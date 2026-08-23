@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-label="summonlab — Every hero is an agent">
-  <title>summonlab — Every hero is an agent</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-label="summonlab — Hero summoning game, where every hero is an agent">
+  <title>summonlab — Hero summoning game, where every hero is an agent</title>
   <desc>Branching legal actions flow into a summoned agent hero, whose choice returns to a deterministic game loop.</desc>
   <defs>
     <linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">
@@ -136,7 +136,7 @@
 
     <g class="copy">
       <text x="82" y="151" fill="#f4f1ff" font-size="74" font-weight="780" letter-spacing="-3">summon<tspan fill="url(#gold)">lab</tspan></text>
-      <text x="86" y="194" fill="#c8c4da" font-size="24" font-weight="430" letter-spacing="0.4">Every hero is an agent.</text>
+      <text x="86" y="194" fill="#c8c4da" font-size="20" font-weight="430" letter-spacing="0.2">Hero summoning game, where every hero is an agent.</text>
       <g transform="translate(86 236)">
         <rect width="456" height="42" rx="21" fill="#111525" stroke="#9b7cff" stroke-opacity="0.28"/>
         <text x="22" y="27" fill="#8ee7ff" font-size="12" font-weight="650" letter-spacing="1.25">SEED</text>

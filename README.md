@@ -1,48 +1,52 @@
 <div align="center">
 
-<img src="assets/hero.svg" alt="summonlab — Every hero is an agent" width="100%">
+<img src="assets/agent-summoning-concept.png" alt="A summoner watches an autonomous agent hero emerge through a gate surrounded by possible actions" width="100%">
 
 # summonlab
 
-**A game-design laboratory where you summon personalities, give them a mission, and let them choose how to pursue it.**
+**A hero-summoning game where every hero is an agent.**
+
+Give them a mission. Earn their trust. Watch them decide what happens next.
 
 _Status: concept and prototyping._
 
 </div>
 
-## The idea
+## A game where heroes are people
 
-Summonlab asks a slightly dangerous game-design question: **how much freedom can we give an agent while still having a fair, legible game?**
+Summonlab explores a difficult game-design question: **how much freedom can we give an agent while still having a fair, legible game?**
 
-The player brings a story, objective, or expedition. They summon a roster of heroes with different rarities, capabilities, memories, and personalities. Those heroes are not units waiting for direct orders; each is an agent that interprets the situation and decides what to do next.
+The player summons a roster of heroes with distinct bodies, talents, values, personalities, memories, and relationships. These heroes are not units waiting for direct orders. They interpret the situation, speak to one another, choose their own actions, and may accept, negotiate, or refuse what the player asks of them.
 
-The game supplies the world and its rules. The player supplies intent. The heroes supply agency.
+The game supplies the world and its rules. The player supplies leadership and intent. The heroes supply agency.
 
-<img src="assets/agent-summoning-concept.png" alt="A summoner watches an autonomous agent hero emerge through a gate surrounded by possible actions" width="100%">
+## Working direction: a frontier settlement RPG
 
-## The player fantasy
+The strongest concept so far places the player in charge of a ruined settlement on a monster-held frontier. The long-term objective is to reclaim the surrounding regions, restore a chain of ancient beacons, and close the breach that keeps producing monsters.
 
-1. **Summon** a hero with a rolled rarity, kit, and personality.
-2. **Brief** the party with a mission rather than a sequence of commands.
-3. **Observe** each hero read the room, remember events, and choose an action.
-4. **Intervene** through resources, relationships, new information, or a changed objective—not by puppeteering every turn.
-5. **Replay** the expedition and understand how this particular cast produced this particular story.
+The settlement gives heroes somewhere to live rather than merely somewhere to wait between battles. They can train, work, argue, form friendships, hold grudges, volunteer for missions, and challenge the player's priorities. Expeditions beyond the walls turn those relationships into bounded tactical and narrative decisions.
 
-The interesting outcomes should live between competence and character: the cautious tactician who refuses a reckless shortcut, the glory-seeker who takes it anyway, or the healer who remembers a promise the player had forgotten.
+A day might look like this:
 
-## Freedom with a hard boundary
+1. **Council** — announce a priority, ask for volunteers, and hear objections.
+2. **Prepare** — build, equip, research, summon, and assign scarce resources.
+3. **Act** — heroes work around the settlement or depart on expeditions.
+4. **Respond** — resolve discoveries, disputes, injuries, raids, and opportunities.
+5. **Reflect** — relationships change, memories consolidate, and heroes reconsider their goals.
+
+The player leads through conversation, policy, resources, appointments, and persuasion—not a cursor that directly moves every hero.
+
+## How agency stays playable
+
+<div align="center">
+
+<img src="assets/hero.svg" alt="summonlab — Hero summoning game, where every hero is an agent" width="72%">
+
+</div>
 
 The load-bearing rule is simple:
 
 > **An agent may choose what happens next. It may never mutate game state directly.**
-
-The engine owns the canonical state and advances it deterministically:
-
-```text
-nextState = transition(state, validatedAction, seed)
-```
-
-On a hero turn, the engine assembles a compact view of the situation, that hero's personality and memory, and the actions currently allowed. A policy selects or proposes an action. The engine validates it, applies it, and records it.
 
 ```text
 mission + world state
@@ -56,56 +60,69 @@ mission + world state
         └──► event log / replay / memory
 ```
 
-This boundary preserves the two things the experiment needs most: **real agent agency** and **a trustworthy game**.
+The authoritative engine owns state, rules, costs, randomness, and consequences. A hero policy receives a deliberately assembled turn packet and returns a structured choice. The engine validates that choice before applying it.
 
-## One policy interface, many kinds of mind
+Every model request can therefore be independent. Summonlab—not the model provider—owns the hero's memories, relationships, prompt version, context budget, and view of the world.
 
-Hero decision-making should be swappable behind one narrow contract:
+## Summoning, rarity, and pity
 
-- `RandomPolicy` gives a zero-cost baseline and fuzzes the rules.
-- `ScriptedPolicy` supports balance tests and authored encounters.
-- `LLMPolicy` lets personality, memory, negotiation, and improvisation matter.
+Summoning should feel exciting without making the system opaque or cruel:
 
-That makes it possible to simulate thousands of expeditions without model calls, then reserve agents for the moments where agency adds something a behavior tree cannot.
+- each banner has visible soft-pity and hard-pity counters;
+- guarantees update transactionally on the server and survive reconnects;
+- banners feature generation themes such as a vocation, origin, skill family, or resonance—not a duplicate named hero;
+- missing a featured theme can guarantee that the next high-rarity result is a new hero matching it;
+- rarity represents unusual starting aptitude, not a hero's humanity or ultimate ceiling;
+- every summoned identity is unique, so the design does not need personality clones disguised as duplicates.
 
-## The freedom ladder
+The first prototype should use earned in-game currency only. Exact thresholds remain configuration and balance questions, not engine constants.
 
-Not every decision needs the same amount of latitude. Summonlab can explore a spectrum:
+## Human first, not human only
 
-| Mode | What the hero receives | What the engine accepts | Best fit |
-| --- | --- | --- | --- |
-| Pick | A short list of legal actions | One action ID | Routine combat turns |
-| Compose | Legal verbs and typed targets | A structured action | Skills, movement, cooperation |
-| Propose | Goals, constraints, and world tools | A validated plan or intent | Exploration and social scenes |
+The first character generator will focus on humans so we can learn whether personality and continuity actually work before multiplying the content problem.
 
-Even at the most open end, freeform language is not game state. It must resolve through engine-owned verbs, validation, costs, and consequences.
+A hero seed can determine physical traits such as height, build, facial structure, skin tone, hair, eyes, age, and handedness. Heritage, culture, gender, physicality, personality, and ability remain separate dimensions. Ethnicity or ancestry must never imply intelligence, morality, rarity, or temperament.
+
+Personality begins with continuous traits rather than a single archetype: temperament, values, motivations, fears, attachment and conflict styles, risk tolerance, moral boundaries, and stress responses. Experiences may change opinions and behavior without rewriting the hero into a different person after every scene.
+
+Later species—whether goblins, elves, constructs, or monsters—can share the same identity, memory, relationship, vocation, and evolution systems while supplying a different physiology template.
+
+## A common evolution path
+
+Every hero should be able to become important. A common progression model can separate:
+
+- **level** — competence earned through practice;
+- **vocation** — the work or combat role a hero chooses and develops;
+- **conviction** — a value, vow, or ambition tested by story events;
+- **bond** — relationships that unlock cooperation and change decisions;
+- **ascension** — star growth earned through meaningful achievements rather than duplicates.
+
+This lets a low-rarity recruit eventually stand beside a rare summon while preserving different beginnings and stories.
+
+## Conversation is a game system
+
+Talking to heroes should not be decorative dialogue. The player can request, persuade, bargain, reassure, threaten, apologize, or reveal information. Trust, time pressure, personality, relationships, and the request itself determine whether a hero accepts, counters, delays, or refuses.
+
+Conversation still resolves through game rules. Repeating a request consumes time and patience; promises become remembered commitments; lies can be discovered; rank may create compliance without loyalty. The model writes a brief player-facing intent and the human response, while the engine owns the mechanical result.
 
 ## First playable slice
 
-A useful vertical slice would be a short, room-based expedition rather than a sprawling RPG:
+The first slice should test the risky idea, not simulate an entire kingdom:
 
-- summon a party of three heroes from a small personality pool;
-- give them one mission with several valid approaches;
-- run turn-based combat and one non-combat dilemma;
-- let relationships and recent events alter later choices;
-- finish with a seeded replay that exposes every context, choice, and state transition.
+- one small settlement with three useful buildings;
+- three summoned human heroes with inspectable personality seeds;
+- one council conversation and one contested assignment;
+- one short ruin expedition with combat and a non-combat dilemma;
+- one goblin raid whose outcome depends on earlier preparation;
+- a complete seeded replay of contexts, choices, dialogue, and state transitions.
 
-The slice is small enough to measure cost, latency, coherence, and fun—the questions that should decide the eventual shape of the game.
+If those three heroes feel meaningfully different across repeated runs, the concept has earned a larger world.
 
-## Why web, why turn-based
+## Project documents
 
-Agent decisions already need a server boundary for credentials, budgets, rate limits, and validation. A web client can remain a thin renderer while the authoritative engine and policy calls run server-side.
-
-Turn-based expeditions also make agent latency part of the rhythm instead of a dropped frame. A PWA can cover desktop and mobile early; a native wrapper only becomes interesting if distribution demands it.
-
-## Design questions worth testing
-
-- When does an autonomous hero feel alive, and when does it merely feel slow?
-- How much personality context changes behavior without flattening competence?
-- Can players influence agents in ways that feel strategic without becoming direct control?
-- What should memory retain so a run develops continuity without drowning the model in history?
-- How do rarity and progression expand possibility without making lower-rarity personalities disposable?
-- Which decisions deserve an agent call, and which are better resolved locally?
+- [Game design](docs/game-design.md) — concept options, world premise, game loops, character generation, pity, progression, and persuasion.
+- [Architecture and platform](docs/architecture.md) — deterministic engine, stateless agent turns, memory ownership, persistence, cost controls, and web deployment.
+- [Visual direction](docs/visual-direction.md) — art language, procedural characters, animation layers, summoning sequences, and screen concepts.
 
 ## Inspiration
 
