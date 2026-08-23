@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-label="summonlab — Every hero is an agent">
+  <title>summonlab — Every hero is an agent</title>
+  <desc>Branching legal actions flow into a summoned agent hero, whose choice returns to a deterministic game loop.</desc>
+  <defs>
+    <linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080b14"/>
+      <stop offset="0.58" stop-color="#111128"/>
+      <stop offset="1" stop-color="#0a1420"/>
+    </linearGradient>
+    <radialGradient id="summonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f6c86b" stop-opacity="0.34"/>
+      <stop offset="0.42" stop-color="#9b7cff" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#080b14" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff0b3"/>
+      <stop offset="0.48" stop-color="#f6c86b"/>
+      <stop offset="1" stop-color="#c78235"/>
+    </linearGradient>
+    <linearGradient id="threadGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#67d9ff" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#9b7cff"/>
+      <stop offset="1" stop-color="#f6c86b"/>
+    </linearGradient>
+    <linearGradient id="scrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#080b14" stop-opacity="0.98"/>
+      <stop offset="0.48" stop-color="#080b14" stop-opacity="0.92"/>
+      <stop offset="0.68" stop-color="#080b14" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#080b14" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="tinyGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="frameClip">
+      <rect x="1" y="1" width="1198" height="358" rx="24"/>
+    </clipPath>
+  </defs>
+
+  <style>
+    .copy { font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; }
+    .thread { stroke-dasharray: 5 18; }
+    .orbit { transform-box: view-box; transform-origin: 930px 180px; }
+    .card { transform-box: fill-box; transform-origin: center; }
+    @keyframes signal { to { stroke-dashoffset: -92; } }
+    @keyframes orbitForward { to { transform: rotate(360deg); } }
+    @keyframes orbitBack { to { transform: rotate(-360deg); } }
+    @keyframes breathe { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 1; transform: scale(1.04); } }
+    @keyframes choose { 0%, 58%, 100% { opacity: 0.48; } 66%, 82% { opacity: 1; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .thread { animation: signal 7s linear infinite; }
+      .thread.slow { animation-duration: 10s; }
+      .orbit-forward { animation: orbitForward 28s linear infinite; }
+      .orbit-back { animation: orbitBack 38s linear infinite; }
+      .card-counter { animation: orbitBack 28s linear infinite; }
+      .core { transform-box: fill-box; transform-origin: center; animation: breathe 4.8s ease-in-out infinite; }
+      .chosen { animation: choose 7s ease-in-out infinite; }
+    }
+  </style>
+
+  <g clip-path="url(#frameClip)">
+    <rect width="1200" height="360" fill="url(#backdrop)"/>
+    <ellipse cx="930" cy="180" rx="330" ry="275" fill="url(#summonGlow)"/>
+
+    <!-- A branching field of legal actions converges on the summoned agent. -->
+    <g fill="none" stroke="url(#threadGradient)" stroke-linecap="round" opacity="0.34">
+      <path class="thread slow" d="M580 34 C682 34 694 84 760 84 S846 118 884 142"/>
+      <path class="thread" d="M618 92 C680 92 704 120 756 120 S836 146 884 158"/>
+      <path class="thread slow" d="M552 151 C644 151 677 142 738 155 S822 174 884 174"/>
+      <path class="thread" d="M600 211 C672 211 688 186 750 190 S830 188 884 187"/>
+      <path class="thread slow" d="M570 272 C674 272 694 226 756 226 S832 207 886 202"/>
+      <path class="thread" d="M650 326 C706 326 722 282 778 282 S844 235 890 216"/>
+      <path class="thread" d="M1200 58 C1118 58 1104 105 1058 124"/>
+      <path class="thread slow" d="M1200 130 C1136 130 1104 142 1066 154"/>
+      <path class="thread" d="M1200 230 C1138 230 1102 214 1066 202"/>
+      <path class="thread slow" d="M1200 314 C1126 314 1094 258 1056 231"/>
+    </g>
+    <g fill="#9b7cff" opacity="0.62" filter="url(#tinyGlow)">
+      <circle cx="760" cy="84" r="2.5"/><circle cx="756" cy="120" r="2"/>
+      <circle cx="738" cy="155" r="2.5"/><circle cx="750" cy="190" r="2"/>
+      <circle cx="756" cy="226" r="2.5"/><circle cx="778" cy="282" r="2"/>
+      <circle cx="1098" cy="88" r="2"/><circle cx="1128" cy="130" r="2.5"/>
+      <circle cx="1110" cy="218" r="2"/><circle cx="1100" cy="266" r="2.5"/>
+    </g>
+
+    <!-- Summoning gate and orbiting action cards. -->
+    <g fill="none" stroke-linecap="round">
+      <circle cx="930" cy="180" r="128" stroke="#9b7cff" stroke-opacity="0.18" stroke-width="1" stroke-dasharray="2 10"/>
+      <circle class="orbit orbit-back" cx="930" cy="180" r="106" stroke="#67d9ff" stroke-opacity="0.28" stroke-width="1.2" stroke-dasharray="34 12 4 12"/>
+      <circle class="orbit orbit-forward" cx="930" cy="180" r="82" stroke="#f6c86b" stroke-opacity="0.48" stroke-width="1.4" stroke-dasharray="3 9 24 10"/>
+      <circle cx="930" cy="180" r="60" stroke="#f6c86b" stroke-opacity="0.24"/>
+    </g>
+
+    <g class="orbit orbit-forward copy" font-size="11" font-weight="700" text-anchor="middle">
+      <g transform="translate(904 40)">
+        <g class="card card-counter">
+          <rect width="52" height="34" rx="9" fill="#11162a" stroke="#9b7cff" stroke-opacity="0.8"/>
+          <text x="26" y="22" fill="#d7ccff">A1</text>
+        </g>
+      </g>
+      <g class="chosen" transform="translate(1053 163)">
+        <g class="card card-counter">
+          <rect width="52" height="34" rx="9" fill="#211b19" stroke="#f6c86b" stroke-width="1.5"/>
+          <text x="26" y="22" fill="#fff0b3">A2</text>
+        </g>
+      </g>
+      <g transform="translate(904 286)">
+        <g class="card card-counter">
+          <rect width="52" height="34" rx="9" fill="#101b26" stroke="#67d9ff" stroke-opacity="0.75"/>
+          <text x="26" y="22" fill="#bdefff">A3</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- The agent core: a distinct actor inside, but not outside, the rules. -->
+    <g class="core" filter="url(#softGlow)">
+      <path d="M930 111 L970 146 L960 215 L930 249 L900 215 L890 146 Z" fill="url(#gold)" opacity="0.16"/>
+      <path d="M930 123 L959 150 L951 207 L930 236 L909 207 L901 150 Z" fill="#0b1020" stroke="url(#gold)" stroke-width="2"/>
+      <circle cx="930" cy="158" r="12" fill="url(#gold)"/>
+      <path d="M909 204 C912 180 918 176 930 176 C942 176 948 180 951 204" fill="none" stroke="#fff0b3" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="930" cy="207" r="4" fill="#67d9ff"/>
+    </g>
+
+    <!-- Legibility scrim over the living decision field. -->
+    <rect width="820" height="360" fill="url(#scrim)"/>
+
+    <g class="copy">
+      <text x="82" y="151" fill="#f4f1ff" font-size="74" font-weight="780" letter-spacing="-3">summon<tspan fill="url(#gold)">lab</tspan></text>
+      <text x="86" y="194" fill="#c8c4da" font-size="24" font-weight="430" letter-spacing="0.4">Every hero is an agent.</text>
+      <g transform="translate(86 236)">
+        <rect width="456" height="42" rx="21" fill="#111525" stroke="#9b7cff" stroke-opacity="0.28"/>
+        <text x="22" y="27" fill="#8ee7ff" font-size="12" font-weight="650" letter-spacing="1.25">SEED</text>
+        <text x="72" y="27" fill="#5d6076" font-size="13">→</text>
+        <text x="98" y="27" fill="#d7ccff" font-size="12" font-weight="650" letter-spacing="1.1">LEGAL MOVES</text>
+        <text x="207" y="27" fill="#5d6076" font-size="13">→</text>
+        <text x="232" y="27" fill="#ffe0a0" font-size="12" font-weight="650" letter-spacing="1.1">AGENT CHOICE</text>
+        <text x="352" y="27" fill="#5d6076" font-size="13">→</text>
+        <text x="378" y="27" fill="#bdefff" font-size="12" font-weight="650" letter-spacing="1.1">REPLAY</text>
+      </g>
+    </g>
+  </g>
+  <rect x="1" y="1" width="1198" height="358" rx="24" fill="none" stroke="#ffffff" stroke-opacity="0.09"/>
+</svg>
