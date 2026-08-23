@@ -6,123 +6,139 @@
 
 **A hero-summoning game where every hero is an agent.**
 
-Give them a mission. Earn their trust. Watch them decide what happens next.
+Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: concept and prototyping._
+_Status: concept and visual prototyping._
 
 </div>
 
-## A game where heroes are people
+## The game
 
-Summonlab explores a difficult game-design question: **how much freedom can we give an agent while still having a fair, legible game?**
+The Master—the player's embodied character—awakens in a walled settlement built around an ancient summoning gate. Beyond the walls stands a one-hundred-floor tower. Other destinations exist only through unstable portals to resource-rich worlds.
 
-The player summons a roster of heroes with distinct bodies, talents, values, personalities, memories, and relationships. These heroes are not units waiting for direct orders. They interpret the situation, speak to one another, choose their own actions, and may accept, negotiate, or refuse what the player asks of them.
+The goal is clear: **reach floor 100 without the Master dying.** Hero death is permanent. If the Master dies, the run ends.
 
-The game supplies the world and its rules. The player supplies leadership and intent. The heroes supply agency.
+Summoned heroes arrive as clean slates. They have bodies, temperaments, affinities, and fragments of culture, but no memory of the settlement, the Master, or why they should recognize the Master's authority. They learn those things from what actually happens.
 
-## Working direction: a frontier settlement RPG
+## Three connected loops
 
-The strongest concept so far places the player in charge of a ruined settlement on a monster-held frontier. The long-term objective is to reclaim the surrounding regions, restore a chain of ancient beacons, and close the breach that keeps producing monsters.
+### Settlement loop
 
-The settlement gives heroes somewhere to live rather than merely somewhere to wait between battles. They can train, work, argue, form friendships, hold grudges, volunteer for missions, and challenge the player's priorities. Expeditions beyond the walls turn those relationships into bounded tactical and narrative decisions.
+The settlement runs continuously on an accelerated server clock. The initial target is `4×` real time: one game day every six real hours.
 
-A day might look like this:
+Heroes eat, sleep, work, train, socialize, practice skills, idle, and form routines. The player can talk to available heroes, issue orders, send them to speak with someone, construct buildings, prepare missions, or ignore settlement management and train the Master instead.
 
-1. **Council** — announce a priority, ask for volunteers, and hear objections.
-2. **Prepare** — build, equip, research, summon, and assign scarce resources.
-3. **Act** — heroes work around the settlement or depart on expeditions.
-4. **Respond** — resolve discoveries, disputes, injuries, raids, and opportunities.
-5. **Reflect** — relationships change, memories consolidate, and heroes reconsider their goals.
+### Mission loop
 
-The player leads through conversation, policy, resources, appointments, and persuasion—not a cursor that directly moves every hero.
+There are two mission families:
+
+- **Tower missions** provide the objective. Difficulty rises every five floors, with larger tests and promotion resources every ten.
+- **Portal missions** open temporary routes to other worlds for ore, ingredients, knowledge, equipment, and unusual encounters.
+
+Combat heroes can climb. Non-combat heroes can cook, brew, craft, heal, research, maintain equipment, train others, or operate buildings. Roles remain choices rather than permanent castes.
+
+### Master loop
+
+The player can remain in the settlement, join tower and portal missions, or invest heavily in personal training. Strength is one source of recognized authority, but provision, competence, trust, fear, relationships, and demonstrated judgment also matter.
+
+Only the Master can trigger construction, summoning, and synthesis. Heroes can suggest, operate, resist, negotiate, or react to those decisions.
+
+## Habits make a life
+
+Personality describes tendencies. Habits describe what a hero has actually learned to do in a particular situation.
+
+Every hero develops cue-bound routines such as stretching after waking, training before dinner, visiting the workshop when anxious, or seeking a particular friend after a difficult mission. Buildings, schedules, needs, injuries, relationships, weather, orders, and available resources change which actions are possible and attractive.
+
+Routine behavior does not require a model call every minute. Each hero makes at least one agent-authored daily plan, while a deterministic habit system carries out familiar actions until something meaningful interrupts them.
 
 ## How agency stays playable
 
 <div align="center">
 
-<img src="assets/hero.svg" alt="summonlab — Hero summoning game, where every hero is an agent" width="72%">
+<img src="assets/hero.svg" alt="summonlab — Hero summoning game, where every hero is an agent" width="50%">
 
 </div>
-
-The load-bearing rule is simple:
 
 > **An agent may choose what happens next. It may never mutate game state directly.**
 
 ```text
-mission + world state
-        │
-        ▼
-  deterministic engine ──► legal moves + hero context
-        ▲                              │
-        │                              ▼
-  validated action ◄──────────── hero policy
-        │
-        └──► event log / replay / memory
+world state + habits + remembered context
+                  │
+                  ▼
+       legal choices / mission tools
+                  │
+                  ▼
+          independent hero policy
+                  │
+                  ▼
+       validated action or fallback
+                  │
+                  ▼
+       deterministic engine + event log
 ```
 
-The authoritative engine owns state, rules, costs, randomness, and consequences. A hero policy receives a deliberately assembled turn packet and returns a structured choice. The engine validates that choice before applying it.
+The server owns the clock, state, context, memory, legality, costs, and consequences. The phone can be off while settlement decisions continue. Model responses are independent jobs assembled from the context Summonlab deliberately chooses to provide.
 
-Every model request can therefore be independent. Summonlab—not the model provider—owns the hero's memories, relationships, prompt version, context budget, and view of the world.
+## Tower rules
 
-## Summoning, rarity, and pity
+- The tower has exactly 100 campaign floors.
+- Each five-floor band introduces a new difficulty tier, environment, or rule pressure.
+- Each tenth floor is a major gate, boss, or promotion checkpoint.
+- The tower supplies the mission objective: eliminate, survive, protect, recover, reach, or discover.
+- Hidden rooms, paths, and Easter eggs only appear when a hero tries a valid revealing action.
+- Secrets are seeded and engine-owned; the model can discover them but cannot invent them into existence.
 
-Summoning should feel exciting without making the system opaque or cruel:
+Floor 100 can end the campaign. An endless postgame mode can come later if the finite tower is fun.
 
-- each banner has visible soft-pity and hard-pity counters;
-- guarantees update transactionally on the server and survive reconnects;
-- banners feature generation themes such as a vocation, origin, skill family, or resonance—not a duplicate named hero;
-- missing a featured theme can guarantee that the next high-rarity result is a new hero matching it;
-- rarity represents unusual starting aptitude, not a hero's humanity or ultimate ceiling;
-- every summoned identity is unique, so the design does not need personality clones disguised as duplicates.
+## Heroes, stars, and synthesis
 
-The first prototype should use earned in-game currency only. Exact thresholds remain configuration and balance questions, not engine constants.
+Heroes use a `1★–7★` progression:
 
-## Human first, not human only
+- ordinary summons overwhelmingly produce `1★` or `2★` heroes;
+- `3★` summons are special;
+- a natural `4★` is an extreme anomaly;
+- `5★–7★` are reached through promotion rather than normal summoning;
+- each star raises the level cap by ten, ending at level 70 for `7★`;
+- promotions unlock capacity, skill growth, and evolution choices without changing who the hero is.
 
-The first character generator will focus on humans so we can learn whether personality and continuity actually work before multiplying the content problem.
+Anyone can learn any skill, but aptitude, teacher quality, facilities, habits, physical constraints, and practice time determine how quickly.
 
-A hero seed can determine physical traits such as height, build, facial structure, skin tone, hair, eyes, age, and handedness. Heritage, culture, gender, physicality, personality, and ability remain separate dimensions. Ethnicity or ancestry must never imply intelligence, morality, rarity, or temperament.
+Synthesis permanently consumes one hero to strengthen another. It is not a consequence-free duplicate system. Friends notice absences, witnesses remember, rumors travel through the social graph, and remaining heroes may become afraid, angry, compliant, ambitious, or distrustful.
 
-Personality begins with continuous traits rather than a single archetype: temperament, values, motivations, fears, attachment and conflict styles, risk tolerance, moral boundaries, and stress responses. Experiences may change opinions and behavior without rewriting the hero into a different person after every scene.
+A hero cannot permanently leave the roster on their own. Their terminal outcomes are death or synthesis.
 
-Later species—whether goblins, elves, constructs, or monsters—can share the same identity, memory, relationship, vocation, and evolution systems while supplying a different physiology template.
+## Clean-slate people
 
-## A common evolution path
+The first generator focuses on humans. Physiology stays stable unless a major promotion or evolution changes it. Temperament, values, drives, social style, habits, capabilities, loyalties, and beliefs can change through lived experience.
 
-Every hero should be able to become important. A common progression model can separate:
+New summons do not automatically recognize authority. They may ask where they are, demand an explanation, distrust the Master, or refuse a dangerous order. Their knowledge graph begins with what they can observe and what others tell them.
 
-- **level** — competence earned through practice;
-- **vocation** — the work or combat role a hero chooses and develops;
-- **conviction** — a value, vow, or ambition tested by story events;
-- **bond** — relationships that unlock cooperation and change decisions;
-- **ascension** — star growth earned through meaningful achievements rather than duplicates.
-
-This lets a low-rarity recruit eventually stand beside a rare summon while preserving different beginnings and stories.
-
-## Conversation is a game system
-
-Talking to heroes should not be decorative dialogue. The player can request, persuade, bargain, reassure, threaten, apologize, or reveal information. Trust, time pressure, personality, relationships, and the request itself determine whether a hero accepts, counters, delays, or refuses.
-
-Conversation still resolves through game rules. Repeating a request consumes time and patience; promises become remembered commitments; lies can be discovered; rank may create compliance without loyalty. The model writes a brief player-facing intent and the human response, while the engine owns the mechanical result.
+Heritage, culture, gender, physicality, personality, capability, and rarity remain separate dimensions. Ethnicity or ancestry never implies intelligence, morality, temperament, or value.
 
 ## First playable slice
 
-The first slice should test the risky idea, not simulate an entire kingdom:
+- one walled settlement with a gate, dormitory, training ground, workshop, and kitchen;
+- the Master plus three clean-slate human summons;
+- a continuous `4×` clock and one agent-authored daily plan per hero;
+- habits for sleep, food, training, work, idling, and social contact;
+- tower floors 1–5 with one hidden route;
+- one temporary mining portal mission;
+- one contested order and one authority conversation;
+- one death-capable combat encounter;
+- one synthesis decision with social propagation;
+- a replay of contexts, choices, knowledge, and state transitions.
 
-- one small settlement with three useful buildings;
-- three summoned human heroes with inspectable personality seeds;
-- one council conversation and one contested assignment;
-- one short ruin expedition with combat and a non-combat dilemma;
-- one goblin raid whose outcome depends on earlier preparation;
-- a complete seeded replay of contexts, choices, dialogue, and state transitions.
+## Visual prototype
 
-If those three heroes feel meaningfully different across repeated runs, the concept has earned a larger world.
+![Tower and settlement interface prototype](assets/tower-prototype.png)
+
+[Open the interactive prototype](prototype/index.html) to switch between the settlement, tower, and portal views, inspect heroes, change time speed, and resolve sample agent choices.
 
 ## Project documents
 
-- [Game design](docs/game-design.md) — concept options, world premise, game loops, character generation, pity, progression, and persuasion.
-- [Architecture and platform](docs/architecture.md) — deterministic engine, stateless agent turns, memory ownership, persistence, cost controls, and web deployment.
-- [Visual direction](docs/visual-direction.md) — art language, procedural characters, animation layers, summoning sequences, and screen concepts.
+- [Game design](docs/game-design.md) — the hundred-floor campaign, habits, clean-slate characters, missions, progression, synthesis, authority, and permadeath.
+- [Architecture and platform](docs/architecture.md) — accelerated time, offline decision scheduling, independent model jobs, context ownership, persistence, replay, and cost controls.
+- [Visual direction](docs/visual-direction.md) — tower, settlement, portal, character, habit, synthesis, and animation language.
 
 ## Inspiration
 

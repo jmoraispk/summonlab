@@ -1,163 +1,202 @@
 # Visual direction
 
+## Prototype
+
+![Tower and settlement interface prototype](../assets/tower-prototype.png)
+
+[Open the interactive prototype](../prototype/index.html).
+
+The prototype explores one integrated command surface rather than separate management and combat products. The player can switch between settlement, tower, and portal views while the roster, accelerated clock, resources, pending decisions, and social activity remain visible.
+
 ## Target feeling
 
-Summonlab should look like arcane machinery discovering a human soul: dark, precise systems interrupted by warm, living character.
+Summonlab should look like arcane machinery trying to classify a human soul.
 
-The current concept art establishes a useful palette:
+- Midnight navy and near-black create the world and interface.
+- Amber-gold represents agency, summons, chosen actions, and irreversible decisions.
+- Muted violet represents possibility, memory, habit, and the unknown tower.
+- Cyan represents engine validation, information, and stable system state.
+- Warm settlement light contrasts with cold tower geometry.
 
-- midnight navy and near-black for the world and interface;
-- amber-gold for summons, agency, and important choices;
-- muted violet for possibility, memory, and the gate;
-- cyan for validated actions, information, and system feedback.
+Rarity should alter geometry, density, sound, and the behavior of light—not cycle through a generic rainbow.
 
-The visual system should avoid generic rainbow rarity effects. Rarity changes density, geometry, sound, and the behavior of light—not merely the hue of the same explosion.
+## Product frame
 
-## Recommended presentation: a living 2.5D diorama
+The persistent game shell contains:
 
-Use layered two-dimensional art with depth, lighting, particles, and camera motion rather than committing immediately to full 3D.
+- current day, time, and speed multiplier;
+- food, ore, aether, and other scarce resources;
+- destination switcher for settlement, tower, and portals;
+- Master and hero roster with stars, level, health, and current activity;
+- selected hero state, needs, habits, plan, and authority belief;
+- pending agent decisions and recent event log.
 
-This direction can support:
+The shell should answer three questions without opening a character sheet:
 
-- a painterly settlement with parallax depth;
-- small characters moving between real locations;
-- expressive portraits during council and conversation;
-- tactical expedition rooms with clear positions and targets;
-- elaborate summon effects without requiring a fully modeled world;
-- deterministic seeded variation in characters and scenes.
+1. Who needs attention?
+2. What is happening while I am away?
+3. What decision will matter next?
 
-It also matches turn-based pacing: the screen can breathe while a hero thinks, then animate the chosen action decisively.
+## Tower view
+
+The tower is a vertical campaign object, not a generic stage selector.
+
+- Show all twenty five-floor bands as a compressed spine.
+- Emphasize the current band and next floor rather than drawing 100 identical buttons.
+- Mark every fifth floor as a threshold and every tenth as a boss gate.
+- Let cleared bands retain scars, trophies, or discovered side paths.
+- Display current objective, known hazards, party readiness, secret progress, and extraction route.
+- Animate legal possibilities converging into the selected action, echoing the README SVG.
+
+The default prototype shows floor 15, “The Hollow Foundry,” with a hidden route indicator and party silhouettes against a monumental tower cutaway.
+
+## Settlement view
+
+Use a living 2.5D diorama inside one visible wall:
+
+- summoning gate;
+- dormitory;
+- kitchen;
+- training ground;
+- workshop and forge;
+- infirmary;
+- social hall;
+- portal chamber;
+- synthesis chamber.
+
+The settlement should grow denser and more animated rather than sprawl across a map. Heroes move between buildings according to real schedules. Lighting, occupancy, smoke, meals, training, construction, and damage show the passage of accelerated time.
+
+### Habit visibility
+
+Do not visualize habits as invisible numeric buffs.
+
+- A regular route becomes subtly more confident and direct.
+- A repeated activity gains a small routine marker on the schedule.
+- Strong cue-action links appear as a compact “after waking → stretch” chain.
+- Interrupted habits show the blocking cause: injury, locked building, missing partner, order, or mission.
+- Building upgrades visibly reduce friction through better access, capacity, equipment, and teaching.
+
+The player can inspect habit strength, cue, last repetition, and recent outcome without seeing raw model reasoning.
+
+## Portal view
+
+Portals are time-limited mission cards embedded in a spatial chamber, not a permanent world map.
+
+Each portal shows:
+
+- world silhouette and material identity;
+- time remaining in real and game time;
+- known hazards and environmental rules;
+- required extraction condition;
+- expected resources;
+- heroes currently deployed or preparing.
+
+Portal worlds can vary art direction dramatically while the surrounding chamber and interface keep the product coherent.
+
+## Character presentation
+
+### Clean-slate reveal
+
+A summon sequence should reveal a person before a stat sheet:
+
+1. gate geometry maps physical possibility;
+2. body silhouette resolves;
+3. fragments of temperament and affinity orbit without a biography;
+4. star resonance locks into place;
+5. the hero looks at the room;
+6. the hero speaks or asks a first question;
+7. only then do attributes and available actions appear.
+
+The first line should often express disorientation: “Where am I?”, “Who are you?”, or a silent refusal to answer.
+
+### Procedural body and portrait
+
+A reproducible visual seed controls body proportions, face, skin, hair, eyes, age, marks, voice profile, posture, clothing fit, and small idle behaviors. Physiology remains visually consistent until injury, aging, equipment, or major evolution changes it.
+
+Temperament affects animation timing and posture tendencies without freezing one expression onto the character. Culture affects gesture, naming, clothing, and ornament separately from inherited appearance.
+
+## Attributes, skills, and growth
+
+Use six compact attribute marks rather than a spreadsheet wall:
+
+- Might;
+- Vigor;
+- Agility;
+- Focus;
+- Insight;
+- Presence.
+
+Skills appear as practiced motions and tools: sword stance, bow draw, cooking rhythm, spell geometry, hammer technique, or teaching posture.
+
+Promotion at each ten-level threshold adds a visible resonance ring. Major promotions can alter silhouette, clothing integration, aura, or physiology. A `7★` hero should look like the accumulated result of a life, not merely a brighter `1★` portrait.
+
+## Synthesis presentation
+
+Synthesis must feel terminal.
+
+- Use the same gate language as summoning, but run the geometry inward.
+- Show the selected hero's identity and relationships before confirmation.
+- Make the recipient and source visually distinct.
+- Do not use celebratory loot-box motion.
+- After resolution, leave a quiet absence in the roster and settlement.
+- Let later conversations, avoidance, glances, and routine changes carry the social consequence.
+
+The confirmation screen should name close relationships and known witnesses. It should never pretend the source hero is an interchangeable material.
+
+## Mission animation
+
+Turn-based action can still feel alive:
+
+1. relevant legal targets gain subtle outlines;
+2. possible paths gather around the acting hero;
+3. selected intent turns gold;
+4. validation turns the action cyan;
+5. the action resolves quickly;
+6. consequences linger on bodies and environment.
+
+Agent latency becomes a short focus animation, not an endless spinner. Show “considering,” “validated,” or “fallback” states without exposing hidden chain-of-thought.
 
 ## Animation layers
 
-Use the simplest renderer that fits each layer:
-
-| Layer | Technique | Examples |
+| Layer | Technique | Use |
 | --- | --- | --- |
-| Interface ornament | SVG and CSS | Gate rings, pity meter, rarity stars, legal-action paths |
-| Character portraits | Layered raster parts or a 2D bone rig | Breathing, blinking, gaze, mouth, hair, clothing |
-| World characters | Sprite sheets or compact rigs | Walking, work, combat, reactions |
-| Environment | Layered raster scenes | Parallax, day/night light, fog, fires, banners |
-| Dense effects | Canvas or WebGL | Summon particles, weather, spell fields, crowds |
-| Cinematic accents | Camera and compositing | Slow push, shake, bloom, silhouettes, wipes |
+| Interface geometry | SVG and CSS | Tower bands, stars, pity, habits, legal paths |
+| Character portraits | Layered raster or 2D rig | Gaze, breathing, speech, posture, injury |
+| World characters | Sprite sheets or compact rigs | Work, travel, training, combat, social contact |
+| Environment | Layered raster scenes | Day/night, fire, weather, construction, damage |
+| Dense effects | Canvas or WebGL | Gate particles, magic, portal fields, crowds |
+| Cinematic accents | Camera and compositing | Summon, promotion, boss gate, death, synthesis |
 
-Do not make every idle surface move. One focal animation plus low-frequency ambient motion feels more expensive than many unrelated loops.
+## High-value moments
 
-## Signature summoning sequence
+1. A clean-slate hero asks the Master for an explanation.
+2. A habitual training route continues while the player is away.
+3. A hero breaks routine because a friend is missing.
+4. An unexpected inspect action opens a tower side path.
+5. The party reaches a fifth-floor threshold.
+6. A promotion replays the choices that earned it.
+7. A portal collapses seconds after extraction.
+8. The Master dies and the continuous settlement falls silent.
 
-A summon should visualize the actual character-generation pipeline.
+## Animation rules
 
-1. **The gate wakes** — thin violet geometry maps possible identities.
-2. **A body resolves** — a silhouette forms from physical trait layers.
-3. **A mind branches** — values, motives, and temperament appear as orbiting paths.
-4. **A choice ignites** — one warm gold signal moves from the hero outward, showing agency rather than ownership.
-5. **Rarity reveals** — star geometry locks into place with increasing complexity.
-6. **The hero speaks first** — a generated introductory line reveals attitude before the stat sheet appears.
-
-The player should feel that the gate produced a person, not opened a loot box containing an icon.
-
-### Rarity language
-
-- 1★: one clean ring, grounded light, direct reveal;
-- 2★: a second orbital line and stronger silhouette;
-- 3★: branching motifs and a short environment response;
-- 4★: multi-stage geometry, held anticipation, character-specific accent;
-- 5★: the gate briefly changes the surrounding room, then becomes quiet for the first spoken line.
-
-The animation must remain skippable after the result is committed. Skip affects presentation, never randomness.
-
-## Procedural human characters
-
-### Reproducible layers
-
-A `visualSeed` should select and parameterize:
-
-- body height and proportions;
-- face shape and feature placement;
-- skin tone and surface details;
-- hair shape, texture, color, and age effects;
-- eyes, brows, nose, mouth, ears, and facial hair;
-- scars, marks, and non-genetic details from personal history;
-- posture and neutral expression from current state;
-- clothing silhouette, material, wear, equipment, and vocation;
-- small animated behaviors such as gaze, fidgeting, breathing, or guarded stance.
-
-Portrait parts need shared anchor standards so thousands of combinations do not clip. Generate a deterministic visual manifest and validate it independently from the personality manifest.
-
-### Personality without caricature
-
-Personality may influence posture, expression, gaze duration, personal space, and animation timing, but should not permanently stamp one emotion onto a face. A cautious hero can smile; an extrovert can grieve.
-
-Inherited family traits influence coherent appearance ranges. Culture separately influences clothing, naming, ornament, gesture, and social presentation. Neither should recolor a single face template or imply personality. Clothing and equipment should also reveal profession, resources, climate, and personal modification.
-
-## Settlement screens
-
-### Hearthgate overview
-
-An angled diorama shows every important location: gate, hall, homes, workshop, stores, palisade, farms, and road. Heroes physically move to assignments. Weather, damage, construction, and population change the same scene over time.
-
-Clicking a hero should answer three questions immediately:
-
-1. What are they doing?
-2. Why are they doing it?
-3. What do they currently care about?
-
-### Council table
-
-Frame the player at one end of a table with heroes arranged by relationship and office. Small posture changes, glances, interruptions, and side reactions make group dynamics visible before dialogue explains them.
-
-Requests can appear as an intent card in the center. Lines connect it to each hero with private willingness hidden until they respond. The visual echoes the SVG banner's legal choices orbiting an autonomous core.
-
-### Relationship constellation
-
-Use a constellation view sparingly for inspection, not as the main game. Nodes represent people; line style represents trust, affection, authority, fear, debt, or conflict. Selecting an edge reveals the events that changed it so relationships remain explainable.
-
-## Expedition and combat screens
-
-Use compact rooms with clear cover, hazards, elevation, exits, interactable objects, and visible objectives. The camera can be isometric or a shallow side perspective, but readable legal targets matter more than spectacle.
-
-During a hero turn:
-
-1. relevant objects gain subtle outlines;
-2. a short “considering” motion gathers possibilities around the hero;
-3. the selected action path becomes gold;
-4. validation turns it cyan;
-5. the action animates quickly;
-6. intent or dialogue appears only if it adds character.
-
-Never simulate thinking with an endless spinner. Show the bounded choices and the hero's changing focus without revealing hidden model reasoning.
-
-## High-value animated moments
-
-1. **Summon reveal** — identity and agency forming together.
-2. **First refusal** — the command card stops, fractures, and returns as a counterproposal.
-3. **Kept promise** — a remembered event connects two characters and changes a later decision.
-4. **Ascension** — past choices orbit the hero before resolving into a new conviction.
-5. **Beacon restoration** — the settlement and world map light together, showing campaign progress.
-6. **Raid preparation payoff** — defenses built earlier activate in the same living settlement view.
-
-## Animation principles
-
-- Animate cause and consequence, not decoration.
-- Keep autonomous loops slow and subtle.
-- Make every critical animation skippable or accelerable.
+- Animate cause and consequence, not every available surface.
+- Make critical sequences skippable after state commits.
 - Respect reduced-motion settings.
-- Preserve a finished static frame for SVG and loading states.
-- Avoid flashes and rapid full-screen luminance changes.
-- Use seeded variation for particles and timings when a replay must match.
+- Preserve readable static states.
+- Avoid flashing and full-screen luminance jumps.
+- Use seeded variation when replay presentation must match.
 - Separate simulation time from presentation time.
+- Never let animation hide a death, synthesis, resource cost, or failed action.
 
-## Asset strategy for the prototype
+## Prototype asset scope
 
-Start with one excellent reusable scene instead of many thin scenes:
+The current prototype intentionally uses code-native geometry and interface motion. A production visual slice should next add:
 
-- one Hearthgate background with day, evening, and raid lighting;
-- three modular human portrait sets;
-- four vocation clothing kits;
-- a small shared library of body and face parts;
-- one goblin family with several equipment variations;
-- one gate animation assembled from code-native rings and particles;
-- one expedition room kit;
-- one conversation and council presentation.
-
-The prototype should prove that procedural people remain visually coherent and emotionally readable before expanding the species catalog.
+- one painted settlement diorama with day and night states;
+- one monumental tower cutaway;
+- three modular human portrait rigs;
+- five building activity loops;
+- one portal-world environment;
+- one deterministic monster family;
+- summon, hidden-path, promotion, death, and synthesis sequences.

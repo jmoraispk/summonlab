@@ -2,60 +2,304 @@
 
 ## Goals
 
-The architecture exists to maximize character agency without surrendering correctness, cost control, or replayability.
-
-1. The server is authoritative.
-2. The engine is deterministic given state, action, and seed.
-3. Model requests are independent by default.
-4. Summonlab owns context and memory.
-5. Agent output is untrusted input until validated.
-6. Every important decision is replayable and inspectable.
-7. Policies are swappable so most simulation costs no model tokens.
+1. Keep the server authoritative while the phone is open or closed.
+2. Advance a continuous accelerated world clock deterministically.
+3. Give every roster hero meaningful language-model choices without calling a model for every minute of life.
+4. Represent habits, environment, knowledge, and social propagation explicitly.
+5. Keep every model request independent and context-owned by Summonlab.
+6. Make tower, portal, settlement, death, synthesis, and promotion replayable.
+7. Cap cost and recover safely from stale, late, invalid, or unavailable model responses.
 
 ## System boundary
 
 ```text
 ┌──────────────────────── web / PWA ────────────────────────┐
-│ render state · submit player intent · stream turn results │
+│ render projections · control Master · talk · issue orders │
 └────────────────────────────┬───────────────────────────────┘
-                             │ authenticated API
+                             │ authenticated commands/events
 ┌────────────────────────────▼───────────────────────────────┐
-│                    authoritative server                    │
+│                    authoritative backend                   │
 │                                                           │
-│  command handler ─► deterministic engine ─► event store   │
-│         │                    ▲                    │         │
-│         │                    │ validated action   │         │
-│         ▼                    │                    ▼         │
-│  turn orchestrator ─► policy adapter ◄──── context/memory │
-│         │                                                 │
-│         └──── budgets · timeouts · retries · telemetry    │
+│  simulation clock ─► scheduler ─► decision-job queue      │
+│         │               │                 │                │
+│         ▼               ▼                 ▼                │
+│  deterministic engine ◄──── validated policy response     │
+│         │                                  ▲               │
+│         ▼                                  │               │
+│  event log ─► projections ─► context / memory / habits     │
+│                                                           │
+│  account limits · leases · retries · usage · replay hashes │
 └────────────────────────────────────────────────────────────┘
 ```
 
-The browser never receives a model-provider key and never decides canonical outcomes.
+The browser is a renderer and command surface. It does not own the clock, model key, random seed, pity state, mission result, or background simulation.
 
 ## Suggested repository shape
 
 ```text
 apps/
-  web/                 browser UI and server routes
-  worker/              queued agent turns and simulations
+  web/                  responsive game client and server endpoints
+  worker/               simulation scheduling and model decision jobs
 packages/
-  contracts/           commands, actions, events, and runtime schemas
-  engine/              pure state transitions and legal-action generation
-  characters/          generation, personality, progression, relationships
-  policies/            random, scripted, replay, and model policies
-  context/             memory selection and turn-packet assembly
-  simulation/          balance runs, fixtures, and evaluation scenarios
-  ui/                   shared visual components
+  contracts/            commands, actions, events, jobs, runtime schemas
+  engine/               pure transitions and legal-action generation
+  simulation/           clock, schedules, needs, habits, jobs, catch-up
+  characters/           generation, attributes, skills, promotion, death
+  society/              relationships, knowledge, rumors, authority
+  missions/             tower floors, portal worlds, encounters, secrets
+  policies/             habit, random, scripted, replay, and model policies
+  context/              memory selection and independent turn packets
+  evaluation/           recorded scenarios, graders, cost and latency tests
+  ui/                   reusable interface and presentation components
+prototype/
 docs/
 ```
 
-A TypeScript monorepo keeps contracts shared between the web client, server, engine, simulations, and tests. The engine package must not import database, network, clock, or model SDK code.
+TypeScript keeps the engine contracts shared. The engine cannot import database, network, wall-clock, browser, or model SDK code.
+
+## Simulation clock
+
+Store an authoritative run clock:
+
+```ts
+interface SimulationClock {
+  runId: string;
+  gameTime: string;
+  speed: 0 | 1 | 2 | 4 | 8;
+  lastAdvancedAt: string;
+  version: number;
+}
+```
+
+`4×` is the initial default. A scheduler advances to the next due domain event rather than ticking every hero every second.
+
+Examples of due events:
+
+- wake or sleep boundary;
+- meal or work shift;
+- training completion;
+- injury recovery checkpoint;
+- portal expiration;
+- mission turn deadline;
+- building completion;
+- habit cue window;
+- daily planning decision;
+- pending social meeting;
+- rumor delivery opportunity.
+
+Advancement is deterministic for a given prior state, time interval, and seed.
+
+## Three resolution levels
+
+Not every action deserves a language-model request.
+
+### Level 1: continuous rules
+
+Needs, timers, travel progress, passive recovery, crafting counters, and building progress advance locally.
+
+### Level 2: habit and schedule policy
+
+Familiar actions resolve from the hero's daily plan, habit strengths, environment affordances, needs, and current constraints. This policy is deterministic and explainable.
+
+### Level 3: agent decision
+
+Open a model job when the hero must interpret meaning or make a consequential choice:
+
+- daily intention and schedule formation;
+- direct player conversation or order;
+- conflict between goals, values, habits, or relationships;
+- novel opportunity or blocked plan;
+- mission turn with several meaningful legal actions;
+- important social approach, refusal, secret, or rumor;
+- response to death, synthesis, promotion, or emergency.
+
+This design gives every hero agent-authored choices across the day without paying for “walk to kitchen” one minute at a time.
+
+## Proposed decision cadence
+
+At `4×`, each hero receives at minimum:
+
+| Trigger | Model call | Notes |
+| --- | --- | --- |
+| Wake / new game day | Yes | Produces daily priorities and conditional plan |
+| Routine action under expected conditions | No | Habit policy executes the plan |
+| Routine blocked or needs conflict | Sometimes | Threshold decides whether local fallback is sufficient |
+| Direct player conversation or meaningful order | Yes | Only when hero is available to perceive it |
+| Social contact | Only when salient | Routine small talk can be summarized locally |
+| Active tower or portal decision | Yes | One independent call per meaningful hero turn |
+| Bedtime reflection | Usually no | Memory service projects the day's events; call only for a major unresolved issue |
+
+One call per hero per game day means four baseline planning calls per hero per real day at `4×`. Additional calls come from player attention, missions, and novelty. Per-run and per-account budgets can degrade excess decisions to habit, scripted, or random policies.
+
+## Daily plan contract
+
+A wake-time request returns bounded intent rather than a minute-by-minute screenplay:
+
+```ts
+interface DailyPlanDecision {
+  priorities: GoalId[];
+  preferredActivities: ActivityPreference[];
+  socialIntents: SocialIntent[];
+  orderResponses: OrderResponse[];
+  conditions: ConditionalChoice[];
+  playerFacingIntent: string;
+}
+```
+
+The schedule service turns this into legal time blocks. Buildings, injuries, jobs, mission reservations, other people's availability, and the Master’s orders can invalidate or reshape it.
+
+## Habit policy
+
+```ts
+interface Habit {
+  id: string;
+  heroId: string;
+  cue: HabitCue;
+  actionTemplate: ActionTemplate;
+  strength: number;
+  rewardEstimate: number;
+  lastPerformedAt?: string;
+  version: number;
+}
+```
+
+The engine computes legal environment affordances first. A habit policy ranks legal routine actions using cue match, strength, need pressure, daily-plan alignment, personality alignment, social influence, reward history, and friction.
+
+Every automatic choice logs the contributing factors. A player should be able to inspect “trained because the 16:00 practice cue was strong, the training ground was open, and no mission conflicted.”
+
+## Independent model turn packet
+
+Every model request is assembled fresh:
+
+```text
+identity
+  physiology · temperament · values · drives · voice · current star
+
+learned self
+  habits · skills · recent growth · injuries · emotional state
+
+knowledge
+  observed facts · claims and sources · uncertainty · authority beliefs
+
+social context
+  relevant relationships · promises · fears · rumors · availability
+
+environment
+  time · location · buildings · resources · visible entities · affordances
+
+current situation
+  daily plan · mission objective · recent events · direct order or dialogue
+
+decision contract
+  legal actions · typed targets · output schema · deadline · fallback
+```
+
+Clean-slate heroes receive no world lore they have not learned. The context service selects what the hero knows, not everything the database knows.
+
+### Structured response
+
+```ts
+interface HeroDecision {
+  actionId: string;
+  targetIds: string[];
+  playerFacingIntent: string;
+  spokenLine?: string;
+  memoryCandidates?: MemoryCandidate[];
+}
+```
+
+Intent and dialogue are presentation. Only a validated legal action mutates state.
+
+The OpenAI Responses API supports explicit instructions, structured JSON output, independent inputs, and background execution. Summonlab can submit a background response, store its provider response ID on the decision job, and receive completion through a webhook while its own queue remains authoritative. See the official [Responses API reference](https://developers.openai.com/api/reference/cli/resources/responses/methods/create), [background mode guide](https://developers.openai.com/api/docs/guides/background), and [webhook guide](https://developers.openai.com/api/docs/guides/webhooks).
+
+## Offline and phone-off processing
+
+“Offline” means the client is absent, not that model calls run on the phone.
+
+### Normal operation
+
+1. The backend advances the run clock to the next due event.
+2. Deterministic and habitual events resolve immediately.
+3. Consequential events create leased decision jobs.
+4. Workers call the selected policy, possibly in parallel for independent heroes.
+5. Responses are validated and applied in game-time order.
+6. Client projections update whether or not a device is connected.
+
+### Conflict and staleness
+
+Every job carries:
+
+- expected world version;
+- hero version;
+- decision game time;
+- legal-action hash;
+- lease owner and expiry;
+- model, prompt, and context-policy versions;
+- token and latency budget.
+
+If another action changes the relevant state while a hero is deciding, reject the stale response. Rebuild the packet, choose a deterministic fallback, or cancel the now-irrelevant decision.
+
+### Backend downtime catch-up
+
+If the backend itself stops, reconnect processing should:
+
+1. advance deterministic timers and needs;
+2. execute safe habitual actions up to configured limits;
+3. identify only salient unresolved decision points;
+4. cap model catch-up jobs per hero and real minute;
+5. summarize skipped routine periods without fabricating important social scenes;
+6. stop catch-up at a death, game-over, resource conflict, or player-required decision.
+
+This prevents a long outage from generating thousands of calls or silently deciding a campaign's most important moment.
+
+## Knowledge, memory, and clean slates
+
+Store facts as beliefs with provenance:
+
+```ts
+interface Belief {
+  subjectId: string;
+  predicate: string;
+  object: unknown;
+  sourceEventId: string;
+  learnedFromId?: string;
+  confidence: number;
+  learnedAt: string;
+}
+```
+
+A new hero starts with sensory knowledge, language capability, cultural fragments, and system-safe self-knowledge. They do not know the Master's authority, previous deaths, tower rules, or other heroes until an observation, explanation, record, or rumor teaches them.
+
+Memory layers:
+
+| Store | Purpose |
+| --- | --- |
+| Canonical event log | Objective replay and state reconstruction |
+| Working memory | Very recent perceived events |
+| Episodic memory | Salient personal experiences |
+| Belief graph | Learned facts, claims, sources, and uncertainty |
+| Relationship state | Trust, respect, fear, affection, resentment, debt |
+| Habit ledger | Cue-bound learned automaticity |
+| Semantic self-summary | Goals, identity, skills, and recurring concerns |
+
+The model can suggest memorable moments; the memory service decides what persists and preserves links to canonical events.
+
+## Social propagation
+
+Conversation and observation transmit knowledge through explicit events. There is no roster-wide telepathy.
+
+For death or synthesis:
+
+1. engine records the terminal event;
+2. direct witnesses receive high-confidence beliefs;
+3. close contacts receive “missing” observations when expected interactions fail;
+4. social encounters can emit tell, ask, conceal, accuse, or investigate actions;
+5. rumor beliefs retain source chains and confidence;
+6. reactions occur only when knowledge reaches the hero.
+
+This lets a secret remain temporarily secret while making disappearance impossible to treat as an invisible inventory operation.
 
 ## Deterministic engine
-
-The core transition stays conceptually small:
 
 ```ts
 type Transition = (
@@ -65,225 +309,139 @@ type Transition = (
 ) => TransitionResult;
 ```
 
-`TransitionResult` contains the next state and emitted domain events. Randomness comes only from the supplied seeded generator. Time enters as an explicit command or event, not a call to the system clock inside the engine.
+The engine owns:
 
-The engine is responsible for:
-
-- legal-action generation;
-- target and range validation;
-- resource and action costs;
-- seeded resolution;
-- turn order and status effects;
-- settlement rules;
-- summon tables and pity transitions;
+- world and mission time;
+- legal actions and targets;
+- attributes, skills, needs, injuries, and death;
+- tower floors, portal durations, secrets, and rewards;
+- monster policies;
+- schedules, jobs, buildings, and resources;
+- habits and affordances;
+- summons, pity, stars, promotion, and synthesis;
+- knowledge visibility and social events;
+- run-ending Master death;
 - emitted events and replay hashes.
 
 ## Policy interface
 
-Policies choose; they do not resolve:
-
 ```ts
 interface HeroPolicy {
-  decide(packet: HeroTurnPacket): Promise<HeroDecision>;
+  decide(packet: HeroDecisionPacket): Promise<HeroDecision>;
 }
 ```
 
-Initial implementations:
+Implementations:
 
-- `RandomPolicy` for fuzzing and baselines;
-- `ScriptedPolicy` for deterministic fixtures and authored behaviors;
-- `ReplayPolicy` for reproducing an action log;
-- `ModelPolicy` for personality, memory, dialogue, and improvisation.
+- `HabitPolicy` for routine settlement life;
+- `RandomPolicy` for fuzzing and baseline simulations;
+- `ScriptedPolicy` for fixtures, monsters, and authored cases;
+- `ReplayPolicy` for exact action playback;
+- `ModelPolicy` for meaningful hero interpretation and choice.
 
-The orchestrator validates `HeroDecision` against the packet's legal actions. Invalid, late, or unavailable responses use a deterministic fallback policy and record the failure.
-
-## Independent agent turns
-
-Each model decision should be a fresh request assembled by Summonlab. Do not depend on an opaque provider-side chat history for character continuity.
-
-### Turn packet
-
-```text
-identity
-  stable personality · values · biography · voice · vocation
-
-current self
-  health · needs · emotion · goals · inventory · conditions
-
-social context
-  relevant relationships · promises · conflicts · authority
-
-situation
-  mission · local world state · visible entities · recent events
-
-recalled memory
-  selected episodes · relationship beliefs · compact summaries
-
-decision contract
-  mode · legal actions/tools · targets · output schema · deadline
-```
-
-The packet should contain only what that hero can know. Hidden game state stays hidden even if including it would make the model more competent.
-
-### Structured decision
-
-```ts
-interface HeroDecision {
-  actionId: string;
-  targetIds: string[];
-  intent: string;
-  spokenLine?: string;
-  memoryCandidates?: MemoryCandidate[];
-}
-```
-
-`intent` helps explain and evaluate a decision but has no authority. Only the validated action and targets enter the engine.
-
-When OpenAI integration begins, the Responses API can accept explicit instructions and inputs and produce schema-constrained output. Summonlab can keep turns stateless and manually supply the relevant items rather than linking requests into a provider-owned conversation. See the official [Responses API reference](https://developers.openai.com/api/reference/cli/resources/responses/methods/create).
-
-## Memory ownership
-
-The canonical event log is not the same as a hero's memory.
-
-| Store | Purpose | Selection |
-| --- | --- | --- |
-| Event log | Complete objective history and replay | Never summarized away |
-| Working memory | Very recent perceived events | Fixed rolling window |
-| Episodic memory | Salient personal experiences | Relevance, recency, emotion, novelty |
-| Social beliefs | Trust, affection, fear, respect, debts, promises | Relationship-specific |
-| Semantic summary | Stable learned facts and ongoing goals | Periodically rebuilt from events |
-
-The policy may suggest what felt memorable, but the memory service decides what persists. It records provenance back to canonical events and can regenerate summaries when prompt formats change.
-
-Context assembly should be deterministic for a given state and context-policy version. Log the selected memory IDs and token counts with every decision.
-
-## Model provider integration
-
-Add a provider adapter only after random and scripted policies can complete the vertical slice.
-
-```ts
-interface ModelGateway {
-  generateDecision(request: ModelDecisionRequest): Promise<ModelDecisionResponse>;
-}
-```
-
-Keep provider details outside the engine. Configuration selects the routine model at deployment time. Choose the lowest-cost model that passes scenario evaluations for legality, competence, personality consistency, and latency; do not bake a model name or price into game rules. The current model catalog belongs in configuration and deployment documentation, with the official [OpenAI model guide](https://developers.openai.com/api/docs/models) as the source of truth.
-
-### API key boundary
-
-When an OpenAI key is added:
-
-- store it as the server-side `OPENAI_API_KEY` environment variable;
-- never expose it to the browser, mobile wrapper, logs, replays, or database rows;
-- never commit `.env` files containing secrets;
-- route all requests through the backend or worker;
-- apply per-account, per-run, and global spend caps;
-- record token usage and latency without recording secrets.
-
-This follows OpenAI's official [API key safety guidance](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
-
-### Cost and latency controls
-
-- Call models only for decisions where personality or interpretation matters.
-- Resolve pathfinding, damage, routine labor, and status ticks locally.
-- Cache immutable character-card fragments and shared world rules.
-- Cap input and output tokens per decision mode.
-- Set a deadline and deterministic fallback.
-- Batch background summaries or evaluations when immediate output is unnecessary.
-- Track cost per hero, scene, expedition, and active player.
-- Use stronger models only for evaluated cases that benefit from them.
+Most monsters use deterministic scripted or utility policies. Intelligent monsters can adopt `ModelPolicy` later without changing engine authority.
 
 ## Persistence model
 
-An initial relational schema needs these conceptual groups:
+### Run and time
 
-### Accounts and summoning
+- runs and game-over state;
+- simulation clock and speed history;
+- due events and scheduled activities;
+- decision jobs, leases, attempts, fallbacks, and provider IDs;
+- client projection cursors.
 
-- players;
-- banner definitions and versions;
-- player banner pity counters;
+### Characters
+
+- Master and hero identities;
+- generation and visual seeds;
+- physiology, attributes, skills, needs, and injuries;
+- temperament, values, drives, social style, and emotion;
+- habits and daily plans;
+- star rank, level, promotion choices, and synthesis state;
+- death records.
+
+### Society
+
+- relationships;
+- beliefs with provenance;
+- conversations, promises, orders, and authority beliefs;
+- rumor transfers and social encounters.
+
+### World and missions
+
+- settlement buildings, jobs, resources, and construction;
+- tower seed, floors, hidden triggers, objectives, and clear state;
+- portal definitions, expiry, world state, and extraction;
+- monster entities and deterministic policies.
+
+### Summoning and economy
+
+- summon channel configurations;
+- pity counters and anomaly meters;
 - summon receipts;
-- currency ledger.
+- resource ledger;
+- synthesis receipts.
 
-Pity rows require transactional locking or optimistic version checks. Currency spend, summon result, pity update, and receipt creation commit together or not at all.
-
-### Characters and society
-
-- hero identity and generation seed;
-- stable trait vectors and generated character card;
-- mutable stats, vocation, conviction, and ascension;
-- relationships and remembered commitments;
-- settlement membership and current assignment.
-
-### World and replays
-
-- campaigns and settlements;
-- world snapshots;
-- commands and domain events;
-- expedition and combat runs;
-- policy decisions and validation results;
-- prompt/context versions;
-- model usage and latency.
-
-Snapshots speed loading, but the command and event log remains sufficient to audit important state transitions.
-
-## Request and turn flow
-
-1. Client submits an authenticated player command.
-2. Server validates authority and expected state version.
-3. Engine applies immediate commands or emits a `HeroDecisionRequested` event.
-4. Worker leases the pending decision.
-5. Context service assembles and stores the turn-packet manifest.
-6. Selected policy returns a structured decision.
-7. Orchestrator validates it against legal actions and the expected state version.
-8. Engine applies the action and emits events.
-9. Memory projections and client subscriptions update.
-10. Usage, latency, fallback, and replay metadata are recorded.
-
-If state changed while a model was thinking, discard or re-evaluate the stale decision. Never force it onto a different state.
+Currency spend, summon result, pity update, hero creation, and receipt commit in one transaction. Synthesis validates the source hero, recipient, social visibility, and irreversible event in one transaction.
 
 ## Platform
 
-Web remains the best first platform:
+Web remains the first platform:
 
-- model keys and authoritative state already require a server;
-- turn-based play tolerates decision latency;
-- a responsive UI covers desktop and mobile browsers;
-- a PWA can provide installation and notifications later;
-- the same web build can be wrapped only if distribution eventually requires it.
+- authoritative simulation and model keys already require a backend;
+- the client can reconnect to a continuously advanced run;
+- turn-based tower and portal missions tolerate model latency;
+- a responsive interface supports desktop and mobile browsers;
+- a PWA can install and notify when a mission, conversation, death, or decision needs attention.
 
-The client should stream partial scene status—“considering,” “responding,” “action validated”—without exposing hidden chain-of-thought. Visible intent, spoken dialogue, chosen action, and mechanical result are enough for legibility.
+The interface should show queued, considering, validated, fallback, and resolved states without exposing hidden chain-of-thought.
+
+## Cost controls
+
+- One baseline daily planning call per hero.
+- No model call for normal habit execution.
+- Per-hero, per-run, and per-account call and token budgets.
+- Model calls only at meaningful mission turns and novel settlement decisions.
+- Cached stable prompt prefixes and character-card fragments where supported.
+- Output schema and strict output-token caps.
+- Deterministic fallback on deadline, invalid output, budget exhaustion, or provider failure.
+- Recorded cost per hero, game day, mission, and real day.
+- Cheapest model that passes action-legality, competence, habit, continuity, and latency evaluations.
 
 ## Testing and evaluation
 
-### Engine tests
+### Engine and scheduler
 
-- property tests for invariants and legal actions;
-- golden seeded replays;
-- transactional pity tests;
-- serialization and migration tests;
-- stale-turn and duplicate-command tests.
+- seeded replay and state-hash tests;
+- clock multiplier and downtime catch-up tests;
+- stale-job, double-lease, and out-of-order completion tests;
+- habit cue, reinforcement, interruption, and affordance tests;
+- pity, promotion, synthesis, death, and game-over transaction tests;
+- floor-secret non-creation and discovery tests.
 
 ### Policy evaluations
 
-- action legality;
-- mission competence;
+- legal action selection;
+- daily-plan usefulness;
+- clean-slate knowledge boundaries;
+- habit consistency without rigidity;
+- order interpretation and authority response;
 - personality distinguishability;
-- memory precision and continuity;
-- susceptibility to player prompt injection;
-- refusal quality;
-- latency and cost distributions;
+- social rumor provenance;
+- tower competence and secret discovery;
+- cost and latency distributions;
 - fallback frequency.
-
-Run evaluation scenarios against recorded packets so model or prompt changes can be compared without changing the game state around them.
 
 ## Implementation order
 
-1. Contracts and seeded engine.
-2. Random and scripted policies.
-3. Summoning, pity, and character seeds.
-4. One expedition and replay viewer.
-5. Settlement projection and council interaction.
-6. Memory selection and model gateway.
-7. Model evaluations and budget controls.
-8. Broader content, species, and progression.
+1. Contracts, seeded engine, run clock, and event log.
+2. Master, heroes, attributes, skills, death, and game over.
+3. Settlement needs, schedules, buildings, and habit policy.
+4. Tower floors 1–5, deterministic monsters, secrets, and replay.
+5. Summoning, pity, stars, promotion, and synthesis.
+6. Portal mission and resource extraction.
+7. Relationships, beliefs, authority, and rumor propagation.
+8. Decision jobs, context assembly, random and scripted policies.
+9. Model gateway, background workers, budgets, and evaluations.
+10. Responsive client, reconnect, and PWA behavior.

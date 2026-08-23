@@ -2,246 +2,401 @@
 
 ## Product thesis
 
-Summonlab is a leadership RPG about autonomous people. The player can shape conditions, make requests, and build relationships, but cannot directly author a hero's every choice.
+Summonlab is a tower-climbing leadership RPG about people who happen to be summoned.
 
-The fun should come from three layers interacting:
+The player controls the Master directly and shapes everyone else's circumstances. Heroes receive information, form habits, build relationships, and make their own choices inside deterministic game rules. The design succeeds when a hero's behavior feels surprising in the moment and inevitable in retrospect.
 
-1. **Systems** create a real problem with legal possibilities and consequences.
-2. **Characters** interpret that problem through ability, personality, memory, and relationships.
-3. **Leadership** lets the player influence those characters without replacing their agency.
+## The game shape
 
-The project succeeds when the player says, “Of course *this* hero did that,” while still being surprised that it happened.
+Three spaces create the complete loop:
 
-## Candidate game shapes
+| Space | Purpose | Time pressure | Primary agency |
+| --- | --- | --- | --- |
+| Walled settlement | Continuity, routines, jobs, training, construction, relationships | Continuous accelerated time | Master and resident heroes |
+| Hundred-floor tower | Campaign progress, combat, promotion gates, secrets | Mission time | Master and selected party |
+| Portal worlds | Time-limited resources, unusual rules, optional discovery | Portal duration | Master and selected party |
 
-| Concept | Agent freedom | Prototype cost | Strength | Risk |
-| --- | --- | --- | --- | --- |
-| Frontier settlement | Very high | Medium | Daily life, politics, building, and emergent relationships | Too many simultaneous systems |
-| Expedition company | High | Low | Bounded missions, clear replays, strong party identity | Hub can feel like a menu |
-| Endless tower | Medium | Low | Closest to the summoning fantasy and easiest to simulate | Choices may collapse into combat tactics |
-| Generational colony | Very high | Very high | Genetics, inheritance, culture, and long-term evolution | Scope overwhelms the agent experiment |
+The settlement does not expand across a strategic world map. It can become denser, deeper, safer, and more capable inside its walls. Travel destinations remain explicit: tower, temporary portal world, or another discovered settlement.
 
-### Recommendation: settlement plus expeditions
+## Campaign objective
 
-Use a frontier settlement as the long-term game and expeditions as the unit of play. The settlement creates continuity and social life. Expeditions create bounded contexts, legal actions, victory conditions, and replayable stories.
+The campaign begins at floor 1 and ends when the Master clears floor 100 or dies.
 
-Prototype the expedition loop first, then make its survivors residents of a tiny settlement. This preserves the ambitious fantasy without requiring a colony simulator on day one.
+- Floors are grouped into twenty five-floor bands.
+- Each band adds a difficulty tier, environment, enemy family, or systemic constraint.
+- Floors ending in `5` are band tests or minibosses.
+- Floors ending in `0` are major bosses, story gates, and promotion-material sources.
+- Floor 100 is the campaign climax.
 
-## Working world premise: the Unclaimed March
+An endless mode is postgame scope. The finite tower comes first because it provides pacing, a measurable goal, and an ending worth balancing.
 
-The player becomes Warden of Hearthgate, a ruined keep surrounding an ancient summoning gate. Beyond its walls lies the Unclaimed March, a region abandoned after a network of beacon fortresses failed. A breach now twists wildlife, produces monsters, and gives organized factions room to expand.
+### Tower objectives
 
-The campaign objective is concrete:
+The tower assigns a mission objective when a floor opens:
 
-1. make Hearthgate self-sustaining;
-2. reclaim the roads and nearby settlements;
-3. restore the fallen beacons;
-4. learn what opened the breach;
-5. decide whether to close, control, or transform it.
+- eliminate a target;
+- survive for a duration;
+- protect a person or object;
+- recover an item;
+- reach an exit;
+- discover a hidden truth;
+- solve a spatial or social condition.
 
-The gate summons fully realized people, not disposable copies. They arrive with a generated history, values, skills, and expectations. Becoming the Warden does not make the player their owner. Heroes can negotiate service, refuse an order, desert, become loyal, or eventually seek leadership themselves.
+The engine generates the objective, legal interactions, secret triggers, and rewards. Heroes can attempt unexpected legal actions, but their narration cannot create a door, treasure, or Easter egg that the seed did not contain.
 
-### Monster design
+### Hidden paths and Easter eggs
 
-Early monsters can be deterministic or scripted to keep agent costs focused on heroes. They should still behave like an ecology rather than random bags of hit points:
+Secrets reward personality and experimentation without depending on hallucination.
 
-- beasts compete for territory and food;
-- goblin bands scout, steal, bargain, raid, and retreat;
-- corrupted creatures spread the breach into nearby terrain;
-- intelligent faction leaders may gain their own agent policies later.
+A floor can contain hidden triggers such as:
 
-Goblins become more interesting when fighting is only one possible relationship. A settlement might repel one clan, trade with another, and accidentally empower a third.
+- inspect a specific surface;
+- wait instead of taking the obvious action;
+- speak to an enemy;
+- combine two ordinary items;
+- revisit a room after a condition changes;
+- use an inconvenient skill;
+- follow environmental evidence.
 
-## Player verbs
+The legal-action generator only reveals an explicit secret after its trigger. Before that, it can expose ordinary actions such as inspect, listen, test, speak, wait, or interact. Curious, patient, suspicious, playful, or habitually thorough heroes may choose them more often.
 
-The player can:
+## The settlement clock
 
-- summon and recruit;
-- speak, listen, persuade, promise, and negotiate;
-- declare settlement priorities and policies;
-- appoint heroes to authority;
-- offer assignments and request volunteers;
-- allocate equipment, supplies, housing, and training;
-- build and upgrade the settlement;
-- choose what information to reveal;
-- intervene in disputes;
-- accept the consequences when a hero says no.
+The first timing target is `4×` real time:
 
-The player does not select a combat move for every hero or silently rewrite a hero's personality.
+```text
+1 real minute = 4 game minutes
+1 real hour   = 4 game hours
+6 real hours  = 1 game day
+```
+
+The server owns time. Closing the app does not pause routines, jobs, healing, training, social contact, mission timers, or queued decisions.
+
+The multiplier remains configuration. Testing should compare `2×`, `4×`, and `8×` for pressure, cost, sleep disruption, and how often players return to a settlement they no longer recognize.
 
 ## Core loops
 
-### The daily settlement loop
+### Daily settlement loop
 
-1. **Morning state** — resources, injuries, threats, and unfinished promises update.
-2. **Council** — the player communicates priorities; heroes react and propose alternatives.
-3. **Commitment** — heroes accept, refuse, negotiate, or volunteer for work.
-4. **Activity** — local tasks resolve cheaply; important scenes become explicit turns.
-5. **Crisis** — an expedition, raid, dispute, discovery, or opportunity demands attention.
-6. **Evening** — memories consolidate, relationships change, and progression resolves.
+The loop stays deliberately small:
 
-### The expedition loop
+1. **Wake and plan** — each hero makes one agent-authored daily plan from needs, habits, orders, relationships, and available places.
+2. **Live** — the habit engine executes routine actions such as eating, sleeping, working, training, idling, and socializing.
+3. **Interrupt** — blocked routines, player orders, conflict, emergencies, and opportunities open new decision windows.
+4. **Mission** — the Master sends a party to the tower or a portal world, optionally joining them.
+5. **Reflect** — memories, habits, relationships, learning, injuries, and rumors update.
 
-1. choose an objective and provision a party;
-2. let heroes negotiate roles and approach;
-3. reveal a room, encounter, or dilemma;
-4. assemble one independent decision packet per acting hero;
-5. validate and resolve choices in initiative order;
-6. update injuries, supplies, trust, goals, and memories;
-7. return, retreat, succeed, or lose the party.
+The player can spend as much attention as desired. Micromanagement creates more requests, conversations, and social consequences; neglect gives agents more room to follow their own plans.
 
-### Tactical combat
+### Mission loop
 
-Combat should be turn-based and legible. The engine supplies typed legal actions such as move, strike, defend, assist, use skill, use item, speak, interact, flee, or wait. A hero chooses among them based on the mission, personality, current relationships, and local situation.
+“Mission” is the common term for tower and portal play:
 
-Freeform intent can influence action selection and dialogue, but damage, movement, targeting, line of sight, status effects, and resource costs remain deterministic.
+1. choose or receive an objective;
+2. select willing or ordered participants;
+3. provision equipment and consumables;
+4. travel through the tower gate or portal;
+5. resolve turn-based encounters and travel decisions;
+6. discover, extract, complete, retreat, or die;
+7. return resources and consequences to the settlement.
 
-## Character generation
+Tower missions advance the campaign. Portal missions gather materials and expose optional worlds with different hazards, resources, cultures, and temporary rules.
 
-### Stable identity
+### Master loop
 
-Each hero begins with a reproducible `characterSeed` that expands into several independent layers:
+The Master is an embodied hero controlled directly by the player.
 
-| Layer | Examples | Changes over time? |
-| --- | --- | --- |
-| Physiology | Height, frame, face, skin, hair, eyes, age, handedness | Slowly or never |
-| Heritage | Family origins and inherited appearance ranges | No |
-| Culture | Language, customs, naming, education, social expectations | Through exposure |
-| Temperament | Big Five-style continuous traits and baseline affect | Slowly |
-| Values | Loyalty, achievement, care, tradition, autonomy, power | Through major events |
-| Drives | Ambitions, needs, fears, curiosities, unfinished business | Yes |
-| Social style | Attachment, trust, conflict, humor, leadership | Through relationships |
-| Capabilities | Aptitudes, training, profession, skills, injuries | Yes |
-| Personal history | Family, work, formative events, secrets, obligations | Reinterpreted, not replaced |
+The Master can:
 
-Traits should produce tendencies, not scripts. High caution can make a hero prepare carefully without forcing them to reject every risk. Courage, loyalty, desperation, and a promise to a friend may outweigh it in a specific scene.
+- move freely inside the settlement;
+- travel only to available tower floors, temporary portal missions, or known settlements;
+- fight and train using the same attributes and skills as other heroes;
+- speak, persuade, order, reward, threaten, explain, and apologize;
+- summon and synthesize heroes;
+- trigger construction;
+- choose personal power over settlement administration.
 
-### Physicality, heritage, and representation
+Only the Master can begin construction. Other heroes can suggest buildings, gather materials, design upgrades, operate facilities, and complain about priorities.
 
-The first generator should model humans with broad visual variety while avoiding false biological claims.
+## Authority without automatic obedience
 
-- Use fictional regional heritage and family traits to generate coherent appearance ranges.
-- Keep culture separate from inherited physical traits.
-- Keep personality, intelligence, morality, rarity, and talent independent from ethnicity and skin tone.
-- Derive physical modifiers only from explicit physiological variables such as height, frame, age, conditioning, injury, and training.
-- Treat sex characteristics, gender identity, presentation, and social role as related but separate fields.
-- Describe the system as procedural character generation, not a scientifically accurate genetics simulator.
+A fresh summon does not know what “Master” means. Authority is a belief learned from the environment and social network.
 
-For the initial prototype, physical variation can affect portrait construction and a small number of transparent mechanics such as reach, carry capacity, or movement profile. It should not create hidden “better ancestry” outcomes.
+A hero can recognize several kinds of authority independently:
 
-### Personality representation
+- **formal** — the gate or settlement rules designate the Master;
+- **material** — the Master controls food, shelter, equipment, and construction;
+- **competence** — the Master makes decisions that work;
+- **strength** — the Master can personally enforce or protect;
+- **relational** — the hero trusts, admires, fears, loves, or owes the Master;
+- **social** — respected peers treat the Master as legitimate.
 
-Store numeric or categorical traits as game data, then translate them into a short behavioral character card for the policy. A useful initial model includes:
+An order enters the hero's context as an in-world request with source, tone, urgency, and consequences. The hero can accept, question, counter, delay, pretend, or refuse when rules allow.
 
-- five continuous temperament dimensions;
-- six to ten ranked values;
-- two major motivations and one fear;
-- risk, empathy, trust, and conflict tendencies;
-- one moral boundary and one possible compromise;
-- a stress response;
-- a current emotional state;
-- relationship-specific trust, affection, respect, fear, and resentment.
+Heroes cannot permanently remove themselves from the roster. They may resist, hide, refuse work, or damage relationships, but their terminal roster exits are death and synthesis.
 
-The policy should receive both stable identity and current state. “Patient by nature, frightened right now” is more lifelike than changing the stable personality whenever the mood changes.
+## Habits and environmental constraint
 
-## Summoning and pity
+### Why habits are separate from personality
 
-### Rarity
+Personality influences what feels attractive. Habit records what repeated behavior has become easy in a particular context.
 
-Use a one-to-five-star starting rarity. Rarity can influence initial aptitude budget, unusual skills, or gate resonance. It must not determine personality depth, moral value, maximum star rank, or whether a character deserves narrative attention.
+A cautious hero may not begin with a stretching routine. If stretching after waking repeatedly reduces pain before training, the cue-response-reward loop can become strong even if caution later changes.
 
-Every summoned character is procedurally unique. The system therefore does not need exact hero duplicates. Repeated archetypes remain different people.
-
-A banner features generation tags rather than a named individual: for example, a vocation aptitude, regional origin, skill family, or unusual gate resonance. A featured result is still a new person; it simply guarantees that the generated hero matches at least one advertised tag.
-
-### Pity state
-
-Pity belongs to the authoritative account state and updates in the same transaction as a summon:
+### Habit record
 
 ```text
-banner family
-pulls since 4★+
-pulls since 5★
-soft-pity progress
-featured guarantee
-lifetime summons
-last summon receipt
+cue
+  time window · location · preceding action · need · emotion · social presence
+
+routine
+  legal action or short action sequence
+
+strength
+  learned automaticity from 0–100
+
+reward history
+  need relief · progress · approval · comfort · pleasure · social outcome
+
+friction
+  distance · injury · missing building · missing tool · order conflict · danger
 ```
 
-Illustrative prototype defaults:
+### Habit resolution rules
 
-- at least 4★ every 10 summons;
-- 5★ soft pity begins at 40;
-- 5★ hard pity at 50;
-- missing the advertised generation theme guarantees that the next 5★ matches it;
-- pity carries between banners in the same family;
-- the UI shows the counters and guarantee state before every summon.
+1. The engine determines what the environment affords.
+2. Mandatory needs and active emergencies can override routine.
+3. A strong matching cue places the habitual action near the top of the local policy.
+4. Personality, goals, relationships, orders, and current emotion modify—but do not erase—the habit score.
+5. Repetition under a stable cue strengthens the habit.
+6. Repeated interruption, poor outcomes, or unavailable infrastructure weakens it.
+7. A model call is required when the hero must form a plan, choose between meaningful goals, interpret an order, or react to novelty; routine execution stays local.
 
-These are tuning values stored in banner configuration. They are not hard-coded rules. The prototype should use earned currency and avoid monetization until the game is independently fun and its ethical boundaries are explicit.
+Initial habit actions include:
 
-## Progression and common evolution
+- sleep;
+- eat or prepare food;
+- work an assigned job;
+- train or practice a skill;
+- stretch or exercise;
+- maintain equipment;
+- seek a particular person;
+- socialize with available peers;
+- rest, wander, observe, or laze around.
 
-All playable species should eventually implement the same progression contract:
+### Buildings as behavioral technology
 
-1. **Level** improves learned competence.
-2. **Vocation** develops the role the character practices.
-3. **Conviction** emerges from an ambition, value, or vow tested by events.
-4. **Bond** unlocks cooperation built through actual relationships.
-5. **Ascension** increases star rank after meaningful achievements.
-6. **Legacy** leaves a permanent mark on the settlement or future roster.
+Buildings change behavior by changing affordances and friction:
 
-A low-rarity recruit can ascend to the same final star rank as a rare summon. The rare hero begins with more or stranger possibilities; the common hero's advantage is that the player watched those possibilities grow.
+| Building | New or easier behavior |
+| --- | --- |
+| Dormitory | Regular sleep, privacy, roommate interaction |
+| Kitchen | Cooking, shared meals, food routines |
+| Training ground | Exercise, sparring, instruction, measurable practice |
+| Workshop and forge | Mining refinement, crafting, repair, experimentation |
+| Infirmary | Treatment, recovery, rehabilitation, medical learning |
+| Social hall | Group meals, gossip, celebrations, disputes |
+| Library or archive | Study, research, memory records, magic theory |
+| Portal chamber | World selection, mission preparation, extraction |
+| Synthesis chamber | Terminal conversion of a hero into growth resources |
 
-Future species add a physiology and cultural template without replacing this progression contract. A human scout, goblin diplomat, and awakened construct can all form bonds, choose vocations, develop convictions, and ascend.
+The Master may create a disciplined culture by building schedules and facilities, or a chaotic one by providing little structure and intervening inconsistently.
 
-## Conversation and influence
+## Clean-slate character generation
 
-Conversation is an action system, not an unrestricted chat window glued to the side of the game.
+### What a new hero has
 
-An influence scene has:
+- a stable human physiology;
+- a visual and vocal identity;
+- latent attribute ranges and skill affinities;
+- a starting temperament;
+- initial needs and emotional capacity;
+- fragments of language, custom, gesture, taste, and cultural intuition;
+- no autobiographical memory of where those fragments came from;
+- no knowledge of the settlement, tower, portals, other heroes, or Master;
+- no automatic belief that the Master has authority.
 
-- a concrete request or topic;
-- a speaker and audience;
-- time and location;
-- relevant facts and secrets;
-- trust, authority, leverage, and urgency;
-- remembered promises and previous attempts;
-- a bounded result: accept, counter, delay, refuse, deceive, or end the conversation.
+The first conversation is onboarding, not flavor text.
 
-The agent writes a brief player-facing intent and the hero's spoken response. The engine applies the result and costs. Repeating a request can reduce patience. A threat can create compliance and resentment. A kept promise can improve future trust. A hero may agree to the goal but propose a different plan.
+### What can change
 
-Player text is in-world speech, never a hidden system prompt. Attempts to tell a hero to ignore the rules remain dialogue that the character can interpret; they cannot alter the policy instructions or engine state.
+| Layer | Rate of change |
+| --- | --- |
+| Physiology | Static except major promotion, evolution, injury, or aging |
+| Temperament | Slow drift from repeated stress and experience |
+| Values | Major events, relationships, and costly choices |
+| Drives | Goals can emerge, complete, fail, or be replaced |
+| Social style | Learned through success, rejection, hierarchy, and attachment |
+| Habits | Frequent cue-bound reinforcement and decay |
+| Capabilities | Practice, teaching, facilities, missions, and promotion |
+| Knowledge | Observation, conversation, records, and memory |
+
+Stable traits should bias behavior without becoming hard-coded caricatures. Current needs, fear, injury, trust, orders, and environment can outweigh baseline temperament.
+
+### Representation boundaries
+
+- Inherited family traits influence coherent appearance ranges.
+- Culture separately influences language fragments, gesture, clothing, naming, and taste.
+- Personality, intelligence, morality, rarity, talent, and obedience remain independent from ethnicity and skin tone.
+- Physical mechanics derive only from explicit physiology, training, injury, and equipment.
+- The system is procedural character generation, not a claim of scientifically exact human genetics.
+
+## Attributes and skills
+
+### Minimal attribute proposal
+
+| Attribute | Covers | Example roles |
+| --- | --- | --- |
+| Might | Force, lifting, melee power | Sword fighter, miner, builder |
+| Vigor | Health, stamina, resistance | Guardian, laborer, explorer |
+| Agility | Speed, coordination, precision | Archer, scout, craftsperson |
+| Focus | Mana control, concentration, technical execution | Mage, alchemist, smith |
+| Insight | Perception, learning, memory use, diagnosis | Researcher, healer, explorer |
+| Presence | Persuasion, leadership, performance, intimidation | Leader, negotiator, trainer |
+
+Insight must not make a model “smarter” or “dumber.” It changes game checks, learning speed, perception, and available information. The same policy still chooses for every hero.
+
+### Skills
+
+Skills are learned proficiencies such as sword fighting, bow fighting, shield use, mining, cooking, brewing, smithing, medicine, construction, stealth, survival, teaching, and schools of magic.
+
+Anyone can learn any non-exclusive skill. Learning rate depends on:
+
+- attribute fit;
+- innate affinity;
+- teacher skill and relationship;
+- facility and tool quality;
+- habit strength and practice consistency;
+- fatigue, injury, stress, and available time;
+- real mission experience.
+
+## Summoning, rarity, and pity
+
+### Summon channels
+
+Initial probability proposal:
+
+| Result | Ordinary gate | Focused gate | Milestone summon |
+| --- | ---: | ---: | ---: |
+| 1★ | 85.00% | 60.00% | 0% |
+| 2★ | 14.50% | 37.00% | 0% |
+| 3★ | 0.49% | 2.90% | 100% |
+| 4★ | 0.01% | 0.10% | 0% |
+| 5★–7★ | 0% | 0% | 0% |
+
+Values are tuning configuration. The important shape is common `1★–2★`, special `3★`, anomalous natural `4★`, and promotion-only `5★–7★`.
+
+Pity counters remain visible and transactional. A draft configuration can guarantee `2★+` after ten ordinary pulls, `3★+` after a long configurable drought, and preserve a separate anomaly meter for `4★`. Milestone summons provide known `3★` results rather than named duplicate heroes.
+
+### What stars mean
+
+Stars represent current resonance capacity:
+
+- level cap equals `star rank × 10`;
+- each promotion unlocks one growth choice, skill slot, or passive capacity;
+- higher star rank supports more complex magic and equipment effects;
+- major promotions can change physiology or visual form;
+- all heroes can eventually reach `7★` and level 70;
+- summon rarity changes the starting distance, not the final human value.
+
+A natural `3★` starts at level 1 with a level-30 cap and two promotion thresholds already open. A `1★` starts with a level-10 cap and must earn every promotion.
+
+### Promotion
+
+At each ten-level cap, promotion requires some combination of:
+
+- tower-gate material;
+- portal-world resources;
+- demonstrated skill or mission achievement;
+- training time;
+- synthesis essence.
+
+Promotion raises the cap and presents an evolution choice. It does not reset memories, relationships, habits, or identity.
+
+## Synthesis
+
+Synthesis consumes one hero permanently and grants bounded growth resources to another hero.
+
+Possible outputs include experience, promotion essence, a compatible skill fragment, or affinity reinforcement. It should never copy a full personality or memory into the recipient.
+
+### Social consequences
+
+Synthesis emits a canonical event with an explicit visibility model:
+
+1. direct witnesses know what happened;
+2. close relationships notice the missing hero;
+3. operators of the chamber know who entered;
+4. witnesses can tell others during social contact;
+5. rumors preserve source and confidence rather than granting magical knowledge;
+6. the recipient knows what the rules and scene make observable;
+7. the roster changes trust, fear, resentment, ambition, obedience, and habits according to values and relationships.
+
+Secret synthesis is possible, but unexplained disappearances remain socially meaningful. The game must not hide the moral cost merely because the player gained experience points.
+
+## Death, failure, and run structure
+
+- Hero death is permanent.
+- Synthesis is permanent.
+- The Master can die in settlement, tower, or portal play.
+- Master death ends the run and requires a restart.
+- Replays remain available after game over.
+- Meta-progression, if any, must not erase the meaning of death; it can unlock knowledge, starting options, or visual records rather than resurrecting the run.
+
+Permadeath creates real stakes, but the first slice should measure whether frequent restarts teach the player or merely waste time.
+
+## Monster autonomy
+
+Most monsters use deterministic utility, state-machine, or behavior-tree policies driven by immediate needs and duties. They do not need language-model calls.
+
+Examples:
+
+- patrol;
+- guard;
+- hunt;
+- flee;
+- protect young;
+- gather;
+- obey a commander;
+- investigate noise;
+- use a known combat tactic.
+
+Later intelligent or awakened monsters can implement the same agent policy interface as heroes. Awareness becomes a content feature, not the default cost of every enemy.
 
 ## First vertical slice
 
 ### Content
 
-- Hearthgate with a gate, hall, workshop, and palisade;
-- three generated human heroes;
-- four broad vocation kits;
-- one council scene;
-- one contested assignment;
-- a three-room ruin expedition;
-- one social dilemma;
-- one goblin raid;
-- one ascension opportunity;
-- complete replay and context inspection.
+- Master and three clean-slate human heroes;
+- five settlement buildings;
+- `4×` continuous clock;
+- one daily plan call per hero;
+- deterministic habit execution and interruption;
+- six attributes and a small skill library;
+- tower floors 1–5 with one hidden path;
+- one mining portal mission;
+- hero and Master permadeath;
+- star caps through `2★` promotion;
+- one synthesis decision and rumor chain;
+- replay and context inspection.
 
 ### Questions it must answer
 
-- Can players distinguish the three personalities from behavior alone?
-- Do heroes make competent choices often enough to remain trusted?
-- Does refusal create strategy and drama rather than irritation?
-- Can the engine explain why an action was legal and why it resolved as it did?
-- How many model calls and tokens does one satisfying expedition consume?
-- Does context management preserve continuity across independent requests?
+- Do habits make offline behavior coherent rather than random?
+- Can players understand why a hero obeyed or refused?
+- Does clean-slate onboarding feel intriguing after repeated summons?
+- Is one daily model plan per hero enough to preserve agency?
+- Do tower secrets reward experimentation without model hallucination?
+- Does synthesis create meaningful tension instead of routine inventory cleanup?
+- Is `4×` time fast enough to feel alive and slow enough to lead?
+- Does Master permadeath motivate care or only encourage restarts?
+- What is the token and latency cost per real day for a growing roster?
 
-## Open design decisions
+## Deferred decisions
 
-- Is death permanent, recoverable, or configurable?
-- Are summons drawn from possible histories, created by the gate, or transported from real places?
-- Can a hero permanently leave the settlement?
-- How much authority can heroes gain over construction and policy?
-- When do monsters become recruitable or agent-controlled?
-- Should the campaign be authored, procedural, or a hybrid?
-- Does the player have an embodied character who can travel, or only lead from Hearthgate?
+- Exact pity thresholds beyond the first prototype.
+- Whether the simulation pauses during server maintenance or catches up later.
+- How much a major promotion can alter physiology.
+- Whether the Master can delegate construction initiation later.
+- How heroes resist forced synthesis at the scene level.
+- Whether another settlement can become a permanent destination.
+- What, if anything, survives a Master-death restart.

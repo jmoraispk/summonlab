@@ -1,0 +1,1311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>summonlab — tower command prototype</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --sl-bg: #070911;
+      --sl-panel: #0d1120;
+      --sl-panel-2: #11172a;
+      --sl-panel-3: #151b31;
+      --sl-line: rgba(154, 132, 255, 0.2);
+      --sl-line-strong: rgba(246, 200, 107, 0.42);
+      --sl-text: #f4f1ff;
+      --sl-muted: #979bb3;
+      --sl-gold: #f6c86b;
+      --sl-gold-soft: #ffe7a7;
+      --sl-violet: #9b7cff;
+      --sl-cyan: #67d9ff;
+      --sl-green: #76e3b5;
+      --sl-danger: #ff6d85;
+      --sl-shadow: 0 22px 80px rgba(0, 0, 0, 0.38);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 52% -15%, rgba(110, 83, 204, 0.18), transparent 42%),
+        linear-gradient(150deg, #05070d 0%, #090c17 50%, #060911 100%);
+      color: var(--sl-text);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .sl-shell {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .sl-shell::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      opacity: 0.15;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 84%);
+    }
+
+    .sl-topbar {
+      min-height: 74px;
+      display: grid;
+      grid-template-columns: minmax(230px, 1fr) auto minmax(300px, 1fr);
+      align-items: center;
+      gap: 24px;
+      padding: 12px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(7, 9, 17, 0.84);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .sl-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .sl-brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      color: var(--sl-gold);
+    }
+
+    .sl-brand-mark::before,
+    .sl-brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 1px solid currentColor;
+      transform: rotate(45deg);
+      opacity: 0.7;
+    }
+
+    .sl-brand-mark::after {
+      inset: 10px;
+      color: var(--sl-violet);
+      transform: rotate(22.5deg);
+    }
+
+    .sl-brand-copy { min-width: 0; }
+
+    .sl-brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.19em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .sl-brand-meta {
+      margin-top: 2px;
+      color: var(--sl-muted);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .sl-nav {
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.025);
+      border-radius: 11px;
+    }
+
+    .sl-nav button {
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 16px;
+      color: var(--sl-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .sl-nav button:hover { color: var(--sl-text); }
+
+    .sl-nav button[aria-selected="true"] {
+      color: var(--sl-gold-soft);
+      background: linear-gradient(180deg, rgba(246,200,107,0.14), rgba(246,200,107,0.06));
+      box-shadow: inset 0 0 0 1px rgba(246,200,107,0.18);
+    }
+
+    .sl-statusbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .sl-resources {
+      display: flex;
+      gap: 14px;
+      color: var(--sl-muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .sl-resource strong { color: var(--sl-text); font-weight: 650; }
+    .sl-resource[data-kind="aether"] strong { color: var(--sl-violet); }
+    .sl-resource[data-kind="food"] strong { color: var(--sl-green); }
+
+    .sl-clock {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 14px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sl-clock-copy { text-align: right; }
+
+    .sl-clock-time {
+      color: var(--sl-gold-soft);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.05em;
+    }
+
+    .sl-clock-day {
+      color: var(--sl-muted);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .sl-speed {
+      min-width: 39px;
+      padding: 7px 8px;
+      border: 1px solid rgba(103,217,255,0.24);
+      border-radius: 8px;
+      background: rgba(103,217,255,0.07);
+      color: var(--sl-cyan);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .sl-layout {
+      display: grid;
+      grid-template-columns: 248px minmax(540px, 1fr) 310px;
+      gap: 14px;
+      padding: 14px;
+      min-height: calc(100vh - 74px);
+    }
+
+    .sl-panel {
+      border: 1px solid rgba(255,255,255,0.065);
+      background: linear-gradient(165deg, rgba(17,23,42,0.94), rgba(9,12,23,0.94));
+      box-shadow: var(--sl-shadow);
+      border-radius: 16px;
+    }
+
+    .sl-roster {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .sl-panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+
+    .sl-eyebrow {
+      color: var(--sl-muted);
+      font-size: 9px;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+    }
+
+    .sl-panel-title {
+      margin-top: 3px;
+      font-size: 17px;
+      font-weight: 650;
+    }
+
+    .sl-roster-count {
+      color: var(--sl-cyan);
+      font-size: 11px;
+    }
+
+    .sl-hero-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sl-hero-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.025);
+      color: var(--sl-text);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 150ms ease, border 150ms ease, background 150ms ease;
+    }
+
+    .sl-hero-card:hover {
+      transform: translateX(2px);
+      border-color: rgba(155,124,255,0.2);
+      background: rgba(155,124,255,0.055);
+    }
+
+    .sl-hero-card[aria-pressed="true"] {
+      border-color: rgba(246,200,107,0.34);
+      background: linear-gradient(90deg, rgba(246,200,107,0.095), rgba(155,124,255,0.045));
+    }
+
+    .sl-avatar {
+      width: 42px;
+      height: 42px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px 12px 16px 16px;
+      background:
+        radial-gradient(circle at 50% 34%, var(--avatar-skin, #d9a57e) 0 17%, transparent 18%),
+        radial-gradient(ellipse at 50% 82%, var(--avatar-cloth, #5d4f92) 0 38%, transparent 39%),
+        linear-gradient(145deg, rgba(155,124,255,0.3), rgba(103,217,255,0.08));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .sl-avatar::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 8px;
+      left: 12px;
+      top: 5px;
+      border-radius: 80% 60% 20% 20%;
+      background: var(--avatar-hair, #2c2631);
+      transform: rotate(-7deg);
+    }
+
+    .sl-avatar::after {
+      content: "";
+      position: absolute;
+      left: 19px;
+      top: 21px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--sl-cyan);
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .sl-hero-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .sl-hero-state {
+      margin-top: 3px;
+      overflow: hidden;
+      color: var(--sl-muted);
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sl-stars {
+      color: var(--sl-gold);
+      font-size: 10px;
+      letter-spacing: -0.04em;
+    }
+
+    .sl-level {
+      margin-top: 4px;
+      color: var(--sl-muted);
+      font-size: 9px;
+      text-align: right;
+    }
+
+    .sl-roster-foot {
+      margin-top: auto;
+      padding-top: 14px;
+    }
+
+    .sl-risk {
+      padding: 11px;
+      border: 1px solid rgba(255,109,133,0.15);
+      border-radius: 12px;
+      background: rgba(255,109,133,0.045);
+    }
+
+    .sl-risk-label {
+      color: var(--sl-danger);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sl-risk-text {
+      margin-top: 5px;
+      color: #d8b8c1;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .sl-stage {
+      position: relative;
+      min-width: 0;
+      min-height: 680px;
+      overflow: hidden;
+    }
+
+    .sl-view {
+      display: none;
+      height: 100%;
+      min-height: 680px;
+      position: relative;
+    }
+
+    .sl-view.is-active { display: block; }
+
+    .sl-tower-view {
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 60% 23%, rgba(155,124,255,0.2), transparent 28%),
+        radial-gradient(circle at 58% 100%, rgba(246,200,107,0.08), transparent 38%),
+        linear-gradient(180deg, #0c1022 0%, #090d19 62%, #070a12 100%);
+    }
+
+    .sl-tower-view::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.34;
+      background-image:
+        radial-gradient(circle, rgba(155,124,255,0.65) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(103,217,255,0.42) 0 1px, transparent 1.5px);
+      background-position: 0 0, 23px 31px;
+      background-size: 71px 71px, 97px 97px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+    }
+
+    .sl-stage-head {
+      position: absolute;
+      top: 20px;
+      left: 22px;
+      right: 22px;
+      z-index: 4;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      pointer-events: none;
+    }
+
+    .sl-stage-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(26px, 3vw, 42px);
+      letter-spacing: -0.02em;
+    }
+
+    .sl-stage-subtitle {
+      margin-top: 4px;
+      color: var(--sl-muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .sl-floor-badge {
+      align-self: flex-start;
+      padding: 8px 12px;
+      border: 1px solid rgba(246,200,107,0.34);
+      border-radius: 10px;
+      background: rgba(11,13,24,0.76);
+      color: var(--sl-gold-soft);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+    }
+
+    .sl-tower-art {
+      position: absolute;
+      inset: 45px 0 130px 0;
+      width: 100%;
+      height: calc(100% - 175px);
+    }
+
+    .sl-tower-progress {
+      position: absolute;
+      left: 22px;
+      top: 128px;
+      bottom: 155px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      align-items: center;
+      width: 30px;
+    }
+
+    .sl-band {
+      width: 18px;
+      height: 5px;
+      padding: 0;
+      border: 0;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.095);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .sl-band::after {
+      content: attr(data-floor);
+      position: absolute;
+      left: 24px;
+      top: -5px;
+      color: transparent;
+      font-size: 9px;
+      transition: color 120ms ease;
+    }
+
+    .sl-band:hover::after,
+    .sl-band:focus-visible::after { color: var(--sl-muted); }
+    .sl-band.is-cleared { background: rgba(103,217,255,0.38); }
+    .sl-band.is-current { width: 28px; background: var(--sl-gold); box-shadow: 0 0 15px rgba(246,200,107,0.65); }
+    .sl-band.is-boss { height: 7px; }
+
+    .sl-floor-card {
+      position: absolute;
+      left: 68px;
+      right: 22px;
+      bottom: 20px;
+      z-index: 6;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      background: linear-gradient(110deg, rgba(13,17,32,0.94), rgba(18,17,35,0.9));
+      backdrop-filter: blur(16px);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.34);
+    }
+
+    .sl-objective-label {
+      color: var(--sl-cyan);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .sl-objective-title {
+      margin-top: 4px;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .sl-objective-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+      color: var(--sl-muted);
+      font-size: 10px;
+    }
+
+    .sl-objective-meta span strong { color: var(--sl-text); font-weight: 600; }
+
+    .sl-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sl-button {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: rgba(255,255,255,0.045);
+      color: var(--sl-text);
+      cursor: pointer;
+      font-size: 11px;
+      white-space: nowrap;
+      transition: transform 130ms ease, border 130ms ease, background 130ms ease;
+    }
+
+    .sl-button:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.2); }
+    .sl-button:active { transform: translateY(0); }
+    .sl-button.is-primary { border-color: rgba(246,200,107,0.32); background: rgba(246,200,107,0.14); color: var(--sl-gold-soft); }
+    .sl-button.is-cyan { border-color: rgba(103,217,255,0.28); background: rgba(103,217,255,0.09); color: var(--sl-cyan); }
+    .sl-button.is-danger { border-color: rgba(255,109,133,0.27); background: rgba(255,109,133,0.07); color: #ff9cad; }
+
+    .sl-settlement-view {
+      padding: 22px;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(246,200,107,0.12), transparent 28%),
+        linear-gradient(180deg, #111528, #090d17);
+    }
+
+    .sl-settlement-map {
+      position: absolute;
+      inset: 100px 22px 22px;
+      overflow: hidden;
+      border-radius: 18px;
+      background:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 105%, rgba(44,68,60,0.52), transparent 65%),
+        #0b101b;
+      background-size: 34px 34px, 34px 34px, auto, auto;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sl-wall {
+      position: absolute;
+      inset: 8% 5%;
+      border: 8px double rgba(134,115,91,0.32);
+      clip-path: polygon(7% 0,93% 0,100% 10%,100% 88%,92% 100%,8% 100%,0 88%,0 10%);
+      pointer-events: none;
+    }
+
+    .sl-building {
+      position: absolute;
+      width: 116px;
+      min-height: 80px;
+      padding: 11px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      background: linear-gradient(150deg, rgba(29,34,56,0.96), rgba(14,18,31,0.96));
+      color: var(--sl-text);
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.28);
+      transition: transform 150ms ease, border 150ms ease;
+    }
+
+    .sl-building:hover { transform: translateY(-3px); border-color: rgba(246,200,107,0.26); }
+    .sl-building-symbol { color: var(--sl-gold); font-family: Georgia, serif; font-size: 22px; }
+    .sl-building-name { margin-top: 5px; font-size: 11px; font-weight: 650; }
+    .sl-building-activity { margin-top: 3px; color: var(--sl-muted); font-size: 9px; }
+    .sl-building-pulse { display: inline-block; width: 5px; height: 5px; margin-right: 4px; border-radius: 50%; background: var(--sl-green); box-shadow: 0 0 7px currentColor; }
+
+    .sl-portals-view {
+      padding: 22px;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(103,217,255,0.09), transparent 28%),
+        linear-gradient(180deg, #0b1021, #080b14);
+    }
+
+    .sl-portal-grid {
+      position: absolute;
+      inset: 112px 22px 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .sl-portal-card {
+      border: 1px solid rgba(255,255,255,0.075);
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(18,25,43,0.96), rgba(9,12,23,0.98));
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .sl-portal-window {
+      height: 270px;
+      position: relative;
+      overflow: hidden;
+      background: var(--portal-bg);
+    }
+
+    .sl-portal-window::before {
+      content: "";
+      position: absolute;
+      inset: 12% 14%;
+      border: 2px solid var(--portal-color);
+      border-radius: 48% 52% 46% 54%;
+      box-shadow: 0 0 24px var(--portal-color), inset 0 0 30px rgba(255,255,255,0.13);
+      animation: sl-portal-warp 7s ease-in-out infinite;
+    }
+
+    .sl-portal-window::after {
+      content: "";
+      position: absolute;
+      inset: 22% 25%;
+      border: 1px dashed var(--portal-color);
+      border-radius: 50%;
+      opacity: 0.72;
+      animation: sl-orbit 14s linear infinite;
+    }
+
+    .sl-portal-copy { padding: 14px; }
+    .sl-portal-type { color: var(--portal-color); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; }
+    .sl-portal-title { margin-top: 4px; font-size: 17px; font-family: Georgia, serif; }
+    .sl-portal-desc { margin-top: 7px; color: var(--sl-muted); font-size: 10px; line-height: 1.5; }
+    .sl-portal-timer { margin-top: auto; padding: 12px 14px; border-top: 1px solid rgba(255,255,255,0.06); color: var(--sl-text); font-size: 10px; }
+    .sl-portal-timer strong { color: var(--portal-color); font-variant-numeric: tabular-nums; }
+
+    .sl-inspector {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .sl-inspector-profile {
+      display: grid;
+      grid-template-columns: 58px minmax(0,1fr);
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.065);
+    }
+
+    .sl-inspector .sl-avatar { width: 58px; height: 58px; border-radius: 16px 16px 22px 22px; }
+    .sl-inspector .sl-avatar::before { width: 24px; height: 10px; left: 17px; top: 7px; }
+    .sl-inspector .sl-avatar::after { left: 27px; top: 29px; }
+
+    .sl-inspector-name { font-size: 20px; font-family: Georgia, serif; }
+    .sl-inspector-role { margin-top: 3px; color: var(--sl-muted); font-size: 10px; }
+    .sl-inspector-rank { margin-top: 5px; color: var(--sl-gold); font-size: 10px; }
+
+    .sl-section {
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+    }
+
+    .sl-section:last-child { border-bottom: 0; }
+
+    .sl-section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+      color: var(--sl-muted);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sl-section-title strong { color: var(--sl-text); font-weight: 600; letter-spacing: 0; text-transform: none; }
+
+    .sl-meter-list { display: grid; gap: 7px; }
+    .sl-meter-row { display: grid; grid-template-columns: 48px 1fr 26px; gap: 8px; align-items: center; font-size: 9px; color: var(--sl-muted); }
+    .sl-meter-track { height: 4px; border-radius: 4px; background: rgba(255,255,255,0.07); overflow: hidden; }
+    .sl-meter-fill { height: 100%; width: var(--value); border-radius: inherit; background: var(--meter-color, var(--sl-cyan)); box-shadow: 0 0 9px color-mix(in srgb, var(--meter-color, var(--sl-cyan)) 55%, transparent); }
+    .sl-meter-value { color: var(--sl-text); text-align: right; font-variant-numeric: tabular-nums; }
+
+    .sl-habit {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 12px;
+      padding: 8px 0;
+    }
+
+    .sl-habit + .sl-habit { border-top: 1px solid rgba(255,255,255,0.045); }
+    .sl-habit-name { font-size: 11px; }
+    .sl-habit-cue { color: var(--sl-muted); font-size: 9px; }
+    .sl-habit-strength { color: var(--sl-violet); font-size: 10px; font-variant-numeric: tabular-nums; }
+
+    .sl-intent {
+      padding: 11px;
+      border-left: 2px solid var(--sl-gold);
+      background: rgba(246,200,107,0.045);
+      color: #d8d3e7;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .sl-inspector-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+    .sl-inspector-actions .sl-button { padding-inline: 8px; }
+
+    .sl-log {
+      margin-top: auto;
+      padding-top: 13px;
+      min-height: 150px;
+    }
+
+    .sl-log-list {
+      display: grid;
+      gap: 8px;
+      max-height: 180px;
+      overflow: auto;
+      scrollbar-color: rgba(155,124,255,0.25) transparent;
+    }
+
+    .sl-log-entry {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 8px;
+      color: var(--sl-muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .sl-log-time { color: var(--sl-cyan); font-variant-numeric: tabular-nums; }
+    .sl-log-entry strong { color: var(--sl-text); font-weight: 600; }
+
+    .sl-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 50;
+      max-width: min(480px, calc(100% - 32px));
+      padding: 11px 15px;
+      border: 1px solid rgba(103,217,255,0.24);
+      border-radius: 11px;
+      background: rgba(10,15,27,0.96);
+      color: var(--sl-text);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      font-size: 11px;
+      transform: translate(-50%, 18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .sl-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+    @keyframes sl-orbit { to { transform: rotate(360deg); } }
+    @keyframes sl-dash { to { stroke-dashoffset: -120; } }
+    @keyframes sl-breathe { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+    @keyframes sl-portal-warp { 0%,100% { transform: scale(0.96) rotate(-2deg); } 50% { transform: scale(1.035) rotate(2deg); } }
+
+    .sl-orbit-line { transform-box: fill-box; transform-origin: center; animation: sl-orbit 24s linear infinite; }
+    .sl-path-flow { animation: sl-dash 7s linear infinite; }
+    .sl-tower-sigil { animation: sl-breathe 4s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; }
+    }
+
+    @media (max-width: 1180px) {
+      .sl-topbar { grid-template-columns: 1fr auto; }
+      .sl-nav { order: 3; grid-column: 1 / -1; justify-self: center; }
+      .sl-layout { grid-template-columns: 220px minmax(500px, 1fr); }
+      .sl-inspector { grid-column: 1 / -1; display: grid; grid-template-columns: 250px 1fr 1fr; gap: 16px; }
+      .sl-log { margin-top: 0; }
+    }
+
+    @media (max-width: 820px) {
+      .sl-topbar { grid-template-columns: 1fr; gap: 10px; }
+      .sl-statusbar { justify-content: space-between; }
+      .sl-resources { flex-wrap: wrap; }
+      .sl-layout { grid-template-columns: 1fr; }
+      .sl-roster { order: 2; }
+      .sl-stage { order: 1; min-height: 620px; }
+      .sl-view { min-height: 620px; }
+      .sl-inspector { order: 3; grid-template-columns: 1fr; }
+      .sl-hero-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sl-portal-grid { grid-template-columns: 1fr; overflow: auto; }
+      .sl-floor-card { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .sl-topbar { padding-inline: 12px; }
+      .sl-statusbar { align-items: flex-start; }
+      .sl-resources { display: none; }
+      .sl-layout { padding: 8px; gap: 8px; }
+      .sl-hero-list { grid-template-columns: 1fr; }
+      .sl-actions { flex-wrap: wrap; }
+      .sl-floor-card { left: 16px; right: 16px; }
+      .sl-tower-progress { display: none; }
+      .sl-portal-grid { inset-inline: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sl-shell" id="summonlab-prototype">
+    <header class="sl-topbar">
+      <div class="sl-brand">
+        <div class="sl-brand-mark" aria-hidden="true"></div>
+        <div class="sl-brand-copy">
+          <div class="sl-brand-name">summonlab</div>
+          <div class="sl-brand-meta">Hearth 01 · Run 0007</div>
+        </div>
+      </div>
+
+      <nav class="sl-nav" aria-label="Destination">
+        <button type="button" data-view-target="settlement" aria-selected="false">Settlement</button>
+        <button type="button" data-view-target="tower" aria-selected="true">Tower</button>
+        <button type="button" data-view-target="portals" aria-selected="false">Portals</button>
+      </nav>
+
+      <div class="sl-statusbar">
+        <div class="sl-resources" aria-label="Resources">
+          <span class="sl-resource" data-kind="aether">Aether <strong>1,240</strong></span>
+          <span class="sl-resource">Iron <strong>86</strong></span>
+          <span class="sl-resource" data-kind="food">Food <strong>42</strong></span>
+        </div>
+        <div class="sl-clock">
+          <div class="sl-clock-copy">
+            <div class="sl-clock-day" id="clock-day">Day 03 · cycle 01</div>
+            <div class="sl-clock-time" id="clock-time">18:40</div>
+          </div>
+          <button type="button" class="sl-speed" id="speed-button" aria-label="Change simulation speed">4×</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="sl-layout">
+      <aside class="sl-panel sl-roster" aria-label="Summoned roster">
+        <div class="sl-panel-heading">
+          <div>
+            <div class="sl-eyebrow">Summoning party</div>
+            <div class="sl-panel-title">Five lives</div>
+          </div>
+          <div class="sl-roster-count">3 available</div>
+        </div>
+
+        <div class="sl-hero-list" id="hero-list"></div>
+
+        <div class="sl-roster-foot">
+          <div class="sl-risk">
+            <div class="sl-risk-label">Run condition</div>
+            <div class="sl-risk-text">If the Master dies, this run ends. Floor progress: <strong>14 / 100</strong>.</div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="sl-panel sl-stage">
+        <section class="sl-view sl-tower-view is-active" data-view="tower" aria-label="Tower floor view">
+          <div class="sl-stage-head">
+            <div>
+              <div class="sl-eyebrow">Tower mission</div>
+              <div class="sl-stage-title">The Hollow Foundry</div>
+              <div class="sl-stage-subtitle">Floor 15 · threshold chamber</div>
+            </div>
+            <div class="sl-floor-badge">Band 03 / 20</div>
+          </div>
+
+          <div class="sl-tower-progress" id="tower-progress" aria-label="Tower bands"></div>
+
+          <svg class="sl-tower-art" viewBox="0 0 900 560" role="img" aria-labelledby="tower-title tower-desc">
+            <title id="tower-title">The one-hundred-floor tower at floor fifteen</title>
+            <desc id="tower-desc">A monumental arcane tower with twenty campaign bands, a glowing current floor, and hidden paths.</desc>
+            <defs>
+              <linearGradient id="tower-body" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#25294b"/>
+                <stop offset="0.45" stop-color="#13182d"/>
+                <stop offset="1" stop-color="#090d19"/>
+              </linearGradient>
+              <linearGradient id="tower-edge" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#9b7cff" stop-opacity="0.75"/>
+                <stop offset="0.55" stop-color="#67d9ff" stop-opacity="0.2"/>
+                <stop offset="1" stop-color="#f6c86b" stop-opacity="0.4"/>
+              </linearGradient>
+              <radialGradient id="tower-gate">
+                <stop offset="0" stop-color="#fff0b3" stop-opacity="0.9"/>
+                <stop offset="0.2" stop-color="#f6c86b" stop-opacity="0.55"/>
+                <stop offset="0.65" stop-color="#9b7cff" stop-opacity="0.18"/>
+                <stop offset="1" stop-color="#9b7cff" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="tower-glow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="7" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <clipPath id="tower-clip"><path d="M362 500 L375 145 L421 93 L435 28 L450 6 L465 28 L479 93 L525 145 L538 500 Z"/></clipPath>
+            </defs>
+
+            <g opacity="0.33" fill="none" stroke-linecap="round">
+              <path class="sl-path-flow" d="M90 410 C210 370 250 438 355 354" stroke="#9b7cff" stroke-dasharray="6 22"/>
+              <path class="sl-path-flow" d="M810 330 C690 292 620 390 545 320" stroke="#67d9ff" stroke-dasharray="7 24"/>
+              <path class="sl-path-flow" d="M160 238 C250 252 286 188 378 210" stroke="#f6c86b" stroke-dasharray="5 28"/>
+            </g>
+
+            <ellipse cx="450" cy="485" rx="310" ry="58" fill="#05070d" opacity="0.75"/>
+            <ellipse cx="450" cy="478" rx="220" ry="33" fill="url(#tower-gate)" opacity="0.32"/>
+
+            <path d="M362 500 L375 145 L421 93 L435 28 L450 6 L465 28 L479 93 L525 145 L538 500 Z" fill="url(#tower-body)" stroke="url(#tower-edge)" stroke-width="2"/>
+            <g clip-path="url(#tower-clip)" opacity="0.62">
+              <path d="M350 172 H550 M350 194 H550 M350 216 H550 M350 238 H550 M350 260 H550 M350 282 H550 M350 304 H550 M350 326 H550 M350 348 H550 M350 370 H550 M350 392 H550 M350 414 H550 M350 436 H550 M350 458 H550" stroke="#8c91b3" stroke-opacity="0.21"/>
+              <path d="M390 140 L405 500 M425 96 L434 500 M475 96 L466 500 M510 140 L495 500" stroke="#9b7cff" stroke-opacity="0.11"/>
+              <rect x="348" y="424" width="204" height="22" fill="#f6c86b" opacity="0.16"/>
+              <rect x="348" y="424" width="204" height="2" fill="#f6c86b" opacity="0.8" filter="url(#tower-glow)"/>
+            </g>
+
+            <g fill="none" stroke-linecap="round">
+              <circle class="sl-orbit-line" cx="450" cy="109" r="70" stroke="#9b7cff" stroke-opacity="0.32" stroke-dasharray="8 19"/>
+              <circle class="sl-orbit-line" cx="450" cy="109" r="53" stroke="#67d9ff" stroke-opacity="0.35" stroke-dasharray="27 12 3 12"/>
+              <circle cx="450" cy="109" r="34" stroke="#f6c86b" stroke-opacity="0.45"/>
+            </g>
+            <circle class="sl-tower-sigil" cx="450" cy="109" r="18" fill="url(#tower-gate)" filter="url(#tower-glow)"/>
+            <path d="M450 91 L463 109 L450 127 L437 109 Z" fill="#0d1120" stroke="#fff0b3"/>
+
+            <g transform="translate(280 440)">
+              <circle cx="0" cy="0" r="10" fill="#f6c86b" opacity="0.9"/>
+              <path d="M-15 35 C-13 13 -9 9 0 9 C9 9 13 13 15 35" fill="#5a405f" stroke="#f6c86b" stroke-opacity="0.4"/>
+              <circle cx="47" cy="3" r="9" fill="#d69c73"/>
+              <path d="M34 35 C35 16 39 12 47 12 C55 12 60 16 61 35" fill="#334a67"/>
+              <circle cx="92" cy="-2" r="9" fill="#9c684e"/>
+              <path d="M78 35 C80 13 84 9 92 9 C101 9 105 14 107 35" fill="#493a65"/>
+            </g>
+            <path d="M290 478 C330 450 354 455 388 438" fill="none" stroke="#f6c86b" stroke-width="2" stroke-opacity="0.45" stroke-dasharray="4 9"/>
+
+            <g transform="translate(610 242)" opacity="0.76">
+              <path d="M0 48 C32 15 72 15 106 48 C72 38 35 38 0 48 Z" fill="#090c17" stroke="#9b7cff" stroke-opacity="0.35"/>
+              <path d="M22 38 L29 7 L41 32 M59 33 L68 0 L78 37" fill="none" stroke="#6f668f"/>
+              <circle cx="68" cy="2" r="3" fill="#67d9ff"/>
+              <text x="53" y="67" fill="#8c91a8" font-size="10" text-anchor="middle" letter-spacing="2">HIDDEN ROUTE</text>
+            </g>
+          </svg>
+
+          <div class="sl-floor-card">
+            <div>
+              <div class="sl-objective-label">Tower objective</div>
+              <div class="sl-objective-title">Restart the foundry lift before the wardens wake.</div>
+              <div class="sl-objective-meta">
+                <span>Party <strong>3 / 4</strong></span>
+                <span>Threat <strong>Severe</strong></span>
+                <span>Secrets <strong id="secret-count">1 / 3</strong></span>
+                <span>Extraction <strong>Stable</strong></span>
+              </div>
+            </div>
+            <div class="sl-actions">
+              <button class="sl-button" type="button" id="inspect-button">Inspect wall</button>
+              <button class="sl-button is-primary" type="button" id="begin-button">Begin floor</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="sl-view sl-settlement-view" data-view="settlement" aria-label="Settlement view">
+          <div class="sl-stage-head">
+            <div>
+              <div class="sl-eyebrow">Walled settlement</div>
+              <div class="sl-stage-title">Hearth 01</div>
+              <div class="sl-stage-subtitle">Evening shift · 3 heroes available</div>
+            </div>
+            <div class="sl-floor-badge">Population 05</div>
+          </div>
+          <div class="sl-settlement-map">
+            <div class="sl-wall"></div>
+            <button class="sl-building" style="left:12%;top:16%" data-building="Summoning Gate"><span class="sl-building-symbol">◇</span><div class="sl-building-name">Summoning Gate</div><div class="sl-building-activity"><span class="sl-building-pulse"></span>Dormant</div></button>
+            <button class="sl-building" style="left:40%;top:11%" data-building="Dormitory"><span class="sl-building-symbol">⌂</span><div class="sl-building-name">Dormitory</div><div class="sl-building-activity"><span class="sl-building-pulse"></span>1 resting</div></button>
+            <button class="sl-building" style="right:12%;top:18%" data-building="Kitchen"><span class="sl-building-symbol">♨</span><div class="sl-building-name">Kitchen</div><div class="sl-building-activity"><span class="sl-building-pulse"></span>Mara cooking</div></button>
+            <button class="sl-building" style="left:17%;bottom:18%" data-building="Training Ground"><span class="sl-building-symbol">⚔</span><div class="sl-building-name">Training Ground</div><div class="sl-building-activity"><span class="sl-building-pulse"></span>Ilya training</div></button>
+            <button class="sl-building" style="left:42%;bottom:12%" data-building="Workshop"><span class="sl-building-symbol">⌁</span><div class="sl-building-name">Workshop</div><div class="sl-building-activity"><span class="sl-building-pulse"></span>Tarin repairing</div></button>
+            <button class="sl-building" style="right:12%;bottom:20%" data-building="Portal Chamber"><span class="sl-building-symbol">◉</span><div class="sl-building-name">Portal Chamber</div><div class="sl-building-activity"><span class="sl-building-pulse"></span>2 routes open</div></button>
+          </div>
+        </section>
+
+        <section class="sl-view sl-portals-view" data-view="portals" aria-label="Portal missions view">
+          <div class="sl-stage-head">
+            <div>
+              <div class="sl-eyebrow">Portal missions</div>
+              <div class="sl-stage-title">Unstable worlds</div>
+              <div class="sl-stage-subtitle">Extract before the route collapses</div>
+            </div>
+            <div class="sl-floor-badge">2 viable</div>
+          </div>
+          <div class="sl-portal-grid">
+            <article class="sl-portal-card" style="--portal-color:#67d9ff;--portal-bg:radial-gradient(circle at 50% 60%,#18485a,transparent 35%),linear-gradient(#081827,#0a0d16)">
+              <div class="sl-portal-window"></div>
+              <div class="sl-portal-copy"><div class="sl-portal-type">Mining world</div><div class="sl-portal-title">The Iron Moon</div><div class="sl-portal-desc">Low gravity, exposed ore seams, territorial tunnel life. Extraction requires three stabilized loads.</div></div>
+              <div class="sl-portal-timer">Closes in <strong>02:13:44</strong></div>
+            </article>
+            <article class="sl-portal-card" style="--portal-color:#76e3b5;--portal-bg:radial-gradient(circle at 50% 52%,#214a39,transparent 38%),linear-gradient(#0b1c18,#090d16)">
+              <div class="sl-portal-window"></div>
+              <div class="sl-portal-copy"><div class="sl-portal-type">Gathering world</div><div class="sl-portal-title">Verdant Fault</div><div class="sl-portal-desc">Medicinal growth after every tremor. Safe paths move. Best for herbs, food, and alchemical cultures.</div></div>
+              <div class="sl-portal-timer">Closes in <strong>05:48:09</strong></div>
+            </article>
+            <article class="sl-portal-card" style="--portal-color:#ff6d85;--portal-bg:radial-gradient(circle at 50% 55%,#4a232d,transparent 38%),linear-gradient(#1e0e16,#090b12)">
+              <div class="sl-portal-window"></div>
+              <div class="sl-portal-copy"><div class="sl-portal-type">Unknown world</div><div class="sl-portal-title">The Glass Desert</div><div class="sl-portal-desc">A route with no stable extraction signature. Heat silhouettes move against the wind.</div></div>
+              <div class="sl-portal-timer">Signal <strong>unsafe</strong></div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <aside class="sl-panel sl-inspector" aria-label="Selected hero details">
+        <div class="sl-inspector-profile">
+          <div class="sl-avatar" id="inspector-avatar"></div>
+          <div>
+            <div class="sl-inspector-name" id="inspector-name">Ilya</div>
+            <div class="sl-inspector-role" id="inspector-role">Unassigned · Sword affinity</div>
+            <div class="sl-inspector-rank" id="inspector-rank">★★ · Level 14 / 20</div>
+          </div>
+        </div>
+
+        <section class="sl-section">
+          <div class="sl-section-title"><span>Current plan</span><strong id="inspector-activity">Training · 42m</strong></div>
+          <div class="sl-intent" id="inspector-intent">“If the Master expects me to enter that tower, I need to know what this body can do first.”</div>
+          <div class="sl-inspector-actions">
+            <button class="sl-button" type="button" data-hero-action="Talk">Talk</button>
+            <button class="sl-button" type="button" data-hero-action="Order">Order</button>
+            <button class="sl-button is-cyan" type="button" data-hero-action="Mission">Mission</button>
+          </div>
+        </section>
+
+        <section class="sl-section">
+          <div class="sl-section-title"><span>Needs</span><strong>Stable</strong></div>
+          <div class="sl-meter-list" id="need-list"></div>
+        </section>
+
+        <section class="sl-section">
+          <div class="sl-section-title"><span>Strong habits</span><strong id="habit-count">2 learned</strong></div>
+          <div id="habit-list"></div>
+        </section>
+
+        <section class="sl-log">
+          <div class="sl-section-title"><span>Event stream</span><strong>live at 4×</strong></div>
+          <div class="sl-log-list" id="event-log" aria-live="polite"></div>
+          <button class="sl-button is-primary" type="button" id="resolve-button" style="width:100%;margin-top:10px">Resolve next choice</button>
+        </section>
+      </aside>
+    </div>
+
+    <div class="sl-toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const heroes = [
+      {
+        id: 'master', name: 'Master', role: 'Warden · Player controlled', stars: 2, level: 17, cap: 20,
+        state: 'Tower entrance', activity: 'Reviewing floor 15', intent: 'Your choices are direct. If you die, the run ends.',
+        skin: '#c99770', cloth: '#6a4a3b', hair: '#211d1d',
+        needs: { Health: 92, Stamina: 76, Hunger: 31, Stress: 44 },
+        habits: [{ name: 'Inspect equipment', cue: 'before every mission', value: 81 }, { name: 'Walk the walls', cue: 'after evening meal', value: 58 }]
+      },
+      {
+        id: 'ilya', name: 'Ilya', role: 'Unassigned · Sword affinity', stars: 2, level: 14, cap: 20,
+        state: 'Training ground', activity: 'Training · 42m', intent: '“If the Master expects me to enter that tower, I need to know what this body can do first.”',
+        skin: '#d5a078', cloth: '#604573', hair: '#241e2b',
+        needs: { Health: 100, Stamina: 68, Hunger: 46, Stress: 27 },
+        habits: [{ name: 'Sword forms', cue: '16:00 at training ground', value: 74 }, { name: 'Stretch', cue: 'after waking', value: 63 }]
+      },
+      {
+        id: 'mara', name: 'Mara', role: 'Cook · Herbal affinity', stars: 1, level: 8, cap: 10,
+        state: 'Kitchen', activity: 'Evening meal · 18m', intent: '“Nobody thinks clearly when they are hungry. I will ask questions after they eat.”',
+        skin: '#8f5d46', cloth: '#3e6262', hair: '#171518',
+        needs: { Health: 88, Stamina: 51, Hunger: 24, Stress: 34 },
+        habits: [{ name: 'Taste the broth', cue: 'before serving food', value: 88 }, { name: 'Seek Ilya', cue: 'after difficult missions', value: 49 }]
+      },
+      {
+        id: 'tarin', name: 'Tarin', role: 'Smith · Mining affinity', stars: 1, level: 9, cap: 10,
+        state: 'Workshop', activity: 'Repairing lift key · 1h 12m', intent: '“The old key was made by someone who expected it to fail. I want to know why.”',
+        skin: '#b67b58', cloth: '#3f4d65', hair: '#3a2c25',
+        needs: { Health: 73, Stamina: 42, Hunger: 58, Stress: 39 },
+        habits: [{ name: 'Clean tools', cue: 'after every repair', value: 79 }, { name: 'Work alone', cue: 'when stressed', value: 55 }]
+      },
+      {
+        id: 'sera', name: 'Sera', role: 'Scout · Bow affinity', stars: 3, level: 19, cap: 30,
+        state: 'Dormitory', activity: 'Sleeping · 2h 06m', intent: '“I do not know what waits above floor fifteen. That is a reason to sleep, not to guess.”',
+        skin: '#e0b28c', cloth: '#304c61', hair: '#5d463d',
+        needs: { Health: 64, Stamina: 21, Hunger: 37, Stress: 61 },
+        habits: [{ name: 'Count exits', cue: 'entering a new room', value: 91 }, { name: 'Sleep after injury', cue: 'health below 70', value: 68 }]
+      }
+    ];
+
+    const events = [
+      { time: '18:32', html: '<strong>Mara</strong> moved the evening meal forward after noticing Tarin had skipped lunch.' },
+      { time: '18:19', html: '<strong>Ilya</strong> repeated sword form IV. Habit strength increased to 74.' },
+      { time: '18:04', html: '<strong>Portal</strong> to the Iron Moon stabilized for another 2h 13m.' },
+      { time: '17:51', html: '<strong>Sera</strong> refused tower duty while injured and went to sleep.' }
+    ];
+
+    const resolutionPool = [
+      ['Ilya', 'paused training to ask Mara what happened on the previous tower attempt.'],
+      ['Tarin', 'finished the lift key and chose to hide its structural weakness until he can test it.'],
+      ['Mara', 'served the meal early; two heroes are now available for conversation.'],
+      ['Sera', 'woke after hearing the tower alarm and began counting viable exits.']
+    ];
+
+    let selectedHero = heroes[1];
+    let speed = 4;
+    let minutes = 18 * 60 + 40;
+    let day = 3;
+    let resolutionIndex = 0;
+    let toastTimer;
+
+    const heroList = document.getElementById('hero-list');
+    const eventLog = document.getElementById('event-log');
+    const toast = document.getElementById('toast');
+
+    function avatarStyle(hero) {
+      return `--avatar-skin:${hero.skin};--avatar-cloth:${hero.cloth};--avatar-hair:${hero.hair}`;
+    }
+
+    function renderRoster() {
+      heroList.innerHTML = heroes.map(hero => `
+        <button class="sl-hero-card" type="button" data-hero-id="${hero.id}" aria-pressed="${hero.id === selectedHero.id}">
+          <span class="sl-avatar" style="${avatarStyle(hero)}" aria-hidden="true"></span>
+          <span><span class="sl-hero-name">${hero.name}</span><span class="sl-hero-state">${hero.state}</span></span>
+          <span><span class="sl-stars">${'★'.repeat(hero.stars)}</span><span class="sl-level">L${hero.level}/${hero.cap}</span></span>
+        </button>
+      `).join('');
+
+      heroList.querySelectorAll('[data-hero-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedHero = heroes.find(hero => hero.id === button.dataset.heroId);
+          renderRoster();
+          renderInspector();
+        });
+      });
+    }
+
+    function renderInspector() {
+      document.getElementById('inspector-name').textContent = selectedHero.name;
+      document.getElementById('inspector-role').textContent = selectedHero.role;
+      document.getElementById('inspector-rank').textContent = `${'★'.repeat(selectedHero.stars)} · Level ${selectedHero.level} / ${selectedHero.cap}`;
+      document.getElementById('inspector-activity').textContent = selectedHero.activity;
+      document.getElementById('inspector-intent').textContent = selectedHero.intent;
+      document.getElementById('inspector-avatar').style.cssText = avatarStyle(selectedHero);
+      document.getElementById('habit-count').textContent = `${selectedHero.habits.length} learned`;
+
+      const needColors = { Health: '#76e3b5', Stamina: '#67d9ff', Hunger: '#f6c86b', Stress: '#ff6d85' };
+      document.getElementById('need-list').innerHTML = Object.entries(selectedHero.needs).map(([name, value]) => `
+        <div class="sl-meter-row">
+          <span>${name}</span>
+          <span class="sl-meter-track"><span class="sl-meter-fill" style="--value:${value}%;--meter-color:${needColors[name]}"></span></span>
+          <span class="sl-meter-value">${value}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('habit-list').innerHTML = selectedHero.habits.map(habit => `
+        <div class="sl-habit">
+          <div><div class="sl-habit-name">${habit.name}</div><div class="sl-habit-cue">${habit.cue}</div></div>
+          <div class="sl-habit-strength">${habit.value}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderEvents() {
+      eventLog.innerHTML = events.slice(0, 7).map(event => `
+        <div class="sl-log-entry"><span class="sl-log-time">${event.time}</span><span>${event.html}</span></div>
+      `).join('');
+    }
+
+    function renderTowerBands() {
+      const progress = document.getElementById('tower-progress');
+      progress.innerHTML = Array.from({ length: 20 }, (_, index) => {
+        const floor = (index + 1) * 5;
+        const classes = ['sl-band'];
+        if (floor < 15) classes.push('is-cleared');
+        if (floor === 15) classes.push('is-current');
+        if (floor % 10 === 0) classes.push('is-boss');
+        return `<button type="button" class="${classes.join(' ')}" data-floor="F${floor}" aria-label="Floor ${floor}${floor === 15 ? ', current threshold' : ''}"></button>`;
+      }).join('');
+      progress.querySelectorAll('.sl-band').forEach(button => button.addEventListener('click', () => showToast(`${button.dataset.floor} is ${Number(button.dataset.floor.slice(1)) > 15 ? 'still sealed' : 'available in the replay archive'}.`)));
+    }
+
+    function setView(view) {
+      document.querySelectorAll('[data-view-target]').forEach(button => button.setAttribute('aria-selected', String(button.dataset.viewTarget === view)));
+      document.querySelectorAll('[data-view]').forEach(section => section.classList.toggle('is-active', section.dataset.view === view));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('is-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2600);
+    }
+
+    function addEvent(heroName, text) {
+      const time = formatTime();
+      events.unshift({ time, html: `<strong>${heroName}</strong> ${text}` });
+      renderEvents();
+    }
+
+    function formatTime() {
+      const hours = Math.floor(minutes / 60) % 24;
+      const mins = minutes % 60;
+      return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+    }
+
+    function updateClock() {
+      while (minutes >= 24 * 60) { minutes -= 24 * 60; day += 1; }
+      document.getElementById('clock-time').textContent = formatTime();
+      document.getElementById('clock-day').textContent = `Day ${String(day).padStart(2, '0')} · cycle 01`;
+    }
+
+    document.querySelectorAll('[data-view-target]').forEach(button => button.addEventListener('click', () => setView(button.dataset.viewTarget)));
+
+    document.getElementById('speed-button').addEventListener('click', event => {
+      const speeds = [1, 2, 4, 8];
+      speed = speeds[(speeds.indexOf(speed) + 1) % speeds.length];
+      event.currentTarget.textContent = `${speed}×`;
+      showToast(`Simulation speed changed to ${speed}×.`);
+    });
+
+    document.getElementById('resolve-button').addEventListener('click', () => {
+      const [heroName, text] = resolutionPool[resolutionIndex % resolutionPool.length];
+      resolutionIndex += 1;
+      minutes += 12;
+      updateClock();
+      addEvent(heroName, text);
+      showToast(`${heroName}'s independent choice was validated.`);
+    });
+
+    document.querySelectorAll('[data-hero-action]').forEach(button => button.addEventListener('click', () => {
+      const action = button.dataset.heroAction;
+      if (selectedHero.id === 'master') {
+        showToast(`${action} is a direct player action for the Master.`);
+        return;
+      }
+      addEvent('Master', `${action.toLowerCase()} request queued for ${selectedHero.name}; availability and authority will shape the response.`);
+      showToast(`${action} request queued for ${selectedHero.name}.`);
+    }));
+
+    document.querySelectorAll('[data-building]').forEach(button => button.addEventListener('click', () => showToast(`${button.dataset.building}: inspect schedules, capacity, habits, and possible upgrades.`)));
+
+    document.getElementById('inspect-button').addEventListener('click', () => {
+      document.getElementById('secret-count').textContent = '2 / 3';
+      addEvent('Sera', 'noticed heat escaping through a false foundry wall. A hidden route is now legal.');
+      showToast('Hidden path discovered by a valid inspect action.');
+    });
+
+    document.getElementById('begin-button').addEventListener('click', () => {
+      addEvent('Tower', 'opened floor 15. Three independent hero decisions are now queued.');
+      showToast('Floor 15 started. Hero turns are processing.');
+    });
+
+    setInterval(() => {
+      minutes += speed;
+      updateClock();
+    }, 5000);
+
+    renderRoster();
+    renderInspector();
+    renderEvents();
+    renderTowerBands();
+    updateClock();
+  </script>
+</body>
+</html>
