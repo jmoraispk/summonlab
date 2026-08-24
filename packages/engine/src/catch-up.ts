@@ -1,8 +1,10 @@
 import {
 	EngineGameStateV5Schema,
+	EngineGameStateV6Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
-	type EngineGameStateV5
+	type EngineGameStateV5,
+	type EngineGameStateV6
 } from '@summonlab/contracts';
 
 import { applyCommand, legalActions } from './engine.js';
@@ -29,7 +31,15 @@ function systemSource() {
 	};
 }
 
-function commandBase(state: EngineGameStateV5, key: string, actorId: string) {
+type CatchUpState = EngineGameStateV5 | EngineGameStateV6;
+
+function parseCatchUpState(state: CatchUpState): CatchUpState {
+	return state.schemaVersion === 5
+		? EngineGameStateV5Schema.parse(state)
+		: EngineGameStateV6Schema.parse(state);
+}
+
+function commandBase(state: CatchUpState, key: string, actorId: string) {
 	const commandId = deterministicUuid(`catch-up:${state.runId}:${state.version}:${key}`);
 	return {
 		commandId,
@@ -40,7 +50,7 @@ function commandBase(state: EngineGameStateV5, key: string, actorId: string) {
 	};
 }
 
-function earliestScheduledTime(state: EngineGameStateV5): string | null {
+function earliestScheduledTime(state: CatchUpState): string | null {
 	return (
 		Object.values(state.heroes)
 			.flatMap((hero) => [
@@ -54,10 +64,10 @@ function earliestScheduledTime(state: EngineGameStateV5): string | null {
 }
 
 export function nextCatchUpCommand(
-	stateInput: EngineGameStateV5,
+	stateInput: CatchUpState,
 	targetGameTime: string
 ): EngineCommand | null {
-	const state = EngineGameStateV5Schema.parse(stateInput);
+	const state = parseCatchUpState(stateInput);
 	if (state.status !== 'active') return null;
 	if (compareGameTime(state.simulatedAt, targetGameTime) > 0) return null;
 	for (const hero of Object.values(state.heroes).sort((left, right) =>
@@ -98,7 +108,7 @@ export function nextCatchUpCommand(
 }
 
 export interface CatchUpPolicyResult {
-	readonly state: EngineGameStateV5;
+	readonly state: CatchUpState;
 	readonly commands: readonly EngineCommand[];
 	readonly events: readonly AuthoritativeEvent[];
 	readonly resolvedScheduledEventIds: readonly string[];
@@ -106,14 +116,14 @@ export interface CatchUpPolicyResult {
 }
 
 export function applyCatchUpPolicy(
-	stateInput: EngineGameStateV5,
+	stateInput: CatchUpState,
 	targetGameTime: string,
 	maxCommands = 256
 ): CatchUpPolicyResult {
 	if (!Number.isSafeInteger(maxCommands) || maxCommands < 1) {
 		throw new Error('Catch-up command limit must be a positive safe integer');
 	}
-	let state = EngineGameStateV5Schema.parse(stateInput);
+	let state = parseCatchUpState(stateInput);
 	const commands: EngineCommand[] = [];
 	const events: AuthoritativeEvent[] = [];
 	const resolvedScheduledEventIds: string[] = [];
@@ -121,7 +131,10 @@ export function applyCatchUpPolicy(
 		const command = nextCatchUpCommand(state, targetGameTime);
 		if (!command) break;
 		const result = applyCommand(state, command);
-		state = EngineGameStateV5Schema.parse(result.state);
+		if (result.state.schemaVersion !== 5 && result.state.schemaVersion !== 6) {
+			throw new Error(`Catch-up changed engine schema to v${result.state.schemaVersion}`);
+		}
+		state = parseCatchUpState(result.state);
 		commands.push(command);
 		events.push(...result.events);
 		resolvedScheduledEventIds.push(...result.resolvedScheduledEventIds);

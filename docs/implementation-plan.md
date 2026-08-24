@@ -966,7 +966,7 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — SET-001 through SET-008 completed 2026-08-24.** `hearth-01-v1`
+**Status: complete — SET-001 through SET-009 completed 2026-08-24.** `hearth-01-v1`
 defines five interiors, a connected 18-node/17-edge route graph, travel time, capacity, authored
 visual paths, interaction/effect declarations, and explicit system access. The development-only
 `/settlement-lab` inspects that hash-bound content without changing existing engine histories or
@@ -984,7 +984,9 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 - `SET-006` complete: implement accelerated clock and worker catch-up;
 - `SET-007` complete: implement SSE events, reconnect, and recap;
 - `SET-008` complete: add day/night, occupancy, work, sleep, eat, train, and idle animations;
-- `SET-009` implement one-core facility choice and consequences.
+- `SET-009` complete: recover the First Ember from Floor 01, permanently bind it to kitchen,
+  dormitory, or training ground, persist rationale-aware hero reactions, and apply replay-stable
+  facility advantages.
 
 **Feedback gate:** leave a run, return to its recap, and judge whether the settlement changed enough without feeling stolen from the player.
 
@@ -1103,10 +1105,14 @@ batch, and connected due schedules to the worker and reconnect API. `SET-007` ad
 transaction-bound PostgreSQL event notifications, bounded cursor pages, resumable SSE with typed
 gap recovery, browser-local acknowledgement cursors, and deterministic full-range return recap
 totals with cursor-linked highlights. `SET-008` now projects day phase, exact physical occupancy,
-building state, travel, and work/sleep/eat/train/idle poses from the cached `engine-v5` snapshot and
-persisted clock. The painted scene consumes ordered SSE cues and periodic server projections without
-running a reducer in the browser. The next engineering slice is `SET-009`: one core facility choice
-and its consequences.
+building state, travel, and work/sleep/eat/train/idle poses from the cached `engine-v5` or
+`engine-v6` snapshot and persisted clock. The painted scene consumes ordered SSE cues and periodic
+server projections without running a reducer in the browser. `SET-009` replaces the reversible
+development power control on new runs with an `engine-v6` First Ember lifecycle. Floor 01 recovery
+makes exactly three commitments legal; one player choice permanently records a rationale,
+mind-and-needs-aware hero responses, and the exact kitchen, dormitory, or training modifiers used by
+replay. Phase 4 is complete. The next engineering slice is `AGT-001`: beliefs, provenance,
+observations, relationships, promises, and authority built from existing authoritative events.
 
 ## Accepted product decisions — 2026-08-23
 
@@ -1120,5 +1126,5 @@ and its consequences.
 - Floor stories use fixed, authored envelopes with agent-assisted development and engine-validated runtime patches. Agents may alter the route and character-aware expression but cannot bypass world rules, causality, content, or reward bounds.
 - The player journal must expose actions, rewards, experience, levels, party progression, control source, directions, and story changes from authoritative events.
 
-Phases 0, 1, and 2 are complete; Phase 3 is at its visual approval gate. Later feedback may revise any reversible
+Phases 0, 1, 2, and 4 are complete; Phase 3 is at its visual approval gate. Later feedback may revise any reversible
 implementation choice without discarding these product intentions.

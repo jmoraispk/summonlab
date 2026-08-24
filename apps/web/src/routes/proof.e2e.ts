@@ -65,6 +65,18 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByText('Arrived · Training Ground')).toBeVisible({ timeout: 6_000 });
 	await expect(page.getByTestId('living-settlement')).toBeVisible();
 	await expect(page.getByTestId('living-settlement')).toHaveAttribute('data-hero-pose', 'idle');
+	await page.getByRole('button', { name: /Return from Floor 01/ }).click();
+	await expect(page.getByRole('heading', { name: 'One core. Three promises.' })).toBeVisible();
+	await page.getByRole('button', { name: /The Tempered Yard/ }).click();
+	await expect(page.getByRole('dialog')).toContainText('The Tempered Yard');
+	await page.getByRole('button', { name: /Bind the First Ember/ }).click();
+	await expect(page.locator('.ember-council')).toContainText('safer training');
+	await expect(page.locator('.ember-council')).toContainText('Mara Vey');
+	await expect(page.locator('.ember-council')).toContainText('Immediate response');
+	if (process.env.CAPTURE_PHASE4_EMBER) {
+		await page.setViewportSize({ width: 1440, height: 1050 });
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_EMBER, fullPage: true });
+	}
 	if (process.env.CAPTURE_PHASE1_PLAY) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE1_PLAY, fullPage: true });
 	}
@@ -81,23 +93,14 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByText('hero.travel.started')).toBeVisible();
 	await expect(page.getByText('simulation.advanced')).toBeVisible();
 	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
+	await expect(page.getByTestId('first-ember-proof')).toContainText('committed');
 	await page
 		.getByTestId('building-training-ground')
 		.getByRole('button', { name: 'assign', exact: true })
 		.click();
 	await expect(page.getByTestId('hero-assignment')).toContainText('training-ground');
-	await page
-		.getByTestId('building-workshop')
-		.getByRole('button', { name: 'power', exact: true })
-		.click();
-	await expect(page.getByTestId('building-workshop')).toContainText('powered');
-	await page.getByRole('button', { name: 'forge', exact: true }).click();
-	await expect(page.getByTestId('travel-proof')).toContainText('training-ring → workshop-forge');
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('travel-proof').locator('strong')).toHaveText('workshop-forge');
-	await page.getByRole('button', { name: 'training', exact: true }).click();
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('travel-proof').locator('strong')).toHaveText('training-ring');
+	await expect(page.getByTestId('building-training-ground')).toContainText('powered');
+	await expect(page.getByTestId('building-workshop')).toContainText('unpowered');
 	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
 
 	if (process.env.CAPTURE_PHASE4_OPERATIONS) {
@@ -186,7 +189,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('link', { name: 'Replay' }).click();
 	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
 	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('hero-xp')).toHaveText('1 / 8');
+	await expect(page.getByTestId('hero-xp')).toHaveText('2 / 12');
 	await expect(page.getByTestId('item-durability')).toHaveText('5/6');
 	await expect(page.getByText(/one train activity resolved/i)).toBeVisible();
 

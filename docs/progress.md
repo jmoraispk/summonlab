@@ -172,9 +172,9 @@ remaining ten representative humans before the human visual gate.
 
 ## Phase 4 — living settlement
 
-Status: **in progress**. Topology, the layered environment candidate, authoritative travel, and
-facility operations were completed on 2026-08-24 while Phase 3 remains at its separate human
-character-visual gate.
+Status: **complete**. One online or offline settlement day, the living projection, and the
+permanent First Ember decision were completed on 2026-08-24 while Phase 3 remains at its separate
+human character-visual gate.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -186,6 +186,7 @@ character-visual gate.
 | `SET-006` | Complete: each run owns a configurable `4×` anchored clock; one deterministic policy resolves online and offline routines byte-for-byte; renewable leases, expiry recovery, one-day/128-command safety bounds, due-only worker polling, reconnect catch-up, and explicit clock-sync events preserve exact replay | [Offline catch-up evidence](evidence/phase-4-offline-catch-up.png), engine equivalence/property tests, database lease integration, worker/browser tests, ADR 0016 |
 | `SET-007` | Complete: transaction-bound PostgreSQL notifications wake bounded cursor reads; SSE resumes from `Last-Event-ID`, detects gaps, and never projects client state; exact full-range recap totals and deltas feed six diverse cursor-linked highlights; acknowledgement survives reload correctly | [Return recap evidence](evidence/phase-4-return-recap.png), recap unit tests, notification/database integration, SSE protocol and return browser tests, ADR 0017 |
 | `SET-008` | Complete: a pure `engine-v5` presentation projection binds day phase, physical occupancy, building power/rosters, route progress, and idle/walk/work/sleep/eat/train/downed/dead poses to a cursor and state hash; the painted play scene refreshes from ordered SSE and visible-page clock reads, with reduced-motion semantics intact | [Living settlement evidence](evidence/phase-4-living-settlement.png), projection unit tests, SSE-to-scene browser test, full proof journey, ADR 0018 |
+| `SET-009` | Complete: `engine-v6` recovers the Floor 01 core, exposes exactly kitchen/dormitory/training, commits once with the Master’s rationale, records deterministic mind-and-needs-aware hero responses, and persists replay-stable meal/rest/training advantages; v1–v5 histories remain byte-compatible | [First Ember council evidence](evidence/phase-4-first-ember.png), player/replay browser journey, three-facility outcome tests, database replay integration, ADR 0019 |
 
 ### Reproduce the checkpoint
 
@@ -200,11 +201,13 @@ interior stations, compare Reserve with All systems, and confirm that the forge 
 but unreachable while its system is dormant. This route is a development inspector; it does not
 mutate a run. Complete a summon, open its **Replay** view, choose another Hearth destination under
 **Verified Hearth routes**, confirm that the displayed authoritative node remains at the origin,
-then choose **Advance to outcome** and verify the arrival event and resolved schedule. In the replay
-view, assign the hero to a facility, route development power to the workshop, travel to the newly
-reachable forge, and verify the assignment and power events in the hash chain. Then choose **Plan
-day**, inspect the habit/duty/meal/sleep intentions, choose **Follow next intention**, compare the
-candidate scores, and advance the routine schedule to its verified outcome.
+then choose **Advance to outcome** and verify the arrival event and resolved schedule. On the play
+screen, choose **Return from Floor 01**, compare all three First Ember promises, select a facility,
+choose the Master’s explanation, and verify the permanent effect and hero response. In the replay
+view, confirm that recovery and commitment are in the verified hash chain and that no second
+commitment is legal. Assign the hero to a facility, then choose **Plan day**, inspect the
+habit/duty/meal/sleep intentions, choose **Follow next intention**, compare the candidate scores, and
+advance the routine schedule to its verified outcome.
 
 Use **Simulate 6h away** in the replay clock panel to resolve one complete game day, verify that Day
 2 begins with one pending routine, and inspect the intervening plan, routine, need, and clock-sync
@@ -219,6 +222,7 @@ to confirm animation freezes without losing the activity label.
 
 ## Next active engineering slice
 
-Collect feedback on the living scene's legibility, character scale, night grade, activity language,
-and occupancy density, then implement the one-core facility choice and consequences in SET-009.
-Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect feedback on the First Ember council’s visual hierarchy, the usefulness of the three
+advantages, the explanation choices, and whether Mara’s response feels earned. Then begin `AGT-001`
+with beliefs and provenance sourced from existing events. Phase 3 cohort expansion remains behind
+its separate human visual gate.

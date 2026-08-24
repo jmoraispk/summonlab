@@ -450,7 +450,8 @@ export async function markProofArrival(
 			if (
 				engine.state.schemaVersion === 3 ||
 				engine.state.schemaVersion === 4 ||
-				engine.state.schemaVersion === 5
+				engine.state.schemaVersion === 5 ||
+				engine.state.schemaVersion === 6
 			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,

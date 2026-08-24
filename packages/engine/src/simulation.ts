@@ -54,7 +54,8 @@ function assertSimulationInvariants(state: EngineGameState): void {
 		state.schemaVersion !== 2 &&
 		state.schemaVersion !== 3 &&
 		state.schemaVersion !== 4 &&
-		state.schemaVersion !== 5
+		state.schemaVersion !== 5 &&
+		state.schemaVersion !== 6
 	)
 		return;
 	for (const balance of Object.values(state.settlement.resources)) {
@@ -134,7 +135,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
-		if (state.schemaVersion === 4 || state.schemaVersion === 5) {
+		if (state.schemaVersion === 4 || state.schemaVersion === 5 || state.schemaVersion === 6) {
 			apply('assign-facility', {
 				actorId: state.master.masterId,
 				source: source('manual'),
@@ -143,7 +144,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				buildingId: destination,
 				role: destination === 'kitchen' ? 'cook' : 'trainee'
 			});
-			if (index % 3 === 0) {
+			if (index % 3 === 0 && state.schemaVersion !== 6) {
 				apply('power-workshop', {
 					actorId: state.master.masterId,
 					source: source('manual'),
@@ -152,7 +153,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				});
 			}
 		}
-		if (state.schemaVersion === 5 && index % 5 === 0) {
+		if ((state.schemaVersion === 5 || state.schemaVersion === 6) && index % 5 === 0) {
 			apply('plan-day', {
 				actorId: heroId,
 				source: source('manual'),
@@ -216,7 +217,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				(state.schemaVersion === 2 ||
 					state.schemaVersion === 3 ||
 					state.schemaVersion === 4 ||
-					state.schemaVersion === 5)
+					state.schemaVersion === 5 ||
+					state.schemaVersion === 6)
 			) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {

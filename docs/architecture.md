@@ -354,9 +354,12 @@ than receiving hidden defaults.
 
 `engine-v4` added reciprocal facility rosters, station-derived capacity, and one reversible
 development-power allocation. `engine-v5` persists the summoned mind, mutable habit, four-part daily
-plan, inspectable routine ranking, and zero-model-cost scheduled outcomes. A dual-anchor simulation
-clock projects configured wall time into explicit engine targets; renewable database leases and one
-pure catch-up policy make online and offline resolution byte-identical.
+plan, inspectable routine ranking, and zero-model-cost scheduled outcomes. `engine-v6` replaces the
+development power control for new runs with the irreversible First Ember lifecycle: Floor 01
+recovery, one kitchen/dormitory/training commitment, the Master’s explanation, deterministic hero
+responses, and event-persisted facility modifiers. A dual-anchor simulation clock projects
+configured wall time into explicit engine targets; renewable database leases and one pure catch-up
+policy make online and offline resolution byte-identical.
 
 ### Implemented reconnect projection
 
@@ -374,11 +377,12 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` or `engine-v6` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
-label, and optional engine-provided route nodes. The response carries the exact event cursor and
-state hash that explain the scene.
+label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
+immediate reactions. The response carries the exact event cursor and state hash that explain the
+scene.
 
 The player refreshes this bounded view after each ordered SSE cue and every 15 seconds while the
 page is visible. Code-owned scene layers interpolate travel below completion, grade the approved

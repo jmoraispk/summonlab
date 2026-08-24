@@ -5,7 +5,8 @@ import {
 	ClockSpeedSchema,
 	type CatchUpReport,
 	type ClockSpeed,
-	type EngineGameStateV5
+	type EngineGameStateV5,
+	type EngineGameStateV6
 } from '@summonlab/contracts';
 import {
 	ENGINE_CONTENT_VERSION,
@@ -51,13 +52,16 @@ function cappedTarget(currentGameTime: string, projectedGameTime: string, maxGam
 	return compareGameTime(quantizedTarget, maximum) > 0 ? maximum : quantizedTarget;
 }
 
-async function loadState(sql: postgres.Sql, runId: string): Promise<EngineGameStateV5> {
+async function loadState(
+	sql: postgres.Sql,
+	runId: string
+): Promise<EngineGameStateV5 | EngineGameStateV6> {
 	const snapshot = await sql.begin((transaction) =>
 		getEngineSnapshotInTransaction(transaction, runId)
 	);
 	if (!snapshot) throw new Error(`Engine snapshot not found: ${runId}`);
-	if (snapshot.state.schemaVersion !== 5) {
-		throw new Error(`Catch-up requires engine-v5 state: ${runId}`);
+	if (snapshot.state.schemaVersion !== 5 && snapshot.state.schemaVersion !== 6) {
+		throw new Error(`Catch-up requires engine-v5 or engine-v6 state: ${runId}`);
 	}
 	return snapshot.state;
 }

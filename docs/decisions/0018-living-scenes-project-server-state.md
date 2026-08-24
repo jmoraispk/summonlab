@@ -15,7 +15,7 @@ cannot begin an activity, and wall-clock rendering cannot resolve scheduled work
   version/cursor/hash, projected game time and day phase, building power/rosters/physical occupancy,
   and one presentation pose per non-synthesized hero.
 - `projectSettlementPresentation(snapshot, definition, projectedGameTime)` is a pure engine
-  projection. It accepts the cached authoritative `engine-v5` snapshot, hash-bound settlement
+  projection. It accepts the cached authoritative `engine-v5` or `engine-v6` snapshot, hash-bound settlement
   content, and persisted clock projection. It does not read wall time, mutate state, or emit events.
 - Day phases use fixed UTC game-time windows: dawn 05:00–07:59, day 08:00–17:59, dusk
   18:00–20:59, and night otherwise.
@@ -37,8 +37,9 @@ cannot begin an activity, and wall-clock rendering cannot resolve scheduled work
 
 The settlement can feel continuous while preserving replay authority and offline equivalence. The
 same state hash explains the visible time, occupancy, and activity, and an SSE integration test proves
-that a committed event refreshes the view cursor. The v1 scene supports only `engine-v5` runs; an
-older run must use its compatible historical renderer rather than receiving invented defaults.
+that a committed event refreshes the view cursor. The v1 scene supports `engine-v5` and `engine-v6`
+runs; an older run must use its compatible historical renderer rather than receiving invented
+defaults.
 
 The current visual route has one approved identity rig and one settlement plate. Additional hero
 anchors, collision-aware marker placement, interiors, and richer social clustering remain later

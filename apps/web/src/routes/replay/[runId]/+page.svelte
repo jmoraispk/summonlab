@@ -6,7 +6,9 @@
 		BuildingAssignmentRole,
 		CatchUpReport,
 		EngineCommand,
-		EngineReplayReport
+		EngineReplayReport,
+		FirstEmberFacility,
+		FirstEmberRationale
 	} from '@summonlab/contracts';
 
 	let { data } = $props();
@@ -22,26 +24,36 @@
 		engineState.schemaVersion === 2 ||
 			engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
-			engineState.schemaVersion === 5
+			engineState.schemaVersion === 5 ||
+			engineState.schemaVersion === 6
 			? engineState
 			: null
 	);
 	const navigationState = $derived(
 		engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
-			engineState.schemaVersion === 5
+			engineState.schemaVersion === 5 ||
+			engineState.schemaVersion === 6
 			? engineState.settlement.navigation
 			: null
 	);
 	const operationsState = $derived(
-		engineState.schemaVersion === 4 || engineState.schemaVersion === 5 ? engineState : null
+		engineState.schemaVersion === 4 ||
+			engineState.schemaVersion === 5 ||
+			engineState.schemaVersion === 6
+			? engineState
+			: null
 	);
-	const routineState = $derived(engineState.schemaVersion === 5 ? engineState : null);
+	const routineState = $derived(
+		engineState.schemaVersion === 5 || engineState.schemaVersion === 6 ? engineState : null
+	);
+	const firstEmberState = $derived(engineState.schemaVersion === 6 ? engineState : null);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
 		(engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
-			engineState.schemaVersion === 5) &&
+			engineState.schemaVersion === 5 ||
+			engineState.schemaVersion === 6) &&
 			hero
 			? engineState.heroes[hero.heroId]
 			: null
@@ -220,6 +232,36 @@
 				buildingId
 			},
 			`Development power routed to ${buildingId}.`
+		);
+	}
+
+	async function recoverFirstEmber() {
+		if (!firstEmberState) return;
+		await execute(
+			{
+				...commandMeta(firstEmberState.master.masterId, engineState.version, {
+					source: 'system',
+					timing: null,
+					fallbackPolicy: null,
+					directiveIds: [],
+					decisionJobId: null
+				}),
+				commandType: 'story.recover.first.ember'
+			},
+			'Floor 01 recovery committed; the permanent facility choice is now available.'
+		);
+	}
+
+	async function commitFirstEmber(buildingId: FirstEmberFacility, rationale: FirstEmberRationale) {
+		if (!firstEmberState) return;
+		await execute(
+			{
+				...commandMeta(firstEmberState.master.masterId),
+				commandType: 'settlement.commit.first.ember',
+				buildingId,
+				rationale
+			},
+			`The First Ember is permanently bound to ${buildingId}.`
 		);
 	}
 
@@ -575,7 +617,51 @@
 				</div>
 				{#if operationsState && hero}
 					<div class="control-group facilities" data-testid="facility-operations">
-						<span>Facility operations · one development power slot</span>
+						<span
+							>Facility operations · {firstEmberState
+								? 'one permanent First Ember'
+								: 'one development power slot'}</span
+						>
+						{#if firstEmberState}
+							<div class="first-ember-proof" data-testid="first-ember-proof">
+								<div>
+									<strong>First Ember · {firstEmberState.settlement.firstEmber.status}</strong>
+									<small
+										>{firstEmberState.settlement.firstEmber.buildingId ??
+											'Floor 01 recovery not yet recorded'}</small
+									>
+								</div>
+								{#if firstEmberState.settlement.firstEmber.status === 'unrecovered'}
+									<button type="button" onclick={recoverFirstEmber} disabled={pending}
+										>Recover Floor 01 core</button
+									>
+								{:else if firstEmberState.settlement.firstEmber.status === 'available'}
+									<div class="buttons wrap">
+										<button
+											type="button"
+											onclick={() => commitFirstEmber('kitchen', 'feed-everyone')}
+											disabled={pending}>Kitchen</button
+										>
+										<button
+											type="button"
+											onclick={() => commitFirstEmber('dormitory', 'protect-recovery')}
+											disabled={pending}>Dormitory</button
+										>
+										<button
+											type="button"
+											onclick={() => commitFirstEmber('training-ground', 'prepare-tower')}
+											disabled={pending}>Training</button
+										>
+									</div>
+								{:else}
+									<code
+										>{firstEmberState.settlement.firstEmber.modifiers
+											.map((modifier) => `${modifier.key} ${modifier.amount}`)
+											.join(' · ')}</code
+									>
+								{/if}
+							</div>
+						{/if}
 						<div class="facility-list">
 							{#each Object.values(operationsState.settlement.buildings) as building (building.buildingId)}
 								<article data-testid={`building-${building.buildingId}`}>
@@ -595,7 +681,7 @@
 											!canMaster(`settlement.assign.${hero.heroId}.${building.buildingId}`)}
 										>assign</button
 									>
-									{#if building.buildingId !== 'summoning-gate'}
+									{#if !firstEmberState && building.buildingId !== 'summoning-gate'}
 										<button
 											class="secondary compact"
 											type="button"
@@ -1304,6 +1390,37 @@
 		color: rgba(244, 240, 232, 0.48);
 		font-size: 0.62rem;
 		line-height: 1.5;
+	}
+	.first-ember-proof {
+		margin: 0.7rem;
+		padding: 0.75rem;
+		border: 1px solid rgba(215, 119, 62, 0.28);
+		background: rgba(118, 48, 21, 0.12);
+	}
+	.first-ember-proof > div:first-child {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.4rem;
+	}
+	.first-ember-proof strong,
+	.first-ember-proof small {
+		display: block;
+	}
+	.first-ember-proof strong {
+		color: #d7773e;
+		font:
+			400 0.75rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.first-ember-proof small,
+	.first-ember-proof code {
+		color: rgba(244, 240, 232, 0.42);
+		font-size: 0.5rem;
+	}
+	.first-ember-proof > button {
+		margin-top: 0.75rem;
+		padding: 0.6rem 0.7rem;
 	}
 	.facility-list {
 		display: grid;

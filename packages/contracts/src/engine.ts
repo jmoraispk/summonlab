@@ -855,12 +855,160 @@ export const EngineGameStateV5Schema = z
 		}
 	});
 
+export const FirstEmberFacilitySchema = z.enum(['kitchen', 'dormitory', 'training-ground']);
+export const FirstEmberRationaleSchema = z.enum([
+	'feed-everyone',
+	'protect-recovery',
+	'prepare-tower'
+]);
+export const FirstEmberReactionStanceSchema = z.enum(['support', 'accept', 'question', 'oppose']);
+export const FirstEmberModifierKeySchema = z.enum([
+	'hunger-recovery',
+	'fatigue-recovery',
+	'health-recovery',
+	'hero-experience',
+	'sword-experience',
+	'training-injury-threshold'
+]);
+
+export const FirstEmberModifierSchema = z
+	.object({
+		key: FirstEmberModifierKeySchema,
+		amount: z.number().int().min(-100).max(100)
+	})
+	.strict();
+
+export const FirstEmberHeroReactionSchema = z
+	.object({
+		heroId: EntityIdSchema,
+		stance: FirstEmberReactionStanceSchema,
+		score: z.number().int().min(-100).max(100),
+		summary: z.string().min(1).max(300),
+		factors: z.array(z.string().min(1).max(120)).min(2).max(8)
+	})
+	.strict();
+
+export const FirstEmberStateSchema = z
+	.object({
+		coreId: z.literal('first-ember-core'),
+		status: z.enum(['unrecovered', 'available', 'committed']),
+		recoveredFrom: z.literal('tower-floor-01').nullable(),
+		recoveredAt: IsoDateTimeSchema.nullable(),
+		committedAt: IsoDateTimeSchema.nullable(),
+		buildingId: FirstEmberFacilitySchema.nullable(),
+		rationale: FirstEmberRationaleSchema.nullable(),
+		modifiers: z.array(FirstEmberModifierSchema).max(6),
+		reactions: z.array(FirstEmberHeroReactionSchema).max(32)
+	})
+	.strict()
+	.superRefine((core, context) => {
+		const recoveryFields = core.recoveredFrom !== null && core.recoveredAt !== null;
+		const commitmentFields =
+			core.committedAt !== null && core.buildingId !== null && core.rationale !== null;
+		if (
+			(core.status === 'unrecovered' &&
+				(recoveryFields ||
+					commitmentFields ||
+					core.modifiers.length > 0 ||
+					core.reactions.length > 0)) ||
+			(core.status === 'available' &&
+				(!recoveryFields ||
+					commitmentFields ||
+					core.modifiers.length > 0 ||
+					core.reactions.length > 0)) ||
+			(core.status === 'committed' && (!recoveryFields || !commitmentFields))
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'First Ember lifecycle fields are inconsistent'
+			});
+		}
+		if (new Set(core.modifiers.map((modifier) => modifier.key)).size !== core.modifiers.length) {
+			context.addIssue({ code: 'custom', message: 'First Ember modifiers must be unique' });
+		}
+		if (new Set(core.reactions.map((reaction) => reaction.heroId)).size !== core.reactions.length) {
+			context.addIssue({ code: 'custom', message: 'First Ember hero reactions must be unique' });
+		}
+	});
+
+export const EngineSettlementStateV6Schema = z
+	.object({
+		...EngineSettlementStateV4Schema.shape,
+		firstEmber: FirstEmberStateSchema
+	})
+	.strict();
+
+export const EngineGameStateV6Schema = z
+	.object({
+		...EngineGameStateV5Schema.shape,
+		schemaVersion: z.literal(6),
+		settlement: EngineSettlementStateV6Schema
+	})
+	.strict()
+	.superRefine((state, context) => {
+		const settlementV5 = { ...state.settlement } as Record<string, unknown>;
+		delete settlementV5.firstEmber;
+		const inherited = EngineGameStateV5Schema.safeParse({
+			...state,
+			schemaVersion: 5,
+			settlement: settlementV5
+		});
+		if (!inherited.success) {
+			for (const issue of inherited.error.issues) {
+				context.addIssue({
+					code: 'custom',
+					message: `Engine-v5 invariant failed: ${issue.message}`,
+					path: issue.path
+				});
+			}
+		}
+		if (
+			state.settlement.firstEmber.status === 'committed' &&
+			state.settlement.poweredBuildingId !== state.settlement.firstEmber.buildingId
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Committed First Ember must own the power slot'
+			});
+		}
+		if (
+			state.settlement.firstEmber.status !== 'committed' &&
+			state.settlement.poweredBuildingId !== null
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Uncommitted First Ember cannot power a facility'
+			});
+		}
+		const powered = Object.values(state.settlement.buildings).filter(
+			(building) => building.powerState === 'powered'
+		);
+		if (
+			powered.length !== (state.settlement.poweredBuildingId ? 1 : 0) ||
+			(state.settlement.poweredBuildingId !== null &&
+				powered[0]?.buildingId !== state.settlement.poweredBuildingId)
+		) {
+			context.addIssue({ code: 'custom', message: 'First Ember power projection is inconsistent' });
+		}
+		const activeSystemIds = Object.values(state.settlement.buildings)
+			.filter((building) => building.powerState !== 'unpowered')
+			.map((building) => building.systemId)
+			.sort((left, right) => left.localeCompare(right));
+		if (activeSystemIds.join('|') !== state.settlement.navigation.activeSystemIds.join('|')) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Active systems diverged from First Ember power'
+			});
+		}
+	});
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
 	EngineGameStateV3Schema,
 	EngineGameStateV4Schema,
-	EngineGameStateV5Schema
+	EngineGameStateV5Schema,
+	EngineGameStateV6Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -906,6 +1054,27 @@ export const AllocateBuildingPowerCommandSchema = EngineCommandBaseSchema.extend
 	commandType: z.literal('settlement.allocate.power'),
 	buildingId: SettlementSlugSchema
 }).strict();
+
+export const RecoverFirstEmberCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('story.recover.first.ember')
+}).strict();
+
+export const CommitFirstEmberCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('settlement.commit.first.ember'),
+	buildingId: FirstEmberFacilitySchema,
+	rationale: FirstEmberRationaleSchema
+}).strict();
+
+export const FirstEmberRequestSchema = z.discriminatedUnion('action', [
+	z.object({ action: z.literal('recover') }).strict(),
+	z
+		.object({
+			action: z.literal('commit'),
+			buildingId: FirstEmberFacilitySchema,
+			rationale: FirstEmberRationaleSchema
+		})
+		.strict()
+]);
 
 export const CreateDailyPlanCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.plan.day')
@@ -953,6 +1122,8 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	AssignHeroBuildingCommandSchema,
 	UnassignHeroBuildingCommandSchema,
 	AllocateBuildingPowerCommandSchema,
+	RecoverFirstEmberCommandSchema,
+	CommitFirstEmberCommandSchema,
 	CreateDailyPlanCommandSchema,
 	StartRoutineCommandSchema,
 	InspectGateCommandSchema,
@@ -1141,11 +1312,16 @@ export type EngineGameStateV2 = z.infer<typeof EngineGameStateV2Schema>;
 export type EngineGameStateV3 = z.infer<typeof EngineGameStateV3Schema>;
 export type EngineGameStateV4 = z.infer<typeof EngineGameStateV4Schema>;
 export type EngineGameStateV5 = z.infer<typeof EngineGameStateV5Schema>;
+export type EngineGameStateV6 = z.infer<typeof EngineGameStateV6Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
 export type EngineSnapshot = z.infer<typeof EngineSnapshotSchema>;
 export type EntropyDraw = z.infer<typeof EntropyDrawSchema>;
+export type FirstEmberFacility = z.infer<typeof FirstEmberFacilitySchema>;
+export type FirstEmberRationale = z.infer<typeof FirstEmberRationaleSchema>;
+export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
+export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
 export type ScheduledEvent = z.infer<typeof ScheduledEventSchema>;
 export type SimulationClock = z.infer<typeof SimulationClockSchema>;

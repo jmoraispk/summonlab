@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { BuildingPowerStateSchema, HeroLifeStateSchema } from './engine.js';
+import { BuildingPowerStateSchema, FirstEmberStateSchema, HeroLifeStateSchema } from './engine.js';
 import { SettlementSlugSchema } from './settlement.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
 
@@ -59,6 +59,7 @@ export const SettlementPresentationSchema = z
 		dayNumber: z.number().int().positive(),
 		minuteOfDay: z.number().int().min(0).max(1_439),
 		dayPhase: SettlementDayPhaseSchema,
+		firstEmber: FirstEmberStateSchema.nullable(),
 		buildings: z.array(SettlementBuildingProjectionSchema),
 		occupants: z.array(SettlementOccupantProjectionSchema)
 	})

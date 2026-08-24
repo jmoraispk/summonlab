@@ -10,11 +10,13 @@ import {
 	EngineGameStateV3Schema,
 	EngineGameStateV4Schema,
 	EngineGameStateV5Schema,
+	EngineGameStateV6Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
 	HeroProgressionSchema,
 	HabitStateSchema,
+	FirstEmberStateSchema,
 	InjurySchema,
 	LegalActionSchema,
 	NeedStateSchema,
@@ -34,8 +36,11 @@ import {
 	type EngineGameStateV3,
 	type EngineGameStateV4,
 	type EngineGameStateV5,
+	type EngineGameStateV6,
 	type EngineSnapshot,
 	type EntropyDraw,
+	type FirstEmberFacility,
+	type FirstEmberRationale,
 	type LegalAction,
 	type RewardDelta,
 	type RoutineKind,
@@ -51,7 +56,8 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v5';
+export const ENGINE_CONTENT_VERSION = 'engine-v6';
+export const ROUTINE_ENGINE_CONTENT_VERSION = 'engine-v5';
 export const FACILITY_ENGINE_CONTENT_VERSION = 'engine-v4';
 export const TRAVEL_ENGINE_CONTENT_VERSION = 'engine-v3';
 export const PREVIOUS_ENGINE_CONTENT_VERSION = 'engine-v2';
@@ -80,7 +86,8 @@ const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
 ] as const);
 
 type EngineGameStateModern =
-	EngineGameStateV2 | EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5;
+	EngineGameStateV2 | EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6;
+type EngineRoutineState = EngineGameStateV5 | EngineGameStateV6;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -277,6 +284,19 @@ const PowerAllocatedPayloadSchema = EmptyMetadataSchema.extend({
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
+const FirstEmberRecoveredPayloadSchema = EmptyMetadataSchema.extend({
+	firstEmber: FirstEmberStateSchema,
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
+	firstEmber: FirstEmberStateSchema,
+	previousPoweredBuildingId: z.string().nullable(),
+	powerStateChanges: z.array(PowerStateChangeSchema).min(1),
+	activeSystemIdsAfter: z.array(z.string()),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
 const DailyPlanCreatedPayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
 	dailyPlan: DailyPlanSchema,
@@ -448,8 +468,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
-	const state = EngineGameStateV5Schema.parse({
-		schemaVersion: 5,
+	const state = EngineGameStateV6Schema.parse({
+		schemaVersion: 6,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -513,7 +533,18 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				activeSystemIds: [...DEFAULT_ACTIVE_SYSTEM_IDS]
 			},
 			poweredBuildingId: null,
-			buildings: buildingStates
+			buildings: buildingStates,
+			firstEmber: {
+				coreId: 'first-ember-core',
+				status: 'unrecovered',
+				recoveredFrom: null,
+				recoveredAt: null,
+				committedAt: null,
+				buildingId: null,
+				rationale: null,
+				modifiers: [],
+				reactions: []
+			}
 		},
 		items: {
 			[bladeId]: {
@@ -617,8 +648,120 @@ function createBuildingStates(definition: SettlementDefinition) {
 	);
 }
 
+const FIRST_EMBER_MODIFIERS = Object.freeze({
+	kitchen: [{ key: 'hunger-recovery', amount: 15 }],
+	dormitory: [
+		{ key: 'fatigue-recovery', amount: 20 },
+		{ key: 'health-recovery', amount: 5 }
+	],
+	'training-ground': [
+		{ key: 'hero-experience', amount: 4 },
+		{ key: 'sword-experience', amount: 3 },
+		{ key: 'training-injury-threshold', amount: -7 }
+	]
+} as const);
+
+const FACILITY_RATIONALE = Object.freeze({
+	kitchen: 'feed-everyone',
+	dormitory: 'protect-recovery',
+	'training-ground': 'prepare-tower'
+} as const satisfies Record<FirstEmberFacility, FirstEmberRationale>);
+
+function reactionStance(score: number) {
+	if (score >= 30) return 'support' as const;
+	if (score >= 10) return 'accept' as const;
+	if (score >= -10) return 'question' as const;
+	return 'oppose' as const;
+}
+
+function buildFirstEmberReaction(
+	hero: EngineGameStateV6['heroes'][string],
+	buildingId: FirstEmberFacility,
+	rationale: FirstEmberRationale
+) {
+	let score = 0;
+	const factors: string[] = [];
+	if (buildingId === 'kitchen') {
+		const need = Math.round(hero.needs.hunger / 2);
+		score += need;
+		factors.push(`hunger ${hero.needs.hunger} contributes ${need}`);
+		if (['belonging', 'mercy'].includes(hero.mind.primaryValue)) {
+			score += 18;
+			factors.push(`value ${hero.mind.primaryValue} supports shared food`);
+		}
+		if (['connect', 'protect', 'survive'].includes(hero.mind.primaryDrive)) {
+			score += 12;
+			factors.push(`drive ${hero.mind.primaryDrive} supports the hearth`);
+		}
+	}
+	if (buildingId === 'dormitory') {
+		const need = Math.round(hero.needs.fatigue / 2 + (hero.maxHealth - hero.health) / 2);
+		score += need;
+		factors.push(`fatigue and injury pressure contribute ${need}`);
+		if (['freedom', 'belonging', 'mercy'].includes(hero.mind.primaryValue)) {
+			score += 18;
+			factors.push(`value ${hero.mind.primaryValue} supports recovery and privacy`);
+		}
+		if (['protect', 'survive'].includes(hero.mind.primaryDrive)) {
+			score += 12;
+			factors.push(`drive ${hero.mind.primaryDrive} supports shelter`);
+		}
+	}
+	if (buildingId === 'training-ground') {
+		const readiness = Math.round((100 - hero.needs.fatigue) / 5);
+		score += readiness;
+		factors.push(`physical readiness contributes ${readiness}`);
+		if (['duty', 'mastery'].includes(hero.mind.primaryValue)) {
+			score += 18;
+			factors.push(`value ${hero.mind.primaryValue} supports preparation`);
+		}
+		if (['prove', 'survive'].includes(hero.mind.primaryDrive)) {
+			score += 12;
+			factors.push(`drive ${hero.mind.primaryDrive} supports tower readiness`);
+		}
+		if (hero.needs.fatigue >= 70) {
+			score -= 18;
+			factors.push('high fatigue argues against more training');
+		}
+	}
+	if (FACILITY_RATIONALE[buildingId] === rationale) {
+		score += 12;
+		factors.push('the explanation matches the chosen facility');
+	} else {
+		score -= 12;
+		factors.push('the explanation conflicts with the chosen facility');
+	}
+	score += Math.round((hero.mind.personality.agreeableness - 50) / 10);
+	factors.push(`agreeableness ${hero.mind.personality.agreeableness} shapes willingness to accept`);
+	const clampedScore = Math.max(-100, Math.min(100, score));
+	const stance = reactionStance(clampedScore);
+	const summary = {
+		support: 'The hero openly supports the commitment and its stated purpose.',
+		accept: 'The hero accepts the commitment, reserving judgment for its results.',
+		question: 'The hero asks whether the irreversible choice truly answers the settlement’s needs.',
+		oppose: 'The hero objects to spending the only core on this priority.'
+	}[stance];
+	return { heroId: hero.heroId, stance, score: clampedScore, summary, factors };
+}
+
+function firstEmberModifier(
+	state: EngineGameStateModern,
+	key:
+		| 'hunger-recovery'
+		| 'fatigue-recovery'
+		| 'health-recovery'
+		| 'hero-experience'
+		| 'sword-experience'
+		| 'training-injury-threshold'
+): number {
+	if (!hasFirstEmberState(state) || state.settlement.firstEmber.status !== 'committed') return 0;
+	return (
+		state.settlement.firstEmber.modifiers.find((modifier) => modifier.key === key)?.amount ?? 0
+	);
+}
+
 function settlementForState(
-	state: EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5
+	state: EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -655,23 +798,38 @@ function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalActi
 }
 
 function currentTravelFor(state: EngineGameState, heroId: string) {
-	return state.schemaVersion === 3 || state.schemaVersion === 4 || state.schemaVersion === 5
+	return state.schemaVersion === 3 ||
+		state.schemaVersion === 4 ||
+		state.schemaVersion === 5 ||
+		state.schemaVersion === 6
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
 
 function currentRoutineFor(state: EngineGameState, heroId: string) {
-	return state.schemaVersion === 5 ? (state.heroes[heroId]?.currentRoutine ?? null) : null;
+	return state.schemaVersion === 5 || state.schemaVersion === 6
+		? (state.heroes[heroId]?.currentRoutine ?? null)
+		: null;
 }
 
 function hasNavigationState(
 	state: EngineGameState
-): state is EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 {
-	return state.schemaVersion === 3 || state.schemaVersion === 4 || state.schemaVersion === 5;
+): state is EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6 {
+	return [3, 4, 5, 6].includes(state.schemaVersion);
 }
 
-function hasFacilityState(state: EngineGameState): state is EngineGameStateV4 | EngineGameStateV5 {
-	return state.schemaVersion === 4 || state.schemaVersion === 5;
+function hasFacilityState(
+	state: EngineGameState
+): state is EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6 {
+	return state.schemaVersion === 4 || state.schemaVersion === 5 || state.schemaVersion === 6;
+}
+
+function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
+	return state.schemaVersion === 5 || state.schemaVersion === 6;
+}
+
+function hasFirstEmberState(state: EngineGameState): state is EngineGameStateV6 {
+	return state.schemaVersion === 6;
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
@@ -705,7 +863,7 @@ function routineDuration(kind: RoutineKind): number {
 	return 25;
 }
 
-function createDailyPlan(state: EngineGameStateV5, heroId: string, commandId: string) {
+function createDailyPlan(state: EngineRoutineState, heroId: string, commandId: string) {
 	const hero = state.heroes[heroId];
 	if (!hero) throw new IllegalActionError('hero.plan.day');
 	const dayIndex = gameDayIndex(state.simulatedAt);
@@ -756,10 +914,13 @@ function createDailyPlan(state: EngineGameStateV5, heroId: string, commandId: st
 }
 
 export function resolveDailyRoutine(
-	stateInput: EngineGameStateV5,
+	stateInput: EngineRoutineState,
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
-	const state = EngineGameStateV5Schema.parse(stateInput);
+	const state =
+		stateInput.schemaVersion === 6
+			? EngineGameStateV6Schema.parse(stateInput)
+			: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -924,7 +1085,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			})
 		);
 	}
-	if (state.schemaVersion === 4 || state.schemaVersion === 5) {
+	if (state.schemaVersion === 4 || state.schemaVersion === 5 || state.schemaVersion === 6) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
 			if (hero.assignment) {
@@ -961,23 +1122,41 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				);
 			}
 		}
-		for (const building of Object.values(state.settlement.buildings)) {
-			if (
-				building.buildingId === 'summoning-gate' ||
-				state.settlement.poweredBuildingId === building.buildingId
-			)
-				continue;
+		if (state.schemaVersion === 4 || state.schemaVersion === 5)
+			for (const building of Object.values(state.settlement.buildings)) {
+				if (
+					building.buildingId === 'summoning-gate' ||
+					state.settlement.poweredBuildingId === building.buildingId
+				)
+					continue;
+				actions.push(
+					action({
+						actionId: `settlement.power.${building.buildingId}`,
+						actorId,
+						kind: 'interact',
+						label: `Route development power to ${building.buildingId}`,
+						description:
+							'Reallocate the one reversible development power slot and refresh route access.',
+						targetIds: [],
+						resourceCosts: {},
+						tags: ['settlement', 'power', 'development-proof', building.buildingId]
+					})
+				);
+			}
+	}
+	if (hasFirstEmberState(state) && state.settlement.firstEmber.status === 'available') {
+		for (const buildingId of ['kitchen', 'dormitory', 'training-ground'] as const) {
 			actions.push(
 				action({
-					actionId: `settlement.power.${building.buildingId}`,
+					actionId: `settlement.first-ember.${buildingId}`,
 					actorId,
 					kind: 'interact',
-					label: `Route development power to ${building.buildingId}`,
+					label: `Bind the First Ember to ${buildingId}`,
 					description:
-						'Reallocate the one reversible development power slot and refresh route access.',
+						'Make the irreversible facility commitment and record each hero’s immediate response.',
 					targetIds: [],
 					resourceCosts: {},
-					tags: ['settlement', 'power', 'development-proof', building.buildingId]
+					tags: ['settlement', 'first-ember', 'irreversible', buildingId]
 				})
 			);
 		}
@@ -1025,7 +1204,7 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 	)
 		return [];
 	const actions: LegalAction[] = [];
-	if (state.schemaVersion === 5) {
+	if (hasRoutineState(state)) {
 		const heroV5 = state.heroes[actorId];
 		if (!heroV5) return [];
 		const currentDay = gameDayIndex(state.simulatedAt);
@@ -1208,6 +1387,9 @@ function requiredAction(command: EngineCommand): string {
 		return `settlement.unassign.${command.heroId}`;
 	if (command.commandType === 'settlement.allocate.power')
 		return `settlement.power.${command.buildingId}`;
+	if (command.commandType === 'story.recover.first.ember') return 'story.recover.first-ember';
+	if (command.commandType === 'settlement.commit.first.ember')
+		return `settlement.first-ember.${command.buildingId}`;
 	if (command.commandType === 'hero.plan.day') return 'hero.plan.day';
 	if (command.commandType === 'hero.start.routine') return 'hero.follow.plan';
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
@@ -1225,11 +1407,25 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	if (command.expectedVersion !== state.version) {
 		throw new StaleStateVersionError(command.expectedVersion, state.version);
 	}
+	if (command.commandType === 'story.recover.first.ember') {
+		if (
+			!hasFirstEmberState(state) ||
+			state.status !== 'active' ||
+			state.master.lifeState !== 'alive' ||
+			command.actorId !== state.master.masterId ||
+			command.source.source !== 'system' ||
+			command.source.timing !== null ||
+			state.settlement.firstEmber.status !== 'unrecovered'
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		return;
+	}
 	if (command.commandType === 'simulation.sync.clock') {
 		const earliest = state.schemaVersion === 1 ? null : earliestScheduledTime(state);
 		const minutes = gameMinutesBetween(state.simulatedAt, command.targetGameTime);
 		if (
-			state.schemaVersion !== 5 ||
+			!hasRoutineState(state) ||
 			state.status !== 'active' ||
 			command.actorId !== state.master.masterId ||
 			command.source.source !== 'system' ||
@@ -1331,15 +1527,24 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
+	if (command.commandType === 'settlement.commit.first.ember') {
+		if (
+			!hasFirstEmberState(state) ||
+			state.settlement.firstEmber.status !== 'available' ||
+			!['kitchen', 'dormitory', 'training-ground'].includes(command.buildingId)
+		) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
 	if (command.commandType === 'hero.plan.day') {
-		if (state.schemaVersion !== 5) throw new IllegalActionError(required, actionIds);
+		if (!hasRoutineState(state)) throw new IllegalActionError(required, actionIds);
 		const hero = state.heroes[command.actorId];
 		if (!hero || hero.currentRoutine || hero.currentActivity || hero.currentTravel) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
 	if (command.commandType === 'hero.start.routine') {
-		if (state.schemaVersion !== 5 || !resolveDailyRoutine(state, command.actorId)) {
+		if (!hasRoutineState(state) || !resolveDailyRoutine(state, command.actorId)) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
@@ -1459,11 +1664,13 @@ function buildActivityOutcome(
 	const deltas: RewardDelta[] = [];
 
 	if (activity.kind === 'train') {
+		const experienceBonus = firstEmberModifier(state, 'hero-experience');
+		const skillBonus = firstEmberModifier(state, 'sword-experience');
 		const experienceBefore = hero.progression.experience;
 		const levelBefore = hero.progression.level;
 		const skillBefore = hero.progression.skills.swordFighting.experience;
-		const skillAfter = skillBefore + 6;
-		const experienceAfter = experienceBefore + 8;
+		const skillAfter = skillBefore + 6 + skillBonus;
+		const experienceAfter = experienceBefore + 8 + experienceBonus;
 		progressionAfter = {
 			...hero.progression,
 			experience: experienceAfter,
@@ -1486,7 +1693,7 @@ function buildActivityOutcome(
 				key: 'hero',
 				before: experienceBefore,
 				after: experienceAfter,
-				delta: 8
+				delta: 8 + experienceBonus
 			},
 			{
 				ownerId: heroId,
@@ -1494,7 +1701,7 @@ function buildActivityOutcome(
 				key: 'sword-fighting',
 				before: skillBefore,
 				after: skillAfter,
-				delta: 6
+				delta: 6 + skillBonus
 			},
 			{
 				ownerId: heroId,
@@ -1545,7 +1752,8 @@ function buildActivityOutcome(
 		);
 		nextEntropy = injuryDraw.next;
 		draws.push(injuryDraw.draw);
-		if (injuryDraw.draw.value < 15) {
+		const injuryThreshold = 15 + firstEmberModifier(state, 'training-injury-threshold');
+		if (injuryDraw.draw.value < injuryThreshold) {
 			healthAfter = Math.max(0, hero.health - 10);
 			lifeStateAfter = healthAfter === 0 ? 'dead' : 'active';
 			if (healthAfter > 0) {
@@ -1568,7 +1776,8 @@ function buildActivityOutcome(
 	}
 
 	if (activity.kind === 'eat') {
-		needsAfter = { ...hero.needs, hunger: Math.max(0, hero.needs.hunger - 45) };
+		const recovery = 45 + firstEmberModifier(state, 'hunger-recovery');
+		needsAfter = { ...hero.needs, hunger: Math.max(0, hero.needs.hunger - recovery) };
 		deltas.push({
 			ownerId: heroId,
 			kind: 'need',
@@ -1580,8 +1789,10 @@ function buildActivityOutcome(
 	}
 
 	if (activity.kind === 'rest') {
-		needsAfter = { ...hero.needs, fatigue: Math.max(0, hero.needs.fatigue - 50) };
-		healthAfter = Math.min(hero.maxHealth, hero.health + 10);
+		const fatigueRecovery = 50 + firstEmberModifier(state, 'fatigue-recovery');
+		const healthRecovery = 10 + firstEmberModifier(state, 'health-recovery');
+		needsAfter = { ...hero.needs, fatigue: Math.max(0, hero.needs.fatigue - fatigueRecovery) };
+		healthAfter = Math.min(hero.maxHealth, hero.health + healthRecovery);
 		injuriesAfter = hero.injuries.slice(1);
 		deltas.push({
 			ownerId: heroId,
@@ -1637,7 +1848,7 @@ function buildActivityOutcome(
 	};
 }
 
-function buildRoutineOutcome(state: EngineGameStateV5, heroId: string) {
+function buildRoutineOutcome(state: EngineRoutineState, heroId: string) {
 	const hero = state.heroes[heroId];
 	const routine = hero?.currentRoutine;
 	if (!hero || !routine) throw new Error('Cannot resolve a missing routine');
@@ -1698,11 +1909,14 @@ function buildRoutineOutcome(state: EngineGameStateV5, heroId: string) {
 		changeNeed('fatigue', hero.needs.fatigue + 7);
 	}
 	if (routine.kind === 'meal') {
-		changeNeed('hunger', hero.needs.hunger - 45);
+		changeNeed('hunger', hero.needs.hunger - 45 - firstEmberModifier(state, 'hunger-recovery'));
 	}
 	if (routine.kind === 'sleep') {
-		changeNeed('fatigue', hero.needs.fatigue - 55);
-		healthAfter = Math.min(hero.maxHealth, hero.health + 8);
+		changeNeed('fatigue', hero.needs.fatigue - 55 - firstEmberModifier(state, 'fatigue-recovery'));
+		healthAfter = Math.min(
+			hero.maxHealth,
+			hero.health + 8 + firstEmberModifier(state, 'health-recovery')
+		);
 		if (healthAfter !== hero.health) {
 			rewardDeltas.push({
 				ownerId: heroId,
@@ -1728,7 +1942,7 @@ function buildRoutineOutcome(state: EngineGameStateV5, heroId: string) {
 	});
 }
 
-function skipUnfinishedPlan(hero: EngineGameStateV5['heroes'][string], resolvedAt: string) {
+function skipUnfinishedPlan(hero: EngineRoutineState['heroes'][string], resolvedAt: string) {
 	if (!hero.dailyPlan) return null;
 	return DailyPlanSchema.parse({
 		...hero.dailyPlan,
@@ -1741,8 +1955,88 @@ function skipUnfinishedPlan(hero: EngineGameStateV5['heroes'][string], resolvedA
 }
 
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType === 'story.recover.first.ember') {
+		if (!hasFirstEmberState(state)) throw new IllegalActionError(command.commandType);
+		const firstEmber = FirstEmberStateSchema.parse({
+			...state.settlement.firstEmber,
+			status: 'available',
+			recoveredFrom: 'tower-floor-01',
+			recoveredAt: state.simulatedAt
+		});
+		const base = eventBase(state, command, 'story.first.ember.recovered');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				firstEmber,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					'The party returned the First Ember from Floor 01. One permanent facility commitment is now available.'
+				)
+			}
+		});
+	}
+	if (command.commandType === 'settlement.commit.first.ember') {
+		if (!hasFirstEmberState(state)) throw new IllegalActionError(command.commandType);
+		const target = state.settlement.buildings[command.buildingId];
+		if (!target || state.settlement.firstEmber.status !== 'available') {
+			throw new IllegalActionError(command.commandType);
+		}
+		const reactions = Object.values(state.heroes)
+			.filter((hero) => hero.lifeState === 'active')
+			.sort((left, right) => left.heroId.localeCompare(right.heroId))
+			.map((hero) => buildFirstEmberReaction(hero, command.buildingId, command.rationale));
+		const firstEmber = FirstEmberStateSchema.parse({
+			...state.settlement.firstEmber,
+			status: 'committed',
+			committedAt: state.simulatedAt,
+			buildingId: command.buildingId,
+			rationale: command.rationale,
+			modifiers: FIRST_EMBER_MODIFIERS[command.buildingId],
+			reactions
+		});
+		const powerStateChanges = Object.values(state.settlement.buildings)
+			.map((building) => ({
+				buildingId: building.buildingId,
+				before: building.powerState,
+				after:
+					building.buildingId === command.buildingId
+						? ('powered' as const)
+						: building.baselinePowerState
+			}))
+			.filter((change) => change.before !== change.after)
+			.sort((left, right) => left.buildingId.localeCompare(right.buildingId));
+		const activeSystemIdsAfter = Object.values(state.settlement.buildings)
+			.filter(
+				(building) =>
+					building.buildingId === command.buildingId || building.baselinePowerState !== 'unpowered'
+			)
+			.map((building) => building.systemId)
+			.sort((left, right) => left.localeCompare(right));
+		const responseCounts = Object.fromEntries(
+			['support', 'accept', 'question', 'oppose'].map((stance) => [
+				stance,
+				reactions.filter((reaction) => reaction.stance === stance).length
+			])
+		);
+		const base = eventBase(state, command, 'settlement.first.ember.committed');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				firstEmber,
+				previousPoweredBuildingId: state.settlement.poweredBuildingId,
+				powerStateChanges,
+				activeSystemIdsAfter,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The Master permanently bound the First Ember to ${command.buildingId}: ${responseCounts.support ?? 0} supported, ${responseCounts.accept ?? 0} accepted, ${responseCounts.question ?? 0} questioned, and ${responseCounts.oppose ?? 0} opposed.`
+				)
+			}
+		});
+	}
 	if (command.commandType === 'simulation.sync.clock') {
-		if (state.schemaVersion !== 5) throw new IllegalActionError(command.commandType);
+		if (!hasRoutineState(state)) throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'simulation.clock.synced');
 		return AuthoritativeEventSchema.parse({
 			...base,
@@ -1756,7 +2050,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'hero.plan.day') {
-		if (state.schemaVersion !== 5) throw new IllegalActionError(command.commandType);
+		if (!hasRoutineState(state)) throw new IllegalActionError(command.commandType);
 		const dailyPlan = createDailyPlan(state, command.actorId, command.commandId);
 		const base = eventBase(state, command, 'hero.daily.plan.created');
 		return AuthoritativeEventSchema.parse({
@@ -1773,7 +2067,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'hero.start.routine') {
-		if (state.schemaVersion !== 5) throw new IllegalActionError(command.commandType);
+		if (!hasRoutineState(state)) throw new IllegalActionError(command.commandType);
 		const hero = state.heroes[command.actorId];
 		const resolution = resolveDailyRoutine(state, command.actorId);
 		if (!hero?.dailyPlan || !resolution) throw new IllegalActionError(command.commandType);
@@ -2111,7 +2405,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			entropy = result.entropy;
 			draws.push(...result.draws);
 		}
-		if (state.schemaVersion === 5) {
+		if (hasRoutineState(state)) {
 			const dueTravels = Object.values(state.heroes)
 				.filter(
 					(hero) =>
@@ -2472,15 +2766,91 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 2) return EngineGameStateV2Schema.parse(value);
 	if (state.schemaVersion === 3) return EngineGameStateV3Schema.parse(value);
 	if (state.schemaVersion === 4) return EngineGameStateV4Schema.parse(value);
-	return EngineGameStateV5Schema.parse(value);
+	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(value);
+	return EngineGameStateV6Schema.parse(value);
 }
 
 function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
+	if (event.eventType === 'story.first.ember.recovered') {
+		if (!hasFirstEmberState(state) || state.settlement.firstEmber.status !== 'unrecovered') {
+			throw new ReplayIntegrityError('First Ember recovery requires engine-v6', event.sequence);
+		}
+		const payload = FirstEmberRecoveredPayloadSchema.parse(event.payload);
+		const expected = FirstEmberStateSchema.parse({
+			...state.settlement.firstEmber,
+			status: 'available',
+			recoveredFrom: 'tower-floor-01',
+			recoveredAt: state.simulatedAt
+		});
+		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
+			throw new ReplayIntegrityError('First Ember recovery payload diverged', event.sequence);
+		}
+		return EngineGameStateV6Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			settlement: { ...state.settlement, firstEmber: payload.firstEmber }
+		});
+	}
+	if (event.eventType === 'settlement.first.ember.committed') {
+		if (!hasFirstEmberState(state) || state.settlement.firstEmber.status !== 'available') {
+			throw new ReplayIntegrityError(
+				'First Ember commitment requires availability',
+				event.sequence
+			);
+		}
+		const payload = FirstEmberCommittedPayloadSchema.parse(event.payload);
+		const buildingId = payload.firstEmber.buildingId;
+		const rationale = payload.firstEmber.rationale;
+		if (!buildingId || !rationale || payload.previousPoweredBuildingId !== null) {
+			throw new ReplayIntegrityError('First Ember commitment precondition failed', event.sequence);
+		}
+		const expected = FirstEmberStateSchema.parse({
+			...state.settlement.firstEmber,
+			status: 'committed',
+			committedAt: state.simulatedAt,
+			buildingId,
+			rationale,
+			modifiers: FIRST_EMBER_MODIFIERS[buildingId],
+			reactions: Object.values(state.heroes)
+				.filter((hero) => hero.lifeState === 'active')
+				.sort((left, right) => left.heroId.localeCompare(right.heroId))
+				.map((hero) => buildFirstEmberReaction(hero, buildingId, rationale))
+		});
+		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
+			throw new ReplayIntegrityError('First Ember reaction projection diverged', event.sequence);
+		}
+		const buildings = { ...state.settlement.buildings };
+		for (const change of payload.powerStateChanges) {
+			const building = buildings[change.buildingId];
+			if (!building || building.powerState !== change.before) {
+				throw new ReplayIntegrityError('First Ember power precondition failed', event.sequence);
+			}
+			buildings[change.buildingId] = { ...building, powerState: change.after };
+		}
+		return EngineGameStateV6Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			settlement: {
+				...state.settlement,
+				poweredBuildingId: buildingId,
+				buildings,
+				firstEmber: payload.firstEmber,
+				navigation: {
+					...state.settlement.navigation,
+					activeSystemIds: payload.activeSystemIdsAfter
+				}
+			}
+		});
+	}
 	if (event.eventType === 'simulation.clock.synced') {
-		if (state.schemaVersion !== 5)
+		if (!hasRoutineState(state))
 			throw new ReplayIntegrityError('Clock sync event requires engine-v5', event.sequence);
 		const payload = SimulationClockSyncedPayloadSchema.parse(event.payload);
 		const earliest = earliestScheduledTime(state);
@@ -2491,7 +2861,7 @@ function reduceV2Event(
 		) {
 			throw new ReplayIntegrityError('Clock sync precondition failed', event.sequence);
 		}
-		return EngineGameStateV5Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -2500,7 +2870,7 @@ function reduceV2Event(
 		});
 	}
 	if (event.eventType === 'hero.daily.plan.created') {
-		if (state.schemaVersion !== 5)
+		if (!hasRoutineState(state))
 			throw new ReplayIntegrityError('Daily plan event requires engine-v5', event.sequence);
 		const payload = DailyPlanCreatedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -2517,7 +2887,7 @@ function reduceV2Event(
 		if (hashCanonical(expected) !== hashCanonical(payload.dailyPlan)) {
 			throw new ReplayIntegrityError('Daily plan content diverged', event.sequence);
 		}
-		return EngineGameStateV5Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -2529,7 +2899,7 @@ function reduceV2Event(
 		});
 	}
 	if (event.eventType === 'hero.routine.started') {
-		if (state.schemaVersion !== 5)
+		if (!hasRoutineState(state))
 			throw new ReplayIntegrityError('Routine event requires engine-v5', event.sequence);
 		const payload = RoutineStartedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -2563,7 +2933,7 @@ function reduceV2Event(
 					: candidate
 			)
 		});
-		return EngineGameStateV5Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -2797,7 +3167,7 @@ function reduceV2Event(
 		});
 	}
 	if (event.eventType === 'simulation.advanced') {
-		if (state.schemaVersion === 5) {
+		if (hasRoutineState(state)) {
 			const payload = SimulationAdvancedPayloadV5Schema.parse(event.payload);
 			const heroes = { ...state.heroes };
 			const items = { ...state.items };
@@ -2900,7 +3270,7 @@ function reduceV2Event(
 					currentRoutine: null
 				};
 			}
-			return EngineGameStateV5Schema.parse({
+			return parseModernState(state, {
 				...state,
 				version: payload.nextVersion,
 				eventCursor: event.sequence,
@@ -3034,13 +3404,12 @@ function reduceV2Event(
 			const heroes = dead
 				? Object.fromEntries(
 						Object.entries(state.heroes).map(([id, hero]) => {
-							const routineState =
-								state.schemaVersion === 5
-									? {
-											currentRoutine: null,
-											dailyPlan: skipUnfinishedPlan(state.heroes[id]!, state.simulatedAt)
-										}
-									: {};
+							const routineState = hasRoutineState(state)
+								? {
+										currentRoutine: null,
+										dailyPlan: skipUnfinishedPlan(state.heroes[id]!, state.simulatedAt)
+									}
+								: {};
 							return [
 								id,
 								{
@@ -3079,15 +3448,14 @@ function reduceV2Event(
 			hasFacilityState(state) && dead && assignment
 				? clearBuildingAssignment(state.settlement, hero.heroId, assignment.buildingId)
 				: state.settlement;
-		const routineState =
-			state.schemaVersion === 5
-				? {
-						currentRoutine: dead ? null : state.heroes[payload.targetId]!.currentRoutine,
-						dailyPlan: dead
-							? skipUnfinishedPlan(state.heroes[payload.targetId]!, state.simulatedAt)
-							: state.heroes[payload.targetId]!.dailyPlan
-					}
-				: {};
+		const routineState = hasRoutineState(state)
+			? {
+					currentRoutine: dead ? null : state.heroes[payload.targetId]!.currentRoutine,
+					dailyPlan: dead
+						? skipUnfinishedPlan(state.heroes[payload.targetId]!, state.simulatedAt)
+						: state.heroes[payload.targetId]!.dailyPlan
+				}
+			: {};
 		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,

@@ -1,6 +1,7 @@
 import {
 	SettlementPresentationSchema,
 	type EngineGameStateV5,
+	type EngineGameStateV6,
 	type EngineSnapshot,
 	type RoutineKind,
 	type SettlementDefinition,
@@ -50,7 +51,7 @@ function readable(value: string): string {
 	return value.replaceAll('-', ' ');
 }
 
-function poseForHero(hero: EngineGameStateV5['heroes'][string]): {
+function poseForHero(hero: (EngineGameStateV5 | EngineGameStateV6)['heroes'][string]): {
 	pose: SettlementPose;
 	label: string;
 } {
@@ -77,8 +78,10 @@ export function projectSettlementPresentation(
 	projectedGameTime: string
 ): SettlementPresentation {
 	const { state } = snapshot;
-	if (state.schemaVersion !== 5) {
-		throw new Error(`Settlement presentation requires engine-v5, received v${state.schemaVersion}`);
+	if (state.schemaVersion !== 5 && state.schemaVersion !== 6) {
+		throw new Error(
+			`Settlement presentation requires engine-v5 or engine-v6, received v${state.schemaVersion}`
+		);
 	}
 	const gameDate = new Date(projectedGameTime);
 	if (Number.isNaN(gameDate.valueOf()))
@@ -135,6 +138,7 @@ export function projectSettlementPresentation(
 		dayNumber: dayIndex + 1,
 		minuteOfDay,
 		dayPhase: settlementDayPhase(minuteOfDay),
+		firstEmber: state.schemaVersion === 6 ? state.settlement.firstEmber : null,
 		buildings,
 		occupants
 	});

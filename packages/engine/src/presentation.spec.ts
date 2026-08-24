@@ -82,7 +82,12 @@ describe('settlement presentation projection', () => {
 			HEARTH_01_DEFINITION,
 			'2000-01-01T06:30:00.000Z'
 		);
-		expect(initial).toMatchObject({ dayNumber: 1, dayPhase: 'dawn', minuteOfDay: 390 });
+		expect(initial).toMatchObject({
+			dayNumber: 1,
+			dayPhase: 'dawn',
+			minuteOfDay: 390,
+			firstEmber: { status: 'unrecovered' }
+		});
 		expect(initial.occupants[0]).toMatchObject({
 			heroId,
 			nodeId: 'gate-dais',
@@ -104,8 +109,8 @@ describe('settlement presentation projection', () => {
 			targetNodeId: 'training-ring'
 		});
 		const travel =
-			traveling.state.schemaVersion === 5 ? traveling.state.heroes[heroId]!.currentTravel! : null;
-		if (!travel) throw new Error('Expected a v5 travel state');
+			traveling.state.schemaVersion === 6 ? traveling.state.heroes[heroId]!.currentTravel! : null;
+		if (!travel) throw new Error('Expected a v6 travel state');
 		const afterDueTime = new Date(Date.parse(travel.arrivesAt) + 60_000).toISOString();
 		const inMotion = projectSettlementPresentation(
 			{ state: traveling.state, stateHash: hashGameState(traveling.state) },

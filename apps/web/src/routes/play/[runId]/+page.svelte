@@ -2,6 +2,8 @@
 	import { resolve } from '$app/paths';
 	import type {
 		AuthoritativeEvent,
+		FirstEmberFacility,
+		FirstEmberRationale,
 		ProofRunSnapshot,
 		SettlementPresentation,
 		SimulationClock
@@ -25,7 +27,43 @@
 	// svelte-ignore state_referenced_locally
 	let presentation = $state<SettlementPresentation | null>(data.presentation);
 	let eventCue = $state<AuthoritativeEvent | null>(null);
+	let emberPending = $state(false);
+	let selectedEmberFacility = $state<FirstEmberFacility | null>(null);
+	let selectedEmberRationale = $state<FirstEmberRationale>('prepare-tower');
 	let eventCueTimer: ReturnType<typeof setTimeout> | null = null;
+	const emberOptions: ReadonlyArray<{
+		id: FirstEmberFacility;
+		name: string;
+		rationale: FirstEmberRationale;
+		promise: string;
+		effect: string;
+	}> = [
+		{
+			id: 'kitchen',
+			name: 'The Common Flame',
+			rationale: 'feed-everyone',
+			promise: 'No one trains or fights hungry.',
+			effect: '+15 hunger recovery from meals'
+		},
+		{
+			id: 'dormitory',
+			name: 'The Quiet Ward',
+			rationale: 'protect-recovery',
+			promise: 'Give every summoned life room to recover.',
+			effect: '+20 fatigue and +5 health recovery from rest'
+		},
+		{
+			id: 'training-ground',
+			name: 'The Tempered Yard',
+			rationale: 'prepare-tower',
+			promise: 'Prepare the company for what waits above.',
+			effect: '+4 hero XP, +3 sword XP, safer training'
+		}
+	];
+	const firstEmber = $derived(presentation?.firstEmber ?? null);
+	const selectedEmberOption = $derived(
+		emberOptions.find((option) => option.id === selectedEmberFacility) ?? null
+	);
 	const settlementDay = $derived(
 		presentation
 			? presentation.dayNumber
@@ -89,10 +127,57 @@
 		if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
 	}
 
+	async function recoverFirstEmber() {
+		await submitFirstEmber({ action: 'recover' });
+	}
+
+	function prepareFirstEmberChoice(option: (typeof emberOptions)[number]) {
+		selectedEmberFacility = option.id;
+		selectedEmberRationale = option.rationale;
+	}
+
+	async function commitFirstEmber() {
+		if (!selectedEmberFacility) return;
+		await submitFirstEmber({
+			action: 'commit',
+			buildingId: selectedEmberFacility,
+			rationale: selectedEmberRationale
+		});
+		selectedEmberFacility = null;
+	}
+
+	async function submitFirstEmber(body: Record<string, string>) {
+		emberPending = true;
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${snapshot.runId}/first-ember`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify(body)
+			});
+			const result = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(result.message ?? 'The First Ember did not answer.');
+			await refreshProjection();
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The First Ember did not answer.';
+		} finally {
+			emberPending = false;
+		}
+	}
+
 	function showEventCue(event: AuthoritativeEvent) {
 		eventCue = event;
 		if (eventCueTimer) clearTimeout(eventCueTimer);
 		eventCueTimer = setTimeout(() => (eventCue = null), 4_600);
+	}
+
+	function emberModifierLabel(modifier: { key: string; amount: number }) {
+		if (modifier.key === 'hunger-recovery') return `+${modifier.amount} meal recovery`;
+		if (modifier.key === 'fatigue-recovery') return `+${modifier.amount} fatigue recovery`;
+		if (modifier.key === 'health-recovery') return `+${modifier.amount} health recovery`;
+		if (modifier.key === 'hero-experience') return `+${modifier.amount} hero experience`;
+		if (modifier.key === 'sword-experience') return `+${modifier.amount} sword experience`;
+		return `${Math.abs(modifier.amount)} point lower training injury risk`;
 	}
 </script>
 
@@ -186,6 +271,117 @@
 		</section>
 	{:else}
 		<LivingHearthScene scene={data.scene} {presentation} manifest={snapshot.manifest} {eventCue} />
+	{/if}
+
+	{#if !walking && firstEmber}
+		<section class:committed={firstEmber.status === 'committed'} class="ember-council">
+			<div class="ember-heading">
+				<p>Settlement council · First Ember</p>
+				{#if firstEmber.status === 'unrecovered'}
+					<h2>The first ascent waits.</h2>
+					<span
+						>For this prototype, return the company from Floor 01 with the core that will define
+						Hearth 01’s first real advantage.</span
+					>
+				{:else if firstEmber.status === 'available'}
+					<h2>One core. Three promises.</h2>
+					<span
+						>The recovered ember can awaken one facility. Your explanation shapes how the summoned
+						heroes receive the choice.</span
+					>
+				{:else}
+					<h2>{emberOptions.find((option) => option.id === firstEmber.buildingId)?.name}</h2>
+					<span
+						>The core is permanently bound to {firstEmber.buildingId?.replaceAll('-', ' ')}. Its
+						effect now belongs to this history.</span
+					>
+				{/if}
+			</div>
+
+			{#if firstEmber.status === 'unrecovered'}
+				<button
+					class="recover-ember"
+					type="button"
+					onclick={recoverFirstEmber}
+					disabled={emberPending}
+					><span>Prototype story bridge</span><strong
+						>{emberPending ? 'Recovering…' : 'Return from Floor 01'}</strong
+					></button
+				>
+			{:else if firstEmber.status === 'available'}
+				<div class="ember-options" aria-label="First Ember facility choices">
+					{#each emberOptions as option, index (option.id)}
+						<button
+							type="button"
+							onclick={() => prepareFirstEmberChoice(option)}
+							disabled={emberPending}
+						>
+							<i>0{index + 1}</i>
+							<span>{option.id.replaceAll('-', ' ')}</span>
+							<strong>{option.name}</strong>
+							<small>{option.promise}</small>
+							<code>{option.effect}</code>
+						</button>
+					{/each}
+				</div>
+			{:else}
+				<div class="ember-resolution">
+					<div class="ember-effects">
+						<span>Permanent settlement effect</span>
+						{#each firstEmber.modifiers as modifier (`${modifier.key}-${modifier.amount}`)}
+							<strong>{emberModifierLabel(modifier)}</strong>
+						{/each}
+					</div>
+					<div class="ember-reactions">
+						<span>Immediate response</span>
+						{#each firstEmber.reactions as reaction (reaction.heroId)}
+							<article>
+								<strong
+									>{reaction.heroId === snapshot.manifest.characterId
+										? snapshot.manifest.displayName
+										: reaction.heroId.slice(0, 8)}</strong
+								>
+								<i class={`stance-${reaction.stance}`}>{reaction.stance} · {reaction.score}</i>
+								<p>{reaction.summary}</p>
+							</article>
+						{/each}
+					</div>
+				</div>
+			{/if}
+		</section>
+	{/if}
+
+	{#if selectedEmberOption}
+		<div class="ember-confirm-backdrop" role="presentation">
+			<dialog open class="ember-confirm" aria-labelledby="ember-title">
+				<button
+					class="ember-close"
+					type="button"
+					onclick={() => (selectedEmberFacility = null)}
+					aria-label="Close First Ember choice">×</button
+				>
+				<p>Irreversible commitment</p>
+				<h2 id="ember-title">{selectedEmberOption.name}</h2>
+				<span>{selectedEmberOption.effect}</span>
+				<label for="ember-rationale">What do you tell the company?</label>
+				<select id="ember-rationale" bind:value={selectedEmberRationale}>
+					<option value="feed-everyone">No one under my command goes hungry.</option>
+					<option value="protect-recovery">We protect the people who carry this settlement.</option>
+					<option value="prepare-tower">The tower will punish anyone we fail to prepare.</option>
+				</select>
+				<small>This choice cannot be moved later.</small>
+				<div>
+					<button
+						class="secondary-choice"
+						type="button"
+						onclick={() => (selectedEmberFacility = null)}>Keep deciding</button
+					>
+					<button type="button" onclick={commitFirstEmber} disabled={emberPending}
+						>{emberPending ? 'Binding…' : 'Bind the First Ember'}</button
+					>
+				</div>
+			</dialog>
+		</div>
 	{/if}
 
 	<section class="hero-hud">
@@ -699,6 +895,322 @@
 		right: -4rem;
 	}
 
+	.ember-council {
+		position: relative;
+		z-index: 22;
+		display: grid;
+		grid-template-columns: minmax(15rem, 0.42fr) minmax(30rem, 1fr);
+		gap: clamp(2rem, 5vw, 6rem);
+		padding: clamp(2rem, 4vw, 4.5rem) clamp(1.2rem, 4vw, 4rem);
+		border-top: 1px solid rgba(212, 166, 83, 0.25);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background:
+			radial-gradient(circle at 8% 50%, rgba(220, 120, 48, 0.14), transparent 25rem),
+			linear-gradient(115deg, #100d0c, #090b10 60%);
+	}
+
+	.ember-council::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: clamp(1.4rem, 3vw, 3.5rem);
+		width: 0.45rem;
+		height: 65%;
+		background: linear-gradient(180deg, transparent, #d27138, transparent);
+		box-shadow: 0 0 2rem rgba(236, 117, 45, 0.4);
+		transform: translateY(-50%);
+	}
+
+	.ember-council.committed {
+		background:
+			radial-gradient(circle at 76% 50%, rgba(212, 166, 83, 0.11), transparent 30rem),
+			linear-gradient(115deg, #0f0d0c, #090b10 60%);
+	}
+
+	.ember-heading {
+		align-self: center;
+		padding-left: 1.5rem;
+	}
+
+	.ember-heading p,
+	.ember-effects > span,
+	.ember-reactions > span,
+	.ember-confirm > p {
+		margin: 0 0 0.6rem;
+		color: #d7773e;
+		font-size: 0.55rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+
+	.ember-heading h2,
+	.ember-confirm h2 {
+		margin: 0 0 0.8rem;
+		font-family: Georgia, serif;
+		font-size: clamp(2rem, 4vw, 4rem);
+		font-weight: 400;
+		letter-spacing: -0.045em;
+		line-height: 0.95;
+	}
+
+	.ember-heading > span,
+	.ember-confirm > span {
+		display: block;
+		max-width: 34rem;
+		color: rgba(244, 240, 232, 0.52);
+		font-size: 0.75rem;
+		line-height: 1.7;
+	}
+
+	.recover-ember {
+		align-self: center;
+		justify-self: start;
+		min-width: min(100%, 25rem);
+		padding: 1.4rem 1.6rem;
+		border: 1px solid rgba(215, 119, 62, 0.5);
+		background: linear-gradient(110deg, rgba(126, 56, 28, 0.35), rgba(22, 18, 17, 0.85));
+		box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.35);
+		color: #f4f0e8;
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.recover-ember span,
+	.recover-ember strong {
+		display: block;
+	}
+
+	.recover-ember span {
+		margin-bottom: 0.35rem;
+		color: rgba(244, 240, 232, 0.38);
+		font-size: 0.5rem;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+	}
+
+	.recover-ember strong {
+		font-family: Georgia, serif;
+		font-size: 1.15rem;
+		font-weight: 400;
+	}
+
+	.ember-options {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+
+	.ember-options button {
+		position: relative;
+		display: flex;
+		min-height: 14rem;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 1.2rem;
+		overflow: hidden;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #0c0d12;
+		color: #f4f0e8;
+		cursor: pointer;
+		text-align: left;
+		transition:
+			border-color 180ms ease,
+			transform 180ms ease,
+			background 180ms ease;
+	}
+
+	.ember-options button:hover,
+	.ember-options button:focus-visible {
+		border-color: rgba(215, 119, 62, 0.58);
+		background:
+			radial-gradient(circle at 100% 0, rgba(215, 119, 62, 0.17), transparent 55%), #100e10;
+		transform: translateY(-0.25rem);
+	}
+
+	.ember-options i {
+		position: absolute;
+		top: -0.8rem;
+		right: 0.4rem;
+		color: rgba(215, 119, 62, 0.09);
+		font-family: Georgia, serif;
+		font-size: 5.5rem;
+		font-style: normal;
+	}
+
+	.ember-options span {
+		position: relative;
+		color: #d7773e;
+		font-size: 0.5rem;
+		font-weight: 700;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+	}
+
+	.ember-options strong {
+		position: relative;
+		margin: 1.8rem 0 0.7rem;
+		font-family: Georgia, serif;
+		font-size: 1.25rem;
+		font-weight: 400;
+	}
+
+	.ember-options small {
+		position: relative;
+		color: rgba(244, 240, 232, 0.5);
+		font-size: 0.66rem;
+		line-height: 1.55;
+	}
+
+	.ember-options code {
+		position: relative;
+		margin-top: auto;
+		padding-top: 1.5rem;
+		color: rgba(212, 166, 83, 0.75);
+		font-family: ui-monospace, monospace;
+		font-size: 0.53rem;
+		line-height: 1.45;
+	}
+
+	.ember-resolution {
+		display: grid;
+		grid-template-columns: minmax(12rem, 0.4fr) 1fr;
+		gap: 1rem;
+	}
+
+	.ember-effects,
+	.ember-reactions {
+		padding: 1.2rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(10, 11, 15, 0.72);
+	}
+
+	.ember-effects strong {
+		display: block;
+		margin-top: 0.6rem;
+		color: rgba(244, 240, 232, 0.75);
+		font-family: ui-monospace, monospace;
+		font-size: 0.63rem;
+		font-weight: 500;
+		text-transform: capitalize;
+	}
+
+	.ember-reactions article {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.25rem 1rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+	}
+
+	.ember-reactions article > strong {
+		font-family: Georgia, serif;
+		font-size: 0.9rem;
+		font-weight: 400;
+	}
+
+	.ember-reactions i {
+		color: #d4a653;
+		font-size: 0.52rem;
+		font-style: normal;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.ember-reactions p {
+		grid-column: 1 / -1;
+		margin: 0;
+		color: rgba(244, 240, 232, 0.5);
+		font-size: 0.65rem;
+		line-height: 1.55;
+	}
+
+	.ember-confirm-backdrop {
+		position: fixed;
+		z-index: 100;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		padding: 1rem;
+		background: rgba(4, 5, 8, 0.82);
+		backdrop-filter: blur(12px);
+	}
+
+	.ember-confirm {
+		position: relative;
+		width: min(34rem, 100%);
+		padding: clamp(1.5rem, 4vw, 3rem);
+		border: 1px solid rgba(215, 119, 62, 0.42);
+		background:
+			radial-gradient(circle at 80% 0, rgba(215, 119, 62, 0.14), transparent 20rem), #0c0d11;
+		box-shadow: 0 3rem 10rem rgba(0, 0, 0, 0.75);
+	}
+
+	.ember-close {
+		position: absolute;
+		top: 0.8rem;
+		right: 0.8rem;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: transparent;
+		color: rgba(244, 240, 232, 0.55);
+		cursor: pointer;
+		font-size: 1.2rem;
+	}
+
+	.ember-confirm label {
+		display: block;
+		margin: 2rem 0 0.55rem;
+		color: rgba(244, 240, 232, 0.42);
+		font-size: 0.54rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.ember-confirm select {
+		width: 100%;
+		padding: 0.9rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: #090a0e;
+		color: rgba(244, 240, 232, 0.8);
+		font:
+			0.7rem/1.4 ui-monospace,
+			monospace;
+	}
+
+	.ember-confirm > small {
+		display: block;
+		margin-top: 0.55rem;
+		color: rgba(244, 240, 232, 0.32);
+		font-size: 0.55rem;
+	}
+
+	.ember-confirm > div {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.6rem;
+		margin-top: 2rem;
+	}
+
+	.ember-confirm > div button {
+		padding: 0.75rem 0.9rem;
+		border: 1px solid #d7773e;
+		background: #d7773e;
+		color: #09090b;
+		cursor: pointer;
+		font-size: 0.58rem;
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+	}
+
+	.ember-confirm > div .secondary-choice {
+		border-color: rgba(255, 255, 255, 0.12);
+		background: transparent;
+		color: rgba(244, 240, 232, 0.55);
+	}
+
 	.hero-hud {
 		position: relative;
 		z-index: 20;
@@ -968,6 +1480,16 @@
 		.choice-result {
 			grid-template-columns: 1fr;
 			gap: 2rem;
+		}
+
+		.ember-council,
+		.ember-resolution {
+			grid-template-columns: 1fr;
+		}
+
+		.ember-options {
+			grid-template-columns: repeat(3, minmax(11rem, 1fr));
+			overflow-x: auto;
 		}
 	}
 

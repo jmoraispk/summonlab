@@ -42,3 +42,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-4-living-settlement.png` — server-projected night settlement with an active training pose,
   physical building occupancy, assignment capacity, building power, accelerated time, event cursor,
   and state hash rendered over the topology-bound painted plate.
+- `phase-4-first-ember.png` — committed training-ground First Ember on the normal player route,
+  including the living powered settlement, permanent mechanical advantages, Mara Vey’s
+  mind-and-needs-aware response, authoritative event cue, and unchanged fixed story spine.
