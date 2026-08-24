@@ -966,7 +966,7 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — SET-001 through SET-007 completed 2026-08-24.** `hearth-01-v1`
+**Status: in progress — SET-001 through SET-008 completed 2026-08-24.** `hearth-01-v1`
 defines five interiors, a connected 18-node/17-edge route graph, travel time, capacity, authored
 visual paths, interaction/effect declarations, and explicit system access. The development-only
 `/settlement-lab` inspects that hash-bound content without changing existing engine histories or
@@ -983,7 +983,7 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 - `SET-005` complete: implement needs, activities, daily plan, and habit resolution;
 - `SET-006` complete: implement accelerated clock and worker catch-up;
 - `SET-007` complete: implement SSE events, reconnect, and recap;
-- `SET-008` add day/night, occupancy, work, sleep, eat, train, and idle animations;
+- `SET-008` complete: add day/night, occupancy, work, sleep, eat, train, and idle animations;
 - `SET-009` implement one-core facility choice and consequences.
 
 **Feedback gate:** leave a run, return to its recap, and judge whether the settlement changed enough without feeling stolen from the player.
@@ -1102,8 +1102,11 @@ renewable crash-recoverable run lease, proved byte-equal online/offline resoluti
 batch, and connected due schedules to the worker and reconnect API. `SET-007` added
 transaction-bound PostgreSQL event notifications, bounded cursor pages, resumable SSE with typed
 gap recovery, browser-local acknowledgement cursors, and deterministic full-range return recap
-totals with cursor-linked highlights. The next engineering slice is `SET-008`: day/night
-presentation, occupancy, and work/sleep/eat/train/idle animation states.
+totals with cursor-linked highlights. `SET-008` now projects day phase, exact physical occupancy,
+building state, travel, and work/sleep/eat/train/idle poses from the cached `engine-v5` snapshot and
+persisted clock. The painted scene consumes ordered SSE cues and periodic server projections without
+running a reducer in the browser. The next engineering slice is `SET-009`: one core facility choice
+and its consequences.
 
 ## Accepted product decisions — 2026-08-23
 

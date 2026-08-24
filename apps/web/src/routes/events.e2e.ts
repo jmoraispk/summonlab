@@ -117,3 +117,54 @@ test('streams exact events, resumes Last-Event-ID, and reports cursor gaps', asy
 		reason: 'cursor_ahead'
 	});
 });
+
+test('refreshes the living settlement from an ordered world event', async ({ page, request }) => {
+	const createdResponse = await request.post('/api/runs', {
+		data: { recipe, controlMode: 'autonomous', directive: '' }
+	});
+	expect(createdResponse.status()).toBe(201);
+	const created = (await createdResponse.json()) as { runId: string };
+	const arrival = await request.post(`/api/runs/${created.runId}/arrive`, { data: {} });
+	expect(arrival.ok()).toBe(true);
+
+	await page.goto(`/play/${created.runId}`);
+	const scene = page.getByTestId('living-settlement');
+	await expect(scene).toBeVisible();
+	await expect(scene).toHaveAttribute('data-day-phase', 'night');
+	await expect(scene).toHaveAttribute('data-hero-pose', 'idle');
+	await expect(page.getByTestId('run-connection')).toContainText('Live');
+
+	const replay = (await request
+		.get(`/api/dev/replays/${created.runId}`)
+		.then((response) => response.json())) as {
+		snapshot: {
+			state: { master: { masterId: string }; version: number; eventCursor: number };
+		};
+	};
+	const commandId = randomUUID();
+	const committed = await request.post(`/api/runs/${created.runId}/commands`, {
+		data: {
+			commandId,
+			runId: created.runId,
+			actorId: replay.snapshot.state.master.masterId,
+			expectedVersion: replay.snapshot.state.version,
+			correlationId: commandId,
+			source: {
+				source: 'manual',
+				timing: 'step',
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			},
+			commandType: 'master.inspect.gate'
+		}
+	});
+	expect(committed.ok()).toBe(true);
+	await expect(
+		page.getByText(`World event #${replay.snapshot.state.eventCursor + 1}`)
+	).toBeVisible();
+	await expect(scene).toHaveAttribute(
+		'data-event-cursor',
+		String(replay.snapshot.state.eventCursor + 1)
+	);
+});

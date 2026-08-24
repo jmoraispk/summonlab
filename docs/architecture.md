@@ -98,7 +98,9 @@ Not every action deserves a language-model request.
 
 ### Level 1: continuous rules
 
-Needs, timers, travel progress, passive recovery, crafting counters, and building progress advance locally.
+Needs, timers, travel progress, passive recovery, crafting counters, and building progress advance
+through deterministic engine rules and server catch-up without a language-model request. A client
+may interpolate presentation progress, but it never advances domain state locally.
 
 ### Level 2: habit and schedule policy
 
@@ -369,6 +371,20 @@ requests a deterministic recap over that exact interval: database aggregates sup
 routine, plan, activity, arrival, failure, and net-delta totals; journal projection supplies a small
 diverse set of cursor-linked highlights. Generated narration may decorate this projection later but
 cannot provide facts, ordering, rewards, or progression values.
+
+### Implemented living-scene projection
+
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` snapshot and persisted accelerated
+clock after running due catch-up through the normal event path. One pure projection produces game
+time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
+label, and optional engine-provided route nodes. The response carries the exact event cursor and
+state hash that explain the scene.
+
+The player refreshes this bounded view after each ordered SSE cue and every 15 seconds while the
+page is visible. Code-owned scene layers interpolate travel below completion, grade the approved
+plate for dawn/day/dusk/night, and animate idle/walk/work/sleep/eat/train states. The browser never
+applies an event to engine state; only a later server projection can move a hero's authoritative
+node. Reduced-motion rendering freezes movement without hiding the semantic pose or occupancy.
 
 ## Policy interface
 

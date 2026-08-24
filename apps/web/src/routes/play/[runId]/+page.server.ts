@@ -2,9 +2,12 @@ import { getConfig } from '@summonlab/config';
 import {
 	catchUpRun,
 	getEngineEventHead,
+	getEngineSnapshot,
 	getProofRun,
 	getSimulationClock
 } from '@summonlab/database';
+import { HEARTH_01_DEFINITION, loadHearth01Scene } from '@summonlab/content';
+import { projectSettlementPresentation } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
@@ -25,5 +28,12 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 	const eventHead = await getEngineEventHead(config.databaseUrl, params.runId).catch(() => null);
 	if (!eventHead) error(404, 'This run has no authoritative event cursor.');
-	return { snapshot, clock, eventHead };
+	const engineSnapshot = await getEngineSnapshot(config.databaseUrl, params.runId).catch(
+		() => null
+	);
+	const presentation =
+		engineSnapshot && clock
+			? projectSettlementPresentation(engineSnapshot, HEARTH_01_DEFINITION, clock.projectedGameTime)
+			: null;
+	return { snapshot, clock, eventHead, presentation, scene: await loadHearth01Scene() };
 };

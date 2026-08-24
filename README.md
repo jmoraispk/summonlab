@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 are complete; Phase 3 is human-gated and Phase 4 is implementing the living settlement._
+_Status: Phases 0–2 are complete; Phase 3 is human-gated and Phase 4 has a playable living settlement._
 
 </div>
 
@@ -206,7 +206,7 @@ paths, travel time, capacity, interactions, simulation effects, and explicit sys
 building or interior station to inspect the deterministic route from the summoning gate; the dormant
 forge remains unreachable under Reserve and opens only in the clearly labeled All systems preview.
 
-The scene lab is composition and content evidence, not run state. New runs use `engine-v3`, which
+The scene lab is composition and content evidence, not run state. New runs use `engine-v5`, which
 binds the topology by exact hash. `hero.start.travel` computes and persists the legal route and due
 time while leaving the hero's authoritative location at the origin; only an injected-clock
 `simulation.advance` event commits arrival. Animation remains a projection. Existing `engine-v1`
@@ -218,6 +218,15 @@ compressed into a content-addressed 296.2 KB WebP and combined with five code-ow
 layers for atmosphere, localized light, route projection, activity intent, and keyboard interaction.
 The six-layer scene is an approval candidate—not engine state—and is checked by
 `pnpm validate:settlement-scene`. The combined settlement route remains 41.8 KB gzip.
+
+After authoritative arrival, the play route now becomes that painted settlement. A pure server
+projection binds the visible dawn/day/dusk/night grade, physical occupancy, building power and
+capacity, and idle/walk/work/sleep/eat/train poses to the exact engine cursor and state hash. Travel
+can interpolate along the persisted route but never reaches one hundred percent before the arrival
+event. Ordered SSE events cue a projection refresh; a visible page also refreshes the persisted
+`4×` clock every 15 seconds. Reduced motion freezes effects without hiding the active state.
+
+![Living Hearth 01 at night with an active training pose](docs/evidence/phase-4-living-settlement.png)
 
 ![Mobile layered Hearth 01 scene](docs/evidence/phase-4-settlement-layered-scene-mobile.png)
 

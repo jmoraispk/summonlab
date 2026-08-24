@@ -185,6 +185,7 @@ character-visual gate.
 | `SET-005` | Complete: `engine-v5` persists the summoned mind, owns mutable habits and four-entry daily plans, records inspectable routine scores and close-decision boundaries, schedules zero-model-cost outcomes, resolves needs and habit deltas on the injected clock, and preserves v1–v4 replay schemas | [Daily routine evidence](evidence/phase-4-daily-routine.png), engine/property/integration/browser tests, replay routine lab, ADR 0015 |
 | `SET-006` | Complete: each run owns a configurable `4×` anchored clock; one deterministic policy resolves online and offline routines byte-for-byte; renewable leases, expiry recovery, one-day/128-command safety bounds, due-only worker polling, reconnect catch-up, and explicit clock-sync events preserve exact replay | [Offline catch-up evidence](evidence/phase-4-offline-catch-up.png), engine equivalence/property tests, database lease integration, worker/browser tests, ADR 0016 |
 | `SET-007` | Complete: transaction-bound PostgreSQL notifications wake bounded cursor reads; SSE resumes from `Last-Event-ID`, detects gaps, and never projects client state; exact full-range recap totals and deltas feed six diverse cursor-linked highlights; acknowledgement survives reload correctly | [Return recap evidence](evidence/phase-4-return-recap.png), recap unit tests, notification/database integration, SSE protocol and return browser tests, ADR 0017 |
+| `SET-008` | Complete: a pure `engine-v5` presentation projection binds day phase, physical occupancy, building power/rosters, route progress, and idle/walk/work/sleep/eat/train/downed/dead poses to a cursor and state hash; the painted play scene refreshes from ordered SSE and visible-page clock reads, with reduced-motion semantics intact | [Living settlement evidence](evidence/phase-4-living-settlement.png), projection unit tests, SSE-to-scene browser test, full proof journey, ADR 0018 |
 
 ### Reproduce the checkpoint
 
@@ -211,8 +212,13 @@ events in the same hash chain. Choose **Return to settlement**, inspect the curs
 net changes, reload before acknowledging it to verify that it remains unread, then choose
 **Continue to settlement** and confirm the live cursor indicator reconnects.
 
+Return while a training activity or routine is active and confirm that the painted Hearth scene
+shows the authoritative building occupancy, activity pose, game time/day phase, cursor, and state
+hash. Leave the page open while visible to watch the server-owned clock update; use reduced motion
+to confirm animation freezes without losing the activity label.
+
 ## Next active engineering slice
 
-Collect topology, layered-scene, travel, facility-operation, routine-life, catch-up, and return-recap
-feedback, then implement day/night presentation, occupancy, work, sleep, eat, train, and idle
-animations in SET-008. Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect feedback on the living scene's legibility, character scale, night grade, activity language,
+and occupancy density, then implement the one-core facility choice and consequences in SET-009.
+Phase 3 cohort expansion remains behind its separate human visual gate.

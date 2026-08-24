@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { ProofRunSnapshot, SimulationClock } from '@summonlab/contracts';
+	import type {
+		AuthoritativeEvent,
+		ProofRunSnapshot,
+		SettlementPresentation,
+		SimulationClock
+	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
 	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
 
 	let { data } = $props();
@@ -16,13 +22,19 @@
 	let errorMessage = $state('');
 	// svelte-ignore state_referenced_locally
 	let clock = $state<SimulationClock | null>(data.clock);
+	// svelte-ignore state_referenced_locally
+	let presentation = $state<SettlementPresentation | null>(data.presentation);
+	let eventCue = $state<AuthoritativeEvent | null>(null);
+	let eventCueTimer: ReturnType<typeof setTimeout> | null = null;
 	const settlementDay = $derived(
-		clock
-			? Math.floor(
-					(Date.parse(clock.currentGameTime) - Date.parse('2000-01-01T00:00:00.000Z')) /
-						(24 * 60 * 60 * 1_000)
-				) + 1
-			: 1
+		presentation
+			? presentation.dayNumber
+			: clock
+				? Math.floor(
+						(Date.parse(clock.currentGameTime) - Date.parse('2000-01-01T00:00:00.000Z')) /
+							(24 * 60 * 60 * 1_000)
+					) + 1
+				: 1
 	);
 	const wallSpines = Array.from({ length: 11 }, (_, index) => index);
 	const destinationLabel = $derived(
@@ -35,10 +47,19 @@
 	);
 
 	onMount(() => {
-		if (snapshot.arrived) return;
-		const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 450 : 3_600;
-		const timeout = window.setTimeout(() => void recordArrival(), delay);
-		return () => window.clearTimeout(timeout);
+		let arrivalTimeout: number | null = null;
+		if (!snapshot.arrived) {
+			const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 450 : 3_600;
+			arrivalTimeout = window.setTimeout(() => void recordArrival(), delay);
+		}
+		const projectionInterval = window.setInterval(() => {
+			if (snapshot.arrived && document.visibilityState === 'visible') void refreshProjection();
+		}, 15_000);
+		return () => {
+			if (arrivalTimeout !== null) window.clearTimeout(arrivalTimeout);
+			window.clearInterval(projectionInterval);
+			if (eventCueTimer) clearTimeout(eventCueTimer);
+		};
 	});
 
 	async function recordArrival() {
@@ -52,16 +73,26 @@
 			if (!response.ok) throw new Error(result.message ?? 'Arrival could not be recorded.');
 			snapshot = result;
 			walking = false;
-			const clockResponse = await fetch(`/api/runs/${snapshot.runId}/clock`);
-			if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
+			await refreshProjection();
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The arrival log failed.';
 		}
 	}
 
 	async function refreshProjection() {
-		const response = await fetch(`/api/runs/${snapshot.runId}/clock`);
-		if (response.ok) clock = (await response.json()) as SimulationClock;
+		const [projectionResponse, clockResponse] = await Promise.all([
+			fetch(`/api/runs/${snapshot.runId}/projection`),
+			fetch(`/api/runs/${snapshot.runId}/clock`)
+		]);
+		if (projectionResponse.ok)
+			presentation = (await projectionResponse.json()) as SettlementPresentation;
+		if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
+	}
+
+	function showEventCue(event: AuthoritativeEvent) {
+		eventCue = event;
+		if (eventCueTimer) clearTimeout(eventCueTimer);
+		eventCueTimer = setTimeout(() => (eventCue = null), 4_600);
 	}
 </script>
 
@@ -100,54 +131,62 @@
 		runId={snapshot.runId}
 		initialCursor={data.eventHead.eventCursor}
 		onRefresh={refreshProjection}
+		onEvent={showEventCue}
 	/>
 
-	<section class="world" aria-label={`${snapshot.manifest.displayName} walking through Hearth 01`}>
-		<div class="sky"><i></i><i></i><i></i></div>
-		<div class="far-wall">
-			{#each wallSpines as spine (spine)}<span></span>{/each}
-		</div>
-		<div class="tower-silhouette">
-			<div></div>
-			<span>100</span>
-		</div>
-		<div class="settlement">
-			<div class="building dormitory">
-				<div class="roof"></div>
-				<div class="facade"><span></span><span></span><span></span></div>
-				<span class="building-label">Summoning Hall</span>
+	{#if walking || !presentation}
+		<section
+			class="world"
+			aria-label={`${snapshot.manifest.displayName} walking through Hearth 01`}
+		>
+			<div class="sky"><i></i><i></i><i></i></div>
+			<div class="far-wall">
+				{#each wallSpines as spine (spine)}<span></span>{/each}
 			</div>
-			<div class="building destination">
-				<div class="roof"></div>
-				<div class="facade">
-					<span></span><span></span>
-					<div class="door"><i></i></div>
+			<div class="tower-silhouette">
+				<div></div>
+				<span>100</span>
+			</div>
+			<div class="settlement">
+				<div class="building dormitory">
+					<div class="roof"></div>
+					<div class="facade"><span></span><span></span><span></span></div>
+					<span class="building-label">Summoning Hall</span>
 				</div>
-				{#if snapshot.destination === 'kitchen'}
-					<div class="chimney"><i></i><i></i><i></i></div>
-				{:else}
-					<div class="targets"><i></i><i></i></div>
-				{/if}
-				<span class="building-label">{destinationLabel}</span>
+				<div class="building destination">
+					<div class="roof"></div>
+					<div class="facade">
+						<span></span><span></span>
+						<div class="door"><i></i></div>
+					</div>
+					{#if snapshot.destination === 'kitchen'}
+						<div class="chimney"><i></i><i></i><i></i></div>
+					{:else}
+						<div class="targets"><i></i><i></i></div>
+					{/if}
+					<span class="building-label">{destinationLabel}</span>
+				</div>
+				<div class="route-line"><i></i><i></i><i></i><i></i><i></i></div>
 			</div>
-			<div class="route-line"><i></i><i></i><i></i><i></i><i></i></div>
-		</div>
 
-		<div class:in-transit={walking} class:at-destination={!walking} class="walker">
-			<div class="thought">
-				{walking
-					? snapshot.mind.dailyHabit === 'checks-exits'
-						? 'One gate. Two towers. Three exits.'
-						: `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
-					: snapshot.destination === 'kitchen'
-						? 'Listen before speaking.'
-						: 'Balance first. Then reach.'}
+			<div class:in-transit={walking} class:at-destination={!walking} class="walker">
+				<div class="thought">
+					{walking
+						? snapshot.mind.dailyHabit === 'checks-exits'
+							? 'One gate. Two towers. Three exits.'
+							: `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
+						: snapshot.destination === 'kitchen'
+							? 'Listen before speaking.'
+							: 'Balance first. Then reach.'}
+				</div>
+				<HeroRig manifest={snapshot.manifest} {walking} />
 			</div>
-			<HeroRig manifest={snapshot.manifest} {walking} />
-		</div>
 
-		<div class="foreground"><span></span><span></span><span></span></div>
-	</section>
+			<div class="foreground"><span></span><span></span><span></span></div>
+		</section>
+	{:else}
+		<LivingHearthScene scene={data.scene} {presentation} manifest={snapshot.manifest} {eventCue} />
+	{/if}
 
 	<section class="hero-hud">
 		<div class="portrait">

@@ -432,6 +432,18 @@ export async function getEngineSnapshotInTransaction(
 	return row ? EngineSnapshotSchema.parse({ state: row.state, stateHash: row.state_hash }) : null;
 }
 
+export async function getEngineSnapshot(
+	databaseUrl: string,
+	runId: string
+): Promise<EngineSnapshot | null> {
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		return await sql.begin((transaction) => getEngineSnapshotInTransaction(transaction, runId));
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
 export async function getEngineReplay(
 	databaseUrl: string,
 	runId: string

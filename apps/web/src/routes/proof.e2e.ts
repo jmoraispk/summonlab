@@ -63,6 +63,8 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('link', { name: /Follow to the training ground/ }).click();
 	await expect(page).toHaveURL(/\/play\/[a-f0-9-]+$/u);
 	await expect(page.getByText('Arrived · Training Ground')).toBeVisible({ timeout: 6_000 });
+	await expect(page.getByTestId('living-settlement')).toBeVisible();
+	await expect(page.getByTestId('living-settlement')).toHaveAttribute('data-hero-pose', 'idle');
 	if (process.env.CAPTURE_PHASE1_PLAY) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE1_PLAY, fullPage: true });
 	}
@@ -172,6 +174,16 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
 
 	await page.getByRole('button', { name: 'train', exact: true }).click();
+	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
+	await page.getByRole('link', { name: /Return to settlement/ }).click();
+	await expect(page.getByTestId('return-recap')).toBeVisible();
+	await page.getByRole('button', { name: /Continue to settlement/ }).click();
+	await expect(page.getByTestId('living-settlement')).toHaveAttribute('data-hero-pose', 'train');
+	if (process.env.CAPTURE_PHASE4_LIVING) {
+		await page.setViewportSize({ width: 1440, height: 1050 });
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_LIVING });
+	}
+	await page.getByRole('link', { name: 'Replay' }).click();
 	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
 	await page.getByRole('button', { name: /Advance to outcome/ }).click();
 	await expect(page.getByTestId('hero-xp')).toHaveText('1 / 8');

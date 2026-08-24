@@ -11,11 +11,13 @@
 	let {
 		runId,
 		initialCursor,
-		onRefresh
+		onRefresh,
+		onEvent
 	}: {
 		runId: string;
 		initialCursor: number;
 		onRefresh?: () => void | Promise<void>;
+		onEvent?: (event: AuthoritativeEvent) => void;
 	} = $props();
 
 	let status = $state<'connecting' | 'live' | 'reconnecting' | 'offline' | 'resyncing'>(
@@ -90,6 +92,7 @@
 			currentCursor = Math.max(currentCursor, event.sequence);
 			if (!recapOpen) remember(currentCursor);
 			status = 'live';
+			onEvent?.(event);
 			scheduleRefresh();
 		});
 		eventSource.addEventListener('cursor-gap', (message) => {

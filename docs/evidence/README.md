@@ -39,3 +39,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-4-return-recap.png` — reconnect checkpoint with exact away-time cursor range, elapsed game
   time, routine/plan/arrival totals, aggregate need changes, diverse cursor-linked highlights, and
   explicit paths to acknowledge the recap or inspect the full log.
+- `phase-4-living-settlement.png` — server-projected night settlement with an active training pose,
+  physical building occupancy, assignment capacity, building power, accelerated time, event cursor,
+  and state hash rendered over the topology-bound painted plate.
