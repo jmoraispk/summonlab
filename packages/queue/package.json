@@ -1,0 +1,18 @@
+{
+	"name": "@summonlab/queue",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": "./src/index.ts",
+	"scripts": {
+		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
+		"lint": "eslint src",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run --exclude '**/*.integration.spec.ts'",
+		"test:integration": "vitest run --config vitest.integration.config.ts"
+	},
+	"dependencies": {
+		"pg-boss": "^12.28.0",
+		"zod": "^4.4.3"
+	}
+}

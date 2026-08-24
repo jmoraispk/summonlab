@@ -1,0 +1,43 @@
+{
+	"name": "summonlab",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@10.33.0",
+	"engines": {
+		"node": ">=24.14.1 <25",
+		"pnpm": ">=10.33.0 <11"
+	},
+	"scripts": {
+		"dev": "node tools/dev.mjs --with-db",
+		"dev:app": "node tools/dev.mjs",
+		"smoke:dev": "node tools/dev.mjs --with-db --smoke",
+		"db:start": "node tools/database.mjs start",
+		"db:stop": "node tools/database.mjs stop",
+		"db:logs": "node tools/database.mjs logs",
+		"db:migrate": "pnpm --filter @summonlab/database migrate",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"lint": "pnpm -r --if-present lint",
+		"typecheck": "pnpm -r --if-present typecheck",
+		"test": "pnpm -r --if-present test",
+		"test:integration": "pnpm -r --if-present test:integration",
+		"build": "pnpm -r --if-present build",
+		"check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@types/node": "^24.10.0",
+		"concurrently": "^10.0.5",
+		"eslint": "^10.4.1",
+		"globals": "^17.6.0",
+		"prettier": "^3.8.3",
+		"prettier-plugin-svelte": "^4.1.0",
+		"tsup": "^8.5.1",
+		"tsx": "^4.23.12",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.60.1",
+		"vitest": "^4.1.8"
+	}
+}

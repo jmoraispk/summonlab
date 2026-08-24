@@ -1,0 +1,21 @@
+{
+	"name": "@summonlab/worker",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"start": "node dist/index.js",
+		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
+		"lint": "eslint src",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@summonlab/config": "workspace:*",
+		"@summonlab/contracts": "workspace:*",
+		"@summonlab/database": "workspace:*",
+		"@summonlab/observability": "workspace:*",
+		"@summonlab/queue": "workspace:*"
+	}
+}

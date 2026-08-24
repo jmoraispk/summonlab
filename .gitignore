@@ -1,3 +1,26 @@
 # Local README tooling. Clone with:
 # git clone --depth 1 https://github.com/jmoraispk/hero-readme.git tools/hero-readme
 tools/hero-readme/
+
+# JavaScript workspace
+node_modules/
+.pnpm-store/
+dist/
+build/
+.svelte-kit/
+.vite/
+coverage/
+playwright-report/
+test-results/
+
+# Local configuration and process output
+.env
+.env.*
+!.env.example
+*.log
+*.pid
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/

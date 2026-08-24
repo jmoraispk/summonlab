@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: summonlab
+      POSTGRES_USER: summonlab
+      POSTGRES_PASSWORD: summonlab
+    ports:
+      - '54329:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U summonlab -d summonlab']
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - summonlab-postgres:/var/lib/postgresql/data
+
+volumes:
+  summonlab-postgres:

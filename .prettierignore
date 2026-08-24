@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+.svelte-kit
+coverage
+playwright-report
+test-results
+prototype/index.html
+tools/hero-readme
+pnpm-lock.yaml
+docs
+README.md
+AGENTS.md
+assets

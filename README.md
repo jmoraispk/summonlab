@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: concept and visual prototyping._
+_Status: Phase 0 foundation complete; summon-to-choice implementation is next._
 
 </div>
 
@@ -133,6 +133,20 @@ Heritage, culture, gender, physicality, personality, capability, and rarity rema
 ![Tower and settlement interface prototype](assets/tower-prototype.png)
 
 [Open the interactive prototype](prototype/index.html) to switch between the settlement, tower, and portal views, inspect heroes, change time speed, and resolve sample agent choices.
+
+## Local development
+
+The Phase 0 application is a pnpm TypeScript workspace pinned to Node `24.14.1` and pnpm `10.33.0`.
+
+```powershell
+Copy-Item .env.example .env
+pnpm install
+pnpm dev
+```
+
+`pnpm dev` starts Docker PostgreSQL, the SvelteKit web process on `http://localhost:5173`, and the worker health process on `http://localhost:4174/health`. The launcher uses native Docker or Docker inside WSL on Windows. The web server binds to the private LAN by default for local playtesting.
+
+If Docker is unavailable, use `pnpm dev:app`. Both processes stay runnable and report PostgreSQL as unavailable instead of inventing persistence. Run all local quality gates with `pnpm check`; browser smoke tests use `pnpm test:e2e` after installing Playwright Chromium once with `pnpm --filter @summonlab/web exec playwright install chromium`.
 
 ## Project documents
 

@@ -874,6 +874,8 @@ Database migrations use expand/contract patterns once persistent playtest data e
 
 Estimated engineering effort: **1 week**.
 
+**Status: complete — 2026-08-23.** Evidence and commands are recorded in [implementation progress](progress.md).
+
 - `FND-001` scaffold pnpm workspace, Node pin, TypeScript, lint, formatting, and scripts;
 - `FND-002` create web and worker processes with health endpoints;
 - `FND-003` add Docker Postgres and configuration parser;

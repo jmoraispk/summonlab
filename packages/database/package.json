@@ -1,0 +1,20 @@
+{
+	"name": "@summonlab/database",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": "./src/index.ts",
+	"scripts": {
+		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
+		"lint": "eslint src",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"migrate": "tsx src/migrate.ts",
+		"test:integration": "vitest run --config vitest.integration.config.ts"
+	},
+	"dependencies": {
+		"@summonlab/contracts": "workspace:*",
+		"@summonlab/config": "workspace:*",
+		"postgres": "^3.4.9"
+	}
+}

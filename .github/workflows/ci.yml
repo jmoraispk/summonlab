@@ -1,0 +1,88 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_DB: summonlab_test
+          POSTGRES_USER: summonlab
+          POSTGRES_PASSWORD: summonlab
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U summonlab -d summonlab_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://summonlab:summonlab@127.0.0.1:5432/summonlab_test
+      TEST_DATABASE_URL: postgresql://summonlab:summonlab@127.0.0.1:5432/summonlab_test
+      POLICY_MODE: scripted
+      SUMMONLAB_COMMIT_SHA: ${{ github.sha }}
+      CI: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate migrations
+        run: pnpm db:migrate
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: PostgreSQL integration tests
+        run: pnpm test:integration
+
+      - name: Production build
+        run: pnpm build
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @summonlab/web exec playwright install --with-deps chromium
+
+      - name: Browser smoke test
+        run: pnpm test:e2e
+
+      - name: Upload Playwright failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-evidence
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          if-no-files-found: ignore
+          retention-days: 7
