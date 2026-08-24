@@ -22,7 +22,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	try {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 6 && snapshot.state.schemaVersion !== 7) {
+		if (
+			snapshot.state.schemaVersion !== 6 &&
+			snapshot.state.schemaVersion !== 7 &&
+			snapshot.state.schemaVersion !== 8
+		) {
 			return json({ message: 'This history predates the First Ember choice.' }, { status: 409 });
 		}
 		const commandId = randomUUID();

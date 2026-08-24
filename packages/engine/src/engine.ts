@@ -1,6 +1,7 @@
 import {
 	AuthoritativeEventSchema,
 	CharacterMindSchema,
+	CommunicativeActSchema,
 	CurrentRoutineSchema,
 	DailyPlanSchema,
 	EngineCommandSchema,
@@ -12,6 +13,7 @@ import {
 	EngineGameStateV5Schema,
 	EngineGameStateV6Schema,
 	EngineGameStateV7Schema,
+	EngineGameStateV8Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -27,6 +29,7 @@ import {
 	ScheduledEventSchema,
 	SettlementRoutePlanSchema,
 	SocietyStateSchema,
+	SocietyStateV2Schema,
 	type ActivityKind,
 	type AuthoritativeEvent,
 	type BuildingAssignmentRole,
@@ -40,6 +43,7 @@ import {
 	type EngineGameStateV5,
 	type EngineGameStateV6,
 	type EngineGameStateV7,
+	type EngineGameStateV8,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
@@ -49,6 +53,7 @@ import {
 	type RoutineKind,
 	type SettlementDefinition,
 	type SocietyState,
+	type SocietyStateV2,
 	type ScheduledEvent
 } from '@summonlab/contracts';
 import { HEARTH_01_DEFINITION, planSettlementRoute } from '@summonlab/content';
@@ -60,7 +65,8 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v7';
+export const ENGINE_CONTENT_VERSION = 'engine-v8';
+export const COMMUNICATION_ENGINE_CONTENT_VERSION = 'engine-v8';
 export const SOCIAL_ENGINE_CONTENT_VERSION = 'engine-v7';
 export const FIRST_EMBER_ENGINE_CONTENT_VERSION = 'engine-v6';
 export const ROUTINE_ENGINE_CONTENT_VERSION = 'engine-v5';
@@ -97,8 +103,10 @@ type EngineGameStateModern =
 	| EngineGameStateV4
 	| EngineGameStateV5
 	| EngineGameStateV6
-	| EngineGameStateV7;
-type EngineRoutineState = EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7;
+	| EngineGameStateV7
+	| EngineGameStateV8;
+type EngineRoutineState =
+	EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -302,10 +310,16 @@ const FirstEmberRecoveredPayloadSchema = EmptyMetadataSchema.extend({
 
 const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
 	firstEmber: FirstEmberStateSchema,
-	society: SocietyStateSchema.optional(),
+	society: z.union([SocietyStateSchema, SocietyStateV2Schema]).optional(),
 	previousPoweredBuildingId: z.string().nullable(),
 	powerStateChanges: z.array(PowerStateChangeSchema).min(1),
 	activeSystemIdsAfter: z.array(z.string()),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const CommunicativeActRecordedPayloadSchema = EmptyMetadataSchema.extend({
+	communicativeAct: CommunicativeActSchema,
+	society: SocietyStateV2Schema,
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -465,14 +479,14 @@ function createBootstrapSociety(
 	masterId: string,
 	eventId: string,
 	observedAt: string
-): SocietyState {
+): SocietyStateV2 {
 	const observationId = deterministicUuid(`${eventId}:${heroId}:awakening-observation`);
 	const selfBeliefId = deterministicUuid(`${observationId}:self-awakened`);
 	const presenceBeliefId = deterministicUuid(`${observationId}:master-present`);
 	const relationshipId = deterministicUuid(`${heroId}:${masterId}:relationship`);
 	const authorityId = deterministicUuid(`${heroId}:${masterId}:authority`);
-	return SocietyStateSchema.parse({
-		contentVersion: 'society-v1',
+	return SocietyStateV2Schema.parse({
+		contentVersion: 'society-v2',
 		observations: {
 			[observationId]: {
 				observationId,
@@ -550,7 +564,8 @@ function createBootstrapSociety(
 				lastSourceEventId: eventId,
 				evidence: []
 			}
-		}
+		},
+		communicativeActs: {}
 	});
 }
 
@@ -582,8 +597,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
-	const state = EngineGameStateV7Schema.parse({
-		schemaVersion: 7,
+	const state = EngineGameStateV8Schema.parse({
+		schemaVersion: 8,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -866,12 +881,12 @@ const FIRST_EMBER_PROMISE_TERMS = Object.freeze({
 } as const satisfies Record<FirstEmberRationale, string>);
 
 function buildFirstEmberSociety(
-	state: EngineGameStateV7,
+	state: EngineGameStateV7 | EngineGameStateV8,
 	eventId: string,
 	buildingId: FirstEmberFacility,
 	rationale: FirstEmberRationale,
 	reactions: readonly ReturnType<typeof buildFirstEmberReaction>[]
-): SocietyState {
+): SocietyState | SocietyStateV2 {
 	const observations = { ...state.society.observations };
 	const beliefs = { ...state.society.beliefs };
 	const relationships = { ...state.society.relationships };
@@ -1004,7 +1019,7 @@ function buildFirstEmberSociety(
 		};
 	}
 
-	return SocietyStateSchema.parse({
+	const candidate = {
 		...state.society,
 		observations,
 		beliefs,
@@ -1026,7 +1041,158 @@ function buildFirstEmberSociety(
 				resolutionEventId: null
 			}
 		}
+	};
+	return state.schemaVersion === 8
+		? SocietyStateV2Schema.parse(candidate)
+		: SocietyStateSchema.parse(candidate);
+}
+
+type MasterCommunicateCommand = Extract<EngineCommand, { commandType: 'master.communicate' }>;
+type CommunicationInput = Pick<
+	MasterCommunicateCommand,
+	'targetHeroId' | 'kind' | 'topic' | 'exactText' | 'tone' | 'delivery'
+>;
+
+function heroCanHearCommunication(hero: EngineGameStateV8['heroes'][string]): boolean {
+	return (
+		hero.lifeState === 'active' &&
+		hero.currentTravel === null &&
+		hero.currentActivity === null &&
+		hero.currentRoutine === null
+	);
+}
+
+function communicationWitnessHeroes(
+	state: EngineGameStateV8,
+	command: CommunicationInput
+): EngineGameStateV8['heroes'][string][] {
+	const target = state.heroes[command.targetHeroId];
+	if (!target || target.location !== state.master.location || !heroCanHearCommunication(target)) {
+		return [];
+	}
+	const witnesses = [target];
+	if (command.delivery === 'open') {
+		witnesses.push(
+			...Object.values(state.heroes)
+				.filter(
+					(hero) =>
+						hero.heroId !== target.heroId &&
+						hero.location === state.master.location &&
+						heroCanHearCommunication(hero)
+				)
+				.sort((left, right) => left.heroId.localeCompare(right.heroId))
+		);
+	}
+	return witnesses;
+}
+
+function communicationClaim(state: EngineGameStateV8, command: CommunicationInput) {
+	if (command.topic === 'hero-memory') return null;
+	if (command.topic === 'master-role') {
+		return {
+			subjectId: state.master.masterId,
+			predicate: 'claims-master-role' as const,
+			object: { kind: 'text' as const, text: 'Master of Hearth 01' }
+		};
+	}
+	if (command.topic === 'summoning-situation') {
+		return {
+			subjectId: command.targetHeroId,
+			predicate: 'was-summoned-into' as const,
+			object: { kind: 'location' as const, locationId: 'summoning-gate' }
+		};
+	}
+	return {
+		subjectId: state.master.masterId,
+		predicate: 'described-tower-mission' as const,
+		object: {
+			kind: 'text' as const,
+			text: 'Hearth 01 shelters a summoned company preparing to climb the one-hundred-floor tower.'
+		}
+	};
+}
+
+function buildCommunicativeSociety(
+	state: EngineGameStateV8,
+	eventId: string,
+	command: CommunicationInput
+): { society: SocietyStateV2; communicativeAct: z.infer<typeof CommunicativeActSchema> } {
+	const claim = communicationClaim(state, command);
+	const actId = deterministicUuid(`${eventId}:communicative-act`);
+	const observations = { ...state.society.observations };
+	const beliefs = { ...state.society.beliefs };
+	const witnesses = communicationWitnessHeroes(state, command).map((hero) => {
+		const intended = hero.heroId === command.targetHeroId;
+		const observationId = deterministicUuid(`${actId}:${hero.heroId}:observation`);
+		const beliefId = claim ? deterministicUuid(`${observationId}:belief`) : null;
+		observations[observationId] = {
+			observationId,
+			sourceEventId: eventId,
+			observerHeroId: hero.heroId,
+			observedAt: state.simulatedAt,
+			kind: 'communication',
+			communicationActId: actId,
+			summary: intended
+				? command.kind === 'ask'
+					? `The Master directly asked me about ${command.topic}.`
+					: `The Master directly ${command.kind === 'tell' ? 'told' : 'explained to'} me about ${command.topic}.`
+				: `I overheard the Master ${command.kind} ${command.topic} to another hero.`,
+			subjectIds: [state.master.masterId, command.targetHeroId]
+		};
+		if (claim && beliefId) {
+			beliefs[beliefId] = {
+				beliefId,
+				holderHeroId: hero.heroId,
+				subjectId: claim.subjectId,
+				predicate: claim.predicate,
+				object: claim.object,
+				confidence: claim.predicate === 'was-summoned-into' ? (intended ? 85 : 70) : 100,
+				status: 'held',
+				learnedAt: state.simulatedAt,
+				provenance: {
+					kind: 'told',
+					sourceEventId: eventId,
+					observationId,
+					learnedFromId: state.master.masterId,
+					chainDepth: 1
+				}
+			};
+		}
+		return {
+			heroId: hero.heroId,
+			role: intended ? ('intended' as const) : ('bystander' as const),
+			perception: intended ? ('addressed' as const) : ('overheard' as const),
+			observationId,
+			beliefId
+		};
 	});
+	const communicativeAct = CommunicativeActSchema.parse({
+		actId,
+		sourceEventId: eventId,
+		speakerId: state.master.masterId,
+		intendedAudienceIds: [command.targetHeroId],
+		kind: command.kind,
+		topic: command.topic,
+		exactText: command.exactText,
+		tone: command.tone,
+		delivery: command.delivery,
+		location: state.master.location,
+		occurredAt: state.simulatedAt,
+		claim,
+		witnesses
+	});
+	return {
+		communicativeAct,
+		society: SocietyStateV2Schema.parse({
+			...state.society,
+			observations,
+			beliefs,
+			communicativeActs: {
+				...state.society.communicativeActs,
+				[actId]: communicativeAct
+			}
+		})
+	};
 }
 
 function firstEmberModifier(
@@ -1052,6 +1218,7 @@ function settlementForState(
 		| EngineGameStateV5
 		| EngineGameStateV6
 		| EngineGameStateV7
+		| EngineGameStateV8
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -1092,13 +1259,17 @@ function currentTravelFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 4 ||
 		state.schemaVersion === 5 ||
 		state.schemaVersion === 6 ||
-		state.schemaVersion === 7
+		state.schemaVersion === 7 ||
+		state.schemaVersion === 8
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
 
 function currentRoutineFor(state: EngineGameState, heroId: string) {
-	return state.schemaVersion === 5 || state.schemaVersion === 6 || state.schemaVersion === 7
+	return state.schemaVersion === 5 ||
+		state.schemaVersion === 6 ||
+		state.schemaVersion === 7 ||
+		state.schemaVersion === 8
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -1110,24 +1281,35 @@ function hasNavigationState(
 	| EngineGameStateV4
 	| EngineGameStateV5
 	| EngineGameStateV6
-	| EngineGameStateV7 {
-	return [3, 4, 5, 6, 7].includes(state.schemaVersion);
+	| EngineGameStateV7
+	| EngineGameStateV8 {
+	return [3, 4, 5, 6, 7, 8].includes(state.schemaVersion);
 }
 
 function hasFacilityState(
 	state: EngineGameState
-): state is EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 {
-	return [4, 5, 6, 7].includes(state.schemaVersion);
+): state is
+	| EngineGameStateV4
+	| EngineGameStateV5
+	| EngineGameStateV6
+	| EngineGameStateV7
+	| EngineGameStateV8 {
+	return [4, 5, 6, 7, 8].includes(state.schemaVersion);
 }
 
 function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
-	return state.schemaVersion === 5 || state.schemaVersion === 6 || state.schemaVersion === 7;
+	return (
+		state.schemaVersion === 5 ||
+		state.schemaVersion === 6 ||
+		state.schemaVersion === 7 ||
+		state.schemaVersion === 8
+	);
 }
 
 function hasFirstEmberState(
 	state: EngineGameState
-): state is EngineGameStateV6 | EngineGameStateV7 {
-	return state.schemaVersion === 6 || state.schemaVersion === 7;
+): state is EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 {
+	return state.schemaVersion === 6 || state.schemaVersion === 7 || state.schemaVersion === 8;
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
@@ -1216,11 +1398,13 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 7
-			? EngineGameStateV7Schema.parse(stateInput)
-			: stateInput.schemaVersion === 6
-				? EngineGameStateV6Schema.parse(stateInput)
-				: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 8
+			? EngineGameStateV8Schema.parse(stateInput)
+			: stateInput.schemaVersion === 7
+				? EngineGameStateV7Schema.parse(stateInput)
+				: stateInput.schemaVersion === 6
+					? EngineGameStateV6Schema.parse(stateInput)
+					: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -1389,7 +1573,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 4 ||
 		state.schemaVersion === 5 ||
 		state.schemaVersion === 6 ||
-		state.schemaVersion === 7
+		state.schemaVersion === 7 ||
+		state.schemaVersion === 8
 	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
@@ -1448,6 +1633,26 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 					})
 				);
 			}
+	}
+	if (state.schemaVersion === 8) {
+		for (const hero of Object.values(state.heroes)) {
+			if (hero.location !== state.master.location || !heroCanHearCommunication(hero)) {
+				continue;
+			}
+			actions.push(
+				action({
+					actionId: `social.communicate.${hero.heroId}`,
+					actorId,
+					kind: 'interact',
+					label: `Speak with ${hero.heroId.slice(0, 8)}`,
+					description:
+						'Record exact words, compute actual witnesses, and transfer only an engine-approved claim.',
+					targetIds: [hero.heroId],
+					resourceCosts: {},
+					tags: ['social', 'communication', 'witness-bounded']
+				})
+			);
+		}
 	}
 	if (hasFirstEmberState(state) && state.settlement.firstEmber.status === 'available') {
 		for (const buildingId of ['kitchen', 'dormitory', 'training-ground'] as const) {
@@ -1701,6 +1906,8 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'story.recover.first.ember') return 'story.recover.first-ember';
 	if (command.commandType === 'settlement.commit.first.ember')
 		return `settlement.first-ember.${command.buildingId}`;
+	if (command.commandType === 'master.communicate')
+		return `social.communicate.${command.targetHeroId}`;
 	if (command.commandType === 'hero.plan.day') return 'hero.plan.day';
 	if (command.commandType === 'hero.start.routine') return 'hero.follow.plan';
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
@@ -1748,6 +1955,31 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			throw new IllegalActionError(command.commandType, []);
 		}
 		return;
+	}
+	if (command.commandType === 'master.communicate') {
+		const compatible =
+			(command.kind === 'ask' && command.topic === 'hero-memory') ||
+			(command.kind !== 'ask' && command.topic !== 'hero-memory');
+		if (
+			state.schemaVersion !== 8 ||
+			state.status !== 'active' ||
+			state.master.lifeState !== 'alive' ||
+			command.actorId !== state.master.masterId ||
+			command.source.source !== 'manual' ||
+			command.source.timing !== 'step' ||
+			!compatible
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		const target = state.heroes[command.targetHeroId];
+		if (
+			!target ||
+			target.location !== state.master.location ||
+			!heroCanHearCommunication(target) ||
+			Object.keys(state.society.communicativeActs).length >= 2_048
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
 	}
 	const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
 	const required = requiredAction(command);
@@ -2332,7 +2564,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		);
 		const base = eventBase(state, command, 'settlement.first.ember.committed');
 		const society =
-			state.schemaVersion === 7
+			state.schemaVersion === 7 || state.schemaVersion === 8
 				? buildFirstEmberSociety(
 						state,
 						base.eventId,
@@ -2353,6 +2585,26 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 				nextVersion: state.version + 1,
 				...emptyMetadata(
 					`The Master permanently bound the First Ember to ${command.buildingId}: ${responseCounts.support ?? 0} supported, ${responseCounts.accept ?? 0} accepted, ${responseCounts.question ?? 0} questioned, and ${responseCounts.oppose ?? 0} opposed.`
+				)
+			}
+		});
+	}
+	if (command.commandType === 'master.communicate') {
+		if (state.schemaVersion !== 8) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'social.communicative.act.recorded');
+		const { society, communicativeAct } = buildCommunicativeSociety(state, base.eventId, command);
+		const bystanders = communicativeAct.witnesses.filter(
+			(witness) => witness.role === 'bystander'
+		).length;
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				communicativeAct,
+				society,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The Master used ${command.kind} about ${command.topic}; one intended hero and ${bystanders} bystander${bystanders === 1 ? '' : 's'} witnessed it.`
 				)
 			}
 		});
@@ -3090,7 +3342,8 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 4) return EngineGameStateV4Schema.parse(value);
 	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(value);
 	if (state.schemaVersion === 6) return EngineGameStateV6Schema.parse(value);
-	return EngineGameStateV7Schema.parse(value);
+	if (state.schemaVersion === 7) return EngineGameStateV7Schema.parse(value);
+	return EngineGameStateV8Schema.parse(value);
 }
 
 function reduceV2Event(
@@ -3147,8 +3400,8 @@ function reduceV2Event(
 		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
 			throw new ReplayIntegrityError('First Ember reaction projection diverged', event.sequence);
 		}
-		let society: SocietyState | undefined;
-		if (state.schemaVersion === 7) {
+		let society: SocietyState | SocietyStateV2 | undefined;
+		if (state.schemaVersion === 7 || state.schemaVersion === 8) {
 			society = buildFirstEmberSociety(
 				state,
 				event.eventId,
@@ -3189,6 +3442,42 @@ function reduceV2Event(
 				}
 			},
 			...(society ? { society } : {})
+		});
+	}
+	if (event.eventType === 'social.communicative.act.recorded') {
+		if (
+			state.schemaVersion !== 8 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt ||
+			event.source.source !== 'manual' ||
+			event.source.timing !== 'step'
+		) {
+			throw new ReplayIntegrityError('Communicative act precondition failed', event.sequence);
+		}
+		const payload = CommunicativeActRecordedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1) {
+			throw new ReplayIntegrityError('Communicative act version diverged', event.sequence);
+		}
+		const expected = buildCommunicativeSociety(state, event.eventId, {
+			targetHeroId: payload.communicativeAct.intendedAudienceIds[0]!,
+			kind: payload.communicativeAct.kind as CommunicationInput['kind'],
+			topic: payload.communicativeAct.topic,
+			exactText: payload.communicativeAct.exactText,
+			tone: payload.communicativeAct.tone,
+			delivery: payload.communicativeAct.delivery
+		});
+		if (
+			hashCanonical(expected.communicativeAct) !== hashCanonical(payload.communicativeAct) ||
+			hashCanonical(expected.society) !== hashCanonical(payload.society)
+		) {
+			throw new ReplayIntegrityError('Communicative act projection diverged', event.sequence);
+		}
+		return EngineGameStateV8Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			society: payload.society
 		});
 	}
 	if (event.eventType === 'simulation.clock.synced') {

@@ -37,6 +37,7 @@ export function eventDeltas(event: AuthoritativeEvent): readonly RewardDelta[] {
 
 function categoryFor(event: AuthoritativeEvent): JournalEntry['category'] {
 	if (event.eventType.includes('died') || event.eventType.includes('damaged')) return 'failure';
+	if (event.eventType.startsWith('social.')) return 'social';
 	if (event.eventType.includes('destination') || event.eventType.includes('branch')) return 'story';
 	if (eventDeltas(event).some((delta) => delta.kind === 'resource')) return 'reward';
 	if (eventDeltas(event).some((delta) => ['experience', 'level', 'skill'].includes(delta.kind)))
@@ -51,6 +52,32 @@ function participantIds(event: AuthoritativeEvent): string[] {
 	for (const key of ['heroId', 'masterId', 'targetId']) {
 		const value = payload[key];
 		if (typeof value === 'string') result.add(value);
+	}
+	const act = payload.communicativeAct;
+	if (act && typeof act === 'object') {
+		const candidate = act as {
+			speakerId?: unknown;
+			intendedAudienceIds?: unknown;
+			witnesses?: unknown;
+		};
+		if (typeof candidate.speakerId === 'string') result.add(candidate.speakerId);
+		if (Array.isArray(candidate.intendedAudienceIds)) {
+			for (const value of candidate.intendedAudienceIds) {
+				if (typeof value === 'string') result.add(value);
+			}
+		}
+		if (Array.isArray(candidate.witnesses)) {
+			for (const witness of candidate.witnesses) {
+				if (
+					witness &&
+					typeof witness === 'object' &&
+					'heroId' in witness &&
+					typeof witness.heroId === 'string'
+				) {
+					result.add(witness.heroId);
+				}
+			}
+		}
 	}
 	return [...result];
 }

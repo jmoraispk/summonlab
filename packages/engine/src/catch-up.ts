@@ -2,11 +2,13 @@ import {
 	EngineGameStateV5Schema,
 	EngineGameStateV6Schema,
 	EngineGameStateV7Schema,
+	EngineGameStateV8Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameStateV5,
 	type EngineGameStateV6,
-	type EngineGameStateV7
+	type EngineGameStateV7,
+	type EngineGameStateV8
 } from '@summonlab/contracts';
 
 import { applyCommand, legalActions } from './engine.js';
@@ -33,12 +35,13 @@ function systemSource() {
 	};
 }
 
-type CatchUpState = EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7;
+type CatchUpState = EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8;
 
 function parseCatchUpState(state: CatchUpState): CatchUpState {
 	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(state);
 	if (state.schemaVersion === 6) return EngineGameStateV6Schema.parse(state);
-	return EngineGameStateV7Schema.parse(state);
+	if (state.schemaVersion === 7) return EngineGameStateV7Schema.parse(state);
+	return EngineGameStateV8Schema.parse(state);
 }
 
 function commandBase(state: CatchUpState, key: string, actorId: string) {
@@ -136,7 +139,8 @@ export function applyCatchUpPolicy(
 		if (
 			result.state.schemaVersion !== 5 &&
 			result.state.schemaVersion !== 6 &&
-			result.state.schemaVersion !== 7
+			result.state.schemaVersion !== 7 &&
+			result.state.schemaVersion !== 8
 		) {
 			throw new Error(`Catch-up changed engine schema to v${result.state.schemaVersion}`);
 		}

@@ -26,7 +26,8 @@
 			engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
-			engineState.schemaVersion === 7
+			engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8
 			? engineState
 			: null
 	);
@@ -35,7 +36,8 @@
 			engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
-			engineState.schemaVersion === 7
+			engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8
 			? engineState.settlement.navigation
 			: null
 	);
@@ -43,28 +45,38 @@
 		engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
-			engineState.schemaVersion === 7
+			engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8
 			? engineState
 			: null
 	);
 	const routineState = $derived(
 		engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
-			engineState.schemaVersion === 7
+			engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8
 			? engineState
 			: null
 	);
 	const firstEmberState = $derived(
-		engineState.schemaVersion === 6 || engineState.schemaVersion === 7 ? engineState : null
+		engineState.schemaVersion === 6 ||
+			engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8
+			? engineState
+			: null
 	);
-	const socialState = $derived(engineState.schemaVersion === 7 ? engineState.society : null);
+	const socialState = $derived(
+		engineState.schemaVersion === 7 || engineState.schemaVersion === 8 ? engineState.society : null
+	);
+	const communicationState = $derived(engineState.schemaVersion === 8 ? engineState : null);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
 		(engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
-			engineState.schemaVersion === 7) &&
+			engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8) &&
 			hero
 			? engineState.heroes[hero.heroId]
 			: null
@@ -722,6 +734,41 @@
 								{#each Object.values(socialState.promises) as promise (promise.promiseId)}
 									<p class="social-promise"><span>{promise.status} promise</span>{promise.terms}</p>
 								{/each}
+								{#if communicationState}
+									<div class="communication-ledger" data-testid="communication-witness-ledger">
+										<div class="social-proof-heading">
+											<strong>Communicative acts · witness chains</strong>
+											<small
+												>{Object.keys(communicationState.society.communicativeActs).length} canonical
+												acts</small
+											>
+										</div>
+										{#each Object.values(communicationState.society.communicativeActs) as act (act.actId)}
+											<article class="communication-act">
+												<header>
+													<span>{act.kind} · {act.topic} · {act.delivery}</span>
+													<code>{act.sourceEventId}</code>
+												</header>
+												<blockquote>“{act.exactText}”</blockquote>
+												<div class="witness-chain">
+													{#each act.witnesses as witness (witness.heroId)}
+														<p>
+															<strong
+																>{witness.heroId.slice(0, 8)} · {witness.role} / {witness.perception}</strong
+															>
+															<code
+																>obs {witness.observationId.slice(0, 8)} · belief {witness.beliefId?.slice(
+																	0,
+																	8
+																) ?? 'none'}</code
+															>
+														</p>
+													{/each}
+												</div>
+											</article>
+										{/each}
+									</div>
+								{/if}
 							</div>
 						{/if}
 						<div class="facility-list">
@@ -1544,6 +1591,60 @@
 	.social-promise span {
 		display: block;
 		margin-bottom: 0.15rem;
+	}
+	.communication-ledger {
+		margin-top: 0.8rem;
+		padding-top: 0.8rem;
+		border-top: 1px solid rgba(127, 216, 233, 0.16);
+	}
+	.communication-act {
+		margin-top: 0.5rem;
+		padding: 0.7rem;
+		border: 1px solid rgba(212, 166, 83, 0.16);
+		background: rgba(8, 9, 14, 0.8);
+	}
+	.communication-act header {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.8rem;
+		color: #d4a653;
+		font-size: 0.52rem;
+		text-transform: uppercase;
+	}
+	.communication-act header code {
+		overflow-wrap: anywhere;
+		color: rgba(127, 216, 233, 0.48);
+		font-size: 0.45rem;
+		text-transform: none;
+	}
+	.communication-act blockquote {
+		margin: 0.6rem 0;
+		color: rgba(244, 240, 232, 0.8);
+		font:
+			400 0.7rem/1.5 Georgia,
+			serif;
+	}
+	.witness-chain {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.35rem;
+	}
+	.witness-chain p {
+		margin: 0;
+		padding: 0.45rem;
+		background: rgba(127, 216, 233, 0.06);
+	}
+	.witness-chain strong,
+	.witness-chain code {
+		display: block;
+	}
+	.witness-chain strong {
+		font-size: 0.48rem;
+	}
+	.witness-chain code {
+		margin-top: 0.2rem;
+		color: rgba(127, 216, 233, 0.52);
+		font-size: 0.43rem;
 	}
 	.facility-list {
 		display: grid;

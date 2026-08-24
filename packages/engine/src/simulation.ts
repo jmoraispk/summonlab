@@ -44,7 +44,8 @@ function assertSimulationInvariants(state: EngineGameState): void {
 		state.schemaVersion !== 4 &&
 		state.schemaVersion !== 5 &&
 		state.schemaVersion !== 6 &&
-		state.schemaVersion !== 7
+		state.schemaVersion !== 7 &&
+		state.schemaVersion !== 8
 	)
 		return;
 	for (const balance of Object.values(state.settlement.resources)) {
@@ -128,7 +129,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			state.schemaVersion === 4 ||
 			state.schemaVersion === 5 ||
 			state.schemaVersion === 6 ||
-			state.schemaVersion === 7
+			state.schemaVersion === 7 ||
+			state.schemaVersion === 8
 		) {
 			apply('assign-facility', {
 				actorId: state.master.masterId,
@@ -138,7 +140,12 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				buildingId: destination,
 				role: destination === 'kitchen' ? 'cook' : 'trainee'
 			});
-			if (index % 3 === 0 && state.schemaVersion !== 6 && state.schemaVersion !== 7) {
+			if (
+				index % 3 === 0 &&
+				state.schemaVersion !== 6 &&
+				state.schemaVersion !== 7 &&
+				state.schemaVersion !== 8
+			) {
 				apply('power-workshop', {
 					actorId: state.master.masterId,
 					source: source('manual'),
@@ -148,7 +155,10 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			}
 		}
 		if (
-			(state.schemaVersion === 5 || state.schemaVersion === 6 || state.schemaVersion === 7) &&
+			(state.schemaVersion === 5 ||
+				state.schemaVersion === 6 ||
+				state.schemaVersion === 7 ||
+				state.schemaVersion === 8) &&
 			index % 5 === 0
 		) {
 			apply('plan-day', {
@@ -216,7 +226,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 					state.schemaVersion === 4 ||
 					state.schemaVersion === 5 ||
 					state.schemaVersion === 6 ||
-					state.schemaVersion === 7)
+					state.schemaVersion === 7 ||
+					state.schemaVersion === 8)
 			) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {

@@ -6,6 +6,7 @@ import {
 	createBootstrapEngine,
 	deterministicUuid,
 	hashGameState,
+	projectHeroConversationPresentation,
 	projectSettlementPresentation,
 	routineSettlementPose,
 	settlementDayPhase,
@@ -117,8 +118,8 @@ describe('settlement presentation projection', () => {
 			targetNodeId: 'training-ring'
 		});
 		const travel =
-			traveling.state.schemaVersion === 7 ? traveling.state.heroes[heroId]!.currentTravel! : null;
-		if (!travel) throw new Error('Expected a v7 travel state');
+			traveling.state.schemaVersion === 8 ? traveling.state.heroes[heroId]!.currentTravel! : null;
+		if (!travel) throw new Error('Expected a v8 travel state');
 		const afterDueTime = new Date(Date.parse(travel.arrivesAt) + 60_000).toISOString();
 		const inMotion = projectSettlementPresentation(
 			{ state: traveling.state, stateHash: hashGameState(traveling.state) },
@@ -135,5 +136,43 @@ describe('settlement presentation projection', () => {
 			inMotion.buildings.find((building) => building.buildingId === 'summoning-gate')
 				?.occupantHeroIds
 		).toEqual([heroId]);
+	});
+
+	it('projects witnessed words and learned claims without exposing unavailable communication', () => {
+		const bootstrap = fixture();
+		if (bootstrap.snapshot.state.schemaVersion !== 8) throw new Error('Expected engine-v8 state');
+		const heroId = Object.keys(bootstrap.snapshot.state.heroes)[0]!;
+		const committed = applyCommand(bootstrap.snapshot.state, {
+			...commandBase(bootstrap.snapshot.state, bootstrap.snapshot.state.master.masterId, 'speak'),
+			source: { ...source(), source: 'manual', timing: 'step' },
+			commandType: 'master.communicate',
+			targetHeroId: heroId,
+			kind: 'tell',
+			topic: 'summoning-situation',
+			exactText: 'You crossed this gate without a settlement history.',
+			tone: 'reassuring',
+			delivery: 'private'
+		});
+		const presentation = projectHeroConversationPresentation(
+			{ state: committed.state, stateHash: hashGameState(committed.state) },
+			heroId
+		);
+		expect(presentation).toMatchObject({
+			canCommunicate: true,
+			availability: 'available',
+			masterLocation: 'summoning-gate',
+			heroLocation: 'summoning-gate'
+		});
+		expect(presentation.acts[0]).toMatchObject({
+			kind: 'tell',
+			topic: 'summoning-situation',
+			exactText: 'You crossed this gate without a settlement history.',
+			witnesses: [{ heroId, role: 'intended', perception: 'addressed', learnedBelief: true }]
+		});
+		expect(presentation.beliefsLearnedFromCommunication[0]).toMatchObject({
+			predicate: 'was-summoned-into',
+			objectSummary: 'summoning gate',
+			confidence: 85
+		});
 	});
 });

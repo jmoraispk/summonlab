@@ -222,12 +222,13 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` was completed on 2026-08-24; conversation and model-backed
-decisions remain deliberately out of this foundation slice.
+Status: **in progress**. `AGT-001` and `AGT-002` were completed on 2026-08-24. Canonical witnessed
+onboarding is implemented; hero-authored responses and model-backed decisions remain later slices.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `AGT-001` | Complete: `engine-v7` adds direct observations, holder-specific beliefs with event provenance, directed relationship dimensions, active promises, and seven evidence-backed authority dimensions; awakening remains a clean slate, First Ember creates the first durable social consequence, normal play uses relationship language, replay exposes raw evidence, and v1–v6 histories remain unmodified | [Social cognition evidence](evidence/phase-5-social-cognition.png), engine/property/integration/browser tests, replay cognition ledger, ADR 0020 |
+| `AGT-002` | Complete: `engine-v8` / `society-v2` records exact Master-to-hero explanations, statements, and questions; computes private/open witnesses from co-location and availability; creates observations for actual witnesses; transfers only topic-bound told beliefs; exposes normal-play onboarding and replay witness chains; and preserves v1–v7 histories | [Communication evidence](evidence/phase-5-communication.png), engine/integration/browser tests, summon onboarding, replay witness ledger, ADR 0021 |
 
 ### Reproduce the checkpoint
 
@@ -235,16 +236,18 @@ decisions remain deliberately out of this foundation slice.
 pnpm dev
 ```
 
-Complete a summon, follow the hero to Hearth 01, recover the Floor 01 core, and bind the First Ember.
-On the player page, compare the immediate response with **What the hero actually knows**: the hero
-should have four held beliefs, relationship language, an authority standing, and the exact active
-promise. Open **Replay** and inspect **Hero cognition · provenance ledger**. Confirm the awakening and
-First Ember observations have distinct source events, both new beliefs have direct provenance, and
-relationship/authority evidence matches the commitment while replay remains verified.
+Complete a summon in **Wait for step** mode and break the seal. Before allowing the first choice,
+select an onboarding topic, edit the exact words, choose private/open delivery, and press **Speak**.
+Confirm the witness proof reports one intended witness and one learned claim; asking about hero
+memory should instead report no learned claim. Continue to Hearth 01, recover the Floor 01 core, and
+bind the First Ember. The hero should now have the two awakening beliefs, the onboarding claim, and
+the two First Ember beliefs. Open **Replay**, inspect **Communicative acts · witness chains**, and
+trace exact text through the source event, observation, and optional belief while replay remains
+verified.
 
 ## Next active engineering slice
 
-Collect feedback on whether the social ledger is legible, whether “receptive / provisional” feels
-earned for Mara’s accepted training commitment, and whether the active promise reads like something
-the game should later hold the Master to. Then begin `AGT-002` with communicative acts and explicit
-witness rules. Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect feedback on whether the summon-chamber conversation feels like gameplay, whether the four
+onboarding topics are the right initial vocabulary, and whether the witness/provenance proof is
+legible. Then begin `AGT-003` with context-owned decision packets and deterministic memory retrieval.
+Phase 3 cohort expansion remains behind its separate human visual gate.

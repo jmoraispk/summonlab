@@ -374,8 +374,22 @@ about the resulting founding promise, and evidence-linked changes to relationshi
 Relationship state tracks trust, respect, fear, affection, resentment, and debt. Authority tracks
 competence, provision, trust, legitimacy, fear, strength, and consistency; there is deliberately no
 scalar obedience score. Immutable v1–v6 streams remain on their original schemas and receive no
-retroactive knowledge. General communication, witness propagation, rumor, and memory retrieval are
-owned by later Phase 5 slices.
+retroactive knowledge.
+
+`engine-v8` extends that aggregate as `society-v2` with canonical communicative acts. The first
+bounded slice supports Master-to-hero onboarding through `explain`, `tell`, and `ask`. Every act
+stores exact text, structured topic, optional tone, private/open delivery, location, intended
+audience, actual witnesses, and its source event. Private delivery addresses only the target. Open
+delivery adds only active, unoccupied, non-traveling heroes co-located with the Master. Questions
+create observations without claims; explanations transfer only one engine-owned structured claim,
+so arbitrary prose cannot manufacture world facts. Replay recomputes the entire act → witness
+observation → told-belief chain. Immutable v1–v7 streams remain unchanged. Hero responses, order
+outcomes, rumor, and memory retrieval remain later Phase 5 slices.
+
+`GET` and `POST /api/runs/:runId/communications` expose a bounded per-hero conversation projection
+and commit manual step-timed communication. The summon chamber uses it before the hero’s first route
+choice; the replay inspector exposes exact text, witness roles, observation IDs, belief IDs, and
+source-event provenance. No model call or hidden relationship adjustment occurs in this slice.
 
 ### Implemented reconnect projection
 
@@ -393,11 +407,11 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5`, `engine-v6`, or `engine-v7` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v8` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
 label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
-immediate reactions. For `engine-v7`, the same bounded projection adds each visible hero’s held
+immediate reactions. For `engine-v7` and `engine-v8`, the same bounded projection adds each visible hero’s held
 belief count, latest direct observation, relationship language, authority standing, and active
 promise terms. Raw social dimensions and provenance remain available in the development replay
 inspector. The response carries the exact event cursor and state hash that explain the scene.

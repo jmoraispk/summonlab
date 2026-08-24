@@ -49,6 +49,19 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByRole('heading', { name: 'The hero is waiting to choose.' })).toBeVisible({
 		timeout: 5_000
 	});
+	await expect(page.getByRole('heading', { name: 'Speak into a clean slate.' })).toBeVisible();
+	await page
+		.getByLabel('Exact words to the summoned hero')
+		.fill(
+			'I am the Master of Hearth 01. You were summoned here, but you are free to ask what this place demands.'
+		);
+	await page.getByRole('button', { name: 'Speak', exact: true }).click();
+	await expect(page.getByText('1 witnessed')).toBeVisible();
+	await expect(page.getByText('1 learned a claim')).toBeVisible();
+	if (process.env.CAPTURE_PHASE5_COMMUNICATION) {
+		await page.setViewportSize({ width: 1440, height: 1050 });
+		await page.screenshot({ path: process.env.CAPTURE_PHASE5_COMMUNICATION, fullPage: true });
+	}
 	await page.getByRole('button', { name: /Let Mara decide now/ }).click();
 	await expect(
 		page.getByText(/Show me somewhere I can test what this body remembers/)
@@ -73,7 +86,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.locator('.ember-council')).toContainText('safer training');
 	await expect(page.locator('.ember-council')).toContainText('Mara Vey');
 	await expect(page.locator('.ember-council')).toContainText('Immediate response');
-	await expect(page.getByTestId('hero-social-ledger')).toContainText('4 held beliefs');
+	await expect(page.getByTestId('hero-social-ledger')).toContainText('5 held beliefs');
 	await expect(page.getByTestId('hero-social-ledger')).toContainText('provisional authority');
 	await expect(page.getByTestId('hero-social-ledger')).toContainText(
 		'I will prepare this company for the tower as our founding priority.'
@@ -109,6 +122,15 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('social-cognition-proof')).toContainText('first-ember-commitment');
 	await expect(page.getByTestId('social-cognition-proof')).toContainText('made-founding-promise');
 	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 6');
+	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
+		'Communicative acts · witness chains'
+	);
+	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
+		'I am the Master of Hearth 01.'
+	);
+	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
+		'intended / addressed'
+	);
 	await page
 		.getByTestId('building-training-ground')
 		.getByRole('button', { name: 'assign', exact: true })

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { ProofRunSnapshot } from '@summonlab/contracts';
+	import type { HeroConversationPresentation, ProofRunSnapshot } from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
 	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
@@ -9,12 +9,27 @@
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
+	// svelte-ignore state_referenced_locally
+	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
 	let stage = $state(0);
 	// svelte-ignore state_referenced_locally
 	let directive = $state(snapshot.directive);
 	let countdown = $state(5);
 	let deciding = $state(false);
 	let errorMessage = $state('');
+	let communicationError = $state('');
+	let communicating = $state(false);
+	let communicationKind = $state<'explain' | 'tell' | 'ask'>('explain');
+	let communicationTopic = $state<
+		'master-role' | 'summoning-situation' | 'tower-mission' | 'hero-memory'
+	>('master-role');
+	let communicationTone = $state<'neutral' | 'reassuring' | 'firm' | 'urgent' | 'apologetic'>(
+		'reassuring'
+	);
+	let communicationDelivery = $state<'private' | 'open'>('private');
+	let communicationText = $state(
+		'I am the Master of Hearth 01. You were summoned here, but you are free to ask what this place demands.'
+	);
 	let countdownTimer: number | undefined;
 	const outerRunes = Array.from({ length: 12 }, (_, index) => index);
 	const innerRunes = Array.from({ length: 8 }, (_, index) => index);
@@ -44,6 +59,60 @@
 				void resolveDecision('countdown');
 			}
 		}, 1_000);
+	}
+
+	function chooseCommunicationTopic(
+		topic: 'master-role' | 'summoning-situation' | 'tower-mission' | 'hero-memory'
+	) {
+		communicationTopic = topic;
+		if (topic === 'hero-memory') {
+			communicationKind = 'ask';
+			communicationText = 'What is the last thing you remember before awakening here?';
+		} else {
+			communicationKind = topic === 'summoning-situation' ? 'tell' : 'explain';
+			communicationText = {
+				'master-role':
+					'I am the Master of Hearth 01. You were summoned here, but you are free to ask what this place demands.',
+				'summoning-situation':
+					'You arrived through this gate as a new summon. I do not expect you to remember a life in this settlement.',
+				'tower-mission':
+					'Hearth 01 is preparing to climb a one-hundred-floor tower. Each floor is dangerous, and your choices can change how we face it.'
+			}[topic];
+		}
+	}
+
+	async function sendCommunication() {
+		if (!conversation?.canCommunicate || communicating || !communicationText.trim()) return;
+		communicating = true;
+		communicationError = '';
+		if (countdownTimer) {
+			window.clearInterval(countdownTimer);
+			countdownTimer = undefined;
+		}
+		try {
+			const response = await fetch(`/api/runs/${snapshot.runId}/communications`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					targetHeroId: snapshot.manifest.characterId,
+					kind: communicationKind,
+					topic: communicationTopic,
+					exactText: communicationText.trim(),
+					tone: communicationTone,
+					delivery: communicationDelivery
+				})
+			});
+			const result = (await response.json()) as HeroConversationPresentation & {
+				message?: string;
+			};
+			if (!response.ok) throw new Error(result.message ?? 'Those words could not be recorded.');
+			conversation = result;
+		} catch (error) {
+			communicationError = error instanceof Error ? error.message : 'Communication failed.';
+		} finally {
+			communicating = false;
+			if (snapshot.controlMode === 'countdown' && !snapshot.destination) beginCountdown();
+		}
 	}
 
 	async function resolveDecision(trigger: 'step' | 'countdown') {
@@ -188,6 +257,78 @@
 						</div>
 					{/if}
 				</div>
+				{#if conversation}
+					<div class="onboarding">
+						<div class="onboarding-title">
+							<div>
+								<p>Before the first choice</p>
+								<h3>Speak into a clean slate.</h3>
+							</div>
+							<span class:available={conversation.canCommunicate}
+								>{conversation.availability.replaceAll('-', ' ')}</span
+							>
+						</div>
+						<div class="topic-row" aria-label="Communication topic">
+							{#each ['master-role', 'summoning-situation', 'tower-mission', 'hero-memory'] as topic (topic)}
+								<button
+									type="button"
+									class:active={communicationTopic === topic}
+									onclick={() => chooseCommunicationTopic(topic as typeof communicationTopic)}
+									>{topic.replaceAll('-', ' ')}</button
+								>
+							{/each}
+						</div>
+						<textarea
+							class="communication-copy"
+							bind:value={communicationText}
+							maxlength="600"
+							aria-label="Exact words to the summoned hero"></textarea>
+						<div class="delivery-row">
+							<label>
+								<span>Tone</span>
+								<select bind:value={communicationTone}>
+									<option value="reassuring">reassuring</option>
+									<option value="neutral">neutral</option>
+									<option value="firm">firm</option>
+									<option value="urgent">urgent</option>
+									<option value="apologetic">apologetic</option>
+								</select>
+							</label>
+							<label>
+								<span>Witness rule</span>
+								<select bind:value={communicationDelivery}>
+									<option value="private">private</option>
+									<option value="open">open / nearby heroes overhear</option>
+								</select>
+							</label>
+							<button
+								class="speak"
+								type="button"
+								onclick={sendCommunication}
+								disabled={!conversation.canCommunicate ||
+									communicating ||
+									!communicationText.trim()}
+								>{communicating
+									? 'Recording…'
+									: communicationKind === 'ask'
+										? 'Ask hero'
+										: 'Speak'}</button
+							>
+						</div>
+						{#if communicationError}<p class="error" role="alert">{communicationError}</p>{/if}
+						{#if conversation.acts.length > 0}
+							{@const latestAct = conversation.acts.at(-1)!}
+							<div class="witness-proof">
+								<span>{latestAct.witnesses.length} witnessed</span>
+								<span
+									>{latestAct.witnesses.filter((witness) => witness.learnedBelief).length} learned a claim</span
+								>
+								<code>{latestAct.sourceEventId.slice(0, 8)}</code>
+							</div>
+						{/if}
+						<small>Exact words are canonical. Free text cannot invent engine facts.</small>
+					</div>
+				{/if}
 				<label>
 					<span>Give direction before the choice · best effort</span>
 					<textarea
@@ -741,6 +882,8 @@
 
 	.decision-window {
 		padding: 1.4rem;
+		max-height: 76vh;
+		overflow: auto;
 	}
 
 	.window-heading {
@@ -760,6 +903,123 @@
 		font-family: Georgia, serif;
 		font-size: 1.5rem;
 		font-weight: 400;
+	}
+
+	.onboarding {
+		margin: 0 -0.25rem 1rem;
+		padding: 1rem;
+		border: 1px solid rgba(112, 200, 217, 0.2);
+		background:
+			linear-gradient(135deg, rgba(112, 200, 217, 0.08), transparent 55%), rgba(2, 4, 8, 0.72);
+	}
+
+	.onboarding-title,
+	.delivery-row,
+	.witness-proof {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.65rem;
+	}
+
+	.onboarding-title h3 {
+		margin: 0;
+		font-family: Georgia, serif;
+		font-size: 1.05rem;
+		font-weight: 400;
+	}
+
+	.onboarding-title > span {
+		padding: 0.3rem 0.45rem;
+		border: 1px solid rgba(242, 147, 143, 0.35);
+		color: #f2938f;
+		font-size: 0.47rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.onboarding-title > span.available {
+		border-color: rgba(112, 200, 217, 0.45);
+		color: #70c8d9;
+	}
+
+	.topic-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.35rem;
+		margin: 0.75rem 0 0.55rem;
+	}
+
+	.topic-row button,
+	.speak {
+		padding: 0.48rem 0.55rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.025);
+		color: rgba(246, 241, 231, 0.55);
+		cursor: pointer;
+		font-size: 0.51rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.topic-row button.active {
+		border-color: rgba(112, 200, 217, 0.55);
+		background: rgba(112, 200, 217, 0.12);
+		color: #bcebf2;
+	}
+
+	.communication-copy {
+		min-height: 4.4rem;
+	}
+
+	.delivery-row {
+		align-items: end;
+		margin-top: 0.55rem;
+	}
+
+	.delivery-row label {
+		flex: 1;
+	}
+
+	.delivery-row select {
+		width: 100%;
+		padding: 0.45rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: #090b10;
+		color: rgba(246, 241, 231, 0.7);
+		font-size: 0.58rem;
+	}
+
+	.speak {
+		min-width: 5rem;
+		border-color: #70c8d9;
+		background: #70c8d9;
+		color: #071014;
+		font-weight: 800;
+	}
+
+	.speak:disabled {
+		cursor: not-allowed;
+		opacity: 0.4;
+	}
+
+	.witness-proof {
+		justify-content: flex-start;
+		margin-top: 0.55rem;
+		color: #70c8d9;
+		font-size: 0.52rem;
+	}
+
+	.witness-proof code {
+		margin-left: auto;
+		color: rgba(246, 241, 231, 0.32);
+	}
+
+	.onboarding > small {
+		display: block;
+		margin-top: 0.55rem;
+		color: rgba(246, 241, 231, 0.3);
+		font-size: 0.52rem;
 	}
 
 	.counter {

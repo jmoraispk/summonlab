@@ -998,7 +998,8 @@ Estimated engineering effort: **2 weeks**.
 
 - `AGT-001` complete: implement direct observations, provenance-linked beliefs, directed
   relationships, founding promises, and multidimensional authority under `engine-v7`;
-- `AGT-002` implement communicative acts and witness rules;
+- `AGT-002` complete: implement canonical communicative acts, private/open delivery, co-location and
+  availability witness rules, and direct told-belief provenance under `engine-v8`;
 - `AGT-003` implement decision packet assembly and deterministic memory retrieval;
 - `AGT-004` implement random and scripted policies for every decision kind;
 - `AGT-005` implement OpenAI policy adapter with strict Structured Outputs;
@@ -1106,8 +1107,8 @@ batch, and connected due schedules to the worker and reconnect API. `SET-007` ad
 transaction-bound PostgreSQL event notifications, bounded cursor pages, resumable SSE with typed
 gap recovery, browser-local acknowledgement cursors, and deterministic full-range return recap
 totals with cursor-linked highlights. `SET-008` now projects day phase, exact physical occupancy,
-building state, travel, and work/sleep/eat/train/idle poses from the cached `engine-v5`,
-`engine-v6`, or `engine-v7` snapshot and persisted clock. The painted scene consumes ordered SSE cues and periodic
+building state, travel, and work/sleep/eat/train/idle poses from the cached `engine-v5` through
+`engine-v8` snapshot and persisted clock. The painted scene consumes ordered SSE cues and periodic
 server projections without running a reducer in the browser. `SET-009` replaces the reversible
 development power control on new runs with an `engine-v6` First Ember lifecycle. Floor 01 recovery
 makes exactly three commitments legal; one player choice permanently records a rationale,
@@ -1115,8 +1116,11 @@ mind-and-needs-aware hero responses, and the exact kitchen, dormitory, or traini
 replay. `AGT-001` adds `society-v1` under `engine-v7`: awakening grants only direct sensory
 knowledge and neutral social priors, while the existing First Ember commitment produces witnessed
 observations, provenance-linked beliefs, an active founding promise, and evidence-backed directed
-relationship and authority changes. Immutable v1–v6 histories receive no social backfill. The next
-engineering slice is `AGT-002`: communicative acts and explicit witness rules.
+relationship and authority changes. Immutable v1–v6 histories receive no social backfill.
+`AGT-002` adds `society-v2` under `engine-v8`: exact Master onboarding, bounded private/open
+witnesses, direct communication observations, and topic-owned told beliefs. Immutable v1–v7
+histories receive no communication backfill. The next engineering slice is `AGT-003`: context-owned
+decision packets and deterministic memory retrieval.
 
 ## Accepted product decisions — 2026-08-23
 
