@@ -7,3 +7,11 @@
 - Never include unrelated pre-existing changes in the commit. If the in-scope changes cannot be isolated safely, stop and ask for direction.
 - Use concise Conventional Commit messages that describe the completed outcome.
 - In the final response, report the commit hash, commit subject, push destination, and whether the working tree is clean.
+
+## Feedback cadence
+
+- End every turn with at least one focused request for product, visual, technical, or playtest feedback.
+- When a runnable slice changes, provide the exact path or command, two or three useful test actions, and the specific decisions the test should inform.
+- Do not block safe implementation work on unanswered preferences. State the current assumption, proceed on reversible work, and record durable answers in the relevant project document.
+- Treat feedback as accepted, revise, experiment, or deferred. Preserve accepted decisions in the repository so later turns do not have to rediscover them.
+- Prefer small reviewable slices with visible evidence over long periods without a user checkpoint.
