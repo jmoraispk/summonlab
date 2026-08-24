@@ -115,6 +115,16 @@ A reproducible visual seed controls body proportions, face, skin, hair, eyes, ag
 
 Temperament affects animation timing and posture tendencies without freezing one expression onto the character. Culture affects gesture, naming, clothing, and ornament separately from inherited appearance.
 
+Build a developer-facing Character Forge before producing a large cast. It must render seed grids, lock individual fields, compare front/profile/full-body views, test expressions and outfits, and export a canonical physical manifest plus rig recipe. Generated summon cards and cinematic images use that manifest and approved reference views; they never redefine the character.
+
+### Camera hierarchy
+
+- Settlement management uses a hand-composed 2.5D three-quarter view with clickable buildings and visible hero routes.
+- Building interiors and conversations use illustrated eye-level or over-the-shoulder compositions with subtle parallax.
+- Missions use authored third-person arenas and limited camera tracks.
+- First-person is reserved for the opening summon and rare confrontation shots.
+- Free settlement traversal waits until a one-courtyard experiment proves it adds more embodiment than it costs in visual control.
+
 ## Attributes, skills, and growth
 
 Use six compact attribute marks rather than a spreadsheet wall:

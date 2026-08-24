@@ -207,6 +207,7 @@ The Master may create a disciplined culture by building schedules and facilities
 ### What a new hero has
 
 - a stable human physiology;
+- an adult age sampled for the first prototype from a truncated normal distribution centered near 25;
 - a visual and vocal identity;
 - latent attribute ranges and skill affinities;
 - a starting temperament;
@@ -217,6 +218,8 @@ The Master may create a disciplined culture by building schedules and facilities
 - no automatic belief that the Master has authority.
 
 The first conversation is onboarding, not flavor text.
+
+The prototype uses adult summons only, with ages bounded from 18–42. Age can affect appearance, recovery, bodily wear, and plausible skill exposure, but never directly determines intelligence, morality, obedience, or worth. The exact age may initially be unknown in-world even though the physical manifest remains deterministic.
 
 ### What can change
 
