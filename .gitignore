@@ -19,6 +19,7 @@ test-results/
 !.env.example
 *.log
 *.pid
+artifacts/local-provider-runs/
 
 # Editors and operating systems
 .DS_Store

@@ -22,6 +22,9 @@
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
 		"export:recognition-audit": "tsx tools/export-recognition-audit.ts",
 		"validate:recognition-audit": "tsx tools/export-recognition-audit.ts --check",
+		"export:agent-evaluation": "tsx tools/export-agent-evaluation.ts",
+		"validate:agent-evaluation": "tsx tools/export-agent-evaluation.ts --check",
+		"record:agent-evaluation": "tsx tools/record-agent-evaluation.ts --acknowledge-paid-provider-run",
 		"validate:settlement-content": "tsx tools/validate-settlement-content.ts",
 		"validate:settlement-scene": "tsx tools/validate-settlement-scene.ts",
 		"measure:web-build-budget": "pnpm --filter @summonlab/web build && node tools/validate-web-build-budget.mjs --write",
@@ -33,7 +36,7 @@
 		"test": "pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:recognition-audit && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

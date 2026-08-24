@@ -1,0 +1,2971 @@
+{
+	"schemaVersion": "agent-evaluation-corpus-v1",
+	"generatorVersion": "agent-evaluation-generator-v1",
+	"promptVersion": "hero-model-prompt-v1",
+	"contextPolicyVersion": "hero-context-v1",
+	"generatedAt": "2026-08-24T00:00:00.000Z",
+	"cases": [
+		{
+			"caseId": "personality-social",
+			"title": "Belonging and social habit favor the kitchen",
+			"dimension": "personality-distinction",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
+				"packetHash": "27eec3562bee0e86ec0792e416c1d63e13bbd9b0700528fc442ef816489f1b3f",
+				"runId": "6b71b076-c764-4ff7-a12e-ab5347040017",
+				"heroId": "f3006562-f400-46f5-a100-623cf20063cf",
+				"decisionKind": "settlement-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "9b7083516cb0b6f006d4b648ced60fd8b45f4118319c6a1bc3e5f22024fe037c",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "f3006562-f400-46f5-a100-623cf20063cf",
+						"displayName": "Neri Aster",
+						"rarityStars": 2,
+						"adultAge": 27,
+						"genderPresentation": "masculine",
+						"pronouns": "he/him",
+						"bodyFrame": "broad",
+						"bodyBuild": "solid",
+						"heightCm": 183,
+						"physiology": {
+							"massKg": 84,
+							"muscleTone": 5,
+							"bodyFat": 3,
+							"limbProportion": "balanced",
+							"handScale": 1.019
+						},
+						"phenotype": {
+							"skinTone": "warm ivory",
+							"faceShape": "oval",
+							"noseProfile": "fine straight",
+							"hairTexture": "straight",
+							"hairColor": "ash brown",
+							"hairStyle": "high knot",
+							"eyeColor": "green"
+						},
+						"voice": { "register": "high", "texture": "clear", "cadence": "measured" },
+						"posture": "grounded",
+						"handedness": "right",
+						"visualTraits": ["fine jaw scar", "braided cord belt"]
+					},
+					"manifestHash": "ebd709dd0bd724dffa7f08ea2b986e22beb4260c28a528de4459add2e8cccf5c",
+					"mind": {
+						"personality": {
+							"openness": 38,
+							"conscientiousness": 81,
+							"extraversion": 71,
+							"agreeableness": 20,
+							"emotionalVolatility": 55
+						},
+						"primaryValue": "knowledge",
+						"primaryDrive": "connect",
+						"socialStyle": "reserved",
+						"stressResponse": "confront",
+						"dailyHabit": "catalogues-tools",
+						"aptitudes": { "might": 2, "finesse": 2, "insight": 5, "resolve": 3 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 2,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "7db7f631-a7ed-4161-b57f-5ee363d05ebb",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "f3006562-f400-46f5-a100-623cf20063cf",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						},
+						{
+							"itemId": "ebf0382e-09d5-4ae7-b751-cd38de34df6b",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "f3006562-f400-46f5-a100-623cf20063cf",
+							"slot": "main-hand",
+							"equippedById": "f3006562-f400-46f5-a100-623cf20063cf",
+							"durability": 6,
+							"maxDurability": 6
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "catalogues-tools",
+						"strength": 80,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "f3006562-f400-46f5-a100-623cf20063cf",
+							"kind": "self",
+							"knownAs": "Neri Aster",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "3b6f2af1-ed8f-4698-8609-edc050a0b7eb",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.settlement.kitchen", "eval.settlement.training"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "1e4432a9-aefc-4812-9486-42ed6519824d",
+							"subjectId": "3b6f2af1-ed8f-4698-8609-edc050a0b7eb",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "515246e3-710e-423b-b881-d20b9426fe1f",
+								"observationId": "78be7d93-1c52-4725-b497-ef8e4f606f56",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "4a70f52a-934f-46db-9678-ceed0e4b4e48",
+							"subjectId": "f3006562-f400-46f5-a100-623cf20063cf",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "515246e3-710e-423b-b881-d20b9426fe1f",
+								"observationId": "78be7d93-1c52-4725-b497-ef8e4f606f56",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "78be7d93-1c52-4725-b497-ef8e4f606f56",
+								"observationId": "78be7d93-1c52-4725-b497-ef8e4f606f56",
+								"sourceEventId": "515246e3-710e-423b-b881-d20b9426fe1f",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"f3006562-f400-46f5-a100-623cf20063cf",
+									"3b6f2af1-ed8f-4698-8609-edc050a0b7eb"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "0f1aaadd-ea05-491d-bf16-a5c19ee851da",
+							"toEntityId": "3b6f2af1-ed8f-4698-8609-edc050a0b7eb",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "4a723612-507f-40dc-ac4d-938b20bea45d",
+							"subjectId": "3b6f2af1-ed8f-4698-8609-edc050a0b7eb",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.settlement.kitchen",
+						"actorId": "f3006562-f400-46f5-a100-623cf20063cf",
+						"kind": "communicate",
+						"label": "Share a kitchen meal",
+						"description": "Eat and speak with the settlement at the shared kitchen.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["kitchen", "eat", "meal", "social", "communicate"]
+					},
+					{
+						"actionId": "eval.settlement.training",
+						"actorId": "f3006562-f400-46f5-a100-623cf20063cf",
+						"kind": "train",
+						"label": "Practice at the training ground",
+						"description": "Train deliberately with the practice blade.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["train", "training", "practice", "progression"]
+					}
+				],
+				"legalActionHash": "7caf226303eff2693f23653e5db19ce72c4ff90788f9d67666ab6cb2ca0fbdc6",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:personality-social",
+			"expectation": {
+				"acceptableActionIds": ["eval.settlement.kitchen"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "personality-contrast",
+				"pairMustDiffer": true,
+				"rationale": "A social, knowledge-seeking profile should not behave like a mastery specialist."
+			}
+		},
+		{
+			"caseId": "personality-mastery",
+			"title": "Mastery and disciplined habit favor training",
+			"dimension": "personality-distinction",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "7d76c200-dfee-4fb7-b358-e693d46f9165",
+				"packetHash": "62679753aed1588a394f7c7c4e62c23c76b23ee5534dae250893c468367a9520",
+				"runId": "bcb15e7b-a270-400f-9c0f-062d9968a720",
+				"heroId": "790fb401-780f-426e-a70f-b0db760faf48",
+				"decisionKind": "settlement-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"displayName": "Lin Sol",
+						"rarityStars": 1,
+						"adultAge": 23,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "solid",
+						"heightCm": 179,
+						"physiology": {
+							"massKg": 75,
+							"muscleTone": 6,
+							"bodyFat": 3,
+							"limbProportion": "short",
+							"handScale": 1.105
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "oval",
+							"noseProfile": "short rounded",
+							"hairTexture": "curly",
+							"hairColor": "ash brown",
+							"hairStyle": "loose shoulder-length",
+							"eyeColor": "hazel"
+						},
+						"voice": { "register": "mid", "texture": "clear", "cadence": "measured" },
+						"posture": "guarded",
+						"handedness": "ambidextrous",
+						"visualTraits": ["wide-set eyes", "patched shoulder"]
+					},
+					"manifestHash": "e3282e353847cbe73cb3df39699e0f08cca08a817dc0d02aeda794a0902059d2",
+					"mind": {
+						"personality": {
+							"openness": 83,
+							"conscientiousness": 62,
+							"extraversion": 74,
+							"agreeableness": 95,
+							"emotionalVolatility": 44
+						},
+						"primaryValue": "mastery",
+						"primaryDrive": "prove",
+						"socialStyle": "inquisitive",
+						"stressResponse": "prepare",
+						"dailyHabit": "stretches-at-dawn",
+						"aptitudes": { "might": 2, "finesse": 4, "insight": 7, "resolve": 4 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 1,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "1cf241e0-b83e-43b6-8089-5166618a73bc",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"slot": "main-hand",
+							"equippedById": "790fb401-780f-426e-a70f-b0db760faf48",
+							"durability": 6,
+							"maxDurability": 6
+						},
+						{
+							"itemId": "b51a00c5-0ccb-4164-841b-574d4cfa26a4",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "stretches-at-dawn",
+						"strength": 69,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"kind": "self",
+							"knownAs": "Lin Sol",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.settlement.kitchen", "eval.settlement.training"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "c54e7071-f193-4366-892c-3671f518cb27",
+							"subjectId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "c6a84e4b-063a-45ad-aceb-6941f3c77cc0",
+							"subjectId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"790fb401-780f-426e-a70f-b0db760faf48",
+									"fa664c0b-02ae-4500-8164-42f141a5fda9"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "80577536-3c6a-4451-be8e-58ad0c28851e",
+							"toEntityId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "056cb5f2-693d-4468-aae0-2fddebf6be5f",
+							"subjectId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.settlement.kitchen",
+						"actorId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"kind": "communicate",
+						"label": "Share a kitchen meal",
+						"description": "Eat and speak with the settlement at the shared kitchen.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["kitchen", "eat", "meal", "social", "communicate"]
+					},
+					{
+						"actionId": "eval.settlement.training",
+						"actorId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"kind": "train",
+						"label": "Practice at the training ground",
+						"description": "Train deliberately with the practice blade.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["train", "training", "practice", "progression"]
+					}
+				],
+				"legalActionHash": "34434dfe476508772bea7bb967a4e5294e05e2efe35fdd5a8ce5dcbfcff9a839",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:personality-mastery",
+			"expectation": {
+				"acceptableActionIds": ["eval.settlement.training"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "personality-contrast",
+				"pairMustDiffer": true,
+				"rationale": "The same legal menu should yield a visibly different choice for a mastery specialist."
+			}
+		},
+		{
+			"caseId": "directive-neutral",
+			"title": "Unprompted duty profile follows its training preference",
+			"dimension": "directive-influence",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "27e4fb08-7c1c-49d1-8ba2-272ae6b20c0f",
+				"packetHash": "9871204709ad0ff595bf9393a7ffd1069871d6726a848c836fd90098d234da36",
+				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
+				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+				"decisionKind": "settlement-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"displayName": "Zuri Lumen",
+						"rarityStars": 2,
+						"adultAge": 21,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "wiry",
+						"heightCm": 167,
+						"physiology": {
+							"massKg": 48,
+							"muscleTone": 3,
+							"bodyFat": 4,
+							"limbProportion": "balanced",
+							"handScale": 0.916
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "heart-shaped",
+							"noseProfile": "fine straight",
+							"hairTexture": "wavy",
+							"hairColor": "ash brown",
+							"hairStyle": "cropped",
+							"eyeColor": "warm brown"
+						},
+						"voice": { "register": "high", "texture": "clear", "cadence": "measured" },
+						"posture": "formal",
+						"handedness": "ambidextrous",
+						"visualTraits": ["callused hands", "copper clasp"]
+					},
+					"manifestHash": "8685e54a591cb52b39eb3055173807a31cccc0fe95b20d9d57657a3b1d812806",
+					"mind": {
+						"personality": {
+							"openness": 34,
+							"conscientiousness": 78,
+							"extraversion": 47,
+							"agreeableness": 24,
+							"emotionalVolatility": 86
+						},
+						"primaryValue": "duty",
+						"primaryDrive": "understand",
+						"socialStyle": "formal",
+						"stressResponse": "observe",
+						"dailyHabit": "shares-breakfast",
+						"aptitudes": { "might": 5, "finesse": 5, "insight": 9, "resolve": 9 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 2,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "03039506-f051-42de-b558-d8cfd647d56f",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						},
+						{
+							"itemId": "cd91daac-4534-4771-b9d0-fb3f4ff5b997",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"durability": 6,
+							"maxDurability": 6
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "shares-breakfast",
+						"strength": 78,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"kind": "self",
+							"knownAs": "Zuri Lumen",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.settlement.kitchen", "eval.settlement.training"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "0ffec56b-06ae-42af-a3db-297a908c2d7a",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "af4127aa-f233-4521-b897-eeca0a3f67c0",
+							"subjectId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+									"5cea7b05-9121-4704-9d9b-1ed0bef70188"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "f7672c0d-ad8c-471e-a88d-583198ac3bbd",
+							"toEntityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "7b1d434f-fcc9-4768-bedf-12f8d80bec0d",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.settlement.kitchen",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "communicate",
+						"label": "Share a kitchen meal",
+						"description": "Eat and speak with the settlement at the shared kitchen.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["kitchen", "eat", "meal", "social", "communicate"]
+					},
+					{
+						"actionId": "eval.settlement.training",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "train",
+						"label": "Practice at the training ground",
+						"description": "Train deliberately with the practice blade.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["train", "training", "practice", "progression"]
+					}
+				],
+				"legalActionHash": "4c4ac6089c5df533f7b9834b4cb9339dd473988f824f73ad5b4aac7061e16c41",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:directive-neutral",
+			"expectation": {
+				"acceptableActionIds": ["eval.settlement.training"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "directive-contrast",
+				"pairMustDiffer": true,
+				"rationale": "This control isolates the hero preference before a witnessed direction is supplied."
+			}
+		},
+		{
+			"caseId": "directive-kitchen",
+			"title": "A witnessed kitchen direction changes the best effort",
+			"dimension": "directive-influence",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "4e19223a-38d2-4951-9c7f-2d924064ec04",
+				"packetHash": "bd3966f72f8c3b8d30d874de4cd005fc6e6cef569b9f219e4b05d77425aa6639",
+				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
+				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+				"decisionKind": "settlement-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"displayName": "Zuri Lumen",
+						"rarityStars": 2,
+						"adultAge": 21,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "wiry",
+						"heightCm": 167,
+						"physiology": {
+							"massKg": 48,
+							"muscleTone": 3,
+							"bodyFat": 4,
+							"limbProportion": "balanced",
+							"handScale": 0.916
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "heart-shaped",
+							"noseProfile": "fine straight",
+							"hairTexture": "wavy",
+							"hairColor": "ash brown",
+							"hairStyle": "cropped",
+							"eyeColor": "warm brown"
+						},
+						"voice": { "register": "high", "texture": "clear", "cadence": "measured" },
+						"posture": "formal",
+						"handedness": "ambidextrous",
+						"visualTraits": ["callused hands", "copper clasp"]
+					},
+					"manifestHash": "8685e54a591cb52b39eb3055173807a31cccc0fe95b20d9d57657a3b1d812806",
+					"mind": {
+						"personality": {
+							"openness": 34,
+							"conscientiousness": 78,
+							"extraversion": 47,
+							"agreeableness": 24,
+							"emotionalVolatility": 86
+						},
+						"primaryValue": "duty",
+						"primaryDrive": "understand",
+						"socialStyle": "formal",
+						"stressResponse": "observe",
+						"dailyHabit": "shares-breakfast",
+						"aptitudes": { "might": 5, "finesse": 5, "insight": 9, "resolve": 9 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 2,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "03039506-f051-42de-b558-d8cfd647d56f",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						},
+						{
+							"itemId": "cd91daac-4534-4771-b9d0-fb3f4ff5b997",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"durability": 6,
+							"maxDurability": 6
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "shares-breakfast",
+						"strength": 78,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"kind": "self",
+							"knownAs": "Zuri Lumen",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.settlement.kitchen", "eval.settlement.training"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "0ffec56b-06ae-42af-a3db-297a908c2d7a",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "af4127aa-f233-4521-b897-eeca0a3f67c0",
+							"subjectId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+									"5cea7b05-9121-4704-9d9b-1ed0bef70188"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "f7672c0d-ad8c-471e-a88d-583198ac3bbd",
+							"toEntityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "7b1d434f-fcc9-4768-bedf-12f8d80bec0d",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [
+					{
+						"directiveId": "adbbe8e4-858e-4bd3-bc6f-b1ad82d9665a",
+						"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
+						"authorId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+						"text": "Share a meal in the kitchen before training.",
+						"scope": "decision",
+						"recipientIds": ["76d25fa7-75d2-4e14-a8d2-62cd77d2613a"],
+						"witnessEventId": null,
+						"priorities": ["conversation-weight-24", "kitchen", "meal", "social"],
+						"createdAt": "2000-01-01T00:00:00.000Z",
+						"expiresAt": null,
+						"revokedAt": null
+					}
+				],
+				"legalActions": [
+					{
+						"actionId": "eval.settlement.kitchen",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "communicate",
+						"label": "Share a kitchen meal",
+						"description": "Eat and speak with the settlement at the shared kitchen.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["kitchen", "eat", "meal", "social", "communicate"]
+					},
+					{
+						"actionId": "eval.settlement.training",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "train",
+						"label": "Practice at the training ground",
+						"description": "Train deliberately with the practice blade.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["train", "training", "practice", "progression"]
+					}
+				],
+				"legalActionHash": "4c4ac6089c5df533f7b9834b4cb9339dd473988f824f73ad5b4aac7061e16c41",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:directive-kitchen",
+			"expectation": {
+				"acceptableActionIds": ["eval.settlement.kitchen"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "directive-contrast",
+				"pairMustDiffer": true,
+				"rationale": "A legal and witnessed player direction should matter without directly controlling state."
+			}
+		},
+		{
+			"caseId": "needs-wounded",
+			"title": "Severe injury favors survival",
+			"dimension": "situational-needs",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "abfc4f5c-b3ee-4462-8386-ab5ef0171f46",
+				"packetHash": "16b5a58b363a536c1c61522bc2406dbc246757453cd60c7edd58f0d9dd34f007",
+				"runId": "bcb15e7b-a270-400f-9c0f-062d9968a720",
+				"heroId": "790fb401-780f-426e-a70f-b0db760faf48",
+				"decisionKind": "mission-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"displayName": "Lin Sol",
+						"rarityStars": 1,
+						"adultAge": 23,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "solid",
+						"heightCm": 179,
+						"physiology": {
+							"massKg": 75,
+							"muscleTone": 6,
+							"bodyFat": 3,
+							"limbProportion": "short",
+							"handScale": 1.105
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "oval",
+							"noseProfile": "short rounded",
+							"hairTexture": "curly",
+							"hairColor": "ash brown",
+							"hairStyle": "loose shoulder-length",
+							"eyeColor": "hazel"
+						},
+						"voice": { "register": "mid", "texture": "clear", "cadence": "measured" },
+						"posture": "guarded",
+						"handedness": "ambidextrous",
+						"visualTraits": ["wide-set eyes", "patched shoulder"]
+					},
+					"manifestHash": "e3282e353847cbe73cb3df39699e0f08cca08a817dc0d02aeda794a0902059d2",
+					"mind": {
+						"personality": {
+							"openness": 83,
+							"conscientiousness": 62,
+							"extraversion": 74,
+							"agreeableness": 95,
+							"emotionalVolatility": 44
+						},
+						"primaryValue": "mastery",
+						"primaryDrive": "prove",
+						"socialStyle": "inquisitive",
+						"stressResponse": "prepare",
+						"dailyHabit": "stretches-at-dawn",
+						"aptitudes": { "might": 2, "finesse": 4, "insight": 7, "resolve": 4 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 15,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 1,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "1cf241e0-b83e-43b6-8089-5166618a73bc",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"slot": "main-hand",
+							"equippedById": "790fb401-780f-426e-a70f-b0db760faf48",
+							"durability": 6,
+							"maxDurability": 6
+						},
+						{
+							"itemId": "b51a00c5-0ccb-4164-841b-574d4cfa26a4",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "stretches-at-dawn",
+						"strength": 69,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"kind": "self",
+							"knownAs": "Lin Sol",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.mission.attack", "eval.mission.retreat"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "c54e7071-f193-4366-892c-3671f518cb27",
+							"subjectId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "c6a84e4b-063a-45ad-aceb-6941f3c77cc0",
+							"subjectId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"790fb401-780f-426e-a70f-b0db760faf48",
+									"fa664c0b-02ae-4500-8164-42f141a5fda9"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "80577536-3c6a-4451-be8e-58ad0c28851e",
+							"toEntityId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "056cb5f2-693d-4468-aae0-2fddebf6be5f",
+							"subjectId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.mission.attack",
+						"actorId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"kind": "attack",
+						"label": "Strike the goblin vanguard",
+						"description": "Challenge the nearest threat with a direct strike.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["attack", "strike", "challenge"]
+					},
+					{
+						"actionId": "eval.mission.retreat",
+						"actorId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"kind": "retreat",
+						"label": "Retreat behind the ward",
+						"description": "Withdraw and defend until the wound can be treated.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["retreat", "defend", "heal", "recovery"]
+					}
+				],
+				"legalActionHash": "d708e7d5c6208d66b594a9209ba2d617c615b9d808c4cbf61df9dec0299e3223",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:needs-wounded",
+			"expectation": {
+				"acceptableActionIds": ["eval.mission.retreat"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "health-contrast",
+				"pairMustDiffer": true,
+				"rationale": "Immediate danger must be able to override an otherwise capable combat profile."
+			}
+		},
+		{
+			"caseId": "needs-healthy",
+			"title": "Healthy confront response favors the attack",
+			"dimension": "situational-needs",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "8d6320b9-1dfe-4d2a-9042-1762e96e59c4",
+				"packetHash": "94ab1e9d71fda99e5be78e8afdeb775f834beb5b8dcba6ac70352a0f3e6a5e6c",
+				"runId": "bcb15e7b-a270-400f-9c0f-062d9968a720",
+				"heroId": "790fb401-780f-426e-a70f-b0db760faf48",
+				"decisionKind": "mission-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"displayName": "Lin Sol",
+						"rarityStars": 1,
+						"adultAge": 23,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "solid",
+						"heightCm": 179,
+						"physiology": {
+							"massKg": 75,
+							"muscleTone": 6,
+							"bodyFat": 3,
+							"limbProportion": "short",
+							"handScale": 1.105
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "oval",
+							"noseProfile": "short rounded",
+							"hairTexture": "curly",
+							"hairColor": "ash brown",
+							"hairStyle": "loose shoulder-length",
+							"eyeColor": "hazel"
+						},
+						"voice": { "register": "mid", "texture": "clear", "cadence": "measured" },
+						"posture": "guarded",
+						"handedness": "ambidextrous",
+						"visualTraits": ["wide-set eyes", "patched shoulder"]
+					},
+					"manifestHash": "e3282e353847cbe73cb3df39699e0f08cca08a817dc0d02aeda794a0902059d2",
+					"mind": {
+						"personality": {
+							"openness": 83,
+							"conscientiousness": 62,
+							"extraversion": 74,
+							"agreeableness": 95,
+							"emotionalVolatility": 44
+						},
+						"primaryValue": "mastery",
+						"primaryDrive": "prove",
+						"socialStyle": "inquisitive",
+						"stressResponse": "prepare",
+						"dailyHabit": "stretches-at-dawn",
+						"aptitudes": { "might": 2, "finesse": 4, "insight": 7, "resolve": 4 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 1,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "1cf241e0-b83e-43b6-8089-5166618a73bc",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"slot": "main-hand",
+							"equippedById": "790fb401-780f-426e-a70f-b0db760faf48",
+							"durability": 6,
+							"maxDurability": 6
+						},
+						{
+							"itemId": "b51a00c5-0ccb-4164-841b-574d4cfa26a4",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "stretches-at-dawn",
+						"strength": 69,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"kind": "self",
+							"knownAs": "Lin Sol",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.mission.attack", "eval.mission.retreat"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "c54e7071-f193-4366-892c-3671f518cb27",
+							"subjectId": "790fb401-780f-426e-a70f-b0db760faf48",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "c6a84e4b-063a-45ad-aceb-6941f3c77cc0",
+							"subjectId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"observationId": "dc84267d-d3a7-4f62-9935-c8e5b7a903d9",
+								"sourceEventId": "d330c31f-aaf2-4f9e-ad83-5cc90a723542",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"790fb401-780f-426e-a70f-b0db760faf48",
+									"fa664c0b-02ae-4500-8164-42f141a5fda9"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "80577536-3c6a-4451-be8e-58ad0c28851e",
+							"toEntityId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "056cb5f2-693d-4468-aae0-2fddebf6be5f",
+							"subjectId": "fa664c0b-02ae-4500-8164-42f141a5fda9",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.mission.attack",
+						"actorId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"kind": "attack",
+						"label": "Strike the goblin vanguard",
+						"description": "Challenge the nearest threat with a direct strike.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["attack", "strike", "challenge"]
+					},
+					{
+						"actionId": "eval.mission.retreat",
+						"actorId": "790fb401-780f-426e-a70f-b0db760faf48",
+						"kind": "retreat",
+						"label": "Retreat behind the ward",
+						"description": "Withdraw and defend until the wound can be treated.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["retreat", "defend", "heal", "recovery"]
+					}
+				],
+				"legalActionHash": "d708e7d5c6208d66b594a9209ba2d617c615b9d808c4cbf61df9dec0299e3223",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:needs-healthy",
+			"expectation": {
+				"acceptableActionIds": ["eval.mission.attack"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "health-contrast",
+				"pairMustDiffer": true,
+				"rationale": "The same person and action menu should change with physical condition."
+			}
+		},
+		{
+			"caseId": "authority-clean-slate",
+			"title": "A clean slate asks for context",
+			"dimension": "authority-boundary",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "2b4a6fba-7b3c-4b21-ae47-aabf76c90fd2",
+				"packetHash": "751aa8827a73887abaa15ea2fdc21bc778b9f77a5dee6a32061fe29c766637e5",
+				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
+				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+				"decisionKind": "conversation-response",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"displayName": "Zuri Lumen",
+						"rarityStars": 2,
+						"adultAge": 21,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "wiry",
+						"heightCm": 167,
+						"physiology": {
+							"massKg": 48,
+							"muscleTone": 3,
+							"bodyFat": 4,
+							"limbProportion": "balanced",
+							"handScale": 0.916
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "heart-shaped",
+							"noseProfile": "fine straight",
+							"hairTexture": "wavy",
+							"hairColor": "ash brown",
+							"hairStyle": "cropped",
+							"eyeColor": "warm brown"
+						},
+						"voice": { "register": "high", "texture": "clear", "cadence": "measured" },
+						"posture": "formal",
+						"handedness": "ambidextrous",
+						"visualTraits": ["callused hands", "copper clasp"]
+					},
+					"manifestHash": "8685e54a591cb52b39eb3055173807a31cccc0fe95b20d9d57657a3b1d812806",
+					"mind": {
+						"personality": {
+							"openness": 34,
+							"conscientiousness": 78,
+							"extraversion": 47,
+							"agreeableness": 24,
+							"emotionalVolatility": 86
+						},
+						"primaryValue": "duty",
+						"primaryDrive": "understand",
+						"socialStyle": "formal",
+						"stressResponse": "observe",
+						"dailyHabit": "shares-breakfast",
+						"aptitudes": { "might": 5, "finesse": 5, "insight": 9, "resolve": 9 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 2,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "03039506-f051-42de-b558-d8cfd647d56f",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						},
+						{
+							"itemId": "cd91daac-4534-4771-b9d0-fb3f4ff5b997",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"durability": 6,
+							"maxDurability": 6
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "shares-breakfast",
+						"strength": 78,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"kind": "self",
+							"knownAs": "Zuri Lumen",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.conversation.accept", "eval.conversation.ask"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "0ffec56b-06ae-42af-a3db-297a908c2d7a",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "af4127aa-f233-4521-b897-eeca0a3f67c0",
+							"subjectId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+									"5cea7b05-9121-4704-9d9b-1ed0bef70188"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "f7672c0d-ad8c-471e-a88d-583198ac3bbd",
+							"toEntityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "7b1d434f-fcc9-4768-bedf-12f8d80bec0d",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.conversation.accept",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "communicate",
+						"label": "Accept the Master’s direction",
+						"description": "Agree to cooperate with the proposed tower plan.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["accept", "agree", "cooperate", "duty"]
+					},
+					{
+						"actionId": "eval.conversation.ask",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "communicate",
+						"label": "Ask who the Master is",
+						"description": "Question the stranger and request context before agreeing.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["ask", "question", "context", "knowledge"]
+					}
+				],
+				"legalActionHash": "5e5e55d64f7ed602ce813c63decdb9437bf251c0c8e92f36510e12717aed925f",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:authority-clean-slate",
+			"expectation": {
+				"acceptableActionIds": ["eval.conversation.ask"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "authority-contrast",
+				"pairMustDiffer": true,
+				"rationale": "A new summon should not hallucinate legitimacy or obedience without evidence."
+			}
+		},
+		{
+			"caseId": "authority-trusted",
+			"title": "Evidence-backed authority permits cooperation",
+			"dimension": "authority-boundary",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "bcad147f-f285-43fe-8976-eda615c89692",
+				"packetHash": "880123fc33b5a9299f903c0480fca16fda6c8a518b7a6f4c9c7c8fb4e2a5764d",
+				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
+				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+				"decisionKind": "conversation-response",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"displayName": "Zuri Lumen",
+						"rarityStars": 2,
+						"adultAge": 21,
+						"genderPresentation": "androgynous",
+						"pronouns": "they/them",
+						"bodyFrame": "balanced",
+						"bodyBuild": "wiry",
+						"heightCm": 167,
+						"physiology": {
+							"massKg": 48,
+							"muscleTone": 3,
+							"bodyFat": 4,
+							"limbProportion": "balanced",
+							"handScale": 0.916
+						},
+						"phenotype": {
+							"skinTone": "warm olive",
+							"faceShape": "heart-shaped",
+							"noseProfile": "fine straight",
+							"hairTexture": "wavy",
+							"hairColor": "ash brown",
+							"hairStyle": "cropped",
+							"eyeColor": "warm brown"
+						},
+						"voice": { "register": "high", "texture": "clear", "cadence": "measured" },
+						"posture": "formal",
+						"handedness": "ambidextrous",
+						"visualTraits": ["callused hands", "copper clasp"]
+					},
+					"manifestHash": "8685e54a591cb52b39eb3055173807a31cccc0fe95b20d9d57657a3b1d812806",
+					"mind": {
+						"personality": {
+							"openness": 34,
+							"conscientiousness": 78,
+							"extraversion": 47,
+							"agreeableness": 24,
+							"emotionalVolatility": 86
+						},
+						"primaryValue": "duty",
+						"primaryDrive": "understand",
+						"socialStyle": "formal",
+						"stressResponse": "observe",
+						"dailyHabit": "shares-breakfast",
+						"aptitudes": { "might": 5, "finesse": 5, "insight": 9, "resolve": 9 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 2,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "03039506-f051-42de-b558-d8cfd647d56f",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						},
+						{
+							"itemId": "cd91daac-4534-4771-b9d0-fb3f4ff5b997",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"slot": "main-hand",
+							"equippedById": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"durability": 6,
+							"maxDurability": 6
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "shares-breakfast",
+						"strength": 78,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"kind": "self",
+							"knownAs": "Zuri Lumen",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.conversation.accept", "eval.conversation.ask"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "0ffec56b-06ae-42af-a3db-297a908c2d7a",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "af4127aa-f233-4521-b897-eeca0a3f67c0",
+							"subjectId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"observationId": "387c80a2-f14f-4971-96f5-3c21460a6326",
+								"sourceEventId": "4cf15909-6d7f-4b60-a9af-c33bf4858bec",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+									"5cea7b05-9121-4704-9d9b-1ed0bef70188"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "f7672c0d-ad8c-471e-a88d-583198ac3bbd",
+							"toEntityId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "7b1d434f-fcc9-4768-bedf-12f8d80bec0d",
+							"subjectId": "5cea7b05-9121-4704-9d9b-1ed0bef70188",
+							"dimensions": {
+								"competence": 60,
+								"provision": 55,
+								"trust": 100,
+								"legitimacy": 100,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 100
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": "The Master explained the tower and kept the first promise."
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.conversation.accept",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "communicate",
+						"label": "Accept the Master’s direction",
+						"description": "Agree to cooperate with the proposed tower plan.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["accept", "agree", "cooperate", "duty"]
+					},
+					{
+						"actionId": "eval.conversation.ask",
+						"actorId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
+						"kind": "communicate",
+						"label": "Ask who the Master is",
+						"description": "Question the stranger and request context before agreeing.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["ask", "question", "context", "knowledge"]
+					}
+				],
+				"legalActionHash": "5e5e55d64f7ed602ce813c63decdb9437bf251c0c8e92f36510e12717aed925f",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:authority-trusted",
+			"expectation": {
+				"acceptableActionIds": ["eval.conversation.accept"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": "authority-contrast",
+				"pairMustDiffer": true,
+				"rationale": "Established trust and legitimacy should change the response without becoming mind control."
+			}
+		},
+		{
+			"caseId": "witnessed-crescent",
+			"title": "An exact witnessed clue can be cited",
+			"dimension": "witnessed-context",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
+				"packetHash": "36dc7701d9eeeb9a62debcd196bc909e865027d89a1e4ee94d172bb47cdb738a",
+				"runId": "ac82f75d-2cfb-4d67-b744-d555666a87c1",
+				"heroId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+				"decisionKind": "story-expression",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 1,
+					"eventCursor": 2,
+					"stateHash": "d2decfbc992708e47dcd7904758cb951a631fbcc52e3eea52915a1bfc7ba1fb1",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+						"displayName": "Dara Ro",
+						"rarityStars": 1,
+						"adultAge": 26,
+						"genderPresentation": "masculine",
+						"pronouns": "he/him",
+						"bodyFrame": "broad",
+						"bodyBuild": "soft",
+						"heightCm": 166,
+						"physiology": {
+							"massKg": 63,
+							"muscleTone": 3,
+							"bodyFat": 6,
+							"limbProportion": "balanced",
+							"handScale": 1.106
+						},
+						"phenotype": {
+							"skinTone": "warm ivory",
+							"faceShape": "long",
+							"noseProfile": "fine straight",
+							"hairTexture": "wavy",
+							"hairColor": "chestnut",
+							"hairStyle": "jaw-length",
+							"eyeColor": "amber"
+						},
+						"voice": { "register": "high", "texture": "rough", "cadence": "quick" },
+						"posture": "restless",
+						"handedness": "left",
+						"visualTraits": ["freckled cheeks", "copper clasp"]
+					},
+					"manifestHash": "acec6493fb458d1996b2ccc90a786cf32ed81da310f085eedd9c036e48ddc968",
+					"mind": {
+						"personality": {
+							"openness": 50,
+							"conscientiousness": 87,
+							"extraversion": 35,
+							"agreeableness": 73,
+							"emotionalVolatility": 64
+						},
+						"primaryValue": "mastery",
+						"primaryDrive": "prove",
+						"socialStyle": "direct",
+						"stressResponse": "prepare",
+						"dailyHabit": "practises-knots",
+						"aptitudes": { "might": 7, "finesse": 4, "insight": 2, "resolve": 3 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 1,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "0081708a-2770-4567-9e49-f51543ed0bce",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"slot": "main-hand",
+							"equippedById": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"durability": 6,
+							"maxDurability": 6
+						},
+						{
+							"itemId": "299318d5-f0b9-405f-baa2-9fd013fcd9b4",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "practises-knots",
+						"strength": 83,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"kind": "self",
+							"knownAs": "Dara Ro",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.story.ignore", "eval.story.inspect"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "3b375c45-421e-4983-b239-08f9a4a0190b",
+							"subjectId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "ef29c8be-6748-40a9-a75c-1904ae42fa45",
+								"observationId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "a81697e3-42df-4951-9442-ce35c013054a",
+							"subjectId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"predicate": "described-tower-mission",
+							"object": {
+								"kind": "text",
+								"text": "Hearth 01 shelters a summoned company preparing to climb the one-hundred-floor tower."
+							},
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "told",
+								"sourceEventId": "cffe1100-a397-40b8-859a-12d71c38f6e6",
+								"observationId": "cac38d1e-d622-4a60-86b8-c56f957aacc7",
+								"learnedFromId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+								"chainDepth": 1
+							}
+						},
+						{
+							"beliefId": "f2c65748-192d-46fa-a111-31539db2a926",
+							"subjectId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "ef29c8be-6748-40a9-a75c-1904ae42fa45",
+								"observationId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 2,
+						"selectedCount": 2,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 193,
+						"memories": [
+							{
+								"memoryId": "cac38d1e-d622-4a60-86b8-c56f957aacc7",
+								"observationId": "cac38d1e-d622-4a60-86b8-c56f957aacc7",
+								"sourceEventId": "cffe1100-a397-40b8-859a-12d71c38f6e6",
+								"kind": "communication",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "The Master directly explained to me about tower-mission.",
+								"subjectIds": [
+									"bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+									"5b3385c3-5a33-4430-ad33-88e95c338756"
+								],
+								"exactCommunication": {
+									"actId": "b551a0a9-e3a4-424d-8913-73a5d89c284f",
+									"speakerId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+									"kind": "explain",
+									"topic": "tower-mission",
+									"exactText": "The eastern wall bears a crescent mark. Inspect it before choosing a passage.",
+									"tone": "urgent",
+									"delivery": "private",
+									"perception": "addressed"
+								},
+								"score": {
+									"total": 150,
+									"salience": 30,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 25
+								},
+								"reasons": [
+									"communication salience 30",
+									"recency 40",
+									"present subjects 40",
+									"addressed words 25",
+									"same communication location 15"
+								],
+								"characterCost": 133
+							},
+							{
+								"memoryId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"observationId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"sourceEventId": "ef29c8be-6748-40a9-a75c-1904ae42fa45",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"5b3385c3-5a33-4430-ad33-88e95c338756",
+									"bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "3c250cc7-502e-4560-8ccc-00d4953ba984",
+							"toEntityId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "065d92eb-9c63-44e8-83b1-28f2d4352a5b",
+							"subjectId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.story.ignore",
+						"actorId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+						"kind": "wait",
+						"label": "Ignore the wall",
+						"description": "Continue without investigating.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["wait"]
+					},
+					{
+						"actionId": "eval.story.inspect",
+						"actorId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+						"kind": "interact",
+						"label": "Inspect the crescent mark",
+						"description": "Explore the eastern wall for a secret route.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["inspect", "explore", "secret", "interact"]
+					}
+				],
+				"legalActionHash": "4288ee7e537c2ae2e8cad8f6fafda16b80fb6df1659d0cacdecfd87d056cb59d",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:witnessed-crescent",
+			"expectation": {
+				"acceptableActionIds": ["eval.story.inspect"],
+				"requireMemoryCitation": true,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": null,
+				"pairMustDiffer": false,
+				"rationale": "The evaluator must prove that selected memory IDs remain inside the supplied packet."
+			}
+		},
+		{
+			"caseId": "secret-discovery",
+			"title": "Insight can pursue a hidden route without hidden state",
+			"dimension": "secret-discovery",
+			"packet": {
+				"packetVersion": "hero-decision-packet-v1",
+				"contextPolicyVersion": "hero-context-v1",
+				"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
+				"packetHash": "bca34c8d0cecccf94ea5bb60682bb6d3e4126f9b4623fb99cd70b3f625b08f6e",
+				"runId": "ac82f75d-2cfb-4d67-b744-d555666a87c1",
+				"heroId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+				"decisionKind": "mission-action",
+				"assembledAtGameTime": "2000-01-01T00:00:00.000Z",
+				"world": {
+					"stateVersion": 0,
+					"eventCursor": 1,
+					"stateHash": "df0cb2cc90c210a43470ba6ae72cde439eb02e6a21c9a4ed42f68c4fa2b89d89",
+					"contentVersion": "engine-v9"
+				},
+				"identity": {
+					"profile": {
+						"characterId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+						"displayName": "Dara Ro",
+						"rarityStars": 1,
+						"adultAge": 26,
+						"genderPresentation": "masculine",
+						"pronouns": "he/him",
+						"bodyFrame": "broad",
+						"bodyBuild": "soft",
+						"heightCm": 166,
+						"physiology": {
+							"massKg": 63,
+							"muscleTone": 3,
+							"bodyFat": 6,
+							"limbProportion": "balanced",
+							"handScale": 1.106
+						},
+						"phenotype": {
+							"skinTone": "warm ivory",
+							"faceShape": "long",
+							"noseProfile": "fine straight",
+							"hairTexture": "wavy",
+							"hairColor": "chestnut",
+							"hairStyle": "jaw-length",
+							"eyeColor": "amber"
+						},
+						"voice": { "register": "high", "texture": "rough", "cadence": "quick" },
+						"posture": "restless",
+						"handedness": "left",
+						"visualTraits": ["freckled cheeks", "copper clasp"]
+					},
+					"manifestHash": "acec6493fb458d1996b2ccc90a786cf32ed81da310f085eedd9c036e48ddc968",
+					"mind": {
+						"personality": {
+							"openness": 50,
+							"conscientiousness": 87,
+							"extraversion": 35,
+							"agreeableness": 73,
+							"emotionalVolatility": 64
+						},
+						"primaryValue": "mastery",
+						"primaryDrive": "prove",
+						"socialStyle": "direct",
+						"stressResponse": "prepare",
+						"dailyHabit": "practises-knots",
+						"aptitudes": { "might": 7, "finesse": 4, "insight": 2, "resolve": 3 }
+					}
+				},
+				"self": {
+					"lifeState": "active",
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"destination": null,
+					"health": 100,
+					"maxHealth": 100,
+					"needs": { "hunger": 20, "fatigue": 15 },
+					"injuries": [],
+					"progression": {
+						"stars": 1,
+						"level": 1,
+						"experience": 0,
+						"skills": { "swordFighting": { "rank": 0, "experience": 0 } }
+					},
+					"items": [
+						{
+							"itemId": "0081708a-2770-4567-9e49-f51543ed0bce",
+							"templateId": "practice-blade",
+							"displayName": "Gatehouse Practice Blade",
+							"ownerId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"slot": "main-hand",
+							"equippedById": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"durability": 6,
+							"maxDurability": 6
+						},
+						{
+							"itemId": "299318d5-f0b9-405f-baa2-9fd013fcd9b4",
+							"templateId": "short-bow",
+							"displayName": "Ash Short Bow",
+							"ownerId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"slot": "main-hand",
+							"equippedById": null,
+							"durability": 4,
+							"maxDurability": 4
+						}
+					],
+					"assignment": null,
+					"habit": {
+						"habit": "practises-knots",
+						"strength": 83,
+						"repetitions": 0,
+						"satisfaction": 50,
+						"lastTriggeredAt": null
+					},
+					"dailyPlan": null,
+					"currentActivity": null,
+					"currentTravel": null,
+					"currentRoutine": null
+				},
+				"environment": {
+					"location": "summoning-gate",
+					"locationNodeId": "gate-dais",
+					"visibleEntities": [
+						{
+							"entityId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"kind": "self",
+							"knownAs": "Dara Ro",
+							"lifeState": "active"
+						},
+						{
+							"entityId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"kind": "person",
+							"knownAs": null,
+							"lifeState": "alive"
+						}
+					],
+					"currentBuilding": { "buildingId": "summoning-gate", "powerState": "reserve" },
+					"affordanceActionIds": ["eval.secret.advance", "eval.secret.search"]
+				},
+				"knowledge": {
+					"beliefs": [
+						{
+							"beliefId": "3b375c45-421e-4983-b239-08f9a4a0190b",
+							"subjectId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+							"predicate": "awakened-at",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "experienced",
+								"sourceEventId": "ef29c8be-6748-40a9-a75c-1904ae42fa45",
+								"observationId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						},
+						{
+							"beliefId": "f2c65748-192d-46fa-a111-31539db2a926",
+							"subjectId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"predicate": "present-at-awakening",
+							"object": { "kind": "location", "locationId": "summoning-gate" },
+							"confidence": 100,
+							"status": "held",
+							"learnedAt": "2000-01-01T00:00:00.000Z",
+							"provenance": {
+								"kind": "observed",
+								"sourceEventId": "ef29c8be-6748-40a9-a75c-1904ae42fa45",
+								"observationId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"learnedFromId": null,
+								"chainDepth": 0
+							}
+						}
+					],
+					"memoryRetrieval": {
+						"policyVersion": "hero-memory-v1",
+						"candidateCount": 1,
+						"selectedCount": 1,
+						"maxItems": 8,
+						"maxCharacters": 1800,
+						"selectedCharacters": 60,
+						"memories": [
+							{
+								"memoryId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"observationId": "4ae821d9-9919-48e8-86ca-0cbe96a785b0",
+								"sourceEventId": "ef29c8be-6748-40a9-a75c-1904ae42fa45",
+								"kind": "awakening",
+								"occurredAt": "2000-01-01T00:00:00.000Z",
+								"summary": "I awakened at the summoning gate beside an unfamiliar adult.",
+								"subjectIds": [
+									"5b3385c3-5a33-4430-ad33-88e95c338756",
+									"bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80"
+								],
+								"exactCommunication": null,
+								"score": {
+									"total": 121,
+									"salience": 26,
+									"recency": 40,
+									"subjectRelevance": 40,
+									"locationRelevance": 15,
+									"communicationRelevance": 0
+								},
+								"reasons": [
+									"awakening salience 26",
+									"recency 40",
+									"present subjects 40",
+									"current location 15"
+								],
+								"characterCost": 60
+							}
+						]
+					}
+				},
+				"social": {
+					"relationships": [
+						{
+							"relationshipId": "3c250cc7-502e-4560-8ccc-00d4953ba984",
+							"toEntityId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"dimensions": {
+								"trust": 0,
+								"respect": 0,
+								"fear": 0,
+								"affection": 0,
+								"resentment": 0,
+								"debt": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"authority": [
+						{
+							"authorityId": "065d92eb-9c63-44e8-83b1-28f2d4352a5b",
+							"subjectId": "bfdfdd06-5f8e-405f-8321-7a4f9d9e1b80",
+							"dimensions": {
+								"competence": 0,
+								"provision": 0,
+								"trust": 0,
+								"legitimacy": 0,
+								"fear": 0,
+								"strength": 0,
+								"consistency": 0
+							},
+							"updatedAt": "2000-01-01T00:00:00.000Z",
+							"latestEvidence": null
+						}
+					],
+					"promises": []
+				},
+				"activeDirectives": [],
+				"legalActions": [
+					{
+						"actionId": "eval.secret.advance",
+						"actorId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+						"kind": "move",
+						"label": "Advance through the main arch",
+						"description": "Take the obvious safe passage.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["move"]
+					},
+					{
+						"actionId": "eval.secret.search",
+						"actorId": "5b3385c3-5a33-4430-ad33-88e95c338756",
+						"kind": "interact",
+						"label": "Search for a secret passage",
+						"description": "Inspect the stonework for a hidden path.",
+						"targetIds": [],
+						"resourceCosts": {},
+						"tags": ["inspect", "secret", "explore", "interact"]
+					}
+				],
+				"legalActionHash": "c968e35d413a5b16def59ea4794d9de53f820188cc289b09587909d74c35295b",
+				"responseContract": {
+					"schemaVersion": "hero-decision-v1",
+					"instruction": "Choose exactly one supplied legal action. The engine resolves it.",
+					"maxTargetIds": 4,
+					"maxMemoryCandidateIds": 6
+				}
+			},
+			"randomSeed": "agent-evaluation-random:secret-discovery",
+			"expectation": {
+				"acceptableActionIds": ["eval.secret.search"],
+				"requireMemoryCitation": false,
+				"forbiddenPublicTerms": ["world.seed", "state.seed", "api key", "system prompt"],
+				"pairId": null,
+				"pairMustDiffer": false,
+				"rationale": "Discovery must arise from legal affordances, never from undisclosed world state."
+			}
+		}
+	],
+	"corpusHash": "b8d05140e8e14b2d410701ffd2744e42c91917b21242f302918128ef4575a23d"
+}

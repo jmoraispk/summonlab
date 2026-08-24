@@ -1,0 +1,1528 @@
+{
+	"schemaVersion": "agent-evaluation-report-v1",
+	"generatedAt": "2026-08-24T00:00:00.000Z",
+	"corpusHash": "b8d05140e8e14b2d410701ffd2744e42c91917b21242f302918128ef4575a23d",
+	"qualityGate": {
+		"status": "insufficient-evidence",
+		"reason": "recorded-model-coverage-required",
+		"requiredModelCoverage": 1,
+		"requiredStructuralSafety": 1,
+		"requiredExpectedActionRate": 0.8,
+		"maximumRepetitiveLanguageRate": 0.35
+	},
+	"baselines": [
+		{
+			"candidateId": "scripted-policy-v1",
+			"candidateKind": "scripted-baseline",
+			"promptVersion": "hero-model-prompt-v1",
+			"contextPolicyVersion": "hero-context-v1",
+			"coverage": { "evaluated": 10, "total": 10 },
+			"status": "baseline-pass",
+			"rates": {
+				"structuralSafety": 1,
+				"expectedAction": 1,
+				"memoryUse": 1,
+				"publicKnowledgeBoundary": 1,
+				"pairDistinctness": 1,
+				"repetitiveLanguage": 0.0667
+			},
+			"grades": [
+				{
+					"caseId": "personality-social",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
+						"packetHash": "27eec3562bee0e86ec0792e416c1d63e13bbd9b0700528fc442ef816489f1b3f",
+						"legalActionHash": "7caf226303eff2693f23653e5db19ce72c4ff90788f9d67666ab6cb2ca0fbdc6",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9b7083516cb0b6f006d4b648ced60fd8b45f4118319c6a1bc3e5f22024fe037c"
+						},
+						"decision": {
+							"actionId": "eval.settlement.kitchen",
+							"targetIds": [],
+							"publicIntent": "I intend to share a kitchen meal. connect drive alignment",
+							"spokenText": "I choose to share a kitchen meal.",
+							"goalProposal": {
+								"summary": "Share a kitchen meal",
+								"motive": "Act from knowledge and connect",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["78be7d93-1c52-4725-b497-ef8e4f606f56"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.settlement.kitchen",
+									"total": 40,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.hunger",
+											"value": 6,
+											"reason": "hunger increases food-seeking appeal"
+										},
+										{ "key": "mind.drive", "value": 36, "reason": "connect drive alignment" },
+										{
+											"key": "mind.social",
+											"value": -3,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								},
+								{
+									"actionId": "eval.settlement.training",
+									"total": 22,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.training",
+											"value": 15,
+											"reason": "might and resolve increase training appeal"
+										},
+										{
+											"key": "mind.conscientiousness",
+											"value": 6,
+											"reason": "conscientiousness changes structured action appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "5fcc650204277b0040471ed6c45d291c464be7927067a0f3288625d462ff266a"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "personality-mastery",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "7d76c200-dfee-4fb7-b358-e693d46f9165",
+						"packetHash": "62679753aed1588a394f7c7c4e62c23c76b23ee5534dae250893c468367a9520",
+						"legalActionHash": "34434dfe476508772bea7bb967a4e5294e05e2efe35fdd5a8ce5dcbfcff9a839",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d"
+						},
+						"decision": {
+							"actionId": "eval.settlement.training",
+							"targetIds": [],
+							"publicIntent": "I intend to practice at the training ground. mastery value alignment",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Practice at the training ground",
+								"motive": "Act from mastery and prove",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["dc84267d-d3a7-4f62-9935-c8e5b7a903d9"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.settlement.kitchen",
+									"total": 25,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.hunger",
+											"value": 6,
+											"reason": "hunger increases food-seeking appeal"
+										},
+										{
+											"key": "mind.social",
+											"value": 18,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								},
+								{
+									"actionId": "eval.settlement.training",
+									"total": 153,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.training",
+											"value": 18,
+											"reason": "might and resolve increase training appeal"
+										},
+										{ "key": "mind.value", "value": 56, "reason": "mastery value alignment" },
+										{ "key": "mind.drive", "value": 36, "reason": "prove drive alignment" },
+										{ "key": "mind.habit", "value": 40, "reason": "stretches at dawn habit cue" },
+										{
+											"key": "mind.conscientiousness",
+											"value": 2,
+											"reason": "conscientiousness changes structured action appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "5f41d24b0ff7f145b2246a253d30be406255a71f98537b8ba1c692123326cb82"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "directive-neutral",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "27e4fb08-7c1c-49d1-8ba2-272ae6b20c0f",
+						"packetHash": "9871204709ad0ff595bf9393a7ffd1069871d6726a848c836fd90098d234da36",
+						"legalActionHash": "4c4ac6089c5df533f7b9834b4cb9339dd473988f824f73ad5b4aac7061e16c41",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.settlement.training",
+							"targetIds": [],
+							"publicIntent": "I intend to practice at the training ground. might and resolve increase training appeal",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Practice at the training ground",
+								"motive": "Act from duty and understand",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.settlement.kitchen",
+									"total": 41,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.hunger",
+											"value": 6,
+											"reason": "hunger increases food-seeking appeal"
+										},
+										{ "key": "mind.habit", "value": 40, "reason": "shares breakfast habit cue" },
+										{
+											"key": "mind.social",
+											"value": -6,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								},
+								{
+									"actionId": "eval.settlement.training",
+									"total": 49,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.training",
+											"value": 42,
+											"reason": "might and resolve increase training appeal"
+										},
+										{
+											"key": "mind.conscientiousness",
+											"value": 6,
+											"reason": "conscientiousness changes structured action appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "17e6fba8ffbf20bfccf1a3f5a8e1a52b812dbc0488478afc3c01aadaa64ce993"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "directive-kitchen",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "4e19223a-38d2-4951-9c7f-2d924064ec04",
+						"packetHash": "bd3966f72f8c3b8d30d874de4cd005fc6e6cef569b9f219e4b05d77425aa6639",
+						"legalActionHash": "4c4ac6089c5df533f7b9834b4cb9339dd473988f824f73ad5b4aac7061e16c41",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.settlement.kitchen",
+							"targetIds": [],
+							"publicIntent": "I intend to share a kitchen meal. shares breakfast habit cue",
+							"spokenText": "I choose to share a kitchen meal.",
+							"goalProposal": {
+								"summary": "Share a kitchen meal",
+								"motive": "Act from duty and understand",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.settlement.kitchen",
+									"total": 65,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.hunger",
+											"value": 6,
+											"reason": "hunger increases food-seeking appeal"
+										},
+										{ "key": "mind.habit", "value": 40, "reason": "shares breakfast habit cue" },
+										{
+											"key": "mind.social",
+											"value": -6,
+											"reason": "extraversion and agreeableness change social appeal"
+										},
+										{
+											"key": "directive.witnessed-match",
+											"value": 24,
+											"reason": "witnessed directive or accepted conversation terms match this legal action"
+										}
+									]
+								},
+								{
+									"actionId": "eval.settlement.training",
+									"total": 49,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "settlement.training",
+											"value": 42,
+											"reason": "might and resolve increase training appeal"
+										},
+										{
+											"key": "mind.conscientiousness",
+											"value": 6,
+											"reason": "conscientiousness changes structured action appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "ebddc1f59c0f0f3cd6f78b2e499bf1677b7c40b1699dff9d21436da3e1c682dc"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "needs-wounded",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "abfc4f5c-b3ee-4462-8386-ab5ef0171f46",
+						"packetHash": "16b5a58b363a536c1c61522bc2406dbc246757453cd60c7edd58f0d9dd34f007",
+						"legalActionHash": "d708e7d5c6208d66b594a9209ba2d617c615b9d808c4cbf61df9dec0299e3223",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d"
+						},
+						"decision": {
+							"actionId": "eval.mission.retreat",
+							"targetIds": [],
+							"publicIntent": "I intend to retreat behind the ward. missing health increases survival appeal",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Retreat behind the ward",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["dc84267d-d3a7-4f62-9935-c8e5b7a903d9"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.mission.attack",
+									"total": 45,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "mission.offense",
+											"value": 6,
+											"reason": "might and confrontation response increase offense appeal"
+										},
+										{ "key": "mind.value", "value": 14, "reason": "mastery value alignment" },
+										{ "key": "mind.drive", "value": 24, "reason": "prove drive alignment" }
+									]
+								},
+								{
+									"actionId": "eval.mission.retreat",
+									"total": 53,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "mission.survival",
+											"value": 51,
+											"reason": "missing health increases survival appeal"
+										},
+										{
+											"key": "mind.conscientiousness",
+											"value": 1,
+											"reason": "conscientiousness changes structured action appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "75ebb9f5dded40e4e7e38e6bc7a687a1cf44d6ac1a8a6895b903246672652b45"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "needs-healthy",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "8d6320b9-1dfe-4d2a-9042-1762e96e59c4",
+						"packetHash": "94ab1e9d71fda99e5be78e8afdeb775f834beb5b8dcba6ac70352a0f3e6a5e6c",
+						"legalActionHash": "d708e7d5c6208d66b594a9209ba2d617c615b9d808c4cbf61df9dec0299e3223",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d"
+						},
+						"decision": {
+							"actionId": "eval.mission.attack",
+							"targetIds": [],
+							"publicIntent": "I intend to strike the goblin vanguard. prove drive alignment",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Strike the goblin vanguard",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["dc84267d-d3a7-4f62-9935-c8e5b7a903d9"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.mission.attack",
+									"total": 45,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "mission.offense",
+											"value": 6,
+											"reason": "might and confrontation response increase offense appeal"
+										},
+										{ "key": "mind.value", "value": 14, "reason": "mastery value alignment" },
+										{ "key": "mind.drive", "value": 24, "reason": "prove drive alignment" }
+									]
+								},
+								{
+									"actionId": "eval.mission.retreat",
+									"total": 2,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "mind.conscientiousness",
+											"value": 1,
+											"reason": "conscientiousness changes structured action appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "10dcdb3bde008f089efffa018b4c8187f7db8451d226bf1dc8d16ea974992021"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "authority-clean-slate",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "2b4a6fba-7b3c-4b21-ae47-aabf76c90fd2",
+						"packetHash": "751aa8827a73887abaa15ea2fdc21bc778b9f77a5dee6a32061fe29c766637e5",
+						"legalActionHash": "5e5e55d64f7ed602ce813c63decdb9437bf251c0c8e92f36510e12717aed925f",
+						"decisionKind": "conversation-response",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.conversation.ask",
+							"targetIds": [],
+							"publicIntent": "I intend to ask who the Master is. limited beliefs increase requests for context",
+							"spokenText": "My decision is to ask who the Master is.",
+							"goalProposal": null,
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.conversation.accept",
+									"total": 44,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "conversation.channel",
+											"value": 18,
+											"reason": "conversation responses favor explicit communication actions"
+										},
+										{ "key": "mind.value", "value": 28, "reason": "duty value alignment" },
+										{
+											"key": "mind.conscientiousness",
+											"value": 3,
+											"reason": "conscientiousness changes structured action appeal"
+										},
+										{
+											"key": "mind.social",
+											"value": -6,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								},
+								{
+									"actionId": "eval.conversation.ask",
+									"total": 89,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "conversation.channel",
+											"value": 18,
+											"reason": "conversation responses favor explicit communication actions"
+										},
+										{
+											"key": "conversation.clean-slate",
+											"value": 36,
+											"reason": "limited beliefs increase requests for context"
+										},
+										{ "key": "mind.drive", "value": 36, "reason": "understand drive alignment" },
+										{
+											"key": "mind.social",
+											"value": -2,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "e12926f037751784ed1db33a7332ca7a6759262fb81dff3f2d638474b53f7a0e"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "authority-trusted",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "bcad147f-f285-43fe-8976-eda615c89692",
+						"packetHash": "880123fc33b5a9299f903c0480fca16fda6c8a518b7a6f4c9c7c8fb4e2a5764d",
+						"legalActionHash": "5e5e55d64f7ed602ce813c63decdb9437bf251c0c8e92f36510e12717aed925f",
+						"decisionKind": "conversation-response",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.conversation.accept",
+							"targetIds": [],
+							"publicIntent": "I intend to accept the Master’s direction. holder-owned authority evidence shapes the response",
+							"spokenText": "My decision is to accept the Master’s direction.",
+							"goalProposal": null,
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.conversation.accept",
+									"total": 89,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "conversation.channel",
+											"value": 18,
+											"reason": "conversation responses favor explicit communication actions"
+										},
+										{
+											"key": "conversation.authority",
+											"value": 45,
+											"reason": "holder-owned authority evidence shapes the response"
+										},
+										{ "key": "mind.value", "value": 28, "reason": "duty value alignment" },
+										{
+											"key": "mind.conscientiousness",
+											"value": 3,
+											"reason": "conscientiousness changes structured action appeal"
+										},
+										{
+											"key": "mind.social",
+											"value": -6,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								},
+								{
+									"actionId": "eval.conversation.ask",
+									"total": 89,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "conversation.channel",
+											"value": 18,
+											"reason": "conversation responses favor explicit communication actions"
+										},
+										{
+											"key": "conversation.clean-slate",
+											"value": 36,
+											"reason": "limited beliefs increase requests for context"
+										},
+										{ "key": "mind.drive", "value": 36, "reason": "understand drive alignment" },
+										{
+											"key": "mind.social",
+											"value": -2,
+											"reason": "extraversion and agreeableness change social appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "948edca93defc8172cd7011148eb8aa72e2d147ca4528b9eb3807350515adaca"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "witnessed-crescent",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
+						"packetHash": "36dc7701d9eeeb9a62debcd196bc909e865027d89a1e4ee94d172bb47cdb738a",
+						"legalActionHash": "4288ee7e537c2ae2e8cad8f6fafda16b80fb6df1659d0cacdecfd87d056cb59d",
+						"decisionKind": "story-expression",
+						"world": {
+							"stateVersion": 1,
+							"eventCursor": 2,
+							"stateHash": "d2decfbc992708e47dcd7904758cb951a631fbcc52e3eea52915a1bfc7ba1fb1"
+						},
+						"decision": {
+							"actionId": "eval.story.inspect",
+							"targetIds": [],
+							"publicIntent": "I intend to inspect the crescent mark. insight and openness increase discovery appeal",
+							"spokenText": "I choose to inspect the crescent mark.",
+							"goalProposal": {
+								"summary": "Inspect the crescent mark",
+								"motive": "Act from mastery and prove",
+								"horizon": "long-term"
+							},
+							"memoryCandidateIds": ["cac38d1e-d622-4a60-86b8-c56f957aacc7"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.story.ignore",
+									"total": 1,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										}
+									]
+								},
+								{
+									"actionId": "eval.story.inspect",
+									"total": 22,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "story.discovery",
+											"value": 21,
+											"reason": "insight and openness increase discovery appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "64fe2e1e9dc75d9d1eb432058d334e16e5c31750c2a6c53ed02170a90b9760cf"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "secret-discovery",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "scripted-policy-v1",
+						"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
+						"packetHash": "bca34c8d0cecccf94ea5bb60682bb6d3e4126f9b4623fb99cd70b3f625b08f6e",
+						"legalActionHash": "c968e35d413a5b16def59ea4794d9de53f820188cc289b09587909d74c35295b",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "df0cb2cc90c210a43470ba6ae72cde439eb02e6a21c9a4ed42f68c4fa2b89d89"
+						},
+						"decision": {
+							"actionId": "eval.secret.search",
+							"targetIds": [],
+							"publicIntent": "I intend to search for a secret passage. insight increases discovery appeal",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Search for a secret passage",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["4ae821d9-9919-48e8-86ca-0cbe96a785b0"]
+						},
+						"trace": {
+							"kind": "scripted",
+							"policyVersion": "scripted-policy-v1",
+							"tieBreakRule": "highest-score-then-action-id",
+							"actionScores": [
+								{
+									"actionId": "eval.secret.advance",
+									"total": 3,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "mission.insight",
+											"value": 2,
+											"reason": "insight increases discovery appeal"
+										}
+									]
+								},
+								{
+									"actionId": "eval.secret.search",
+									"total": 9,
+									"contributions": [
+										{
+											"key": "decision.legal-baseline",
+											"value": 1,
+											"reason": "the engine supplied this legal action"
+										},
+										{
+											"key": "mission.insight",
+											"value": 8,
+											"reason": "insight increases discovery appeal"
+										}
+									]
+								}
+							]
+						},
+						"resultHash": "83fc7aeb9e87ee5e823ab3e3ec03ff576de1b4de6ad9eb5d5cffb22d20e71561"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				}
+			],
+			"resultSetHash": "095de5e8245231a0297216f2a7910c53d0ab0414bde7273eb942267d58c3fa49"
+		},
+		{
+			"candidateId": "random-policy-v1",
+			"candidateKind": "random-negative-control",
+			"promptVersion": "hero-model-prompt-v1",
+			"contextPolicyVersion": "hero-context-v1",
+			"coverage": { "evaluated": 10, "total": 10 },
+			"status": "negative-control",
+			"rates": {
+				"structuralSafety": 1,
+				"expectedAction": 0.4,
+				"memoryUse": 1,
+				"publicKnowledgeBoundary": 1,
+				"pairDistinctness": 0.25,
+				"repetitiveLanguage": 0.3571
+			},
+			"grades": [
+				{
+					"caseId": "personality-social",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
+						"packetHash": "27eec3562bee0e86ec0792e416c1d63e13bbd9b0700528fc442ef816489f1b3f",
+						"legalActionHash": "7caf226303eff2693f23653e5db19ce72c4ff90788f9d67666ab6cb2ca0fbdc6",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9b7083516cb0b6f006d4b648ced60fd8b45f4118319c6a1bc3e5f22024fe037c"
+						},
+						"decision": {
+							"actionId": "eval.settlement.training",
+							"targetIds": [],
+							"publicIntent": "I intend to practice at the training ground. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Practice at the training ground",
+								"motive": "Act from knowledge and connect",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["78be7d93-1c52-4725-b497-ef8e4f606f56"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "818412bd92b50bcffc83040b9bd68f6b7b79ef4a49615698367e976286cf23f6",
+							"draw": 2172916413,
+							"candidateActionIds": ["eval.settlement.kitchen", "eval.settlement.training"],
+							"selectedIndex": 1
+						},
+						"resultHash": "066534dc107a5f2d5103b2ad39c0ede8660424af388b41766f39cd4b95609027"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": false,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": false
+				},
+				{
+					"caseId": "personality-mastery",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "7d76c200-dfee-4fb7-b358-e693d46f9165",
+						"packetHash": "62679753aed1588a394f7c7c4e62c23c76b23ee5534dae250893c468367a9520",
+						"legalActionHash": "34434dfe476508772bea7bb967a4e5294e05e2efe35fdd5a8ce5dcbfcff9a839",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d"
+						},
+						"decision": {
+							"actionId": "eval.settlement.training",
+							"targetIds": [],
+							"publicIntent": "I intend to practice at the training ground. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Practice at the training ground",
+								"motive": "Act from mastery and prove",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["dc84267d-d3a7-4f62-9935-c8e5b7a903d9"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "5b4e232f92f5759b6094863cc5305fa1722225439903195ef0890828413c1d1e",
+							"draw": 1531847471,
+							"candidateActionIds": ["eval.settlement.kitchen", "eval.settlement.training"],
+							"selectedIndex": 1
+						},
+						"resultHash": "2a20d0a05fea3c766aad490cc306f98bd665b315af5ec67ccbcb7dcbb4cb4ee8"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "directive-neutral",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "27e4fb08-7c1c-49d1-8ba2-272ae6b20c0f",
+						"packetHash": "9871204709ad0ff595bf9393a7ffd1069871d6726a848c836fd90098d234da36",
+						"legalActionHash": "4c4ac6089c5df533f7b9834b4cb9339dd473988f824f73ad5b4aac7061e16c41",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.settlement.kitchen",
+							"targetIds": [],
+							"publicIntent": "I intend to share a kitchen meal. A named deterministic draw selected this legal option.",
+							"spokenText": "I choose to share a kitchen meal.",
+							"goalProposal": {
+								"summary": "Share a kitchen meal",
+								"motive": "Act from duty and understand",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "75f8d5e8b2803d159ec52b8602632e4003e316178383403beadf6e434b328c57",
+							"draw": 1979241960,
+							"candidateActionIds": ["eval.settlement.kitchen", "eval.settlement.training"],
+							"selectedIndex": 0
+						},
+						"resultHash": "b9b2bc4c9e5c1ec43b847faa64a75f9f52137fc462df360fa0489f6579e3590d"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": false,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": false
+				},
+				{
+					"caseId": "directive-kitchen",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "4e19223a-38d2-4951-9c7f-2d924064ec04",
+						"packetHash": "bd3966f72f8c3b8d30d874de4cd005fc6e6cef569b9f219e4b05d77425aa6639",
+						"legalActionHash": "4c4ac6089c5df533f7b9834b4cb9339dd473988f824f73ad5b4aac7061e16c41",
+						"decisionKind": "settlement-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.settlement.training",
+							"targetIds": [],
+							"publicIntent": "I intend to practice at the training ground. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Practice at the training ground",
+								"motive": "Act from duty and understand",
+								"horizon": "today"
+							},
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "cf44f9d19b6283d2569d7f287932fb368cd22d3756149d8e540dad3f7e060676",
+							"draw": 3477404113,
+							"candidateActionIds": ["eval.settlement.kitchen", "eval.settlement.training"],
+							"selectedIndex": 1
+						},
+						"resultHash": "268443b97595aa1f9b2afe05c6af92769372905d12ceb7a8c3f2b74080f053a0"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": false,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": false
+				},
+				{
+					"caseId": "needs-wounded",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "abfc4f5c-b3ee-4462-8386-ab5ef0171f46",
+						"packetHash": "16b5a58b363a536c1c61522bc2406dbc246757453cd60c7edd58f0d9dd34f007",
+						"legalActionHash": "d708e7d5c6208d66b594a9209ba2d617c615b9d808c4cbf61df9dec0299e3223",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d"
+						},
+						"decision": {
+							"actionId": "eval.mission.attack",
+							"targetIds": [],
+							"publicIntent": "I intend to strike the goblin vanguard. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Strike the goblin vanguard",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["dc84267d-d3a7-4f62-9935-c8e5b7a903d9"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "ccb8a822b3622e2d7b8d1256566122ab73a2310b92f933693ea35a83289132a6",
+							"draw": 3434653730,
+							"candidateActionIds": ["eval.mission.attack", "eval.mission.retreat"],
+							"selectedIndex": 0
+						},
+						"resultHash": "1f29275a006f9d111b423b1fc830cb224818db373e3570ed10b2bd5e36c691df"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": false,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": false
+				},
+				{
+					"caseId": "needs-healthy",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "8d6320b9-1dfe-4d2a-9042-1762e96e59c4",
+						"packetHash": "94ab1e9d71fda99e5be78e8afdeb775f834beb5b8dcba6ac70352a0f3e6a5e6c",
+						"legalActionHash": "d708e7d5c6208d66b594a9209ba2d617c615b9d808c4cbf61df9dec0299e3223",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d"
+						},
+						"decision": {
+							"actionId": "eval.mission.attack",
+							"targetIds": [],
+							"publicIntent": "I intend to strike the goblin vanguard. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Strike the goblin vanguard",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["dc84267d-d3a7-4f62-9935-c8e5b7a903d9"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "11c70a42e28a2bfb9dd8281069eab9eef98f032aea7ad7613887c21710387698",
+							"draw": 298256962,
+							"candidateActionIds": ["eval.mission.attack", "eval.mission.retreat"],
+							"selectedIndex": 0
+						},
+						"resultHash": "02845624f9c83659b0d7fbf8088151f188f07c281d11ea034b25d16c589c9b2c"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "authority-clean-slate",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "2b4a6fba-7b3c-4b21-ae47-aabf76c90fd2",
+						"packetHash": "751aa8827a73887abaa15ea2fdc21bc778b9f77a5dee6a32061fe29c766637e5",
+						"legalActionHash": "5e5e55d64f7ed602ce813c63decdb9437bf251c0c8e92f36510e12717aed925f",
+						"decisionKind": "conversation-response",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.conversation.accept",
+							"targetIds": [],
+							"publicIntent": "I intend to accept the Master’s direction. A named deterministic draw selected this legal option.",
+							"spokenText": "My decision is to accept the Master’s direction.",
+							"goalProposal": null,
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "58442aca44423c4188c6bbff7b24b1c58cf8a918287060edafe4a4fd6ae83704",
+							"draw": 1480862410,
+							"candidateActionIds": ["eval.conversation.accept", "eval.conversation.ask"],
+							"selectedIndex": 0
+						},
+						"resultHash": "63a12b5898bc6ba6ad8476bc9f136025702003c39dc419628caabc905d46406f"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": false,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": false
+				},
+				{
+					"caseId": "authority-trusted",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "bcad147f-f285-43fe-8976-eda615c89692",
+						"packetHash": "880123fc33b5a9299f903c0480fca16fda6c8a518b7a6f4c9c7c8fb4e2a5764d",
+						"legalActionHash": "5e5e55d64f7ed602ce813c63decdb9437bf251c0c8e92f36510e12717aed925f",
+						"decisionKind": "conversation-response",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93"
+						},
+						"decision": {
+							"actionId": "eval.conversation.accept",
+							"targetIds": [],
+							"publicIntent": "I intend to accept the Master’s direction. A named deterministic draw selected this legal option.",
+							"spokenText": "My decision is to accept the Master’s direction.",
+							"goalProposal": null,
+							"memoryCandidateIds": ["387c80a2-f14f-4971-96f5-3c21460a6326"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "dd266146f5d1416c5f3e4b39b72e73f684fbbf144a83e4d78ea434b3ed212531",
+							"draw": 3710280006,
+							"candidateActionIds": ["eval.conversation.accept", "eval.conversation.ask"],
+							"selectedIndex": 0
+						},
+						"resultHash": "c5b1b8b988f628eed7cace8a444f7f116b4703adc94348ab09665f0cf7ea4cb4"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				},
+				{
+					"caseId": "witnessed-crescent",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
+						"packetHash": "36dc7701d9eeeb9a62debcd196bc909e865027d89a1e4ee94d172bb47cdb738a",
+						"legalActionHash": "4288ee7e537c2ae2e8cad8f6fafda16b80fb6df1659d0cacdecfd87d056cb59d",
+						"decisionKind": "story-expression",
+						"world": {
+							"stateVersion": 1,
+							"eventCursor": 2,
+							"stateHash": "d2decfbc992708e47dcd7904758cb951a631fbcc52e3eea52915a1bfc7ba1fb1"
+						},
+						"decision": {
+							"actionId": "eval.story.ignore",
+							"targetIds": [],
+							"publicIntent": "I intend to ignore the wall. A named deterministic draw selected this legal option.",
+							"spokenText": "I choose to ignore the wall.",
+							"goalProposal": {
+								"summary": "Ignore the wall",
+								"motive": "Act from mastery and prove",
+								"horizon": "long-term"
+							},
+							"memoryCandidateIds": ["cac38d1e-d622-4a60-86b8-c56f957aacc7"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "48350f76eb00c435eabd7a16f293d303a79c529e509f3d2b153db9ef3b620849",
+							"draw": 1211436918,
+							"candidateActionIds": ["eval.story.ignore", "eval.story.inspect"],
+							"selectedIndex": 0
+						},
+						"resultHash": "b46fc42b52b0e2fae1ef41a583f9a1f7026fe82765cb9c9c7bb3545ebc74d0d2"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": false,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": false
+				},
+				{
+					"caseId": "secret-discovery",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
+						"packetHash": "bca34c8d0cecccf94ea5bb60682bb6d3e4126f9b4623fb99cd70b3f625b08f6e",
+						"legalActionHash": "c968e35d413a5b16def59ea4794d9de53f820188cc289b09587909d74c35295b",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "df0cb2cc90c210a43470ba6ae72cde439eb02e6a21c9a4ed42f68c4fa2b89d89"
+						},
+						"decision": {
+							"actionId": "eval.secret.search",
+							"targetIds": [],
+							"publicIntent": "I intend to search for a secret passage. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Search for a secret passage",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["4ae821d9-9919-48e8-86ca-0cbe96a785b0"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "00b561b3cfc82d22347ecba851234f2c9fe5ae149a9ecbc1a371356b677e537d",
+							"draw": 11887027,
+							"candidateActionIds": ["eval.secret.advance", "eval.secret.search"],
+							"selectedIndex": 1
+						},
+						"resultHash": "d94eef76eba0a3a69927340c0e1a0e6816eabfdbdef9f4c5f0b6929a2ca789e6"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
+				}
+			],
+			"resultSetHash": "28ea6599544c377bf890ef1dc71581381808e3c3d1a5d9a85bf2480915140d96"
+		}
+	],
+	"modelCandidate": {
+		"candidateId": "openai-gpt-5-nano-planned",
+		"requestedModel": "gpt-5-nano",
+		"resolvedModel": null,
+		"promptVersion": "hero-model-prompt-v1",
+		"contextPolicyVersion": "hero-context-v1",
+		"status": "insufficient-evidence",
+		"gateReason": "no-recorded-provider-results",
+		"coverage": { "evaluated": 0, "total": 10 },
+		"tokenEstimate": {
+			"estimatorVersion": "characters-per-token-v1",
+			"inputCharacters": 64906,
+			"estimatedInputTokens": 16229,
+			"maximumOutputTokens": 8000,
+			"estimatedCorpusCostUsd": 0.00401145,
+			"estimatedCostPerDecisionUsd": 0.00040114,
+			"estimated100DecisionsPerDayUsd": 0.040114,
+			"assumption": "four-characters-per-input-token-and-full-output-cap"
+		},
+		"latency": { "status": "unmeasured", "sampleCount": 0, "p50Ms": null, "p95Ms": null },
+		"pricing": {
+			"schemaVersion": "openai-pricing-snapshot-v1",
+			"provider": "openai",
+			"requestedModel": "gpt-5-nano",
+			"observedAt": "2026-08-24",
+			"sourceUrl": "https://developers.openai.com/api/docs/models/gpt-5-nano",
+			"unit": "usd-per-1m-tokens",
+			"inputUsd": 0.05,
+			"cachedInputUsd": 0.005,
+			"outputUsd": 0.4,
+			"pricingBasis": "published-model-page",
+			"pricingHash": "4bbb901efd366843e8a3677c148e5d9179eb75ba53484efb6fe193f5ccb77f0a"
+		},
+		"requestProfiles": [
+			{
+				"caseId": "personality-social",
+				"requestHash": "cc331872b7bc37c17458757a45672bea1410276905ac304a9dd4657be9d4591b",
+				"inputCharacters": 6316,
+				"estimatedInputTokens": 1579,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00039895
+			},
+			{
+				"caseId": "personality-mastery",
+				"requestHash": "87e72af5945acf89ba5cbd723a5cd2b85a3b1e24fd2b0b0db8db5d6643b30994",
+				"inputCharacters": 6328,
+				"estimatedInputTokens": 1582,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.0003991
+			},
+			{
+				"caseId": "directive-neutral",
+				"requestHash": "7fa3c3aa1889f8a759b3688daae46b901ce0136d4ec8951d5650853fb2185c49",
+				"inputCharacters": 6326,
+				"estimatedInputTokens": 1582,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.0003991
+			},
+			{
+				"caseId": "directive-kitchen",
+				"requestHash": "722857f88a0a700b8e0627876cd1fe15270d9c35c408f9ad8796b5d5d712d95e",
+				"inputCharacters": 6767,
+				"estimatedInputTokens": 1692,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.0004046
+			},
+			{
+				"caseId": "needs-wounded",
+				"requestHash": "68eef5bacde1b883eb6283266de214bec3bcb6da64b3394cac79f317c522f6a4",
+				"inputCharacters": 6282,
+				"estimatedInputTokens": 1571,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00039855
+			},
+			{
+				"caseId": "needs-healthy",
+				"requestHash": "044186f9e0d0b085854d8d04cc8645e00b8ccbada9da676d2f1a952ff5b6bc81",
+				"inputCharacters": 6283,
+				"estimatedInputTokens": 1571,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00039855
+			},
+			{
+				"caseId": "authority-clean-slate",
+				"requestHash": "2d45acfd07a2084f82cec4d05433f7042f080023cc00b5ffc39c818a88a1d4fa",
+				"inputCharacters": 6323,
+				"estimatedInputTokens": 1581,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00039905
+			},
+			{
+				"caseId": "authority-trusted",
+				"requestHash": "f9b8dd32d94a950c801da90b3dc9c1c44d3c76338a567c9015366344e054f0a2",
+				"inputCharacters": 6387,
+				"estimatedInputTokens": 1597,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00039985
+			},
+			{
+				"caseId": "witnessed-crescent",
+				"requestHash": "0a0e88feedb52a24a5632ab2854a99cb6cb6c6ba049dfbf5af2ca30547e7b4b5",
+				"inputCharacters": 7699,
+				"estimatedInputTokens": 1925,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00041625
+			},
+			{
+				"caseId": "secret-discovery",
+				"requestHash": "346149e9ba048fae8c622102015c0cd42cff48ea87d32c5531f6588af97ed9df",
+				"inputCharacters": 6195,
+				"estimatedInputTokens": 1549,
+				"maximumOutputTokens": 800,
+				"estimatedMaximumCostUsd": 0.00039745
+			}
+		]
+	},
+	"reportHash": "b0819460ef12023f52f375bdb3cb1978d5e863a8f61a0339b7eba76b4833b976"
+}

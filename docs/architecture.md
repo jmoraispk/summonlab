@@ -622,6 +622,17 @@ The interface should show queued, considering, validated, fallback, and resolved
 - cost and latency distributions;
 - fallback frequency.
 
+`@summonlab/evaluation` now implements the first credential-free gate as
+`agent-evaluation-corpus-v1`. Ten fixed packet fixtures isolate personality, directives, needs,
+authority, witnessed memory, and legal secret discovery. Both zero-cost policies are graded on
+every packet; a dated `gpt-5-nano` request/cost projection remains `insufficient-evidence` until a
+recorded provider run supplies resolved model identity, full-corpus outputs, token usage, and
+latency. `pnpm validate:agent-evaluation` rejects drift in the checked-in corpus or report, and the
+development-only `/debug/evaluations` route renders the same artifacts without making a provider
+call. The opt-in `pnpm record:agent-evaluation` command is excluded from CI, requires a paid-run
+acknowledgement, and turns actual full-corpus outputs into measured promotion evidence. See ADR
+0028.
+
 ## Implementation order
 
 1. Contracts, seeded engine, run clock, and event log.

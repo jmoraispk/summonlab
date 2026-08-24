@@ -222,13 +222,15 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-008` were completed on 2026-08-24. Canonical
+Status: **in progress**. `AGT-001` through `AGT-009` were completed on 2026-08-24. Canonical
 witnessed onboarding now feeds deterministic, inspectable hero context, two packet-bound zero-cost
 policies, one opt-in strict OpenAI policy preview, and a PostgreSQL-authoritative stale-safe job
 lifecycle that can atomically apply a legal choice. Free conversation now records exact witnessed
 turns, distinct hero replies, explicit order outcomes, and later decision preferences. The
 development-only redacted inspector now audits exactly supplied and omitted context, provider-safe
-request settings, token metadata, validation boundaries, and application evidence.
+request settings, token metadata, validation boundaries, and application evidence. Ten fixed
+packet trials now separate structural safety from useful behavior and block live-model promotion
+until recorded quality, token, and latency evidence exists.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -240,6 +242,7 @@ request settings, token metadata, validation boundaries, and application evidenc
 | `AGT-006` | Complete: `decision-job-v1` persists the exact packet and run/legal hashes, attempts, leases, transitions, failures, replacement links, result, and application receipt; pg-boss carries only the job ID; pre-policy and transaction-locked pre-application guards reject stale work; model calls receive one bounded retry then deterministic scripted fallback; expired leases and completed-but-unapplied results recover without repeating provider work; fresh replans are linked and capped; and a validated policy result becomes one idempotent engine command with strict replay | [Decision job evidence](evidence/phase-5-decision-jobs.png), contract/engine/database/queue/worker/browser tests, decision-job APIs, summon lifecycle inspector, ADR 0025 |
 | `AGT-007` | Complete: `engine-v9` / `society-v3` records exact witnessed say/ask/order turns; derives social-style replies and accepted/negotiated/deferred/refused outcomes from six inspectable score groups; leaves action execution entirely inside the normal engine boundary; projects accepted/negotiated orders into later packet preferences of 24/12; exposes reply, score, influence, and replay evidence in normal play; and preserves v1–v8 histories | [Conversation and order evidence](evidence/phase-5-conversation-orders.png), contract/engine/policy/database/browser tests, conversation API and summon/replay inspectors, ADR 0026 |
 | `AGT-008` | Complete: `decision-job-v2` persists an exact credential-free, packet-bound provider request profile for model jobs while retaining v1 compatibility; `decision-inspector-v1` derives a hash-bound report with sensitive prose replaced by typed digests; supplied/omitted context, evidence scores, legal choices, provider settings and usage, retries/fallback, validation boundaries, and engine receipts remain auditable; normal polling receives a packet-free client projection | [Redacted decision inspector evidence](evidence/phase-5-decision-inspector.png), contract/redaction/provider/database/worker/browser tests, dev API and inspector page, ADR 0027 |
+| `AGT-009` | Complete: `agent-evaluation-corpus-v1` exports ten credential-free, hash-bound packets across six agency dimensions; scripted and seeded-random policies receive deterministic integrity, legality, target, memory, expected-fit, knowledge-boundary, contrast, and repetition grades; a dated `gpt-5-nano` request/cost projection remains explicitly unapproved with zero fabricated latency or provider results | [Agency evaluation bench](evidence/phase-5-agent-evaluation.png), [machine-readable report](evidence/phase-5-agent-evaluation.json), `pnpm validate:agent-evaluation`, package/browser tests, ADR 0028 |
 
 ### Reproduce the checkpoint
 
@@ -278,9 +281,17 @@ the two First Ember beliefs. Open **Replay**, inspect **Communicative acts · wi
 trace exact text through the source event, observation, and optional belief while replay remains
 verified.
 
+For the agency gate, run `pnpm validate:agent-evaluation`, start `pnpm dev`, and open
+`http://localhost:5173/debug/evaluations`. Compare the 100% scripted fit with the structurally safe
+random negative control, inspect all ten fixed choices, and confirm the live candidate still says
+**Evidence required**, `0/10 recorded`, and `unmeasured · 0 samples`. A deliberate paid recording
+can later use `pnpm record:agent-evaluation` after setting `OPENAI_API_KEY`; it writes ignored local
+artifacts and cannot promote a partial corpus run.
+
 ## Next active engineering slice
 
-Begin `AGT-009`: create a fixed evaluation corpus that covers personality distinction, witnessed
-context use, directive influence, legal-action safety, fallback, and redaction, then produce a
-repeatable quality/latency/token budget report. Phase 3 cohort expansion remains behind its separate
-human visual gate.
+Begin `AGT-010`: generalize conversation-derived preferences into scoped player directives with
+explicit witnessed delivery, decision/mission/day/until-revoked lifetimes, replacement and
+revocation, and event-derived influence records. Preserve the packet-only legal-action boundary and
+add the resulting cases to the fixed evaluator. Phase 3 cohort expansion remains behind its
+separate human visual gate.

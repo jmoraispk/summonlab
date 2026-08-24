@@ -68,6 +68,9 @@ importers:
       '@summonlab/engine':
         specifier: workspace:*
         version: link:../../packages/engine
+      '@summonlab/evaluation':
+        specifier: workspace:*
+        version: link:../../packages/evaluation
       '@summonlab/observability':
         specifier: workspace:*
         version: link:../../packages/observability
@@ -225,6 +228,24 @@ importers:
       fast-check:
         specifier: ^4.9.0
         version: 4.9.0
+
+  packages/evaluation:
+    dependencies:
+      '@summonlab/characters':
+        specifier: workspace:*
+        version: link:../characters
+      '@summonlab/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@summonlab/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@summonlab/policies':
+        specifier: workspace:*
+        version: link:../policies
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/observability:
     dependencies:
