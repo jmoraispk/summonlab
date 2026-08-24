@@ -17,6 +17,7 @@
 		"test:e2e": "playwright test"
 	},
 	"dependencies": {
+		"@summonlab/characters": "workspace:*",
 		"@summonlab/config": "workspace:*",
 		"@summonlab/contracts": "workspace:*",
 		"@summonlab/database": "workspace:*",

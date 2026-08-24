@@ -892,6 +892,9 @@ Estimated engineering effort: **1 week**.
 
 Estimated engineering effort: **1–2 weeks**.
 
+**Status: complete — 2026-08-23.** Evidence and commands are recorded in [implementation
+progress](progress.md).
+
 - `POL-001` implement deterministic manifest generator and hash;
 - `POL-002` build one original modular hero rig;
 - `POL-003` build minimal `/forge` seed grid and lock/reroll controls;
@@ -1037,20 +1040,21 @@ Art-system work and engine work may overlap after schemas stabilize. Mission con
 - Never solve latency by letting the client apply speculative game consequences.
 - Defer free movement, non-humans, romance, and 100-floor content until the first five floors are fun.
 
-## First execution slice
+## Next execution slice
 
-The next repository-changing turn should begin Phase 0 and stop at a reviewable foundation:
+The next repository-changing turn begins Phase 2 and stops at a reviewable deterministic engine
+checkpoint:
 
-1. scaffold pnpm workspace and pinned runtime;
-2. create `apps/web`, `apps/worker`, `packages/contracts`, and `packages/engine`;
-3. configure strict TypeScript, formatting, linting, and Vitest;
-4. add Docker Postgres and `.env.example`;
-5. expose `/health` with commit, policy mode, and database status;
-6. add the first `CharacterManifest` and `LegalAction` contracts;
-7. run all checks, launch locally, capture the page, commit, and push;
-8. ask for feedback on the development shell before building the summon scene.
+1. establish the engine PRNG fixture and explicit entropy cursor;
+2. implement the first command → event → reducer transition with no I/O or wall clock;
+3. persist an append-only event stream and snapshot with before/after state hashes;
+4. rebuild a proof run from events and reject an illegal or stale action;
+5. add property tests for schema validity and deterministic replay;
+6. expose a small development replay inspector without replacing the Phase 1 journal;
+7. run all gates, capture evidence, commit, and push;
+8. ask for feedback on replay readability before adding resources, needs, injury, and time.
 
-This is small enough to review in one turn and foundational enough that no work is thrown away.
+Phase 2 must deepen authority and replay rather than expanding content breadth.
 
 ## Accepted product decisions — 2026-08-23
 
@@ -1064,4 +1068,5 @@ This is small enough to review in one turn and foundational enough that no work 
 - Floor stories use fixed, authored envelopes with agent-assisted development and engine-validated runtime patches. Agents may alter the route and character-aware expression but cannot bypass world rules, causality, content, or reward bounds.
 - The player journal must expose actions, rewards, experience, levels, party progression, control source, directions, and story changes from authoritative events.
 
-Phase 0 is unblocked. Later feedback may revise any reversible implementation choice without discarding these product intentions.
+Phases 0 and 1 are complete; Phase 2 is unblocked. Later feedback may revise any reversible
+implementation choice without discarding these product intentions.

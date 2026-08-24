@@ -1,0 +1,16 @@
+{
+	"name": "@summonlab/characters",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": "./src/index.ts",
+	"scripts": {
+		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
+		"lint": "eslint src",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@summonlab/contracts": "workspace:*"
+	}
+}

@@ -47,6 +47,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@summonlab/characters':
+        specifier: workspace:*
+        version: link:../../packages/characters
       '@summonlab/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -133,6 +136,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/queue
 
+  packages/characters:
+    dependencies:
+      '@summonlab/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+
   packages/config:
     dependencies:
       '@summonlab/contracts':
@@ -159,6 +168,10 @@ importers:
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
+    devDependencies:
+      '@summonlab/characters':
+        specifier: workspace:*
+        version: link:../characters
 
   packages/engine:
     dependencies:

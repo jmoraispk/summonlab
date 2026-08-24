@@ -27,17 +27,20 @@
 		<header>
 			<a class="wordmark" href={resolve('/')}>summonlab</a>
 			<nav aria-label="Development links">
+				<a href={resolve('/forge')}>Open forge</a>
 				<a href={resolve('/design-reference')}>Design reference</a>
 				<a href={resolve('/health')}>Health JSON</a>
 			</nav>
 		</header>
 
 		<div class="hero-copy">
-			<p class="eyebrow">Foundation checkpoint · Phase 0</p>
+			<p class="eyebrow">Playable checkpoint · Phase 1</p>
 			<h1>The gate is listening.</h1>
 			<p class="lede">
-				The authoritative shell is online. Heroes will choose; the engine will decide what is real.
+				Forge one persistent identity, summon them face-to-face, and watch their first independent
+				choice alter the route through Hearth 01.
 			</p>
+			<a class="launch" href={resolve('/forge')}>Begin at the character forge <span>→</span></a>
 		</div>
 	</section>
 
@@ -209,6 +212,25 @@
 		color: rgba(247, 242, 232, 0.78);
 		font-size: clamp(1rem, 1.6vw, 1.25rem);
 		line-height: 1.55;
+	}
+
+	.launch {
+		display: inline-flex;
+		align-items: center;
+		gap: 2rem;
+		margin-top: 1.5rem;
+		padding: 0.8rem 1rem;
+		border: 1px solid rgba(244, 206, 122, 0.5);
+		background: rgba(6, 7, 12, 0.52);
+		color: #f4ce7a;
+		font-size: 0.68rem;
+		font-weight: 650;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.launch span {
+		font-size: 1rem;
 	}
 
 	.status {

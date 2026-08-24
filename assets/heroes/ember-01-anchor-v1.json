@@ -1,0 +1,10 @@
+{
+	"assetKey": "ember-01-anchor-v1",
+	"characterSeed": "ember-01",
+	"generationVersion": "human-v1",
+	"kind": "original-generated-anchor",
+	"generationMode": "built-in image generation followed by background edit",
+	"createdAt": "2026-08-23",
+	"finalPrompt": "Background extraction only. Replace every baked gray-and-white checkerboard tile around the character with a seamless, nearly black deep-midnight radial backdrop (#070910 at edges, #111321 faintly behind the silhouette). Preserve the character herself exactly: same adult woman, facial identity, expression, coiled high knot, skin tone, body proportions, stance, charcoal outfit, plum cloak, ember clasp, boots, hands, line work, rendering, crop, and resolution. Do not redesign, repaint, relight, sharpen, soften, recolor, or move any part of the character. No portal, particles, scenery, floor, text, frame, logo, extra objects, or checkerboard. The result should read as clean premium character key art on a dark neutral background, with no visible grid seams.",
+	"productionNote": "Development anchor only. The deterministic manifest and rig recipe remain identity truth. Review provenance and production rights before release."
+}

@@ -3,3 +3,8 @@
 Captured screenshots for reviewable implementation milestones live here. They are generated from the runnable application rather than hand-authored mockups.
 
 - `phase-0-foundation.png` — responsive foundation health shell with the database intentionally offline.
+- `phase-1-forge.png` — deterministic seed cohort, approved original hero anchor, physicality,
+  personality and habit preview, lock/reroll controls, four decision modes, and player direction.
+- `phase-1-summon.png` — first-person reveal, fixed story spine, hero-altered branch, first line,
+  manifest hash, and four authoritative events.
+- `phase-1-play.png` — the same manifest-driven rig arriving at its selected settlement destination.

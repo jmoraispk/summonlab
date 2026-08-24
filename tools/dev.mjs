@@ -26,6 +26,12 @@ if (withDatabase) {
 		process.exitCode = typeof exitCode === 'number' ? exitCode : 1;
 		throw new Error('PostgreSQL failed to start. Install Docker or use pnpm dev:app.');
 	}
+	const migration = run('pnpm', ['db:migrate']);
+	const migrationExitCode = await new Promise((resolve) => migration.once('exit', resolve));
+	if (migrationExitCode !== 0) {
+		process.exitCode = typeof migrationExitCode === 'number' ? migrationExitCode : 1;
+		throw new Error('PostgreSQL migrations failed. Check pnpm db:logs for details.');
+	}
 }
 
 const web = run('pnpm', ['--filter', '@summonlab/web', 'dev', '--host', '0.0.0.0']);

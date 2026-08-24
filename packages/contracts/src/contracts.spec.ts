@@ -9,47 +9,54 @@ import {
 	RewardDeltaSchema
 } from './index.js';
 
+function validCharacterManifest(adultAge = 25) {
+	return {
+		characterId: randomUUID(),
+		displayName: 'Test Hero',
+		appearanceSeed: 'forge-seed-1',
+		generationVersion: 'human-v1',
+		rarityStars: 1,
+		adultAge,
+		genderPresentation: 'androgynous',
+		pronouns: 'they/them',
+		bodyFrame: 'balanced',
+		bodyBuild: 'athletic',
+		heightCm: 172,
+		phenotype: {
+			skinTone: 'deep umber',
+			faceShape: 'oval',
+			noseProfile: 'broad straight',
+			hairTexture: 'coiled',
+			hairColor: 'black',
+			hairStyle: 'high knot',
+			eyeColor: 'brown'
+		},
+		voice: { register: 'mid', texture: 'clear', cadence: 'measured' },
+		posture: 'grounded',
+		handedness: 'right',
+		visualTraits: ['left brow scar'],
+		palette: { skin: '#633b2d', hair: '#17151b', cloth: '#272932', accent: '#d49b47' },
+		rig: {
+			headScale: 1,
+			shoulderWidth: 1,
+			hipWidth: 1,
+			legRatio: 1,
+			anchors: { head: [50, 17], leftHand: [27, 56], rightHand: [73, 56], back: [50, 36] }
+		},
+		artKey: null,
+		assetProvenance: 'procedural'
+	};
+}
+
 describe('foundation contracts', () => {
 	it('accepts an adult deterministic character manifest', () => {
-		const result = CharacterManifestSchema.parse({
-			characterId: randomUUID(),
-			appearanceSeed: 'forge-seed-1',
-			generationVersion: 'human-v1',
-			adultAge: 25,
-			genderPresentation: 'androgynous',
-			bodyFrame: 'balanced',
-			heightCm: 172,
-			phenotype: {
-				skinTone: 'deep umber',
-				hairTexture: 'coiled',
-				hairColor: 'black',
-				eyeColor: 'brown'
-			},
-			visualTraits: ['left brow scar']
-		});
+		const result = CharacterManifestSchema.parse(validCharacterManifest());
 
 		expect(result.adultAge).toBe(25);
 	});
 
 	it('rejects an underage manifest', () => {
-		expect(() =>
-			CharacterManifestSchema.parse({
-				characterId: randomUUID(),
-				appearanceSeed: 'seed',
-				generationVersion: 'human-v1',
-				adultAge: 17,
-				genderPresentation: 'feminine',
-				bodyFrame: 'slight',
-				heightCm: 165,
-				phenotype: {
-					skinTone: 'olive',
-					hairTexture: 'wavy',
-					hairColor: 'brown',
-					eyeColor: 'hazel'
-				},
-				visualTraits: []
-			})
-		).toThrow();
+		expect(() => CharacterManifestSchema.parse(validCharacterManifest(17))).toThrow();
 	});
 
 	it('keeps actions constrained to declared legal targets', () => {

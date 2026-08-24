@@ -1,6 +1,8 @@
 import type { DatabaseHealth } from '@summonlab/contracts';
 import postgres from 'postgres';
 
+export * from './proof.js';
+
 export async function checkDatabaseHealth(databaseUrl: string): Promise<DatabaseHealth> {
 	const startedAt = performance.now();
 	const sql = postgres(databaseUrl, {

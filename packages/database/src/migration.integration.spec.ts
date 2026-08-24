@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -12,19 +12,23 @@ describe('database migration', () => {
 	run('applies the foundation migration to PostgreSQL', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
 		const sql = postgres(databaseUrl, { max: 1 });
-		const migration = await readFile(
-			join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations', '0001_foundation.sql'),
-			'utf8'
+		const directory = join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations');
+		const migrations = await Promise.all(
+			(await readdir(directory))
+				.filter((name) => name.endsWith('.sql'))
+				.sort()
+				.map((name) => readFile(join(directory, name), 'utf8'))
 		);
 
 		try {
-			await sql.unsafe(migration);
+			for (const migration of migrations) await sql.unsafe(migration);
 			const rows = await sql<{ table_name: string }[]>`
 				select table_name
 				from information_schema.tables
-				where table_schema = 'public' and table_name = 'summonlab_runtime_metadata'
+				where table_schema = 'public'
+					and table_name in ('summonlab_runtime_metadata', 'summonlab_proof_runs', 'summonlab_proof_events')
 			`;
-			expect(rows).toHaveLength(1);
+			expect(rows).toHaveLength(3);
 		} finally {
 			await sql.end({ timeout: 5 });
 		}
