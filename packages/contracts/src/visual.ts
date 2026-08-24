@@ -184,10 +184,73 @@ export const VisualReviewListSchema = z
 		}
 	});
 
+export const SummonCardPreviewRequestSchema = z
+	.object({
+		assetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		catalogVersion: ContentVersionSchema,
+		assetContentHash: StateHashSchema,
+		manifestHash: StateHashSchema,
+		direction: z.string().trim().max(500).default('')
+	})
+	.strict();
+
+export const SummonCardGenerateRequestSchema = SummonCardPreviewRequestSchema.extend({
+	requestId: EntityIdSchema,
+	costAcknowledged: z.literal(true)
+}).strict();
+
+export const SummonCardGenerationSpecSchema = z
+	.object({
+		schemaVersion: z.literal('summon-card-request-v1'),
+		assetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		catalogVersion: ContentVersionSchema,
+		assetContentHash: StateHashSchema,
+		manifestHash: StateHashSchema,
+		endpoint: z.literal('/v1/images/edits'),
+		model: z.string().min(1).max(120),
+		quality: z.enum(['low', 'medium', 'high']),
+		size: z.enum(['1024x1024', '1024x1536', '1536x1024']),
+		outputFormat: z.literal('png'),
+		moderation: z.literal('auto'),
+		candidateCount: z.literal(1),
+		prompt: z.string().min(1).max(20_000),
+		promptHash: StateHashSchema,
+		estimatedOutputCostUsd: z.number().nonnegative(),
+		costEstimateDate: z.literal('2026-08-23'),
+		costExclusions: z.array(z.string().min(1).max(160)).min(1).max(8),
+		canonical: z.literal(false),
+		persistence: z.literal('ephemeral-response-only'),
+		retryPolicy: z.literal('none')
+	})
+	.strict();
+
+export const SummonCardGenerationResultSchema = z
+	.object({
+		requestId: EntityIdSchema,
+		providerRequestId: z.string().min(1).max(200).nullable(),
+		spec: SummonCardGenerationSpecSchema,
+		image: z
+			.object({
+				mimeType: z.literal('image/png'),
+				b64Json: z
+					.string()
+					.regex(/^[a-z0-9+/]+=*$/iu)
+					.max(40_000_000),
+				contentHash: StateHashSchema
+			})
+			.strict(),
+		generatedAt: IsoDateTimeSchema
+	})
+	.strict();
+
 export type CharacterExpression = z.infer<typeof CharacterExpressionSchema>;
 export type CharacterVisualAsset = z.infer<typeof CharacterVisualAssetSchema>;
 export type CharacterVisualCatalog = z.infer<typeof CharacterVisualCatalogSchema>;
 export type CharacterVisualProfile = z.infer<typeof CharacterVisualProfileSchema>;
+export type SummonCardGenerateRequest = z.infer<typeof SummonCardGenerateRequestSchema>;
+export type SummonCardGenerationResult = z.infer<typeof SummonCardGenerationResultSchema>;
+export type SummonCardGenerationSpec = z.infer<typeof SummonCardGenerationSpecSchema>;
+export type SummonCardPreviewRequest = z.infer<typeof SummonCardPreviewRequestSchema>;
 export type VisualReviewCreateRequest = z.infer<typeof VisualReviewCreateRequestSchema>;
 export type VisualReviewList = z.infer<typeof VisualReviewListSchema>;
 export type VisualReviewRecord = z.infer<typeof VisualReviewRecordSchema>;

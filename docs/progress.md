@@ -133,6 +133,7 @@ Status: **in progress**. The first visual approval checkpoint completed on 2026-
 | `ART-003` | Separate visual profiles drive identity locks, expression states, normalized equipment/injury anchors, and base/night/injured palette swaps in the code-native runtime rig | `CharacterVisualProfileSchema`, asset catalog, and `HeroRig.svelte` |
 | `ART-004` | Complete: `/visual-lab` compares assets and records append-only accept/revise notes against exact hashes; `/forge/contact-sheet` prints or downloads a deterministic 100-seed audit; CI verifies source bytes and stale-hash rejection | [Visual lab evidence](evidence/phase-3-visual-lab.png), [contact sheet evidence](evidence/phase-3-contact-sheet.png), ADR 0006 |
 | `ART-005` | Two of twelve representative original humans: Mara Vey and Remy Nahl | Anchor and continuity assets under `assets/heroes/visuals` |
+| `ART-006` | Complete: `/visual-lab/summon-card` previews a deterministic manifest-authored image-edit request; paid execution is development-only, one-candidate, cost-acknowledged, no-retry, hash-verified, ephemeral, and non-canonical | [Summon-card lab evidence](evidence/phase-3-summon-card-lab.png), ADR 0007, provider-mock and browser tests |
 | `ART-008` | Face/hair/silhouette/palette/signature-trait checks score 5/5 for continuity and roster views; settlement explicitly records 4/5 because facial identity is not claimed | Versioned visual catalog |
 
 The image-generation skill produced the five new approval candidates through the built-in path. The
@@ -150,10 +151,12 @@ pnpm dev
 Open `http://localhost:5173/visual-lab`. Switch between Mara and Remy, compare their continuity
 sheets, inspect the settlement-scale recognition limit, and record an accept/revise note. Open
 `http://localhost:5173/forge/contact-sheet` to inspect all 100 manifests, save a PDF, or download the
-hash-bearing JSON audit.
+hash-bearing JSON audit. Open `http://localhost:5173/visual-lab/summon-card`, switch the identity
+anchor, add optional direction, and rebuild the outbound request without making a provider call.
+Paid execution remains disabled until a local developer explicitly enables it and supplies a key.
 
 ## Next active slice
 
-Collect feedback on specificity, cross-view identity, rendering style, and settlement character
-scale. While that remains unanswered, continue the development-flagged summon-card experiment and
-runtime export tooling; do not generate the remaining ten representative humans yet.
+Collect feedback on specificity, cross-view identity, rendering style, settlement character scale,
+and the summon-card composition/prompt. While that remains unanswered, continue with runtime export
+tooling; do not generate the remaining ten representative humans yet.

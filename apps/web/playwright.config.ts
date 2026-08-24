@@ -5,7 +5,7 @@ export default defineConfig({
 		command: 'pnpm build && pnpm preview --host 127.0.0.1',
 		port: 4173,
 		reuseExistingServer: !process.env.CI,
-		env: { ENABLE_DEV_ROUTES: 'true' }
+		env: { ENABLE_DEV_ROUTES: 'true', ENABLE_IMAGE_GENERATION: 'false' }
 	},
 	testMatch: '**/*.e2e.{ts,js}',
 	use: {

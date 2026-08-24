@@ -7,6 +7,8 @@ import {
 	HealthResponseSchema,
 	LegalActionSchema,
 	RewardDeltaSchema,
+	SummonCardGenerateRequestSchema,
+	SummonCardGenerationSpecSchema,
 	VisualIdentityCheckSchema,
 	VisualReviewCreateRequestSchema,
 	VisualReviewListSchema,
@@ -141,5 +143,46 @@ describe('foundation contracts', () => {
 				latestByAsset: { 'different-asset': review }
 			}).success
 		).toBe(false);
+	});
+
+	it('keeps summon-card generation explicit, ephemeral, and non-canonical', () => {
+		const request = {
+			requestId: randomUUID(),
+			assetKey: 'ember-01-anchor-v1',
+			catalogVersion: 'visual-catalog-v1',
+			assetContentHash: '1'.repeat(64),
+			manifestHash: '2'.repeat(64),
+			direction: 'A restrained arrival at the circular gate.',
+			costAcknowledged: true as const
+		};
+		const spec = SummonCardGenerationSpecSchema.parse({
+			schemaVersion: 'summon-card-request-v1',
+			assetKey: request.assetKey,
+			catalogVersion: request.catalogVersion,
+			assetContentHash: request.assetContentHash,
+			manifestHash: request.manifestHash,
+			endpoint: '/v1/images/edits',
+			model: 'gpt-image-2-2026-04-21',
+			quality: 'low',
+			size: '1024x1536',
+			outputFormat: 'png',
+			moderation: 'auto',
+			candidateCount: 1,
+			prompt: 'Create one original portrait summon card from the supplied identity reference.',
+			promptHash: '3'.repeat(64),
+			estimatedOutputCostUsd: 0.005,
+			costEstimateDate: '2026-08-23',
+			costExclusions: ['Prompt and reference-image input tokens are additional.'],
+			canonical: false,
+			persistence: 'ephemeral-response-only',
+			retryPolicy: 'none'
+		});
+
+		expect(SummonCardGenerateRequestSchema.parse(request).costAcknowledged).toBe(true);
+		expect(spec.canonical).toBe(false);
+		expect(spec.candidateCount).toBe(1);
+		expect(() =>
+			SummonCardGenerateRequestSchema.parse({ ...request, costAcknowledged: false })
+		).toThrow();
 	});
 });

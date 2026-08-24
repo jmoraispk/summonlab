@@ -164,9 +164,18 @@ recognition checks. `/forge/contact-sheet` renders 100 deterministic manifests a
 as JSON or print-ready PDF. Accept/revise decisions are append-only PostgreSQL records bound to the
 exact asset hash; generated assets remain candidates until a human records acceptance.
 
+`/visual-lab/summon-card` turns either exact anchor into a deterministic, inspectable image-edit
+request. Provider execution is disabled by default and requires an explicit local flag, key, and
+one-candidate cost acknowledgement. Reference bytes are hash-checked immediately before the call;
+the returned PNG remains ephemeral and cannot write the catalog, approve itself, mutate a manifest,
+or enter deterministic game state. The checked-in checkpoint uses a provider mock and makes no paid
+request.
+
 ![Visual continuity lab](docs/evidence/phase-3-visual-lab.png)
 
 ![100-seed Forge contact sheet](docs/evidence/phase-3-contact-sheet.png)
+
+![Development-only summon-card request lab](docs/evidence/phase-3-summon-card-lab.png)
 
 ## Deterministic survival checkpoint
 
