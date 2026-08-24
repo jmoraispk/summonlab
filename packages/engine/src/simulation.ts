@@ -14,7 +14,7 @@ import {
 } from './engine.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
 
-function source(source: 'random' | 'manual' | 'system') {
+function source(source: 'random' | 'manual' | 'habit' | 'system') {
 	return {
 		source,
 		timing:
@@ -22,7 +22,9 @@ function source(source: 'random' | 'manual' | 'system') {
 				? ('continuous' as const)
 				: source === 'manual'
 					? ('step' as const)
-					: null,
+					: source === 'habit'
+						? ('continuous' as const)
+						: null,
 		fallbackPolicy: source === 'random' ? ('random' as const) : null,
 		directiveIds: [],
 		decisionJobId: null
@@ -48,7 +50,13 @@ type SimulationCommand = WithoutEnvelope<EngineCommand>;
 
 function assertSimulationInvariants(state: EngineGameState): void {
 	EngineGameStateSchema.parse(state);
-	if (state.schemaVersion !== 2 && state.schemaVersion !== 3 && state.schemaVersion !== 4) return;
+	if (
+		state.schemaVersion !== 2 &&
+		state.schemaVersion !== 3 &&
+		state.schemaVersion !== 4 &&
+		state.schemaVersion !== 5
+	)
+		return;
 	for (const balance of Object.values(state.settlement.resources)) {
 		if (balance < 0) throw new Error('Simulation produced a negative resource balance');
 	}
@@ -126,7 +134,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
-		if (state.schemaVersion === 4) {
+		if (state.schemaVersion === 4 || state.schemaVersion === 5) {
 			apply('assign-facility', {
 				actorId: state.master.masterId,
 				source: source('manual'),
@@ -143,6 +151,24 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 					buildingId: 'workshop'
 				});
 			}
+		}
+		if (state.schemaVersion === 5 && index % 5 === 0) {
+			apply('plan-day', {
+				actorId: heroId,
+				source: source('manual'),
+				commandType: 'hero.plan.day'
+			});
+			const routine = apply('follow-plan', {
+				actorId: heroId,
+				source: source('habit'),
+				commandType: 'hero.start.routine'
+			});
+			apply('finish-routine', {
+				actorId: state.master.masterId,
+				source: source('system'),
+				commandType: 'simulation.advance',
+				targetGameTime: routine.scheduled[0]!.dueGameTime
+			});
 		}
 
 		if (index % 2 === 0) {
@@ -187,7 +213,10 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			}
 			if (
 				index % 5 === 1 &&
-				(state.schemaVersion === 2 || state.schemaVersion === 3 || state.schemaVersion === 4)
+				(state.schemaVersion === 2 ||
+					state.schemaVersion === 3 ||
+					state.schemaVersion === 4 ||
+					state.schemaVersion === 5)
 			) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {

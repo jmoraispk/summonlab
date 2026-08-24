@@ -102,6 +102,22 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		await page.screenshot({ path: process.env.CAPTURE_PHASE4_OPERATIONS, fullPage: true });
 	}
 
+	await expect(page.getByTestId('routine-profile')).toContainText('Stable mind');
+	await page.getByRole('button', { name: 'Plan day', exact: true }).click();
+	await expect(page.getByTestId('daily-plan')).toContainText('Four intentions');
+	await expect(page.getByTestId('daily-plan')).toContainText('pending');
+	await page.getByRole('button', { name: /Follow next intention/ }).click();
+	await expect(page.getByTestId('routine-resolution')).toContainText('Resolver trace');
+	await expect(page.getByTestId('pending-schedule')).toContainText('hero.routine.complete');
+	await expect(page.getByTestId('daily-plan')).toContainText('active');
+	if (process.env.CAPTURE_PHASE4_ROUTINES) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_ROUTINES, fullPage: true });
+	}
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('daily-plan')).toContainText('completed');
+	await expect(page.getByText(/one daily routine resolved/i)).toBeVisible();
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+
 	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
 	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
 	await expect(page.getByText('master.gate.inspected')).toBeVisible();

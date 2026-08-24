@@ -19,22 +19,32 @@
 	const survivalState = $derived(
 		engineState.schemaVersion === 2 ||
 			engineState.schemaVersion === 3 ||
-			engineState.schemaVersion === 4
+			engineState.schemaVersion === 4 ||
+			engineState.schemaVersion === 5
 			? engineState
 			: null
 	);
 	const navigationState = $derived(
-		engineState.schemaVersion === 3 || engineState.schemaVersion === 4
+		engineState.schemaVersion === 3 ||
+			engineState.schemaVersion === 4 ||
+			engineState.schemaVersion === 5
 			? engineState.settlement.navigation
 			: null
 	);
-	const operationsState = $derived(engineState.schemaVersion === 4 ? engineState : null);
+	const operationsState = $derived(
+		engineState.schemaVersion === 4 || engineState.schemaVersion === 5 ? engineState : null
+	);
+	const routineState = $derived(engineState.schemaVersion === 5 ? engineState : null);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
-		(engineState.schemaVersion === 3 || engineState.schemaVersion === 4) && hero
+		(engineState.schemaVersion === 3 ||
+			engineState.schemaVersion === 4 ||
+			engineState.schemaVersion === 5) &&
+			hero
 			? engineState.heroes[hero.heroId]
 			: null
 	);
+	const routineHero = $derived(routineState && hero ? routineState.heroes[hero.heroId] : null);
 	const heroActions = $derived(hero ? (report.legalActionsByActor[hero.heroId] ?? []) : []);
 	const pendingSchedule = $derived(
 		report.scheduledEvents.find((scheduled) => scheduled.status === 'pending') ?? null
@@ -53,7 +63,11 @@
 		decisionJobId: null
 	};
 
-	function commandMeta(actorId: string, expectedVersion = engineState.version) {
+	function commandMeta(
+		actorId: string,
+		expectedVersion = engineState.version,
+		source: ActionSource = manualSource
+	) {
 		const commandId = crypto.randomUUID();
 		return {
 			commandId,
@@ -61,7 +75,7 @@
 			actorId,
 			expectedVersion,
 			correlationId: commandId,
-			source: manualSource
+			source
 		};
 	}
 
@@ -207,6 +221,34 @@
 		);
 	}
 
+	async function planDay() {
+		if (!routineHero) return;
+		await execute(
+			{
+				...commandMeta(routineHero.heroId),
+				commandType: 'hero.plan.day'
+			},
+			'A four-part daily plan was committed from this hero’s stable mind and current needs.'
+		);
+	}
+
+	async function followPlan() {
+		if (!routineHero) return;
+		await execute(
+			{
+				...commandMeta(routineHero.heroId, engineState.version, {
+					source: 'habit',
+					timing: 'continuous',
+					fallbackPolicy: null,
+					directiveIds: [],
+					decisionJobId: null
+				}),
+				commandType: 'hero.start.routine'
+			},
+			'The inspectable habit resolver scheduled its highest-ranked eligible intention.'
+		);
+	}
+
 	async function equipAlternateItem() {
 		const action = heroActions.find((candidate) => candidate.actionId.startsWith('hero.equip.'));
 		if (!survivalHero || !action) return;
@@ -349,6 +391,64 @@
 						{/if}
 					</div>
 				{/if}
+				{#if routineHero}
+					<div class="routine-profile" data-testid="routine-profile">
+						<div class="mind-line">
+							<span>Stable mind</span>
+							<strong>{routineHero.mind.primaryValue} · {routineHero.mind.primaryDrive}</strong>
+							<code>{routineHero.mind.socialStyle} / {routineHero.mind.stressResponse}</code>
+						</div>
+						<div class="habit-line" data-testid="hero-habit">
+							<span>Daily habit</span>
+							<strong>{routineHero.habit.habit.replaceAll('-', ' ')}</strong>
+							<code
+								>strength {routineHero.habit.strength} · {routineHero.habit.repetitions} repetitions ·
+								{routineHero.habit.satisfaction} satisfaction</code
+							>
+						</div>
+						{#if routineHero.dailyPlan}
+							<div class="daily-plan" data-testid="daily-plan">
+								<header>
+									<span>Day {routineHero.dailyPlan.dayIndex + 1}</span>
+									<strong>Four intentions</strong>
+								</header>
+								{#each routineHero.dailyPlan.entries as entry (entry.planEntryId)}
+									<div
+										class:active={entry.status === 'active'}
+										class:complete={entry.status === 'completed'}
+									>
+										<span>{entry.period}</span>
+										<strong>{entry.kind.replaceAll('-', ' ')}</strong>
+										<code>{entry.status}</code>
+									</div>
+								{/each}
+							</div>
+						{/if}
+						{#if routineHero.currentRoutine}
+							<div class="routine-resolution" data-testid="routine-resolution">
+								<header>
+									<div>
+										<span>Resolver trace</span>
+										<strong>{routineHero.currentRoutine.kind.replaceAll('-', ' ')}</strong>
+									</div>
+									<code
+										>margin {routineHero.currentRoutine.resolution.margin}{routineHero
+											.currentRoutine.resolution.decisionRecommended
+											? ' · fallback boundary'
+											: ' · decisive'}</code
+									>
+								</header>
+								{#each routineHero.currentRoutine.resolution.candidateScores as candidate (candidate.planEntryId)}
+									<div class:ineligible={!candidate.eligible}>
+										<span>{candidate.kind.replaceAll('-', ' ')}</span>
+										<strong>{candidate.score}</strong>
+									</div>
+								{/each}
+								<p>{routineHero.currentRoutine.resolution.summary}</p>
+							</div>
+						{/if}
+					</div>
+				{/if}
 				<div class="survival-stats">
 					<div><span>Rarity</span><strong>{survivalHero.progression.stars}★</strong></div>
 					<div>
@@ -474,6 +574,28 @@
 										travelHero.locationNodeId === destination[0]}>{destination[1]}</button
 								>
 							{/each}
+						</div>
+					</div>
+				{/if}
+				{#if routineHero}
+					<div class="control-group routine-controls" data-testid="routine-controls">
+						<span>Mind-managed day · zero model calls</span>
+						<p>
+							Plans are intentions. Following one ranks habit, duty, hunger, fatigue, health, and
+							personality before scheduling work.
+						</p>
+						<div class="buttons wrap">
+							<button
+								class="secondary"
+								type="button"
+								onclick={planDay}
+								disabled={pending || !canHero('hero.plan.day')}>Plan day</button
+							>
+							<button
+								type="button"
+								onclick={followPlan}
+								disabled={pending || !canHero('hero.follow.plan')}>Follow next intention</button
+							>
 						</div>
 					</div>
 				{/if}
@@ -873,6 +995,97 @@
 		color: rgba(244, 240, 232, 0.45);
 		font-size: 0.56rem;
 	}
+	.routine-profile {
+		padding: 1rem 1.4rem;
+		border-bottom: 1px solid rgba(212, 166, 83, 0.16);
+		background: linear-gradient(120deg, rgba(212, 166, 83, 0.07), transparent 45%), #090c12;
+	}
+	.mind-line,
+	.habit-line {
+		display: grid;
+		grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+		align-items: baseline;
+		gap: 0.7rem;
+		padding: 0.35rem 0;
+	}
+	.routine-profile span {
+		color: rgba(244, 240, 232, 0.34);
+		font-size: 0.48rem;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	.routine-profile strong {
+		font:
+			400 0.72rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.routine-profile code {
+		color: #d4a653;
+		font-size: 0.54rem;
+	}
+	.daily-plan {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1px;
+		margin-top: 0.8rem;
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.daily-plan header {
+		grid-column: 1 / -1;
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		padding: 0.55rem 0.7rem;
+		background: #10131a;
+	}
+	.daily-plan > div {
+		min-width: 0;
+		padding: 0.65rem;
+		background: #0b0e14;
+	}
+	.daily-plan > div strong,
+	.daily-plan > div code {
+		display: block;
+		margin-top: 0.28rem;
+	}
+	.daily-plan > div.active {
+		background: rgba(212, 166, 83, 0.16);
+	}
+	.daily-plan > div.complete code {
+		color: #78d7af;
+	}
+	.routine-resolution {
+		margin-top: 0.7rem;
+		border: 1px solid rgba(127, 216, 233, 0.22);
+	}
+	.routine-resolution header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.65rem;
+		background: rgba(40, 91, 104, 0.16);
+	}
+	.routine-resolution header span,
+	.routine-resolution header strong {
+		display: block;
+	}
+	.routine-resolution > div:not(header) {
+		display: flex;
+		justify-content: space-between;
+		padding: 0.35rem 0.65rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+	}
+	.routine-resolution > div.ineligible {
+		opacity: 0.35;
+	}
+	.routine-resolution p {
+		margin: 0;
+		padding: 0.55rem 0.65rem;
+		color: rgba(244, 240, 232, 0.48);
+		font-size: 0.58rem;
+		line-height: 1.5;
+	}
 	.hashes {
 		display: grid;
 		grid-template-columns: 4.5rem minmax(0, 1fr);
@@ -971,6 +1184,13 @@
 		padding-right: 0.75rem;
 		padding-bottom: 0.75rem;
 		padding-left: 0.75rem;
+	}
+	.routine-controls > p {
+		margin: 0;
+		padding: 0.55rem 0.8rem 0;
+		color: rgba(244, 240, 232, 0.48);
+		font-size: 0.62rem;
+		line-height: 1.5;
 	}
 	.facility-list {
 		display: grid;
@@ -1237,6 +1457,14 @@
 			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 		}
 		.survival-stats {
+			grid-template-columns: 1fr 1fr;
+		}
+		.mind-line,
+		.habit-line {
+			grid-template-columns: 1fr;
+			gap: 0.2rem;
+		}
+		.daily-plan {
 			grid-template-columns: 1fr 1fr;
 		}
 		.grid {

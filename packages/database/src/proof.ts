@@ -293,7 +293,8 @@ export async function createProofRun(
 				seed: input.draft.recipe.seed,
 				heroId: input.draft.manifest.characterId,
 				manifestHash: input.draft.manifestHash,
-				rarityStars: input.draft.manifest.rarityStars
+				rarityStars: input.draft.manifest.rarityStars,
+				mind: input.draft.mind
 			});
 			await insertEvent(
 				transaction,
@@ -443,7 +444,11 @@ export async function markProofArrival(
 			if (!row?.destination || row.arrived) return;
 			const engine = await getEngineSnapshotInTransaction(transaction, runId);
 			if (!engine) throw new Error(`Engine run not found: ${runId}`);
-			if (engine.state.schemaVersion === 3 || engine.state.schemaVersion === 4) {
+			if (
+				engine.state.schemaVersion === 3 ||
+				engine.state.schemaVersion === 4 ||
+				engine.state.schemaVersion === 5
+			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,
 					travelCommand(runId, row.manifest.characterId, engine.state.version, row.destination)

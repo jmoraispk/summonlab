@@ -30,3 +30,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   persisted Hearth route, pending arrival, and explicit clock advancement.
 - `phase-4-facility-operations.png` — engine-v4 replay lab with reciprocal facility assignment,
   roster capacity, workshop power, forge-system access, verified forge traversal, and no pending work.
+- `phase-4-daily-routine.png` — engine-v5 replay lab with the summoned mind, mutable habit,
+  four-part day plan, active routine, inspectable candidate scores, pending completion, and a
+  verified hash chain.

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { LegalActionSchema } from './character.js';
+import { CharacterMindSchema, LegalActionSchema } from './character.js';
 import {
 	ActionSourceSchema,
 	AuthoritativeEventSchema,
@@ -281,6 +281,169 @@ export const EngineHeroStateV4Schema = z
 		}
 		if (value.lifeState !== 'active' && value.assignment !== null) {
 			context.addIssue({ code: 'custom', message: 'A terminal hero cannot remain assigned' });
+		}
+	});
+
+export const RoutineKindSchema = z.enum([
+	'checks-exits',
+	'stretches-at-dawn',
+	'shares-breakfast',
+	'catalogues-tools',
+	'walks-the-walls',
+	'practises-knots',
+	'assigned-duty',
+	'self-directed',
+	'meal',
+	'sleep'
+]);
+
+export const HabitStateSchema = z
+	.object({
+		habit: CharacterMindSchema.shape.dailyHabit,
+		strength: z.number().int().min(0).max(100),
+		repetitions: z.number().int().nonnegative(),
+		satisfaction: z.number().int().min(0).max(100),
+		lastTriggeredAt: IsoDateTimeSchema.nullable()
+	})
+	.strict();
+
+export const DailyPlanEntrySchema = z
+	.object({
+		planEntryId: EntityIdSchema,
+		period: z.enum(['dawn', 'day', 'evening', 'night']),
+		kind: RoutineKindSchema,
+		buildingId: SettlementSlugSchema.nullable(),
+		status: z.enum(['pending', 'active', 'completed', 'skipped']),
+		startedAt: IsoDateTimeSchema.nullable(),
+		completedAt: IsoDateTimeSchema.nullable()
+	})
+	.strict()
+	.superRefine((entry, context) => {
+		if (entry.status === 'pending' && (entry.startedAt || entry.completedAt)) {
+			context.addIssue({ code: 'custom', message: 'Pending plan entry has timestamps' });
+		}
+		if (entry.status === 'active' && (!entry.startedAt || entry.completedAt)) {
+			context.addIssue({ code: 'custom', message: 'Active plan entry timestamps are invalid' });
+		}
+		if (entry.status === 'completed' && (!entry.startedAt || !entry.completedAt)) {
+			context.addIssue({ code: 'custom', message: 'Completed plan entry lacks timestamps' });
+		}
+		if (entry.status === 'skipped' && !entry.completedAt) {
+			context.addIssue({ code: 'custom', message: 'Skipped plan entry lacks resolution time' });
+		}
+	});
+
+export const DailyPlanSchema = z
+	.object({
+		planId: EntityIdSchema,
+		dayIndex: z.number().int().nonnegative(),
+		createdAt: IsoDateTimeSchema,
+		entries: z.array(DailyPlanEntrySchema).length(4)
+	})
+	.strict()
+	.superRefine((plan, context) => {
+		if (new Set(plan.entries.map((entry) => entry.planEntryId)).size !== plan.entries.length) {
+			context.addIssue({ code: 'custom', message: 'Daily plan entry ids must be unique' });
+		}
+		if (plan.entries.filter((entry) => entry.status === 'active').length > 1) {
+			context.addIssue({ code: 'custom', message: 'Daily plan has multiple active entries' });
+		}
+	});
+
+export const RoutineCandidateScoreSchema = z
+	.object({
+		planEntryId: EntityIdSchema,
+		kind: RoutineKindSchema,
+		score: z.number().int().min(-200).max(500),
+		eligible: z.boolean(),
+		reasons: z.array(z.string().min(1).max(160)).min(1).max(8)
+	})
+	.strict();
+
+export const RoutineResolutionSchema = z
+	.object({
+		selectedPlanEntryId: EntityIdSchema,
+		selectedKind: RoutineKindSchema,
+		candidateScores: z.array(RoutineCandidateScoreSchema).min(1).max(4),
+		margin: z.number().int().nonnegative().max(700),
+		decisionRecommended: z.boolean(),
+		fallbackUsed: z.boolean(),
+		summary: z.string().min(1).max(500)
+	})
+	.strict()
+	.refine((resolution) => resolution.decisionRecommended === resolution.fallbackUsed, {
+		message: 'Routine fallback must expose every deferred decision boundary'
+	});
+
+export const CurrentRoutineSchema = z
+	.object({
+		routineId: EntityIdSchema,
+		scheduledEventId: EntityIdSchema,
+		planId: EntityIdSchema,
+		planEntryId: EntityIdSchema,
+		kind: RoutineKindSchema,
+		resolution: RoutineResolutionSchema,
+		startedAt: IsoDateTimeSchema,
+		completesAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const EngineHeroStateV5Schema = z
+	.object({
+		...EngineHeroStateV4Schema.shape,
+		mind: CharacterMindSchema,
+		habit: HabitStateSchema,
+		dailyPlan: DailyPlanSchema.nullable(),
+		currentRoutine: CurrentRoutineSchema.nullable()
+	})
+	.strict()
+	.superRefine((hero, context) => {
+		if (hero.habit.habit !== hero.mind.dailyHabit) {
+			context.addIssue({ code: 'custom', message: 'Habit state diverged from stable mind' });
+		}
+		if (hero.health > hero.maxHealth) {
+			context.addIssue({ code: 'custom', message: 'Hero health cannot exceed maxHealth' });
+		}
+		if (hero.lifeState === 'active' && hero.health === 0) {
+			context.addIssue({ code: 'custom', message: 'An active hero must have health' });
+		}
+		if (hero.lifeState !== 'active' && hero.health !== 0) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero must have zero health' });
+		}
+		if (hero.lifeState !== 'active' && hero.currentActivity !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot have an activity' });
+		}
+		if (hero.lifeState !== 'active' && hero.currentTravel !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot travel' });
+		}
+		if (hero.currentTravel && hero.currentTravel.fromNodeId !== hero.locationNodeId) {
+			context.addIssue({ code: 'custom', message: 'Travel must begin at the authoritative node' });
+		}
+		if (hero.lifeState !== 'active' && hero.assignment !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot remain assigned' });
+		}
+		if (
+			[hero.currentActivity, hero.currentTravel, hero.currentRoutine].filter(Boolean).length > 1
+		) {
+			context.addIssue({ code: 'custom', message: 'A hero cannot perform concurrent work' });
+		}
+		if (hero.lifeState !== 'active' && hero.currentRoutine !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot follow a routine' });
+		}
+		const activeEntries =
+			hero.dailyPlan?.entries.filter((entry) => entry.status === 'active') ?? [];
+		if (hero.currentRoutine) {
+			const entry = activeEntries[0];
+			if (
+				activeEntries.length !== 1 ||
+				hero.dailyPlan?.planId !== hero.currentRoutine.planId ||
+				entry?.planEntryId !== hero.currentRoutine.planEntryId ||
+				entry?.kind !== hero.currentRoutine.kind
+			) {
+				context.addIssue({ code: 'custom', message: 'Current routine diverged from daily plan' });
+			}
+		} else if (activeEntries.length !== 0) {
+			context.addIssue({ code: 'custom', message: 'Daily plan has an orphaned active entry' });
 		}
 	});
 
@@ -597,11 +760,107 @@ export const EngineGameStateV4Schema = z
 		}
 	});
 
+export const EngineGameStateV5Schema = z
+	.object({
+		...EngineGameStateV4Schema.shape,
+		schemaVersion: z.literal(5),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV5Schema)
+	})
+	.strict()
+	.superRefine((state, context) => {
+		if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
+			context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
+		}
+		if (state.status === 'active' && state.master.lifeState !== 'alive') {
+			context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
+		}
+		for (const hero of Object.values(state.heroes)) {
+			const itemId = hero.equipment.mainHand;
+			if (itemId) {
+				const item = state.items[itemId];
+				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned item'
+					});
+				}
+			}
+			if (hero.assignment) {
+				const building = state.settlement.buildings[hero.assignment.buildingId];
+				if (
+					!building ||
+					building.assignmentNodeId !== hero.assignment.nodeId ||
+					building.assignmentRole !== hero.assignment.role ||
+					!building.assignedHeroIds.includes(hero.heroId)
+				) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero assignment diverged from building state'
+					});
+				}
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (
+				item.equippedById &&
+				state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId
+			) {
+				context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+			}
+		}
+		for (const [buildingId, building] of Object.entries(state.settlement.buildings)) {
+			if (building.buildingId !== buildingId) {
+				context.addIssue({ code: 'custom', message: 'Building record key does not match its id' });
+			}
+			for (const heroId of building.assignedHeroIds) {
+				if (state.heroes[heroId]?.assignment?.buildingId !== buildingId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Building roster diverged from hero assignment'
+					});
+				}
+			}
+			if (
+				building.powerState !== 'powered' &&
+				building.powerState !== building.baselinePowerState
+			) {
+				context.addIssue({ code: 'custom', message: 'Building power diverged from its baseline' });
+			}
+		}
+		const powered = Object.values(state.settlement.buildings).filter(
+			(building) => building.powerState === 'powered'
+		);
+		if (
+			powered.length !== (state.settlement.poweredBuildingId ? 1 : 0) ||
+			(state.settlement.poweredBuildingId !== null &&
+				powered[0]?.buildingId !== state.settlement.poweredBuildingId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Powered building slot is inconsistent' });
+		}
+		const activeSystemIds = Object.values(state.settlement.buildings)
+			.filter((building) => building.powerState !== 'unpowered')
+			.map((building) => building.systemId)
+			.sort((left, right) => left.localeCompare(right));
+		if (activeSystemIds.join('|') !== state.settlement.navigation.activeSystemIds.join('|')) {
+			context.addIssue({ code: 'custom', message: 'Active systems diverged from building power' });
+		}
+		for (const resource of ResourceKeySchema.options) {
+			const entries = state.settlement.resourceLedger.filter(
+				(entry) => entry.resource === resource
+			);
+			const last = entries.at(-1);
+			if (last && last.after !== state.settlement.resources[resource]) {
+				context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
+			}
+		}
+	});
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
 	EngineGameStateV3Schema,
-	EngineGameStateV4Schema
+	EngineGameStateV4Schema,
+	EngineGameStateV5Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -648,6 +907,14 @@ export const AllocateBuildingPowerCommandSchema = EngineCommandBaseSchema.extend
 	buildingId: SettlementSlugSchema
 }).strict();
 
+export const CreateDailyPlanCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.plan.day')
+}).strict();
+
+export const StartRoutineCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.start.routine')
+}).strict();
+
 export const InspectGateCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('master.inspect.gate')
 }).strict();
@@ -681,6 +948,8 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	AssignHeroBuildingCommandSchema,
 	UnassignHeroBuildingCommandSchema,
 	AllocateBuildingPowerCommandSchema,
+	CreateDailyPlanCommandSchema,
+	StartRoutineCommandSchema,
 	InspectGateCommandSchema,
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
@@ -804,9 +1073,11 @@ export type EngineGameStateV1 = z.infer<typeof EngineGameStateV1Schema>;
 export type EngineGameStateV2 = z.infer<typeof EngineGameStateV2Schema>;
 export type EngineGameStateV3 = z.infer<typeof EngineGameStateV3Schema>;
 export type EngineGameStateV4 = z.infer<typeof EngineGameStateV4Schema>;
+export type EngineGameStateV5 = z.infer<typeof EngineGameStateV5Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
 export type EngineSnapshot = z.infer<typeof EngineSnapshotSchema>;
 export type EntropyDraw = z.infer<typeof EntropyDrawSchema>;
+export type RoutineKind = z.infer<typeof RoutineKindSchema>;
 export type ScheduledEvent = z.infer<typeof ScheduledEventSchema>;

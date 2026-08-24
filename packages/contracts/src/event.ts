@@ -60,6 +60,7 @@ export const RewardDeltaSchema = z
 			'durability',
 			'health',
 			'need',
+			'habit',
 			'relationship'
 		]),
 		key: z.string().min(1).max(100),
