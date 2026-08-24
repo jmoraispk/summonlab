@@ -48,7 +48,11 @@ The engine generates the objective, legal interactions, secret triggers, and rew
 
 Every five-floor band carries a designed story spine as well as a difficulty tier. The usual rhythm is setup, complication, division, consequence, and payoff. Objectives can change from floor to floor, but the band should leave one coherent change in the settlement, party, or understanding of the tower.
 
-A development-time narrative agent may propose band arcs from the world bible and mechanics. Accepted arcs become reviewed, versioned content. At runtime, agents adapt eligible dialogue and reactions to the actual party, relationships, habits, and goals; they cannot create new plot facts or consequences outside the engine-owned beat graph.
+A development-time narrative agent may propose band arcs from the world bible and mechanics. Accepted arcs become reviewed, versioned content. Each accepted band is a **story envelope**, not a fixed script: world rules, the opening situation, required anchors, finale constraints, available content, and reward bounds remain authoritative while the route between them can change.
+
+At designated checkpoints, a runtime story agent may propose a typed story patch based on the actual heroes, losses, discoveries, relationships, and player direction. A patch can select or reorder eligible beats, bind an authored role to an existing character, introduce an allowed complication, or carry a consequence into a later floor. The engine validates the patch against the envelope before it becomes canonical. If generation fails, the authored default route continues.
+
+This lets agents alter the plot without asking them to invent the rules, assets, rewards, and structure of the game. They never mutate state through prose or create a mechanical fact that the engine did not validate.
 
 This makes the hundred-floor campaign twenty comprehensible arcs rather than one hundred unrelated procedural missions.
 
@@ -125,6 +129,19 @@ The Master can:
 - choose personal power over settlement administration.
 
 Only the Master can begin construction. Other heroes can suggest buildings, gather materials, design upgrades, operate facilities, and complain about priorities.
+
+### Decision pacing and player direction
+
+The player controls two independent settings: **when** the Master acts and **how** an unattended choice is selected.
+
+- **Wait** pauses until the player chooses.
+- **Countdown** shows a visible five-second window, then uses the selected fallback.
+- **Step** resolves exactly one Master decision through the fallback, then returns to Wait.
+- **Continuous** keeps using the fallback until the player pauses or intervenes.
+- **Directed** fallback follows player priorities and a scoped plain-language direction on a best-effort basis.
+- **Random** fallback selects a seeded legal action for experimentation and chaotic runs.
+
+The player can interrupt before a choice resolves. A direction can apply to one decision, a mission, a settlement day, or until revoked. It is passed to relevant decision makers as attributed player intent, never as a rule that overrides legal actions or a hero's autonomy. The game shows when a direction influenced a choice and when no legal action could satisfy it.
 
 ## Authority without automatic obedience
 
@@ -373,6 +390,12 @@ Examples:
 
 Later intelligent or awakened monsters can implement the same agent policy interface as heroes. Awareness becomes a content feature, not the default cost of every enemy.
 
+## Chronicle and accountability
+
+Every meaningful turn produces a readable chronicle entry backed by the authoritative event log. The player can review actions and their source, damage and healing, discoveries, rewards, experience, skill progress, level changes, inventory deltas, relationships, deaths, synthesis, and story changes.
+
+Entries can be filtered by day, mission, floor, hero, or event type and expanded to the exact replay position. Numerical results always come from engine events rather than generated narration. Development tools additionally expose redacted decision context, policy and prompt versions, model usage, validation failures, and fallbacks without revealing hidden chain-of-thought.
+
 ## First vertical slice
 
 ### Content
@@ -384,11 +407,15 @@ Later intelligent or awakened monsters can implement the same agent policy inter
 - deterministic habit execution and interruption;
 - six attributes and a small skill library;
 - tower floors 1–5 with one hidden path;
+- Wait, five-second Countdown, Step, and Continuous Master timing;
+- directed and seeded-random unattended Master policies;
+- one engine-validated runtime story patch point;
 - one mining portal mission;
 - hero and Master permadeath;
 - star caps through `2★` promotion;
 - one synthesis decision and rumor chain;
-- replay and context inspection.
+- replay and context inspection;
+- filterable turn chronicle with reward, experience, and progression deltas.
 
 ### Questions it must answer
 
@@ -400,6 +427,9 @@ Later intelligent or awakened monsters can implement the same agent policy inter
 - Does synthesis create meaningful tension instead of routine inventory cleanup?
 - Is `4×` time fast enough to feel alive and slow enough to lead?
 - Does Master permadeath motivate care or only encourage restarts?
+- Can an agent-authored story patch surprise the player without breaking the authored arc?
+- Do timing modes and scoped directions provide useful control without weakening hero autonomy?
+- Can players reconstruct every important result from the chronicle?
 - What is the token and latency cost per real day for a growing roster?
 
 ## Deferred decisions

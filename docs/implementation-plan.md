@@ -87,7 +87,9 @@ These are lead-engineering defaults, not irreversible product decrees.
 | Art truth | Deterministic physical manifest and approved reference pack | Never delegated to runtime generation |
 | Character scope | Adult humans, ages 18–42 | Human pipeline passes diversity and identity tests |
 | Reference art | May guide original/generated development art; never ships as game content | Rights or intended use changes |
-| Master control | Direct turn choice by default; optional autopilot | Playtests prefer continuous observation |
+| Master timing | `Wait` by default; `Countdown`, `Step`, and `Continuous` available | Playtests show fewer modes are clearer |
+| Master fallback | Directed deterministic policy by default; seeded random available | An evaluated delegated policy adds value |
+| Story authority | Fixed story envelope plus engine-validated runtime patches | Dynamic patches harm coherence or replayability |
 | Synthesis warning | Short irreversible-action warning | Testers misunderstand the consequence |
 | Visual order | Summoning, settlement, then dialogue close-up | A dependency makes another order cheaper |
 | Multiplayer | None | Single-player loop is already compelling |
@@ -302,6 +304,7 @@ The clock is event-driven, not a per-frame simulation.
 - portal opened or expired;
 - building work completed;
 - promise, goal, or rumor review due.
+- Master decision countdown expired.
 
 ### Online resolution
 
@@ -381,6 +384,7 @@ Every model turn is independently assembled and includes only:
 - recent remembered events selected by deterministic retrieval;
 - relationships relevant to present actors;
 - player communication exactly as witnessed;
+- active player directives relevant to this hero, with author, scope, and expiry;
 - legal action IDs with descriptions, targets, costs, and likely immediate affordances;
 - a compact response schema.
 
@@ -400,6 +404,8 @@ const HeroDecision = z.object({
 ```
 
 The model chooses; the engine resolves. `publicIntent` is inspectable characterization, not hidden chain-of-thought.
+
+Player directions are stored as data, not concatenated into system instructions. A `PlayerDirective` keeps its original text, scope (`decision`, `mission`, `day`, or `until_revoked`), intended recipients, witnessed delivery, optional structured priorities, and expiry. The original direction is quoted in every relevant decision packet. It influences best-effort selection but cannot expand legal moves, reveal hidden information, force obedience, or override safety and engine rules. The journal records whether a chosen action advanced, conflicted with, or could not satisfy the direction.
 
 The official OpenAI documentation states that Structured Outputs enforce schema adherence, unlike basic JSON mode. Routine decision calls use a strict JSON Schema through the Responses API. See [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
 
@@ -486,8 +492,11 @@ GET    /api/runs/:runId                  snapshot and event cursor
 POST   /api/runs/:runId/commands         validated player command
 GET    /api/runs/:runId/events           SSE after cursor
 POST   /api/runs/:runId/conversations    player communication act
+PATCH  /api/runs/:runId/control          decision timing and fallback policy
+POST   /api/runs/:runId/directives       create, replace, or revoke direction
 POST   /api/runs/:runId/catch-up          request/resume catch-up
 GET    /api/runs/:runId/recap             readable return summary
+GET    /api/runs/:runId/journal           filterable player chronicle
 ```
 
 ### Development API
@@ -613,11 +622,25 @@ Authority is multi-dimensional: competence, provision, trust, legitimacy, fear, 
 
 ### Master control modes
 
-The Master is the player's embodied character, so **Command mode** is the default. At each Master decision, mission time pauses and the player selects one legal action. Summoned heroes continue to choose independently.
+The Master is the player's embodied character. Control uses two orthogonal settings so pacing and choice policy do not become a confusing matrix of bespoke modes.
 
-**Autopilot mode** lets a deterministic `MasterPolicy` choose from player-configured priorities such as protect self, protect a named hero, retreat below a health threshold, conserve consumables, or focus the objective. It does not use an LLM in the first slice. The player may reclaim control at the next Master decision; switching modes is itself logged for replay.
+**Decision timing** determines when unattended choices resolve:
 
-Autopilot exists for observation, accessibility, and faster repeated testing. It must not quietly become the normal mode or erase the player's physical stake in Master death.
+| Timing | Behavior |
+| --- | --- |
+| `Wait` | Pause indefinitely for a legal player choice; this is the default. |
+| `Countdown` | Show a visible five-second timer; accept player input until resolution begins, then use the fallback. The duration is configurable. |
+| `Step` | Use the fallback for exactly one Master decision, then return to `Wait`. |
+| `Continuous` | Use the fallback for each Master decision until paused, the mission ends, or a configured safety stop fires. |
+
+**Fallback selection** determines how an unattended choice is made:
+
+- `DirectedPolicy` scores legal actions against structured priorities such as protect self, protect a named hero, retreat below a health threshold, conserve consumables, seek secrets, or focus the objective. A scoped free-text direction accompanies those priorities. The first slice uses deterministic scoring and a seeded tie-breaker; unsupported intent is shown rather than silently invented.
+- `RandomPolicy` makes a seeded random legal choice. It is useful for simulation, experimentation, and deliberately chaotic play.
+
+The interface always exposes pause/takeover during `Countdown` and `Continuous`; already committed engine actions remain atomic. Mode, timer, fallback, direction snapshot, action source, and expiry outcome are logged for replay. Configurable safety stops can force `Wait` before irreversible choices, imminent Master death when a retreat option exists, or any state the policy cannot classify. The player can deliberately disable those stops for a genuinely uninterrupted autonomous run.
+
+Autopilot exists for observation, accessibility, and faster repeated testing. It must not erase the player's physical stake in Master death. Summoned heroes remain autonomous in every Master mode.
 
 ### Mission state machine
 
@@ -660,14 +683,25 @@ Every five-floor band has an authored **story spine**. Individual floors provide
 | 4 | Reveal the cost of earlier behavior | Test preparation and information |
 | 5 | Pay off the conflict and leave a consequence | Boss, band test, or irreversible choice |
 
-The runtime engine owns objectives, eligible beats, triggers, secrets, consequences, and rewards. A narrative agent may write candidate dialogue, recaps, descriptions, or goal-aware variants, but it cannot introduce a new door, survivor, betrayal, reward, or plot fact outside the selected beat graph.
+The runtime engine owns a **story envelope** for each band: world laws, opening state, required anchors, finale constraints, content catalog, reward budget, and forbidden changes. The envelope compiles to a beat graph with an authored default route and explicit patch points.
 
-Agent assistance happens at two levels:
+At a patch point, a `StoryDirector` receives the envelope, current canonical state, relevant public history, unresolved goals, actual cast, and active player direction. It may propose a strict `StoryPatch` that can:
+
+- activate, skip, or reorder optional eligible beats;
+- bind an authored story role to an existing living character;
+- select an objective, location, enemy, discovery, or complication from the envelope's catalog;
+- carry a validated consequence or relationship conflict into a later eligible beat;
+- choose the character-aware expression of an established fact.
+
+The engine rejects patches that violate causality, use unknown information, require unavailable assets, exceed reward bounds, revive the dead, modify world laws, or directly mutate state. Accepted patches emit ordinary commands and domain events, enter replay, and become canonical for that run. Rejection, timeout, or model failure follows the authored default edge.
+
+Agent assistance happens at three levels:
 
 1. **Development-time story workshop:** a stronger configured model can propose five-floor arcs from the world bible, mechanics, enemy family, and target emotional question. A developer reviews the proposal and compiles accepted beats into versioned content.
-2. **Runtime character adaptation:** the cheap routine model can express an eligible beat through the actual heroes' knowledge, relationships, habits, and goals. It chooses characterization within the beat, not the beat's truth.
+2. **Runtime story direction:** a separately budgeted call may choose an engine-valid patch at sparse band checkpoints, allowing the cast and player behavior to alter the route without generating the whole game.
+3. **Runtime character adaptation:** the cheap routine model can express accepted facts through the actual heroes' knowledge, relationships, habits, and goals.
 
-This hybrid keeps the tower coherent and testable while allowing the cast to make each run personal. Floors 1–5 remain predominantly predesigned; the story workshop becomes useful when expanding toward all twenty bands.
+This hybrid keeps the tower coherent and testable while allowing the cast to make each run personal. Floors 1–5 remain predominantly predesigned but include one optional runtime patch point to prove the integration before expanding toward all twenty bands.
 
 ## Art production pipeline
 
@@ -735,6 +769,16 @@ Administrative and development routes require a separate role and are disabled b
 Premium scenes load as separate bundles. Reduced-motion mode removes nonessential particles and parallax. Automated performance collection runs on representative desktop and mobile emulation; real-device review remains a milestone gate.
 
 ## Observability
+
+### Event log, player journal, and decision trace
+
+The implementation keeps three related records with different audiences:
+
+1. **Authoritative event log:** append-only commands and domain events with sequence, simulated time, actor, action source, seed cursor, before/after state hashes, and content version. Reward, experience, level, skill, inventory, relationship, death, synthesis, control-mode, directive, and story-patch changes are first-class events.
+2. **Player journal:** a projection of those events into a readable turn timeline. It supports day, mission, floor, hero, and event-type filters; shows numerical before/after deltas; and links each entry to the exact replay cursor. Generated narration may decorate an entry but never supplies its numbers.
+3. **Decision trace:** development-only prompt version, redacted packet and output, policy/model identifier, latency, token estimate, validation result, retries, fallback, directive influence, and accepted story patch. It stores inspectable intent summaries, never hidden chain-of-thought.
+
+Every Master decision records whether it was manual, Countdown fallback, Step, Continuous, directed, or random. Every active direction records its scope and whether the result advanced, conflicted with, or could not satisfy it. This makes both progression auditing and emergent-behavior debugging possible from the same run history.
 
 ### Required dashboards or reports
 
@@ -837,7 +881,8 @@ Estimated engineering effort: **1 week**.
 - `FND-005` add CI quality gates;
 - `FND-006` establish structured logging and correlation IDs;
 - `FND-007` decide pg-boss versus leased jobs through a crash-recovery spike;
-- `FND-008` preserve the static prototype under a design-reference route or documentation link.
+- `FND-008` preserve the static prototype under a design-reference route or documentation link;
+- `FND-009` define authoritative event, decision-source, directive, reward-delta, and journal-entry contracts.
 
 **Exit:** one command starts database, web, and worker; CI passes; a typed health page shows version and policy mode.
 
@@ -870,7 +915,8 @@ Estimated engineering effort: **2 weeks**.
 - `ENG-006` implement needs, activities, injuries, death, and game over;
 - `ENG-007` implement scheduled events and fake clock;
 - `ENG-008` implement property-test harness and simulation CLI;
-- `ENG-009` run 10,000 random command sequences without invariant failure.
+- `ENG-009` run 10,000 random command sequences without invariant failure;
+- `ENG-010` project rewards, experience, levels, skills, and inventory deltas from domain events.
 
 **Exit:** every supported transition is deterministic, replayable, and independent of UI/database/network code.
 
@@ -921,7 +967,8 @@ Estimated engineering effort: **2 weeks**.
 - `AGT-006` implement job lifecycle, retry, stale rejection, replan, and fallback;
 - `AGT-007` implement free-text conversation UI and order outcomes;
 - `AGT-008` implement redacted packet and result inspector;
-- `AGT-009` create fixed evaluation corpus and budget report.
+- `AGT-009` create fixed evaluation corpus and budget report;
+- `AGT-010` implement scoped player directives, witnessed delivery, and influence records.
 
 **Feedback gate:** conduct the first real conversations and review whether explanations, refusals, and later behavior feel coherent.
 
@@ -940,8 +987,12 @@ Estimated engineering effort: **2–3 weeks**.
 - `MIS-007` implement Iron Moon timer, extraction, and ore ledger;
 - `MIS-008` implement injury, death, equipment, memory, and relationship aftermath;
 - `MIS-009` implement Master actions and atomic game over;
-- `MIS-010` validate three floor-5 strategies and deterministic replay.
-- `MIS-011` implement band story spines, beat eligibility, and character-aware expression hooks.
+- `MIS-010` validate three floor-5 strategies and deterministic replay;
+- `MIS-011` implement band story envelopes, beat eligibility, and character-aware expression hooks;
+- `MIS-012` implement Wait, Countdown, Step, and Continuous Master decision timing;
+- `MIS-013` implement directed and seeded-random fallbacks with pause and safety stops;
+- `MIS-014` add the player journal with reward, experience, level, and party-progress deltas;
+- `MIS-015` validate one runtime `StoryPatch` against the floors 1–5 envelope.
 
 **Feedback gate:** play two contrasting parties through floor 5 and review tactical readability, autonomy, retreat, and emotional consequence.
 
@@ -958,7 +1009,7 @@ Estimated engineering effort: **2 weeks**.
 - `FIN-005` tune performance and asset budgets for target phones;
 - `FIN-006` add analytics and playtest consent;
 - `FIN-007` run five moderated tests and triage findings;
-- `FIN-008` fix all release-blocking defects and package the playtest build.
+- `FIN-008` fix all release-blocking defects and package the playtest build;
 - `FIN-009` add a development-time story workshop that generates reviewable, versioned arc proposals.
 
 **Exit:** definition of done is met and the next investment decision can be based on observed play rather than speculation.
@@ -1003,11 +1054,12 @@ This is small enough to review in one turn and foundational enough that no work 
 
 - Initial playtesting remains local and private. The web server may expose a LAN-accessible URL from the development machine.
 - User-provided manhwa references may guide original and generated development art, but reference images do not ship.
-- Command mode directly controls the Master during missions; summoned heroes remain autonomous. Optional autopilot is available for observation and convenience.
+- Master decision timing supports Wait, five-second Countdown, Step, and Continuous. The unattended fallback can follow a scoped player direction and priorities or make a seeded random legal choice. Summoned heroes remain autonomous in every mode.
 - The entire first vertical slice uses adult summons only.
 - Synthesis is experimental and uses a short irreversible-action warning rather than an unusually severe interstitial.
 - Agent calls begin with the cheapest suitable model and escalate only after evaluation demonstrates a quality need.
 - Premium visual work is attempted in this order: summoning, living settlement, dialogue close-up. All three remain in vertical-slice scope.
-- Floor stories use authored band arcs with agent-assisted development and character-aware runtime expression.
+- Floor stories use fixed, authored envelopes with agent-assisted development and engine-validated runtime patches. Agents may alter the route and character-aware expression but cannot bypass world rules, causality, content, or reward bounds.
+- The player journal must expose actions, rewards, experience, levels, party progression, control source, directions, and story changes from authoritative events.
 
 Phase 0 is unblocked. Later feedback may revise any reversible implementation choice without discarding these product intentions.
