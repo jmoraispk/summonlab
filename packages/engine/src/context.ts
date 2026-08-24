@@ -16,7 +16,7 @@ import {
 	type RetrievedMemory
 } from '@summonlab/contracts';
 
-import { hashGameState, legalActions } from './engine.js';
+import { decisionLegalActions, hashGameState } from './engine.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
@@ -268,7 +268,7 @@ export function assembleHeroDecisionPacket(
 		throw new Error('Decision identity does not match the engine manifest hash');
 	}
 	const decisionKind = HeroDecisionKindSchema.parse(input.decisionKind);
-	const actions = [...legalActions(state, input.heroId)].sort((left, right) =>
+	const actions = [...decisionLegalActions(state, input.heroId)].sort((left, right) =>
 		left.actionId.localeCompare(right.actionId)
 	);
 	if (actions.length === 0) {

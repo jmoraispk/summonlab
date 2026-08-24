@@ -263,11 +263,15 @@ pnpm dev
 
 If Docker is unavailable, use `pnpm dev:app`. Both processes stay runnable and report PostgreSQL as unavailable instead of inventing persistence. Run all local quality gates with `pnpm check`; browser smoke tests use `pnpm test:e2e` after installing Playwright Chromium once with `pnpm --filter @summonlab/web exec playwright install chromium`.
 
-Model hero decisions remain opt-in development previews. The default `POLICY_MODE=scripted` sends
-no provider requests. To test one model choice, set `POLICY_MODE=model` and `OPENAI_API_KEY` only in
-your local `.env`, restart `pnpm dev`, summon a hero, open **What reaches this hero**, and press the
-manual **Ask gpt-5-nano once** button. The response is validated and displayed but never applied to
-game state; durable jobs, retry, stale rejection, and application arrive in the next phase.
+The default `POLICY_MODE=scripted` sends no provider requests. During a wait-mode summon, open
+**What reaches this hero** and press **Queue scripted + apply** to run the durable job lifecycle and
+commit one validated choice. The browser only observes the PostgreSQL-backed job; the worker owns
+claiming, stale checks, deterministic fallback, and atomic engine application.
+
+Model hero decisions remain opt-in. Set `POLICY_MODE=model` and `OPENAI_API_KEY` only in your local
+`.env`, then restart `pnpm dev`. **Ask gpt-5-nano once** is a non-applying preview. **Queue model +
+apply** is a separate explicitly acknowledged durable job with at most two provider attempts before
+scripted fallback. Late results are rejected and replanned from fresh engine state.
 
 ## Project documents
 

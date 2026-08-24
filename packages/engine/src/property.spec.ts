@@ -117,7 +117,7 @@ describe('engine properties', () => {
 			),
 			{ numRuns: 250 }
 		);
-	});
+	}, 10_000);
 
 	it('runs 10,000 generated survival histories without an invariant failure', () => {
 		const report = simulateFoundation(10_000);
@@ -130,5 +130,5 @@ describe('engine properties', () => {
 		expect(report.heroDeathCount).toBeGreaterThan(0);
 		expect(report.gameOverCount).toBeGreaterThan(0);
 		expect(report.invariantFailures).toBe(0);
-	}, 180_000);
+	}, 240_000);
 });

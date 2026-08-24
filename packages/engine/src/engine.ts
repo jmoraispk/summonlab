@@ -17,6 +17,8 @@ import {
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
+	HeroDecisionPacketSchema,
+	HeroPolicyResultSchema,
 	HeroProgressionSchema,
 	HabitStateSchema,
 	FirstEmberStateSchema,
@@ -48,6 +50,8 @@ import {
 	type EntropyDraw,
 	type FirstEmberFacility,
 	type FirstEmberRationale,
+	type HeroDecisionPacket,
+	type HeroPolicyResult,
 	type LegalAction,
 	type RewardDelta,
 	type RoutineKind,
@@ -1254,6 +1258,92 @@ function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalActi
 	return LegalActionSchema.parse(input);
 }
 
+function routeHasCapacity(
+	state:
+		| EngineGameStateV3
+		| EngineGameStateV4
+		| EngineGameStateV5
+		| EngineGameStateV6
+		| EngineGameStateV7
+		| EngineGameStateV8,
+	definition: SettlementDefinition,
+	heroId: string,
+	targetNodeId: string,
+	route: ReturnType<typeof planSettlementRoute>
+): boolean {
+	if (!route) return false;
+	if (!hasFacilityState(state)) return true;
+	const targetNode = definition.nodes.find((candidate) => candidate.nodeId === targetNodeId);
+	const nodeReservations = Object.values(state.heroes).filter(
+		(candidate) =>
+			candidate.heroId !== heroId &&
+			(candidate.locationNodeId === targetNodeId ||
+				candidate.currentTravel?.toNodeId === targetNodeId)
+	).length;
+	if (!targetNode || nodeReservations >= targetNode.capacity) return false;
+	return route.steps.every((step) => {
+		const edge = definition.edges.find((candidate) => candidate.edgeId === step.edgeId);
+		const reservations = Object.values(state.heroes).filter((candidate) =>
+			candidate.currentTravel?.route.steps.some(
+				(candidateStep) => candidateStep.edgeId === step.edgeId
+			)
+		).length;
+		return Boolean(edge && reservations < edge.capacity);
+	});
+}
+
+function travelActions(
+	state:
+		| EngineGameStateV3
+		| EngineGameStateV4
+		| EngineGameStateV5
+		| EngineGameStateV6
+		| EngineGameStateV7
+		| EngineGameStateV8,
+	actorId: string,
+	targetNodeIds?: readonly string[]
+): LegalAction[] {
+	const hero = state.heroes[actorId];
+	if (!hero) return [];
+	const definition = settlementForState(state);
+	const allowedTargets = targetNodeIds ? new Set(targetNodeIds) : null;
+	return definition.nodes
+		.filter(
+			(node) =>
+				node.nodeId !== hero.locationNodeId &&
+				zoneForNode(definition, node.nodeId) !== null &&
+				(!allowedTargets || allowedTargets.has(node.nodeId))
+		)
+		.map((node) => ({
+			node,
+			route: planSettlementRoute(
+				definition,
+				hero.locationNodeId,
+				node.nodeId,
+				new Set(state.settlement.navigation.activeSystemIds)
+			)
+		}))
+		.filter(
+			(candidate) =>
+				candidate.route !== null &&
+				candidate.route.totalTravelGameSeconds > 0 &&
+				routeHasCapacity(state, definition, actorId, candidate.node.nodeId, candidate.route)
+		)
+		.sort((left, right) => left.node.nodeId.localeCompare(right.node.nodeId))
+		.map(({ node, route }) =>
+			action({
+				actionId: `hero.travel.${node.nodeId}`,
+				actorId,
+				kind: 'move',
+				label: `Travel to ${node.label}`,
+				description: `Schedule the verified ${route!.totalTravelGameSeconds}-second route to ${node.label}.`,
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['settlement', 'scheduled-event', 'content-bound', node.nodeId]
+			})
+		);
+}
+
 function currentTravelFor(state: EngineGameState, heroId: string) {
 	return state.schemaVersion === 3 ||
 		state.schemaVersion === 4 ||
@@ -1877,6 +1967,151 @@ function legalActionsForParsedState(
 
 export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
 	return legalActionsForParsedState(EngineGameStateSchema.parse(stateInput), actorId);
+}
+
+export function decisionLegalActions(
+	stateInput: EngineGameState,
+	actorId: string
+): readonly LegalAction[] {
+	const state = EngineGameStateSchema.parse(stateInput);
+	const actions = legalActionsForParsedState(state, actorId);
+	if (
+		!actions.some((candidate) => candidate.actionId === 'hero.travel') ||
+		!hasNavigationState(state)
+	) {
+		return actions;
+	}
+	const hero = state.heroes[actorId];
+	const targets =
+		hero && !hero.firstArrivalCompleted && hero.destination
+			? [destinationNodeId(settlementForState(state), hero.destination)]
+			: undefined;
+	const expandedTravel = travelActions(state, actorId, targets);
+	return actions.flatMap((candidate) =>
+		candidate.actionId === 'hero.travel' ? expandedTravel : [candidate]
+	);
+}
+
+function boundedDecisionText(result: HeroPolicyResult): string {
+	const text = result.decision.spokenText ?? result.decision.publicIntent;
+	return text.length <= 500 ? text : text.slice(0, 500).trimEnd();
+}
+
+export function commandFromHeroPolicyResult(input: {
+	readonly state: EngineGameState;
+	readonly packet: HeroDecisionPacket;
+	readonly result: HeroPolicyResult;
+	readonly decisionJobId: string;
+}): EngineCommand {
+	const state = EngineGameStateSchema.parse(input.state);
+	const packet = HeroDecisionPacketSchema.parse(input.packet);
+	const result = HeroPolicyResultSchema.parse(input.result);
+	const unsignedPacket = { ...packet } as Partial<HeroDecisionPacket>;
+	delete unsignedPacket.packetHash;
+	const unsignedResult = { ...result } as Partial<HeroPolicyResult>;
+	delete unsignedResult.resultHash;
+	if (
+		hashCanonical(unsignedPacket) !== packet.packetHash ||
+		hashCanonical(unsignedResult) !== result.resultHash ||
+		packet.runId !== state.runId ||
+		packet.heroId !== packet.identity.profile.characterId ||
+		packet.world.stateVersion !== state.version ||
+		packet.world.eventCursor !== state.eventCursor ||
+		packet.world.stateHash !== hashParsedGameState(state) ||
+		result.packetId !== packet.packetId ||
+		result.packetHash !== packet.packetHash ||
+		result.legalActionHash !== packet.legalActionHash ||
+		result.world.stateVersion !== packet.world.stateVersion ||
+		result.world.eventCursor !== packet.world.eventCursor ||
+		result.world.stateHash !== packet.world.stateHash
+	) {
+		throw new Error('Decision result is not bound to the current engine state');
+	}
+	const currentActions = [...decisionLegalActions(state, packet.heroId)].sort((left, right) =>
+		left.actionId.localeCompare(right.actionId)
+	);
+	if (hashCanonical(currentActions) !== packet.legalActionHash) {
+		throw new Error('Decision legal actions are stale');
+	}
+	const selectedAction = currentActions.find(
+		(candidate) => candidate.actionId === result.decision.actionId
+	);
+	if (
+		!selectedAction ||
+		result.decision.targetIds.some((targetId) => !selectedAction.targetIds.includes(targetId))
+	) {
+		throw new IllegalActionError(
+			result.decision.actionId,
+			currentActions.map((action) => action.actionId)
+		);
+	}
+	const commandId = deterministicUuid(
+		`${input.decisionJobId}:apply:${packet.packetHash}:${result.resultHash}`
+	);
+	const base = {
+		commandId,
+		runId: state.runId,
+		actorId: packet.heroId,
+		expectedVersion: state.version,
+		correlationId: deterministicUuid(`${input.decisionJobId}:correlation`),
+		source: {
+			source: result.trace.kind,
+			timing: null,
+			fallbackPolicy: null,
+			directiveIds: packet.activeDirectives.map((directive) => directive.directiveId),
+			decisionJobId: input.decisionJobId
+		}
+	};
+	const actionId = result.decision.actionId;
+	if (actionId === 'hero.choose.kitchen' || actionId === 'hero.choose.training-ground') {
+		const destination = actionId === 'hero.choose.kitchen' ? 'kitchen' : 'training-ground';
+		return EngineCommandSchema.parse({
+			...base,
+			commandType: 'hero.choose.destination',
+			destination,
+			firstLine: boundedDecisionText(result),
+			storyBranch: destination === 'kitchen' ? 'names-before-orders' : 'steel-before-trust'
+		});
+	}
+	if (actionId === 'hero.arrive.destination') {
+		return EngineCommandSchema.parse({ ...base, commandType: 'hero.arrive' });
+	}
+	if (actionId.startsWith('hero.travel.')) {
+		return EngineCommandSchema.parse({
+			...base,
+			commandType: 'hero.start.travel',
+			targetNodeId: actionId.slice('hero.travel.'.length)
+		});
+	}
+	if (actionId === 'hero.plan.day') {
+		return EngineCommandSchema.parse({ ...base, commandType: 'hero.plan.day' });
+	}
+	if (actionId === 'hero.follow.plan') {
+		return EngineCommandSchema.parse({ ...base, commandType: 'hero.start.routine' });
+	}
+	if (
+		actionId === 'hero.activity.train' ||
+		actionId === 'hero.activity.eat' ||
+		actionId === 'hero.activity.rest' ||
+		actionId === 'hero.activity.repair'
+	) {
+		return EngineCommandSchema.parse({
+			...base,
+			commandType: 'hero.start.activity',
+			activity: actionId.slice('hero.activity.'.length)
+		});
+	}
+	if (actionId.startsWith('hero.equip.')) {
+		return EngineCommandSchema.parse({
+			...base,
+			commandType: 'hero.equip.item',
+			itemId: actionId.slice('hero.equip.'.length)
+		});
+	}
+	throw new IllegalActionError(
+		actionId,
+		currentActions.map((action) => action.actionId)
+	);
 }
 
 function earliestScheduledTime(state: EngineGameStateModern): string | null {

@@ -76,7 +76,17 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		'No provider request is sent in scripted mode.'
 	);
 	await expect(page.getByRole('button', { name: /Ask gpt-5-nano once/ })).toHaveCount(0);
+	await expect(page.getByTestId('decision-job-bench')).toContainText('Durable decision job');
+	await expect(page.getByTestId('decision-job-bench')).toContainText(
+		'scripted fallback · stale state never applies'
+	);
+	await expect(page.getByRole('button', { name: /Queue scripted \+ apply/ })).toBeVisible();
 	await expect(page.getByTestId('decision-context')).toContainText('witnessed knowledge only');
+	if (process.env.CAPTURE_PHASE5_DECISION_JOBS) {
+		await page.setViewportSize({ width: 1440, height: 1120 });
+		await page.getByTestId('decision-job-bench').scrollIntoViewIfNeeded();
+		await page.screenshot({ path: process.env.CAPTURE_PHASE5_DECISION_JOBS, fullPage: true });
+	}
 	if (process.env.CAPTURE_PHASE5_MODEL_ADAPTER) {
 		await page.setViewportSize({ width: 1440, height: 1050 });
 		await page.getByTestId('model-policy-bench').scrollIntoViewIfNeeded();

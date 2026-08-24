@@ -2,12 +2,17 @@ import { getConfig } from '@summonlab/config';
 import { createLogger } from '@summonlab/observability';
 
 import { startCatchUpWorker } from './catch-up.js';
+import { startDecisionWorker } from './decision.js';
 import { createWorkerServer } from './server.js';
 
 const config = getConfig();
 const logger = createLogger({ service: 'worker', level: config.logLevel });
 const server = createWorkerServer(config);
 const catchUpWorker = startCatchUpWorker(config, logger);
+const decisionWorker = await startDecisionWorker(config, logger).catch((error) => {
+	logger.error({ error }, 'decision worker unavailable; health process will remain online');
+	return null;
+});
 
 server.listen(config.workerPort, config.host, () => {
 	logger.info(
@@ -27,6 +32,7 @@ async function shutdown(signal: string): Promise<void> {
 	stopping = true;
 	logger.info({ signal }, 'worker shutting down');
 	await catchUpWorker.stop();
+	await decisionWorker?.stop();
 	await new Promise<void>((resolve) => {
 		server.close((error) => {
 			if (error) {

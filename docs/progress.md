@@ -222,10 +222,10 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-005` were completed on 2026-08-24. Canonical
+Status: **in progress**. `AGT-001` through `AGT-006` were completed on 2026-08-24. Canonical
 witnessed onboarding now feeds deterministic, inspectable hero context, two packet-bound zero-cost
-policies, and one opt-in strict OpenAI policy preview. Durable model jobs, application, and free
-conversation remain later slices.
+policies, one opt-in strict OpenAI policy preview, and a PostgreSQL-authoritative stale-safe job
+lifecycle that can atomically apply a legal choice. Free conversation remains the next slice.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -234,6 +234,7 @@ conversation remain later slices.
 | `AGT-003` | Complete: `hero-decision-packet-v1` hash-binds the exact engine-v8 cursor, state, identity, context policy, and sorted legal actions; projects only visible environment and holder-owned cognition; retrieves direct memories with deterministic relevance scores, stable ties, item/character budgets, and witnessed exact speech; rejects stale/mismatched inputs; and exposes the live boundary before the first choice | [Decision context evidence](evidence/phase-5-decision-context.png), contract/engine/browser tests, current-context API, summon packet preview, ADR 0022 |
 | `AGT-004` | Complete: `@summonlab/policies` implements one explicit-seed random policy and one personality/value/drive/habit/needs-aware scripted policy across all four decision kinds; both accept only canonical packet actions/targets/memories, return packet/legal/state-bound `hero-policy-result-v1` records with deterministic traces and result hashes, and remain zero-cost baselines rather than direct state mutators | [Policy baseline evidence](evidence/phase-5-policy-baselines.png), policy/contract/browser tests, current-preview API, summon side-by-side baseline cards, ADR 0023 |
 | `AGT-005` | Complete: `OpenAIModelPolicy` submits one official-SDK foreground Responses request containing only the verified canonical packet; disables provider storage and conversation chaining; uses low verbosity, bounded minimal reasoning, and strict `summonlab_hero_decision` Structured Outputs; revalidates schema plus legal actions/targets/memories; returns provider/model/token/request/output/result trace; classifies timeout, provider error, refusal, incomplete, malformed, invalid, and illegal outputs; and remains a manual development-only preview with mode/key/cost/stale-packet gates | [Model adapter evidence](evidence/phase-5-model-adapter.png), fake-transport policy tests, no-key browser journey, model-preview API, ADR 0024 |
+| `AGT-006` | Complete: `decision-job-v1` persists the exact packet and run/legal hashes, attempts, leases, transitions, failures, replacement links, result, and application receipt; pg-boss carries only the job ID; pre-policy and transaction-locked pre-application guards reject stale work; model calls receive one bounded retry then deterministic scripted fallback; expired leases and completed-but-unapplied results recover without repeating provider work; fresh replans are linked and capped; and a validated policy result becomes one idempotent engine command with strict replay | [Decision job evidence](evidence/phase-5-decision-jobs.png), contract/engine/database/queue/worker/browser tests, decision-job APIs, summon lifecycle inspector, ADR 0025 |
 
 ### Reproduce the checkpoint
 
@@ -249,11 +250,15 @@ exactly two legal route choices, the latest exact words have event → observati
 packet/state hashes are visible. Compare **Personality script** with **Seeded random**: both must
 choose one of those exact actions, show `0 model calls`, and carry a different result hash bound to
 the same packet. The **Live model bench** must report **adapter ready** and **No provider request is
-sent in scripted mode**. Speak again and confirm the packet and both results refresh. To perform one
+sent in scripted mode**. Press **Queue scripted + apply** and confirm the observed lifecycle ends
+at **applied**, shows exactly one attempt, and displays the selected action plus cursor/version.
+The answer panel and authoritative journal must reflect the same choice, and replay must remain
+verified. Speak again on a fresh run and confirm the packet and both preview results refresh. To perform one
 optional paid preview, stop the app, set `POLICY_MODE=model` and `OPENAI_API_KEY` in local `.env`,
 restart, reopen the same inspector, and press **Ask gpt-5-nano once**. Confirm the result displays a
 legal action, public intent, tokens, provider response ID, and result hash but does not move the
-hero. Continue to Hearth 01,
+hero. **Queue model + apply** is a separate acknowledged durable job: it may retry once, then uses
+the scripted result if the provider remains unavailable. Continue to Hearth 01,
 recover the Floor 01 core, and
 bind the First Ember. The hero should now have the two awakening beliefs, the onboarding claim, and
 the two First Ember beliefs. Open **Replay**, inspect **Communicative acts · witness chains**, and
@@ -262,9 +267,7 @@ verified.
 
 ## Next active engineering slice
 
-Collect feedback on whether the disabled model bench communicates the cost/state boundary clearly
-and, after a keyed playtest, whether `gpt-5-nano` produces a believable choice from this packet.
-Then begin `AGT-006`: persist the decision-job lifecycle, retry only classified transient failures,
-reject stale completions, replan from fresh state, select deterministic fallbacks, and apply one
-validated result atomically. Phase 3 cohort expansion remains behind its separate human visual
-gate.
+Begin `AGT-007`: make free-text hero conversation a first-class loop and record explicit order
+outcomes such as accepted, negotiated, refused, or deferred without turning player language into a
+direct engine command. Reuse witnessed speech, holder-owned context, durable decision jobs, and the
+existing authority evidence. Phase 3 cohort expansion remains behind its separate human visual gate.

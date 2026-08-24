@@ -27,6 +27,7 @@ import {
 	RelationshipDimensionsSchema
 } from './social.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
+import { PolicyModeSchema } from './run.js';
 
 export const HERO_DECISION_PACKET_VERSION = 'hero-decision-packet-v1';
 export const HERO_CONTEXT_POLICY_VERSION = 'hero-context-v1';
@@ -38,6 +39,7 @@ export const RANDOM_POLICY_VERSION = 'random-policy-v1';
 export const SCRIPTED_POLICY_VERSION = 'scripted-policy-v1';
 export const MODEL_POLICY_VERSION = 'model-policy-v1';
 export const HERO_MODEL_PROMPT_VERSION = 'hero-model-prompt-v1';
+export const DECISION_JOB_VERSION = 'decision-job-v1';
 
 export const HeroDecisionKindSchema = z.enum([
 	'settlement-action',
@@ -386,6 +388,12 @@ export const ModelPolicyTraceSchema = z
 	})
 	.strict();
 
+export const HeroPolicyIdSchema = z.enum([
+	RANDOM_POLICY_VERSION,
+	SCRIPTED_POLICY_VERSION,
+	MODEL_POLICY_VERSION
+]);
+
 export const HeroPolicyTraceSchema = z.discriminatedUnion('kind', [
 	RandomPolicyTraceSchema,
 	ScriptedPolicyTraceSchema,
@@ -395,7 +403,7 @@ export const HeroPolicyTraceSchema = z.discriminatedUnion('kind', [
 export const HeroPolicyResultSchema = z
 	.object({
 		schemaVersion: z.literal(HERO_POLICY_RESULT_VERSION),
-		policyId: z.enum([RANDOM_POLICY_VERSION, SCRIPTED_POLICY_VERSION, MODEL_POLICY_VERSION]),
+		policyId: HeroPolicyIdSchema,
 		packetId: EntityIdSchema,
 		packetHash: StateHashSchema,
 		legalActionHash: StateHashSchema,
@@ -432,6 +440,171 @@ export const HeroPolicyResultSchema = z
 			});
 		}
 	});
+
+export const DecisionJobStatusSchema = z.enum([
+	'created',
+	'queued',
+	'in_progress',
+	'retry_wait',
+	'fallback',
+	'completed',
+	'validated',
+	'applied',
+	'stale',
+	'replanned',
+	'failed'
+]);
+
+export const DecisionAttemptKindSchema = z.enum(['primary', 'retry', 'fallback']);
+
+export const DecisionJobFailureSchema = z
+	.object({
+		code: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		message: z.string().min(1).max(500),
+		retryable: z.boolean(),
+		occurredAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const DecisionJobAttemptSchema = z
+	.object({
+		attemptNumber: z.number().int().positive(),
+		kind: DecisionAttemptKindSchema,
+		policy: PolicyModeSchema,
+		policyId: HeroPolicyIdSchema,
+		status: z.enum(['in_progress', 'succeeded', 'failed']),
+		startedAt: IsoDateTimeSchema,
+		completedAt: IsoDateTimeSchema.nullable(),
+		latencyMs: z.number().int().nonnegative().nullable(),
+		resultHash: StateHashSchema.nullable(),
+		failure: DecisionJobFailureSchema.nullable()
+	})
+	.strict()
+	.superRefine((attempt, context) => {
+		if (
+			(attempt.status === 'in_progress') !== (attempt.completedAt === null) ||
+			(attempt.status === 'succeeded') !== (attempt.resultHash !== null) ||
+			(attempt.status === 'failed') !== (attempt.failure !== null)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Decision attempt terminal fields are inconsistent'
+			});
+		}
+	});
+
+export const DecisionJobTransitionSchema = z
+	.object({
+		sequence: z.number().int().positive(),
+		fromStatus: DecisionJobStatusSchema.nullable(),
+		toStatus: DecisionJobStatusSchema,
+		reason: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		detail: z.string().min(1).max(500).nullable(),
+		occurredAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const DecisionJobApplicationSchema = z
+	.object({
+		commandId: EntityIdSchema,
+		eventCursor: z.number().int().positive(),
+		runVersion: z.number().int().positive(),
+		stateHash: StateHashSchema,
+		appliedAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const DecisionJobRecordSchema = z
+	.object({
+		schemaVersion: z.literal(DECISION_JOB_VERSION),
+		decisionJobId: EntityIdSchema,
+		rootJobId: EntityIdSchema,
+		parentJobId: EntityIdSchema.nullable(),
+		replacementJobId: EntityIdSchema.nullable(),
+		runId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		decisionKind: HeroDecisionKindSchema,
+		status: DecisionJobStatusSchema,
+		requestedPolicy: PolicyModeSchema,
+		nextAttemptKind: DecisionAttemptKindSchema,
+		activePolicy: PolicyModeSchema.nullable(),
+		resolution: z.enum(['requested', 'fallback']).nullable(),
+		expectedRunVersion: z.number().int().nonnegative(),
+		expectedEventCursor: z.number().int().positive(),
+		decisionGameTime: IsoDateTimeSchema,
+		packetId: EntityIdSchema,
+		packetHash: StateHashSchema,
+		stateHash: StateHashSchema,
+		legalActionHash: StateHashSchema,
+		promptVersion: z.string().min(1).max(80),
+		contextPolicyVersion: z.string().min(1).max(80),
+		packet: HeroDecisionPacketSchema,
+		result: HeroPolicyResultSchema.nullable(),
+		failure: DecisionJobFailureSchema.nullable(),
+		attemptCount: z.number().int().nonnegative(),
+		providerAttemptCount: z.number().int().nonnegative(),
+		maxProviderAttempts: z.number().int().min(1).max(4),
+		replanCount: z.number().int().nonnegative().max(16),
+		maxReplans: z.number().int().nonnegative().max(16),
+		leaseExpiresAt: IsoDateTimeSchema.nullable(),
+		application: DecisionJobApplicationSchema.nullable(),
+		attempts: z.array(DecisionJobAttemptSchema).max(16),
+		transitions: z.array(DecisionJobTransitionSchema).min(1).max(64),
+		createdAt: IsoDateTimeSchema,
+		updatedAt: IsoDateTimeSchema
+	})
+	.strict()
+	.superRefine((job, context) => {
+		if (
+			job.packet.packetId !== job.packetId ||
+			job.packet.packetHash !== job.packetHash ||
+			job.packet.runId !== job.runId ||
+			job.packet.heroId !== job.heroId ||
+			job.packet.decisionKind !== job.decisionKind ||
+			job.packet.world.stateVersion !== job.expectedRunVersion ||
+			job.packet.world.eventCursor !== job.expectedEventCursor ||
+			job.packet.world.stateHash !== job.stateHash ||
+			job.packet.legalActionHash !== job.legalActionHash
+		) {
+			context.addIssue({ code: 'custom', message: 'Decision job packet binding is inconsistent' });
+		}
+		if (
+			job.result &&
+			(job.result.packetId !== job.packetId ||
+				job.result.packetHash !== job.packetHash ||
+				job.result.legalActionHash !== job.legalActionHash ||
+				job.result.world.stateVersion !== job.expectedRunVersion ||
+				job.result.world.eventCursor !== job.expectedEventCursor ||
+				job.result.world.stateHash !== job.stateHash)
+		) {
+			context.addIssue({ code: 'custom', message: 'Decision job result binding is inconsistent' });
+		}
+		if (job.attemptCount !== job.attempts.length) {
+			context.addIssue({ code: 'custom', message: 'Decision job attempt count is inconsistent' });
+		}
+		const latestTransition = job.transitions.at(-1);
+		if (!latestTransition || latestTransition.toStatus !== job.status) {
+			context.addIssue({ code: 'custom', message: 'Decision job transition head is inconsistent' });
+		}
+		if ((job.status === 'applied') !== (job.application !== null)) {
+			context.addIssue({ code: 'custom', message: 'Decision job application is inconsistent' });
+		}
+		if (job.status === 'applied' && !job.result) {
+			context.addIssue({ code: 'custom', message: 'Applied decision job has no result' });
+		}
+		if (job.parentJobId === null && job.rootJobId !== job.decisionJobId) {
+			context.addIssue({ code: 'custom', message: 'Root decision job identity is inconsistent' });
+		}
+	});
+
+export const DecisionJobCreateRequestSchema = z
+	.object({
+		heroId: EntityIdSchema,
+		packetHash: StateHashSchema,
+		policy: PolicyModeSchema,
+		costAcknowledged: z.boolean().default(false)
+	})
+	.strict();
 
 export const HeroDecisionPreviewSchema = z
 	.object({
@@ -475,6 +648,13 @@ export type HeroDecisionKind = z.infer<typeof HeroDecisionKindSchema>;
 export type HeroDecisionPacket = z.infer<typeof HeroDecisionPacketSchema>;
 export type HeroDecisionPreview = z.infer<typeof HeroDecisionPreviewSchema>;
 export type HeroPolicyResult = z.infer<typeof HeroPolicyResultSchema>;
+export type DecisionAttemptKind = z.infer<typeof DecisionAttemptKindSchema>;
+export type DecisionJobAttempt = z.infer<typeof DecisionJobAttemptSchema>;
+export type DecisionJobCreateRequest = z.infer<typeof DecisionJobCreateRequestSchema>;
+export type DecisionJobFailure = z.infer<typeof DecisionJobFailureSchema>;
+export type DecisionJobRecord = z.infer<typeof DecisionJobRecordSchema>;
+export type DecisionJobStatus = z.infer<typeof DecisionJobStatusSchema>;
+export type DecisionJobTransition = z.infer<typeof DecisionJobTransitionSchema>;
 export type PolicyActionScore = z.infer<typeof PolicyActionScoreSchema>;
 export type PolicyScoreContribution = z.infer<typeof PolicyScoreContributionSchema>;
 export type RetrievedMemory = z.infer<typeof RetrievedMemorySchema>;

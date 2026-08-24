@@ -60,3 +60,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-5-model-adapter.png` — the summoned hero, both zero-cost packet baselines, and the
   development-only live model bench visibly disabled in scripted mode with explicit model,
   reasoning/output bounds, preview-only semantics, and assurance that no provider request is sent.
+- `phase-5-decision-jobs.png` — an applied zero-cost decision beside the summoned hero, including
+  the job ID, exact engine action, run cursor/version, requested-policy resolution, complete durable
+  transition path, and matching authoritative journal events.

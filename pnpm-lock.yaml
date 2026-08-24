@@ -144,12 +144,22 @@ importers:
       '@summonlab/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@summonlab/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
       '@summonlab/observability':
         specifier: workspace:*
         version: link:../../packages/observability
+      '@summonlab/policies':
+        specifier: workspace:*
+        version: link:../../packages/policies
       '@summonlab/queue':
         specifier: workspace:*
         version: link:../../packages/queue
+    devDependencies:
+      '@summonlab/characters':
+        specifier: workspace:*
+        version: link:../../packages/characters
 
   packages/characters:
     dependencies:

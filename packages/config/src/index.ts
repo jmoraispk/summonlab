@@ -9,6 +9,10 @@ const EnvironmentSchema = z
 		WORKER_PORT: z.coerce.number().int().min(1).max(65_535).default(4174),
 		SIMULATION_SPEED: z.coerce.number().pipe(ClockSpeedSchema).default(4),
 		CATCH_UP_POLL_MS: z.coerce.number().int().min(250).max(60_000).default(1_000),
+		DECISION_JOB_POLL_MS: z.coerce.number().int().min(250).max(60_000).default(500),
+		DECISION_JOB_LEASE_SECONDS: z.coerce.number().int().min(10).max(300).default(45),
+		DECISION_JOB_MAX_PROVIDER_ATTEMPTS: z.coerce.number().int().min(1).max(4).default(2),
+		DECISION_JOB_MAX_REPLANS: z.coerce.number().int().min(0).max(16).default(3),
 		LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 		DATABASE_URL: z
 			.string()
@@ -35,6 +39,10 @@ const EnvironmentSchema = z
 		workerPort: value.WORKER_PORT,
 		simulationSpeed: value.SIMULATION_SPEED,
 		catchUpPollMs: value.CATCH_UP_POLL_MS,
+		decisionJobPollMs: value.DECISION_JOB_POLL_MS,
+		decisionJobLeaseSeconds: value.DECISION_JOB_LEASE_SECONDS,
+		decisionJobMaxProviderAttempts: value.DECISION_JOB_MAX_PROVIDER_ATTEMPTS,
+		decisionJobMaxReplans: value.DECISION_JOB_MAX_REPLANS,
 		logLevel: value.LOG_LEVEL,
 		databaseUrl: value.DATABASE_URL,
 		policyMode: value.POLICY_MODE,

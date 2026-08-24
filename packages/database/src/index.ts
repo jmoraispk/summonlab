@@ -3,6 +3,7 @@ import postgres from 'postgres';
 
 export * from './clock.js';
 export * from './catch-up.js';
+export * from './decision-jobs.js';
 export * from './proof.js';
 export * from './engine.js';
 export * from './events.js';

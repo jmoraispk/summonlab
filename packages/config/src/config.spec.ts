@@ -10,6 +10,10 @@ describe('configuration', () => {
 		expect(config.workerPort).toBe(4174);
 		expect(config.simulationSpeed).toBe(4);
 		expect(config.catchUpPollMs).toBe(1_000);
+		expect(config.decisionJobPollMs).toBe(500);
+		expect(config.decisionJobLeaseSeconds).toBe(45);
+		expect(config.decisionJobMaxProviderAttempts).toBe(2);
+		expect(config.decisionJobMaxReplans).toBe(3);
 		expect(config.databaseUrl).toContain('54329/summonlab');
 		expect(config.devRoutesEnabled).toBe(true);
 		expect(config.imageGenerationEnabled).toBe(false);
@@ -54,5 +58,6 @@ describe('configuration', () => {
 		expect(() => parseConfig({ POLICY_MODE: 'unbounded' })).toThrow();
 		expect(() => parseConfig({ SIMULATION_SPEED: '3' })).toThrow();
 		expect(() => parseConfig({ CATCH_UP_POLL_MS: '100' })).toThrow();
+		expect(() => parseConfig({ DECISION_JOB_LEASE_SECONDS: '5' })).toThrow();
 	});
 });

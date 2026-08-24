@@ -9,13 +9,19 @@
 		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
 		"lint": "eslint src",
 		"typecheck": "tsc --noEmit",
-		"test": "vitest run"
+		"test": "vitest run --exclude '**/*.integration.spec.ts'",
+		"test:integration": "vitest run --config vitest.integration.config.ts"
 	},
 	"dependencies": {
 		"@summonlab/config": "workspace:*",
 		"@summonlab/contracts": "workspace:*",
 		"@summonlab/database": "workspace:*",
+		"@summonlab/engine": "workspace:*",
 		"@summonlab/observability": "workspace:*",
+		"@summonlab/policies": "workspace:*",
 		"@summonlab/queue": "workspace:*"
+	},
+	"devDependencies": {
+		"@summonlab/characters": "workspace:*"
 	}
 }

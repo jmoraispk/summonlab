@@ -5,6 +5,7 @@ import {
 	ProofRunSnapshotSchema,
 	type CharacterDraft,
 	type ClockSpeed,
+	type DecisionSource,
 	type EngineCommand,
 	type FirstDestination,
 	type ProofControlMode,
@@ -50,7 +51,7 @@ interface ProofEventRow {
 
 export interface ResolvedFirstChoice {
 	readonly destination: FirstDestination;
-	readonly source: 'random' | 'scripted' | 'directed';
+	readonly source: DecisionSource;
 	readonly firstLine: string;
 	readonly storyBranch: string;
 	readonly score: Readonly<{ kitchen: number; trainingGround: number }>;
@@ -376,6 +377,37 @@ async function appendChoiceEvents(
 			{ storyEnvelopeId: 'first-ember-v1', storyBranch: choice.storyBranch }
 		)
 	);
+}
+
+export async function projectProofChoiceInTransaction(
+	sql: postgres.TransactionSql,
+	runId: string,
+	choice: ResolvedFirstChoice,
+	directive: string
+): Promise<void> {
+	const rows = await sql<{ destination: FirstDestination | null }[]>`
+		select destination from summonlab_proof_runs where run_id = ${runId} for update
+	`;
+	const row = rows[0];
+	if (!row) throw new Error(`Proof run not found: ${runId}`);
+	if (row.destination) {
+		if (row.destination !== choice.destination) {
+			throw new Error('Proof projection conflicts with the authoritative destination');
+		}
+		return;
+	}
+	const sequenceRows = await sql<{ sequence: number }[]>`
+		select coalesce(max(sequence), 0)::integer as sequence
+		from summonlab_proof_events where run_id = ${runId}
+	`;
+	const startSequence = (sequenceRows[0]?.sequence ?? 0) + 1;
+	await sql`
+		update summonlab_proof_runs
+		set directive = ${directive}, first_line = ${choice.firstLine},
+			destination = ${choice.destination}, story_branch = ${choice.storyBranch}, updated_at = now()
+		where run_id = ${runId}
+	`;
+	await appendChoiceEvents(sql, runId, choice, directive, startSequence);
 }
 
 export async function resolveProofDecision(

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type {
+		DecisionJobRecord,
 		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
@@ -22,6 +23,9 @@
 	let modelResult = $state<HeroPolicyResult | null>(null);
 	let requestingModel = $state(false);
 	let modelRequestError = $state('');
+	let decisionJob = $state<DecisionJobRecord | null>(null);
+	let decisionJobError = $state('');
+	let queueingDecisionJob = $state(false);
 	let stage = $state(0);
 	// svelte-ignore state_referenced_locally
 	let directive = $state(snapshot.directive);
@@ -42,6 +46,7 @@
 		'I am the Master of Hearth 01. You were summoned here, but you are free to ask what this place demands.'
 	);
 	let countdownTimer: number | undefined;
+	let decisionJobPollTimer: number | undefined;
 	const outerRunes = Array.from({ length: 12 }, (_, index) => index);
 	const innerRunes = Array.from({ length: 8 }, (_, index) => index);
 	const destinationLabel = $derived(
@@ -165,6 +170,72 @@
 		}
 	}
 
+	function stopDecisionJobPolling() {
+		if (decisionJobPollTimer) window.clearTimeout(decisionJobPollTimer);
+		decisionJobPollTimer = undefined;
+	}
+
+	async function loadDecisionJob(jobId: string): Promise<DecisionJobRecord> {
+		const response = await fetch(`/api/runs/${snapshot.runId}/decision-jobs/${jobId}`);
+		const result = (await response.json()) as DecisionJobRecord & { message?: string };
+		if (!response.ok) throw new Error(result.message ?? 'The decision job could not be loaded.');
+		return result;
+	}
+
+	async function pollDecisionJob() {
+		if (!decisionJob) return;
+		stopDecisionJobPolling();
+		try {
+			let current = await loadDecisionJob(decisionJob.decisionJobId);
+			if (current.status === 'replanned' && current.replacementJobId) {
+				current = await loadDecisionJob(current.replacementJobId);
+			}
+			decisionJob = current;
+			if (current.status === 'applied') {
+				const runResponse = await fetch(`/api/runs/${snapshot.runId}`);
+				if (runResponse.ok) snapshot = (await runResponse.json()) as ProofRunSnapshot;
+				stage = 4;
+				await refreshDecisionPacket();
+				return;
+			}
+			if (current.status === 'failed' || current.status === 'stale') return;
+			decisionJobPollTimer = window.setTimeout(() => void pollDecisionJob(), 350);
+		} catch (error) {
+			decisionJobError = error instanceof Error ? error.message : 'Decision polling failed.';
+		}
+	}
+
+	async function queueDecisionJob(policy: 'scripted' | 'model') {
+		if (!decisionPacket || queueingDecisionJob || snapshot.destination) return;
+		queueingDecisionJob = true;
+		decisionJobError = '';
+		if (countdownTimer) {
+			window.clearInterval(countdownTimer);
+			countdownTimer = undefined;
+		}
+		try {
+			const response = await fetch(`/api/runs/${snapshot.runId}/decision-jobs`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					heroId: snapshot.manifest.characterId,
+					packetHash: decisionPacket.packetHash,
+					policy,
+					costAcknowledged: policy === 'model'
+				})
+			});
+			const result = (await response.json()) as DecisionJobRecord & { message?: string };
+			if (!response.ok) throw new Error(result.message ?? 'The decision job could not be queued.');
+			decisionJob = result;
+			await pollDecisionJob();
+		} catch (error) {
+			decisionJobError = error instanceof Error ? error.message : 'Decision job creation failed.';
+			if (snapshot.controlMode === 'countdown' && !snapshot.destination) beginCountdown();
+		} finally {
+			queueingDecisionJob = false;
+		}
+	}
+
 	function policyActionLabel(result: HeroPolicyResult): string {
 		return (
 			decisionPacket?.legalActions.find((action) => action.actionId === result.decision.actionId)
@@ -219,6 +290,7 @@
 
 	onDestroy(() => {
 		if (countdownTimer) window.clearInterval(countdownTimer);
+		stopDecisionJobPolling();
 	});
 </script>
 
@@ -519,6 +591,69 @@
 									One independent Responses request · strict schema · never applies state
 								</footer>
 							</section>
+							<section class="decision-job" data-testid="decision-job-bench">
+								<div class="decision-job-head">
+									<div>
+										<span>Durable decision job</span>
+										<strong>Queue → validate → apply</strong>
+									</div>
+									<em>{decisionJob?.status.replaceAll('_', ' ') ?? 'not queued'}</em>
+								</div>
+								{#if decisionJob}
+									<div class="job-proof">
+										<div><span>job</span><code>{decisionJob.decisionJobId.slice(0, 10)}</code></div>
+										<div><span>packet</span><code>{decisionJob.packetHash.slice(0, 10)}</code></div>
+										<div><span>attempts</span><strong>{decisionJob.attemptCount}</strong></div>
+										<div><span>replans</span><strong>{decisionJob.replanCount}</strong></div>
+									</div>
+									<div class="job-track" aria-label="Decision job transitions">
+										{#each decisionJob.transitions.slice(-5) as transition (transition.sequence)}
+											<span class:current={transition.toStatus === decisionJob.status}
+												>{transition.toStatus.replaceAll('_', ' ')}</span
+											>
+										{/each}
+									</div>
+									{#if decisionJob.failure}
+										<small>{decisionJob.failure.code} · {decisionJob.failure.message}</small>
+									{:else if decisionJob.result}
+										<small
+											>{decisionJob.resolution} policy chose {decisionJob.result.decision
+												.actionId}</small
+										>
+									{:else}
+										<small
+											>The worker owns execution; this browser only observes lifecycle state.</small
+										>
+									{/if}
+								{:else}
+									<p>
+										Create one packet-bound job. A stale completion is rejected and replanned; only
+										the engine can commit its selected legal action.
+									</p>
+									<div class="job-actions">
+										<button
+											type="button"
+											onclick={() => queueDecisionJob('scripted')}
+											disabled={queueingDecisionJob}
+										>
+											{queueingDecisionJob ? 'Queuing…' : 'Queue scripted + apply'}
+										</button>
+										{#if data.modelPolicy.enabled}
+											<button
+												type="button"
+												onclick={() => queueDecisionJob('model')}
+												disabled={queueingDecisionJob}
+											>
+												Queue model + apply
+											</button>
+										{/if}
+									</div>
+								{/if}
+								{#if decisionJobError}<p class="error" role="alert">{decisionJobError}</p>{/if}
+								<footer>
+									One provider retry maximum · scripted fallback · stale state never applies
+								</footer>
+							</section>
 							<div class="memory-context">
 								<p>Retrieved personal memory</p>
 								{#each decisionPacket.knowledge.memoryRetrieval.memories as memory (memory.memoryId)}
@@ -586,6 +721,24 @@
 						<strong>{snapshot.storyBranch?.replaceAll('-', ' ')} → {destinationLabel}</strong>
 					</div>
 				</div>
+				{#if decisionJob?.application}
+					<div class="applied-job" data-testid="applied-decision-job">
+						<div>
+							<span>Decision job applied</span>
+							<code>{decisionJob.decisionJobId.slice(0, 10)}</code>
+						</div>
+						<strong>{decisionJob.result?.decision.actionId}</strong>
+						<small
+							>cursor {decisionJob.application.eventCursor} · version {decisionJob.application
+								.runVersion} · {decisionJob.resolution}</small
+						>
+						<div class="applied-track" aria-label="Applied decision lifecycle">
+							{#each decisionJob.transitions as transition (transition.sequence)}
+								<span>{transition.toStatus.replaceAll('_', ' ')}</span>
+							{/each}
+						</div>
+					</div>
+				{/if}
 				<a class="follow" href={resolve('/play/[runId]', { runId: snapshot.runId })}>
 					<span>Follow to {destinationLabel}</span>
 					<small>Watch the same rig continue through the settlement</small>
@@ -1588,6 +1741,183 @@
 	.model-result code {
 		color: rgba(112, 200, 217, 0.52);
 		font-size: 0.41rem;
+	}
+
+	.decision-job {
+		margin-top: 0.55rem;
+		padding: 0.7rem;
+		border: 1px solid rgba(210, 160, 77, 0.28);
+		background:
+			linear-gradient(135deg, rgba(210, 160, 77, 0.08), rgba(4, 6, 10, 0.78)),
+			repeating-linear-gradient(90deg, transparent 0 12px, rgba(255, 255, 255, 0.012) 12px 13px);
+	}
+
+	.decision-job-head,
+	.job-proof,
+	.job-track,
+	.job-actions,
+	.applied-job {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.45rem;
+	}
+
+	.decision-job-head span,
+	.decision-job-head strong,
+	.job-proof span,
+	.job-proof strong,
+	.applied-job span,
+	.applied-job small {
+		display: block;
+	}
+
+	.decision-job-head span,
+	.job-proof span,
+	.applied-job span {
+		color: #d2a04d;
+		font-size: 0.42rem;
+		font-weight: 800;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+
+	.decision-job-head strong {
+		margin-top: 0.16rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.58rem;
+		font-weight: 500;
+	}
+
+	.decision-job-head em {
+		padding: 0.22rem 0.35rem;
+		border: 1px solid rgba(112, 200, 217, 0.25);
+		color: #70c8d9;
+		font-size: 0.42rem;
+		font-style: normal;
+		text-transform: uppercase;
+	}
+
+	.decision-job > p,
+	.decision-job > small,
+	.decision-job > footer {
+		color: rgba(246, 241, 231, 0.45);
+		font-size: 0.47rem;
+		line-height: 1.5;
+	}
+
+	.decision-job > p {
+		margin: 0.55rem 0;
+	}
+
+	.job-proof {
+		margin-top: 0.55rem;
+		align-items: stretch;
+	}
+
+	.job-proof > div {
+		min-width: 0;
+		flex: 1;
+		padding: 0.35rem;
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		background: rgba(255, 255, 255, 0.02);
+	}
+
+	.job-proof code,
+	.job-proof strong {
+		margin-top: 0.15rem;
+		color: rgba(112, 200, 217, 0.7);
+		font-size: 0.45rem;
+	}
+
+	.job-track {
+		justify-content: flex-start;
+		margin: 0.5rem 0;
+		overflow: hidden;
+	}
+
+	.job-track span {
+		padding: 0.2rem 0.3rem;
+		border: 1px solid rgba(255, 255, 255, 0.07);
+		color: rgba(246, 241, 231, 0.3);
+		font-size: 0.4rem;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.job-track span.current {
+		border-color: rgba(112, 200, 217, 0.4);
+		color: #bce7ef;
+	}
+
+	.job-actions button {
+		flex: 1;
+		padding: 0.45rem;
+		border: 1px solid rgba(210, 160, 77, 0.45);
+		background: rgba(210, 160, 77, 0.1);
+		color: #f0c87f;
+		cursor: pointer;
+		font-size: 0.48rem;
+		text-transform: uppercase;
+	}
+
+	.job-actions button:last-child {
+		border-color: rgba(112, 200, 217, 0.4);
+		background: rgba(112, 200, 217, 0.08);
+		color: #bce7ef;
+	}
+
+	.job-actions button:disabled {
+		cursor: wait;
+		opacity: 0.5;
+	}
+
+	.decision-job > footer {
+		margin-top: 0.55rem;
+		padding-top: 0.45rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+		font-size: 0.4rem;
+		text-transform: uppercase;
+	}
+
+	.applied-job {
+		align-items: flex-start;
+		flex-direction: column;
+		margin: 0 1.25rem;
+		padding: 0.7rem;
+		border-left: 2px solid #70c8d9;
+		background: rgba(112, 200, 217, 0.06);
+	}
+
+	.applied-job code {
+		color: #70c8d9;
+		font-size: 0.5rem;
+	}
+
+	.applied-job strong {
+		color: rgba(246, 241, 231, 0.82);
+		font-family: ui-monospace, monospace;
+		font-size: 0.52rem;
+		font-weight: 500;
+	}
+
+	.applied-job small {
+		color: rgba(246, 241, 231, 0.42);
+		font-size: 0.46rem;
+	}
+
+	.applied-track {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+	}
+
+	.applied-track span {
+		padding: 0.16rem 0.26rem;
+		border: 1px solid rgba(112, 200, 217, 0.18);
+		color: rgba(188, 231, 239, 0.6);
+		font-size: 0.36rem;
+		letter-spacing: 0.04em;
 	}
 
 	.memory-context article {
