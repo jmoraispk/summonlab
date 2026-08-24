@@ -70,8 +70,11 @@ const appKey = entryKeyByName('entry/app');
 const layoutKey = await routeNodeKey('src/routes/+layout.svelte');
 const homeKey = await routeNodeKey('src/routes/+page.svelte');
 const runtimeKey = await routeNodeKey('src/routes/visual-lab/runtime-bundles/+page.svelte');
+const recognitionKey = await routeNodeKey('src/routes/visual-lab/recognition/+page.svelte');
 const initialEntries = collect([startKey, appKey, layoutKey, homeKey], false);
-const runtimeEntries = collect([startKey, appKey, layoutKey, runtimeKey], true);
+const shellEntries = collect([startKey, appKey, layoutKey], false);
+const runtimeEntries = new Set([...shellEntries, ...collect([runtimeKey], true)]);
+const recognitionEntries = new Set([...shellEntries, ...collect([recognitionKey], true)]);
 const lazyEntries = [...runtimeEntries].filter((key) => !initialEntries.has(key));
 const lazySizes = await Promise.all(
 	lazyEntries.map(async (key) => ({ key, bytes: await gzipBytes(new Set([key])) }))
@@ -82,17 +85,20 @@ const report = {
 	budgets: {
 		initialJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		runtimeInspectorLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
+		recognitionAuditLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		runtimeVisualPayloadBytes: runtimeManifest.initialPayloadBudgetBytes
 	},
 	measurements: {
 		initialJavaScriptGzipBytes: await gzipBytes(initialEntries),
 		runtimeInspectorLoadedJavaScriptGzipBytes: await gzipBytes(runtimeEntries),
+		recognitionAuditLoadedJavaScriptGzipBytes: await gzipBytes(recognitionEntries),
 		largestRuntimeLazyChunkGzipBytes: Math.max(...lazySizes.map(({ bytes }) => bytes)),
 		runtimeVisualPayloadBytes: runtimeManifest.initialPayloadBytes
 	},
 	status: {
 		initialJavaScript: 'within-budget',
 		runtimeInspectorLoadedJavaScript: 'within-budget',
+		recognitionAuditLoadedJavaScript: 'within-budget',
 		runtimeVisualPayload: 'within-budget'
 	}
 };
@@ -105,6 +111,12 @@ if (
 	report.budgets.runtimeInspectorLoadedJavaScriptGzipBytes
 ) {
 	throw new Error('Loaded runtime inspector JavaScript exceeds the 700 KB compressed budget');
+}
+if (
+	report.measurements.recognitionAuditLoadedJavaScriptGzipBytes >
+	report.budgets.recognitionAuditLoadedJavaScriptGzipBytes
+) {
+	throw new Error('Loaded recognition audit JavaScript exceeds the 700 KB compressed budget');
 }
 if (report.measurements.runtimeVisualPayloadBytes > report.budgets.runtimeVisualPayloadBytes) {
 	throw new Error('Runtime visual payload exceeds the 8 MB phone budget');
@@ -130,6 +142,7 @@ if (process.argv.includes('--write')) {
 	const javascriptEvidenceIsCurrent = [
 		'initialJavaScriptGzipBytes',
 		'runtimeInspectorLoadedJavaScriptGzipBytes',
+		'recognitionAuditLoadedJavaScriptGzipBytes',
 		'largestRuntimeLazyChunkGzipBytes'
 	].every((key) => {
 		const storedBytes = storedReport.measurements?.[key];

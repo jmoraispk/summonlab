@@ -20,6 +20,8 @@
 		"validate:visual-assets": "tsx tools/validate-visual-assets.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
+		"export:recognition-audit": "tsx tools/export-recognition-audit.ts",
+		"validate:recognition-audit": "tsx tools/export-recognition-audit.ts --check",
 		"measure:web-build-budget": "pnpm --filter @summonlab/web build && node tools/validate-web-build-budget.mjs --write",
 		"validate:web-build-budget": "node tools/validate-web-build-budget.mjs",
 		"format": "prettier --write .",
@@ -29,7 +31,7 @@
 		"test": "pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:recognition-audit && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

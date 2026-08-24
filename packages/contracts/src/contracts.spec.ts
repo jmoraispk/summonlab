@@ -11,6 +11,7 @@ import {
 	SummonCardGenerateRequestSchema,
 	SummonCardGenerationSpecSchema,
 	VisualIdentityCheckSchema,
+	VisualRecognitionAuditSchema,
 	VisualReviewCreateRequestSchema,
 	VisualReviewListSchema,
 	VisualReviewRecordSchema,
@@ -255,23 +256,122 @@ describe('foundation contracts', () => {
 		).toThrow();
 	});
 
+	it('keeps recognition audits human-gated and internally measurable', () => {
+		const recognitionCase = {
+			caseId: 'settlement-night-walk',
+			label: 'Settlement night walk',
+			cameraTier: 'settlement' as const,
+			expression: 'neutral' as const,
+			paletteMode: 'night' as const,
+			equipment: 'none' as const,
+			walking: true,
+			displayCssWidth: 48,
+			displayCssHeight: 86,
+			requiredCues: ['hair', 'silhouette', 'palette', 'signature-traits'] as const,
+			requiredStateLayers: ['palette', 'gait'] as const,
+			humanReviewStatus: 'pending-human-review' as const,
+			reviewPrompt: 'Do four non-facial cues still identify the hero?'
+		};
+		const texture = {
+			alias: 'hero.ember-01-anchor-v1.roster',
+			usage: 'roster' as const,
+			width: 256,
+			height: 384,
+			displayCssWidth: 96,
+			displayCssHeight: 144,
+			requiredPixelWidth: 192,
+			requiredPixelHeight: 288,
+			densityMargin: 1.333,
+			encodedBytes: 3_484,
+			decodedRgbaBytes: 393_216,
+			densityStatus: 'sufficient' as const
+		};
+		const cases = [
+			recognitionCase,
+			...(['summon', 'dialogue', 'roster', 'mission'] as const).map((cameraTier) => ({
+				...recognitionCase,
+				caseId: `${cameraTier}-case`,
+				cameraTier,
+				requiredCues: ['face', 'hair', 'silhouette', 'palette', 'signature-traits'] as const
+			}))
+		];
+		const audit = {
+			schemaVersion: 'visual-recognition-audit-v1' as const,
+			catalogVersion: 'visual-catalog-v1',
+			catalogContentHash: '1'.repeat(64),
+			characterId: randomUUID(),
+			manifestHash: '2'.repeat(64),
+			approvedSourceAssetKey: 'ember-01-anchor-v1',
+			approvedSourceContentHash: '3'.repeat(64),
+			cases,
+			coverage: {
+				expressions: ['neutral', 'alert', 'injured'] as const,
+				cameraTiers: ['summon', 'dialogue', 'roster', 'settlement', 'mission'] as const,
+				paletteModes: ['base', 'night', 'injured'] as const,
+				equipment: ['none', 'practice-blade', 'short-bow'] as const
+			},
+			phoneDelivery: {
+				profile: 'mid-range-phone-390x844-2x' as const,
+				viewportCssWidth: 390 as const,
+				viewportCssHeight: 844 as const,
+				devicePixelRatio: 2 as const,
+				textures: [
+					{ ...texture, alias: 'hero.a.summon', usage: 'summon' as const },
+					{ ...texture, alias: 'hero.a.dialogue', usage: 'dialogue' as const },
+					texture
+				],
+				totalEncodedBytes: texture.encodedBytes * 3,
+				totalDecodedRgbaBytes: texture.decodedRgbaBytes * 3,
+				visualPayloadBudgetBytes: 8_000_000 as const,
+				textureMemoryReferenceBytes: 300_000_000 as const,
+				payloadStatus: 'within-budget' as const,
+				textureMemoryProxyStatus: 'within-reference' as const
+			},
+			humanReviewStatus: 'pending-human-review' as const,
+			auditHash: '4'.repeat(64)
+		};
+
+		expect(VisualRecognitionAuditSchema.parse(audit).cases).toHaveLength(5);
+		expect(() =>
+			VisualRecognitionAuditSchema.parse({
+				...audit,
+				phoneDelivery: { ...audit.phoneDelivery, totalEncodedBytes: 1 }
+			})
+		).toThrow();
+		expect(() =>
+			VisualRecognitionAuditSchema.parse({
+				...audit,
+				cases: [
+					{
+						...recognitionCase,
+						requiredCues: ['face', 'hair', 'silhouette', 'palette', 'signature-traits']
+					},
+					...cases.slice(1)
+				]
+			})
+		).toThrow();
+	});
+
 	it('rejects measured web payloads that exceed their recorded budgets', () => {
 		const report = {
 			schemaVersion: 'web-build-budget-v1' as const,
 			budgets: {
 				initialJavaScriptGzipBytes: 700_000,
 				runtimeInspectorLoadedJavaScriptGzipBytes: 700_000,
+				recognitionAuditLoadedJavaScriptGzipBytes: 700_000,
 				runtimeVisualPayloadBytes: 8_000_000
 			},
 			measurements: {
 				initialJavaScriptGzipBytes: 36_788,
 				runtimeInspectorLoadedJavaScriptGzipBytes: 371_947,
+				recognitionAuditLoadedJavaScriptGzipBytes: 48_000,
 				largestRuntimeLazyChunkGzipBytes: 174_947,
 				runtimeVisualPayloadBytes: 47_758
 			},
 			status: {
 				initialJavaScript: 'within-budget' as const,
 				runtimeInspectorLoadedJavaScript: 'within-budget' as const,
+				recognitionAuditLoadedJavaScript: 'within-budget' as const,
 				runtimeVisualPayload: 'within-budget' as const
 			}
 		};

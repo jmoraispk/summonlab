@@ -50,5 +50,5 @@ The first approved Mara Vey anchor produces three WebP textures totaling 47,758 
 its 1,801,226-byte source and 0.60% of the phone bundle budget. Five current approval candidates
 remain deferred. New approved sources enter the same deterministic pipeline without hand-editing
 client imports, while source review and runtime delivery remain separately auditable. The measured
-initial shell is 36,787 gzip bytes; the fully loaded renderer inspector is 372,191 gzip bytes, with a
+initial shell is 36,834 gzip bytes; the fully loaded renderer inspector is 296,225 gzip bytes, with a
 174,947-byte largest lazy chunk. Both remain below the 700,000-byte compressed JavaScript ceiling.

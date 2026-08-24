@@ -252,6 +252,184 @@ export const RuntimeVisualUsageSchema = z.enum([
 	'summon-card'
 ]);
 
+export const VisualRecognitionCueSchema = z.enum([
+	'face',
+	'hair',
+	'silhouette',
+	'palette',
+	'signature-traits'
+]);
+
+export const VisualCameraTierSchema = z.enum([
+	'summon',
+	'dialogue',
+	'roster',
+	'settlement',
+	'mission'
+]);
+
+export const VisualRigPaletteModeSchema = z.enum(['base', 'night', 'injured']);
+export const VisualRigEquipmentSchema = z.enum(['none', 'practice-blade', 'short-bow']);
+
+export const VisualRecognitionCaseSchema = z
+	.object({
+		caseId: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		label: z.string().min(1).max(100),
+		cameraTier: VisualCameraTierSchema,
+		expression: CharacterExpressionSchema,
+		paletteMode: VisualRigPaletteModeSchema,
+		equipment: VisualRigEquipmentSchema,
+		walking: z.boolean(),
+		displayCssWidth: z.number().int().min(40).max(768),
+		displayCssHeight: z.number().int().min(72).max(1_152),
+		requiredCues: z.array(VisualRecognitionCueSchema).min(4).max(5),
+		requiredStateLayers: z
+			.array(z.enum(['expression', 'palette', 'equipment', 'gait', 'injury']))
+			.min(1)
+			.max(5),
+		humanReviewStatus: z.literal('pending-human-review'),
+		reviewPrompt: z.string().min(1).max(300)
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (new Set(value.requiredCues).size !== value.requiredCues.length) {
+			context.addIssue({ code: 'custom', message: 'Recognition cues must be unique per case' });
+		}
+		if (new Set(value.requiredStateLayers).size !== value.requiredStateLayers.length) {
+			context.addIssue({ code: 'custom', message: 'State layers must be unique per case' });
+		}
+		if (value.cameraTier === 'settlement' && value.requiredCues.includes('face')) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Settlement-scale recognition cannot claim facial identity'
+			});
+		}
+		if (
+			(value.expression === 'injured' || value.paletteMode === 'injured') &&
+			!value.requiredStateLayers.includes('injury')
+		) {
+			context.addIssue({ code: 'custom', message: 'Injured cases must audit the injury layer' });
+		}
+	});
+
+export const MobileTextureMeasurementSchema = z
+	.object({
+		alias: z.string().regex(/^hero\.[a-z0-9.-]{3,180}$/u),
+		usage: z.enum(['summon', 'dialogue', 'roster']),
+		width: z.number().int().positive(),
+		height: z.number().int().positive(),
+		displayCssWidth: z.number().int().positive(),
+		displayCssHeight: z.number().int().positive(),
+		requiredPixelWidth: z.number().int().positive(),
+		requiredPixelHeight: z.number().int().positive(),
+		densityMargin: z.number().positive(),
+		encodedBytes: z.number().int().positive(),
+		decodedRgbaBytes: z.number().int().positive(),
+		densityStatus: z.literal('sufficient')
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (value.width < value.requiredPixelWidth || value.height < value.requiredPixelHeight) {
+			context.addIssue({ code: 'custom', message: 'Runtime texture undersupplies phone pixels' });
+		}
+		if (value.decodedRgbaBytes !== value.width * value.height * 4) {
+			context.addIssue({ code: 'custom', message: 'Decoded RGBA byte estimate is stale' });
+		}
+	});
+
+export const VisualRecognitionAuditSchema = z
+	.object({
+		schemaVersion: z.literal('visual-recognition-audit-v1'),
+		catalogVersion: ContentVersionSchema,
+		catalogContentHash: StateHashSchema,
+		characterId: EntityIdSchema,
+		manifestHash: StateHashSchema,
+		approvedSourceAssetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		approvedSourceContentHash: StateHashSchema,
+		cases: z.array(VisualRecognitionCaseSchema).min(5).max(20),
+		coverage: z
+			.object({
+				expressions: z.array(CharacterExpressionSchema).min(3),
+				cameraTiers: z.array(VisualCameraTierSchema).length(5),
+				paletteModes: z.array(VisualRigPaletteModeSchema).length(3),
+				equipment: z.array(VisualRigEquipmentSchema).length(3)
+			})
+			.strict(),
+		phoneDelivery: z
+			.object({
+				profile: z.literal('mid-range-phone-390x844-2x'),
+				viewportCssWidth: z.literal(390),
+				viewportCssHeight: z.literal(844),
+				devicePixelRatio: z.literal(2),
+				textures: z.array(MobileTextureMeasurementSchema).length(3),
+				totalEncodedBytes: z.number().int().positive(),
+				totalDecodedRgbaBytes: z.number().int().positive(),
+				visualPayloadBudgetBytes: z.literal(8_000_000),
+				textureMemoryReferenceBytes: z.literal(300_000_000),
+				payloadStatus: z.literal('within-budget'),
+				textureMemoryProxyStatus: z.literal('within-reference')
+			})
+			.strict(),
+		humanReviewStatus: z.literal('pending-human-review'),
+		auditHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((audit, context) => {
+		const caseIds = new Set(audit.cases.map((entry) => entry.caseId));
+		if (caseIds.size !== audit.cases.length) {
+			context.addIssue({ code: 'custom', message: 'Recognition cases must have unique ids' });
+		}
+		const expressionCoverage = new Set(audit.coverage.expressions);
+		const cameraCoverage = new Set(audit.coverage.cameraTiers);
+		const paletteCoverage = new Set(audit.coverage.paletteModes);
+		const equipmentCoverage = new Set(audit.coverage.equipment);
+		for (const entry of audit.cases) {
+			if (!expressionCoverage.has(entry.expression)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Missing expression coverage: ${entry.caseId}`
+				});
+			}
+			if (!cameraCoverage.has(entry.cameraTier)) {
+				context.addIssue({ code: 'custom', message: `Missing camera coverage: ${entry.caseId}` });
+			}
+			if (!paletteCoverage.has(entry.paletteMode)) {
+				context.addIssue({ code: 'custom', message: `Missing palette coverage: ${entry.caseId}` });
+			}
+			if (!equipmentCoverage.has(entry.equipment)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Missing equipment coverage: ${entry.caseId}`
+				});
+			}
+		}
+		for (const tier of VisualCameraTierSchema.options) {
+			if (!audit.cases.some((entry) => entry.cameraTier === tier)) {
+				context.addIssue({ code: 'custom', message: `Camera tier has no audit case: ${tier}` });
+			}
+		}
+		const encodedBytes = audit.phoneDelivery.textures.reduce(
+			(total, texture) => total + texture.encodedBytes,
+			0
+		);
+		const decodedBytes = audit.phoneDelivery.textures.reduce(
+			(total, texture) => total + texture.decodedRgbaBytes,
+			0
+		);
+		if (encodedBytes !== audit.phoneDelivery.totalEncodedBytes) {
+			context.addIssue({ code: 'custom', message: 'Phone encoded texture total is stale' });
+		}
+		if (decodedBytes !== audit.phoneDelivery.totalDecodedRgbaBytes) {
+			context.addIssue({ code: 'custom', message: 'Phone decoded texture total is stale' });
+		}
+		if (encodedBytes > audit.phoneDelivery.visualPayloadBudgetBytes) {
+			context.addIssue({ code: 'custom', message: 'Phone visual payload exceeds budget' });
+		}
+		if (decodedBytes > audit.phoneDelivery.textureMemoryReferenceBytes) {
+			context.addIssue({ code: 'custom', message: 'Decoded textures exceed memory reference' });
+		}
+	});
+
 export const RuntimeVisualAssetSchema = z
 	.object({
 		alias: z.string().regex(/^hero\.[a-z0-9.-]{3,180}$/u),
@@ -411,6 +589,7 @@ export const WebBuildBudgetReportSchema = z
 			.object({
 				initialJavaScriptGzipBytes: z.number().int().positive(),
 				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().positive(),
+				recognitionAuditLoadedJavaScriptGzipBytes: z.number().int().positive(),
 				runtimeVisualPayloadBytes: z.number().int().positive()
 			})
 			.strict(),
@@ -418,6 +597,7 @@ export const WebBuildBudgetReportSchema = z
 			.object({
 				initialJavaScriptGzipBytes: z.number().int().nonnegative(),
 				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
+				recognitionAuditLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
 				largestRuntimeLazyChunkGzipBytes: z.number().int().nonnegative(),
 				runtimeVisualPayloadBytes: z.number().int().nonnegative()
 			})
@@ -426,6 +606,7 @@ export const WebBuildBudgetReportSchema = z
 			.object({
 				initialJavaScript: z.literal('within-budget'),
 				runtimeInspectorLoadedJavaScript: z.literal('within-budget'),
+				recognitionAuditLoadedJavaScript: z.literal('within-budget'),
 				runtimeVisualPayload: z.literal('within-budget')
 			})
 			.strict()
@@ -435,6 +616,7 @@ export const WebBuildBudgetReportSchema = z
 		for (const key of [
 			'initialJavaScriptGzipBytes',
 			'runtimeInspectorLoadedJavaScriptGzipBytes',
+			'recognitionAuditLoadedJavaScriptGzipBytes',
 			'runtimeVisualPayloadBytes'
 		] as const) {
 			if (report.measurements[key] > report.budgets[key]) {
@@ -448,11 +630,18 @@ export type CharacterVisualAsset = z.infer<typeof CharacterVisualAssetSchema>;
 export type CharacterVisualCatalog = z.infer<typeof CharacterVisualCatalogSchema>;
 export type CharacterVisualProfile = z.infer<typeof CharacterVisualProfileSchema>;
 export type DeferredRuntimeVisual = z.infer<typeof DeferredRuntimeVisualSchema>;
+export type MobileTextureMeasurement = z.infer<typeof MobileTextureMeasurementSchema>;
 export type PixiAssetManifest = z.infer<typeof PixiAssetManifestSchema>;
 export type RuntimeVisualAsset = z.infer<typeof RuntimeVisualAssetSchema>;
 export type RuntimeVisualBundle = z.infer<typeof RuntimeVisualBundleSchema>;
 export type RuntimeVisualManifest = z.infer<typeof RuntimeVisualManifestSchema>;
 export type RuntimeVisualUsage = z.infer<typeof RuntimeVisualUsageSchema>;
+export type VisualCameraTier = z.infer<typeof VisualCameraTierSchema>;
+export type VisualRecognitionAudit = z.infer<typeof VisualRecognitionAuditSchema>;
+export type VisualRecognitionCase = z.infer<typeof VisualRecognitionCaseSchema>;
+export type VisualRecognitionCue = z.infer<typeof VisualRecognitionCueSchema>;
+export type VisualRigEquipment = z.infer<typeof VisualRigEquipmentSchema>;
+export type VisualRigPaletteMode = z.infer<typeof VisualRigPaletteModeSchema>;
 export type WebBuildBudgetReport = z.infer<typeof WebBuildBudgetReportSchema>;
 export type SummonCardGenerateRequest = z.infer<typeof SummonCardGenerateRequestSchema>;
 export type SummonCardGenerationResult = z.infer<typeof SummonCardGenerationResultSchema>;

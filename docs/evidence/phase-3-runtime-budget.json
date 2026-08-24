@@ -3,17 +3,20 @@
 	"budgets": {
 		"initialJavaScriptGzipBytes": 700000,
 		"runtimeInspectorLoadedJavaScriptGzipBytes": 700000,
+		"recognitionAuditLoadedJavaScriptGzipBytes": 700000,
 		"runtimeVisualPayloadBytes": 8000000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 36787,
-		"runtimeInspectorLoadedJavaScriptGzipBytes": 372191,
+		"initialJavaScriptGzipBytes": 36834,
+		"runtimeInspectorLoadedJavaScriptGzipBytes": 296225,
+		"recognitionAuditLoadedJavaScriptGzipBytes": 42484,
 		"largestRuntimeLazyChunkGzipBytes": 174947,
 		"runtimeVisualPayloadBytes": 47758
 	},
 	"status": {
 		"initialJavaScript": "within-budget",
 		"runtimeInspectorLoadedJavaScript": "within-budget",
+		"recognitionAuditLoadedJavaScript": "within-budget",
 		"runtimeVisualPayload": "within-budget"
 	}
 }

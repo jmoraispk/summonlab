@@ -135,7 +135,7 @@ Status: **in progress**. The first visual approval checkpoint completed on 2026-
 | `ART-005` | Two of twelve representative original humans: Mara Vey and Remy Nahl | Anchor and continuity assets under `assets/heroes/visuals` |
 | `ART-006` | Complete: `/visual-lab/summon-card` previews a deterministic manifest-authored image-edit request; paid execution is development-only, one-candidate, cost-acknowledged, no-retry, hash-verified, ephemeral, and non-canonical | [Summon-card lab evidence](evidence/phase-3-summon-card-lab.png), ADR 0007, provider-mock and browser tests |
 | `ART-007` | Complete: approved source assets export as purpose-sized, content-addressed WebP files plus a PixiJS v8 manifest; exact re-encoding and asset/build budgets run in `pnpm check`, while five candidates remain deferred | [Runtime bundle evidence](evidence/phase-3-runtime-bundles.png), [budget report](evidence/phase-3-runtime-budget.json), ADR 0008 |
-| `ART-008` | Face/hair/silhouette/palette/signature-trait checks score 5/5 for continuity and roster views; settlement explicitly records 4/5 because facial identity is not claimed | Versioned visual catalog |
+| `ART-008` | In progress: a hash-bound seven-case audit covers every approved Mara expression, all five camera tiers, equipment, gait, injury, and a 390×844/2× phone profile; it forbids settlement face claims and remains pending human review | [Mobile recognition evidence](evidence/phase-3-recognition-mobile.png), [recognition audit](../assets/heroes/visuals/recognition-audit.json), ADR 0009 |
 
 The image-generation skill produced the five new approval candidates through the built-in path. The
 catalog stores the final normalized prompt set, input references, dimensions, bytes, content hashes,
@@ -146,6 +146,7 @@ unoptimized until the visual gate accepts them.
 
 ```powershell
 pnpm validate:visual-assets
+pnpm validate:recognition-audit
 pnpm dev
 ```
 
@@ -157,10 +158,13 @@ anchor, add optional direction, and rebuild the outbound request without making 
 Paid execution remains disabled until a local developer explicitly enables it and supplies a key.
 Open `http://localhost:5173/visual-lab/runtime-bundles` to compare the approved Mara anchor at
 summon, dialogue, and roster sizes and verify that PixiJS loads it through the checked-in alias.
+Open `http://localhost:5173/visual-lab/recognition` at desktop or phone width, switch all seven
+cases, and judge the required cues at their actual CSS scales. The page reports live frame and input
+observations while keeping the verdict human-pending.
 
 ## Next active slice
 
 Collect feedback on specificity, cross-view identity, rendering style, settlement character scale,
-summon-card composition/prompt, and compressed runtime fidelity. While that remains unanswered,
-continue recognition and mobile bundle measurements on approved assets; do not generate the
-remaining ten representative humans yet.
+summon-card composition/prompt, compressed runtime fidelity, and the seven-case Mara audit. Do not
+promote Remy, manufacture a machine approval, or generate the remaining ten representative humans
+before the human visual gate.
