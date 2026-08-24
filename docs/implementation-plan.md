@@ -77,13 +77,19 @@ These are lead-engineering defaults, not irreversible product decrees.
 | Front end | SvelteKit | Rendering integration becomes substantially harder than an alternative |
 | Renderer | PixiJS v8 | Rig or shader requirements exceed its practical envelope |
 | Server | SvelteKit Node server plus separate worker | Load or deployment needs independently scalable services |
+| Playtest access | Local machine and private LAN URL | Remote collaborators need access |
 | Database | PostgreSQL | None anticipated for the prototype |
 | Queue | PostgreSQL-backed jobs | Contention or throughput requires a dedicated queue |
 | Contracts | Zod schemas plus inferred TypeScript types | JSON Schema generation proves incomplete |
 | Agent state | Fresh independent Responses request per decision | A measured use case benefits from provider conversation state |
-| Model | Configured through `OPENAI_POLICY_MODEL`; no hard-coded default | Cost and quality evaluation selects a model snapshot |
+| Routine model | `gpt-5-nano` through `OPENAI_POLICY_MODEL` | Evaluation shows insufficient character consistency |
+| Escalation model | None automatically; evaluate `gpt-5.6-luna` for authored story work | Approved quality test justifies additional cost |
 | Art truth | Deterministic physical manifest and approved reference pack | Never delegated to runtime generation |
 | Character scope | Adult humans, ages 18–42 | Human pipeline passes diversity and identity tests |
+| Reference art | May guide original/generated development art; never ships as game content | Rights or intended use changes |
+| Master control | Direct turn choice by default; optional autopilot | Playtests prefer continuous observation |
+| Synthesis warning | Short irreversible-action warning | Testers misunderstand the consequence |
+| Visual order | Summoning, settlement, then dialogue close-up | A dependency makes another order cheaper |
 | Multiplayer | None | Single-player loop is already compelling |
 
 ## System topology
@@ -196,7 +202,8 @@ APP_ORIGIN
 DATABASE_URL
 RUN_ENCRYPTION_KEY
 OPENAI_API_KEY             optional until LLM policy is enabled
-OPENAI_POLICY_MODEL        optional until selected by evaluation
+OPENAI_POLICY_MODEL        default gpt-5-nano when LLM policy is enabled
+OPENAI_STORY_MODEL         unset until a stronger model passes story evaluation
 OPENAI_BACKGROUND_MODE     default false for short routine turns
 POLICY_MODE                random | scripted | llm
 SIMULATION_SPEED           default 4
@@ -395,6 +402,8 @@ const HeroDecision = z.object({
 The model chooses; the engine resolves. `publicIntent` is inspectable characterization, not hidden chain-of-thought.
 
 The official OpenAI documentation states that Structured Outputs enforce schema adherence, unlike basic JSON mode. Routine decision calls use a strict JSON Schema through the Responses API. See [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+The initial routine candidate is `gpt-5-nano`, which the official model page describes as the fastest, cheapest GPT-5 variant and lists as supporting the Responses API and Structured Outputs. Cost is not enough to pass evaluation: if it cannot maintain goals, personality, or knowledge boundaries, test `gpt-5.6-luna` before any larger model. See [GPT-5 nano](https://developers.openai.com/api/docs/models/gpt-5-nano) and the current [model comparison](https://developers.openai.com/api/docs/models/compare).
 
 ### Job state machine
 
@@ -602,6 +611,14 @@ Authority is multi-dimensional: competence, provision, trust, legitimacy, fear, 
 
 ## Mission implementation
 
+### Master control modes
+
+The Master is the player's embodied character, so **Command mode** is the default. At each Master decision, mission time pauses and the player selects one legal action. Summoned heroes continue to choose independently.
+
+**Autopilot mode** lets a deterministic `MasterPolicy` choose from player-configured priorities such as protect self, protect a named hero, retreat below a health threshold, conserve consumables, or focus the objective. It does not use an LLM in the first slice. The player may reclaim control at the next Master decision; switching modes is itself logged for replay.
+
+Autopilot exists for observation, accessibility, and faster repeated testing. It must not quietly become the normal mode or erase the player's physical stake in Master death.
+
 ### Mission state machine
 
 ```text
@@ -630,6 +647,27 @@ The floor-5 Foundry Warden must support at least:
 - direct damage with sufficient preparation;
 - furnace control through the discovered route;
 - retreat with surviving consequences.
+
+### Floor story architecture
+
+Every five-floor band has an authored **story spine**. Individual floors provide different mission shapes, but together they perform a small arc:
+
+| Floor in band | Narrative job | Mechanical job |
+| --- | --- | --- |
+| 1 | Establish a need, place, or question | Introduce the band's rule |
+| 2 | Complicate the obvious interpretation | Require a second capability |
+| 3 | Divide priorities or relationships | Apply injury, scarcity, or separation pressure |
+| 4 | Reveal the cost of earlier behavior | Test preparation and information |
+| 5 | Pay off the conflict and leave a consequence | Boss, band test, or irreversible choice |
+
+The runtime engine owns objectives, eligible beats, triggers, secrets, consequences, and rewards. A narrative agent may write candidate dialogue, recaps, descriptions, or goal-aware variants, but it cannot introduce a new door, survivor, betrayal, reward, or plot fact outside the selected beat graph.
+
+Agent assistance happens at two levels:
+
+1. **Development-time story workshop:** a stronger configured model can propose five-floor arcs from the world bible, mechanics, enemy family, and target emotional question. A developer reviews the proposal and compiles accepted beats into versioned content.
+2. **Runtime character adaptation:** the cheap routine model can express an eligible beat through the actual heroes' knowledge, relationships, habits, and goals. It chooses characterization within the beat, not the beat's truth.
+
+This hybrid keeps the tower coherent and testable while allowing the cast to make each run personal. Floors 1–5 remain predominantly predesigned; the story workshop becomes useful when expanding toward all twenty bands.
 
 ## Art production pipeline
 
@@ -903,6 +941,7 @@ Estimated engineering effort: **2–3 weeks**.
 - `MIS-008` implement injury, death, equipment, memory, and relationship aftermath;
 - `MIS-009` implement Master actions and atomic game over;
 - `MIS-010` validate three floor-5 strategies and deterministic replay.
+- `MIS-011` implement band story spines, beat eligibility, and character-aware expression hooks.
 
 **Feedback gate:** play two contrasting parties through floor 5 and review tactical readability, autonomy, retreat, and emotional consequence.
 
@@ -920,6 +959,7 @@ Estimated engineering effort: **2 weeks**.
 - `FIN-006` add analytics and playtest consent;
 - `FIN-007` run five moderated tests and triage findings;
 - `FIN-008` fix all release-blocking defects and package the playtest build.
+- `FIN-009` add a development-time story workshop that generates reviewable, versioned arc proposals.
 
 **Exit:** definition of done is met and the next investment decision can be based on observed play rather than speculation.
 
@@ -959,16 +999,15 @@ The next repository-changing turn should begin Phase 0 and stop at a reviewable 
 
 This is small enough to review in one turn and foundational enough that no work is thrown away.
 
-## Decisions requested from the product owner
+## Accepted product decisions — 2026-08-23
 
-The plan can start under the defaults above. These answers influence the next two milestones:
+- Initial playtesting remains local and private. The web server may expose a LAN-accessible URL from the development machine.
+- User-provided manhwa references may guide original and generated development art, but reference images do not ship.
+- Command mode directly controls the Master during missions; summoned heroes remain autonomous. Optional autopilot is available for observation and convenience.
+- The entire first vertical slice uses adult summons only.
+- Synthesis is experimental and uses a short irreversible-action warning rather than an unusually severe interstitial.
+- Agent calls begin with the cheapest suitable model and escalate only after evaluation demonstrates a quality need.
+- Premium visual work is attempted in this order: summoning, living settlement, dialogue close-up. All three remain in vertical-slice scope.
+- Floor stories use authored band arcs with agent-assisted development and character-aware runtime expression.
 
-1. Should the initial playtest be strictly local/private, or should Phase 4 include a shareable hosted environment?
-2. May user-provided manhwa references guide generated and original development art, assuming none of the reference images ship?
-3. In missions, should the Master be directly controlled turn by turn while every summoned hero remains autonomous?
-4. Is adult-only summoning acceptable for the entire first vertical slice?
-5. Should synthesis be fully playable in the first public test, or implemented behind an explicit experimental warning?
-6. What approximate OpenAI spend per one-hour play session feels acceptable when the LLM policy is enabled?
-7. Which matters more for the first visual approval: the summoning cinematic, the hero close-up, or the living settlement view?
-
-Unanswered questions keep the documented defaults and do not block Phase 0.
+Phase 0 is unblocked. Later feedback may revise any reversible implementation choice without discarding these product intentions.

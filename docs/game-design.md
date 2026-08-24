@@ -44,6 +44,14 @@ The tower assigns a mission objective when a floor opens:
 
 The engine generates the objective, legal interactions, secret triggers, and rewards. Heroes can attempt unexpected legal actions, but their narration cannot create a door, treasure, or Easter egg that the seed did not contain.
 
+### Five-floor story arcs
+
+Every five-floor band carries a designed story spine as well as a difficulty tier. The usual rhythm is setup, complication, division, consequence, and payoff. Objectives can change from floor to floor, but the band should leave one coherent change in the settlement, party, or understanding of the tower.
+
+A development-time narrative agent may propose band arcs from the world bible and mechanics. Accepted arcs become reviewed, versioned content. At runtime, agents adapt eligible dialogue and reactions to the actual party, relationships, habits, and goals; they cannot create new plot facts or consequences outside the engine-owned beat graph.
+
+This makes the hundred-floor campaign twenty comprehensible arcs rather than one hundred unrelated procedural missions.
+
 ### Hidden paths and Easter eggs
 
 Secrets reward personality and experimentation without depending on hallucination.
