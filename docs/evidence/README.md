@@ -26,3 +26,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   scene before the topology and interior inspectors.
 - `phase-4-settlement-layered-scene-mobile.png` — isolated 390×844/2× scene evidence showing the
   topology-aligned plate, five interactive labels, selected hotspot, route projection, and boundary.
+- `phase-4-authoritative-travel.png` — hash-verified scheduled travel with an unchanged origin,
+  persisted Hearth route, pending arrival, and explicit clock advancement.
+- `phase-4-facility-operations.png` — engine-v4 replay lab with reciprocal facility assignment,
+  roster capacity, workshop power, forge-system access, verified forge traversal, and no pending work.

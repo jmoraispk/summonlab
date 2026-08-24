@@ -157,11 +157,35 @@ describe('engine event store', () => {
 			});
 			await markProofArrival(databaseUrl, runId);
 			let replay = await getEngineReplay(databaseUrl, runId);
-			if (!replay || replay.snapshot.state.schemaVersion !== 3) {
-				throw new Error('Expected a version-three engine replay');
+			if (!replay || replay.snapshot.state.schemaVersion !== 4) {
+				throw new Error('Expected a version-four engine replay');
 			}
 			const heroId = draft.manifest.characterId;
 			const masterId = replay.snapshot.state.master.masterId;
+			await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, replay.snapshot.state.version, {
+					commandType: 'settlement.assign.hero',
+					heroId,
+					buildingId: 'training-ground',
+					role: 'trainee'
+				})
+			);
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 4) throw new Error('Expected replay');
+			await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, replay.snapshot.state.version, {
+					commandType: 'settlement.allocate.power',
+					buildingId: 'workshop'
+				})
+			);
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 4) throw new Error('Expected replay');
+			expect(
+				replay.snapshot.state.settlement.buildings['training-ground']?.assignedHeroIds
+			).toEqual([heroId]);
+			expect(replay.snapshot.state.settlement.navigation.activeSystemIds).toContain('forge-system');
 
 			const training = await commitEngineCommand(
 				databaseUrl,
@@ -188,7 +212,7 @@ describe('engine event store', () => {
 				})
 			);
 			replay = await getEngineReplay(databaseUrl, runId);
-			if (!replay || replay.snapshot.state.schemaVersion !== 3) throw new Error('Expected replay');
+			if (!replay || replay.snapshot.state.schemaVersion !== 4) throw new Error('Expected replay');
 			expect(
 				replay.scheduledEvents.find(
 					(scheduled) => scheduled.scheduledEventId === training.scheduled[0]?.scheduledEventId
@@ -210,8 +234,8 @@ describe('engine event store', () => {
 					activity: 'repair'
 				})
 			);
-			expect(repair.snapshot.state.schemaVersion).toBe(3);
-			if (repair.snapshot.state.schemaVersion !== 3) throw new Error('Expected survival state');
+			expect(repair.snapshot.state.schemaVersion).toBe(4);
+			if (repair.snapshot.state.schemaVersion !== 4) throw new Error('Expected survival state');
 			expect(repair.snapshot.state.settlement.resources['iron-ore']).toBe(1);
 			const repairDue = repair.scheduled[0]?.dueGameTime;
 			if (!repairDue) throw new Error('Expected a scheduled repair outcome');
@@ -224,7 +248,7 @@ describe('engine event store', () => {
 			);
 
 			replay = await getEngineReplay(databaseUrl, runId);
-			if (!replay || replay.snapshot.state.schemaVersion !== 3) throw new Error('Expected replay');
+			if (!replay || replay.snapshot.state.schemaVersion !== 4) throw new Error('Expected replay');
 			const rest = await commitEngineCommand(
 				databaseUrl,
 				engineCommand(runId, heroId, replay.snapshot.state.version, {

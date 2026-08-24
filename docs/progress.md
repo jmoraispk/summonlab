@@ -172,14 +172,16 @@ remaining ten representative humans before the human visual gate.
 
 ## Phase 4 — living settlement
 
-Status: **in progress**. Topology, the layered environment candidate, and authoritative travel were
-completed on 2026-08-24 while Phase 3 remains at its separate human character-visual gate.
+Status: **in progress**. Topology, the layered environment candidate, authoritative travel, and
+facility operations were completed on 2026-08-24 while Phase 3 remains at its separate human
+character-visual gate.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `SET-001` | Complete: `hearth-01-v1` defines exactly five buildings/interiors, 18 connected nodes, 17 authored paths, travel duration, capacity, interaction/effect declarations, and explicit system access; deterministic route planning never lets the renderer commit arrival | [Mobile route-lab evidence](evidence/phase-4-settlement-route-lab-mobile.png), `pnpm validate:settlement-content`, ADR 0011 |
 | `SET-002` | Complete as a human-pending candidate: `hearth-01-scene-v1` binds a hero-free 1536×1024 plate to the exact topology; a content-addressed 296.2 KB WebP sits beneath atmosphere, light, route, activity, and interface layers; five hotspots and 18 node projections remain visual-only; the combined phone route is 41.8 KB gzip | [Isolated phone scene](evidence/phase-4-settlement-layered-scene-mobile.png), [full phone lab](evidence/phase-4-settlement-layered-mobile.png), `pnpm validate:settlement-scene`, ADR 0012 |
 | `SET-003` | Complete: `engine-v3` validates `hero.start.travel` against the hash-bound Hearth graph, persists the exact route and due arrival, leaves location unchanged in transit, and lets only `simulation.advance` commit arrival; death cancels travel and v1/v2 replay schemas remain intact | [Authoritative travel evidence](evidence/phase-4-authoritative-travel.png), engine/property/integration tests, replay travel lab, ADR 0013 |
+| `SET-004` | Complete: `engine-v4` owns reciprocal facility assignments, station-derived capacity, one reversible development power slot, active-system projection, power-gated forge access, route reservation checks, and assignment cleanup on death while preserving v1/v2/v3 replay schemas | [Facility operations evidence](evidence/phase-4-facility-operations.png), engine/property/integration/browser tests, replay operations lab, ADR 0014 |
 
 ### Reproduce the checkpoint
 
@@ -194,9 +196,12 @@ interior stations, compare Reserve with All systems, and confirm that the forge 
 but unreachable while its system is dormant. This route is a development inspector; it does not
 mutate a run. Complete a summon, open its **Replay** view, choose another Hearth destination under
 **Verified Hearth routes**, confirm that the displayed authoritative node remains at the origin,
-then choose **Advance to outcome** and verify the arrival event and resolved schedule.
+then choose **Advance to outcome** and verify the arrival event and resolved schedule. In the replay
+view, assign the hero to a facility, route development power to the workshop, travel to the newly
+reachable forge, and verify the assignment and power events in the hash chain.
 
 ## Next active engineering slice
 
-Collect topology, layered-scene, and travel-lab feedback, then implement capacity, assignments, and
-powered state in SET-004. Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect topology, layered-scene, travel, and facility-operations feedback, then implement needs,
+daily plans, and habit resolution in SET-005. Phase 3 cohort expansion remains behind its separate
+human visual gate.

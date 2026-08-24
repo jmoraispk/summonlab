@@ -5,8 +5,10 @@ import {
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
 	EngineGameStateV3Schema,
+	EngineGameStateV4Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
+	HeroBuildingAssignmentSchema,
 	HeroProgressionSchema,
 	InjurySchema,
 	LegalActionSchema,
@@ -17,11 +19,13 @@ import {
 	SettlementRoutePlanSchema,
 	type ActivityKind,
 	type AuthoritativeEvent,
+	type BuildingAssignmentRole,
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV1,
 	type EngineGameStateV2,
 	type EngineGameStateV3,
+	type EngineGameStateV4,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type LegalAction,
@@ -38,7 +42,8 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v3';
+export const ENGINE_CONTENT_VERSION = 'engine-v4';
+export const TRAVEL_ENGINE_CONTENT_VERSION = 'engine-v3';
 export const PREVIOUS_ENGINE_CONTENT_VERSION = 'engine-v2';
 export const LEGACY_ENGINE_CONTENT_VERSION = 'engine-v1';
 export const ENGINE_EPOCH = '2000-01-01T00:00:00.000Z';
@@ -64,7 +69,30 @@ const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
 	'training-system'
 ] as const);
 
-type EngineGameStateModern = EngineGameStateV2 | EngineGameStateV3;
+type EngineGameStateModern = EngineGameStateV2 | EngineGameStateV3 | EngineGameStateV4;
+
+const BUILDING_OPERATIONS = Object.freeze({
+	'summoning-gate': {
+		nodeId: 'gate-rail',
+		role: 'gate-attendant',
+		baselinePowerState: 'reserve'
+	},
+	kitchen: { nodeId: 'kitchen-hearth', role: 'cook', baselinePowerState: 'reserve' },
+	dormitory: { nodeId: 'dormitory-bunks', role: 'resident', baselinePowerState: 'reserve' },
+	'training-ground': {
+		nodeId: 'training-ring',
+		role: 'trainee',
+		baselinePowerState: 'reserve'
+	},
+	workshop: { nodeId: 'workshop-bench', role: 'artisan', baselinePowerState: 'unpowered' }
+} as const satisfies Record<
+	string,
+	{
+		readonly nodeId: string;
+		readonly role: BuildingAssignmentRole;
+		readonly baselinePowerState: 'reserve' | 'unpowered';
+	}
+>);
 
 export interface BootstrapEngineInput {
 	readonly runId: string;
@@ -198,6 +226,29 @@ const TravelStartedPayloadSchema = EmptyMetadataSchema.extend({
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
+const AssignmentChangedPayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	previousAssignment: HeroBuildingAssignmentSchema.nullable(),
+	assignment: HeroBuildingAssignmentSchema.nullable(),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const PowerStateChangeSchema = z
+	.object({
+		buildingId: z.string(),
+		before: z.enum(['unpowered', 'reserve', 'powered']),
+		after: z.enum(['unpowered', 'reserve', 'powered'])
+	})
+	.strict();
+
+const PowerAllocatedPayloadSchema = EmptyMetadataSchema.extend({
+	buildingId: z.string(),
+	previousPoweredBuildingId: z.string().nullable(),
+	powerStateChanges: z.array(PowerStateChangeSchema).min(1),
+	activeSystemIdsAfter: z.array(z.string()),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
 const ItemEquippedPayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
 	itemId: z.string().uuid(),
@@ -315,8 +366,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		reason: 'run bootstrap stock'
 	}));
 	const settlementContent = verifiedSettlementContent();
-	const state = EngineGameStateV3Schema.parse({
-		schemaVersion: 3,
+	const buildingStates = createBuildingStates(settlementContent);
+	const state = EngineGameStateV4Schema.parse({
+		schemaVersion: 4,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -356,7 +408,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				},
 				equipment: { mainHand: bladeId },
 				currentActivity: null,
-				currentTravel: null
+				currentTravel: null,
+				assignment: null
 			}
 		},
 		settlement: {
@@ -367,7 +420,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				contentVersion: settlementContent.contentVersion,
 				contentHash: settlementContent.contentHash,
 				activeSystemIds: [...DEFAULT_ACTIVE_SYSTEM_IDS]
-			}
+			},
+			poweredBuildingId: null,
+			buildings: buildingStates
 		},
 		items: {
 			[bladeId]: {
@@ -444,7 +499,34 @@ function verifiedSettlementContent(): SettlementDefinition {
 	return verifiedSettlement;
 }
 
-function settlementForState(state: EngineGameStateV3): SettlementDefinition {
+function createBuildingStates(definition: SettlementDefinition) {
+	return Object.fromEntries(
+		definition.buildings.map((building) => {
+			const operation =
+				BUILDING_OPERATIONS[building.buildingId as keyof typeof BUILDING_OPERATIONS];
+			if (!operation) throw new Error(`Missing building operation: ${building.buildingId}`);
+			const node = definition.nodes.find((candidate) => candidate.nodeId === operation.nodeId);
+			if (!node || node.buildingId !== building.buildingId) {
+				throw new Error(`Invalid assignment node for ${building.buildingId}`);
+			}
+			return [
+				building.buildingId,
+				{
+					buildingId: building.buildingId,
+					systemId: building.systemId,
+					assignmentNodeId: operation.nodeId,
+					assignmentRole: operation.role,
+					assignmentCapacity: node.capacity,
+					assignedHeroIds: [],
+					baselinePowerState: operation.baselinePowerState,
+					powerState: operation.baselinePowerState
+				}
+			];
+		})
+	);
+}
+
+function settlementForState(state: EngineGameStateV3 | EngineGameStateV4): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
 	if (
@@ -480,7 +562,15 @@ function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalActi
 }
 
 function currentTravelFor(state: EngineGameState, heroId: string) {
-	return state.schemaVersion === 3 ? (state.heroes[heroId]?.currentTravel ?? null) : null;
+	return state.schemaVersion === 3 || state.schemaVersion === 4
+		? (state.heroes[heroId]?.currentTravel ?? null)
+		: null;
+}
+
+function hasNavigationState(
+	state: EngineGameState
+): state is EngineGameStateV3 | EngineGameStateV4 {
+	return state.schemaVersion === 3 || state.schemaVersion === 4;
 }
 
 function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
@@ -511,19 +601,19 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 			})
 		];
 	}
-	const awaitingFirstArrival =
-		state.schemaVersion === 3 ? !state.heroes[actorId]!.firstArrivalCompleted : false;
-	if ((state.schemaVersion !== 3 && hero.location === 'summoning-gate') || awaitingFirstArrival) {
+	const awaitingFirstArrival = hasNavigationState(state)
+		? !state.heroes[actorId]!.firstArrivalCompleted
+		: false;
+	if ((!hasNavigationState(state) && hero.location === 'summoning-gate') || awaitingFirstArrival) {
 		return [
 			action({
-				actionId: state.schemaVersion === 3 ? 'hero.travel' : 'hero.arrive.destination',
+				actionId: hasNavigationState(state) ? 'hero.travel' : 'hero.arrive.destination',
 				actorId,
 				kind: 'move',
 				label: `Walk to the ${hero.destination === 'kitchen' ? 'kitchen' : 'training ground'}`,
-				description:
-					state.schemaVersion === 3
-						? 'Schedule the verified route; arrival commits only when game time reaches its due time.'
-						: 'Complete the already selected route through Hearth 01.',
+				description: hasNavigationState(state)
+					? 'Schedule the verified route; arrival commits only when game time reaches its due time.'
+					: 'Complete the already selected route through Hearth 01.',
 				targetIds: [],
 				resourceCosts: {},
 				tags: ['settlement', 'arrival']
@@ -565,6 +655,64 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				tags: ['fake-clock', 'scheduled-event']
 			})
 		);
+	}
+	if (state.schemaVersion === 4) {
+		for (const hero of Object.values(state.heroes)) {
+			if (hero.lifeState !== 'active') continue;
+			if (hero.assignment) {
+				actions.push(
+					action({
+						actionId: `settlement.unassign.${hero.heroId}`,
+						actorId,
+						kind: 'work',
+						label: `Release ${hero.heroId.slice(0, 8)} from duty`,
+						description: 'Remove the hero from the authoritative facility roster.',
+						targetIds: [hero.heroId],
+						resourceCosts: {},
+						tags: ['settlement', 'assignment', 'capacity']
+					})
+				);
+			}
+			for (const building of Object.values(state.settlement.buildings)) {
+				if (
+					hero.assignment?.buildingId === building.buildingId ||
+					building.assignedHeroIds.length >= building.assignmentCapacity
+				)
+					continue;
+				actions.push(
+					action({
+						actionId: `settlement.assign.${hero.heroId}.${building.buildingId}`,
+						actorId,
+						kind: 'work',
+						label: `Assign hero as ${building.assignmentRole}`,
+						description: `Move the hero into ${building.buildingId}'s ${building.assignedHeroIds.length}/${building.assignmentCapacity} roster.`,
+						targetIds: [hero.heroId],
+						resourceCosts: {},
+						tags: ['settlement', 'assignment', 'capacity', building.buildingId]
+					})
+				);
+			}
+		}
+		for (const building of Object.values(state.settlement.buildings)) {
+			if (
+				building.buildingId === 'summoning-gate' ||
+				state.settlement.poweredBuildingId === building.buildingId
+			)
+				continue;
+			actions.push(
+				action({
+					actionId: `settlement.power.${building.buildingId}`,
+					actorId,
+					kind: 'interact',
+					label: `Route development power to ${building.buildingId}`,
+					description:
+						'Reallocate the one reversible development power slot and refresh route access.',
+					targetIds: [],
+					resourceCosts: {},
+					tags: ['settlement', 'power', 'development-proof', building.buildingId]
+				})
+			);
+		}
 	}
 	for (const hero of Object.values(state.heroes)) {
 		if (hero.lifeState !== 'active') continue;
@@ -690,7 +838,7 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 			);
 		}
 	}
-	if (state.schemaVersion === 3) {
+	if (state.schemaVersion === 3 || state.schemaVersion === 4) {
 		actions.push(
 			action({
 				actionId: 'hero.travel',
@@ -711,7 +859,8 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 	const state = EngineGameStateSchema.parse(stateInput);
 	if (state.status !== 'active') return [];
 	if (actorId === state.master.masterId && state.master.lifeState === 'alive') {
-		if (state.schemaVersion === 2 || state.schemaVersion === 3) return masterActionsV2(state);
+		if (state.schemaVersion === 2 || state.schemaVersion === 3 || state.schemaVersion === 4)
+			return masterActionsV2(state);
 		return [
 			action({
 				actionId: 'master.inspect.gate',
@@ -725,7 +874,7 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 			})
 		];
 	}
-	return state.schemaVersion === 2 || state.schemaVersion === 3
+	return state.schemaVersion === 2 || state.schemaVersion === 3 || state.schemaVersion === 4
 		? heroActionsV2(state, actorId)
 		: routeActions(state, actorId);
 }
@@ -747,6 +896,12 @@ function requiredAction(command: EngineCommand): string {
 		return `hero.choose.${command.destination}`;
 	if (command.commandType === 'hero.arrive') return 'hero.arrive.destination';
 	if (command.commandType === 'hero.start.travel') return 'hero.travel';
+	if (command.commandType === 'settlement.assign.hero')
+		return `settlement.assign.${command.heroId}.${command.buildingId}`;
+	if (command.commandType === 'settlement.unassign.hero')
+		return `settlement.unassign.${command.heroId}`;
+	if (command.commandType === 'settlement.allocate.power')
+		return `settlement.power.${command.buildingId}`;
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
 	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
@@ -769,8 +924,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		if (command.storyBranch !== branch) throw new IllegalActionError(required, actionIds);
 	}
 	if (command.commandType === 'simulation.advance') {
-		if (state.schemaVersion !== 2 && state.schemaVersion !== 3)
-			throw new IllegalActionError(required, actionIds);
+		if (state.schemaVersion === 1) throw new IllegalActionError(required, actionIds);
 		const earliest = earliestScheduledTime(state);
 		if (!earliest || compareGameTime(command.targetGameTime, earliest) < 0) {
 			throw new IllegalActionError(required, actionIds);
@@ -779,7 +933,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		if (minutes <= 0 || minutes > 7 * 24 * 60) throw new IllegalActionError(required, actionIds);
 	}
 	if (command.commandType === 'hero.start.travel') {
-		if (state.schemaVersion !== 3) throw new IllegalActionError(required, actionIds);
+		if (!hasNavigationState(state)) throw new IllegalActionError(required, actionIds);
 		const hero = state.heroes[command.actorId];
 		if (!hero || hero.locationNodeId === command.targetNodeId)
 			throw new IllegalActionError(required, actionIds);
@@ -791,10 +945,62 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		);
 		if (!route || route.totalTravelGameSeconds <= 0)
 			throw new IllegalActionError(required, actionIds);
+		if (state.schemaVersion === 4) {
+			const definition = settlementForState(state);
+			const targetNode = definition.nodes.find((node) => node.nodeId === command.targetNodeId);
+			const nodeReservations = Object.values(state.heroes).filter(
+				(candidate) =>
+					candidate.heroId !== hero.heroId &&
+					(candidate.locationNodeId === command.targetNodeId ||
+						candidate.currentTravel?.toNodeId === command.targetNodeId)
+			).length;
+			if (!targetNode || nodeReservations >= targetNode.capacity) {
+				throw new IllegalActionError(required, actionIds);
+			}
+			for (const step of route.steps) {
+				const edge = definition.edges.find((candidate) => candidate.edgeId === step.edgeId);
+				const reservations = Object.values(state.heroes).filter((candidate) =>
+					candidate.currentTravel?.route.steps.some(
+						(candidateStep) => candidateStep.edgeId === step.edgeId
+					)
+				).length;
+				if (!edge || reservations >= edge.capacity) {
+					throw new IllegalActionError(required, actionIds);
+				}
+			}
+		}
 		if (
 			!hero.firstArrivalCompleted &&
 			(!hero.destination ||
 				command.targetNodeId !== destinationNodeId(settlementForState(state), hero.destination))
+		) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'settlement.assign.hero') {
+		if (state.schemaVersion !== 4) throw new IllegalActionError(required, actionIds);
+		const hero = state.heroes[command.heroId];
+		const building = state.settlement.buildings[command.buildingId];
+		if (
+			!hero ||
+			hero.lifeState !== 'active' ||
+			!building ||
+			building.assignmentRole !== command.role ||
+			building.assignedHeroIds.length >= building.assignmentCapacity
+		) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'settlement.unassign.hero') {
+		if (state.schemaVersion !== 4 || !state.heroes[command.heroId]?.assignment) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'settlement.allocate.power') {
+		if (
+			state.schemaVersion !== 4 ||
+			command.buildingId === 'summoning-gate' ||
+			!state.settlement.buildings[command.buildingId]
 		) {
 			throw new IllegalActionError(required, actionIds);
 		}
@@ -1094,8 +1300,89 @@ function buildActivityOutcome(
 }
 
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType === 'settlement.assign.hero') {
+		if (state.schemaVersion !== 4) throw new IllegalActionError(command.commandType);
+		const hero = state.heroes[command.heroId];
+		const building = state.settlement.buildings[command.buildingId];
+		if (!hero || !building) throw new IllegalActionError(command.commandType);
+		const assignment = HeroBuildingAssignmentSchema.parse({
+			buildingId: building.buildingId,
+			nodeId: building.assignmentNodeId,
+			role: building.assignmentRole,
+			assignedAt: state.simulatedAt
+		});
+		const base = eventBase(state, command, 'hero.assignment.changed');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: hero.heroId,
+				previousAssignment: hero.assignment,
+				assignment,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero was assigned to ${building.buildingId} as ${building.assignmentRole}.`
+				)
+			}
+		});
+	}
+	if (command.commandType === 'settlement.unassign.hero') {
+		if (state.schemaVersion !== 4) throw new IllegalActionError(command.commandType);
+		const hero = state.heroes[command.heroId];
+		if (!hero?.assignment) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'hero.assignment.changed');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: hero.heroId,
+				previousAssignment: hero.assignment,
+				assignment: null,
+				nextVersion: state.version + 1,
+				...emptyMetadata(`The hero was released from ${hero.assignment.buildingId}.`)
+			}
+		});
+	}
+	if (command.commandType === 'settlement.allocate.power') {
+		if (state.schemaVersion !== 4) throw new IllegalActionError(command.commandType);
+		const target = state.settlement.buildings[command.buildingId];
+		if (!target) throw new IllegalActionError(command.commandType);
+		const powerStateChanges = Object.values(state.settlement.buildings)
+			.map((building) => ({
+				buildingId: building.buildingId,
+				before: building.powerState,
+				after:
+					building.buildingId === command.buildingId
+						? ('powered' as const)
+						: building.baselinePowerState
+			}))
+			.filter((change) => change.before !== change.after)
+			.sort((left, right) => left.buildingId.localeCompare(right.buildingId));
+		const activeSystemIdsAfter = Object.values(state.settlement.buildings)
+			.filter(
+				(building) =>
+					building.buildingId === command.buildingId || building.baselinePowerState !== 'unpowered'
+			)
+			.map((building) => building.systemId)
+			.sort((left, right) => left.localeCompare(right));
+		const base = eventBase(state, command, 'settlement.power.allocated');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				buildingId: command.buildingId,
+				previousPoweredBuildingId: state.settlement.poweredBuildingId,
+				powerStateChanges,
+				activeSystemIdsAfter,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The development power slot now feeds ${command.buildingId}; route access was recomputed.`
+				)
+			}
+		});
+	}
 	if (command.commandType === 'hero.start.travel') {
-		if (state.schemaVersion !== 3) throw new IllegalActionError(command.commandType);
+		if (!hasNavigationState(state)) throw new IllegalActionError(command.commandType);
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
 		const definition = settlementForState(state);
@@ -1165,7 +1452,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'hero.arrive') {
-		if (state.schemaVersion === 3) throw new IllegalActionError(command.commandType);
+		if (hasNavigationState(state)) throw new IllegalActionError(command.commandType);
 		const hero = state.heroes[command.actorId];
 		if (!hero?.destination) throw new IllegalActionError('hero.arrive.destination');
 		const base = eventBase(state, command, 'hero.arrived');
@@ -1300,7 +1587,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			entropy = result.entropy;
 			draws.push(...result.draws);
 		}
-		if (state.schemaVersion === 3) {
+		if (state.schemaVersion === 3 || state.schemaVersion === 4) {
 			const dueTravels = Object.values(state.heroes)
 				.filter(
 					(hero) =>
@@ -1527,16 +1814,129 @@ function applyResourceChanges(
 	return { ...state.settlement, resources, resourceLedger };
 }
 
+function assignmentsEqual(
+	left: z.infer<typeof HeroBuildingAssignmentSchema> | null,
+	right: z.infer<typeof HeroBuildingAssignmentSchema> | null
+): boolean {
+	return (
+		left?.buildingId === right?.buildingId &&
+		left?.nodeId === right?.nodeId &&
+		left?.role === right?.role &&
+		left?.assignedAt === right?.assignedAt
+	);
+}
+
+function clearBuildingAssignment(
+	settlement: EngineGameStateV4['settlement'],
+	heroId: string,
+	buildingId: string
+): EngineGameStateV4['settlement'] {
+	const building = settlement.buildings[buildingId];
+	if (!building) return settlement;
+	return {
+		...settlement,
+		buildings: {
+			...settlement.buildings,
+			[buildingId]: {
+				...building,
+				assignedHeroIds: building.assignedHeroIds.filter((candidate) => candidate !== heroId)
+			}
+		}
+	};
+}
+
 function parseModernState(state: EngineGameStateModern, value: unknown): EngineGameStateModern {
-	return state.schemaVersion === 2
-		? EngineGameStateV2Schema.parse(value)
-		: EngineGameStateV3Schema.parse(value);
+	if (state.schemaVersion === 2) return EngineGameStateV2Schema.parse(value);
+	if (state.schemaVersion === 3) return EngineGameStateV3Schema.parse(value);
+	return EngineGameStateV4Schema.parse(value);
 }
 
 function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
+	if (event.eventType === 'hero.assignment.changed') {
+		if (state.schemaVersion !== 4)
+			throw new ReplayIntegrityError('Assignment event requires engine-v4', event.sequence);
+		const payload = AssignmentChangedPayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		if (!hero || !assignmentsEqual(hero.assignment, payload.previousAssignment)) {
+			throw new ReplayIntegrityError('Assignment precondition failed', event.sequence);
+		}
+		let settlement = state.settlement;
+		if (payload.previousAssignment) {
+			settlement = clearBuildingAssignment(
+				settlement,
+				hero.heroId,
+				payload.previousAssignment.buildingId
+			);
+		}
+		if (payload.assignment) {
+			const building = settlement.buildings[payload.assignment.buildingId];
+			if (
+				!building ||
+				building.assignmentNodeId !== payload.assignment.nodeId ||
+				building.assignmentRole !== payload.assignment.role ||
+				building.assignedHeroIds.length >= building.assignmentCapacity
+			) {
+				throw new ReplayIntegrityError('Assignment target precondition failed', event.sequence);
+			}
+			settlement = {
+				...settlement,
+				buildings: {
+					...settlement.buildings,
+					[building.buildingId]: {
+						...building,
+						assignedHeroIds: [...building.assignedHeroIds, hero.heroId].sort((left, right) =>
+							left.localeCompare(right)
+						)
+					}
+				}
+			};
+		}
+		return EngineGameStateV4Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			settlement,
+			heroes: {
+				...state.heroes,
+				[payload.heroId]: { ...hero, assignment: payload.assignment }
+			}
+		});
+	}
+	if (event.eventType === 'settlement.power.allocated') {
+		if (state.schemaVersion !== 4)
+			throw new ReplayIntegrityError('Power event requires engine-v4', event.sequence);
+		const payload = PowerAllocatedPayloadSchema.parse(event.payload);
+		if (state.settlement.poweredBuildingId !== payload.previousPoweredBuildingId) {
+			throw new ReplayIntegrityError('Power allocation precondition failed', event.sequence);
+		}
+		const buildings = { ...state.settlement.buildings };
+		for (const change of payload.powerStateChanges) {
+			const building = buildings[change.buildingId];
+			if (!building || building.powerState !== change.before) {
+				throw new ReplayIntegrityError('Building power precondition failed', event.sequence);
+			}
+			buildings[change.buildingId] = { ...building, powerState: change.after };
+		}
+		return EngineGameStateV4Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			settlement: {
+				...state.settlement,
+				poweredBuildingId: payload.buildingId,
+				buildings,
+				navigation: {
+					...state.settlement.navigation,
+					activeSystemIds: payload.activeSystemIdsAfter
+				}
+			}
+		});
+	}
 	if (event.eventType === 'hero.destination.selected') {
 		const payload = ChoosePayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -1555,8 +1955,8 @@ function reduceV2Event(
 		});
 	}
 	if (event.eventType === 'hero.travel.started') {
-		if (state.schemaVersion !== 3)
-			throw new ReplayIntegrityError('Travel event requires engine-v3', event.sequence);
+		if (state.schemaVersion !== 3 && state.schemaVersion !== 4)
+			throw new ReplayIntegrityError('Travel event requires navigation state', event.sequence);
 		const payload = TravelStartedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
 		if (
@@ -1569,7 +1969,7 @@ function reduceV2Event(
 		) {
 			throw new ReplayIntegrityError('Travel start precondition failed', event.sequence);
 		}
-		return EngineGameStateV3Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1673,7 +2073,7 @@ function reduceV2Event(
 		});
 	}
 	if (event.eventType === 'simulation.advanced') {
-		if (state.schemaVersion === 3) {
+		if (state.schemaVersion === 3 || state.schemaVersion === 4) {
 			const payload = SimulationAdvancedPayloadV3Schema.parse(event.payload);
 			const heroes = { ...state.heroes };
 			const items = { ...state.items };
@@ -1721,14 +2121,33 @@ function reduceV2Event(
 					currentTravel: null
 				};
 			}
-			return EngineGameStateV3Schema.parse({
+			let settlement = state.settlement;
+			if (state.schemaVersion === 4) {
+				let settlementV4 = state.settlement;
+				for (const outcome of payload.activityOutcomes) {
+					if (outcome.lifeStateAfter !== 'active') {
+						const assignment = state.heroes[outcome.heroId]?.assignment;
+						if (assignment) {
+							settlementV4 = clearBuildingAssignment(
+								settlementV4,
+								outcome.heroId,
+								assignment.buildingId
+							);
+							heroes[outcome.heroId] = { ...heroes[outcome.heroId]!, assignment: null };
+						}
+					}
+				}
+				settlement = settlementV4;
+			}
+			return parseModernState(state, {
 				...state,
 				version: payload.nextVersion,
 				eventCursor: event.sequence,
 				entropyCursor: event.seedCursor,
 				simulatedAt: payload.targetGameTime,
 				heroes,
-				items
+				items,
+				settlement
 			});
 		}
 		const payload = SimulationAdvancedPayloadSchema.parse(event.payload);
@@ -1781,7 +2200,9 @@ function reduceV2Event(
 							{
 								...hero,
 								currentActivity: null,
-								...(state.schemaVersion === 3 ? { currentTravel: null } : {})
+								...(state.schemaVersion === 3 || state.schemaVersion === 4
+									? { currentTravel: null }
+									: {})
 							}
 						])
 					)
@@ -1807,11 +2228,18 @@ function reduceV2Event(
 		if (!hero || hero.health !== payload.healthBefore)
 			throw new ReplayIntegrityError('Hero damage precondition failed', event.sequence);
 		const dead = payload.healthAfter === 0;
+		const assignment =
+			state.schemaVersion === 4 ? state.heroes[payload.targetId]?.assignment : null;
+		const settlement =
+			state.schemaVersion === 4 && dead && assignment
+				? clearBuildingAssignment(state.settlement, hero.heroId, assignment.buildingId)
+				: state.settlement;
 		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
 			entropyCursor: event.seedCursor,
+			settlement,
 			heroes: {
 				...state.heroes,
 				[payload.targetId]: {
@@ -1820,9 +2248,10 @@ function reduceV2Event(
 					lifeState: dead ? 'dead' : 'active',
 					injuries: payload.injury ? [...hero.injuries, payload.injury] : hero.injuries,
 					currentActivity: dead ? null : hero.currentActivity,
-					...(state.schemaVersion === 3
+					...(state.schemaVersion === 3 || state.schemaVersion === 4
 						? { currentTravel: dead ? null : currentTravelFor(state, payload.targetId) }
-						: {})
+						: {}),
+					...(state.schemaVersion === 4 ? { assignment: dead ? null : assignment } : {})
 				}
 			}
 		});

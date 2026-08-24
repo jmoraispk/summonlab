@@ -966,7 +966,7 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — SET-001 through SET-003 completed 2026-08-24.** `hearth-01-v1`
+**Status: in progress — SET-001 through SET-004 completed 2026-08-24.** `hearth-01-v1`
 defines five interiors, a connected 18-node/17-edge route graph, travel time, capacity, authored
 visual paths, interaction/effect declarations, and explicit system access. The development-only
 `/settlement-lab` inspects that hash-bound content without changing existing engine histories or
@@ -979,7 +979,7 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 - `SET-001` complete: implement route graph and five building nodes/interiors;
 - `SET-002` complete as a human-pending candidate: create the layered Hearth 01 settlement scene;
 - `SET-003` complete: implement content-bound hero travel and authoritative scheduled arrival;
-- `SET-004` implement building capacity, assignments, and powered state;
+- `SET-004` complete: implement building capacity, assignments, and powered state;
 - `SET-005` implement needs, activities, daily plan, and habit resolution;
 - `SET-006` implement accelerated clock and worker catch-up;
 - `SET-007` implement SSE events, reconnect, and recap;
@@ -1093,7 +1093,9 @@ available at `/settlement-lab`. Their next review asks whether the five-building
 painted spatial clarity, travel scale, interior focal stations, and reserve-versus-powered access
 boundary form a clear foundation. After feedback, the scene can be accepted or revised while
 `SET-003` added the versioned authoritative travel path without changing `engine-v1` or `engine-v2`
-replay schemas. The next engineering slice is `SET-004`: capacity, assignments, and powered state.
+replay schemas. `SET-004` added reciprocal facility rosters, capacity checks, one reversible power
+slot, power-gated forge access, and v3 preservation under `engine-v4`. The next engineering slice is
+`SET-005`: needs, daily plans, and habit resolution.
 
 ## Accepted product decisions — 2026-08-23
 

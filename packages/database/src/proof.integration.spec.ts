@@ -67,11 +67,11 @@ describe('summon proof persistence', () => {
 			expect(replay?.scheduledEvents).toEqual([
 				expect.objectContaining({ eventKind: 'hero.travel.arrive', status: 'resolved' })
 			]);
-			expect(replay?.snapshot.state.schemaVersion).toBe(3);
+			expect(replay?.snapshot.state.schemaVersion).toBe(4);
 			expect(replay?.snapshot.state.heroes[draft.manifest.characterId]?.location).toBe(
 				'training-ground'
 			);
-			if (replay?.snapshot.state.schemaVersion !== 3) throw new Error('Expected engine-v3');
+			if (replay?.snapshot.state.schemaVersion !== 4) throw new Error('Expected engine-v4');
 			expect(replay.snapshot.state.heroes[draft.manifest.characterId]).toMatchObject({
 				locationNodeId: 'training-ring',
 				currentTravel: null

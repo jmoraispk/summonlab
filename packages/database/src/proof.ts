@@ -443,7 +443,7 @@ export async function markProofArrival(
 			if (!row?.destination || row.arrived) return;
 			const engine = await getEngineSnapshotInTransaction(transaction, runId);
 			if (!engine) throw new Error(`Engine run not found: ${runId}`);
-			if (engine.state.schemaVersion === 3) {
+			if (engine.state.schemaVersion === 3 || engine.state.schemaVersion === 4) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,
 					travelCommand(runId, row.manifest.characterId, engine.state.version, row.destination)

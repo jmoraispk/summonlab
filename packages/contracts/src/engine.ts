@@ -8,7 +8,7 @@ import {
 	RewardDeltaSchema
 } from './event.js';
 import { RunStatusSchema } from './run.js';
-import { SettlementRoutePlanSchema } from './settlement.js';
+import { SettlementRoutePlanSchema, SettlementSlugSchema } from './settlement.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -144,7 +144,7 @@ export const CurrentActivitySchema = z
 	})
 	.strict();
 
-const SettlementNodeIdSchema = z.string().regex(/^[a-z][a-z0-9-]{2,79}$/u);
+const SettlementNodeIdSchema = SettlementSlugSchema;
 
 export const CurrentTravelSchema = z
 	.object({
@@ -234,6 +234,56 @@ export const EngineHeroStateV3Schema = z
 		}
 	});
 
+export const BuildingAssignmentRoleSchema = z.enum([
+	'gate-attendant',
+	'cook',
+	'resident',
+	'trainee',
+	'artisan'
+]);
+
+export const HeroBuildingAssignmentSchema = z
+	.object({
+		buildingId: SettlementSlugSchema,
+		nodeId: SettlementNodeIdSchema,
+		role: BuildingAssignmentRoleSchema,
+		assignedAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const EngineHeroStateV4Schema = z
+	.object({
+		...EngineHeroStateV3Schema.shape,
+		assignment: HeroBuildingAssignmentSchema.nullable()
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (value.health > value.maxHealth) {
+			context.addIssue({ code: 'custom', message: 'Hero health cannot exceed maxHealth' });
+		}
+		if (value.lifeState === 'active' && value.health === 0) {
+			context.addIssue({ code: 'custom', message: 'An active hero must have health' });
+		}
+		if (value.lifeState !== 'active' && value.health !== 0) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero must have zero health' });
+		}
+		if (value.lifeState !== 'active' && value.currentActivity !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot have an activity' });
+		}
+		if (value.currentActivity && value.currentTravel) {
+			context.addIssue({ code: 'custom', message: 'A hero cannot work while traveling' });
+		}
+		if (value.lifeState !== 'active' && value.currentTravel !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot travel' });
+		}
+		if (value.currentTravel && value.currentTravel.fromNodeId !== value.locationNodeId) {
+			context.addIssue({ code: 'custom', message: 'Travel must begin at the authoritative node' });
+		}
+		if (value.lifeState !== 'active' && value.assignment !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot remain assigned' });
+		}
+	});
+
 export const EngineMasterStateV2Schema = z
 	.object({
 		masterId: EntityIdSchema,
@@ -303,6 +353,37 @@ export const SettlementNavigationStateSchema = z
 export const EngineSettlementStateV3Schema = EngineSettlementStateSchema.extend({
 	navigation: SettlementNavigationStateSchema
 }).strict();
+
+export const BuildingPowerStateSchema = z.enum(['unpowered', 'reserve', 'powered']);
+
+export const EngineBuildingStateSchema = z
+	.object({
+		buildingId: SettlementSlugSchema,
+		systemId: SettlementSlugSchema,
+		assignmentNodeId: SettlementNodeIdSchema,
+		assignmentRole: BuildingAssignmentRoleSchema,
+		assignmentCapacity: z.number().int().min(1).max(30),
+		assignedHeroIds: z.array(EntityIdSchema).max(30),
+		baselinePowerState: z.enum(['unpowered', 'reserve']),
+		powerState: BuildingPowerStateSchema
+	})
+	.strict()
+	.superRefine((building, context) => {
+		if (new Set(building.assignedHeroIds).size !== building.assignedHeroIds.length) {
+			context.addIssue({ code: 'custom', message: 'Building assignments must be unique' });
+		}
+		if (building.assignedHeroIds.length > building.assignmentCapacity) {
+			context.addIssue({ code: 'custom', message: 'Building assignment capacity was exceeded' });
+		}
+	});
+
+export const EngineSettlementStateV4Schema = z
+	.object({
+		...EngineSettlementStateV3Schema.shape,
+		poweredBuildingId: SettlementSlugSchema.nullable(),
+		buildings: z.record(SettlementSlugSchema, EngineBuildingStateSchema)
+	})
+	.strict();
 
 export const EngineItemStateSchema = z
 	.object({
@@ -420,10 +501,107 @@ export const EngineGameStateV3Schema = z
 		}
 	});
 
+export const EngineGameStateV4Schema = z
+	.object({
+		...EngineGameStateV3Schema.shape,
+		schemaVersion: z.literal(4),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV4Schema),
+		settlement: EngineSettlementStateV4Schema
+	})
+	.strict()
+	.superRefine((state, context) => {
+		if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
+			context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
+		}
+		if (state.status === 'active' && state.master.lifeState !== 'alive') {
+			context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
+		}
+		for (const hero of Object.values(state.heroes)) {
+			const itemId = hero.equipment.mainHand;
+			if (itemId) {
+				const item = state.items[itemId];
+				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned item'
+					});
+				}
+			}
+			if (hero.assignment) {
+				const building = state.settlement.buildings[hero.assignment.buildingId];
+				if (
+					!building ||
+					building.assignmentNodeId !== hero.assignment.nodeId ||
+					building.assignmentRole !== hero.assignment.role ||
+					!building.assignedHeroIds.includes(hero.heroId)
+				) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero assignment diverged from building state'
+					});
+				}
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (
+				item.equippedById &&
+				state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId
+			) {
+				context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+			}
+		}
+		for (const [buildingId, building] of Object.entries(state.settlement.buildings)) {
+			if (building.buildingId !== buildingId) {
+				context.addIssue({ code: 'custom', message: 'Building record key does not match its id' });
+			}
+			for (const heroId of building.assignedHeroIds) {
+				if (state.heroes[heroId]?.assignment?.buildingId !== buildingId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Building roster diverged from hero assignment'
+					});
+				}
+			}
+			if (
+				building.powerState !== 'powered' &&
+				building.powerState !== building.baselinePowerState
+			) {
+				context.addIssue({ code: 'custom', message: 'Building power diverged from its baseline' });
+			}
+		}
+		const powered = Object.values(state.settlement.buildings).filter(
+			(building) => building.powerState === 'powered'
+		);
+		if (
+			powered.length !== (state.settlement.poweredBuildingId ? 1 : 0) ||
+			(state.settlement.poweredBuildingId !== null &&
+				powered[0]?.buildingId !== state.settlement.poweredBuildingId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Powered building slot is inconsistent' });
+		}
+		const activeSystemIds = Object.values(state.settlement.buildings)
+			.filter((building) => building.powerState !== 'unpowered')
+			.map((building) => building.systemId)
+			.sort((left, right) => left.localeCompare(right));
+		if (activeSystemIds.join('|') !== state.settlement.navigation.activeSystemIds.join('|')) {
+			context.addIssue({ code: 'custom', message: 'Active systems diverged from building power' });
+		}
+		for (const resource of ResourceKeySchema.options) {
+			const entries = state.settlement.resourceLedger.filter(
+				(entry) => entry.resource === resource
+			);
+			const last = entries.at(-1);
+			if (last && last.after !== state.settlement.resources[resource]) {
+				context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
+			}
+		}
+	});
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
-	EngineGameStateV3Schema
+	EngineGameStateV3Schema,
+	EngineGameStateV4Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -451,6 +629,23 @@ export const ArriveDestinationCommandSchema = EngineCommandBaseSchema.extend({
 export const StartTravelCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.start.travel'),
 	targetNodeId: SettlementNodeIdSchema
+}).strict();
+
+export const AssignHeroBuildingCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('settlement.assign.hero'),
+	heroId: EntityIdSchema,
+	buildingId: SettlementSlugSchema,
+	role: BuildingAssignmentRoleSchema
+}).strict();
+
+export const UnassignHeroBuildingCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('settlement.unassign.hero'),
+	heroId: EntityIdSchema
+}).strict();
+
+export const AllocateBuildingPowerCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('settlement.allocate.power'),
+	buildingId: SettlementSlugSchema
 }).strict();
 
 export const InspectGateCommandSchema = EngineCommandBaseSchema.extend({
@@ -483,6 +678,9 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
 	StartTravelCommandSchema,
+	AssignHeroBuildingCommandSchema,
+	UnassignHeroBuildingCommandSchema,
+	AllocateBuildingPowerCommandSchema,
 	InspectGateCommandSchema,
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
@@ -598,12 +796,14 @@ export const EngineErrorResponseSchema = z.discriminatedUnion('code', [
 ]);
 
 export type ActivityKind = z.infer<typeof ActivityKindSchema>;
+export type BuildingAssignmentRole = z.infer<typeof BuildingAssignmentRoleSchema>;
 export type EngineCommand = z.infer<typeof EngineCommandSchema>;
 export type EngineCommit = z.infer<typeof EngineCommitSchema>;
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
 export type EngineGameStateV1 = z.infer<typeof EngineGameStateV1Schema>;
 export type EngineGameStateV2 = z.infer<typeof EngineGameStateV2Schema>;
 export type EngineGameStateV3 = z.infer<typeof EngineGameStateV3Schema>;
+export type EngineGameStateV4 = z.infer<typeof EngineGameStateV4Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;

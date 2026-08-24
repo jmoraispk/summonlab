@@ -48,7 +48,7 @@ type SimulationCommand = WithoutEnvelope<EngineCommand>;
 
 function assertSimulationInvariants(state: EngineGameState): void {
 	EngineGameStateSchema.parse(state);
-	if (state.schemaVersion !== 2 && state.schemaVersion !== 3) return;
+	if (state.schemaVersion !== 2 && state.schemaVersion !== 3 && state.schemaVersion !== 4) return;
 	for (const balance of Object.values(state.settlement.resources)) {
 		if (balance < 0) throw new Error('Simulation produced a negative resource balance');
 	}
@@ -126,6 +126,24 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
+		if (state.schemaVersion === 4) {
+			apply('assign-facility', {
+				actorId: state.master.masterId,
+				source: source('manual'),
+				commandType: 'settlement.assign.hero',
+				heroId,
+				buildingId: destination,
+				role: destination === 'kitchen' ? 'cook' : 'trainee'
+			});
+			if (index % 3 === 0) {
+				apply('power-workshop', {
+					actorId: state.master.masterId,
+					source: source('manual'),
+					commandType: 'settlement.allocate.power',
+					buildingId: 'workshop'
+				});
+			}
+		}
 
 		if (index % 2 === 0) {
 			const started = apply('eat', {
@@ -167,7 +185,10 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 					targetGameTime: repair.scheduled[0]!.dueGameTime
 				});
 			}
-			if (index % 5 === 1 && (state.schemaVersion === 2 || state.schemaVersion === 3)) {
+			if (
+				index % 5 === 1 &&
+				(state.schemaVersion === 2 || state.schemaVersion === 3 || state.schemaVersion === 4)
+			) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {
 					apply('equip-bow', {

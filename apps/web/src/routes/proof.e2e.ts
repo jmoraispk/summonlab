@@ -79,6 +79,28 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByText('hero.travel.started')).toBeVisible();
 	await expect(page.getByText('simulation.advanced')).toBeVisible();
 	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
+	await page
+		.getByTestId('building-training-ground')
+		.getByRole('button', { name: 'assign', exact: true })
+		.click();
+	await expect(page.getByTestId('hero-assignment')).toContainText('training-ground');
+	await page
+		.getByTestId('building-workshop')
+		.getByRole('button', { name: 'power', exact: true })
+		.click();
+	await expect(page.getByTestId('building-workshop')).toContainText('powered');
+	await page.getByRole('button', { name: 'forge', exact: true }).click();
+	await expect(page.getByTestId('travel-proof')).toContainText('training-ring → workshop-forge');
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('travel-proof').locator('strong')).toHaveText('workshop-forge');
+	await page.getByRole('button', { name: 'training', exact: true }).click();
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('travel-proof').locator('strong')).toHaveText('training-ring');
+	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
+
+	if (process.env.CAPTURE_PHASE4_OPERATIONS) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_OPERATIONS, fullPage: true });
+	}
 
 	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
 	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
@@ -127,6 +149,8 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('button', { name: 'rest', exact: true }).click();
 	await page.getByRole('button', { name: /Fatal hero proof/ }).click();
 	await expect(page.getByText(/Summoned hero/).locator('..')).toContainText('dead');
+	await expect(page.getByTestId('hero-assignment')).toHaveCount(0);
+	await expect(page.getByTestId('building-training-ground')).toContainText('0/8');
 	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
 	await page.getByRole('button', { name: /End run proof/ }).click();
 	await expect(page.getByTestId('game-over')).toContainText('This history is sealed');

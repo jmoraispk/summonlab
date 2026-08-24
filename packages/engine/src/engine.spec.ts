@@ -1,5 +1,7 @@
 import {
 	EngineGameStateV2Schema,
+	EngineGameStateV3Schema,
+	EngineGameStateV4Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameStateV1
@@ -201,7 +203,7 @@ describe('deterministic engine', () => {
 			commandType: 'hero.start.travel',
 			targetNodeId: 'kitchen-table'
 		});
-		if (traveling.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (traveling.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		const inTransit = traveling.state.heroes[heroId]!;
 		expect(inTransit.location).toBe('summoning-gate');
 		expect(inTransit.locationNodeId).toBe('gate-dais');
@@ -233,7 +235,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
-		if (arrived.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (arrived.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		expect(arrived.state.heroes[heroId]).toMatchObject({
 			location: 'kitchen',
 			locationNodeId: 'kitchen-table',
@@ -271,7 +273,7 @@ describe('deterministic engine', () => {
 			amount: 100,
 			damageKind: 'hazard'
 		});
-		if (died.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (died.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		expect(died.state.heroes[heroId]?.currentTravel).toBeNull();
 		expect(died.canceledScheduledEventIds).toEqual([traveling.scheduled[0]!.scheduledEventId]);
 	});
@@ -352,14 +354,17 @@ describe('deterministic engine', () => {
 
 	it('keeps immutable engine-v2 commands and reducer bytes on their original schema', () => {
 		const modern = fixture();
-		if (modern.snapshot.state.schemaVersion !== 3) throw new Error('Expected engine-v3 fixture');
+		if (modern.snapshot.state.schemaVersion !== 4) throw new Error('Expected engine-v4 fixture');
 		const modernHero = Object.values(modern.snapshot.state.heroes)[0]!;
 		const hero = { ...modernHero } as Record<string, unknown>;
 		delete hero.locationNodeId;
 		delete hero.firstArrivalCompleted;
 		delete hero.currentTravel;
+		delete hero.assignment;
 		const settlement = { ...modern.snapshot.state.settlement } as Record<string, unknown>;
 		delete settlement.navigation;
+		delete settlement.poweredBuildingId;
+		delete settlement.buildings;
 		const state = EngineGameStateV2Schema.parse({
 			...modern.snapshot.state,
 			schemaVersion: 2,
@@ -391,6 +396,149 @@ describe('deterministic engine', () => {
 		expect(replay.snapshot.state.schemaVersion).toBe(2);
 	});
 
+	it('keeps immutable engine-v3 travel streams replayable under their original schema', () => {
+		const modern = fixture();
+		if (modern.snapshot.state.schemaVersion !== 4) throw new Error('Expected engine-v4 fixture');
+		const modernHero = Object.values(modern.snapshot.state.heroes)[0]!;
+		const hero = { ...modernHero } as Record<string, unknown>;
+		delete hero.assignment;
+		const settlement = { ...modern.snapshot.state.settlement } as Record<string, unknown>;
+		delete settlement.poweredBuildingId;
+		delete settlement.buildings;
+		const state = EngineGameStateV3Schema.parse({
+			...modern.snapshot.state,
+			schemaVersion: 3,
+			contentVersion: 'engine-v3',
+			heroes: { [modernHero.heroId]: hero },
+			settlement
+		});
+		const bootstrapEvent: AuthoritativeEvent = {
+			...modern.event,
+			schemaVersion: 3,
+			contentVersion: 'engine-v3',
+			afterStateHash: hashGameState(state),
+			payload: { ...modern.event.payload, initialState: state }
+		};
+		const chosen = applyCommand(state, {
+			...commandBase(state, modernHero.heroId, 'v3-choose'),
+			commandType: 'hero.choose.destination',
+			destination: 'kitchen',
+			firstLine: 'Old routes remain true.',
+			storyBranch: 'names-before-orders'
+		});
+		const traveling = applyCommand(chosen.state, {
+			...commandBase(chosen.state, modernHero.heroId, 'v3-travel'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'kitchen-table'
+		});
+		const arrived = applyCommand(traveling.state, {
+			...commandBase(traveling.state, traveling.state.master.masterId, 'v3-arrive'),
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
+		});
+		const replay = replayEventsStrict([
+			bootstrapEvent,
+			...chosen.events,
+			...traveling.events,
+			...arrived.events
+		]);
+		expect(replay.snapshot.state).toEqual(arrived.state);
+		expect(replay.snapshot.state.schemaVersion).toBe(3);
+	});
+
+	it('commits facility assignments and reallocates one authoritative power slot', () => {
+		const { bootstrap, chosen, traveling, arrived, heroId } = arriveAtTraining();
+		const assigned = applyCommand(arrived.state, {
+			...commandBase(arrived.state, arrived.state.master.masterId, 'assign-workshop'),
+			commandType: 'settlement.assign.hero',
+			heroId,
+			buildingId: 'workshop',
+			role: 'artisan'
+		});
+		if (assigned.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
+		expect(assigned.state.heroes[heroId]?.assignment).toMatchObject({
+			buildingId: 'workshop',
+			nodeId: 'workshop-bench',
+			role: 'artisan'
+		});
+		expect(assigned.state.settlement.buildings.workshop?.assignedHeroIds).toEqual([heroId]);
+		const secondHeroId = deterministicUuid('engine-test-second-hero');
+		const saturated = EngineGameStateV4Schema.parse({
+			...assigned.state,
+			heroes: {
+				...assigned.state.heroes,
+				[secondHeroId]: {
+					...assigned.state.heroes[heroId]!,
+					heroId: secondHeroId,
+					equipment: { mainHand: null },
+					assignment: null
+				}
+			},
+			settlement: {
+				...assigned.state.settlement,
+				buildings: {
+					...assigned.state.settlement.buildings,
+					workshop: {
+						...assigned.state.settlement.buildings.workshop!,
+						assignmentCapacity: 1
+					}
+				}
+			}
+		});
+		expect(
+			legalActions(saturated, saturated.master.masterId).some(
+				(candidate) => candidate.actionId === `settlement.assign.${secondHeroId}.workshop`
+			)
+		).toBe(false);
+		expect(() =>
+			applyCommand(saturated, {
+				...commandBase(saturated, saturated.master.masterId, 'overfill-workshop'),
+				commandType: 'settlement.assign.hero',
+				heroId: secondHeroId,
+				buildingId: 'workshop',
+				role: 'artisan'
+			})
+		).toThrow(IllegalActionError);
+
+		const powered = applyCommand(assigned.state, {
+			...commandBase(assigned.state, assigned.state.master.masterId, 'power-workshop'),
+			commandType: 'settlement.allocate.power',
+			buildingId: 'workshop'
+		});
+		if (powered.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
+		expect(powered.state.settlement.poweredBuildingId).toBe('workshop');
+		expect(powered.state.settlement.buildings.workshop?.powerState).toBe('powered');
+		expect(powered.state.settlement.navigation.activeSystemIds).toContain('forge-system');
+
+		const forgeTravel = applyCommand(powered.state, {
+			...commandBase(powered.state, heroId, 'travel-powered-forge'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'workshop-forge'
+		});
+		expect(forgeTravel.scheduled[0]).toMatchObject({ eventKind: 'hero.travel.arrive' });
+		const reallocated = applyCommand(forgeTravel.state, {
+			...commandBase(forgeTravel.state, forgeTravel.state.master.masterId, 'power-kitchen'),
+			commandType: 'settlement.allocate.power',
+			buildingId: 'kitchen'
+		});
+		if (reallocated.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
+		expect(reallocated.state.settlement.buildings.kitchen?.powerState).toBe('powered');
+		expect(reallocated.state.settlement.buildings.workshop?.powerState).toBe('unpowered');
+		expect(reallocated.state.settlement.navigation.activeSystemIds).not.toContain('forge-system');
+
+		const replay = replayEventsStrict([
+			bootstrap.event,
+			...chosen.events,
+			...traveling.events,
+			...arrived.events,
+			...assigned.events,
+			...powered.events,
+			...forgeTravel.events,
+			...reallocated.events
+		]);
+		expect(replay.snapshot.stateHash).toBe(reallocated.stateHash);
+	});
+
 	it('schedules training, advances an injected clock, and projects progression exactly', () => {
 		const { bootstrap, chosen, traveling, arrived, heroId } = arriveAtTraining();
 		const started = applyCommand(arrived.state, {
@@ -400,7 +548,7 @@ describe('deterministic engine', () => {
 		});
 		expect(started.scheduled).toHaveLength(1);
 		expect(started.scheduled[0]?.dueGameTime).toBe('2000-01-01T00:32:06.000Z');
-		if (started.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (started.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		expect(started.state.heroes[heroId]?.currentActivity?.kind).toBe('train');
 
 		const advanced = applyCommand(started.state, {
@@ -408,7 +556,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: started.scheduled[0]!.dueGameTime
 		});
-		if (advanced.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (advanced.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		const hero = advanced.state.heroes[heroId]!;
 		const blade = advanced.state.items[hero.equipment.mainHand!]!;
 		expect(hero.currentActivity).toBeNull();
@@ -458,7 +606,7 @@ describe('deterministic engine', () => {
 			commandType: 'hero.start.activity',
 			activity: 'repair'
 		});
-		if (repair.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (repair.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		expect(repair.state.settlement.resources['iron-ore']).toBe(1);
 		expect(repair.state.settlement.resourceLedger.at(-1)).toMatchObject({
 			resource: 'iron-ore',
@@ -471,15 +619,22 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: repair.scheduled[0]!.dueGameTime
 		});
-		if (repaired.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (repaired.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		const itemId = repaired.state.heroes[heroId]!.equipment.mainHand!;
 		expect(repaired.state.items[itemId]?.durability).toBe(6);
 	});
 
 	it('makes hero death permanent and Master death atomically ends the run', () => {
 		const { arrived, heroId } = arriveAtTraining();
-		const started = applyCommand(arrived.state, {
-			...commandBase(arrived.state, heroId, 'start-before-death'),
+		const assigned = applyCommand(arrived.state, {
+			...commandBase(arrived.state, arrived.state.master.masterId, 'assign-before-death'),
+			commandType: 'settlement.assign.hero',
+			heroId,
+			buildingId: 'training-ground',
+			role: 'trainee'
+		});
+		const started = applyCommand(assigned.state, {
+			...commandBase(assigned.state, heroId, 'start-before-death'),
 			commandType: 'hero.start.activity',
 			activity: 'train'
 		});
@@ -490,12 +645,14 @@ describe('deterministic engine', () => {
 			amount: 100,
 			damageKind: 'hazard'
 		});
-		if (heroDied.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		if (heroDied.state.schemaVersion !== 4) throw new Error('Expected engine-v4 state');
 		expect(heroDied.state.heroes[heroId]).toMatchObject({
 			lifeState: 'dead',
 			health: 0,
-			currentActivity: null
+			currentActivity: null,
+			assignment: null
 		});
+		expect(heroDied.state.settlement.buildings['training-ground']?.assignedHeroIds).toEqual([]);
 		expect(heroDied.canceledScheduledEventIds).toEqual([started.scheduled[0]!.scheduledEventId]);
 		expect(() =>
 			applyCommand(heroDied.state, {

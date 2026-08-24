@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { ContentVersionSchema, StateHashSchema } from './shared.js';
 
-const SettlementSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,79}$/u);
+export const SettlementSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,79}$/u);
 
 export const SettlementBuildingKindSchema = z.enum([
 	'summoning-gate',

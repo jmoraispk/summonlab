@@ -3,6 +3,7 @@
 	import type {
 		ActionSource,
 		ActivityKind,
+		BuildingAssignmentRole,
 		EngineCommand,
 		EngineReplayReport
 	} from '@summonlab/contracts';
@@ -16,14 +17,23 @@
 	const hero = $derived(Object.values(report.snapshot.state.heroes)[0]);
 	const engineState = $derived(report.snapshot.state);
 	const survivalState = $derived(
-		engineState.schemaVersion === 2 || engineState.schemaVersion === 3 ? engineState : null
+		engineState.schemaVersion === 2 ||
+			engineState.schemaVersion === 3 ||
+			engineState.schemaVersion === 4
+			? engineState
+			: null
 	);
 	const navigationState = $derived(
-		engineState.schemaVersion === 3 ? engineState.settlement.navigation : null
+		engineState.schemaVersion === 3 || engineState.schemaVersion === 4
+			? engineState.settlement.navigation
+			: null
 	);
+	const operationsState = $derived(engineState.schemaVersion === 4 ? engineState : null);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
-		engineState.schemaVersion === 3 && hero ? engineState.heroes[hero.heroId] : null
+		(engineState.schemaVersion === 3 || engineState.schemaVersion === 4) && hero
+			? engineState.heroes[hero.heroId]
+			: null
 	);
 	const heroActions = $derived(hero ? (report.legalActionsByActor[hero.heroId] ?? []) : []);
 	const pendingSchedule = $derived(
@@ -159,6 +169,44 @@
 		);
 	}
 
+	async function assignHero(buildingId: string, role: BuildingAssignmentRole) {
+		if (!operationsState || !hero) return;
+		await execute(
+			{
+				...commandMeta(operationsState.master.masterId),
+				commandType: 'settlement.assign.hero',
+				heroId: hero.heroId,
+				buildingId,
+				role
+			},
+			`Hero assignment moved to ${buildingId}.`
+		);
+	}
+
+	async function unassignHero() {
+		if (!operationsState || !hero) return;
+		await execute(
+			{
+				...commandMeta(operationsState.master.masterId),
+				commandType: 'settlement.unassign.hero',
+				heroId: hero.heroId
+			},
+			'Hero released from the facility roster.'
+		);
+	}
+
+	async function allocatePower(buildingId: string) {
+		if (!operationsState) return;
+		await execute(
+			{
+				...commandMeta(operationsState.master.masterId),
+				commandType: 'settlement.allocate.power',
+				buildingId
+			},
+			`Development power routed to ${buildingId}.`
+		);
+	}
+
 	async function equipAlternateItem() {
 		const action = heroActions.find((candidate) => candidate.actionId.startsWith('hero.equip.'));
 		if (!survivalHero || !action) return;
@@ -187,6 +235,10 @@
 
 	function canHero(actionId: string) {
 		return heroActions.some((action) => action.actionId === actionId);
+	}
+
+	function canMaster(actionId: string) {
+		return report.legalActions.some((action) => action.actionId === actionId);
 	}
 </script>
 
@@ -359,11 +411,60 @@
 				this view from the resulting hash chain.
 			</p>
 			{#if survivalState && survivalHero}
+				{#if operationsState && hero}
+					<div class="control-group facilities" data-testid="facility-operations">
+						<span>Facility operations · one development power slot</span>
+						<div class="facility-list">
+							{#each Object.values(operationsState.settlement.buildings) as building (building.buildingId)}
+								<article data-testid={`building-${building.buildingId}`}>
+									<div>
+										<strong>{building.buildingId}</strong>
+										<small
+											>{building.powerState} · {building.assignedHeroIds
+												.length}/{building.assignmentCapacity}
+											{building.assignmentRole}</small
+										>
+									</div>
+									<button
+										class="secondary compact"
+										type="button"
+										onclick={() => assignHero(building.buildingId, building.assignmentRole)}
+										disabled={pending ||
+											!canMaster(`settlement.assign.${hero.heroId}.${building.buildingId}`)}
+										>assign</button
+									>
+									{#if building.buildingId !== 'summoning-gate'}
+										<button
+											class="secondary compact"
+											type="button"
+											onclick={() => allocatePower(building.buildingId)}
+											disabled={pending || !canMaster(`settlement.power.${building.buildingId}`)}
+											>power</button
+										>
+									{/if}
+								</article>
+							{/each}
+						</div>
+						{#if operationsState.heroes[hero.heroId]?.assignment}
+							<div class="assignment-line" data-testid="hero-assignment">
+								<strong>{operationsState.heroes[hero.heroId]?.assignment?.buildingId}</strong>
+								<span>{operationsState.heroes[hero.heroId]?.assignment?.role}</span>
+								<button
+									class="secondary compact"
+									type="button"
+									onclick={unassignHero}
+									disabled={pending || !canMaster(`settlement.unassign.${hero.heroId}`)}
+									>release</button
+								>
+							</div>
+						{/if}
+					</div>
+				{/if}
 				{#if travelHero}
 					<div class="control-group">
 						<span>Verified Hearth routes</span>
 						<div class="buttons wrap">
-							{#each [['gate-dais', 'gate'], ['kitchen-table', 'kitchen'], ['dormitory-bunks', 'dormitory'], ['training-ring', 'training'], ['workshop-bench', 'workshop'], ['courtyard-heart', 'courtyard']] as destination (destination[0])}
+							{#each [['gate-dais', 'gate'], ['kitchen-table', 'kitchen'], ['dormitory-bunks', 'dormitory'], ['training-ring', 'training'], ['workshop-bench', 'workshop'], ['workshop-forge', 'forge'], ['courtyard-heart', 'courtyard']] as destination (destination[0])}
 								<button
 									class="secondary"
 									type="button"
@@ -688,7 +789,7 @@
 	}
 	.grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 		gap: 1rem;
 		max-width: 88rem;
 		margin: 1rem auto;
@@ -871,6 +972,52 @@
 		padding-bottom: 0.75rem;
 		padding-left: 0.75rem;
 	}
+	.facility-list {
+		display: grid;
+		gap: 1px;
+		margin-top: 0.7rem;
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.facility-list article {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.55rem 0.65rem;
+		background: #0b0e14;
+	}
+	.facility-list strong,
+	.facility-list small {
+		display: block;
+	}
+	.facility-list strong {
+		font:
+			400 0.72rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.facility-list small {
+		margin-top: 0.15rem;
+		color: rgba(244, 240, 232, 0.4);
+		font-size: 0.48rem;
+		text-transform: uppercase;
+	}
+	button.compact {
+		flex: none;
+		padding: 0.48rem 0.55rem;
+		font-size: 0.48rem;
+	}
+	.assignment-line {
+		display: grid;
+		grid-template-columns: 1fr 1fr auto;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.65rem;
+		border-top: 1px solid rgba(120, 215, 175, 0.18);
+		color: #78d7af;
+		font-size: 0.58rem;
+		text-transform: capitalize;
+	}
 	.schedule {
 		display: grid;
 		grid-template-columns: 1fr auto;
@@ -942,6 +1089,7 @@
 	.legal {
 		display: flex;
 		align-items: center;
+		flex-wrap: wrap;
 		gap: 0.7rem;
 		padding: 1rem 1.4rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.06);
