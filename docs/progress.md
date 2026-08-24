@@ -122,9 +122,36 @@ active and terminal checkpoints are captured in
 [phase-2-survival-state.png](evidence/phase-2-survival-state.png) and
 [phase-2-game-over.png](evidence/phase-2-game-over.png).
 
+## Phase 3 — Character Forge and visual system
+
+Status: **in progress**. The first visual approval checkpoint completed on 2026-08-23.
+
+| Task | Result | Evidence |
+| --- | --- | --- |
+| `ART-001` | Production art bible fixes palette, line/value/material rules, camera tiers, continuity contract, motion, and approval rubric | [Art bible](art-bible.md) |
+| `ART-002` | `human-v2` preserves `human-v1` bytes while adding deterministic mass, muscle tone, body-fat band, limb proportion, and hand scale; 1,000-seed diversity coverage | Character generator and unit tests |
+| `ART-003` | Separate visual profiles drive identity locks, expression states, normalized equipment/injury anchors, and base/night/injured palette swaps in the code-native runtime rig | `CharacterVisualProfileSchema`, asset catalog, and `HeroRig.svelte` |
+| `ART-004` | `/visual-lab` compares anchors, continuity, roster, scale, provenance, hashes, and approval status; CI verifies every source asset byte-for-byte | [Visual lab evidence](evidence/phase-3-visual-lab.png) |
+| `ART-005` | Two of twelve representative original humans: Mara Vey and Remy Nahl | Anchor and continuity assets under `assets/heroes/visuals` |
+| `ART-008` | Face/hair/silhouette/palette/signature-trait checks score 5/5 for continuity and roster views; settlement explicitly records 4/5 because facial identity is not claimed | Versioned visual catalog |
+
+The image-generation skill produced the five new approval candidates through the built-in path. The
+catalog stores the final normalized prompt set, input references, dimensions, bytes, content hashes,
+and production notes. Generated art never updates the deterministic manifest. Source PNGs remain
+unoptimized until the visual gate accepts them.
+
+### Reproduce the checkpoint
+
+```powershell
+pnpm validate:visual-assets
+pnpm dev
+```
+
+Open `http://localhost:5173/visual-lab`. Switch between Mara and Remy, compare their continuity
+sheets, inspect the settlement-scale recognition limit, and review the asset ledger.
+
 ## Next active slice
 
-Begin Phase 3 with a reviewable visual-system spike: define the art bible and continuity contract,
-then produce one representative male hero, one representative female hero, a small roster group,
-and settlement-scale versions before expanding the asset system. Reuse the manifest and evidence
-workflow rather than growing an unreviewed asset library.
+Collect feedback on specificity, cross-view identity, rendering style, and settlement character
+scale. While that remains unanswered, continue reversible profile-driven rig layers, approval
+records, and runtime export tooling; do not generate the remaining ten representative humans yet.

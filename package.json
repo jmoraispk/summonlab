@@ -17,6 +17,7 @@
 		"db:logs": "node tools/database.mjs logs",
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
+		"validate:visual-assets": "tsx tools/validate-visual-assets.ts",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "pnpm -r --if-present lint",
@@ -24,7 +25,7 @@
 		"test": "pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

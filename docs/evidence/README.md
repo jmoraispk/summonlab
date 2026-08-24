@@ -15,3 +15,5 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-2-game-over.png` — permanent hero death, canceled work, atomic Master death, empty legal
   action sets, and a still-verified terminal replay.
 - `phase-2-simulation.json` — deterministic 10,000-history / 48,341-command survival replay report.
+- `phase-3-visual-lab.png` — original female/male approval pair, deterministic physiology,
+  continuity sheet, roster grouping, settlement-scale recognition limit, and SHA-256 asset ledger.

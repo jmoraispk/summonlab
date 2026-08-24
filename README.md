@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 are complete; the summon path and deterministic survival-state lab run locally._
+_Status: Phases 0–2 are complete; Phase 3 has a local visual-continuity approval gate._
 
 </div>
 
@@ -147,6 +147,20 @@ choice, and story branch. Four control modes demonstrate immediate autonomy, see
 wait-for-step, and a five-second direction handoff without giving the hero direct access to state.
 
 ![Character Forge checkpoint](docs/evidence/phase-1-forge.png)
+
+## Visual continuity checkpoint
+
+The current Forge uses `human-v2`: it preserves replayable `human-v1` manifests while adding
+deterministic mass, muscle tone, body-fat band, limb proportion, and hand scale. A separate visual
+profile—not generated artwork—owns identity locks, expressions, equipment anchors, injury placement,
+and palette swaps.
+
+The local `/visual-lab` route compares Mara Vey and Remy Nahl across full-body anchors,
+front/profile/back views, expressions, equipment, injury, a roster composition, and settlement scale.
+Every bitmap has a versioned record with prompt provenance, dimensions, SHA-256, and explicit
+recognition checks. Generated assets remain approval candidates until reviewed.
+
+![Visual continuity lab](docs/evidence/phase-3-visual-lab.png)
 
 ## Deterministic survival checkpoint
 

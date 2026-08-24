@@ -28,17 +28,18 @@
 			<a class="wordmark" href={resolve('/')}>summonlab</a>
 			<nav aria-label="Development links">
 				<a href={resolve('/forge')}>Open forge</a>
+				<a href={resolve('/visual-lab')}>Visual lab</a>
 				<a href={resolve('/design-reference')}>Design reference</a>
 				<a href={resolve('/health')}>Health JSON</a>
 			</nav>
 		</header>
 
 		<div class="hero-copy">
-			<p class="eyebrow">Playable checkpoint · Phase 1</p>
+			<p class="eyebrow">Playable checkpoint · Phase 3 visual gate</p>
 			<h1>The gate is listening.</h1>
 			<p class="lede">
-				Forge one persistent identity, summon them face-to-face, and watch their first independent
-				choice alter the route through Hearth 01.
+				Forge one persistent identity, verify that person across expressions and distance, summon
+				them face-to-face, and watch their first independent choice alter Hearth 01.
 			</p>
 			<a class="launch" href={resolve('/forge')}>Begin at the character forge <span>→</span></a>
 		</div>

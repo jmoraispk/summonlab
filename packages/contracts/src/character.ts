@@ -34,6 +34,16 @@ export const CharacterManifestSchema = z
 		bodyFrame: z.enum(['slight', 'balanced', 'broad']),
 		bodyBuild: z.enum(['wiry', 'soft', 'athletic', 'solid']),
 		heightCm: z.number().int().min(140).max(210),
+		physiology: z
+			.object({
+				massKg: z.number().int().min(40).max(160),
+				muscleTone: z.number().int().min(1).max(10),
+				bodyFat: z.number().int().min(1).max(10),
+				limbProportion: z.enum(['short', 'balanced', 'long']),
+				handScale: z.number().min(0.8).max(1.2)
+			})
+			.strict()
+			.optional(),
 		phenotype: z
 			.object({
 				skinTone: z.string().min(1).max(40),

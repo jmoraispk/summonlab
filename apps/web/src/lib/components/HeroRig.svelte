@@ -1,11 +1,27 @@
 <script lang="ts">
-	import type { CharacterManifest } from '@summonlab/contracts';
+	import type {
+		CharacterExpression,
+		CharacterManifest,
+		CharacterVisualProfile
+	} from '@summonlab/contracts';
 
 	let {
 		manifest,
+		profile,
+		expression = 'neutral',
+		equipment = 'none',
+		paletteMode = 'base',
 		walking = false,
 		compact = false
-	}: { manifest: CharacterManifest; walking?: boolean; compact?: boolean } = $props();
+	}: {
+		manifest: CharacterManifest;
+		profile?: CharacterVisualProfile;
+		expression?: CharacterExpression;
+		equipment?: 'none' | 'practice-blade' | 'short-bow';
+		paletteMode?: 'base' | 'night' | 'injured';
+		walking?: boolean;
+		compact?: boolean;
+	} = $props();
 
 	const hasKnot = $derived(
 		manifest.phenotype.hairStyle.includes('knot') || manifest.phenotype.hairStyle.includes('crown')
@@ -15,11 +31,26 @@
 			manifest.phenotype.hairStyle.includes('jaw')
 	);
 	const stars = $derived('✦'.repeat(manifest.rarityStars));
+	const mainHandAnchor = $derived(
+		profile?.anchors.mainHand ?? {
+			x: manifest.handedness === 'left' ? 0.27 : 0.73,
+			y: 0.56,
+			rotationDegrees: manifest.handedness === 'left' ? -5 : 5,
+			depth: 'front' as const
+		}
+	);
+	const injuryAnchor = $derived(
+		profile?.anchors.faceInjury ?? { x: 0.4, y: 0.2, rotationDegrees: -10, depth: 'front' as const }
+	);
 </script>
 
 <figure
 	class:walking
 	class:compact
+	class:night={paletteMode === 'night'}
+	class:injured={paletteMode === 'injured' || expression === 'injured'}
+	data-expression={expression}
+	data-equipment={equipment}
 	aria-label={`${manifest.displayName}, deterministic modular hero rig`}
 >
 	<svg
@@ -93,12 +124,53 @@
 				<ellipse class="ear skin" cx="63.5" cy="32" rx="3" ry="5" />
 				<path class="skin face" d="M37 20 Q50 12 63 20 L62 38 Q57 48 50 49 Q41 46 38 38 Z" />
 				<path class="hair" d="M37 26 Q36 14 49 13 Q64 13 64 27 Q58 20 51 22 Q43 18 37 26 Z" />
-				<path class="brow" d="M41 29 Q45 27 48 29 M53 29 Q57 27 60 29" />
+				{#if expression === 'skeptical'}
+					<path class="brow" d="M41 27 Q45 25 48 28 M53 30 Q57 28 60 30" />
+				{:else if expression === 'injured'}
+					<path class="brow" d="M41 30 Q45 28 48 30 M53 29 Q57 27 60 29" />
+				{:else}
+					<path class="brow" d="M41 29 Q45 27 48 29 M53 29 Q57 27 60 29" />
+				{/if}
 				<circle class="eye" cx="45" cy="32" r="1.15" />
 				<circle class="eye" cx="56" cy="32" r="1.15" />
 				<path class="nose" d="M51 31 L49 37 L52 38" />
-				<path class="mouth" d="M46 42 Q50 43 55 41" />
+				{#if expression === 'amused'}
+					<path class="mouth" d="M46 41 Q51 45 56 40" />
+				{:else if expression === 'alert'}
+					<path class="mouth" d="M47 42 Q51 41 55 42" />
+				{:else if expression === 'exertion'}
+					<ellipse class="mouth-open" cx="51" cy="42" rx="3" ry="1.8" />
+				{:else if expression === 'injured'}
+					<path class="mouth" d="M46 43 Q51 40 55 43" />
+				{:else}
+					<path class="mouth" d="M46 42 Q50 43 55 41" />
+				{/if}
 			</g>
+
+			{#if expression === 'injured'}
+				<g
+					class="injury-mark"
+					transform={`translate(${injuryAnchor.x * 100} ${injuryAnchor.y * 180}) rotate(${injuryAnchor.rotationDegrees})`}
+				>
+					<path d="M-4 -1 Q0 -4 4 -1 M-3 2 Q0 0 3 2" />
+				</g>
+			{/if}
+
+			{#if equipment !== 'none'}
+				<g
+					class="equipment"
+					transform={`translate(${mainHandAnchor.x * 100} ${mainHandAnchor.y * 180}) rotate(${mainHandAnchor.rotationDegrees})`}
+				>
+					{#if equipment === 'practice-blade'}
+						<path class="blade" d="M-1 2 L-2 -34 L1 -41 L4 -34 L2 2 Z" />
+						<path class="guard" d="M-7 1 L8 1 L8 4 L-7 4 Z" />
+						<path class="grip" d="M-2 4 L3 4 L3 15 L-2 15 Z" />
+					{:else}
+						<path class="bow" d="M0 -30 Q18 0 0 30" />
+						<path class="bow-string" d="M0 -30 L0 30" />
+					{/if}
+				</g>
+			{/if}
 
 			<g class="clasp" filter={`url(#glow-${manifest.characterId})`}>
 				<circle cx="50" cy="55" r="3.5" />
@@ -214,6 +286,52 @@
 		stroke-width: 0.8;
 	}
 
+	.mouth-open {
+		fill: #241313;
+		stroke: color-mix(in srgb, var(--skin), #050505 72%);
+		stroke-width: 0.6;
+	}
+
+	.injury-mark {
+		fill: none;
+		stroke: #7c2f32;
+		stroke-linecap: round;
+		stroke-width: 1.2;
+	}
+
+	.equipment {
+		filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.7));
+	}
+
+	.blade {
+		fill: #727983;
+		stroke: #c3ccd4;
+		stroke-width: 0.7;
+	}
+
+	.guard,
+	.grip {
+		fill: #5b4638;
+		stroke: #b08a59;
+		stroke-width: 0.6;
+	}
+
+	.bow,
+	.bow-string {
+		fill: none;
+		stroke-linecap: round;
+	}
+
+	.bow {
+		stroke: #8c6745;
+		stroke-width: 2.1;
+	}
+
+	.bow-string {
+		stroke: #c9bda8;
+		stroke-width: 0.55;
+	}
+
 	.eye {
 		fill: #f2d9c6;
 		stroke: #17151a;
@@ -256,6 +374,14 @@
 
 	.walking .figure {
 		animation: body-bob 0.72s ease-in-out infinite;
+	}
+
+	.night .figure {
+		filter: saturate(0.76) brightness(0.72) hue-rotate(7deg);
+	}
+
+	.injured .figure {
+		filter: saturate(0.72) contrast(1.04);
 	}
 
 	.walking .leg-left,

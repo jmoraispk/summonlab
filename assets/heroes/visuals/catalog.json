@@ -1,0 +1,189 @@
+{
+  "catalogVersion": "visual-catalog-v1",
+  "status": "approval-candidate",
+  "profiles": [
+    {
+      "profileVersion": "visual-profile-v1",
+      "characterId": "9aeb01f2-9beb-4385-a8ea-fecc99eb005f",
+      "manifestHash": "a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212",
+      "identityLocks": [
+        "deep umber skin",
+        "angular oval face and broad straight nose",
+        "dark brown eyes with angular brows",
+        "tightly coiled ink-black high knot",
+        "178 cm balanced athletic silhouette",
+        "guarded posture",
+        "charcoal layers with muted plum cloak",
+        "ember-gold circular clasp"
+      ],
+      "expressions": ["neutral", "alert", "skeptical", "exertion", "injured"],
+      "anchors": {
+        "mainHand": { "x": 0.71, "y": 0.56, "rotationDegrees": 4, "depth": "front" },
+        "offHand": { "x": 0.28, "y": 0.56, "rotationDegrees": -4, "depth": "front" },
+        "back": { "x": 0.5, "y": 0.35, "rotationDegrees": -18, "depth": "behind" },
+        "waist": { "x": 0.5, "y": 0.56, "rotationDegrees": 0, "depth": "front" },
+        "faceInjury": { "x": 0.39, "y": 0.19, "rotationDegrees": -10, "depth": "front" }
+      },
+      "paletteSwaps": {
+        "base": ["#633b2d", "#17151b", "#242126", "#d2a04d"],
+        "night": ["#4f3028", "#101017", "#191820", "#a78654"],
+        "injured": ["#65362f", "#17151b", "#211d22", "#b58145"]
+      },
+      "approvedAssetKeys": ["ember-01-anchor-v1"]
+    },
+    {
+      "profileVersion": "visual-profile-v1",
+      "characterId": "0ed71eea-0fd7-407d-acd7-1bc40dd71d57",
+      "manifestHash": "135bf46fb99b843a74b2e564be4b2eb6d85131cdeab441ea8867cd4b57e574ec",
+      "identityLocks": [
+        "warm olive skin",
+        "round face and soft convex nose",
+        "hazel eyes and clean right-brow notch",
+        "cropped tight silver curls",
+        "167 cm slight athletic silhouette",
+        "open upright posture",
+        "charcoal-navy layered clothing",
+        "understated copper circular clasp",
+        "left-handed equipment use"
+      ],
+      "expressions": ["neutral", "alert", "amused", "exertion", "injured"],
+      "anchors": {
+        "mainHand": { "x": 0.27, "y": 0.56, "rotationDegrees": -5, "depth": "front" },
+        "offHand": { "x": 0.73, "y": 0.56, "rotationDegrees": 5, "depth": "front" },
+        "back": { "x": 0.5, "y": 0.34, "rotationDegrees": 18, "depth": "behind" },
+        "waist": { "x": 0.5, "y": 0.57, "rotationDegrees": 0, "depth": "front" },
+        "faceInjury": { "x": 0.59, "y": 0.18, "rotationDegrees": 8, "depth": "front" }
+      },
+      "paletteSwaps": {
+        "base": ["#a97755", "#a7a7ad", "#272932", "#d49b47"],
+        "night": ["#815b47", "#85858d", "#1b202a", "#aa8047"],
+        "injured": ["#a36a58", "#9c9ca4", "#24262f", "#bd7d42"]
+      },
+      "approvedAssetKeys": []
+    }
+  ],
+  "assets": [
+    {
+      "assetKey": "ember-01-anchor-v1",
+      "role": "anchor",
+      "status": "approved",
+      "characterIds": ["9aeb01f2-9beb-4385-a8ea-fecc99eb005f"],
+      "manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212"],
+      "file": "assets/heroes/ember-01-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 1801226,
+      "contentHash": "11a29acaa379bd10f7ef44b7126e9142e9b5a9279ba00585a86e2ff8cff91241",
+      "generationMode": "existing-original",
+      "createdAt": "2026-08-23T00:00:00.000Z",
+      "prompt": "Background extraction only. Replace every baked gray-and-white checkerboard tile around the character with a seamless, nearly black deep-midnight radial backdrop. Preserve Mara Vey exactly; no redesign, scenery, text, frame, logo, or extra objects.",
+      "referenceAssetKeys": [],
+      "identityChecks": [
+        { "characterId": "9aeb01f2-9beb-4385-a8ea-fecc99eb005f", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Approved development identity anchor. Manifest and visual profile remain identity truth; review final production rights before release."
+    },
+    {
+      "assetKey": "ember-01-continuity-v1",
+      "role": "continuity-sheet",
+      "status": "approval-candidate",
+      "characterIds": ["9aeb01f2-9beb-4385-a8ea-fecc99eb005f"],
+      "manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212"],
+      "file": "assets/heroes/visuals/ember-01-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2026709,
+      "contentHash": "38852de7e6c8d5d8f5c6a1aa6e842b3dea3f1a82e02257c3eeb5c2105f493a4b",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-24T04:25:00.000Z",
+      "prompt": "Identity-preserving six-panel continuity sheet of Mara Vey: neutral front, profile, three-quarter back, alert portrait, skeptical portrait, and a modest post-training cheek bruise. Preserve her exact face, deep umber skin, high coiled knot, athletic proportions, charcoal outfit, plum cloak, ember clasp, and guarded bearing. Dark-fantasy manhwa-inspired painted concept; no text, labels, UI, logo, watermark, redesign, or sexualization.",
+      "referenceAssetKeys": ["ember-01-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "9aeb01f2-9beb-4385-a8ea-fecc99eb005f", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Approval candidate. Injury is a state layer, never a replacement identity."
+    },
+    {
+      "assetKey": "hearth-02-anchor-v1",
+      "role": "anchor",
+      "status": "approval-candidate",
+      "characterIds": ["0ed71eea-0fd7-407d-acd7-1bc40dd71d57"],
+      "manifestHashes": ["135bf46fb99b843a74b2e564be4b2eb6d85131cdeab441ea8867cd4b57e574ec"],
+      "file": "assets/heroes/visuals/hearth-02-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 1911823,
+      "contentHash": "1b7fb5e3a073557f2b70bcd6edcbf8ce2188f169e21286d9b20550ad5122aac8",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-24T04:28:00.000Z",
+      "prompt": "Original full-body anchor for Remy Nahl: age 24, 167 cm, slight athletic, warm olive skin, round face, soft convex nose, hazel eyes, cropped silver curls, notched right brow, open posture, left-handed, charcoal-navy practical layers and copper clasp. Premium dark-fantasy manhwa-inspired painted key art on midnight navy; no published-character resemblance, text, frame, UI, logo, watermark, ornate armor, or giant weapon.",
+      "referenceAssetKeys": [],
+      "identityChecks": [
+        { "characterId": "0ed71eea-0fd7-407d-acd7-1bc40dd71d57", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Approval candidate generated from the deterministic human-v2 manifest."
+    },
+    {
+      "assetKey": "hearth-02-continuity-v1",
+      "role": "continuity-sheet",
+      "status": "approval-candidate",
+      "characterIds": ["0ed71eea-0fd7-407d-acd7-1bc40dd71d57"],
+      "manifestHashes": ["135bf46fb99b843a74b2e564be4b2eb6d85131cdeab441ea8867cd4b57e574ec"],
+      "file": "assets/heroes/visuals/hearth-02-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2067316,
+      "contentHash": "244d3c57c45b83d2d3c89ade7463e69065eb46b9607b54867d306eaa2d972112",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-24T04:31:00.000Z",
+      "prompt": "Identity-preserving six-panel continuity sheet of Remy Nahl: neutral front, profile, three-quarter back, attentive portrait, restrained amused portrait, and left-handed short-sword training stance. Preserve his exact face, warm olive skin, cropped silver curls, right-brow notch, shorter slight-athletic build, navy layers, copper clasp, and open bearing. No text, labels, UI, logo, watermark, redesign, or handedness change.",
+      "referenceAssetKeys": ["hearth-02-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "0ed71eea-0fd7-407d-acd7-1bc40dd71d57", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Approval candidate. Equipment attaches to the profile rather than redefining the body."
+    },
+    {
+      "assetKey": "hearth-roster-pair-v1",
+      "role": "roster-group",
+      "status": "approval-candidate",
+      "characterIds": ["9aeb01f2-9beb-4385-a8ea-fecc99eb005f", "0ed71eea-0fd7-407d-acd7-1bc40dd71d57"],
+      "manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212", "135bf46fb99b843a74b2e564be4b2eb6d85131cdeab441ea8867cd4b57e574ec"],
+      "file": "assets/heroes/visuals/hearth-roster-pair-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2049073,
+      "contentHash": "d14d708da38607c5d352c4f217f8e91c0ba9c85907589a73e72c5116b5769ba8",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-24T04:34:00.000Z",
+      "prompt": "Identity-preserving two-hero roster lineup in a dark summoning hall. Mara is clearly taller, guarded, deep umber, high-knot, charcoal and plum; Remy is shorter, open, warm olive, silver-curled, navy and copper. Preserve exact faces, body proportions, height relationship, outfits, and posture; exactly two people; no romance coding, weapons, text, UI, logo, watermark, or face blending.",
+      "referenceAssetKeys": ["ember-01-anchor-v1", "hearth-02-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "9aeb01f2-9beb-4385-a8ea-fecc99eb005f", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 },
+        { "characterId": "0ed71eea-0fd7-407d-acd7-1bc40dd71d57", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Approval candidate for party-card silhouette separation and shared outfit language."
+    },
+    {
+      "assetKey": "hearth-settlement-scale-v1",
+      "role": "settlement-scale",
+      "status": "approval-candidate",
+      "characterIds": ["9aeb01f2-9beb-4385-a8ea-fecc99eb005f", "0ed71eea-0fd7-407d-acd7-1bc40dd71d57"],
+      "manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212", "135bf46fb99b843a74b2e564be4b2eb6d85131cdeab441ea8867cd4b57e574ec"],
+      "file": "assets/heroes/visuals/hearth-settlement-scale-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2599970,
+      "contentHash": "555bd154e5914663dfdd7c4b37e97d1b68207f42f859af916b895eb0ed41a870",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-24T04:37:00.000Z",
+      "prompt": "Identity-preserving settlement-scale study of Mara and Remy in a compact walled Hearth 01 diorama at blue hour. Show gate, kitchen, dormitory, workshop, training ground, clickable entrances, and clear routes. Mara walks toward training; Remy pauses at a communal table. Preserve height, hair silhouette, skin, outfit, and accents at 12–16 percent image height; no chibi simplification, UI, labels, logo, or watermark.",
+      "referenceAssetKeys": ["ember-01-anchor-v1", "hearth-02-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "9aeb01f2-9beb-4385-a8ea-fecc99eb005f", "face": false, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 4 },
+        { "characterId": "0ed71eea-0fd7-407d-acd7-1bc40dd71d57", "face": false, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 4 }
+      ],
+      "productionNote": "Approval candidate. Facial identity is intentionally not claimed at gameplay scale; silhouette, palette, hair, and signature clothing carry recognition."
+    }
+  ]
+}

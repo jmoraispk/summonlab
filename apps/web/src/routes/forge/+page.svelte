@@ -7,7 +7,8 @@
 		ProofControlMode,
 		ProofRunCreateRequest
 	} from '@summonlab/contracts';
-	import heroAnchor from '../../../../../assets/heroes/ember-01-anchor-v1.png';
+	import maraAnchor from '../../../../../assets/heroes/ember-01-anchor-v1.png';
+	import remyAnchor from '../../../../../assets/heroes/visuals/hearth-02-anchor-v1.png';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 
 	let { data } = $props();
@@ -29,6 +30,13 @@
 	let errorMessage = $state('');
 
 	const selected = $derived(drafts[selectedIndex]!);
+	const selectedAnchor = $derived(
+		selected.manifest.artKey === 'ember-01-anchor-v1'
+			? maraAnchor
+			: selected.manifest.artKey === 'hearth-02-anchor-v1'
+				? remyAnchor
+				: null
+	);
 	const channels = [
 		{ key: 'identity', label: 'Name & voice' },
 		{ key: 'body', label: 'Age & build' },
@@ -133,12 +141,12 @@
 			<span>Story envelope</span>
 			<strong>00 · The First Ember</strong>
 		</div>
-		<div class="phase"><span></span> Phase 1 · proof of life</div>
+		<a class="phase" href={resolve('/visual-lab')}><span></span> Phase 3 · visual lab</a>
 	</header>
 
 	<section class="intro">
 		<div>
-			<p class="eyebrow">Character forge / human-v1</p>
+			<p class="eyebrow">Character forge / {selected.manifest.generationVersion}</p>
 			<h1>One seed.<br />One persistent self.</h1>
 		</div>
 		<p>
@@ -183,9 +191,9 @@
 		<article class="selected-hero">
 			<div class="portrait-stage">
 				<div class="scanline"></div>
-				{#if selected.manifest.artKey === 'ember-01-anchor-v1'}
+				{#if selectedAnchor}
 					<img
-						src={heroAnchor}
+						src={selectedAnchor}
 						alt={`${selected.manifest.displayName}, original full-body hero concept`}
 					/>
 				{:else}
@@ -222,6 +230,22 @@
 						<dt>Build</dt>
 						<dd>{selected.manifest.bodyFrame} / {selected.manifest.bodyBuild}</dd>
 					</div>
+					{#if selected.manifest.physiology}
+						<div>
+							<dt>Physiology</dt>
+							<dd>
+								{selected.manifest.physiology.massKg} kg · tone {selected.manifest.physiology
+									.muscleTone}/10
+							</dd>
+						</div>
+						<div>
+							<dt>Proportions</dt>
+							<dd>
+								{selected.manifest.physiology.limbProportion} limbs · hand {selected.manifest
+									.physiology.handScale}
+							</dd>
+						</div>
+					{/if}
 					<div>
 						<dt>Skin</dt>
 						<dd>{selected.manifest.phenotype.skinTone}</dd>

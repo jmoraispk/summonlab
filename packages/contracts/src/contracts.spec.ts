@@ -6,7 +6,8 @@ import {
 	CharacterManifestSchema,
 	HealthResponseSchema,
 	LegalActionSchema,
-	RewardDeltaSchema
+	RewardDeltaSchema,
+	VisualIdentityCheckSchema
 } from './index.js';
 
 function validCharacterManifest(adultAge = 25) {
@@ -97,6 +98,20 @@ describe('foundation contracts', () => {
 				before: 10,
 				after: 15,
 				delta: 4
+			})
+		).toThrow();
+	});
+
+	it('requires visual recognition scores to equal their explicit checks', () => {
+		expect(() =>
+			VisualIdentityCheckSchema.parse({
+				characterId: randomUUID(),
+				face: false,
+				hair: true,
+				silhouette: true,
+				palette: true,
+				signatureTraits: true,
+				score: 5
 			})
 		).toThrow();
 	});

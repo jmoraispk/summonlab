@@ -933,6 +933,11 @@ integration, generated-history, and browser evidence. New runs use `engine-v2`; 
 
 Estimated engineering effort: **2–3 weeks**, partially parallel with Phase 2.
 
+**Status: in progress — visual approval checkpoint completed 2026-08-23.** `ART-001`, the
+`human-v2` portion of `ART-002`, `ART-003`, the review surface and
+catalog portion of `ART-004`, two of twelve `ART-005` humans, and an initial `ART-008` recognition
+measurement now have runnable evidence. Expansion and runtime exports wait behind the feedback gate.
+
 - `ART-001` approve art bible, palette, line/value rules, and camera compositions;
 - `ART-002` expand manifest generator and diversity test suite;
 - `ART-003` implement rig schema, expression layers, equipment anchors, and palette swaps;
@@ -1046,21 +1051,19 @@ Art-system work and engine work may overlap after schemas stabilize. Mission con
 
 ## Next execution slice
 
-Phase 2 is complete. The next repository-changing turn begins Phase 3 and stops at a visual approval
-gate before implementing a large asset library:
+The Phase 3 visual approval checkpoint is available at `/visual-lab`. The next repository-changing
+turn incorporates feedback where available and continues reversible production infrastructure:
 
-1. turn the current visual direction into a concise art bible and character-continuity contract;
-2. define portrait, dialogue, summon-card, roster, and settlement-scale compositions;
-3. create one representative original adult male and one representative original adult female;
-4. derive expression, equipment, injury, and settlement-scale studies while preserving identity;
-5. assemble the two heroes into a small roster/group composition and test silhouette separation;
-6. prototype the manifest-to-asset record and review workflow behind a development surface;
-7. run visual, accessibility, performance, and repository gates; capture evidence; commit and push;
-8. ask for approval of character recognition, manhwa influence, rendering style, and settlement scale
-   before expanding toward twelve humans.
+1. accept or revise Mara Vey, Remy Nahl, their roster composition, and settlement scale;
+2. add a Forge contact-sheet export and explicit approve/reject records;
+3. prototype one development-flagged summon-card generation request without making it canonical;
+4. define optimized runtime sprite/texture bundles and measure payload budgets;
+5. only after visual acceptance, expand the representative cohort from two toward twelve humans;
+6. rerun visual, accessibility, performance, browser, and deterministic manifest gates;
+7. commit and push each reviewable checkpoint.
 
-Phase 3 prioritizes recognizable original characters and a repeatable continuity system over raw
-asset count. Summoning remains the premium composition, followed by settlement and dialogue close-up.
+The unoptimized source PNGs remain deliberate approval artifacts. Runtime compression and layered
+exports follow acceptance so the pipeline does not optimize rejected art.
 
 ## Accepted product decisions — 2026-08-23
 
@@ -1074,5 +1077,5 @@ asset count. Summoning remains the premium composition, followed by settlement a
 - Floor stories use fixed, authored envelopes with agent-assisted development and engine-validated runtime patches. Agents may alter the route and character-aware expression but cannot bypass world rules, causality, content, or reward bounds.
 - The player journal must expose actions, rewards, experience, levels, party progression, control source, directions, and story changes from authoritative events.
 
-Phases 0, 1, and 2 are complete; Phase 3 is next. Later feedback may revise any reversible
+Phases 0, 1, and 2 are complete; Phase 3 is at its visual approval gate. Later feedback may revise any reversible
 implementation choice without discarding these product intentions.

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	LEGACY_CHARACTER_GENERATION_VERSION,
 	canonicalJson,
 	chooseFirstDestination,
 	generateCharacterDraft,
@@ -26,9 +27,21 @@ describe('deterministic character generation', () => {
 		expect(await hashManifest(left.manifest)).toBe(left.manifestHash);
 	});
 
+	it('keeps human-v1 manifests byte-stable after human-v2 becomes current', async () => {
+		const legacy = await generateCharacterDraft(
+			recipeFromSeed('ember-01', LEGACY_CHARACTER_GENERATION_VERSION)
+		);
+
+		expect(legacy.manifest.generationVersion).toBe('human-v1');
+		expect(legacy.manifest.physiology).toBeUndefined();
+		expect(legacy.manifestHash).toBe(
+			'3bf119dcae88f8c72c8eb2f0223a36ee43c03b054b1a396649f08bd1d09300f9'
+		);
+	});
+
 	it('makes different seeds meaningfully distinct while keeping every summon adult', async () => {
 		const drafts = await Promise.all(
-			Array.from({ length: 100 }, (_, index) =>
+			Array.from({ length: 1_000 }, (_, index) =>
 				generateCharacterDraft(recipeFromSeed(`cohort-${index}`))
 			)
 		);
@@ -44,15 +57,26 @@ describe('deterministic character generation', () => {
 			)
 		);
 
-		expect(identities.size).toBeGreaterThan(95);
+		expect(identities.size).toBeGreaterThan(990);
 		expect(drafts.every((draft) => draft.manifest.adultAge >= 18)).toBe(true);
 		expect(drafts.every((draft) => draft.manifest.adultAge <= 42)).toBe(true);
 		expect(new Set(drafts.map((draft) => draft.mind.dailyHabit)).size).toBe(6);
 		expect(new Set(drafts.map((draft) => draft.manifest.phenotype.skinTone)).size).toBe(7);
+		expect(new Set(drafts.map((draft) => draft.manifest.phenotype.hairTexture)).size).toBe(5);
+		expect(new Set(drafts.map((draft) => draft.manifest.genderPresentation)).size).toBe(3);
+		expect(drafts.every((draft) => draft.manifest.physiology !== undefined)).toBe(true);
+		expect(new Set(drafts.map((draft) => draft.manifest.physiology?.limbProportion)).size).toBe(3);
+		expect(Math.min(...drafts.map((draft) => draft.manifest.heightCm))).toBeLessThanOrEqual(156);
+		expect(Math.max(...drafts.map((draft) => draft.manifest.heightCm))).toBeGreaterThanOrEqual(198);
 		const meanAge =
 			drafts.reduce((total, draft) => total + draft.manifest.adultAge, 0) / drafts.length;
 		expect(meanAge).toBeGreaterThan(24);
 		expect(meanAge).toBeLessThan(29);
+		for (const presentation of ['feminine', 'masculine', 'androgynous'] as const) {
+			expect(
+				drafts.filter((draft) => draft.manifest.genderPresentation === presentation).length
+			).toBeGreaterThan(250);
+		}
 	});
 
 	it('rerolls only unlocked generation channels', async () => {

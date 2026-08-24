@@ -56,6 +56,9 @@ jobs:
       - name: Format
         run: pnpm format:check
 
+      - name: Validate visual assets
+        run: pnpm validate:visual-assets
+
       - name: Lint
         run: pnpm lint
 

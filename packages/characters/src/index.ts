@@ -12,7 +12,8 @@ import {
 	type ProofControlMode
 } from '@summonlab/contracts';
 
-export const CHARACTER_GENERATION_VERSION = 'human-v1';
+export const LEGACY_CHARACTER_GENERATION_VERSION = 'human-v1';
+export const CHARACTER_GENERATION_VERSION = 'human-v2';
 
 export const ZERO_GENERATION_CURSORS: CharacterGenerationCursors = Object.freeze({
 	identity: 0,
@@ -80,8 +81,29 @@ function hash32(value: string): number {
 }
 
 function streamFor(recipe: CharacterGenerationRecipe, channel: RerollChannel): Stream {
+	const compatibleVersion =
+		recipe.generationVersion === CHARACTER_GENERATION_VERSION
+			? LEGACY_CHARACTER_GENERATION_VERSION
+			: recipe.generationVersion;
 	let state = hash32(
-		`${recipe.generationVersion}\u0000${recipe.seed}\u0000${channel}\u0000${recipe.cursors[channel]}`
+		`${compatibleVersion}\u0000${recipe.seed}\u0000${channel}\u0000${recipe.cursors[channel]}`
+	);
+	return () => {
+		state += 0x6d2b79f5;
+		let value = state;
+		value = Math.imul(value ^ (value >>> 15), value | 1);
+		value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+		return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296;
+	};
+}
+
+function auxiliaryStreamFor(
+	recipe: CharacterGenerationRecipe,
+	channel: RerollChannel,
+	purpose: string
+): Stream {
+	let state = hash32(
+		`${recipe.generationVersion}\u0000${recipe.seed}\u0000${channel}\u0000${recipe.cursors[channel]}\u0000${purpose}`
 	);
 	return () => {
 		state += 0x6d2b79f5;
@@ -135,10 +157,13 @@ export async function hashManifest(manifest: CharacterManifest): Promise<string>
 	return sha256(canonicalJson(manifest));
 }
 
-export function recipeFromSeed(seed: string): CharacterGenerationRecipe {
+export function recipeFromSeed(
+	seed: string,
+	generationVersion = CHARACTER_GENERATION_VERSION
+): CharacterGenerationRecipe {
 	return CharacterGenerationRecipeSchema.parse({
 		seed,
-		generationVersion: CHARACTER_GENERATION_VERSION,
+		generationVersion,
 		cursors: { ...ZERO_GENERATION_CURSORS }
 	});
 }
@@ -154,14 +179,18 @@ export function rerollRecipe(
 	return CharacterGenerationRecipeSchema.parse({ ...recipe, cursors });
 }
 
-function hasAnchorArt(recipe: CharacterGenerationRecipe): boolean {
-	return (
-		recipe.seed === 'ember-01' &&
+function visualAnchorKey(recipe: CharacterGenerationRecipe): string | null {
+	const baseRecipe =
 		recipe.cursors.identity === 0 &&
 		recipe.cursors.body === 0 &&
 		recipe.cursors.features === 0 &&
-		recipe.cursors.styling === 0
-	);
+		recipe.cursors.styling === 0;
+	if (!baseRecipe) return null;
+	if (recipe.seed === 'ember-01') return 'ember-01-anchor-v1';
+	if (recipe.seed === 'hearth-02' && recipe.generationVersion === CHARACTER_GENERATION_VERSION) {
+		return 'hearth-02-anchor-v1';
+	}
+	return null;
 }
 
 function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest {
@@ -170,35 +199,36 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const features = streamFor(recipe, 'features');
 	const styling = streamFor(recipe, 'styling');
 	const rarity = streamFor(recipe, 'rarity');
-	const anchor = hasAnchorArt(recipe);
-	const [firstName, lastName] = anchor ? names[0] : choose(identity, names);
-	const presentation = anchor
+	const anchorKey = visualAnchorKey(recipe);
+	const maraAnchor = anchorKey === 'ember-01-anchor-v1';
+	const [firstName, lastName] = maraAnchor ? names[0] : choose(identity, names);
+	const presentation = maraAnchor
 		? ('feminine' as const)
 		: choose(identity, ['feminine', 'masculine', 'androgynous'] as const);
 	const pronouns =
 		presentation === 'feminine' ? 'she/her' : presentation === 'masculine' ? 'he/him' : 'they/them';
-	const skin = anchor ? skinTones[5] : choose(features, skinTones);
-	const hair = anchor ? hairColors[0] : choose(features, hairColors);
-	const cloth = anchor ? (['#242126', '#d2a04d'] as const) : choose(styling, clothPalettes);
+	const skin = maraAnchor ? skinTones[5] : choose(features, skinTones);
+	const hair = maraAnchor ? hairColors[0] : choose(features, hairColors);
+	const cloth = maraAnchor ? (['#242126', '#d2a04d'] as const) : choose(styling, clothPalettes);
 	const rarityRoll = rarity();
 	const rarityStars = rarityRoll < 0.78 ? 1 : rarityRoll < 0.98 ? 2 : rarityRoll < 0.999 ? 3 : 4;
-	const bodyFrame = anchor
+	const bodyFrame = maraAnchor
 		? ('balanced' as const)
 		: choose(body, ['slight', 'balanced', 'broad'] as const);
-	const bodyBuild = anchor
+	const bodyBuild = maraAnchor
 		? ('athletic' as const)
 		: choose(body, ['wiry', 'soft', 'athletic', 'solid'] as const);
 	const heightBase = presentation === 'masculine' ? 162 : presentation === 'feminine' ? 154 : 158;
 	const heightRange = presentation === 'masculine' ? 37 : presentation === 'feminine' ? 34 : 36;
-	const heightCm = anchor ? 178 : heightBase + Math.floor(body() * heightRange);
+	const heightCm = maraAnchor ? 178 : heightBase + Math.floor(body() * heightRange);
 	const ageSampleA = Math.max(body(), Number.EPSILON);
 	const ageSampleB = body();
 	const ageNormal = Math.sqrt(-2 * Math.log(ageSampleA)) * Math.cos(2 * Math.PI * ageSampleB);
-	const age = anchor ? 27 : Math.max(18, Math.min(42, Math.round(26 + ageNormal * 4.5)));
-	const posture = anchor
+	const age = maraAnchor ? 27 : Math.max(18, Math.min(42, Math.round(26 + ageNormal * 4.5)));
+	const posture = maraAnchor
 		? ('guarded' as const)
 		: choose(styling, ['guarded', 'open', 'restless', 'grounded', 'formal'] as const);
-	const visualTraits = anchor
+	const visualTraits = maraAnchor
 		? ['high coiled knot', 'ember clasp', 'angular brows']
 		: [
 				choose(features, [
@@ -219,6 +249,9 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 				] as const)
 			];
 
+	const physiology = auxiliaryStreamFor(recipe, 'body', 'physiology-v1');
+	const buildMass = { wiry: -7, soft: 3, athletic: 2, solid: 10 }[bodyBuild];
+	const frameMass = { slight: -4, balanced: 0, broad: 6 }[bodyFrame];
 	return CharacterManifestSchema.parse({
 		characterId: deterministicUuid(
 			canonicalJson({
@@ -243,12 +276,44 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 		bodyFrame,
 		bodyBuild,
 		heightCm,
+		...(recipe.generationVersion === CHARACTER_GENERATION_VERSION
+			? {
+					physiology: {
+						massKg: Math.max(
+							40,
+							Math.min(160, Math.round((heightCm - 100) * 0.82 + buildMass + frameMass))
+						),
+						muscleTone: Math.max(
+							1,
+							Math.min(
+								10,
+								Math.round(
+									(bodyBuild === 'athletic' ? 7 : bodyBuild === 'solid' ? 6 : 4) +
+										(physiology() - 0.5) * 3
+								)
+							)
+						),
+						bodyFat: Math.max(
+							1,
+							Math.min(
+								10,
+								Math.round(
+									(bodyBuild === 'soft' ? 7 : bodyBuild === 'wiry' ? 3 : 4) +
+										(physiology() - 0.5) * 3
+								)
+							)
+						),
+						limbProportion: choose(physiology, ['short', 'balanced', 'balanced', 'long'] as const),
+						handScale: Number((0.86 + physiology() * 0.28).toFixed(3))
+					}
+				}
+			: {}),
 		phenotype: {
 			skinTone: skin[0],
-			faceShape: anchor
+			faceShape: maraAnchor
 				? 'angular oval'
 				: choose(features, ['round', 'oval', 'angular oval', 'long', 'heart-shaped'] as const),
-			noseProfile: anchor
+			noseProfile: maraAnchor
 				? 'broad straight'
 				: choose(features, [
 						'fine straight',
@@ -256,11 +321,11 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 						'soft convex',
 						'short rounded'
 					] as const),
-			hairTexture: anchor
+			hairTexture: maraAnchor
 				? 'tightly coiled'
 				: choose(features, ['straight', 'wavy', 'curly', 'coiled', 'tightly coiled'] as const),
 			hairColor: hair[0],
-			hairStyle: anchor
+			hairStyle: maraAnchor
 				? 'high coiled knot'
 				: choose(styling, [
 						'cropped',
@@ -269,7 +334,7 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 						'high knot',
 						'braided crown'
 					] as const),
-			eyeColor: anchor
+			eyeColor: maraAnchor
 				? 'dark brown'
 				: choose(features, ['dark brown', 'warm brown', 'hazel', 'grey', 'green', 'amber'] as const)
 		},
@@ -294,8 +359,8 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 				back: [50, 36]
 			}
 		},
-		artKey: anchor ? 'ember-01-anchor-v1' : null,
-		assetProvenance: anchor ? 'original-generated-anchor' : 'procedural'
+		artKey: anchorKey,
+		assetProvenance: anchorKey ? 'original-generated-anchor' : 'procedural'
 	});
 }
 
