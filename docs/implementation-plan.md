@@ -1000,7 +1000,8 @@ Estimated engineering effort: **2 weeks**.
   relationships, founding promises, and multidimensional authority under `engine-v7`;
 - `AGT-002` complete: implement canonical communicative acts, private/open delivery, co-location and
   availability witness rules, and direct told-belief provenance under `engine-v8`;
-- `AGT-003` implement decision packet assembly and deterministic memory retrieval;
+- `AGT-003` complete: implement hash-bound decision packet assembly, holder-only context selection,
+  deterministic scored/budgeted memory retrieval, and an inspectable first-choice preview;
 - `AGT-004` implement random and scripted policies for every decision kind;
 - `AGT-005` implement OpenAI policy adapter with strict Structured Outputs;
 - `AGT-006` implement job lifecycle, retry, stale rejection, replan, and fallback;

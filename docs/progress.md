@@ -222,13 +222,15 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` and `AGT-002` were completed on 2026-08-24. Canonical witnessed
-onboarding is implemented; hero-authored responses and model-backed decisions remain later slices.
+Status: **in progress**. `AGT-001` through `AGT-003` were completed on 2026-08-24. Canonical
+witnessed onboarding now feeds deterministic, inspectable hero context; hero-authored responses and
+model-backed decisions remain later slices.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `AGT-001` | Complete: `engine-v7` adds direct observations, holder-specific beliefs with event provenance, directed relationship dimensions, active promises, and seven evidence-backed authority dimensions; awakening remains a clean slate, First Ember creates the first durable social consequence, normal play uses relationship language, replay exposes raw evidence, and v1–v6 histories remain unmodified | [Social cognition evidence](evidence/phase-5-social-cognition.png), engine/property/integration/browser tests, replay cognition ledger, ADR 0020 |
 | `AGT-002` | Complete: `engine-v8` / `society-v2` records exact Master-to-hero explanations, statements, and questions; computes private/open witnesses from co-location and availability; creates observations for actual witnesses; transfers only topic-bound told beliefs; exposes normal-play onboarding and replay witness chains; and preserves v1–v7 histories | [Communication evidence](evidence/phase-5-communication.png), engine/integration/browser tests, summon onboarding, replay witness ledger, ADR 0021 |
+| `AGT-003` | Complete: `hero-decision-packet-v1` hash-binds the exact engine-v8 cursor, state, identity, context policy, and sorted legal actions; projects only visible environment and holder-owned cognition; retrieves direct memories with deterministic relevance scores, stable ties, item/character budgets, and witnessed exact speech; rejects stale/mismatched inputs; and exposes the live boundary before the first choice | [Decision context evidence](evidence/phase-5-decision-context.png), contract/engine/browser tests, current-context API, summon packet preview, ADR 0022 |
 
 ### Reproduce the checkpoint
 
@@ -239,7 +241,9 @@ pnpm dev
 Complete a summon in **Wait for step** mode and break the seal. Before allowing the first choice,
 select an onboarding topic, edit the exact words, choose private/open delivery, and press **Speak**.
 Confirm the witness proof reports one intended witness and one learned claim; asking about hero
-memory should instead report no learned claim. Continue to Hearth 01, recover the Floor 01 core, and
+memory should instead report no learned claim. Open **What reaches this hero** and confirm there are
+exactly two legal route choices, the latest exact words have event → observation provenance, and the
+packet/state hashes are visible. Continue to Hearth 01, recover the Floor 01 core, and
 bind the First Ember. The hero should now have the two awakening beliefs, the onboarding claim, and
 the two First Ember beliefs. Open **Replay**, inspect **Communicative acts · witness chains**, and
 trace exact text through the source event, observation, and optional belief while replay remains
@@ -247,7 +251,7 @@ verified.
 
 ## Next active engineering slice
 
-Collect feedback on whether the summon-chamber conversation feels like gameplay, whether the four
-onboarding topics are the right initial vocabulary, and whether the witness/provenance proof is
-legible. Then begin `AGT-003` with context-owned decision packets and deterministic memory retrieval.
-Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect feedback on whether the context preview explains the hero boundary without overwhelming the
+summon, and whether the selected-memory score/provenance is legible. Then begin `AGT-004` with random
+and scripted policy implementations that consume the packet without bypassing its legal-action
+hash. Phase 3 cohort expansion remains behind its separate human visual gate.

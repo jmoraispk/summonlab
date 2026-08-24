@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { HeroConversationPresentation, ProofRunSnapshot } from '@summonlab/contracts';
+	import type {
+		HeroConversationPresentation,
+		HeroDecisionPacket,
+		ProofRunSnapshot
+	} from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
 	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
@@ -11,6 +15,8 @@
 	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
 	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
+	// svelte-ignore state_referenced_locally
+	let decisionPacket = $state<HeroDecisionPacket | null>(data.decisionPacket);
 	let stage = $state(0);
 	// svelte-ignore state_referenced_locally
 	let directive = $state(snapshot.directive);
@@ -107,12 +113,24 @@
 			};
 			if (!response.ok) throw new Error(result.message ?? 'Those words could not be recorded.');
 			conversation = result;
+			await refreshDecisionPacket();
 		} catch (error) {
 			communicationError = error instanceof Error ? error.message : 'Communication failed.';
 		} finally {
 			communicating = false;
 			if (snapshot.controlMode === 'countdown' && !snapshot.destination) beginCountdown();
 		}
+	}
+
+	async function refreshDecisionPacket() {
+		const response = await fetch(
+			`/api/runs/${snapshot.runId}/decision-context?heroId=${snapshot.manifest.characterId}`
+		);
+		if (!response.ok) {
+			decisionPacket = null;
+			return;
+		}
+		decisionPacket = (await response.json()) as HeroDecisionPacket;
 	}
 
 	async function resolveDecision(trigger: 'step' | 'countdown') {
@@ -328,6 +346,60 @@
 						{/if}
 						<small>Exact words are canonical. Free text cannot invent engine facts.</small>
 					</div>
+				{/if}
+				{#if decisionPacket}
+					<details class="context-preview" data-testid="decision-context">
+						<summary>
+							<div>
+								<span>Context boundary</span>
+								<strong>What reaches this hero</strong>
+							</div>
+							<small
+								>{decisionPacket.legalActions.length} legal · {decisionPacket.knowledge
+									.memoryRetrieval.selectedCount} memories · {decisionPacket.knowledge.beliefs
+									.length} beliefs</small
+							>
+						</summary>
+						<div class="context-body">
+							<div class="context-proof">
+								<span>packet</span><code>{decisionPacket.packetHash.slice(0, 12)}</code>
+								<span>state</span><code>{decisionPacket.world.stateHash.slice(0, 12)}</code>
+								<span>cursor</span><code>{decisionPacket.world.eventCursor}</code>
+							</div>
+							<div class="legal-context">
+								<p>Only these actions can be chosen</p>
+								{#each decisionPacket.legalActions as action (action.actionId)}
+									<div>
+										<strong>{action.label}</strong>
+										<code>{action.actionId}</code>
+									</div>
+								{/each}
+							</div>
+							<div class="memory-context">
+								<p>Retrieved personal memory</p>
+								{#each decisionPacket.knowledge.memoryRetrieval.memories as memory (memory.memoryId)}
+									<article>
+										<div>
+											<span>{memory.kind.replaceAll('-', ' ')}</span>
+											<strong>score {memory.score.total}</strong>
+										</div>
+										{#if memory.exactCommunication}
+											<blockquote>“{memory.exactCommunication.exactText}”</blockquote>
+										{:else}
+											<p>{memory.summary}</p>
+										{/if}
+										<code
+											>{memory.sourceEventId.slice(0, 8)} → {memory.observationId.slice(0, 8)}</code
+										>
+									</article>
+								{/each}
+							</div>
+							<small
+								>Fresh packet, deterministic retrieval, witnessed knowledge only. Hidden state and
+								the full run log stay out.</small
+							>
+						</div>
+					</details>
 				{/if}
 				<label>
 					<span>Give direction before the choice · best effort</span>
@@ -1020,6 +1092,155 @@
 		margin-top: 0.55rem;
 		color: rgba(246, 241, 231, 0.3);
 		font-size: 0.52rem;
+	}
+
+	.context-preview {
+		margin: 0 0 1rem;
+		border: 1px solid rgba(210, 160, 77, 0.28);
+		background: linear-gradient(145deg, rgba(210, 160, 77, 0.08), rgba(3, 5, 8, 0.82));
+	}
+
+	.context-preview summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.8rem;
+		padding: 0.8rem 0.9rem;
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.context-preview summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.context-preview summary::after {
+		content: '+';
+		color: #d2a04d;
+		font-family: ui-monospace, monospace;
+	}
+
+	.context-preview[open] summary::after {
+		content: '−';
+	}
+
+	.context-preview summary span,
+	.context-preview summary strong {
+		display: block;
+	}
+
+	.context-preview summary span,
+	.legal-context > p,
+	.memory-context > p {
+		margin: 0 0 0.2rem;
+		color: #d2a04d;
+		font-size: 0.46rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.context-preview summary strong {
+		font-family: Georgia, serif;
+		font-size: 0.9rem;
+		font-weight: 400;
+	}
+
+	.context-preview summary small {
+		margin-left: auto;
+		color: rgba(246, 241, 231, 0.42);
+		font-size: 0.48rem;
+	}
+
+	.context-body {
+		padding: 0 0.9rem 0.9rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.07);
+	}
+
+	.context-proof {
+		display: grid;
+		grid-template-columns: auto 1fr auto 1fr auto auto;
+		gap: 0.35rem;
+		align-items: center;
+		padding: 0.55rem 0;
+		color: rgba(246, 241, 231, 0.3);
+		font-size: 0.45rem;
+		text-transform: uppercase;
+	}
+
+	.context-proof code {
+		color: #70c8d9;
+		font-size: 0.48rem;
+	}
+
+	.legal-context {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.35rem;
+	}
+
+	.legal-context > p,
+	.memory-context > p {
+		grid-column: 1 / -1;
+	}
+
+	.legal-context > div {
+		padding: 0.5rem;
+		border: 1px solid rgba(112, 200, 217, 0.16);
+		background: rgba(112, 200, 217, 0.04);
+	}
+
+	.legal-context strong,
+	.legal-context code {
+		display: block;
+	}
+
+	.legal-context strong {
+		margin-bottom: 0.25rem;
+		font-size: 0.58rem;
+	}
+
+	.legal-context code,
+	.memory-context article > code {
+		color: rgba(112, 200, 217, 0.58);
+		font-size: 0.44rem;
+	}
+
+	.memory-context {
+		margin-top: 0.65rem;
+	}
+
+	.memory-context article {
+		padding: 0.5rem 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+	}
+
+	.memory-context article > div {
+		display: flex;
+		justify-content: space-between;
+		color: rgba(246, 241, 231, 0.4);
+		font-size: 0.48rem;
+		text-transform: uppercase;
+	}
+
+	.memory-context blockquote,
+	.memory-context article > p {
+		margin: 0.35rem 0;
+		color: rgba(246, 241, 231, 0.68);
+		font-size: 0.58rem;
+		line-height: 1.45;
+	}
+
+	.memory-context blockquote {
+		font-family: Georgia, serif;
+	}
+
+	.context-body > small {
+		display: block;
+		margin-top: 0.5rem;
+		color: rgba(246, 241, 231, 0.3);
+		font-size: 0.49rem;
+		line-height: 1.45;
 	}
 
 	.counter {

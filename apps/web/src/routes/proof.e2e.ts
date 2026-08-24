@@ -58,6 +58,15 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('button', { name: 'Speak', exact: true }).click();
 	await expect(page.getByText('1 witnessed')).toBeVisible();
 	await expect(page.getByText('1 learned a claim')).toBeVisible();
+	await expect(page.getByTestId('decision-context')).toContainText(
+		'2 legal · 2 memories · 3 beliefs'
+	);
+	await page.getByTestId('decision-context').locator('summary').click();
+	await expect(page.getByTestId('decision-context')).toContainText(
+		'I am the Master of Hearth 01. You were summoned here'
+	);
+	await expect(page.getByTestId('decision-context')).toContainText('hero.choose.kitchen');
+	await expect(page.getByTestId('decision-context')).toContainText('witnessed knowledge only');
 	if (process.env.CAPTURE_PHASE5_COMMUNICATION) {
 		await page.setViewportSize({ width: 1440, height: 1050 });
 		await page.screenshot({ path: process.env.CAPTURE_PHASE5_COMMUNICATION, fullPage: true });

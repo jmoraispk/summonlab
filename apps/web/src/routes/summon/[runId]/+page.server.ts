@@ -1,6 +1,6 @@
 import { getConfig } from '@summonlab/config';
 import { getEngineSnapshot, getProofRun } from '@summonlab/database';
-import { projectHeroConversationPresentation } from '@summonlab/engine';
+import { assembleHeroDecisionPacket, projectHeroConversationPresentation } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
@@ -15,5 +15,19 @@ export const load: PageServerLoad = async ({ params }) => {
 	const conversation = engineSnapshot
 		? projectHeroConversationPresentation(engineSnapshot, snapshot.manifest.characterId)
 		: null;
-	return { snapshot, conversation };
+	const decisionPacket = engineSnapshot
+		? (() => {
+				try {
+					return assembleHeroDecisionPacket({
+						snapshot: engineSnapshot,
+						manifest: snapshot.manifest,
+						heroId: snapshot.manifest.characterId,
+						decisionKind: 'settlement-action'
+					});
+				} catch {
+					return null;
+				}
+			})()
+		: null;
+	return { snapshot, conversation, decisionPacket };
 };

@@ -48,3 +48,9 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-5-social-cognition.png` — the same committed First Ember with Mara’s bounded player-facing
   cognition projection: four held beliefs, receptive relationship language, provisional authority,
   exact witnessed observation, and an active founding promise.
+- `phase-5-communication.png` — summon-chamber onboarding with exact editable Master speech,
+  structured topic/tone/delivery, actual witness count, learned-claim count, and the unchanged
+  deterministic first-choice boundary.
+- `phase-5-decision-context.png` — expanded first-choice packet preview with state/packet hashes,
+  exactly two engine-owned legal actions, scored personal memories, exact witnessed words, and
+  source-event → observation provenance beside the summoned hero.

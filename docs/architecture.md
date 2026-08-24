@@ -384,12 +384,34 @@ delivery adds only active, unoccupied, non-traveling heroes co-located with the 
 create observations without claims; explanations transfer only one engine-owned structured claim,
 so arbitrary prose cannot manufacture world facts. Replay recomputes the entire act → witness
 observation → told-belief chain. Immutable v1–v7 streams remain unchanged. Hero responses, order
-outcomes, rumor, and memory retrieval remain later Phase 5 slices.
+  outcomes and rumor remain later Phase 5 slices.
 
 `GET` and `POST /api/runs/:runId/communications` expose a bounded per-hero conversation projection
 and commit manual step-timed communication. The summon chamber uses it before the hero’s first route
 choice; the replay inspector exposes exact text, witness roles, observation IDs, belief IDs, and
 source-event provenance. No model call or hidden relationship adjustment occurs in this slice.
+
+`AGT-003` adds `hero-decision-packet-v1` as a pure projection over an exact `engine-v8` snapshot,
+the selected hero, and a full manifest whose canonical hash must match engine state. The context
+service rejects stale snapshot hashes, terminal or unavailable heroes, mismatched identities, and
+states with no legal hero action. It never queries the network, database, wall clock, or random
+source while assembling a packet.
+
+Each packet is bound to the run version, event cursor, state hash, context-policy version, packet
+hash, and a separately hashed, sorted legal-action list. It includes implemented self state,
+co-located visible people, holder-only beliefs, relevant directed relationship/authority/promise
+projections, witnessed active directives, and only the current engine-derived affordances. The
+Master appears as an unidentified person until the hero holds the witnessed Master-role claim;
+other heroes' manifests, private thoughts, and the run seed are never projected.
+
+`hero-memory-v1` considers only observations owned by the deciding hero. It scores salience,
+recency, present-subject overlap, location, and whether exact communication was addressed or
+overheard; ties resolve by event time and stable ID. Selection stops at both an item limit and a
+character budget. Communication text can enter a memory only when act → witness → observation
+provenance resolves for that hero. The summon page exposes a compact **What reaches this hero**
+preview, and `GET /api/runs/:runId/decision-context` rebuilds the same current packet after new
+speech. Policy invocation, persisted decision jobs, agent-authored responses, and the development
+packet/result inspector remain `AGT-004`–`AGT-008`.
 
 ### Implemented reconnect projection
 
