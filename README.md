@@ -150,17 +150,23 @@ wait-for-step, and a five-second direction handoff without giving the hero direc
 
 ## Visual continuity checkpoint
 
-The current Forge uses `human-v2`: it preserves replayable `human-v1` manifests while adding
-deterministic mass, muscle tone, body-fat band, limb proportion, and hand scale. A separate visual
-profile—not generated artwork—owns identity locks, expressions, equipment anchors, injury placement,
-and palette swaps.
+New Forge recipes use `human-v3`: `human-v2` added deterministic mass, muscle tone, body-fat band,
+limb proportion, and hand scale without changing `human-v1`; `human-v3` expands names through a
+separate identity stream after the 100-seed sheet exposed obvious repetition. The two curated visual
+fixtures remain explicitly pinned to immutable `human-v2` manifests. A separate visual profile—not
+generated artwork—owns identity locks, expressions, equipment anchors, injury placement, and palette
+swaps.
 
 The local `/visual-lab` route compares Mara Vey and Remy Nahl across full-body anchors,
 front/profile/back views, expressions, equipment, injury, a roster composition, and settlement scale.
 Every bitmap has a versioned record with prompt provenance, dimensions, SHA-256, and explicit
-recognition checks. Generated assets remain approval candidates until reviewed.
+recognition checks. `/forge/contact-sheet` renders 100 deterministic manifests and exports the audit
+as JSON or print-ready PDF. Accept/revise decisions are append-only PostgreSQL records bound to the
+exact asset hash; generated assets remain candidates until a human records acceptance.
 
 ![Visual continuity lab](docs/evidence/phase-3-visual-lab.png)
+
+![100-seed Forge contact sheet](docs/evidence/phase-3-contact-sheet.png)
 
 ## Deterministic survival checkpoint
 

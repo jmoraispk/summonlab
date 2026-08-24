@@ -148,7 +148,47 @@ export const CharacterVisualCatalogSchema = z
 		}
 	});
 
+export const VisualReviewVerdictSchema = z.enum(['approved', 'revise']);
+
+export const VisualReviewCreateRequestSchema = z
+	.object({
+		reviewId: EntityIdSchema,
+		assetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		catalogVersion: ContentVersionSchema,
+		assetContentHash: StateHashSchema,
+		verdict: VisualReviewVerdictSchema,
+		note: z.string().trim().min(1).max(1_000),
+		reviewer: z.string().trim().min(1).max(80)
+	})
+	.strict();
+
+export const VisualReviewRecordSchema = VisualReviewCreateRequestSchema.extend({
+	createdAt: IsoDateTimeSchema
+}).strict();
+
+export const VisualReviewListSchema = z
+	.object({
+		reviews: z.array(VisualReviewRecordSchema),
+		latestByAsset: z.record(z.string(), VisualReviewRecordSchema)
+	})
+	.strict()
+	.superRefine((value, context) => {
+		const knownReviewIds = new Set(value.reviews.map((review) => review.reviewId));
+		for (const [assetKey, review] of Object.entries(value.latestByAsset)) {
+			if (review.assetKey !== assetKey || !knownReviewIds.has(review.reviewId)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Latest visual review must reference a listed review for ${assetKey}`
+				});
+			}
+		}
+	});
+
 export type CharacterExpression = z.infer<typeof CharacterExpressionSchema>;
 export type CharacterVisualAsset = z.infer<typeof CharacterVisualAssetSchema>;
 export type CharacterVisualCatalog = z.infer<typeof CharacterVisualCatalogSchema>;
 export type CharacterVisualProfile = z.infer<typeof CharacterVisualProfileSchema>;
+export type VisualReviewCreateRequest = z.infer<typeof VisualReviewCreateRequestSchema>;
+export type VisualReviewList = z.infer<typeof VisualReviewListSchema>;
+export type VisualReviewRecord = z.infer<typeof VisualReviewRecordSchema>;
+export type VisualReviewVerdict = z.infer<typeof VisualReviewVerdictSchema>;

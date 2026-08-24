@@ -1,4 +1,8 @@
-import { generateCharacterDraft, recipeFromSeed } from '@summonlab/characters';
+import {
+	VISUAL_CHARACTER_GENERATION_VERSION,
+	generateCharacterDraft,
+	recipeFromSeed
+} from '@summonlab/characters';
 
 import type { PageServerLoad } from './$types';
 
@@ -18,5 +22,16 @@ const forgeSeeds = [
 ];
 
 export const load: PageServerLoad = async () => ({
-	drafts: await Promise.all(forgeSeeds.map((seed) => generateCharacterDraft(recipeFromSeed(seed))))
+	drafts: await Promise.all(
+		forgeSeeds.map((seed) =>
+			generateCharacterDraft(
+				recipeFromSeed(
+					seed,
+					seed === 'ember-01' || seed === 'hearth-02'
+						? VISUAL_CHARACTER_GENERATION_VERSION
+						: undefined
+				)
+			)
+		)
+	)
 });

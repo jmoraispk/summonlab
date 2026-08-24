@@ -7,7 +7,10 @@ import {
 	HealthResponseSchema,
 	LegalActionSchema,
 	RewardDeltaSchema,
-	VisualIdentityCheckSchema
+	VisualIdentityCheckSchema,
+	VisualReviewCreateRequestSchema,
+	VisualReviewListSchema,
+	VisualReviewRecordSchema
 } from './index.js';
 
 function validCharacterManifest(adultAge = 25) {
@@ -114,5 +117,29 @@ describe('foundation contracts', () => {
 				score: 5
 			})
 		).toThrow();
+	});
+
+	it('rejects internally inconsistent visual review lists', () => {
+		const request = {
+			reviewId: 'a4d12f1f-af58-47ac-a889-c250cbabc1d8',
+			assetKey: 'hearth-02-anchor-v1',
+			catalogVersion: 'visual-catalog-v1',
+			assetContentHash: '1'.repeat(64),
+			verdict: 'approved' as const,
+			note: 'Identity reads clearly at every required scale.',
+			reviewer: 'local-lead'
+		};
+		const review = VisualReviewRecordSchema.parse({
+			...request,
+			createdAt: '2026-08-24T05:00:00.000Z'
+		});
+
+		expect(VisualReviewCreateRequestSchema.parse(request).note).toBe(request.note);
+		expect(
+			VisualReviewListSchema.safeParse({
+				reviews: [review],
+				latestByAsset: { 'different-asset': review }
+			}).success
+		).toBe(false);
 	});
 });

@@ -141,7 +141,10 @@
 			<span>Story envelope</span>
 			<strong>00 · The First Ember</strong>
 		</div>
-		<a class="phase" href={resolve('/visual-lab')}><span></span> Phase 3 · visual lab</a>
+		<nav class="phase">
+			<a href={resolve('/forge/contact-sheet')}>100-seed sheet</a>
+			<a href={resolve('/visual-lab')}><span></span> Phase 3 · visual lab</a>
+		</nav>
 	</header>
 
 	<section class="intro">
@@ -407,7 +410,9 @@
 	}
 
 	.phase {
+		display: flex;
 		justify-self: end;
+		gap: 1rem;
 		color: rgba(246, 241, 231, 0.55);
 		font-size: 0.62rem;
 		letter-spacing: 0.1em;

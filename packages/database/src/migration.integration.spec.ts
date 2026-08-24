@@ -34,10 +34,11 @@ describe('database migration', () => {
 						'summonlab_engine_commands',
 						'summonlab_engine_events',
 						'summonlab_engine_snapshots',
-						'summonlab_engine_scheduled_events'
+						'summonlab_engine_scheduled_events',
+						'summonlab_visual_asset_reviews'
 					)
 			`;
-			expect(rows).toHaveLength(8);
+			expect(rows).toHaveLength(9);
 		} finally {
 			await sql.end({ timeout: 5 });
 		}

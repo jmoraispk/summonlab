@@ -16,4 +16,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   action sets, and a still-verified terminal replay.
 - `phase-2-simulation.json` — deterministic 10,000-history / 48,341-command survival replay report.
 - `phase-3-visual-lab.png` — original female/male approval pair, deterministic physiology,
-  continuity sheet, roster grouping, settlement-scale recognition limit, and SHA-256 asset ledger.
+  continuity sheet, roster grouping, settlement-scale recognition limit, SHA-256 asset ledger, and
+  append-only review form.
+- `phase-3-contact-sheet.png` — printable 100-seed `human-v3` cohort with summary distributions,
+  code-native rigs, individual manifest hashes, and JSON audit export.

@@ -96,6 +96,10 @@ An asset stays an `approval-candidate` until a human accepts it. A failed cue is
 For the current settlement sample, face recognition is intentionally **not claimed**; four other cues
 carry identity at that distance.
 
+The local `/visual-lab` records accept/revise decisions as append-only notes bound to the exact
+catalog version and asset SHA-256. The `/forge/contact-sheet` route prints or exports the deterministic
+100-seed distribution used to catch cohort-level repetition and correlation before portrait work.
+
 ## Motion
 
 - Dialogue: breathing, eye focus, blink, small posture shifts, mouth shapes, and cloth lag.

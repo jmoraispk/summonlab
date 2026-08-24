@@ -7,10 +7,24 @@
 	import rosterPair from '../../../../../assets/heroes/visuals/hearth-roster-pair-v1.png';
 	import settlementScale from '../../../../../assets/heroes/visuals/hearth-settlement-scale-v1.png';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import type { VisualReviewRecord, VisualReviewVerdict } from '@summonlab/contracts';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
 	let selectedId = $state(data.characters[0]!.manifest.characterId);
+	// svelte-ignore state_referenced_locally
+	let reviewHistory = $state(data.reviewHistory);
+	// svelte-ignore state_referenced_locally
+	let reviewAssetKey = $state(
+		data.catalog.assets.find((asset) => asset.status === 'approval-candidate')?.assetKey ??
+			data.catalog.assets[0]!.assetKey
+	);
+	let reviewVerdict = $state<VisualReviewVerdict>('approved');
+	let reviewNote = $state('');
+	let reviewer = $state('project-lead');
+	let reviewBusy = $state(false);
+	let reviewMessage = $state('');
+	let reviewError = $state('');
 
 	const selected = $derived(
 		data.characters.find((character) => character.manifest.characterId === selectedId) ??
@@ -31,12 +45,50 @@
 	const settlementAsset = $derived(
 		data.catalog.assets.find((asset) => asset.assetKey === 'hearth-settlement-scale-v1')!
 	);
+	const reviewAsset = $derived(
+		data.catalog.assets.find((asset) => asset.assetKey === reviewAssetKey)!
+	);
+	const currentReview = $derived(reviewHistory.latestByAsset[reviewAssetKey] ?? null);
 	const rigStates = [
 		{ label: 'Neutral', expression: 'neutral', equipment: 'none', palette: 'base' },
 		{ label: 'Night watch', expression: 'alert', equipment: 'short-bow', palette: 'night' },
 		{ label: 'Training', expression: 'exertion', equipment: 'practice-blade', palette: 'base' },
 		{ label: 'Injured', expression: 'injured', equipment: 'practice-blade', palette: 'injured' }
 	] as const;
+
+	async function submitReview() {
+		if (!reviewNote.trim() || !reviewer.trim() || reviewBusy) return;
+		reviewBusy = true;
+		reviewMessage = '';
+		reviewError = '';
+		try {
+			const response = await fetch('/api/dev/visual-reviews', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					reviewId: crypto.randomUUID(),
+					assetKey: reviewAsset.assetKey,
+					catalogVersion: data.catalog.catalogVersion,
+					assetContentHash: reviewAsset.contentHash,
+					verdict: reviewVerdict,
+					note: reviewNote.trim(),
+					reviewer: reviewer.trim()
+				})
+			});
+			const body = (await response.json()) as VisualReviewRecord & { message?: string };
+			if (!response.ok || !body.reviewId) throw new Error(body.message ?? 'Review was not saved.');
+			reviewHistory = {
+				reviews: [...reviewHistory.reviews, body],
+				latestByAsset: { ...reviewHistory.latestByAsset, [body.assetKey]: body }
+			};
+			reviewMessage = `${body.verdict === 'approved' ? 'Accepted' : 'Revision requested'} · ${body.assetKey}`;
+			reviewNote = '';
+		} catch (error) {
+			reviewError = error instanceof Error ? error.message : 'Review was not saved.';
+		} finally {
+			reviewBusy = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -51,7 +103,10 @@
 	<header class="topbar">
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>Phase 3</span><strong>Visual continuity lab</strong></div>
-		<a href={resolve('/forge')}>Return to forge</a>
+		<nav aria-label="Visual lab links">
+			<a href={resolve('/forge/contact-sheet')}>100-seed sheet</a>
+			<a href={resolve('/forge')}>Return to forge</a>
+		</nav>
 	</header>
 
 	<section class="opening">
@@ -275,13 +330,111 @@
 		</header>
 		<div class="asset-table">
 			{#each data.catalog.assets as asset (asset.assetKey)}
+				{@const review = reviewHistory.latestByAsset[asset.assetKey]}
 				<article>
 					<div><span>{asset.role}</span><strong>{asset.assetKey}</strong></div>
 					<code>{asset.contentHash.slice(0, 12)}</code>
 					<small>{asset.width}×{asset.height} · {(asset.bytes / 1_000_000).toFixed(2)} MB</small>
-					<i class:approved={asset.status === 'approved'}>{asset.status}</i>
+					<i
+						class:approved={(review?.verdict ?? asset.status) === 'approved'}
+						class:revise={review?.verdict === 'revise'}
+						data-testid={`asset-status-${asset.assetKey}`}>{review?.verdict ?? asset.status}</i
+					>
 				</article>
 			{/each}
+		</div>
+	</section>
+
+	<section class="review-gate" aria-labelledby="review-heading">
+		<header class="section-heading">
+			<div>
+				<p class="eyebrow">Append-only human gate</p>
+				<h2 id="review-heading">Bind the decision to the pixels.</h2>
+			</div>
+			<strong
+				>{reviewHistory.reviews.length} durable decision{reviewHistory.reviews.length === 1
+					? ''
+					: 's'}</strong
+			>
+		</header>
+		<div class="review-grid">
+			<form
+				onsubmit={(event) => {
+					event.preventDefault();
+					void submitReview();
+				}}
+			>
+				<label>
+					<span>Exact asset</span>
+					<select bind:value={reviewAssetKey} disabled={reviewBusy}>
+						{#each data.catalog.assets as asset (asset.assetKey)}
+							<option value={asset.assetKey}>{asset.assetKey} · {asset.role}</option>
+						{/each}
+					</select>
+				</label>
+				<div class="verdict" role="radiogroup" aria-label="Visual verdict">
+					<button
+						type="button"
+						class:selected={reviewVerdict === 'approved'}
+						aria-pressed={reviewVerdict === 'approved'}
+						onclick={() => (reviewVerdict = 'approved')}>Accept</button
+					>
+					<button
+						type="button"
+						class:selected={reviewVerdict === 'revise'}
+						aria-pressed={reviewVerdict === 'revise'}
+						onclick={() => (reviewVerdict = 'revise')}>Revise</button
+					>
+				</div>
+				<label>
+					<span>Reviewer</span>
+					<input bind:value={reviewer} maxlength="80" required />
+				</label>
+				<label>
+					<span>Decision note</span>
+					<textarea
+						bind:value={reviewNote}
+						maxlength="1000"
+						required
+						placeholder="What survives? What must change? Be specific enough for the next art pass."
+					></textarea>
+					<small>{reviewNote.length}/1000</small>
+				</label>
+				<button
+					class="record-review"
+					type="submit"
+					disabled={!data.reviewPersistenceAvailable ||
+						reviewBusy ||
+						!reviewNote.trim() ||
+						!reviewer.trim()}>{reviewBusy ? 'Recording…' : 'Record hash-bound decision'}</button
+				>
+				{#if !data.reviewPersistenceAvailable}
+					<p class="review-error" role="alert">
+						Start with <code>pnpm dev</code> to record reviews.
+					</p>
+				{:else if reviewError}
+					<p class="review-error" role="alert">{reviewError}</p>
+				{:else if reviewMessage}
+					<p class="review-success" data-testid="review-result">{reviewMessage}</p>
+				{/if}
+			</form>
+
+			<article class="current-decision" data-testid="current-review">
+				<p class="eyebrow">Current decision</p>
+				<h3>{reviewAsset.assetKey}</h3>
+				<code>{reviewAsset.contentHash}</code>
+				{#if currentReview}
+					<strong class:revise={currentReview.verdict === 'revise'}>{currentReview.verdict}</strong>
+					<blockquote>{currentReview.note}</blockquote>
+					<small
+						>{currentReview.reviewer} · {new Date(currentReview.createdAt).toLocaleString()}</small
+					>
+				{:else}
+					<strong>unreviewed</strong>
+					<p>No human decision is bound to this exact asset hash yet.</p>
+				{/if}
+				<a href={resolve('/forge/contact-sheet')}>Open 100-seed Forge contact sheet →</a>
+			</article>
 		</div>
 	</section>
 
@@ -350,7 +503,12 @@
 			400 1rem Georgia,
 			serif;
 	}
-	.topbar > a:last-child {
+	.topbar nav {
+		display: flex;
+		justify-self: end;
+		gap: 1rem;
+	}
+	.topbar nav a {
 		justify-self: end;
 		color: rgba(246, 241, 231, 0.48);
 		font-size: 0.58rem;
@@ -363,6 +521,7 @@
 	.settlement,
 	.runtime-rig,
 	.ledger,
+	.review-gate,
 	.questions {
 		max-width: 96rem;
 		margin: 0 auto;
@@ -449,7 +608,8 @@
 	.continuity,
 	.settlement,
 	.runtime-rig,
-	.ledger {
+	.ledger,
+	.review-gate {
 		padding: clamp(3rem, 6vw, 6rem) clamp(1.2rem, 3vw, 3rem);
 		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
@@ -781,6 +941,149 @@
 		border-color: rgba(120, 215, 175, 0.35);
 		color: #78d7af;
 	}
+	.asset-table i.revise {
+		border-color: rgba(242, 147, 143, 0.4);
+		color: #f2938f;
+	}
+	.review-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.7fr);
+		gap: 1px;
+		padding: 1px;
+		background: rgba(255, 255, 255, 0.09);
+	}
+	.review-grid form,
+	.current-decision {
+		padding: clamp(1.2rem, 3vw, 2.2rem);
+		background: #0a0c12;
+	}
+	.review-grid form {
+		display: grid;
+		gap: 1rem;
+	}
+	.review-grid label,
+	.review-grid label > span {
+		display: grid;
+		gap: 0.45rem;
+	}
+	.review-grid label > span {
+		color: rgba(246, 241, 231, 0.42);
+		font-size: 0.53rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.review-grid input,
+	.review-grid select,
+	.review-grid textarea {
+		width: 100%;
+		box-sizing: border-box;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: 0;
+		background: #07090e;
+		color: #f6f1e7;
+		font: inherit;
+	}
+	.review-grid input,
+	.review-grid select {
+		min-height: 2.8rem;
+		padding: 0 0.8rem;
+	}
+	.review-grid textarea {
+		min-height: 7rem;
+		padding: 0.8rem;
+		resize: vertical;
+	}
+	.review-grid label small {
+		justify-self: end;
+		color: rgba(246, 241, 231, 0.32);
+		font-size: 0.55rem;
+	}
+	.verdict {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.1);
+	}
+	.verdict button,
+	.record-review {
+		min-height: 2.9rem;
+		border: 0;
+		background: #11141c;
+		color: rgba(246, 241, 231, 0.58);
+		font-size: 0.62rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.verdict button.selected {
+		background: #1b362f;
+		color: #9ce8c8;
+	}
+	.verdict button:last-child.selected {
+		background: #422425;
+		color: #f7aaa6;
+	}
+	.record-review {
+		background: #d2a04d;
+		color: #08090d;
+	}
+	.record-review:disabled {
+		cursor: not-allowed;
+		opacity: 0.35;
+	}
+	.review-success,
+	.review-error {
+		margin: 0;
+		font-size: 0.68rem;
+	}
+	.review-success {
+		color: #78d7af;
+	}
+	.review-error {
+		color: #f2938f;
+	}
+	.current-decision > code {
+		display: block;
+		overflow-wrap: anywhere;
+		color: #6e919a;
+		font-size: 0.55rem;
+		line-height: 1.5;
+	}
+	.current-decision > strong {
+		display: block;
+		margin-top: 2rem;
+		color: #78d7af;
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.current-decision > strong.revise {
+		color: #f2938f;
+	}
+	.current-decision blockquote {
+		margin: 1rem 0;
+		padding-left: 1rem;
+		border-left: 2px solid #d2a04d;
+		color: rgba(246, 241, 231, 0.65);
+		font:
+			400 1rem/1.5 Georgia,
+			serif;
+	}
+	.current-decision > p:not(.eyebrow),
+	.current-decision > small {
+		color: rgba(246, 241, 231, 0.42);
+		font-size: 0.62rem;
+		line-height: 1.6;
+	}
+	.current-decision > a {
+		display: inline-block;
+		margin-top: 2rem;
+		color: #7fd8e9;
+		font-size: 0.62rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
 	.questions {
 		padding: clamp(4rem, 8vw, 8rem) clamp(1.2rem, 3vw, 3rem) 8rem;
 	}
@@ -831,6 +1134,9 @@
 		}
 		.rig-grid {
 			grid-template-columns: 1fr 1fr;
+		}
+		.review-grid {
+			grid-template-columns: 1fr;
 		}
 		.asset-table article {
 			grid-template-columns: 1fr auto;

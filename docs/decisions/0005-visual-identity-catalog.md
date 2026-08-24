@@ -11,8 +11,9 @@ gameplay manifest would also let art generation redefine authoritative identity.
 ## Decision
 
 - The deterministic character manifest remains physical identity truth.
-- `human-v1` stays replayable; new Forge recipes use `human-v2`, which adds deterministic physiology
-  without changing v1 bytes.
+- `human-v1` stays replayable. `human-v2` adds deterministic physiology without changing v1 bytes
+  and remains the immutable version behind the first visual profiles. New Forge recipes use
+  `human-v3`, whose isolated name stream expands identity labels without changing v1/v2 bytes.
 - A separate versioned visual profile binds one manifest hash to identity locks, expression states,
   equipment anchors, injury placement, and palette swaps.
 - Every generated bitmap receives a catalog record with provenance, final prompt, references,

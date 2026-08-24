@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	LEGACY_CHARACTER_GENERATION_VERSION,
+	VISUAL_CHARACTER_GENERATION_VERSION,
 	canonicalJson,
 	chooseFirstDestination,
 	generateCharacterDraft,
@@ -27,7 +28,7 @@ describe('deterministic character generation', () => {
 		expect(await hashManifest(left.manifest)).toBe(left.manifestHash);
 	});
 
-	it('keeps human-v1 manifests byte-stable after human-v2 becomes current', async () => {
+	it('keeps human-v1 manifests byte-stable after later versions become current', async () => {
 		const legacy = await generateCharacterDraft(
 			recipeFromSeed('ember-01', LEGACY_CHARACTER_GENERATION_VERSION)
 		);
@@ -36,6 +37,20 @@ describe('deterministic character generation', () => {
 		expect(legacy.manifest.physiology).toBeUndefined();
 		expect(legacy.manifestHash).toBe(
 			'3bf119dcae88f8c72c8eb2f0223a36ee43c03b054b1a396649f08bd1d09300f9'
+		);
+	});
+
+	it('keeps the visual human-v2 manifests byte-stable after name expansion', async () => {
+		const [mara, remy] = await Promise.all([
+			generateCharacterDraft(recipeFromSeed('ember-01', VISUAL_CHARACTER_GENERATION_VERSION)),
+			generateCharacterDraft(recipeFromSeed('hearth-02', VISUAL_CHARACTER_GENERATION_VERSION))
+		]);
+
+		expect(mara.manifestHash).toBe(
+			'a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212'
+		);
+		expect(remy.manifestHash).toBe(
+			'135bf46fb99b843a74b2e564be4b2eb6d85131cdeab441ea8867cd4b57e574ec'
 		);
 	});
 
@@ -58,6 +73,9 @@ describe('deterministic character generation', () => {
 		);
 
 		expect(identities.size).toBeGreaterThan(990);
+		expect(
+			new Set(drafts.slice(0, 100).map((draft) => draft.manifest.displayName)).size
+		).toBeGreaterThan(90);
 		expect(drafts.every((draft) => draft.manifest.adultAge >= 18)).toBe(true);
 		expect(drafts.every((draft) => draft.manifest.adultAge <= 42)).toBe(true);
 		expect(new Set(drafts.map((draft) => draft.mind.dailyHabit)).size).toBe(6);

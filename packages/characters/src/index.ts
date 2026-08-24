@@ -13,7 +13,8 @@ import {
 } from '@summonlab/contracts';
 
 export const LEGACY_CHARACTER_GENERATION_VERSION = 'human-v1';
-export const CHARACTER_GENERATION_VERSION = 'human-v2';
+export const VISUAL_CHARACTER_GENERATION_VERSION = 'human-v2';
+export const CHARACTER_GENERATION_VERSION = 'human-v3';
 
 export const ZERO_GENERATION_CURSORS: CharacterGenerationCursors = Object.freeze({
 	identity: 0,
@@ -40,6 +41,76 @@ const names = [
 	['Aven', 'Rook'],
 	['Dara', 'Quill'],
 	['Remy', 'Nahl']
+] as const;
+
+const givenNames = [
+	'Mara',
+	'Tarin',
+	'Edda',
+	'Noa',
+	'Iven',
+	'Sumi',
+	'Orin',
+	'Kira',
+	'Lio',
+	'Aven',
+	'Dara',
+	'Remy',
+	'Amari',
+	'Bryn',
+	'Cael',
+	'Devin',
+	'Elian',
+	'Fara',
+	'Galen',
+	'Hana',
+	'Isen',
+	'Jori',
+	'Kavi',
+	'Lin',
+	'Miro',
+	'Neri',
+	'Osei',
+	'Pema',
+	'Rian',
+	'Sena',
+	'Tavi',
+	'Zuri'
+] as const;
+
+const familyNames = [
+	'Vey',
+	'Sol',
+	'Ro',
+	'Kest',
+	'Mora',
+	'Vale',
+	'Dae',
+	'Senn',
+	'Aster',
+	'Rook',
+	'Quill',
+	'Nahl',
+	'Arden',
+	'Belen',
+	'Corin',
+	'Daro',
+	'Esen',
+	'Fenn',
+	'Garo',
+	'Hale',
+	'Ilyan',
+	'Juno',
+	'Kade',
+	'Lumen',
+	'Marin',
+	'Nor',
+	'Orra',
+	'Pell',
+	'Ravel',
+	'Saye',
+	'Toren',
+	'Zev'
 ] as const;
 
 const skinTones = [
@@ -82,6 +153,7 @@ function hash32(value: string): number {
 
 function streamFor(recipe: CharacterGenerationRecipe, channel: RerollChannel): Stream {
 	const compatibleVersion =
+		recipe.generationVersion === VISUAL_CHARACTER_GENERATION_VERSION ||
 		recipe.generationVersion === CHARACTER_GENERATION_VERSION
 			? LEGACY_CHARACTER_GENERATION_VERSION
 			: recipe.generationVersion;
@@ -186,8 +258,17 @@ function visualAnchorKey(recipe: CharacterGenerationRecipe): string | null {
 		recipe.cursors.features === 0 &&
 		recipe.cursors.styling === 0;
 	if (!baseRecipe) return null;
-	if (recipe.seed === 'ember-01') return 'ember-01-anchor-v1';
-	if (recipe.seed === 'hearth-02' && recipe.generationVersion === CHARACTER_GENERATION_VERSION) {
+	if (
+		recipe.seed === 'ember-01' &&
+		(recipe.generationVersion === LEGACY_CHARACTER_GENERATION_VERSION ||
+			recipe.generationVersion === VISUAL_CHARACTER_GENERATION_VERSION)
+	) {
+		return 'ember-01-anchor-v1';
+	}
+	if (
+		recipe.seed === 'hearth-02' &&
+		recipe.generationVersion === VISUAL_CHARACTER_GENERATION_VERSION
+	) {
 		return 'hearth-02-anchor-v1';
 	}
 	return null;
@@ -201,7 +282,12 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const rarity = streamFor(recipe, 'rarity');
 	const anchorKey = visualAnchorKey(recipe);
 	const maraAnchor = anchorKey === 'ember-01-anchor-v1';
-	const [firstName, lastName] = maraAnchor ? names[0] : choose(identity, names);
+	const legacyName = maraAnchor ? names[0] : choose(identity, names);
+	const expandedName = auxiliaryStreamFor(recipe, 'identity', 'expanded-name-v1');
+	const [firstName, lastName] =
+		recipe.generationVersion === CHARACTER_GENERATION_VERSION
+			? [choose(expandedName, givenNames), choose(expandedName, familyNames)]
+			: legacyName;
 	const presentation = maraAnchor
 		? ('feminine' as const)
 		: choose(identity, ['feminine', 'masculine', 'androgynous'] as const);
@@ -276,7 +362,8 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 		bodyFrame,
 		bodyBuild,
 		heightCm,
-		...(recipe.generationVersion === CHARACTER_GENERATION_VERSION
+		...(recipe.generationVersion === VISUAL_CHARACTER_GENERATION_VERSION ||
+		recipe.generationVersion === CHARACTER_GENERATION_VERSION
 			? {
 					physiology: {
 						massKg: Math.max(
