@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "web-build-budget-v1",
+	"budgets": {
+		"initialJavaScriptGzipBytes": 700000,
+		"runtimeInspectorLoadedJavaScriptGzipBytes": 700000,
+		"runtimeVisualPayloadBytes": 8000000
+	},
+	"measurements": {
+		"initialJavaScriptGzipBytes": 36787,
+		"runtimeInspectorLoadedJavaScriptGzipBytes": 372191,
+		"largestRuntimeLazyChunkGzipBytes": 174947,
+		"runtimeVisualPayloadBytes": 47758
+	},
+	"status": {
+		"initialJavaScript": "within-budget",
+		"runtimeInspectorLoadedJavaScript": "within-budget",
+		"runtimeVisualPayload": "within-budget"
+	}
+}

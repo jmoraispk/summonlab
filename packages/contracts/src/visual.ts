@@ -243,10 +243,217 @@ export const SummonCardGenerationResultSchema = z
 	})
 	.strict();
 
+export const RuntimeVisualUsageSchema = z.enum([
+	'summon',
+	'dialogue',
+	'roster',
+	'roster-group',
+	'settlement-preview',
+	'summon-card'
+]);
+
+export const RuntimeVisualAssetSchema = z
+	.object({
+		alias: z.string().regex(/^hero\.[a-z0-9.-]{3,180}$/u),
+		usage: RuntimeVisualUsageSchema,
+		sourceAssetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		sourceStatus: z.literal('approved'),
+		sourceContentHash: StateHashSchema,
+		manifestHashes: z.array(StateHashSchema).min(1).max(12),
+		file: z
+			.string()
+			.regex(/^runtime\/[a-z0-9-]+\/[a-z0-9-]+\/[a-z0-9.-]+\.webp$/u)
+			.refine((value) => !value.includes('..'), { message: 'Runtime asset path cannot traverse' }),
+		publicPath: z.string().regex(/^\/runtime\/[a-z0-9/-]+\/[a-z0-9.-]+\.webp$/u),
+		width: z.number().int().positive().max(4_096),
+		height: z.number().int().positive().max(4_096),
+		bytes: z.number().int().positive(),
+		contentHash: StateHashSchema,
+		budgetBytes: z.number().int().positive(),
+		budgetStatus: z.literal('within-budget'),
+		encoder: z
+			.object({
+				format: z.literal('webp'),
+				quality: z.number().int().min(1).max(100),
+				effort: z.number().int().min(0).max(6),
+				preset: z.literal('drawing'),
+				smartSubsample: z.literal(true),
+				metadata: z.literal('stripped')
+			})
+			.strict()
+	})
+	.strict()
+	.refine((asset) => asset.bytes <= asset.budgetBytes, {
+		message: 'Runtime visual asset exceeds its declared budget'
+	});
+
+export const RuntimeVisualBundleSchema = z
+	.object({
+		name: z.string().regex(/^hero-[a-z0-9-]{3,120}$/u),
+		budgetBytes: z.number().int().positive(),
+		bytes: z.number().int().positive(),
+		budgetStatus: z.literal('within-budget'),
+		assets: z.array(RuntimeVisualAssetSchema).min(1).max(20)
+	})
+	.strict()
+	.superRefine((bundle, context) => {
+		const bytes = bundle.assets.reduce((total, asset) => total + asset.bytes, 0);
+		if (bytes !== bundle.bytes) {
+			context.addIssue({ code: 'custom', message: `Bundle ${bundle.name} byte total is stale` });
+		}
+		if (bundle.bytes > bundle.budgetBytes) {
+			context.addIssue({ code: 'custom', message: `Bundle ${bundle.name} exceeds its budget` });
+		}
+	});
+
+export const PixiAssetManifestSchema = z
+	.object({
+		bundles: z.array(
+			z
+				.object({
+					name: z.string().min(1).max(140),
+					assets: z
+						.array(
+							z
+								.object({
+									alias: z.string().min(1).max(200),
+									src: z.string().min(1).max(500)
+								})
+								.strict()
+						)
+						.min(1)
+				})
+				.strict()
+		)
+	})
+	.strict();
+
+export const DeferredRuntimeVisualSchema = z
+	.object({
+		sourceAssetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		sourceContentHash: StateHashSchema,
+		sourceStatus: z.enum(['approval-candidate', 'approved', 'rejected']),
+		reason: z.enum([
+			'awaiting-human-approval',
+			'rejected-source',
+			'development-reference-only',
+			'no-export-profile'
+		])
+	})
+	.strict();
+
+export const RuntimeVisualManifestSchema = z
+	.object({
+		schemaVersion: z.literal('runtime-visual-manifest-v1'),
+		catalogVersion: ContentVersionSchema,
+		catalogContentHash: StateHashSchema,
+		exporterVersion: z.literal('runtime-visual-exporter-v1'),
+		initialPayloadBudgetBytes: z.literal(8_000_000),
+		initialPayloadBytes: z.number().int().nonnegative(),
+		initialPayloadStatus: z.literal('within-budget'),
+		toolchain: z
+			.object({
+				pixi: z.string().min(1).max(40),
+				sharp: z.string().min(1).max(40),
+				vips: z.string().min(1).max(80),
+				webp: z.string().min(1).max(80)
+			})
+			.strict(),
+		bundles: z.array(RuntimeVisualBundleSchema),
+		deferred: z.array(DeferredRuntimeVisualSchema),
+		pixiManifest: PixiAssetManifestSchema,
+		manifestHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const bytes = manifest.bundles.reduce((total, bundle) => total + bundle.bytes, 0);
+		if (bytes !== manifest.initialPayloadBytes) {
+			context.addIssue({ code: 'custom', message: 'Initial runtime payload byte total is stale' });
+		}
+		if (bytes > manifest.initialPayloadBudgetBytes) {
+			context.addIssue({ code: 'custom', message: 'Initial runtime visual payload exceeds 8 MB' });
+		}
+		const aliases = new Set<string>();
+		for (const bundle of manifest.bundles) {
+			const pixiBundle = manifest.pixiManifest.bundles.find(
+				(candidate) => candidate.name === bundle.name
+			);
+			if (!pixiBundle || pixiBundle.assets.length !== bundle.assets.length) {
+				context.addIssue({
+					code: 'custom',
+					message: `Pixi bundle projection is stale: ${bundle.name}`
+				});
+				continue;
+			}
+			for (const asset of bundle.assets) {
+				if (aliases.has(asset.alias)) {
+					context.addIssue({ code: 'custom', message: `Duplicate runtime alias: ${asset.alias}` });
+				}
+				aliases.add(asset.alias);
+				if (
+					!pixiBundle.assets.some(
+						(candidate) => candidate.alias === asset.alias && candidate.src === asset.publicPath
+					)
+				) {
+					context.addIssue({
+						code: 'custom',
+						message: `Pixi asset projection is stale: ${asset.alias}`
+					});
+				}
+			}
+		}
+	});
+
+export const WebBuildBudgetReportSchema = z
+	.object({
+		schemaVersion: z.literal('web-build-budget-v1'),
+		budgets: z
+			.object({
+				initialJavaScriptGzipBytes: z.number().int().positive(),
+				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().positive(),
+				runtimeVisualPayloadBytes: z.number().int().positive()
+			})
+			.strict(),
+		measurements: z
+			.object({
+				initialJavaScriptGzipBytes: z.number().int().nonnegative(),
+				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
+				largestRuntimeLazyChunkGzipBytes: z.number().int().nonnegative(),
+				runtimeVisualPayloadBytes: z.number().int().nonnegative()
+			})
+			.strict(),
+		status: z
+			.object({
+				initialJavaScript: z.literal('within-budget'),
+				runtimeInspectorLoadedJavaScript: z.literal('within-budget'),
+				runtimeVisualPayload: z.literal('within-budget')
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((report, context) => {
+		for (const key of [
+			'initialJavaScriptGzipBytes',
+			'runtimeInspectorLoadedJavaScriptGzipBytes',
+			'runtimeVisualPayloadBytes'
+		] as const) {
+			if (report.measurements[key] > report.budgets[key]) {
+				context.addIssue({ code: 'custom', message: `Web build budget exceeded: ${key}` });
+			}
+		}
+	});
+
 export type CharacterExpression = z.infer<typeof CharacterExpressionSchema>;
 export type CharacterVisualAsset = z.infer<typeof CharacterVisualAssetSchema>;
 export type CharacterVisualCatalog = z.infer<typeof CharacterVisualCatalogSchema>;
 export type CharacterVisualProfile = z.infer<typeof CharacterVisualProfileSchema>;
+export type DeferredRuntimeVisual = z.infer<typeof DeferredRuntimeVisualSchema>;
+export type PixiAssetManifest = z.infer<typeof PixiAssetManifestSchema>;
+export type RuntimeVisualAsset = z.infer<typeof RuntimeVisualAssetSchema>;
+export type RuntimeVisualBundle = z.infer<typeof RuntimeVisualBundleSchema>;
+export type RuntimeVisualManifest = z.infer<typeof RuntimeVisualManifestSchema>;
+export type RuntimeVisualUsage = z.infer<typeof RuntimeVisualUsageSchema>;
+export type WebBuildBudgetReport = z.infer<typeof WebBuildBudgetReportSchema>;
 export type SummonCardGenerateRequest = z.infer<typeof SummonCardGenerateRequestSchema>;
 export type SummonCardGenerationResult = z.infer<typeof SummonCardGenerationResultSchema>;
 export type SummonCardGenerationSpec = z.infer<typeof SummonCardGenerationSpecSchema>;

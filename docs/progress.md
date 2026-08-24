@@ -134,6 +134,7 @@ Status: **in progress**. The first visual approval checkpoint completed on 2026-
 | `ART-004` | Complete: `/visual-lab` compares assets and records append-only accept/revise notes against exact hashes; `/forge/contact-sheet` prints or downloads a deterministic 100-seed audit; CI verifies source bytes and stale-hash rejection | [Visual lab evidence](evidence/phase-3-visual-lab.png), [contact sheet evidence](evidence/phase-3-contact-sheet.png), ADR 0006 |
 | `ART-005` | Two of twelve representative original humans: Mara Vey and Remy Nahl | Anchor and continuity assets under `assets/heroes/visuals` |
 | `ART-006` | Complete: `/visual-lab/summon-card` previews a deterministic manifest-authored image-edit request; paid execution is development-only, one-candidate, cost-acknowledged, no-retry, hash-verified, ephemeral, and non-canonical | [Summon-card lab evidence](evidence/phase-3-summon-card-lab.png), ADR 0007, provider-mock and browser tests |
+| `ART-007` | Complete: approved source assets export as purpose-sized, content-addressed WebP files plus a PixiJS v8 manifest; exact re-encoding and asset/build budgets run in `pnpm check`, while five candidates remain deferred | [Runtime bundle evidence](evidence/phase-3-runtime-bundles.png), [budget report](evidence/phase-3-runtime-budget.json), ADR 0008 |
 | `ART-008` | Face/hair/silhouette/palette/signature-trait checks score 5/5 for continuity and roster views; settlement explicitly records 4/5 because facial identity is not claimed | Versioned visual catalog |
 
 The image-generation skill produced the five new approval candidates through the built-in path. The
@@ -154,9 +155,12 @@ sheets, inspect the settlement-scale recognition limit, and record an accept/rev
 hash-bearing JSON audit. Open `http://localhost:5173/visual-lab/summon-card`, switch the identity
 anchor, add optional direction, and rebuild the outbound request without making a provider call.
 Paid execution remains disabled until a local developer explicitly enables it and supplies a key.
+Open `http://localhost:5173/visual-lab/runtime-bundles` to compare the approved Mara anchor at
+summon, dialogue, and roster sizes and verify that PixiJS loads it through the checked-in alias.
 
 ## Next active slice
 
 Collect feedback on specificity, cross-view identity, rendering style, settlement character scale,
-and the summon-card composition/prompt. While that remains unanswered, continue with runtime export
-tooling; do not generate the remaining ten representative humans yet.
+summon-card composition/prompt, and compressed runtime fidelity. While that remains unanswered,
+continue recognition and mobile bundle measurements on approved assets; do not generate the
+remaining ten representative humans yet.

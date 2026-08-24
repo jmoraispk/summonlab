@@ -18,6 +18,10 @@
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
 		"validate:visual-assets": "tsx tools/validate-visual-assets.ts",
+		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
+		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
+		"measure:web-build-budget": "pnpm --filter @summonlab/web build && node tools/validate-web-build-budget.mjs --write",
+		"validate:web-build-budget": "node tools/validate-web-build-budget.mjs",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "pnpm -r --if-present lint",
@@ -25,7 +29,7 @@
 		"test": "pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {
@@ -36,6 +40,7 @@
 		"globals": "^17.6.0",
 		"prettier": "^3.8.3",
 		"prettier-plugin-svelte": "^4.1.0",
+		"sharp": "0.35.3",
 		"tsup": "^8.5.1",
 		"tsx": "^4.23.12",
 		"typescript": "^6.0.3",

@@ -105,6 +105,7 @@
 		<div><span>Phase 3</span><strong>Visual continuity lab</strong></div>
 		<nav aria-label="Visual lab links">
 			<a href={resolve('/visual-lab/summon-card')}>Summon-card request</a>
+			<a href={resolve('/visual-lab/runtime-bundles')}>Runtime bundles</a>
 			<a href={resolve('/forge/contact-sheet')}>100-seed sheet</a>
 			<a href={resolve('/forge')}>Return to forge</a>
 		</nav>

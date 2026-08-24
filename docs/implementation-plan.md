@@ -533,6 +533,7 @@ Development routes are unavailable in production builds unless explicitly secure
 | `/forge/contact-sheet` | printable and JSON-exportable deterministic 100-seed cohort audit |
 | `/visual-lab` | hash-bound asset comparison and append-only human review gate |
 | `/visual-lab/summon-card` | development-only, hash-bound summon-card request preview and one-shot execution gate |
+| `/visual-lab/runtime-bundles` | approved-only WebP budget ledger and live PixiJS bundle proof |
 | `/replay/[runId]` | event timeline and deterministic replay |
 | `/debug/decisions/[jobId]` | redacted packet/result inspector |
 
@@ -937,10 +938,10 @@ integration, generated-history, and browser evidence. New runs use `engine-v2`; 
 Estimated engineering effort: **2–3 weeks**, partially parallel with Phase 2.
 
 **Status: in progress — visual approval checkpoint completed 2026-08-23.** `ART-001`, the
-`human-v2` physiology and `human-v3` naming portions of `ART-002`, `ART-003`, `ART-004`, and
-`ART-006` now have runnable evidence. Two of twelve `ART-005` humans and an initial `ART-008`
-recognition measurement remain at the human feedback gate. Expansion and runtime exports wait
-behind that gate.
+`human-v2` physiology and `human-v3` naming portions of `ART-002`, `ART-003`, `ART-004`, `ART-006`,
+and `ART-007` now have runnable evidence. Two of twelve `ART-005` humans and an initial `ART-008`
+recognition measurement remain at the human feedback gate. Cohort expansion remains behind that
+gate.
 
 - `ART-001` approve art bible, palette, line/value rules, and camera compositions;
 - `ART-002` expand manifest generator and diversity test suite;
@@ -949,7 +950,8 @@ behind that gate.
 - `ART-005` create twelve representative original humans;
 - `ART-006` complete: preview and test reference-driven summon-card generation behind a development
   flag, exact hashes, one-candidate cost acknowledgement, and an ephemeral non-canonical boundary;
-- `ART-007` export optimized PixiJS bundles;
+- `ART-007` complete: export approved sources into content-addressed, budgeted WebP variants and a
+  validated PixiJS manifest while deferring every candidate source;
 - `ART-008` measure identity recognition across views and expressions.
 
 **Feedback gate:** approve a representative male hero, female hero, roster group, and settlement-scale appearance before expanding assets.
@@ -1060,13 +1062,15 @@ The Phase 3 visual approval checkpoint is available at `/visual-lab`. The next r
 turn incorporates feedback where available and continues reversible production infrastructure:
 
 1. accept or revise Mara Vey, Remy Nahl, their roster composition, and settlement scale;
-2. define optimized runtime sprite/texture bundles and measure payload budgets;
+2. review the first approved runtime bundle at summon, dialogue, and roster sizes;
 3. only after visual acceptance, expand the representative cohort from two toward twelve humans;
-4. rerun visual, accessibility, performance, browser, and deterministic manifest gates;
-5. commit and push each reviewable checkpoint.
+4. continue `ART-008` scale/recognition evidence and mobile bundle measurements on approved assets;
+5. rerun visual, accessibility, performance, browser, and deterministic manifest gates;
+6. commit and push each reviewable checkpoint.
 
-The unoptimized source PNGs remain deliberate approval artifacts. Runtime compression and layered
-exports follow acceptance so the pipeline does not optimize rejected art.
+The unoptimized source PNGs remain deliberate approval artifacts. The runtime exporter processes
+only static-catalog `approved` sources; candidates are recorded as deferred and produce no runtime
+file.
 
 ## Accepted product decisions — 2026-08-23
 

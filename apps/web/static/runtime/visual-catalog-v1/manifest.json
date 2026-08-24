@@ -1,0 +1,146 @@
+{
+	"schemaVersion": "runtime-visual-manifest-v1",
+	"catalogVersion": "visual-catalog-v1",
+	"catalogContentHash": "78a270c54e2972777bb1ab532c59116d215c2405c6f32b893c64f7dc10c49c06",
+	"exporterVersion": "runtime-visual-exporter-v1",
+	"initialPayloadBudgetBytes": 8000000,
+	"initialPayloadBytes": 47758,
+	"initialPayloadStatus": "within-budget",
+	"toolchain": { "pixi": "8.20.0", "sharp": "0.35.3", "vips": "8.18.3", "webp": "1.6.0" },
+	"bundles": [
+		{
+			"name": "hero-ember-01-anchor-v1",
+			"budgetBytes": 550000,
+			"bytes": 47758,
+			"budgetStatus": "within-budget",
+			"assets": [
+				{
+					"alias": "hero.ember-01-anchor-v1.summon",
+					"usage": "summon",
+					"sourceAssetKey": "ember-01-anchor-v1",
+					"sourceStatus": "approved",
+					"sourceContentHash": "11a29acaa379bd10f7ef44b7126e9142e9b5a9279ba00585a86e2ff8cff91241",
+					"manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212"],
+					"file": "runtime/visual-catalog-v1/hero-ember-01-anchor-v1/summon.96b0fe61ac45.webp",
+					"publicPath": "/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/summon.96b0fe61ac45.webp",
+					"width": 768,
+					"height": 1152,
+					"bytes": 30528,
+					"contentHash": "96b0fe61ac45617f6d9d08d61e7a02fa481c85ab2027b1afb5f16f7aa52056f6",
+					"budgetBytes": 300000,
+					"budgetStatus": "within-budget",
+					"encoder": {
+						"format": "webp",
+						"quality": 82,
+						"effort": 6,
+						"preset": "drawing",
+						"smartSubsample": true,
+						"metadata": "stripped"
+					}
+				},
+				{
+					"alias": "hero.ember-01-anchor-v1.dialogue",
+					"usage": "dialogue",
+					"sourceAssetKey": "ember-01-anchor-v1",
+					"sourceStatus": "approved",
+					"sourceContentHash": "11a29acaa379bd10f7ef44b7126e9142e9b5a9279ba00585a86e2ff8cff91241",
+					"manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212"],
+					"file": "runtime/visual-catalog-v1/hero-ember-01-anchor-v1/dialogue.2986064d1a74.webp",
+					"publicPath": "/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/dialogue.2986064d1a74.webp",
+					"width": 512,
+					"height": 768,
+					"bytes": 13746,
+					"contentHash": "2986064d1a741c6eba789c3379228787e8fb9c756415d2b60db1e60a52467376",
+					"budgetBytes": 180000,
+					"budgetStatus": "within-budget",
+					"encoder": {
+						"format": "webp",
+						"quality": 80,
+						"effort": 6,
+						"preset": "drawing",
+						"smartSubsample": true,
+						"metadata": "stripped"
+					}
+				},
+				{
+					"alias": "hero.ember-01-anchor-v1.roster",
+					"usage": "roster",
+					"sourceAssetKey": "ember-01-anchor-v1",
+					"sourceStatus": "approved",
+					"sourceContentHash": "11a29acaa379bd10f7ef44b7126e9142e9b5a9279ba00585a86e2ff8cff91241",
+					"manifestHashes": ["a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212"],
+					"file": "runtime/visual-catalog-v1/hero-ember-01-anchor-v1/roster.33f7793c3bb2.webp",
+					"publicPath": "/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/roster.33f7793c3bb2.webp",
+					"width": 256,
+					"height": 384,
+					"bytes": 3484,
+					"contentHash": "33f7793c3bb275007c45d2f151626d07ad407587f982e4ca842bf9755aec2220",
+					"budgetBytes": 70000,
+					"budgetStatus": "within-budget",
+					"encoder": {
+						"format": "webp",
+						"quality": 76,
+						"effort": 6,
+						"preset": "drawing",
+						"smartSubsample": true,
+						"metadata": "stripped"
+					}
+				}
+			]
+		}
+	],
+	"deferred": [
+		{
+			"sourceAssetKey": "ember-01-continuity-v1",
+			"sourceContentHash": "38852de7e6c8d5d8f5c6a1aa6e842b3dea3f1a82e02257c3eeb5c2105f493a4b",
+			"sourceStatus": "approval-candidate",
+			"reason": "awaiting-human-approval"
+		},
+		{
+			"sourceAssetKey": "hearth-02-anchor-v1",
+			"sourceContentHash": "1b7fb5e3a073557f2b70bcd6edcbf8ce2188f169e21286d9b20550ad5122aac8",
+			"sourceStatus": "approval-candidate",
+			"reason": "awaiting-human-approval"
+		},
+		{
+			"sourceAssetKey": "hearth-02-continuity-v1",
+			"sourceContentHash": "244d3c57c45b83d2d3c89ade7463e69065eb46b9607b54867d306eaa2d972112",
+			"sourceStatus": "approval-candidate",
+			"reason": "awaiting-human-approval"
+		},
+		{
+			"sourceAssetKey": "hearth-roster-pair-v1",
+			"sourceContentHash": "d14d708da38607c5d352c4f217f8e91c0ba9c85907589a73e72c5116b5769ba8",
+			"sourceStatus": "approval-candidate",
+			"reason": "awaiting-human-approval"
+		},
+		{
+			"sourceAssetKey": "hearth-settlement-scale-v1",
+			"sourceContentHash": "555bd154e5914663dfdd7c4b37e97d1b68207f42f859af916b895eb0ed41a870",
+			"sourceStatus": "approval-candidate",
+			"reason": "awaiting-human-approval"
+		}
+	],
+	"pixiManifest": {
+		"bundles": [
+			{
+				"name": "hero-ember-01-anchor-v1",
+				"assets": [
+					{
+						"alias": "hero.ember-01-anchor-v1.summon",
+						"src": "/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/summon.96b0fe61ac45.webp"
+					},
+					{
+						"alias": "hero.ember-01-anchor-v1.dialogue",
+						"src": "/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/dialogue.2986064d1a74.webp"
+					},
+					{
+						"alias": "hero.ember-01-anchor-v1.roster",
+						"src": "/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/roster.33f7793c3bb2.webp"
+					}
+				]
+			}
+		]
+	},
+	"manifestHash": "d16826e4ddd7358b8a29b701b5ed9fd1bb4ee4b8902123dd3c4faf97f002bb32"
+}

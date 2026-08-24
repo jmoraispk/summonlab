@@ -171,11 +171,21 @@ the returned PNG remains ephemeral and cannot write the catalog, approve itself,
 or enter deterministic game state. The checked-in checkpoint uses a provider mock and makes no paid
 request.
 
+`/visual-lab/runtime-bundles` proves the delivery side with the first approved identity. Mara's
+1.80 MB anchor exports into separate summon, dialogue, and roster WebP textures totaling 47.8 KB.
+The checked-in manifest binds every file to source and identity hashes, enforces the 8 MB phone
+budget, and loads the summon texture through an actual lazy PixiJS v8 bundle alias. Approval
+candidates are visible in the ledger but produce no runtime files. The build gate measures 36.8 KB
+of initial JavaScript and 372.2 KB with the renderer inspector fully loaded, both gzip and below the
+700 KB ceiling.
+
 ![Visual continuity lab](docs/evidence/phase-3-visual-lab.png)
 
 ![100-seed Forge contact sheet](docs/evidence/phase-3-contact-sheet.png)
 
 ![Development-only summon-card request lab](docs/evidence/phase-3-summon-card-lab.png)
+
+![Approved-only runtime bundle lab](docs/evidence/phase-3-runtime-bundles.png)
 
 ## Deterministic survival checkpoint
 
