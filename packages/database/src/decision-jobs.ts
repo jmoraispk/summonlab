@@ -6,6 +6,7 @@ import {
 	DecisionJobFailureSchema,
 	DecisionJobRecordSchema,
 	DecisionJobStatusSchema,
+	DecisionProviderRequestProfileSchema,
 	HERO_MODEL_PROMPT_VERSION,
 	HeroDecisionPacketSchema,
 	HeroPolicyResultSchema,
@@ -17,6 +18,7 @@ import {
 	type DecisionJobFailure,
 	type DecisionJobRecord,
 	type DecisionJobStatus,
+	type DecisionProviderRequestProfile,
 	type HeroDecisionPacket,
 	type HeroPolicyResult,
 	type PolicyMode
@@ -56,6 +58,7 @@ interface DecisionJobRow {
 	legal_action_hash: string;
 	prompt_version: string;
 	context_policy_version: string;
+	provider_request: unknown | null;
 	packet: unknown;
 	result: unknown | null;
 	failure: unknown | null;
@@ -105,6 +108,7 @@ interface EngineRunBindingRow {
 export interface CreateDecisionJobInput {
 	readonly packet: HeroDecisionPacket;
 	readonly requestedPolicy: PolicyMode;
+	readonly providerRequest: DecisionProviderRequestProfile | null;
 	readonly maxProviderAttempts?: number;
 	readonly maxReplans?: number;
 }
@@ -182,7 +186,7 @@ async function parseJob(sql: Queryable, row: DecisionJobRow): Promise<DecisionJo
 		attemptsFor(sql, row.decision_job_id),
 		transitionsFor(sql, row.decision_job_id)
 	]);
-	return DecisionJobRecordSchema.parse({
+	const record = {
 		schemaVersion: row.schema_version,
 		decisionJobId: row.decision_job_id,
 		rootJobId: row.root_job_id,
@@ -232,7 +236,15 @@ async function parseJob(sql: Queryable, row: DecisionJobRow): Promise<DecisionJo
 		transitions,
 		createdAt: iso(row.created_at),
 		updatedAt: iso(row.updated_at)
-	});
+	};
+	return DecisionJobRecordSchema.parse(
+		row.schema_version === DECISION_JOB_VERSION
+			? {
+					...record,
+					providerRequest: row.provider_request
+				}
+			: record
+	);
 }
 
 async function jobRow(sql: Queryable, decisionJobId: string, forUpdate = false) {
@@ -283,6 +295,16 @@ async function insertDecisionJob(
 		throw new Error('Cannot persist a decision job with a tampered packet');
 	}
 	const requestedPolicy = PolicyModeSchema.parse(input.requestedPolicy);
+	const providerRequest =
+		input.providerRequest === null
+			? null
+			: DecisionProviderRequestProfileSchema.parse(input.providerRequest);
+	if ((requestedPolicy === 'model') !== (providerRequest !== null)) {
+		throw new Error('Model decision jobs require one exact provider request profile');
+	}
+	if (providerRequest && providerRequest.packetHash !== packet.packetHash) {
+		throw new Error('Decision provider request profile is bound to another packet');
+	}
 	const maxProviderAttempts = input.maxProviderAttempts ?? 2;
 	const maxReplans = input.maxReplans ?? 3;
 	const inserted = await sql<DecisionJobRow[]>`
@@ -290,7 +312,7 @@ async function insertDecisionJob(
 			decision_job_id, schema_version, root_job_id, parent_job_id, run_id, hero_id,
 			decision_kind, requested_policy, expected_run_version, expected_event_cursor,
 			decision_game_time, packet_id, packet_hash, state_hash, legal_action_hash,
-			prompt_version, context_policy_version, packet, max_provider_attempts,
+			prompt_version, context_policy_version, provider_request, packet, max_provider_attempts,
 			replan_count, max_replans
 		) values (
 			${input.decisionJobId}, ${DECISION_JOB_VERSION}, ${input.rootJobId},
@@ -298,7 +320,8 @@ async function insertDecisionJob(
 			${requestedPolicy}, ${packet.world.stateVersion}, ${packet.world.eventCursor},
 			${packet.assembledAtGameTime}, ${packet.packetId}, ${packet.packetHash},
 			${packet.world.stateHash}, ${packet.legalActionHash}, ${HERO_MODEL_PROMPT_VERSION},
-			${packet.contextPolicyVersion}, ${sql.json(packet as never)}, ${maxProviderAttempts},
+			${packet.contextPolicyVersion}, ${providerRequest ? sql.json(providerRequest as never) : null},
+			${sql.json(packet as never)}, ${maxProviderAttempts},
 			${input.replanCount}, ${maxReplans}
 		)
 		on conflict (run_id, hero_id, packet_hash, requested_policy) do nothing
@@ -346,7 +369,8 @@ export async function createDecisionJob(
 export async function createReplannedDecisionJob(
 	databaseUrl: string,
 	parentJobId: string,
-	packetInput: HeroDecisionPacket
+	packetInput: HeroDecisionPacket,
+	providerRequestInput: DecisionProviderRequestProfile | null
 ): Promise<DecisionJobRecord | null> {
 	const packet = HeroDecisionPacketSchema.parse(packetInput);
 	const decisionJobId = randomUUID();
@@ -366,6 +390,7 @@ export async function createReplannedDecisionJob(
 			const inserted = await insertDecisionJob(transaction, {
 				packet,
 				requestedPolicy: parent.requested_policy,
+				providerRequest: providerRequestInput,
 				maxProviderAttempts: parent.max_provider_attempts,
 				maxReplans: parent.max_replans,
 				decisionJobId,

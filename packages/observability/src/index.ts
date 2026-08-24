@@ -38,3 +38,4 @@ export function requestLogger(logger: Logger, requestId: string): Logger {
 }
 
 export { REQUEST_ID_HEADER };
+export * from './decision-inspector.js';

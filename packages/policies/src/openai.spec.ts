@@ -8,7 +8,8 @@ import {
 	assembleHeroDecisionPacket,
 	createBootstrapEngine,
 	deterministicUuid,
-	hashCanonical
+	hashCanonical,
+	sha256Hex
 } from '@summonlab/engine';
 import type { ResponseCreateParamsNonStreaming } from 'openai/resources/responses/responses';
 import { describe, expect, it } from 'vitest';
@@ -19,6 +20,8 @@ import {
 	OPENAI_HERO_DECISION_JSON_SCHEMA,
 	OPENAI_HERO_DECISION_SCHEMA_NAME,
 	OpenAIModelPolicy,
+	buildOpenAIHeroDecisionRequest,
+	buildOpenAIHeroDecisionRequestProfile,
 	type OpenAIModelResponse,
 	type OpenAIResponsesTransport
 } from './openai.js';
@@ -107,6 +110,36 @@ function expectPolicyError(error: unknown, code: ModelPolicyError['code'], retry
 }
 
 describe('OpenAI model policy', () => {
+	it('persists an exact credential-free profile of the request boundary', async () => {
+		const packet = await packetFixture();
+		const options = {
+			model: 'gpt-5-nano',
+			maxOutputTokens: 640,
+			reasoningEffort: 'low' as const
+		};
+		const request = buildOpenAIHeroDecisionRequest(packet, options);
+		const profile = buildOpenAIHeroDecisionRequestProfile(packet, options);
+
+		expect(profile).toMatchObject({
+			packetHash: packet.packetHash,
+			requestedModel: 'gpt-5-nano',
+			maxOutputTokens: 640,
+			reasoningEffort: 'low',
+			store: false,
+			background: false,
+			conversationId: null,
+			previousResponseId: null,
+			toolCount: 0,
+			credentialDisposition: 'server-only-never-persisted',
+			privateReasoningDisposition: 'private-reasoning-content-not-requested-or-stored'
+		});
+		expect(profile.requestKeys).toEqual(Object.keys(request).sort());
+		expect(profile.requestHash).toBe(hashCanonical(request));
+		expect(profile.inputHash).toBe(sha256Hex(String(request.input)));
+		expect(JSON.stringify(profile)).not.toContain(String(request.input));
+		expect(JSON.stringify(profile).toLowerCase()).not.toContain('api_key');
+	});
+
 	it('submits one independent strict structured request and returns a legal bound result', async () => {
 		const packet = await packetFixture();
 		const decision = validDecision(packet);

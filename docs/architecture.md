@@ -409,8 +409,8 @@ overheard; ties resolve by event time and stable ID. Selection stops at both an 
 character budget. Communication text can enter a memory only when act → witness → observation
 provenance resolves for that hero. The summon page exposes a compact **What reaches this hero**
 preview, and `GET /api/runs/:runId/decision-context` rebuilds the same current packet after new
-speech. Decision jobs, result application, and witnessed conversation are now implemented; the
-full redacted packet/result inspector remains `AGT-008`.
+speech. Decision jobs, result application, witnessed conversation, and redacted decision inspection
+are now implemented.
 
 `AGT-004` adds a separate pure `@summonlab/policies` package. `RandomPolicy` requires an explicit
 seed and derives one reproducible unsigned draw from the packet and legal-action hashes.
@@ -456,6 +456,25 @@ decision packets as witnessed preferences with weights 24 and 12. The scripted p
 weight only when intent terms match an already legal action. Refused and deferred orders remain
 retrievable memories but contribute no preference. Replay recomputes the act, response, score,
 relationship/authority evidence, and `society-v3` bytes; v1–v8 histories remain unchanged.
+
+`AGT-008` adds a historical request and inspection boundary. New `decision-job-v2` rows persist an
+exact, credential-free provider request profile when and only when the requested policy is a model.
+The profile is created from the same request object the adapter would submit and hash-binds the
+packet, prompt, schema, input, instructions, model, output cap, reasoning effort, and provider-safe
+settings. Existing `decision-job-v1` rows remain readable and report unavailable historical request
+metadata rather than borrowing current configuration.
+
+`decision-inspector-v1` derives a report from the canonical stored job. It retains action IDs,
+legal moves, selected evidence provenance and scores, lifecycle, latency, token metadata, validation
+outcomes, and engine receipts while replacing private communication, directives, memory summaries,
+belief text, social evidence, promise terms, and hero prose with typed length-plus-hash digests. It
+also names context that never entered the packet. The report has its own canonical hash and contains
+no credential or provider-private reasoning content.
+
+The development-only `/debug/decisions/:jobId` page and `/api/dev/decisions/:jobId` endpoint expose
+only that redacted report. Normal browser polling uses a separate minimal client projection with no
+packet, provider profile, policy trace, raw result prose, transition details, or provider failure
+message. See ADR 0027.
 
 ### Implemented reconnect projection
 

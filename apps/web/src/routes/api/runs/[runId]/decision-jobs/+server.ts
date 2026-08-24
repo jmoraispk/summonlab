@@ -2,6 +2,8 @@ import { getConfig } from '@summonlab/config';
 import { DecisionJobCreateRequestSchema } from '@summonlab/contracts';
 import { createDecisionJob, getEngineSnapshot, getProofRun } from '@summonlab/database';
 import { assembleHeroDecisionPacket } from '@summonlab/engine';
+import { projectDecisionJobClientView } from '@summonlab/observability';
+import { buildOpenAIHeroDecisionRequestProfile } from '@summonlab/policies/openai';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
@@ -70,10 +72,20 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const job = await createDecisionJob(config.databaseUrl, {
 			packet,
 			requestedPolicy: parsed.data.policy,
+			providerRequest:
+				parsed.data.policy === 'model'
+					? buildOpenAIHeroDecisionRequestProfile(packet, {
+							model: config.policyModel,
+							maxOutputTokens: config.policyMaxOutputTokens,
+							reasoningEffort: config.policyReasoningEffort
+						})
+					: null,
 			maxProviderAttempts: config.decisionJobMaxProviderAttempts,
 			maxReplans: config.decisionJobMaxReplans
 		});
-		return json(job, { status: job.status === 'created' ? 202 : 200 });
+		return json(projectDecisionJobClientView(job), {
+			status: job.status === 'created' ? 202 : 200
+		});
 	} catch (error) {
 		return json(
 			{

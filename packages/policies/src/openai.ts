@@ -1,7 +1,10 @@
 import {
+	DECISION_PROVIDER_REQUEST_VERSION,
+	DecisionProviderRequestProfileSchema,
 	HERO_MODEL_PROMPT_VERSION,
 	HeroDecisionSchema,
 	MODEL_POLICY_VERSION,
+	type DecisionProviderRequestProfile,
 	type HeroDecisionPacket,
 	type HeroPolicyResult
 } from '@summonlab/contracts';
@@ -201,6 +204,43 @@ export function buildOpenAIHeroDecisionRequest(
 		positiveInteger(options.maxOutputTokens ?? 800, 'maxOutputTokens', 128, 4_000),
 		options.reasoningEffort ?? 'minimal'
 	);
+}
+
+export function buildOpenAIHeroDecisionRequestProfile(
+	packetInput: HeroDecisionPacket,
+	options: Pick<OpenAIModelPolicyOptions, 'model' | 'maxOutputTokens' | 'reasoningEffort'>
+): DecisionProviderRequestProfile {
+	const packet = validatePolicyPacket(packetInput);
+	const request = buildOpenAIHeroDecisionRequest(packet, options);
+	if (typeof request.input !== 'string' || typeof request.instructions !== 'string') {
+		throw new Error('Hero decision requests require canonical string input and instructions');
+	}
+	return DecisionProviderRequestProfileSchema.parse({
+		schemaVersion: DECISION_PROVIDER_REQUEST_VERSION,
+		provider: 'openai',
+		endpoint: '/v1/responses',
+		packetHash: packet.packetHash,
+		promptVersion: HERO_MODEL_PROMPT_VERSION,
+		schemaName: OPENAI_HERO_DECISION_SCHEMA_NAME,
+		requestedModel: request.model,
+		background: request.background,
+		store: request.store,
+		serviceTier: request.service_tier,
+		maxOutputTokens: request.max_output_tokens,
+		reasoningEffort: request.reasoning?.effort,
+		textVerbosity: request.text?.verbosity,
+		conversationId: null,
+		previousResponseId: null,
+		toolCount: request.tools?.length ?? 0,
+		requestKeys: Object.keys(request).sort(),
+		inputCharacters: request.input.length,
+		inputHash: sha256Hex(request.input),
+		instructionsHash: sha256Hex(request.instructions),
+		schemaHash: hashCanonical(OPENAI_HERO_DECISION_JSON_SCHEMA),
+		requestHash: hashCanonical(request),
+		credentialDisposition: 'server-only-never-persisted',
+		privateReasoningDisposition: 'private-reasoning-content-not-requested-or-stored'
+	});
 }
 
 export class OpenAIModelPolicy implements HeroPolicy {

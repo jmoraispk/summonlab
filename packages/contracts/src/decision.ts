@@ -39,7 +39,9 @@ export const RANDOM_POLICY_VERSION = 'random-policy-v1';
 export const SCRIPTED_POLICY_VERSION = 'scripted-policy-v1';
 export const MODEL_POLICY_VERSION = 'model-policy-v1';
 export const HERO_MODEL_PROMPT_VERSION = 'hero-model-prompt-v1';
-export const DECISION_JOB_VERSION = 'decision-job-v1';
+export const LEGACY_DECISION_JOB_VERSION = 'decision-job-v1';
+export const DECISION_JOB_VERSION = 'decision-job-v2';
+export const DECISION_PROVIDER_REQUEST_VERSION = 'decision-provider-request-v1';
 
 export const HeroDecisionKindSchema = z.enum([
 	'settlement-action',
@@ -441,6 +443,45 @@ export const HeroPolicyResultSchema = z
 		}
 	});
 
+export const DecisionProviderRequestProfileSchema = z
+	.object({
+		schemaVersion: z.literal(DECISION_PROVIDER_REQUEST_VERSION),
+		provider: z.literal('openai'),
+		endpoint: z.literal('/v1/responses'),
+		packetHash: StateHashSchema,
+		promptVersion: z.literal(HERO_MODEL_PROMPT_VERSION),
+		schemaName: z.literal('summonlab_hero_decision'),
+		requestedModel: z.string().min(1).max(120),
+		background: z.literal(false),
+		store: z.literal(false),
+		serviceTier: z.literal('default'),
+		maxOutputTokens: z.number().int().min(128).max(4_000),
+		reasoningEffort: z.enum(['minimal', 'low', 'medium']),
+		textVerbosity: z.literal('low'),
+		conversationId: z.null(),
+		previousResponseId: z.null(),
+		toolCount: z.literal(0),
+		requestKeys: z.tuple([
+			z.literal('background'),
+			z.literal('input'),
+			z.literal('instructions'),
+			z.literal('max_output_tokens'),
+			z.literal('model'),
+			z.literal('reasoning'),
+			z.literal('service_tier'),
+			z.literal('store'),
+			z.literal('text')
+		]),
+		inputCharacters: z.number().int().positive().max(200_000),
+		inputHash: StateHashSchema,
+		instructionsHash: StateHashSchema,
+		schemaHash: StateHashSchema,
+		requestHash: StateHashSchema,
+		credentialDisposition: z.literal('server-only-never-persisted'),
+		privateReasoningDisposition: z.literal('private-reasoning-content-not-requested-or-stored')
+	})
+	.strict();
+
 export const DecisionJobStatusSchema = z.enum([
 	'created',
 	'queued',
@@ -514,88 +555,125 @@ export const DecisionJobApplicationSchema = z
 	})
 	.strict();
 
-export const DecisionJobRecordSchema = z
+const DecisionJobRecordFields = {
+	decisionJobId: EntityIdSchema,
+	rootJobId: EntityIdSchema,
+	parentJobId: EntityIdSchema.nullable(),
+	replacementJobId: EntityIdSchema.nullable(),
+	runId: EntityIdSchema,
+	heroId: EntityIdSchema,
+	decisionKind: HeroDecisionKindSchema,
+	status: DecisionJobStatusSchema,
+	requestedPolicy: PolicyModeSchema,
+	nextAttemptKind: DecisionAttemptKindSchema,
+	activePolicy: PolicyModeSchema.nullable(),
+	resolution: z.enum(['requested', 'fallback']).nullable(),
+	expectedRunVersion: z.number().int().nonnegative(),
+	expectedEventCursor: z.number().int().positive(),
+	decisionGameTime: IsoDateTimeSchema,
+	packetId: EntityIdSchema,
+	packetHash: StateHashSchema,
+	stateHash: StateHashSchema,
+	legalActionHash: StateHashSchema,
+	promptVersion: z.string().min(1).max(80),
+	contextPolicyVersion: z.string().min(1).max(80),
+	packet: HeroDecisionPacketSchema,
+	result: HeroPolicyResultSchema.nullable(),
+	failure: DecisionJobFailureSchema.nullable(),
+	attemptCount: z.number().int().nonnegative(),
+	providerAttemptCount: z.number().int().nonnegative(),
+	maxProviderAttempts: z.number().int().min(1).max(4),
+	replanCount: z.number().int().nonnegative().max(16),
+	maxReplans: z.number().int().nonnegative().max(16),
+	leaseExpiresAt: IsoDateTimeSchema.nullable(),
+	application: DecisionJobApplicationSchema.nullable(),
+	attempts: z.array(DecisionJobAttemptSchema).max(16),
+	transitions: z.array(DecisionJobTransitionSchema).min(1).max(64),
+	createdAt: IsoDateTimeSchema,
+	updatedAt: IsoDateTimeSchema
+} satisfies z.ZodRawShape;
+
+function validateDecisionJobRecord(
+	job: z.infer<z.ZodObject<typeof DecisionJobRecordFields>>,
+	context: z.RefinementCtx
+): void {
+	if (
+		job.packet.packetId !== job.packetId ||
+		job.packet.packetHash !== job.packetHash ||
+		job.packet.runId !== job.runId ||
+		job.packet.heroId !== job.heroId ||
+		job.packet.decisionKind !== job.decisionKind ||
+		job.packet.world.stateVersion !== job.expectedRunVersion ||
+		job.packet.world.eventCursor !== job.expectedEventCursor ||
+		job.packet.world.stateHash !== job.stateHash ||
+		job.packet.legalActionHash !== job.legalActionHash
+	) {
+		context.addIssue({ code: 'custom', message: 'Decision job packet binding is inconsistent' });
+	}
+	if (
+		job.result &&
+		(job.result.packetId !== job.packetId ||
+			job.result.packetHash !== job.packetHash ||
+			job.result.legalActionHash !== job.legalActionHash ||
+			job.result.world.stateVersion !== job.expectedRunVersion ||
+			job.result.world.eventCursor !== job.expectedEventCursor ||
+			job.result.world.stateHash !== job.stateHash)
+	) {
+		context.addIssue({ code: 'custom', message: 'Decision job result binding is inconsistent' });
+	}
+	if (job.attemptCount !== job.attempts.length) {
+		context.addIssue({ code: 'custom', message: 'Decision job attempt count is inconsistent' });
+	}
+	const latestTransition = job.transitions.at(-1);
+	if (!latestTransition || latestTransition.toStatus !== job.status) {
+		context.addIssue({ code: 'custom', message: 'Decision job transition head is inconsistent' });
+	}
+	if ((job.status === 'applied') !== (job.application !== null)) {
+		context.addIssue({ code: 'custom', message: 'Decision job application is inconsistent' });
+	}
+	if (job.status === 'applied' && !job.result) {
+		context.addIssue({ code: 'custom', message: 'Applied decision job has no result' });
+	}
+	if (job.parentJobId === null && job.rootJobId !== job.decisionJobId) {
+		context.addIssue({ code: 'custom', message: 'Root decision job identity is inconsistent' });
+	}
+}
+
+export const DecisionJobRecordV1Schema = z
+	.object({
+		schemaVersion: z.literal(LEGACY_DECISION_JOB_VERSION),
+		...DecisionJobRecordFields
+	})
+	.strict()
+	.superRefine(validateDecisionJobRecord);
+
+export const DecisionJobRecordV2Schema = z
 	.object({
 		schemaVersion: z.literal(DECISION_JOB_VERSION),
-		decisionJobId: EntityIdSchema,
-		rootJobId: EntityIdSchema,
-		parentJobId: EntityIdSchema.nullable(),
-		replacementJobId: EntityIdSchema.nullable(),
-		runId: EntityIdSchema,
-		heroId: EntityIdSchema,
-		decisionKind: HeroDecisionKindSchema,
-		status: DecisionJobStatusSchema,
-		requestedPolicy: PolicyModeSchema,
-		nextAttemptKind: DecisionAttemptKindSchema,
-		activePolicy: PolicyModeSchema.nullable(),
-		resolution: z.enum(['requested', 'fallback']).nullable(),
-		expectedRunVersion: z.number().int().nonnegative(),
-		expectedEventCursor: z.number().int().positive(),
-		decisionGameTime: IsoDateTimeSchema,
-		packetId: EntityIdSchema,
-		packetHash: StateHashSchema,
-		stateHash: StateHashSchema,
-		legalActionHash: StateHashSchema,
-		promptVersion: z.string().min(1).max(80),
-		contextPolicyVersion: z.string().min(1).max(80),
-		packet: HeroDecisionPacketSchema,
-		result: HeroPolicyResultSchema.nullable(),
-		failure: DecisionJobFailureSchema.nullable(),
-		attemptCount: z.number().int().nonnegative(),
-		providerAttemptCount: z.number().int().nonnegative(),
-		maxProviderAttempts: z.number().int().min(1).max(4),
-		replanCount: z.number().int().nonnegative().max(16),
-		maxReplans: z.number().int().nonnegative().max(16),
-		leaseExpiresAt: IsoDateTimeSchema.nullable(),
-		application: DecisionJobApplicationSchema.nullable(),
-		attempts: z.array(DecisionJobAttemptSchema).max(16),
-		transitions: z.array(DecisionJobTransitionSchema).min(1).max(64),
-		createdAt: IsoDateTimeSchema,
-		updatedAt: IsoDateTimeSchema
+		...DecisionJobRecordFields,
+		providerRequest: DecisionProviderRequestProfileSchema.nullable()
 	})
 	.strict()
 	.superRefine((job, context) => {
-		if (
-			job.packet.packetId !== job.packetId ||
-			job.packet.packetHash !== job.packetHash ||
-			job.packet.runId !== job.runId ||
-			job.packet.heroId !== job.heroId ||
-			job.packet.decisionKind !== job.decisionKind ||
-			job.packet.world.stateVersion !== job.expectedRunVersion ||
-			job.packet.world.eventCursor !== job.expectedEventCursor ||
-			job.packet.world.stateHash !== job.stateHash ||
-			job.packet.legalActionHash !== job.legalActionHash
-		) {
-			context.addIssue({ code: 'custom', message: 'Decision job packet binding is inconsistent' });
+		validateDecisionJobRecord(job, context);
+		if ((job.requestedPolicy === 'model') !== (job.providerRequest !== null)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Decision provider request profile does not match the requested policy'
+			});
 		}
-		if (
-			job.result &&
-			(job.result.packetId !== job.packetId ||
-				job.result.packetHash !== job.packetHash ||
-				job.result.legalActionHash !== job.legalActionHash ||
-				job.result.world.stateVersion !== job.expectedRunVersion ||
-				job.result.world.eventCursor !== job.expectedEventCursor ||
-				job.result.world.stateHash !== job.stateHash)
-		) {
-			context.addIssue({ code: 'custom', message: 'Decision job result binding is inconsistent' });
-		}
-		if (job.attemptCount !== job.attempts.length) {
-			context.addIssue({ code: 'custom', message: 'Decision job attempt count is inconsistent' });
-		}
-		const latestTransition = job.transitions.at(-1);
-		if (!latestTransition || latestTransition.toStatus !== job.status) {
-			context.addIssue({ code: 'custom', message: 'Decision job transition head is inconsistent' });
-		}
-		if ((job.status === 'applied') !== (job.application !== null)) {
-			context.addIssue({ code: 'custom', message: 'Decision job application is inconsistent' });
-		}
-		if (job.status === 'applied' && !job.result) {
-			context.addIssue({ code: 'custom', message: 'Applied decision job has no result' });
-		}
-		if (job.parentJobId === null && job.rootJobId !== job.decisionJobId) {
-			context.addIssue({ code: 'custom', message: 'Root decision job identity is inconsistent' });
+		if (job.providerRequest && job.providerRequest.packetHash !== job.packetHash) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Decision provider request profile is bound to another packet'
+			});
 		}
 	});
+
+export const DecisionJobRecordSchema = z.discriminatedUnion('schemaVersion', [
+	DecisionJobRecordV1Schema,
+	DecisionJobRecordV2Schema
+]);
 
 export const DecisionJobCreateRequestSchema = z
 	.object({
@@ -648,6 +726,7 @@ export type HeroDecisionKind = z.infer<typeof HeroDecisionKindSchema>;
 export type HeroDecisionPacket = z.infer<typeof HeroDecisionPacketSchema>;
 export type HeroDecisionPreview = z.infer<typeof HeroDecisionPreviewSchema>;
 export type HeroPolicyResult = z.infer<typeof HeroPolicyResultSchema>;
+export type DecisionProviderRequestProfile = z.infer<typeof DecisionProviderRequestProfileSchema>;
 export type DecisionAttemptKind = z.infer<typeof DecisionAttemptKindSchema>;
 export type DecisionJobAttempt = z.infer<typeof DecisionJobAttemptSchema>;
 export type DecisionJobCreateRequest = z.infer<typeof DecisionJobCreateRequestSchema>;

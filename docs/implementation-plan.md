@@ -999,11 +999,12 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — AGT-001 through AGT-007 completed 2026-08-24.** Holder-owned cognition,
+**Status: in progress — AGT-001 through AGT-008 completed 2026-08-24.** Holder-owned cognition,
 witnessed communication, hash-bound decision packets, deterministic zero-cost policy baselines,
 an opt-in strict OpenAI Responses policy, and the durable stale-safe application lifecycle are
-runnable. Free conversation now produces witnessed hero replies and explicit order outcomes;
-redacted inspection, evaluation, and general scoped directives remain.
+runnable. Free conversation now produces witnessed hero replies and explicit order outcomes, and a
+hash-bound redacted inspector audits supplied/omitted context plus provider and validation
+boundaries; evaluation and general scoped directives remain.
 
 - `AGT-001` complete: implement direct observations, provenance-linked beliefs, directed
   relationships, founding promises, and multidimensional authority under `engine-v7`;
@@ -1024,7 +1025,10 @@ redacted inspection, evaluation, and general scoped directives remain.
   relationship/authority-aware responses, explicit accepted/negotiated/deferred/refused outcomes,
   replay-safe social evidence, and witnessed order preferences that affect only later legal-action
   scoring;
-- `AGT-008` implement redacted packet and result inspector;
+- `AGT-008` complete: persist a credential-free exact provider request profile, preserve legacy
+  jobs, derive hash-bound redacted packet/result reports, expose supplied and omitted context,
+  evidence selection, tokens, lifecycle and validation boundaries, and keep raw packets out of
+  normal browser polling;
 - `AGT-009` create fixed evaluation corpus and budget report;
 - `AGT-010` implement scoped player directives, witnessed delivery, and influence records.
 
@@ -1143,8 +1147,9 @@ packets, deterministic baselines, and the independent strict model adapter. `AGT
 PostgreSQL-authoritative decision lifecycle, crash leases, bounded retry/fallback, two stale guards,
 replacement packets, and atomic engine application. `AGT-007` adds `engine-v9` / `society-v3`,
 canonical free-text turns, explicit hero replies and order outcomes, and weighted witnessed
-preferences that cannot create or execute actions. The next engineering slice is `AGT-008`: a
-redacted packet and result inspector.
+preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
+profiles plus a redacted, hash-bound decision inspector. The next engineering slice is `AGT-009`: a
+fixed evaluation corpus and budget report.
 
 ## Accepted product decisions — 2026-08-23
 

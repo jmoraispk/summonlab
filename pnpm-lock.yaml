@@ -228,9 +228,22 @@ importers:
 
   packages/observability:
     dependencies:
+      '@summonlab/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@summonlab/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@summonlab/policies':
+        specifier: workspace:*
+        version: link:../policies
       pino:
         specifier: ^10.3.1
         version: 10.3.1
+    devDependencies:
+      '@summonlab/characters':
+        specifier: workspace:*
+        version: link:../characters
 
   packages/policies:
     dependencies:

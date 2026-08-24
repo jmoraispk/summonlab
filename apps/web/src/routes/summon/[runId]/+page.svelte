@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type {
-		DecisionJobRecord,
+		DecisionJobClientView,
 		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
@@ -23,7 +23,7 @@
 	let modelResult = $state<HeroPolicyResult | null>(null);
 	let requestingModel = $state(false);
 	let modelRequestError = $state('');
-	let decisionJob = $state<DecisionJobRecord | null>(null);
+	let decisionJob = $state<DecisionJobClientView | null>(null);
 	let decisionJobError = $state('');
 	let queueingDecisionJob = $state(false);
 	let stage = $state(0);
@@ -238,9 +238,9 @@
 		decisionJobPollTimer = undefined;
 	}
 
-	async function loadDecisionJob(jobId: string): Promise<DecisionJobRecord> {
+	async function loadDecisionJob(jobId: string): Promise<DecisionJobClientView> {
 		const response = await fetch(`/api/runs/${snapshot.runId}/decision-jobs/${jobId}`);
-		const result = (await response.json()) as DecisionJobRecord & { message?: string };
+		const result = (await response.json()) as DecisionJobClientView & { message?: string };
 		if (!response.ok) throw new Error(result.message ?? 'The decision job could not be loaded.');
 		return result;
 	}
@@ -287,7 +287,7 @@
 					costAcknowledged: policy === 'model'
 				})
 			});
-			const result = (await response.json()) as DecisionJobRecord & { message?: string };
+			const result = (await response.json()) as DecisionJobClientView & { message?: string };
 			if (!response.ok) throw new Error(result.message ?? 'The decision job could not be queued.');
 			decisionJob = result;
 			await pollDecisionJob();
@@ -765,17 +765,26 @@
 										{/each}
 									</div>
 									{#if decisionJob.failure}
-										<small>{decisionJob.failure.code} · {decisionJob.failure.message}</small>
+										<small
+											>{decisionJob.failure.code} · {decisionJob.failure.retryable
+												? 'retryable'
+												: 'terminal'}</small
+										>
 									{:else if decisionJob.result}
 										<small
-											>{decisionJob.resolution} policy chose {decisionJob.result.decision
-												.actionId}</small
+											>{decisionJob.resolution} policy chose {decisionJob.result.actionId}</small
 										>
 									{:else}
 										<small
 											>The worker owns execution; this browser only observes lifecycle state.</small
 										>
 									{/if}
+									<a
+										class="trace-link"
+										href={resolve('/debug/decisions/[jobId]', {
+											jobId: decisionJob.decisionJobId
+										})}>Open redacted decision trace →</a
+									>
 								{:else}
 									<p>
 										Create one packet-bound job. A stale completion is rejected and replanned; only
@@ -878,7 +887,7 @@
 							<span>Decision job applied</span>
 							<code>{decisionJob.decisionJobId.slice(0, 10)}</code>
 						</div>
-						<strong>{decisionJob.result?.decision.actionId}</strong>
+						<strong>{decisionJob.result?.actionId}</strong>
 						<small
 							>cursor {decisionJob.application.eventCursor} · version {decisionJob.application
 								.runVersion} · {decisionJob.resolution}</small
@@ -2103,6 +2112,20 @@
 		color: rgba(246, 241, 231, 0.45);
 		font-size: 0.47rem;
 		line-height: 1.5;
+	}
+
+	.trace-link {
+		display: block;
+		margin-top: 0.55rem;
+		color: #70c8d9;
+		font-size: 0.45rem;
+		letter-spacing: 0.06em;
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+
+	.trace-link:hover {
+		color: #bce7ef;
 	}
 
 	.decision-job > p {

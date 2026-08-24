@@ -222,12 +222,13 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-007` were completed on 2026-08-24. Canonical
+Status: **in progress**. `AGT-001` through `AGT-008` were completed on 2026-08-24. Canonical
 witnessed onboarding now feeds deterministic, inspectable hero context, two packet-bound zero-cost
 policies, one opt-in strict OpenAI policy preview, and a PostgreSQL-authoritative stale-safe job
 lifecycle that can atomically apply a legal choice. Free conversation now records exact witnessed
-turns, distinct hero replies, explicit order outcomes, and later decision preferences; the redacted
-packet/result inspector is next.
+turns, distinct hero replies, explicit order outcomes, and later decision preferences. The
+development-only redacted inspector now audits exactly supplied and omitted context, provider-safe
+request settings, token metadata, validation boundaries, and application evidence.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -238,6 +239,7 @@ packet/result inspector is next.
 | `AGT-005` | Complete: `OpenAIModelPolicy` submits one official-SDK foreground Responses request containing only the verified canonical packet; disables provider storage and conversation chaining; uses low verbosity, bounded minimal reasoning, and strict `summonlab_hero_decision` Structured Outputs; revalidates schema plus legal actions/targets/memories; returns provider/model/token/request/output/result trace; classifies timeout, provider error, refusal, incomplete, malformed, invalid, and illegal outputs; and remains a manual development-only preview with mode/key/cost/stale-packet gates | [Model adapter evidence](evidence/phase-5-model-adapter.png), fake-transport policy tests, no-key browser journey, model-preview API, ADR 0024 |
 | `AGT-006` | Complete: `decision-job-v1` persists the exact packet and run/legal hashes, attempts, leases, transitions, failures, replacement links, result, and application receipt; pg-boss carries only the job ID; pre-policy and transaction-locked pre-application guards reject stale work; model calls receive one bounded retry then deterministic scripted fallback; expired leases and completed-but-unapplied results recover without repeating provider work; fresh replans are linked and capped; and a validated policy result becomes one idempotent engine command with strict replay | [Decision job evidence](evidence/phase-5-decision-jobs.png), contract/engine/database/queue/worker/browser tests, decision-job APIs, summon lifecycle inspector, ADR 0025 |
 | `AGT-007` | Complete: `engine-v9` / `society-v3` records exact witnessed say/ask/order turns; derives social-style replies and accepted/negotiated/deferred/refused outcomes from six inspectable score groups; leaves action execution entirely inside the normal engine boundary; projects accepted/negotiated orders into later packet preferences of 24/12; exposes reply, score, influence, and replay evidence in normal play; and preserves v1–v8 histories | [Conversation and order evidence](evidence/phase-5-conversation-orders.png), contract/engine/policy/database/browser tests, conversation API and summon/replay inspectors, ADR 0026 |
+| `AGT-008` | Complete: `decision-job-v2` persists an exact credential-free, packet-bound provider request profile for model jobs while retaining v1 compatibility; `decision-inspector-v1` derives a hash-bound report with sensitive prose replaced by typed digests; supplied/omitted context, evidence scores, legal choices, provider settings and usage, retries/fallback, validation boundaries, and engine receipts remain auditable; normal polling receives a packet-free client projection | [Redacted decision inspector evidence](evidence/phase-5-decision-inspector.png), contract/redaction/provider/database/worker/browser tests, dev API and inspector page, ADR 0027 |
 
 ### Reproduce the checkpoint
 
@@ -259,6 +261,10 @@ its witnessed text and `conversation-weight-24` or `conversation-weight-12`; a r
 order must remain a memory without a preference. The **Live model bench** must report **adapter ready** and **No provider request is
 sent in scripted mode**. Press **Queue scripted + apply** and confirm the observed lifecycle ends
 at **applied**, shows exactly one attempt, and displays the selected action plus cursor/version.
+As soon as a job exists, press **Open redacted decision trace**. Confirm the privacy boundary shows
+zero credentials, raw private text, and private reasoning; the supplied-context counts and evidence
+scores are present; scripted mode says no external model was requested; validation shows the exact
+boundaries reached; and opening the redacted JSON never reveals the conversation or order text.
 The answer panel and authoritative journal must reflect the same choice, and replay must remain
 verified. Speak again on a fresh run and confirm the packet and both preview results refresh. To perform one
 optional paid preview, stop the app, set `POLICY_MODE=model` and `OPENAI_API_KEY` in local `.env`,
@@ -274,7 +280,7 @@ verified.
 
 ## Next active engineering slice
 
-Begin `AGT-008`: expose a redacted packet/result inspector that makes supplied context, omitted
-private state, provider-safe fields, selected evidence, token metadata, and validation boundaries
-auditable without leaking secrets or private reasoning. Phase 3 cohort expansion remains behind its
-separate human visual gate.
+Begin `AGT-009`: create a fixed evaluation corpus that covers personality distinction, witnessed
+context use, directive influence, legal-action safety, fallback, and redaction, then produce a
+repeatable quality/latency/token budget report. Phase 3 cohort expansion remains behind its separate
+human visual gate.

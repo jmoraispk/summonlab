@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 are complete; Phase 3 is human-gated, Phase 4 is playable, and Phase 5 now includes witnessed free conversation and order outcomes._
+_Status: Phases 0–2 are complete; Phase 3 is human-gated, Phase 4 is playable, and Phase 5 now includes witnessed conversation plus redacted agent-decision traces._
 
 </div>
 
@@ -158,6 +158,16 @@ next legal decision packet, while the engine remains the only code allowed to ex
 
 ![A summoned hero negotiates a training order](docs/evidence/phase-5-conversation-orders.png)
 
+### Redacted decision trace
+
+Every durable choice now has a development-only audit page. It shows what context reached the hero,
+which memories were selected and why, the legal choices, exact request safety settings, available
+token usage, retry/fallback history, every validation boundary, and the final engine receipt. Player
+speech, directions, memory summaries, social evidence, and hero prose are replaced by typed hashes;
+credentials and private reasoning content never enter the report.
+
+![Development-only redacted decision trace](docs/evidence/phase-5-decision-inspector.png)
+
 ## Visual continuity checkpoint
 
 New Forge recipes use `human-v3`: `human-v2` added deterministic mass, muscle tone, body-fat band,
@@ -277,6 +287,9 @@ The default `POLICY_MODE=scripted` sends no provider requests. During a wait-mod
 **What reaches this hero** and press **Queue scripted + apply** to run the durable job lifecycle and
 commit one validated choice. The browser only observes the PostgreSQL-backed job; the worker owns
 claiming, stale checks, deterministic fallback, and atomic engine application.
+Once queued, select **Open redacted decision trace** to audit that job without exposing its raw
+packet. Scripted jobs visibly report that no external model was requested. Model jobs additionally
+show the persisted request profile and provider token metadata when available.
 
 Before that choice, use **Hero agency** to say something, ask a question, or give a bounded order.
 The hero replies from their social style and current circumstances; orders show an explicit

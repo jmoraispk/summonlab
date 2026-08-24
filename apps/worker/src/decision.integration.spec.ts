@@ -27,7 +27,10 @@ import {
 } from '@summonlab/database';
 import { assembleHeroDecisionPacket } from '@summonlab/engine';
 import { ScriptedPolicy, type HeroPolicy } from '@summonlab/policies';
-import { ModelPolicyError } from '@summonlab/policies/openai';
+import {
+	buildOpenAIHeroDecisionRequestProfile,
+	ModelPolicyError
+} from '@summonlab/policies/openai';
 import { describe, expect, it, vi } from 'vitest';
 
 import { processDecisionJob, type DecisionPolicyFactory } from './decision.js';
@@ -70,12 +73,35 @@ function config() {
 
 async function queueJob(packet: HeroDecisionPacket, policy: 'scripted' | 'model') {
 	if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+	const appConfig = config();
 	const job = await createDecisionJob(databaseUrl, {
 		packet,
 		requestedPolicy: policy,
+		providerRequest:
+			policy === 'model'
+				? buildOpenAIHeroDecisionRequestProfile(packet, {
+						model: appConfig.policyModel,
+						maxOutputTokens: appConfig.policyMaxOutputTokens,
+						reasoningEffort: appConfig.policyReasoningEffort
+					})
+				: null,
 		maxProviderAttempts: 2,
 		maxReplans: 3
 	});
+	expect(job.schemaVersion).toBe('decision-job-v2');
+	if (job.schemaVersion !== 'decision-job-v2') throw new Error('Expected decision-job-v2');
+	if (policy === 'model') {
+		expect(job.providerRequest).toMatchObject({
+			packetHash: packet.packetHash,
+			requestedModel: appConfig.policyModel,
+			store: false,
+			background: false,
+			credentialDisposition: 'server-only-never-persisted',
+			privateReasoningDisposition: 'private-reasoning-content-not-requested-or-stored'
+		});
+	} else {
+		expect(job.providerRequest).toBeNull();
+	}
 	expect(await markDecisionJobQueued(databaseUrl, job.decisionJobId)).toBe(true);
 	return job;
 }

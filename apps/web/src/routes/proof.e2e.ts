@@ -118,6 +118,32 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		await page.setViewportSize({ width: 1440, height: 1050 });
 		await page.screenshot({ path: process.env.CAPTURE_PHASE5_COMMUNICATION, fullPage: true });
 	}
+	await page.getByRole('button', { name: /Queue scripted \+ apply/ }).click();
+	const traceLink = page.getByRole('link', { name: /Open redacted decision trace/ });
+	await expect(traceLink).toBeVisible();
+	const traceHref = await traceLink.getAttribute('href');
+	if (!traceHref) throw new Error('Decision trace link had no href');
+	const inspector = await page.context().newPage();
+	await inspector.goto(traceHref);
+	await expect(inspector).toHaveURL(/\/debug\/decisions\/[a-f0-9-]+$/u);
+	await expect(inspector.getByTestId('decision-inspector')).toContainText('The choice,');
+	await expect(inspector.getByTestId('privacy-boundary')).toContainText('Absent by construction');
+	await expect(inspector.getByTestId('privacy-boundary')).toContainText('Raw private text');
+	await expect(inspector.getByTestId('provider-boundary')).toContainText(
+		'This decision did not request an external model.'
+	);
+	await expect(inspector.getByTestId('validation-boundaries')).toContainText('packet hash');
+	await expect(inspector.getByTestId('redacted-packet')).not.toContainText(
+		'Train at the practice ring before we enter the tower.'
+	);
+	if (process.env.CAPTURE_PHASE5_DECISION_INSPECTOR) {
+		await inspector.setViewportSize({ width: 1440, height: 1200 });
+		await inspector.screenshot({
+			path: process.env.CAPTURE_PHASE5_DECISION_INSPECTOR,
+			fullPage: true
+		});
+	}
+	await inspector.close();
 	await page.getByRole('button', { name: /Let Mara decide now/ }).click();
 	await expect(
 		page.getByText(/Show me somewhere I can test what this body remembers/)

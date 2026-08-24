@@ -19,7 +19,11 @@ import {
 } from '@summonlab/database';
 import { assembleHeroDecisionPacket } from '@summonlab/engine';
 import { RandomPolicy, ScriptedPolicy, type HeroPolicy } from '@summonlab/policies';
-import { ModelPolicyError, OpenAIModelPolicy } from '@summonlab/policies/openai';
+import {
+	buildOpenAIHeroDecisionRequestProfile,
+	ModelPolicyError,
+	OpenAIModelPolicy
+} from '@summonlab/policies/openai';
 import {
 	DECISION_QUEUE,
 	DecisionQueueJobSchema,
@@ -58,12 +62,13 @@ export function createDecisionPolicyFactory(config: AppConfig): DecisionPolicyFa
 					false
 				);
 			}
+			const providerRequest = job.schemaVersion === 'decision-job-v2' ? job.providerRequest : null;
 			return new OpenAIModelPolicy({
 				apiKey: config.openAiApiKey,
-				model: config.policyModel,
+				model: providerRequest?.requestedModel ?? config.policyModel,
 				timeoutMs: config.policyTimeoutMs,
-				maxOutputTokens: config.policyMaxOutputTokens,
-				reasoningEffort: config.policyReasoningEffort
+				maxOutputTokens: providerRequest?.maxOutputTokens ?? config.policyMaxOutputTokens,
+				reasoningEffort: providerRequest?.reasoningEffort ?? config.policyReasoningEffort
 			});
 		}
 	};
@@ -86,7 +91,22 @@ async function replanStaleJob(
 			heroId: stale.heroId,
 			decisionKind: stale.decisionKind
 		});
-		return await createReplannedDecisionJob(config.databaseUrl, stale.decisionJobId, packet);
+		const previousRequest =
+			stale.schemaVersion === 'decision-job-v2' ? stale.providerRequest : null;
+		const providerRequest =
+			stale.requestedPolicy === 'model'
+				? buildOpenAIHeroDecisionRequestProfile(packet, {
+						model: previousRequest?.requestedModel ?? config.policyModel,
+						maxOutputTokens: previousRequest?.maxOutputTokens ?? config.policyMaxOutputTokens,
+						reasoningEffort: previousRequest?.reasoningEffort ?? config.policyReasoningEffort
+					})
+				: null;
+		return await createReplannedDecisionJob(
+			config.databaseUrl,
+			stale.decisionJobId,
+			packet,
+			providerRequest
+		);
 	} catch {
 		return null;
 	}

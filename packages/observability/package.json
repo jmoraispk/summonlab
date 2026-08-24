@@ -11,6 +11,12 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
+		"@summonlab/contracts": "workspace:*",
+		"@summonlab/engine": "workspace:*",
+		"@summonlab/policies": "workspace:*",
 		"pino": "^10.3.1"
+	},
+	"devDependencies": {
+		"@summonlab/characters": "workspace:*"
 	}
 }
