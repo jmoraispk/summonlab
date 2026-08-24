@@ -51,7 +51,17 @@ export const ActionSourceSchema = z
 export const RewardDeltaSchema = z
 	.object({
 		ownerId: EntityIdSchema,
-		kind: z.enum(['resource', 'experience', 'level', 'skill', 'item', 'relationship']),
+		kind: z.enum([
+			'resource',
+			'experience',
+			'level',
+			'skill',
+			'item',
+			'durability',
+			'health',
+			'need',
+			'relationship'
+		]),
 		key: z.string().min(1).max(100),
 		before: z.number(),
 		after: z.number(),
@@ -105,6 +115,7 @@ export const JournalEntrySchema = z
 		summary: z.string().min(1).max(1_000),
 		participantIds: z.array(EntityIdSchema).max(32),
 		deltas: z.array(RewardDeltaSchema).max(50),
+		source: ActionSourceSchema,
 		directionOutcome: z.enum(['advanced', 'conflicted', 'unavailable']).nullable(),
 		replayCursor: z.number().int().positive()
 	})

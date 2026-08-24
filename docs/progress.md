@@ -80,23 +80,28 @@ and camera assets before expanding the roster.
 
 ## Phase 2 — deterministic engine
 
-Status: **in progress**. The replay-foundation checkpoint completed on 2026-08-23; survival,
-resource, and clock transitions remain.
+Status: **complete** on 2026-08-23.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `ENG-001` | Immutable seeded entropy cursor with named draws and an exact fixture (`gate.resonance[0] = 7`) | Engine unit tests |
 | `ENG-002` | Pure command → event → reducer path for destination, arrival, and Master gate inspection; engine imports no DB, network, model SDK, browser, or wall clock | `@summonlab/engine` contracts and invariant tests |
 | `ENG-003` | Canonical append-only commands/events plus per-event snapshots, SHA-256 before/after state hashes, exact rebuild, idempotency, and optimistic concurrency | `0003_engine_event_store.sql`, database integration test, [ADR 0003](decisions/0003-event-sourced-engine.md) |
-| `ENG-004` | Master and hero identity, health, location, and life-state foundations exist; injury, terminal transitions, and game over remain | Engine state schema |
-| `ENG-008` | Fast-check legal-path property suite and standalone simulation CLI | `pnpm simulate:engine` |
-| `ENG-009` | 10,000 generated histories / 35,000 accepted commands replay with zero invariant failures | [Simulation report](evidence/phase-2-simulation.json) |
+| `ENG-004` | Master/hero identity, health, location, life state, permanent hero death, and atomic Master game over | Engine schema, unit/integration/browser terminal-state tests |
+| `ENG-005` | Nonnegative resource ledger, owned inventory, main-hand equipment, and deterministic durability | Engine schema/reducer and [survival evidence](evidence/phase-2-survival-state.png) |
+| `ENG-006` | Hunger, fatigue, scheduled training/eating/rest/repair, deterministic injury, death, and game over | Unit, integration, and browser tests |
+| `ENG-007` | Persisted scheduled events and an explicit fake clock shared by online and offline-style resolution | `0004_engine_schedule.sql` and [ADR 0004](decisions/0004-versioned-survival-engine.md) |
+| `ENG-008` | Fast-check legal-path property suite and standalone survival simulation CLI | `pnpm simulate:engine` |
+| `ENG-009` | 10,000 generated survival histories / 48,341 accepted commands, including 12,500 schedules, 589 hero deaths, and 323 game-over transitions, replay with zero invariant failures | [Simulation report](evidence/phase-2-simulation.json) |
+| `ENG-010` | Readable journal projects authoritative resource, XP, level, skill, needs, health, and durability deltas with source and replay cursor | Replay inspector and database integration test |
 
-The Phase 1 readable journal remains a projection. Its choice and arrival now commit through the
-canonical engine in the same PostgreSQL transaction, so the polished screen and development replay
-inspector describe one history. A development-only command endpoint demonstrates named entropy and
-returns `409 STALE_RUN_VERSION` when two browser commands target the same version. Production builds
-keep these inspector routes disabled unless `ENABLE_DEV_ROUTES=true` is explicit.
+The Phase 1 readable journal remains a projection. Choice, arrival, routine work, resource costs,
+progression, damage, death, and game over now commit through the canonical engine, so the polished
+screen and development replay inspector describe one history. A development-only command endpoint
+demonstrates named entropy and returns `409 STALE_RUN_VERSION` when two browser commands target the
+same version. Production builds keep these inspector routes disabled unless
+`ENABLE_DEV_ROUTES=true` is explicit. Version-one histories remain byte-stable and replayable; new
+runs use `engine-v2` rather than silently changing old hashes.
 
 ### Reproduce the checkpoint
 
@@ -111,12 +116,15 @@ pnpm check
 pnpm test:e2e
 ```
 
-Run `pnpm dev`, complete a summon, then open **Replay** from the settlement. Draw a gate resonance
-and use **Prove stale guard** to verify that only one of two simultaneous commands is accepted. The
-rendered checkpoint is captured in [phase-2-replay-foundation.png](evidence/phase-2-replay-foundation.png).
+Run `pnpm dev`, complete a summon, then open **Replay** from the settlement. Train and advance the
+clock, repair the practice blade, inspect numerical deltas, then use the terminal-state proof. The
+active and terminal checkpoints are captured in
+[phase-2-survival-state.png](evidence/phase-2-survival-state.png) and
+[phase-2-game-over.png](evidence/phase-2-game-over.png).
 
 ## Next active slice
 
-Continue Phase 2 with resource/inventory ledgers, equipment durability, needs and scheduled
-activities, injury/death/game-over transitions, and reward/experience projections. Extend the same
-replay inspector rather than creating a second debug surface.
+Begin Phase 3 with a reviewable visual-system spike: define the art bible and continuity contract,
+then produce one representative male hero, one representative female hero, a small roster group,
+and settlement-scale versions before expanding the asset system. Reuse the manifest and evidence
+workflow rather than growing an unreviewed asset library.

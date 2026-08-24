@@ -89,4 +89,33 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	if (process.env.CAPTURE_PHASE2_REPLAY) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE2_REPLAY, fullPage: true });
 	}
+
+	await page.getByRole('button', { name: 'train', exact: true }).click();
+	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('hero-xp')).toHaveText('1 / 8');
+	await expect(page.getByTestId('item-durability')).toHaveText('5/6');
+	await expect(page.getByText(/train activity completed/i)).toBeVisible();
+
+	await page.getByRole('button', { name: 'repair', exact: true }).click();
+	await expect(page.getByTestId('resource-iron-ore')).toHaveText('1');
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('item-durability')).toHaveText('6/6');
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+
+	if (process.env.CAPTURE_PHASE2_SURVIVAL) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE2_SURVIVAL, fullPage: true });
+	}
+
+	await page.getByRole('button', { name: 'rest', exact: true }).click();
+	await page.getByRole('button', { name: /Fatal hero proof/ }).click();
+	await expect(page.getByText(/Summoned hero/).locator('..')).toContainText('dead');
+	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
+	await page.getByRole('button', { name: /End run proof/ }).click();
+	await expect(page.getByTestId('game-over')).toContainText('This history is sealed');
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+
+	if (process.env.CAPTURE_PHASE2_GAMEOVER) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE2_GAMEOVER, fullPage: true });
+	}
 });

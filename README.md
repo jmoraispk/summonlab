@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phase 1 is playable; the Phase 2 deterministic replay foundation is running locally._
+_Status: Phases 0–2 are complete; the summon path and deterministic survival-state lab run locally._
 
 </div>
 
@@ -148,15 +148,18 @@ wait-for-step, and a five-second direction handoff without giving the hero direc
 
 ![Character Forge checkpoint](docs/evidence/phase-1-forge.png)
 
-## Deterministic replay checkpoint
+## Deterministic survival checkpoint
 
 Every opening choice and settlement arrival now passes through a pure command → event → reducer
 engine. PostgreSQL stores an idempotent command, an append-only event, and a hashed snapshot in one
 transaction. A development inspector rebuilds the run from event 01, verifies every before/after
 hash, exposes named entropy draws, and proves that two commands aimed at one version cannot both
-commit.
+commit. The same lab now schedules training, eating, rest, and repairs on an explicit game clock;
+projects resources, experience, skills, needs, health, and durability into the journal; and proves
+permanent hero death plus atomic Master game over. Existing `engine-v1` histories retain their
+original schema and hashes while new summons use `engine-v2`.
 
-![Deterministic replay inspector](docs/evidence/phase-2-replay-foundation.png)
+![Deterministic survival-state inspector](docs/evidence/phase-2-survival-state.png)
 
 ## Local development
 

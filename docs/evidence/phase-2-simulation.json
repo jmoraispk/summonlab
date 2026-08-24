@@ -1,7 +1,11 @@
 {
   "sequenceCount": 10000,
-  "commandCount": 35000,
+  "commandCount": 48341,
   "replayCount": 10000,
+  "scheduledCount": 12500,
+  "resolvedScheduleCount": 12500,
+  "heroDeathCount": 589,
+  "gameOverCount": 323,
   "invariantFailures": 0,
-  "finalDigest": "a973e64fa416e70b99aa7f40ad5ea0e8ac97f4c419bde5e26e15ce85080ae446"
+  "finalDigest": "12284aa64fea484aacd10cbf8c43b2988ecf26fe385a656fc681b700ad6c4755"
 }

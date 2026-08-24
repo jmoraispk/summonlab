@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { FIRST_OBSERVATION, generateCharacterDraft, recipeFromSeed } from '@summonlab/characters';
-import { type EngineCommand } from '@summonlab/contracts';
+import { EngineCommandSchema, type EngineCommand } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -10,7 +10,7 @@ import {
 	commitEngineCommand,
 	getEngineReplay
 } from './engine.js';
-import { createProofRun } from './proof.js';
+import { createProofRun, markProofArrival } from './proof.js';
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
 const run = databaseUrl ? it : it.skip;
@@ -36,6 +36,30 @@ function inspectionCommand(
 		},
 		commandType: 'master.inspect.gate'
 	};
+}
+
+function engineCommand(
+	runId: string,
+	actorId: string,
+	expectedVersion: number,
+	fields: Record<string, unknown>
+): EngineCommand {
+	const commandId = randomUUID();
+	return EngineCommandSchema.parse({
+		commandId,
+		runId,
+		actorId,
+		expectedVersion,
+		correlationId: commandId,
+		source: {
+			source: 'manual',
+			timing: 'step',
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		...fields
+	});
 }
 
 describe('engine event store', () => {
@@ -110,4 +134,123 @@ describe('engine event store', () => {
 		expect(replay?.eventCount).toBe(2);
 		expect(replay?.snapshot.state.entropyCursor).toBe(1);
 	});
+
+	run(
+		'persists scheduled survival work, progression deltas, cancellation, and game over',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const draft = await generateCharacterDraft(recipeFromSeed(`survival-${randomUUID()}`));
+			const runId = randomUUID();
+			await createProofRun(databaseUrl, {
+				runId,
+				draft,
+				controlMode: 'autonomous',
+				directive: 'Train and preserve useful equipment.',
+				firstObservation: FIRST_OBSERVATION,
+				choice: {
+					destination: 'training-ground',
+					source: 'scripted',
+					firstLine: 'I will learn what this body can do.',
+					storyBranch: 'steel-before-trust',
+					score: { kitchen: 0, trainingGround: 1 }
+				}
+			});
+			await markProofArrival(databaseUrl, runId);
+			let replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 2) {
+				throw new Error('Expected a version-two engine replay');
+			}
+			const heroId = draft.manifest.characterId;
+			const masterId = replay.snapshot.state.master.masterId;
+
+			const training = await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, heroId, replay.snapshot.state.version, {
+					commandType: 'hero.start.activity',
+					activity: 'train'
+				})
+			);
+			expect(training.scheduled).toHaveLength(1);
+			replay = await getEngineReplay(databaseUrl, runId);
+			expect(replay?.scheduledEvents[0]?.status).toBe('pending');
+			const trainingDue = training.scheduled[0]?.dueGameTime;
+			if (!trainingDue) throw new Error('Expected a scheduled training outcome');
+
+			await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, training.snapshot.state.version, {
+					commandType: 'simulation.advance',
+					targetGameTime: trainingDue
+				})
+			);
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 2) throw new Error('Expected replay');
+			expect(replay.scheduledEvents[0]?.status).toBe('resolved');
+			expect(replay.snapshot.state.heroes[heroId]?.progression.experience).toBe(8);
+			expect(
+				replay.journalEntries.some((entry) =>
+					entry.deltas.some(
+						(delta) => delta.kind === 'experience' && delta.key === 'hero' && delta.delta === 8
+					)
+				)
+			).toBe(true);
+
+			const repair = await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, heroId, replay.snapshot.state.version, {
+					commandType: 'hero.start.activity',
+					activity: 'repair'
+				})
+			);
+			expect(repair.snapshot.state.schemaVersion).toBe(2);
+			if (repair.snapshot.state.schemaVersion !== 2) throw new Error('Expected survival state');
+			expect(repair.snapshot.state.settlement.resources['iron-ore']).toBe(1);
+			const repairDue = repair.scheduled[0]?.dueGameTime;
+			if (!repairDue) throw new Error('Expected a scheduled repair outcome');
+			await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, repair.snapshot.state.version, {
+					commandType: 'simulation.advance',
+					targetGameTime: repairDue
+				})
+			);
+
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 2) throw new Error('Expected replay');
+			const rest = await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, heroId, replay.snapshot.state.version, {
+					commandType: 'hero.start.activity',
+					activity: 'rest'
+				})
+			);
+			const killed = await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, rest.snapshot.state.version, {
+					commandType: 'simulation.apply.damage',
+					targetId: heroId,
+					amount: 100,
+					damageKind: 'hazard'
+				})
+			);
+			expect(killed.canceledScheduledEventIds).toEqual([rest.scheduled[0]?.scheduledEventId]);
+			replay = await getEngineReplay(databaseUrl, runId);
+			expect(replay?.scheduledEvents.at(-1)?.status).toBe('canceled');
+			expect(replay?.legalActionsByActor[heroId]).toEqual([]);
+
+			const ended = await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, killed.snapshot.state.version, {
+					commandType: 'simulation.apply.damage',
+					targetId: masterId,
+					amount: 100,
+					damageKind: 'hazard'
+				})
+			);
+			expect(ended.snapshot.state.status).toBe('game_over');
+			replay = await getEngineReplay(databaseUrl, runId);
+			expect(replay?.verified).toBe(true);
+			expect(replay?.legalActions).toEqual([]);
+		}
+	);
 });

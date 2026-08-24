@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { EngineReplayReport } from '@summonlab/contracts';
+	import type {
+		ActionSource,
+		ActivityKind,
+		EngineCommand,
+		EngineReplayReport
+	} from '@summonlab/contracts';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
@@ -10,26 +15,39 @@
 	let errorMessage = $state('');
 	const hero = $derived(Object.values(report.snapshot.state.heroes)[0]);
 	const engineState = $derived(report.snapshot.state);
+	const survivalState = $derived(engineState.schemaVersion === 2 ? engineState : null);
+	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
+	const heroActions = $derived(hero ? (report.legalActionsByActor[hero.heroId] ?? []) : []);
+	const pendingSchedule = $derived(
+		report.scheduledEvents.find((scheduled) => scheduled.status === 'pending') ?? null
+	);
+	const equippedItem = $derived(
+		survivalState && survivalHero?.equipment.mainHand
+			? survivalState.items[survivalHero.equipment.mainHand]
+			: null
+	);
 
-	function commandBody(commandId: string, expectedVersion: number) {
+	const manualSource: ActionSource = {
+		source: 'manual',
+		timing: 'step',
+		fallbackPolicy: null,
+		directiveIds: [],
+		decisionJobId: null
+	};
+
+	function commandMeta(actorId: string, expectedVersion = engineState.version) {
+		const commandId = crypto.randomUUID();
 		return {
 			commandId,
 			runId: report.runId,
-			actorId: engineState.master.masterId,
+			actorId,
 			expectedVersion,
 			correlationId: commandId,
-			source: {
-				source: 'manual',
-				timing: 'step',
-				fallbackPolicy: null,
-				directiveIds: [],
-				decisionJobId: null
-			},
-			commandType: 'master.inspect.gate'
+			source: manualSource
 		};
 	}
 
-	async function postCommand(body: ReturnType<typeof commandBody>) {
+	async function postCommand(body: EngineCommand) {
 		return fetch(`/api/runs/${report.runId}/commands`, {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
@@ -44,21 +62,31 @@
 		report = body;
 	}
 
-	async function inspectGate() {
+	async function execute(command: EngineCommand, success: string) {
 		pending = true;
 		errorMessage = '';
 		resultMessage = '';
 		try {
-			const response = await postCommand(commandBody(crypto.randomUUID(), engineState.version));
+			const response = await postCommand(command);
 			const body = (await response.json()) as { message?: string };
-			if (!response.ok) throw new Error(body.message ?? 'Gate inspection failed.');
+			if (!response.ok) throw new Error(body.message ?? 'The engine rejected this command.');
 			await refresh();
-			resultMessage = `Accepted at version ${engineState.version} · resonance ${engineState.master.lastGateResonance}`;
+			resultMessage = success;
 		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'Gate inspection failed.';
+			errorMessage = error instanceof Error ? error.message : 'The engine rejected this command.';
 		} finally {
 			pending = false;
 		}
+	}
+
+	async function inspectGate() {
+		await execute(
+			{
+				...commandMeta(engineState.master.masterId),
+				commandType: 'master.inspect.gate'
+			},
+			'Gate resonance committed from one named entropy draw.'
+		);
 	}
 
 	async function proveStaleGuard() {
@@ -67,10 +95,15 @@
 		resultMessage = '';
 		try {
 			const expectedVersion = engineState.version;
-			const responses = await Promise.all([
-				postCommand(commandBody(crypto.randomUUID(), expectedVersion)),
-				postCommand(commandBody(crypto.randomUUID(), expectedVersion))
-			]);
+			const left = {
+				...commandMeta(engineState.master.masterId, expectedVersion),
+				commandType: 'master.inspect.gate' as const
+			};
+			const right = {
+				...commandMeta(engineState.master.masterId, expectedVersion),
+				commandType: 'master.inspect.gate' as const
+			};
+			const responses = await Promise.all([postCommand(left), postCommand(right)]);
 			const accepted = responses.filter((response) => response.ok).length;
 			const stale = responses.filter((response) => response.status === 409).length;
 			await refresh();
@@ -80,6 +113,60 @@
 		} finally {
 			pending = false;
 		}
+	}
+
+	async function startActivity(activity: ActivityKind) {
+		if (!survivalHero) return;
+		await execute(
+			{
+				...commandMeta(survivalHero.heroId),
+				commandType: 'hero.start.activity',
+				activity
+			},
+			`${activity} scheduled on the deterministic game clock.`
+		);
+	}
+
+	async function advanceSimulation() {
+		if (!pendingSchedule) return;
+		await execute(
+			{
+				...commandMeta(engineState.master.masterId),
+				commandType: 'simulation.advance',
+				targetGameTime: pendingSchedule.dueGameTime
+			},
+			'Offline catch-up resolved through the same reducer.'
+		);
+	}
+
+	async function equipAlternateItem() {
+		const action = heroActions.find((candidate) => candidate.actionId.startsWith('hero.equip.'));
+		if (!survivalHero || !action) return;
+		await execute(
+			{
+				...commandMeta(survivalHero.heroId),
+				commandType: 'hero.equip.item',
+				itemId: action.actionId.replace('hero.equip.', '')
+			},
+			'Equipment changed through an authoritative event.'
+		);
+	}
+
+	async function damage(targetId: string, amount: number) {
+		await execute(
+			{
+				...commandMeta(engineState.master.masterId),
+				commandType: 'simulation.apply.damage',
+				targetId,
+				amount,
+				damageKind: 'hazard'
+			},
+			amount === 100 ? 'Terminal state committed and replay verified.' : 'Hazard recorded.'
+		);
+	}
+
+	function canHero(actionId: string) {
+		return heroActions.some((action) => action.actionId === actionId);
 	}
 </script>
 
@@ -117,6 +204,14 @@
 		</div>
 	</section>
 
+	{#if engineState.status === 'game_over'}
+		<section class="game-over" data-testid="game-over">
+			<span>Terminal state</span>
+			<strong>The Master is dead. This history is sealed.</strong>
+			<p>No actor can issue another legal action; the run can only be inspected or replayed.</p>
+		</section>
+	{/if}
+
 	<section class="metrics" aria-label="Engine state">
 		<div>
 			<span>Run version</span><strong data-testid="run-version">{engineState.version}</strong>
@@ -127,7 +222,12 @@
 				>{engineState.entropyCursor}</strong
 			>
 		</div>
-		<div><span>Story route</span><strong>{engineState.story.branch ?? 'unopened'}</strong></div>
+		<div>
+			<span>Game clock</span><strong data-testid="game-clock"
+				>{engineState.simulatedAt.slice(11, 16)}</strong
+			>
+		</div>
+		<div><span>Run state</span><strong>{engineState.status}</strong></div>
 	</section>
 
 	<div class="grid">
@@ -152,6 +252,49 @@
 					<code>{hero.health}/{hero.maxHealth}</code>
 				</article>
 			{/if}
+			{#if survivalHero && survivalState}
+				<div class="survival-stats">
+					<div><span>Rarity</span><strong>{survivalHero.progression.stars}★</strong></div>
+					<div>
+						<span>Level / XP</span><strong data-testid="hero-xp"
+							>{survivalHero.progression.level} / {survivalHero.progression.experience}</strong
+						>
+					</div>
+					<div>
+						<span>Sword skill</span><strong
+							>{survivalHero.progression.skills.swordFighting.rank} / {survivalHero.progression
+								.skills.swordFighting.experience} XP</strong
+						>
+					</div>
+					<div>
+						<span>Needs</span><strong data-testid="hero-needs"
+							>H {survivalHero.needs.hunger} · F {survivalHero.needs.fatigue}</strong
+						>
+					</div>
+					<div><span>Main hand</span><strong>{equippedItem?.displayName ?? 'unarmed'}</strong></div>
+					<div>
+						<span>Durability</span><strong data-testid="item-durability"
+							>{equippedItem
+								? `${equippedItem.durability}/${equippedItem.maxDurability}`
+								: '—'}</strong
+						>
+					</div>
+				</div>
+				<div class="resource-ledger" aria-label="Settlement resources">
+					{#each Object.entries(survivalState.settlement.resources) as [resource, amount] (resource)}
+						<div>
+							<span>{resource}</span><strong data-testid={`resource-${resource}`}>{amount}</strong>
+						</div>
+					{/each}
+				</div>
+				{#if survivalHero.injuries.length}
+					<p class="injuries">
+						Injuries · {#each survivalHero.injuries as injury, index (injury.injuryId)}{index
+								? ', '
+								: ''}{injury.kind}{/each}
+					</p>
+				{/if}
+			{/if}
 			<div class="hashes">
 				<span>rebuilt</span><code title={report.snapshot.stateHash}
 					>{report.snapshot.stateHash}</code
@@ -164,24 +307,94 @@
 
 		<section class="panel controls">
 			<header>
-				<span>Safe command boundary</span>
-				<h2>Interrogate the engine</h2>
+				<span>Survival-state laboratory</span>
+				<h2>Act, wait, and inspect</h2>
 			</header>
 			<p>
-				A named entropy draw advances exactly once. The stale-state proof submits two commands
-				against one version; PostgreSQL may accept only one.
+				Every button proposes a command. The engine checks legality, commits one event, and rebuilds
+				this view from the resulting hash chain.
 			</p>
-			<div class="buttons">
-				<button type="button" onclick={inspectGate} disabled={pending}>Draw gate resonance</button>
-				<button class="secondary" type="button" onclick={proveStaleGuard} disabled={pending}
-					>Prove stale guard</button
+			{#if survivalState && survivalHero}
+				<div class="control-group">
+					<span>Hero routine</span>
+					<div class="buttons wrap">
+						{#each ['train', 'eat', 'rest', 'repair'] as activity (activity)}
+							<button
+								class="secondary"
+								type="button"
+								onclick={() => startActivity(activity as ActivityKind)}
+								disabled={pending || !canHero(`hero.activity.${activity}`)}>{activity}</button
+							>
+						{/each}
+					</div>
+				</div>
+				<div class="control-group schedule">
+					<span>Scheduled work</span>
+					{#if pendingSchedule}
+						<strong data-testid="pending-schedule"
+							>{pendingSchedule.eventKind} · due {pendingSchedule.dueGameTime.slice(11, 16)}</strong
+						>
+						<button type="button" onclick={advanceSimulation} disabled={pending}
+							>Advance to outcome</button
+						>
+					{:else}
+						<strong data-testid="pending-schedule">No pending work</strong>
+					{/if}
+				</div>
+				<div class="buttons wrap">
+					<button
+						class="secondary"
+						type="button"
+						onclick={equipAlternateItem}
+						disabled={pending ||
+							!heroActions.some((action) => action.actionId.startsWith('hero.equip.'))}
+						>Swap weapon</button
+					>
+					<button
+						class="secondary danger"
+						type="button"
+						onclick={() => damage(survivalHero.heroId, 25)}
+						disabled={pending || survivalHero.lifeState !== 'active'}>Apply hazard</button
+					>
+					<button
+						class="secondary danger"
+						type="button"
+						onclick={() => damage(survivalHero.heroId, 100)}
+						disabled={pending || survivalHero.lifeState !== 'active'}>Fatal hero proof</button
+					>
+					<button
+						class="danger"
+						type="button"
+						onclick={() => damage(engineState.master.masterId, 100)}
+						disabled={pending || engineState.master.lifeState !== 'alive'}>End run proof</button
+					>
+				</div>
+			{:else}
+				<p class="legacy">
+					This immutable engine-v1 history remains replayable. Start a new summon to use the
+					survival lab.
+				</p>
+			{/if}
+			<div class="buttons proof-buttons">
+				<button
+					type="button"
+					onclick={inspectGate}
+					disabled={pending || engineState.status === 'game_over'}>Draw gate resonance</button
+				>
+				<button
+					class="secondary"
+					type="button"
+					onclick={proveStaleGuard}
+					disabled={pending || engineState.status === 'game_over'}>Prove stale guard</button
 				>
 			</div>
 			{#if resultMessage}<output data-testid="command-result">{resultMessage}</output>{/if}
 			{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
 			<div class="legal">
-				<span>Legal master actions</span>
-				{#each report.legalActions as action (action.actionId)}<code>{action.actionId}</code>{/each}
+				<span>Legal actions</span>
+				{#each [...report.legalActions, ...heroActions] as action (action.actionId)}<code
+						>{action.actionId}</code
+					>{/each}
 			</div>
 		</section>
 	</div>
@@ -200,7 +413,9 @@
 					<div class="sequence">{String(check.sequence).padStart(2, '0')}</div>
 					<div class="event">
 						<strong>{check.eventType}</strong>
-						<span>{check.verified ? 'hash verified' : 'hash mismatch'}</span>
+						<span>{check.source.source} · {check.verified ? 'hash verified' : 'hash mismatch'}</span
+						>
+						<p>{check.summary}</p>
 					</div>
 					<div class="transition">
 						<code title={check.beforeStateHash}>{check.beforeStateHash.slice(0, 12)}</code>
@@ -208,11 +423,16 @@
 						<code title={check.afterStateHash}>{check.afterStateHash.slice(0, 12)}</code>
 					</div>
 					<div class="draws">
+						{#each check.deltas as delta (`${delta.kind}-${delta.key}`)}
+							<span class="delta" data-testid={`delta-${delta.key}`}
+								>{delta.key} <strong>{delta.delta > 0 ? '+' : ''}{delta.delta}</strong></span
+							>
+						{/each}
 						{#if check.entropyDraws.length}
 							{#each check.entropyDraws as draw (`${draw.purpose}-${draw.cursor}`)}
 								<span>{draw.purpose} [{draw.cursor}] = <strong>{draw.value}</strong></span>
 							{/each}
-						{:else}<span>no entropy</span>{/if}
+						{:else if check.deltas.length === 0}<span>no numerical delta</span>{/if}
 					</div>
 				</li>
 			{/each}
@@ -344,10 +564,38 @@
 	}
 	.metrics {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(5, 1fr);
 		max-width: 88rem;
 		margin: 0 auto;
 		border: 1px solid rgba(255, 255, 255, 0.09);
+	}
+	.game-over {
+		max-width: 88rem;
+		margin: 0 auto 1rem;
+		padding: 1.25rem 1.5rem;
+		border: 1px solid rgba(242, 147, 143, 0.45);
+		background: rgba(73, 20, 24, 0.28);
+	}
+	.game-over span,
+	.game-over strong {
+		display: block;
+	}
+	.game-over span {
+		color: #f2938f;
+		font-size: 0.52rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.game-over strong {
+		margin-top: 0.3rem;
+		font:
+			400 1.3rem Georgia,
+			serif;
+	}
+	.game-over p {
+		margin: 0.45rem 0 0;
+		color: rgba(244, 240, 232, 0.5);
+		font-size: 0.68rem;
 	}
 	.metrics div {
 		min-width: 0;
@@ -445,6 +693,51 @@
 		gap: 0.55rem 1rem;
 		padding: 1.2rem 1.4rem;
 	}
+	.survival-stats,
+	.resource-ledger {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.06);
+	}
+	.survival-stats div,
+	.resource-ledger div {
+		padding: 0.8rem 1rem;
+		background: #0b0e14;
+	}
+	.survival-stats span,
+	.resource-ledger span,
+	.survival-stats strong,
+	.resource-ledger strong {
+		display: block;
+	}
+	.survival-stats span,
+	.resource-ledger span {
+		color: rgba(244, 240, 232, 0.32);
+		font-size: 0.48rem;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	.survival-stats strong,
+	.resource-ledger strong {
+		margin-top: 0.25rem;
+		color: #7fd8e9;
+		font:
+			0.68rem ui-monospace,
+			monospace;
+	}
+	.resource-ledger strong {
+		color: #d4a653;
+		font-size: 1rem;
+	}
+	.injuries,
+	.legacy {
+		margin: 0;
+		padding: 0.8rem 1.4rem;
+		border-top: 1px solid rgba(242, 147, 143, 0.2);
+		color: #f2938f;
+		font-size: 0.62rem;
+	}
 	.hashes span {
 		color: rgba(244, 240, 232, 0.3);
 		font-size: 0.52rem;
@@ -468,6 +761,63 @@
 		display: flex;
 		gap: 0.6rem;
 		padding: 0 1.4rem 1.2rem;
+	}
+	.buttons.wrap {
+		flex-wrap: wrap;
+		padding-top: 0.75rem;
+	}
+	.buttons.wrap button {
+		flex: 1 1 8rem;
+	}
+	.control-group {
+		margin: 0 1.4rem 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.control-group > span {
+		display: block;
+		padding: 0.7rem 0.8rem 0;
+		color: rgba(244, 240, 232, 0.35);
+		font-size: 0.5rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.control-group .buttons {
+		padding-right: 0.75rem;
+		padding-bottom: 0.75rem;
+		padding-left: 0.75rem;
+	}
+	.schedule {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 0.6rem 1rem;
+		padding: 0.8rem;
+	}
+	.schedule > span {
+		grid-column: 1 / -1;
+		padding: 0;
+	}
+	.schedule strong {
+		color: #7fd8e9;
+		font:
+			0.62rem ui-monospace,
+			monospace;
+	}
+	.schedule button {
+		padding: 0.65rem 0.8rem;
+	}
+	.proof-buttons {
+		padding-top: 1rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+	}
+	button.danger {
+		border-color: #f2938f;
+		background: #f2938f;
+		color: #13090b;
+	}
+	button.secondary.danger {
+		background: transparent;
+		color: #f2938f;
 	}
 	button {
 		flex: 1;
@@ -565,6 +915,12 @@
 	.event span {
 		display: block;
 	}
+	.event p {
+		margin: 0.35rem 0 0;
+		color: rgba(244, 240, 232, 0.45);
+		font-size: 0.62rem;
+		line-height: 1.4;
+	}
 	.event strong {
 		font:
 			400 0.82rem Georgia,
@@ -607,6 +963,19 @@
 		color: #d4a653;
 		font-size: 1rem;
 	}
+	.draws .delta {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+		color: rgba(244, 240, 232, 0.5);
+	}
+	.draws .delta strong {
+		display: inline;
+		color: #78d7af;
+		font-size: 0.72rem;
+	}
 	@media (max-width: 760px) {
 		.topbar {
 			grid-template-columns: 1fr auto;
@@ -630,6 +999,12 @@
 		}
 		.metrics div:nth-child(-n + 2) {
 			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		.metrics div:last-child {
+			grid-column: 1 / -1;
+		}
+		.survival-stats {
+			grid-template-columns: 1fr 1fr;
 		}
 		.grid {
 			grid-template-columns: 1fr;

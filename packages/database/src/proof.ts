@@ -238,7 +238,8 @@ export async function createProofRun(
 				runId: input.runId,
 				seed: input.draft.recipe.seed,
 				heroId: input.draft.manifest.characterId,
-				manifestHash: input.draft.manifestHash
+				manifestHash: input.draft.manifestHash,
+				rarityStars: input.draft.manifest.rarityStars
 			});
 			await insertEvent(
 				transaction,

@@ -3,19 +3,26 @@ import {
 	EngineCommandSchema,
 	EngineCommitSchema,
 	EngineReplayReportSchema,
+	EngineScheduleRecordSchema,
 	EngineSnapshotSchema,
+	ScheduledEventSchema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineCommit,
 	type EngineReplayReport,
+	type EngineScheduleRecord,
 	type EngineSnapshot
 } from '@summonlab/contracts';
 import {
 	applyCommand,
+	canceledScheduledEventIdsFromEvent,
 	createBootstrapEngine,
 	hashCanonical,
 	legalActions,
+	projectJournal,
 	replayEvents,
+	resolvedScheduledEventIdsFromEvent,
+	scheduledEventsFromEvent,
 	type BootstrapEngineInput
 } from '@summonlab/engine';
 import postgres from 'postgres';
@@ -48,6 +55,18 @@ interface EngineRunRow {
 	version: number;
 	event_cursor: number;
 	state_hash: string;
+}
+
+interface ScheduleRow {
+	scheduled_event_id: string;
+	run_id: string;
+	actor_id: string;
+	due_game_time: Date | string;
+	event_kind: string;
+	payload: unknown;
+	status: 'pending' | 'resolved' | 'canceled';
+	created_event_id: string;
+	terminal_event_id: string | null;
 }
 
 export class StaleRunVersionError extends Error {
@@ -98,6 +117,32 @@ function parseEvent(row: EventRow): AuthoritativeEvent {
 	});
 }
 
+function parseSchedule(row: ScheduleRow): EngineScheduleRecord {
+	return EngineScheduleRecordSchema.parse({
+		scheduledEventId: row.scheduled_event_id,
+		runId: row.run_id,
+		actorId: row.actor_id,
+		dueGameTime: iso(row.due_game_time),
+		eventKind: row.event_kind,
+		payload: row.payload,
+		status: row.status,
+		createdEventId: row.created_event_id,
+		terminalEventId: row.terminal_event_id
+	});
+}
+
+function parseScheduledEvent(row: ScheduleRow) {
+	const record = parseSchedule(row);
+	return ScheduledEventSchema.parse({
+		scheduledEventId: record.scheduledEventId,
+		runId: record.runId,
+		actorId: record.actorId,
+		dueGameTime: record.dueGameTime,
+		eventKind: record.eventKind,
+		payload: record.payload
+	});
+}
+
 async function insertEvent(sql: postgres.TransactionSql, event: AuthoritativeEvent): Promise<void> {
 	await sql`
 		insert into summonlab_engine_events (
@@ -125,6 +170,41 @@ async function insertSnapshot(
 			${sql.json(snapshot.state as never)}, ${snapshot.stateHash}
 		)
 	`;
+}
+
+async function applyScheduleChanges(
+	sql: postgres.TransactionSql,
+	event: AuthoritativeEvent
+): Promise<void> {
+	for (const scheduled of scheduledEventsFromEvent(event)) {
+		await sql`
+			insert into summonlab_engine_scheduled_events (
+				scheduled_event_id, run_id, actor_id, due_game_time, event_kind, payload,
+				created_event_id
+			) values (
+				${scheduled.scheduledEventId}, ${scheduled.runId}, ${scheduled.actorId},
+				${scheduled.dueGameTime}, ${scheduled.eventKind},
+				${sql.json(scheduled.payload as never)}, ${event.eventId}
+			)
+		`;
+	}
+	for (const [status, identifiers] of [
+		['resolved', resolvedScheduledEventIdsFromEvent(event)],
+		['canceled', canceledScheduledEventIdsFromEvent(event)]
+	] as const) {
+		if (identifiers.length === 0) continue;
+		const updated = await sql`
+			update summonlab_engine_scheduled_events
+			set status = ${status}, terminal_event_id = ${event.eventId}, updated_at = now()
+			where run_id = ${event.runId}
+				and scheduled_event_id in ${sql(identifiers)}
+				and status = 'pending'
+			returning scheduled_event_id
+		`;
+		if (updated.length !== identifiers.length) {
+			throw new Error(`Scheduled-event ${status} set did not match pending state`);
+		}
+	}
 }
 
 export async function initializeEngineRun(
@@ -190,10 +270,15 @@ async function findIdempotentCommit(
 	}
 	const snapshot = EngineSnapshotSchema.parse({ state: row.state, stateHash: row.state_hash });
 	const event = parseEvent(row);
+	const scheduleRows = await sql<ScheduleRow[]>`
+		select * from summonlab_engine_scheduled_events where created_event_id = ${event.eventId}
+	`;
 	return EngineCommitSchema.parse({
 		snapshot,
 		events: [event],
-		scheduled: [],
+		scheduled: scheduleRows.map(parseScheduledEvent),
+		resolvedScheduledEventIds: resolvedScheduledEventIdsFromEvent(event),
+		canceledScheduledEventIds: canceledScheduledEventIdsFromEvent(event),
 		legalActions: legalActions(snapshot.state, event.actorId ?? snapshot.state.master.masterId),
 		idempotentReplay: true
 	});
@@ -254,6 +339,7 @@ export async function commitEngineCommandInTransaction(
 		)
 	`;
 	await insertEvent(sql, event);
+	await applyScheduleChanges(sql, event);
 	const nextSnapshot = EngineSnapshotSchema.parse({
 		state: applied.state,
 		stateHash: applied.stateHash
@@ -279,6 +365,8 @@ export async function commitEngineCommandInTransaction(
 		snapshot: nextSnapshot,
 		events: applied.events,
 		scheduled: applied.scheduled,
+		resolvedScheduledEventIds: applied.resolvedScheduledEventIds,
+		canceledScheduledEventIds: applied.canceledScheduledEventIds,
 		legalActions: applied.legalActions,
 		idempotentReplay: false
 	});
@@ -336,16 +424,34 @@ export async function getEngineReplay(
 			order by sequence asc
 		`;
 		if (eventRows.length === 0) return null;
-		const replay = replayEvents(eventRows.map(parseEvent));
+		const events = eventRows.map(parseEvent);
+		const scheduleRows = await sql<ScheduleRow[]>`
+			select scheduled.*
+			from summonlab_engine_scheduled_events scheduled
+			join summonlab_engine_events created on created.event_id = scheduled.created_event_id
+			where scheduled.run_id = ${runId} and created.sequence <= ${persisted.state.eventCursor}
+			order by scheduled.due_game_time, scheduled.scheduled_event_id
+		`;
+		const replay = replayEvents(events);
+		const actors = [
+			replay.snapshot.state.master.masterId,
+			...Object.keys(replay.snapshot.state.heroes)
+		];
+		const legalActionsByActor = Object.fromEntries(
+			actors.map((actorId) => [actorId, legalActions(replay.snapshot.state, actorId)])
+		);
 		return EngineReplayReportSchema.parse({
 			runId,
 			verified: replay.verified && replay.snapshot.stateHash === persisted.stateHash,
 			eventCount: eventRows.length,
 			checks: replay.checks,
+			journalEntries: projectJournal(events),
+			scheduledEvents: scheduleRows.map(parseSchedule),
 			snapshot: replay.snapshot,
 			persistedStateHash: persisted.stateHash,
 			hashMatchesPersistedSnapshot: replay.snapshot.stateHash === persisted.stateHash,
-			legalActions: legalActions(replay.snapshot.state, replay.snapshot.state.master.masterId)
+			legalActions: legalActions(replay.snapshot.state, replay.snapshot.state.master.masterId),
+			legalActionsByActor
 		});
 	} finally {
 		await sql.end({ timeout: 5 });

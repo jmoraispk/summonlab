@@ -912,9 +912,9 @@ progress](progress.md).
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — replay foundation completed 2026-08-23.** `ENG-001`, `ENG-002`,
-`ENG-003`, `ENG-008`, and `ENG-009` now have runnable evidence; `ENG-004` has its state foundation
-but not terminal transitions. See [implementation progress](progress.md).
+**Status: complete — 2026-08-23.** All `ENG-001` through `ENG-010` tasks have unit,
+integration, generated-history, and browser evidence. New runs use `engine-v2`; immutable
+`engine-v1` histories retain their original replay hashes. See [implementation progress](progress.md).
 
 - `ENG-001` implement PRNG and entropy cursor;
 - `ENG-002` implement command/event/reducer contract;
@@ -1046,19 +1046,21 @@ Art-system work and engine work may overlap after schemas stabilize. Mission con
 
 ## Next execution slice
 
-The replay foundation is complete. The next repository-changing turn continues Phase 2 and stops at
-a reviewable survival-state checkpoint:
+Phase 2 is complete. The next repository-changing turn begins Phase 3 and stops at a visual approval
+gate before implementing a large asset library:
 
-1. add resource and inventory ledgers plus minimal equipment durability;
-2. implement Master/hero injury, death, and atomic Master game over;
-3. add needs, scheduled activities, and an injected fake clock without using wall time in the engine;
-4. project reward, experience, level, skill, and inventory deltas into the readable journal;
-5. extend generated command sequences across resource, activity, and terminal-state invariants;
-6. expose those deltas and scheduled outcomes in the existing replay inspector;
-7. run all gates, capture evidence, commit, and push;
-8. ask for feedback on survival pacing and log readability before broadening settlement content.
+1. turn the current visual direction into a concise art bible and character-continuity contract;
+2. define portrait, dialogue, summon-card, roster, and settlement-scale compositions;
+3. create one representative original adult male and one representative original adult female;
+4. derive expression, equipment, injury, and settlement-scale studies while preserving identity;
+5. assemble the two heroes into a small roster/group composition and test silhouette separation;
+6. prototype the manifest-to-asset record and review workflow behind a development surface;
+7. run visual, accessibility, performance, and repository gates; capture evidence; commit and push;
+8. ask for approval of character recognition, manhwa influence, rendering style, and settlement scale
+   before expanding toward twelve humans.
 
-Phase 2 continues to deepen authority and replay rather than expanding content breadth.
+Phase 3 prioritizes recognizable original characters and a repeatable continuity system over raw
+asset count. Summoning remains the premium composition, followed by settlement and dialogue close-up.
 
 ## Accepted product decisions — 2026-08-23
 
@@ -1072,5 +1074,5 @@ Phase 2 continues to deepen authority and replay rather than expanding content b
 - Floor stories use fixed, authored envelopes with agent-assisted development and engine-validated runtime patches. Agents may alter the route and character-aware expression but cannot bypass world rules, causality, content, or reward bounds.
 - The player journal must expose actions, rewards, experience, levels, party progression, control source, directions, and story changes from authoritative events.
 
-Phases 0 and 1 are complete; Phase 2 is in progress. Later feedback may revise any reversible
+Phases 0, 1, and 2 are complete; Phase 3 is next. Later feedback may revise any reversible
 implementation choice without discarding these product intentions.

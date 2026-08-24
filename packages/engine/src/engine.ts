@@ -2,15 +2,27 @@ import {
 	AuthoritativeEventSchema,
 	EngineCommandSchema,
 	EngineGameStateSchema,
+	EngineGameStateV1Schema,
+	EngineGameStateV2Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
+	HeroProgressionSchema,
+	InjurySchema,
 	LegalActionSchema,
+	NeedStateSchema,
+	ResourceKeySchema,
+	RewardDeltaSchema,
+	ScheduledEventSchema,
+	type ActivityKind,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
+	type EngineGameStateV1,
+	type EngineGameStateV2,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type LegalAction,
+	type RewardDelta,
 	type ScheduledEvent
 } from '@summonlab/contracts';
 import { z } from 'zod';
@@ -18,14 +30,21 @@ import { z } from 'zod';
 import { createEntropyCursor, drawInteger } from './entropy.js';
 import { IllegalActionError, ReplayIntegrityError, StaleStateVersionError } from './errors.js';
 import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
+import { eventDeltas, eventSummary } from './journal.js';
+import { addGameMinutes, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v1';
+export const ENGINE_CONTENT_VERSION = 'engine-v2';
+export const LEGACY_ENGINE_CONTENT_VERSION = 'engine-v1';
 export const ENGINE_EPOCH = '2000-01-01T00:00:00.000Z';
 export const ENGINE_INVARIANTS = Object.freeze([
 	'pure-transition',
 	'engine-owned-legality',
 	'seeded-entropy',
 	'append-only-events',
+	'nonnegative-resource-ledger',
+	'terminal-actors-cannot-act',
+	'atomic-master-game-over',
+	'fake-clock-only',
 	'no-network',
 	'no-database',
 	'no-wall-clock',
@@ -37,6 +56,7 @@ export interface BootstrapEngineInput {
 	readonly seed: string;
 	readonly heroId: string;
 	readonly manifestHash: string;
+	readonly rarityStars?: number;
 	readonly simulatedAt?: string;
 }
 
@@ -50,14 +70,33 @@ export interface EngineApplyResult {
 	readonly stateHash: string;
 	readonly events: readonly AuthoritativeEvent[];
 	readonly scheduled: readonly ScheduledEvent[];
+	readonly resolvedScheduledEventIds: readonly string[];
+	readonly canceledScheduledEventIds: readonly string[];
 	readonly decisionRequests: readonly never[];
 	readonly legalActions: readonly LegalAction[];
 }
 
+const RewardDeltasSchema = z.array(RewardDeltaSchema);
+const EmptyMetadataSchema = z.object({
+	summary: z.string().min(1).max(1_000),
+	rewardDeltas: RewardDeltasSchema,
+	resolvedScheduledEventIds: z.array(z.string().uuid()),
+	canceledScheduledEventIds: z.array(z.string().uuid()),
+	entropyDraws: z.array(EntropyDrawSchema)
+});
+
 const InitializedPayloadSchema = z
-	.object({ initialState: EngineGameStateSchema, entropyDraws: z.array(EntropyDrawSchema) })
+	.object({
+		initialState: EngineGameStateSchema,
+		entropyDraws: z.array(EntropyDrawSchema),
+		summary: z.string().optional(),
+		rewardDeltas: RewardDeltasSchema.optional(),
+		resolvedScheduledEventIds: z.array(z.string().uuid()).optional(),
+		canceledScheduledEventIds: z.array(z.string().uuid()).optional()
+	})
 	.strict();
-const ChoosePayloadSchema = z
+
+const LegacyChoosePayloadSchema = z
 	.object({
 		heroId: z.string().uuid(),
 		destination: z.enum(['kitchen', 'training-ground']),
@@ -67,7 +106,7 @@ const ChoosePayloadSchema = z
 		entropyDraws: z.array(EntropyDrawSchema)
 	})
 	.strict();
-const ArrivePayloadSchema = z
+const LegacyArrivePayloadSchema = z
 	.object({
 		heroId: z.string().uuid(),
 		destination: z.enum(['kitchen', 'training-ground']),
@@ -75,7 +114,7 @@ const ArrivePayloadSchema = z
 		entropyDraws: z.array(EntropyDrawSchema)
 	})
 	.strict();
-const InspectPayloadSchema = z
+const LegacyInspectPayloadSchema = z
 	.object({
 		masterId: z.string().uuid(),
 		resonance: z.number().int().min(0).max(99),
@@ -83,6 +122,92 @@ const InspectPayloadSchema = z
 		entropyDraws: z.array(EntropyDrawSchema).length(1)
 	})
 	.strict();
+
+const ChoosePayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	destination: z.enum(['kitchen', 'training-ground']),
+	firstLine: z.string(),
+	storyBranch: z.string(),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+const ArrivePayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	destination: z.enum(['kitchen', 'training-ground']),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+const InspectPayloadSchema = EmptyMetadataSchema.extend({
+	masterId: z.string().uuid(),
+	resonance: z.number().int().min(0).max(99),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const ResourceChangeSchema = z
+	.object({
+		resource: ResourceKeySchema,
+		before: z.number().int().nonnegative(),
+		after: z.number().int().nonnegative(),
+		delta: z.number().int(),
+		reason: z.string().min(1).max(120)
+	})
+	.strict()
+	.refine((value) => value.after - value.before === value.delta, {
+		message: 'Resource change delta is invalid'
+	});
+
+const ActivityStartedPayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	activity: z.enum(['train', 'eat', 'rest', 'repair']),
+	activityId: z.string().uuid(),
+	scheduledEvent: ScheduledEventSchema,
+	resourceChanges: z.array(ResourceChangeSchema),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const ItemEquippedPayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	itemId: z.string().uuid(),
+	previousItemId: z.string().uuid().nullable(),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const ItemUpdateSchema = z
+	.object({
+		itemId: z.string().uuid(),
+		durabilityAfter: z.number().int().nonnegative()
+	})
+	.strict();
+
+const ActivityOutcomeSchema = z
+	.object({
+		scheduledEventId: z.string().uuid(),
+		heroId: z.string().uuid(),
+		activity: z.enum(['train', 'eat', 'rest', 'repair']),
+		healthAfter: z.number().int().min(0).max(100),
+		lifeStateAfter: z.enum(['active', 'dead', 'synthesized']),
+		needsAfter: NeedStateSchema,
+		injuriesAfter: z.array(InjurySchema),
+		progressionAfter: HeroProgressionSchema,
+		itemUpdate: ItemUpdateSchema.nullable(),
+		rewardDeltas: RewardDeltasSchema
+	})
+	.strict();
+
+const SimulationAdvancedPayloadSchema = EmptyMetadataSchema.extend({
+	targetGameTime: z.string().datetime(),
+	outcomes: z.array(ActivityOutcomeSchema),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const DamagePayloadSchema = EmptyMetadataSchema.extend({
+	targetId: z.string().uuid(),
+	targetKind: z.enum(['master', 'hero']),
+	damageKind: z.enum(['hazard', 'training', 'combat']),
+	amount: z.number().int().min(1).max(100),
+	healthBefore: z.number().int().min(0).max(100),
+	healthAfter: z.number().int().min(0).max(100),
+	injury: InjurySchema.nullable(),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
 
 function systemSource() {
 	return {
@@ -94,6 +219,20 @@ function systemSource() {
 	};
 }
 
+function emptyMetadata(summary: string, rewardDeltas: readonly RewardDelta[] = []) {
+	return {
+		summary,
+		rewardDeltas,
+		resolvedScheduledEventIds: [] as string[],
+		canceledScheduledEventIds: [] as string[],
+		entropyDraws: [] as EntropyDraw[]
+	};
+}
+
+function clamp(value: number, minimum = 0, maximum = 100): number {
+	return Math.min(maximum, Math.max(minimum, value));
+}
+
 export function hashGameState(state: EngineGameState): string {
 	return hashCanonical(EngineGameStateSchema.parse(state));
 }
@@ -101,8 +240,22 @@ export function hashGameState(state: EngineGameState): string {
 export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEngineResult {
 	const masterId = deterministicUuid(`${input.runId}:master`);
 	const commandId = deterministicUuid(`${input.runId}:bootstrap`);
-	const state = EngineGameStateSchema.parse({
-		schemaVersion: 1,
+	const eventId = deterministicUuid(`${commandId}:1:run.initialized`);
+	const bladeId = deterministicUuid(`${input.runId}:${input.heroId}:practice-blade`);
+	const bowId = deterministicUuid(`${input.runId}:${input.heroId}:short-bow`);
+	const simulatedAt = input.simulatedAt ?? ENGINE_EPOCH;
+	const initialResources = { food: 3, 'iron-ore': 2, 'ember-shard': 0 } as const;
+	const resourceLedger = ResourceKeySchema.options.map((resource) => ({
+		entryId: deterministicUuid(`${eventId}:resource:${resource}`),
+		eventId,
+		resource,
+		before: 0,
+		after: initialResources[resource],
+		delta: initialResources[resource],
+		reason: 'run bootstrap stock'
+	}));
+	const state = EngineGameStateV2Schema.parse({
+		schemaVersion: 2,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -110,13 +263,14 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		version: 0,
 		eventCursor: 1,
 		entropyCursor: 0,
-		simulatedAt: input.simulatedAt ?? ENGINE_EPOCH,
+		simulatedAt,
 		master: {
 			masterId,
 			lifeState: 'alive',
 			location: 'summoning-gate',
 			health: 100,
 			maxHealth: 100,
+			injuries: [],
 			gateInspectionCount: 0,
 			lastGateResonance: null
 		},
@@ -128,17 +282,58 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				destination: null,
 				health: 100,
 				maxHealth: 100,
-				manifestHash: input.manifestHash
+				manifestHash: input.manifestHash,
+				needs: { hunger: 20, fatigue: 15 },
+				injuries: [],
+				progression: {
+					stars: input.rarityStars ?? 1,
+					level: 1,
+					experience: 0,
+					skills: { swordFighting: { rank: 0, experience: 0 } }
+				},
+				equipment: { mainHand: bladeId },
+				currentActivity: null
+			}
+		},
+		settlement: { resources: initialResources, resourceLedger },
+		items: {
+			[bladeId]: {
+				itemId: bladeId,
+				templateId: 'practice-blade',
+				displayName: 'Gatehouse Practice Blade',
+				ownerId: input.heroId,
+				slot: 'main-hand',
+				equippedById: input.heroId,
+				durability: 6,
+				maxDurability: 6
+			},
+			[bowId]: {
+				itemId: bowId,
+				templateId: 'short-bow',
+				displayName: 'Ash Short Bow',
+				ownerId: input.heroId,
+				slot: 'main-hand',
+				equippedById: null,
+				durability: 4,
+				maxDurability: 4
 			}
 		},
 		story: { envelopeId: 'first-ember-v1', branch: null }
 	});
 	const stateHash = hashGameState(state);
+	const rewardDeltas = resourceLedger.map((entry): RewardDelta => ({
+		ownerId: masterId,
+		kind: 'resource',
+		key: entry.resource,
+		before: entry.before,
+		after: entry.after,
+		delta: entry.delta
+	}));
 	const event = AuthoritativeEventSchema.parse({
-		eventId: deterministicUuid(`${commandId}:1:run.initialized`),
+		eventId,
 		runId: input.runId,
 		sequence: 1,
-		schemaVersion: 1,
+		schemaVersion: 2,
 		gameTime: state.simulatedAt,
 		eventType: 'run.initialized',
 		actorId: null,
@@ -150,33 +345,27 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		beforeStateHash: EMPTY_STATE_HASH,
 		afterStateHash: stateHash,
 		contentVersion: state.contentVersion,
-		payload: { initialState: state, entropyDraws: [] }
+		payload: {
+			initialState: state,
+			...emptyMetadata(
+				'The Master awakened beside a stocked gate and one new summon.',
+				rewardDeltas
+			)
+		}
 	});
 	return { snapshot: EngineSnapshotSchema.parse({ state, stateHash }), event };
 }
 
-export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
-	const state = EngineGameStateSchema.parse(stateInput);
-	if (state.status !== 'active') return [];
-	if (actorId === state.master.masterId && state.master.lifeState === 'alive') {
-		return [
-			LegalActionSchema.parse({
-				actionId: 'master.inspect.gate',
-				actorId,
-				kind: 'interact',
-				label: 'Inspect the gate resonance',
-				description: 'Draw one named deterministic resonance value without advancing time.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['deterministic', 'development-proof']
-			})
-		];
-	}
+function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalAction {
+	return LegalActionSchema.parse(input);
+}
+
+function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 	const hero = state.heroes[actorId];
 	if (!hero || hero.lifeState !== 'active') return [];
 	if (hero.destination === null) {
 		return [
-			LegalActionSchema.parse({
+			action({
 				actionId: 'hero.choose.kitchen',
 				actorId,
 				kind: 'move',
@@ -186,7 +375,7 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 				resourceCosts: {},
 				tags: ['story-branch', 'settlement']
 			}),
-			LegalActionSchema.parse({
+			action({
 				actionId: 'hero.choose.training-ground',
 				actorId,
 				kind: 'move',
@@ -200,7 +389,7 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 	}
 	if (hero.location === 'summoning-gate') {
 		return [
-			LegalActionSchema.parse({
+			action({
 				actionId: 'hero.arrive.destination',
 				actorId,
 				kind: 'move',
@@ -215,38 +404,230 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 	return [];
 }
 
+function masterActionsV2(state: EngineGameStateV2): LegalAction[] {
+	const actorId = state.master.masterId;
+	const actions = [
+		action({
+			actionId: 'master.inspect.gate',
+			actorId,
+			kind: 'interact',
+			label: 'Inspect the gate resonance',
+			description: 'Draw one named deterministic resonance value without advancing time.',
+			targetIds: [],
+			resourceCosts: {},
+			tags: ['deterministic', 'development-proof']
+		})
+	];
+	if (Object.values(state.heroes).some((hero) => hero.currentActivity)) {
+		actions.push(
+			action({
+				actionId: 'simulation.advance',
+				actorId,
+				kind: 'wait',
+				label: 'Advance to the next scheduled outcome',
+				description: 'Advance the injected game clock and resolve every due activity in order.',
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['fake-clock', 'scheduled-event']
+			})
+		);
+	}
+	for (const hero of Object.values(state.heroes)) {
+		if (hero.lifeState !== 'active') continue;
+		actions.push(
+			action({
+				actionId: `simulation.damage.hero.${hero.heroId}`,
+				actorId,
+				kind: 'attack',
+				label: 'Apply a controlled hero hazard',
+				description: 'Development proof for injury, terminal state, and schedule cancellation.',
+				targetIds: [hero.heroId],
+				resourceCosts: {},
+				tags: ['development-proof', 'permadeath']
+			})
+		);
+	}
+	actions.push(
+		action({
+			actionId: 'simulation.damage.master',
+			actorId,
+			kind: 'attack',
+			label: 'Apply a controlled Master hazard',
+			description: 'Development proof that Master death atomically ends the run.',
+			targetIds: [actorId],
+			resourceCosts: {},
+			tags: ['development-proof', 'game-over']
+		})
+	);
+	return actions;
+}
+
+function heroActionsV2(state: EngineGameStateV2, actorId: string): LegalAction[] {
+	const route = routeActions(state, actorId);
+	if (route.length > 0) return route;
+	const hero = state.heroes[actorId];
+	if (!hero || hero.lifeState !== 'active' || hero.currentActivity) return [];
+	const actions: LegalAction[] = [];
+	const equipped = hero.equipment.mainHand ? state.items[hero.equipment.mainHand] : null;
+	if (hero.location === 'training-ground' && equipped && equipped.durability > 0) {
+		actions.push(
+			action({
+				actionId: 'hero.activity.train',
+				actorId,
+				kind: 'train',
+				label: 'Train for 30 minutes',
+				description: 'Gain experience and sword skill at a deterministic injury risk.',
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['activity', 'progression', 'injury-risk']
+			})
+		);
+	}
+	if (hero.location === 'kitchen' && state.settlement.resources.food > 0) {
+		actions.push(
+			action({
+				actionId: 'hero.activity.eat',
+				actorId,
+				kind: 'rest',
+				label: 'Eat a meal',
+				description: 'Reserve one food and reduce hunger after 15 game minutes.',
+				targetIds: [],
+				resourceCosts: { food: 1 },
+				tags: ['activity', 'need']
+			})
+		);
+	}
+	if (hero.needs.fatigue > 0 || hero.health < hero.maxHealth || hero.injuries.length > 0) {
+		actions.push(
+			action({
+				actionId: 'hero.activity.rest',
+				actorId,
+				kind: 'rest',
+				label: 'Rest for one hour',
+				description: 'Reduce fatigue, heal, and recover one active injury.',
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['activity', 'recovery']
+			})
+		);
+	}
+	if (
+		hero.location === 'training-ground' &&
+		equipped &&
+		equipped.durability < equipped.maxDurability &&
+		state.settlement.resources['iron-ore'] > 0
+	) {
+		actions.push(
+			action({
+				actionId: 'hero.activity.repair',
+				actorId,
+				kind: 'work',
+				label: `Repair ${equipped.displayName}`,
+				description: 'Reserve one iron ore and restore durability after 20 game minutes.',
+				targetIds: [equipped.itemId],
+				resourceCosts: { 'iron-ore': 1 },
+				tags: ['activity', 'equipment']
+			})
+		);
+	}
+	for (const item of Object.values(state.items)) {
+		if (
+			item.ownerId === hero.heroId &&
+			item.itemId !== hero.equipment.mainHand &&
+			item.durability > 0
+		) {
+			actions.push(
+				action({
+					actionId: `hero.equip.${item.itemId}`,
+					actorId,
+					kind: 'interact',
+					label: `Equip ${item.displayName}`,
+					description: 'Change the authoritative main-hand equipment slot.',
+					targetIds: [item.itemId],
+					resourceCosts: {},
+					tags: ['inventory', 'equipment']
+				})
+			);
+		}
+	}
+	return actions;
+}
+
+export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
+	const state = EngineGameStateSchema.parse(stateInput);
+	if (state.status !== 'active') return [];
+	if (actorId === state.master.masterId && state.master.lifeState === 'alive') {
+		if (state.schemaVersion === 2) return masterActionsV2(state);
+		return [
+			action({
+				actionId: 'master.inspect.gate',
+				actorId,
+				kind: 'interact',
+				label: 'Inspect the gate resonance',
+				description: 'Draw one named deterministic resonance value without advancing time.',
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['deterministic', 'development-proof']
+			})
+		];
+	}
+	return state.schemaVersion === 2 ? heroActionsV2(state, actorId) : routeActions(state, actorId);
+}
+
+function earliestActivityTime(state: EngineGameStateV2): string | null {
+	return (
+		Object.values(state.heroes)
+			.map((hero) => hero.currentActivity?.completesAt)
+			.filter((value): value is string => Boolean(value))
+			.sort((left, right) => compareGameTime(left, right))[0] ?? null
+	);
+}
+
+function requiredAction(command: EngineCommand): string {
+	if (command.commandType === 'hero.choose.destination')
+		return `hero.choose.${command.destination}`;
+	if (command.commandType === 'hero.arrive') return 'hero.arrive.destination';
+	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
+	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
+	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
+	if (command.commandType === 'simulation.advance') return 'simulation.advance';
+	return command.targetId === command.actorId
+		? 'simulation.damage.master'
+		: `simulation.damage.hero.${command.targetId}`;
+}
+
 function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): void {
 	if (command.runId !== state.runId) throw new IllegalActionError(command.commandType, []);
 	if (command.expectedVersion !== state.version) {
 		throw new StaleStateVersionError(command.expectedVersion, state.version);
 	}
-	const actionIds = legalActions(state, command.actorId).map((action) => action.actionId);
-	const requiredAction =
-		command.commandType === 'hero.choose.destination'
-			? `hero.choose.${command.destination}`
-			: command.commandType === 'hero.arrive'
-				? 'hero.arrive.destination'
-				: 'master.inspect.gate';
-	if (!actionIds.includes(requiredAction)) throw new IllegalActionError(requiredAction, actionIds);
+	const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
+	const required = requiredAction(command);
+	if (!actionIds.includes(required)) throw new IllegalActionError(required, actionIds);
 	if (command.commandType === 'hero.choose.destination') {
-		const requiredBranch =
-			command.destination === 'kitchen' ? 'names-before-orders' : 'steel-before-trust';
-		if (command.storyBranch !== requiredBranch)
-			throw new IllegalActionError(requiredAction, actionIds);
+		const branch = command.destination === 'kitchen' ? 'names-before-orders' : 'steel-before-trust';
+		if (command.storyBranch !== branch) throw new IllegalActionError(required, actionIds);
+	}
+	if (command.commandType === 'simulation.advance') {
+		if (state.schemaVersion !== 2) throw new IllegalActionError(required, actionIds);
+		const earliest = earliestActivityTime(state);
+		if (!earliest || compareGameTime(command.targetGameTime, earliest) < 0) {
+			throw new IllegalActionError(required, actionIds);
+		}
+		const minutes = gameMinutesBetween(state.simulatedAt, command.targetGameTime);
+		if (minutes <= 0 || minutes > 7 * 24 * 60) throw new IllegalActionError(required, actionIds);
 	}
 }
 
-function buildEvent(
-	state: EngineGameState,
-	command: EngineCommand
-): Omit<AuthoritativeEvent, 'afterStateHash'> & { afterStateHash: string } {
+function eventBase(state: EngineGameState, command: EngineCommand, eventType: string) {
 	const sequence = state.eventCursor + 1;
-	const base = {
-		eventId: '',
+	return {
+		eventId: deterministicUuid(`${command.commandId}:${sequence}:${eventType}`),
 		runId: state.runId,
 		sequence,
-		schemaVersion: 1,
+		schemaVersion: state.schemaVersion,
 		gameTime: state.simulatedAt,
+		eventType,
 		actorId: command.actorId,
 		commandId: command.commandId,
 		causationId: null,
@@ -256,12 +637,13 @@ function buildEvent(
 		afterStateHash: EMPTY_STATE_HASH,
 		contentVersion: state.contentVersion
 	};
+}
+
+function buildLegacyEvent(state: EngineGameStateV1, command: EngineCommand): AuthoritativeEvent {
 	if (command.commandType === 'hero.choose.destination') {
-		const eventType = 'hero.destination.selected';
-		return {
+		const base = eventBase(state, command, 'hero.destination.selected');
+		return AuthoritativeEventSchema.parse({
 			...base,
-			eventId: deterministicUuid(`${command.commandId}:${sequence}:${eventType}`),
-			eventType,
 			seedCursor: state.entropyCursor,
 			payload: {
 				heroId: command.actorId,
@@ -271,16 +653,14 @@ function buildEvent(
 				nextVersion: state.version + 1,
 				entropyDraws: []
 			}
-		};
+		});
 	}
 	if (command.commandType === 'hero.arrive') {
 		const hero = state.heroes[command.actorId];
 		if (!hero?.destination) throw new IllegalActionError('hero.arrive.destination');
-		const eventType = 'hero.arrived';
-		return {
+		const base = eventBase(state, command, 'hero.arrived');
+		return AuthoritativeEventSchema.parse({
 			...base,
-			eventId: deterministicUuid(`${command.commandId}:${sequence}:${eventType}`),
-			eventType,
 			seedCursor: state.entropyCursor,
 			payload: {
 				heroId: command.actorId,
@@ -288,7 +668,10 @@ function buildEvent(
 				nextVersion: state.version + 1,
 				entropyDraws: []
 			}
-		};
+		});
+	}
+	if (command.commandType !== 'master.inspect.gate') {
+		throw new IllegalActionError(command.commandType);
 	}
 	const entropy = drawInteger(
 		createEntropyCursor(state.seed, state.entropyCursor),
@@ -296,11 +679,9 @@ function buildEvent(
 		0,
 		99
 	);
-	const eventType = 'master.gate.inspected';
-	return {
+	const base = eventBase(state, command, 'master.gate.inspected');
+	return AuthoritativeEventSchema.parse({
 		...base,
-		eventId: deterministicUuid(`${command.commandId}:${sequence}:${eventType}`),
-		eventType,
 		seedCursor: entropy.next.cursor,
 		payload: {
 			masterId: command.actorId,
@@ -308,20 +689,530 @@ function buildEvent(
 			nextVersion: state.version + 1,
 			entropyDraws: [entropy.draw]
 		}
+	});
+}
+
+function resourceChange(state: EngineGameStateV2, resource: 'food' | 'iron-ore', reason: string) {
+	const before = state.settlement.resources[resource];
+	return { resource, before, after: before - 1, delta: -1, reason };
+}
+
+function activityDuration(activity: ActivityKind): number {
+	return { train: 30, eat: 15, rest: 60, repair: 20 }[activity];
+}
+
+function levelFor(experience: number, stars: number): number {
+	return Math.min(stars * 10, 1 + Math.floor(experience / 10));
+}
+
+function buildActivityOutcome(
+	state: EngineGameStateV2,
+	heroId: string,
+	eventId: string,
+	entropyCursor: { seed: string; cursor: number }
+): {
+	outcome: z.infer<typeof ActivityOutcomeSchema>;
+	entropy: typeof entropyCursor;
+	draws: EntropyDraw[];
+} {
+	const hero = state.heroes[heroId];
+	const activity = hero?.currentActivity;
+	if (!hero || !activity) throw new Error('Cannot resolve a missing activity');
+	let healthAfter = hero.health;
+	let lifeStateAfter = hero.lifeState;
+	let needsAfter = { ...hero.needs };
+	let injuriesAfter = [...hero.injuries];
+	let progressionAfter = structuredClone(hero.progression);
+	let itemUpdate: z.infer<typeof ItemUpdateSchema> | null = null;
+	let nextEntropy = entropyCursor;
+	const draws: EntropyDraw[] = [];
+	const deltas: RewardDelta[] = [];
+
+	if (activity.kind === 'train') {
+		const experienceBefore = hero.progression.experience;
+		const levelBefore = hero.progression.level;
+		const skillBefore = hero.progression.skills.swordFighting.experience;
+		const skillAfter = skillBefore + 6;
+		const experienceAfter = experienceBefore + 8;
+		progressionAfter = {
+			...hero.progression,
+			experience: experienceAfter,
+			level: levelFor(experienceAfter, hero.progression.stars),
+			skills: {
+				swordFighting: {
+					experience: skillAfter,
+					rank: Math.min(20, Math.floor(skillAfter / 5))
+				}
+			}
+		};
+		needsAfter = {
+			hunger: clamp(hero.needs.hunger + 10),
+			fatigue: clamp(hero.needs.fatigue + 15)
+		};
+		deltas.push(
+			{
+				ownerId: heroId,
+				kind: 'experience',
+				key: 'hero',
+				before: experienceBefore,
+				after: experienceAfter,
+				delta: 8
+			},
+			{
+				ownerId: heroId,
+				kind: 'skill',
+				key: 'sword-fighting',
+				before: skillBefore,
+				after: skillAfter,
+				delta: 6
+			},
+			{
+				ownerId: heroId,
+				kind: 'need',
+				key: 'hunger',
+				before: hero.needs.hunger,
+				after: needsAfter.hunger,
+				delta: needsAfter.hunger - hero.needs.hunger
+			},
+			{
+				ownerId: heroId,
+				kind: 'need',
+				key: 'fatigue',
+				before: hero.needs.fatigue,
+				after: needsAfter.fatigue,
+				delta: needsAfter.fatigue - hero.needs.fatigue
+			}
+		);
+		if (progressionAfter.level !== levelBefore) {
+			deltas.push({
+				ownerId: heroId,
+				kind: 'level',
+				key: 'hero',
+				before: levelBefore,
+				after: progressionAfter.level,
+				delta: progressionAfter.level - levelBefore
+			});
+		}
+		const itemId = hero.equipment.mainHand;
+		const item = itemId ? state.items[itemId] : null;
+		if (item) {
+			const durabilityAfter = Math.max(0, item.durability - 1);
+			itemUpdate = { itemId: item.itemId, durabilityAfter };
+			deltas.push({
+				ownerId: heroId,
+				kind: 'durability',
+				key: item.templateId,
+				before: item.durability,
+				after: durabilityAfter,
+				delta: durabilityAfter - item.durability
+			});
+		}
+		const injuryDraw = drawInteger(
+			createEntropyCursor(nextEntropy.seed, nextEntropy.cursor),
+			`activity.train.injury.${heroId.replaceAll('-', '')}`,
+			0,
+			99
+		);
+		nextEntropy = injuryDraw.next;
+		draws.push(injuryDraw.draw);
+		if (injuryDraw.draw.value < 15) {
+			healthAfter = Math.max(0, hero.health - 10);
+			lifeStateAfter = healthAfter === 0 ? 'dead' : 'active';
+			if (healthAfter > 0) {
+				injuriesAfter.push({
+					injuryId: deterministicUuid(`${eventId}:${heroId}:training-strain`),
+					kind: 'strain',
+					severity: 10,
+					inflictedAt: activity.completesAt
+				});
+			}
+			deltas.push({
+				ownerId: heroId,
+				kind: 'health',
+				key: 'body',
+				before: hero.health,
+				after: healthAfter,
+				delta: healthAfter - hero.health
+			});
+		}
+	}
+
+	if (activity.kind === 'eat') {
+		needsAfter = { ...hero.needs, hunger: Math.max(0, hero.needs.hunger - 45) };
+		deltas.push({
+			ownerId: heroId,
+			kind: 'need',
+			key: 'hunger',
+			before: hero.needs.hunger,
+			after: needsAfter.hunger,
+			delta: needsAfter.hunger - hero.needs.hunger
+		});
+	}
+
+	if (activity.kind === 'rest') {
+		needsAfter = { ...hero.needs, fatigue: Math.max(0, hero.needs.fatigue - 50) };
+		healthAfter = Math.min(hero.maxHealth, hero.health + 10);
+		injuriesAfter = hero.injuries.slice(1);
+		deltas.push({
+			ownerId: heroId,
+			kind: 'need',
+			key: 'fatigue',
+			before: hero.needs.fatigue,
+			after: needsAfter.fatigue,
+			delta: needsAfter.fatigue - hero.needs.fatigue
+		});
+		if (healthAfter !== hero.health) {
+			deltas.push({
+				ownerId: heroId,
+				kind: 'health',
+				key: 'body',
+				before: hero.health,
+				after: healthAfter,
+				delta: healthAfter - hero.health
+			});
+		}
+	}
+
+	if (activity.kind === 'repair') {
+		const itemId = hero.equipment.mainHand;
+		const item = itemId ? state.items[itemId] : null;
+		if (!item) throw new Error('Repair activity lost its equipment target');
+		const durabilityAfter = Math.min(item.maxDurability, item.durability + 3);
+		itemUpdate = { itemId: item.itemId, durabilityAfter };
+		deltas.push({
+			ownerId: heroId,
+			kind: 'durability',
+			key: item.templateId,
+			before: item.durability,
+			after: durabilityAfter,
+			delta: durabilityAfter - item.durability
+		});
+	}
+
+	return {
+		outcome: ActivityOutcomeSchema.parse({
+			scheduledEventId: activity.scheduledEventId,
+			heroId,
+			activity: activity.kind,
+			healthAfter,
+			lifeStateAfter,
+			needsAfter,
+			injuriesAfter,
+			progressionAfter,
+			itemUpdate,
+			rewardDeltas: deltas
+		}),
+		entropy: nextEntropy,
+		draws
 	};
 }
 
-export function reduceEvent(
-	stateInput: EngineGameState,
-	eventInput: AuthoritativeEvent
-): EngineGameState {
-	const state = EngineGameStateSchema.parse(stateInput);
-	const event = AuthoritativeEventSchema.parse(eventInput);
-	if (event.runId !== state.runId)
-		throw new ReplayIntegrityError('Event run does not match state', event.sequence);
-	if (event.sequence !== state.eventCursor + 1) {
-		throw new ReplayIntegrityError('Event sequence is not contiguous', event.sequence);
+function buildV2Event(state: EngineGameStateV2, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType === 'hero.choose.destination') {
+		const base = eventBase(state, command, 'hero.destination.selected');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: command.actorId,
+				destination: command.destination,
+				firstLine: command.firstLine,
+				storyBranch: command.storyBranch,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero chose the ${command.destination === 'kitchen' ? 'kitchen' : 'training ground'}.`
+				)
+			}
+		});
 	}
+	if (command.commandType === 'hero.arrive') {
+		const hero = state.heroes[command.actorId];
+		if (!hero?.destination) throw new IllegalActionError('hero.arrive.destination');
+		const base = eventBase(state, command, 'hero.arrived');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: command.actorId,
+				destination: hero.destination,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero reached the ${hero.destination === 'kitchen' ? 'kitchen' : 'training ground'}.`
+				)
+			}
+		});
+	}
+	if (command.commandType === 'master.inspect.gate') {
+		const entropy = drawInteger(
+			createEntropyCursor(state.seed, state.entropyCursor),
+			'gate.resonance',
+			0,
+			99
+		);
+		const base = eventBase(state, command, 'master.gate.inspected');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: entropy.next.cursor,
+			payload: {
+				masterId: command.actorId,
+				resonance: entropy.draw.value,
+				nextVersion: state.version + 1,
+				...emptyMetadata(`The gate answered with resonance ${entropy.draw.value}.`),
+				entropyDraws: [entropy.draw]
+			}
+		});
+	}
+	if (command.commandType === 'hero.start.activity') {
+		const base = eventBase(state, command, 'hero.activity.started');
+		const activityId = deterministicUuid(`${command.commandId}:activity`);
+		const scheduledEventId = deterministicUuid(`${command.commandId}:completion`);
+		const dueGameTime = addGameMinutes(state.simulatedAt, activityDuration(command.activity));
+		const scheduledEvent = ScheduledEventSchema.parse({
+			scheduledEventId,
+			runId: state.runId,
+			actorId: command.actorId,
+			dueGameTime,
+			eventKind: 'hero.activity.complete',
+			payload: { heroId: command.actorId, activityId, activity: command.activity }
+		});
+		const resourceChanges =
+			command.activity === 'eat'
+				? [resourceChange(state, 'food', 'meal reserved')]
+				: command.activity === 'repair'
+					? [resourceChange(state, 'iron-ore', 'repair material reserved')]
+					: [];
+		const rewardDeltas = resourceChanges.map((change): RewardDelta => ({
+			ownerId: state.master.masterId,
+			kind: 'resource',
+			key: change.resource,
+			before: change.before,
+			after: change.after,
+			delta: change.delta
+		}));
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: command.actorId,
+				activity: command.activity,
+				activityId,
+				scheduledEvent,
+				resourceChanges,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero began ${command.activity}; completion is due at ${dueGameTime}.`,
+					rewardDeltas
+				)
+			}
+		});
+	}
+	if (command.commandType === 'hero.equip.item') {
+		const hero = state.heroes[command.actorId];
+		if (!hero) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'hero.item.equipped');
+		const previousItemId = hero.equipment.mainHand;
+		const before = previousItemId ? 1 : 0;
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: command.actorId,
+				itemId: command.itemId,
+				previousItemId,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero equipped ${state.items[command.itemId]?.displayName ?? 'an item'}.`,
+					[
+						{
+							ownerId: command.actorId,
+							kind: 'item',
+							key: 'main-hand',
+							before,
+							after: 1,
+							delta: 1 - before
+						}
+					]
+				)
+			}
+		});
+	}
+	if (command.commandType === 'simulation.advance') {
+		const base = eventBase(state, command, 'simulation.advanced');
+		const dueHeroes = Object.values(state.heroes)
+			.filter(
+				(hero) =>
+					hero.currentActivity &&
+					compareGameTime(hero.currentActivity.completesAt, command.targetGameTime) <= 0
+			)
+			.sort((left, right) => {
+				const time = compareGameTime(
+					left.currentActivity!.completesAt,
+					right.currentActivity!.completesAt
+				);
+				return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
+			});
+		let entropy = createEntropyCursor(state.seed, state.entropyCursor);
+		const outcomes: z.infer<typeof ActivityOutcomeSchema>[] = [];
+		const draws: EntropyDraw[] = [];
+		for (const hero of dueHeroes) {
+			const result = buildActivityOutcome(state, hero.heroId, base.eventId, entropy);
+			outcomes.push(result.outcome);
+			entropy = result.entropy;
+			draws.push(...result.draws);
+		}
+		const resolvedScheduledEventIds = outcomes.map((outcome) => outcome.scheduledEventId);
+		const rewardDeltas = outcomes.flatMap((outcome) => outcome.rewardDeltas);
+		return AuthoritativeEventSchema.parse({
+			...base,
+			gameTime: command.targetGameTime,
+			seedCursor: entropy.cursor,
+			payload: {
+				targetGameTime: command.targetGameTime,
+				outcomes,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					outcomes.length === 1
+						? `One ${outcomes[0]?.activity} activity completed.`
+						: `${outcomes.length} scheduled activities completed.`,
+					rewardDeltas
+				),
+				resolvedScheduledEventIds,
+				entropyDraws: draws
+			}
+		});
+	}
+	const targetKind = command.targetId === state.master.masterId ? 'master' : 'hero';
+	const target = targetKind === 'master' ? state.master : state.heroes[command.targetId];
+	if (!target) throw new IllegalActionError(command.commandType);
+	const healthAfter = Math.max(0, target.health - command.amount);
+	const fatal = healthAfter === 0;
+	const eventType = fatal ? `${targetKind}.died` : `${targetKind}.damaged`;
+	const base = eventBase(state, command, eventType);
+	const injury = fatal
+		? null
+		: InjurySchema.parse({
+				injuryId: deterministicUuid(`${base.eventId}:${command.targetId}:injury`),
+				kind: command.amount >= 50 ? 'critical' : command.amount >= 20 ? 'strain' : 'bruise',
+				severity: command.amount,
+				inflictedAt: state.simulatedAt
+			});
+	const targetHeroActivity = state.heroes[command.targetId]?.currentActivity;
+	const canceledScheduledEventIds = fatal
+		? targetKind === 'master'
+			? Object.values(state.heroes)
+					.map((hero) => hero.currentActivity?.scheduledEventId)
+					.filter((id): id is string => Boolean(id))
+			: targetHeroActivity
+				? [targetHeroActivity.scheduledEventId]
+				: []
+		: [];
+	return AuthoritativeEventSchema.parse({
+		...base,
+		seedCursor: state.entropyCursor,
+		payload: {
+			targetId: command.targetId,
+			targetKind,
+			damageKind: command.damageKind,
+			amount: command.amount,
+			healthBefore: target.health,
+			healthAfter,
+			injury,
+			nextVersion: state.version + 1,
+			...emptyMetadata(
+				fatal
+					? targetKind === 'master'
+						? 'The Master died. The run ended atomically.'
+						: 'A summoned hero died permanently.'
+					: `${targetKind === 'master' ? 'The Master' : 'A hero'} suffered ${command.amount} ${command.damageKind} damage.`,
+				[
+					{
+						ownerId: command.targetId,
+						kind: 'health',
+						key: 'body',
+						before: target.health,
+						after: healthAfter,
+						delta: healthAfter - target.health
+					}
+				]
+			),
+			canceledScheduledEventIds
+		}
+	});
+}
+
+function reduceLegacyEvent(state: EngineGameStateV1, event: AuthoritativeEvent): EngineGameStateV1 {
+	if (event.eventType === 'hero.destination.selected') {
+		const payload = LegacyChoosePayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		if (!hero)
+			throw new ReplayIntegrityError(
+				'Destination event references an unknown hero',
+				event.sequence
+			);
+		return EngineGameStateV1Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			heroes: { ...state.heroes, [payload.heroId]: { ...hero, destination: payload.destination } },
+			story: { ...state.story, branch: payload.storyBranch }
+		});
+	}
+	if (event.eventType === 'hero.arrived') {
+		const payload = LegacyArrivePayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		if (!hero)
+			throw new ReplayIntegrityError('Arrival event references an unknown hero', event.sequence);
+		return EngineGameStateV1Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			heroes: { ...state.heroes, [payload.heroId]: { ...hero, location: payload.destination } }
+		});
+	}
+	if (event.eventType === 'master.gate.inspected') {
+		const payload = LegacyInspectPayloadSchema.parse(event.payload);
+		return EngineGameStateV1Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			master: {
+				...state.master,
+				gateInspectionCount: state.master.gateInspectionCount + 1,
+				lastGateResonance: payload.resonance
+			}
+		});
+	}
+	throw new ReplayIntegrityError(
+		`Unsupported legacy event type: ${event.eventType}`,
+		event.sequence
+	);
+}
+
+function applyResourceChanges(
+	state: EngineGameStateV2,
+	event: AuthoritativeEvent,
+	changes: readonly z.infer<typeof ResourceChangeSchema>[]
+) {
+	const resources = { ...state.settlement.resources };
+	const resourceLedger = [...state.settlement.resourceLedger];
+	for (const [index, change] of changes.entries()) {
+		if (resources[change.resource] !== change.before || change.after < 0) {
+			throw new ReplayIntegrityError('Resource ledger precondition failed', event.sequence);
+		}
+		resources[change.resource] = change.after;
+		resourceLedger.push({
+			entryId: deterministicUuid(`${event.eventId}:resource:${index}`),
+			eventId: event.eventId,
+			...change
+		});
+	}
+	return { resources, resourceLedger };
+}
+
+function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): EngineGameStateV2 {
 	if (event.eventType === 'hero.destination.selected') {
 		const payload = ChoosePayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -330,7 +1221,7 @@ export function reduceEvent(
 				'Destination event references an unknown hero',
 				event.sequence
 			);
-		return EngineGameStateSchema.parse({
+		return EngineGameStateV2Schema.parse({
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -344,7 +1235,7 @@ export function reduceEvent(
 		const hero = state.heroes[payload.heroId];
 		if (!hero)
 			throw new ReplayIntegrityError('Arrival event references an unknown hero', event.sequence);
-		return EngineGameStateSchema.parse({
+		return EngineGameStateV2Schema.parse({
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -354,7 +1245,7 @@ export function reduceEvent(
 	}
 	if (event.eventType === 'master.gate.inspected') {
 		const payload = InspectPayloadSchema.parse(event.payload);
-		return EngineGameStateSchema.parse({
+		return EngineGameStateV2Schema.parse({
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -366,7 +1257,182 @@ export function reduceEvent(
 			}
 		});
 	}
+	if (event.eventType === 'hero.activity.started') {
+		const payload = ActivityStartedPayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		if (!hero || hero.currentActivity)
+			throw new ReplayIntegrityError('Activity start is not legal', event.sequence);
+		const settlement = applyResourceChanges(state, event, payload.resourceChanges);
+		return EngineGameStateV2Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			settlement,
+			heroes: {
+				...state.heroes,
+				[payload.heroId]: {
+					...hero,
+					currentActivity: {
+						activityId: payload.activityId,
+						scheduledEventId: payload.scheduledEvent.scheduledEventId,
+						kind: payload.activity,
+						startedAt: state.simulatedAt,
+						completesAt: payload.scheduledEvent.dueGameTime
+					}
+				}
+			}
+		});
+	}
+	if (event.eventType === 'hero.item.equipped') {
+		const payload = ItemEquippedPayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		const item = state.items[payload.itemId];
+		if (!hero || !item || item.ownerId !== hero.heroId)
+			throw new ReplayIntegrityError('Equipment ownership failed', event.sequence);
+		const items = { ...state.items };
+		if (payload.previousItemId) {
+			const previous = items[payload.previousItemId];
+			if (previous) items[payload.previousItemId] = { ...previous, equippedById: null };
+		}
+		items[payload.itemId] = { ...item, equippedById: hero.heroId };
+		return EngineGameStateV2Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			items,
+			heroes: {
+				...state.heroes,
+				[payload.heroId]: { ...hero, equipment: { mainHand: payload.itemId } }
+			}
+		});
+	}
+	if (event.eventType === 'simulation.advanced') {
+		const payload = SimulationAdvancedPayloadSchema.parse(event.payload);
+		const heroes = { ...state.heroes };
+		const items = { ...state.items };
+		for (const outcome of payload.outcomes) {
+			const hero = heroes[outcome.heroId];
+			if (
+				!hero?.currentActivity ||
+				hero.currentActivity.scheduledEventId !== outcome.scheduledEventId ||
+				compareGameTime(hero.currentActivity.completesAt, payload.targetGameTime) > 0
+			) {
+				throw new ReplayIntegrityError('Scheduled activity precondition failed', event.sequence);
+			}
+			heroes[outcome.heroId] = {
+				...hero,
+				health: outcome.healthAfter,
+				lifeState: outcome.lifeStateAfter,
+				needs: outcome.needsAfter,
+				injuries: outcome.injuriesAfter,
+				progression: outcome.progressionAfter,
+				currentActivity: null
+			};
+			if (outcome.itemUpdate) {
+				const item = items[outcome.itemUpdate.itemId];
+				if (!item) throw new ReplayIntegrityError('Activity item disappeared', event.sequence);
+				items[item.itemId] = { ...item, durability: outcome.itemUpdate.durabilityAfter };
+			}
+		}
+		return EngineGameStateV2Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			simulatedAt: payload.targetGameTime,
+			heroes,
+			items
+		});
+	}
+	if (['master.damaged', 'master.died', 'hero.damaged', 'hero.died'].includes(event.eventType)) {
+		const payload = DamagePayloadSchema.parse(event.payload);
+		if (payload.targetKind === 'master') {
+			if (state.master.health !== payload.healthBefore)
+				throw new ReplayIntegrityError('Master damage precondition failed', event.sequence);
+			const dead = payload.healthAfter === 0;
+			const heroes = dead
+				? Object.fromEntries(
+						Object.entries(state.heroes).map(([id, hero]) => [
+							id,
+							{ ...hero, currentActivity: null }
+						])
+					)
+				: state.heroes;
+			return EngineGameStateV2Schema.parse({
+				...state,
+				status: dead ? 'game_over' : state.status,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				heroes,
+				master: {
+					...state.master,
+					health: payload.healthAfter,
+					lifeState: dead ? 'dead' : 'alive',
+					injuries: payload.injury
+						? [...state.master.injuries, payload.injury]
+						: state.master.injuries
+				}
+			});
+		}
+		const hero = state.heroes[payload.targetId];
+		if (!hero || hero.health !== payload.healthBefore)
+			throw new ReplayIntegrityError('Hero damage precondition failed', event.sequence);
+		const dead = payload.healthAfter === 0;
+		return EngineGameStateV2Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			heroes: {
+				...state.heroes,
+				[payload.targetId]: {
+					...hero,
+					health: payload.healthAfter,
+					lifeState: dead ? 'dead' : 'active',
+					injuries: payload.injury ? [...hero.injuries, payload.injury] : hero.injuries,
+					currentActivity: dead ? null : hero.currentActivity
+				}
+			}
+		});
+	}
 	throw new ReplayIntegrityError(`Unsupported event type: ${event.eventType}`, event.sequence);
+}
+
+export function reduceEvent(
+	stateInput: EngineGameState,
+	eventInput: AuthoritativeEvent
+): EngineGameState {
+	const state = EngineGameStateSchema.parse(stateInput);
+	const event = AuthoritativeEventSchema.parse(eventInput);
+	if (event.runId !== state.runId)
+		throw new ReplayIntegrityError('Event run does not match state', event.sequence);
+	if (event.sequence !== state.eventCursor + 1)
+		throw new ReplayIntegrityError('Event sequence is not contiguous', event.sequence);
+	return state.schemaVersion === 1 ? reduceLegacyEvent(state, event) : reduceV2Event(state, event);
+}
+
+function metadataIds(
+	event: AuthoritativeEvent,
+	key: 'resolvedScheduledEventIds' | 'canceledScheduledEventIds'
+): string[] {
+	const payload = event.payload as Record<string, unknown>;
+	return z.array(z.string().uuid()).parse(payload[key] ?? []);
+}
+
+export function scheduledEventsFromEvent(event: AuthoritativeEvent): readonly ScheduledEvent[] {
+	if (event.eventType !== 'hero.activity.started') return [];
+	return [ActivityStartedPayloadSchema.parse(event.payload).scheduledEvent];
+}
+
+export function resolvedScheduledEventIdsFromEvent(event: AuthoritativeEvent): readonly string[] {
+	return metadataIds(event, 'resolvedScheduledEventIds');
+}
+
+export function canceledScheduledEventIdsFromEvent(event: AuthoritativeEvent): readonly string[] {
+	return metadataIds(event, 'canceledScheduledEventIds');
 }
 
 export function applyCommand(
@@ -376,7 +1442,8 @@ export function applyCommand(
 	const state = EngineGameStateSchema.parse(stateInput);
 	const command = EngineCommandSchema.parse(commandInput);
 	assertCommandIsLegal(state, command);
-	const eventDraft = buildEvent(state, command);
+	const eventDraft =
+		state.schemaVersion === 1 ? buildLegacyEvent(state, command) : buildV2Event(state, command);
 	const nextState = reduceEvent(state, eventDraft);
 	const stateHash = hashGameState(nextState);
 	const event = AuthoritativeEventSchema.parse({ ...eventDraft, afterStateHash: stateHash });
@@ -384,7 +1451,9 @@ export function applyCommand(
 		state: nextState,
 		stateHash,
 		events: [event],
-		scheduled: [],
+		scheduled: scheduledEventsFromEvent(event),
+		resolvedScheduledEventIds: resolvedScheduledEventIdsFromEvent(event),
+		canceledScheduledEventIds: canceledScheduledEventIdsFromEvent(event),
 		decisionRequests: [],
 		legalActions: legalActions(nextState, command.actorId)
 	};
@@ -392,12 +1461,17 @@ export function applyCommand(
 
 export interface ReplayCheck {
 	readonly sequence: number;
+	readonly gameTime: string;
 	readonly eventType: string;
+	readonly actorId: string | null;
+	readonly source: AuthoritativeEvent['source'];
+	readonly summary: string;
 	readonly beforeStateHash: string;
 	readonly afterStateHash: string;
 	readonly computedStateHash: string;
 	readonly verified: boolean;
 	readonly entropyDraws: readonly EntropyDraw[];
+	readonly deltas: readonly RewardDelta[];
 }
 
 export interface ReplayResult {
@@ -409,6 +1483,27 @@ export interface ReplayResult {
 function entropyDrawsFromEvent(event: AuthoritativeEvent): readonly EntropyDraw[] {
 	const payload = event.payload as Record<string, unknown>;
 	return z.array(EntropyDrawSchema).parse(payload.entropyDraws ?? []);
+}
+
+function replayCheck(
+	event: AuthoritativeEvent,
+	computedStateHash: string,
+	verified: boolean
+): ReplayCheck {
+	return {
+		sequence: event.sequence,
+		gameTime: event.gameTime,
+		eventType: event.eventType,
+		actorId: event.actorId,
+		source: event.source,
+		summary: eventSummary(event),
+		beforeStateHash: event.beforeStateHash,
+		afterStateHash: event.afterStateHash,
+		computedStateHash,
+		verified,
+		entropyDraws: entropyDrawsFromEvent(event),
+		deltas: eventDeltas(event)
+	};
 }
 
 export function replayEvents(eventInputs: readonly AuthoritativeEvent[]): ReplayResult {
@@ -425,29 +1520,23 @@ export function replayEvents(eventInputs: readonly AuthoritativeEvent[]): Replay
 	let state = initialized.initialState;
 	let computedHash = hashGameState(state);
 	const checks: ReplayCheck[] = [
-		{
-			sequence: first.sequence,
-			eventType: first.eventType,
-			beforeStateHash: first.beforeStateHash,
-			afterStateHash: first.afterStateHash,
-			computedStateHash: computedHash,
-			verified: first.beforeStateHash === EMPTY_STATE_HASH && first.afterStateHash === computedHash,
-			entropyDraws: initialized.entropyDraws
-		}
+		replayCheck(
+			first,
+			computedHash,
+			first.beforeStateHash === EMPTY_STATE_HASH && first.afterStateHash === computedHash
+		)
 	];
 	for (const event of events.slice(1)) {
 		const beforeHash = hashGameState(state);
 		state = reduceEvent(state, event);
 		computedHash = hashGameState(state);
-		checks.push({
-			sequence: event.sequence,
-			eventType: event.eventType,
-			beforeStateHash: event.beforeStateHash,
-			afterStateHash: event.afterStateHash,
-			computedStateHash: computedHash,
-			verified: event.beforeStateHash === beforeHash && event.afterStateHash === computedHash,
-			entropyDraws: entropyDrawsFromEvent(event)
-		});
+		checks.push(
+			replayCheck(
+				event,
+				computedHash,
+				event.beforeStateHash === beforeHash && event.afterStateHash === computedHash
+			)
+		);
 	}
 	return {
 		snapshot: EngineSnapshotSchema.parse({ state, stateHash: computedHash }),

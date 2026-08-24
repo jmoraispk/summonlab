@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
 import { LegalActionSchema } from './character.js';
-import { ActionSourceSchema, AuthoritativeEventSchema } from './event.js';
+import {
+	ActionSourceSchema,
+	AuthoritativeEventSchema,
+	JournalEntrySchema,
+	RewardDeltaSchema
+} from './event.js';
 import { RunStatusSchema } from './run.js';
 import {
 	ContentVersionSchema,
@@ -10,18 +15,38 @@ import {
 	StateHashSchema
 } from './shared.js';
 
-export const EngineLocationSchema = z.enum(['summoning-gate', 'kitchen', 'training-ground']);
+export const EngineLocationV1Schema = z.enum(['summoning-gate', 'kitchen', 'training-ground']);
+export const EngineLocationSchema = z.enum([
+	'summoning-gate',
+	'kitchen',
+	'training-ground',
+	'dormitory',
+	'workshop'
+]);
 export const HeroLifeStateSchema = z.enum(['active', 'dead', 'synthesized']);
 export const MasterLifeStateSchema = z.enum(['alive', 'dead']);
+export const ResourceKeySchema = z.enum(['food', 'iron-ore', 'ember-shard']);
+export const ActivityKindSchema = z.enum(['train', 'eat', 'rest', 'repair']);
+export const InjuryKindSchema = z.enum(['bruise', 'strain', 'critical']);
+export const EquipmentSlotSchema = z.enum(['main-hand']);
 
-export const EngineHeroStateSchema = z
+const HealthSchema = z
+	.object({
+		health: z.number().int().min(0).max(100),
+		maxHealth: z.number().int().positive().max(100)
+	})
+	.refine((value) => value.health <= value.maxHealth, {
+		message: 'Health cannot exceed maxHealth'
+	});
+
+export const EngineHeroStateV1Schema = z
 	.object({
 		heroId: EntityIdSchema,
 		lifeState: HeroLifeStateSchema,
-		location: EngineLocationSchema,
+		location: EngineLocationV1Schema,
 		destination: z.enum(['kitchen', 'training-ground']).nullable(),
-		health: z.number().int().min(0).max(100),
-		maxHealth: z.number().int().positive().max(100),
+		health: HealthSchema.shape.health,
+		maxHealth: HealthSchema.shape.maxHealth,
 		manifestHash: StateHashSchema
 	})
 	.strict()
@@ -29,13 +54,13 @@ export const EngineHeroStateSchema = z
 		message: 'Hero health cannot exceed maxHealth'
 	});
 
-export const EngineMasterStateSchema = z
+export const EngineMasterStateV1Schema = z
 	.object({
 		masterId: EntityIdSchema,
 		lifeState: MasterLifeStateSchema,
-		location: EngineLocationSchema,
-		health: z.number().int().min(0).max(100),
-		maxHealth: z.number().int().positive().max(100),
+		location: EngineLocationV1Schema,
+		health: HealthSchema.shape.health,
+		maxHealth: HealthSchema.shape.maxHealth,
 		gateInspectionCount: z.number().int().nonnegative(),
 		lastGateResonance: z.number().int().min(0).max(99).nullable()
 	})
@@ -51,7 +76,7 @@ export const EngineStoryStateSchema = z
 	})
 	.strict();
 
-export const EngineGameStateSchema = z
+export const EngineGameStateV1Schema = z
 	.object({
 		schemaVersion: z.literal(1),
 		runId: EntityIdSchema,
@@ -62,11 +87,225 @@ export const EngineGameStateSchema = z
 		eventCursor: z.number().int().positive(),
 		entropyCursor: z.number().int().nonnegative(),
 		simulatedAt: IsoDateTimeSchema,
-		master: EngineMasterStateSchema,
-		heroes: z.record(EntityIdSchema, EngineHeroStateSchema),
+		master: EngineMasterStateV1Schema,
+		heroes: z.record(EntityIdSchema, EngineHeroStateV1Schema),
 		story: EngineStoryStateSchema
 	})
 	.strict();
+
+export const InjurySchema = z
+	.object({
+		injuryId: EntityIdSchema,
+		kind: InjuryKindSchema,
+		severity: z.number().int().min(1).max(100),
+		inflictedAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const NeedStateSchema = z
+	.object({
+		hunger: z.number().int().min(0).max(100),
+		fatigue: z.number().int().min(0).max(100)
+	})
+	.strict();
+
+export const SkillProgressSchema = z
+	.object({
+		rank: z.number().int().min(0).max(20),
+		experience: z.number().int().nonnegative()
+	})
+	.strict();
+
+export const HeroProgressionSchema = z
+	.object({
+		stars: z.number().int().min(1).max(7),
+		level: z.number().int().min(1).max(70),
+		experience: z.number().int().nonnegative(),
+		skills: z
+			.object({
+				swordFighting: SkillProgressSchema
+			})
+			.strict()
+	})
+	.strict()
+	.refine((value) => value.level <= value.stars * 10, {
+		message: 'Hero level cannot exceed the current star cap'
+	});
+
+export const CurrentActivitySchema = z
+	.object({
+		activityId: EntityIdSchema,
+		scheduledEventId: EntityIdSchema,
+		kind: ActivityKindSchema,
+		startedAt: IsoDateTimeSchema,
+		completesAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const EngineHeroStateV2Schema = z
+	.object({
+		heroId: EntityIdSchema,
+		lifeState: HeroLifeStateSchema,
+		location: EngineLocationSchema,
+		destination: z.enum(['kitchen', 'training-ground']).nullable(),
+		health: HealthSchema.shape.health,
+		maxHealth: HealthSchema.shape.maxHealth,
+		manifestHash: StateHashSchema,
+		needs: NeedStateSchema,
+		injuries: z.array(InjurySchema).max(20),
+		progression: HeroProgressionSchema,
+		equipment: z
+			.object({
+				mainHand: EntityIdSchema.nullable()
+			})
+			.strict(),
+		currentActivity: CurrentActivitySchema.nullable()
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (value.health > value.maxHealth) {
+			context.addIssue({ code: 'custom', message: 'Hero health cannot exceed maxHealth' });
+		}
+		if (value.lifeState === 'active' && value.health === 0) {
+			context.addIssue({ code: 'custom', message: 'An active hero must have health' });
+		}
+		if (value.lifeState !== 'active' && value.health !== 0) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero must have zero health' });
+		}
+		if (value.lifeState !== 'active' && value.currentActivity !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot have an activity' });
+		}
+	});
+
+export const EngineMasterStateV2Schema = z
+	.object({
+		masterId: EntityIdSchema,
+		lifeState: MasterLifeStateSchema,
+		location: EngineLocationSchema,
+		health: HealthSchema.shape.health,
+		maxHealth: HealthSchema.shape.maxHealth,
+		injuries: z.array(InjurySchema).max(20),
+		gateInspectionCount: z.number().int().nonnegative(),
+		lastGateResonance: z.number().int().min(0).max(99).nullable()
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (value.health > value.maxHealth) {
+			context.addIssue({ code: 'custom', message: 'Master health cannot exceed maxHealth' });
+		}
+		if (value.lifeState === 'alive' && value.health === 0) {
+			context.addIssue({ code: 'custom', message: 'A living Master must have health' });
+		}
+		if (value.lifeState === 'dead' && value.health !== 0) {
+			context.addIssue({ code: 'custom', message: 'A dead Master must have zero health' });
+		}
+	});
+
+export const ResourceBalancesSchema = z
+	.object({
+		food: z.number().int().nonnegative(),
+		'iron-ore': z.number().int().nonnegative(),
+		'ember-shard': z.number().int().nonnegative()
+	})
+	.strict();
+
+export const ResourceLedgerEntrySchema = z
+	.object({
+		entryId: EntityIdSchema,
+		eventId: EntityIdSchema,
+		resource: ResourceKeySchema,
+		before: z.number().int().nonnegative(),
+		after: z.number().int().nonnegative(),
+		delta: z.number().int(),
+		reason: z.string().min(1).max(120)
+	})
+	.strict()
+	.refine((value) => value.after - value.before === value.delta, {
+		message: 'Resource ledger delta must equal after minus before'
+	});
+
+export const EngineSettlementStateSchema = z
+	.object({
+		resources: ResourceBalancesSchema,
+		resourceLedger: z.array(ResourceLedgerEntrySchema).max(10_000)
+	})
+	.strict();
+
+export const EngineItemStateSchema = z
+	.object({
+		itemId: EntityIdSchema,
+		templateId: z.enum(['practice-blade', 'short-bow']),
+		displayName: z.string().min(1).max(80),
+		ownerId: EntityIdSchema,
+		slot: EquipmentSlotSchema,
+		equippedById: EntityIdSchema.nullable(),
+		durability: z.number().int().nonnegative(),
+		maxDurability: z.number().int().positive().max(100)
+	})
+	.strict()
+	.refine((value) => value.durability <= value.maxDurability, {
+		message: 'Item durability cannot exceed maxDurability'
+	});
+
+export const EngineGameStateV2Schema = z
+	.object({
+		schemaVersion: z.literal(2),
+		runId: EntityIdSchema,
+		seed: z.string().min(1).max(128),
+		contentVersion: ContentVersionSchema,
+		status: RunStatusSchema,
+		version: z.number().int().nonnegative(),
+		eventCursor: z.number().int().positive(),
+		entropyCursor: z.number().int().nonnegative(),
+		simulatedAt: IsoDateTimeSchema,
+		master: EngineMasterStateV2Schema,
+		heroes: z.record(EntityIdSchema, EngineHeroStateV2Schema),
+		settlement: EngineSettlementStateSchema,
+		items: z.record(EntityIdSchema, EngineItemStateSchema),
+		story: EngineStoryStateSchema
+	})
+	.strict()
+	.superRefine((state, context) => {
+		if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
+			context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
+		}
+		if (state.status === 'active' && state.master.lifeState !== 'alive') {
+			context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
+		}
+		for (const hero of Object.values(state.heroes)) {
+			const itemId = hero.equipment.mainHand;
+			if (!itemId) continue;
+			const item = state.items[itemId];
+			if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Hero equipment must reference an owned item'
+				});
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (
+				item.equippedById &&
+				state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId
+			) {
+				context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+			}
+		}
+		for (const resource of ResourceKeySchema.options) {
+			const entries = state.settlement.resourceLedger.filter(
+				(entry) => entry.resource === resource
+			);
+			const last = entries.at(-1);
+			if (last && last.after !== state.settlement.resources[resource]) {
+				context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
+			}
+		}
+	});
+
+export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
+	EngineGameStateV1Schema,
+	EngineGameStateV2Schema
+]);
 
 const EngineCommandBaseSchema = z
 	.object({
@@ -94,10 +333,36 @@ export const InspectGateCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('master.inspect.gate')
 }).strict();
 
+export const StartActivityCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.start.activity'),
+	activity: ActivityKindSchema
+}).strict();
+
+export const EquipItemCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.equip.item'),
+	itemId: EntityIdSchema
+}).strict();
+
+export const AdvanceSimulationCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('simulation.advance'),
+	targetGameTime: IsoDateTimeSchema
+}).strict();
+
+export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('simulation.apply.damage'),
+	targetId: EntityIdSchema,
+	amount: z.number().int().min(1).max(100),
+	damageKind: z.enum(['hazard', 'training', 'combat'])
+}).strict();
+
 export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
-	InspectGateCommandSchema
+	InspectGateCommandSchema,
+	StartActivityCommandSchema,
+	EquipItemCommandSchema,
+	AdvanceSimulationCommandSchema,
+	ApplyDamageCommandSchema
 ]);
 
 export const EntropyDrawSchema = z
@@ -117,11 +382,18 @@ export const ScheduledEventSchema = z
 	.object({
 		scheduledEventId: EntityIdSchema,
 		runId: EntityIdSchema,
+		actorId: EntityIdSchema,
 		dueGameTime: IsoDateTimeSchema,
 		eventKind: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
 		payload: z.record(z.string(), z.unknown())
 	})
 	.strict();
+
+export const EngineScheduleRecordSchema = ScheduledEventSchema.extend({
+	status: z.enum(['pending', 'resolved', 'canceled']),
+	createdEventId: EntityIdSchema,
+	terminalEventId: EntityIdSchema.nullable()
+}).strict();
 
 export const EngineSnapshotSchema = z
 	.object({
@@ -135,6 +407,8 @@ export const EngineCommitSchema = z
 		snapshot: EngineSnapshotSchema,
 		events: z.array(AuthoritativeEventSchema).min(1),
 		scheduled: z.array(ScheduledEventSchema),
+		resolvedScheduledEventIds: z.array(EntityIdSchema),
+		canceledScheduledEventIds: z.array(EntityIdSchema),
 		legalActions: z.array(LegalActionSchema),
 		idempotentReplay: z.boolean()
 	})
@@ -143,12 +417,17 @@ export const EngineCommitSchema = z
 export const ReplayEventCheckSchema = z
 	.object({
 		sequence: z.number().int().positive(),
+		gameTime: IsoDateTimeSchema,
 		eventType: z.string(),
+		actorId: EntityIdSchema.nullable(),
+		source: ActionSourceSchema,
+		summary: z.string().min(1).max(1_000),
 		beforeStateHash: StateHashSchema,
 		afterStateHash: StateHashSchema,
 		computedStateHash: StateHashSchema,
 		verified: z.boolean(),
-		entropyDraws: z.array(EntropyDrawSchema)
+		entropyDraws: z.array(EntropyDrawSchema),
+		deltas: z.array(RewardDeltaSchema)
 	})
 	.strict();
 
@@ -158,10 +437,13 @@ export const EngineReplayReportSchema = z
 		verified: z.boolean(),
 		eventCount: z.number().int().positive(),
 		checks: z.array(ReplayEventCheckSchema),
+		journalEntries: z.array(JournalEntrySchema),
+		scheduledEvents: z.array(EngineScheduleRecordSchema),
 		snapshot: EngineSnapshotSchema,
 		persistedStateHash: StateHashSchema,
 		hashMatchesPersistedSnapshot: z.boolean(),
-		legalActions: z.array(LegalActionSchema)
+		legalActions: z.array(LegalActionSchema),
+		legalActionsByActor: z.record(EntityIdSchema, z.array(LegalActionSchema))
 	})
 	.strict();
 
@@ -181,13 +463,24 @@ export const EngineErrorResponseSchema = z.discriminatedUnion('code', [
 			message: z.string(),
 			legalActionIds: z.array(z.string())
 		})
+		.strict(),
+	z
+		.object({
+			code: z.literal('IDEMPOTENCY_CONFLICT'),
+			message: z.string()
+		})
 		.strict()
 ]);
 
+export type ActivityKind = z.infer<typeof ActivityKindSchema>;
 export type EngineCommand = z.infer<typeof EngineCommandSchema>;
 export type EngineCommit = z.infer<typeof EngineCommitSchema>;
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
+export type EngineGameStateV1 = z.infer<typeof EngineGameStateV1Schema>;
+export type EngineGameStateV2 = z.infer<typeof EngineGameStateV2Schema>;
+export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
+export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
 export type EngineSnapshot = z.infer<typeof EngineSnapshotSchema>;
 export type EntropyDraw = z.infer<typeof EntropyDrawSchema>;
 export type ScheduledEvent = z.infer<typeof ScheduledEventSchema>;

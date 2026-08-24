@@ -93,12 +93,16 @@ describe('engine properties', () => {
 		);
 	});
 
-	it('runs 10,000 generated command sequences without an invariant failure', () => {
+	it('runs 10,000 generated survival histories without an invariant failure', () => {
 		const report = simulateFoundation(10_000);
 
 		expect(report.sequenceCount).toBe(10_000);
-		expect(report.commandCount).toBeGreaterThanOrEqual(20_000);
+		expect(report.commandCount).toBeGreaterThanOrEqual(40_000);
 		expect(report.replayCount).toBe(10_000);
+		expect(report.scheduledCount).toBeGreaterThanOrEqual(10_000);
+		expect(report.resolvedScheduleCount).toBe(report.scheduledCount);
+		expect(report.heroDeathCount).toBeGreaterThan(0);
+		expect(report.gameOverCount).toBeGreaterThan(0);
 		expect(report.invariantFailures).toBe(0);
-	}, 30_000);
+	}, 180_000);
 });

@@ -323,17 +323,22 @@ The engine owns:
 - run-ending Master death;
 - emitted events and replay hashes.
 
-### Implemented replay foundation
+### Implemented deterministic survival core
 
-The Phase 2 foundation implements typed commands, actor-specific legal actions, immutable named
-entropy, pure reduction, append-only PostgreSQL events, per-event snapshots, and SHA-256 state-hash
+The Phase 2 core implements typed commands, actor-specific legal actions, immutable named entropy,
+pure reduction, append-only PostgreSQL events, per-event snapshots, and SHA-256 state-hash
 verification. Commands carry an idempotency UUID and expected run version. Concurrent commands are
 serialized at the run row; a stale command receives the latest version, cursor, and hash rather than
-overwriting state. The `/replay/[runId]` development inspector rebuilds and compares the stream, and
-is disabled in production unless explicitly enabled.
+overwriting state.
 
-Resources, equipment, needs, scheduled time, injury, death, game over, and reward projections remain
-the next Phase 2 slice.
+New `engine-v2` runs also own nonnegative resources, inventory/equipment links, durability, needs,
+activities, deterministic injuries, progression, permanent hero death, and atomic Master game over.
+Scheduled work is indexed in PostgreSQL, but only events create, resolve, or cancel it. An explicit
+game timestamp drives both immediate and offline-style resolution, so the reducer never consults wall
+time. The readable journal projects numerical deltas and action source from the authoritative stream.
+The `/replay/[runId]` development inspector exercises and rebuilds this full chain, and is disabled in
+production unless explicitly enabled. Immutable `engine-v1` runs keep their original schemas and
+hashes rather than receiving hidden defaults.
 
 ## Policy interface
 
