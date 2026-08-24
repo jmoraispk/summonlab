@@ -48,7 +48,7 @@ type SimulationCommand = WithoutEnvelope<EngineCommand>;
 
 function assertSimulationInvariants(state: EngineGameState): void {
 	EngineGameStateSchema.parse(state);
-	if (state.schemaVersion !== 2) return;
+	if (state.schemaVersion !== 2 && state.schemaVersion !== 3) return;
 	for (const balance of Object.values(state.settlement.resources)) {
 		if (balance < 0) throw new Error('Simulation produced a negative resource balance');
 	}
@@ -114,10 +114,17 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			firstLine: 'A deterministic survival simulation choice.',
 			storyBranch: destination === 'kitchen' ? 'names-before-orders' : 'steel-before-trust'
 		});
-		apply('arrive', {
+		const traveling = apply('travel', {
 			actorId: heroId,
 			source: source('system'),
-			commandType: 'hero.arrive'
+			commandType: 'hero.start.travel',
+			targetNodeId: destination === 'kitchen' ? 'kitchen-table' : 'training-ring'
+		});
+		apply('arrive', {
+			actorId: state.master.masterId,
+			source: source('system'),
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
 
 		if (index % 2 === 0) {
@@ -160,7 +167,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 					targetGameTime: repair.scheduled[0]!.dueGameTime
 				});
 			}
-			if (index % 5 === 1 && state.schemaVersion === 2) {
+			if (index % 5 === 1 && (state.schemaVersion === 2 || state.schemaVersion === 3)) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {
 					apply('equip-bow', {

@@ -331,14 +331,21 @@ verification. Commands carry an idempotency UUID and expected run version. Concu
 serialized at the run row; a stale command receives the latest version, cursor, and hash rather than
 overwriting state.
 
-New `engine-v2` runs also own nonnegative resources, inventory/equipment links, durability, needs,
-activities, deterministic injuries, progression, permanent hero death, and atomic Master game over.
+`engine-v2` added nonnegative resources, inventory/equipment links, durability, needs, activities,
+deterministic injuries, progression, permanent hero death, and atomic Master game over.
 Scheduled work is indexed in PostgreSQL, but only events create, resolve, or cancel it. An explicit
 game timestamp drives both immediate and offline-style resolution, so the reducer never consults wall
 time. The readable journal projects numerical deltas and action source from the authoritative stream.
 The `/replay/[runId]` development inspector exercises and rebuilds this full chain, and is disabled in
-production unless explicitly enabled. Immutable `engine-v1` runs keep their original schemas and
-hashes rather than receiving hidden defaults.
+production unless explicitly enabled.
+
+New runs use `engine-v3`. The state binds the Hearth route graph by id, version, and content hash;
+travel commands supply only a target node. The engine derives the access-aware route, persists its
+edges and due time, and schedules arrival without changing the hero's authoritative node. Only an
+explicit `simulation.advance` event at or after the due game time commits arrival. Visual
+interpolation cannot write location, and death cancels pending travel through the same schedule
+ledger. Immutable `engine-v1` and `engine-v2` runs keep their original schemas and reducers rather
+than receiving hidden defaults.
 
 ## Policy interface
 

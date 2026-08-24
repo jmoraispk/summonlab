@@ -8,6 +8,7 @@ import {
 	RewardDeltaSchema
 } from './event.js';
 import { RunStatusSchema } from './run.js';
+import { SettlementRoutePlanSchema } from './settlement.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -23,6 +24,7 @@ export const EngineLocationSchema = z.enum([
 	'dormitory',
 	'workshop'
 ]);
+export const EngineZoneSchema = z.enum([...EngineLocationSchema.options, 'settlement-exterior']);
 export const HeroLifeStateSchema = z.enum(['active', 'dead', 'synthesized']);
 export const MasterLifeStateSchema = z.enum(['alive', 'dead']);
 export const ResourceKeySchema = z.enum(['food', 'iron-ore', 'ember-shard']);
@@ -142,6 +144,28 @@ export const CurrentActivitySchema = z
 	})
 	.strict();
 
+const SettlementNodeIdSchema = z.string().regex(/^[a-z][a-z0-9-]{2,79}$/u);
+
+export const CurrentTravelSchema = z
+	.object({
+		travelId: EntityIdSchema,
+		scheduledEventId: EntityIdSchema,
+		fromNodeId: SettlementNodeIdSchema,
+		toNodeId: SettlementNodeIdSchema,
+		destinationZone: EngineZoneSchema,
+		route: SettlementRoutePlanSchema,
+		settlementContentVersion: ContentVersionSchema,
+		settlementContentHash: StateHashSchema,
+		startedAt: IsoDateTimeSchema,
+		arrivesAt: IsoDateTimeSchema
+	})
+	.strict()
+	.refine(
+		(value) =>
+			value.route.fromNodeId === value.fromNodeId && value.route.toNodeId === value.toNodeId,
+		{ message: 'Current travel route endpoints must match the journey' }
+	);
+
 export const EngineHeroStateV2Schema = z
 	.object({
 		heroId: EntityIdSchema,
@@ -174,6 +198,39 @@ export const EngineHeroStateV2Schema = z
 		}
 		if (value.lifeState !== 'active' && value.currentActivity !== null) {
 			context.addIssue({ code: 'custom', message: 'A terminal hero cannot have an activity' });
+		}
+	});
+
+export const EngineHeroStateV3Schema = z
+	.object({
+		...EngineHeroStateV2Schema.shape,
+		location: EngineZoneSchema,
+		locationNodeId: SettlementNodeIdSchema,
+		firstArrivalCompleted: z.boolean(),
+		currentTravel: CurrentTravelSchema.nullable()
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (value.health > value.maxHealth) {
+			context.addIssue({ code: 'custom', message: 'Hero health cannot exceed maxHealth' });
+		}
+		if (value.lifeState === 'active' && value.health === 0) {
+			context.addIssue({ code: 'custom', message: 'An active hero must have health' });
+		}
+		if (value.lifeState !== 'active' && value.health !== 0) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero must have zero health' });
+		}
+		if (value.lifeState !== 'active' && value.currentActivity !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot have an activity' });
+		}
+		if (value.currentActivity && value.currentTravel) {
+			context.addIssue({ code: 'custom', message: 'A hero cannot work while traveling' });
+		}
+		if (value.lifeState !== 'active' && value.currentTravel !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot travel' });
+		}
+		if (value.currentTravel && value.currentTravel.fromNodeId !== value.locationNodeId) {
+			context.addIssue({ code: 'custom', message: 'Travel must begin at the authoritative node' });
 		}
 	});
 
@@ -230,6 +287,22 @@ export const EngineSettlementStateSchema = z
 		resourceLedger: z.array(ResourceLedgerEntrySchema).max(10_000)
 	})
 	.strict();
+
+export const SettlementNavigationStateSchema = z
+	.object({
+		settlementId: SettlementNodeIdSchema,
+		contentVersion: ContentVersionSchema,
+		contentHash: StateHashSchema,
+		activeSystemIds: z.array(SettlementNodeIdSchema).max(20)
+	})
+	.strict()
+	.refine((value) => new Set(value.activeSystemIds).size === value.activeSystemIds.length, {
+		message: 'Active settlement systems must be unique'
+	});
+
+export const EngineSettlementStateV3Schema = EngineSettlementStateSchema.extend({
+	navigation: SettlementNavigationStateSchema
+}).strict();
 
 export const EngineItemStateSchema = z
 	.object({
@@ -302,9 +375,55 @@ export const EngineGameStateV2Schema = z
 		}
 	});
 
+export const EngineGameStateV3Schema = z
+	.object({
+		...EngineGameStateV2Schema.shape,
+		schemaVersion: z.literal(3),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV3Schema),
+		settlement: EngineSettlementStateV3Schema
+	})
+	.strict()
+	.superRefine((state, context) => {
+		if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
+			context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
+		}
+		if (state.status === 'active' && state.master.lifeState !== 'alive') {
+			context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
+		}
+		for (const hero of Object.values(state.heroes)) {
+			const itemId = hero.equipment.mainHand;
+			if (!itemId) continue;
+			const item = state.items[itemId];
+			if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Hero equipment must reference an owned item'
+				});
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (
+				item.equippedById &&
+				state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId
+			) {
+				context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+			}
+		}
+		for (const resource of ResourceKeySchema.options) {
+			const entries = state.settlement.resourceLedger.filter(
+				(entry) => entry.resource === resource
+			);
+			const last = entries.at(-1);
+			if (last && last.after !== state.settlement.resources[resource]) {
+				context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
+			}
+		}
+	});
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
-	EngineGameStateV2Schema
+	EngineGameStateV2Schema,
+	EngineGameStateV3Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -327,6 +446,11 @@ export const ChooseDestinationCommandSchema = EngineCommandBaseSchema.extend({
 
 export const ArriveDestinationCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.arrive')
+}).strict();
+
+export const StartTravelCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.start.travel'),
+	targetNodeId: SettlementNodeIdSchema
 }).strict();
 
 export const InspectGateCommandSchema = EngineCommandBaseSchema.extend({
@@ -358,6 +482,7 @@ export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
 export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
+	StartTravelCommandSchema,
 	InspectGateCommandSchema,
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
@@ -478,6 +603,7 @@ export type EngineCommit = z.infer<typeof EngineCommitSchema>;
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
 export type EngineGameStateV1 = z.infer<typeof EngineGameStateV1Schema>;
 export type EngineGameStateV2 = z.infer<typeof EngineGameStateV2Schema>;
+export type EngineGameStateV3 = z.infer<typeof EngineGameStateV3Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;

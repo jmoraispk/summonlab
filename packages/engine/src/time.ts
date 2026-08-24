@@ -1,4 +1,14 @@
 const MINUTE_MS = 60_000;
+const SECOND_MS = 1_000;
+
+export function addGameSeconds(isoTime: string, seconds: number): string {
+	if (!Number.isSafeInteger(seconds) || seconds < 0) {
+		throw new Error('Game-second delta must be a nonnegative safe integer');
+	}
+	const milliseconds = Date.parse(isoTime);
+	if (!Number.isFinite(milliseconds)) throw new Error(`Invalid game time: ${isoTime}`);
+	return new Date(milliseconds + seconds * SECOND_MS).toISOString();
+}
 
 export function addGameMinutes(isoTime: string, minutes: number): string {
 	if (!Number.isSafeInteger(minutes) || minutes < 0) {

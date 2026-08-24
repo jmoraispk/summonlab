@@ -1,4 +1,9 @@
-import type { AuthoritativeEvent, EngineCommand, EngineGameStateV1 } from '@summonlab/contracts';
+import {
+	EngineGameStateV2Schema,
+	type AuthoritativeEvent,
+	type EngineCommand,
+	type EngineGameStateV1
+} from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -65,11 +70,17 @@ function arriveAtTraining() {
 		firstLine: 'Let me test what this body remembers.',
 		storyBranch: 'steel-before-trust'
 	});
-	const arrived = applyCommand(chosen.state, {
-		...commandBase(chosen.state, heroId, 'arrive-training'),
-		commandType: 'hero.arrive'
+	const traveling = applyCommand(chosen.state, {
+		...commandBase(chosen.state, heroId, 'travel-training'),
+		commandType: 'hero.start.travel',
+		targetNodeId: 'training-ring'
 	});
-	return { bootstrap, chosen, arrived, heroId };
+	const arrived = applyCommand(traveling.state, {
+		...commandBase(traveling.state, traveling.state.master.masterId, 'arrive-training'),
+		commandType: 'simulation.advance',
+		targetGameTime: traveling.scheduled[0]!.dueGameTime
+	});
+	return { bootstrap, chosen, traveling, arrived, heroId };
 }
 
 describe('deterministic engine', () => {
@@ -110,25 +121,42 @@ describe('deterministic engine', () => {
 			storyBranch: 'steel-before-trust'
 		};
 		const chosen = applyCommand(bootstrap.snapshot.state, choose);
-		const arrived = applyCommand(chosen.state, {
-			commandId: deterministicUuid(`${runId}:arrive`),
+		const traveling = applyCommand(chosen.state, {
+			commandId: deterministicUuid(`${runId}:travel`),
 			runId,
 			actorId: heroId,
 			expectedVersion: 1,
-			correlationId: deterministicUuid(`${runId}:arrive:correlation`),
+			correlationId: deterministicUuid(`${runId}:travel:correlation`),
 			source: source(),
-			commandType: 'hero.arrive'
+			commandType: 'hero.start.travel',
+			targetNodeId: 'training-ring'
+		});
+		const arrived = applyCommand(traveling.state, {
+			commandId: deterministicUuid(`${runId}:arrive`),
+			runId,
+			actorId: traveling.state.master.masterId,
+			expectedVersion: 2,
+			correlationId: deterministicUuid(`${runId}:arrive:correlation`),
+			source: { ...source(), source: 'system', timing: null },
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
 		const inspected = applyCommand(arrived.state, {
 			commandId: deterministicUuid(`${runId}:inspect`),
 			runId,
 			actorId: arrived.state.master.masterId,
-			expectedVersion: 2,
+			expectedVersion: 3,
 			correlationId: deterministicUuid(`${runId}:inspect:correlation`),
 			source: { ...source(), source: 'manual', timing: 'step' },
 			commandType: 'master.inspect.gate'
 		});
-		const events = [bootstrap.event, ...chosen.events, ...arrived.events, ...inspected.events];
+		const events = [
+			bootstrap.event,
+			...chosen.events,
+			...traveling.events,
+			...arrived.events,
+			...inspected.events
+		];
 		const replay = replayEventsStrict(events);
 
 		expect(replay.snapshot.state).toEqual(inspected.state);
@@ -156,6 +184,96 @@ describe('deterministic engine', () => {
 			applyCommand(before, { ...base, expectedVersion: 0, commandType: 'hero.arrive' })
 		).toThrow(IllegalActionError);
 		expect(before).toEqual(bootstrap.snapshot.state);
+	});
+
+	it('schedules a content-bound route and commits location only at authoritative arrival', () => {
+		const bootstrap = fixture();
+		const heroId = Object.keys(bootstrap.snapshot.state.heroes)[0]!;
+		const chosen = applyCommand(bootstrap.snapshot.state, {
+			...commandBase(bootstrap.snapshot.state, heroId, 'choose-kitchen-route'),
+			commandType: 'hero.choose.destination',
+			destination: 'kitchen',
+			firstLine: 'Names first.',
+			storyBranch: 'names-before-orders'
+		});
+		const traveling = applyCommand(chosen.state, {
+			...commandBase(chosen.state, heroId, 'travel-kitchen'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'kitchen-table'
+		});
+		if (traveling.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		const inTransit = traveling.state.heroes[heroId]!;
+		expect(inTransit.location).toBe('summoning-gate');
+		expect(inTransit.locationNodeId).toBe('gate-dais');
+		expect(inTransit.currentTravel).toMatchObject({
+			fromNodeId: 'gate-dais',
+			toNodeId: 'kitchen-table',
+			settlementContentVersion: 'hearth-01-v1',
+			settlementContentHash: '83e2d404fa3e119bc02ff6ff1f82896ea8ffb10a2661f8c7b0e858a35eeb89b9',
+			route: {
+				nodeIds: ['gate-dais', 'gate-court', 'courtyard-heart', 'kitchen-entry', 'kitchen-table'],
+				totalTravelGameSeconds: 124
+			}
+		});
+		expect(traveling.scheduled[0]).toMatchObject({
+			eventKind: 'hero.travel.arrive',
+			dueGameTime: '2000-01-01T00:02:04.000Z'
+		});
+
+		expect(() =>
+			applyCommand(traveling.state, {
+				...commandBase(traveling.state, traveling.state.master.masterId, 'arrive-early'),
+				commandType: 'simulation.advance',
+				targetGameTime: '2000-01-01T00:02:03.000Z'
+			})
+		).toThrow(IllegalActionError);
+
+		const arrived = applyCommand(traveling.state, {
+			...commandBase(traveling.state, traveling.state.master.masterId, 'arrive-on-time'),
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
+		});
+		if (arrived.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		expect(arrived.state.heroes[heroId]).toMatchObject({
+			location: 'kitchen',
+			locationNodeId: 'kitchen-table',
+			currentTravel: null
+		});
+		expect(arrived.resolvedScheduledEventIds).toEqual([traveling.scheduled[0]!.scheduledEventId]);
+		const replay = replayEventsStrict([
+			bootstrap.event,
+			...chosen.events,
+			...traveling.events,
+			...arrived.events
+		]);
+		expect(replay.snapshot.stateHash).toBe(arrived.stateHash);
+
+		expect(() =>
+			applyCommand(chosen.state, {
+				...commandBase(chosen.state, heroId, 'ignore-first-destination'),
+				commandType: 'hero.start.travel',
+				targetNodeId: 'training-ring'
+			})
+		).toThrow(IllegalActionError);
+
+		expect(() =>
+			applyCommand(arrived.state, {
+				...commandBase(arrived.state, heroId, 'travel-locked-forge'),
+				commandType: 'hero.start.travel',
+				targetNodeId: 'workshop-forge'
+			})
+		).toThrow(IllegalActionError);
+
+		const died = applyCommand(traveling.state, {
+			...commandBase(traveling.state, traveling.state.master.masterId, 'die-in-transit'),
+			commandType: 'simulation.apply.damage',
+			targetId: heroId,
+			amount: 100,
+			damageKind: 'hazard'
+		});
+		if (died.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
+		expect(died.state.heroes[heroId]?.currentTravel).toBeNull();
+		expect(died.canceledScheduledEventIds).toEqual([traveling.scheduled[0]!.scheduledEventId]);
 	});
 
 	it('detects a tampered replay hash at the exact event', () => {
@@ -232,16 +350,57 @@ describe('deterministic engine', () => {
 		expect(replay.snapshot.state.schemaVersion).toBe(1);
 	});
 
+	it('keeps immutable engine-v2 commands and reducer bytes on their original schema', () => {
+		const modern = fixture();
+		if (modern.snapshot.state.schemaVersion !== 3) throw new Error('Expected engine-v3 fixture');
+		const modernHero = Object.values(modern.snapshot.state.heroes)[0]!;
+		const hero = { ...modernHero } as Record<string, unknown>;
+		delete hero.locationNodeId;
+		delete hero.firstArrivalCompleted;
+		delete hero.currentTravel;
+		const settlement = { ...modern.snapshot.state.settlement } as Record<string, unknown>;
+		delete settlement.navigation;
+		const state = EngineGameStateV2Schema.parse({
+			...modern.snapshot.state,
+			schemaVersion: 2,
+			contentVersion: 'engine-v2',
+			heroes: { [modernHero.heroId]: hero },
+			settlement
+		});
+		const stateHash = hashGameState(state);
+		const bootstrapEvent: AuthoritativeEvent = {
+			...modern.event,
+			schemaVersion: 2,
+			contentVersion: 'engine-v2',
+			afterStateHash: stateHash,
+			payload: { ...modern.event.payload, initialState: state }
+		};
+		const chosen = applyCommand(state, {
+			...commandBase(state, modernHero.heroId, 'v2-choose'),
+			commandType: 'hero.choose.destination',
+			destination: 'training-ground',
+			firstLine: 'Old steel, old trust.',
+			storyBranch: 'steel-before-trust'
+		});
+		const arrived = applyCommand(chosen.state, {
+			...commandBase(chosen.state, modernHero.heroId, 'v2-arrive'),
+			commandType: 'hero.arrive'
+		});
+		const replay = replayEventsStrict([bootstrapEvent, ...chosen.events, ...arrived.events]);
+		expect(replay.snapshot.state).toEqual(arrived.state);
+		expect(replay.snapshot.state.schemaVersion).toBe(2);
+	});
+
 	it('schedules training, advances an injected clock, and projects progression exactly', () => {
-		const { bootstrap, chosen, arrived, heroId } = arriveAtTraining();
+		const { bootstrap, chosen, traveling, arrived, heroId } = arriveAtTraining();
 		const started = applyCommand(arrived.state, {
 			...commandBase(arrived.state, heroId, 'start-training'),
 			commandType: 'hero.start.activity',
 			activity: 'train'
 		});
 		expect(started.scheduled).toHaveLength(1);
-		expect(started.scheduled[0]?.dueGameTime).toBe('2000-01-01T00:30:00.000Z');
-		if (started.state.schemaVersion !== 2) throw new Error('Expected engine-v2 state');
+		expect(started.scheduled[0]?.dueGameTime).toBe('2000-01-01T00:32:06.000Z');
+		if (started.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
 		expect(started.state.heroes[heroId]?.currentActivity?.kind).toBe('train');
 
 		const advanced = applyCommand(started.state, {
@@ -249,7 +408,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: started.scheduled[0]!.dueGameTime
 		});
-		if (advanced.state.schemaVersion !== 2) throw new Error('Expected engine-v2 state');
+		if (advanced.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
 		const hero = advanced.state.heroes[heroId]!;
 		const blade = advanced.state.items[hero.equipment.mainHand!]!;
 		expect(hero.currentActivity).toBeNull();
@@ -271,6 +430,7 @@ describe('deterministic engine', () => {
 		const replay = replayEventsStrict([
 			bootstrap.event,
 			...chosen.events,
+			...traveling.events,
 			...arrived.events,
 			...started.events,
 			...advanced.events
@@ -298,7 +458,7 @@ describe('deterministic engine', () => {
 			commandType: 'hero.start.activity',
 			activity: 'repair'
 		});
-		if (repair.state.schemaVersion !== 2) throw new Error('Expected engine-v2 state');
+		if (repair.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
 		expect(repair.state.settlement.resources['iron-ore']).toBe(1);
 		expect(repair.state.settlement.resourceLedger.at(-1)).toMatchObject({
 			resource: 'iron-ore',
@@ -311,7 +471,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: repair.scheduled[0]!.dueGameTime
 		});
-		if (repaired.state.schemaVersion !== 2) throw new Error('Expected engine-v2 state');
+		if (repaired.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
 		const itemId = repaired.state.heroes[heroId]!.equipment.mainHand!;
 		expect(repaired.state.items[itemId]?.durability).toBe(6);
 	});
@@ -330,7 +490,7 @@ describe('deterministic engine', () => {
 			amount: 100,
 			damageKind: 'hazard'
 		});
-		if (heroDied.state.schemaVersion !== 2) throw new Error('Expected engine-v2 state');
+		if (heroDied.state.schemaVersion !== 3) throw new Error('Expected engine-v3 state');
 		expect(heroDied.state.heroes[heroId]).toMatchObject({
 			lifeState: 'dead',
 			health: 0,

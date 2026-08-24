@@ -30,45 +30,71 @@ describe('engine properties', () => {
 					const events = [bootstrap.event];
 					let state = bootstrap.snapshot.state;
 					const destination = kitchen ? 'kitchen' : 'training-ground';
+					const choose: EngineCommand = {
+						commandId: deterministicUuid(`${runId}:choose`),
+						runId,
+						actorId: heroId,
+						expectedVersion: 0,
+						correlationId: deterministicUuid(`${runId}:choose:corr`),
+						source: {
+							source: 'random',
+							timing: 'continuous',
+							fallbackPolicy: 'random',
+							directiveIds: [],
+							decisionJobId: null
+						},
+						commandType: 'hero.choose.destination',
+						destination,
+						firstLine: 'Generated property path.',
+						storyBranch: kitchen ? 'names-before-orders' : 'steel-before-trust'
+					};
+					const chosen = applyCommand(state, choose);
+					state = EngineGameStateSchema.parse(chosen.state);
+					events.push(...chosen.events);
+					const travel: EngineCommand = {
+						commandId: deterministicUuid(`${runId}:travel`),
+						runId,
+						actorId: heroId,
+						expectedVersion: 1,
+						correlationId: deterministicUuid(`${runId}:travel:corr`),
+						source: {
+							source: 'system',
+							timing: null,
+							fallbackPolicy: null,
+							directiveIds: [],
+							decisionJobId: null
+						},
+						commandType: 'hero.start.travel',
+						targetNodeId: kitchen ? 'kitchen-table' : 'training-ring'
+					};
+					const traveling = applyCommand(state, travel);
+					state = EngineGameStateSchema.parse(traveling.state);
+					events.push(...traveling.events);
+					const arrive: EngineCommand = {
+						commandId: deterministicUuid(`${runId}:arrive`),
+						runId,
+						actorId: state.master.masterId,
+						expectedVersion: 2,
+						correlationId: deterministicUuid(`${runId}:arrive:corr`),
+						source: {
+							source: 'system',
+							timing: null,
+							fallbackPolicy: null,
+							directiveIds: [],
+							decisionJobId: null
+						},
+						commandType: 'simulation.advance',
+						targetGameTime: traveling.scheduled[0]!.dueGameTime
+					};
+					const arrived = applyCommand(state, arrive);
+					state = EngineGameStateSchema.parse(arrived.state);
+					events.push(...arrived.events);
 					const commands: EngineCommand[] = [
-						{
-							commandId: deterministicUuid(`${runId}:choose`),
-							runId,
-							actorId: heroId,
-							expectedVersion: 0,
-							correlationId: deterministicUuid(`${runId}:choose:corr`),
-							source: {
-								source: 'random',
-								timing: 'continuous',
-								fallbackPolicy: 'random',
-								directiveIds: [],
-								decisionJobId: null
-							},
-							commandType: 'hero.choose.destination',
-							destination,
-							firstLine: 'Generated property path.',
-							storyBranch: kitchen ? 'names-before-orders' : 'steel-before-trust'
-						},
-						{
-							commandId: deterministicUuid(`${runId}:arrive`),
-							runId,
-							actorId: heroId,
-							expectedVersion: 1,
-							correlationId: deterministicUuid(`${runId}:arrive:corr`),
-							source: {
-								source: 'system',
-								timing: null,
-								fallbackPolicy: null,
-								directiveIds: [],
-								decisionJobId: null
-							},
-							commandType: 'hero.arrive'
-						},
 						...Array.from({ length: inspectionCount }, (_, index): EngineCommand => ({
 							commandId: deterministicUuid(`${runId}:inspect:${index}`),
 							runId,
 							actorId: state.master.masterId,
-							expectedVersion: index + 2,
+							expectedVersion: index + 3,
 							correlationId: deterministicUuid(`${runId}:inspect:${index}:corr`),
 							source: {
 								source: 'manual',

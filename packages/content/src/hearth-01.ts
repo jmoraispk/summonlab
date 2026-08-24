@@ -673,9 +673,15 @@ function deepFreeze<T>(value: T): T {
 	return value;
 }
 
+/**
+ * Synchronously available, schema-checked content for deterministic engine transitions.
+ * Call `loadHearth01` at application boundaries when cryptographic hash verification is required.
+ */
+export const HEARTH_01_DEFINITION = deepFreeze(SettlementDefinitionSchema.parse(source));
+
 export function loadHearth01(): Promise<SettlementDefinition> {
 	verifiedDefinition ??= (async () => {
-		const definition = SettlementDefinitionSchema.parse(source);
+		const definition = HEARTH_01_DEFINITION;
 		const contentHash = await calculateSettlementContentHash(definition);
 		if (contentHash !== definition.contentHash) {
 			throw new Error(

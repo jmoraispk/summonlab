@@ -15,8 +15,16 @@
 	let errorMessage = $state('');
 	const hero = $derived(Object.values(report.snapshot.state.heroes)[0]);
 	const engineState = $derived(report.snapshot.state);
-	const survivalState = $derived(engineState.schemaVersion === 2 ? engineState : null);
+	const survivalState = $derived(
+		engineState.schemaVersion === 2 || engineState.schemaVersion === 3 ? engineState : null
+	);
+	const navigationState = $derived(
+		engineState.schemaVersion === 3 ? engineState.settlement.navigation : null
+	);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
+	const travelHero = $derived(
+		engineState.schemaVersion === 3 && hero ? engineState.heroes[hero.heroId] : null
+	);
 	const heroActions = $derived(hero ? (report.legalActionsByActor[hero.heroId] ?? []) : []);
 	const pendingSchedule = $derived(
 		report.scheduledEvents.find((scheduled) => scheduled.status === 'pending') ?? null
@@ -139,6 +147,18 @@
 		);
 	}
 
+	async function startTravel(targetNodeId: string, label: string) {
+		if (!travelHero) return;
+		await execute(
+			{
+				...commandMeta(travelHero.heroId),
+				commandType: 'hero.start.travel',
+				targetNodeId
+			},
+			`Route to ${label} scheduled; location remains authoritative at the origin.`
+		);
+	}
+
 	async function equipAlternateItem() {
 		const action = heroActions.find((candidate) => candidate.actionId.startsWith('hero.equip.'));
 		if (!survivalHero || !action) return;
@@ -227,6 +247,7 @@
 				>{engineState.simulatedAt.slice(11, 16)}</strong
 			>
 		</div>
+		<div><span>Engine schema</span><strong>v{engineState.schemaVersion}</strong></div>
 		<div><span>Run state</span><strong>{engineState.status}</strong></div>
 	</section>
 
@@ -248,11 +269,34 @@
 			{#if hero}
 				<article>
 					<div class="sigil">H</div>
-					<div><strong>Summoned hero</strong><span>{hero.location} · {hero.lifeState}</span></div>
+					<div>
+						<strong>Summoned hero</strong><span
+							>{hero.location}{travelHero ? ` · ${travelHero.locationNodeId}` : ''} · {hero.lifeState}</span
+						>
+					</div>
 					<code>{hero.health}/{hero.maxHealth}</code>
 				</article>
 			{/if}
 			{#if survivalHero && survivalState}
+				{#if navigationState && travelHero}
+					<div class="travel-proof" data-testid="travel-proof">
+						<span>Authoritative travel · {navigationState.contentVersion}</span>
+						{#if travelHero.currentTravel}
+							<strong
+								>{travelHero.currentTravel.fromNodeId} → {travelHero.currentTravel.toNodeId}</strong
+							>
+							<code
+								>{travelHero.locationNodeId} remains current until {travelHero.currentTravel.arrivesAt.slice(
+									11,
+									19
+								)}</code
+							>
+						{:else}
+							<strong>{travelHero.locationNodeId}</strong>
+							<code>{navigationState.contentHash.slice(0, 16)}</code>
+						{/if}
+					</div>
+				{/if}
 				<div class="survival-stats">
 					<div><span>Rarity</span><strong>{survivalHero.progression.stars}★</strong></div>
 					<div>
@@ -315,6 +359,23 @@
 				this view from the resulting hash chain.
 			</p>
 			{#if survivalState && survivalHero}
+				{#if travelHero}
+					<div class="control-group">
+						<span>Verified Hearth routes</span>
+						<div class="buttons wrap">
+							{#each [['gate-dais', 'gate'], ['kitchen-table', 'kitchen'], ['dormitory-bunks', 'dormitory'], ['training-ring', 'training'], ['workshop-bench', 'workshop'], ['courtyard-heart', 'courtyard']] as destination (destination[0])}
+								<button
+									class="secondary"
+									type="button"
+									onclick={() => startTravel(destination[0]!, destination[1]!)}
+									disabled={pending ||
+										!canHero('hero.travel') ||
+										travelHero.locationNodeId === destination[0]}>{destination[1]}</button
+								>
+							{/each}
+						</div>
+					</div>
+				{/if}
 				<div class="control-group">
 					<span>Hero routine</span>
 					<div class="buttons wrap">
@@ -329,7 +390,7 @@
 					</div>
 				</div>
 				<div class="control-group schedule">
-					<span>Scheduled work</span>
+					<span>Scheduled work or travel</span>
 					{#if pendingSchedule}
 						<strong data-testid="pending-schedule"
 							>{pendingSchedule.eventKind} · due {pendingSchedule.dueGameTime.slice(11, 16)}</strong
@@ -564,7 +625,7 @@
 	}
 	.metrics {
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(6, 1fr);
 		max-width: 88rem;
 		margin: 0 auto;
 		border: 1px solid rgba(255, 255, 255, 0.09);
@@ -686,6 +747,30 @@
 	.actors article code {
 		color: #78d7af;
 		font-size: 0.65rem;
+	}
+	.travel-proof {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.35rem 1rem;
+		padding: 0.9rem 1.4rem;
+		border-bottom: 1px solid rgba(127, 216, 233, 0.15);
+		background: rgba(40, 91, 104, 0.12);
+	}
+	.travel-proof span {
+		grid-column: 1 / -1;
+		color: #7fd8e9;
+		font-size: 0.5rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.travel-proof strong {
+		font:
+			400 0.8rem Georgia,
+			serif;
+	}
+	.travel-proof code {
+		color: rgba(244, 240, 232, 0.45);
+		font-size: 0.56rem;
 	}
 	.hashes {
 		display: grid;
@@ -995,13 +1080,13 @@
 			margin: 0 1rem;
 		}
 		.metrics div:nth-child(2) {
+			border-right: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		.metrics div:nth-child(2n) {
 			border-right: 0;
 		}
-		.metrics div:nth-child(-n + 2) {
+		.metrics div:nth-child(-n + 4) {
 			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-		}
-		.metrics div:last-child {
-			grid-column: 1 / -1;
 		}
 		.survival-stats {
 			grid-template-columns: 1fr 1fr;

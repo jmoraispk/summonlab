@@ -61,11 +61,21 @@ describe('summon proof persistence', () => {
 			expect(replay?.checks.map((check) => check.eventType)).toEqual([
 				'run.initialized',
 				'hero.destination.selected',
-				'hero.arrived'
+				'hero.travel.started',
+				'simulation.advanced'
 			]);
+			expect(replay?.scheduledEvents).toEqual([
+				expect.objectContaining({ eventKind: 'hero.travel.arrive', status: 'resolved' })
+			]);
+			expect(replay?.snapshot.state.schemaVersion).toBe(3);
 			expect(replay?.snapshot.state.heroes[draft.manifest.characterId]?.location).toBe(
 				'training-ground'
 			);
+			if (replay?.snapshot.state.schemaVersion !== 3) throw new Error('Expected engine-v3');
+			expect(replay.snapshot.state.heroes[draft.manifest.characterId]).toMatchObject({
+				locationNodeId: 'training-ring',
+				currentTravel: null
+			});
 		}
 	);
 });

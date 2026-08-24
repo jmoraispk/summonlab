@@ -4,6 +4,7 @@ import {
 	EngineGameStateSchema,
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
+	EngineGameStateV3Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroProgressionSchema,
@@ -13,27 +14,32 @@ import {
 	ResourceKeySchema,
 	RewardDeltaSchema,
 	ScheduledEventSchema,
+	SettlementRoutePlanSchema,
 	type ActivityKind,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV1,
 	type EngineGameStateV2,
+	type EngineGameStateV3,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type LegalAction,
 	type RewardDelta,
+	type SettlementDefinition,
 	type ScheduledEvent
 } from '@summonlab/contracts';
+import { HEARTH_01_DEFINITION, planSettlementRoute } from '@summonlab/content';
 import { z } from 'zod';
 
 import { createEntropyCursor, drawInteger } from './entropy.js';
 import { IllegalActionError, ReplayIntegrityError, StaleStateVersionError } from './errors.js';
 import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
-import { addGameMinutes, compareGameTime, gameMinutesBetween } from './time.js';
+import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v2';
+export const ENGINE_CONTENT_VERSION = 'engine-v3';
+export const PREVIOUS_ENGINE_CONTENT_VERSION = 'engine-v2';
 export const LEGACY_ENGINE_CONTENT_VERSION = 'engine-v1';
 export const ENGINE_EPOCH = '2000-01-01T00:00:00.000Z';
 export const ENGINE_INVARIANTS = Object.freeze([
@@ -50,6 +56,15 @@ export const ENGINE_INVARIANTS = Object.freeze([
 	'no-wall-clock',
 	'no-model-sdk'
 ] as const);
+
+const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
+	'dormitory-system',
+	'gate-system',
+	'hearth-system',
+	'training-system'
+] as const);
+
+type EngineGameStateModern = EngineGameStateV2 | EngineGameStateV3;
 
 export interface BootstrapEngineInput {
 	readonly runId: string;
@@ -163,6 +178,26 @@ const ActivityStartedPayloadSchema = EmptyMetadataSchema.extend({
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
+const TravelStartedPayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	travelId: z.string().uuid(),
+	fromNodeId: z.string(),
+	toNodeId: z.string(),
+	destinationZone: z.enum([
+		'summoning-gate',
+		'kitchen',
+		'training-ground',
+		'dormitory',
+		'workshop',
+		'settlement-exterior'
+	]),
+	route: SettlementRoutePlanSchema,
+	settlementContentVersion: z.string(),
+	settlementContentHash: z.string().length(64),
+	scheduledEvent: ScheduledEventSchema,
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
 const ItemEquippedPayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
 	itemId: z.string().uuid(),
@@ -195,6 +230,31 @@ const ActivityOutcomeSchema = z
 const SimulationAdvancedPayloadSchema = EmptyMetadataSchema.extend({
 	targetGameTime: z.string().datetime(),
 	outcomes: z.array(ActivityOutcomeSchema),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const TravelOutcomeSchema = z
+	.object({
+		scheduledEventId: z.string().uuid(),
+		heroId: z.string().uuid(),
+		travelId: z.string().uuid(),
+		fromNodeId: z.string(),
+		toNodeId: z.string(),
+		locationAfter: z.enum([
+			'summoning-gate',
+			'kitchen',
+			'training-ground',
+			'dormitory',
+			'workshop',
+			'settlement-exterior'
+		])
+	})
+	.strict();
+
+const SimulationAdvancedPayloadV3Schema = EmptyMetadataSchema.extend({
+	targetGameTime: z.string().datetime(),
+	activityOutcomes: z.array(ActivityOutcomeSchema),
+	travelOutcomes: z.array(TravelOutcomeSchema),
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -254,8 +314,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		delta: initialResources[resource],
 		reason: 'run bootstrap stock'
 	}));
-	const state = EngineGameStateV2Schema.parse({
-		schemaVersion: 2,
+	const settlementContent = verifiedSettlementContent();
+	const state = EngineGameStateV3Schema.parse({
+		schemaVersion: 3,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -279,6 +340,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				heroId: input.heroId,
 				lifeState: 'active',
 				location: 'summoning-gate',
+				locationNodeId: settlementContent.spawnNodeId,
+				firstArrivalCompleted: false,
 				destination: null,
 				health: 100,
 				maxHealth: 100,
@@ -292,10 +355,20 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					skills: { swordFighting: { rank: 0, experience: 0 } }
 				},
 				equipment: { mainHand: bladeId },
-				currentActivity: null
+				currentActivity: null,
+				currentTravel: null
 			}
 		},
-		settlement: { resources: initialResources, resourceLedger },
+		settlement: {
+			resources: initialResources,
+			resourceLedger,
+			navigation: {
+				settlementId: settlementContent.settlementId,
+				contentVersion: settlementContent.contentVersion,
+				contentHash: settlementContent.contentHash,
+				activeSystemIds: [...DEFAULT_ACTIVE_SYSTEM_IDS]
+			}
+		},
 		items: {
 			[bladeId]: {
 				itemId: bladeId,
@@ -333,7 +406,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		eventId,
 		runId: input.runId,
 		sequence: 1,
-		schemaVersion: 2,
+		schemaVersion: state.schemaVersion,
 		gameTime: state.simulatedAt,
 		eventType: 'run.initialized',
 		actorId: null,
@@ -356,13 +429,64 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	return { snapshot: EngineSnapshotSchema.parse({ state, stateHash }), event };
 }
 
+let verifiedSettlement: SettlementDefinition | undefined;
+
+function verifiedSettlementContent(): SettlementDefinition {
+	if (verifiedSettlement) return verifiedSettlement;
+	const { contentHash, ...payload } = HEARTH_01_DEFINITION;
+	const calculatedHash = hashCanonical(payload);
+	if (calculatedHash !== contentHash) {
+		throw new Error(
+			`Hearth 01 content hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
+		);
+	}
+	verifiedSettlement = HEARTH_01_DEFINITION;
+	return verifiedSettlement;
+}
+
+function settlementForState(state: EngineGameStateV3): SettlementDefinition {
+	const definition = verifiedSettlementContent();
+	const binding = state.settlement.navigation;
+	if (
+		binding.settlementId !== definition.settlementId ||
+		binding.contentVersion !== definition.contentVersion ||
+		binding.contentHash !== definition.contentHash
+	) {
+		throw new ReplayIntegrityError('Settlement content binding is unavailable', state.eventCursor);
+	}
+	return definition;
+}
+
+function zoneForNode(definition: SettlementDefinition, nodeId: string) {
+	const node = definition.nodes.find((candidate) => candidate.nodeId === nodeId);
+	if (!node) return null;
+	if (!node.buildingId) return 'settlement-exterior' as const;
+	return (
+		definition.buildings.find((building) => building.buildingId === node.buildingId)?.kind ?? null
+	);
+}
+
+function destinationNodeId(
+	definition: SettlementDefinition,
+	destination: 'kitchen' | 'training-ground'
+): string {
+	const building = definition.buildings.find((candidate) => candidate.kind === destination);
+	if (!building) throw new Error(`Settlement is missing ${destination}`);
+	return building.interior.focusNodeId;
+}
+
 function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalAction {
 	return LegalActionSchema.parse(input);
+}
+
+function currentTravelFor(state: EngineGameState, heroId: string) {
+	return state.schemaVersion === 3 ? (state.heroes[heroId]?.currentTravel ?? null) : null;
 }
 
 function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 	const hero = state.heroes[actorId];
 	if (!hero || hero.lifeState !== 'active') return [];
+	if (currentTravelFor(state, actorId)) return [];
 	if (hero.destination === null) {
 		return [
 			action({
@@ -387,14 +511,19 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 			})
 		];
 	}
-	if (hero.location === 'summoning-gate') {
+	const awaitingFirstArrival =
+		state.schemaVersion === 3 ? !state.heroes[actorId]!.firstArrivalCompleted : false;
+	if ((state.schemaVersion !== 3 && hero.location === 'summoning-gate') || awaitingFirstArrival) {
 		return [
 			action({
-				actionId: 'hero.arrive.destination',
+				actionId: state.schemaVersion === 3 ? 'hero.travel' : 'hero.arrive.destination',
 				actorId,
 				kind: 'move',
 				label: `Walk to the ${hero.destination === 'kitchen' ? 'kitchen' : 'training ground'}`,
-				description: 'Complete the already selected route through Hearth 01.',
+				description:
+					state.schemaVersion === 3
+						? 'Schedule the verified route; arrival commits only when game time reaches its due time.'
+						: 'Complete the already selected route through Hearth 01.',
 				targetIds: [],
 				resourceCosts: {},
 				tags: ['settlement', 'arrival']
@@ -404,7 +533,7 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 	return [];
 }
 
-function masterActionsV2(state: EngineGameStateV2): LegalAction[] {
+function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 	const actorId = state.master.masterId;
 	const actions = [
 		action({
@@ -418,14 +547,19 @@ function masterActionsV2(state: EngineGameStateV2): LegalAction[] {
 			tags: ['deterministic', 'development-proof']
 		})
 	];
-	if (Object.values(state.heroes).some((hero) => hero.currentActivity)) {
+	if (
+		Object.values(state.heroes).some(
+			(hero) => hero.currentActivity || currentTravelFor(state, hero.heroId)
+		)
+	) {
 		actions.push(
 			action({
 				actionId: 'simulation.advance',
 				actorId,
 				kind: 'wait',
 				label: 'Advance to the next scheduled outcome',
-				description: 'Advance the injected game clock and resolve every due activity in order.',
+				description:
+					'Advance the injected game clock and resolve every due activity or arrival in order.',
 				targetIds: [],
 				resourceCosts: {},
 				tags: ['fake-clock', 'scheduled-event']
@@ -462,11 +596,17 @@ function masterActionsV2(state: EngineGameStateV2): LegalAction[] {
 	return actions;
 }
 
-function heroActionsV2(state: EngineGameStateV2, actorId: string): LegalAction[] {
+function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalAction[] {
 	const route = routeActions(state, actorId);
 	if (route.length > 0) return route;
 	const hero = state.heroes[actorId];
-	if (!hero || hero.lifeState !== 'active' || hero.currentActivity) return [];
+	if (
+		!hero ||
+		hero.lifeState !== 'active' ||
+		hero.currentActivity ||
+		currentTravelFor(state, actorId)
+	)
+		return [];
 	const actions: LegalAction[] = [];
 	const equipped = hero.equipment.mainHand ? state.items[hero.equipment.mainHand] : null;
 	if (hero.location === 'training-ground' && equipped && equipped.durability > 0) {
@@ -550,6 +690,20 @@ function heroActionsV2(state: EngineGameStateV2, actorId: string): LegalAction[]
 			);
 		}
 	}
+	if (state.schemaVersion === 3) {
+		actions.push(
+			action({
+				actionId: 'hero.travel',
+				actorId,
+				kind: 'move',
+				label: 'Travel through Hearth 01',
+				description: 'Choose a reachable authored node and schedule its authoritative arrival.',
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['settlement', 'scheduled-event', 'content-bound']
+			})
+		);
+	}
 	return actions;
 }
 
@@ -557,7 +711,7 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 	const state = EngineGameStateSchema.parse(stateInput);
 	if (state.status !== 'active') return [];
 	if (actorId === state.master.masterId && state.master.lifeState === 'alive') {
-		if (state.schemaVersion === 2) return masterActionsV2(state);
+		if (state.schemaVersion === 2 || state.schemaVersion === 3) return masterActionsV2(state);
 		return [
 			action({
 				actionId: 'master.inspect.gate',
@@ -571,13 +725,18 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 			})
 		];
 	}
-	return state.schemaVersion === 2 ? heroActionsV2(state, actorId) : routeActions(state, actorId);
+	return state.schemaVersion === 2 || state.schemaVersion === 3
+		? heroActionsV2(state, actorId)
+		: routeActions(state, actorId);
 }
 
-function earliestActivityTime(state: EngineGameStateV2): string | null {
+function earliestScheduledTime(state: EngineGameStateModern): string | null {
 	return (
 		Object.values(state.heroes)
-			.map((hero) => hero.currentActivity?.completesAt)
+			.flatMap((hero) => [
+				hero.currentActivity?.completesAt,
+				currentTravelFor(state, hero.heroId)?.arrivesAt
+			])
 			.filter((value): value is string => Boolean(value))
 			.sort((left, right) => compareGameTime(left, right))[0] ?? null
 	);
@@ -587,6 +746,7 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'hero.choose.destination')
 		return `hero.choose.${command.destination}`;
 	if (command.commandType === 'hero.arrive') return 'hero.arrive.destination';
+	if (command.commandType === 'hero.start.travel') return 'hero.travel';
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
 	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
@@ -609,13 +769,35 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		if (command.storyBranch !== branch) throw new IllegalActionError(required, actionIds);
 	}
 	if (command.commandType === 'simulation.advance') {
-		if (state.schemaVersion !== 2) throw new IllegalActionError(required, actionIds);
-		const earliest = earliestActivityTime(state);
+		if (state.schemaVersion !== 2 && state.schemaVersion !== 3)
+			throw new IllegalActionError(required, actionIds);
+		const earliest = earliestScheduledTime(state);
 		if (!earliest || compareGameTime(command.targetGameTime, earliest) < 0) {
 			throw new IllegalActionError(required, actionIds);
 		}
 		const minutes = gameMinutesBetween(state.simulatedAt, command.targetGameTime);
 		if (minutes <= 0 || minutes > 7 * 24 * 60) throw new IllegalActionError(required, actionIds);
+	}
+	if (command.commandType === 'hero.start.travel') {
+		if (state.schemaVersion !== 3) throw new IllegalActionError(required, actionIds);
+		const hero = state.heroes[command.actorId];
+		if (!hero || hero.locationNodeId === command.targetNodeId)
+			throw new IllegalActionError(required, actionIds);
+		const route = planSettlementRoute(
+			settlementForState(state),
+			hero.locationNodeId,
+			command.targetNodeId,
+			new Set(state.settlement.navigation.activeSystemIds)
+		);
+		if (!route || route.totalTravelGameSeconds <= 0)
+			throw new IllegalActionError(required, actionIds);
+		if (
+			!hero.firstArrivalCompleted &&
+			(!hero.destination ||
+				command.targetNodeId !== destinationNodeId(settlementForState(state), hero.destination))
+		) {
+			throw new IllegalActionError(required, actionIds);
+		}
 	}
 }
 
@@ -692,7 +874,11 @@ function buildLegacyEvent(state: EngineGameStateV1, command: EngineCommand): Aut
 	});
 }
 
-function resourceChange(state: EngineGameStateV2, resource: 'food' | 'iron-ore', reason: string) {
+function resourceChange(
+	state: EngineGameStateModern,
+	resource: 'food' | 'iron-ore',
+	reason: string
+) {
 	const before = state.settlement.resources[resource];
 	return { resource, before, after: before - 1, delta: -1, reason };
 }
@@ -706,7 +892,7 @@ function levelFor(experience: number, stars: number): number {
 }
 
 function buildActivityOutcome(
-	state: EngineGameStateV2,
+	state: EngineGameStateModern,
 	heroId: string,
 	eventId: string,
 	entropyCursor: { seed: string; cursor: number }
@@ -907,7 +1093,60 @@ function buildActivityOutcome(
 	};
 }
 
-function buildV2Event(state: EngineGameStateV2, command: EngineCommand): AuthoritativeEvent {
+function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType === 'hero.start.travel') {
+		if (state.schemaVersion !== 3) throw new IllegalActionError(command.commandType);
+		const hero = state.heroes[command.actorId];
+		if (!hero) throw new IllegalActionError(command.commandType);
+		const definition = settlementForState(state);
+		const route = planSettlementRoute(
+			definition,
+			hero.locationNodeId,
+			command.targetNodeId,
+			new Set(state.settlement.navigation.activeSystemIds)
+		);
+		const destinationZone = zoneForNode(definition, command.targetNodeId);
+		if (!route || route.totalTravelGameSeconds <= 0 || !destinationZone) {
+			throw new IllegalActionError(command.commandType);
+		}
+		const base = eventBase(state, command, 'hero.travel.started');
+		const travelId = deterministicUuid(`${command.commandId}:travel`);
+		const scheduledEventId = deterministicUuid(`${command.commandId}:arrival`);
+		const dueGameTime = addGameSeconds(state.simulatedAt, route.totalTravelGameSeconds);
+		const scheduledEvent = ScheduledEventSchema.parse({
+			scheduledEventId,
+			runId: state.runId,
+			actorId: command.actorId,
+			dueGameTime,
+			eventKind: 'hero.travel.arrive',
+			payload: {
+				heroId: command.actorId,
+				travelId,
+				fromNodeId: route.fromNodeId,
+				toNodeId: route.toNodeId,
+				settlementContentHash: definition.contentHash
+			}
+		});
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: command.actorId,
+				travelId,
+				fromNodeId: route.fromNodeId,
+				toNodeId: route.toNodeId,
+				destinationZone,
+				route,
+				settlementContentVersion: definition.contentVersion,
+				settlementContentHash: definition.contentHash,
+				scheduledEvent,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero began a ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to ${route.toNodeId}; arrival is due at ${dueGameTime}.`
+				)
+			}
+		});
+	}
 	if (command.commandType === 'hero.choose.destination') {
 		const base = eventBase(state, command, 'hero.destination.selected');
 		return AuthoritativeEventSchema.parse({
@@ -926,6 +1165,7 @@ function buildV2Event(state: EngineGameStateV2, command: EngineCommand): Authori
 		});
 	}
 	if (command.commandType === 'hero.arrive') {
+		if (state.schemaVersion === 3) throw new IllegalActionError(command.commandType);
 		const hero = state.heroes[command.actorId];
 		if (!hero?.destination) throw new IllegalActionError('hero.arrive.destination');
 		const base = eventBase(state, command, 'hero.arrived');
@@ -1060,6 +1300,74 @@ function buildV2Event(state: EngineGameStateV2, command: EngineCommand): Authori
 			entropy = result.entropy;
 			draws.push(...result.draws);
 		}
+		if (state.schemaVersion === 3) {
+			const dueTravels = Object.values(state.heroes)
+				.filter(
+					(hero) =>
+						hero.currentTravel &&
+						compareGameTime(hero.currentTravel.arrivesAt, command.targetGameTime) <= 0
+				)
+				.sort((left, right) => {
+					const time = compareGameTime(
+						left.currentTravel!.arrivesAt,
+						right.currentTravel!.arrivesAt
+					);
+					return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
+				});
+			const travelOutcomes = dueTravels.map((hero) => ({
+				scheduledEventId: hero.currentTravel!.scheduledEventId,
+				heroId: hero.heroId,
+				travelId: hero.currentTravel!.travelId,
+				fromNodeId: hero.currentTravel!.fromNodeId,
+				toNodeId: hero.currentTravel!.toNodeId,
+				locationAfter: hero.currentTravel!.destinationZone
+			}));
+			const dueByScheduleId = new Map<string, string>();
+			for (const hero of dueHeroes)
+				dueByScheduleId.set(
+					hero.currentActivity!.scheduledEventId,
+					hero.currentActivity!.completesAt
+				);
+			for (const hero of dueTravels)
+				dueByScheduleId.set(hero.currentTravel!.scheduledEventId, hero.currentTravel!.arrivesAt);
+			const resolvedScheduledEventIds = [
+				...outcomes.map((outcome) => outcome.scheduledEventId),
+				...travelOutcomes.map((outcome) => outcome.scheduledEventId)
+			].sort((left, right) => {
+				const time = compareGameTime(dueByScheduleId.get(left)!, dueByScheduleId.get(right)!);
+				return time === 0 ? left.localeCompare(right) : time;
+			});
+			const rewardDeltas = outcomes.flatMap((outcome) => outcome.rewardDeltas);
+			const resolutionParts = [
+				outcomes.length === 0
+					? null
+					: outcomes.length === 1
+						? `one ${outcomes[0]!.activity} activity`
+						: `${outcomes.length} activities`,
+				travelOutcomes.length === 0
+					? null
+					: travelOutcomes.length === 1
+						? 'one scheduled arrival'
+						: `${travelOutcomes.length} scheduled arrivals`
+			].filter((part): part is string => Boolean(part));
+			return AuthoritativeEventSchema.parse({
+				...base,
+				gameTime: command.targetGameTime,
+				seedCursor: entropy.cursor,
+				payload: {
+					targetGameTime: command.targetGameTime,
+					activityOutcomes: outcomes,
+					travelOutcomes,
+					nextVersion: state.version + 1,
+					...emptyMetadata(
+						`${resolutionParts.join(' and ').replace(/^./u, (letter) => letter.toUpperCase())} resolved.`,
+						rewardDeltas
+					),
+					resolvedScheduledEventIds,
+					entropyDraws: draws
+				}
+			});
+		}
 		const resolvedScheduledEventIds = outcomes.map((outcome) => outcome.scheduledEventId);
 		const rewardDeltas = outcomes.flatMap((outcome) => outcome.rewardDeltas);
 		return AuthoritativeEventSchema.parse({
@@ -1096,15 +1404,22 @@ function buildV2Event(state: EngineGameStateV2, command: EngineCommand): Authori
 				severity: command.amount,
 				inflictedAt: state.simulatedAt
 			});
-	const targetHeroActivity = state.heroes[command.targetId]?.currentActivity;
+	const targetHero = state.heroes[command.targetId];
+	const targetHeroSchedules = targetHero
+		? [
+				targetHero.currentActivity?.scheduledEventId,
+				currentTravelFor(state, command.targetId)?.scheduledEventId
+			].filter((id): id is string => Boolean(id))
+		: [];
 	const canceledScheduledEventIds = fatal
 		? targetKind === 'master'
 			? Object.values(state.heroes)
-					.map((hero) => hero.currentActivity?.scheduledEventId)
+					.flatMap((hero) => [
+						hero.currentActivity?.scheduledEventId,
+						currentTravelFor(state, hero.heroId)?.scheduledEventId
+					])
 					.filter((id): id is string => Boolean(id))
-			: targetHeroActivity
-				? [targetHeroActivity.scheduledEventId]
-				: []
+			: targetHeroSchedules
 		: [];
 	return AuthoritativeEventSchema.parse({
 		...base,
@@ -1192,7 +1507,7 @@ function reduceLegacyEvent(state: EngineGameStateV1, event: AuthoritativeEvent):
 }
 
 function applyResourceChanges(
-	state: EngineGameStateV2,
+	state: EngineGameStateModern,
 	event: AuthoritativeEvent,
 	changes: readonly z.infer<typeof ResourceChangeSchema>[]
 ) {
@@ -1209,10 +1524,19 @@ function applyResourceChanges(
 			...change
 		});
 	}
-	return { resources, resourceLedger };
+	return { ...state.settlement, resources, resourceLedger };
 }
 
-function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): EngineGameStateV2 {
+function parseModernState(state: EngineGameStateModern, value: unknown): EngineGameStateModern {
+	return state.schemaVersion === 2
+		? EngineGameStateV2Schema.parse(value)
+		: EngineGameStateV3Schema.parse(value);
+}
+
+function reduceV2Event(
+	state: EngineGameStateModern,
+	event: AuthoritativeEvent
+): EngineGameStateModern {
 	if (event.eventType === 'hero.destination.selected') {
 		const payload = ChoosePayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -1221,7 +1545,7 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 				'Destination event references an unknown hero',
 				event.sequence
 			);
-		return EngineGameStateV2Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1230,12 +1554,52 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 			story: { ...state.story, branch: payload.storyBranch }
 		});
 	}
+	if (event.eventType === 'hero.travel.started') {
+		if (state.schemaVersion !== 3)
+			throw new ReplayIntegrityError('Travel event requires engine-v3', event.sequence);
+		const payload = TravelStartedPayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		if (
+			!hero ||
+			hero.currentActivity ||
+			hero.currentTravel ||
+			hero.locationNodeId !== payload.fromNodeId ||
+			state.settlement.navigation.contentVersion !== payload.settlementContentVersion ||
+			state.settlement.navigation.contentHash !== payload.settlementContentHash
+		) {
+			throw new ReplayIntegrityError('Travel start precondition failed', event.sequence);
+		}
+		return EngineGameStateV3Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			heroes: {
+				...state.heroes,
+				[payload.heroId]: {
+					...hero,
+					currentTravel: {
+						travelId: payload.travelId,
+						scheduledEventId: payload.scheduledEvent.scheduledEventId,
+						fromNodeId: payload.fromNodeId,
+						toNodeId: payload.toNodeId,
+						destinationZone: payload.destinationZone,
+						route: payload.route,
+						settlementContentVersion: payload.settlementContentVersion,
+						settlementContentHash: payload.settlementContentHash,
+						startedAt: state.simulatedAt,
+						arrivesAt: payload.scheduledEvent.dueGameTime
+					}
+				}
+			}
+		});
+	}
 	if (event.eventType === 'hero.arrived') {
 		const payload = ArrivePayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
 		if (!hero)
 			throw new ReplayIntegrityError('Arrival event references an unknown hero', event.sequence);
-		return EngineGameStateV2Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1245,7 +1609,7 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 	}
 	if (event.eventType === 'master.gate.inspected') {
 		const payload = InspectPayloadSchema.parse(event.payload);
-		return EngineGameStateV2Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1260,10 +1624,10 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 	if (event.eventType === 'hero.activity.started') {
 		const payload = ActivityStartedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
-		if (!hero || hero.currentActivity)
+		if (!hero || hero.currentActivity || currentTravelFor(state, payload.heroId))
 			throw new ReplayIntegrityError('Activity start is not legal', event.sequence);
 		const settlement = applyResourceChanges(state, event, payload.resourceChanges);
-		return EngineGameStateV2Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1296,7 +1660,7 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 			if (previous) items[payload.previousItemId] = { ...previous, equippedById: null };
 		}
 		items[payload.itemId] = { ...item, equippedById: hero.heroId };
-		return EngineGameStateV2Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1309,6 +1673,64 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 		});
 	}
 	if (event.eventType === 'simulation.advanced') {
+		if (state.schemaVersion === 3) {
+			const payload = SimulationAdvancedPayloadV3Schema.parse(event.payload);
+			const heroes = { ...state.heroes };
+			const items = { ...state.items };
+			for (const outcome of payload.activityOutcomes) {
+				const hero = heroes[outcome.heroId];
+				if (
+					!hero?.currentActivity ||
+					hero.currentActivity.scheduledEventId !== outcome.scheduledEventId ||
+					compareGameTime(hero.currentActivity.completesAt, payload.targetGameTime) > 0
+				) {
+					throw new ReplayIntegrityError('Scheduled activity precondition failed', event.sequence);
+				}
+				heroes[outcome.heroId] = {
+					...hero,
+					health: outcome.healthAfter,
+					lifeState: outcome.lifeStateAfter,
+					needs: outcome.needsAfter,
+					injuries: outcome.injuriesAfter,
+					progression: outcome.progressionAfter,
+					currentActivity: null
+				};
+				if (outcome.itemUpdate) {
+					const item = items[outcome.itemUpdate.itemId];
+					if (!item) throw new ReplayIntegrityError('Activity item disappeared', event.sequence);
+					items[item.itemId] = { ...item, durability: outcome.itemUpdate.durabilityAfter };
+				}
+			}
+			for (const outcome of payload.travelOutcomes) {
+				const hero = heroes[outcome.heroId];
+				if (
+					!hero?.currentTravel ||
+					hero.currentTravel.scheduledEventId !== outcome.scheduledEventId ||
+					hero.currentTravel.travelId !== outcome.travelId ||
+					hero.currentTravel.fromNodeId !== outcome.fromNodeId ||
+					hero.currentTravel.toNodeId !== outcome.toNodeId ||
+					compareGameTime(hero.currentTravel.arrivesAt, payload.targetGameTime) > 0
+				) {
+					throw new ReplayIntegrityError('Scheduled travel precondition failed', event.sequence);
+				}
+				heroes[outcome.heroId] = {
+					...hero,
+					location: outcome.locationAfter,
+					locationNodeId: outcome.toNodeId,
+					firstArrivalCompleted: true,
+					currentTravel: null
+				};
+			}
+			return EngineGameStateV3Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				simulatedAt: payload.targetGameTime,
+				heroes,
+				items
+			});
+		}
 		const payload = SimulationAdvancedPayloadSchema.parse(event.payload);
 		const heroes = { ...state.heroes };
 		const items = { ...state.items };
@@ -1356,11 +1778,15 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 				? Object.fromEntries(
 						Object.entries(state.heroes).map(([id, hero]) => [
 							id,
-							{ ...hero, currentActivity: null }
+							{
+								...hero,
+								currentActivity: null,
+								...(state.schemaVersion === 3 ? { currentTravel: null } : {})
+							}
 						])
 					)
 				: state.heroes;
-			return EngineGameStateV2Schema.parse({
+			return parseModernState(state, {
 				...state,
 				status: dead ? 'game_over' : state.status,
 				version: payload.nextVersion,
@@ -1381,7 +1807,7 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 		if (!hero || hero.health !== payload.healthBefore)
 			throw new ReplayIntegrityError('Hero damage precondition failed', event.sequence);
 		const dead = payload.healthAfter === 0;
-		return EngineGameStateV2Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -1393,7 +1819,10 @@ function reduceV2Event(state: EngineGameStateV2, event: AuthoritativeEvent): Eng
 					health: payload.healthAfter,
 					lifeState: dead ? 'dead' : 'active',
 					injuries: payload.injury ? [...hero.injuries, payload.injury] : hero.injuries,
-					currentActivity: dead ? null : hero.currentActivity
+					currentActivity: dead ? null : hero.currentActivity,
+					...(state.schemaVersion === 3
+						? { currentTravel: dead ? null : currentTravelFor(state, payload.targetId) }
+						: {})
 				}
 			}
 		});
@@ -1423,8 +1852,11 @@ function metadataIds(
 }
 
 export function scheduledEventsFromEvent(event: AuthoritativeEvent): readonly ScheduledEvent[] {
-	if (event.eventType !== 'hero.activity.started') return [];
-	return [ActivityStartedPayloadSchema.parse(event.payload).scheduledEvent];
+	if (event.eventType === 'hero.activity.started')
+		return [ActivityStartedPayloadSchema.parse(event.payload).scheduledEvent];
+	if (event.eventType === 'hero.travel.started')
+		return [TravelStartedPayloadSchema.parse(event.payload).scheduledEvent];
+	return [];
 }
 
 export function resolvedScheduledEventIdsFromEvent(event: AuthoritativeEvent): readonly string[] {

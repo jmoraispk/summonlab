@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 are complete; Phase 3 has a local visual-continuity approval gate._
+_Status: Phases 0–2 are complete; Phase 3 is human-gated and Phase 4 is implementing the living settlement._
 
 </div>
 
@@ -206,9 +206,11 @@ paths, travel time, capacity, interactions, simulation effects, and explicit sys
 building or interior station to inspect the deterministic route from the summoning gate; the dormant
 forge remains unreachable under Reserve and opens only in the clearly labeled All systems preview.
 
-The lab is composition and content evidence, not run state. Existing engine histories remain
-unchanged; a later versioned engine command will schedule travel and commit arrival. The topology is
-bound to an exact content hash and checked by `pnpm validate:settlement-content`.
+The scene lab is composition and content evidence, not run state. New runs use `engine-v3`, which
+binds the topology by exact hash. `hero.start.travel` computes and persists the legal route and due
+time while leaving the hero's authoritative location at the origin; only an injected-clock
+`simulation.advance` event commits arrival. Animation remains a projection. Existing `engine-v1`
+and `engine-v2` histories retain their original schemas and replay path.
 
 The same route now opens with a hero-free, topology-aligned painted environment: gate north, kitchen
 west, dormant workshop east, dormitory southwest, training southeast. The 1536×1024 source is
@@ -221,6 +223,8 @@ The six-layer scene is an approval candidate—not engine state—and is checked
 
 ![Mobile Hearth 01 route lab](docs/evidence/phase-4-settlement-route-lab-mobile.png)
 
+![Authoritative scheduled travel in the replay lab](docs/evidence/phase-4-authoritative-travel.png)
+
 ## Deterministic survival checkpoint
 
 Every opening choice and settlement arrival now passes through a pure command → event → reducer
@@ -230,7 +234,9 @@ hash, exposes named entropy draws, and proves that two commands aimed at one ver
 commit. The same lab now schedules training, eating, rest, and repairs on an explicit game clock;
 projects resources, experience, skills, needs, health, and durability into the journal; and proves
 permanent hero death plus atomic Master game over. Existing `engine-v1` histories retain their
-original schema and hashes while new summons use `engine-v2`.
+original schema and hashes while new summons use `engine-v3`. The replay lab can now start a verified
+Hearth route, inspect its pending arrival and unchanged origin, and explicitly advance to the due
+event.
 
 ![Deterministic survival-state inspector](docs/evidence/phase-2-survival-state.png)
 

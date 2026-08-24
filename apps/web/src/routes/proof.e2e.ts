@@ -76,7 +76,9 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('replay-status')).toContainText('Verified');
 	await expect(page.getByText('snapshot agrees')).toBeVisible();
 	await expect(page.getByText('hero.destination.selected')).toBeVisible();
-	await expect(page.getByText('hero.arrived')).toBeVisible();
+	await expect(page.getByText('hero.travel.started')).toBeVisible();
+	await expect(page.getByText('simulation.advanced')).toBeVisible();
+	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
 
 	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
 	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
@@ -90,12 +92,27 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		await page.screenshot({ path: process.env.CAPTURE_PHASE2_REPLAY, fullPage: true });
 	}
 
+	await page.getByRole('button', { name: 'kitchen', exact: true }).click();
+	await expect(page.getByTestId('travel-proof')).toContainText('training-ring → kitchen-table');
+	await expect(page.getByTestId('travel-proof')).toContainText(
+		'training-ring remains current until'
+	);
+	await expect(page.getByTestId('pending-schedule')).toContainText('hero.travel.arrive');
+	if (process.env.CAPTURE_PHASE4_TRAVEL) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_TRAVEL, fullPage: true });
+	}
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('travel-proof')).toContainText('kitchen-table');
+	await page.getByRole('button', { name: 'training', exact: true }).click();
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
+
 	await page.getByRole('button', { name: 'train', exact: true }).click();
 	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
 	await page.getByRole('button', { name: /Advance to outcome/ }).click();
 	await expect(page.getByTestId('hero-xp')).toHaveText('1 / 8');
 	await expect(page.getByTestId('item-durability')).toHaveText('5/6');
-	await expect(page.getByText(/train activity completed/i)).toBeVisible();
+	await expect(page.getByText(/one train activity resolved/i)).toBeVisible();
 
 	await page.getByRole('button', { name: 'repair', exact: true }).click();
 	await expect(page.getByTestId('resource-iron-ore')).toHaveText('1');

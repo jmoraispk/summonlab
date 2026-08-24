@@ -199,6 +199,9 @@ importers:
       '@noble/hashes':
         specifier: ^2.3.0
         version: 2.3.0
+      '@summonlab/content':
+        specifier: workspace:*
+        version: link:../content
       '@summonlab/contracts':
         specifier: workspace:*
         version: link:../contracts

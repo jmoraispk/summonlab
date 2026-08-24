@@ -142,7 +142,11 @@ function destinationCommand(
 	});
 }
 
-function arrivalCommand(runId: string, heroId: string, expectedVersion: number): EngineCommand {
+function legacyArrivalCommand(
+	runId: string,
+	heroId: string,
+	expectedVersion: number
+): EngineCommand {
 	const commandId = deterministicUuid(`${runId}:hero.arrive:${expectedVersion}`);
 	return EngineCommandSchema.parse({
 		commandId,
@@ -158,6 +162,56 @@ function arrivalCommand(runId: string, heroId: string, expectedVersion: number):
 			decisionJobId: null
 		},
 		commandType: 'hero.arrive'
+	});
+}
+
+function travelCommand(
+	runId: string,
+	heroId: string,
+	expectedVersion: number,
+	destination: FirstDestination
+): EngineCommand {
+	const commandId = deterministicUuid(`${runId}:hero.start.travel:${expectedVersion}`);
+	return EngineCommandSchema.parse({
+		commandId,
+		runId,
+		actorId: heroId,
+		expectedVersion,
+		correlationId: commandId,
+		source: {
+			source: 'system',
+			timing: 'step',
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		commandType: 'hero.start.travel',
+		targetNodeId: destination === 'kitchen' ? 'kitchen-table' : 'training-ring'
+	});
+}
+
+function advanceTravelCommand(
+	runId: string,
+	masterId: string,
+	expectedVersion: number,
+	targetGameTime: string
+): EngineCommand {
+	const commandId = deterministicUuid(`${runId}:simulation.advance.travel:${expectedVersion}`);
+	return EngineCommandSchema.parse({
+		commandId,
+		runId,
+		actorId: masterId,
+		expectedVersion,
+		correlationId: commandId,
+		source: {
+			source: 'system',
+			timing: 'step',
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		commandType: 'simulation.advance',
+		targetGameTime
 	});
 }
 
@@ -389,10 +443,30 @@ export async function markProofArrival(
 			if (!row?.destination || row.arrived) return;
 			const engine = await getEngineSnapshotInTransaction(transaction, runId);
 			if (!engine) throw new Error(`Engine run not found: ${runId}`);
-			await commitEngineCommandInTransaction(
-				transaction,
-				arrivalCommand(runId, row.manifest.characterId, engine.state.version)
-			);
+			if (engine.state.schemaVersion === 3) {
+				const traveling = await commitEngineCommandInTransaction(
+					transaction,
+					travelCommand(runId, row.manifest.characterId, engine.state.version, row.destination)
+				);
+				const arrival = traveling.scheduled[0];
+				if (!arrival || arrival.eventKind !== 'hero.travel.arrive') {
+					throw new Error('Travel did not create an authoritative arrival schedule');
+				}
+				await commitEngineCommandInTransaction(
+					transaction,
+					advanceTravelCommand(
+						runId,
+						traveling.snapshot.state.master.masterId,
+						traveling.snapshot.state.version,
+						arrival.dueGameTime
+					)
+				);
+			} else {
+				await commitEngineCommandInTransaction(
+					transaction,
+					legacyArrivalCommand(runId, row.manifest.characterId, engine.state.version)
+				);
+			}
 			await transaction`
 				update summonlab_proof_runs set arrived = true, updated_at = now() where run_id = ${runId}
 			`;

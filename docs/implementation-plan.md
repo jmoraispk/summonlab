@@ -966,17 +966,19 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — SET-001 and the SET-002 visual candidate completed 2026-08-24.** `hearth-01-v1`
+**Status: in progress — SET-001 through SET-003 completed 2026-08-24.** `hearth-01-v1`
 defines five interiors, a connected 18-node/17-edge route graph, travel time, capacity, authored
 visual paths, interaction/effect declarations, and explicit system access. The development-only
 `/settlement-lab` inspects that hash-bound content without changing existing engine histories or
 claiming authoritative arrival. `hearth-01-scene-v1` adds a topology-aligned hero-free plate, six
 ordered presentation layers, five hotspots, and all 18 visual node projections. It remains an
-approval candidate while topology and composition feedback are pending.
+approval candidate while topology and composition feedback are pending. `engine-v3` now binds that
+topology by hash, schedules exact routes without changing location, and commits arrival only through
+the injected game clock; existing v1/v2 streams retain their original schemas.
 
 - `SET-001` complete: implement route graph and five building nodes/interiors;
 - `SET-002` complete as a human-pending candidate: create the layered Hearth 01 settlement scene;
-- `SET-003` implement hero travel and authoritative arrival;
+- `SET-003` complete: implement content-bound hero travel and authoritative scheduled arrival;
 - `SET-004` implement building capacity, assignments, and powered state;
 - `SET-005` implement needs, activities, daily plan, and habit resolution;
 - `SET-006` implement accelerated clock and worker catch-up;
@@ -1090,8 +1092,8 @@ In parallel with the human character-art gate, `SET-001` and the `SET-002` scene
 available at `/settlement-lab`. Their next review asks whether the five-building arrangement,
 painted spatial clarity, travel scale, interior focal stations, and reserve-versus-powered access
 boundary form a clear foundation. After feedback, the scene can be accepted or revised while
-`SET-003` adds a new versioned authoritative travel path without changing `engine-v1` or `engine-v2`
-replay bytes.
+`SET-003` added the versioned authoritative travel path without changing `engine-v1` or `engine-v2`
+replay schemas. The next engineering slice is `SET-004`: capacity, assignments, and powered state.
 
 ## Accepted product decisions — 2026-08-23
 
