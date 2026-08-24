@@ -117,6 +117,18 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('daily-plan')).toContainText('completed');
 	await expect(page.getByText(/one daily routine resolved/i)).toBeVisible();
 	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+	await expect(page.getByTestId('simulation-clock')).toContainText('4× real time');
+	await page.getByRole('button', { name: /Simulate 6h away/ }).click();
+	await expect(page.getByTestId('command-result')).toContainText('3 schedules');
+	await expect(page.getByTestId('simulation-clock')).toContainText('2000-01-02');
+	await expect(page.getByTestId('daily-plan')).toContainText('Day 2');
+	await expect(page.getByTestId('pending-schedule')).toContainText('hero.routine.complete');
+	await expect(page.getByText('simulation.clock.synced')).toBeVisible();
+	if (process.env.CAPTURE_PHASE4_CATCHUP) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_CATCHUP, fullPage: true });
+	}
+	await page.getByRole('button', { name: /Advance to outcome/ }).click();
+	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
 
 	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
 	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');

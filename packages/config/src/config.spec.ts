@@ -8,6 +8,8 @@ describe('configuration', () => {
 
 		expect(config.policyMode).toBe('scripted');
 		expect(config.workerPort).toBe(4174);
+		expect(config.simulationSpeed).toBe(4);
+		expect(config.catchUpPollMs).toBe(1_000);
 		expect(config.databaseUrl).toContain('54329/summonlab');
 		expect(config.devRoutesEnabled).toBe(true);
 		expect(config.imageGenerationEnabled).toBe(false);
@@ -44,5 +46,7 @@ describe('configuration', () => {
 	it('rejects invalid ports and policy modes', () => {
 		expect(() => parseConfig({ WORKER_PORT: '70000' })).toThrow();
 		expect(() => parseConfig({ POLICY_MODE: 'unbounded' })).toThrow();
+		expect(() => parseConfig({ SIMULATION_SPEED: '3' })).toThrow();
+		expect(() => parseConfig({ CATCH_UP_POLL_MS: '100' })).toThrow();
 	});
 });

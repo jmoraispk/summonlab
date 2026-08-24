@@ -4,6 +4,7 @@
 		ActionSource,
 		ActivityKind,
 		BuildingAssignmentRole,
+		CatchUpReport,
 		EngineCommand,
 		EngineReplayReport
 	} from '@summonlab/contracts';
@@ -16,6 +17,7 @@
 	let errorMessage = $state('');
 	const hero = $derived(Object.values(report.snapshot.state.heroes)[0]);
 	const engineState = $derived(report.snapshot.state);
+	const clock = $derived(report.clock);
 	const survivalState = $derived(
 		engineState.schemaVersion === 2 ||
 			engineState.schemaVersion === 3 ||
@@ -249,6 +251,30 @@
 		);
 	}
 
+	async function catchUp(simulateSixHours = false) {
+		pending = true;
+		errorMessage = '';
+		resultMessage = '';
+		try {
+			const wallTime = simulateSixHours
+				? new Date(Date.parse(clock.anchorRealTime) + 6 * 60 * 60 * 1_000).toISOString()
+				: undefined;
+			const response = await fetch(`/api/runs/${report.runId}/catch-up`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify(wallTime ? { wallTime } : {})
+			});
+			const result = (await response.json()) as CatchUpReport & { message?: string };
+			if (!response.ok) throw new Error(result.message ?? 'Catch-up could not acquire the run.');
+			await refresh();
+			resultMessage = `${result.commandsApplied} events · ${result.schedulesResolved} schedules · ${result.plansCreated} plans`;
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'Catch-up failed.';
+		} finally {
+			pending = false;
+		}
+	}
+
 	async function equipAlternateItem() {
 		const action = heroActions.find((candidate) => candidate.actionId.startsWith('hero.equip.'));
 		if (!survivalHero || !action) return;
@@ -338,7 +364,7 @@
 		</div>
 		<div>
 			<span>Game clock</span><strong data-testid="game-clock"
-				>{engineState.simulatedAt.slice(11, 16)}</strong
+				>{clock.currentGameTime.slice(11, 16)}</strong
 			>
 		</div>
 		<div><span>Engine schema</span><strong>v{engineState.schemaVersion}</strong></div>
@@ -511,6 +537,42 @@
 				this view from the resulting hash chain.
 			</p>
 			{#if survivalState && survivalHero}
+				<div class="control-group clock-proof" data-testid="simulation-clock">
+					<div>
+						<span>Continuous settlement clock</span>
+						<strong>{clock.speed}× real time</strong>
+						<code>{clock.leaseStatus} lease</code>
+					</div>
+					<div class="clock-times">
+						<p>
+							<span>authoritative</span><strong
+								>{clock.currentGameTime.slice(0, 16).replace('T', ' · ')}</strong
+							>
+						</p>
+						<p>
+							<span>projected now</span><strong
+								>{clock.projectedGameTime.slice(0, 16).replace('T', ' · ')}</strong
+							>
+						</p>
+						<p>
+							<span>backlog</span><strong>{Math.floor(clock.backlogGameMinutes)} game min</strong>
+						</p>
+						<p>
+							<span>next due</span><strong>{clock.nextDueGameTime?.slice(11, 16) ?? 'none'}</strong>
+						</p>
+					</div>
+					<div class="buttons wrap">
+						<button
+							class="secondary"
+							type="button"
+							onclick={() => catchUp(false)}
+							disabled={pending}>Catch up now</button
+						>
+						<button type="button" onclick={() => catchUp(true)} disabled={pending}
+							>Simulate 6h away</button
+						>
+					</div>
+				</div>
 				{#if operationsState && hero}
 					<div class="control-group facilities" data-testid="facility-operations">
 						<span>Facility operations · one development power slot</span>
@@ -1172,6 +1234,57 @@
 		margin: 0 1.4rem 1rem;
 		border: 1px solid rgba(255, 255, 255, 0.08);
 	}
+	.clock-proof {
+		background:
+			radial-gradient(circle at 100% 0, rgba(127, 216, 233, 0.12), transparent 45%), #0b0e14;
+	}
+	.clock-proof > div:first-child {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: baseline;
+		gap: 0.7rem;
+		padding: 0.75rem 0.8rem;
+		border-bottom: 1px solid rgba(127, 216, 233, 0.14);
+	}
+	.clock-proof > div:first-child span,
+	.clock-times span {
+		color: rgba(244, 240, 232, 0.35);
+		font-size: 0.48rem;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	.clock-proof > div:first-child strong {
+		color: #7fd8e9;
+		font:
+			400 1rem Georgia,
+			serif;
+	}
+	.clock-proof > div:first-child code {
+		color: #78d7af;
+		font-size: 0.52rem;
+	}
+	.clock-times {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.06);
+	}
+	.clock-times p {
+		margin: 0;
+		padding: 0.65rem 0.75rem;
+		background: #090c12;
+	}
+	.clock-times span,
+	.clock-times strong {
+		display: block;
+	}
+	.clock-times strong {
+		margin-top: 0.28rem;
+		color: #d4a653;
+		font:
+			0.58rem ui-monospace,
+			monospace;
+	}
 	.control-group > span {
 		display: block;
 		padding: 0.7rem 0.8rem 0;
@@ -1465,6 +1578,9 @@
 			gap: 0.2rem;
 		}
 		.daily-plan {
+			grid-template-columns: 1fr 1fr;
+		}
+		.clock-times {
 			grid-template-columns: 1fr 1fr;
 		}
 		.grid {

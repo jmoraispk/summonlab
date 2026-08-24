@@ -1,3 +1,4 @@
+export * from './catch-up.js';
 export * from './engine.js';
 export * from './entropy.js';
 export * from './errors.js';

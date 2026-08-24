@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { ProofRunSnapshot } from '@summonlab/contracts';
+	import type { ProofRunSnapshot, SimulationClock } from '@summonlab/contracts';
 	import { onMount } from 'svelte';
 	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
@@ -13,6 +13,16 @@
 	let walking = $state(!snapshot.arrived);
 	let journalOpen = $state(false);
 	let errorMessage = $state('');
+	// svelte-ignore state_referenced_locally
+	let clock = $state<SimulationClock | null>(data.clock);
+	const settlementDay = $derived(
+		clock
+			? Math.floor(
+					(Date.parse(clock.currentGameTime) - Date.parse('2000-01-01T00:00:00.000Z')) /
+						(24 * 60 * 60 * 1_000)
+				) + 1
+			: 1
+	);
 	const wallSpines = Array.from({ length: 11 }, (_, index) => index);
 	const destinationLabel = $derived(
 		snapshot.destination === 'kitchen' ? 'Kitchen' : 'Training Ground'
@@ -41,6 +51,8 @@
 			if (!response.ok) throw new Error(result.message ?? 'Arrival could not be recorded.');
 			snapshot = result;
 			walking = false;
+			const clockResponse = await fetch(`/api/runs/${snapshot.runId}/clock`);
+			if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The arrival log failed.';
 		}
@@ -62,9 +74,9 @@
 	<header>
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div class="clock">
-			<span>Hearth 01 · Day 0</span>
-			<strong>00:03</strong>
-			<small>settlement time · paused for proof</small>
+			<span>Hearth 01 · Day {settlementDay}</span>
+			<strong>{clock?.currentGameTime.slice(11, 16) ?? '00:00'}</strong>
+			<small>{clock?.speed ?? 4}× settlement time · server-owned</small>
 		</div>
 		<nav>
 			<button

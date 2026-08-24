@@ -66,12 +66,15 @@ interface SimulationClock {
   runId: string;
   gameTime: string;
   speed: 0 | 1 | 2 | 4 | 8;
-  lastAdvancedAt: string;
-  version: number;
+  anchorGameTime: string;
+  anchorRealTime: string;
+  lastCatchUpAt: string | null;
 }
 ```
 
-`4×` is the initial default. A scheduler advances to the next due domain event rather than ticking every hero every second.
+`4×` is the initial default. The two anchors project an explicit target game time without passing
+wall time into the engine. A scheduler advances to the next due domain event rather than ticking
+every hero every second; intervals without due work use a system-only clock-sync event.
 
 Examples of due events:
 

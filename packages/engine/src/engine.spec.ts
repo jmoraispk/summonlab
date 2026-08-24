@@ -15,12 +15,16 @@ import {
 	IllegalActionError,
 	StaleStateVersionError,
 	applyCommand,
+	applyCatchUpPolicy,
+	addGameMinutes,
 	createBootstrapEngine,
 	createEntropyCursor,
 	deterministicUuid,
 	drawInteger,
 	hashGameState,
 	legalActions,
+	projectGameTime,
+	realTimeForGameTime,
 	resolveDailyRoutine,
 	replayEvents,
 	replayEventsStrict,
@@ -106,6 +110,25 @@ describe('deterministic engine', () => {
 			value: 7
 		});
 		expect(first.next.cursor).toBe(1);
+	});
+
+	it('projects the documented four-times clock without reading wall time', () => {
+		expect(
+			projectGameTime(
+				'2000-01-01T00:00:00.000Z',
+				'2026-08-24T00:00:00.000Z',
+				'2026-08-24T06:00:00.000Z',
+				4
+			)
+		).toBe('2000-01-02T00:00:00.000Z');
+		expect(
+			realTimeForGameTime(
+				'2000-01-01T00:00:00.000Z',
+				'2026-08-24T00:00:00.000Z',
+				'2000-01-02T00:00:00.000Z',
+				4
+			)
+		).toBe('2026-08-24T06:00:00.000Z');
 	});
 
 	it('applies and replays choice, arrival, and entropy-bearing commands byte-for-byte', () => {
@@ -674,6 +697,48 @@ describe('deterministic engine', () => {
 			expect.arrayContaining([expect.objectContaining({ status: 'skipped' })])
 		);
 		expect(died.canceledScheduledEventIds).toEqual([started.scheduled[0]!.scheduledEventId]);
+	});
+
+	it('keeps one offline day byte-equal to resolving each due event online', () => {
+		const { arrived } = arriveAtTraining();
+		if (arrived.state.schemaVersion !== 5) throw new Error('Expected engine-v5 state');
+		const targetGameTime = addGameMinutes(arrived.state.simulatedAt, 24 * 60);
+		const offline = applyCatchUpPolicy(arrived.state, targetGameTime);
+
+		let onlineState = arrived.state;
+		const onlineCommands: EngineCommand[] = [];
+		const onlineEvents: AuthoritativeEvent[] = [];
+		const runOnline = (target: string) => {
+			const result = applyCatchUpPolicy(onlineState, target);
+			onlineState = result.state;
+			onlineCommands.push(...result.commands);
+			onlineEvents.push(...result.events);
+		};
+		runOnline(onlineState.simulatedAt);
+		while (true) {
+			const due = Object.values(onlineState.heroes)
+				.map((hero) => hero.currentRoutine?.completesAt)
+				.filter((value): value is string => Boolean(value))
+				.sort()[0];
+			if (!due || Date.parse(due) > Date.parse(targetGameTime)) break;
+			runOnline(due);
+		}
+		runOnline(targetGameTime);
+
+		expect(offline.truncated).toBe(false);
+		expect(offline.resolvedScheduledEventIds).toHaveLength(4);
+		expect(offline.commands).toEqual(onlineCommands);
+		expect(offline.events).toEqual(onlineEvents);
+		expect(offline.events.some((event) => event.eventType === 'simulation.clock.synced')).toBe(
+			true
+		);
+		expect(offline.state).toEqual(onlineState);
+		expect(offline.state.simulatedAt).toBe(targetGameTime);
+		expect(
+			Object.values(offline.state.heroes)[0]?.dailyPlan?.entries.filter(
+				(entry) => entry.status === 'active'
+			)
+		).toHaveLength(1);
 	});
 
 	it('exposes close routine scores while keeping deterministic fallback replayable', () => {

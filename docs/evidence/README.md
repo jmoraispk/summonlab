@@ -33,3 +33,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-4-daily-routine.png` — engine-v5 replay lab with the summoned mind, mutable habit,
   four-part day plan, active routine, inspectable candidate scores, pending completion, and a
   verified hash chain.
+- `phase-4-offline-catch-up.png` — a six-real-hour/one-game-day catch-up showing the persisted `4×`
+  clock, zero backlog, idle lease, Day 2 plan, pending next routine, and every offline outcome in the
+  verified canonical timeline.

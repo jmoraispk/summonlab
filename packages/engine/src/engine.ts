@@ -384,6 +384,11 @@ const SimulationAdvancedPayloadV5Schema = EmptyMetadataSchema.extend({
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
+const SimulationClockSyncedPayloadSchema = EmptyMetadataSchema.extend({
+	targetGameTime: z.string().datetime(),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
 const DamagePayloadSchema = EmptyMetadataSchema.extend({
 	targetId: z.string().uuid(),
 	targetKind: z.enum(['master', 'hero']),
@@ -1209,6 +1214,7 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
 	if (command.commandType === 'simulation.advance') return 'simulation.advance';
+	if (command.commandType === 'simulation.sync.clock') return 'simulation.sync.clock';
 	return command.targetId === command.actorId
 		? 'simulation.damage.master'
 		: `simulation.damage.hero.${command.targetId}`;
@@ -1218,6 +1224,23 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	if (command.runId !== state.runId) throw new IllegalActionError(command.commandType, []);
 	if (command.expectedVersion !== state.version) {
 		throw new StaleStateVersionError(command.expectedVersion, state.version);
+	}
+	if (command.commandType === 'simulation.sync.clock') {
+		const earliest = state.schemaVersion === 1 ? null : earliestScheduledTime(state);
+		const minutes = gameMinutesBetween(state.simulatedAt, command.targetGameTime);
+		if (
+			state.schemaVersion !== 5 ||
+			state.status !== 'active' ||
+			command.actorId !== state.master.masterId ||
+			command.source.source !== 'system' ||
+			command.source.timing !== null ||
+			minutes <= 0 ||
+			minutes > 7 * 24 * 60 ||
+			(earliest !== null && compareGameTime(command.targetGameTime, earliest) >= 0)
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		return;
 	}
 	const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
 	const required = requiredAction(command);
@@ -1718,6 +1741,20 @@ function skipUnfinishedPlan(hero: EngineGameStateV5['heroes'][string], resolvedA
 }
 
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType === 'simulation.sync.clock') {
+		if (state.schemaVersion !== 5) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'simulation.clock.synced');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			gameTime: command.targetGameTime,
+			seedCursor: state.entropyCursor,
+			payload: {
+				targetGameTime: command.targetGameTime,
+				nextVersion: state.version + 1,
+				...emptyMetadata('The event-driven settlement clock advanced without due work.')
+			}
+		});
+	}
 	if (command.commandType === 'hero.plan.day') {
 		if (state.schemaVersion !== 5) throw new IllegalActionError(command.commandType);
 		const dailyPlan = createDailyPlan(state, command.actorId, command.commandId);
@@ -2442,6 +2479,26 @@ function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
+	if (event.eventType === 'simulation.clock.synced') {
+		if (state.schemaVersion !== 5)
+			throw new ReplayIntegrityError('Clock sync event requires engine-v5', event.sequence);
+		const payload = SimulationClockSyncedPayloadSchema.parse(event.payload);
+		const earliest = earliestScheduledTime(state);
+		if (
+			event.gameTime !== payload.targetGameTime ||
+			compareGameTime(payload.targetGameTime, state.simulatedAt) <= 0 ||
+			(earliest !== null && compareGameTime(payload.targetGameTime, earliest) >= 0)
+		) {
+			throw new ReplayIntegrityError('Clock sync precondition failed', event.sequence);
+		}
+		return EngineGameStateV5Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			simulatedAt: payload.targetGameTime
+		});
+	}
 	if (event.eventType === 'hero.daily.plan.created') {
 		if (state.schemaVersion !== 5)
 			throw new ReplayIntegrityError('Daily plan event requires engine-v5', event.sequence);

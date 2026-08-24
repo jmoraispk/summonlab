@@ -27,13 +27,15 @@ export const POST: RequestHandler = async ({ request }) => {
 		const choice = shouldResolve
 			? chooseFirstDestination(draft, parsed.data.controlMode, parsed.data.directive)
 			: null;
-		const snapshot = await createProofRun(getConfig().databaseUrl, {
+		const config = getConfig();
+		const snapshot = await createProofRun(config.databaseUrl, {
 			runId: randomUUID(),
 			draft,
 			controlMode: parsed.data.controlMode,
 			directive: parsed.data.directive,
 			firstObservation: FIRST_OBSERVATION,
-			choice
+			choice,
+			clockSpeed: config.simulationSpeed
 		});
 		return json({ runId: snapshot.runId, manifestHash: snapshot.manifestHash }, { status: 201 });
 	} catch (error) {

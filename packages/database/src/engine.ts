@@ -7,6 +7,7 @@ import {
 	EngineSnapshotSchema,
 	ScheduledEventSchema,
 	type AuthoritativeEvent,
+	type ClockSpeed,
 	type EngineCommand,
 	type EngineCommit,
 	type EngineReplayReport,
@@ -26,6 +27,8 @@ import {
 	type BootstrapEngineInput
 } from '@summonlab/engine';
 import postgres from 'postgres';
+
+import { getSimulationClock, reanchorSimulationClockInTransaction } from './clock.js';
 
 interface EventRow {
 	event_id: string;
@@ -209,7 +212,10 @@ async function applyScheduleChanges(
 
 export async function initializeEngineRun(
 	sql: postgres.TransactionSql,
-	input: BootstrapEngineInput
+	input: BootstrapEngineInput & {
+		readonly clockSpeed?: ClockSpeed;
+		readonly clockRealTime?: string;
+	}
 ): Promise<EngineSnapshot> {
 	const bootstrap = createBootstrapEngine(input);
 	await sql`
@@ -222,6 +228,14 @@ export async function initializeEngineRun(
 			${bootstrap.snapshot.state.version}, ${bootstrap.snapshot.state.eventCursor},
 			${bootstrap.snapshot.state.entropyCursor}, ${bootstrap.snapshot.state.simulatedAt},
 			${bootstrap.snapshot.stateHash}
+		)
+	`;
+	await sql`
+		insert into summonlab_engine_clocks (
+			run_id, speed, anchor_game_time, anchor_real_time
+		) values (
+			${bootstrap.snapshot.state.runId}, ${input.clockSpeed ?? 4},
+			${bootstrap.snapshot.state.simulatedAt}, ${input.clockRealTime ?? sql`now()`}
 		)
 	`;
 	await sql`
@@ -286,7 +300,8 @@ async function findIdempotentCommit(
 
 export async function commitEngineCommandInTransaction(
 	sql: postgres.TransactionSql,
-	commandInput: EngineCommand
+	commandInput: EngineCommand,
+	options: { preserveClockAnchor?: boolean; wallTime?: string } = {}
 ): Promise<EngineCommit> {
 	const command = EngineCommandSchema.parse(commandInput);
 	const idempotent = await findIdempotentCommit(sql, command);
@@ -361,6 +376,17 @@ export async function commitEngineCommandInTransaction(
 			run.state_hash
 		);
 	}
+	if (
+		!options.preserveClockAnchor &&
+		nextSnapshot.state.simulatedAt !== snapshot.state.simulatedAt
+	) {
+		await reanchorSimulationClockInTransaction(
+			sql,
+			command.runId,
+			nextSnapshot.state.simulatedAt,
+			options.wallTime
+		);
+	}
 	return EngineCommitSchema.parse({
 		snapshot: nextSnapshot,
 		events: applied.events,
@@ -433,6 +459,8 @@ export async function getEngineReplay(
 			order by scheduled.due_game_time, scheduled.scheduled_event_id
 		`;
 		const replay = replayEvents(events);
+		const clock = await getSimulationClock(databaseUrl, runId);
+		if (!clock) throw new Error(`Simulation clock not found: ${runId}`);
 		const actors = [
 			replay.snapshot.state.master.masterId,
 			...Object.keys(replay.snapshot.state.heroes)
@@ -447,6 +475,7 @@ export async function getEngineReplay(
 			checks: replay.checks,
 			journalEntries: projectJournal(events),
 			scheduledEvents: scheduleRows.map(parseSchedule),
+			clock,
 			snapshot: replay.snapshot,
 			persistedStateHash: persisted.stateHash,
 			hashMatchesPersistedSnapshot: replay.snapshot.stateHash === persisted.stateHash,

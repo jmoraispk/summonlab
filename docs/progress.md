@@ -183,6 +183,7 @@ character-visual gate.
 | `SET-003` | Complete: `engine-v3` validates `hero.start.travel` against the hash-bound Hearth graph, persists the exact route and due arrival, leaves location unchanged in transit, and lets only `simulation.advance` commit arrival; death cancels travel and v1/v2 replay schemas remain intact | [Authoritative travel evidence](evidence/phase-4-authoritative-travel.png), engine/property/integration tests, replay travel lab, ADR 0013 |
 | `SET-004` | Complete: `engine-v4` owns reciprocal facility assignments, station-derived capacity, one reversible development power slot, active-system projection, power-gated forge access, route reservation checks, and assignment cleanup on death while preserving v1/v2/v3 replay schemas | [Facility operations evidence](evidence/phase-4-facility-operations.png), engine/property/integration/browser tests, replay operations lab, ADR 0014 |
 | `SET-005` | Complete: `engine-v5` persists the summoned mind, owns mutable habits and four-entry daily plans, records inspectable routine scores and close-decision boundaries, schedules zero-model-cost outcomes, resolves needs and habit deltas on the injected clock, and preserves v1–v4 replay schemas | [Daily routine evidence](evidence/phase-4-daily-routine.png), engine/property/integration/browser tests, replay routine lab, ADR 0015 |
+| `SET-006` | Complete: each run owns a configurable `4×` anchored clock; one deterministic policy resolves online and offline routines byte-for-byte; renewable leases, expiry recovery, one-day/128-command safety bounds, due-only worker polling, reconnect catch-up, and explicit clock-sync events preserve exact replay | [Offline catch-up evidence](evidence/phase-4-offline-catch-up.png), engine equivalence/property tests, database lease integration, worker/browser tests, ADR 0016 |
 
 ### Reproduce the checkpoint
 
@@ -203,8 +204,12 @@ reachable forge, and verify the assignment and power events in the hash chain. T
 day**, inspect the habit/duty/meal/sleep intentions, choose **Follow next intention**, compare the
 candidate scores, and advance the routine schedule to its verified outcome.
 
+Use **Simulate 6h away** in the replay clock panel to resolve one complete game day, verify that Day
+2 begins with one pending routine, and inspect the intervening plan, routine, need, and clock-sync
+events in the same hash chain.
+
 ## Next active engineering slice
 
-Collect topology, layered-scene, travel, facility-operation, and routine-life feedback, then
-implement accelerated game-time mapping and offline worker catch-up in SET-006. Phase 3 cohort
-expansion remains behind its separate human visual gate.
+Collect topology, layered-scene, travel, facility-operation, routine-life, and catch-up feedback,
+then implement SSE reconnect cursors and concise return recaps in SET-007. Phase 3 cohort expansion
+remains behind its separate human visual gate.

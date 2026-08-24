@@ -1,5 +1,12 @@
 const MINUTE_MS = 60_000;
 const SECOND_MS = 1_000;
+const CLOCK_SPEEDS = new Set([0, 1, 2, 4, 8]);
+
+function timeMilliseconds(isoTime: string, label: string): number {
+	const milliseconds = Date.parse(isoTime);
+	if (!Number.isFinite(milliseconds)) throw new Error(`Invalid ${label}: ${isoTime}`);
+	return milliseconds;
+}
 
 export function addGameSeconds(isoTime: string, seconds: number): string {
 	if (!Number.isSafeInteger(seconds) || seconds < 0) {
@@ -32,4 +39,33 @@ export function gameMinutesBetween(left: string, right: string): number {
 	const milliseconds = Date.parse(right) - Date.parse(left);
 	if (!Number.isFinite(milliseconds)) throw new Error('Cannot subtract invalid game times');
 	return milliseconds / MINUTE_MS;
+}
+
+export function projectGameTime(
+	anchorGameTime: string,
+	anchorRealTime: string,
+	wallTime: string,
+	speed: number
+): string {
+	if (!CLOCK_SPEEDS.has(speed)) throw new Error(`Unsupported simulation speed: ${speed}`);
+	const gameMilliseconds = timeMilliseconds(anchorGameTime, 'game anchor');
+	const realMilliseconds = timeMilliseconds(anchorRealTime, 'real anchor');
+	const wallMilliseconds = timeMilliseconds(wallTime, 'wall time');
+	const elapsedRealMilliseconds = Math.max(0, wallMilliseconds - realMilliseconds);
+	return new Date(gameMilliseconds + elapsedRealMilliseconds * speed).toISOString();
+}
+
+export function realTimeForGameTime(
+	anchorGameTime: string,
+	anchorRealTime: string,
+	gameTime: string,
+	speed: number
+): string | null {
+	if (!CLOCK_SPEEDS.has(speed)) throw new Error(`Unsupported simulation speed: ${speed}`);
+	if (speed === 0) return null;
+	const gameMilliseconds = timeMilliseconds(anchorGameTime, 'game anchor');
+	const targetGameMilliseconds = timeMilliseconds(gameTime, 'target game time');
+	const realMilliseconds = timeMilliseconds(anchorRealTime, 'real anchor');
+	const elapsedGameMilliseconds = Math.max(0, targetGameMilliseconds - gameMilliseconds);
+	return new Date(realMilliseconds + elapsedGameMilliseconds / speed).toISOString();
 }

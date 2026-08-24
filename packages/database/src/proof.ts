@@ -4,6 +4,7 @@ import {
 	EngineCommandSchema,
 	ProofRunSnapshotSchema,
 	type CharacterDraft,
+	type ClockSpeed,
 	type EngineCommand,
 	type FirstDestination,
 	type ProofControlMode,
@@ -62,6 +63,7 @@ export interface CreateProofRunInput {
 	readonly directive: string;
 	readonly firstObservation: string;
 	readonly choice: ResolvedFirstChoice | null;
+	readonly clockSpeed?: ClockSpeed;
 }
 
 function iso(value: Date | string): string {
@@ -294,7 +296,8 @@ export async function createProofRun(
 				heroId: input.draft.manifest.characterId,
 				manifestHash: input.draft.manifestHash,
 				rarityStars: input.draft.manifest.rarityStars,
-				mind: input.draft.mind
+				mind: input.draft.mind,
+				...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
 			});
 			await insertEvent(
 				transaction,

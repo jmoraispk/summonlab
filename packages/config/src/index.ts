@@ -1,4 +1,4 @@
-import { PolicyModeSchema } from '@summonlab/contracts';
+import { ClockSpeedSchema, PolicyModeSchema } from '@summonlab/contracts';
 import { z } from 'zod';
 
 const EnvironmentSchema = z
@@ -7,6 +7,8 @@ const EnvironmentSchema = z
 		HOST: z.string().min(1).default('0.0.0.0'),
 		WEB_PORT: z.coerce.number().int().min(1).max(65_535).default(5173),
 		WORKER_PORT: z.coerce.number().int().min(1).max(65_535).default(4174),
+		SIMULATION_SPEED: z.coerce.number().pipe(ClockSpeedSchema).default(4),
+		CATCH_UP_POLL_MS: z.coerce.number().int().min(250).max(60_000).default(1_000),
 		LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 		DATABASE_URL: z
 			.string()
@@ -28,6 +30,8 @@ const EnvironmentSchema = z
 		host: value.HOST,
 		webPort: value.WEB_PORT,
 		workerPort: value.WORKER_PORT,
+		simulationSpeed: value.SIMULATION_SPEED,
+		catchUpPollMs: value.CATCH_UP_POLL_MS,
 		logLevel: value.LOG_LEVEL,
 		databaseUrl: value.DATABASE_URL,
 		policyMode: value.POLICY_MODE,

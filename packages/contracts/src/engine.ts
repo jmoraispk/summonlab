@@ -934,6 +934,11 @@ export const AdvanceSimulationCommandSchema = EngineCommandBaseSchema.extend({
 	targetGameTime: IsoDateTimeSchema
 }).strict();
 
+export const SyncSimulationClockCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('simulation.sync.clock'),
+	targetGameTime: IsoDateTimeSchema
+}).strict();
+
 export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('simulation.apply.damage'),
 	targetId: EntityIdSchema,
@@ -954,6 +959,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
 	AdvanceSimulationCommandSchema,
+	SyncSimulationClockCommandSchema,
 	ApplyDamageCommandSchema
 ]);
 
@@ -986,6 +992,64 @@ export const EngineScheduleRecordSchema = ScheduledEventSchema.extend({
 	createdEventId: EntityIdSchema,
 	terminalEventId: EntityIdSchema.nullable()
 }).strict();
+
+export const ClockSpeedSchema = z.union([
+	z.literal(0),
+	z.literal(1),
+	z.literal(2),
+	z.literal(4),
+	z.literal(8)
+]);
+
+export const SimulationClockSchema = z
+	.object({
+		runId: EntityIdSchema,
+		speed: ClockSpeedSchema,
+		anchorGameTime: IsoDateTimeSchema,
+		anchorRealTime: IsoDateTimeSchema,
+		currentGameTime: IsoDateTimeSchema,
+		projectedGameTime: IsoDateTimeSchema,
+		lastCatchUpAt: IsoDateTimeSchema.nullable(),
+		nextDueGameTime: IsoDateTimeSchema.nullable(),
+		nextDueRealTime: IsoDateTimeSchema.nullable(),
+		backlogGameMinutes: z.number().nonnegative(),
+		leaseStatus: z.enum(['idle', 'leased'])
+	})
+	.strict();
+
+export const CatchUpEventSchema = z
+	.object({
+		sequence: z.number().int().positive(),
+		gameTime: IsoDateTimeSchema,
+		eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
+		summary: z.string().min(1).max(1_000)
+	})
+	.strict();
+
+export const CatchUpRequestSchema = z
+	.object({
+		wallTime: IsoDateTimeSchema.optional()
+	})
+	.strict();
+
+export const CatchUpReportSchema = z
+	.object({
+		runId: EntityIdSchema,
+		result: z.enum(['caught_up', 'noop', 'lease_busy', 'terminal', 'safety_limit']),
+		fromGameTime: IsoDateTimeSchema,
+		toGameTime: IsoDateTimeSchema,
+		targetGameTime: IsoDateTimeSchema,
+		wallTime: IsoDateTimeSchema,
+		speed: ClockSpeedSchema,
+		commandsApplied: z.number().int().nonnegative(),
+		schedulesResolved: z.number().int().nonnegative(),
+		plansCreated: z.number().int().nonnegative(),
+		routinesStarted: z.number().int().nonnegative(),
+		truncated: z.boolean(),
+		events: z.array(CatchUpEventSchema).max(512),
+		clock: SimulationClockSchema
+	})
+	.strict();
 
 export const EngineSnapshotSchema = z
 	.object({
@@ -1031,6 +1095,7 @@ export const EngineReplayReportSchema = z
 		checks: z.array(ReplayEventCheckSchema),
 		journalEntries: z.array(JournalEntrySchema),
 		scheduledEvents: z.array(EngineScheduleRecordSchema),
+		clock: SimulationClockSchema,
 		snapshot: EngineSnapshotSchema,
 		persistedStateHash: StateHashSchema,
 		hashMatchesPersistedSnapshot: z.boolean(),
@@ -1066,6 +1131,8 @@ export const EngineErrorResponseSchema = z.discriminatedUnion('code', [
 
 export type ActivityKind = z.infer<typeof ActivityKindSchema>;
 export type BuildingAssignmentRole = z.infer<typeof BuildingAssignmentRoleSchema>;
+export type CatchUpReport = z.infer<typeof CatchUpReportSchema>;
+export type ClockSpeed = z.infer<typeof ClockSpeedSchema>;
 export type EngineCommand = z.infer<typeof EngineCommandSchema>;
 export type EngineCommit = z.infer<typeof EngineCommitSchema>;
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
@@ -1081,3 +1148,4 @@ export type EngineSnapshot = z.infer<typeof EngineSnapshotSchema>;
 export type EntropyDraw = z.infer<typeof EntropyDrawSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
 export type ScheduledEvent = z.infer<typeof ScheduledEventSchema>;
+export type SimulationClock = z.infer<typeof SimulationClockSchema>;
