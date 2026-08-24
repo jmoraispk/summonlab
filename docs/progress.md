@@ -184,6 +184,7 @@ character-visual gate.
 | `SET-004` | Complete: `engine-v4` owns reciprocal facility assignments, station-derived capacity, one reversible development power slot, active-system projection, power-gated forge access, route reservation checks, and assignment cleanup on death while preserving v1/v2/v3 replay schemas | [Facility operations evidence](evidence/phase-4-facility-operations.png), engine/property/integration/browser tests, replay operations lab, ADR 0014 |
 | `SET-005` | Complete: `engine-v5` persists the summoned mind, owns mutable habits and four-entry daily plans, records inspectable routine scores and close-decision boundaries, schedules zero-model-cost outcomes, resolves needs and habit deltas on the injected clock, and preserves v1–v4 replay schemas | [Daily routine evidence](evidence/phase-4-daily-routine.png), engine/property/integration/browser tests, replay routine lab, ADR 0015 |
 | `SET-006` | Complete: each run owns a configurable `4×` anchored clock; one deterministic policy resolves online and offline routines byte-for-byte; renewable leases, expiry recovery, one-day/128-command safety bounds, due-only worker polling, reconnect catch-up, and explicit clock-sync events preserve exact replay | [Offline catch-up evidence](evidence/phase-4-offline-catch-up.png), engine equivalence/property tests, database lease integration, worker/browser tests, ADR 0016 |
+| `SET-007` | Complete: transaction-bound PostgreSQL notifications wake bounded cursor reads; SSE resumes from `Last-Event-ID`, detects gaps, and never projects client state; exact full-range recap totals and deltas feed six diverse cursor-linked highlights; acknowledgement survives reload correctly | [Return recap evidence](evidence/phase-4-return-recap.png), recap unit tests, notification/database integration, SSE protocol and return browser tests, ADR 0017 |
 
 ### Reproduce the checkpoint
 
@@ -206,10 +207,12 @@ candidate scores, and advance the routine schedule to its verified outcome.
 
 Use **Simulate 6h away** in the replay clock panel to resolve one complete game day, verify that Day
 2 begins with one pending routine, and inspect the intervening plan, routine, need, and clock-sync
-events in the same hash chain.
+events in the same hash chain. Choose **Return to settlement**, inspect the cursor-bounded recap and
+net changes, reload before acknowledging it to verify that it remains unread, then choose
+**Continue to settlement** and confirm the live cursor indicator reconnects.
 
 ## Next active engineering slice
 
-Collect topology, layered-scene, travel, facility-operation, routine-life, and catch-up feedback,
-then implement SSE reconnect cursors and concise return recaps in SET-007. Phase 3 cohort expansion
-remains behind its separate human visual gate.
+Collect topology, layered-scene, travel, facility-operation, routine-life, catch-up, and return-recap
+feedback, then implement day/night presentation, occupancy, work, sleep, eat, train, and idle
+animations in SET-008. Phase 3 cohort expansion remains behind its separate human visual gate.

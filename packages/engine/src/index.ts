@@ -4,5 +4,6 @@ export * from './entropy.js';
 export * from './errors.js';
 export * from './hash.js';
 export * from './journal.js';
+export * from './recap.js';
 export * from './simulation.js';
 export * from './time.js';

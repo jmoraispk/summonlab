@@ -127,6 +127,20 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	if (process.env.CAPTURE_PHASE4_CATCHUP) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE4_CATCHUP, fullPage: true });
 	}
+	await page.getByRole('link', { name: /Return to settlement/ }).click();
+	await expect(page.getByTestId('return-recap')).toBeVisible();
+	await expect(page.getByTestId('return-recap')).toContainText('authoritative changes');
+	await expect(page.getByTestId('return-recap')).toContainText('routines completed');
+	if (process.env.CAPTURE_PHASE4_RECAP) {
+		await page.setViewportSize({ width: 1280, height: 960 });
+		await page.screenshot({ path: process.env.CAPTURE_PHASE4_RECAP });
+	}
+	await page.reload();
+	await expect(page.getByTestId('return-recap')).toBeVisible();
+	await page.getByRole('button', { name: /Continue to settlement/ }).click();
+	await expect(page.getByTestId('run-connection')).toContainText('Live');
+	await page.getByRole('link', { name: 'Replay' }).click();
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
 	await page.getByRole('button', { name: /Advance to outcome/ }).click();
 	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
 

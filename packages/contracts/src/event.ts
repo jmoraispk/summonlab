@@ -125,11 +125,99 @@ export const JournalEntrySchema = z
 		message: 'Journal sequence range is inverted'
 	});
 
+export const EngineEventHeadSchema = z
+	.object({
+		runId: EntityIdSchema,
+		version: z.number().int().nonnegative(),
+		eventCursor: z.number().int().positive(),
+		stateHash: StateHashSchema,
+		gameTime: IsoDateTimeSchema
+	})
+	.strict();
+
+export const EngineEventPageSchema = z
+	.object({
+		runId: EntityIdSchema,
+		requestedAfter: z.number().int().nonnegative(),
+		nextCursor: z.number().int().nonnegative(),
+		latestCursor: z.number().int().positive(),
+		hasMore: z.boolean(),
+		gap: z.enum(['cursor_ahead', 'missing_events']).nullable(),
+		events: z.array(AuthoritativeEventSchema).max(256)
+	})
+	.strict();
+
+export const EngineStreamReadySchema = z
+	.object({
+		runId: EntityIdSchema,
+		afterCursor: z.number().int().nonnegative(),
+		latestCursor: z.number().int().positive(),
+		heartbeatMs: z.number().int().min(1_000).max(60_000)
+	})
+	.strict();
+
+export const EngineCursorGapSchema = z
+	.object({
+		runId: EntityIdSchema,
+		requestedAfter: z.number().int().nonnegative(),
+		latestCursor: z.number().int().positive(),
+		reason: z.enum(['cursor_ahead', 'missing_events'])
+	})
+	.strict();
+
+export const ReturnRecapCountsSchema = z
+	.object({
+		plansCreated: z.number().int().nonnegative(),
+		routinesCompleted: z.number().int().nonnegative(),
+		activitiesCompleted: z.number().int().nonnegative(),
+		travelArrivals: z.number().int().nonnegative(),
+		failures: z.number().int().nonnegative(),
+		clockSyncs: z.number().int().nonnegative()
+	})
+	.strict();
+
+export const ReturnRecapDeltaSchema = z
+	.object({
+		ownerId: EntityIdSchema,
+		kind: RewardDeltaSchema.shape.kind,
+		key: z.string().min(1).max(100),
+		delta: z.number()
+	})
+	.strict();
+
+export const ReturnRecapSchema = z
+	.object({
+		runId: EntityIdSchema,
+		fromCursor: z.number().int().nonnegative(),
+		toCursor: z.number().int().positive(),
+		fromGameTime: IsoDateTimeSchema.nullable(),
+		toGameTime: IsoDateTimeSchema,
+		spanGameMinutes: z.number().int().nonnegative(),
+		eventCount: z.number().int().nonnegative(),
+		omittedEventCount: z.number().int().nonnegative(),
+		headline: z.string().min(1).max(160),
+		summary: z.string().min(1).max(1_000),
+		counts: ReturnRecapCountsSchema,
+		deltas: z.array(ReturnRecapDeltaSchema).max(24),
+		highlights: z.array(JournalEntrySchema).max(8)
+	})
+	.strict()
+	.refine((value) => value.fromCursor <= value.toCursor, {
+		message: 'Recap cursor range is inverted'
+	});
+
 export type ActionSource = z.infer<typeof ActionSourceSchema>;
 export type AuthoritativeEvent = z.infer<typeof AuthoritativeEventSchema>;
 export type DecisionSource = z.infer<typeof DecisionSourceSchema>;
 export type DecisionTiming = z.infer<typeof DecisionTimingSchema>;
+export type EngineCursorGap = z.infer<typeof EngineCursorGapSchema>;
+export type EngineEventHead = z.infer<typeof EngineEventHeadSchema>;
+export type EngineEventPage = z.infer<typeof EngineEventPageSchema>;
+export type EngineStreamReady = z.infer<typeof EngineStreamReadySchema>;
 export type FallbackPolicy = z.infer<typeof FallbackPolicySchema>;
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;
 export type PlayerDirective = z.infer<typeof PlayerDirectiveSchema>;
+export type ReturnRecap = z.infer<typeof ReturnRecapSchema>;
+export type ReturnRecapCounts = z.infer<typeof ReturnRecapCountsSchema>;
+export type ReturnRecapDelta = z.infer<typeof ReturnRecapDeltaSchema>;
 export type RewardDelta = z.infer<typeof RewardDeltaSchema>;

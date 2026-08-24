@@ -1,5 +1,10 @@
 import { getConfig } from '@summonlab/config';
-import { catchUpRun, getProofRun, getSimulationClock } from '@summonlab/database';
+import {
+	catchUpRun,
+	getEngineEventHead,
+	getProofRun,
+	getSimulationClock
+} from '@summonlab/database';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
@@ -18,5 +23,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			clock = await getSimulationClock(config.databaseUrl, params.runId).catch(() => clock);
 		}
 	}
-	return { snapshot, clock };
+	const eventHead = await getEngineEventHead(config.databaseUrl, params.runId).catch(() => null);
+	if (!eventHead) error(404, 'This run has no authoritative event cursor.');
+	return { snapshot, clock, eventHead };
 };

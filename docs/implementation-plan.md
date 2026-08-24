@@ -966,7 +966,7 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — SET-001 through SET-004 completed 2026-08-24.** `hearth-01-v1`
+**Status: in progress — SET-001 through SET-007 completed 2026-08-24.** `hearth-01-v1`
 defines five interiors, a connected 18-node/17-edge route graph, travel time, capacity, authored
 visual paths, interaction/effect declarations, and explicit system access. The development-only
 `/settlement-lab` inspects that hash-bound content without changing existing engine histories or
@@ -982,7 +982,7 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 - `SET-004` complete: implement building capacity, assignments, and powered state;
 - `SET-005` complete: implement needs, activities, daily plan, and habit resolution;
 - `SET-006` complete: implement accelerated clock and worker catch-up;
-- `SET-007` implement SSE events, reconnect, and recap;
+- `SET-007` complete: implement SSE events, reconnect, and recap;
 - `SET-008` add day/night, occupancy, work, sleep, eat, train, and idle animations;
 - `SET-009` implement one-core facility choice and consequences.
 
@@ -1099,8 +1099,11 @@ summoned mind, added mutable habits and four-part daily plans, scheduled
 zero-model-cost routine outcomes, exposed close-score decision boundaries, and preserved v1–v4
 replay schemas under `engine-v5`. `SET-006` persisted the configurable `4×` wall-to-game-time projection, added a
 renewable crash-recoverable run lease, proved byte-equal online/offline resolution, bounded each
-batch, and connected due schedules to the worker and reconnect API. The next engineering slice is
-`SET-007`: SSE events, reconnect cursors, and return recaps.
+batch, and connected due schedules to the worker and reconnect API. `SET-007` added
+transaction-bound PostgreSQL event notifications, bounded cursor pages, resumable SSE with typed
+gap recovery, browser-local acknowledgement cursors, and deterministic full-range return recap
+totals with cursor-linked highlights. The next engineering slice is `SET-008`: day/night
+presentation, occupancy, and work/sleep/eat/train/idle animation states.
 
 ## Accepted product decisions — 2026-08-23
 

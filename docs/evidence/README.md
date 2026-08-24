@@ -36,3 +36,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-4-offline-catch-up.png` — a six-real-hour/one-game-day catch-up showing the persisted `4×`
   clock, zero backlog, idle lease, Day 2 plan, pending next routine, and every offline outcome in the
   verified canonical timeline.
+- `phase-4-return-recap.png` — reconnect checkpoint with exact away-time cursor range, elapsed game
+  time, routine/plan/arrival totals, aggregate need changes, diverse cursor-linked highlights, and
+  explicit paths to acknowledge the recap or inspect the full log.

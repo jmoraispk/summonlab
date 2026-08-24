@@ -5,6 +5,7 @@
 	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import RunConnection from '$lib/components/RunConnection.svelte';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
@@ -57,6 +58,11 @@
 			errorMessage = error instanceof Error ? error.message : 'The arrival log failed.';
 		}
 	}
+
+	async function refreshProjection() {
+		const response = await fetch(`/api/runs/${snapshot.runId}/clock`);
+		if (response.ok) clock = (await response.json()) as SimulationClock;
+	}
 </script>
 
 <svelte:head>
@@ -90,6 +96,11 @@
 			<a href={resolve('/forge')}>New seed</a>
 		</nav>
 	</header>
+	<RunConnection
+		runId={snapshot.runId}
+		initialCursor={data.eventHead.eventCursor}
+		onRefresh={refreshProjection}
+	/>
 
 	<section class="world" aria-label={`${snapshot.manifest.displayName} walking through Hearth 01`}>
 		<div class="sky"><i></i><i></i><i></i></div>

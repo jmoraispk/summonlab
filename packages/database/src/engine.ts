@@ -29,6 +29,7 @@ import {
 import postgres from 'postgres';
 
 import { getSimulationClock, reanchorSimulationClockInTransaction } from './clock.js';
+import { notifyEngineEventCursorInTransaction } from './events.js';
 
 interface EventRow {
 	event_id: string;
@@ -254,6 +255,11 @@ export async function initializeEngineRun(
 	`;
 	await insertEvent(sql, bootstrap.event);
 	await insertSnapshot(sql, bootstrap.snapshot);
+	await notifyEngineEventCursorInTransaction(
+		sql,
+		bootstrap.snapshot.state.runId,
+		bootstrap.snapshot.state.eventCursor
+	);
 	return bootstrap.snapshot;
 }
 
@@ -387,6 +393,7 @@ export async function commitEngineCommandInTransaction(
 			options.wallTime
 		);
 	}
+	await notifyEngineEventCursorInTransaction(sql, command.runId, nextSnapshot.state.eventCursor);
 	return EngineCommitSchema.parse({
 		snapshot: nextSnapshot,
 		events: applied.events,

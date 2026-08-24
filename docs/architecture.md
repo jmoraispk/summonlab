@@ -350,6 +350,26 @@ interpolation cannot write location, and death cancels pending travel through th
 ledger. Immutable `engine-v1` and `engine-v2` runs keep their original schemas and reducers rather
 than receiving hidden defaults.
 
+`engine-v4` added reciprocal facility rosters, station-derived capacity, and one reversible
+development-power allocation. `engine-v5` persists the summoned mind, mutable habit, four-part daily
+plan, inspectable routine ranking, and zero-model-cost scheduled outcomes. A dual-anchor simulation
+clock projects configured wall time into explicit engine targets; renewable database leases and one
+pure catch-up policy make online and offline resolution byte-identical.
+
+### Implemented reconnect projection
+
+Every new event schedules a run-specific PostgreSQL notification in its command transaction. The
+SSE player endpoint subscribes first, then reads bounded append-only pages after the requested
+cursor, which closes the notification race without treating notification payloads as state.
+Authoritative event sequences become SSE IDs, `Last-Event-ID` resumes reconnects, and impossible or
+missing cursors force a snapshot refresh.
+
+The player keeps a local last-observed cursor for private prototype play. Returning after catch-up
+requests a deterministic recap over that exact interval: database aggregates supply complete event,
+routine, plan, activity, arrival, failure, and net-delta totals; journal projection supplies a small
+diverse set of cursor-linked highlights. Generated narration may decorate this projection later but
+cannot provide facts, ordering, rewards, or progression values.
+
 ## Policy interface
 
 ```ts
