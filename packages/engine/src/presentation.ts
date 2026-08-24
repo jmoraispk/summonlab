@@ -2,6 +2,7 @@ import {
 	SettlementPresentationSchema,
 	type EngineGameStateV5,
 	type EngineGameStateV6,
+	type EngineGameStateV7,
 	type EngineSnapshot,
 	type RoutineKind,
 	type SettlementDefinition,
@@ -51,7 +52,9 @@ function readable(value: string): string {
 	return value.replaceAll('-', ' ');
 }
 
-function poseForHero(hero: (EngineGameStateV5 | EngineGameStateV6)['heroes'][string]): {
+function poseForHero(
+	hero: (EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7)['heroes'][string]
+): {
 	pose: SettlementPose;
 	label: string;
 } {
@@ -78,9 +81,9 @@ export function projectSettlementPresentation(
 	projectedGameTime: string
 ): SettlementPresentation {
 	const { state } = snapshot;
-	if (state.schemaVersion !== 5 && state.schemaVersion !== 6) {
+	if (state.schemaVersion !== 5 && state.schemaVersion !== 6 && state.schemaVersion !== 7) {
 		throw new Error(
-			`Settlement presentation requires engine-v5 or engine-v6, received v${state.schemaVersion}`
+			`Settlement presentation requires engine-v5, engine-v6, or engine-v7, received v${state.schemaVersion}`
 		);
 	}
 	const gameDate = new Date(projectedGameTime);
@@ -127,6 +130,83 @@ export function projectSettlementPresentation(
 				.filter((occupant) => occupant.buildingId === building.buildingId)
 				.map((occupant) => occupant.heroId)
 		}));
+	const social =
+		state.schemaVersion === 7
+			? Object.values(state.heroes)
+					.filter((hero) => hero.lifeState !== 'synthesized')
+					.sort((left, right) => left.heroId.localeCompare(right.heroId))
+					.map((hero) => {
+						const relationship = Object.values(state.society.relationships).find(
+							(candidate) =>
+								candidate.fromHeroId === hero.heroId &&
+								candidate.toEntityId === state.master.masterId
+						);
+						const authority = Object.values(state.society.authority).find(
+							(candidate) => candidate.observerHeroId === hero.heroId
+						);
+						const latestObservation = Object.values(state.society.observations)
+							.filter((observation) => observation.observerHeroId === hero.heroId)
+							.sort(
+								(left, right) =>
+									left.observedAt.localeCompare(right.observedAt) ||
+									left.observationId.localeCompare(right.observationId)
+							)
+							.at(-1);
+						const relationshipScore = relationship
+							? relationship.dimensions.trust + relationship.dimensions.respect
+							: 0;
+						const relationshipTone =
+							relationship &&
+							(relationship.dimensions.resentment >= 8 || relationship.dimensions.trust <= -6)
+								? ('guarded' as const)
+								: relationshipScore >= 15
+									? ('trusting' as const)
+									: relationshipScore > 0
+										? ('receptive' as const)
+										: ('neutral' as const);
+						const authorityScore = authority
+							? authority.dimensions.competence +
+								authority.dimensions.provision +
+								authority.dimensions.trust +
+								authority.dimensions.legitimacy
+							: 0;
+						const authorityStanding =
+							authority && authority.dimensions.legitimacy <= -5
+								? ('contested' as const)
+								: authorityScore >= 20
+									? ('recognized' as const)
+									: authorityScore > 0
+										? ('provisional' as const)
+										: ('unrecognized' as const);
+						return {
+							heroId: hero.heroId,
+							beliefCount: Object.values(state.society.beliefs).filter(
+								(belief) => belief.holderHeroId === hero.heroId && belief.status === 'held'
+							).length,
+							latestObservation: latestObservation
+								? {
+										kind: latestObservation.kind,
+										summary: latestObservation.summary,
+										observedAt: latestObservation.observedAt
+									}
+								: null,
+							relationshipToMaster: {
+								tone: relationshipTone,
+								latestEvidence: relationship?.evidence.at(-1)?.summary ?? null
+							},
+							authority: {
+								standing: authorityStanding,
+								latestEvidence: authority?.evidence.at(-1)?.summary ?? null
+							},
+							activePromiseTerms: Object.values(state.society.promises)
+								.filter(
+									(promise) =>
+										promise.status === 'active' && promise.promiseeHeroIds.includes(hero.heroId)
+								)
+								.map((promise) => promise.terms)
+						};
+					})
+			: [];
 
 	return SettlementPresentationSchema.parse({
 		runId: state.runId,
@@ -138,8 +218,10 @@ export function projectSettlementPresentation(
 		dayNumber: dayIndex + 1,
 		minuteOfDay,
 		dayPhase: settlementDayPhase(minuteOfDay),
-		firstEmber: state.schemaVersion === 6 ? state.settlement.firstEmber : null,
+		firstEmber:
+			state.schemaVersion === 6 || state.schemaVersion === 7 ? state.settlement.firstEmber : null,
 		buildings,
-		occupants
+		occupants,
+		social
 	});
 }

@@ -61,6 +61,9 @@
 		}
 	];
 	const firstEmber = $derived(presentation?.firstEmber ?? null);
+	const heroSocial = $derived(
+		presentation?.social.find((entry) => entry.heroId === snapshot.manifest.characterId) ?? null
+	);
 	const selectedEmberOption = $derived(
 		emberOptions.find((option) => option.id === selectedEmberFacility) ?? null
 	);
@@ -343,6 +346,12 @@
 								>
 								<i class={`stance-${reaction.stance}`}>{reaction.stance} · {reaction.score}</i>
 								<p>{reaction.summary}</p>
+								{#if reaction.heroId === snapshot.manifest.characterId && heroSocial}
+									<small
+										>{heroSocial.relationshipToMaster.tone} toward the Master · authority
+										{heroSocial.authority.standing}</small
+									>
+								{/if}
 							</article>
 						{/each}
 					</div>
@@ -403,13 +412,41 @@
 				<span>Resolve</span><i><b style={`width: ${snapshot.mind.aptitudes.resolve * 10}%`}></b></i
 				><strong>{snapshot.mind.aptitudes.resolve}</strong>
 			</div>
-			<div><span>Trust</span><i><b style="width: 8%"></b></i><strong>unknown</strong></div>
+			<div>
+				<span>Trust</span><i
+					><b
+						style={`width: ${heroSocial?.relationshipToMaster.tone === 'trusting' ? 78 : heroSocial?.relationshipToMaster.tone === 'receptive' ? 52 : heroSocial?.relationshipToMaster.tone === 'guarded' ? 18 : 32}%`}
+					></b></i
+				><strong>{heroSocial?.relationshipToMaster.tone ?? 'unknown'}</strong>
+			</div>
 		</div>
 		<div class="proof-state">
 			<span>{walking ? 'In transit' : 'Persistent state updated'}</span>
 			<code>{snapshot.manifestHash.slice(0, 12)}</code>
 		</div>
 	</section>
+
+	{#if !walking && heroSocial}
+		<section class="social-ledger" data-testid="hero-social-ledger">
+			<div>
+				<p>What {snapshot.manifest.displayName} actually knows</p>
+				<h2>{heroSocial.beliefCount} held beliefs · {heroSocial.authority.standing} authority</h2>
+				<span>{heroSocial.latestObservation?.summary}</span>
+			</div>
+			<div class="social-signals">
+				<p><span>Relationship</span><strong>{heroSocial.relationshipToMaster.tone}</strong></p>
+				<p>
+					<span>Evidence</span><strong
+						>{heroSocial.relationshipToMaster.latestEvidence ??
+							'Only the awakening is known.'}</strong
+					>
+				</p>
+				{#each heroSocial.activePromiseTerms as promise (promise)}
+					<p><span>Active promise</span><strong>{promise}</strong></p>
+				{/each}
+			</div>
+		</section>
+	{/if}
 
 	<section class="choice-result">
 		<div>
@@ -1125,6 +1162,14 @@
 		line-height: 1.55;
 	}
 
+	.ember-reactions article > small {
+		grid-column: 1 / -1;
+		color: #7fd8e9;
+		font-size: 0.5rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
 	.ember-confirm-backdrop {
 		position: fixed;
 		z-index: 100;
@@ -1335,6 +1380,67 @@
 		font-size: 0.56rem;
 	}
 
+	.social-ledger {
+		display: grid;
+		grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+		gap: clamp(1.5rem, 4vw, 4rem);
+		padding: clamp(2rem, 5vw, 4.5rem) clamp(1.4rem, 6vw, 6rem);
+		border-top: 1px solid rgba(127, 216, 233, 0.16);
+		background: linear-gradient(90deg, rgba(20, 52, 64, 0.2), transparent 45%), #090c12;
+	}
+
+	.social-ledger > div > p {
+		margin: 0 0 0.65rem;
+		color: #7fd8e9;
+		font-size: 0.56rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.social-ledger h2 {
+		margin: 0 0 0.8rem;
+		font:
+			400 clamp(1.4rem, 2.4vw, 2.2rem) Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+
+	.social-ledger > div > span {
+		color: rgba(244, 240, 232, 0.54);
+		font-size: 0.78rem;
+		line-height: 1.6;
+	}
+
+	.social-signals {
+		display: grid;
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.08);
+	}
+
+	.social-signals p {
+		display: grid;
+		grid-template-columns: 7rem minmax(0, 1fr);
+		gap: 1rem;
+		margin: 0;
+		padding: 0.8rem 1rem;
+		background: #0d1118;
+	}
+
+	.social-signals span {
+		color: rgba(244, 240, 232, 0.34);
+		font-size: 0.48rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.social-signals strong {
+		color: rgba(244, 240, 232, 0.74);
+		font-size: 0.62rem;
+		font-weight: 500;
+		line-height: 1.45;
+	}
+
 	.choice-result {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -1480,6 +1586,10 @@
 		.choice-result {
 			grid-template-columns: 1fr;
 			gap: 2rem;
+		}
+
+		.social-ledger {
+			grid-template-columns: 1fr;
 		}
 
 		.ember-council,

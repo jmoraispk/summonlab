@@ -11,6 +11,7 @@ import {
 	EngineGameStateV4Schema,
 	EngineGameStateV5Schema,
 	EngineGameStateV6Schema,
+	EngineGameStateV7Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -25,6 +26,7 @@ import {
 	RoutineResolutionSchema,
 	ScheduledEventSchema,
 	SettlementRoutePlanSchema,
+	SocietyStateSchema,
 	type ActivityKind,
 	type AuthoritativeEvent,
 	type BuildingAssignmentRole,
@@ -37,6 +39,7 @@ import {
 	type EngineGameStateV4,
 	type EngineGameStateV5,
 	type EngineGameStateV6,
+	type EngineGameStateV7,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
@@ -45,6 +48,7 @@ import {
 	type RewardDelta,
 	type RoutineKind,
 	type SettlementDefinition,
+	type SocietyState,
 	type ScheduledEvent
 } from '@summonlab/contracts';
 import { HEARTH_01_DEFINITION, planSettlementRoute } from '@summonlab/content';
@@ -56,7 +60,9 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v6';
+export const ENGINE_CONTENT_VERSION = 'engine-v7';
+export const SOCIAL_ENGINE_CONTENT_VERSION = 'engine-v7';
+export const FIRST_EMBER_ENGINE_CONTENT_VERSION = 'engine-v6';
 export const ROUTINE_ENGINE_CONTENT_VERSION = 'engine-v5';
 export const FACILITY_ENGINE_CONTENT_VERSION = 'engine-v4';
 export const TRAVEL_ENGINE_CONTENT_VERSION = 'engine-v3';
@@ -86,8 +92,13 @@ const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
 ] as const);
 
 type EngineGameStateModern =
-	EngineGameStateV2 | EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6;
-type EngineRoutineState = EngineGameStateV5 | EngineGameStateV6;
+	| EngineGameStateV2
+	| EngineGameStateV3
+	| EngineGameStateV4
+	| EngineGameStateV5
+	| EngineGameStateV6
+	| EngineGameStateV7;
+type EngineRoutineState = EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -291,6 +302,7 @@ const FirstEmberRecoveredPayloadSchema = EmptyMetadataSchema.extend({
 
 const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
 	firstEmber: FirstEmberStateSchema,
+	society: SocietyStateSchema.optional(),
 	previousPoweredBuildingId: z.string().nullable(),
 	powerStateChanges: z.array(PowerStateChangeSchema).min(1),
 	activeSystemIdsAfter: z.array(z.string()),
@@ -444,8 +456,110 @@ function clamp(value: number, minimum = 0, maximum = 100): number {
 	return Math.min(maximum, Math.max(minimum, value));
 }
 
+function clampSocial(value: number): number {
+	return clamp(value, -100, 100);
+}
+
+function createBootstrapSociety(
+	heroId: string,
+	masterId: string,
+	eventId: string,
+	observedAt: string
+): SocietyState {
+	const observationId = deterministicUuid(`${eventId}:${heroId}:awakening-observation`);
+	const selfBeliefId = deterministicUuid(`${observationId}:self-awakened`);
+	const presenceBeliefId = deterministicUuid(`${observationId}:master-present`);
+	const relationshipId = deterministicUuid(`${heroId}:${masterId}:relationship`);
+	const authorityId = deterministicUuid(`${heroId}:${masterId}:authority`);
+	return SocietyStateSchema.parse({
+		contentVersion: 'society-v1',
+		observations: {
+			[observationId]: {
+				observationId,
+				sourceEventId: eventId,
+				observerHeroId: heroId,
+				observedAt,
+				kind: 'awakening',
+				summary: 'I awakened at the summoning gate beside an unfamiliar adult.',
+				subjectIds: [heroId, masterId]
+			}
+		},
+		beliefs: {
+			[selfBeliefId]: {
+				beliefId: selfBeliefId,
+				holderHeroId: heroId,
+				subjectId: heroId,
+				predicate: 'awakened-at',
+				object: { kind: 'location', locationId: 'summoning-gate' },
+				confidence: 100,
+				status: 'held',
+				learnedAt: observedAt,
+				provenance: {
+					kind: 'experienced',
+					sourceEventId: eventId,
+					observationId,
+					learnedFromId: null,
+					chainDepth: 0
+				}
+			},
+			[presenceBeliefId]: {
+				beliefId: presenceBeliefId,
+				holderHeroId: heroId,
+				subjectId: masterId,
+				predicate: 'present-at-awakening',
+				object: { kind: 'location', locationId: 'summoning-gate' },
+				confidence: 100,
+				status: 'held',
+				learnedAt: observedAt,
+				provenance: {
+					kind: 'observed',
+					sourceEventId: eventId,
+					observationId,
+					learnedFromId: null,
+					chainDepth: 0
+				}
+			}
+		},
+		relationships: {
+			[relationshipId]: {
+				relationshipId,
+				fromHeroId: heroId,
+				toEntityId: masterId,
+				dimensions: { trust: 0, respect: 0, fear: 0, affection: 0, resentment: 0, debt: 0 },
+				updatedAt: observedAt,
+				lastSourceEventId: eventId,
+				evidence: []
+			}
+		},
+		promises: {},
+		authority: {
+			[authorityId]: {
+				authorityId,
+				observerHeroId: heroId,
+				subjectId: masterId,
+				dimensions: {
+					competence: 0,
+					provision: 0,
+					trust: 0,
+					legitimacy: 0,
+					fear: 0,
+					strength: 0,
+					consistency: 0
+				},
+				updatedAt: observedAt,
+				lastSourceEventId: eventId,
+				evidence: []
+			}
+		}
+	});
+}
+
 export function hashGameState(state: EngineGameState): string {
-	return hashCanonical(EngineGameStateSchema.parse(state));
+	return hashParsedGameState(EngineGameStateSchema.parse(state));
+}
+
+function hashParsedGameState(state: EngineGameState): string {
+	return hashCanonical(state);
 }
 
 export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEngineResult {
@@ -468,8 +582,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
-	const state = EngineGameStateV6Schema.parse({
-		schemaVersion: 6,
+	const state = EngineGameStateV7Schema.parse({
+		schemaVersion: 7,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -568,9 +682,10 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				maxDurability: 4
 			}
 		},
+		society: createBootstrapSociety(input.heroId, masterId, eventId, simulatedAt),
 		story: { envelopeId: 'first-ember-v1', branch: null }
 	});
-	const stateHash = hashGameState(state);
+	const stateHash = hashParsedGameState(state);
 	const rewardDeltas = resourceLedger.map((entry): RewardDelta => ({
 		ownerId: masterId,
 		kind: 'resource',
@@ -744,6 +859,176 @@ function buildFirstEmberReaction(
 	return { heroId: hero.heroId, stance, score: clampedScore, summary, factors };
 }
 
+const FIRST_EMBER_PROMISE_TERMS = Object.freeze({
+	'feed-everyone': 'I will make feeding this company our founding priority.',
+	'protect-recovery': 'I will protect this company’s recovery as our founding priority.',
+	'prepare-tower': 'I will prepare this company for the tower as our founding priority.'
+} as const satisfies Record<FirstEmberRationale, string>);
+
+function buildFirstEmberSociety(
+	state: EngineGameStateV7,
+	eventId: string,
+	buildingId: FirstEmberFacility,
+	rationale: FirstEmberRationale,
+	reactions: readonly ReturnType<typeof buildFirstEmberReaction>[]
+): SocietyState {
+	const observations = { ...state.society.observations };
+	const beliefs = { ...state.society.beliefs };
+	const relationships = { ...state.society.relationships };
+	const authority = { ...state.society.authority };
+	const promiseId = deterministicUuid(`${eventId}:founding-promise`);
+	const witnessObservationIds: string[] = [];
+
+	for (const reaction of reactions) {
+		const observationId = deterministicUuid(
+			`${eventId}:${reaction.heroId}:first-ember-observation`
+		);
+		witnessObservationIds.push(observationId);
+		observations[observationId] = {
+			observationId,
+			sourceEventId: eventId,
+			observerHeroId: reaction.heroId,
+			observedAt: state.simulatedAt,
+			kind: 'first-ember-commitment',
+			summary: `I witnessed the Master bind the First Ember to ${buildingId} for ${rationale}.`,
+			subjectIds: [state.master.masterId, reaction.heroId]
+		};
+
+		const commitmentBeliefId = deterministicUuid(`${observationId}:commitment-belief`);
+		beliefs[commitmentBeliefId] = {
+			beliefId: commitmentBeliefId,
+			holderHeroId: reaction.heroId,
+			subjectId: state.master.masterId,
+			predicate: 'first-ember-bound-to',
+			object: { kind: 'commitment', facilityId: buildingId, rationale },
+			confidence: 100,
+			status: 'held',
+			learnedAt: state.simulatedAt,
+			provenance: {
+				kind: 'observed',
+				sourceEventId: eventId,
+				observationId,
+				learnedFromId: null,
+				chainDepth: 0
+			}
+		};
+		const promiseBeliefId = deterministicUuid(`${observationId}:promise-belief`);
+		beliefs[promiseBeliefId] = {
+			beliefId: promiseBeliefId,
+			holderHeroId: reaction.heroId,
+			subjectId: state.master.masterId,
+			predicate: 'made-founding-promise',
+			object: { kind: 'promise', promiseId },
+			confidence: 100,
+			status: 'held',
+			learnedAt: state.simulatedAt,
+			provenance: {
+				kind: 'observed',
+				sourceEventId: eventId,
+				observationId,
+				learnedFromId: null,
+				chainDepth: 0
+			}
+		};
+
+		const relationshipId = deterministicUuid(
+			`${reaction.heroId}:${state.master.masterId}:relationship`
+		);
+		const previousRelationship = relationships[relationshipId];
+		if (!previousRelationship)
+			throw new ReplayIntegrityError('Missing Master relationship', state.eventCursor);
+		const relationshipDeltas = {
+			trust: { support: 8, accept: 3, question: -2, oppose: -8 }[reaction.stance],
+			respect: { support: 10, accept: 4, question: -1, oppose: -6 }[reaction.stance],
+			fear: 0,
+			affection: 0,
+			resentment: reaction.stance === 'oppose' ? 8 : 0,
+			debt: 0
+		};
+		relationships[relationshipId] = {
+			...previousRelationship,
+			dimensions: Object.fromEntries(
+				Object.entries(previousRelationship.dimensions).map(([key, value]) => [
+					key,
+					clampSocial(value + relationshipDeltas[key as keyof typeof relationshipDeltas])
+				])
+			) as typeof previousRelationship.dimensions,
+			updatedAt: state.simulatedAt,
+			lastSourceEventId: eventId,
+			evidence: [
+				...previousRelationship.evidence,
+				{
+					sourceEventId: eventId,
+					observationId,
+					summary: reaction.summary,
+					deltas: relationshipDeltas
+				}
+			]
+		};
+
+		const authorityId = deterministicUuid(`${reaction.heroId}:${state.master.masterId}:authority`);
+		const previousAuthority = authority[authorityId];
+		if (!previousAuthority)
+			throw new ReplayIntegrityError('Missing Master authority view', state.eventCursor);
+		const matched = FACILITY_RATIONALE[buildingId] === rationale;
+		const authorityDeltas = {
+			competence: buildingId === 'training-ground' ? 5 : buildingId === 'dormitory' ? 4 : 3,
+			provision: buildingId === 'kitchen' ? 10 : buildingId === 'dormitory' ? 8 : 2,
+			trust: relationshipDeltas.trust,
+			legitimacy: { support: 8, accept: 4, question: -2, oppose: -8 }[reaction.stance],
+			fear: 0,
+			strength: buildingId === 'training-ground' ? 8 : 2,
+			consistency: matched ? 6 : -8
+		};
+		authority[authorityId] = {
+			...previousAuthority,
+			dimensions: Object.fromEntries(
+				Object.entries(previousAuthority.dimensions).map(([key, value]) => [
+					key,
+					clampSocial(value + authorityDeltas[key as keyof typeof authorityDeltas])
+				])
+			) as typeof previousAuthority.dimensions,
+			updatedAt: state.simulatedAt,
+			lastSourceEventId: eventId,
+			evidence: [
+				...previousAuthority.evidence,
+				{
+					sourceEventId: eventId,
+					observationId,
+					summary: matched
+						? 'The stated priority matched the chosen facility.'
+						: 'The stated priority conflicted with the chosen facility.',
+					deltas: authorityDeltas
+				}
+			]
+		};
+	}
+
+	return SocietyStateSchema.parse({
+		...state.society,
+		observations,
+		beliefs,
+		relationships,
+		authority,
+		promises: {
+			...state.society.promises,
+			[promiseId]: {
+				promiseId,
+				promisorId: state.master.masterId,
+				promiseeHeroIds: reactions.map((reaction) => reaction.heroId),
+				kind: 'founding-priority',
+				terms: FIRST_EMBER_PROMISE_TERMS[rationale],
+				status: 'active',
+				sourceEventId: eventId,
+				createdAt: state.simulatedAt,
+				witnessObservationIds,
+				resolvedAt: null,
+				resolutionEventId: null
+			}
+		}
+	});
+}
+
 function firstEmberModifier(
 	state: EngineGameStateModern,
 	key:
@@ -761,7 +1046,12 @@ function firstEmberModifier(
 }
 
 function settlementForState(
-	state: EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6
+	state:
+		| EngineGameStateV3
+		| EngineGameStateV4
+		| EngineGameStateV5
+		| EngineGameStateV6
+		| EngineGameStateV7
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -801,35 +1091,43 @@ function currentTravelFor(state: EngineGameState, heroId: string) {
 	return state.schemaVersion === 3 ||
 		state.schemaVersion === 4 ||
 		state.schemaVersion === 5 ||
-		state.schemaVersion === 6
+		state.schemaVersion === 6 ||
+		state.schemaVersion === 7
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
 
 function currentRoutineFor(state: EngineGameState, heroId: string) {
-	return state.schemaVersion === 5 || state.schemaVersion === 6
+	return state.schemaVersion === 5 || state.schemaVersion === 6 || state.schemaVersion === 7
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
 
 function hasNavigationState(
 	state: EngineGameState
-): state is EngineGameStateV3 | EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6 {
-	return [3, 4, 5, 6].includes(state.schemaVersion);
+): state is
+	| EngineGameStateV3
+	| EngineGameStateV4
+	| EngineGameStateV5
+	| EngineGameStateV6
+	| EngineGameStateV7 {
+	return [3, 4, 5, 6, 7].includes(state.schemaVersion);
 }
 
 function hasFacilityState(
 	state: EngineGameState
-): state is EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6 {
-	return state.schemaVersion === 4 || state.schemaVersion === 5 || state.schemaVersion === 6;
+): state is EngineGameStateV4 | EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 {
+	return [4, 5, 6, 7].includes(state.schemaVersion);
 }
 
 function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
-	return state.schemaVersion === 5 || state.schemaVersion === 6;
+	return state.schemaVersion === 5 || state.schemaVersion === 6 || state.schemaVersion === 7;
 }
 
-function hasFirstEmberState(state: EngineGameState): state is EngineGameStateV6 {
-	return state.schemaVersion === 6;
+function hasFirstEmberState(
+	state: EngineGameState
+): state is EngineGameStateV6 | EngineGameStateV7 {
+	return state.schemaVersion === 6 || state.schemaVersion === 7;
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
@@ -918,9 +1216,11 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 6
-			? EngineGameStateV6Schema.parse(stateInput)
-			: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 7
+			? EngineGameStateV7Schema.parse(stateInput)
+			: stateInput.schemaVersion === 6
+				? EngineGameStateV6Schema.parse(stateInput)
+				: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -1085,7 +1385,12 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			})
 		);
 	}
-	if (state.schemaVersion === 4 || state.schemaVersion === 5 || state.schemaVersion === 6) {
+	if (
+		state.schemaVersion === 4 ||
+		state.schemaVersion === 5 ||
+		state.schemaVersion === 6 ||
+		state.schemaVersion === 7
+	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
 			if (hero.assignment) {
@@ -1342,8 +1647,10 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 	return actions;
 }
 
-export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
-	const state = EngineGameStateSchema.parse(stateInput);
+function legalActionsForParsedState(
+	state: EngineGameState,
+	actorId: string
+): readonly LegalAction[] {
 	if (state.status !== 'active') return [];
 	if (actorId === state.master.masterId && state.master.lifeState === 'alive') {
 		if (isModernState(state)) return masterActionsV2(state);
@@ -1361,6 +1668,10 @@ export function legalActions(stateInput: EngineGameState, actorId: string): read
 		];
 	}
 	return isModernState(state) ? heroActionsV2(state, actorId) : routeActions(state, actorId);
+}
+
+export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
+	return legalActionsForParsedState(EngineGameStateSchema.parse(stateInput), actorId);
 }
 
 function earliestScheduledTime(state: EngineGameStateModern): string | null {
@@ -1564,7 +1875,7 @@ function eventBase(state: EngineGameState, command: EngineCommand, eventType: st
 		causationId: null,
 		correlationId: command.correlationId,
 		source: command.source,
-		beforeStateHash: hashGameState(state),
+		beforeStateHash: hashParsedGameState(state),
 		afterStateHash: EMPTY_STATE_HASH,
 		contentVersion: state.contentVersion
 	};
@@ -2020,11 +2331,22 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			])
 		);
 		const base = eventBase(state, command, 'settlement.first.ember.committed');
+		const society =
+			state.schemaVersion === 7
+				? buildFirstEmberSociety(
+						state,
+						base.eventId,
+						command.buildingId,
+						command.rationale,
+						reactions
+					)
+				: undefined;
 		return AuthoritativeEventSchema.parse({
 			...base,
 			seedCursor: state.entropyCursor,
 			payload: {
 				firstEmber,
+				...(society ? { society } : {}),
 				previousPoweredBuildingId: state.settlement.poweredBuildingId,
 				powerStateChanges,
 				activeSystemIdsAfter,
@@ -2767,7 +3089,8 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 3) return EngineGameStateV3Schema.parse(value);
 	if (state.schemaVersion === 4) return EngineGameStateV4Schema.parse(value);
 	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(value);
-	return EngineGameStateV6Schema.parse(value);
+	if (state.schemaVersion === 6) return EngineGameStateV6Schema.parse(value);
+	return EngineGameStateV7Schema.parse(value);
 }
 
 function reduceV2Event(
@@ -2788,7 +3111,7 @@ function reduceV2Event(
 		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
 			throw new ReplayIntegrityError('First Ember recovery payload diverged', event.sequence);
 		}
-		return EngineGameStateV6Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -2824,6 +3147,24 @@ function reduceV2Event(
 		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
 			throw new ReplayIntegrityError('First Ember reaction projection diverged', event.sequence);
 		}
+		let society: SocietyState | undefined;
+		if (state.schemaVersion === 7) {
+			society = buildFirstEmberSociety(
+				state,
+				event.eventId,
+				buildingId,
+				rationale,
+				expected.reactions
+			);
+			if (!payload.society || hashCanonical(society) !== hashCanonical(payload.society)) {
+				throw new ReplayIntegrityError('First Ember social projection diverged', event.sequence);
+			}
+		} else if (payload.society) {
+			throw new ReplayIntegrityError(
+				'Legacy First Ember event contains social state',
+				event.sequence
+			);
+		}
 		const buildings = { ...state.settlement.buildings };
 		for (const change of payload.powerStateChanges) {
 			const building = buildings[change.buildingId];
@@ -2832,7 +3173,7 @@ function reduceV2Event(
 			}
 			buildings[change.buildingId] = { ...building, powerState: change.after };
 		}
-		return EngineGameStateV6Schema.parse({
+		return parseModernState(state, {
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,
@@ -2846,7 +3187,8 @@ function reduceV2Event(
 					...state.settlement.navigation,
 					activeSystemIds: payload.activeSystemIdsAfter
 				}
-			}
+			},
+			...(society ? { society } : {})
 		});
 	}
 	if (event.eventType === 'simulation.clock.synced') {
@@ -3482,17 +3824,22 @@ function reduceV2Event(
 	throw new ReplayIntegrityError(`Unsupported event type: ${event.eventType}`, event.sequence);
 }
 
-export function reduceEvent(
-	stateInput: EngineGameState,
-	eventInput: AuthoritativeEvent
-): EngineGameState {
-	const state = EngineGameStateSchema.parse(stateInput);
-	const event = AuthoritativeEventSchema.parse(eventInput);
+function reduceParsedEvent(state: EngineGameState, event: AuthoritativeEvent): EngineGameState {
 	if (event.runId !== state.runId)
 		throw new ReplayIntegrityError('Event run does not match state', event.sequence);
 	if (event.sequence !== state.eventCursor + 1)
 		throw new ReplayIntegrityError('Event sequence is not contiguous', event.sequence);
 	return state.schemaVersion === 1 ? reduceLegacyEvent(state, event) : reduceV2Event(state, event);
+}
+
+export function reduceEvent(
+	stateInput: EngineGameState,
+	eventInput: AuthoritativeEvent
+): EngineGameState {
+	return reduceParsedEvent(
+		EngineGameStateSchema.parse(stateInput),
+		AuthoritativeEventSchema.parse(eventInput)
+	);
 }
 
 function metadataIds(
@@ -3530,8 +3877,8 @@ export function applyCommand(
 	assertCommandIsLegal(state, command);
 	const eventDraft =
 		state.schemaVersion === 1 ? buildLegacyEvent(state, command) : buildV2Event(state, command);
-	const nextState = reduceEvent(state, eventDraft);
-	const stateHash = hashGameState(nextState);
+	const nextState = reduceParsedEvent(state, eventDraft);
+	const stateHash = hashParsedGameState(nextState);
 	const event = AuthoritativeEventSchema.parse({ ...eventDraft, afterStateHash: stateHash });
 	return {
 		state: nextState,
@@ -3541,7 +3888,7 @@ export function applyCommand(
 		resolvedScheduledEventIds: resolvedScheduledEventIdsFromEvent(event),
 		canceledScheduledEventIds: canceledScheduledEventIdsFromEvent(event),
 		decisionRequests: [],
-		legalActions: legalActions(nextState, command.actorId)
+		legalActions: legalActionsForParsedState(nextState, command.actorId)
 	};
 }
 
@@ -3604,7 +3951,7 @@ export function replayEvents(eventInputs: readonly AuthoritativeEvent[]): Replay
 	}
 	const initialized = InitializedPayloadSchema.parse(first.payload);
 	let state = initialized.initialState;
-	let computedHash = hashGameState(state);
+	let computedHash = hashParsedGameState(state);
 	const checks: ReplayCheck[] = [
 		replayCheck(
 			first,
@@ -3613,9 +3960,9 @@ export function replayEvents(eventInputs: readonly AuthoritativeEvent[]): Replay
 		)
 	];
 	for (const event of events.slice(1)) {
-		const beforeHash = hashGameState(state);
-		state = reduceEvent(state, event);
-		computedHash = hashGameState(state);
+		const beforeHash = hashParsedGameState(state);
+		state = reduceParsedEvent(state, event);
+		computedHash = hashParsedGameState(state);
 		checks.push(
 			replayCheck(
 				event,

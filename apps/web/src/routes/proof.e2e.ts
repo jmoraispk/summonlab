@@ -73,6 +73,15 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.locator('.ember-council')).toContainText('safer training');
 	await expect(page.locator('.ember-council')).toContainText('Mara Vey');
 	await expect(page.locator('.ember-council')).toContainText('Immediate response');
+	await expect(page.getByTestId('hero-social-ledger')).toContainText('4 held beliefs');
+	await expect(page.getByTestId('hero-social-ledger')).toContainText('provisional authority');
+	await expect(page.getByTestId('hero-social-ledger')).toContainText(
+		'I will prepare this company for the tower as our founding priority.'
+	);
+	if (process.env.CAPTURE_PHASE5_SOCIAL) {
+		await page.setViewportSize({ width: 1440, height: 1050 });
+		await page.screenshot({ path: process.env.CAPTURE_PHASE5_SOCIAL, fullPage: true });
+	}
 	if (process.env.CAPTURE_PHASE4_EMBER) {
 		await page.setViewportSize({ width: 1440, height: 1050 });
 		await page.screenshot({ path: process.env.CAPTURE_PHASE4_EMBER, fullPage: true });
@@ -94,6 +103,12 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByText('simulation.advanced')).toBeVisible();
 	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
 	await expect(page.getByTestId('first-ember-proof')).toContainText('committed');
+	await expect(page.getByTestId('social-cognition-proof')).toContainText(
+		'Hero cognition · provenance ledger'
+	);
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('first-ember-commitment');
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('made-founding-promise');
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 6');
 	await page
 		.getByTestId('building-training-ground')
 		.getByRole('button', { name: 'assign', exact: true })

@@ -361,6 +361,22 @@ responses, and event-persisted facility modifiers. A dual-anchor simulation cloc
 configured wall time into explicit engine targets; renewable database leases and one pure catch-up
 policy make online and offline resolution byte-identical.
 
+`engine-v7` adds the first event-derived social cognition layer. `society-v1` stores direct
+observations, holder-specific beliefs with source-event and observation provenance, directed
+relationship dimensions, explicit promises, and each hero’s multidimensional view of the Master’s
+authority. A newly summoned hero receives only two high-confidence beliefs: that they awakened at
+the summoning gate and that an unfamiliar adult was present. The state does not inject tower rules,
+Master legitimacy, prior deaths, or knowledge of other heroes.
+
+The First Ember commitment is the first social consequence. Every active hero who participated in
+that council receives a direct observation, a belief about the exact facility/rationale, a belief
+about the resulting founding promise, and evidence-linked changes to relationship and authority.
+Relationship state tracks trust, respect, fear, affection, resentment, and debt. Authority tracks
+competence, provision, trust, legitimacy, fear, strength, and consistency; there is deliberately no
+scalar obedience score. Immutable v1–v6 streams remain on their original schemas and receive no
+retroactive knowledge. General communication, witness propagation, rumor, and memory retrieval are
+owned by later Phase 5 slices.
+
 ### Implemented reconnect projection
 
 Every new event schedules a run-specific PostgreSQL notification in its command transaction. The
@@ -377,12 +393,14 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5` or `engine-v6` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5`, `engine-v6`, or `engine-v7` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
 label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
-immediate reactions. The response carries the exact event cursor and state hash that explain the
-scene.
+immediate reactions. For `engine-v7`, the same bounded projection adds each visible hero’s held
+belief count, latest direct observation, relationship language, authority standing, and active
+promise terms. Raw social dimensions and provenance remain available in the development replay
+inspector. The response carries the exact event cursor and state hash that explain the scene.
 
 The player refreshes this bounded view after each ordered SSE cue and every 15 seconds while the
 page is visible. Code-owned scene layers interpolate travel below completion, grade the approved

@@ -220,9 +220,31 @@ shows the authoritative building occupancy, activity pose, game time/day phase, 
 hash. Leave the page open while visible to watch the server-owned clock update; use reduced motion
 to confirm animation freezes without losing the activity label.
 
+## Phase 5 — agency, conversation, and memory
+
+Status: **in progress**. `AGT-001` was completed on 2026-08-24; conversation and model-backed
+decisions remain deliberately out of this foundation slice.
+
+| Task | Result | Evidence |
+| --- | --- | --- |
+| `AGT-001` | Complete: `engine-v7` adds direct observations, holder-specific beliefs with event provenance, directed relationship dimensions, active promises, and seven evidence-backed authority dimensions; awakening remains a clean slate, First Ember creates the first durable social consequence, normal play uses relationship language, replay exposes raw evidence, and v1–v6 histories remain unmodified | [Social cognition evidence](evidence/phase-5-social-cognition.png), engine/property/integration/browser tests, replay cognition ledger, ADR 0020 |
+
+### Reproduce the checkpoint
+
+```powershell
+pnpm dev
+```
+
+Complete a summon, follow the hero to Hearth 01, recover the Floor 01 core, and bind the First Ember.
+On the player page, compare the immediate response with **What the hero actually knows**: the hero
+should have four held beliefs, relationship language, an authority standing, and the exact active
+promise. Open **Replay** and inspect **Hero cognition · provenance ledger**. Confirm the awakening and
+First Ember observations have distinct source events, both new beliefs have direct provenance, and
+relationship/authority evidence matches the commitment while replay remains verified.
+
 ## Next active engineering slice
 
-Collect feedback on the First Ember council’s visual hierarchy, the usefulness of the three
-advantages, the explanation choices, and whether Mara’s response feels earned. Then begin `AGT-001`
-with beliefs and provenance sourced from existing events. Phase 3 cohort expansion remains behind
-its separate human visual gate.
+Collect feedback on whether the social ledger is legible, whether “receptive / provisional” feels
+earned for Mara’s accepted training commitment, and whether the active promise reads like something
+the game should later hold the Master to. Then begin `AGT-002` with communicative acts and explicit
+witness rules. Phase 3 cohort expansion remains behind its separate human visual gate.

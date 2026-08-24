@@ -95,6 +95,14 @@ describe('settlement presentation projection', () => {
 			pose: 'idle',
 			travel: null
 		});
+		expect(initial.social[0]).toMatchObject({
+			heroId,
+			beliefCount: 2,
+			latestObservation: { kind: 'awakening' },
+			relationshipToMaster: { tone: 'neutral', latestEvidence: null },
+			authority: { standing: 'unrecognized', latestEvidence: null },
+			activePromiseTerms: []
+		});
 
 		const chosen = applyCommand(bootstrap.snapshot.state, {
 			...commandBase(bootstrap.snapshot.state, heroId, 'choose-training'),
@@ -109,8 +117,8 @@ describe('settlement presentation projection', () => {
 			targetNodeId: 'training-ring'
 		});
 		const travel =
-			traveling.state.schemaVersion === 6 ? traveling.state.heroes[heroId]!.currentTravel! : null;
-		if (!travel) throw new Error('Expected a v6 travel state');
+			traveling.state.schemaVersion === 7 ? traveling.state.heroes[heroId]!.currentTravel! : null;
+		if (!travel) throw new Error('Expected a v7 travel state');
 		const afterDueTime = new Date(Date.parse(travel.arrivesAt) + 60_000).toISOString();
 		const inMotion = projectSettlementPresentation(
 			{ state: traveling.state, stateHash: hashGameState(traveling.state) },

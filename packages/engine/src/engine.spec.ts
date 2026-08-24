@@ -3,6 +3,7 @@ import {
 	EngineGameStateV3Schema,
 	EngineGameStateV4Schema,
 	EngineGameStateV6Schema,
+	EngineGameStateV7Schema,
 	type ActivityKind,
 	type AuthoritativeEvent,
 	type EngineCommand,
@@ -133,6 +134,67 @@ describe('deterministic engine', () => {
 		).toBe('2026-08-24T06:00:00.000Z');
 	});
 
+	it('boots a clean-slate hero with only direct awakening knowledge', () => {
+		const bootstrap = fixture();
+		if (bootstrap.snapshot.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
+		const state = bootstrap.snapshot.state;
+		const heroId = Object.keys(state.heroes)[0]!;
+		const observations = Object.values(state.society.observations);
+		const beliefs = Object.values(state.society.beliefs);
+		const relationship = Object.values(state.society.relationships)[0]!;
+		const authority = Object.values(state.society.authority)[0]!;
+
+		expect(observations).toHaveLength(1);
+		expect(observations[0]).toMatchObject({
+			observerHeroId: heroId,
+			kind: 'awakening',
+			sourceEventId: bootstrap.event.eventId
+		});
+		expect(beliefs.map((belief) => belief.predicate).sort()).toEqual([
+			'awakened-at',
+			'present-at-awakening'
+		]);
+		expect(JSON.stringify(beliefs)).not.toContain('tower');
+		expect(JSON.stringify(beliefs)).not.toContain('authority');
+		expect(relationship.dimensions).toEqual({
+			trust: 0,
+			respect: 0,
+			fear: 0,
+			affection: 0,
+			resentment: 0,
+			debt: 0
+		});
+		expect(authority.dimensions).toEqual({
+			competence: 0,
+			provision: 0,
+			trust: 0,
+			legitimacy: 0,
+			fear: 0,
+			strength: 0,
+			consistency: 0
+		});
+		expect(state.society.promises).toEqual({});
+		const belief = beliefs[0]!;
+		expect(
+			EngineGameStateV7Schema.safeParse({
+				...state,
+				society: {
+					...state.society,
+					beliefs: {
+						...state.society.beliefs,
+						[belief.beliefId]: {
+							...belief,
+							provenance: {
+								...belief.provenance,
+								observationId: deterministicUuid('missing-observation')
+							}
+						}
+					}
+				}
+			}).success
+		).toBe(false);
+	});
+
 	it('applies and replays choice, arrival, and entropy-bearing commands byte-for-byte', () => {
 		const bootstrap = fixture();
 		const heroId = Object.keys(bootstrap.snapshot.state.heroes)[0]!;
@@ -230,7 +292,7 @@ describe('deterministic engine', () => {
 			commandType: 'hero.start.travel',
 			targetNodeId: 'kitchen-table'
 		});
-		if (traveling.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (traveling.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		const inTransit = traveling.state.heroes[heroId]!;
 		expect(inTransit.location).toBe('summoning-gate');
 		expect(inTransit.locationNodeId).toBe('gate-dais');
@@ -262,7 +324,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
-		if (arrived.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (arrived.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(arrived.state.heroes[heroId]).toMatchObject({
 			location: 'kitchen',
 			locationNodeId: 'kitchen-table',
@@ -300,7 +362,7 @@ describe('deterministic engine', () => {
 			amount: 100,
 			damageKind: 'hazard'
 		});
-		if (died.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (died.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(died.state.heroes[heroId]?.currentTravel).toBeNull();
 		expect(died.canceledScheduledEventIds).toEqual([traveling.scheduled[0]!.scheduledEventId]);
 	});
@@ -381,7 +443,7 @@ describe('deterministic engine', () => {
 
 	it('keeps immutable engine-v2 commands and reducer bytes on their original schema', () => {
 		const modern = fixture();
-		if (modern.snapshot.state.schemaVersion !== 6) throw new Error('Expected engine-v6 fixture');
+		if (modern.snapshot.state.schemaVersion !== 7) throw new Error('Expected engine-v7 fixture');
 		const modernHero = Object.values(modern.snapshot.state.heroes)[0]!;
 		const hero = { ...modernHero } as Record<string, unknown>;
 		delete hero.locationNodeId;
@@ -397,8 +459,10 @@ describe('deterministic engine', () => {
 		delete settlement.navigation;
 		delete settlement.poweredBuildingId;
 		delete settlement.buildings;
+		const legacyState = { ...modern.snapshot.state } as Record<string, unknown>;
+		delete legacyState.society;
 		const state = EngineGameStateV2Schema.parse({
-			...modern.snapshot.state,
+			...legacyState,
 			schemaVersion: 2,
 			contentVersion: 'engine-v2',
 			heroes: { [modernHero.heroId]: hero },
@@ -430,7 +494,7 @@ describe('deterministic engine', () => {
 
 	it('keeps immutable engine-v3 travel streams replayable under their original schema', () => {
 		const modern = fixture();
-		if (modern.snapshot.state.schemaVersion !== 6) throw new Error('Expected engine-v6 fixture');
+		if (modern.snapshot.state.schemaVersion !== 7) throw new Error('Expected engine-v7 fixture');
 		const modernHero = Object.values(modern.snapshot.state.heroes)[0]!;
 		const hero = { ...modernHero } as Record<string, unknown>;
 		delete hero.assignment;
@@ -442,8 +506,10 @@ describe('deterministic engine', () => {
 		delete settlement.firstEmber;
 		delete settlement.poweredBuildingId;
 		delete settlement.buildings;
+		const legacyState = { ...modern.snapshot.state } as Record<string, unknown>;
+		delete legacyState.society;
 		const state = EngineGameStateV3Schema.parse({
-			...modern.snapshot.state,
+			...legacyState,
 			schemaVersion: 3,
 			contentVersion: 'engine-v3',
 			heroes: { [modernHero.heroId]: hero },
@@ -485,7 +551,7 @@ describe('deterministic engine', () => {
 
 	it('keeps immutable engine-v4 facility streams replayable under their original schema', () => {
 		const modern = fixture();
-		if (modern.snapshot.state.schemaVersion !== 6) throw new Error('Expected engine-v6 fixture');
+		if (modern.snapshot.state.schemaVersion !== 7) throw new Error('Expected engine-v7 fixture');
 		const modernHero = Object.values(modern.snapshot.state.heroes)[0]!;
 		const hero = { ...modernHero } as Record<string, unknown>;
 		delete hero.mind;
@@ -494,8 +560,10 @@ describe('deterministic engine', () => {
 		delete hero.currentRoutine;
 		const settlement = { ...modern.snapshot.state.settlement } as Record<string, unknown>;
 		delete settlement.firstEmber;
+		const legacyState = { ...modern.snapshot.state } as Record<string, unknown>;
+		delete legacyState.society;
 		const state = EngineGameStateV4Schema.parse({
-			...modern.snapshot.state,
+			...legacyState,
 			schemaVersion: 4,
 			contentVersion: 'engine-v4',
 			heroes: { [modernHero.heroId]: hero },
@@ -525,6 +593,40 @@ describe('deterministic engine', () => {
 		expect(replay.snapshot.state.schemaVersion).toBe(4);
 	});
 
+	it('keeps immutable engine-v6 First Ember streams free of social backfill', () => {
+		const modern = fixture();
+		if (modern.snapshot.state.schemaVersion !== 7) throw new Error('Expected engine-v7 fixture');
+		const legacyState = { ...modern.snapshot.state } as Record<string, unknown>;
+		delete legacyState.society;
+		const state = EngineGameStateV6Schema.parse({
+			...legacyState,
+			schemaVersion: 6,
+			contentVersion: 'engine-v6'
+		});
+		const bootstrapEvent: AuthoritativeEvent = {
+			...modern.event,
+			schemaVersion: 6,
+			contentVersion: 'engine-v6',
+			afterStateHash: hashGameState(state),
+			payload: { ...modern.event.payload, initialState: state }
+		};
+		const recovered = applyCommand(state, {
+			...commandBase(state, state.master.masterId, 'v6-recover'),
+			source: { ...source(), source: 'system', timing: null },
+			commandType: 'story.recover.first.ember'
+		});
+		const committed = applyCommand(recovered.state, {
+			...commandBase(recovered.state, recovered.state.master.masterId, 'v6-commit'),
+			commandType: 'settlement.commit.first.ember',
+			buildingId: 'kitchen',
+			rationale: 'feed-everyone'
+		});
+		expect(committed.state.schemaVersion).toBe(6);
+		expect(committed.events[0]?.payload).not.toHaveProperty('society');
+		const replay = replayEventsStrict([bootstrapEvent, ...recovered.events, ...committed.events]);
+		expect(replay.snapshot.state).toEqual(committed.state);
+	});
+
 	it('commits the First Ember once and preserves facility capacity', () => {
 		const { bootstrap, chosen, traveling, arrived, heroId } = arriveAtTraining();
 		const assigned = applyCommand(arrived.state, {
@@ -534,7 +636,7 @@ describe('deterministic engine', () => {
 			buildingId: 'workshop',
 			role: 'artisan'
 		});
-		if (assigned.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (assigned.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(assigned.state.heroes[heroId]?.assignment).toMatchObject({
 			buildingId: 'workshop',
 			nodeId: 'workshop-bench',
@@ -542,7 +644,7 @@ describe('deterministic engine', () => {
 		});
 		expect(assigned.state.settlement.buildings.workshop?.assignedHeroIds).toEqual([heroId]);
 		const secondHeroId = deterministicUuid('engine-test-second-hero');
-		const saturated = EngineGameStateV6Schema.parse({
+		const saturated = EngineGameStateV7Schema.parse({
 			...assigned.state,
 			heroes: {
 				...assigned.state.heroes,
@@ -584,7 +686,7 @@ describe('deterministic engine', () => {
 			source: { ...source(), source: 'system' as const, timing: null },
 			commandType: 'story.recover.first.ember'
 		});
-		if (recovered.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (recovered.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(recovered.state.settlement.firstEmber.status).toBe('available');
 		expect(
 			legalActions(recovered.state, recovered.state.master.masterId)
@@ -603,7 +705,7 @@ describe('deterministic engine', () => {
 			buildingId: 'training-ground',
 			rationale: 'prepare-tower'
 		});
-		if (committed.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (committed.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(committed.state.settlement.poweredBuildingId).toBe('training-ground');
 		expect(committed.state.settlement.buildings['training-ground']?.powerState).toBe('powered');
 		expect(committed.state.settlement.buildings.workshop?.powerState).toBe('unpowered');
@@ -618,6 +720,38 @@ describe('deterministic engine', () => {
 			]
 		});
 		expect(committed.state.settlement.firstEmber.reactions).toHaveLength(1);
+		const commitmentEvent = committed.events[0]!;
+		const observation = Object.values(committed.state.society.observations).find(
+			(candidate) => candidate.kind === 'first-ember-commitment'
+		)!;
+		const socialBeliefs = Object.values(committed.state.society.beliefs).filter(
+			(candidate) => candidate.provenance.sourceEventId === commitmentEvent.eventId
+		);
+		const promise = Object.values(committed.state.society.promises)[0]!;
+		const relationship = Object.values(committed.state.society.relationships)[0]!;
+		const authority = Object.values(committed.state.society.authority)[0]!;
+		expect(observation.sourceEventId).toBe(commitmentEvent.eventId);
+		expect(socialBeliefs.map((belief) => belief.predicate).sort()).toEqual([
+			'first-ember-bound-to',
+			'made-founding-promise'
+		]);
+		expect(
+			socialBeliefs.every((belief) => belief.provenance.observationId === observation.observationId)
+		).toBe(true);
+		expect(promise).toMatchObject({
+			status: 'active',
+			terms: 'I will prepare this company for the tower as our founding priority.',
+			sourceEventId: commitmentEvent.eventId
+		});
+		expect(relationship.dimensions).toMatchObject({ trust: 8, respect: 10, resentment: 0 });
+		expect(authority.dimensions).toMatchObject({
+			competence: 5,
+			provision: 2,
+			trust: 8,
+			legitimacy: 8,
+			strength: 8,
+			consistency: 6
+		});
 		expect(() =>
 			applyCommand(committed.state, {
 				...commandBase(committed.state, committed.state.master.masterId, 'change-first-ember'),
@@ -649,7 +783,7 @@ describe('deterministic engine', () => {
 				dormitory: 'dormitory-bunks',
 				'training-ground': 'training-ring'
 			}[buildingId];
-			let state = EngineGameStateV6Schema.parse({
+			let state = EngineGameStateV7Schema.parse({
 				...bootstrap.snapshot.state,
 				heroes: {
 					...bootstrap.snapshot.state.heroes,
@@ -682,7 +816,7 @@ describe('deterministic engine', () => {
 					buildingId,
 					rationale
 				});
-				if (committed.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+				if (committed.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 				state = committed.state;
 			}
 			const started = applyCommand(state, {
@@ -695,7 +829,7 @@ describe('deterministic engine', () => {
 				commandType: 'simulation.advance',
 				targetGameTime: started.scheduled[0]!.dueGameTime
 			});
-			if (completed.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+			if (completed.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 			return completed.state.heroes[heroId]!;
 		}
 
@@ -719,13 +853,42 @@ describe('deterministic engine', () => {
 		expect(trainingPowered.progression.skills.swordFighting.experience).toBe(9);
 	});
 
+	it('records a conflicting founding explanation as negative consistency evidence', () => {
+		const bootstrap = fixture();
+		const recovered = applyCommand(bootstrap.snapshot.state, {
+			...commandBase(
+				bootstrap.snapshot.state,
+				bootstrap.snapshot.state.master.masterId,
+				'mismatch-recover'
+			),
+			source: { ...source(), source: 'system', timing: null },
+			commandType: 'story.recover.first.ember'
+		});
+		const committed = applyCommand(recovered.state, {
+			...commandBase(recovered.state, recovered.state.master.masterId, 'mismatch-commit'),
+			commandType: 'settlement.commit.first.ember',
+			buildingId: 'kitchen',
+			rationale: 'prepare-tower'
+		});
+		if (committed.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
+		const authority = Object.values(committed.state.society.authority)[0]!;
+		expect(authority.dimensions.consistency).toBe(-8);
+		expect(authority.evidence[0]?.summary).toContain('conflicted');
+		expect(Object.values(committed.state.society.beliefs)).toContainEqual(
+			expect.objectContaining({
+				predicate: 'first-ember-bound-to',
+				object: { kind: 'commitment', facilityId: 'kitchen', rationale: 'prepare-tower' }
+			})
+		);
+	});
+
 	it('plans four daily intentions and resolves a habit through the injected clock', () => {
 		const { bootstrap, chosen, traveling, arrived, heroId } = arriveAtTraining();
 		const planned = applyCommand(arrived.state, {
 			...commandBase(arrived.state, heroId, 'plan-day'),
 			commandType: 'hero.plan.day'
 		});
-		if (planned.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (planned.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		const plannedHero = planned.state.heroes[heroId]!;
 		expect(plannedHero.mind).toMatchObject({
 			primaryValue: 'duty',
@@ -754,7 +917,7 @@ describe('deterministic engine', () => {
 		});
 		expect(started.scheduled).toHaveLength(1);
 		expect(started.scheduled[0]).toMatchObject({ eventKind: 'hero.routine.complete' });
-		if (started.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (started.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(started.state.heroes[heroId]?.currentRoutine?.resolution).toEqual(resolution);
 		expect(
 			started.state.heroes[heroId]?.dailyPlan?.entries.find(
@@ -767,7 +930,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: started.scheduled[0]!.dueGameTime
 		});
-		if (advanced.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (advanced.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		const hero = advanced.state.heroes[heroId]!;
 		expect(hero.currentRoutine).toBeNull();
 		expect(hero.habit).toMatchObject({ strength: 69, repetitions: 1, satisfaction: 58 });
@@ -799,7 +962,7 @@ describe('deterministic engine', () => {
 			amount: 100,
 			damageKind: 'hazard'
 		});
-		if (died.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (died.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(died.state.heroes[heroId]?.currentRoutine).toBeNull();
 		expect(died.state.heroes[heroId]?.dailyPlan?.entries).toEqual(
 			expect.arrayContaining([expect.objectContaining({ status: 'skipped' })])
@@ -809,7 +972,7 @@ describe('deterministic engine', () => {
 
 	it('keeps one offline day byte-equal to resolving each due event online', () => {
 		const { arrived } = arriveAtTraining();
-		if (arrived.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (arrived.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		const targetGameTime = addGameMinutes(arrived.state.simulatedAt, 24 * 60);
 		const offline = applyCatchUpPolicy(arrived.state, targetGameTime);
 
@@ -855,8 +1018,8 @@ describe('deterministic engine', () => {
 			...commandBase(arrived.state, heroId, 'plan-close-score'),
 			commandType: 'hero.plan.day'
 		});
-		if (planned.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
-		const closeState = EngineGameStateV6Schema.parse({
+		if (planned.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
+		const closeState = EngineGameStateV7Schema.parse({
 			...planned.state,
 			heroes: {
 				...planned.state.heroes,
@@ -885,7 +1048,7 @@ describe('deterministic engine', () => {
 		});
 		expect(started.scheduled).toHaveLength(1);
 		expect(started.scheduled[0]?.dueGameTime).toBe('2000-01-01T00:32:06.000Z');
-		if (started.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (started.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(started.state.heroes[heroId]?.currentActivity?.kind).toBe('train');
 
 		const advanced = applyCommand(started.state, {
@@ -893,7 +1056,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: started.scheduled[0]!.dueGameTime
 		});
-		if (advanced.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (advanced.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		const hero = advanced.state.heroes[heroId]!;
 		const blade = advanced.state.items[hero.equipment.mainHand!]!;
 		expect(hero.currentActivity).toBeNull();
@@ -943,7 +1106,7 @@ describe('deterministic engine', () => {
 			commandType: 'hero.start.activity',
 			activity: 'repair'
 		});
-		if (repair.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (repair.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(repair.state.settlement.resources['iron-ore']).toBe(1);
 		expect(repair.state.settlement.resourceLedger.at(-1)).toMatchObject({
 			resource: 'iron-ore',
@@ -956,7 +1119,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: repair.scheduled[0]!.dueGameTime
 		});
-		if (repaired.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (repaired.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		const itemId = repaired.state.heroes[heroId]!.equipment.mainHand!;
 		expect(repaired.state.items[itemId]?.durability).toBe(6);
 	});
@@ -982,7 +1145,7 @@ describe('deterministic engine', () => {
 			amount: 100,
 			damageKind: 'hazard'
 		});
-		if (heroDied.state.schemaVersion !== 6) throw new Error('Expected engine-v6 state');
+		if (heroDied.state.schemaVersion !== 7) throw new Error('Expected engine-v7 state');
 		expect(heroDied.state.heroes[heroId]).toMatchObject({
 			lifeState: 'dead',
 			health: 0,

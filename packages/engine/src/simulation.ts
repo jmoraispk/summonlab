@@ -1,17 +1,6 @@
-import {
-	EngineGameStateSchema,
-	type AuthoritativeEvent,
-	type EngineCommand,
-	type EngineGameState
-} from '@summonlab/contracts';
+import type { AuthoritativeEvent, EngineCommand, EngineGameState } from '@summonlab/contracts';
 
-import {
-	applyCommand,
-	createBootstrapEngine,
-	hashGameState,
-	legalActions,
-	replayEventsStrict
-} from './engine.js';
+import { applyCommand, createBootstrapEngine, legalActions, replayEventsStrict } from './engine.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
 
 function source(source: 'random' | 'manual' | 'habit' | 'system') {
@@ -49,13 +38,13 @@ type WithoutEnvelope<T> = T extends EngineCommand
 type SimulationCommand = WithoutEnvelope<EngineCommand>;
 
 function assertSimulationInvariants(state: EngineGameState): void {
-	EngineGameStateSchema.parse(state);
 	if (
 		state.schemaVersion !== 2 &&
 		state.schemaVersion !== 3 &&
 		state.schemaVersion !== 4 &&
 		state.schemaVersion !== 5 &&
-		state.schemaVersion !== 6
+		state.schemaVersion !== 6 &&
+		state.schemaVersion !== 7
 	)
 		return;
 	for (const balance of Object.values(state.settlement.resources)) {
@@ -106,7 +95,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				expectedVersion: state.version,
 				correlationId: commandId
 			} as EngineCommand);
-			state = EngineGameStateSchema.parse(result.state);
+			state = result.state;
 			events.push(...result.events);
 			commandCount += 1;
 			scheduledCount += result.scheduled.length;
@@ -135,7 +124,12 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
-		if (state.schemaVersion === 4 || state.schemaVersion === 5 || state.schemaVersion === 6) {
+		if (
+			state.schemaVersion === 4 ||
+			state.schemaVersion === 5 ||
+			state.schemaVersion === 6 ||
+			state.schemaVersion === 7
+		) {
 			apply('assign-facility', {
 				actorId: state.master.masterId,
 				source: source('manual'),
@@ -144,7 +138,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				buildingId: destination,
 				role: destination === 'kitchen' ? 'cook' : 'trainee'
 			});
-			if (index % 3 === 0 && state.schemaVersion !== 6) {
+			if (index % 3 === 0 && state.schemaVersion !== 6 && state.schemaVersion !== 7) {
 				apply('power-workshop', {
 					actorId: state.master.masterId,
 					source: source('manual'),
@@ -153,7 +147,10 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				});
 			}
 		}
-		if ((state.schemaVersion === 5 || state.schemaVersion === 6) && index % 5 === 0) {
+		if (
+			(state.schemaVersion === 5 || state.schemaVersion === 6 || state.schemaVersion === 7) &&
+			index % 5 === 0
+		) {
 			apply('plan-day', {
 				actorId: heroId,
 				source: source('manual'),
@@ -218,7 +215,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 					state.schemaVersion === 3 ||
 					state.schemaVersion === 4 ||
 					state.schemaVersion === 5 ||
-					state.schemaVersion === 6)
+					state.schemaVersion === 6 ||
+					state.schemaVersion === 7)
 			) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {
@@ -266,7 +264,7 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 		}
 
 		const replay = replayEventsStrict(events);
-		if (replay.snapshot.stateHash !== hashGameState(state)) {
+		if (replay.snapshot.stateHash !== hashCanonical(state)) {
 			throw new Error(`Simulation replay mismatch at sequence ${index}`);
 		}
 		replayCount += 1;

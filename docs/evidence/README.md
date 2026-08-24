@@ -45,3 +45,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-4-first-ember.png` — committed training-ground First Ember on the normal player route,
   including the living powered settlement, permanent mechanical advantages, Mara Vey’s
   mind-and-needs-aware response, authoritative event cue, and unchanged fixed story spine.
+- `phase-5-social-cognition.png` — the same committed First Ember with Mara’s bounded player-facing
+  cognition projection: four held beliefs, receptive relationship language, provisional authority,
+  exact witnessed observation, and an active founding promise.

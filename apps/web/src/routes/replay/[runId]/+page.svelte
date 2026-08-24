@@ -25,7 +25,8 @@
 			engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
-			engineState.schemaVersion === 6
+			engineState.schemaVersion === 6 ||
+			engineState.schemaVersion === 7
 			? engineState
 			: null
 	);
@@ -33,27 +34,37 @@
 		engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
-			engineState.schemaVersion === 6
+			engineState.schemaVersion === 6 ||
+			engineState.schemaVersion === 7
 			? engineState.settlement.navigation
 			: null
 	);
 	const operationsState = $derived(
 		engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
-			engineState.schemaVersion === 6
+			engineState.schemaVersion === 6 ||
+			engineState.schemaVersion === 7
 			? engineState
 			: null
 	);
 	const routineState = $derived(
-		engineState.schemaVersion === 5 || engineState.schemaVersion === 6 ? engineState : null
+		engineState.schemaVersion === 5 ||
+			engineState.schemaVersion === 6 ||
+			engineState.schemaVersion === 7
+			? engineState
+			: null
 	);
-	const firstEmberState = $derived(engineState.schemaVersion === 6 ? engineState : null);
+	const firstEmberState = $derived(
+		engineState.schemaVersion === 6 || engineState.schemaVersion === 7 ? engineState : null
+	);
+	const socialState = $derived(engineState.schemaVersion === 7 ? engineState.society : null);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
 		(engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
 			engineState.schemaVersion === 5 ||
-			engineState.schemaVersion === 6) &&
+			engineState.schemaVersion === 6 ||
+			engineState.schemaVersion === 7) &&
 			hero
 			? engineState.heroes[hero.heroId]
 			: null
@@ -660,6 +671,57 @@
 											.join(' · ')}</code
 									>
 								{/if}
+							</div>
+						{/if}
+						{#if socialState}
+							<div class="social-proof" data-testid="social-cognition-proof">
+								<div class="social-proof-heading">
+									<strong>Hero cognition · provenance ledger</strong>
+									<small>{socialState.contentVersion} · no omniscient roster context</small>
+								</div>
+								<div class="social-proof-grid">
+									<article>
+										<span>Direct observations</span>
+										{#each Object.values(socialState.observations).filter((entry) => entry.observerHeroId === hero.heroId) as observation (observation.observationId)}
+											<p><strong>{observation.kind}</strong>{observation.summary}</p>
+											<code>{observation.sourceEventId.slice(0, 12)}</code>
+										{/each}
+									</article>
+									<article>
+										<span>Held beliefs</span>
+										{#each Object.values(socialState.beliefs).filter((entry) => entry.holderHeroId === hero.heroId) as belief (belief.beliefId)}
+											<p><strong>{belief.predicate}</strong>{belief.confidence}% confidence</p>
+											<code>{belief.provenance.kind} · depth {belief.provenance.chainDepth}</code>
+										{/each}
+									</article>
+									<article>
+										<span>Relationship → Master</span>
+										{#each Object.values(socialState.relationships).filter((entry) => entry.fromHeroId === hero.heroId && entry.toEntityId === engineState.master.masterId) as relationship (relationship.relationshipId)}
+											<p>
+												{Object.entries(relationship.dimensions)
+													.map(([key, value]) => `${key} ${value}`)
+													.join(' · ')}
+											</p>
+											<code>{relationship.evidence.at(-1)?.summary ?? 'Neutral at awakening'}</code>
+										{/each}
+									</article>
+									<article>
+										<span>Authority → Master</span>
+										{#each Object.values(socialState.authority).filter((entry) => entry.observerHeroId === hero.heroId) as authority (authority.authorityId)}
+											<p>
+												{Object.entries(authority.dimensions)
+													.map(([key, value]) => `${key} ${value}`)
+													.join(' · ')}
+											</p>
+											<code
+												>{authority.evidence.at(-1)?.summary ?? 'No authority recognized yet'}</code
+											>
+										{/each}
+									</article>
+								</div>
+								{#each Object.values(socialState.promises) as promise (promise.promiseId)}
+									<p class="social-promise"><span>{promise.status} promise</span>{promise.terms}</p>
+								{/each}
 							</div>
 						{/if}
 						<div class="facility-list">
@@ -1421,6 +1483,67 @@
 	.first-ember-proof > button {
 		margin-top: 0.75rem;
 		padding: 0.6rem 0.7rem;
+	}
+	.social-proof {
+		margin: 0.7rem;
+		padding: 0.8rem;
+		border: 1px solid rgba(127, 216, 233, 0.2);
+		background: rgba(35, 81, 93, 0.08);
+	}
+	.social-proof-heading {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.7rem;
+	}
+	.social-proof-heading strong {
+		color: #7fd8e9;
+		font:
+			400 0.75rem Georgia,
+			serif;
+	}
+	.social-proof-heading small,
+	.social-proof article > span,
+	.social-promise span {
+		color: rgba(244, 240, 232, 0.4);
+		font-size: 0.48rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.social-proof-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.07);
+	}
+	.social-proof article {
+		min-width: 0;
+		padding: 0.7rem;
+		background: #090c12;
+	}
+	.social-proof article p,
+	.social-promise {
+		margin: 0.45rem 0 0;
+		color: rgba(244, 240, 232, 0.72);
+		font-size: 0.58rem;
+		line-height: 1.45;
+	}
+	.social-proof article p strong {
+		display: block;
+		color: #d4a653;
+		font-size: 0.52rem;
+		text-transform: uppercase;
+	}
+	.social-proof article code {
+		display: block;
+		margin-top: 0.25rem;
+		overflow-wrap: anywhere;
+		color: rgba(127, 216, 233, 0.58);
+		font-size: 0.48rem;
+	}
+	.social-promise span {
+		display: block;
+		margin-bottom: 0.15rem;
 	}
 	.facility-list {
 		display: grid;
