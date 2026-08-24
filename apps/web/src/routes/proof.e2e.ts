@@ -70,4 +70,23 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('button', { name: /Journal/ }).click();
 	await expect(page.getByText('5 events')).toBeVisible();
 	await expect(page.getByText('hero.arrived')).toBeVisible();
+	await page.getByRole('button', { name: /Close journal/ }).click();
+	await page.getByRole('link', { name: 'Replay' }).click();
+	await expect(page).toHaveURL(/\/replay\/[a-f0-9-]+$/u);
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+	await expect(page.getByText('snapshot agrees')).toBeVisible();
+	await expect(page.getByText('hero.destination.selected')).toBeVisible();
+	await expect(page.getByText('hero.arrived')).toBeVisible();
+
+	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
+	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
+	await expect(page.getByText('master.gate.inspected')).toBeVisible();
+	await page.getByRole('button', { name: /Prove stale guard/ }).click();
+	await expect(page.getByTestId('command-result')).toHaveText('1 accepted · 1 rejected stale');
+	await expect(page.getByTestId('entropy-cursor')).toHaveText('2');
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+
+	if (process.env.CAPTURE_PHASE2_REPLAY) {
+		await page.screenshot({ path: process.env.CAPTURE_PHASE2_REPLAY, fullPage: true });
+	}
 });

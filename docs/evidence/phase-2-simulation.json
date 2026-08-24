@@ -1,0 +1,7 @@
+{
+  "sequenceCount": 10000,
+  "commandCount": 35000,
+  "replayCount": 10000,
+  "invariantFailures": 0,
+  "finalDigest": "a973e64fa416e70b99aa7f40ad5ea0e8ac97f4c419bde5e26e15ce85080ae446"
+}

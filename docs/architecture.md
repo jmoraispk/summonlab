@@ -323,6 +323,18 @@ The engine owns:
 - run-ending Master death;
 - emitted events and replay hashes.
 
+### Implemented replay foundation
+
+The Phase 2 foundation implements typed commands, actor-specific legal actions, immutable named
+entropy, pure reduction, append-only PostgreSQL events, per-event snapshots, and SHA-256 state-hash
+verification. Commands carry an idempotency UUID and expected run version. Concurrent commands are
+serialized at the run row; a stale command receives the latest version, cursor, and hash rather than
+overwriting state. The `/replay/[runId]` development inspector rebuilds and compares the stream, and
+is disabled in production unless explicitly enabled.
+
+Resources, equipment, needs, scheduled time, injury, death, game over, and reward projections remain
+the next Phase 2 slice.
+
 ## Policy interface
 
 ```ts

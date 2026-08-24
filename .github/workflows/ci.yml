@@ -34,6 +34,7 @@ jobs:
       DATABASE_URL: postgresql://summonlab:summonlab@127.0.0.1:5432/summonlab_test
       TEST_DATABASE_URL: postgresql://summonlab:summonlab@127.0.0.1:5432/summonlab_test
       POLICY_MODE: scripted
+      ENABLE_DEV_ROUTES: true
       SUMMONLAB_COMMIT_SHA: ${{ github.sha }}
       CI: true
     steps:

@@ -26,9 +26,17 @@ describe('database migration', () => {
 				select table_name
 				from information_schema.tables
 				where table_schema = 'public'
-					and table_name in ('summonlab_runtime_metadata', 'summonlab_proof_runs', 'summonlab_proof_events')
+					and table_name in (
+						'summonlab_runtime_metadata',
+						'summonlab_proof_runs',
+						'summonlab_proof_events',
+						'summonlab_engine_runs',
+						'summonlab_engine_commands',
+						'summonlab_engine_events',
+						'summonlab_engine_snapshots'
+					)
 			`;
-			expect(rows).toHaveLength(3);
+			expect(rows).toHaveLength(7);
 		} finally {
 			await sql.end({ timeout: 5 });
 		}

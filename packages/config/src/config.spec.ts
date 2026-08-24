@@ -9,6 +9,14 @@ describe('configuration', () => {
 		expect(config.policyMode).toBe('scripted');
 		expect(config.workerPort).toBe(4174);
 		expect(config.databaseUrl).toContain('54329/summonlab');
+		expect(config.devRoutesEnabled).toBe(true);
+	});
+
+	it('keeps development inspectors off in production unless explicitly enabled', () => {
+		expect(parseConfig({ NODE_ENV: 'production' }).devRoutesEnabled).toBe(false);
+		expect(
+			parseConfig({ NODE_ENV: 'production', ENABLE_DEV_ROUTES: 'true' }).devRoutesEnabled
+		).toBe(true);
 	});
 
 	it('rejects invalid ports and policy modes', () => {

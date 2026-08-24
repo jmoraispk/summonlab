@@ -15,6 +15,7 @@
 	"dependencies": {
 		"@summonlab/contracts": "workspace:*",
 		"@summonlab/config": "workspace:*",
+		"@summonlab/engine": "workspace:*",
 		"postgres": "^3.4.9"
 	},
 	"devDependencies": {

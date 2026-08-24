@@ -14,6 +14,7 @@ const EnvironmentSchema = z
 			.default('postgresql://summonlab:summonlab@127.0.0.1:54329/summonlab'),
 		POLICY_MODE: PolicyModeSchema.default('scripted'),
 		OPENAI_POLICY_MODEL: z.string().min(1).default('gpt-5-nano'),
+		ENABLE_DEV_ROUTES: z.enum(['true', 'false']).optional(),
 		SUMMONLAB_COMMIT_SHA: z.string().min(1).default('local')
 	})
 	.transform((value) => ({
@@ -25,6 +26,10 @@ const EnvironmentSchema = z
 		databaseUrl: value.DATABASE_URL,
 		policyMode: value.POLICY_MODE,
 		policyModel: value.OPENAI_POLICY_MODEL,
+		devRoutesEnabled:
+			value.ENABLE_DEV_ROUTES === undefined
+				? value.NODE_ENV !== 'production'
+				: value.ENABLE_DEV_ROUTES === 'true',
 		commit: value.SUMMONLAB_COMMIT_SHA
 	}));
 

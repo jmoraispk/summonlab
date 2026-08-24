@@ -8,6 +8,7 @@ import {
 } from '@summonlab/characters';
 import { describe, expect, it } from 'vitest';
 
+import { getEngineReplay } from './engine.js';
 import { createProofRun, getProofRun, markProofArrival, resolveProofDecision } from './proof.js';
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -53,6 +54,18 @@ describe('summon proof persistence', () => {
 			expect(arrived?.arrived).toBe(true);
 			expect(arrived?.events.at(-1)?.eventType).toBe('hero.arrived');
 			expect((await getProofRun(databaseUrl, runId))?.manifestHash).toBe(draft.manifestHash);
+
+			const replay = await getEngineReplay(databaseUrl, runId);
+			expect(replay?.verified).toBe(true);
+			expect(replay?.hashMatchesPersistedSnapshot).toBe(true);
+			expect(replay?.checks.map((check) => check.eventType)).toEqual([
+				'run.initialized',
+				'hero.destination.selected',
+				'hero.arrived'
+			]);
+			expect(replay?.snapshot.state.heroes[draft.manifest.characterId]?.location).toBe(
+				'training-ground'
+			);
 		}
 	);
 });

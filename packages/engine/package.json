@@ -7,10 +7,16 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
 		"lint": "eslint src",
+		"simulate": "tsx src/simulate.ts",
 		"typecheck": "tsc --noEmit",
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@summonlab/contracts": "workspace:*"
+		"@noble/hashes": "^2.3.0",
+		"@summonlab/contracts": "workspace:*",
+		"zod": "^4.4.3"
+	},
+	"devDependencies": {
+		"fast-check": "^4.9.0"
 	}
 }

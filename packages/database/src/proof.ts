@@ -1,14 +1,23 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 import {
+	EngineCommandSchema,
 	ProofRunSnapshotSchema,
 	type CharacterDraft,
+	type EngineCommand,
 	type FirstDestination,
 	type ProofControlMode,
 	type ProofEvent,
 	type ProofRunSnapshot
 } from '@summonlab/contracts';
+import { deterministicUuid } from '@summonlab/engine';
 import postgres from 'postgres';
+
+import {
+	commitEngineCommandInTransaction,
+	getEngineSnapshotInTransaction,
+	initializeEngineRun
+} from './engine.js';
 
 interface ProofRunRow {
 	run_id: string;
@@ -91,6 +100,67 @@ function eventValues(
 	};
 }
 
+function commandSource(controlMode: ProofControlMode, choiceSource: ResolvedFirstChoice['source']) {
+	return {
+		source: choiceSource,
+		timing:
+			controlMode === 'countdown'
+				? ('countdown' as const)
+				: controlMode === 'autonomous'
+					? ('continuous' as const)
+					: ('step' as const),
+		fallbackPolicy:
+			controlMode === 'countdown'
+				? choiceSource === 'directed'
+					? ('directed' as const)
+					: ('random' as const)
+				: null,
+		directiveIds: [],
+		decisionJobId: null
+	};
+}
+
+function destinationCommand(
+	runId: string,
+	heroId: string,
+	expectedVersion: number,
+	controlMode: ProofControlMode,
+	choice: ResolvedFirstChoice
+): EngineCommand {
+	const commandId = deterministicUuid(`${runId}:hero.choose.destination:${expectedVersion}`);
+	return EngineCommandSchema.parse({
+		commandId,
+		runId,
+		actorId: heroId,
+		expectedVersion,
+		correlationId: commandId,
+		source: commandSource(controlMode, choice.source),
+		commandType: 'hero.choose.destination',
+		destination: choice.destination,
+		firstLine: choice.firstLine,
+		storyBranch: choice.storyBranch
+	});
+}
+
+function arrivalCommand(runId: string, heroId: string, expectedVersion: number): EngineCommand {
+	const commandId = deterministicUuid(`${runId}:hero.arrive:${expectedVersion}`);
+	return EngineCommandSchema.parse({
+		commandId,
+		runId,
+		actorId: heroId,
+		expectedVersion,
+		correlationId: commandId,
+		source: {
+			source: 'system',
+			timing: 'step',
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		commandType: 'hero.arrive'
+	});
+}
+
 async function insertEvent(
 	sql: postgres.TransactionSql,
 	event: ReturnType<typeof eventValues>
@@ -164,6 +234,12 @@ export async function createProofRun(
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
 				)
 			`;
+			const engine = await initializeEngineRun(transaction, {
+				runId: input.runId,
+				seed: input.draft.recipe.seed,
+				heroId: input.draft.manifest.characterId,
+				manifestHash: input.draft.manifestHash
+			});
 			await insertEvent(
 				transaction,
 				eventValues(
@@ -185,8 +261,19 @@ export async function createProofRun(
 					observation: input.firstObservation
 				})
 			);
-			if (input.choice)
+			if (input.choice) {
+				await commitEngineCommandInTransaction(
+					transaction,
+					destinationCommand(
+						input.runId,
+						input.draft.manifest.characterId,
+						engine.state.version,
+						input.controlMode,
+						input.choice
+					)
+				);
 				await appendChoiceEvents(transaction, input.runId, input.choice, input.directive, 3);
+			}
 		});
 		const snapshot = await loadWithSql(sql, input.runId);
 		if (!snapshot) throw new Error('Created proof run could not be loaded');
@@ -241,12 +328,31 @@ export async function resolveProofDecision(
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
-			const rows = await transaction<{ destination: FirstDestination | null }[]>`
-				select destination from summonlab_proof_runs where run_id = ${runId} for update
+			const rows = await transaction<
+				{
+					destination: FirstDestination | null;
+					control_mode: ProofControlMode;
+					manifest: CharacterDraft['manifest'];
+				}[]
+			>`
+				select destination, control_mode, manifest
+				from summonlab_proof_runs where run_id = ${runId} for update
 			`;
 			const row = rows[0];
 			if (!row) return;
 			if (row.destination) return;
+			const engine = await getEngineSnapshotInTransaction(transaction, runId);
+			if (!engine) throw new Error(`Engine run not found: ${runId}`);
+			await commitEngineCommandInTransaction(
+				transaction,
+				destinationCommand(
+					runId,
+					row.manifest.characterId,
+					engine.state.version,
+					row.control_mode,
+					choice
+				)
+			);
 			await transaction`
 				update summonlab_proof_runs
 				set directive = ${directive}, first_line = ${choice.firstLine},
@@ -272,12 +378,20 @@ export async function markProofArrival(
 				{
 					arrived: boolean;
 					destination: FirstDestination | null;
+					manifest: CharacterDraft['manifest'];
 				}[]
 			>`
-				select arrived, destination from summonlab_proof_runs where run_id = ${runId} for update
+				select arrived, destination, manifest
+				from summonlab_proof_runs where run_id = ${runId} for update
 			`;
 			const row = rows[0];
 			if (!row?.destination || row.arrived) return;
+			const engine = await getEngineSnapshotInTransaction(transaction, runId);
+			if (!engine) throw new Error(`Engine run not found: ${runId}`);
+			await commitEngineCommandInTransaction(
+				transaction,
+				arrivalCommand(runId, row.manifest.characterId, engine.state.version)
+			);
 			await transaction`
 				update summonlab_proof_runs set arrived = true, updated_at = now() where run_id = ${runId}
 			`;

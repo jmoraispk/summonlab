@@ -78,8 +78,45 @@ The high-fidelity anchor and the settlement rig intentionally share manifest ide
 pixel fidelity. Phase 3 must close that recognition gap with approved expression, limb, equipment,
 and camera assets before expanding the roster.
 
-## Next active phase
+## Phase 2 — deterministic engine
 
-Phase 2 — deterministic engine. Begin with the PRNG and entropy cursor, then implement one fully
-replayable command/event/reducer path, state hashes, event-store snapshots, and property tests before
-adding broader survival systems.
+Status: **in progress**. The replay-foundation checkpoint completed on 2026-08-23; survival,
+resource, and clock transitions remain.
+
+| Task | Result | Evidence |
+| --- | --- | --- |
+| `ENG-001` | Immutable seeded entropy cursor with named draws and an exact fixture (`gate.resonance[0] = 7`) | Engine unit tests |
+| `ENG-002` | Pure command → event → reducer path for destination, arrival, and Master gate inspection; engine imports no DB, network, model SDK, browser, or wall clock | `@summonlab/engine` contracts and invariant tests |
+| `ENG-003` | Canonical append-only commands/events plus per-event snapshots, SHA-256 before/after state hashes, exact rebuild, idempotency, and optimistic concurrency | `0003_engine_event_store.sql`, database integration test, [ADR 0003](decisions/0003-event-sourced-engine.md) |
+| `ENG-004` | Master and hero identity, health, location, and life-state foundations exist; injury, terminal transitions, and game over remain | Engine state schema |
+| `ENG-008` | Fast-check legal-path property suite and standalone simulation CLI | `pnpm simulate:engine` |
+| `ENG-009` | 10,000 generated histories / 35,000 accepted commands replay with zero invariant failures | [Simulation report](evidence/phase-2-simulation.json) |
+
+The Phase 1 readable journal remains a projection. Its choice and arrival now commit through the
+canonical engine in the same PostgreSQL transaction, so the polished screen and development replay
+inspector describe one history. A development-only command endpoint demonstrates named entropy and
+returns `409 STALE_RUN_VERSION` when two browser commands target the same version. Production builds
+keep these inspector routes disabled unless `ENABLE_DEV_ROUTES=true` is explicit.
+
+### Reproduce the checkpoint
+
+```powershell
+pnpm install
+pnpm db:start
+pnpm db:migrate
+$env:TEST_DATABASE_URL = 'postgresql://summonlab:summonlab@127.0.0.1:54329/summonlab'
+pnpm test:integration
+pnpm simulate:engine
+pnpm check
+pnpm test:e2e
+```
+
+Run `pnpm dev`, complete a summon, then open **Replay** from the settlement. Draw a gate resonance
+and use **Prove stale guard** to verify that only one of two simultaneous commands is accepted. The
+rendered checkpoint is captured in [phase-2-replay-foundation.png](evidence/phase-2-replay-foundation.png).
+
+## Next active slice
+
+Continue Phase 2 with resource/inventory ledgers, equipment durability, needs and scheduled
+activities, injury/death/game-over transitions, and reward/experience projections. Extend the same
+replay inspector rather than creating a second debug surface.

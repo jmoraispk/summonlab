@@ -21,6 +21,7 @@
 		"@summonlab/config": "workspace:*",
 		"@summonlab/contracts": "workspace:*",
 		"@summonlab/database": "workspace:*",
+		"@summonlab/engine": "workspace:*",
 		"@summonlab/observability": "workspace:*"
 	},
 	"devDependencies": {

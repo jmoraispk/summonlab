@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phase 1 summon-to-choice proof is playable locally; deterministic engine work is next._
+_Status: Phase 1 is playable; the Phase 2 deterministic replay foundation is running locally._
 
 </div>
 
@@ -148,9 +148,19 @@ wait-for-step, and a five-second direction handoff without giving the hero direc
 
 ![Character Forge checkpoint](docs/evidence/phase-1-forge.png)
 
+## Deterministic replay checkpoint
+
+Every opening choice and settlement arrival now passes through a pure command → event → reducer
+engine. PostgreSQL stores an idempotent command, an append-only event, and a hashed snapshot in one
+transaction. A development inspector rebuilds the run from event 01, verifies every before/after
+hash, exposes named entropy draws, and proves that two commands aimed at one version cannot both
+commit.
+
+![Deterministic replay inspector](docs/evidence/phase-2-replay-foundation.png)
+
 ## Local development
 
-The Phase 1 application is a pnpm TypeScript workspace pinned to Node `24.14.1` and pnpm `10.33.0`.
+The application is a pnpm TypeScript workspace pinned to Node `24.14.1` and pnpm `10.33.0`.
 
 ```powershell
 Copy-Item .env.example .env

@@ -16,6 +16,7 @@
 		"db:stop": "node tools/database.mjs stop",
 		"db:logs": "node tools/database.mjs logs",
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
+		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "pnpm -r --if-present lint",
