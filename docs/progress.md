@@ -222,9 +222,10 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-004` were completed on 2026-08-24. Canonical
-witnessed onboarding now feeds deterministic, inspectable hero context and two packet-bound
-zero-cost policies; provider-backed decisions and free conversation remain later slices.
+Status: **in progress**. `AGT-001` through `AGT-005` were completed on 2026-08-24. Canonical
+witnessed onboarding now feeds deterministic, inspectable hero context, two packet-bound zero-cost
+policies, and one opt-in strict OpenAI policy preview. Durable model jobs, application, and free
+conversation remain later slices.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -232,6 +233,7 @@ zero-cost policies; provider-backed decisions and free conversation remain later
 | `AGT-002` | Complete: `engine-v8` / `society-v2` records exact Master-to-hero explanations, statements, and questions; computes private/open witnesses from co-location and availability; creates observations for actual witnesses; transfers only topic-bound told beliefs; exposes normal-play onboarding and replay witness chains; and preserves v1–v7 histories | [Communication evidence](evidence/phase-5-communication.png), engine/integration/browser tests, summon onboarding, replay witness ledger, ADR 0021 |
 | `AGT-003` | Complete: `hero-decision-packet-v1` hash-binds the exact engine-v8 cursor, state, identity, context policy, and sorted legal actions; projects only visible environment and holder-owned cognition; retrieves direct memories with deterministic relevance scores, stable ties, item/character budgets, and witnessed exact speech; rejects stale/mismatched inputs; and exposes the live boundary before the first choice | [Decision context evidence](evidence/phase-5-decision-context.png), contract/engine/browser tests, current-context API, summon packet preview, ADR 0022 |
 | `AGT-004` | Complete: `@summonlab/policies` implements one explicit-seed random policy and one personality/value/drive/habit/needs-aware scripted policy across all four decision kinds; both accept only canonical packet actions/targets/memories, return packet/legal/state-bound `hero-policy-result-v1` records with deterministic traces and result hashes, and remain zero-cost baselines rather than direct state mutators | [Policy baseline evidence](evidence/phase-5-policy-baselines.png), policy/contract/browser tests, current-preview API, summon side-by-side baseline cards, ADR 0023 |
+| `AGT-005` | Complete: `OpenAIModelPolicy` submits one official-SDK foreground Responses request containing only the verified canonical packet; disables provider storage and conversation chaining; uses low verbosity, bounded minimal reasoning, and strict `summonlab_hero_decision` Structured Outputs; revalidates schema plus legal actions/targets/memories; returns provider/model/token/request/output/result trace; classifies timeout, provider error, refusal, incomplete, malformed, invalid, and illegal outputs; and remains a manual development-only preview with mode/key/cost/stale-packet gates | [Model adapter evidence](evidence/phase-5-model-adapter.png), fake-transport policy tests, no-key browser journey, model-preview API, ADR 0024 |
 
 ### Reproduce the checkpoint
 
@@ -246,7 +248,12 @@ memory should instead report no learned claim. Open **What reaches this hero** a
 exactly two legal route choices, the latest exact words have event → observation provenance, and the
 packet/state hashes are visible. Compare **Personality script** with **Seeded random**: both must
 choose one of those exact actions, show `0 model calls`, and carry a different result hash bound to
-the same packet. Speak again and confirm the packet and both results refresh. Continue to Hearth 01,
+the same packet. The **Live model bench** must report **adapter ready** and **No provider request is
+sent in scripted mode**. Speak again and confirm the packet and both results refresh. To perform one
+optional paid preview, stop the app, set `POLICY_MODE=model` and `OPENAI_API_KEY` in local `.env`,
+restart, reopen the same inspector, and press **Ask gpt-5-nano once**. Confirm the result displays a
+legal action, public intent, tokens, provider response ID, and result hash but does not move the
+hero. Continue to Hearth 01,
 recover the Floor 01 core, and
 bind the First Ember. The hero should now have the two awakening beliefs, the onboarding claim, and
 the two First Ember beliefs. Open **Replay**, inspect **Communicative acts · witness chains**, and
@@ -255,8 +262,9 @@ verified.
 
 ## Next active engineering slice
 
-Collect feedback on whether two policy cards clarify autonomy or overload the summon, and whether
-the scripted score reason feels like a believable baseline rather than a hidden obedience meter.
-Then begin `AGT-005`: implement the OpenAI Responses adapter with strict Structured Outputs while
-preserving this exact validation/result boundary. Phase 3 cohort expansion remains behind its
-separate human visual gate.
+Collect feedback on whether the disabled model bench communicates the cost/state boundary clearly
+and, after a keyed playtest, whether `gpt-5-nano` produces a believable choice from this packet.
+Then begin `AGT-006`: persist the decision-job lifecycle, retry only classified transient failures,
+reject stale completions, replan from fresh state, select deterministic fallbacks, and apply one
+validated result atomically. Phase 3 cohort expansion remains behind its separate human visual
+gate.

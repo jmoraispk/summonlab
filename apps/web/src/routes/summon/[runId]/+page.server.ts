@@ -7,7 +7,8 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const databaseUrl = getConfig().databaseUrl;
+	const config = getConfig();
+	const databaseUrl = config.databaseUrl;
 	const [snapshot, engineSnapshot] = await Promise.all([
 		getProofRun(databaseUrl, params.runId).catch(() => null),
 		getEngineSnapshot(databaseUrl, params.runId).catch(() => null)
@@ -31,5 +32,19 @@ export const load: PageServerLoad = async ({ params }) => {
 				}
 			})()
 		: null;
-	return { snapshot, conversation, decisionPreview };
+	const modelPolicy = {
+		enabled:
+			config.devRoutesEnabled && config.policyMode === 'model' && Boolean(config.openAiApiKey),
+		model: config.policyModel,
+		reasoningEffort: config.policyReasoningEffort,
+		maxOutputTokens: config.policyMaxOutputTokens,
+		message: !config.devRoutesEnabled
+			? 'Development model previews are disabled.'
+			: config.policyMode !== 'model'
+				? 'Set POLICY_MODE=model to enable manual model previews.'
+				: !config.openAiApiKey
+					? 'Set OPENAI_API_KEY locally to enable the one-call preview.'
+					: 'Ready for one manual, non-applying model call.'
+	};
+	return { snapshot, conversation, decisionPreview, modelPolicy };
 };

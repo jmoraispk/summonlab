@@ -24,6 +24,9 @@ describe('configuration', () => {
 		const config = parseConfig({
 			ENABLE_IMAGE_GENERATION: 'true',
 			OPENAI_API_KEY: 'test-only-key',
+			OPENAI_POLICY_TIMEOUT_MS: '25000',
+			OPENAI_POLICY_MAX_OUTPUT_TOKENS: '640',
+			OPENAI_POLICY_REASONING_EFFORT: 'low',
 			OPENAI_IMAGE_QUALITY: 'medium',
 			OPENAI_IMAGE_SIZE: '1536x1024',
 			OPENAI_IMAGE_TIMEOUT_MS: '90000'
@@ -31,6 +34,9 @@ describe('configuration', () => {
 
 		expect(config.imageGenerationEnabled).toBe(true);
 		expect(config.openAiApiKey).toBe('test-only-key');
+		expect(config.policyTimeoutMs).toBe(25_000);
+		expect(config.policyMaxOutputTokens).toBe(640);
+		expect(config.policyReasoningEffort).toBe('low');
 		expect(config.imageQuality).toBe('medium');
 		expect(config.imageSize).toBe('1536x1024');
 		expect(config.imageTimeoutMs).toBe(90_000);

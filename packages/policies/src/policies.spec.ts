@@ -1,6 +1,7 @@
 import {
 	CharacterManifestSchema,
 	HeroDecisionPacketSchema,
+	HeroDecisionPreviewSchema,
 	HeroPolicyResultSchema,
 	type CharacterManifest,
 	type CharacterMind,
@@ -186,6 +187,17 @@ describe('packet-bound hero policies', () => {
 			packet.legalActions.map((action) => action.actionId)
 		);
 		expect(left.decision.actionId).toBe(left.trace.candidateActionIds[left.trace.selectedIndex]);
+	});
+
+	it('keeps model results out of the named zero-cost preview slots', async () => {
+		const packet = packetFor('settlement-action');
+		const preview = await createHeroDecisionPreview(packet, 'slot-seed');
+		expect(
+			HeroDecisionPreviewSchema.safeParse({
+				...preview,
+				policies: { ...preview.policies, random: preview.policies.scripted }
+			}).success
+		).toBe(false);
 	});
 
 	it('lets personality, values, drives, and habits change the scripted first choice', async () => {

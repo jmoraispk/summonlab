@@ -410,8 +410,8 @@ overheard; ties resolve by event time and stable ID. Selection stops at both an 
 character budget. Communication text can enter a memory only when act → witness → observation
 provenance resolves for that hero. The summon page exposes a compact **What reaches this hero**
 preview, and `GET /api/runs/:runId/decision-context` rebuilds the same current packet after new
-speech. Policy invocation, persisted decision jobs, agent-authored responses, and the development
-packet/result inspector remain `AGT-005`–`AGT-008`.
+speech. Persisted decision jobs, model-result application, free agent-authored conversation, and
+the full redacted packet/result inspector remain `AGT-006`–`AGT-008`.
 
 `AGT-004` adds a separate pure `@summonlab/policies` package. `RandomPolicy` requires an explicit
 seed and derives one reproducible unsigned draw from the packet and legal-action hashes.
@@ -424,6 +424,25 @@ inspectable trace to the packet, state cursor, and legal boundary with its own r
 `GET /api/runs/:runId/decision-preview` evaluates both zero-cost policies against one freshly
 assembled packet. The summon inspector displays the two candidate results but does not apply them:
 atomic job leasing, stale-result rejection, retry, and application belong to `AGT-006`.
+
+`AGT-005` adds `OpenAIModelPolicy` behind the `@summonlab/policies/openai` server-only subpath. The
+root policy export stays free of provider code. Each invocation first verifies the packet, then
+submits one foreground Responses request through the official TypeScript SDK with `store: false`,
+no conversation or previous response ID, the fixed `hero-model-prompt-v1` instructions, low
+verbosity, bounded minimal reasoning, and a strict `summonlab_hero_decision` JSON Schema. The only
+dynamic input is canonical packet data; strings inside it are explicitly treated as quoted game
+data rather than instructions.
+
+The parsed response passes the normal Zod and legal action/target/memory checks before becoming a
+`model-policy-v1` result. Its trace records requested/resolved model, provider response ID, service
+tier, prompt/schema versions, usage, request/output hashes, and selected action without storing
+private reasoning. Timeout, provider failure, refusal, incomplete output, malformed JSON, schema
+failure, and illegal selection are typed but not retried here. `AGT-006` owns retry and fallback.
+
+`POST /api/runs/:runId/model-preview` is a development-only, read-only bench. It requires
+`POLICY_MODE=model`, a local API key, explicit per-click cost acknowledgement, and the exact current
+packet hash before it spends one call. The summon inspector never calls it automatically and makes
+the disabled scripted-mode state visible. A successful preview still cannot apply game state.
 
 ### Implemented reconnect projection
 

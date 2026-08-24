@@ -19,6 +19,9 @@
 	// svelte-ignore state_referenced_locally
 	let decisionPreview = $state<HeroDecisionPreview | null>(data.decisionPreview);
 	let decisionPacket = $derived(decisionPreview?.packet ?? null);
+	let modelResult = $state<HeroPolicyResult | null>(null);
+	let requestingModel = $state(false);
+	let modelRequestError = $state('');
 	let stage = $state(0);
 	// svelte-ignore state_referenced_locally
 	let directive = $state(snapshot.directive);
@@ -125,6 +128,8 @@
 	}
 
 	async function refreshDecisionPacket() {
+		modelResult = null;
+		modelRequestError = '';
 		const response = await fetch(
 			`/api/runs/${snapshot.runId}/decision-preview?heroId=${snapshot.manifest.characterId}`
 		);
@@ -133,6 +138,31 @@
 			return;
 		}
 		decisionPreview = (await response.json()) as HeroDecisionPreview;
+	}
+
+	async function requestModelDecision() {
+		if (!decisionPacket || !data.modelPolicy.enabled || requestingModel) return;
+		requestingModel = true;
+		modelRequestError = '';
+		modelResult = null;
+		try {
+			const response = await fetch(`/api/runs/${snapshot.runId}/model-preview`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					heroId: snapshot.manifest.characterId,
+					packetHash: decisionPacket.packetHash,
+					costAcknowledged: true
+				})
+			});
+			const result = (await response.json()) as HeroPolicyResult & { message?: string };
+			if (!response.ok) throw new Error(result.message ?? 'The model preview failed.');
+			modelResult = result;
+		} catch (error) {
+			modelRequestError = error instanceof Error ? error.message : 'The model preview failed.';
+		} finally {
+			requestingModel = false;
+		}
 	}
 
 	function policyActionLabel(result: HeroPolicyResult): string {
@@ -424,13 +454,15 @@
 														result
 													)}</small
 												>
-											{:else}
+											{:else if result.trace.kind === 'random'}
 												<small
 													>draw {result.trace.draw} → option {result.trace.selectedIndex + 1} · seed {result.trace.seedHash.slice(
 														0,
 														8
 													)}</small
 												>
+											{:else}
+												<small>Model result {result.trace.responseId}</small>
 											{/if}
 											<footer>
 												<span>result</span><code>{result.resultHash.slice(0, 10)}</code>
@@ -439,6 +471,54 @@
 									{/each}
 								</div>
 							</div>
+							<section
+								class:ready={data.modelPolicy.enabled}
+								class="model-policy"
+								data-testid="model-policy-bench"
+							>
+								<div class="model-policy-head">
+									<div>
+										<span>Live model bench</span>
+										<strong>{data.modelPolicy.model}</strong>
+									</div>
+									<em>{data.modelPolicy.enabled ? 'manual paid call' : 'adapter ready'}</em>
+								</div>
+								{#if modelResult && modelResult.trace.kind === 'model'}
+									<div class="model-result">
+										<span>Model chose</span>
+										<strong>{policyActionLabel(modelResult)}</strong>
+										<blockquote>“{modelResult.decision.publicIntent}”</blockquote>
+										<div>
+											<small>{modelResult.trace.usage.totalTokens} tokens</small>
+											<code>{modelResult.trace.responseId}</code>
+											<code>{modelResult.resultHash.slice(0, 10)}</code>
+										</div>
+									</div>
+								{:else}
+									<p>{data.modelPolicy.message}</p>
+									<div class="model-settings">
+										<span>{data.modelPolicy.reasoningEffort} reasoning</span>
+										<span>≤ {data.modelPolicy.maxOutputTokens} output tokens</span>
+										<span>preview only</span>
+									</div>
+									{#if data.modelPolicy.enabled}
+										<button
+											class="model-call"
+											type="button"
+											onclick={requestModelDecision}
+											disabled={requestingModel}
+										>
+											{requestingModel ? 'Asking once…' : `Ask ${data.modelPolicy.model} once`}
+										</button>
+									{:else}
+										<small>No provider request is sent in scripted mode.</small>
+									{/if}
+								{/if}
+								{#if modelRequestError}<p class="error" role="alert">{modelRequestError}</p>{/if}
+								<footer>
+									One independent Responses request · strict schema · never applies state
+								</footer>
+							</section>
 							<div class="memory-context">
 								<p>Retrieved personal memory</p>
 								{#each decisionPacket.knowledge.memoryRetrieval.memories as memory (memory.memoryId)}
@@ -1196,7 +1276,8 @@
 	.context-preview summary span,
 	.legal-context > p,
 	.memory-context > p,
-	.policy-context > p {
+	.policy-context > p,
+	.model-policy-head span {
 		margin: 0 0 0.2rem;
 		color: #d2a04d;
 		font-size: 0.46rem;
@@ -1366,6 +1447,147 @@
 	.policy-context footer code {
 		color: rgba(246, 241, 231, 0.44);
 		font-size: 0.42rem;
+	}
+
+	.model-policy {
+		margin-top: 0.55rem;
+		padding: 0.65rem;
+		border: 1px solid rgba(126, 114, 176, 0.2);
+		background:
+			linear-gradient(135deg, rgba(126, 114, 176, 0.08), rgba(6, 8, 12, 0.66)),
+			repeating-linear-gradient(90deg, transparent 0 16px, rgba(255, 255, 255, 0.015) 16px 17px);
+	}
+
+	.model-policy.ready {
+		border-color: rgba(112, 200, 217, 0.3);
+		box-shadow: inset 2px 0 rgba(112, 200, 217, 0.55);
+	}
+
+	.model-policy-head,
+	.model-settings,
+	.model-result > div,
+	.model-policy > footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.45rem;
+	}
+
+	.model-policy-head strong,
+	.model-policy-head span {
+		display: block;
+	}
+
+	.model-policy-head strong {
+		margin-top: 0.18rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.6rem;
+		font-weight: 500;
+	}
+
+	.model-policy-head em {
+		color: rgba(112, 200, 217, 0.6);
+		font-size: 0.42rem;
+		font-style: normal;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.model-policy > p {
+		margin: 0.55rem 0;
+		color: rgba(246, 241, 231, 0.58);
+		font-size: 0.52rem;
+		line-height: 1.5;
+	}
+
+	.model-settings {
+		justify-content: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.model-settings span {
+		padding: 0.18rem 0.3rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		color: rgba(246, 241, 231, 0.4);
+		font-size: 0.42rem;
+		text-transform: uppercase;
+	}
+
+	.model-call {
+		width: 100%;
+		margin-top: 0.55rem;
+		padding: 0.45rem;
+		border: 1px solid rgba(112, 200, 217, 0.35);
+		background: rgba(112, 200, 217, 0.08);
+		color: #bce7ef;
+		font-size: 0.52rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+
+	.model-call:disabled {
+		cursor: wait;
+		opacity: 0.55;
+	}
+
+	.model-policy > small,
+	.model-policy > footer {
+		color: rgba(246, 241, 231, 0.3);
+		font-size: 0.43rem;
+	}
+
+	.model-policy > small {
+		display: block;
+		margin-top: 0.5rem;
+	}
+
+	.model-policy > footer {
+		justify-content: flex-start;
+		margin-top: 0.55rem;
+		padding-top: 0.45rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.model-result > span,
+	.model-result > strong {
+		display: block;
+	}
+
+	.model-result > span {
+		margin-top: 0.6rem;
+		color: rgba(112, 200, 217, 0.58);
+		font-size: 0.43rem;
+		text-transform: uppercase;
+	}
+
+	.model-result > strong {
+		margin-top: 0.18rem;
+		font-family: Georgia, serif;
+		font-size: 0.8rem;
+		font-weight: 400;
+	}
+
+	.model-result blockquote {
+		margin: 0.4rem 0;
+		color: rgba(246, 241, 231, 0.62);
+		font-family: Georgia, serif;
+		font-size: 0.57rem;
+		line-height: 1.45;
+	}
+
+	.model-result > div {
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		color: rgba(246, 241, 231, 0.35);
+		font-size: 0.42rem;
+	}
+
+	.model-result code {
+		color: rgba(112, 200, 217, 0.52);
+		font-size: 0.41rem;
 	}
 
 	.memory-context article {

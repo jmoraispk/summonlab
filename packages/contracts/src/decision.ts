@@ -36,6 +36,8 @@ export const HERO_POLICY_RESULT_VERSION = 'hero-policy-result-v1';
 export const HERO_DECISION_PREVIEW_VERSION = 'hero-decision-preview-v1';
 export const RANDOM_POLICY_VERSION = 'random-policy-v1';
 export const SCRIPTED_POLICY_VERSION = 'scripted-policy-v1';
+export const MODEL_POLICY_VERSION = 'model-policy-v1';
+export const HERO_MODEL_PROMPT_VERSION = 'hero-model-prompt-v1';
 
 export const HeroDecisionKindSchema = z.enum([
 	'settlement-action',
@@ -348,15 +350,52 @@ export const ScriptedPolicyTraceSchema = z
 	})
 	.strict();
 
+export const ModelPolicyUsageSchema = z
+	.object({
+		inputTokens: z.number().int().nonnegative(),
+		cachedInputTokens: z.number().int().nonnegative(),
+		outputTokens: z.number().int().nonnegative(),
+		reasoningTokens: z.number().int().nonnegative(),
+		totalTokens: z.number().int().nonnegative()
+	})
+	.strict()
+	.superRefine((usage, context) => {
+		if (usage.cachedInputTokens > usage.inputTokens) {
+			context.addIssue({ code: 'custom', message: 'Cached input tokens exceed input tokens' });
+		}
+		if (usage.totalTokens !== usage.inputTokens + usage.outputTokens) {
+			context.addIssue({ code: 'custom', message: 'Model policy token total is inconsistent' });
+		}
+	});
+
+export const ModelPolicyTraceSchema = z
+	.object({
+		kind: z.literal('model'),
+		policyVersion: z.literal(MODEL_POLICY_VERSION),
+		provider: z.literal('openai'),
+		promptVersion: z.literal(HERO_MODEL_PROMPT_VERSION),
+		schemaName: z.literal('summonlab_hero_decision'),
+		requestedModel: z.string().min(1).max(120),
+		resolvedModel: z.string().min(1).max(120),
+		responseId: z.string().min(1).max(160),
+		serviceTier: z.string().min(1).max(40).nullable(),
+		requestHash: StateHashSchema,
+		outputHash: StateHashSchema,
+		selectedActionId: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		usage: ModelPolicyUsageSchema
+	})
+	.strict();
+
 export const HeroPolicyTraceSchema = z.discriminatedUnion('kind', [
 	RandomPolicyTraceSchema,
-	ScriptedPolicyTraceSchema
+	ScriptedPolicyTraceSchema,
+	ModelPolicyTraceSchema
 ]);
 
 export const HeroPolicyResultSchema = z
 	.object({
 		schemaVersion: z.literal(HERO_POLICY_RESULT_VERSION),
-		policyId: z.enum([RANDOM_POLICY_VERSION, SCRIPTED_POLICY_VERSION]),
+		policyId: z.enum([RANDOM_POLICY_VERSION, SCRIPTED_POLICY_VERSION, MODEL_POLICY_VERSION]),
 		packetId: EntityIdSchema,
 		packetHash: StateHashSchema,
 		legalActionHash: StateHashSchema,
@@ -380,9 +419,12 @@ export const HeroPolicyResultSchema = z
 		const selectedActionId =
 			result.trace.kind === 'random'
 				? result.trace.candidateActionIds[result.trace.selectedIndex]
-				: [...result.trace.actionScores].sort(
-						(left, right) => right.total - left.total || left.actionId.localeCompare(right.actionId)
-					)[0]?.actionId;
+				: result.trace.kind === 'scripted'
+					? [...result.trace.actionScores].sort(
+							(left, right) =>
+								right.total - left.total || left.actionId.localeCompare(right.actionId)
+						)[0]?.actionId
+					: result.trace.selectedActionId;
 		if (selectedActionId !== result.decision.actionId) {
 			context.addIssue({
 				code: 'custom',
@@ -404,6 +446,15 @@ export const HeroDecisionPreviewSchema = z
 	})
 	.strict()
 	.superRefine((preview, context) => {
+		if (
+			preview.policies.random.policyId !== RANDOM_POLICY_VERSION ||
+			preview.policies.scripted.policyId !== SCRIPTED_POLICY_VERSION
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Policy preview baseline slots are inconsistent'
+			});
+		}
 		for (const result of Object.values(preview.policies)) {
 			if (
 				result.packetId !== preview.packet.packetId ||

@@ -263,6 +263,12 @@ pnpm dev
 
 If Docker is unavailable, use `pnpm dev:app`. Both processes stay runnable and report PostgreSQL as unavailable instead of inventing persistence. Run all local quality gates with `pnpm check`; browser smoke tests use `pnpm test:e2e` after installing Playwright Chromium once with `pnpm --filter @summonlab/web exec playwright install chromium`.
 
+Model hero decisions remain opt-in development previews. The default `POLICY_MODE=scripted` sends
+no provider requests. To test one model choice, set `POLICY_MODE=model` and `OPENAI_API_KEY` only in
+your local `.env`, restart `pnpm dev`, summon a hero, open **What reaches this hero**, and press the
+manual **Ask gpt-5-nano once** button. The response is validated and displayed but never applied to
+game state; durable jobs, retry, stale rejection, and application arrive in the next phase.
+
 ## Project documents
 
 - [Game design](docs/game-design.md) — the hundred-floor campaign, habits, clean-slate characters, missions, progression, synthesis, authority, and permadeath.

@@ -205,9 +205,12 @@ DATABASE_URL
 RUN_ENCRYPTION_KEY
 OPENAI_API_KEY             optional until LLM policy is enabled
 OPENAI_POLICY_MODEL        default gpt-5-nano when LLM policy is enabled
+OPENAI_POLICY_TIMEOUT_MS   default 30000
+OPENAI_POLICY_MAX_OUTPUT_TOKENS default 800
+OPENAI_POLICY_REASONING_EFFORT  default minimal
 OPENAI_STORY_MODEL         unset until a stronger model passes story evaluation
 OPENAI_BACKGROUND_MODE     default false for short routine turns
-POLICY_MODE                random | scripted | llm
+POLICY_MODE                random | scripted | model
 SIMULATION_SPEED           default 4
 MAX_DECISIONS_PER_RUN_DAY
 MAX_TOKENS_PER_RUN_DAY
@@ -996,10 +999,10 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — AGT-001 through AGT-004 completed 2026-08-24.** Holder-owned cognition,
-witnessed communication, hash-bound decision packets, and deterministic zero-cost policy baselines
-are runnable. Provider-backed choices, job lifecycle, free conversation, inspection, evaluation,
-and scoped directives remain.
+**Status: in progress — AGT-001 through AGT-005 completed 2026-08-24.** Holder-owned cognition,
+witnessed communication, hash-bound decision packets, deterministic zero-cost policy baselines,
+and an opt-in strict OpenAI Responses policy are runnable. Durable job lifecycle, free
+conversation, inspection, evaluation, and scoped directives remain.
 
 - `AGT-001` complete: implement direct observations, provenance-linked beliefs, directed
   relationships, founding promises, and multidimensional authority under `engine-v7`;
@@ -1009,7 +1012,10 @@ and scoped directives remain.
   deterministic scored/budgeted memory retrieval, and an inspectable first-choice preview;
 - `AGT-004` complete: implement packet-bound random and personality-scripted policies for every
   decision kind, with deterministic traces and hash-bound results;
-- `AGT-005` implement OpenAI policy adapter with strict Structured Outputs;
+- `AGT-005` complete: implement an official-SDK OpenAI Responses policy adapter with an
+  independent packet-only request, strict Structured Outputs, bounded output/reasoning, typed
+  failure taxonomy, legal-boundary revalidation, provider/token/hash trace, and a manual
+  development preview that never applies state;
 - `AGT-006` implement job lifecycle, retry, stale rejection, replan, and fallback;
 - `AGT-007` implement free-text conversation UI and order outcomes;
 - `AGT-008` implement redacted packet and result inspector;

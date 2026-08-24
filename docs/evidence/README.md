@@ -57,3 +57,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-5-policy-baselines.png` — the same summoned hero and holder-owned packet with side-by-side
   personality-scripted and explicit-seed random choices, zero model calls, inspectable score/draw
   evidence, and independent result hashes bound to the one legal-action boundary.
+- `phase-5-model-adapter.png` — the summoned hero, both zero-cost packet baselines, and the
+  development-only live model bench visibly disabled in scripted mode with explicit model,
+  reasoning/output bounds, preview-only semantics, and assurance that no provider request is sent.

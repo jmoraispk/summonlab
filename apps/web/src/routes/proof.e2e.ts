@@ -70,7 +70,19 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('policy-baselines')).toContainText('Seeded random');
 	await expect(page.getByTestId('policy-baselines')).toContainText('0 model calls');
 	await expect(page.getByTestId('policy-baselines').getByText('result')).toHaveCount(2);
+	await expect(page.getByTestId('model-policy-bench')).toContainText('Live model bench');
+	await expect(page.getByTestId('model-policy-bench')).toContainText('gpt-5-nano');
+	await expect(page.getByTestId('model-policy-bench')).toContainText(
+		'No provider request is sent in scripted mode.'
+	);
+	await expect(page.getByRole('button', { name: /Ask gpt-5-nano once/ })).toHaveCount(0);
 	await expect(page.getByTestId('decision-context')).toContainText('witnessed knowledge only');
+	if (process.env.CAPTURE_PHASE5_MODEL_ADAPTER) {
+		await page.setViewportSize({ width: 1440, height: 1050 });
+		await page.getByTestId('model-policy-bench').scrollIntoViewIfNeeded();
+		await page.evaluate(() => window.scrollTo(0, 0));
+		await page.screenshot({ path: process.env.CAPTURE_PHASE5_MODEL_ADAPTER, fullPage: true });
+	}
 	if (process.env.CAPTURE_PHASE5_POLICIES) {
 		await page.setViewportSize({ width: 1440, height: 1050 });
 		await page.screenshot({ path: process.env.CAPTURE_PHASE5_POLICIES, fullPage: true });
