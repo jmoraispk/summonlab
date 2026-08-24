@@ -222,15 +222,16 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-003` were completed on 2026-08-24. Canonical
-witnessed onboarding now feeds deterministic, inspectable hero context; hero-authored responses and
-model-backed decisions remain later slices.
+Status: **in progress**. `AGT-001` through `AGT-004` were completed on 2026-08-24. Canonical
+witnessed onboarding now feeds deterministic, inspectable hero context and two packet-bound
+zero-cost policies; provider-backed decisions and free conversation remain later slices.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `AGT-001` | Complete: `engine-v7` adds direct observations, holder-specific beliefs with event provenance, directed relationship dimensions, active promises, and seven evidence-backed authority dimensions; awakening remains a clean slate, First Ember creates the first durable social consequence, normal play uses relationship language, replay exposes raw evidence, and v1–v6 histories remain unmodified | [Social cognition evidence](evidence/phase-5-social-cognition.png), engine/property/integration/browser tests, replay cognition ledger, ADR 0020 |
 | `AGT-002` | Complete: `engine-v8` / `society-v2` records exact Master-to-hero explanations, statements, and questions; computes private/open witnesses from co-location and availability; creates observations for actual witnesses; transfers only topic-bound told beliefs; exposes normal-play onboarding and replay witness chains; and preserves v1–v7 histories | [Communication evidence](evidence/phase-5-communication.png), engine/integration/browser tests, summon onboarding, replay witness ledger, ADR 0021 |
 | `AGT-003` | Complete: `hero-decision-packet-v1` hash-binds the exact engine-v8 cursor, state, identity, context policy, and sorted legal actions; projects only visible environment and holder-owned cognition; retrieves direct memories with deterministic relevance scores, stable ties, item/character budgets, and witnessed exact speech; rejects stale/mismatched inputs; and exposes the live boundary before the first choice | [Decision context evidence](evidence/phase-5-decision-context.png), contract/engine/browser tests, current-context API, summon packet preview, ADR 0022 |
+| `AGT-004` | Complete: `@summonlab/policies` implements one explicit-seed random policy and one personality/value/drive/habit/needs-aware scripted policy across all four decision kinds; both accept only canonical packet actions/targets/memories, return packet/legal/state-bound `hero-policy-result-v1` records with deterministic traces and result hashes, and remain zero-cost baselines rather than direct state mutators | [Policy baseline evidence](evidence/phase-5-policy-baselines.png), policy/contract/browser tests, current-preview API, summon side-by-side baseline cards, ADR 0023 |
 
 ### Reproduce the checkpoint
 
@@ -243,7 +244,10 @@ select an onboarding topic, edit the exact words, choose private/open delivery, 
 Confirm the witness proof reports one intended witness and one learned claim; asking about hero
 memory should instead report no learned claim. Open **What reaches this hero** and confirm there are
 exactly two legal route choices, the latest exact words have event → observation provenance, and the
-packet/state hashes are visible. Continue to Hearth 01, recover the Floor 01 core, and
+packet/state hashes are visible. Compare **Personality script** with **Seeded random**: both must
+choose one of those exact actions, show `0 model calls`, and carry a different result hash bound to
+the same packet. Speak again and confirm the packet and both results refresh. Continue to Hearth 01,
+recover the Floor 01 core, and
 bind the First Ember. The hero should now have the two awakening beliefs, the onboarding claim, and
 the two First Ember beliefs. Open **Replay**, inspect **Communicative acts · witness chains**, and
 trace exact text through the source event, observation, and optional belief while replay remains
@@ -251,7 +255,8 @@ verified.
 
 ## Next active engineering slice
 
-Collect feedback on whether the context preview explains the hero boundary without overwhelming the
-summon, and whether the selected-memory score/provenance is legible. Then begin `AGT-004` with random
-and scripted policy implementations that consume the packet without bypassing its legal-action
-hash. Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect feedback on whether two policy cards clarify autonomy or overload the summon, and whether
+the scripted score reason feels like a believable baseline rather than a hidden obedience meter.
+Then begin `AGT-005`: implement the OpenAI Responses adapter with strict Structured Outputs while
+preserving this exact validation/result boundary. Phase 3 cohort expansion remains behind its
+separate human visual gate.

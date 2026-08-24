@@ -24,6 +24,7 @@
 		"@summonlab/database": "workspace:*",
 		"@summonlab/engine": "workspace:*",
 		"@summonlab/observability": "workspace:*",
+		"@summonlab/policies": "workspace:*",
 		"pixi.js": "8.20.0"
 	},
 	"devDependencies": {

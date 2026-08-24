@@ -411,7 +411,19 @@ character budget. Communication text can enter a memory only when act → witnes
 provenance resolves for that hero. The summon page exposes a compact **What reaches this hero**
 preview, and `GET /api/runs/:runId/decision-context` rebuilds the same current packet after new
 speech. Policy invocation, persisted decision jobs, agent-authored responses, and the development
-packet/result inspector remain `AGT-004`–`AGT-008`.
+packet/result inspector remain `AGT-005`–`AGT-008`.
+
+`AGT-004` adds a separate pure `@summonlab/policies` package. `RandomPolicy` requires an explicit
+seed and derives one reproducible unsigned draw from the packet and legal-action hashes.
+`ScriptedPolicy` scores only packet-visible action terms against decision kind, current needs,
+personality, value, drive, habit, capabilities, holder-owned authority, and witnessed directives.
+Both reject a malformed packet, a mismatched legal-action hash, invented targets, or memory IDs
+outside retrieval. Each returns `hero-policy-result-v1`, which binds the selected decision and
+inspectable trace to the packet, state cursor, and legal boundary with its own result hash.
+
+`GET /api/runs/:runId/decision-preview` evaluates both zero-cost policies against one freshly
+assembled packet. The summon inspector displays the two candidate results but does not apply them:
+atomic job leasing, stale-result rejection, retry, and application belong to `AGT-006`.
 
 ### Implemented reconnect projection
 
@@ -448,9 +460,14 @@ node. Reduced-motion rendering freezes movement without hiding the semantic pose
 
 ```ts
 interface HeroPolicy {
-  decide(packet: HeroDecisionPacket): Promise<HeroDecision>;
+  readonly policyId: string;
+  decide(packet: HeroDecisionPacket): Promise<HeroPolicyResult>;
 }
 ```
+
+`HeroPolicyResult` contains the validated `HeroDecision`, exact packet/legal/state references, a
+policy-specific trace, and a canonical result hash. Intent, dialogue, goal proposals, and cited
+memory IDs remain presentation or proposals; only the legal action may later reach the engine.
 
 Implementations:
 

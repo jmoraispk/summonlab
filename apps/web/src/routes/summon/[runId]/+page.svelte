@@ -2,7 +2,8 @@
 	import { resolve } from '$app/paths';
 	import type {
 		HeroConversationPresentation,
-		HeroDecisionPacket,
+		HeroDecisionPreview,
+		HeroPolicyResult,
 		ProofRunSnapshot
 	} from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
@@ -16,7 +17,8 @@
 	// svelte-ignore state_referenced_locally
 	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
 	// svelte-ignore state_referenced_locally
-	let decisionPacket = $state<HeroDecisionPacket | null>(data.decisionPacket);
+	let decisionPreview = $state<HeroDecisionPreview | null>(data.decisionPreview);
+	let decisionPacket = $derived(decisionPreview?.packet ?? null);
 	let stage = $state(0);
 	// svelte-ignore state_referenced_locally
 	let directive = $state(snapshot.directive);
@@ -124,13 +126,39 @@
 
 	async function refreshDecisionPacket() {
 		const response = await fetch(
-			`/api/runs/${snapshot.runId}/decision-context?heroId=${snapshot.manifest.characterId}`
+			`/api/runs/${snapshot.runId}/decision-preview?heroId=${snapshot.manifest.characterId}`
 		);
 		if (!response.ok) {
-			decisionPacket = null;
+			decisionPreview = null;
 			return;
 		}
-		decisionPacket = (await response.json()) as HeroDecisionPacket;
+		decisionPreview = (await response.json()) as HeroDecisionPreview;
+	}
+
+	function policyActionLabel(result: HeroPolicyResult): string {
+		return (
+			decisionPacket?.legalActions.find((action) => action.actionId === result.decision.actionId)
+				?.label ?? result.decision.actionId
+		);
+	}
+
+	function selectedScriptedScore(result: HeroPolicyResult) {
+		return result.trace.kind === 'scripted'
+			? result.trace.actionScores.find((score) => score.actionId === result.decision.actionId)
+			: undefined;
+	}
+
+	function strongestScriptedReason(result: HeroPolicyResult): string {
+		const score = selectedScriptedScore(result);
+		return (
+			[...(score?.contributions ?? [])]
+				.sort(
+					(left, right) =>
+						Math.abs(right.value) - Math.abs(left.value) || left.key.localeCompare(right.key)
+				)
+				.find((item) => item.key !== 'decision.legal-baseline')?.reason ??
+			'The stable action-id tie-break resolved equal scores.'
+		);
 	}
 
 	async function resolveDecision(trigger: 'step' | 'countdown') {
@@ -347,7 +375,7 @@
 						<small>Exact words are canonical. Free text cannot invent engine facts.</small>
 					</div>
 				{/if}
-				{#if decisionPacket}
+				{#if decisionPacket && decisionPreview}
 					<details class="context-preview" data-testid="decision-context">
 						<summary>
 							<div>
@@ -374,6 +402,42 @@
 										<code>{action.actionId}</code>
 									</div>
 								{/each}
+							</div>
+							<div class="policy-context" data-testid="policy-baselines">
+								<p>Same packet · two zero-cost baselines</p>
+								<div>
+									{#each [decisionPreview.policies.scripted, decisionPreview.policies.random] as result (result.policyId)}
+										<article class:random={result.trace.kind === 'random'}>
+											<div class="policy-header">
+												<span
+													>{result.trace.kind === 'scripted'
+														? 'Personality script'
+														: 'Seeded random'}</span
+												>
+												<em>0 model calls</em>
+											</div>
+											<strong>{policyActionLabel(result)}</strong>
+											<code>{result.decision.actionId}</code>
+											{#if result.trace.kind === 'scripted'}
+												<small
+													>score {selectedScriptedScore(result)?.total ?? 0} · {strongestScriptedReason(
+														result
+													)}</small
+												>
+											{:else}
+												<small
+													>draw {result.trace.draw} → option {result.trace.selectedIndex + 1} · seed {result.trace.seedHash.slice(
+														0,
+														8
+													)}</small
+												>
+											{/if}
+											<footer>
+												<span>result</span><code>{result.resultHash.slice(0, 10)}</code>
+											</footer>
+										</article>
+									{/each}
+								</div>
 							</div>
 							<div class="memory-context">
 								<p>Retrieved personal memory</p>
@@ -1131,7 +1195,8 @@
 
 	.context-preview summary span,
 	.legal-context > p,
-	.memory-context > p {
+	.memory-context > p,
+	.policy-context > p {
 		margin: 0 0 0.2rem;
 		color: #d2a04d;
 		font-size: 0.46rem;
@@ -1208,6 +1273,99 @@
 
 	.memory-context {
 		margin-top: 0.65rem;
+	}
+
+	.policy-context {
+		margin-top: 0.75rem;
+	}
+
+	.policy-context > p {
+		margin: 0 0 0.35rem;
+	}
+
+	.policy-context > div {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.45rem;
+	}
+
+	.policy-context article {
+		padding: 0.6rem;
+		border: 1px solid rgba(210, 160, 77, 0.2);
+		background: linear-gradient(145deg, rgba(210, 160, 77, 0.08), rgba(6, 8, 12, 0.52));
+	}
+
+	.policy-context article.random {
+		border-color: rgba(112, 200, 217, 0.2);
+		background: linear-gradient(145deg, rgba(112, 200, 217, 0.07), rgba(6, 8, 12, 0.52));
+	}
+
+	.policy-header,
+	.policy-context footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.4rem;
+	}
+
+	.policy-header span,
+	.policy-header em,
+	.policy-context footer {
+		font-size: 0.43rem;
+		font-style: normal;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.policy-header span {
+		color: #d2a04d;
+	}
+
+	.policy-context article.random .policy-header span {
+		color: #70c8d9;
+	}
+
+	.policy-header em,
+	.policy-context footer {
+		color: rgba(246, 241, 231, 0.3);
+	}
+
+	.policy-context article > strong,
+	.policy-context article > code,
+	.policy-context article > small {
+		display: block;
+	}
+
+	.policy-context article > strong {
+		margin-top: 0.45rem;
+		font-family: Georgia, serif;
+		font-size: 0.72rem;
+		font-weight: 400;
+	}
+
+	.policy-context article > code {
+		margin-top: 0.2rem;
+		color: rgba(112, 200, 217, 0.64);
+		font-size: 0.43rem;
+	}
+
+	.policy-context article > small {
+		min-height: 2.4rem;
+		margin-top: 0.42rem;
+		color: rgba(246, 241, 231, 0.52);
+		font-size: 0.49rem;
+		line-height: 1.45;
+	}
+
+	.policy-context footer {
+		margin-top: 0.45rem;
+		padding-top: 0.4rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+	}
+
+	.policy-context footer code {
+		color: rgba(246, 241, 231, 0.44);
+		font-size: 0.42rem;
 	}
 
 	.memory-context article {
@@ -1596,6 +1754,10 @@
 
 		.branch {
 			display: none;
+		}
+
+		.policy-context > div {
+			grid-template-columns: 1fr;
 		}
 
 		.first-person {

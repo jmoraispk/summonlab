@@ -32,6 +32,10 @@ export const HERO_DECISION_PACKET_VERSION = 'hero-decision-packet-v1';
 export const HERO_CONTEXT_POLICY_VERSION = 'hero-context-v1';
 export const HERO_MEMORY_RETRIEVAL_VERSION = 'hero-memory-v1';
 export const HERO_DECISION_RESPONSE_VERSION = 'hero-decision-v1';
+export const HERO_POLICY_RESULT_VERSION = 'hero-policy-result-v1';
+export const HERO_DECISION_PREVIEW_VERSION = 'hero-decision-preview-v1';
+export const RANDOM_POLICY_VERSION = 'random-policy-v1';
+export const SCRIPTED_POLICY_VERSION = 'scripted-policy-v1';
 
 export const HeroDecisionKindSchema = z.enum([
 	'settlement-action',
@@ -292,7 +296,134 @@ export const HeroDecisionPacketSchema = z
 		}
 	});
 
+export const PolicyScoreContributionSchema = z
+	.object({
+		key: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		value: z.number().int().min(-10_000).max(10_000),
+		reason: z.string().min(1).max(200)
+	})
+	.strict();
+
+export const PolicyActionScoreSchema = z
+	.object({
+		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		total: z.number().int().min(-100_000).max(100_000),
+		contributions: z.array(PolicyScoreContributionSchema).min(1).max(32)
+	})
+	.strict()
+	.superRefine((score, context) => {
+		if (
+			score.total !==
+			score.contributions.reduce((total, contribution) => total + contribution.value, 0)
+		) {
+			context.addIssue({ code: 'custom', message: 'Policy score total is inconsistent' });
+		}
+	});
+
+export const RandomPolicyTraceSchema = z
+	.object({
+		kind: z.literal('random'),
+		policyVersion: z.literal(RANDOM_POLICY_VERSION),
+		seedHash: StateHashSchema,
+		draw: z.number().int().nonnegative().max(0xffff_ffff),
+		candidateActionIds: z
+			.array(z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u))
+			.min(1)
+			.max(128),
+		selectedIndex: z.number().int().nonnegative().max(127)
+	})
+	.strict()
+	.superRefine((trace, context) => {
+		if (trace.selectedIndex >= trace.candidateActionIds.length) {
+			context.addIssue({ code: 'custom', message: 'Random policy selected index is out of range' });
+		}
+	});
+
+export const ScriptedPolicyTraceSchema = z
+	.object({
+		kind: z.literal('scripted'),
+		policyVersion: z.literal(SCRIPTED_POLICY_VERSION),
+		tieBreakRule: z.literal('highest-score-then-action-id'),
+		actionScores: z.array(PolicyActionScoreSchema).min(1).max(128)
+	})
+	.strict();
+
+export const HeroPolicyTraceSchema = z.discriminatedUnion('kind', [
+	RandomPolicyTraceSchema,
+	ScriptedPolicyTraceSchema
+]);
+
+export const HeroPolicyResultSchema = z
+	.object({
+		schemaVersion: z.literal(HERO_POLICY_RESULT_VERSION),
+		policyId: z.enum([RANDOM_POLICY_VERSION, SCRIPTED_POLICY_VERSION]),
+		packetId: EntityIdSchema,
+		packetHash: StateHashSchema,
+		legalActionHash: StateHashSchema,
+		decisionKind: HeroDecisionKindSchema,
+		world: z
+			.object({
+				stateVersion: z.number().int().nonnegative(),
+				eventCursor: z.number().int().positive(),
+				stateHash: StateHashSchema
+			})
+			.strict(),
+		decision: HeroDecisionSchema,
+		trace: HeroPolicyTraceSchema,
+		resultHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((result, context) => {
+		if (result.policyId !== result.trace.policyVersion) {
+			context.addIssue({ code: 'custom', message: 'Policy result version is inconsistent' });
+		}
+		const selectedActionId =
+			result.trace.kind === 'random'
+				? result.trace.candidateActionIds[result.trace.selectedIndex]
+				: [...result.trace.actionScores].sort(
+						(left, right) => right.total - left.total || left.actionId.localeCompare(right.actionId)
+					)[0]?.actionId;
+		if (selectedActionId !== result.decision.actionId) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Policy trace does not select the decision action'
+			});
+		}
+	});
+
+export const HeroDecisionPreviewSchema = z
+	.object({
+		schemaVersion: z.literal(HERO_DECISION_PREVIEW_VERSION),
+		packet: HeroDecisionPacketSchema,
+		policies: z
+			.object({
+				random: HeroPolicyResultSchema,
+				scripted: HeroPolicyResultSchema
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((preview, context) => {
+		for (const result of Object.values(preview.policies)) {
+			if (
+				result.packetId !== preview.packet.packetId ||
+				result.packetHash !== preview.packet.packetHash ||
+				result.legalActionHash !== preview.packet.legalActionHash ||
+				result.decisionKind !== preview.packet.decisionKind
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Policy preview packet reference is inconsistent'
+				});
+			}
+		}
+	});
+
 export type HeroDecision = z.infer<typeof HeroDecisionSchema>;
 export type HeroDecisionKind = z.infer<typeof HeroDecisionKindSchema>;
 export type HeroDecisionPacket = z.infer<typeof HeroDecisionPacketSchema>;
+export type HeroDecisionPreview = z.infer<typeof HeroDecisionPreviewSchema>;
+export type HeroPolicyResult = z.infer<typeof HeroPolicyResultSchema>;
+export type PolicyActionScore = z.infer<typeof PolicyActionScoreSchema>;
+export type PolicyScoreContribution = z.infer<typeof PolicyScoreContributionSchema>;
 export type RetrievedMemory = z.infer<typeof RetrievedMemorySchema>;

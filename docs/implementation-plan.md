@@ -996,13 +996,19 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 
 Estimated engineering effort: **2 weeks**.
 
+**Status: in progress — AGT-001 through AGT-004 completed 2026-08-24.** Holder-owned cognition,
+witnessed communication, hash-bound decision packets, and deterministic zero-cost policy baselines
+are runnable. Provider-backed choices, job lifecycle, free conversation, inspection, evaluation,
+and scoped directives remain.
+
 - `AGT-001` complete: implement direct observations, provenance-linked beliefs, directed
   relationships, founding promises, and multidimensional authority under `engine-v7`;
 - `AGT-002` complete: implement canonical communicative acts, private/open delivery, co-location and
   availability witness rules, and direct told-belief provenance under `engine-v8`;
 - `AGT-003` complete: implement hash-bound decision packet assembly, holder-only context selection,
   deterministic scored/budgeted memory retrieval, and an inspectable first-choice preview;
-- `AGT-004` implement random and scripted policies for every decision kind;
+- `AGT-004` complete: implement packet-bound random and personality-scripted policies for every
+  decision kind, with deterministic traces and hash-bound results;
 - `AGT-005` implement OpenAI policy adapter with strict Structured Outputs;
 - `AGT-006` implement job lifecycle, retry, stale rejection, replan, and fallback;
 - `AGT-007` implement free-text conversation UI and order outcomes;

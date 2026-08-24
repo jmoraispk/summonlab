@@ -66,7 +66,15 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		'I am the Master of Hearth 01. You were summoned here'
 	);
 	await expect(page.getByTestId('decision-context')).toContainText('hero.choose.kitchen');
+	await expect(page.getByTestId('policy-baselines')).toContainText('Personality script');
+	await expect(page.getByTestId('policy-baselines')).toContainText('Seeded random');
+	await expect(page.getByTestId('policy-baselines')).toContainText('0 model calls');
+	await expect(page.getByTestId('policy-baselines').getByText('result')).toHaveCount(2);
 	await expect(page.getByTestId('decision-context')).toContainText('witnessed knowledge only');
+	if (process.env.CAPTURE_PHASE5_POLICIES) {
+		await page.setViewportSize({ width: 1440, height: 1050 });
+		await page.screenshot({ path: process.env.CAPTURE_PHASE5_POLICIES, fullPage: true });
+	}
 	if (process.env.CAPTURE_PHASE5_COMMUNICATION) {
 		await page.setViewportSize({ width: 1440, height: 1050 });
 		await page.screenshot({ path: process.env.CAPTURE_PHASE5_COMMUNICATION, fullPage: true });

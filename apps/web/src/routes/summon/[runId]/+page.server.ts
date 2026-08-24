@@ -1,6 +1,7 @@
 import { getConfig } from '@summonlab/config';
 import { getEngineSnapshot, getProofRun } from '@summonlab/database';
 import { assembleHeroDecisionPacket, projectHeroConversationPresentation } from '@summonlab/engine';
+import { createHeroDecisionPreview } from '@summonlab/policies';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
@@ -15,19 +16,20 @@ export const load: PageServerLoad = async ({ params }) => {
 	const conversation = engineSnapshot
 		? projectHeroConversationPresentation(engineSnapshot, snapshot.manifest.characterId)
 		: null;
-	const decisionPacket = engineSnapshot
-		? (() => {
+	const decisionPreview = engineSnapshot
+		? await (async () => {
 				try {
-					return assembleHeroDecisionPacket({
+					const packet = assembleHeroDecisionPacket({
 						snapshot: engineSnapshot,
 						manifest: snapshot.manifest,
 						heroId: snapshot.manifest.characterId,
 						decisionKind: 'settlement-action'
 					});
+					return await createHeroDecisionPreview(packet, `${params.runId}:policy-preview-v1`);
 				} catch {
 					return null;
 				}
 			})()
 		: null;
-	return { snapshot, conversation, decisionPacket };
+	return { snapshot, conversation, decisionPreview };
 };

@@ -54,3 +54,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-5-decision-context.png` — expanded first-choice packet preview with state/packet hashes,
   exactly two engine-owned legal actions, scored personal memories, exact witnessed words, and
   source-event → observation provenance beside the summoned hero.
+- `phase-5-policy-baselines.png` — the same summoned hero and holder-owned packet with side-by-side
+  personality-scripted and explicit-seed random choices, zero model calls, inspectable score/draw
+  evidence, and independent result hashes bound to the one legal-action boundary.
