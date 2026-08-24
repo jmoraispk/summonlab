@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+
 import { expect, test } from '@playwright/test';
 
 test.use({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
@@ -41,6 +44,20 @@ test('audits approved identity states and phone delivery without auto-approval',
 		})
 		.toBeGreaterThanOrEqual(30);
 
+	const reviewConsole = page.getByTestId('review-console');
+	for (const button of await reviewConsole
+		.getByRole('button', { name: 'Pass', exact: true })
+		.all()) {
+		await button.click();
+	}
+	await reviewConsole.getByLabel('Reviewer').fill('test:recognition-e2e');
+	await reviewConsole
+		.getByLabel('Observation')
+		.fill('Mission-scale identity survives motion and equipment stress.');
+	await reviewConsole.getByRole('button', { name: 'Record pass' }).click();
+	await expect(reviewConsole).toContainText('Recorded pass evidence for Mission exertion.');
+	await expect(reviewConsole).toContainText('Latest evidencepass');
+
 	const horizontalOverflow = await page.evaluate(
 		() => document.documentElement.scrollWidth - window.innerWidth
 	);
@@ -61,4 +78,63 @@ test('audits approved identity states and phone delivery without auto-approval',
 				.evaluate((element) => getComputedStyle(element).animationName)
 		)
 		.toBe('none');
+});
+
+test('binds recognition evidence to the current audit and exact required cues', async ({
+	request
+}) => {
+	const audit = JSON.parse(
+		await readFile(
+			new URL('../../../../assets/heroes/visuals/recognition-audit.json', import.meta.url),
+			'utf8'
+		)
+	) as {
+		auditHash: string;
+		catalogVersion: string;
+		characterId: string;
+		cases: Array<{ caseId: string; requiredCues: string[] }>;
+	};
+	const auditCase = audit.cases.find((candidate) => candidate.caseId === 'settlement-night-walk')!;
+	const payload = {
+		reviewId: randomUUID(),
+		auditHash: audit.auditHash,
+		catalogVersion: audit.catalogVersion,
+		characterId: audit.characterId,
+		caseId: auditCase.caseId,
+		outcomes: auditCase.requiredCues.map((cue) => ({ cue, verdict: 'pass' })),
+		verdict: 'pass',
+		note: 'Automated recognition API contract proof.',
+		reviewer: 'test:playwright-api'
+	};
+
+	const created = await request.post('/api/dev/recognition-reviews', { data: payload });
+	expect(created.status()).toBe(201);
+	expect((await created.json()).reviewId).toBe(payload.reviewId);
+	const retried = await request.post('/api/dev/recognition-reviews', { data: payload });
+	expect(retried.status()).toBe(200);
+	const conflicted = await request.post('/api/dev/recognition-reviews', {
+		data: { ...payload, note: 'A conflicting retry.' }
+	});
+	expect(conflicted.status()).toBe(409);
+	const stale = await request.post('/api/dev/recognition-reviews', {
+		data: { ...payload, reviewId: randomUUID(), auditHash: '0'.repeat(64) }
+	});
+	expect(stale.status()).toBe(409);
+	const incomplete = await request.post('/api/dev/recognition-reviews', {
+		data: { ...payload, reviewId: randomUUID(), outcomes: payload.outcomes.slice(1) }
+	});
+	expect(incomplete.status()).toBe(400);
+	const wrongCueSet = await request.post('/api/dev/recognition-reviews', {
+		data: { ...payload, reviewId: randomUUID(), caseId: 'summon-neutral' }
+	});
+	expect(wrongCueSet.status()).toBe(409);
+
+	const listed = await request.get('/api/dev/recognition-reviews?includeAutomated=true');
+	expect(listed.status()).toBe(200);
+	const body = (await listed.json()) as {
+		reviews: Array<{ reviewId: string }>;
+		latestByCase: Record<string, { reviewId: string }>;
+	};
+	expect(body.reviews.some((review) => review.reviewId === payload.reviewId)).toBe(true);
+	expect(body.latestByCase[auditCase.caseId]).toBeDefined();
 });

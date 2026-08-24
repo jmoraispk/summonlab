@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import HeroRig from '$lib/components/HeroRig.svelte';
-	import type { VisualRecognitionCue } from '@summonlab/contracts';
+	import type {
+		RecognitionCueOutcome,
+		RecognitionReviewRecord,
+		RecognitionReviewVerdict,
+		VisualRecognitionCue
+	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
@@ -11,6 +16,16 @@
 	let interactionLatencyMs = $state<number | null>(null);
 	let observedViewport = $state('measuring');
 	let reducedMotion = $state(false);
+	// svelte-ignore state_referenced_locally
+	let reviewHistory = $state<RecognitionReviewRecord[]>([...data.recognitionReviews.reviews]);
+	let outcomeDraft = $state<
+		Partial<Record<VisualRecognitionCue, RecognitionCueOutcome['verdict']>>
+	>({});
+	let overallVerdict = $state<RecognitionReviewVerdict>('pass');
+	let reviewer = $state('project-lead');
+	let reviewNote = $state('');
+	let reviewStatus = $state('');
+	let reviewSubmitting = $state(false);
 
 	const selectedCase = $derived(
 		data.audit.cases.find((entry) => entry.caseId === selectedCaseId) ?? data.audit.cases[0]!
@@ -24,6 +39,19 @@
 		(data.audit.phoneDelivery.totalDecodedRgbaBytes /
 			data.audit.phoneDelivery.textureMemoryReferenceBytes) *
 			100
+	);
+	const latestByCase = $derived.by(() => {
+		const latest: Record<string, RecognitionReviewRecord> = {};
+		for (const review of reviewHistory) latest[review.caseId] = review;
+		return latest;
+	});
+	const selectedLatest = $derived(latestByCase[selectedCaseId]);
+	const completedCaseCount = $derived(Object.keys(latestByCase).length);
+	const allCuesAnswered = $derived(
+		selectedCase.requiredCues.every((cue) => outcomeDraft[cue] !== undefined)
+	);
+	const allCuesPass = $derived(
+		allCuesAnswered && selectedCase.requiredCues.every((cue) => outcomeDraft[cue] === 'pass')
 	);
 	const cues: readonly { key: VisualRecognitionCue; label: string }[] = [
 		{ key: 'face', label: 'Face' },
@@ -44,12 +72,69 @@
 	function chooseCase(caseId: string): void {
 		const startedAt = performance.now();
 		selectedCaseId = caseId;
+		loadDraft(caseId);
+		reviewStatus = '';
 		requestAnimationFrame(() => {
 			interactionLatencyMs = performance.now() - startedAt;
 		});
 	}
 
+	function loadDraft(caseId: string): void {
+		const latest = reviewHistory.findLast((review) => review.caseId === caseId);
+		outcomeDraft = Object.fromEntries(
+			(latest?.outcomes ?? []).map((outcome) => [outcome.cue, outcome.verdict])
+		);
+		overallVerdict = latest?.verdict ?? 'pass';
+		reviewNote = '';
+	}
+
+	function setCue(cue: VisualRecognitionCue, verdict: RecognitionCueOutcome['verdict']): void {
+		outcomeDraft = { ...outcomeDraft, [cue]: verdict };
+		if (verdict === 'fail') overallVerdict = 'revise';
+	}
+
+	async function submitRecognitionReview(event: SubmitEvent): Promise<void> {
+		event.preventDefault();
+		if (!allCuesAnswered || !reviewNote.trim() || !reviewer.trim()) return;
+		if (overallVerdict === 'pass' && !allCuesPass) {
+			reviewStatus = 'Resolve each failed cue or record an overall revision.';
+			return;
+		}
+		reviewSubmitting = true;
+		reviewStatus = 'Recording hash-bound evidence…';
+		try {
+			const response = await fetch(resolve('/api/dev/recognition-reviews'), {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					reviewId: crypto.randomUUID(),
+					auditHash: data.audit.auditHash,
+					catalogVersion: data.audit.catalogVersion,
+					characterId: data.audit.characterId,
+					caseId: selectedCase.caseId,
+					outcomes: selectedCase.requiredCues.map((cue) => ({
+						cue,
+						verdict: outcomeDraft[cue]
+					})),
+					verdict: overallVerdict,
+					note: reviewNote.trim(),
+					reviewer: reviewer.trim()
+				})
+			});
+			const body = (await response.json()) as RecognitionReviewRecord & { message?: string };
+			if (!response.ok) throw new Error(body.message ?? 'The review could not be recorded.');
+			reviewHistory = [...reviewHistory, body];
+			reviewNote = '';
+			reviewStatus = `Recorded ${body.verdict} evidence for ${selectedCase.label}.`;
+		} catch (error) {
+			reviewStatus = error instanceof Error ? error.message : 'The review could not be recorded.';
+		} finally {
+			reviewSubmitting = false;
+		}
+	}
+
 	onMount(() => {
+		loadDraft(selectedCaseId);
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		observedViewport = `${window.innerWidth}×${window.innerHeight} @ ${window.devicePixelRatio.toFixed(1)}×`;
 		let frames = 0;
@@ -155,6 +240,9 @@
 					<span>{entry.cameraTier}</span>
 					<strong>{entry.label}</strong>
 					<small>{entry.expression} · {entry.paletteMode}</small>
+					<b class:passed={latestByCase[entry.caseId]?.verdict === 'pass'}
+						>{latestByCase[entry.caseId]?.verdict ?? 'open'}</b
+					>
 				</button>
 			{/each}
 		</div>
@@ -178,6 +266,103 @@
 				</div>
 			</article>
 		</div>
+
+		<section class="review-console" aria-labelledby="review-heading" data-testid="review-console">
+			<header>
+				<div>
+					<p class="eyebrow">Durable human evidence</p>
+					<h3 id="review-heading">Judge every claimed cue.</h3>
+				</div>
+				<div class="review-progress">
+					<strong>{completedCaseCount}/{data.audit.cases.length}</strong>
+					<span>cases reviewed</span>
+					<progress
+						aria-label="Recognition cases reviewed"
+						value={completedCaseCount}
+						max={data.audit.cases.length}
+					></progress>
+				</div>
+			</header>
+
+			{#if !data.reviewPersistenceAvailable}
+				<p class="persistence-warning" role="status">
+					Review storage is offline. Start the local stack with <code>pnpm dev</code> before recording
+					evidence.
+				</p>
+			{:else}
+				<form onsubmit={submitRecognitionReview}>
+					<div class="review-context">
+						<div>
+							<span>Selected case</span><strong>{selectedCase.label}</strong>
+						</div>
+						<div>
+							<span>Latest evidence</span><strong class:passing={selectedLatest?.verdict === 'pass'}
+								>{selectedLatest?.verdict ?? 'unreviewed'}</strong
+							>
+						</div>
+					</div>
+
+					<div class="cue-decisions">
+						{#each selectedCase.requiredCues as cue (cue)}
+							<fieldset>
+								<legend>{cues.find((entry) => entry.key === cue)?.label ?? cue}</legend>
+								<button
+									type="button"
+									class:active={outcomeDraft[cue] === 'pass'}
+									aria-pressed={outcomeDraft[cue] === 'pass'}
+									onclick={() => setCue(cue, 'pass')}>Pass</button
+								>
+								<button
+									type="button"
+									class:active={outcomeDraft[cue] === 'fail'}
+									class:failed={outcomeDraft[cue] === 'fail'}
+									aria-pressed={outcomeDraft[cue] === 'fail'}
+									onclick={() => setCue(cue, 'fail')}>Fail</button
+								>
+							</fieldset>
+						{/each}
+					</div>
+
+					<div class="overall-decision">
+						<span>Overall evidence</span>
+						<button
+							type="button"
+							class:active={overallVerdict === 'pass'}
+							disabled={!allCuesPass}
+							onclick={() => (overallVerdict = 'pass')}>Pass</button
+						>
+						<button
+							type="button"
+							class:active={overallVerdict === 'revise'}
+							onclick={() => (overallVerdict = 'revise')}>Revise</button
+						>
+						<small>All cues must pass for an overall pass. This never approves the asset.</small>
+					</div>
+
+					<div class="review-fields">
+						<label>
+							<span>Reviewer</span>
+							<input bind:value={reviewer} maxlength="80" required />
+						</label>
+						<label>
+							<span>Observation</span>
+							<textarea bind:value={reviewNote} maxlength="1000" rows="3" required></textarea>
+						</label>
+					</div>
+					<div class="review-submit">
+						<button
+							type="submit"
+							disabled={!allCuesAnswered ||
+								!reviewNote.trim() ||
+								!reviewer.trim() ||
+								reviewSubmitting}
+							>{reviewSubmitting ? 'Recording…' : `Record ${overallVerdict}`}</button
+						>
+						<p aria-live="polite">{reviewStatus}</p>
+					</div>
+				</form>
+			{/if}
+		</section>
 	</section>
 
 	<section class="phone-audit" aria-labelledby="phone-heading">
@@ -587,7 +772,8 @@
 	.case-grid i,
 	.case-grid span,
 	.case-grid strong,
-	.case-grid small {
+	.case-grid small,
+	.case-grid b {
 		display: block;
 	}
 	.case-grid i {
@@ -612,6 +798,21 @@
 	.case-grid small {
 		color: rgba(244, 240, 231, 0.34);
 		font-size: 0.48rem;
+	}
+	.case-grid b {
+		width: fit-content;
+		margin-top: 0.8rem;
+		padding: 0.2rem 0.35rem;
+		border: 1px solid rgba(227, 141, 137, 0.25);
+		color: #e38d89;
+		font-size: 0.4rem;
+		font-weight: 700;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	.case-grid b.passed {
+		border-color: rgba(120, 215, 175, 0.25);
+		color: #78d7af;
 	}
 	.case-detail {
 		display: grid;
@@ -676,6 +877,214 @@
 		border: 1px solid rgba(127, 216, 233, 0.16);
 		color: #7fd8e9;
 		font-size: 0.48rem;
+	}
+	.review-console {
+		margin-top: 1.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: #0a0d14;
+	}
+	.review-console > header {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 2rem;
+		padding: 1.4rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.review-console h3 {
+		margin: 0;
+		font:
+			400 clamp(1.6rem, 3vw, 2.8rem) Georgia,
+			serif;
+		letter-spacing: -0.035em;
+	}
+	.review-progress {
+		display: grid;
+		grid-template-columns: auto auto;
+		align-items: baseline;
+		gap: 0.2rem 0.5rem;
+		min-width: 12rem;
+	}
+	.review-progress strong {
+		color: #78d7af;
+		font:
+			400 1.5rem Georgia,
+			serif;
+	}
+	.review-progress span {
+		color: rgba(244, 240, 231, 0.4);
+		font-size: 0.5rem;
+		text-transform: uppercase;
+	}
+	.review-progress progress {
+		grid-column: 1 / -1;
+		width: 100%;
+		height: 3px;
+		border: 0;
+		background: rgba(255, 255, 255, 0.08);
+		accent-color: #78d7af;
+	}
+	.review-console form {
+		padding: 1.4rem;
+	}
+	.review-context {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.review-context > div {
+		padding: 0.85rem;
+		background: #0d1017;
+	}
+	.review-context span,
+	.review-context strong {
+		display: block;
+	}
+	.review-context span,
+	.review-fields span,
+	.overall-decision > span {
+		color: rgba(244, 240, 231, 0.34);
+		font-size: 0.46rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.review-context strong {
+		margin-top: 0.25rem;
+		color: #e38d89;
+		font:
+			400 0.85rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.review-context strong.passing {
+		color: #78d7af;
+	}
+	.cue-decisions {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		gap: 1px;
+		margin-top: 1px;
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.cue-decisions fieldset {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.35rem;
+		min-width: 0;
+		margin: 0;
+		padding: 0.85rem;
+		border: 0;
+		background: #0d1017;
+	}
+	.cue-decisions legend {
+		grid-column: 1 / -1;
+		width: 100%;
+		margin-bottom: 0.45rem;
+		color: #f4f0e7;
+		font-size: 0.52rem;
+		text-transform: capitalize;
+	}
+	.cue-decisions button,
+	.overall-decision button {
+		padding: 0.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: transparent;
+		color: rgba(244, 240, 231, 0.4);
+		cursor: pointer;
+		font-size: 0.48rem;
+		text-transform: uppercase;
+	}
+	.cue-decisions button.active,
+	.overall-decision button.active {
+		border-color: rgba(120, 215, 175, 0.55);
+		background: rgba(120, 215, 175, 0.12);
+		color: #78d7af;
+	}
+	.cue-decisions button.failed,
+	.overall-decision button.active:last-of-type {
+		border-color: rgba(227, 141, 137, 0.55);
+		background: rgba(227, 141, 137, 0.1);
+		color: #e38d89;
+	}
+	.overall-decision {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 1rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.overall-decision > span {
+		margin-right: 0.4rem;
+	}
+	.overall-decision button:disabled {
+		cursor: not-allowed;
+		opacity: 0.28;
+	}
+	.overall-decision small {
+		margin-left: auto;
+		color: rgba(244, 240, 231, 0.32);
+		font-size: 0.48rem;
+	}
+	.review-fields {
+		display: grid;
+		grid-template-columns: minmax(10rem, 0.3fr) minmax(20rem, 1.7fr);
+		gap: 1rem;
+		padding-top: 1rem;
+	}
+	.review-fields label,
+	.review-fields span {
+		display: block;
+	}
+	.review-fields input,
+	.review-fields textarea {
+		box-sizing: border-box;
+		width: 100%;
+		margin-top: 0.4rem;
+		padding: 0.7rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: 0;
+		outline: none;
+		background: #07090e;
+		color: #f4f0e7;
+		font: inherit;
+	}
+	.review-fields input:focus,
+	.review-fields textarea:focus {
+		border-color: rgba(127, 216, 233, 0.6);
+	}
+	.review-fields textarea {
+		resize: vertical;
+	}
+	.review-submit {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+	.review-submit button {
+		padding: 0.75rem 1rem;
+		border: 1px solid #d4a95c;
+		background: transparent;
+		color: #d4a95c;
+		cursor: pointer;
+		font-size: 0.52rem;
+		font-weight: 750;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.review-submit button:disabled {
+		cursor: not-allowed;
+		opacity: 0.3;
+	}
+	.review-submit p,
+	.persistence-warning {
+		margin: 0;
+		color: rgba(244, 240, 231, 0.48);
+		font-size: 0.52rem;
+	}
+	.persistence-warning {
+		padding: 1.4rem;
 	}
 	.phone-grid {
 		display: grid;
@@ -977,6 +1386,21 @@
 		}
 		.cue-matrix {
 			grid-template-columns: 1fr 1fr;
+		}
+		.review-console > header,
+		.overall-decision,
+		.review-submit {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+		.cue-decisions {
+			grid-template-columns: 1fr 1fr;
+		}
+		.review-fields {
+			grid-template-columns: 1fr;
+		}
+		.overall-decision small {
+			margin-left: 0;
 		}
 		.phone-grid {
 			gap: 1rem;

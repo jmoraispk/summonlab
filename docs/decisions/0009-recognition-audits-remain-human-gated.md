@@ -45,8 +45,8 @@ are only one component of renderer memory.
 The current audit covers seven controlled cases, five expressions, and five camera tiers without
 claiming that a machine recognized the person. The three approved textures total 47,758 encoded bytes
 and 5,505,024 decoded RGBA bytes. At the audited 2× display sizes, their density margins are 2.00×,
-1.60×, and 1.33×. The route-specific production measurements are 36,834 bytes for the initial shell,
-296,225 bytes for the fully loaded Pixi inspector, and 42,484 bytes for the recognition audit, all
+1.60×, and 1.33×. The route-specific production measurements are 36,919 bytes for the initial shell,
+296,297 bytes for the fully loaded Pixi inspector, and 44,420 bytes for the recognition audit, all
 gzip and below the 700,000-byte ceiling.
 
 Mara still needs a human verdict across the seven cases. Remy remains outside this runtime audit

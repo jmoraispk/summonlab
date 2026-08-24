@@ -3,6 +3,7 @@ import postgres from 'postgres';
 
 export * from './proof.js';
 export * from './engine.js';
+export * from './recognition-review.js';
 export * from './visual-review.js';
 
 export async function checkDatabaseHealth(databaseUrl: string): Promise<DatabaseHealth> {

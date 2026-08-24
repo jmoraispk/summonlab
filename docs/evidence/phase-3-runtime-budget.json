@@ -7,9 +7,9 @@
 		"runtimeVisualPayloadBytes": 8000000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 36834,
-		"runtimeInspectorLoadedJavaScriptGzipBytes": 296225,
-		"recognitionAuditLoadedJavaScriptGzipBytes": 42484,
+		"initialJavaScriptGzipBytes": 36919,
+		"runtimeInspectorLoadedJavaScriptGzipBytes": 296297,
+		"recognitionAuditLoadedJavaScriptGzipBytes": 44420,
 		"largestRuntimeLazyChunkGzipBytes": 174947,
 		"runtimeVisualPayloadBytes": 47758
 	},

@@ -260,6 +260,62 @@ export const VisualRecognitionCueSchema = z.enum([
 	'signature-traits'
 ]);
 
+export const RecognitionCueOutcomeSchema = z
+	.object({
+		cue: VisualRecognitionCueSchema,
+		verdict: z.enum(['pass', 'fail'])
+	})
+	.strict();
+
+export const RecognitionReviewVerdictSchema = z.enum(['pass', 'revise']);
+
+export const RecognitionReviewCreateRequestSchema = z
+	.object({
+		reviewId: EntityIdSchema,
+		auditHash: StateHashSchema,
+		catalogVersion: ContentVersionSchema,
+		characterId: EntityIdSchema,
+		caseId: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		outcomes: z.array(RecognitionCueOutcomeSchema).min(4).max(5),
+		verdict: RecognitionReviewVerdictSchema,
+		note: z.string().trim().min(1).max(1_000),
+		reviewer: z.string().trim().min(1).max(80)
+	})
+	.strict()
+	.superRefine((value, context) => {
+		if (new Set(value.outcomes.map((outcome) => outcome.cue)).size !== value.outcomes.length) {
+			context.addIssue({ code: 'custom', message: 'Recognition review cues must be unique' });
+		}
+		if (value.verdict === 'pass' && value.outcomes.some((outcome) => outcome.verdict === 'fail')) {
+			context.addIssue({
+				code: 'custom',
+				message: 'A passing recognition review cannot contain a failed cue'
+			});
+		}
+	});
+
+export const RecognitionReviewRecordSchema = RecognitionReviewCreateRequestSchema.extend({
+	createdAt: IsoDateTimeSchema
+}).strict();
+
+export const RecognitionReviewListSchema = z
+	.object({
+		reviews: z.array(RecognitionReviewRecordSchema),
+		latestByCase: z.record(z.string(), RecognitionReviewRecordSchema)
+	})
+	.strict()
+	.superRefine((value, context) => {
+		const knownReviewIds = new Set(value.reviews.map((review) => review.reviewId));
+		for (const [caseId, review] of Object.entries(value.latestByCase)) {
+			if (review.caseId !== caseId || !knownReviewIds.has(review.reviewId)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Latest recognition review must reference a listed review for ${caseId}`
+				});
+			}
+		}
+	});
+
 export const VisualCameraTierSchema = z.enum([
 	'summon',
 	'dialogue',
@@ -640,6 +696,11 @@ export type VisualCameraTier = z.infer<typeof VisualCameraTierSchema>;
 export type VisualRecognitionAudit = z.infer<typeof VisualRecognitionAuditSchema>;
 export type VisualRecognitionCase = z.infer<typeof VisualRecognitionCaseSchema>;
 export type VisualRecognitionCue = z.infer<typeof VisualRecognitionCueSchema>;
+export type RecognitionCueOutcome = z.infer<typeof RecognitionCueOutcomeSchema>;
+export type RecognitionReviewCreateRequest = z.infer<typeof RecognitionReviewCreateRequestSchema>;
+export type RecognitionReviewList = z.infer<typeof RecognitionReviewListSchema>;
+export type RecognitionReviewRecord = z.infer<typeof RecognitionReviewRecordSchema>;
+export type RecognitionReviewVerdict = z.infer<typeof RecognitionReviewVerdictSchema>;
 export type VisualRigEquipment = z.infer<typeof VisualRigEquipmentSchema>;
 export type VisualRigPaletteMode = z.infer<typeof VisualRigPaletteModeSchema>;
 export type WebBuildBudgetReport = z.infer<typeof WebBuildBudgetReportSchema>;

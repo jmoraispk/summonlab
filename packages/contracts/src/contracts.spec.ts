@@ -6,6 +6,9 @@ import {
 	CharacterManifestSchema,
 	HealthResponseSchema,
 	LegalActionSchema,
+	RecognitionReviewCreateRequestSchema,
+	RecognitionReviewListSchema,
+	RecognitionReviewRecordSchema,
 	RewardDeltaSchema,
 	RuntimeVisualManifestSchema,
 	SummonCardGenerateRequestSchema,
@@ -350,6 +353,51 @@ describe('foundation contracts', () => {
 				]
 			})
 		).toThrow();
+	});
+
+	it('requires complete and internally consistent recognition review evidence', () => {
+		const request = {
+			reviewId: randomUUID(),
+			auditHash: '4'.repeat(64),
+			catalogVersion: 'visual-catalog-v1',
+			characterId: randomUUID(),
+			caseId: 'settlement-night-walk',
+			outcomes: [
+				{ cue: 'hair', verdict: 'pass' },
+				{ cue: 'silhouette', verdict: 'pass' },
+				{ cue: 'palette', verdict: 'pass' },
+				{ cue: 'signature-traits', verdict: 'pass' }
+			] as const,
+			verdict: 'pass' as const,
+			note: 'The non-facial identity survives settlement scale.',
+			reviewer: 'local-lead'
+		};
+		const review = RecognitionReviewRecordSchema.parse({
+			...request,
+			createdAt: '2026-08-24T05:00:00.000Z'
+		});
+
+		expect(RecognitionReviewCreateRequestSchema.parse(request).outcomes).toHaveLength(4);
+		expect(
+			RecognitionReviewCreateRequestSchema.safeParse({
+				...request,
+				outcomes: [request.outcomes[0], request.outcomes[0], ...request.outcomes.slice(2)]
+			}).success
+		).toBe(false);
+		expect(
+			RecognitionReviewCreateRequestSchema.safeParse({
+				...request,
+				outcomes: request.outcomes.map((outcome, index) =>
+					index === 0 ? { ...outcome, verdict: 'fail' } : outcome
+				)
+			}).success
+		).toBe(false);
+		expect(
+			RecognitionReviewListSchema.safeParse({
+				reviews: [review],
+				latestByCase: { 'different-case': review }
+			}).success
+		).toBe(false);
 	});
 
 	it('rejects measured web payloads that exceed their recorded budgets', () => {

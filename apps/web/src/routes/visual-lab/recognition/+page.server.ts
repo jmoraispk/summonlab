@@ -6,9 +6,11 @@ import {
 import { getConfig } from '@summonlab/config';
 import {
 	CharacterVisualCatalogSchema,
+	RecognitionReviewListSchema,
 	VisualRecognitionAuditSchema,
 	WebBuildBudgetReportSchema
 } from '@summonlab/contracts';
+import { listRecognitionReviews } from '@summonlab/database';
 import { error } from '@sveltejs/kit';
 
 import visualCatalogSource from '../../../../../../assets/heroes/visuals/catalog.json';
@@ -40,5 +42,19 @@ export const load: PageServerLoad = async () => {
 	) {
 		throw new Error('Recognition audit no longer matches its approved deterministic identity.');
 	}
-	return { audit, buildBudget, character, profile };
+	let recognitionReviews = RecognitionReviewListSchema.parse({ reviews: [], latestByCase: {} });
+	let reviewPersistenceAvailable = true;
+	try {
+		recognitionReviews = await listRecognitionReviews(getConfig().databaseUrl, audit.auditHash);
+	} catch {
+		reviewPersistenceAvailable = false;
+	}
+	return {
+		audit,
+		buildBudget,
+		character,
+		profile,
+		recognitionReviews,
+		reviewPersistenceAvailable
+	};
 };

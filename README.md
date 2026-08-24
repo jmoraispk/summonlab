@@ -175,15 +175,18 @@ request.
 1.80 MB anchor exports into separate summon, dialogue, and roster WebP textures totaling 47.8 KB.
 The checked-in manifest binds every file to source and identity hashes, enforces the 8 MB phone
 budget, and loads the summon texture through an actual lazy PixiJS v8 bundle alias. Approval
-candidates are visible in the ledger but produce no runtime files. The build gate measures 36.8 KB
-of initial JavaScript and 296.2 KB with the renderer inspector fully loaded, both gzip and below the
+candidates are visible in the ledger but produce no runtime files. The build gate measures 36.9 KB
+of initial JavaScript and 296.3 KB with the renderer inspector fully loaded, both gzip and below the
 700 KB ceiling.
 
 `/visual-lab/recognition` stress-tests that approved identity through seven deterministic cases:
 every Mara expression, all five camera tiers, equipment, gait, night color, and localized injury.
 The 390×844/2× profile proves 1.33× or better texture-density margin, 47.8 KB encoded transfer, and a
-5.51 MB decoded-RGBA proxy. The audit route is 42.5 KB gzip and measures live animation and
-case-switch response, but its verdict deliberately remains human-pending.
+5.51 MB decoded-RGBA proxy. The audit route is 44.4 KB gzip and measures live animation and
+case-switch response. Its review console requires an explicit outcome for every claimed cue and
+stores append-only case evidence against the exact audit hash. Recognition evidence remains
+separate from asset approval, so the verdict deliberately stays human-pending until the seven cases
+are reviewed.
 
 ![Visual continuity lab](docs/evidence/phase-3-visual-lab.png)
 

@@ -941,8 +941,8 @@ Estimated engineering effort: **2–3 weeks**, partially parallel with Phase 2.
 **Status: in progress — visual approval checkpoint completed 2026-08-23.** `ART-001`, the
 `human-v2` physiology and `human-v3` naming portions of `ART-002`, `ART-003`, `ART-004`, `ART-006`,
 and `ART-007` now have runnable evidence. Two of twelve `ART-005` humans and a deterministic
-seven-case `ART-008` audit for the first approved identity remain at the human feedback gate. Cohort
-expansion remains behind that gate.
+seven-case `ART-008` audit with durable, cue-level human reviews for the first approved identity
+remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 - `ART-001` approve art bible, palette, line/value rules, and camera compositions;
 - `ART-002` expand manifest generator and diversity test suite;
@@ -954,8 +954,9 @@ expansion remains behind that gate.
 - `ART-007` complete: export approved sources into content-addressed, budgeted WebP variants and a
   validated PixiJS manifest while deferring every candidate source;
 - `ART-008` in progress: the first approved identity has a hash-bound, human-gated audit across all
-  five camera tiers, five expressions, equipment, gait, injury, and a measured phone profile; human
-  verdicts and later approved identities remain.
+  five camera tiers, five expressions, equipment, gait, injury, and a measured phone profile;
+  append-only cue reviews are now durable and exact-audit-bound, while human verdicts and later
+  approved identities remain.
 
 **Feedback gate:** approve a representative male hero, female hero, roster group, and settlement-scale appearance before expanding assets.
 
@@ -1066,8 +1067,8 @@ turn incorporates feedback where available and continues reversible production i
 
 1. accept or revise Mara Vey, Remy Nahl, their roster composition, and settlement scale;
 2. review the first approved runtime bundle at summon, dialogue, and roster sizes;
-3. run the seven-case recognition audit and decide whether Mara survives expression, state, and
-   actual CSS-scale changes;
+3. run the seven-case recognition audit, explicitly record every claimed cue, and decide whether
+   Mara survives expression, state, and actual CSS-scale changes;
 4. only after visual acceptance, expand the representative cohort from two toward twelve humans;
 5. extend the audit to Remy only after an explicit anchor approval;
 6. rerun visual, accessibility, performance, browser, and deterministic manifest gates;
