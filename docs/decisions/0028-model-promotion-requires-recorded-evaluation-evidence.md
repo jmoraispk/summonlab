@@ -20,7 +20,7 @@ while leaving room for actual provider outputs to become auditable evidence late
   behavior, clean-slate versus evidence-backed authority, cited witnessed memory, and legal secret
   discovery. Each case declares acceptable actions, public-output exclusions, citation rules, and
   contrast-pair invariants.
-- Corpus generation uses real deterministic character minds, engine-v9 snapshots, witnessed
+- Corpus generation uses real deterministic character minds, engine-v10 snapshots, witnessed
   communication where required, canonical legal actions, and existing packet integrity checks.
   The exported fixture contains no credentials or engine seed.
 - Scripted and explicit-seed random policies run over the entire corpus in CI. The scripted policy

@@ -16,6 +16,7 @@ import {
 	EngineGameStateV7Schema,
 	EngineGameStateV8Schema,
 	EngineGameStateV9Schema,
+	EngineGameStateV10Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -35,6 +36,9 @@ import {
 	SocietyStateSchema,
 	SocietyStateV2Schema,
 	SocietyStateV3Schema,
+	SocietyStateV4Schema,
+	DirectiveRecordSchema,
+	DirectiveInfluenceRecordSchema,
 	type ActivityKind,
 	type AuthoritativeEvent,
 	type BuildingAssignmentRole,
@@ -50,6 +54,7 @@ import {
 	type EngineGameStateV7,
 	type EngineGameStateV8,
 	type EngineGameStateV9,
+	type EngineGameStateV10,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
@@ -65,6 +70,8 @@ import {
 	type SocietyState,
 	type SocietyStateV2,
 	type SocietyStateV3,
+	type SocietyStateV4,
+	type DirectiveRecord,
 	type ScheduledEvent
 } from '@summonlab/contracts';
 import { HEARTH_01_DEFINITION, planSettlementRoute } from '@summonlab/content';
@@ -76,7 +83,8 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v9';
+export const ENGINE_CONTENT_VERSION = 'engine-v10';
+export const DIRECTIVE_ENGINE_CONTENT_VERSION = 'engine-v10';
 export const CONVERSATION_ENGINE_CONTENT_VERSION = 'engine-v9';
 export const COMMUNICATION_ENGINE_CONTENT_VERSION = 'engine-v8';
 export const SOCIAL_ENGINE_CONTENT_VERSION = 'engine-v7';
@@ -117,9 +125,15 @@ type EngineGameStateModern =
 	| EngineGameStateV6
 	| EngineGameStateV7
 	| EngineGameStateV8
-	| EngineGameStateV9;
+	| EngineGameStateV9
+	| EngineGameStateV10;
 type EngineRoutineState =
-	EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9;
+	| EngineGameStateV5
+	| EngineGameStateV6
+	| EngineGameStateV7
+	| EngineGameStateV8
+	| EngineGameStateV9
+	| EngineGameStateV10;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -192,7 +206,9 @@ const EmptyMetadataSchema = z.object({
 	rewardDeltas: RewardDeltasSchema,
 	resolvedScheduledEventIds: z.array(z.string().uuid()),
 	canceledScheduledEventIds: z.array(z.string().uuid()),
-	entropyDraws: z.array(EntropyDrawSchema)
+	entropyDraws: z.array(EntropyDrawSchema),
+	directiveInfluences: z.array(DirectiveInfluenceRecordSchema).max(16).optional(),
+	expiredDirectiveIds: z.array(z.string().uuid()).max(256).optional()
 });
 
 const InitializedPayloadSchema = z
@@ -323,7 +339,9 @@ const FirstEmberRecoveredPayloadSchema = EmptyMetadataSchema.extend({
 
 const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
 	firstEmber: FirstEmberStateSchema,
-	society: z.union([SocietyStateSchema, SocietyStateV2Schema, SocietyStateV3Schema]).optional(),
+	society: z
+		.union([SocietyStateSchema, SocietyStateV2Schema, SocietyStateV3Schema, SocietyStateV4Schema])
+		.optional(),
 	previousPoweredBuildingId: z.string().nullable(),
 	powerStateChanges: z.array(PowerStateChangeSchema).min(1),
 	activeSystemIdsAfter: z.array(z.string()),
@@ -332,13 +350,22 @@ const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
 
 const CommunicativeActRecordedPayloadSchema = EmptyMetadataSchema.extend({
 	communicativeAct: CommunicativeActSchema,
-	society: z.union([SocietyStateV2Schema, SocietyStateV3Schema]),
+	society: z.union([SocietyStateV2Schema, SocietyStateV3Schema, SocietyStateV4Schema]),
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
 const ConversationTurnRecordedPayloadSchema = EmptyMetadataSchema.extend({
 	conversationTurn: HeroConversationTurnSchema,
-	society: SocietyStateV3Schema,
+	society: z.union([SocietyStateV3Schema, SocietyStateV4Schema]),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const DirectiveChangedPayloadSchema = EmptyMetadataSchema.extend({
+	directive: DirectiveRecordSchema,
+	previousDirective: DirectiveRecordSchema.nullable(),
+	communicativeAct: CommunicativeActSchema.nullable(),
+	society: SocietyStateV4Schema,
+	scheduledEvent: ScheduledEventSchema.nullable(),
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -498,14 +525,14 @@ function createBootstrapSociety(
 	masterId: string,
 	eventId: string,
 	observedAt: string
-): SocietyStateV3 {
+): SocietyStateV4 {
 	const observationId = deterministicUuid(`${eventId}:${heroId}:awakening-observation`);
 	const selfBeliefId = deterministicUuid(`${observationId}:self-awakened`);
 	const presenceBeliefId = deterministicUuid(`${observationId}:master-present`);
 	const relationshipId = deterministicUuid(`${heroId}:${masterId}:relationship`);
 	const authorityId = deterministicUuid(`${heroId}:${masterId}:authority`);
-	return SocietyStateV3Schema.parse({
-		contentVersion: 'society-v3',
+	return SocietyStateV4Schema.parse({
+		contentVersion: 'society-v4',
 		observations: {
 			[observationId]: {
 				observationId,
@@ -585,7 +612,9 @@ function createBootstrapSociety(
 			}
 		},
 		communicativeActs: {},
-		conversationTurns: {}
+		conversationTurns: {},
+		directives: {},
+		directiveInfluences: {}
 	});
 }
 
@@ -617,8 +646,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
-	const state = EngineGameStateV9Schema.parse({
-		schemaVersion: 9,
+	const state = EngineGameStateV10Schema.parse({
+		schemaVersion: 10,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -901,12 +930,12 @@ const FIRST_EMBER_PROMISE_TERMS = Object.freeze({
 } as const satisfies Record<FirstEmberRationale, string>);
 
 function buildFirstEmberSociety(
-	state: EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9,
+	state: EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10,
 	eventId: string,
 	buildingId: FirstEmberFacility,
 	rationale: FirstEmberRationale,
 	reactions: readonly ReturnType<typeof buildFirstEmberReaction>[]
-): SocietyState | SocietyStateV2 | SocietyStateV3 {
+): SocietyState | SocietyStateV2 | SocietyStateV3 | SocietyStateV4 {
 	const observations = { ...state.society.observations };
 	const beliefs = { ...state.society.beliefs };
 	const relationships = { ...state.society.relationships };
@@ -1062,6 +1091,7 @@ function buildFirstEmberSociety(
 			}
 		}
 	};
+	if (state.schemaVersion === 10) return SocietyStateV4Schema.parse(candidate);
 	if (state.schemaVersion === 9) return SocietyStateV3Schema.parse(candidate);
 	return state.schemaVersion === 8
 		? SocietyStateV2Schema.parse(candidate)
@@ -1073,7 +1103,7 @@ type CommunicationInput = Pick<
 	z.infer<typeof CommunicativeActSchema>,
 	'kind' | 'topic' | 'exactText' | 'tone' | 'delivery'
 > & { readonly targetHeroId: string };
-type EngineCommunicationState = EngineGameStateV8 | EngineGameStateV9;
+type EngineCommunicationState = EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10;
 
 function heroCanHearCommunication(hero: EngineCommunicationState['heroes'][string]): boolean {
 	return (
@@ -1139,7 +1169,7 @@ function buildCommunicativeSociety(
 	eventId: string,
 	command: CommunicationInput
 ): {
-	society: SocietyStateV2 | SocietyStateV3;
+	society: SocietyStateV2 | SocietyStateV3 | SocietyStateV4;
 	communicativeAct: z.infer<typeof CommunicativeActSchema>;
 } {
 	const claim = communicationClaim(state, command);
@@ -1220,9 +1250,168 @@ function buildCommunicativeSociety(
 	return {
 		communicativeAct,
 		society:
-			state.schemaVersion === 9
-				? SocietyStateV3Schema.parse(candidate)
-				: SocietyStateV2Schema.parse(candidate)
+			state.schemaVersion === 10
+				? SocietyStateV4Schema.parse(candidate)
+				: state.schemaVersion === 9
+					? SocietyStateV3Schema.parse(candidate)
+					: SocietyStateV2Schema.parse(candidate)
+	};
+}
+
+type DirectiveIssueCommand = Extract<
+	EngineCommand,
+	{ commandType: 'master.issue.directive' | 'master.replace.directive' }
+>;
+
+function nextGameDayStart(gameTime: string): string {
+	const milliseconds = Date.parse(ENGINE_EPOCH) + (gameDayIndex(gameTime) + 1) * 86_400_000;
+	return new Date(milliseconds).toISOString();
+}
+
+function buildDirectiveChange(
+	state: EngineGameStateV10,
+	eventId: string,
+	command: DirectiveIssueCommand
+): {
+	directive: DirectiveRecord;
+	previousDirective: DirectiveRecord | null;
+	communicativeAct: z.infer<typeof CommunicativeActSchema>;
+	society: SocietyStateV4;
+	scheduledEvent: ScheduledEvent | null;
+} {
+	const previousDirective =
+		command.commandType === 'master.replace.directive'
+			? (state.society.directives[command.directiveId] ?? null)
+			: null;
+	const directiveId = deterministicUuid(`${command.commandId}:directive`);
+	const actId = deterministicUuid(`${eventId}:directive-communicative-act`);
+	const recipientSet = new Set(command.recipientIds);
+	const witnessHeroes = Object.values(state.heroes)
+		.filter(
+			(hero) =>
+				hero.location === state.master.location &&
+				heroCanHearCommunication(hero) &&
+				(recipientSet.has(hero.heroId) || command.delivery === 'open')
+		)
+		.sort((left, right) => left.heroId.localeCompare(right.heroId));
+	const observations = { ...state.society.observations };
+	const witnesses = witnessHeroes.map((hero) => {
+		const intended = recipientSet.has(hero.heroId);
+		const observationId = deterministicUuid(`${actId}:${hero.heroId}:observation`);
+		observations[observationId] = {
+			observationId,
+			sourceEventId: eventId,
+			observerHeroId: hero.heroId,
+			observedAt: state.simulatedAt,
+			kind: 'communication',
+			communicationActId: actId,
+			summary: intended
+				? `The Master directed me: “${command.text}”`
+				: `I overheard the Master direct others: “${command.text}”`,
+			subjectIds: [state.master.masterId, ...command.recipientIds]
+		};
+		return {
+			heroId: hero.heroId,
+			role: intended ? ('intended' as const) : ('bystander' as const),
+			perception: intended ? ('addressed' as const) : ('overheard' as const),
+			observationId,
+			beliefId: null
+		};
+	});
+	const communicativeAct = CommunicativeActSchema.parse({
+		actId,
+		sourceEventId: eventId,
+		speakerId: state.master.masterId,
+		intendedAudienceIds: [...command.recipientIds],
+		kind: 'order',
+		topic: 'daily-order',
+		exactText: command.text,
+		tone: command.tone,
+		delivery: command.delivery,
+		location: state.master.location,
+		occurredAt: state.simulatedAt,
+		claim: null,
+		witnesses
+	});
+	const expiresAt = command.scope === 'day' ? nextGameDayStart(state.simulatedAt) : null;
+	const expiryScheduledEventId =
+		command.scope === 'day' ? deterministicUuid(`${command.commandId}:directive-expiry`) : null;
+	const directive = DirectiveRecordSchema.parse({
+		directiveId,
+		runId: state.runId,
+		authorId: state.master.masterId,
+		text: command.text,
+		scope: command.scope,
+		recipientIds: [...command.recipientIds],
+		witnessEventId: eventId,
+		priorities: [...command.priorities],
+		createdAt: state.simulatedAt,
+		expiresAt,
+		revokedAt: null,
+		delivery: command.delivery,
+		status: 'active',
+		witnessObservationIds: witnesses.map((witness) => witness.observationId),
+		expiryScheduledEventId,
+		replacesDirectiveId: previousDirective?.directiveId ?? null,
+		replacedByDirectiveId: null,
+		terminalAt: null,
+		terminalEventId: null
+	});
+	const directives = { ...state.society.directives };
+	if (previousDirective) {
+		directives[previousDirective.directiveId] = DirectiveRecordSchema.parse({
+			...previousDirective,
+			status: 'replaced',
+			revokedAt: state.simulatedAt,
+			replacedByDirectiveId: directiveId,
+			terminalAt: state.simulatedAt,
+			terminalEventId: eventId
+		});
+	}
+	directives[directiveId] = directive;
+	const society = SocietyStateV4Schema.parse({
+		...state.society,
+		observations,
+		communicativeActs: {
+			...state.society.communicativeActs,
+			[actId]: communicativeAct
+		},
+		directives
+	});
+	const scheduledEvent =
+		expiresAt && expiryScheduledEventId
+			? ScheduledEventSchema.parse({
+					scheduledEventId: expiryScheduledEventId,
+					runId: state.runId,
+					actorId: state.master.masterId,
+					dueGameTime: expiresAt,
+					eventKind: 'directive.expire',
+					payload: { directiveId }
+				})
+			: null;
+	return { directive, previousDirective, communicativeAct, society, scheduledEvent };
+}
+
+function revokeDirective(
+	state: EngineGameStateV10,
+	eventId: string,
+	directiveId: string
+): { directive: DirectiveRecord; society: SocietyStateV4 } {
+	const previous = state.society.directives[directiveId];
+	if (!previous) throw new IllegalActionError('master.revoke.directive');
+	const directive = DirectiveRecordSchema.parse({
+		...previous,
+		status: 'revoked',
+		revokedAt: state.simulatedAt,
+		terminalAt: state.simulatedAt,
+		terminalEventId: eventId
+	});
+	return {
+		directive,
+		society: SocietyStateV4Schema.parse({
+			...state.society,
+			directives: { ...state.society.directives, [directiveId]: directive }
+		})
 	};
 }
 
@@ -1235,8 +1424,8 @@ const ORDER_INTENT_LABELS = Object.freeze({
 } as const satisfies Record<ConversationOrderIntent, string>);
 
 function conversationOrderScore(
-	state: EngineGameStateV9,
-	hero: EngineGameStateV9['heroes'][string],
+	state: EngineGameStateV9 | EngineGameStateV10,
+	hero: (EngineGameStateV9 | EngineGameStateV10)['heroes'][string],
 	intent: ConversationOrderIntent,
 	tone: MasterConverseCommand['tone']
 ) {
@@ -1312,7 +1501,7 @@ function conversationOrderScore(
 	};
 }
 
-function conversationVoice(hero: EngineGameStateV9['heroes'][string]): {
+function conversationVoice(hero: (EngineGameStateV9 | EngineGameStateV10)['heroes'][string]): {
 	prefix: string;
 	question: string;
 } {
@@ -1333,7 +1522,7 @@ function conversationVoice(hero: EngineGameStateV9['heroes'][string]): {
 }
 
 function buildConversationResponse(
-	state: EngineGameStateV9,
+	state: EngineGameStateV9 | EngineGameStateV10,
 	command: MasterConverseCommand
 ): z.infer<typeof HeroConversationTurnSchema>['response'] {
 	const hero = state.heroes[command.targetHeroId];
@@ -1389,10 +1578,13 @@ function buildConversationResponse(
 }
 
 function buildConversationSociety(
-	state: EngineGameStateV9,
+	state: EngineGameStateV9 | EngineGameStateV10,
 	eventId: string,
 	command: MasterConverseCommand
-): { society: SocietyStateV3; conversationTurn: z.infer<typeof HeroConversationTurnSchema> } {
+): {
+	society: SocietyStateV3 | SocietyStateV4;
+	conversationTurn: z.infer<typeof HeroConversationTurnSchema>;
+} {
 	const communication = buildCommunicativeSociety(state, eventId, {
 		targetHeroId: command.targetHeroId,
 		kind: command.kind === 'say' ? 'tell' : command.kind,
@@ -1401,7 +1593,10 @@ function buildConversationSociety(
 		tone: command.tone,
 		delivery: command.delivery
 	});
-	const baseSociety = SocietyStateV3Schema.parse(communication.society);
+	const baseSociety =
+		state.schemaVersion === 10
+			? SocietyStateV4Schema.parse(communication.society)
+			: SocietyStateV3Schema.parse(communication.society);
 	const response = buildConversationResponse(state, command);
 	const turnId = deterministicUuid(`${eventId}:conversation-turn`);
 	const conversationTurn = HeroConversationTurnSchema.parse({
@@ -1450,7 +1645,7 @@ function buildConversationSociety(
 		consistency: response.orderOutcome === 'negotiated' ? 1 : 0
 	};
 	const evidenceSummary = response.publicReason;
-	const society = SocietyStateV3Schema.parse({
+	const societyCandidate = {
 		...baseSociety,
 		relationships: {
 			...baseSociety.relationships,
@@ -1502,7 +1697,11 @@ function buildConversationSociety(
 			...baseSociety.conversationTurns,
 			[turnId]: conversationTurn
 		}
-	});
+	};
+	const society =
+		state.schemaVersion === 10
+			? SocietyStateV4Schema.parse(societyCandidate)
+			: SocietyStateV3Schema.parse(societyCandidate);
 	return { society, conversationTurn };
 }
 
@@ -1531,6 +1730,7 @@ function settlementForState(
 		| EngineGameStateV7
 		| EngineGameStateV8
 		| EngineGameStateV9
+		| EngineGameStateV10
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -1574,7 +1774,8 @@ function routeHasCapacity(
 		| EngineGameStateV6
 		| EngineGameStateV7
 		| EngineGameStateV8
-		| EngineGameStateV9,
+		| EngineGameStateV9
+		| EngineGameStateV10,
 	definition: SettlementDefinition,
 	heroId: string,
 	targetNodeId: string,
@@ -1609,7 +1810,8 @@ function travelActions(
 		| EngineGameStateV6
 		| EngineGameStateV7
 		| EngineGameStateV8
-		| EngineGameStateV9,
+		| EngineGameStateV9
+		| EngineGameStateV10,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -1661,7 +1863,8 @@ function currentTravelFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
-		state.schemaVersion === 9
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
@@ -1671,7 +1874,8 @@ function currentRoutineFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
-		state.schemaVersion === 9
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -1685,8 +1889,9 @@ function hasNavigationState(
 	| EngineGameStateV6
 	| EngineGameStateV7
 	| EngineGameStateV8
-	| EngineGameStateV9 {
-	return [3, 4, 5, 6, 7, 8, 9].includes(state.schemaVersion);
+	| EngineGameStateV9
+	| EngineGameStateV10 {
+	return [3, 4, 5, 6, 7, 8, 9, 10].includes(state.schemaVersion);
 }
 
 function hasFacilityState(
@@ -1697,8 +1902,9 @@ function hasFacilityState(
 	| EngineGameStateV6
 	| EngineGameStateV7
 	| EngineGameStateV8
-	| EngineGameStateV9 {
-	return [4, 5, 6, 7, 8, 9].includes(state.schemaVersion);
+	| EngineGameStateV9
+	| EngineGameStateV10 {
+	return [4, 5, 6, 7, 8, 9, 10].includes(state.schemaVersion);
 }
 
 function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
@@ -1707,14 +1913,20 @@ function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
-		state.schemaVersion === 9
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10
 	);
 }
 
 function hasFirstEmberState(
 	state: EngineGameState
-): state is EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9 {
-	return [6, 7, 8, 9].includes(state.schemaVersion);
+): state is
+	| EngineGameStateV6
+	| EngineGameStateV7
+	| EngineGameStateV8
+	| EngineGameStateV9
+	| EngineGameStateV10 {
+	return [6, 7, 8, 9, 10].includes(state.schemaVersion);
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
@@ -1803,15 +2015,17 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 9
-			? EngineGameStateV9Schema.parse(stateInput)
-			: stateInput.schemaVersion === 8
-				? EngineGameStateV8Schema.parse(stateInput)
-				: stateInput.schemaVersion === 7
-					? EngineGameStateV7Schema.parse(stateInput)
-					: stateInput.schemaVersion === 6
-						? EngineGameStateV6Schema.parse(stateInput)
-						: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 10
+			? EngineGameStateV10Schema.parse(stateInput)
+			: stateInput.schemaVersion === 9
+				? EngineGameStateV9Schema.parse(stateInput)
+				: stateInput.schemaVersion === 8
+					? EngineGameStateV8Schema.parse(stateInput)
+					: stateInput.schemaVersion === 7
+						? EngineGameStateV7Schema.parse(stateInput)
+						: stateInput.schemaVersion === 6
+							? EngineGameStateV6Schema.parse(stateInput)
+							: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -1960,7 +2174,11 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				hero.currentActivity ||
 				currentTravelFor(state, hero.heroId) ||
 				currentRoutineFor(state, hero.heroId)
-		)
+		) ||
+		(state.schemaVersion === 10 &&
+			Object.values(state.society.directives).some(
+				(directive) => directive.status === 'active' && directive.expiresAt !== null
+			))
 	) {
 		actions.push(
 			action({
@@ -1982,7 +2200,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
-		state.schemaVersion === 9
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10
 	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
@@ -2042,7 +2261,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				);
 			}
 	}
-	if (state.schemaVersion === 8 || state.schemaVersion === 9) {
+	if (state.schemaVersion === 8 || state.schemaVersion === 9 || state.schemaVersion === 10) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.location !== state.master.location || !heroCanHearCommunication(hero)) {
 				continue;
@@ -2060,7 +2279,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 					tags: ['social', 'communication', 'witness-bounded']
 				})
 			);
-			if (state.schemaVersion === 9) {
+			if (state.schemaVersion === 9 || state.schemaVersion === 10) {
 				actions.push(
 					action({
 						actionId: `social.converse.${hero.heroId}`,
@@ -2075,6 +2294,53 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 					})
 				);
 			}
+		}
+	}
+	if (state.schemaVersion === 10) {
+		if (
+			Object.values(state.heroes).some(
+				(hero) => hero.location === state.master.location && heroCanHearCommunication(hero)
+			)
+		) {
+			actions.push(
+				action({
+					actionId: 'social.directive.issue',
+					actorId,
+					kind: 'interact',
+					label: 'Give a scoped direction',
+					description:
+						'Record exact words, recipients, witnessed delivery, priorities, and a bounded lifetime.',
+					targetIds: [],
+					resourceCosts: {},
+					tags: ['social', 'directive', 'best-effort', 'witness-bounded']
+				})
+			);
+		}
+		for (const directive of Object.values(state.society.directives).filter(
+			(candidate) => candidate.status === 'active'
+		)) {
+			actions.push(
+				action({
+					actionId: `social.directive.replace.${directive.directiveId}`,
+					actorId,
+					kind: 'interact',
+					label: 'Replace active direction',
+					description: 'End this direction and deliver a witnessed replacement atomically.',
+					targetIds: directive.recipientIds,
+					resourceCosts: {},
+					tags: ['social', 'directive', 'replace']
+				}),
+				action({
+					actionId: `social.directive.revoke.${directive.directiveId}`,
+					actorId,
+					kind: 'interact',
+					label: 'Revoke active direction',
+					description: 'End this direction without deleting its witnessed history.',
+					targetIds: directive.recipientIds,
+					resourceCosts: {},
+					tags: ['social', 'directive', 'revoke']
+				})
+			);
 		}
 	}
 	if (hasFirstEmberState(state) && state.settlement.firstEmber.status === 'available') {
@@ -2449,12 +2715,18 @@ export function commandFromHeroPolicyResult(input: {
 
 function earliestScheduledTime(state: EngineGameStateModern): string | null {
 	return (
-		Object.values(state.heroes)
-			.flatMap((hero) => [
+		[
+			...Object.values(state.heroes).flatMap((hero) => [
 				hero.currentActivity?.completesAt,
 				currentTravelFor(state, hero.heroId)?.arrivesAt,
 				currentRoutineFor(state, hero.heroId)?.completesAt
-			])
+			]),
+			...(state.schemaVersion === 10
+				? Object.values(state.society.directives).map((directive) =>
+						directive.status === 'active' ? directive.expiresAt : null
+					)
+				: [])
+		]
 			.filter((value): value is string => Boolean(value))
 			.sort((left, right) => compareGameTime(left, right))[0] ?? null
 	);
@@ -2477,6 +2749,11 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'master.communicate')
 		return `social.communicate.${command.targetHeroId}`;
 	if (command.commandType === 'master.converse') return `social.converse.${command.targetHeroId}`;
+	if (command.commandType === 'master.issue.directive') return 'social.directive.issue';
+	if (command.commandType === 'master.replace.directive')
+		return `social.directive.replace.${command.directiveId}`;
+	if (command.commandType === 'master.revoke.directive')
+		return `social.directive.revoke.${command.directiveId}`;
 	if (command.commandType === 'hero.plan.day') return 'hero.plan.day';
 	if (command.commandType === 'hero.start.routine') return 'hero.follow.plan';
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
@@ -2530,7 +2807,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			(command.kind === 'ask' && command.topic === 'hero-memory') ||
 			(command.kind !== 'ask' && command.topic !== 'hero-memory');
 		if (
-			(state.schemaVersion !== 8 && state.schemaVersion !== 9) ||
+			(state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -2552,7 +2829,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	}
 	if (command.commandType === 'master.converse') {
 		if (
-			state.schemaVersion !== 9 ||
+			(state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -2570,6 +2847,44 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			Object.keys(state.society.communicativeActs).length >= 2_048
 		) {
 			throw new IllegalActionError(command.commandType, []);
+		}
+	}
+	if (
+		command.commandType === 'master.issue.directive' ||
+		command.commandType === 'master.replace.directive' ||
+		command.commandType === 'master.revoke.directive'
+	) {
+		if (
+			state.schemaVersion !== 10 ||
+			state.status !== 'active' ||
+			state.master.lifeState !== 'alive' ||
+			command.actorId !== state.master.masterId ||
+			command.source.source !== 'manual' ||
+			command.source.timing !== 'step'
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		if (command.commandType !== 'master.revoke.directive') {
+			const recipients = new Set(command.recipientIds);
+			if (
+				recipients.size !== command.recipientIds.length ||
+				command.recipientIds.some((heroId) => {
+					const hero = state.heroes[heroId];
+					return (
+						!hero || hero.location !== state.master.location || !heroCanHearCommunication(hero)
+					);
+				}) ||
+				Object.keys(state.society.directives).length >= 2_048 ||
+				Object.keys(state.society.communicativeActs).length >= 2_048
+			) {
+				throw new IllegalActionError(command.commandType, []);
+			}
+		}
+		if (command.commandType !== 'master.issue.directive') {
+			const previous = state.society.directives[command.directiveId];
+			if (!previous || previous.status !== 'active') {
+				throw new IllegalActionError(command.commandType, []);
+			}
 		}
 	}
 	const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
@@ -3155,7 +3470,10 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		);
 		const base = eventBase(state, command, 'settlement.first.ember.committed');
 		const society =
-			state.schemaVersion === 7 || state.schemaVersion === 8 || state.schemaVersion === 9
+			state.schemaVersion === 7 ||
+			state.schemaVersion === 8 ||
+			state.schemaVersion === 9 ||
+			state.schemaVersion === 10
 				? buildFirstEmberSociety(
 						state,
 						base.eventId,
@@ -3180,8 +3498,59 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			}
 		});
 	}
+	if (
+		command.commandType === 'master.issue.directive' ||
+		command.commandType === 'master.replace.directive'
+	) {
+		if (state.schemaVersion !== 10) throw new IllegalActionError(command.commandType);
+		const eventType =
+			command.commandType === 'master.issue.directive'
+				? 'social.directive.issued'
+				: 'social.directive.replaced';
+		const base = eventBase(state, command, eventType);
+		const change = buildDirectiveChange(state, base.eventId, command);
+		const canceledScheduledEventIds = change.previousDirective?.expiryScheduledEventId
+			? [change.previousDirective.expiryScheduledEventId]
+			: [];
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				...change,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					command.commandType === 'master.issue.directive'
+						? `The Master delivered a ${command.scope} direction to ${command.recipientIds.length} hero${command.recipientIds.length === 1 ? '' : 'es'}.`
+						: `The Master replaced one direction with a witnessed ${command.scope} direction.`
+				),
+				canceledScheduledEventIds
+			}
+		});
+	}
+	if (command.commandType === 'master.revoke.directive') {
+		if (state.schemaVersion !== 10) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'social.directive.revoked');
+		const previousDirective = state.society.directives[command.directiveId]!;
+		const change = revokeDirective(state, base.eventId, command.directiveId);
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				directive: change.directive,
+				previousDirective,
+				communicativeAct: null,
+				society: change.society,
+				scheduledEvent: null,
+				nextVersion: state.version + 1,
+				...emptyMetadata('The Master revoked an active direction; its witnessed history remains.'),
+				canceledScheduledEventIds: previousDirective.expiryScheduledEventId
+					? [previousDirective.expiryScheduledEventId]
+					: []
+			}
+		});
+	}
 	if (command.commandType === 'master.communicate') {
-		if (state.schemaVersion !== 8 && state.schemaVersion !== 9) {
+		if (state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10) {
 			throw new IllegalActionError(command.commandType);
 		}
 		const base = eventBase(state, command, 'social.communicative.act.recorded');
@@ -3203,7 +3572,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'master.converse') {
-		if (state.schemaVersion !== 9) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 9 && state.schemaVersion !== 10)
+			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'social.conversation.turn.recorded');
 		const { society, conversationTurn } = buildConversationSociety(state, base.eventId, command);
 		return AuthoritativeEventSchema.parse({
@@ -3592,6 +3962,21 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			draws.push(...result.draws);
 		}
 		if (hasRoutineState(state)) {
+			const expiredDirectives =
+				state.schemaVersion === 10
+					? Object.values(state.society.directives)
+							.filter(
+								(directive) =>
+									directive.status === 'active' &&
+									directive.expiresAt !== null &&
+									compareGameTime(directive.expiresAt, command.targetGameTime) <= 0
+							)
+							.sort((left, right) =>
+								left.expiresAt === right.expiresAt
+									? left.directiveId.localeCompare(right.directiveId)
+									: compareGameTime(left.expiresAt!, right.expiresAt!)
+							)
+					: [];
 			const dueTravels = Object.values(state.heroes)
 				.filter(
 					(hero) =>
@@ -3640,10 +4025,13 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 					hero.currentRoutine!.scheduledEventId,
 					hero.currentRoutine!.completesAt
 				);
+			for (const directive of expiredDirectives)
+				dueByScheduleId.set(directive.expiryScheduledEventId!, directive.expiresAt!);
 			const resolvedScheduledEventIds = [
 				...outcomes.map((outcome) => outcome.scheduledEventId),
 				...travelOutcomes.map((outcome) => outcome.scheduledEventId),
-				...routineOutcomes.map((outcome) => outcome.scheduledEventId)
+				...routineOutcomes.map((outcome) => outcome.scheduledEventId),
+				...expiredDirectives.map((directive) => directive.expiryScheduledEventId!)
 			].sort((left, right) => {
 				const time = compareGameTime(dueByScheduleId.get(left)!, dueByScheduleId.get(right)!);
 				return time === 0 ? left.localeCompare(right) : time;
@@ -3667,7 +4055,12 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 					? null
 					: routineOutcomes.length === 1
 						? 'one daily routine'
-						: `${routineOutcomes.length} daily routines`
+						: `${routineOutcomes.length} daily routines`,
+				expiredDirectives.length === 0
+					? null
+					: expiredDirectives.length === 1
+						? 'one direction expiry'
+						: `${expiredDirectives.length} direction expiries`
 			].filter((part): part is string => Boolean(part));
 			return AuthoritativeEventSchema.parse({
 				...base,
@@ -3678,6 +4071,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 					activityOutcomes: outcomes,
 					travelOutcomes,
 					routineOutcomes,
+					expiredDirectiveIds: expiredDirectives.map((directive) => directive.directiveId),
 					nextVersion: state.version + 1,
 					...emptyMetadata(
 						`${resolutionParts.join(' and ').replace(/^./u, (letter) => letter.toUpperCase())} resolved.`,
@@ -3956,7 +4350,8 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 6) return EngineGameStateV6Schema.parse(value);
 	if (state.schemaVersion === 7) return EngineGameStateV7Schema.parse(value);
 	if (state.schemaVersion === 8) return EngineGameStateV8Schema.parse(value);
-	return EngineGameStateV9Schema.parse(value);
+	if (state.schemaVersion === 9) return EngineGameStateV9Schema.parse(value);
+	return EngineGameStateV10Schema.parse(value);
 }
 
 function reduceV2Event(
@@ -4013,8 +4408,13 @@ function reduceV2Event(
 		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
 			throw new ReplayIntegrityError('First Ember reaction projection diverged', event.sequence);
 		}
-		let society: SocietyState | SocietyStateV2 | SocietyStateV3 | undefined;
-		if (state.schemaVersion === 7 || state.schemaVersion === 8 || state.schemaVersion === 9) {
+		let society: SocietyState | SocietyStateV2 | SocietyStateV3 | SocietyStateV4 | undefined;
+		if (
+			state.schemaVersion === 7 ||
+			state.schemaVersion === 8 ||
+			state.schemaVersion === 9 ||
+			state.schemaVersion === 10
+		) {
 			society = buildFirstEmberSociety(
 				state,
 				event.eventId,
@@ -4057,9 +4457,80 @@ function reduceV2Event(
 			...(society ? { society } : {})
 		});
 	}
+	if (
+		event.eventType === 'social.directive.issued' ||
+		event.eventType === 'social.directive.replaced' ||
+		event.eventType === 'social.directive.revoked'
+	) {
+		if (
+			state.schemaVersion !== 10 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt ||
+			event.source.source !== 'manual' ||
+			event.source.timing !== 'step'
+		) {
+			throw new ReplayIntegrityError('Directive lifecycle precondition failed', event.sequence);
+		}
+		const payload = DirectiveChangedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1) {
+			throw new ReplayIntegrityError('Directive version diverged', event.sequence);
+		}
+		if (event.eventType === 'social.directive.revoked') {
+			const expected = revokeDirective(state, event.eventId, payload.directive.directiveId);
+			if (
+				payload.communicativeAct !== null ||
+				payload.scheduledEvent !== null ||
+				hashCanonical(expected.directive) !== hashCanonical(payload.directive) ||
+				hashCanonical(expected.society) !== hashCanonical(payload.society)
+			) {
+				throw new ReplayIntegrityError('Directive revocation projection diverged', event.sequence);
+			}
+		} else {
+			const act = payload.communicativeAct;
+			if (!act) throw new ReplayIntegrityError('Directive delivery is missing', event.sequence);
+			const command = EngineCommandSchema.parse({
+				commandId: event.commandId,
+				runId: state.runId,
+				actorId: state.master.masterId,
+				expectedVersion: state.version,
+				correlationId: event.correlationId,
+				source: event.source,
+				commandType:
+					event.eventType === 'social.directive.issued'
+						? 'master.issue.directive'
+						: 'master.replace.directive',
+				...(event.eventType === 'social.directive.replaced' && payload.previousDirective
+					? { directiveId: payload.previousDirective.directiveId }
+					: {}),
+				text: payload.directive.text,
+				scope: payload.directive.scope,
+				recipientIds: payload.directive.recipientIds,
+				priorities: payload.directive.priorities,
+				tone: act.tone ?? 'neutral',
+				delivery: payload.directive.delivery
+			}) as DirectiveIssueCommand;
+			const expected = buildDirectiveChange(state, event.eventId, command);
+			if (
+				hashCanonical(expected.directive) !== hashCanonical(payload.directive) ||
+				hashCanonical(expected.previousDirective) !== hashCanonical(payload.previousDirective) ||
+				hashCanonical(expected.communicativeAct) !== hashCanonical(payload.communicativeAct) ||
+				hashCanonical(expected.society) !== hashCanonical(payload.society) ||
+				hashCanonical(expected.scheduledEvent) !== hashCanonical(payload.scheduledEvent)
+			) {
+				throw new ReplayIntegrityError('Directive delivery projection diverged', event.sequence);
+			}
+		}
+		return EngineGameStateV10Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			society: payload.society
+		});
+	}
 	if (event.eventType === 'social.communicative.act.recorded') {
 		if (
-			(state.schemaVersion !== 8 && state.schemaVersion !== 9) ||
+			(state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -4095,7 +4566,7 @@ function reduceV2Event(
 	}
 	if (event.eventType === 'social.conversation.turn.recorded') {
 		if (
-			state.schemaVersion !== 9 ||
+			(state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -4131,13 +4602,21 @@ function reduceV2Event(
 		) {
 			throw new ReplayIntegrityError('Conversation turn projection diverged', event.sequence);
 		}
-		return EngineGameStateV9Schema.parse({
-			...state,
-			version: payload.nextVersion,
-			eventCursor: event.sequence,
-			entropyCursor: event.seedCursor,
-			society: payload.society
-		});
+		return state.schemaVersion === 10
+			? EngineGameStateV10Schema.parse({
+					...state,
+					version: payload.nextVersion,
+					eventCursor: event.sequence,
+					entropyCursor: event.seedCursor,
+					society: payload.society
+				})
+			: EngineGameStateV9Schema.parse({
+					...state,
+					version: payload.nextVersion,
+					eventCursor: event.sequence,
+					entropyCursor: event.seedCursor,
+					society: payload.society
+				});
 	}
 	if (event.eventType === 'simulation.clock.synced') {
 		if (!hasRoutineState(state))
@@ -4560,6 +5039,35 @@ function reduceV2Event(
 					currentRoutine: null
 				};
 			}
+			if (state.schemaVersion === 10) {
+				const society = SocietyStateV4Schema.parse({
+					...state.society,
+					directives: Object.fromEntries(
+						Object.entries(state.society.directives).map(([directiveId, directive]) => [
+							directiveId,
+							(payload.expiredDirectiveIds ?? []).includes(directiveId)
+								? DirectiveRecordSchema.parse({
+										...directive,
+										status: 'expired',
+										terminalAt: directive.expiresAt,
+										terminalEventId: event.eventId
+									})
+								: directive
+						])
+					)
+				});
+				return EngineGameStateV10Schema.parse({
+					...state,
+					version: payload.nextVersion,
+					eventCursor: event.sequence,
+					entropyCursor: event.seedCursor,
+					simulatedAt: payload.targetGameTime,
+					heroes,
+					items,
+					settlement,
+					society
+				});
+			}
 			return parseModernState(state, {
 				...state,
 				version: payload.nextVersion,
@@ -4777,7 +5285,50 @@ function reduceParsedEvent(state: EngineGameState, event: AuthoritativeEvent): E
 		throw new ReplayIntegrityError('Event run does not match state', event.sequence);
 	if (event.sequence !== state.eventCursor + 1)
 		throw new ReplayIntegrityError('Event sequence is not contiguous', event.sequence);
-	return state.schemaVersion === 1 ? reduceLegacyEvent(state, event) : reduceV2Event(state, event);
+	const reduced =
+		state.schemaVersion === 1 ? reduceLegacyEvent(state, event) : reduceV2Event(state, event);
+	if (state.schemaVersion !== 10) return reduced;
+	const influences = z
+		.array(DirectiveInfluenceRecordSchema)
+		.max(16)
+		.parse((event.payload as Record<string, unknown>).directiveInfluences ?? []);
+	if (influences.length === 0) return reduced;
+	if (reduced.schemaVersion !== 10) {
+		throw new ReplayIntegrityError('Directive influence changed schema version', event.sequence);
+	}
+	const directives = { ...reduced.society.directives };
+	const directiveInfluences = { ...reduced.society.directiveInfluences };
+	for (const influence of influences) {
+		const directive = state.society.directives[influence.directiveId];
+		if (
+			!directive ||
+			directive.status !== 'active' ||
+			influence.heroId !== event.actorId ||
+			influence.sourceEventId !== event.eventId ||
+			influence.evaluatedAt !== state.simulatedAt ||
+			!event.source.directiveIds.includes(influence.directiveId) ||
+			influence.decisionJobId !== event.source.decisionJobId
+		) {
+			throw new ReplayIntegrityError('Directive influence provenance diverged', event.sequence);
+		}
+		directiveInfluences[influence.influenceId] = influence;
+		if (directive.scope === 'decision') {
+			directives[directive.directiveId] = DirectiveRecordSchema.parse({
+				...directive,
+				status: 'consumed',
+				terminalAt: event.gameTime,
+				terminalEventId: event.eventId
+			});
+		}
+	}
+	return EngineGameStateV10Schema.parse({
+		...reduced,
+		society: {
+			...reduced.society,
+			directives,
+			directiveInfluences
+		}
+	});
 }
 
 export function reduceEvent(
@@ -4805,6 +5356,13 @@ export function scheduledEventsFromEvent(event: AuthoritativeEvent): readonly Sc
 		return [TravelStartedPayloadSchema.parse(event.payload).scheduledEvent];
 	if (event.eventType === 'hero.routine.started')
 		return [RoutineStartedPayloadSchema.parse(event.payload).scheduledEvent];
+	if (
+		event.eventType === 'social.directive.issued' ||
+		event.eventType === 'social.directive.replaced'
+	) {
+		const scheduledEvent = DirectiveChangedPayloadSchema.parse(event.payload).scheduledEvent;
+		return scheduledEvent ? [scheduledEvent] : [];
+	}
 	return [];
 }
 
@@ -4816,6 +5374,94 @@ export function canceledScheduledEventIdsFromEvent(event: AuthoritativeEvent): r
 	return metadataIds(event, 'canceledScheduledEventIds');
 }
 
+const DIRECTIVE_STOP_WORDS = new Set([
+	'and',
+	'are',
+	'before',
+	'choose',
+	'for',
+	'from',
+	'that',
+	'the',
+	'then',
+	'this',
+	'with',
+	'you',
+	'your'
+]);
+
+function directiveTerms(directive: DirectiveRecord): string[] {
+	return [...directive.text.toLowerCase().split(/[^a-z0-9]+/u), ...directive.priorities]
+		.map((term) => term.toLowerCase().trim())
+		.filter((term) => term.length >= 3 && !DIRECTIVE_STOP_WORDS.has(term));
+}
+
+function actionMatchesDirective(action: LegalAction, directive: DirectiveRecord): boolean {
+	const searchable = [action.actionId, action.label, action.description, ...action.tags]
+		.join(' ')
+		.toLowerCase();
+	return directiveTerms(directive).some((term) => searchable.includes(term));
+}
+
+function attachDirectiveInfluences(
+	state: EngineGameState,
+	command: EngineCommand,
+	event: AuthoritativeEvent
+): AuthoritativeEvent {
+	if (
+		state.schemaVersion !== 10 ||
+		!state.heroes[command.actorId] ||
+		command.source.directiveIds.length === 0
+	) {
+		return event;
+	}
+	const legal = legalActionsForParsedState(state, command.actorId);
+	const actionId = requiredAction(command);
+	const selected = legal.find((action) => action.actionId === actionId);
+	if (!selected) return event;
+	const influences = command.source.directiveIds
+		.map((directiveId) => state.society.directives[directiveId])
+		.filter((directive): directive is DirectiveRecord =>
+			Boolean(
+				directive &&
+				directive.status === 'active' &&
+				directive.recipientIds.includes(command.actorId)
+			)
+		)
+		.map((directive) => {
+			const selectedMatches = actionMatchesDirective(selected, directive);
+			const alternativeMatches = legal.some(
+				(action) => action.actionId !== actionId && actionMatchesDirective(action, directive)
+			);
+			const outcome = selectedMatches
+				? ('advanced' as const)
+				: alternativeMatches
+					? ('conflicted' as const)
+					: ('unavailable' as const);
+			return DirectiveInfluenceRecordSchema.parse({
+				influenceId: deterministicUuid(`${event.eventId}:${directive.directiveId}:influence`),
+				directiveId: directive.directiveId,
+				heroId: command.actorId,
+				sourceEventId: event.eventId,
+				decisionJobId: command.source.decisionJobId,
+				actionId,
+				outcome,
+				rationale:
+					outcome === 'advanced'
+						? 'The chosen legal action matched the direction text or its structured priorities.'
+						: outcome === 'conflicted'
+							? 'Another legal action matched the direction more closely than the chosen action.'
+							: 'No legal action matched the direction; the direction could not expand the legal set.',
+				evaluatedAt: state.simulatedAt
+			});
+		});
+	if (influences.length === 0) return event;
+	return AuthoritativeEventSchema.parse({
+		...event,
+		payload: { ...event.payload, directiveInfluences: influences }
+	});
+}
+
 export function applyCommand(
 	stateInput: EngineGameState,
 	commandInput: EngineCommand
@@ -4823,8 +5469,9 @@ export function applyCommand(
 	const state = EngineGameStateSchema.parse(stateInput);
 	const command = EngineCommandSchema.parse(commandInput);
 	assertCommandIsLegal(state, command);
-	const eventDraft =
+	const builtEvent =
 		state.schemaVersion === 1 ? buildLegacyEvent(state, command) : buildV2Event(state, command);
+	const eventDraft = attachDirectiveInfluences(state, command, builtEvent);
 	const nextState = reduceParsedEvent(state, eventDraft);
 	const stateHash = hashParsedGameState(nextState);
 	const event = AuthoritativeEventSchema.parse({ ...eventDraft, afterStateHash: stateHash });

@@ -4,6 +4,7 @@ import { CharacterMindSchema, LegalActionSchema } from './character.js';
 import {
 	ActionSourceSchema,
 	AuthoritativeEventSchema,
+	DirectiveScopeSchema,
 	JournalEntrySchema,
 	RewardDeltaSchema
 } from './event.js';
@@ -18,7 +19,8 @@ import {
 	OnboardingCommunicativeActKindSchema,
 	SocietyStateSchema,
 	SocietyStateV2Schema,
-	SocietyStateV3Schema
+	SocietyStateV3Schema,
+	SocietyStateV4Schema
 } from './social.js';
 import {
 	ContentVersionSchema,
@@ -1304,8 +1306,18 @@ const EngineGameStateV9BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV10BaseSchema = z
+	.object({
+		...EngineGameStateV7Schema.shape,
+		schemaVersion: z.literal(10),
+		society: SocietyStateV4Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
-	z.infer<typeof EngineGameStateV8BaseSchema> | z.infer<typeof EngineGameStateV9BaseSchema>;
+	| z.infer<typeof EngineGameStateV8BaseSchema>
+	| z.infer<typeof EngineGameStateV9BaseSchema>
+	| z.infer<typeof EngineGameStateV10BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -1604,6 +1616,54 @@ export const EngineGameStateV9Schema = EngineGameStateV9BaseSchema.superRefine((
 	}
 });
 
+export const EngineGameStateV10Schema = EngineGameStateV10BaseSchema.superRefine(
+	(state, context) => {
+		validateCommunicationEngineState(state, context);
+		for (const turn of Object.values(state.society.conversationTurns)) {
+			const act = state.society.communicativeActs[turn.communicationActId];
+			if (
+				turn.masterId !== state.master.masterId ||
+				!state.heroes[turn.heroId] ||
+				!act?.witnesses.some(
+					(witness) => witness.heroId === turn.heroId && witness.role === 'intended'
+				)
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Conversation turn participants and addressed witness must exist'
+				});
+			}
+		}
+		for (const directive of Object.values(state.society.directives)) {
+			const witnessObservers = directive.witnessObservationIds.map(
+				(observationId) => state.society.observations[observationId]?.observerHeroId
+			);
+			if (
+				directive.runId !== state.runId ||
+				directive.authorId !== state.master.masterId ||
+				directive.witnessEventId === null ||
+				directive.recipientIds.some(
+					(heroId) => !state.heroes[heroId] || !witnessObservers.includes(heroId)
+				) ||
+				directive.witnessObservationIds.some((observationId) => {
+					const observation = state.society.observations[observationId];
+					return !observation || observation.sourceEventId !== directive.witnessEventId;
+				}) ||
+				(directive.status === 'active' &&
+					directive.expiresAt !== null &&
+					Date.parse(directive.expiresAt) <= Date.parse(state.simulatedAt))
+			) {
+				context.addIssue({ code: 'custom', message: 'Directive lifecycle is inconsistent' });
+			}
+		}
+		for (const influence of Object.values(state.society.directiveInfluences)) {
+			if (!state.heroes[influence.heroId]) {
+				context.addIssue({ code: 'custom', message: 'Directive influence hero must exist' });
+			}
+		}
+	}
+);
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
@@ -1613,7 +1673,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV6Schema,
 	EngineGameStateV7Schema,
 	EngineGameStateV8Schema,
-	EngineGameStateV9Schema
+	EngineGameStateV9Schema,
+	EngineGameStateV10Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -1739,6 +1800,49 @@ export const ConversationRequestSchema = z
 	.strict()
 	.superRefine(validateConversationRequest);
 
+const DirectiveIssueShape = {
+	text: z
+		.string()
+		.min(1)
+		.max(600)
+		.refine((text) => /\S/u.test(text), {
+			message: 'Directive text must contain a visible character'
+		}),
+	scope: DirectiveScopeSchema,
+	recipientIds: z.array(EntityIdSchema).min(1).max(8),
+	priorities: z.array(z.string().min(1).max(80)).max(12),
+	tone: CommunicationToneSchema,
+	delivery: CommunicationDeliverySchema
+} as const;
+
+export const MasterIssueDirectiveCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.issue.directive'),
+	...DirectiveIssueShape
+}).strict();
+
+export const MasterReplaceDirectiveCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.replace.directive'),
+	directiveId: EntityIdSchema,
+	...DirectiveIssueShape
+}).strict();
+
+export const MasterRevokeDirectiveCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.revoke.directive'),
+	directiveId: EntityIdSchema
+}).strict();
+
+export const DirectiveRequestSchema = z.discriminatedUnion('action', [
+	z.object({ action: z.literal('issue'), ...DirectiveIssueShape }).strict(),
+	z
+		.object({
+			action: z.literal('replace'),
+			directiveId: EntityIdSchema,
+			...DirectiveIssueShape
+		})
+		.strict(),
+	z.object({ action: z.literal('revoke'), directiveId: EntityIdSchema }).strict()
+]);
+
 export const FirstEmberRequestSchema = z.discriminatedUnion('action', [
 	z.object({ action: z.literal('recover') }).strict(),
 	z
@@ -1800,6 +1904,9 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	CommitFirstEmberCommandSchema,
 	MasterCommunicateCommandSchema,
 	MasterConverseCommandSchema,
+	MasterIssueDirectiveCommandSchema,
+	MasterReplaceDirectiveCommandSchema,
+	MasterRevokeDirectiveCommandSchema,
 	CreateDailyPlanCommandSchema,
 	StartRoutineCommandSchema,
 	InspectGateCommandSchema,
@@ -1992,6 +2099,7 @@ export type EngineGameStateV6 = z.infer<typeof EngineGameStateV6Schema>;
 export type EngineGameStateV7 = z.infer<typeof EngineGameStateV7Schema>;
 export type EngineGameStateV8 = z.infer<typeof EngineGameStateV8Schema>;
 export type EngineGameStateV9 = z.infer<typeof EngineGameStateV9Schema>;
+export type EngineGameStateV10 = z.infer<typeof EngineGameStateV10Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -2003,6 +2111,7 @@ export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
 export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
+export type DirectiveRequest = z.infer<typeof DirectiveRequestSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
 export type ScheduledEvent = z.infer<typeof ScheduledEventSchema>;
 export type SimulationClock = z.infer<typeof SimulationClockSchema>;

@@ -13,7 +13,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
-				"packetHash": "27eec3562bee0e86ec0792e416c1d63e13bbd9b0700528fc442ef816489f1b3f",
+				"packetHash": "e3a68eb1f47b829ce26f65221553777a6f8767e8925048763581be7a59fcc6b6",
 				"runId": "6b71b076-c764-4ff7-a12e-ab5347040017",
 				"heroId": "f3006562-f400-46f5-a100-623cf20063cf",
 				"decisionKind": "settlement-action",
@@ -21,8 +21,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "9b7083516cb0b6f006d4b648ced60fd8b45f4118319c6a1bc3e5f22024fe037c",
-					"contentVersion": "engine-v9"
+					"stateHash": "228a7ad3b57c41e3b768cc9ebb653c7c337839ceb0c8c4c70a80254729d6414b",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -302,7 +302,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "7d76c200-dfee-4fb7-b358-e693d46f9165",
-				"packetHash": "62679753aed1588a394f7c7c4e62c23c76b23ee5534dae250893c468367a9520",
+				"packetHash": "5bf816d8e3c397145d449cb0f6764dc1d7bca17e0312487111b74fcc93182fb2",
 				"runId": "bcb15e7b-a270-400f-9c0f-062d9968a720",
 				"heroId": "790fb401-780f-426e-a70f-b0db760faf48",
 				"decisionKind": "settlement-action",
@@ -310,8 +310,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d",
-					"contentVersion": "engine-v9"
+					"stateHash": "9ec0b1ed8a47879b648a0d6fd4d3c404e0c24a4ad550622b124eaa6cc9f69d73",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -591,7 +591,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "27e4fb08-7c1c-49d1-8ba2-272ae6b20c0f",
-				"packetHash": "9871204709ad0ff595bf9393a7ffd1069871d6726a848c836fd90098d234da36",
+				"packetHash": "3f4c7b03a10224e7667b65954cef7370eef8034feae2d2fd829ba14b52085051",
 				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
 				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
 				"decisionKind": "settlement-action",
@@ -599,8 +599,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
-					"contentVersion": "engine-v9"
+					"stateHash": "2880c01464d30a86720ab552b04bf584e321811cca388e1dfa6bf83496a3b5b0",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -880,7 +880,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "4e19223a-38d2-4951-9c7f-2d924064ec04",
-				"packetHash": "bd3966f72f8c3b8d30d874de4cd005fc6e6cef569b9f219e4b05d77425aa6639",
+				"packetHash": "89c95db58fa9b792a1e560f6e63e1530f9db1acc9ea0fd17a1388404121211ed",
 				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
 				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
 				"decisionKind": "settlement-action",
@@ -888,8 +888,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
-					"contentVersion": "engine-v9"
+					"stateHash": "2880c01464d30a86720ab552b04bf584e321811cca388e1dfa6bf83496a3b5b0",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -1183,7 +1183,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "abfc4f5c-b3ee-4462-8386-ab5ef0171f46",
-				"packetHash": "16b5a58b363a536c1c61522bc2406dbc246757453cd60c7edd58f0d9dd34f007",
+				"packetHash": "913654057f30b2c8e7b132e1767cd203cf1a7fac351d048372a5fa8586beba96",
 				"runId": "bcb15e7b-a270-400f-9c0f-062d9968a720",
 				"heroId": "790fb401-780f-426e-a70f-b0db760faf48",
 				"decisionKind": "mission-action",
@@ -1191,8 +1191,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d",
-					"contentVersion": "engine-v9"
+					"stateHash": "9ec0b1ed8a47879b648a0d6fd4d3c404e0c24a4ad550622b124eaa6cc9f69d73",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -1472,7 +1472,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "8d6320b9-1dfe-4d2a-9042-1762e96e59c4",
-				"packetHash": "94ab1e9d71fda99e5be78e8afdeb775f834beb5b8dcba6ac70352a0f3e6a5e6c",
+				"packetHash": "7caf63e97f72a39574c6d5796b89df43c148a6b694f7f0682b9f2890aadb7996",
 				"runId": "bcb15e7b-a270-400f-9c0f-062d9968a720",
 				"heroId": "790fb401-780f-426e-a70f-b0db760faf48",
 				"decisionKind": "mission-action",
@@ -1480,8 +1480,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "9072b0e03b11b100250a7863aa139f8f4d4e6234a60a26fd37c6daa9fc20bc0d",
-					"contentVersion": "engine-v9"
+					"stateHash": "9ec0b1ed8a47879b648a0d6fd4d3c404e0c24a4ad550622b124eaa6cc9f69d73",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -1761,7 +1761,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "2b4a6fba-7b3c-4b21-ae47-aabf76c90fd2",
-				"packetHash": "751aa8827a73887abaa15ea2fdc21bc778b9f77a5dee6a32061fe29c766637e5",
+				"packetHash": "1d0568c0d89cd48705e660262ff4a888b356bd67f90d31afb0109431ff1cd7f4",
 				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
 				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
 				"decisionKind": "conversation-response",
@@ -1769,8 +1769,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
-					"contentVersion": "engine-v9"
+					"stateHash": "2880c01464d30a86720ab552b04bf584e321811cca388e1dfa6bf83496a3b5b0",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -2050,7 +2050,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "bcad147f-f285-43fe-8976-eda615c89692",
-				"packetHash": "880123fc33b5a9299f903c0480fca16fda6c8a518b7a6f4c9c7c8fb4e2a5764d",
+				"packetHash": "f32cef7de96ebd80ad4895d1ae7a1fcb13abe1b88528a02c2fe9307a8caebf67",
 				"runId": "ba26faf5-f089-48f1-ac3b-5bc557d76f71",
 				"heroId": "76d25fa7-75d2-4e14-a8d2-62cd77d2613a",
 				"decisionKind": "conversation-response",
@@ -2058,8 +2058,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "55d2a133fb9d0e31a2c0501f6c6b6bbbb3cb0cc46746c77d2a430bb3144a4f93",
-					"contentVersion": "engine-v9"
+					"stateHash": "2880c01464d30a86720ab552b04bf584e321811cca388e1dfa6bf83496a3b5b0",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -2339,7 +2339,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
-				"packetHash": "36dc7701d9eeeb9a62debcd196bc909e865027d89a1e4ee94d172bb47cdb738a",
+				"packetHash": "1506f721d7386502564d6c759d2b97bc7b5906139a25db9f0a8e558803830523",
 				"runId": "ac82f75d-2cfb-4d67-b744-d555666a87c1",
 				"heroId": "5b3385c3-5a33-4430-ad33-88e95c338756",
 				"decisionKind": "story-expression",
@@ -2347,8 +2347,8 @@
 				"world": {
 					"stateVersion": 1,
 					"eventCursor": 2,
-					"stateHash": "d2decfbc992708e47dcd7904758cb951a631fbcc52e3eea52915a1bfc7ba1fb1",
-					"contentVersion": "engine-v9"
+					"stateHash": "64e6bbe252c881b759437f5040e4978d0345664ad09dddd5699497472aebc77b",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -2685,7 +2685,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
-				"packetHash": "bca34c8d0cecccf94ea5bb60682bb6d3e4126f9b4623fb99cd70b3f625b08f6e",
+				"packetHash": "7771f2878cd071aff00b527bba4a7c6ea622189eda53a40dbc88d5a1f6ea0dc1",
 				"runId": "ac82f75d-2cfb-4d67-b744-d555666a87c1",
 				"heroId": "5b3385c3-5a33-4430-ad33-88e95c338756",
 				"decisionKind": "mission-action",
@@ -2693,8 +2693,8 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "df0cb2cc90c210a43470ba6ae72cde439eb02e6a21c9a4ed42f68c4fa2b89d89",
-					"contentVersion": "engine-v9"
+					"stateHash": "71da9e863888caa309971ae5da7e113069f27b93d32edc868e5852f2916757ea",
+					"contentVersion": "engine-v10"
 				},
 				"identity": {
 					"profile": {
@@ -2967,5 +2967,5 @@
 			}
 		}
 	],
-	"corpusHash": "b8d05140e8e14b2d410701ffd2744e42c91917b21242f302918128ef4575a23d"
+	"corpusHash": "24f7d3f32d2ee93e05bf12be1e5a9bd661fc4d38bd4c6c844968e6fd7aa748c1"
 }

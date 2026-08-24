@@ -28,7 +28,8 @@
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
 			? engineState
 			: null
 	);
@@ -39,7 +40,8 @@
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
 			? engineState.settlement.navigation
 			: null
 	);
@@ -49,7 +51,8 @@
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
 			? engineState
 			: null
 	);
@@ -58,7 +61,8 @@
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
 			? engineState
 			: null
 	);
@@ -66,19 +70,25 @@
 		engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
 			? engineState
 			: null
 	);
 	const socialState = $derived(
 		engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
 			? engineState.society
 			: null
 	);
 	const communicationState = $derived(
-		engineState.schemaVersion === 8 || engineState.schemaVersion === 9 ? engineState : null
+		engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10
+			? engineState
+			: null
 	);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
@@ -88,7 +98,8 @@
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
-			engineState.schemaVersion === 9) &&
+			engineState.schemaVersion === 9 ||
+			engineState.schemaVersion === 10) &&
 			hero
 			? engineState.heroes[hero.heroId]
 			: null
@@ -779,7 +790,7 @@
 												</div>
 											</article>
 										{/each}
-										{#if communicationState.schemaVersion === 9}
+										{#if communicationState.schemaVersion === 9 || communicationState.schemaVersion === 10}
 											{#each Object.values(communicationState.society.conversationTurns) as turn (turn.turnId)}
 												<article class="communication-act" data-testid="conversation-replay-turn">
 													<header>
@@ -797,6 +808,31 @@
 																.preferenceWeight}</code
 														>
 													{/if}
+												</article>
+											{/each}
+										{/if}
+										{#if communicationState.schemaVersion === 10}
+											{#each Object.values(communicationState.society.directives) as directive (directive.directiveId)}
+												<article class="communication-act" data-testid="directive-replay-record">
+													<header>
+														<span>{directive.status} direction · {directive.scope}</span>
+														<code>{directive.directiveId}</code>
+													</header>
+													<blockquote>“{directive.text}”</blockquote>
+													<p>{directive.priorities.join(' · ') || 'No structured priorities'}</p>
+													<code
+														>{directive.witnessObservationIds.length} witnesses · {directive.expiresAt ??
+															'manual lifetime'}</code
+													>
+												</article>
+											{/each}
+											{#each Object.values(communicationState.society.directiveInfluences) as influence (influence.influenceId)}
+												<article class="communication-act" data-testid="directive-influence-record">
+													<header>
+														<span>{influence.outcome} · {influence.actionId}</span>
+														<code>{influence.sourceEventId}</code>
+													</header>
+													<p>{influence.rationale}</p>
 												</article>
 											{/each}
 										{/if}

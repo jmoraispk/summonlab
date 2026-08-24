@@ -103,7 +103,11 @@ function eventValues(
 	};
 }
 
-function commandSource(controlMode: ProofControlMode, choiceSource: ResolvedFirstChoice['source']) {
+function commandSource(
+	controlMode: ProofControlMode,
+	choiceSource: ResolvedFirstChoice['source'],
+	directiveIds: readonly string[] = []
+) {
 	return {
 		source: choiceSource,
 		timing:
@@ -118,7 +122,7 @@ function commandSource(controlMode: ProofControlMode, choiceSource: ResolvedFirs
 					? ('directed' as const)
 					: ('random' as const)
 				: null,
-		directiveIds: [],
+		directiveIds: [...directiveIds],
 		decisionJobId: null
 	};
 }
@@ -128,7 +132,8 @@ function destinationCommand(
 	heroId: string,
 	expectedVersion: number,
 	controlMode: ProofControlMode,
-	choice: ResolvedFirstChoice
+	choice: ResolvedFirstChoice,
+	directiveIds: readonly string[] = []
 ): EngineCommand {
 	const commandId = deterministicUuid(`${runId}:hero.choose.destination:${expectedVersion}`);
 	return EngineCommandSchema.parse({
@@ -137,7 +142,7 @@ function destinationCommand(
 		actorId: heroId,
 		expectedVersion,
 		correlationId: commandId,
-		source: commandSource(controlMode, choice.source),
+		source: commandSource(controlMode, choice.source, directiveIds),
 		commandType: 'hero.choose.destination',
 		destination: choice.destination,
 		firstLine: choice.firstLine,
@@ -434,6 +439,24 @@ export async function resolveProofDecision(
 			if (row.destination) return;
 			const engine = await getEngineSnapshotInTransaction(transaction, runId);
 			if (!engine) throw new Error(`Engine run not found: ${runId}`);
+			const activeDirectiveIds =
+				engine.state.schemaVersion === 10
+					? Object.values(engine.state.society.directives)
+							.filter(
+								(candidate) =>
+									candidate.status === 'active' &&
+									candidate.scope !== 'mission' &&
+									candidate.recipientIds.includes(row.manifest.characterId) &&
+									candidate.witnessObservationIds.some(
+										(observationId) =>
+											engine.state.schemaVersion === 10 &&
+											engine.state.society.observations[observationId]?.observerHeroId ===
+												row.manifest.characterId
+									)
+							)
+							.map((candidate) => candidate.directiveId)
+							.slice(-16)
+					: [];
 			await commitEngineCommandInTransaction(
 				transaction,
 				destinationCommand(
@@ -441,7 +464,8 @@ export async function resolveProofDecision(
 					row.manifest.characterId,
 					engine.state.version,
 					row.control_mode,
-					choice
+					choice,
+					activeDirectiveIds
 				)
 			);
 			await transaction`
@@ -486,7 +510,8 @@ export async function markProofArrival(
 				engine.state.schemaVersion === 6 ||
 				engine.state.schemaVersion === 7 ||
 				engine.state.schemaVersion === 8 ||
-				engine.state.schemaVersion === 9
+				engine.state.schemaVersion === 9 ||
+				engine.state.schemaVersion === 10
 			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,

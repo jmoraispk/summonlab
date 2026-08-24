@@ -999,13 +999,14 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — AGT-001 through AGT-009 completed 2026-08-24.** Holder-owned cognition,
+**Status: complete — AGT-001 through AGT-010 completed 2026-08-24.** Holder-owned cognition,
 witnessed communication, hash-bound decision packets, deterministic zero-cost policy baselines,
 an opt-in strict OpenAI Responses policy, and the durable stale-safe application lifecycle are
 runnable. Free conversation now produces witnessed hero replies and explicit order outcomes, and a
 hash-bound redacted inspector audits supplied/omitted context plus provider and validation
 boundaries. A fixed credential-free corpus now grades deterministic baselines and exposes an honest
-model quality/token/cost gate; general scoped directives remain.
+model quality/token/cost gate. Scoped witnessed directions now persist through replay, expiry,
+replacement, revocation, packet selection, action influence, and journal projection.
 
 - `AGT-001` complete: implement direct observations, provenance-linked beliefs, directed
   relationships, founding promises, and multidimensional authority under `engine-v7`;
@@ -1035,7 +1036,10 @@ model quality/token/cost gate; general scoped directives remain.
   deterministic safety and behavior checks; record versioned request hashes and a dated conservative
   `gpt-5-nano` cost projection; and keep model quality, resolved identity, tokens, and latency
   explicitly unmeasured until an opt-in, hash-bound full recorded-provider run exists;
-- `AGT-010` implement scoped player directives, witnessed delivery, and influence records.
+- `AGT-010` complete: implement `engine-v10` / `society-v4` scoped player directives with exact
+  witnessed delivery, decision/mission/day/until-revoked lifetimes, scheduled day expiry,
+  replacement and revocation, packet-kind filtering, event-derived influence records, journal
+  outcomes, directive API, and summon/replay controls while preserving v1–v9 replay.
 
 **Feedback gate:** conduct the first real conversations and review whether explanations, refusals, and later behavior feel coherent.
 

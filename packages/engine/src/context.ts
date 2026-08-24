@@ -7,9 +7,11 @@ import {
 	HERO_MEMORY_RETRIEVAL_VERSION,
 	HeroDecisionKindSchema,
 	HeroDecisionPacketSchema,
+	PlayerDirectiveSchema,
 	type CharacterManifest,
 	type EngineGameStateV8,
 	type EngineGameStateV9,
+	type EngineGameStateV10,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -22,7 +24,7 @@ import { deterministicUuid, hashCanonical } from './hash.js';
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
 export const DEFAULT_MEMORY_CHARACTER_LIMIT = 1_800;
-type EngineKnowledgeState = EngineGameStateV8 | EngineGameStateV9;
+type EngineKnowledgeState = EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -245,7 +247,10 @@ const CONVERSATION_INTENT_TERMS = Object.freeze({
 	'prepare-tower': ['tower', 'train', 'prepare']
 } as const);
 
-function conversationDirectives(state: EngineGameStateV9, heroId: string): PlayerDirective[] {
+function conversationDirectives(
+	state: EngineGameStateV9 | EngineGameStateV10,
+	heroId: string
+): PlayerDirective[] {
 	return Object.values(state.society.conversationTurns)
 		.filter(
 			(turn) =>
@@ -283,6 +288,33 @@ function conversationDirectives(state: EngineGameStateV9, heroId: string): Playe
 		});
 }
 
+function storedDirectives(
+	state: EngineGameStateV10,
+	decisionKind: HeroDecisionKind
+): PlayerDirective[] {
+	return Object.values(state.society.directives)
+		.filter(
+			(directive) =>
+				directive.status === 'active' &&
+				(decisionKind === 'mission-action' || directive.scope !== 'mission')
+		)
+		.map((directive) =>
+			PlayerDirectiveSchema.parse({
+				directiveId: directive.directiveId,
+				runId: directive.runId,
+				authorId: directive.authorId,
+				text: directive.text,
+				scope: directive.scope,
+				recipientIds: directive.recipientIds,
+				witnessEventId: directive.witnessEventId,
+				priorities: directive.priorities,
+				createdAt: directive.createdAt,
+				expiresAt: directive.expiresAt,
+				revokedAt: directive.revokedAt
+			})
+		);
+}
+
 function unsignedPacket(packet: HeroDecisionPacket): Omit<HeroDecisionPacket, 'packetHash'> {
 	const unsigned: Partial<HeroDecisionPacket> = { ...packet };
 	delete unsigned.packetHash;
@@ -301,7 +333,11 @@ export function assembleHeroDecisionPacket(
 	input: AssembleHeroDecisionPacketInput
 ): HeroDecisionPacket {
 	const snapshot = EngineSnapshotSchema.parse(input.snapshot);
-	if (snapshot.state.schemaVersion !== 8 && snapshot.state.schemaVersion !== 9) {
+	if (
+		snapshot.state.schemaVersion !== 8 &&
+		snapshot.state.schemaVersion !== 9 &&
+		snapshot.state.schemaVersion !== 10
+	) {
 		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
 	const state = snapshot.state;
@@ -495,7 +531,10 @@ export function assembleHeroDecisionPacket(
 		social: { relationships, authority, promises },
 		activeDirectives: applicableDirectives(state, input.heroId, [
 			...(input.directives ?? []),
-			...(state.schemaVersion === 9 ? conversationDirectives(state, input.heroId) : [])
+			...(state.schemaVersion === 10 ? storedDirectives(state, input.decisionKind) : []),
+			...(state.schemaVersion === 9 || state.schemaVersion === 10
+				? conversationDirectives(state, input.heroId)
+				: [])
 		]),
 		legalActions: actions,
 		legalActionHash: hashCanonical(actions),

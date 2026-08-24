@@ -1,5 +1,6 @@
 import {
 	JournalEntrySchema,
+	DirectiveInfluenceRecordSchema,
 	RewardDeltaSchema,
 	type AuthoritativeEvent,
 	type JournalEntry,
@@ -93,6 +94,16 @@ function participantIds(event: AuthoritativeEvent): string[] {
 	return [...result];
 }
 
+function directionOutcome(event: AuthoritativeEvent): JournalEntry['directionOutcome'] {
+	const parsed = z
+		.array(DirectiveInfluenceRecordSchema)
+		.safeParse(event.payload.directiveInfluences);
+	if (!parsed.success || parsed.data.length === 0) return null;
+	if (parsed.data.some((influence) => influence.outcome === 'conflicted')) return 'conflicted';
+	if (parsed.data.some((influence) => influence.outcome === 'unavailable')) return 'unavailable';
+	return 'advanced';
+}
+
 export function projectJournal(events: readonly AuthoritativeEvent[]): readonly JournalEntry[] {
 	return events.map((event) =>
 		JournalEntrySchema.parse({
@@ -108,7 +119,7 @@ export function projectJournal(events: readonly AuthoritativeEvent[]): readonly 
 			participantIds: participantIds(event),
 			deltas: eventDeltas(event),
 			source: event.source,
-			directionOutcome: event.source.directiveIds.length > 0 ? 'advanced' : null,
+			directionOutcome: directionOutcome(event),
 			replayCursor: event.sequence
 		})
 	);

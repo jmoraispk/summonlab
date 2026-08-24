@@ -457,6 +457,21 @@ weight only when intent terms match an already legal action. Refused and deferre
 retrievable memories but contribute no preference. Replay recomputes the act, response, score,
 relationship/authority evidence, and `society-v3` bytes; v1–v8 histories remain unchanged.
 
+`AGT-010` adds `engine-v10` and `society-v4`. A general player direction is an authoritative social
+record rather than an ephemeral prompt suffix: exact text, priorities, scope, intended recipients,
+delivery, actual witness observations, expiry schedule, replacement chain, and terminal event are
+all replayed. `POST /api/runs/:runId/directives` issues, replaces, or revokes it. Day directions
+expire through the normal scheduled simulation event path; decision directions are consumed by the
+first cited applied action; mission directions enter only mission-action packets; until-revoked
+directions remain active until an explicit command ends them.
+
+Packet assembly quotes only active records the hero actually witnessed. A direction cannot add a
+legal move, disclose omitted state, or bypass policy validation. When a hero action cites a stored
+direction, the event records whether the selected legal action advanced it, conflicted with a
+better-matching legal alternative, or found no matching affordance. Journal and replay projections
+use that event-derived influence instead of assuming compliance. Immutable v1–v9 streams remain on
+their original schemas. See ADR 0029.
+
 `AGT-008` adds a historical request and inspection boundary. New `decision-job-v2` rows persist an
 exact, credential-free provider request profile when and only when the requested policy is a model.
 The profile is created from the same request object the adapter would submit and hash-binds the
@@ -492,14 +507,15 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v9` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v10` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
 label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
 immediate reactions. For `engine-v7` through `engine-v9`, the same bounded projection adds each visible hero’s held
 belief count, latest direct observation, relationship language, authority standing, and active
 promise terms. Raw social dimensions and provenance remain available in the development replay
-inspector. The response carries the exact event cursor and state hash that explain the scene.
+inspector. `engine-v10` additionally exposes direction lifecycle and influence in the replay
+ledger. The response carries the exact event cursor and state hash that explain the scene.
 
 The player refreshes this bounded view after each ordered SSE cue and every 15 seconds while the
 page is visible. Code-owned scene layers interpolate travel below completion, grade the approved

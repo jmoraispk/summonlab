@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { DirectiveInfluenceRecordSchema, DirectiveRecordSchema } from './event.js';
 import { EntityIdSchema, IsoDateTimeSchema } from './shared.js';
 
 export const SocialObservationKindSchema = z.enum(['awakening', 'first-ember-commitment']);
@@ -556,9 +557,49 @@ export const SocietyStateV3Schema = z
 		}
 	});
 
+export const SocietyStateV4Schema = z
+	.object({
+		...SocietyStateV3Schema.shape,
+		contentVersion: z.literal('society-v4'),
+		directives: z.record(EntityIdSchema, DirectiveRecordSchema),
+		directiveInfluences: z.record(EntityIdSchema, DirectiveInfluenceRecordSchema)
+	})
+	.strict()
+	.superRefine((society, context) => {
+		for (const [directiveId, directive] of Object.entries(society.directives)) {
+			if (directive.directiveId !== directiveId) {
+				context.addIssue({ code: 'custom', message: 'Directive key does not match its id' });
+			}
+			if (
+				directive.replacesDirectiveId !== null &&
+				society.directives[directive.replacesDirectiveId]?.replacedByDirectiveId !== directiveId
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Directive replacement chain is inconsistent'
+				});
+			}
+		}
+		for (const [influenceId, influence] of Object.entries(society.directiveInfluences)) {
+			if (influence.influenceId !== influenceId || !society.directives[influence.directiveId]) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Directive influence reference is inconsistent'
+				});
+			}
+		}
+		if (
+			Object.keys(society.directives).length > 2_048 ||
+			Object.keys(society.directiveInfluences).length > 8_192
+		) {
+			context.addIssue({ code: 'custom', message: 'Directive collection limit exceeded' });
+		}
+	});
+
 export type SocietyState = z.infer<typeof SocietyStateSchema>;
 export type SocietyStateV2 = z.infer<typeof SocietyStateV2Schema>;
 export type SocietyStateV3 = z.infer<typeof SocietyStateV3Schema>;
+export type SocietyStateV4 = z.infer<typeof SocietyStateV4Schema>;
 export type SocialObservation = z.infer<typeof SocialObservationSchema>;
 export type HeroBelief = z.infer<typeof HeroBeliefSchema>;
 export type DirectedRelationship = z.infer<typeof DirectedRelationshipSchema>;

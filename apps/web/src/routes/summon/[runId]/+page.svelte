@@ -29,6 +29,9 @@
 	let stage = $state(0);
 	// svelte-ignore state_referenced_locally
 	let directive = $state(snapshot.directive);
+	let directiveScope = $state<'decision' | 'mission' | 'day' | 'until_revoked'>('decision');
+	let directiveSending = $state(false);
+	let directiveStatus = $state('');
 	let countdown = $state(5);
 	let deciding = $state(false);
 	let errorMessage = $state('');
@@ -206,6 +209,43 @@
 			return;
 		}
 		decisionPreview = (await response.json()) as HeroDecisionPreview;
+	}
+
+	async function recordScopedDirective() {
+		if (!directive.trim() || directiveSending) return;
+		directiveSending = true;
+		directiveStatus = '';
+		try {
+			const priorities = [
+				...new Set(
+					directive
+						.toLowerCase()
+						.split(/[^a-z0-9]+/)
+						.filter((term) => term.length >= 4)
+				)
+			].slice(0, 6);
+			const response = await fetch(`/api/runs/${snapshot.runId}/directives`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					action: 'issue',
+					text: directive.trim(),
+					scope: directiveScope,
+					recipientIds: [snapshot.manifest.characterId],
+					priorities,
+					tone: communicationTone,
+					delivery: communicationDelivery
+				})
+			});
+			const result = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(result.message ?? 'The direction could not be recorded.');
+			directiveStatus = `Recorded as ${directiveScope.replaceAll('_', ' ')} · witnessed delivery`;
+			await refreshDecisionPacket();
+		} catch (error) {
+			directiveStatus = error instanceof Error ? error.message : 'Direction failed.';
+		} finally {
+			directiveSending = false;
+		}
 	}
 
 	async function requestModelDecision() {
@@ -841,12 +881,31 @@
 					</details>
 				{/if}
 				<label>
-					<span>Give direction before the choice · best effort</span>
+					<span>Give direction before the choice · best effort, never direct control</span>
 					<textarea
 						bind:value={directive}
 						maxlength="500"
 						placeholder="Try: meet people first, or prepare for danger."></textarea>
 				</label>
+				<div class="directive-tools">
+					<label>
+						<span>Lifetime</span>
+						<select bind:value={directiveScope}>
+							<option value="decision">Next decision</option>
+							<option value="mission">Mission</option>
+							<option value="day">Current day</option>
+							<option value="until_revoked">Until revoked</option>
+						</select>
+					</label>
+					<button
+						type="button"
+						onclick={recordScopedDirective}
+						disabled={directiveSending || !directive.trim()}
+					>
+						{directiveSending ? 'Recording…' : 'Record witnessed direction'}
+					</button>
+				</div>
+				{#if directiveStatus}<p class="directive-status">{directiveStatus}</p>{/if}
 				{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
 				<button
 					type="button"
@@ -1767,6 +1826,33 @@
 		padding: 0.6rem;
 		border: 1px solid rgba(210, 160, 77, 0.28);
 		background: rgba(210, 160, 77, 0.06);
+	}
+
+	.directive-tools {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: 0.55rem;
+		align-items: end;
+		margin: 0.55rem 0;
+	}
+
+	.directive-tools label {
+		margin: 0;
+	}
+
+	.directive-tools select {
+		width: 100%;
+		padding: 0.62rem;
+		border: 1px solid rgba(210, 160, 77, 0.28);
+		background: rgba(6, 8, 12, 0.82);
+		color: #f6f1e7;
+	}
+
+	.directive-status {
+		margin: 0 0 0.6rem;
+		color: rgba(112, 200, 217, 0.84);
+		font-size: 0.52rem;
+		letter-spacing: 0.05em;
 	}
 
 	.conversation-influence blockquote {

@@ -38,6 +38,69 @@ export const PlayerDirectiveSchema = z
 	})
 	.strict();
 
+export const DirectiveScopeSchema = PlayerDirectiveSchema.shape.scope;
+export const DirectiveStatusSchema = z.enum([
+	'active',
+	'consumed',
+	'expired',
+	'revoked',
+	'replaced'
+]);
+export const DirectiveInfluenceOutcomeSchema = z.enum(['advanced', 'conflicted', 'unavailable']);
+
+export const DirectiveRecordSchema = PlayerDirectiveSchema.extend({
+	delivery: z.enum(['private', 'open']),
+	status: DirectiveStatusSchema,
+	witnessObservationIds: z.array(EntityIdSchema).min(1).max(32),
+	expiryScheduledEventId: EntityIdSchema.nullable(),
+	replacesDirectiveId: EntityIdSchema.nullable(),
+	replacedByDirectiveId: EntityIdSchema.nullable(),
+	terminalAt: IsoDateTimeSchema.nullable(),
+	terminalEventId: EntityIdSchema.nullable()
+})
+	.strict()
+	.superRefine((directive, context) => {
+		const terminal = directive.status !== 'active';
+		if (
+			terminal !== (directive.terminalAt !== null) ||
+			terminal !== (directive.terminalEventId !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Directive terminal state is inconsistent' });
+		}
+		if (
+			(directive.scope === 'day') !== (directive.expiresAt !== null) ||
+			(directive.scope === 'day') !== (directive.expiryScheduledEventId !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Only day directives have timed expiry' });
+		}
+		if (
+			(directive.status === 'replaced') !== (directive.replacedByDirectiveId !== null) ||
+			['revoked', 'replaced'].includes(directive.status) !== (directive.revokedAt !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Directive revocation state is inconsistent' });
+		}
+		if (
+			directive.status === 'expired' &&
+			(directive.expiresAt === null || directive.terminalAt !== directive.expiresAt)
+		) {
+			context.addIssue({ code: 'custom', message: 'Directive expiry time is inconsistent' });
+		}
+	});
+
+export const DirectiveInfluenceRecordSchema = z
+	.object({
+		influenceId: EntityIdSchema,
+		directiveId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		decisionJobId: EntityIdSchema.nullable(),
+		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		outcome: DirectiveInfluenceOutcomeSchema,
+		rationale: z.string().min(1).max(240),
+		evaluatedAt: IsoDateTimeSchema
+	})
+	.strict();
+
 export const ActionSourceSchema = z
 	.object({
 		source: DecisionSourceSchema,
@@ -215,6 +278,11 @@ export type EngineEventHead = z.infer<typeof EngineEventHeadSchema>;
 export type EngineEventPage = z.infer<typeof EngineEventPageSchema>;
 export type EngineStreamReady = z.infer<typeof EngineStreamReadySchema>;
 export type FallbackPolicy = z.infer<typeof FallbackPolicySchema>;
+export type DirectiveInfluenceOutcome = z.infer<typeof DirectiveInfluenceOutcomeSchema>;
+export type DirectiveInfluenceRecord = z.infer<typeof DirectiveInfluenceRecordSchema>;
+export type DirectiveRecord = z.infer<typeof DirectiveRecordSchema>;
+export type DirectiveScope = z.infer<typeof DirectiveScopeSchema>;
+export type DirectiveStatus = z.infer<typeof DirectiveStatusSchema>;
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;
 export type PlayerDirective = z.infer<typeof PlayerDirectiveSchema>;
 export type ReturnRecap = z.infer<typeof ReturnRecapSchema>;

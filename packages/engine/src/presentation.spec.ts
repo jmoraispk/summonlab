@@ -118,8 +118,8 @@ describe('settlement presentation projection', () => {
 			targetNodeId: 'training-ring'
 		});
 		const travel =
-			traveling.state.schemaVersion === 9 ? traveling.state.heroes[heroId]!.currentTravel! : null;
-		if (!travel) throw new Error('Expected a v9 travel state');
+			traveling.state.schemaVersion === 10 ? traveling.state.heroes[heroId]!.currentTravel! : null;
+		if (!travel) throw new Error('Expected a v10 travel state');
 		const afterDueTime = new Date(Date.parse(travel.arrivesAt) + 60_000).toISOString();
 		const inMotion = projectSettlementPresentation(
 			{ state: traveling.state, stateHash: hashGameState(traveling.state) },
@@ -140,7 +140,7 @@ describe('settlement presentation projection', () => {
 
 	it('projects witnessed words and learned claims without exposing unavailable communication', () => {
 		const bootstrap = fixture();
-		if (bootstrap.snapshot.state.schemaVersion !== 9) throw new Error('Expected engine-v9 state');
+		if (bootstrap.snapshot.state.schemaVersion !== 10) throw new Error('Expected engine-v10 state');
 		const heroId = Object.keys(bootstrap.snapshot.state.heroes)[0]!;
 		const committed = applyCommand(bootstrap.snapshot.state, {
 			...commandBase(bootstrap.snapshot.state, bootstrap.snapshot.state.master.masterId, 'speak'),

@@ -222,7 +222,7 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-009` were completed on 2026-08-24. Canonical
+Status: **complete**. `AGT-001` through `AGT-010` were completed on 2026-08-24. Canonical
 witnessed onboarding now feeds deterministic, inspectable hero context, two packet-bound zero-cost
 policies, one opt-in strict OpenAI policy preview, and a PostgreSQL-authoritative stale-safe job
 lifecycle that can atomically apply a legal choice. Free conversation now records exact witnessed
@@ -230,7 +230,8 @@ turns, distinct hero replies, explicit order outcomes, and later decision prefer
 development-only redacted inspector now audits exactly supplied and omitted context, provider-safe
 request settings, token metadata, validation boundaries, and application evidence. Ten fixed
 packet trials now separate structural safety from useful behavior and block live-model promotion
-until recorded quality, token, and latency evidence exists.
+until recorded quality, token, and latency evidence exists. General directions are now witnessed,
+scoped, replayed, expired or revoked explicitly, and tied to inspectable action influence.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -243,6 +244,7 @@ until recorded quality, token, and latency evidence exists.
 | `AGT-007` | Complete: `engine-v9` / `society-v3` records exact witnessed say/ask/order turns; derives social-style replies and accepted/negotiated/deferred/refused outcomes from six inspectable score groups; leaves action execution entirely inside the normal engine boundary; projects accepted/negotiated orders into later packet preferences of 24/12; exposes reply, score, influence, and replay evidence in normal play; and preserves v1–v8 histories | [Conversation and order evidence](evidence/phase-5-conversation-orders.png), contract/engine/policy/database/browser tests, conversation API and summon/replay inspectors, ADR 0026 |
 | `AGT-008` | Complete: `decision-job-v2` persists an exact credential-free, packet-bound provider request profile for model jobs while retaining v1 compatibility; `decision-inspector-v1` derives a hash-bound report with sensitive prose replaced by typed digests; supplied/omitted context, evidence scores, legal choices, provider settings and usage, retries/fallback, validation boundaries, and engine receipts remain auditable; normal polling receives a packet-free client projection | [Redacted decision inspector evidence](evidence/phase-5-decision-inspector.png), contract/redaction/provider/database/worker/browser tests, dev API and inspector page, ADR 0027 |
 | `AGT-009` | Complete: `agent-evaluation-corpus-v1` exports ten credential-free, hash-bound packets across six agency dimensions; scripted and seeded-random policies receive deterministic integrity, legality, target, memory, expected-fit, knowledge-boundary, contrast, and repetition grades; a dated `gpt-5-nano` request/cost projection remains explicitly unapproved with zero fabricated latency or provider results | [Agency evaluation bench](evidence/phase-5-agent-evaluation.png), [machine-readable report](evidence/phase-5-agent-evaluation.json), `pnpm validate:agent-evaluation`, package/browser tests, ADR 0028 |
+| `AGT-010` | Complete: `engine-v10` / `society-v4` persists exact witnessed direction delivery; supports decision, mission, day, and until-revoked scopes; schedules day expiry; preserves replacement/revocation chains; selects only applicable packet records; and records advanced/conflicted/unavailable action influence without expanding engine legality | [Scoped direction evidence](evidence/phase-5-scoped-directives.png), engine/context/database/browser tests, directive API, summon control, replay and journal ledgers, ADR 0029 |
 
 ### Reproduce the checkpoint
 
@@ -290,8 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Next active engineering slice
 
-Begin `AGT-010`: generalize conversation-derived preferences into scoped player directives with
-explicit witnessed delivery, decision/mission/day/until-revoked lifetimes, replacement and
-revocation, and event-derived influence records. Preserve the packet-only legal-action boundary and
-add the resulting cases to the fixed evaluator. Phase 3 cohort expansion remains behind its
-separate human visual gate.
+Begin `MIS-001`: define the mission package and arena graph contracts for the first tower slice,
+including authored objectives, legal discovery affordances, party deployment boundaries, and the
+fixed story spine that hero proposals may alter without rewriting. Phase 3 cohort expansion remains
+behind its separate human visual gate.

@@ -78,6 +78,16 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		'Train at the practice ring before we enter the tower.'
 	);
 	await expect(page.getByTestId('conversation-influence')).toContainText('conversation-weight-12');
+	await page.getByRole('button', { name: 'Record witnessed direction' }).click();
+	await expect(page.getByText('Recorded as decision · witnessed delivery')).toBeVisible();
+	await expect(page.getByTestId('conversation-influence')).toContainText(
+		'Train, exercise, and prepare to fight in the tower.'
+	);
+	if (process.env.CAPTURE_PHASE5_SCOPED_DIRECTIVES) {
+		await page.setViewportSize({ width: 1440, height: 1200 });
+		await page.getByText('Recorded as decision · witnessed delivery').scrollIntoViewIfNeeded();
+		await page.screenshot({ path: process.env.CAPTURE_PHASE5_SCOPED_DIRECTIVES, fullPage: true });
+	}
 	if (process.env.CAPTURE_PHASE5_CONVERSATION_ORDERS) {
 		await page.setViewportSize({ width: 1440, height: 1200 });
 		await heroConversation.scrollIntoViewIfNeeded();
@@ -215,6 +225,11 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	);
 	await expect(page.getByTestId('conversation-replay-turn')).toContainText('negotiated');
 	await expect(page.getByTestId('conversation-replay-turn')).toContainText('preference +12');
+	await expect(page.getByTestId('directive-replay-record')).toContainText('consumed direction');
+	await expect(page.getByTestId('directive-replay-record')).toContainText(
+		'Train, exercise, and prepare to fight in the tower.'
+	);
+	await expect(page.getByTestId('directive-influence-record')).toContainText('advanced');
 	await page
 		.getByTestId('building-training-ground')
 		.getByRole('button', { name: 'assign', exact: true })

@@ -63,3 +63,11 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-5-decision-jobs.png` — an applied zero-cost decision beside the summoned hero, including
   the job ID, exact engine action, run cursor/version, requested-policy resolution, complete durable
   transition path, and matching authoritative journal events.
+- `phase-5-conversation-orders.png` — free-text hero conversation with a witnessed negotiated order,
+  inspectable response score, and bounded later decision preference.
+- `phase-5-decision-inspector.png` — redacted packet/result inspection with supplied and omitted
+  context, validation boundaries, provider evidence, and engine application receipts.
+- `phase-5-agent-evaluation.png` / `.json` — the fixed credential-free policy corpus, deterministic
+  baseline grades, honest unmeasured live-model gate, and dated cost projection.
+- `phase-5-scoped-directives.png` — engine-v10 witnessed direction control with exact text, selected
+  lifetime, packet memory provenance, best-effort boundary, and recorded delivery confirmation.
