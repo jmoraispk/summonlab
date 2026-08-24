@@ -356,7 +356,18 @@ function directiveContribution(
 	terms: ReadonlySet<string>
 ): PolicyScoreContribution | null {
 	let matches = 0;
+	let conversationWeight = 0;
 	for (const directive of packet.activeDirectives) {
+		const weightMarker = directive.priorities.find((priority) =>
+			/^conversation-weight-(12|24)$/u.test(priority)
+		);
+		if (weightMarker) {
+			const intentTerms = directive.priorities.filter((priority) => priority !== weightMarker);
+			if (intentTerms.some((term) => terms.has(term))) {
+				conversationWeight += Number(weightMarker.slice('conversation-weight-'.length));
+			}
+			continue;
+		}
 		const directiveTerms = [...directive.priorities, directive.text]
 			.join(' ')
 			.toLowerCase()
@@ -364,12 +375,13 @@ function directiveContribution(
 			.filter((term) => term.length >= 3);
 		matches += directiveTerms.filter((term) => terms.has(term)).length;
 	}
-	return matches === 0
+	const total = Math.min(36, conversationWeight + matches * 6);
+	return total === 0
 		? null
 		: {
 				key: 'directive.witnessed-match',
-				value: Math.min(36, matches * 6),
-				reason: 'witnessed directive terms match this legal action'
+				value: total,
+				reason: 'witnessed directive or accepted conversation terms match this legal action'
 			};
 }
 

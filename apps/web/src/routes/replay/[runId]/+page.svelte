@@ -27,7 +27,8 @@
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
-			engineState.schemaVersion === 8
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9
 			? engineState
 			: null
 	);
@@ -37,7 +38,8 @@
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
-			engineState.schemaVersion === 8
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9
 			? engineState.settlement.navigation
 			: null
 	);
@@ -46,7 +48,8 @@
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
-			engineState.schemaVersion === 8
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9
 			? engineState
 			: null
 	);
@@ -54,21 +57,29 @@
 		engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
-			engineState.schemaVersion === 8
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9
 			? engineState
 			: null
 	);
 	const firstEmberState = $derived(
 		engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
-			engineState.schemaVersion === 8
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9
 			? engineState
 			: null
 	);
 	const socialState = $derived(
-		engineState.schemaVersion === 7 || engineState.schemaVersion === 8 ? engineState.society : null
+		engineState.schemaVersion === 7 ||
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9
+			? engineState.society
+			: null
 	);
-	const communicationState = $derived(engineState.schemaVersion === 8 ? engineState : null);
+	const communicationState = $derived(
+		engineState.schemaVersion === 8 || engineState.schemaVersion === 9 ? engineState : null
+	);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
 	const travelHero = $derived(
 		(engineState.schemaVersion === 3 ||
@@ -76,7 +87,8 @@
 			engineState.schemaVersion === 5 ||
 			engineState.schemaVersion === 6 ||
 			engineState.schemaVersion === 7 ||
-			engineState.schemaVersion === 8) &&
+			engineState.schemaVersion === 8 ||
+			engineState.schemaVersion === 9) &&
 			hero
 			? engineState.heroes[hero.heroId]
 			: null
@@ -767,6 +779,27 @@
 												</div>
 											</article>
 										{/each}
+										{#if communicationState.schemaVersion === 9}
+											{#each Object.values(communicationState.society.conversationTurns) as turn (turn.turnId)}
+												<article class="communication-act" data-testid="conversation-replay-turn">
+													<header>
+														<span
+															>hero reply · {turn.response.orderOutcome ?? turn.kind} · {turn.orderIntent ??
+																'open'}</span
+														>
+														<code>{turn.sourceEventId}</code>
+													</header>
+													<blockquote>“{turn.response.exactText}”</blockquote>
+													<p>{turn.response.publicReason}</p>
+													{#if turn.response.orderScore}
+														<code
+															>score {turn.response.orderScore.total} · preference +{turn.response
+																.preferenceWeight}</code
+														>
+													{/if}
+												</article>
+											{/each}
+										{/if}
 									</div>
 								{/if}
 							</div>

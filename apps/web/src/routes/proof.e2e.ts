@@ -66,6 +66,23 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		'I am the Master of Hearth 01. You were summoned here'
 	);
 	await expect(page.getByTestId('decision-context')).toContainText('hero.choose.kitchen');
+	const heroConversation = page.getByTestId('hero-conversation');
+	await heroConversation.getByRole('button', { name: 'order', exact: true }).click();
+	await heroConversation
+		.getByLabel('Free text for the hero')
+		.fill('Train at the practice ring before we enter the tower.');
+	await heroConversation.getByRole('button', { name: 'Send and hear reply' }).click();
+	await expect(page.getByTestId('hero-reply')).toContainText('negotiated');
+	await expect(page.getByTestId('hero-reply')).toContainText('+12 preference');
+	await expect(page.getByTestId('conversation-influence')).toContainText(
+		'Train at the practice ring before we enter the tower.'
+	);
+	await expect(page.getByTestId('conversation-influence')).toContainText('conversation-weight-12');
+	if (process.env.CAPTURE_PHASE5_CONVERSATION_ORDERS) {
+		await page.setViewportSize({ width: 1440, height: 1200 });
+		await heroConversation.scrollIntoViewIfNeeded();
+		await heroConversation.screenshot({ path: process.env.CAPTURE_PHASE5_CONVERSATION_ORDERS });
+	}
 	await expect(page.getByTestId('policy-baselines')).toContainText('Personality script');
 	await expect(page.getByTestId('policy-baselines')).toContainText('Seeded random');
 	await expect(page.getByTestId('policy-baselines')).toContainText('0 model calls');
@@ -160,7 +177,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	);
 	await expect(page.getByTestId('social-cognition-proof')).toContainText('first-ember-commitment');
 	await expect(page.getByTestId('social-cognition-proof')).toContainText('made-founding-promise');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 6');
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 7');
 	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
 		'Communicative acts · witness chains'
 	);
@@ -170,6 +187,8 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
 		'intended / addressed'
 	);
+	await expect(page.getByTestId('conversation-replay-turn')).toContainText('negotiated');
+	await expect(page.getByTestId('conversation-replay-turn')).toContainText('preference +12');
 	await page
 		.getByTestId('building-training-ground')
 		.getByRole('button', { name: 'assign', exact: true })

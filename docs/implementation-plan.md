@@ -999,10 +999,11 @@ the injected game clock; existing v1/v2 streams retain their original schemas.
 
 Estimated engineering effort: **2 weeks**.
 
-**Status: in progress — AGT-001 through AGT-006 completed 2026-08-24.** Holder-owned cognition,
+**Status: in progress — AGT-001 through AGT-007 completed 2026-08-24.** Holder-owned cognition,
 witnessed communication, hash-bound decision packets, deterministic zero-cost policy baselines,
 an opt-in strict OpenAI Responses policy, and the durable stale-safe application lifecycle are
-runnable. Free conversation, inspection, evaluation, and scoped directives remain.
+runnable. Free conversation now produces witnessed hero replies and explicit order outcomes;
+redacted inspection, evaluation, and general scoped directives remain.
 
 - `AGT-001` complete: implement direct observations, provenance-linked beliefs, directed
   relationships, founding promises, and multidimensional authority under `engine-v7`;
@@ -1019,7 +1020,10 @@ runnable. Free conversation, inspection, evaluation, and scoped directives remai
 - `AGT-006` complete: persist packet-bound decision jobs, queue leases, classified attempts and
   transitions; reject stale work before provider spend and before application; bound model retry,
   deterministic fallback, and replan chains; and atomically apply validated engine commands;
-- `AGT-007` implement free-text conversation UI and order outcomes;
+- `AGT-007` complete: implement canonical free-text say/ask/order turns, personality/needs/
+  relationship/authority-aware responses, explicit accepted/negotiated/deferred/refused outcomes,
+  replay-safe social evidence, and witnessed order preferences that affect only later legal-action
+  scoring;
 - `AGT-008` implement redacted packet and result inspector;
 - `AGT-009` create fixed evaluation corpus and budget report;
 - `AGT-010` implement scoped player directives, witnessed delivery, and influence records.
@@ -1137,8 +1141,10 @@ witnesses, direct communication observations, and topic-owned told beliefs. Immu
 histories receive no communication backfill. `AGT-003` through `AGT-005` add holder-owned decision
 packets, deterministic baselines, and the independent strict model adapter. `AGT-006` adds the
 PostgreSQL-authoritative decision lifecycle, crash leases, bounded retry/fallback, two stale guards,
-replacement packets, and atomic engine application. The next engineering slice is `AGT-007`:
-free-text conversation and explicit order outcomes over the same authority boundary.
+replacement packets, and atomic engine application. `AGT-007` adds `engine-v9` / `society-v3`,
+canonical free-text turns, explicit hero replies and order outcomes, and weighted witnessed
+preferences that cannot create or execute actions. The next engineering slice is `AGT-008`: a
+redacted packet and result inspector.
 
 ## Accepted product decisions — 2026-08-23
 

@@ -45,6 +45,13 @@
 	let communicationText = $state(
 		'I am the Master of Hearth 01. You were summoned here, but you are free to ask what this place demands.'
 	);
+	let conversationKind = $state<'say' | 'ask' | 'order'>('say');
+	let conversationOrderIntent = $state<'train' | 'rest' | 'eat' | 'work' | 'prepare-tower'>(
+		'train'
+	);
+	let conversationText = $state('Tell me what you think we should do next.');
+	let conversationSending = $state(false);
+	let conversationError = $state('');
 	let countdownTimer: number | undefined;
 	let decisionJobPollTimer: number | undefined;
 	const outerRunes = Array.from({ length: 12 }, (_, index) => index);
@@ -128,6 +135,62 @@
 			communicationError = error instanceof Error ? error.message : 'Communication failed.';
 		} finally {
 			communicating = false;
+			if (snapshot.controlMode === 'countdown' && !snapshot.destination) beginCountdown();
+		}
+	}
+
+	function chooseConversationKind(kind: 'say' | 'ask' | 'order') {
+		conversationKind = kind;
+		conversationText =
+			kind === 'say'
+				? 'We need to survive this place together. Tell me what you think we should do next.'
+				: kind === 'ask'
+					? 'What do you want to do next, and why?'
+					: {
+							train: 'Train at the practice ring before we enter the tower.',
+							rest: 'Rest and recover before you take another risk.',
+							eat: 'Eat a proper meal before making another decision.',
+							work: 'Take a settlement duty and help stabilize Hearth 01.',
+							'prepare-tower': 'Prepare yourself for our first tower mission.'
+						}[conversationOrderIntent];
+	}
+
+	function chooseOrderIntent(intent: typeof conversationOrderIntent) {
+		conversationOrderIntent = intent;
+		if (conversationKind === 'order') chooseConversationKind('order');
+	}
+
+	async function sendConversation() {
+		if (!conversation?.canCommunicate || conversationSending || !conversationText.trim()) return;
+		conversationSending = true;
+		conversationError = '';
+		if (countdownTimer) {
+			window.clearInterval(countdownTimer);
+			countdownTimer = undefined;
+		}
+		try {
+			const response = await fetch(`/api/runs/${snapshot.runId}/conversations`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					targetHeroId: snapshot.manifest.characterId,
+					kind: conversationKind,
+					exactText: conversationText.trim(),
+					tone: communicationTone,
+					delivery: communicationDelivery,
+					orderIntent: conversationKind === 'order' ? conversationOrderIntent : null
+				})
+			});
+			const result = (await response.json()) as HeroConversationPresentation & {
+				message?: string;
+			};
+			if (!response.ok) throw new Error(result.message ?? 'The hero could not answer.');
+			conversation = result;
+			await refreshDecisionPacket();
+		} catch (error) {
+			conversationError = error instanceof Error ? error.message : 'Conversation failed.';
+		} finally {
+			conversationSending = false;
 			if (snapshot.controlMode === 'countdown' && !snapshot.destination) beginCountdown();
 		}
 	}
@@ -475,6 +538,83 @@
 							</div>
 						{/if}
 						<small>Exact words are canonical. Free text cannot invent engine facts.</small>
+						<section class="free-conversation" data-testid="hero-conversation">
+							<header>
+								<div>
+									<p>Hero agency</p>
+									<h3>Talk, ask, or try to persuade.</h3>
+								</div>
+								<small>Words influence; the engine still owns actions.</small>
+							</header>
+							<div class="topic-row" aria-label="Conversation kind">
+								{#each ['say', 'ask', 'order'] as kind (kind)}
+									<button
+										type="button"
+										class:active={conversationKind === kind}
+										onclick={() => chooseConversationKind(kind as typeof conversationKind)}
+										>{kind}</button
+									>
+								{/each}
+							</div>
+							{#if conversationKind === 'order'}
+								<div class="order-intents" aria-label="Order intent">
+									{#each ['train', 'rest', 'eat', 'work', 'prepare-tower'] as intent (intent)}
+										<button
+											type="button"
+											class:active={conversationOrderIntent === intent}
+											onclick={() => chooseOrderIntent(intent as typeof conversationOrderIntent)}
+											>{intent.replaceAll('-', ' ')}</button
+										>
+									{/each}
+								</div>
+							{/if}
+							<textarea
+								class="communication-copy"
+								bind:value={conversationText}
+								maxlength="600"
+								aria-label="Free text for the hero"></textarea>
+							<button
+								class="speak"
+								type="button"
+								onclick={sendConversation}
+								disabled={!conversation.canCommunicate ||
+									conversationSending ||
+									!conversationText.trim()}
+								>{conversationSending ? 'Listening…' : 'Send and hear reply'}</button
+							>
+							{#if conversationError}<p class="error" role="alert">{conversationError}</p>{/if}
+							{#if conversation.turns.length > 0}
+								{@const latestTurn = conversation.turns.at(-1)!}
+								<article class="hero-reply" data-testid="hero-reply">
+									<div class="speech-line">
+										<span>Master</span>
+										<blockquote>“{latestTurn.masterText}”</blockquote>
+									</div>
+									<div class="speech-line hero">
+										<span>{snapshot.manifest.displayName}</span>
+										<blockquote>“{latestTurn.heroResponse.exactText}”</blockquote>
+									</div>
+									{#if latestTurn.heroResponse.orderOutcome}
+										<div class="order-outcome">
+											<strong>{latestTurn.heroResponse.orderOutcome}</strong>
+											<span>{latestTurn.orderIntent?.replaceAll('-', ' ')}</span>
+											<em>+{latestTurn.heroResponse.preferenceWeight} preference</em>
+										</div>
+										<details>
+											<summary>Why this outcome?</summary>
+											<p>{latestTurn.heroResponse.publicReason}</p>
+											{#if latestTurn.heroResponse.orderScore}
+												<div class="score-grid">
+													{#each Object.entries(latestTurn.heroResponse.orderScore) as [key, value] (key)}
+														<span>{key}</span><strong>{value > 0 ? `+${value}` : value}</strong>
+													{/each}
+												</div>
+											{/if}
+										</details>
+									{/if}
+								</article>
+							{/if}
+						</section>
 					</div>
 				{/if}
 				{#if decisionPacket && decisionPreview}
@@ -496,6 +636,17 @@
 								<span>state</span><code>{decisionPacket.world.stateHash.slice(0, 12)}</code>
 								<span>cursor</span><code>{decisionPacket.world.eventCursor}</code>
 							</div>
+							{#if decisionPacket.activeDirectives.length > 0}
+								<div class="conversation-influence" data-testid="conversation-influence">
+									<p>Witnessed preferences reaching this decision</p>
+									{#each decisionPacket.activeDirectives as activeDirective (activeDirective.directiveId)}
+										<div>
+											<blockquote>“{activeDirective.text}”</blockquote>
+											<code>{activeDirective.priorities.join(' · ')}</code>
+										</div>
+									{/each}
+								</div>
+							{/if}
 							<div class="legal-context">
 								<p>Only these actions can be chosen</p>
 								{#each decisionPacket.legalActions as action (action.actionId)}
@@ -1391,6 +1542,136 @@
 		font-size: 0.52rem;
 	}
 
+	.free-conversation {
+		margin-top: 1rem;
+		padding-top: 1rem;
+		border-top: 1px solid rgba(210, 160, 77, 0.24);
+	}
+
+	.free-conversation header,
+	.order-outcome,
+	.speech-line {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.7rem;
+	}
+
+	.free-conversation header h3 {
+		margin: 0;
+		font-family: Georgia, serif;
+		font-size: 1.05rem;
+		font-weight: 400;
+	}
+
+	.free-conversation header > small {
+		max-width: 12rem;
+		color: rgba(246, 241, 231, 0.36);
+		font-size: 0.48rem;
+		text-align: right;
+	}
+
+	.free-conversation > .speak {
+		width: 100%;
+		margin-top: 0.55rem;
+	}
+
+	.order-intents {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3rem;
+		margin: -0.2rem 0 0.55rem;
+	}
+
+	.order-intents button {
+		padding: 0.35rem 0.5rem;
+		border: 1px solid rgba(210, 160, 77, 0.22);
+		background: transparent;
+		color: rgba(246, 241, 231, 0.45);
+		cursor: pointer;
+		font-size: 0.48rem;
+		text-transform: uppercase;
+	}
+
+	.order-intents button.active {
+		border-color: #d2a04d;
+		background: rgba(210, 160, 77, 0.13);
+		color: #f1cf8b;
+	}
+
+	.hero-reply {
+		margin-top: 0.75rem;
+		padding: 0.75rem;
+		border-left: 2px solid #d2a04d;
+		background: rgba(210, 160, 77, 0.06);
+	}
+
+	.speech-line {
+		align-items: flex-start;
+		justify-content: flex-start;
+	}
+
+	.speech-line + .speech-line {
+		margin-top: 0.55rem;
+	}
+
+	.speech-line > span {
+		min-width: 4.3rem;
+		color: rgba(246, 241, 231, 0.35);
+		font-size: 0.48rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.speech-line blockquote {
+		margin: 0;
+		color: rgba(246, 241, 231, 0.65);
+		font-family: Georgia, serif;
+		font-size: 0.76rem;
+		line-height: 1.45;
+	}
+
+	.speech-line.hero blockquote {
+		color: #f6f1e7;
+	}
+
+	.order-outcome {
+		justify-content: flex-start;
+		margin-top: 0.75rem;
+		padding-top: 0.55rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		font-size: 0.53rem;
+		text-transform: uppercase;
+	}
+
+	.order-outcome strong {
+		color: #70c8d9;
+		letter-spacing: 0.1em;
+	}
+
+	.order-outcome em {
+		margin-left: auto;
+		color: #d2a04d;
+		font-style: normal;
+	}
+
+	.hero-reply details {
+		margin-top: 0.55rem;
+		color: rgba(246, 241, 231, 0.5);
+		font-size: 0.55rem;
+	}
+
+	.score-grid {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.2rem 1rem;
+		margin-top: 0.45rem;
+	}
+
+	.score-grid strong {
+		color: #f1cf8b;
+	}
+
 	.context-preview {
 		margin: 0 0 1rem;
 		border: 1px solid rgba(210, 160, 77, 0.28);
@@ -1470,6 +1751,24 @@
 	.context-proof code {
 		color: #70c8d9;
 		font-size: 0.48rem;
+	}
+
+	.conversation-influence {
+		margin-bottom: 0.65rem;
+		padding: 0.6rem;
+		border: 1px solid rgba(210, 160, 77, 0.28);
+		background: rgba(210, 160, 77, 0.06);
+	}
+
+	.conversation-influence blockquote {
+		margin: 0.2rem 0;
+		font-family: Georgia, serif;
+		font-size: 0.62rem;
+	}
+
+	.conversation-influence code {
+		color: #d2a04d;
+		font-size: 0.44rem;
 	}
 
 	.legal-context {

@@ -8,7 +8,8 @@ import {
 	type EngineGameStateV5,
 	type EngineGameStateV6,
 	type EngineGameStateV7,
-	type EngineGameStateV8
+	type EngineGameStateV8,
+	type EngineGameStateV9
 } from '@summonlab/contracts';
 import {
 	ENGINE_CONTENT_VERSION,
@@ -57,7 +58,9 @@ function cappedTarget(currentGameTime: string, projectedGameTime: string, maxGam
 async function loadState(
 	sql: postgres.Sql,
 	runId: string
-): Promise<EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8> {
+): Promise<
+	EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9
+> {
 	const snapshot = await sql.begin((transaction) =>
 		getEngineSnapshotInTransaction(transaction, runId)
 	);
@@ -66,9 +69,10 @@ async function loadState(
 		snapshot.state.schemaVersion !== 5 &&
 		snapshot.state.schemaVersion !== 6 &&
 		snapshot.state.schemaVersion !== 7 &&
-		snapshot.state.schemaVersion !== 8
+		snapshot.state.schemaVersion !== 8 &&
+		snapshot.state.schemaVersion !== 9
 	) {
-		throw new Error(`Catch-up requires engine-v5 through engine-v8 state: ${runId}`);
+		throw new Error(`Catch-up requires engine-v5 through engine-v9 state: ${runId}`);
 	}
 	return snapshot.state;
 }

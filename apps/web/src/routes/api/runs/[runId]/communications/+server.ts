@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const config = getConfig();
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 8) {
+		if (snapshot.state.schemaVersion !== 8 && snapshot.state.schemaVersion !== 9) {
 			return json({ message: 'This history predates witnessed communication.' }, { status: 409 });
 		}
 		const commandId = randomUUID();

@@ -222,10 +222,12 @@ to confirm animation freezes without losing the activity label.
 
 ## Phase 5 — agency, conversation, and memory
 
-Status: **in progress**. `AGT-001` through `AGT-006` were completed on 2026-08-24. Canonical
+Status: **in progress**. `AGT-001` through `AGT-007` were completed on 2026-08-24. Canonical
 witnessed onboarding now feeds deterministic, inspectable hero context, two packet-bound zero-cost
 policies, one opt-in strict OpenAI policy preview, and a PostgreSQL-authoritative stale-safe job
-lifecycle that can atomically apply a legal choice. Free conversation remains the next slice.
+lifecycle that can atomically apply a legal choice. Free conversation now records exact witnessed
+turns, distinct hero replies, explicit order outcomes, and later decision preferences; the redacted
+packet/result inspector is next.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -235,6 +237,7 @@ lifecycle that can atomically apply a legal choice. Free conversation remains th
 | `AGT-004` | Complete: `@summonlab/policies` implements one explicit-seed random policy and one personality/value/drive/habit/needs-aware scripted policy across all four decision kinds; both accept only canonical packet actions/targets/memories, return packet/legal/state-bound `hero-policy-result-v1` records with deterministic traces and result hashes, and remain zero-cost baselines rather than direct state mutators | [Policy baseline evidence](evidence/phase-5-policy-baselines.png), policy/contract/browser tests, current-preview API, summon side-by-side baseline cards, ADR 0023 |
 | `AGT-005` | Complete: `OpenAIModelPolicy` submits one official-SDK foreground Responses request containing only the verified canonical packet; disables provider storage and conversation chaining; uses low verbosity, bounded minimal reasoning, and strict `summonlab_hero_decision` Structured Outputs; revalidates schema plus legal actions/targets/memories; returns provider/model/token/request/output/result trace; classifies timeout, provider error, refusal, incomplete, malformed, invalid, and illegal outputs; and remains a manual development-only preview with mode/key/cost/stale-packet gates | [Model adapter evidence](evidence/phase-5-model-adapter.png), fake-transport policy tests, no-key browser journey, model-preview API, ADR 0024 |
 | `AGT-006` | Complete: `decision-job-v1` persists the exact packet and run/legal hashes, attempts, leases, transitions, failures, replacement links, result, and application receipt; pg-boss carries only the job ID; pre-policy and transaction-locked pre-application guards reject stale work; model calls receive one bounded retry then deterministic scripted fallback; expired leases and completed-but-unapplied results recover without repeating provider work; fresh replans are linked and capped; and a validated policy result becomes one idempotent engine command with strict replay | [Decision job evidence](evidence/phase-5-decision-jobs.png), contract/engine/database/queue/worker/browser tests, decision-job APIs, summon lifecycle inspector, ADR 0025 |
+| `AGT-007` | Complete: `engine-v9` / `society-v3` records exact witnessed say/ask/order turns; derives social-style replies and accepted/negotiated/deferred/refused outcomes from six inspectable score groups; leaves action execution entirely inside the normal engine boundary; projects accepted/negotiated orders into later packet preferences of 24/12; exposes reply, score, influence, and replay evidence in normal play; and preserves v1–v8 histories | [Conversation and order evidence](evidence/phase-5-conversation-orders.png), contract/engine/policy/database/browser tests, conversation API and summon/replay inspectors, ADR 0026 |
 
 ### Reproduce the checkpoint
 
@@ -249,7 +252,11 @@ memory should instead report no learned claim. Open **What reaches this hero** a
 exactly two legal route choices, the latest exact words have event → observation provenance, and the
 packet/state hashes are visible. Compare **Personality script** with **Seeded random**: both must
 choose one of those exact actions, show `0 model calls`, and carry a different result hash bound to
-the same packet. The **Live model bench** must report **adapter ready** and **No provider request is
+the same packet. In **Hero agency**, choose **Order → Train**, edit the free text, and send it. Check
+the exact hero reply, accepted/negotiated/deferred/refused badge, six score contributions, and
+preference weight. Open **What reaches this hero** again: an accepted or negotiated order must show
+its witnessed text and `conversation-weight-24` or `conversation-weight-12`; a refused/deferred
+order must remain a memory without a preference. The **Live model bench** must report **adapter ready** and **No provider request is
 sent in scripted mode**. Press **Queue scripted + apply** and confirm the observed lifecycle ends
 at **applied**, shows exactly one attempt, and displays the selected action plus cursor/version.
 The answer panel and authoritative journal must reflect the same choice, and replay must remain
@@ -267,7 +274,7 @@ verified.
 
 ## Next active engineering slice
 
-Begin `AGT-007`: make free-text hero conversation a first-class loop and record explicit order
-outcomes such as accepted, negotiated, refused, or deferred without turning player language into a
-direct engine command. Reuse witnessed speech, holder-owned context, durable decision jobs, and the
-existing authority evidence. Phase 3 cohort expansion remains behind its separate human visual gate.
+Begin `AGT-008`: expose a redacted packet/result inspector that makes supplied context, omitted
+private state, provider-safe fields, selected evidence, token metadata, and validation boundaries
+auditable without leaking secrets or private reasoning. Phase 3 cohort expansion remains behind its
+separate human visual gate.

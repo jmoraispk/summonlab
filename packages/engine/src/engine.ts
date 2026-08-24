@@ -2,6 +2,7 @@ import {
 	AuthoritativeEventSchema,
 	CharacterMindSchema,
 	CommunicativeActSchema,
+	HeroConversationTurnSchema,
 	CurrentRoutineSchema,
 	DailyPlanSchema,
 	EngineCommandSchema,
@@ -14,6 +15,7 @@ import {
 	EngineGameStateV6Schema,
 	EngineGameStateV7Schema,
 	EngineGameStateV8Schema,
+	EngineGameStateV9Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -32,6 +34,7 @@ import {
 	SettlementRoutePlanSchema,
 	SocietyStateSchema,
 	SocietyStateV2Schema,
+	SocietyStateV3Schema,
 	type ActivityKind,
 	type AuthoritativeEvent,
 	type BuildingAssignmentRole,
@@ -46,10 +49,13 @@ import {
 	type EngineGameStateV6,
 	type EngineGameStateV7,
 	type EngineGameStateV8,
+	type EngineGameStateV9,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
 	type FirstEmberRationale,
+	type ConversationOrderIntent,
+	type ConversationOrderOutcome,
 	type HeroDecisionPacket,
 	type HeroPolicyResult,
 	type LegalAction,
@@ -58,6 +64,7 @@ import {
 	type SettlementDefinition,
 	type SocietyState,
 	type SocietyStateV2,
+	type SocietyStateV3,
 	type ScheduledEvent
 } from '@summonlab/contracts';
 import { HEARTH_01_DEFINITION, planSettlementRoute } from '@summonlab/content';
@@ -69,7 +76,8 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v8';
+export const ENGINE_CONTENT_VERSION = 'engine-v9';
+export const CONVERSATION_ENGINE_CONTENT_VERSION = 'engine-v9';
 export const COMMUNICATION_ENGINE_CONTENT_VERSION = 'engine-v8';
 export const SOCIAL_ENGINE_CONTENT_VERSION = 'engine-v7';
 export const FIRST_EMBER_ENGINE_CONTENT_VERSION = 'engine-v6';
@@ -108,9 +116,10 @@ type EngineGameStateModern =
 	| EngineGameStateV5
 	| EngineGameStateV6
 	| EngineGameStateV7
-	| EngineGameStateV8;
+	| EngineGameStateV8
+	| EngineGameStateV9;
 type EngineRoutineState =
-	EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8;
+	EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -314,7 +323,7 @@ const FirstEmberRecoveredPayloadSchema = EmptyMetadataSchema.extend({
 
 const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
 	firstEmber: FirstEmberStateSchema,
-	society: z.union([SocietyStateSchema, SocietyStateV2Schema]).optional(),
+	society: z.union([SocietyStateSchema, SocietyStateV2Schema, SocietyStateV3Schema]).optional(),
 	previousPoweredBuildingId: z.string().nullable(),
 	powerStateChanges: z.array(PowerStateChangeSchema).min(1),
 	activeSystemIdsAfter: z.array(z.string()),
@@ -323,7 +332,13 @@ const FirstEmberCommittedPayloadSchema = EmptyMetadataSchema.extend({
 
 const CommunicativeActRecordedPayloadSchema = EmptyMetadataSchema.extend({
 	communicativeAct: CommunicativeActSchema,
-	society: SocietyStateV2Schema,
+	society: z.union([SocietyStateV2Schema, SocietyStateV3Schema]),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const ConversationTurnRecordedPayloadSchema = EmptyMetadataSchema.extend({
+	conversationTurn: HeroConversationTurnSchema,
+	society: SocietyStateV3Schema,
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -483,14 +498,14 @@ function createBootstrapSociety(
 	masterId: string,
 	eventId: string,
 	observedAt: string
-): SocietyStateV2 {
+): SocietyStateV3 {
 	const observationId = deterministicUuid(`${eventId}:${heroId}:awakening-observation`);
 	const selfBeliefId = deterministicUuid(`${observationId}:self-awakened`);
 	const presenceBeliefId = deterministicUuid(`${observationId}:master-present`);
 	const relationshipId = deterministicUuid(`${heroId}:${masterId}:relationship`);
 	const authorityId = deterministicUuid(`${heroId}:${masterId}:authority`);
-	return SocietyStateV2Schema.parse({
-		contentVersion: 'society-v2',
+	return SocietyStateV3Schema.parse({
+		contentVersion: 'society-v3',
 		observations: {
 			[observationId]: {
 				observationId,
@@ -569,7 +584,8 @@ function createBootstrapSociety(
 				evidence: []
 			}
 		},
-		communicativeActs: {}
+		communicativeActs: {},
+		conversationTurns: {}
 	});
 }
 
@@ -601,8 +617,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
-	const state = EngineGameStateV8Schema.parse({
-		schemaVersion: 8,
+	const state = EngineGameStateV9Schema.parse({
+		schemaVersion: 9,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -885,12 +901,12 @@ const FIRST_EMBER_PROMISE_TERMS = Object.freeze({
 } as const satisfies Record<FirstEmberRationale, string>);
 
 function buildFirstEmberSociety(
-	state: EngineGameStateV7 | EngineGameStateV8,
+	state: EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9,
 	eventId: string,
 	buildingId: FirstEmberFacility,
 	rationale: FirstEmberRationale,
 	reactions: readonly ReturnType<typeof buildFirstEmberReaction>[]
-): SocietyState | SocietyStateV2 {
+): SocietyState | SocietyStateV2 | SocietyStateV3 {
 	const observations = { ...state.society.observations };
 	const beliefs = { ...state.society.beliefs };
 	const relationships = { ...state.society.relationships };
@@ -1046,18 +1062,20 @@ function buildFirstEmberSociety(
 			}
 		}
 	};
+	if (state.schemaVersion === 9) return SocietyStateV3Schema.parse(candidate);
 	return state.schemaVersion === 8
 		? SocietyStateV2Schema.parse(candidate)
 		: SocietyStateSchema.parse(candidate);
 }
 
-type MasterCommunicateCommand = Extract<EngineCommand, { commandType: 'master.communicate' }>;
+type MasterConverseCommand = Extract<EngineCommand, { commandType: 'master.converse' }>;
 type CommunicationInput = Pick<
-	MasterCommunicateCommand,
-	'targetHeroId' | 'kind' | 'topic' | 'exactText' | 'tone' | 'delivery'
->;
+	z.infer<typeof CommunicativeActSchema>,
+	'kind' | 'topic' | 'exactText' | 'tone' | 'delivery'
+> & { readonly targetHeroId: string };
+type EngineCommunicationState = EngineGameStateV8 | EngineGameStateV9;
 
-function heroCanHearCommunication(hero: EngineGameStateV8['heroes'][string]): boolean {
+function heroCanHearCommunication(hero: EngineCommunicationState['heroes'][string]): boolean {
 	return (
 		hero.lifeState === 'active' &&
 		hero.currentTravel === null &&
@@ -1067,9 +1085,9 @@ function heroCanHearCommunication(hero: EngineGameStateV8['heroes'][string]): bo
 }
 
 function communicationWitnessHeroes(
-	state: EngineGameStateV8,
+	state: EngineCommunicationState,
 	command: CommunicationInput
-): EngineGameStateV8['heroes'][string][] {
+): EngineCommunicationState['heroes'][string][] {
 	const target = state.heroes[command.targetHeroId];
 	if (!target || target.location !== state.master.location || !heroCanHearCommunication(target)) {
 		return [];
@@ -1090,8 +1108,8 @@ function communicationWitnessHeroes(
 	return witnesses;
 }
 
-function communicationClaim(state: EngineGameStateV8, command: CommunicationInput) {
-	if (command.topic === 'hero-memory') return null;
+function communicationClaim(state: EngineCommunicationState, command: CommunicationInput) {
+	if (['hero-memory', 'open-conversation', 'daily-order'].includes(command.topic)) return null;
 	if (command.topic === 'master-role') {
 		return {
 			subjectId: state.master.masterId,
@@ -1117,10 +1135,13 @@ function communicationClaim(state: EngineGameStateV8, command: CommunicationInpu
 }
 
 function buildCommunicativeSociety(
-	state: EngineGameStateV8,
+	state: EngineCommunicationState,
 	eventId: string,
 	command: CommunicationInput
-): { society: SocietyStateV2; communicativeAct: z.infer<typeof CommunicativeActSchema> } {
+): {
+	society: SocietyStateV2 | SocietyStateV3;
+	communicativeAct: z.infer<typeof CommunicativeActSchema>;
+} {
 	const claim = communicationClaim(state, command);
 	const actId = deterministicUuid(`${eventId}:communicative-act`);
 	const observations = { ...state.society.observations };
@@ -1139,7 +1160,9 @@ function buildCommunicativeSociety(
 			summary: intended
 				? command.kind === 'ask'
 					? `The Master directly asked me about ${command.topic}.`
-					: `The Master directly ${command.kind === 'tell' ? 'told' : 'explained to'} me about ${command.topic}.`
+					: command.kind === 'order'
+						? `The Master directly ordered me regarding ${command.topic}.`
+						: `The Master directly ${command.kind === 'tell' ? 'told' : 'explained to'} me about ${command.topic}.`
 				: `I overheard the Master ${command.kind} ${command.topic} to another hero.`,
 			subjectIds: [state.master.masterId, command.targetHeroId]
 		};
@@ -1185,18 +1208,302 @@ function buildCommunicativeSociety(
 		claim,
 		witnesses
 	});
+	const candidate = {
+		...state.society,
+		observations,
+		beliefs,
+		communicativeActs: {
+			...state.society.communicativeActs,
+			[actId]: communicativeAct
+		}
+	};
 	return {
 		communicativeAct,
-		society: SocietyStateV2Schema.parse({
-			...state.society,
-			observations,
-			beliefs,
-			communicativeActs: {
-				...state.society.communicativeActs,
-				[actId]: communicativeAct
-			}
-		})
+		society:
+			state.schemaVersion === 9
+				? SocietyStateV3Schema.parse(candidate)
+				: SocietyStateV2Schema.parse(candidate)
 	};
+}
+
+const ORDER_INTENT_LABELS = Object.freeze({
+	train: 'train at the practice ring',
+	rest: 'rest and recover',
+	eat: 'eat a proper meal',
+	work: 'take a settlement duty',
+	'prepare-tower': 'prepare for the tower'
+} as const satisfies Record<ConversationOrderIntent, string>);
+
+function conversationOrderScore(
+	state: EngineGameStateV9,
+	hero: EngineGameStateV9['heroes'][string],
+	intent: ConversationOrderIntent,
+	tone: MasterConverseCommand['tone']
+) {
+	const relationship = Object.values(state.society.relationships).find(
+		(candidate) =>
+			candidate.fromHeroId === hero.heroId && candidate.toEntityId === state.master.masterId
+	);
+	const authority = Object.values(state.society.authority).find(
+		(candidate) =>
+			candidate.observerHeroId === hero.heroId && candidate.subjectId === state.master.masterId
+	);
+	if (!relationship || !authority) {
+		throw new ReplayIntegrityError('Conversation social view is missing', state.eventCursor);
+	}
+	const authorityScore = Math.round(
+		(authority.dimensions.legitimacy +
+			authority.dimensions.trust +
+			authority.dimensions.competence +
+			authority.dimensions.consistency) /
+			20
+	);
+	const relationshipScore = Math.round(
+		(relationship.dimensions.trust +
+			relationship.dimensions.respect +
+			relationship.dimensions.affection -
+			relationship.dimensions.resentment) /
+			20
+	);
+	const personality = Math.round(
+		(hero.mind.personality.agreeableness +
+			hero.mind.personality.conscientiousness -
+			hero.mind.personality.emotionalVolatility -
+			50) /
+			10
+	);
+	const alignedValues: Record<ConversationOrderIntent, readonly string[]> = {
+		train: ['mastery', 'duty'],
+		rest: ['freedom', 'belonging'],
+		eat: ['belonging', 'freedom'],
+		work: ['duty', 'belonging'],
+		'prepare-tower': ['duty', 'mastery']
+	};
+	const alignedDrives: Record<ConversationOrderIntent, readonly string[]> = {
+		train: ['prove', 'survive'],
+		rest: ['survive', 'belong'],
+		eat: ['survive', 'belong'],
+		work: ['protect', 'belong'],
+		'prepare-tower': ['protect', 'prove', 'survive']
+	};
+	let alignment = alignedValues[intent].includes(hero.mind.primaryValue) ? 12 : 0;
+	alignment += alignedDrives[intent].includes(hero.mind.primaryDrive) ? 8 : 0;
+	if (hero.mind.primaryValue === 'freedom' && ['work', 'prepare-tower'].includes(intent)) {
+		alignment -= 10;
+	}
+	const needs = {
+		train: Math.round((50 - hero.needs.fatigue) / 5),
+		rest: Math.round((hero.needs.fatigue - 30) / 3),
+		eat: Math.round((hero.needs.hunger - 25) / 3),
+		work: Math.round((45 - hero.needs.fatigue) / 5),
+		'prepare-tower': Math.round((50 - hero.needs.fatigue) / 6)
+	}[intent];
+	const toneScore = { neutral: 0, reassuring: 6, firm: -3, urgent: -1, apologetic: 3 }[
+		tone ?? 'neutral'
+	];
+	return {
+		authority: authorityScore,
+		relationship: relationshipScore,
+		personality,
+		alignment,
+		needs,
+		tone: toneScore,
+		total: authorityScore + relationshipScore + personality + alignment + needs + toneScore
+	};
+}
+
+function conversationVoice(hero: EngineGameStateV9['heroes'][string]): {
+	prefix: string;
+	question: string;
+} {
+	return {
+		reserved: { prefix: 'Understood.', question: 'I will answer plainly.' },
+		warm: { prefix: 'I hear you.', question: 'You can ask me directly.' },
+		direct: { prefix: 'Be clear.', question: 'Ask what you need.' },
+		formal: { prefix: 'Your words are noted.', question: 'I will give you a precise answer.' },
+		wry: {
+			prefix: 'That makes things interesting.',
+			question: 'Go on—what do you really want to know?'
+		},
+		inquisitive: {
+			prefix: 'I am listening.',
+			question: 'I will answer—and I may have questions too.'
+		}
+	}[hero.mind.socialStyle];
+}
+
+function buildConversationResponse(
+	state: EngineGameStateV9,
+	command: MasterConverseCommand
+): z.infer<typeof HeroConversationTurnSchema>['response'] {
+	const hero = state.heroes[command.targetHeroId];
+	if (!hero) throw new IllegalActionError(command.commandType);
+	const voice = conversationVoice(hero);
+	if (command.kind === 'say') {
+		return {
+			exactText: `${voice.prefix} What matters to me here is ${hero.mind.primaryValue}, and I am trying to ${hero.mind.primaryDrive}.`,
+			publicReason: `The reply reflects a ${hero.mind.socialStyle} style, ${hero.mind.primaryValue}, and the drive to ${hero.mind.primaryDrive}.`,
+			orderOutcome: null,
+			orderScore: null,
+			preferenceWeight: 0
+		};
+	}
+	if (command.kind === 'ask') {
+		const instinct =
+			hero.mind.primaryValue === 'mastery'
+				? 'train'
+				: hero.mind.primaryValue === 'duty'
+					? 'work'
+					: 'rest';
+		return {
+			exactText: `${voice.question} I remember waking at this gate; for now, my next instinct is to ${ORDER_INTENT_LABELS[instinct]}.`,
+			publicReason: `The answer is limited to witnessed memory and the hero's current ${hero.mind.primaryValue} value.`,
+			orderOutcome: null,
+			orderScore: null,
+			preferenceWeight: 0
+		};
+	}
+	const intent = command.orderIntent!;
+	const orderScore = conversationOrderScore(state, hero, intent, command.tone);
+	const orderOutcome: ConversationOrderOutcome =
+		orderScore.total >= 24
+			? 'accepted'
+			: orderScore.total >= 10
+				? 'negotiated'
+				: orderScore.total >= 0
+					? 'deferred'
+					: 'refused';
+	const exactText = {
+		accepted: `${voice.prefix} I will ${ORDER_INTENT_LABELS[intent]}.`,
+		negotiated: `${voice.prefix} I will try to ${ORDER_INTENT_LABELS[intent]}, but I will reassess if conditions change.`,
+		deferred: `${voice.prefix} Not yet. I need the situation to improve before I ${ORDER_INTENT_LABELS[intent]}.`,
+		refused: `${voice.prefix} No. I will not ${ORDER_INTENT_LABELS[intent]} under these conditions.`
+	}[orderOutcome];
+	return {
+		exactText,
+		publicReason: `The ${orderOutcome} outcome totals ${orderScore.total} from authority, relationship, personality, alignment, needs, and tone.`,
+		orderOutcome,
+		orderScore,
+		preferenceWeight: orderOutcome === 'accepted' ? 24 : orderOutcome === 'negotiated' ? 12 : 0
+	};
+}
+
+function buildConversationSociety(
+	state: EngineGameStateV9,
+	eventId: string,
+	command: MasterConverseCommand
+): { society: SocietyStateV3; conversationTurn: z.infer<typeof HeroConversationTurnSchema> } {
+	const communication = buildCommunicativeSociety(state, eventId, {
+		targetHeroId: command.targetHeroId,
+		kind: command.kind === 'say' ? 'tell' : command.kind,
+		topic: command.kind === 'order' ? 'daily-order' : 'open-conversation',
+		exactText: command.exactText,
+		tone: command.tone,
+		delivery: command.delivery
+	});
+	const baseSociety = SocietyStateV3Schema.parse(communication.society);
+	const response = buildConversationResponse(state, command);
+	const turnId = deterministicUuid(`${eventId}:conversation-turn`);
+	const conversationTurn = HeroConversationTurnSchema.parse({
+		turnId,
+		sourceEventId: eventId,
+		communicationActId: communication.communicativeAct.actId,
+		masterId: state.master.masterId,
+		heroId: command.targetHeroId,
+		kind: command.kind,
+		orderIntent: command.orderIntent,
+		response,
+		occurredAt: state.simulatedAt
+	});
+	const targetWitness = communication.communicativeAct.witnesses.find(
+		(witness) => witness.heroId === command.targetHeroId
+	);
+	if (!targetWitness) {
+		throw new ReplayIntegrityError('Conversation target did not witness speech', state.eventCursor);
+	}
+	const relationshipId = deterministicUuid(
+		`${command.targetHeroId}:${state.master.masterId}:relationship`
+	);
+	const authorityId = deterministicUuid(
+		`${command.targetHeroId}:${state.master.masterId}:authority`
+	);
+	const previousRelationship = baseSociety.relationships[relationshipId];
+	const previousAuthority = baseSociety.authority[authorityId];
+	if (!previousRelationship || !previousAuthority) {
+		throw new ReplayIntegrityError('Conversation social view is missing', state.eventCursor);
+	}
+	const relationshipDeltas = {
+		trust: command.tone === 'reassuring' ? 1 : 0,
+		respect: response.orderOutcome === 'accepted' || response.orderOutcome === 'negotiated' ? 1 : 0,
+		fear: command.tone === 'urgent' ? 1 : 0,
+		affection: command.tone === 'apologetic' ? 1 : 0,
+		resentment: response.orderOutcome === 'refused' && command.tone === 'firm' ? 1 : 0,
+		debt: 0
+	};
+	const authorityDeltas = {
+		competence: 0,
+		provision: 0,
+		trust: relationshipDeltas.trust,
+		legitimacy: response.orderOutcome === 'accepted' ? 1 : 0,
+		fear: relationshipDeltas.fear,
+		strength: 0,
+		consistency: response.orderOutcome === 'negotiated' ? 1 : 0
+	};
+	const evidenceSummary = response.publicReason;
+	const society = SocietyStateV3Schema.parse({
+		...baseSociety,
+		relationships: {
+			...baseSociety.relationships,
+			[relationshipId]: {
+				...previousRelationship,
+				dimensions: Object.fromEntries(
+					Object.entries(previousRelationship.dimensions).map(([key, value]) => [
+						key,
+						clampSocial(value + relationshipDeltas[key as keyof typeof relationshipDeltas])
+					])
+				),
+				updatedAt: state.simulatedAt,
+				lastSourceEventId: eventId,
+				evidence: [
+					...previousRelationship.evidence.slice(-63),
+					{
+						sourceEventId: eventId,
+						observationId: targetWitness.observationId,
+						summary: evidenceSummary,
+						deltas: relationshipDeltas
+					}
+				]
+			}
+		},
+		authority: {
+			...baseSociety.authority,
+			[authorityId]: {
+				...previousAuthority,
+				dimensions: Object.fromEntries(
+					Object.entries(previousAuthority.dimensions).map(([key, value]) => [
+						key,
+						clampSocial(value + authorityDeltas[key as keyof typeof authorityDeltas])
+					])
+				),
+				updatedAt: state.simulatedAt,
+				lastSourceEventId: eventId,
+				evidence: [
+					...previousAuthority.evidence.slice(-63),
+					{
+						sourceEventId: eventId,
+						observationId: targetWitness.observationId,
+						summary: evidenceSummary,
+						deltas: authorityDeltas
+					}
+				]
+			}
+		},
+		conversationTurns: {
+			...baseSociety.conversationTurns,
+			[turnId]: conversationTurn
+		}
+	});
+	return { society, conversationTurn };
 }
 
 function firstEmberModifier(
@@ -1223,6 +1530,7 @@ function settlementForState(
 		| EngineGameStateV6
 		| EngineGameStateV7
 		| EngineGameStateV8
+		| EngineGameStateV9
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -1265,7 +1573,8 @@ function routeHasCapacity(
 		| EngineGameStateV5
 		| EngineGameStateV6
 		| EngineGameStateV7
-		| EngineGameStateV8,
+		| EngineGameStateV8
+		| EngineGameStateV9,
 	definition: SettlementDefinition,
 	heroId: string,
 	targetNodeId: string,
@@ -1299,7 +1608,8 @@ function travelActions(
 		| EngineGameStateV5
 		| EngineGameStateV6
 		| EngineGameStateV7
-		| EngineGameStateV8,
+		| EngineGameStateV8
+		| EngineGameStateV9,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -1350,7 +1660,8 @@ function currentTravelFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 5 ||
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
-		state.schemaVersion === 8
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
@@ -1359,7 +1670,8 @@ function currentRoutineFor(state: EngineGameState, heroId: string) {
 	return state.schemaVersion === 5 ||
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
-		state.schemaVersion === 8
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -1372,8 +1684,9 @@ function hasNavigationState(
 	| EngineGameStateV5
 	| EngineGameStateV6
 	| EngineGameStateV7
-	| EngineGameStateV8 {
-	return [3, 4, 5, 6, 7, 8].includes(state.schemaVersion);
+	| EngineGameStateV8
+	| EngineGameStateV9 {
+	return [3, 4, 5, 6, 7, 8, 9].includes(state.schemaVersion);
 }
 
 function hasFacilityState(
@@ -1383,8 +1696,9 @@ function hasFacilityState(
 	| EngineGameStateV5
 	| EngineGameStateV6
 	| EngineGameStateV7
-	| EngineGameStateV8 {
-	return [4, 5, 6, 7, 8].includes(state.schemaVersion);
+	| EngineGameStateV8
+	| EngineGameStateV9 {
+	return [4, 5, 6, 7, 8, 9].includes(state.schemaVersion);
 }
 
 function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
@@ -1392,14 +1706,15 @@ function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
 		state.schemaVersion === 5 ||
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
-		state.schemaVersion === 8
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9
 	);
 }
 
 function hasFirstEmberState(
 	state: EngineGameState
-): state is EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 {
-	return state.schemaVersion === 6 || state.schemaVersion === 7 || state.schemaVersion === 8;
+): state is EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9 {
+	return [6, 7, 8, 9].includes(state.schemaVersion);
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
@@ -1488,13 +1803,15 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 8
-			? EngineGameStateV8Schema.parse(stateInput)
-			: stateInput.schemaVersion === 7
-				? EngineGameStateV7Schema.parse(stateInput)
-				: stateInput.schemaVersion === 6
-					? EngineGameStateV6Schema.parse(stateInput)
-					: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 9
+			? EngineGameStateV9Schema.parse(stateInput)
+			: stateInput.schemaVersion === 8
+				? EngineGameStateV8Schema.parse(stateInput)
+				: stateInput.schemaVersion === 7
+					? EngineGameStateV7Schema.parse(stateInput)
+					: stateInput.schemaVersion === 6
+						? EngineGameStateV6Schema.parse(stateInput)
+						: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -1664,7 +1981,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 5 ||
 		state.schemaVersion === 6 ||
 		state.schemaVersion === 7 ||
-		state.schemaVersion === 8
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9
 	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
@@ -1724,7 +2042,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				);
 			}
 	}
-	if (state.schemaVersion === 8) {
+	if (state.schemaVersion === 8 || state.schemaVersion === 9) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.location !== state.master.location || !heroCanHearCommunication(hero)) {
 				continue;
@@ -1742,6 +2060,21 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 					tags: ['social', 'communication', 'witness-bounded']
 				})
 			);
+			if (state.schemaVersion === 9) {
+				actions.push(
+					action({
+						actionId: `social.converse.${hero.heroId}`,
+						actorId,
+						kind: 'interact',
+						label: `Have a conversation with ${hero.heroId.slice(0, 8)}`,
+						description:
+							'Say, ask, or give a bounded order; the hero replies from their own mind and circumstances.',
+						targetIds: [hero.heroId],
+						resourceCosts: {},
+						tags: ['social', 'conversation', 'agency', 'witness-bounded']
+					})
+				);
+			}
 		}
 	}
 	if (hasFirstEmberState(state) && state.settlement.firstEmber.status === 'available') {
@@ -2143,6 +2476,7 @@ function requiredAction(command: EngineCommand): string {
 		return `settlement.first-ember.${command.buildingId}`;
 	if (command.commandType === 'master.communicate')
 		return `social.communicate.${command.targetHeroId}`;
+	if (command.commandType === 'master.converse') return `social.converse.${command.targetHeroId}`;
 	if (command.commandType === 'hero.plan.day') return 'hero.plan.day';
 	if (command.commandType === 'hero.start.routine') return 'hero.follow.plan';
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
@@ -2196,7 +2530,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			(command.kind === 'ask' && command.topic === 'hero-memory') ||
 			(command.kind !== 'ask' && command.topic !== 'hero-memory');
 		if (
-			state.schemaVersion !== 8 ||
+			(state.schemaVersion !== 8 && state.schemaVersion !== 9) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -2211,6 +2545,28 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			!target ||
 			target.location !== state.master.location ||
 			!heroCanHearCommunication(target) ||
+			Object.keys(state.society.communicativeActs).length >= 2_048
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+	}
+	if (command.commandType === 'master.converse') {
+		if (
+			state.schemaVersion !== 9 ||
+			state.status !== 'active' ||
+			state.master.lifeState !== 'alive' ||
+			command.actorId !== state.master.masterId ||
+			command.source.source !== 'manual' ||
+			command.source.timing !== 'step'
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		const target = state.heroes[command.targetHeroId];
+		if (
+			!target ||
+			target.location !== state.master.location ||
+			!heroCanHearCommunication(target) ||
+			Object.keys(state.society.conversationTurns).length >= 2_048 ||
 			Object.keys(state.society.communicativeActs).length >= 2_048
 		) {
 			throw new IllegalActionError(command.commandType, []);
@@ -2799,7 +3155,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		);
 		const base = eventBase(state, command, 'settlement.first.ember.committed');
 		const society =
-			state.schemaVersion === 7 || state.schemaVersion === 8
+			state.schemaVersion === 7 || state.schemaVersion === 8 || state.schemaVersion === 9
 				? buildFirstEmberSociety(
 						state,
 						base.eventId,
@@ -2825,7 +3181,9 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'master.communicate') {
-		if (state.schemaVersion !== 8) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 8 && state.schemaVersion !== 9) {
+			throw new IllegalActionError(command.commandType);
+		}
 		const base = eventBase(state, command, 'social.communicative.act.recorded');
 		const { society, communicativeAct } = buildCommunicativeSociety(state, base.eventId, command);
 		const bystanders = communicativeAct.witnesses.filter(
@@ -2840,6 +3198,25 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 				nextVersion: state.version + 1,
 				...emptyMetadata(
 					`The Master used ${command.kind} about ${command.topic}; one intended hero and ${bystanders} bystander${bystanders === 1 ? '' : 's'} witnessed it.`
+				)
+			}
+		});
+	}
+	if (command.commandType === 'master.converse') {
+		if (state.schemaVersion !== 9) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'social.conversation.turn.recorded');
+		const { society, conversationTurn } = buildConversationSociety(state, base.eventId, command);
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				conversationTurn,
+				society,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					conversationTurn.response.orderOutcome
+						? `The hero ${conversationTurn.response.orderOutcome} the ${conversationTurn.orderIntent} order.`
+						: `The hero answered the Master's ${conversationTurn.kind}.`
 				)
 			}
 		});
@@ -3578,7 +3955,8 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(value);
 	if (state.schemaVersion === 6) return EngineGameStateV6Schema.parse(value);
 	if (state.schemaVersion === 7) return EngineGameStateV7Schema.parse(value);
-	return EngineGameStateV8Schema.parse(value);
+	if (state.schemaVersion === 8) return EngineGameStateV8Schema.parse(value);
+	return EngineGameStateV9Schema.parse(value);
 }
 
 function reduceV2Event(
@@ -3635,8 +4013,8 @@ function reduceV2Event(
 		if (hashCanonical(expected) !== hashCanonical(payload.firstEmber)) {
 			throw new ReplayIntegrityError('First Ember reaction projection diverged', event.sequence);
 		}
-		let society: SocietyState | SocietyStateV2 | undefined;
-		if (state.schemaVersion === 7 || state.schemaVersion === 8) {
+		let society: SocietyState | SocietyStateV2 | SocietyStateV3 | undefined;
+		if (state.schemaVersion === 7 || state.schemaVersion === 8 || state.schemaVersion === 9) {
 			society = buildFirstEmberSociety(
 				state,
 				event.eventId,
@@ -3681,7 +4059,7 @@ function reduceV2Event(
 	}
 	if (event.eventType === 'social.communicative.act.recorded') {
 		if (
-			state.schemaVersion !== 8 ||
+			(state.schemaVersion !== 8 && state.schemaVersion !== 9) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -3707,7 +4085,53 @@ function reduceV2Event(
 		) {
 			throw new ReplayIntegrityError('Communicative act projection diverged', event.sequence);
 		}
-		return EngineGameStateV8Schema.parse({
+		return parseModernState(state, {
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			society: payload.society
+		});
+	}
+	if (event.eventType === 'social.conversation.turn.recorded') {
+		if (
+			state.schemaVersion !== 9 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt ||
+			event.source.source !== 'manual' ||
+			event.source.timing !== 'step'
+		) {
+			throw new ReplayIntegrityError('Conversation turn precondition failed', event.sequence);
+		}
+		const payload = ConversationTurnRecordedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1) {
+			throw new ReplayIntegrityError('Conversation turn version diverged', event.sequence);
+		}
+		const act = payload.society.communicativeActs[payload.conversationTurn.communicationActId];
+		if (!act)
+			throw new ReplayIntegrityError('Conversation communication is missing', event.sequence);
+		const expected = buildConversationSociety(state, event.eventId, {
+			commandId: event.commandId,
+			runId: state.runId,
+			actorId: state.master.masterId,
+			expectedVersion: state.version,
+			correlationId: event.correlationId,
+			source: event.source,
+			commandType: 'master.converse',
+			targetHeroId: payload.conversationTurn.heroId,
+			kind: payload.conversationTurn.kind,
+			exactText: act.exactText,
+			tone: act.tone ?? 'neutral',
+			delivery: act.delivery,
+			orderIntent: payload.conversationTurn.orderIntent
+		});
+		if (
+			hashCanonical(expected.conversationTurn) !== hashCanonical(payload.conversationTurn) ||
+			hashCanonical(expected.society) !== hashCanonical(payload.society)
+		) {
+			throw new ReplayIntegrityError('Conversation turn projection diverged', event.sequence);
+		}
+		return EngineGameStateV9Schema.parse({
 			...state,
 			version: payload.nextVersion,
 			eventCursor: event.sequence,

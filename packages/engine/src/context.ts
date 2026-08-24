@@ -9,6 +9,7 @@ import {
 	HeroDecisionPacketSchema,
 	type CharacterManifest,
 	type EngineGameStateV8,
+	type EngineGameStateV9,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -21,6 +22,7 @@ import { deterministicUuid, hashCanonical } from './hash.js';
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
 export const DEFAULT_MEMORY_CHARACTER_LIMIT = 1_800;
+type EngineKnowledgeState = EngineGameStateV8 | EngineGameStateV9;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -36,7 +38,7 @@ function compareNewestFirst(left: string, right: string): number {
 	return Date.parse(right) - Date.parse(left);
 }
 
-function witnessedMasterRole(state: EngineGameStateV8, heroId: string): boolean {
+function witnessedMasterRole(state: EngineKnowledgeState, heroId: string): boolean {
 	return Object.values(state.society.beliefs).some(
 		(belief) =>
 			belief.holderHeroId === heroId &&
@@ -46,7 +48,7 @@ function witnessedMasterRole(state: EngineGameStateV8, heroId: string): boolean 
 	);
 }
 
-function visibleEntities(state: EngineGameStateV8, heroId: string, manifest: CharacterManifest) {
+function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: CharacterManifest) {
 	const hero = state.heroes[heroId]!;
 	const entities: HeroDecisionPacket['environment']['visibleEntities'] = [
 		{
@@ -85,7 +87,7 @@ function visibleEntities(state: EngineGameStateV8, heroId: string, manifest: Cha
 }
 
 function memoryCandidates(
-	state: EngineGameStateV8,
+	state: EngineKnowledgeState,
 	heroId: string,
 	relevantSubjectIds: ReadonlySet<string>,
 	focusTags: ReadonlySet<string>
@@ -172,7 +174,7 @@ function memoryCandidates(
 }
 
 function retrieveMemories(
-	state: EngineGameStateV8,
+	state: EngineKnowledgeState,
 	heroId: string,
 	relevantSubjectIds: ReadonlySet<string>,
 	focusTags: ReadonlySet<string>,
@@ -205,7 +207,7 @@ function retrieveMemories(
 }
 
 function applicableDirectives(
-	state: EngineGameStateV8,
+	state: EngineKnowledgeState,
 	heroId: string,
 	directives: readonly PlayerDirective[]
 ) {
@@ -231,7 +233,54 @@ function applicableDirectives(
 			left.createdAt === right.createdAt
 				? left.directiveId.localeCompare(right.directiveId)
 				: left.createdAt.localeCompare(right.createdAt)
-		);
+		)
+		.slice(-16);
+}
+
+const CONVERSATION_INTENT_TERMS = Object.freeze({
+	train: ['train', 'training', 'practice'],
+	rest: ['rest', 'sleep', 'recover'],
+	eat: ['eat', 'meal', 'food'],
+	work: ['work', 'duty', 'repair'],
+	'prepare-tower': ['tower', 'train', 'prepare']
+} as const);
+
+function conversationDirectives(state: EngineGameStateV9, heroId: string): PlayerDirective[] {
+	return Object.values(state.society.conversationTurns)
+		.filter(
+			(turn) =>
+				turn.heroId === heroId &&
+				turn.orderIntent !== null &&
+				(turn.response.orderOutcome === 'accepted' || turn.response.orderOutcome === 'negotiated')
+		)
+		.sort((left, right) =>
+			left.occurredAt === right.occurredAt
+				? left.turnId.localeCompare(right.turnId)
+				: left.occurredAt.localeCompare(right.occurredAt)
+		)
+		.slice(-16)
+		.map((turn) => {
+			const act = state.society.communicativeActs[turn.communicationActId];
+			if (!act || !turn.orderIntent) {
+				throw new Error(`Conversation directive ${turn.turnId} lacks witnessed speech`);
+			}
+			return {
+				directiveId: deterministicUuid(`${turn.turnId}:conversation-directive`),
+				runId: state.runId,
+				authorId: state.master.masterId,
+				text: act.exactText,
+				scope: 'day' as const,
+				recipientIds: [heroId],
+				witnessEventId: turn.sourceEventId,
+				priorities: [
+					`conversation-weight-${turn.response.preferenceWeight}`,
+					...CONVERSATION_INTENT_TERMS[turn.orderIntent]
+				],
+				createdAt: turn.occurredAt,
+				expiresAt: null,
+				revokedAt: null
+			};
+		});
 }
 
 function unsignedPacket(packet: HeroDecisionPacket): Omit<HeroDecisionPacket, 'packetHash'> {
@@ -252,8 +301,8 @@ export function assembleHeroDecisionPacket(
 	input: AssembleHeroDecisionPacketInput
 ): HeroDecisionPacket {
 	const snapshot = EngineSnapshotSchema.parse(input.snapshot);
-	if (snapshot.state.schemaVersion !== 8) {
-		throw new Error('Hero decision packets require engine-v8 witnessed knowledge');
+	if (snapshot.state.schemaVersion !== 8 && snapshot.state.schemaVersion !== 9) {
+		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
 	const state = snapshot.state;
 	if (hashGameState(state) !== snapshot.stateHash) {
@@ -444,7 +493,10 @@ export function assembleHeroDecisionPacket(
 			)
 		},
 		social: { relationships, authority, promises },
-		activeDirectives: applicableDirectives(state, input.heroId, input.directives ?? []),
+		activeDirectives: applicableDirectives(state, input.heroId, [
+			...(input.directives ?? []),
+			...(state.schemaVersion === 9 ? conversationDirectives(state, input.heroId) : [])
+		]),
 		legalActions: actions,
 		legalActionHash: hashCanonical(actions),
 		responseContract: {

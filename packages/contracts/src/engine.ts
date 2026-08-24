@@ -10,12 +10,15 @@ import {
 import { RunStatusSchema } from './run.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from './settlement.js';
 import {
+	ConversationActKindSchema,
+	ConversationOrderIntentSchema,
 	CommunicationDeliverySchema,
 	CommunicationToneSchema,
 	CommunicationTopicSchema,
 	OnboardingCommunicativeActKindSchema,
 	SocietyStateSchema,
-	SocietyStateV2Schema
+	SocietyStateV2Schema,
+	SocietyStateV3Schema
 } from './social.js';
 import {
 	ContentVersionSchema,
@@ -1285,293 +1288,321 @@ export const EngineGameStateV7Schema = z
 		}
 	});
 
-export const EngineGameStateV8Schema = z
+const EngineGameStateV8BaseSchema = z
 	.object({
 		...EngineGameStateV7Schema.shape,
 		schemaVersion: z.literal(8),
 		society: SocietyStateV2Schema
 	})
-	.strict()
-	.superRefine((state, context) => {
-		if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
-			context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
-		}
-		if (state.status === 'active' && state.master.lifeState !== 'alive') {
-			context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
-		}
-		for (const hero of Object.values(state.heroes)) {
-			const itemId = hero.equipment.mainHand;
-			if (itemId) {
-				const item = state.items[itemId];
-				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
-					context.addIssue({
-						code: 'custom',
-						message: 'Hero equipment must reference an owned item'
-					});
-				}
+	.strict();
+
+const EngineGameStateV9BaseSchema = z
+	.object({
+		...EngineGameStateV7Schema.shape,
+		schemaVersion: z.literal(9),
+		society: SocietyStateV3Schema
+	})
+	.strict();
+
+type CommunicationEngineValidationState =
+	z.infer<typeof EngineGameStateV8BaseSchema> | z.infer<typeof EngineGameStateV9BaseSchema>;
+
+function validateCommunicationEngineState(
+	state: CommunicationEngineValidationState,
+	context: z.RefinementCtx
+): void {
+	if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
+		context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
+	}
+	if (state.status === 'active' && state.master.lifeState !== 'alive') {
+		context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
+	}
+	for (const hero of Object.values(state.heroes)) {
+		const itemId = hero.equipment.mainHand;
+		if (itemId) {
+			const item = state.items[itemId];
+			if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Hero equipment must reference an owned item'
+				});
 			}
-			if (hero.assignment) {
-				const building = state.settlement.buildings[hero.assignment.buildingId];
-				if (
-					!building ||
-					building.assignmentNodeId !== hero.assignment.nodeId ||
-					building.assignmentRole !== hero.assignment.role ||
-					!building.assignedHeroIds.includes(hero.heroId)
-				) {
-					context.addIssue({
-						code: 'custom',
-						message: 'Hero assignment diverged from building state'
-					});
-				}
-			}
 		}
-		for (const item of Object.values(state.items)) {
+		if (hero.assignment) {
+			const building = state.settlement.buildings[hero.assignment.buildingId];
 			if (
-				item.equippedById &&
-				state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId
+				!building ||
+				building.assignmentNodeId !== hero.assignment.nodeId ||
+				building.assignmentRole !== hero.assignment.role ||
+				!building.assignedHeroIds.includes(hero.heroId)
 			) {
-				context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+				context.addIssue({
+					code: 'custom',
+					message: 'Hero assignment diverged from building state'
+				});
 			}
 		}
-		for (const [buildingId, building] of Object.entries(state.settlement.buildings)) {
-			if (building.buildingId !== buildingId) {
-				context.addIssue({ code: 'custom', message: 'Building record key does not match its id' });
-			}
-			for (const heroId of building.assignedHeroIds) {
-				if (state.heroes[heroId]?.assignment?.buildingId !== buildingId) {
-					context.addIssue({
-						code: 'custom',
-						message: 'Building roster diverged from hero assignment'
-					});
-				}
-			}
-			if (
-				building.powerState !== 'powered' &&
-				building.powerState !== building.baselinePowerState
-			) {
-				context.addIssue({ code: 'custom', message: 'Building power diverged from its baseline' });
+	}
+	for (const item of Object.values(state.items)) {
+		if (item.equippedById && state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId) {
+			context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+		}
+	}
+	for (const [buildingId, building] of Object.entries(state.settlement.buildings)) {
+		if (building.buildingId !== buildingId) {
+			context.addIssue({ code: 'custom', message: 'Building record key does not match its id' });
+		}
+		for (const heroId of building.assignedHeroIds) {
+			if (state.heroes[heroId]?.assignment?.buildingId !== buildingId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Building roster diverged from hero assignment'
+				});
 			}
 		}
-		for (const resource of ResourceKeySchema.options) {
-			const last = state.settlement.resourceLedger
-				.filter((entry) => entry.resource === resource)
-				.at(-1);
-			if (last && last.after !== state.settlement.resources[resource]) {
-				context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
-			}
+		if (building.powerState !== 'powered' && building.powerState !== building.baselinePowerState) {
+			context.addIssue({ code: 'custom', message: 'Building power diverged from its baseline' });
 		}
-		const powered = Object.values(state.settlement.buildings).filter(
-			(building) => building.powerState === 'powered'
-		);
+	}
+	for (const resource of ResourceKeySchema.options) {
+		const last = state.settlement.resourceLedger
+			.filter((entry) => entry.resource === resource)
+			.at(-1);
+		if (last && last.after !== state.settlement.resources[resource]) {
+			context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
+		}
+	}
+	const powered = Object.values(state.settlement.buildings).filter(
+		(building) => building.powerState === 'powered'
+	);
+	if (
+		powered.length !== (state.settlement.poweredBuildingId ? 1 : 0) ||
+		(state.settlement.poweredBuildingId !== null &&
+			powered[0]?.buildingId !== state.settlement.poweredBuildingId)
+	) {
+		context.addIssue({ code: 'custom', message: 'First Ember power projection is inconsistent' });
+	}
+	if (
+		(state.settlement.firstEmber.status === 'committed' &&
+			state.settlement.poweredBuildingId !== state.settlement.firstEmber.buildingId) ||
+		(state.settlement.firstEmber.status !== 'committed' &&
+			state.settlement.poweredBuildingId !== null)
+	) {
+		context.addIssue({ code: 'custom', message: 'First Ember lifecycle diverged from power' });
+	}
+	const activeSystemIds = Object.values(state.settlement.buildings)
+		.filter((building) => building.powerState !== 'unpowered')
+		.map((building) => building.systemId)
+		.sort((left, right) => left.localeCompare(right));
+	if (activeSystemIds.join('|') !== state.settlement.navigation.activeSystemIds.join('|')) {
+		context.addIssue({
+			code: 'custom',
+			message: 'Active systems diverged from First Ember power'
+		});
+	}
+	for (const observation of Object.values(state.society.observations)) {
 		if (
-			powered.length !== (state.settlement.poweredBuildingId ? 1 : 0) ||
-			(state.settlement.poweredBuildingId !== null &&
-				powered[0]?.buildingId !== state.settlement.poweredBuildingId)
+			!state.heroes[observation.observerHeroId] ||
+			observation.subjectIds.some(
+				(subjectId) => subjectId !== state.master.masterId && !state.heroes[subjectId]
+			)
 		) {
-			context.addIssue({ code: 'custom', message: 'First Ember power projection is inconsistent' });
+			context.addIssue({ code: 'custom', message: 'Observation holder and subjects must exist' });
 		}
+	}
+	for (const belief of Object.values(state.society.beliefs)) {
+		const observation = state.society.observations[belief.provenance.observationId];
 		if (
-			(state.settlement.firstEmber.status === 'committed' &&
-				state.settlement.poweredBuildingId !== state.settlement.firstEmber.buildingId) ||
-			(state.settlement.firstEmber.status !== 'committed' &&
-				state.settlement.poweredBuildingId !== null)
+			!state.heroes[belief.holderHeroId] ||
+			(belief.subjectId !== state.master.masterId && !state.heroes[belief.subjectId]) ||
+			(belief.provenance.learnedFromId !== null &&
+				belief.provenance.learnedFromId !== state.master.masterId &&
+				!state.heroes[belief.provenance.learnedFromId]) ||
+			(belief.object.kind === 'entity' &&
+				belief.object.entityId !== state.master.masterId &&
+				!state.heroes[belief.object.entityId]) ||
+			(belief.object.kind === 'promise' && !state.society.promises[belief.object.promiseId]) ||
+			!observation ||
+			observation.observerHeroId !== belief.holderHeroId ||
+			observation.sourceEventId !== belief.provenance.sourceEventId
 		) {
-			context.addIssue({ code: 'custom', message: 'First Ember lifecycle diverged from power' });
-		}
-		const activeSystemIds = Object.values(state.settlement.buildings)
-			.filter((building) => building.powerState !== 'unpowered')
-			.map((building) => building.systemId)
-			.sort((left, right) => left.localeCompare(right));
-		if (activeSystemIds.join('|') !== state.settlement.navigation.activeSystemIds.join('|')) {
 			context.addIssue({
 				code: 'custom',
-				message: 'Active systems diverged from First Ember power'
+				message: 'Belief provenance must resolve to its holder observation'
 			});
 		}
-		for (const observation of Object.values(state.society.observations)) {
-			if (
-				!state.heroes[observation.observerHeroId] ||
-				observation.subjectIds.some(
-					(subjectId) => subjectId !== state.master.masterId && !state.heroes[subjectId]
-				)
-			) {
-				context.addIssue({ code: 'custom', message: 'Observation holder and subjects must exist' });
-			}
+	}
+	const relationshipPairs = new Set<string>();
+	for (const relationship of Object.values(state.society.relationships)) {
+		const pair = `${relationship.fromHeroId}:${relationship.toEntityId}`;
+		if (relationshipPairs.has(pair)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Directed relationship endpoints must be unique'
+			});
 		}
-		for (const belief of Object.values(state.society.beliefs)) {
-			const observation = state.society.observations[belief.provenance.observationId];
+		relationshipPairs.add(pair);
+		if (
+			!state.heroes[relationship.fromHeroId] ||
+			(relationship.toEntityId !== state.master.masterId && !state.heroes[relationship.toEntityId])
+		) {
+			context.addIssue({ code: 'custom', message: 'Relationship endpoints must exist' });
+		}
+		for (const evidence of relationship.evidence) {
+			const observation = state.society.observations[evidence.observationId];
 			if (
-				!state.heroes[belief.holderHeroId] ||
-				(belief.subjectId !== state.master.masterId && !state.heroes[belief.subjectId]) ||
-				(belief.provenance.learnedFromId !== null &&
-					belief.provenance.learnedFromId !== state.master.masterId &&
-					!state.heroes[belief.provenance.learnedFromId]) ||
-				(belief.object.kind === 'entity' &&
-					belief.object.entityId !== state.master.masterId &&
-					!state.heroes[belief.object.entityId]) ||
-				(belief.object.kind === 'promise' && !state.society.promises[belief.object.promiseId]) ||
 				!observation ||
-				observation.observerHeroId !== belief.holderHeroId ||
-				observation.sourceEventId !== belief.provenance.sourceEventId
+				observation.observerHeroId !== relationship.fromHeroId ||
+				observation.sourceEventId !== evidence.sourceEventId
 			) {
 				context.addIssue({
 					code: 'custom',
-					message: 'Belief provenance must resolve to its holder observation'
+					message: 'Relationship evidence requires an observation'
 				});
 			}
 		}
-		const relationshipPairs = new Set<string>();
-		for (const relationship of Object.values(state.society.relationships)) {
-			const pair = `${relationship.fromHeroId}:${relationship.toEntityId}`;
-			if (relationshipPairs.has(pair)) {
+	}
+	const authorityPairs = new Set<string>();
+	for (const authority of Object.values(state.society.authority)) {
+		const pair = `${authority.observerHeroId}:${authority.subjectId}`;
+		if (authorityPairs.has(pair)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Authority observer and subject must be unique'
+			});
+		}
+		authorityPairs.add(pair);
+		if (!state.heroes[authority.observerHeroId] || authority.subjectId !== state.master.masterId) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Authority must be a hero view of the Master'
+			});
+		}
+		for (const evidence of authority.evidence) {
+			const observation = state.society.observations[evidence.observationId];
+			if (
+				!observation ||
+				observation.observerHeroId !== authority.observerHeroId ||
+				observation.sourceEventId !== evidence.sourceEventId
+			) {
 				context.addIssue({
 					code: 'custom',
-					message: 'Directed relationship endpoints must be unique'
+					message: 'Authority evidence requires an observation'
 				});
 			}
-			relationshipPairs.add(pair);
-			if (
-				!state.heroes[relationship.fromHeroId] ||
-				(relationship.toEntityId !== state.master.masterId &&
-					!state.heroes[relationship.toEntityId])
-			) {
-				context.addIssue({ code: 'custom', message: 'Relationship endpoints must exist' });
-			}
-			for (const evidence of relationship.evidence) {
-				const observation = state.society.observations[evidence.observationId];
-				if (
+		}
+	}
+	for (const promise of Object.values(state.society.promises)) {
+		if (
+			promise.promisorId !== state.master.masterId ||
+			promise.promiseeHeroIds.some((heroId) => !state.heroes[heroId]) ||
+			promise.witnessObservationIds.some((observationId) => {
+				const observation = state.society.observations[observationId];
+				return (
 					!observation ||
-					observation.observerHeroId !== relationship.fromHeroId ||
-					observation.sourceEventId !== evidence.sourceEventId
-				) {
-					context.addIssue({
-						code: 'custom',
-						message: 'Relationship evidence requires an observation'
-					});
-				}
-			}
+					observation.sourceEventId !== promise.sourceEventId ||
+					!promise.promiseeHeroIds.includes(observation.observerHeroId)
+				);
+			})
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Promise participants and witnesses must exist'
+			});
 		}
-		const authorityPairs = new Set<string>();
-		for (const authority of Object.values(state.society.authority)) {
-			const pair = `${authority.observerHeroId}:${authority.subjectId}`;
-			if (authorityPairs.has(pair)) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Authority observer and subject must be unique'
-				});
-			}
-			authorityPairs.add(pair);
+	}
+	const communicationSourceEvents = new Set<string>();
+	for (const act of Object.values(state.society.communicativeActs)) {
+		if (communicationSourceEvents.has(act.sourceEventId)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'One event cannot own multiple communicative acts'
+			});
+		}
+		communicationSourceEvents.add(act.sourceEventId);
+		if (
+			(act.speakerId !== state.master.masterId && !state.heroes[act.speakerId]) ||
+			act.intendedAudienceIds.some((heroId) => !state.heroes[heroId])
+		) {
+			context.addIssue({ code: 'custom', message: 'Communication participants must exist' });
+		}
+		for (const witness of act.witnesses) {
+			const observation = state.society.observations[witness.observationId];
+			const belief = witness.beliefId ? (state.society.beliefs[witness.beliefId] ?? null) : null;
 			if (
-				!state.heroes[authority.observerHeroId] ||
-				authority.subjectId !== state.master.masterId
+				!state.heroes[witness.heroId] ||
+				!observation ||
+				observation.kind !== 'communication' ||
+				observation.communicationActId !== act.actId ||
+				observation.observerHeroId !== witness.heroId ||
+				observation.sourceEventId !== act.sourceEventId ||
+				(act.claim === null) !== (belief === null) ||
+				(belief !== null &&
+					(belief.holderHeroId !== witness.heroId ||
+						belief.subjectId !== act.claim?.subjectId ||
+						belief.predicate !== act.claim?.predicate ||
+						JSON.stringify(belief.object) !== JSON.stringify(act.claim.object) ||
+						belief.provenance.kind !== 'told' ||
+						belief.provenance.sourceEventId !== act.sourceEventId ||
+						belief.provenance.observationId !== witness.observationId ||
+						belief.provenance.learnedFromId !== act.speakerId ||
+						belief.provenance.chainDepth !== 1))
 			) {
 				context.addIssue({
 					code: 'custom',
-					message: 'Authority must be a hero view of the Master'
-				});
-			}
-			for (const evidence of authority.evidence) {
-				const observation = state.society.observations[evidence.observationId];
-				if (
-					!observation ||
-					observation.observerHeroId !== authority.observerHeroId ||
-					observation.sourceEventId !== evidence.sourceEventId
-				) {
-					context.addIssue({
-						code: 'custom',
-						message: 'Authority evidence requires an observation'
-					});
-				}
-			}
-		}
-		for (const promise of Object.values(state.society.promises)) {
-			if (
-				promise.promisorId !== state.master.masterId ||
-				promise.promiseeHeroIds.some((heroId) => !state.heroes[heroId]) ||
-				promise.witnessObservationIds.some((observationId) => {
-					const observation = state.society.observations[observationId];
-					return (
-						!observation ||
-						observation.sourceEventId !== promise.sourceEventId ||
-						!promise.promiseeHeroIds.includes(observation.observerHeroId)
-					);
-				})
-			) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Promise participants and witnesses must exist'
+					message: 'Communication witness chain is inconsistent'
 				});
 			}
 		}
-		const communicationSourceEvents = new Set<string>();
-		for (const act of Object.values(state.society.communicativeActs)) {
-			if (communicationSourceEvents.has(act.sourceEventId)) {
-				context.addIssue({
-					code: 'custom',
-					message: 'One event cannot own multiple communicative acts'
-				});
-			}
-			communicationSourceEvents.add(act.sourceEventId);
-			if (
-				(act.speakerId !== state.master.masterId && !state.heroes[act.speakerId]) ||
-				act.intendedAudienceIds.some((heroId) => !state.heroes[heroId])
-			) {
-				context.addIssue({ code: 'custom', message: 'Communication participants must exist' });
-			}
-			for (const witness of act.witnesses) {
-				const observation = state.society.observations[witness.observationId];
-				const belief = witness.beliefId ? (state.society.beliefs[witness.beliefId] ?? null) : null;
-				if (
-					!state.heroes[witness.heroId] ||
-					!observation ||
-					observation.kind !== 'communication' ||
-					observation.communicationActId !== act.actId ||
-					observation.observerHeroId !== witness.heroId ||
-					observation.sourceEventId !== act.sourceEventId ||
-					(act.claim === null) !== (belief === null) ||
-					(belief !== null &&
-						(belief.holderHeroId !== witness.heroId ||
-							belief.subjectId !== act.claim?.subjectId ||
-							belief.predicate !== act.claim?.predicate ||
-							JSON.stringify(belief.object) !== JSON.stringify(act.claim.object) ||
-							belief.provenance.kind !== 'told' ||
-							belief.provenance.sourceEventId !== act.sourceEventId ||
-							belief.provenance.observationId !== witness.observationId ||
-							belief.provenance.learnedFromId !== act.speakerId ||
-							belief.provenance.chainDepth !== 1))
-				) {
-					context.addIssue({
-						code: 'custom',
-						message: 'Communication witness chain is inconsistent'
-					});
-				}
-			}
+	}
+	for (const observation of Object.values(state.society.observations)) {
+		if (observation.kind !== 'communication') continue;
+		const act = state.society.communicativeActs[observation.communicationActId];
+		if (!act?.witnesses.some((witness) => witness.observationId === observation.observationId)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Communication observation must resolve to its act'
+			});
 		}
-		for (const observation of Object.values(state.society.observations)) {
-			if (observation.kind !== 'communication') continue;
-			const act = state.society.communicativeActs[observation.communicationActId];
-			if (!act?.witnesses.some((witness) => witness.observationId === observation.observationId)) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Communication observation must resolve to its act'
-				});
-			}
+	}
+	for (const belief of Object.values(state.society.beliefs)) {
+		if (belief.provenance.kind !== 'told') continue;
+		const observation = state.society.observations[belief.provenance.observationId];
+		const act =
+			observation?.kind === 'communication'
+				? state.society.communicativeActs[observation.communicationActId]
+				: null;
+		if (!act?.witnesses.some((witness) => witness.beliefId === belief.beliefId)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Told belief must resolve to one communication witness'
+			});
 		}
-		for (const belief of Object.values(state.society.beliefs)) {
-			if (belief.provenance.kind !== 'told') continue;
-			const observation = state.society.observations[belief.provenance.observationId];
-			const act =
-				observation?.kind === 'communication'
-					? state.society.communicativeActs[observation.communicationActId]
-					: null;
-			if (!act?.witnesses.some((witness) => witness.beliefId === belief.beliefId)) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Told belief must resolve to one communication witness'
-				});
-			}
+	}
+}
+
+export const EngineGameStateV8Schema = EngineGameStateV8BaseSchema.superRefine(
+	validateCommunicationEngineState
+);
+
+export const EngineGameStateV9Schema = EngineGameStateV9BaseSchema.superRefine((state, context) => {
+	validateCommunicationEngineState(state, context);
+	for (const turn of Object.values(state.society.conversationTurns)) {
+		const act = state.society.communicativeActs[turn.communicationActId];
+		if (
+			turn.masterId !== state.master.masterId ||
+			!state.heroes[turn.heroId] ||
+			!act?.witnesses.some(
+				(witness) => witness.heroId === turn.heroId && witness.role === 'intended'
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Conversation turn participants and addressed witness must exist'
+			});
 		}
-	});
+	}
+});
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -1581,7 +1612,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV5Schema,
 	EngineGameStateV6Schema,
 	EngineGameStateV7Schema,
-	EngineGameStateV8Schema
+	EngineGameStateV8Schema,
+	EngineGameStateV9Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -1671,6 +1703,42 @@ export const CommunicationRequestSchema = z
 	})
 	.strict();
 
+const ConversationRequestShape = {
+	targetHeroId: EntityIdSchema,
+	kind: ConversationActKindSchema,
+	exactText: z
+		.string()
+		.min(1)
+		.max(600)
+		.refine((text) => /\S/u.test(text), {
+			message: 'Conversation text must contain a visible character'
+		}),
+	tone: CommunicationToneSchema,
+	delivery: CommunicationDeliverySchema,
+	orderIntent: ConversationOrderIntentSchema.nullable()
+} as const;
+
+function validateConversationRequest(
+	request: { kind: 'say' | 'ask' | 'order'; orderIntent: string | null },
+	context: z.RefinementCtx
+): void {
+	if ((request.kind === 'order') !== (request.orderIntent !== null)) {
+		context.addIssue({ code: 'custom', message: 'Only an order has an order intent' });
+	}
+}
+
+export const MasterConverseCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.converse'),
+	...ConversationRequestShape
+})
+	.strict()
+	.superRefine(validateConversationRequest);
+
+export const ConversationRequestSchema = z
+	.object(ConversationRequestShape)
+	.strict()
+	.superRefine(validateConversationRequest);
+
 export const FirstEmberRequestSchema = z.discriminatedUnion('action', [
 	z.object({ action: z.literal('recover') }).strict(),
 	z
@@ -1731,6 +1799,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	RecoverFirstEmberCommandSchema,
 	CommitFirstEmberCommandSchema,
 	MasterCommunicateCommandSchema,
+	MasterConverseCommandSchema,
 	CreateDailyPlanCommandSchema,
 	StartRoutineCommandSchema,
 	InspectGateCommandSchema,
@@ -1922,6 +1991,7 @@ export type EngineGameStateV5 = z.infer<typeof EngineGameStateV5Schema>;
 export type EngineGameStateV6 = z.infer<typeof EngineGameStateV6Schema>;
 export type EngineGameStateV7 = z.infer<typeof EngineGameStateV7Schema>;
 export type EngineGameStateV8 = z.infer<typeof EngineGameStateV8Schema>;
+export type EngineGameStateV9 = z.infer<typeof EngineGameStateV9Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -1932,6 +2002,7 @@ export type FirstEmberRationale = z.infer<typeof FirstEmberRationaleSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
+export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
 export type ScheduledEvent = z.infer<typeof ScheduledEventSchema>;
 export type SimulationClock = z.infer<typeof SimulationClockSchema>;

@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 are complete; Phase 3 is human-gated and Phase 4 has a playable living settlement._
+_Status: Phases 0–2 are complete; Phase 3 is human-gated, Phase 4 is playable, and Phase 5 now includes witnessed free conversation and order outcomes._
 
 </div>
 
@@ -148,6 +148,16 @@ wait-for-step, and a five-second direction handoff without giving the hero direc
 
 ![Character Forge checkpoint](docs/evidence/phase-1-forge.png)
 
+### Conversation and order checkpoint
+
+Free text is now a witnessed social event rather than a hidden command channel. The Master can say,
+ask, or give one bounded order; the hero answers in their own style and may accept, negotiate,
+defer, or refuse. Every outcome exposes the authority, relationship, personality, alignment, needs,
+and tone contributions behind it. Accepted and negotiated orders become visible preferences in the
+next legal decision packet, while the engine remains the only code allowed to execute an action.
+
+![A summoned hero negotiates a training order](docs/evidence/phase-5-conversation-orders.png)
+
 ## Visual continuity checkpoint
 
 New Forge recipes use `human-v3`: `human-v2` added deterministic mass, muscle tone, body-fat band,
@@ -243,7 +253,7 @@ hash, exposes named entropy draws, and proves that two commands aimed at one ver
 commit. The same lab now schedules training, eating, rest, and repairs on an explicit game clock;
 projects resources, experience, skills, needs, health, and durability into the journal; and proves
 permanent hero death plus atomic Master game over. Existing `engine-v1` histories retain their
-original schema and hashes while new summons use `engine-v3`. The replay lab can now start a verified
+original schema and hashes while new summons use `engine-v9`. The replay lab can now start a verified
 Hearth route, inspect its pending arrival and unchanged origin, and explicitly advance to the due
 event.
 
@@ -267,6 +277,11 @@ The default `POLICY_MODE=scripted` sends no provider requests. During a wait-mod
 **What reaches this hero** and press **Queue scripted + apply** to run the durable job lifecycle and
 commit one validated choice. The browser only observes the PostgreSQL-backed job; the worker owns
 claiming, stale checks, deterministic fallback, and atomic engine application.
+
+Before that choice, use **Hero agency** to say something, ask a question, or give a bounded order.
+The hero replies from their social style and current circumstances; orders show an explicit
+accepted, negotiated, deferred, or refused outcome with an inspectable score. Accepted and
+negotiated orders influence the next legal choice, but free text never starts an action directly.
 
 Model hero decisions remain opt-in. Set `POLICY_MODE=model` and `OPENAI_API_KEY` only in your local
 `.env`, then restart `pnpm dev`. **Ask gpt-5-nano once** is a non-applying preview. **Queue model +

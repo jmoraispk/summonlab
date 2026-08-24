@@ -79,6 +79,17 @@ function participantIds(event: AuthoritativeEvent): string[] {
 			}
 		}
 	}
+	const conversationTurn = payload.conversationTurn;
+	if (conversationTurn && typeof conversationTurn === 'object') {
+		for (const key of ['masterId', 'heroId']) {
+			if (
+				key in conversationTurn &&
+				typeof (conversationTurn as Record<string, unknown>)[key] === 'string'
+			) {
+				result.add((conversationTurn as Record<string, string>)[key]!);
+			}
+		}
+	}
 	return [...result];
 }
 

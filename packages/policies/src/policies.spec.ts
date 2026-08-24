@@ -229,7 +229,7 @@ describe('packet-bound hero policies', () => {
 			scope: 'decision',
 			recipientIds: [base.heroId],
 			witnessEventId: deterministicUuid('policy-directive-witness'),
-			priorities: ['prepare'],
+			priorities: ['conversation-weight-24', 'prepare'],
 			createdAt: base.assembledAtGameTime,
 			expiresAt: null,
 			revokedAt: null
@@ -241,8 +241,8 @@ describe('packet-bound hero policies', () => {
 		expect(
 			result.trace.actionScores
 				.find((score) => score.actionId === 'hero.choose.prepare')
-				?.contributions.some((item) => item.key === 'directive.witnessed-match')
-		).toBe(true);
+				?.contributions.find((item) => item.key === 'directive.witnessed-match')
+		).toMatchObject({ value: 24 });
 	});
 
 	it('rejects tampered packets and detects tampered policy results', async () => {

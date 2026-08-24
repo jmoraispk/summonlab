@@ -383,8 +383,7 @@ audience, actual witnesses, and its source event. Private delivery addresses onl
 delivery adds only active, unoccupied, non-traveling heroes co-located with the Master. Questions
 create observations without claims; explanations transfer only one engine-owned structured claim,
 so arbitrary prose cannot manufacture world facts. Replay recomputes the entire act → witness
-observation → told-belief chain. Immutable v1–v7 streams remain unchanged. Hero responses, order
-  outcomes and rumor remain later Phase 5 slices.
+observation → told-belief chain. Immutable v1–v7 streams remain unchanged.
 
 `GET` and `POST /api/runs/:runId/communications` expose a bounded per-hero conversation projection
 and commit manual step-timed communication. The summon chamber uses it before the hero’s first route
@@ -410,8 +409,8 @@ overheard; ties resolve by event time and stable ID. Selection stops at both an 
 character budget. Communication text can enter a memory only when act → witness → observation
 provenance resolves for that hero. The summon page exposes a compact **What reaches this hero**
 preview, and `GET /api/runs/:runId/decision-context` rebuilds the same current packet after new
-speech. Persisted decision jobs, model-result application, free agent-authored conversation, and
-the full redacted packet/result inspector remain `AGT-006`–`AGT-008`.
+speech. Decision jobs, result application, and witnessed conversation are now implemented; the
+full redacted packet/result inspector remains `AGT-008`.
 
 `AGT-004` adds a separate pure `@summonlab/policies` package. `RandomPolicy` requires an explicit
 seed and derives one reproducible unsigned draw from the packet and legal-action hashes.
@@ -444,6 +443,20 @@ failure, and illegal selection are typed but not retried here. `AGT-006` owns re
 packet hash before it spends one call. The summon inspector never calls it automatically and makes
 the disabled scripted-mode state visible. A successful preview still cannot apply game state.
 
+`AGT-007` adds `engine-v9` and `society-v3`. `POST /api/runs/:runId/conversations` accepts canonical
+free text as `say`, `ask`, or `order`; an order also carries one bounded intent. The engine records
+the same co-location and witness chain as onboarding, then resolves an inspectable response from the
+hero's social style, personality, values, drive, needs, directed relationship, authority view, and
+the player's tone. The result is accepted, negotiated, deferred, or refused. The deterministic
+prototype renderer supplies exact reply text; richer model-authored phrasing may later decorate the
+same authoritative outcome.
+
+Conversation cannot execute an action. Accepted and negotiated orders are projected into later
+decision packets as witnessed preferences with weights 24 and 12. The scripted policy adds that
+weight only when intent terms match an already legal action. Refused and deferred orders remain
+retrievable memories but contribute no preference. Replay recomputes the act, response, score,
+relationship/authority evidence, and `society-v3` bytes; v1–v8 histories remain unchanged.
+
 ### Implemented reconnect projection
 
 Every new event schedules a run-specific PostgreSQL notification in its command transaction. The
@@ -460,11 +473,11 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v8` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v9` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
 label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
-immediate reactions. For `engine-v7` and `engine-v8`, the same bounded projection adds each visible hero’s held
+immediate reactions. For `engine-v7` through `engine-v9`, the same bounded projection adds each visible hero’s held
 belief count, latest direct observation, relationship language, authority standing, and active
 promise terms. Raw social dimensions and provenance remain available in the development replay
 inspector. The response carries the exact event cursor and state hash that explain the scene.

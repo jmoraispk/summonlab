@@ -1,10 +1,10 @@
 import {
 	CharacterManifestSchema,
-	EngineGameStateV8Schema,
+	EngineGameStateV9Schema,
 	EngineSnapshotSchema,
 	HeroDecisionPacketSchema,
 	type CharacterManifest,
-	type EngineGameStateV8,
+	type EngineGameStateV9,
 	type PlayerDirective
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
@@ -72,7 +72,7 @@ function bootstrap() {
 	return { engine, heroId, heroManifest };
 }
 
-function snapshot(state: EngineGameStateV8) {
+function snapshot(state: EngineGameStateV9) {
 	return EngineSnapshotSchema.parse({ state, stateHash: hashGameState(state) });
 }
 
@@ -86,7 +86,7 @@ function source() {
 	};
 }
 
-function communicate(state: EngineGameStateV8, heroId: string, key = 'context-words') {
+function communicate(state: EngineGameStateV9, heroId: string, key = 'context-words') {
 	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
 	return applyCommand(state, {
 		commandId,
@@ -108,7 +108,7 @@ function communicate(state: EngineGameStateV8, heroId: string, key = 'context-wo
 describe('hero decision context', () => {
 	it('assembles a deterministic, hash-bound packet from only the hero view', () => {
 		const { engine, heroId, heroManifest } = bootstrap();
-		if (engine.snapshot.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+		if (engine.snapshot.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 		const left = assembleHeroDecisionPacket({
 			snapshot: engine.snapshot,
 			manifest: heroManifest,
@@ -143,9 +143,9 @@ describe('hero decision context', () => {
 
 	it('retrieves exact witnessed words with provenance and a bounded score trace', () => {
 		const { engine, heroId, heroManifest } = bootstrap();
-		if (engine.snapshot.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+		if (engine.snapshot.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 		const committed = communicate(engine.snapshot.state, heroId);
-		if (committed.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+		if (committed.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 		const act = Object.values(committed.state.society.communicativeActs)[0]!;
 		const directive: PlayerDirective = {
 			directiveId: deterministicUuid('context-directive'),
@@ -190,13 +190,54 @@ describe('hero decision context', () => {
 		);
 	});
 
+	it('turns an accepted witnessed order into an inspectable decision preference', () => {
+		const { engine, heroId, heroManifest } = bootstrap();
+		if (engine.snapshot.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
+		const state = engine.snapshot.state;
+		const commandId = deterministicUuid('context-accepted-order');
+		const committed = applyCommand(state, {
+			commandId,
+			runId: state.runId,
+			actorId: state.master.masterId,
+			expectedVersion: state.version,
+			correlationId: commandId,
+			source: source(),
+			commandType: 'master.converse',
+			targetHeroId: heroId,
+			kind: 'order',
+			exactText: 'Train before we enter the tower.',
+			tone: 'reassuring',
+			delivery: 'private',
+			orderIntent: 'train'
+		});
+		if (committed.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
+		const turn = Object.values(committed.state.society.conversationTurns)[0]!;
+		const packet = assembleHeroDecisionPacket({
+			snapshot: snapshot(committed.state),
+			manifest: heroManifest,
+			heroId,
+			decisionKind: 'settlement-action'
+		});
+
+		expect(turn.response).toMatchObject({ orderOutcome: 'accepted', preferenceWeight: 24 });
+		expect(packet.activeDirectives).toHaveLength(1);
+		expect(packet.activeDirectives[0]).toMatchObject({
+			text: 'Train before we enter the tower.',
+			witnessEventId: turn.sourceEventId,
+			priorities: ['conversation-weight-24', 'train', 'training', 'practice']
+		});
+		expect(packet.knowledge.memoryRetrieval.memories[0]?.exactCommunication?.exactText).toBe(
+			'Train before we enter the tower.'
+		);
+	});
+
 	it('does not leak private communication to a hero who did not witness it', () => {
 		const { engine, heroId, heroManifest } = bootstrap();
-		if (engine.snapshot.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+		if (engine.snapshot.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 		const distantId = deterministicUuid('context-distant-hero');
 		const distantManifest = manifest(distantId, 'Tarin Sol');
 		const original = engine.snapshot.state;
-		const expanded = EngineGameStateV8Schema.parse({
+		const expanded = EngineGameStateV9Schema.parse({
 			...original,
 			heroes: {
 				...original.heroes,
@@ -212,7 +253,7 @@ describe('hero decision context', () => {
 			}
 		});
 		const committed = communicate(expanded, heroId, 'private-target-only');
-		if (committed.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+		if (committed.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 		const packet = assembleHeroDecisionPacket({
 			snapshot: snapshot(committed.state),
 			manifest: distantManifest,
@@ -249,14 +290,14 @@ describe('hero decision context', () => {
 
 	it('is byte-stable when source records have a different insertion order', () => {
 		const { engine, heroId, heroManifest } = bootstrap();
-		if (engine.snapshot.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+		if (engine.snapshot.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 		let state = engine.snapshot.state;
 		for (let index = 0; index < 4; index += 1) {
 			const committed = communicate(state, heroId, `repeat-${index}`);
-			if (committed.state.schemaVersion !== 8) throw new Error('Expected engine-v8');
+			if (committed.state.schemaVersion !== 9) throw new Error('Expected engine-v9');
 			state = committed.state;
 		}
-		const reversed = EngineGameStateV8Schema.parse({
+		const reversed = EngineGameStateV9Schema.parse({
 			...state,
 			society: {
 				...state.society,

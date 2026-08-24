@@ -5,6 +5,7 @@ import {
 	type EngineGameStateV6,
 	type EngineGameStateV7,
 	type EngineGameStateV8,
+	type EngineGameStateV9,
 	type EngineSnapshot,
 	type HeroConversationPresentation,
 	type RoutineKind,
@@ -57,7 +58,11 @@ function readable(value: string): string {
 
 function poseForHero(
 	hero: (
-		EngineGameStateV5 | EngineGameStateV6 | EngineGameStateV7 | EngineGameStateV8
+		| EngineGameStateV5
+		| EngineGameStateV6
+		| EngineGameStateV7
+		| EngineGameStateV8
+		| EngineGameStateV9
 	)['heroes'][string]
 ): {
 	pose: SettlementPose;
@@ -90,10 +95,11 @@ export function projectSettlementPresentation(
 		state.schemaVersion !== 5 &&
 		state.schemaVersion !== 6 &&
 		state.schemaVersion !== 7 &&
-		state.schemaVersion !== 8
+		state.schemaVersion !== 8 &&
+		state.schemaVersion !== 9
 	) {
 		throw new Error(
-			`Settlement presentation requires engine-v5 through engine-v8, received v${state.schemaVersion}`
+			`Settlement presentation requires engine-v5 through engine-v9, received v${state.schemaVersion}`
 		);
 	}
 	const gameDate = new Date(projectedGameTime);
@@ -141,7 +147,7 @@ export function projectSettlementPresentation(
 				.map((occupant) => occupant.heroId)
 		}));
 	const social =
-		state.schemaVersion === 7 || state.schemaVersion === 8
+		state.schemaVersion === 7 || state.schemaVersion === 8 || state.schemaVersion === 9
 			? Object.values(state.heroes)
 					.filter((hero) => hero.lifeState !== 'synthesized')
 					.sort((left, right) => left.heroId.localeCompare(right.heroId))
@@ -229,7 +235,10 @@ export function projectSettlementPresentation(
 		minuteOfDay,
 		dayPhase: settlementDayPhase(minuteOfDay),
 		firstEmber:
-			state.schemaVersion === 6 || state.schemaVersion === 7 || state.schemaVersion === 8
+			state.schemaVersion === 6 ||
+			state.schemaVersion === 7 ||
+			state.schemaVersion === 8 ||
+			state.schemaVersion === 9
 				? state.settlement.firstEmber
 				: null,
 		buildings,
@@ -239,7 +248,7 @@ export function projectSettlementPresentation(
 }
 
 function communicationObjectSummary(
-	object: EngineGameStateV8['society']['beliefs'][string]['object']
+	object: (EngineGameStateV8 | EngineGameStateV9)['society']['beliefs'][string]['object']
 ): string {
 	if (object.kind === 'text') return object.text;
 	if (object.kind === 'location') return readable(object.locationId);
@@ -257,7 +266,7 @@ export function projectHeroConversationPresentation(
 	const hero = state.heroes[heroId];
 	if (!hero) throw new Error(`Unknown hero: ${heroId}`);
 	let availability: HeroConversationPresentation['availability'] = 'available';
-	if (state.schemaVersion !== 8) availability = 'legacy-history';
+	if (state.schemaVersion !== 8 && state.schemaVersion !== 9) availability = 'legacy-history';
 	else {
 		const heroV8 = state.heroes[heroId]!;
 		if (state.status !== 'active') availability = 'run-terminal';
@@ -269,7 +278,7 @@ export function projectHeroConversationPresentation(
 	}
 
 	const acts =
-		state.schemaVersion === 8
+		state.schemaVersion === 8 || state.schemaVersion === 9
 			? Object.values(state.society.communicativeActs)
 					.filter((act) => act.witnesses.some((witness) => witness.heroId === heroId))
 					.sort(
@@ -297,7 +306,7 @@ export function projectHeroConversationPresentation(
 					}))
 			: [];
 	const beliefsLearnedFromCommunication =
-		state.schemaVersion === 8
+		state.schemaVersion === 8 || state.schemaVersion === 9
 			? Object.values(state.society.beliefs)
 					.filter(
 						(belief) =>
@@ -325,6 +334,27 @@ export function projectHeroConversationPresentation(
 						observationId: belief.provenance.observationId
 					}))
 			: [];
+	const turns =
+		state.schemaVersion === 9
+			? Object.values(state.society.conversationTurns)
+					.filter((turn) => turn.heroId === heroId)
+					.sort(
+						(left, right) =>
+							left.occurredAt.localeCompare(right.occurredAt) ||
+							left.turnId.localeCompare(right.turnId)
+					)
+					.slice(-24)
+					.map((turn) => ({
+						turnId: turn.turnId,
+						sourceEventId: turn.sourceEventId,
+						communicationActId: turn.communicationActId,
+						kind: turn.kind,
+						orderIntent: turn.orderIntent,
+						masterText: state.society.communicativeActs[turn.communicationActId]!.exactText,
+						heroResponse: turn.response,
+						occurredAt: turn.occurredAt
+					}))
+			: [];
 
 	return HeroConversationPresentationSchema.parse({
 		runId: state.runId,
@@ -337,6 +367,7 @@ export function projectHeroConversationPresentation(
 		masterLocation: state.master.location,
 		heroLocation: hero.location,
 		acts,
+		turns,
 		beliefsLearnedFromCommunication
 	});
 }

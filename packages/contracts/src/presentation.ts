@@ -3,6 +3,11 @@ import { z } from 'zod';
 import { BuildingPowerStateSchema, FirstEmberStateSchema, HeroLifeStateSchema } from './engine.js';
 import { SettlementSlugSchema } from './settlement.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
+import {
+	ConversationActKindSchema,
+	ConversationOrderIntentSchema,
+	HeroConversationResponseSchema
+} from './social.js';
 
 export const SettlementDayPhaseSchema = z.enum(['dawn', 'day', 'dusk', 'night']);
 export const SettlementPoseSchema = z.enum([
@@ -98,7 +103,14 @@ export const ConversationActProjectionSchema = z
 		actId: EntityIdSchema,
 		sourceEventId: EntityIdSchema,
 		kind: z.enum(['explain', 'tell', 'ask', 'order', 'conceal', 'accuse', 'investigate']),
-		topic: z.enum(['master-role', 'summoning-situation', 'tower-mission', 'hero-memory']),
+		topic: z.enum([
+			'master-role',
+			'summoning-situation',
+			'tower-mission',
+			'hero-memory',
+			'open-conversation',
+			'daily-order'
+		]),
 		exactText: z.string().min(1).max(600),
 		tone: z.enum(['neutral', 'reassuring', 'firm', 'urgent', 'apologetic']).nullable(),
 		delivery: z.enum(['private', 'open']),
@@ -117,6 +129,19 @@ export const CommunicationBeliefProjectionSchema = z
 		learnedFromId: EntityIdSchema,
 		sourceEventId: EntityIdSchema,
 		observationId: EntityIdSchema
+	})
+	.strict();
+
+export const ConversationTurnProjectionSchema = z
+	.object({
+		turnId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		communicationActId: EntityIdSchema,
+		kind: ConversationActKindSchema,
+		orderIntent: ConversationOrderIntentSchema.nullable(),
+		masterText: z.string().min(1).max(600),
+		heroResponse: HeroConversationResponseSchema,
+		occurredAt: IsoDateTimeSchema
 	})
 	.strict();
 
@@ -141,6 +166,7 @@ export const HeroConversationPresentationSchema = z
 		masterLocation: z.string().min(1).max(80),
 		heroLocation: z.string().min(1).max(80),
 		acts: z.array(ConversationActProjectionSchema).max(24),
+		turns: z.array(ConversationTurnProjectionSchema).max(24),
 		beliefsLearnedFromCommunication: z.array(CommunicationBeliefProjectionSchema).max(48)
 	})
 	.strict();

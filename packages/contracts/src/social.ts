@@ -109,7 +109,9 @@ export const CommunicationTopicSchema = z.enum([
 	'master-role',
 	'summoning-situation',
 	'tower-mission',
-	'hero-memory'
+	'hero-memory',
+	'open-conversation',
+	'daily-order'
 ]);
 export const CommunicationDeliverySchema = z.enum(['private', 'open']);
 export const CommunicationToneSchema = z.enum([
@@ -201,12 +203,14 @@ export const CommunicativeActSchema = z
 		) {
 			context.addIssue({ code: 'custom', message: 'Private communication cannot have bystanders' });
 		}
-		if ((act.kind === 'ask') !== (act.claim === null)) {
-			context.addIssue({ code: 'custom', message: 'Only questions omit a structured claim' });
+		const claimTopic = ['master-role', 'summoning-situation', 'tower-mission'].includes(act.topic);
+		if (claimTopic !== (act.claim !== null)) {
+			context.addIssue({ code: 'custom', message: 'Structured claims require a factual topic' });
 		}
 		if (
-			(act.kind === 'ask' && act.topic !== 'hero-memory') ||
-			(act.kind !== 'ask' && act.topic === 'hero-memory')
+			(act.kind === 'ask' && !['hero-memory', 'open-conversation'].includes(act.topic)) ||
+			(act.kind === 'order' && act.topic !== 'daily-order') ||
+			(!['ask', 'order'].includes(act.kind) && ['hero-memory', 'daily-order'].includes(act.topic))
 		) {
 			context.addIssue({
 				code: 'custom',
@@ -217,7 +221,9 @@ export const CommunicativeActSchema = z
 			'master-role': 'claims-master-role',
 			'summoning-situation': 'was-summoned-into',
 			'tower-mission': 'described-tower-mission',
-			'hero-memory': null
+			'hero-memory': null,
+			'open-conversation': null,
+			'daily-order': null
 		} as const;
 		if ((act.claim?.predicate ?? null) !== expectedPredicate[act.topic]) {
 			context.addIssue({ code: 'custom', message: 'Communication claim diverged from its topic' });
@@ -231,6 +237,99 @@ export const CommunicativeActSchema = z
 				act.claim.subjectId !== act.speakerId)
 		) {
 			context.addIssue({ code: 'custom', message: 'Communication claim subject is inconsistent' });
+		}
+	});
+
+export const ConversationActKindSchema = z.enum(['say', 'ask', 'order']);
+export const ConversationOrderIntentSchema = z.enum([
+	'train',
+	'rest',
+	'eat',
+	'work',
+	'prepare-tower'
+]);
+export const ConversationOrderOutcomeSchema = z.enum([
+	'accepted',
+	'negotiated',
+	'refused',
+	'deferred'
+]);
+
+export const ConversationOrderScoreSchema = z
+	.object({
+		authority: z.number().int().min(-100).max(100),
+		relationship: z.number().int().min(-100).max(100),
+		personality: z.number().int().min(-100).max(100),
+		alignment: z.number().int().min(-100).max(100),
+		needs: z.number().int().min(-100).max(100),
+		tone: z.number().int().min(-100).max(100),
+		total: z.number().int().min(-600).max(600)
+	})
+	.strict()
+	.superRefine((score, context) => {
+		if (
+			score.total !==
+			score.authority +
+				score.relationship +
+				score.personality +
+				score.alignment +
+				score.needs +
+				score.tone
+		) {
+			context.addIssue({ code: 'custom', message: 'Conversation order score is inconsistent' });
+		}
+	});
+
+export const HeroConversationResponseSchema = z
+	.object({
+		exactText: z
+			.string()
+			.min(1)
+			.max(600)
+			.refine((text) => /\S/u.test(text), {
+				message: 'Hero response must contain a visible character'
+			}),
+		publicReason: z.string().min(1).max(240),
+		orderOutcome: ConversationOrderOutcomeSchema.nullable(),
+		orderScore: ConversationOrderScoreSchema.nullable(),
+		preferenceWeight: z.number().int().min(0).max(36)
+	})
+	.strict()
+	.superRefine((response, context) => {
+		if (
+			(response.orderOutcome === null) !== (response.orderScore === null) ||
+			(response.orderOutcome === null && response.preferenceWeight !== 0) ||
+			(response.orderOutcome === 'refused' && response.preferenceWeight !== 0) ||
+			(response.orderOutcome === 'deferred' && response.preferenceWeight !== 0) ||
+			(response.orderOutcome === 'negotiated' && response.preferenceWeight !== 12) ||
+			(response.orderOutcome === 'accepted' && response.preferenceWeight !== 24)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Conversation response outcome is inconsistent'
+			});
+		}
+	});
+
+export const HeroConversationTurnSchema = z
+	.object({
+		turnId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		communicationActId: EntityIdSchema,
+		masterId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		kind: ConversationActKindSchema,
+		orderIntent: ConversationOrderIntentSchema.nullable(),
+		response: HeroConversationResponseSchema,
+		occurredAt: IsoDateTimeSchema
+	})
+	.strict()
+	.superRefine((turn, context) => {
+		if (
+			(turn.kind === 'order') !== (turn.orderIntent !== null) ||
+			(turn.kind === 'order') !== (turn.response.orderOutcome !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Conversation turn kind is inconsistent' });
 		}
 	});
 
@@ -399,8 +498,67 @@ export const SocietyStateV2Schema = z
 		}
 	});
 
+export const SocietyStateV3Schema = z
+	.object({
+		...SocietyStateV2Schema.shape,
+		contentVersion: z.literal('society-v3'),
+		conversationTurns: z.record(EntityIdSchema, HeroConversationTurnSchema)
+	})
+	.strict()
+	.superRefine((society, context) => {
+		const collections = [
+			['observation', society.observations, 'observationId'],
+			['belief', society.beliefs, 'beliefId'],
+			['relationship', society.relationships, 'relationshipId'],
+			['promise', society.promises, 'promiseId'],
+			['authority', society.authority, 'authorityId'],
+			['communicative act', society.communicativeActs, 'actId']
+		] as const;
+		for (const [label, records, idField] of collections) {
+			if (Object.keys(records).length > 2_048) {
+				context.addIssue({ code: 'custom', message: `Too many ${label} records` });
+			}
+			for (const [key, record] of Object.entries(records)) {
+				if ((record as Record<string, unknown>)[idField] !== key) {
+					context.addIssue({
+						code: 'custom',
+						message: `${label} record key does not match its id`
+					});
+				}
+			}
+		}
+		if (Object.keys(society.conversationTurns).length > 2_048) {
+			context.addIssue({ code: 'custom', message: 'Too many conversation turns' });
+		}
+		for (const [turnId, turn] of Object.entries(society.conversationTurns)) {
+			if (turn.turnId !== turnId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Conversation turn key does not match its id'
+				});
+			}
+			const act = society.communicativeActs[turn.communicationActId];
+			if (
+				!act ||
+				act.sourceEventId !== turn.sourceEventId ||
+				act.speakerId !== turn.masterId ||
+				!act.intendedAudienceIds.includes(turn.heroId) ||
+				act.occurredAt !== turn.occurredAt ||
+				(turn.kind === 'order'
+					? act.kind !== 'order'
+					: act.kind !== turn.kind.replace('say', 'tell'))
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Conversation turn must resolve to its witnessed communication'
+				});
+			}
+		}
+	});
+
 export type SocietyState = z.infer<typeof SocietyStateSchema>;
 export type SocietyStateV2 = z.infer<typeof SocietyStateV2Schema>;
+export type SocietyStateV3 = z.infer<typeof SocietyStateV3Schema>;
 export type SocialObservation = z.infer<typeof SocialObservationSchema>;
 export type HeroBelief = z.infer<typeof HeroBeliefSchema>;
 export type DirectedRelationship = z.infer<typeof DirectedRelationshipSchema>;
@@ -413,3 +571,7 @@ export type CommunicationTopic = z.infer<typeof CommunicationTopicSchema>;
 export type CommunicationDelivery = z.infer<typeof CommunicationDeliverySchema>;
 export type CommunicationTone = z.infer<typeof CommunicationToneSchema>;
 export type OnboardingCommunicativeActKind = z.infer<typeof OnboardingCommunicativeActKindSchema>;
+export type ConversationActKind = z.infer<typeof ConversationActKindSchema>;
+export type ConversationOrderIntent = z.infer<typeof ConversationOrderIntentSchema>;
+export type ConversationOrderOutcome = z.infer<typeof ConversationOrderOutcomeSchema>;
+export type HeroConversationTurn = z.infer<typeof HeroConversationTurnSchema>;
