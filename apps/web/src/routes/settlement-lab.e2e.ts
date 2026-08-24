@@ -9,7 +9,25 @@ test('inspects all five Hearth 01 interiors and deterministic access-aware route
 
 	await expect(page.getByRole('heading', { name: /A small refuge/ })).toBeVisible();
 	await expect(page.getByText('83e2d404fa3e119b')).toBeVisible();
-	await expect(page.getByText(/40\.2 KB route JS/)).toBeVisible();
+	await expect(page.getByText(/41\.8 KB route JS/)).toBeVisible();
+	await expect(page.getByText('c88d39611eee5b39')).toBeVisible();
+	await expect(page.getByText('296.2 KB WebP')).toBeVisible();
+	const paintedScene = page.getByTestId('painted-settlement-scene');
+	await expect(paintedScene).toBeVisible();
+	await expect(paintedScene.locator('[data-layer-kind]')).toHaveCount(6);
+	await expect(paintedScene.locator('.scene-hotspot')).toHaveCount(5);
+	await expect
+		.poll(() =>
+			paintedScene
+				.locator('img.environment-base')
+				.evaluate((image: HTMLImageElement) => `${image.naturalWidth}x${image.naturalHeight}`)
+		)
+		.toBe('1536x1024');
+
+	await page
+		.getByRole('button', { name: 'Inspect Dormant Workshop in painted settlement' })
+		.click();
+	await expect(page.getByRole('heading', { name: 'Dormant Workshop' })).toBeVisible();
 	await expect(page.locator('.building-button')).toHaveCount(5);
 	for (const building of [
 		{ button: 'Gate', heading: 'The Summoning Gate' },
@@ -53,9 +71,17 @@ test('inspects all five Hearth 01 interiors and deterministic access-aware route
 	if (process.env.CAPTURE_PHASE4_SETTLEMENT) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE4_SETTLEMENT, fullPage: true });
 	}
+	if (process.env.CAPTURE_PHASE4_SETTLEMENT_SCENE) {
+		await paintedScene.screenshot({ path: process.env.CAPTURE_PHASE4_SETTLEMENT_SCENE });
+	}
 
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.reload();
+	await expect
+		.poll(() =>
+			page.locator('.route-signal').evaluate((element) => getComputedStyle(element).animationName)
+		)
+		.toBe('none');
 	await expect
 		.poll(() =>
 			page.locator('.traveler').evaluate((element) => getComputedStyle(element).transitionDuration)

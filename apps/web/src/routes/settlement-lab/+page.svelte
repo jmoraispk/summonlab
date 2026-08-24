@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import HearthScene from '$lib/components/HearthScene.svelte';
 	import type {
 		SettlementBuilding,
 		SettlementRouteNode,
@@ -70,17 +71,17 @@
 </script>
 
 <svelte:head>
-	<title>Hearth 01 route lab · summonlab</title>
+	<title>Hearth 01 settlement lab · summonlab</title>
 	<meta
 		name="description"
-		content="Inspect the versioned five-building Hearth 01 route graph, authored interiors, travel times, capacities, and dormant-system boundaries."
+		content="Inspect the layered Hearth 01 environment, versioned five-building route graph, authored interiors, travel times, capacities, and dormant-system boundaries."
 	/>
 </svelte:head>
 
 <main>
 	<header class="topbar">
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
-		<div><span>SET-001</span><strong>Hearth 01 route lab</strong></div>
+		<div><span>SET-001 · SET-002</span><strong>Hearth 01 settlement lab</strong></div>
 		<nav aria-label="Settlement lab links">
 			<a href={resolve('/forge')}>Forge</a>
 			<a href={resolve('/visual-lab/recognition')}>Recognition</a>
@@ -109,6 +110,16 @@
 			</div>
 		</div>
 	</section>
+
+	<HearthScene
+		definition={data.definition}
+		scene={data.scene}
+		{selectedBuildingId}
+		{selectedTargetNodeId}
+		{selectedRoute}
+		{routeProfile}
+		onSelectBuilding={chooseBuilding}
+	/>
 
 	<section class="world-grid" aria-labelledby="map-heading">
 		<div class="map-panel">
@@ -364,7 +375,8 @@
 
 	<footer>
 		<p>
-			<code>pnpm validate:settlement-content</code> verifies hash, connectivity, interiors, and routes.
+			<code>pnpm validate:settlement-content</code> and
+			<code>pnpm validate:settlement-scene</code> verify topology, layers, assets, and routes.
 		</p>
 		<a href={resolve('/visual-lab')}>Return to the human visual gate →</a>
 	</footer>

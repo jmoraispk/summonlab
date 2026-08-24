@@ -5,4 +5,5 @@ export * from './health.js';
 export * from './proof.js';
 export * from './run.js';
 export * from './settlement.js';
+export * from './settlement-scene.js';
 export * from './visual.js';

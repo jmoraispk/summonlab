@@ -198,7 +198,7 @@ are reviewed.
 
 ![Mobile recognition stress lab](docs/evidence/phase-3-recognition-mobile.png)
 
-## Living settlement topology
+## Living settlement
 
 `/settlement-lab` turns Hearth 01 into a versioned, clickable route graph before any canvas motion
 can become game truth. The first definition has five buildings and interiors, 18 nodes, 17 authored
@@ -209,6 +209,15 @@ forge remains unreachable under Reserve and opens only in the clearly labeled Al
 The lab is composition and content evidence, not run state. Existing engine histories remain
 unchanged; a later versioned engine command will schedule travel and commit arrival. The topology is
 bound to an exact content hash and checked by `pnpm validate:settlement-content`.
+
+The same route now opens with a hero-free, topology-aligned painted environment: gate north, kitchen
+west, dormant workshop east, dormitory southwest, training southeast. The 1536×1024 source is
+compressed into a content-addressed 296.2 KB WebP and combined with five code-owned presentation
+layers for atmosphere, localized light, route projection, activity intent, and keyboard interaction.
+The six-layer scene is an approval candidate—not engine state—and is checked by
+`pnpm validate:settlement-scene`. The combined settlement route remains 41.8 KB gzip.
+
+![Mobile layered Hearth 01 scene](docs/evidence/phase-4-settlement-layered-scene-mobile.png)
 
 ![Mobile Hearth 01 route lab](docs/evidence/phase-4-settlement-route-lab-mobile.png)
 

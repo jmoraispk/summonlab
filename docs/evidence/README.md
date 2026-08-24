@@ -22,3 +22,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   code-native rigs, individual manifest hashes, and JSON audit export.
 - `phase-4-settlement-route-lab-mobile.png` — phone-scale five-building Hearth 01 map, highlighted
   deterministic route, access profile, interior composition, and interaction/effect ledger.
+- `phase-4-settlement-layered-mobile.png` — full phone-scale settlement lab with the new painted
+  scene before the topology and interior inspectors.
+- `phase-4-settlement-layered-scene-mobile.png` — isolated 390×844/2× scene evidence showing the
+  topology-aligned plate, five interactive labels, selected hotspot, route projection, and boundary.

@@ -1,5 +1,5 @@
 import { getConfig } from '@summonlab/config';
-import { loadHearth01, planSettlementRoute } from '@summonlab/content';
+import { loadHearth01, loadHearth01Scene, planSettlementRoute } from '@summonlab/content';
 import { WebBuildBudgetReportSchema } from '@summonlab/contracts';
 import { error } from '@sveltejs/kit';
 import { readFile } from 'node:fs/promises';
@@ -24,10 +24,17 @@ async function readBuildBudgetEvidence(): Promise<unknown> {
 
 export const load: PageServerLoad = async () => {
 	if (!getConfig().devRoutesEnabled) error(404, 'Not found.');
-	const [definition, buildBudgetSource] = await Promise.all([
+	const [definition, scene, buildBudgetSource] = await Promise.all([
 		loadHearth01(),
+		loadHearth01Scene(),
 		readBuildBudgetEvidence()
 	]);
+	if (
+		scene.settlementContentVersion !== definition.contentVersion ||
+		scene.settlementContentHash !== definition.contentHash
+	) {
+		throw new Error('Hearth 01 scene is bound to stale settlement content.');
+	}
 	const buildBudget = WebBuildBudgetReportSchema.parse(buildBudgetSource);
 	const reserveSystemIds = new Set(['gate-system']);
 	const allSystemIds = new Set(definition.buildings.map((building) => building.systemId));
@@ -41,6 +48,7 @@ export const load: PageServerLoad = async () => {
 
 	return {
 		definition,
+		scene,
 		buildBudget,
 		routeProfiles: {
 			reserve: routesFor(reserveSystemIds),

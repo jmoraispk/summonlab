@@ -112,6 +112,19 @@ catalog version and asset SHA-256. The `/forge/contact-sheet` route prints or ex
 Animation communicates cause and consequence. It never hides death, synthesis, cost, failed action,
 or a committed state transition.
 
+## Settlement environment construction
+
+- Environment plates remain hero-free so character rigs, occupancy, equipment, injury, and actions
+  can change without regenerating architecture.
+- A scene plate must match a versioned topology binding. Building labels, hotspots, routes, and
+  activity markers remain code-owned layers rather than painted facts.
+- Hearth 01 composes six depths: bitmap architecture, atmosphere, illumination, route projection,
+  activity intent, and interaction. Ambient motion freezes under reduced motion.
+- Source PNGs remain review artifacts. Runtime delivery is content-addressed WebP with explicit
+  byte, decoded-size, and route-bundle budgets.
+- A beautiful plate is still an approval candidate. It cannot approve character identity, commit
+  movement, imply powered equipment, or silently move a building relative to the content graph.
+
 ## Approval rubric
 
 Review each candidate at 100%, roster size, and settlement size:
