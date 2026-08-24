@@ -28,6 +28,7 @@
 			<a class="wordmark" href={resolve('/')}>summonlab</a>
 			<nav aria-label="Development links">
 				<a href={resolve('/forge')}>Open forge</a>
+				<a href={resolve('/settlement-lab')}>Settlement lab</a>
 				<a href={resolve('/visual-lab')}>Visual lab</a>
 				<a href={resolve('/design-reference')}>Design reference</a>
 				<a href={resolve('/health')}>Health JSON</a>

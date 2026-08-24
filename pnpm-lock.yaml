@@ -56,6 +56,9 @@ importers:
       '@summonlab/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@summonlab/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@summonlab/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -159,6 +162,12 @@ importers:
       zod:
         specifier: ^4.4.3
         version: 4.4.3
+
+  packages/content:
+    dependencies:
+      '@summonlab/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
   packages/contracts:
     dependencies:

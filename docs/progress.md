@@ -169,3 +169,31 @@ Collect feedback on specificity, cross-view identity, rendering style, settlemen
 summon-card composition/prompt, and compressed runtime fidelity. Record all seven Mara case reviews
 in the recognition console. Do not promote Remy, manufacture a machine approval, or generate the
 remaining ten representative humans before the human visual gate.
+
+## Phase 4 — living settlement
+
+Status: **in progress**. Topology checkpoint completed on 2026-08-24 while Phase 3 remains at its
+human visual gate.
+
+| Task | Result | Evidence |
+| --- | --- | --- |
+| `SET-001` | Complete: `hearth-01-v1` defines exactly five buildings/interiors, 18 connected nodes, 17 authored paths, travel duration, capacity, interaction/effect declarations, and explicit system access; deterministic route planning never lets the renderer commit arrival; the phone route is 40.2 KB gzip | [Mobile route-lab evidence](evidence/phase-4-settlement-route-lab-mobile.png), `pnpm validate:settlement-content`, ADR 0011 |
+| `SET-002` | Pending: create the final layered Hearth 01 settlement scene from the reviewed topology | — |
+| `SET-003` | Pending: schedule travel and commit arrival through a new versioned engine/content boundary | — |
+
+### Reproduce the checkpoint
+
+```powershell
+pnpm validate:settlement-content
+pnpm dev
+```
+
+Open `http://localhost:5173/settlement-lab`. Select every building, choose interior stations, compare
+Reserve with All systems, and confirm that the forge is visibly present but unreachable while its
+system is dormant. This route is a development inspector; it does not mutate a run.
+
+## Next active engineering slice
+
+Collect topology and composition feedback, then use the accepted graph as the input to layered
+settlement art and a new versioned authoritative travel command. Phase 3 cohort expansion remains
+behind its separate human visual gate.

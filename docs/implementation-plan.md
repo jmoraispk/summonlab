@@ -966,7 +966,13 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 
 Estimated engineering effort: **2 weeks**.
 
-- `SET-001` implement route graph and five building nodes/interiors;
+**Status: in progress — SET-001 topology checkpoint completed 2026-08-24.** `hearth-01-v1`
+defines five interiors, a connected 18-node/17-edge route graph, travel time, capacity, authored
+visual paths, interaction/effect declarations, and explicit system access. The development-only
+`/settlement-lab` inspects that hash-bound content without changing existing engine histories or
+claiming authoritative arrival.
+
+- `SET-001` complete: implement route graph and five building nodes/interiors;
 - `SET-002` create the layered Hearth 01 settlement scene;
 - `SET-003` implement hero travel and authoritative arrival;
 - `SET-004` implement building capacity, assignments, and powered state;
@@ -1077,6 +1083,12 @@ turn incorporates feedback where available and continues reversible production i
 The unoptimized source PNGs remain deliberate approval artifacts. The runtime exporter processes
 only static-catalog `approved` sources; candidates are recorded as deferred and produce no runtime
 file.
+
+In parallel with the human art gate, `SET-001` is available at `/settlement-lab`. Its next review
+asks whether the five-building arrangement, travel scale, interior focal stations, and
+reserve-versus-powered access boundary form a clear foundation. After topology feedback, `SET-002`
+can replace the code-native composition study with layered settlement art and `SET-003` can add a
+new versioned authoritative travel path without changing `engine-v1` or `engine-v2` replay bytes.
 
 ## Accepted product decisions — 2026-08-23
 

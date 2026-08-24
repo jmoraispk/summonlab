@@ -20,3 +20,5 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   append-only review form.
 - `phase-3-contact-sheet.png` — printable 100-seed `human-v3` cohort with summary distributions,
   code-native rigs, individual manifest hashes, and JSON audit export.
+- `phase-4-settlement-route-lab-mobile.png` — phone-scale five-building Hearth 01 map, highlighted
+  deterministic route, access profile, interior composition, and interaction/effect ledger.
