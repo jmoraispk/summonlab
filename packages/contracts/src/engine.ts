@@ -946,20 +946,75 @@ export const EngineGameStateV6Schema = z
 	})
 	.strict()
 	.superRefine((state, context) => {
-		const settlementV5 = { ...state.settlement } as Record<string, unknown>;
-		delete settlementV5.firstEmber;
-		const inherited = EngineGameStateV5Schema.safeParse({
-			...state,
-			schemaVersion: 5,
-			settlement: settlementV5
-		});
-		if (!inherited.success) {
-			for (const issue of inherited.error.issues) {
+		if (state.master.lifeState === 'dead' && state.status !== 'game_over') {
+			context.addIssue({ code: 'custom', message: 'Master death must atomically end the run' });
+		}
+		if (state.status === 'active' && state.master.lifeState !== 'alive') {
+			context.addIssue({ code: 'custom', message: 'An active run requires a living Master' });
+		}
+		for (const hero of Object.values(state.heroes)) {
+			const itemId = hero.equipment.mainHand;
+			if (itemId) {
+				const item = state.items[itemId];
+				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned item'
+					});
+				}
+			}
+			if (hero.assignment) {
+				const building = state.settlement.buildings[hero.assignment.buildingId];
+				if (
+					!building ||
+					building.assignmentNodeId !== hero.assignment.nodeId ||
+					building.assignmentRole !== hero.assignment.role ||
+					!building.assignedHeroIds.includes(hero.heroId)
+				) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero assignment diverged from building state'
+					});
+				}
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (
+				item.equippedById &&
+				state.heroes[item.equippedById]?.equipment.mainHand !== item.itemId
+			) {
+				context.addIssue({ code: 'custom', message: 'Equipped item must be linked by its hero' });
+			}
+		}
+		for (const [buildingId, building] of Object.entries(state.settlement.buildings)) {
+			if (building.buildingId !== buildingId) {
+				context.addIssue({ code: 'custom', message: 'Building record key does not match its id' });
+			}
+			for (const heroId of building.assignedHeroIds) {
+				if (state.heroes[heroId]?.assignment?.buildingId !== buildingId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Building roster diverged from hero assignment'
+					});
+				}
+			}
+			if (
+				building.powerState !== 'powered' &&
+				building.powerState !== building.baselinePowerState
+			) {
 				context.addIssue({
 					code: 'custom',
-					message: `Engine-v5 invariant failed: ${issue.message}`,
-					path: issue.path
+					message: 'Building power diverged from its baseline'
 				});
+			}
+		}
+		for (const resource of ResourceKeySchema.options) {
+			const entries = state.settlement.resourceLedger.filter(
+				(entry) => entry.resource === resource
+			);
+			const last = entries.at(-1);
+			if (last && last.after !== state.settlement.resources[resource]) {
+				context.addIssue({ code: 'custom', message: `Resource ledger diverged for ${resource}` });
 			}
 		}
 		if (
