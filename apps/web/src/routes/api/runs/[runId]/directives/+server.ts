@@ -16,7 +16,11 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ params }) => {
 	const snapshot = await getEngineSnapshot(getConfig().databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-	if (snapshot.state.schemaVersion !== 10 && snapshot.state.schemaVersion !== 11) {
+	if (
+		snapshot.state.schemaVersion !== 10 &&
+		snapshot.state.schemaVersion !== 11 &&
+		snapshot.state.schemaVersion !== 12
+	) {
 		return json({ message: 'This history predates scoped directions.' }, { status: 409 });
 	}
 	return json({
@@ -48,7 +52,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const config = getConfig();
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 10 && snapshot.state.schemaVersion !== 11) {
+		if (
+			snapshot.state.schemaVersion !== 10 &&
+			snapshot.state.schemaVersion !== 11 &&
+			snapshot.state.schemaVersion !== 12
+		) {
 			return json({ message: 'This history predates scoped directions.' }, { status: 409 });
 		}
 		const commandId = randomUUID();
@@ -98,7 +106,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const committed = await commitEngineCommand(config.databaseUrl, command);
 		if (
 			committed.snapshot.state.schemaVersion !== 10 &&
-			committed.snapshot.state.schemaVersion !== 11
+			committed.snapshot.state.schemaVersion !== 11 &&
+			committed.snapshot.state.schemaVersion !== 12
 		) {
 			throw new Error('Directive commit changed the engine schema.');
 		}

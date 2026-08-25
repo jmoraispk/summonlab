@@ -3,7 +3,7 @@ import {
 	EngineSnapshotSchema,
 	HeroDecisionPacketSchema,
 	LegalActionSchema,
-	type EngineGameStateV11,
+	type EngineGameStateV12,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
 	type LegalAction,
@@ -59,7 +59,7 @@ function source() {
 	};
 }
 
-function snapshot(state: EngineGameStateV11) {
+function snapshot(state: EngineGameStateV12) {
 	return EngineSnapshotSchema.parse({ state, stateHash: hashGameState(state) });
 }
 
@@ -75,7 +75,7 @@ async function basePacket(seed: string, witnessed = false): Promise<HeroDecision
 		rarityStars: draft.manifest.rarityStars,
 		mind: draft.mind
 	}).snapshot.state;
-	if (state.schemaVersion !== 11) throw new Error('Evaluation corpus requires engine-v11');
+	if (state.schemaVersion !== 12) throw new Error('Evaluation corpus requires engine-v12');
 	if (witnessed) {
 		const commandId = deterministicUuid(`agent-evaluation:witness:${seed}`);
 		state = applyCommand(state, {
@@ -92,7 +92,7 @@ async function basePacket(seed: string, witnessed = false): Promise<HeroDecision
 			exactText: 'The eastern wall bears a crescent mark. Inspect it before choosing a passage.',
 			tone: 'urgent',
 			delivery: 'private'
-		}).state as EngineGameStateV11;
+		}).state as EngineGameStateV12;
 	}
 	return assembleHeroDecisionPacket({
 		snapshot: snapshot(state),

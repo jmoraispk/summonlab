@@ -531,12 +531,36 @@ before deployment; cancellation and retreat release the party and permit a new n
 Success is terminal for this package and therefore cannot be farmed.
 
 Deployment writes every party member's authoritative entry position and the entry visit into
-mission knowledge. The current prototype exposes objective completion through a development-only
-server control, but the command itself is system-sourced and verifies every primary objective id;
-the client cannot claim arbitrary completion. Extraction and retreat require the whole party at an
-authored extraction/retreat boundary. Each transition emits an immutable mission event whose payload
-the reducer recomputes and verifies during strict replay. `/mission/:runId` is a renderer and command
+mission knowledge. Extraction and retreat require the whole party at an authored
+extraction/retreat boundary. Each transition emits an immutable mission event whose payload the
+reducer recomputes and verifies during strict replay. `/mission/:runId` is a renderer and command
 surface over this state, not an alternative mission engine. See ADR 0031.
+
+### Implemented autonomous mission turns
+
+`engine-v12` extends only new mission attempts with a bounded `mission-turn-v1` ledger; v1–v11
+state and event schemas remain immutable. A deployed round requires exactly one choice for every
+party actor. The player supplies the Master's legal action, while each hero receives a fresh,
+hash-bound `mission-action` packet containing identity, mind, witnessed memory, applicable
+directions, position, visit/discovery knowledge, objective custody, and the engine-owned legal
+set. The current runtime uses the zero-cost personality-scripted policy; the recorded packet,
+legal-action, policy-result, and public-intent evidence keeps that boundary inspectable and makes a
+future model policy swappable.
+
+The engine normalizes choices in Master-first party order, validates their sources and legal sets,
+draws one named `initiative-tie-break` value per actor, and applies the ranked actions. Moves can
+traverse only projected authored edges. Inspections can reveal only legal package discoveries.
+Objective recovery creates explicit custody, and the carrier physically delivers the First Ember
+by returning to the threshold. Extraction opens automatically only when the objective is delivered
+and every party member is present. Every third-round package pulse is recorded, and an attempt that
+has not returned within 48 rounds fails. Monsters remain an empty authoritative action list until
+`MIS-004` rather than being simulated by the client.
+
+Each `mission.round.resolved` event stores the submitted choices, entropy draws, ranked actions,
+knowledge and objective transitions, and resulting status. Strict replay recomputes the entire
+round and rejects any drift. The mission page receives only projected arena nodes, edges, and
+observations; its code-native tactical board cannot inspect concealed author truth or mutate
+positions. See ADR 0032.
 
 ### Implemented reconnect projection
 
@@ -554,14 +578,14 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v11` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v12` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
 label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
 immediate reactions. For `engine-v7` through `engine-v9`, the same bounded projection adds each visible hero’s held
 belief count, latest direct observation, relationship language, authority standing, and active
 promise terms. Raw social dimensions and provenance remain available in the development replay
-inspector. `engine-v10` and `engine-v11` additionally expose direction lifecycle and influence in
+inspector. `engine-v10` through `engine-v12` additionally expose direction lifecycle and influence in
 the replay ledger. The response carries the exact event cursor and state hash that explain the
 scene.
 

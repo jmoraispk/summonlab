@@ -45,7 +45,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		if (
 			snapshot.state.schemaVersion !== 9 &&
 			snapshot.state.schemaVersion !== 10 &&
-			snapshot.state.schemaVersion !== 11
+			snapshot.state.schemaVersion !== 11 &&
+			snapshot.state.schemaVersion !== 12
 		) {
 			return json(
 				{ message: 'This history predates hero conversation outcomes.' },

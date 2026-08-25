@@ -8,6 +8,7 @@ import {
 	type EngineGameStateV9,
 	type EngineGameStateV10,
 	type EngineGameStateV11,
+	type EngineGameStateV12,
 	type EngineSnapshot,
 	type HeroConversationPresentation,
 	type RoutineKind,
@@ -67,6 +68,7 @@ function poseForHero(
 		| EngineGameStateV9
 		| EngineGameStateV10
 		| EngineGameStateV11
+		| EngineGameStateV12
 	)['heroes'][string]
 ): {
 	pose: SettlementPose;
@@ -102,10 +104,11 @@ export function projectSettlementPresentation(
 		state.schemaVersion !== 8 &&
 		state.schemaVersion !== 9 &&
 		state.schemaVersion !== 10 &&
-		state.schemaVersion !== 11
+		state.schemaVersion !== 11 &&
+		state.schemaVersion !== 12
 	) {
 		throw new Error(
-			`Settlement presentation requires engine-v5 through engine-v11, received v${state.schemaVersion}`
+			`Settlement presentation requires engine-v5 through engine-v12, received v${state.schemaVersion}`
 		);
 	}
 	const gameDate = new Date(projectedGameTime);
@@ -157,7 +160,8 @@ export function projectSettlementPresentation(
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
 		state.schemaVersion === 10 ||
-		state.schemaVersion === 11
+		state.schemaVersion === 11 ||
+		state.schemaVersion === 12
 			? Object.values(state.heroes)
 					.filter((hero) => hero.lifeState !== 'synthesized')
 					.sort((left, right) => left.heroId.localeCompare(right.heroId))
@@ -250,7 +254,8 @@ export function projectSettlementPresentation(
 			state.schemaVersion === 8 ||
 			state.schemaVersion === 9 ||
 			state.schemaVersion === 10 ||
-			state.schemaVersion === 11
+			state.schemaVersion === 11 ||
+			state.schemaVersion === 12
 				? state.settlement.firstEmber
 				: null,
 		buildings,
@@ -261,7 +266,11 @@ export function projectSettlementPresentation(
 
 function communicationObjectSummary(
 	object: (
-		EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11
+		| EngineGameStateV8
+		| EngineGameStateV9
+		| EngineGameStateV10
+		| EngineGameStateV11
+		| EngineGameStateV12
 	)['society']['beliefs'][string]['object']
 ): string {
 	if (object.kind === 'text') return object.text;
@@ -284,7 +293,8 @@ export function projectHeroConversationPresentation(
 		state.schemaVersion !== 8 &&
 		state.schemaVersion !== 9 &&
 		state.schemaVersion !== 10 &&
-		state.schemaVersion !== 11
+		state.schemaVersion !== 11 &&
+		state.schemaVersion !== 12
 	)
 		availability = 'legacy-history';
 	else {
@@ -292,6 +302,13 @@ export function projectHeroConversationPresentation(
 		if (state.status !== 'active') availability = 'run-terminal';
 		else if (state.master.lifeState !== 'alive') availability = 'master-terminal';
 		else if (heroV8.lifeState !== 'active') availability = 'hero-terminal';
+		else if (
+			(state.schemaVersion === 11 || state.schemaVersion === 12) &&
+			state.mission.attempt &&
+			['preparing', 'deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status) &&
+			state.mission.attempt.party.memberIds.includes(heroId)
+		)
+			availability = 'hero-occupied';
 		else if (heroV8.location !== state.master.location) availability = 'different-location';
 		else if (heroV8.currentTravel) availability = 'hero-in-transit';
 		else if (heroV8.currentActivity || heroV8.currentRoutine) availability = 'hero-occupied';
@@ -301,7 +318,8 @@ export function projectHeroConversationPresentation(
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
 		state.schemaVersion === 10 ||
-		state.schemaVersion === 11
+		state.schemaVersion === 11 ||
+		state.schemaVersion === 12
 			? Object.values(state.society.communicativeActs)
 					.filter((act) => act.witnesses.some((witness) => witness.heroId === heroId))
 					.sort(
@@ -332,7 +350,8 @@ export function projectHeroConversationPresentation(
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
 		state.schemaVersion === 10 ||
-		state.schemaVersion === 11
+		state.schemaVersion === 11 ||
+		state.schemaVersion === 12
 			? Object.values(state.society.beliefs)
 					.filter(
 						(belief) =>
@@ -361,7 +380,10 @@ export function projectHeroConversationPresentation(
 					}))
 			: [];
 	const turns =
-		state.schemaVersion === 9 || state.schemaVersion === 10 || state.schemaVersion === 11
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11 ||
+		state.schemaVersion === 12
 			? Object.values(state.society.conversationTurns)
 					.filter((turn) => turn.heroId === heroId)
 					.sort(

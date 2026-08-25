@@ -4,16 +4,23 @@ import { getConfig } from '@summonlab/config';
 import {
 	MissionLifecycleRequestSchema,
 	type ActionSource,
-	type EngineCommand
+	type EngineCommand,
+	type EngineSnapshot,
+	type MissionTurnChoice
 } from '@summonlab/contracts';
-import { TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
 import {
 	IdempotencyConflictError,
 	StaleRunVersionError,
 	commitEngineCommand,
-	getEngineSnapshot
+	getEngineSnapshot,
+	getProofRun
 } from '@summonlab/database';
-import { IllegalActionError } from '@summonlab/engine';
+import {
+	IllegalActionError,
+	assembleHeroDecisionPacket,
+	missionTurnLegalActions
+} from '@summonlab/engine';
+import { ScriptedPolicy } from '@summonlab/policies';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
@@ -26,13 +33,57 @@ const manualSource: ActionSource = {
 	decisionJobId: null
 };
 
-const systemSource: ActionSource = {
-	source: 'system',
-	timing: null,
-	fallbackPolicy: null,
-	directiveIds: [],
-	decisionJobId: null
-};
+async function assembleMissionChoices(
+	snapshot: EngineSnapshot,
+	manifest: Parameters<typeof assembleHeroDecisionPacket>[0]['manifest'],
+	masterActionId: string
+): Promise<MissionTurnChoice[]> {
+	if (snapshot.state.schemaVersion !== 12) {
+		throw new IllegalActionError('mission.resolve.turn');
+	}
+	const attempt = snapshot.state.mission.attempt;
+	if (!attempt) throw new IllegalActionError('mission.resolve.turn');
+	const masterAction = missionTurnLegalActions(snapshot.state, snapshot.state.master.masterId).find(
+		(action) => action.actionId === masterActionId
+	);
+	if (!masterAction) throw new IllegalActionError(masterActionId);
+	const choices: MissionTurnChoice[] = [
+		{
+			actorId: snapshot.state.master.masterId,
+			actionId: masterAction.actionId,
+			source: 'manual',
+			policyId: null,
+			packetHash: null,
+			legalActionHash: null,
+			policyResultHash: null,
+			publicIntent: `The Master chose to ${masterAction.label.toLowerCase()}.`
+		}
+	];
+	const policy = new ScriptedPolicy();
+	for (const heroId of attempt.party.heroIds) {
+		if (manifest.characterId !== heroId) {
+			throw new Error(`No stable character manifest is available for mission hero ${heroId}.`);
+		}
+		const packet = assembleHeroDecisionPacket({
+			snapshot,
+			manifest,
+			heroId,
+			decisionKind: 'mission-action'
+		});
+		const result = await policy.decide(packet);
+		choices.push({
+			actorId: heroId,
+			actionId: result.decision.actionId,
+			source: 'scripted',
+			policyId: result.policyId,
+			packetHash: result.packetHash,
+			legalActionHash: result.legalActionHash,
+			policyResultHash: result.resultHash,
+			publicIntent: result.decision.publicIntent
+		});
+	}
+	return choices;
+}
 
 export const POST: RequestHandler = async ({ params, request }) => {
 	const parsed = MissionLifecycleRequestSchema.safeParse(await request.json().catch(() => null));
@@ -41,13 +92,17 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	}
 	const config = getConfig();
 	try {
-		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
+		const [snapshot, proof] = await Promise.all([
+			getEngineSnapshot(config.databaseUrl, params.runId),
+			getProofRun(config.databaseUrl, params.runId)
+		]);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 11) {
-			return json({ message: 'This history predates authoritative missions.' }, { status: 409 });
-		}
-		if (parsed.data.action === 'prove-objective' && !config.devRoutesEnabled) {
-			return json({ message: 'The objective proof control is development-only.' }, { status: 404 });
+		if (!proof) return json({ message: 'Summoned company not found.' }, { status: 404 });
+		if (snapshot.state.schemaVersion !== 12) {
+			return json(
+				{ message: 'This history predates authoritative mission turns.' },
+				{ status: 409 }
+			);
 		}
 		const commandId = randomUUID();
 		const base = {
@@ -57,39 +112,39 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			expectedVersion: snapshot.state.version,
 			correlationId: commandId
 		};
-		const command: EngineCommand =
-			parsed.data.action === 'prepare'
-				? {
-						...base,
-						source: manualSource,
-						commandType: 'mission.prepare',
-						heroIds: parsed.data.heroIds
-					}
-				: parsed.data.action === 'revise-party'
-					? {
-							...base,
-							source: manualSource,
-							commandType: 'mission.revise.party',
-							heroIds: parsed.data.heroIds
-						}
-					: parsed.data.action === 'cancel'
-						? { ...base, source: manualSource, commandType: 'mission.cancel' }
-						: parsed.data.action === 'deploy'
-							? { ...base, source: manualSource, commandType: 'mission.deploy' }
-							: parsed.data.action === 'prove-objective'
-								? {
-										...base,
-										source: systemSource,
-										commandType: 'mission.open.extraction',
-										completedObjectiveIds: TOWER_FLOOR_01_PACKAGE.objectives
-											.filter((objective) => objective.primary)
-											.map((objective) => objective.objectiveId)
-									}
-								: parsed.data.action === 'extract'
-									? { ...base, source: manualSource, commandType: 'mission.extract' }
-									: { ...base, source: manualSource, commandType: 'mission.retreat' };
+		let command: EngineCommand;
+		if (parsed.data.action === 'prepare') {
+			command = {
+				...base,
+				source: manualSource,
+				commandType: 'mission.prepare',
+				heroIds: parsed.data.heroIds
+			};
+		} else if (parsed.data.action === 'revise-party') {
+			command = {
+				...base,
+				source: manualSource,
+				commandType: 'mission.revise.party',
+				heroIds: parsed.data.heroIds
+			};
+		} else if (parsed.data.action === 'cancel') {
+			command = { ...base, source: manualSource, commandType: 'mission.cancel' };
+		} else if (parsed.data.action === 'deploy') {
+			command = { ...base, source: manualSource, commandType: 'mission.deploy' };
+		} else if (parsed.data.action === 'resolve-turn') {
+			command = {
+				...base,
+				source: manualSource,
+				commandType: 'mission.resolve.turn',
+				choices: await assembleMissionChoices(snapshot, proof.manifest, parsed.data.masterActionId)
+			};
+		} else if (parsed.data.action === 'extract') {
+			command = { ...base, source: manualSource, commandType: 'mission.extract' };
+		} else {
+			command = { ...base, source: manualSource, commandType: 'mission.retreat' };
+		}
 		const committed = await commitEngineCommand(config.databaseUrl, command);
-		if (committed.snapshot.state.schemaVersion !== 11) {
+		if (committed.snapshot.state.schemaVersion !== 12) {
 			throw new Error('Mission commit changed the engine schema.');
 		}
 		return json({
@@ -98,6 +153,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			eventCursor: committed.snapshot.state.eventCursor,
 			stateHash: committed.snapshot.stateHash,
 			mission: committed.snapshot.state.mission,
+			round: committed.snapshot.state.mission.attempt?.turnState.rounds.at(-1) ?? null,
 			eventType: committed.events[0]?.eventType ?? null,
 			legalActions: committed.legalActions
 		});

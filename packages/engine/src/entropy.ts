@@ -31,7 +31,8 @@ export function drawInteger(
 	minimum: number,
 	maximum: number
 ): EntropyResult {
-	if (!/^[a-z][a-z0-9.]{2,99}$/u.test(purpose)) throw new Error('Entropy purpose is not canonical');
+	if (!/^[a-z][a-z0-9.-]{2,99}$/u.test(purpose))
+		throw new Error('Entropy purpose is not canonical');
 	if (!Number.isSafeInteger(minimum) || !Number.isSafeInteger(maximum) || minimum > maximum) {
 		throw new Error('Entropy integer bounds are invalid');
 	}

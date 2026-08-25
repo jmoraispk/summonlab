@@ -11,10 +11,12 @@ import {
 	type PlayerDirective
 } from '@summonlab/contracts';
 import {
+	applyCommand,
 	assembleHeroDecisionPacket,
 	createBootstrapEngine,
 	deterministicUuid,
-	hashCanonical
+	hashCanonical,
+	hashGameState
 } from '@summonlab/engine';
 import { describe, expect, it } from 'vitest';
 
@@ -209,6 +211,65 @@ describe('packet-bound hero policies', () => {
 		expect(martial.decision.actionId).toBe('hero.choose.training-ground');
 		expect(social.trace.kind).toBe('scripted');
 		expect(martial.trace.kind).toBe('scripted');
+	});
+
+	it('uses mission objective progress without expanding the engine legal set', async () => {
+		const runId = deterministicUuid('policy-mission-run');
+		const heroId = deterministicUuid('policy-mission-hero');
+		const heroManifest = manifest(heroId);
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'policy-mission-seed',
+			heroId,
+			manifestHash: hashCanonical(heroManifest),
+			mind: MINDS.martial
+		});
+		const masterId = bootstrap.snapshot.state.master.masterId;
+		const source = {
+			source: 'manual' as const,
+			timing: 'step' as const,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		};
+		const prepared = applyCommand(bootstrap.snapshot.state, {
+			commandId: deterministicUuid('policy-mission-prepare'),
+			runId,
+			actorId: masterId,
+			expectedVersion: 0,
+			correlationId: deterministicUuid('policy-mission-prepare-correlation'),
+			source,
+			commandType: 'mission.prepare',
+			heroIds: [heroId]
+		});
+		const deployed = applyCommand(prepared.state, {
+			commandId: deterministicUuid('policy-mission-deploy'),
+			runId,
+			actorId: masterId,
+			expectedVersion: prepared.state.version,
+			correlationId: deterministicUuid('policy-mission-deploy-correlation'),
+			source,
+			commandType: 'mission.deploy'
+		});
+		const packet = assembleHeroDecisionPacket({
+			snapshot: { state: deployed.state, stateHash: hashGameState(deployed.state) },
+			manifest: heroManifest,
+			heroId,
+			decisionKind: 'mission-action'
+		});
+		const result = await new ScriptedPolicy().decide(packet);
+
+		expect(packet.environment.mission).toMatchObject({
+			missionId: 'tower-floor-01',
+			roundNumber: 0,
+			positionNodeId: 'tower-threshold',
+			objectiveStatus: 'available'
+		});
+		expect(packet.legalActions.map((action) => action.actionId)).toEqual([
+			'mission.hold',
+			'mission.move.threshold-to-oath-hall'
+		]);
+		expect(result.decision.actionId).toBe('mission.move.threshold-to-oath-hall');
 	});
 
 	it('scores only witnessed directives included in the packet', async () => {

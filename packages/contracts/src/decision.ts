@@ -27,6 +27,8 @@ import {
 	RelationshipDimensionsSchema
 } from './social.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
+
+const DecisionLocationSchema = z.enum([...EngineZoneSchema.options, 'tower', 'portal-world']);
 import { PolicyModeSchema } from './run.js';
 
 export const HERO_DECISION_PACKET_VERSION = 'hero-decision-packet-v1';
@@ -240,7 +242,7 @@ export const HeroDecisionPacketSchema = z
 		self: z
 			.object({
 				lifeState: HeroLifeStateSchema,
-				location: EngineZoneSchema,
+				location: DecisionLocationSchema,
 				locationNodeId: z.string().min(1).max(80),
 				destination: z.enum(['kitchen', 'training-ground']).nullable(),
 				health: z.number().int().nonnegative(),
@@ -259,7 +261,7 @@ export const HeroDecisionPacketSchema = z
 			.strict(),
 		environment: z
 			.object({
-				location: EngineZoneSchema,
+				location: DecisionLocationSchema,
 				locationNodeId: z.string().min(1).max(80),
 				visibleEntities: z.array(VisibleEntitySchema).min(1).max(64),
 				currentBuilding: z
@@ -268,7 +270,23 @@ export const HeroDecisionPacketSchema = z
 						powerState: z.enum(['unpowered', 'reserve', 'powered'])
 					})
 					.strict()
-					.nullable(),
+					.nullable()
+					.optional(),
+				mission: z
+					.object({
+						missionId: z.string().min(1).max(80),
+						attemptId: EntityIdSchema,
+						roundNumber: z.number().int().nonnegative(),
+						positionNodeId: z.string().min(1).max(80),
+						visitedNodeIds: z.array(z.string().min(1).max(80)).max(80),
+						discoveryIds: z.array(z.string().min(1).max(80)).max(40),
+						objectiveId: z.string().min(1).max(80),
+						objectiveStatus: z.enum(['available', 'carried', 'delivered']),
+						objectiveCarrierId: EntityIdSchema.nullable()
+					})
+					.strict()
+					.nullable()
+					.optional(),
 				affordanceActionIds: z.array(z.string()).min(1).max(128)
 			})
 			.strict(),

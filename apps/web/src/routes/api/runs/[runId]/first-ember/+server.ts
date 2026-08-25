@@ -28,7 +28,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			snapshot.state.schemaVersion !== 8 &&
 			snapshot.state.schemaVersion !== 9 &&
 			snapshot.state.schemaVersion !== 10 &&
-			snapshot.state.schemaVersion !== 11
+			snapshot.state.schemaVersion !== 11 &&
+			snapshot.state.schemaVersion !== 12
 		) {
 			return json({ message: 'This history predates the First Ember choice.' }, { status: 409 });
 		}

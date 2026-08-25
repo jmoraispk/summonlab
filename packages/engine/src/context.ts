@@ -13,6 +13,7 @@ import {
 	type EngineGameStateV9,
 	type EngineGameStateV10,
 	type EngineGameStateV11,
+	type EngineGameStateV12,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -26,7 +27,11 @@ import { deterministicUuid, hashCanonical } from './hash.js';
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
 export const DEFAULT_MEMORY_CHARACTER_LIMIT = 1_800;
 type EngineKnowledgeState =
-	EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11;
+	| EngineGameStateV8
+	| EngineGameStateV9
+	| EngineGameStateV10
+	| EngineGameStateV11
+	| EngineGameStateV12;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -54,6 +59,13 @@ function witnessedMasterRole(state: EngineKnowledgeState, heroId: string): boole
 
 function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: CharacterManifest) {
 	const hero = state.heroes[heroId]!;
+	const missionAttempt = state.schemaVersion === 12 ? state.mission.attempt : null;
+	const missionPosition =
+		missionAttempt &&
+		['deployed', 'resolving', 'extraction'].includes(missionAttempt.status) &&
+		missionAttempt.party.heroIds.includes(heroId)
+			? missionAttempt.positions[heroId]
+			: null;
 	const entities: HeroDecisionPacket['environment']['visibleEntities'] = [
 		{
 			entityId: heroId,
@@ -62,7 +74,11 @@ function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: 
 			lifeState: hero.lifeState
 		}
 	];
-	if (state.master.location === hero.location) {
+	if (
+		missionPosition
+			? missionAttempt?.positions[state.master.masterId] === missionPosition
+			: state.master.location === hero.location
+	) {
 		entities.push({
 			entityId: state.master.masterId,
 			kind: 'person',
@@ -76,7 +92,9 @@ function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: 
 		if (
 			other.heroId === heroId ||
 			other.lifeState === 'synthesized' ||
-			other.location !== hero.location
+			(missionPosition
+				? missionAttempt?.positions[other.heroId] !== missionPosition
+				: other.location !== hero.location)
 		) {
 			continue;
 		}
@@ -250,7 +268,7 @@ const CONVERSATION_INTENT_TERMS = Object.freeze({
 } as const);
 
 function conversationDirectives(
-	state: EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11,
+	state: EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11 | EngineGameStateV12,
 	heroId: string
 ): PlayerDirective[] {
 	return Object.values(state.society.conversationTurns)
@@ -291,7 +309,7 @@ function conversationDirectives(
 }
 
 function storedDirectives(
-	state: EngineGameStateV10 | EngineGameStateV11,
+	state: EngineGameStateV10 | EngineGameStateV11 | EngineGameStateV12,
 	decisionKind: HeroDecisionKind
 ): PlayerDirective[] {
 	return Object.values(state.society.directives)
@@ -339,7 +357,8 @@ export function assembleHeroDecisionPacket(
 		snapshot.state.schemaVersion !== 8 &&
 		snapshot.state.schemaVersion !== 9 &&
 		snapshot.state.schemaVersion !== 10 &&
-		snapshot.state.schemaVersion !== 11
+		snapshot.state.schemaVersion !== 11 &&
+		snapshot.state.schemaVersion !== 12
 	) {
 		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
@@ -436,6 +455,15 @@ export function assembleHeroDecisionPacket(
 	const currentBuilding = Object.values(state.settlement.buildings).find(
 		(building) => building.buildingId === hero.location
 	);
+	const missionAttempt =
+		state.schemaVersion === 12 &&
+		decisionKind === 'mission-action' &&
+		state.mission.attempt?.party.heroIds.includes(input.heroId) &&
+		['deployed', 'resolving'].includes(state.mission.attempt.status)
+			? state.mission.attempt
+			: null;
+	const missionPositionNodeId = missionAttempt?.positions[input.heroId] ?? null;
+	const missionBinding = state.schemaVersion === 12 ? state.mission.binding : null;
 	const packetId = deterministicUuid(
 		`${HERO_DECISION_PACKET_VERSION}:${state.runId}:${input.heroId}:${decisionKind}:${snapshot.stateHash}`
 	);
@@ -493,8 +521,8 @@ export function assembleHeroDecisionPacket(
 		},
 		self: {
 			lifeState: hero.lifeState,
-			location: hero.location,
-			locationNodeId: hero.locationNodeId,
+			location: missionAttempt ? ('tower' as const) : hero.location,
+			locationNodeId: missionPositionNodeId ?? hero.locationNodeId,
 			destination: hero.destination,
 			health: hero.health,
 			maxHealth: hero.maxHealth,
@@ -512,12 +540,28 @@ export function assembleHeroDecisionPacket(
 			currentRoutine: hero.currentRoutine
 		},
 		environment: {
-			location: hero.location,
-			locationNodeId: hero.locationNodeId,
+			location: missionAttempt ? ('tower' as const) : hero.location,
+			locationNodeId: missionPositionNodeId ?? hero.locationNodeId,
 			visibleEntities: visible,
-			currentBuilding: currentBuilding
-				? { buildingId: currentBuilding.buildingId, powerState: currentBuilding.powerState }
-				: null,
+			currentBuilding:
+				!missionAttempt && currentBuilding
+					? { buildingId: currentBuilding.buildingId, powerState: currentBuilding.powerState }
+					: null,
+			...(missionAttempt
+				? {
+						mission: {
+							missionId: missionBinding!.missionId,
+							attemptId: missionAttempt.attemptId,
+							roundNumber: missionAttempt.turnState.roundNumber,
+							positionNodeId: missionPositionNodeId!,
+							visitedNodeIds: missionAttempt.knowledge.visitedNodeIds,
+							discoveryIds: missionAttempt.knowledge.discoveryIds,
+							objectiveId: missionAttempt.turnState.objective.objectiveId,
+							objectiveStatus: missionAttempt.turnState.objective.status,
+							objectiveCarrierId: missionAttempt.turnState.objective.carrierId
+						}
+					}
+				: {}),
 			affordanceActionIds: actions.map((action) => action.actionId)
 		},
 		knowledge: {
@@ -534,10 +578,13 @@ export function assembleHeroDecisionPacket(
 		social: { relationships, authority, promises },
 		activeDirectives: applicableDirectives(state, input.heroId, [
 			...(input.directives ?? []),
-			...(state.schemaVersion === 10 || state.schemaVersion === 11
+			...(state.schemaVersion === 10 || state.schemaVersion === 11 || state.schemaVersion === 12
 				? storedDirectives(state, input.decisionKind)
 				: []),
-			...(state.schemaVersion === 9 || state.schemaVersion === 10 || state.schemaVersion === 11
+			...(state.schemaVersion === 9 ||
+			state.schemaVersion === 10 ||
+			state.schemaVersion === 11 ||
+			state.schemaVersion === 12
 				? conversationDirectives(state, input.heroId)
 				: [])
 		]),

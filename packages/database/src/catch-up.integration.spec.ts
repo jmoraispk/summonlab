@@ -33,8 +33,8 @@ describe('accelerated settlement catch-up', () => {
 		});
 		await markProofArrival(databaseUrl, runId);
 		const before = await getEngineReplay(databaseUrl, runId);
-		if (!before || before.snapshot.state.schemaVersion !== 11) {
-			throw new Error('Expected engine-v11 replay');
+		if (!before || before.snapshot.state.schemaVersion !== 12) {
+			throw new Error('Expected engine-v12 replay');
 		}
 		expect(before.clock.speed).toBe(4);
 		const wallTime = new Date(
@@ -47,7 +47,7 @@ describe('accelerated settlement catch-up', () => {
 			`;
 			expect(await listDueCatchUpRunIds(databaseUrl, wallTime)).not.toContain(runId);
 			await sql`
-				update summonlab_engine_runs set content_version = 'engine-v11' where run_id = ${runId}
+				update summonlab_engine_runs set content_version = 'engine-v12' where run_id = ${runId}
 			`;
 		} finally {
 			await sql.end({ timeout: 5 });
@@ -68,7 +68,7 @@ describe('accelerated settlement catch-up', () => {
 			true
 		);
 		const replay = await getEngineReplay(databaseUrl, runId);
-		if (!replay || replay.snapshot.state.schemaVersion !== 11) throw new Error('Expected replay');
+		if (!replay || replay.snapshot.state.schemaVersion !== 12) throw new Error('Expected replay');
 		expect(replay.verified).toBe(true);
 		expect(replay.snapshot.state.simulatedAt).toBe(expectedGameTime);
 		expect(replay.snapshot.state.heroes[draft.manifest.characterId]?.currentRoutine).not.toBeNull();

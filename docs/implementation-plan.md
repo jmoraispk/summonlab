@@ -1057,7 +1057,13 @@ Estimated engineering effort: **2–3 weeks**.
   Master-led party preparation/revision/cancellation, deployment, objective-gated extraction,
   retreat, retry, participant reservation, immutable lifecycle events, strict replay, and the
   `/mission/:runId` threshold interface;
-- `MIS-003` implement autonomous initiative and turn resolution;
+- `MIS-003` complete: add `engine-v12` bounded 48-round mission state; derive each actor's legal
+  actions from visited/discovered arena knowledge; assemble an independent hash-bound packet for
+  each hero; resolve one manual Master choice plus autonomous hero choices through seeded
+  initiative; persist moves, discoveries, objective custody, policy evidence, environment pulses,
+  and the complete round ledger; automatically open extraction only after the First Ember and all
+  survivors return to the threshold; remove the development objective-proof control while keeping
+  immutable engine-v11 mission streams replayable;
 - `MIS-004` implement goblin duty policies and Foundry Warden;
 - `MIS-005` author floors 1–5 and their observations/rewards;
 - `MIS-006` implement engine-owned maintenance-route secret;

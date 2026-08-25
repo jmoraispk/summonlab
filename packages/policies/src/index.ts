@@ -269,6 +269,26 @@ function decisionKindContributions(
 	}
 	if (packet.decisionKind === 'mission-action') {
 		const missingHealth = Math.max(0, packet.self.maxHealth - packet.self.health);
+		if (packet.environment.mission) {
+			const objectiveStatus = packet.environment.mission.objectiveStatus;
+			const progressScore = terms.has('recover')
+				? 60
+				: terms.has('return') || terms.has('extraction')
+					? objectiveStatus === 'available'
+						? 0
+						: 46
+					: terms.has('advance') || terms.has('objective-route')
+						? objectiveStatus === 'available'
+							? 38
+							: 0
+						: 0;
+			contribution(
+				contributions,
+				'mission.objective-progress',
+				progressScore,
+				'known objective state favors a concrete recovery or return step'
+			);
+		}
 		contribution(
 			contributions,
 			'mission.survival',

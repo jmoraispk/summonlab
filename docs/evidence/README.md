@@ -78,3 +78,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-mission-lifecycle.png` — authoritative Floor 01 threshold during extraction, showing the
   immutable content binding, deployed Master/hero figures, attempt-two state after a prior retreat,
   selected party cards, objective-gated extraction action, and append-only mission transitions.
+- `phase-6-mission-turns.png` — knowledge-bounded tactical Floor 01 board after an autonomous round,
+  showing code-native arena topology, separate Master and hero positions, Master legal-action
+  selection, personality-scripted hero intent, seeded initiative scores, objective custody, round
+  cap, immutable package hash, and append-only `mission.round.resolved` evidence.

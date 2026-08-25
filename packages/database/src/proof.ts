@@ -440,7 +440,9 @@ export async function resolveProofDecision(
 			const engine = await getEngineSnapshotInTransaction(transaction, runId);
 			if (!engine) throw new Error(`Engine run not found: ${runId}`);
 			const activeDirectiveIds =
-				engine.state.schemaVersion === 10 || engine.state.schemaVersion === 11
+				engine.state.schemaVersion === 10 ||
+				engine.state.schemaVersion === 11 ||
+				engine.state.schemaVersion === 12
 					? Object.values(engine.state.society.directives)
 							.filter(
 								(candidate) =>
@@ -449,7 +451,9 @@ export async function resolveProofDecision(
 									candidate.recipientIds.includes(row.manifest.characterId) &&
 									candidate.witnessObservationIds.some(
 										(observationId) =>
-											(engine.state.schemaVersion === 10 || engine.state.schemaVersion === 11) &&
+											(engine.state.schemaVersion === 10 ||
+												engine.state.schemaVersion === 11 ||
+												engine.state.schemaVersion === 12) &&
 											engine.state.society.observations[observationId]?.observerHeroId ===
 												row.manifest.characterId
 									)
@@ -512,7 +516,8 @@ export async function markProofArrival(
 				engine.state.schemaVersion === 8 ||
 				engine.state.schemaVersion === 9 ||
 				engine.state.schemaVersion === 10 ||
-				engine.state.schemaVersion === 11
+				engine.state.schemaVersion === 11 ||
+				engine.state.schemaVersion === 12
 			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,

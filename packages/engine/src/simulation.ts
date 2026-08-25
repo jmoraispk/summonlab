@@ -48,7 +48,8 @@ function assertSimulationInvariants(state: EngineGameState): void {
 		state.schemaVersion !== 8 &&
 		state.schemaVersion !== 9 &&
 		state.schemaVersion !== 10 &&
-		state.schemaVersion !== 11
+		state.schemaVersion !== 11 &&
+		state.schemaVersion !== 12
 	)
 		return;
 	for (const balance of Object.values(state.settlement.resources)) {
@@ -136,7 +137,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 			state.schemaVersion === 8 ||
 			state.schemaVersion === 9 ||
 			state.schemaVersion === 10 ||
-			state.schemaVersion === 11
+			state.schemaVersion === 11 ||
+			state.schemaVersion === 12
 		) {
 			apply('assign-facility', {
 				actorId: state.master.masterId,
@@ -153,7 +155,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				state.schemaVersion !== 8 &&
 				state.schemaVersion !== 9 &&
 				state.schemaVersion !== 10 &&
-				state.schemaVersion !== 11
+				state.schemaVersion !== 11 &&
+				state.schemaVersion !== 12
 			) {
 				apply('power-workshop', {
 					actorId: state.master.masterId,
@@ -170,7 +173,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 				state.schemaVersion === 8 ||
 				state.schemaVersion === 9 ||
 				state.schemaVersion === 10 ||
-				state.schemaVersion === 11) &&
+				state.schemaVersion === 11 ||
+				state.schemaVersion === 12) &&
 			index % 5 === 0
 		) {
 			apply('plan-day', {
@@ -242,7 +246,8 @@ export function simulateFoundation(sequenceCount = 10_000): SimulationReport {
 					state.schemaVersion === 8 ||
 					state.schemaVersion === 9 ||
 					state.schemaVersion === 10 ||
-					state.schemaVersion === 11)
+					state.schemaVersion === 11 ||
+					state.schemaVersion === 12)
 			) {
 				const bow = Object.values(state.items).find((item) => item.templateId === 'short-bow');
 				if (bow) {

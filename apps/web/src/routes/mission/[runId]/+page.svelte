@@ -10,10 +10,13 @@
 	let selectionInitialized = $state(false);
 	let resultMessage = $state('');
 	let errorMessage = $state('');
+	let selectedMasterActionId = $state('');
 
 	const engineState = $derived(data.report.snapshot.state);
-	const mission = $derived(engineState.schemaVersion === 11 ? engineState.mission : null);
+	const mission = $derived(engineState.schemaVersion === 12 ? engineState.mission : null);
 	const attempt = $derived(mission?.attempt ?? null);
+	const turnState = $derived(attempt?.turnState ?? null);
+	const lastRound = $derived(turnState?.rounds.at(-1) ?? null);
 	const hero = $derived(Object.values(engineState.heroes)[0]);
 	const heroSelected = $derived(hero ? selectedHeroIds.includes(hero.heroId) : false);
 	const phase = $derived(attempt?.status ?? 'available');
@@ -28,11 +31,34 @@
 			.slice()
 			.reverse()
 	);
+	const masterTurnActions = $derived(
+		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).filter(
+			(action) =>
+				action.actionId.startsWith('mission.move.') ||
+				action.actionId.startsWith('mission.inspect.') ||
+				action.actionId.startsWith('mission.recover.') ||
+				action.actionId === 'mission.hold'
+		)
+	);
+	const retreatAvailable = $derived(
+		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).some(
+			(action) => action.actionId === 'mission.retreat'
+		)
+	);
 
 	$effect(() => {
 		if (selectionInitialized || !hero) return;
 		selectedHeroIds = attempt?.status === 'preparing' ? [...attempt.party.heroIds] : [hero.heroId];
 		selectionInitialized = true;
+	});
+
+	$effect(() => {
+		if (
+			selectedMasterActionId &&
+			!masterTurnActions.some((action) => action.actionId === selectedMasterActionId)
+		) {
+			selectedMasterActionId = '';
+		}
 	});
 
 	function toggleHero() {
@@ -67,13 +93,34 @@
 			'The threshold roster is reserved in the authoritative event stream.'
 		);
 	}
+
+	async function resolveTurn() {
+		if (!selectedMasterActionId) return;
+		await act(
+			{ action: 'resolve-turn', masterActionId: selectedMasterActionId },
+			'Every party choice resolved in authoritative initiative order.'
+		);
+		selectedMasterActionId = '';
+	}
+
+	function actorName(actorId: string) {
+		return actorId === engineState.master.masterId
+			? 'The Master'
+			: actorId === hero?.heroId
+				? data.proof.manifest.displayName
+				: 'Unknown hero';
+	}
+
+	function nodePosition(nodeId: string) {
+		return data.arena.nodes.find((node) => node.nodeId === nodeId)?.position ?? { x: 0, y: 0 };
+	}
 </script>
 
 <svelte:head>
 	<title>Floor 01 Deployment · summonlab</title>
 	<meta
 		name="description"
-		content="Prepare, deploy, retreat, and extract an authoritative Floor 01 party."
+		content="Choose the Master's move while autonomous heroes resolve deterministic Floor 01 turns."
 	/>
 </svelte:head>
 
@@ -116,22 +163,62 @@
 	<section class="threshold-shell" data-testid="mission-threshold">
 		<div class="threshold-scene" class:opened={phase !== 'available' && phase !== 'preparing'}>
 			<div class="tower-number">01</div>
-			<div class="arch">
-				<div class="portal"><span></span></div>
-			</div>
-			<div class="floor-lines"></div>
-			<div class="scene-caption">
-				<span>{phase === 'available' ? 'Threshold dormant' : phase.replaceAll('-', ' ')}</span>
-				<strong>{attempt ? `Attempt ${attempt.ordinal}` : 'No attempt committed'}</strong>
-			</div>
 			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'retreat'].includes(attempt.status)}
-				<div class="deployed-figures" aria-label="Party deployed at Tower Threshold">
-					<div class="master-figure"><span></span></div>
-					{#if attempt.party.heroIds.length > 0 && hero}
-						<div class="hero-figure"><HeroRig manifest={data.proof.manifest} compact /></div>
+				<div class="tactical-board" data-testid="mission-board">
+					<svg viewBox={`0 0 ${data.arena.width} ${data.arena.height}`} aria-hidden="true">
+						{#each data.arena.edges as edge (edge.edgeId)}
+							<polyline
+								class:guarded={edge.exposure === 'guarded'}
+								class:exposed={edge.exposure === 'exposed'}
+								points={edge.visualPath.map((point) => `${point.x},${point.y}`).join(' ')}
+							/>
+						{/each}
+					</svg>
+					{#each data.arena.nodes as node (node.nodeId)}
+						<div
+							class="arena-node"
+							class:visited={node.visited}
+							class:objective={node.kind === 'objective'}
+							style={`left:${(node.position.x / data.arena.width) * 100}%;top:${(node.position.y / data.arena.height) * 100}%`}
+						>
+							<i></i><span>{node.label}</span>
+						</div>
+					{/each}
+					{#each attempt.party.memberIds as actorId, index (actorId)}
+						{@const position = nodePosition(attempt.positions[actorId] ?? attempt.entryNodeId)}
+						<div
+							class="actor-token"
+							class:master={actorId === engineState.master.masterId}
+							style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
+							title={actorName(actorId)}
+						>
+							{actorId === engineState.master.masterId
+								? 'M'
+								: data.proof.manifest.displayName.slice(0, 1)}
+						</div>
+					{/each}
+					{#if turnState?.objective.status === 'carried'}
+						<div class="objective-banner">
+							First Ember carried by {actorName(turnState.objective.carrierId!)}
+						</div>
+					{:else if turnState?.objective.status === 'delivered'}
+						<div class="objective-banner delivered">First Ember returned to threshold</div>
 					{/if}
 				</div>
+			{:else}
+				<div class="arch">
+					<div class="portal"><span></span></div>
+				</div>
+				<div class="floor-lines"></div>
 			{/if}
+			<div class="scene-caption">
+				<span>{phase === 'available' ? 'Threshold dormant' : phase.replaceAll('-', ' ')}</span>
+				<strong
+					>{attempt
+						? `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/48`
+						: 'No attempt committed'}</strong
+				>
+			</div>
 		</div>
 
 		<div class="operations">
@@ -223,27 +310,39 @@
 						>stand down</button
 					>
 				{:else if phase === 'deployed' || phase === 'resolving'}
-					{#if data.objectiveProofEnabled}
+					<div class="turn-objective">
+						<span>Round {(turnState?.roundNumber ?? 0) + 1}</span>
+						<strong>{turnState?.objective.status ?? 'available'} · First Ember</strong>
+						<small>Choose only the Master. Every summoned hero chooses independently.</small>
+					</div>
+					<div class="turn-choices" data-testid="master-turn-actions">
+						{#each masterTurnActions as choice (choice.actionId)}
+							<button
+								type="button"
+								class:selected={choice.actionId === selectedMasterActionId}
+								disabled={busy}
+								onclick={() => (selectedMasterActionId = choice.actionId)}
+							>
+								<strong>{choice.label}</strong><small>{choice.description}</small>
+							</button>
+						{/each}
+					</div>
+					<button
+						class="primary resolve"
+						disabled={busy || !selectedMasterActionId}
+						onclick={resolveTurn}
+						data-testid="resolve-turn"
+						><span>Commit round</span><small>hero policy → seeded initiative → engine</small
+						></button
+					>
+					{#if retreatAvailable}
 						<button
-							class="primary proof"
+							class="quiet"
 							disabled={busy}
-							onclick={() =>
-								act(
-									{ action: 'prove-objective' },
-									'Primary objective proven by the development resolver.'
-								)}
-							data-testid="prove-objective"
-							><span>Prototype: recover ember</span><small
-								>MIS-003 will replace this proof control</small
-							></button
+							onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
+							data-testid="retreat-party">retreat at threshold</button
 						>
 					{/if}
-					<button
-						class="quiet"
-						disabled={busy}
-						onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
-						data-testid="retreat-party">retreat at threshold</button
-					>
 				{:else if phase === 'extraction'}
 					<button
 						class="primary ember"
@@ -267,8 +366,34 @@
 		</div>
 	</section>
 
+	{#if lastRound}
+		<section class="initiative-report" data-testid="initiative-report">
+			<div class="round-header">
+				<div>
+					<span>Resolved round</span>
+					<h2>Initiative {lastRound.roundNumber}</h2>
+				</div>
+				<strong>{lastRound.environmentEventIds.length > 0 ? 'EMBER PULSE' : 'FIELD QUIET'}</strong>
+			</div>
+			<div class="initiative-actions">
+				{#each lastRound.actions as resolved, index (resolved.actorId)}
+					<article class:superseded={resolved.outcome === 'superseded'}>
+						<div class="initiative-rank">{String(index + 1).padStart(2, '0')}</div>
+						<div>
+							<span>{resolved.actorKind} · {resolved.choiceSource}</span>
+							<strong>{actorName(resolved.actorId)}</strong>
+							<p>{resolved.summary}</p>
+							{#if resolved.actorKind === 'hero'}<small>{resolved.publicIntent}</small>{/if}
+						</div>
+						<code>{resolved.initiative}</code>
+					</article>
+				{/each}
+			</div>
+		</section>
+	{/if}
+
 	<section class="state-rail">
-		{#each ['available', 'preparing', 'deployed', 'extraction', 'success'] as stage, index (stage)}
+		{#each ['available', 'preparing', 'deployed', 'resolving', 'extraction', 'success'] as stage, index (stage)}
 			<div
 				class:active={phase === stage}
 				class:passed={['preparing', 'deployed', 'extraction', 'success'].indexOf(phase) >=
@@ -308,8 +433,8 @@
 	</section>
 
 	<footer>
-		<span>MIS-002 · authoritative mission boundaries</span>
-		<p>Next: autonomous initiative and turn resolution inside the deployed attempt.</p>
+		<span>MIS-003 · autonomous initiative</span>
+		<p>Next: goblin duty policies and the Foundry Warden.</p>
 	</footer>
 </main>
 
@@ -544,6 +669,119 @@
 			repeating-linear-gradient(0deg, transparent 0 44px, rgba(111, 143, 143, 0.08) 45px);
 		transform: perspective(380px) rotateX(58deg);
 	}
+	.tactical-board {
+		position: absolute;
+		inset: 5.5rem 1.5rem 5rem;
+		border: 1px solid #293335;
+		background:
+			radial-gradient(circle at 78% 52%, rgba(209, 126, 42, 0.12), transparent 24%),
+			linear-gradient(155deg, rgba(16, 28, 30, 0.94), rgba(7, 10, 12, 0.98));
+		box-shadow: inset 0 0 5rem #050708;
+		overflow: hidden;
+	}
+	.tactical-board:before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(116, 159, 158, 0.035) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(116, 159, 158, 0.035) 1px, transparent 1px);
+		background-size: 2rem 2rem;
+	}
+	.tactical-board svg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+	.tactical-board polyline {
+		fill: none;
+		stroke: #355d5d;
+		stroke-width: 4;
+		stroke-dasharray: 9 13;
+		vector-effect: non-scaling-stroke;
+	}
+	.tactical-board polyline.guarded {
+		stroke: #7b623c;
+	}
+	.tactical-board polyline.exposed {
+		stroke: #7f4037;
+	}
+	.arena-node {
+		position: absolute;
+		transform: translate(-50%, -50%);
+		display: grid;
+		justify-items: center;
+		gap: 0.45rem;
+		width: 7rem;
+		color: #657071;
+		font-size: 0.54rem;
+		letter-spacing: 0.08em;
+		text-align: center;
+		text-transform: uppercase;
+	}
+	.arena-node i {
+		width: 1rem;
+		height: 1rem;
+		border: 1px solid #536061;
+		background: #111719;
+		transform: rotate(45deg);
+	}
+	.arena-node.visited {
+		color: #b4bfbb;
+	}
+	.arena-node.visited i {
+		background: #3ea8a4;
+		border-color: #8bd7d3;
+		box-shadow: 0 0 1rem rgba(77, 210, 204, 0.5);
+	}
+	.arena-node.objective i {
+		background: #9d6427;
+		border-color: #e4ad59;
+		box-shadow: 0 0 1.2rem rgba(230, 148, 48, 0.38);
+	}
+	.actor-token {
+		position: absolute;
+		z-index: 4;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid #82d3ce;
+		border-radius: 50%;
+		background: #153b3c;
+		box-shadow:
+			0 0 0 3px #090d0f,
+			0 0 1rem rgba(76, 210, 205, 0.3);
+		display: grid;
+		place-items: center;
+		color: #dcfffb;
+		font:
+			700 0.7rem Georgia,
+			serif;
+		transform: translate(-50%, -50%);
+	}
+	.actor-token.master {
+		border-color: #f0bd69;
+		background: #62431e;
+		color: #fff0cf;
+	}
+	.objective-banner {
+		position: absolute;
+		right: 1rem;
+		top: 1rem;
+		padding: 0.6rem 0.8rem;
+		border: 1px solid #815c2e;
+		background: rgba(64, 37, 13, 0.9);
+		color: #e7b963;
+		font-size: 0.55rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	.objective-banner.delivered {
+		border-color: #397b77;
+		background: rgba(17, 62, 61, 0.9);
+		color: #76d9d2;
+	}
 	.scene-caption {
 		position: absolute;
 		left: 2rem;
@@ -560,46 +798,6 @@
 	}
 	.scene-caption strong {
 		color: #c3cbc7;
-	}
-	.deployed-figures {
-		position: absolute;
-		z-index: 2;
-		left: 50%;
-		bottom: 8rem;
-		transform: translateX(-50%);
-		display: flex;
-		align-items: end;
-		gap: 1.2rem;
-		filter: drop-shadow(0 1.3rem 1rem #000);
-	}
-	.master-figure {
-		width: 7rem;
-		height: 14rem;
-		position: relative;
-	}
-	.master-figure:before {
-		content: '';
-		position: absolute;
-		width: 3.2rem;
-		height: 3.2rem;
-		border-radius: 50%;
-		left: 1.9rem;
-		top: 0.4rem;
-		background: #111416;
-		box-shadow: inset 0 0 0 1px #3a4243;
-	}
-	.master-figure span {
-		position: absolute;
-		inset: 3rem 0.5rem 0;
-		background: linear-gradient(90deg, #111416, #292f30 50%, #0c0f10);
-		clip-path: polygon(31% 0, 69% 0, 100% 100%, 0 100%);
-	}
-	.hero-figure {
-		width: 8rem;
-		height: 15rem;
-		overflow: hidden;
-		display: grid;
-		align-items: end;
 	}
 	.operations {
 		padding: 2rem;
@@ -722,6 +920,67 @@
 		grid-template-columns: 1fr auto;
 		gap: 0.65rem;
 	}
+	.turn-objective,
+	.turn-choices {
+		grid-column: 1 / -1;
+	}
+	.turn-objective {
+		display: grid;
+		gap: 0.25rem;
+		padding: 0.8rem;
+		border: 1px solid #343c3d;
+		background: #0e1315;
+	}
+	.turn-objective span {
+		color: #d5a34e;
+		font-size: 0.58rem;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+	}
+	.turn-objective strong {
+		font:
+			1rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.turn-objective small {
+		color: #727c7b;
+	}
+	.turn-choices {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.45rem;
+		max-height: 13rem;
+		overflow-y: auto;
+	}
+	.turn-choices button {
+		min-height: 4.6rem;
+		display: grid;
+		gap: 0.3rem;
+		text-align: left;
+		text-transform: none;
+		letter-spacing: 0;
+	}
+	.turn-choices button.selected {
+		border-color: #4ebdb8;
+		background: #183638;
+		box-shadow: inset 3px 0 #56d4ce;
+	}
+	.turn-choices strong {
+		font:
+			0.8rem Georgia,
+			serif;
+		color: #e1ded3;
+	}
+	.turn-choices small {
+		color: #778180;
+		font-size: 0.6rem;
+		line-height: 1.35;
+	}
+	.action-deck .resolve {
+		border-color: #2d8986;
+		background: linear-gradient(110deg, #153c3d, #247471);
+	}
 	.action-deck button {
 		min-height: 3rem;
 		border: 1px solid #3a4142;
@@ -753,10 +1012,6 @@
 	.action-deck .primary small {
 		opacity: 0.72;
 	}
-	.action-deck .proof {
-		border-color: #2d8986;
-		background: linear-gradient(110deg, #153c3d, #247471);
-	}
 	.action-deck .ember {
 		box-shadow:
 			inset 0 0 2rem rgba(255, 188, 64, 0.18),
@@ -782,8 +1037,78 @@
 		width: min(92vw, 1320px);
 		margin: 1.25rem auto 5rem;
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(6, 1fr);
 		border: 1px solid #252b2c;
+	}
+	.initiative-report {
+		width: min(92vw, 1120px);
+		margin: 1.25rem auto 5rem;
+		border: 1px solid #2d3536;
+		background: #0d1113;
+	}
+	.round-header {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		padding: 1.2rem 1.4rem;
+		border-bottom: 1px solid #2d3536;
+	}
+	.round-header span {
+		color: #c79445;
+		font-size: 0.55rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.round-header h2 {
+		margin: 0.3rem 0 0;
+		font:
+			1.65rem Georgia,
+			serif;
+	}
+	.round-header > strong {
+		color: #5f9996;
+		font-size: 0.58rem;
+		letter-spacing: 0.14em;
+	}
+	.initiative-actions article {
+		display: grid;
+		grid-template-columns: 3rem 1fr auto;
+		gap: 1rem;
+		align-items: start;
+		padding: 1rem 1.4rem;
+		border-bottom: 1px solid #22292a;
+	}
+	.initiative-actions article:last-child {
+		border-bottom: 0;
+	}
+	.initiative-actions article.superseded {
+		opacity: 0.55;
+	}
+	.initiative-rank {
+		color: #4b8582;
+		font:
+			1.2rem Georgia,
+			serif;
+	}
+	.initiative-actions article div:nth-child(2) {
+		display: grid;
+		gap: 0.25rem;
+	}
+	.initiative-actions span,
+	.initiative-actions small {
+		color: #697473;
+		font-size: 0.56rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.initiative-actions p {
+		margin: 0.2rem 0;
+		color: #a6aeab;
+		font-size: 0.72rem;
+	}
+	.initiative-actions code {
+		color: #d9ab5e;
+		font-size: 1rem;
 	}
 	.state-rail div {
 		padding: 1rem;
@@ -915,18 +1240,13 @@
 			height: 26rem;
 			top: 2rem;
 		}
-		.deployed-figures {
-			bottom: 5rem;
-			transform: translateX(-50%) scale(0.8);
-			transform-origin: bottom;
-		}
 		.operations {
 			min-height: 42rem;
 			padding: 1.2rem;
 		}
 		.state-rail {
 			overflow-x: auto;
-			grid-template-columns: repeat(5, 9rem);
+			grid-template-columns: repeat(6, 9rem);
 			margin-bottom: 4rem;
 		}
 		.ledger-heading {
