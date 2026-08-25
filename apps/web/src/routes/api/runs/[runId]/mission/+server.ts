@@ -38,7 +38,7 @@ async function assembleMissionChoices(
 	manifest: Parameters<typeof assembleHeroDecisionPacket>[0]['manifest'],
 	masterActionId: string
 ): Promise<MissionTurnChoice[]> {
-	if (snapshot.state.schemaVersion !== 12) {
+	if (snapshot.state.schemaVersion !== 13) {
 		throw new IllegalActionError('mission.resolve.turn');
 	}
 	const attempt = snapshot.state.mission.attempt;
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		]);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
 		if (!proof) return json({ message: 'Summoned company not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 12) {
+		if (snapshot.state.schemaVersion !== 13) {
 			return json(
 				{ message: 'This history predates authoritative mission turns.' },
 				{ status: 409 }
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			command = { ...base, source: manualSource, commandType: 'mission.retreat' };
 		}
 		const committed = await commitEngineCommand(config.databaseUrl, command);
-		if (committed.snapshot.state.schemaVersion !== 12) {
+		if (committed.snapshot.state.schemaVersion !== 13) {
 			throw new Error('Mission commit changed the engine schema.');
 		}
 		return json({

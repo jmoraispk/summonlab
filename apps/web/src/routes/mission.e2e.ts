@@ -30,6 +30,9 @@ test('prepares, retreats, retries, and resolves one replayable Floor 01 party', 
 	await page.getByTestId('deploy-party').click();
 	await expect(page.locator('.phase-heading h2')).toHaveText('deployed');
 	await expect(page.getByTestId('mission-board')).toBeVisible();
+	await expect(page.getByTestId('threat-intents')).toContainText('Declared threats');
+	await expect(page.getByTestId('threat-intents').locator('article')).toHaveCount(3);
+	await expect(page.getByTestId('monster-token')).toHaveCount(3);
 	await page.getByTestId('retreat-party').click();
 	await expect(page.locator('.phase-heading h2')).toHaveText('retreat');
 	await expect(page.getByText('mission.retreated')).toBeVisible();
@@ -56,10 +59,26 @@ test('prepares, retreats, retries, and resolves one replayable Floor 01 party', 
 		await page.getByTestId('master-turn-actions').getByRole('button', { name: label }).click();
 		await page.getByTestId('resolve-turn').click();
 		await expect(page.getByTestId('initiative-report')).toBeVisible();
+		if (index === 2) {
+			await expect(page.getByTestId('threat-intents')).toContainText('lowers a hooked blade');
+			await expect(
+				page
+					.getByTestId('master-turn-actions')
+					.getByRole('button', { name: /Strike/ })
+					.first()
+			).toBeVisible();
+		}
 		if (index === 0 && process.env.CAPTURE_PHASE6_MISSION_TURNS) {
 			await page.setViewportSize({ width: 1440, height: 1100 });
 			await page.screenshot({
 				path: process.env.CAPTURE_PHASE6_MISSION_TURNS,
+				fullPage: true
+			});
+		}
+		if (index === 2 && process.env.CAPTURE_PHASE6_MONSTER_DUTIES) {
+			await page.setViewportSize({ width: 1440, height: 1200 });
+			await page.screenshot({
+				path: process.env.CAPTURE_PHASE6_MONSTER_DUTIES,
 				fullPage: true
 			});
 		}

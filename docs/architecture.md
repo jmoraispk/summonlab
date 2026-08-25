@@ -553,14 +553,34 @@ traverse only projected authored edges. Inspections can reveal only legal packag
 Objective recovery creates explicit custody, and the carrier physically delivers the First Ember
 by returning to the threshold. Extraction opens automatically only when the objective is delivered
 and every party member is present. Every third-round package pulse is recorded, and an attempt that
-has not returned within 48 rounds fails. Monsters remain an empty authoritative action list until
-`MIS-004` rather than being simulated by the client.
+has not returned within 48 rounds fails.
 
 Each `mission.round.resolved` event stores the submitted choices, entropy draws, ranked actions,
 knowledge and objective transitions, and resulting status. Strict replay recomputes the entire
 round and rejects any drift. The mission page receives only projected arena nodes, edges, and
 observations; its code-native tactical board cannot inspect concealed author truth or mutate
 positions. See ADR 0032.
+
+### Implemented deterministic monster duties
+
+`engine-v13` extends new attempts with `mission-turn-v2` and a hash-bound `monster-policies-v1`
+catalog. Deployment consumes only package-declared monster-count entropy, creates stable goblin
+entities at authored duty nodes, and derives their public threat intents. Chain watchers hold or
+defend the Chain Court. The Ember hauler protects the cradle, alarms when challenged, and can pursue
+a visible carrier along open authored edges without learning concealed topology.
+
+Party and monster actors draw from the same `initiative-tie-break` stream and resolve in one ranked
+ledger. The engine owns monster movement, alarm state, vitality, attack armor, party defense, and a
+bounded mission-guard buffer. A defeated monster's telegraphed action is retained as superseded;
+targets that leave before impact likewise produce an explicit non-effect. Every threat, action,
+before/after effect, and next telegraph is persisted and recomputed by strict replay. Injury,
+permadeath, and Master game over remain later explicit boundaries rather than implied by exhausted
+mission guard.
+
+The same catalog defines the Foundry Warden's furnace-linked armor, furnace surge, and exposed
+cooling-control defense. The policy is reusable but not placed on Floor 01; Floor 05 owns that
+content decision in `MIS-005`. The mission page projects active monster tokens, current threat
+intent, guard, and merged initiative from authoritative state. See ADR 0033.
 
 ### Implemented reconnect projection
 

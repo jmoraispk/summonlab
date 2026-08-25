@@ -268,6 +268,55 @@ export const MissionMonsterDutySlotSchema = z
 		}
 	});
 
+export const MissionMonsterBehaviorSchema = z.enum([
+	'guard-duty-node',
+	'protect-objective',
+	'foundry-warden'
+]);
+
+export const MissionMonsterArmorSchema = z.discriminatedUnion('kind', [
+	z.object({ kind: z.literal('none'), reduction: z.literal(0) }).strict(),
+	z
+		.object({
+			kind: z.literal('furnace-linked'),
+			litReduction: z.number().int().min(1).max(20),
+			coolingReduction: z.number().int().min(0).max(20),
+			quenchedReduction: z.number().int().min(0).max(20)
+		})
+		.strict()
+]);
+
+export const MissionMonsterPolicyDefinitionSchema = z
+	.object({
+		policyId: MissionSlugSchema,
+		label: z.string().min(1).max(100),
+		entityLabel: z.string().min(1).max(80),
+		archetype: z.enum(['goblin', 'construct']),
+		behavior: MissionMonsterBehaviorSchema,
+		maximumVitality: z.number().int().min(1).max(1_000),
+		initiativeBase: z.number().int().min(0).max(1_000),
+		strikePower: z.number().int().min(0).max(100),
+		armor: MissionMonsterArmorSchema,
+		intentSummary: z.string().min(1).max(240)
+	})
+	.strict();
+
+export const MissionMonsterPolicyCatalogSchema = z
+	.object({
+		schemaVersion: z.literal('monster-policy-catalog-v1'),
+		contentVersion: ContentVersionSchema,
+		policies: z.array(MissionMonsterPolicyDefinitionSchema).min(1).max(100),
+		contentHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((catalog, context) => {
+		if (
+			new Set(catalog.policies.map((policy) => policy.policyId)).size !== catalog.policies.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Monster policy ids must be unique' });
+		}
+	});
+
 export const MissionEnvironmentalEventSchema = z
 	.object({
 		eventId: MissionSlugSchema,
@@ -951,5 +1000,7 @@ export type MissionArenaKnowledge = z.infer<typeof MissionArenaKnowledgeSchema>;
 export type MissionArenaNode = z.infer<typeof MissionArenaNodeSchema>;
 export type MissionArenaProjection = z.infer<typeof MissionArenaProjectionSchema>;
 export type MissionDiscoveryAffordance = z.infer<typeof MissionDiscoveryAffordanceSchema>;
+export type MissionMonsterPolicyCatalog = z.infer<typeof MissionMonsterPolicyCatalogSchema>;
+export type MissionMonsterPolicyDefinition = z.infer<typeof MissionMonsterPolicyDefinitionSchema>;
 export type MissionPackage = z.infer<typeof MissionPackageSchema>;
 export type MissionRoutePlan = z.infer<typeof MissionRoutePlanSchema>;

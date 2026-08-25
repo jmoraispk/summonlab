@@ -1611,6 +1611,278 @@ export const MissionRunStateV2Schema = z
 		}
 	});
 
+export const MissionMonsterPolicyBindingSchema = z
+	.object({
+		contentVersion: ContentVersionSchema,
+		contentHash: StateHashSchema
+	})
+	.strict();
+
+export const MissionMonsterStateSchema = z
+	.object({
+		monsterId: EntityIdSchema,
+		dutySlotId: MissionSlugSchema,
+		policyId: MissionSlugSchema,
+		label: z.string().min(1).max(100),
+		ordinal: z.number().int().positive().max(100),
+		nodeId: MissionSlugSchema,
+		status: z.enum(['active', 'defeated']),
+		vitality: z.number().int().nonnegative().max(1_000),
+		maximumVitality: z.number().int().positive().max(1_000),
+		alertState: z.enum(['duty', 'alarmed', 'engaged']),
+		defeatedOnRound: z.number().int().positive().nullable(),
+		lastActionId: z
+			.string()
+			.regex(/^[a-z][a-z0-9._-]{1,119}$/u)
+			.nullable()
+	})
+	.strict()
+	.superRefine((monster, context) => {
+		if (
+			monster.vitality > monster.maximumVitality ||
+			(monster.status === 'active') !== monster.vitality > 0 ||
+			(monster.status === 'defeated') !== (monster.defeatedOnRound !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission monster state is inconsistent' });
+		}
+	});
+
+export const MissionPartyGuardStateSchema = z
+	.object({
+		actorId: EntityIdSchema,
+		guard: z.number().int().nonnegative().max(100),
+		maximumGuard: z.number().int().positive().max(100),
+		status: z.enum(['ready', 'exposed']),
+		lastChangedOnRound: z.number().int().nonnegative().max(48)
+	})
+	.strict()
+	.superRefine((guard, context) => {
+		if (guard.guard > guard.maximumGuard || (guard.status === 'ready') !== guard.guard > 0) {
+			context.addIssue({ code: 'custom', message: 'Mission party guard is inconsistent' });
+		}
+	});
+
+export const MissionFurnaceStateSchema = z.enum(['absent', 'lit', 'cooling', 'quenched']);
+
+export const MissionCombatArenaStateSchema = z
+	.object({
+		furnaceState: MissionFurnaceStateSchema,
+		coolingControlNodeId: MissionSlugSchema.nullable(),
+		coolingControlExposed: z.boolean()
+	})
+	.strict()
+	.superRefine((arena, context) => {
+		if (
+			(arena.furnaceState === 'absent') !== (arena.coolingControlNodeId === null) ||
+			(arena.coolingControlNodeId === null && arena.coolingControlExposed)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission furnace state is inconsistent' });
+		}
+	});
+
+export const MissionMonsterIntentSchema = z
+	.object({
+		monsterId: EntityIdSchema,
+		policyId: MissionSlugSchema,
+		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,119}$/u),
+		kind: z.enum(['hold', 'move', 'strike', 'alarm', 'furnace-surge', 'defend-control']),
+		fromNodeId: MissionSlugSchema,
+		toNodeId: MissionSlugSchema,
+		targetId: EntityIdSchema.nullable(),
+		telegraph: z.string().min(1).max(240),
+		anticipatedEffect: z.string().min(1).max(240)
+	})
+	.strict();
+
+export const MissionResolvedEffectSchema = z
+	.object({
+		effectId: EntityIdSchema,
+		sourceKind: z.enum(['party', 'monster', 'environment']),
+		sourceId: z.string().min(1).max(120),
+		targetKind: z.enum(['party', 'monster', 'arena']),
+		targetId: z.string().min(1).max(120),
+		kind: z.enum(['guard-damage', 'vitality-damage', 'alarm', 'furnace-change']),
+		amount: z.number().int().nonnegative().max(1_000),
+		before: z.number().int().nonnegative().max(1_000).nullable(),
+		after: z.number().int().nonnegative().max(1_000).nullable(),
+		summary: z.string().min(1).max(300)
+	})
+	.strict()
+	.superRefine((effect, context) => {
+		const numerical = effect.kind === 'guard-damage' || effect.kind === 'vitality-damage';
+		if (numerical !== (effect.before !== null && effect.after !== null)) {
+			context.addIssue({ code: 'custom', message: 'Mission effect values are inconsistent' });
+		}
+	});
+
+export const MissionResolvedPartyActionV2Schema = z
+	.object({
+		actorId: EntityIdSchema,
+		actorKind: z.enum(['master', 'hero']),
+		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
+		choiceSource: MissionChoiceSourceSchema,
+		policyId: z.string().min(1).max(120).nullable(),
+		packetHash: StateHashSchema.nullable(),
+		legalActionHash: StateHashSchema.nullable(),
+		policyResultHash: StateHashSchema.nullable(),
+		publicIntent: z.string().min(1).max(240),
+		initiativeBase: z.number().int().min(0).max(1_000),
+		initiativeTieBreak: z.number().int().min(0).max(99),
+		initiative: z.number().int().min(0).max(1_099),
+		outcome: z.enum(['applied', 'superseded']),
+		fromNodeId: MissionSlugSchema,
+		toNodeId: MissionSlugSchema,
+		targetId: EntityIdSchema.nullable(),
+		discoveryIds: z.array(MissionSlugSchema).max(20),
+		objectiveTransition: z.enum(['recovered', 'delivered']).nullable(),
+		effectIds: z.array(EntityIdSchema).max(20),
+		summary: z.string().min(1).max(300)
+	})
+	.strict()
+	.refine((action) => action.initiative === action.initiativeBase + action.initiativeTieBreak, {
+		message: 'Mission initiative total is inconsistent'
+	});
+
+export const MissionResolvedMonsterActionSchema = z
+	.object({
+		monsterId: EntityIdSchema,
+		policyId: MissionSlugSchema,
+		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,119}$/u),
+		kind: z.enum(['hold', 'move', 'strike', 'alarm', 'furnace-surge', 'defend-control']),
+		initiativeBase: z.number().int().min(0).max(1_000),
+		initiativeTieBreak: z.number().int().min(0).max(99),
+		initiative: z.number().int().min(0).max(1_099),
+		outcome: z.enum(['applied', 'superseded']),
+		fromNodeId: MissionSlugSchema,
+		toNodeId: MissionSlugSchema,
+		targetId: EntityIdSchema.nullable(),
+		effectIds: z.array(EntityIdSchema).max(20),
+		summary: z.string().min(1).max(300)
+	})
+	.strict()
+	.refine((action) => action.initiative === action.initiativeBase + action.initiativeTieBreak, {
+		message: 'Mission monster initiative total is inconsistent'
+	});
+
+export const MissionRoundV2Schema = z
+	.object({
+		roundVersion: z.literal('mission-round-v2'),
+		roundNumber: z.number().int().positive(),
+		stateVersion: z.number().int().nonnegative(),
+		environmentEventIds: z.array(MissionSlugSchema).max(20),
+		threatIntents: z.array(MissionMonsterIntentSchema).max(40),
+		monsterActionIds: z.array(z.string().min(1).max(120)).max(40),
+		initiativeOrder: z.array(EntityIdSchema).min(1).max(48),
+		actions: z.array(MissionResolvedPartyActionV2Schema).min(1).max(8),
+		monsterActions: z.array(MissionResolvedMonsterActionSchema).max(40),
+		effects: z.array(MissionResolvedEffectSchema).max(120),
+		statusAfter: MissionAttemptStatusSchema
+	})
+	.strict()
+	.superRefine((round, context) => {
+		const ranked = [...round.actions, ...round.monsterActions]
+			.sort(
+				(left, right) =>
+					right.initiative - left.initiative ||
+					('actorId' in left ? left.actorId : left.monsterId).localeCompare(
+						'actorId' in right ? right.actorId : right.monsterId
+					)
+			)
+			.map((action) => ('actorId' in action ? action.actorId : action.monsterId));
+		if (
+			ranked.join('|') !== round.initiativeOrder.join('|') ||
+			new Set(round.initiativeOrder).size !== round.initiativeOrder.length ||
+			round.monsterActionIds.join('|') !==
+				round.monsterActions.map((action) => action.actionId).join('|')
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission combat initiative is inconsistent' });
+		}
+	});
+
+export const MissionTurnStateV2Schema = z
+	.object({
+		turnVersion: z.literal('mission-turn-v2'),
+		maximumRounds: z.literal(48),
+		roundNumber: z.number().int().nonnegative().max(48),
+		objective: MissionObjectiveProgressSchema,
+		policyBinding: MissionMonsterPolicyBindingSchema,
+		monsters: z.record(EntityIdSchema, MissionMonsterStateSchema),
+		partyGuard: z.record(EntityIdSchema, MissionPartyGuardStateSchema),
+		arena: MissionCombatArenaStateSchema,
+		currentThreatIntents: z.array(MissionMonsterIntentSchema).max(40),
+		rounds: z.array(MissionRoundV2Schema).max(48)
+	})
+	.strict()
+	.superRefine((turn, context) => {
+		if (turn.roundNumber !== turn.rounds.length) {
+			context.addIssue({ code: 'custom', message: 'Mission combat round history is inconsistent' });
+		}
+		if (turn.rounds.some((round, index) => round.roundNumber !== index + 1)) {
+			context.addIssue({ code: 'custom', message: 'Mission combat rounds must be contiguous' });
+		}
+		for (const [monsterId, monster] of Object.entries(turn.monsters)) {
+			if (monster.monsterId !== monsterId) {
+				context.addIssue({ code: 'custom', message: 'Mission monster key must match its id' });
+			}
+		}
+		for (const [actorId, guard] of Object.entries(turn.partyGuard)) {
+			if (guard.actorId !== actorId) {
+				context.addIssue({ code: 'custom', message: 'Mission guard key must match its actor id' });
+			}
+		}
+		if (
+			turn.currentThreatIntents.some(
+				(intent) => turn.monsters[intent.monsterId]?.status !== 'active'
+			)
+		) {
+			context.addIssue({ code: 'custom', message: 'Only active monsters may telegraph intent' });
+		}
+	});
+
+export const MissionAttemptV3Schema = z
+	.object({
+		...MissionAttemptSchema.shape,
+		turnState: MissionTurnStateV2Schema
+	})
+	.strict()
+	.superRefine((attempt, context) => {
+		const legacyAttempt = Object.fromEntries(
+			Object.entries(attempt).filter(([key]) => key !== 'turnState')
+		);
+		if (!MissionAttemptSchema.safeParse(legacyAttempt).success) {
+			context.addIssue({ code: 'custom', message: 'Mission combat lifecycle is inconsistent' });
+		}
+		if (
+			attempt.completedObjectiveIds.includes(attempt.turnState.objective.objectiveId) !==
+			(attempt.turnState.objective.status === 'delivered')
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission combat objective delivery diverged' });
+		}
+		const members = [...attempt.party.memberIds].sort().join('|');
+		if (Object.keys(attempt.turnState.partyGuard).sort().join('|') !== members) {
+			context.addIssue({ code: 'custom', message: 'Mission guard must match the complete party' });
+		}
+	});
+
+export const MissionRunStateV3Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV3Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		if ((mission.attempt === null) !== (mission.attemptCount === 0)) {
+			context.addIssue({ code: 'custom', message: 'Mission combat attempt count is inconsistent' });
+		}
+		if (mission.attempt && mission.attempt.ordinal !== mission.attemptCount) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission combat attempt ordinal is inconsistent'
+			});
+		}
+	});
+
 const EngineGameStateV11BaseSchema = z
 	.object({
 		...EngineGameStateV10BaseSchema.shape,
@@ -1627,12 +1899,21 @@ const EngineGameStateV12BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV13BaseSchema = z
+	.object({
+		...EngineGameStateV11BaseSchema.shape,
+		schemaVersion: z.literal(13),
+		mission: MissionRunStateV3Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
 	| z.infer<typeof EngineGameStateV10BaseSchema>
 	| z.infer<typeof EngineGameStateV11BaseSchema>
-	| z.infer<typeof EngineGameStateV12BaseSchema>;
+	| z.infer<typeof EngineGameStateV12BaseSchema>
+	| z.infer<typeof EngineGameStateV13BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -1980,7 +2261,9 @@ export const EngineGameStateV10Schema = EngineGameStateV10BaseSchema.superRefine
 );
 
 type MissionEngineValidationState =
-	z.infer<typeof EngineGameStateV11BaseSchema> | z.infer<typeof EngineGameStateV12BaseSchema>;
+	| z.infer<typeof EngineGameStateV11BaseSchema>
+	| z.infer<typeof EngineGameStateV12BaseSchema>
+	| z.infer<typeof EngineGameStateV13BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -2046,7 +2329,7 @@ function validateMissionEngineState(
 			message: 'An active mission party requires living heroes'
 		});
 	}
-	if (state.schemaVersion === 12) {
+	if (state.schemaVersion === 12 || state.schemaVersion === 13) {
 		const turnAttempt = state.mission.attempt;
 		if (
 			turnAttempt?.turnState.objective.carrierId !== null &&
@@ -2067,6 +2350,9 @@ export const EngineGameStateV11Schema = EngineGameStateV11BaseSchema.superRefine
 export const EngineGameStateV12Schema = EngineGameStateV12BaseSchema.superRefine(
 	validateMissionEngineState
 );
+export const EngineGameStateV13Schema = EngineGameStateV13BaseSchema.superRefine(
+	validateMissionEngineState
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -2080,7 +2366,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV9Schema,
 	EngineGameStateV10Schema,
 	EngineGameStateV11Schema,
-	EngineGameStateV12Schema
+	EngineGameStateV12Schema,
+	EngineGameStateV13Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -2567,6 +2854,7 @@ export type EngineGameStateV9 = z.infer<typeof EngineGameStateV9Schema>;
 export type EngineGameStateV10 = z.infer<typeof EngineGameStateV10Schema>;
 export type EngineGameStateV11 = z.infer<typeof EngineGameStateV11Schema>;
 export type EngineGameStateV12 = z.infer<typeof EngineGameStateV12Schema>;
+export type EngineGameStateV13 = z.infer<typeof EngineGameStateV13Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -2579,10 +2867,15 @@ export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type MissionAttempt = z.infer<typeof MissionAttemptSchema>;
 export type MissionAttemptStatus = z.infer<typeof MissionAttemptStatusSchema>;
 export type MissionRound = z.infer<typeof MissionRoundSchema>;
+export type MissionRoundV2 = z.infer<typeof MissionRoundV2Schema>;
+export type MissionMonsterIntent = z.infer<typeof MissionMonsterIntentSchema>;
+export type MissionMonsterState = z.infer<typeof MissionMonsterStateSchema>;
+export type MissionResolvedEffect = z.infer<typeof MissionResolvedEffectSchema>;
 export type MissionTurnChoice = z.infer<typeof MissionTurnChoiceSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
 export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type MissionRunStateV2 = z.infer<typeof MissionRunStateV2Schema>;
+export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
 export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
 export type DirectiveRequest = z.infer<typeof DirectiveRequestSchema>;

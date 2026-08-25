@@ -442,7 +442,8 @@ export async function resolveProofDecision(
 			const activeDirectiveIds =
 				engine.state.schemaVersion === 10 ||
 				engine.state.schemaVersion === 11 ||
-				engine.state.schemaVersion === 12
+				engine.state.schemaVersion === 12 ||
+				engine.state.schemaVersion === 13
 					? Object.values(engine.state.society.directives)
 							.filter(
 								(candidate) =>
@@ -453,7 +454,8 @@ export async function resolveProofDecision(
 										(observationId) =>
 											(engine.state.schemaVersion === 10 ||
 												engine.state.schemaVersion === 11 ||
-												engine.state.schemaVersion === 12) &&
+												engine.state.schemaVersion === 12 ||
+												engine.state.schemaVersion === 13) &&
 											engine.state.society.observations[observationId]?.observerHeroId ===
 												row.manifest.characterId
 									)
@@ -517,7 +519,8 @@ export async function markProofArrival(
 				engine.state.schemaVersion === 9 ||
 				engine.state.schemaVersion === 10 ||
 				engine.state.schemaVersion === 11 ||
-				engine.state.schemaVersion === 12
+				engine.state.schemaVersion === 12 ||
+				engine.state.schemaVersion === 13
 			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,

@@ -1064,7 +1064,12 @@ Estimated engineering effort: **2–3 weeks**.
   and the complete round ledger; automatically open extraction only after the First Ember and all
   survivors return to the threshold; remove the development objective-proof control while keeping
   immutable engine-v11 mission streams replayable;
-- `MIS-004` implement goblin duty policies and Foundry Warden;
+- `MIS-004` complete: add the SHA-bound `monster-policies-v1` catalog; spawn stable Floor 01
+  goblins from declared entropy purposes; derive Chain Court guard and Ember Vault protection
+  duties without hidden-route knowledge; expose threat intent before commitment; rank monsters and
+  party members in one initiative ledger; resolve alarms, movement, attacks, defense, vitality,
+  mission guard, and superseded actions; define the reusable furnace-linked Foundry Warden policy
+  without placing it before Floor 05; render threats and resolved effects on the tactical board;
 - `MIS-005` author floors 1–5 and their observations/rewards;
 - `MIS-006` implement engine-owned maintenance-route secret;
 - `MIS-007` implement Iron Moon timer, extraction, and ore ledger;

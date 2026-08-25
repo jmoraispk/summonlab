@@ -7,6 +7,7 @@ import {
 	EngineGameStateV10Schema,
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
+	EngineGameStateV13Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameStateV5,
@@ -16,7 +17,8 @@ import {
 	type EngineGameStateV9,
 	type EngineGameStateV10,
 	type EngineGameStateV11,
-	type EngineGameStateV12
+	type EngineGameStateV12,
+	type EngineGameStateV13
 } from '@summonlab/contracts';
 
 import { applyCommand, legalActions } from './engine.js';
@@ -51,7 +53,8 @@ type CatchUpState =
 	| EngineGameStateV9
 	| EngineGameStateV10
 	| EngineGameStateV11
-	| EngineGameStateV12;
+	| EngineGameStateV12
+	| EngineGameStateV13;
 
 function parseCatchUpState(state: CatchUpState): CatchUpState {
 	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(state);
@@ -61,7 +64,8 @@ function parseCatchUpState(state: CatchUpState): CatchUpState {
 	if (state.schemaVersion === 9) return EngineGameStateV9Schema.parse(state);
 	if (state.schemaVersion === 10) return EngineGameStateV10Schema.parse(state);
 	if (state.schemaVersion === 11) return EngineGameStateV11Schema.parse(state);
-	return EngineGameStateV12Schema.parse(state);
+	if (state.schemaVersion === 12) return EngineGameStateV12Schema.parse(state);
+	return EngineGameStateV13Schema.parse(state);
 }
 
 function commandBase(state: CatchUpState, key: string, actorId: string) {
@@ -83,7 +87,10 @@ function earliestScheduledTime(state: CatchUpState): string | null {
 				hero.currentTravel?.arrivesAt,
 				hero.currentRoutine?.completesAt
 			]),
-			...(state.schemaVersion === 10 || state.schemaVersion === 11 || state.schemaVersion === 12
+			...(state.schemaVersion === 10 ||
+			state.schemaVersion === 11 ||
+			state.schemaVersion === 12 ||
+			state.schemaVersion === 13
 				? Object.values(state.society.directives).map((directive) =>
 						directive.status === 'active' ? directive.expiresAt : null
 					)
@@ -170,7 +177,8 @@ export function applyCatchUpPolicy(
 			result.state.schemaVersion !== 9 &&
 			result.state.schemaVersion !== 10 &&
 			result.state.schemaVersion !== 11 &&
-			result.state.schemaVersion !== 12
+			result.state.schemaVersion !== 12 &&
+			result.state.schemaVersion !== 13
 		) {
 			throw new Error(`Catch-up changed engine schema to v${result.state.schemaVersion}`);
 		}

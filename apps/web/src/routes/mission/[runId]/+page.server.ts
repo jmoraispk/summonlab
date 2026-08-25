@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		getProofRun(config.databaseUrl, params.runId).catch(() => null)
 	]);
 	if (!report || !proof) error(404, 'This summoned company could not be loaded.');
-	if (report.snapshot.state.schemaVersion !== 12) {
+	if (report.snapshot.state.schemaVersion !== 13) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const attempt = report.snapshot.state.mission.attempt;

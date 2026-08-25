@@ -292,8 +292,9 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-003` were completed on 2026-08-24. Floor 01 now has
-a versioned content package, authoritative run lifecycle, and bounded autonomous turns. Authored
+Status: **in progress**. `MIS-001` through `MIS-004` were completed on 2026-08-24. Floor 01 now has
+a versioned content package, authoritative run lifecycle, bounded autonomous turns, and deterministic
+monster duties. Authored
 truth remains distinct from visited/discovered knowledge; the browser can reserve a real party,
 cross the threshold, retreat, retry, choose only the Master's action, watch each hero choose from
 an independent packet, recover and physically return the First Ember, and extract without becoming
@@ -304,6 +305,7 @@ a state authority.
 | `MIS-001` | Complete: `mission-package-v1` validates deployment/extraction roles, exactly one primary objective, the complete connected arena graph, observations, legal discovery affordances, deterministic entropy names, monster/environment declarations, retreat, reward budget, and bounded story patches; `tower-floor-01-v1` projects five initially known nodes from seven authored nodes, keeps on-entry evidence visit-bound, reveals a three-action low-exposure Ash Duct alternative only through the Oath Hall affordance, and preserves a four-action default objective route | [Mission package evidence](evidence/phase-6-mission-package.png), contract/content/browser tests, `pnpm validate:mission-content`, 41.0 KB measured mission-lab JavaScript, ADR 0030 |
 | `MIS-002` | Complete: `engine-v11` binds every new run to the exact `tower-floor-01-v1` SHA-256, owns Master-first 1–5 member parties, rejects unavailable/busy heroes, reserves participants during preparation and deployment, supports party revision/cancellation, commits deployment positions plus visit-bounded knowledge, allows retreat only at an authored boundary, opens extraction only after a system-proven primary objective, prevents success farming, and creates new IDs for legal retries while leaving v1–v10 replay byte-compatible | [Mission lifecycle evidence](evidence/phase-6-mission-lifecycle.png), engine/property/database/browser tests, 43.0 KB measured mission-route JavaScript, ADR 0031 |
 | `MIS-003` | Complete: `engine-v12` owns a maximum 48-round ledger, per-actor projected legal moves, exact one-choice-per-party validation, seeded initiative, moves and legal discoveries, explicit First Ember custody/delivery, third-round environment pulses, automatic objective-gated extraction, policy evidence hashes, and strict round recomputation while preserving immutable v11 proof-driven streams; `/mission/:runId` now exposes a knowledge-bounded tactical board where the player chooses the Master and the personality-scripted hero acts independently | [Mission turn evidence](evidence/phase-6-mission-turns.png), engine/policy/database/browser tests, 44.5 KB measured mission-route JavaScript, ADR 0032 |
+| `MIS-004` | Complete: `engine-v13` binds `monster-policies-v1`, spawns stable Floor 01 goblins from declared count entropy, derives visible Chain Court and Ember Vault duty intents, resolves party and monsters in one initiative order, and persists alarm, movement, vitality, mission guard, defense, environment damage, and superseded actions under strict replay; the Foundry Warden's furnace armor and cooling-control policy are versioned without placing it before Floor 05; the mission board exposes active monsters, threat telegraphs, guard, and the merged resolution ledger | [Monster duty evidence](evidence/phase-6-monster-duties.png), contract/content/engine/database/browser tests, 44.0 KB measured mission-route JavaScript, ADR 0033 |
 
 ### Reproduce the checkpoint
 
@@ -324,14 +326,15 @@ Create a fresh `Wait` run in `http://localhost:5173/forge`, open its summoning c
 **Floor 01** in the top navigation. On `/mission/<runId>`, keep or remove the hero roster card,
 lock the threshold roster, deploy, and retreat. Retry to confirm the attempt number advances. Deploy
 again and choose the Master's route one round at a time. Watch the summoned hero choose separately,
-compare both initiative scores, recover the First Ember, return every member to the threshold, and
-extract. Reload and open the replay inspector to confirm all nine round events and their exact
-hashes survive.
+read all declared goblin intents before committing, and compare the shared party/monster initiative
+ledger. Enter the Chain Court, choose a named goblin strike, and confirm vitality and mission guard
+effects are explicit. Recover the First Ember, return every member to the threshold, and extract.
+Reload and open the replay inspector to confirm all nine round events and their exact hashes survive.
 
 ## Next active engineering slice
 
-Begin `MIS-004`: execute the package's deterministic goblin duty policies and Foundry Warden inside
-the same initiative ledger, then expose threat intent and resolved effects on the tactical board.
+Begin `MIS-005`: author Floors 02–05, their observations and rewards, and the Floor 05 confrontation
+that places the already versioned Foundry Warden policy behind authored furnace controls.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

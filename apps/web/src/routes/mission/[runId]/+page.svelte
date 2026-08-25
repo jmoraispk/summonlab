@@ -13,7 +13,7 @@
 	let selectedMasterActionId = $state('');
 
 	const engineState = $derived(data.report.snapshot.state);
-	const mission = $derived(engineState.schemaVersion === 12 ? engineState.mission : null);
+	const mission = $derived(engineState.schemaVersion === 13 ? engineState.mission : null);
 	const attempt = $derived(mission?.attempt ?? null);
 	const turnState = $derived(attempt?.turnState ?? null);
 	const lastRound = $derived(turnState?.rounds.at(-1) ?? null);
@@ -37,6 +37,7 @@
 				action.actionId.startsWith('mission.move.') ||
 				action.actionId.startsWith('mission.inspect.') ||
 				action.actionId.startsWith('mission.recover.') ||
+				action.actionId.startsWith('mission.attack.') ||
 				action.actionId === 'mission.hold'
 		)
 	);
@@ -104,11 +105,17 @@
 	}
 
 	function actorName(actorId: string) {
+		const monster = turnState?.monsters[actorId];
+		if (monster) return monster.label;
 		return actorId === engineState.master.masterId
 			? 'The Master'
 			: actorId === hero?.heroId
 				? data.proof.manifest.displayName
 				: 'Unknown hero';
+	}
+
+	function guardFor(actorId: string) {
+		return turnState?.partyGuard[actorId] ?? null;
 	}
 
 	function nodePosition(nodeId: string) {
@@ -197,6 +204,17 @@
 								: data.proof.manifest.displayName.slice(0, 1)}
 						</div>
 					{/each}
+					{#each Object.values(turnState?.monsters ?? {}).filter((monster) => monster.status === 'active') as monster (monster.monsterId)}
+						{@const position = nodePosition(monster.nodeId)}
+						<div
+							class="monster-token"
+							style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
+							title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} vitality`}
+							data-testid="monster-token"
+						>
+							<span>G</span><small>{monster.vitality}</small>
+						</div>
+					{/each}
 					{#if turnState?.objective.status === 'carried'}
 						<div class="objective-banner">
 							First Ember carried by {actorName(turnState.objective.carrierId!)}
@@ -253,7 +271,11 @@
 					<div>
 						<span>Required · leader</span>
 						<strong>The Master</strong>
-						<small>100 / 100 vitality</small>
+						<small
+							>100 / 100 vitality{guardFor(engineState.master.masterId)
+								? ` · guard ${guardFor(engineState.master.masterId)!.guard}/${guardFor(engineState.master.masterId)!.maximumGuard}`
+								: ''}</small
+						>
 					</div>
 					<b>LOCKED</b>
 				</article>
@@ -274,7 +296,12 @@
 						<div>
 							<span>{'✦'.repeat(data.proof.manifest.rarityStars)} · summoned hero</span>
 							<strong>{data.proof.manifest.displayName}</strong>
-							<small>Lv. {hero.progression.level} · {hero.health} / {hero.maxHealth} vitality</small
+							<small
+								>Lv. {hero.progression.level} · {hero.health} / {hero.maxHealth} vitality{guardFor(
+									hero.heroId
+								)
+									? ` · guard ${guardFor(hero.heroId)!.guard}/${guardFor(hero.heroId)!.maximumGuard}`
+									: ''}</small
 							>
 						</div>
 						<b>{heroSelected ? 'READY' : 'STAY'}</b>
@@ -315,6 +342,18 @@
 						<strong>{turnState?.objective.status ?? 'available'} · First Ember</strong>
 						<small>Choose only the Master. Every summoned hero chooses independently.</small>
 					</div>
+					{#if turnState && turnState.currentThreatIntents.length > 0}
+						<div class="threat-ledger" data-testid="threat-intents">
+							<div><span>Declared threats</span><small>visible before you commit</small></div>
+							{#each turnState.currentThreatIntents as intent (intent.monsterId)}
+								<article>
+									<strong>{actorName(intent.monsterId)}</strong>
+									<p>{intent.telegraph}</p>
+									<small>{intent.kind.replaceAll('-', ' ')} · {intent.anticipatedEffect}</small>
+								</article>
+							{/each}
+						</div>
+					{/if}
 					<div class="turn-choices" data-testid="master-turn-actions">
 						{#each masterTurnActions as choice (choice.actionId)}
 							<button
@@ -376,14 +415,23 @@
 				<strong>{lastRound.environmentEventIds.length > 0 ? 'EMBER PULSE' : 'FIELD QUIET'}</strong>
 			</div>
 			<div class="initiative-actions">
-				{#each lastRound.actions as resolved, index (resolved.actorId)}
+				{#each lastRound.initiativeOrder as actorId, index (actorId)}
+					{@const partyAction = lastRound.actions.find((action) => action.actorId === actorId)}
+					{@const monsterAction = lastRound.monsterActions.find(
+						(action) => action.monsterId === actorId
+					)}
+					{@const resolved = partyAction ?? monsterAction!}
 					<article class:superseded={resolved.outcome === 'superseded'}>
 						<div class="initiative-rank">{String(index + 1).padStart(2, '0')}</div>
 						<div>
-							<span>{resolved.actorKind} · {resolved.choiceSource}</span>
-							<strong>{actorName(resolved.actorId)}</strong>
+							<span
+								>{partyAction
+									? `${partyAction.actorKind} · ${partyAction.choiceSource}`
+									: `monster · ${monsterAction!.kind.replaceAll('-', ' ')}`}</span
+							>
+							<strong>{actorName(actorId)}</strong>
 							<p>{resolved.summary}</p>
-							{#if resolved.actorKind === 'hero'}<small>{resolved.publicIntent}</small>{/if}
+							{#if partyAction?.actorKind === 'hero'}<small>{partyAction.publicIntent}</small>{/if}
 						</div>
 						<code>{resolved.initiative}</code>
 					</article>
@@ -433,8 +481,8 @@
 	</section>
 
 	<footer>
-		<span>MIS-003 · autonomous initiative</span>
-		<p>Next: goblin duty policies and the Foundry Warden.</p>
+		<span>MIS-004 · autonomous monster duties</span>
+		<p>Next: Floor 02–05 threats and the Foundry Warden confrontation.</p>
 	</footer>
 </main>
 
@@ -765,6 +813,43 @@
 		background: #62431e;
 		color: #fff0cf;
 	}
+	.monster-token {
+		position: absolute;
+		z-index: 5;
+		width: 2.35rem;
+		height: 2.35rem;
+		border: 1px solid #e16f50;
+		background: #481d18;
+		box-shadow:
+			0 0 0 3px #090d0f,
+			0 0 1.2rem rgba(225, 80, 48, 0.38);
+		color: #ffd8c8;
+		transform: translate(-50%, -50%) rotate(45deg);
+		display: grid;
+		place-items: center;
+	}
+	.monster-token span,
+	.monster-token small {
+		position: absolute;
+		transform: rotate(-45deg);
+	}
+	.monster-token span {
+		font:
+			700 0.7rem Georgia,
+			serif;
+	}
+	.monster-token small {
+		right: -0.25rem;
+		bottom: -0.35rem;
+		width: 1rem;
+		height: 1rem;
+		border-radius: 50%;
+		background: #090d0f;
+		color: #e99b7f;
+		font-size: 0.48rem;
+		display: grid;
+		place-items: center;
+	}
 	.objective-banner {
 		position: absolute;
 		right: 1rem;
@@ -921,7 +1006,8 @@
 		gap: 0.65rem;
 	}
 	.turn-objective,
-	.turn-choices {
+	.turn-choices,
+	.threat-ledger {
 		grid-column: 1 / -1;
 	}
 	.turn-objective {
@@ -945,6 +1031,49 @@
 	}
 	.turn-objective small {
 		color: #727c7b;
+	}
+	.threat-ledger {
+		border: 1px solid #633b32;
+		background: linear-gradient(120deg, rgba(86, 35, 27, 0.35), #0e1214);
+		max-height: 12rem;
+		overflow-y: auto;
+	}
+	.threat-ledger > div,
+	.threat-ledger article {
+		padding: 0.65rem 0.8rem;
+		border-bottom: 1px solid rgba(130, 67, 53, 0.35);
+	}
+	.threat-ledger > div {
+		display: flex;
+		justify-content: space-between;
+		color: #d2775f;
+		font-size: 0.55rem;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+	}
+	.threat-ledger article:last-child {
+		border-bottom: 0;
+	}
+	.threat-ledger article {
+		display: grid;
+		grid-template-columns: 8rem 1fr;
+		gap: 0.2rem 0.8rem;
+	}
+	.threat-ledger article strong {
+		color: #e6a088;
+		font:
+			0.78rem Georgia,
+			serif;
+	}
+	.threat-ledger article p {
+		margin: 0;
+		color: #b5aaa4;
+		font-size: 0.66rem;
+	}
+	.threat-ledger article small {
+		grid-column: 2;
+		color: #706c69;
+		font-size: 0.55rem;
 	}
 	.turn-choices {
 		display: grid;
