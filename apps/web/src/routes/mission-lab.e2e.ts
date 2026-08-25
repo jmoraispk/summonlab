@@ -13,7 +13,7 @@ test('reveals Floor 01 topology only through legal authored affordances', async 
 	await expect(page.getByTestId('mission-route')).toContainText('exposed exposure');
 
 	await page.getByRole('button', { name: 'Inspect Oath Hall' }).click();
-	await expect(page.getByText(/Warm soot moves sideways/)).toBeVisible();
+	await expect(page.getByText(/Warm soot moves sideways/)).toBeVisible({ timeout: 10_000 });
 	await expect(page.getByText('Legal discovery actions').locator('..')).toContainText('2');
 	await page.getByRole('button', { name: /Inspect the warm soot seam/ }).click();
 

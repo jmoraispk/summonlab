@@ -1,0 +1,59 @@
+import { expect, test } from '@playwright/test';
+
+const recipe = {
+	seed: 'ember-01',
+	generationVersion: 'human-v1',
+	cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+};
+
+test('prepares, retreats, retries, and extracts one replayable Floor 01 party', async ({
+	page,
+	request
+}) => {
+	const createdResponse = await request.post('/api/runs', {
+		data: { recipe, controlMode: 'wait', directive: '' }
+	});
+	expect(createdResponse.status()).toBe(201);
+	const created = (await createdResponse.json()) as { runId: string };
+
+	await page.goto(`/mission/${created.runId}`);
+	await expect(page.getByRole('heading', { name: /The Unlit Muster/ })).toBeVisible();
+	await expect(
+		page.getByText('31f756076a3e67ad9023108400464e9a0ab9995637266b1b9f41c802d3a48b02')
+	).toBeVisible();
+	await expect(page.getByTestId('hero-roster-card')).toContainText('Mara Vey');
+	await expect(page.locator('.phase-heading h2')).toHaveText('available');
+
+	await page.getByTestId('prepare-party').click();
+	await expect(page.locator('.phase-heading h2')).toHaveText('preparing');
+	await expect(page.getByText('mission.preparation.started')).toBeVisible();
+	await page.getByTestId('deploy-party').click();
+	await expect(page.locator('.phase-heading h2')).toHaveText('deployed');
+	await expect(page.locator('.deployed-figures')).toBeVisible();
+	await page.getByTestId('retreat-party').click();
+	await expect(page.locator('.phase-heading h2')).toHaveText('retreat');
+	await expect(page.getByText('mission.retreated')).toBeVisible();
+
+	await page.getByTestId('prepare-party').click();
+	await expect(page.locator('.scene-caption')).toContainText('Attempt 2');
+	await page.getByTestId('deploy-party').click();
+	await page.getByTestId('prove-objective').click();
+	await expect(page.locator('.phase-heading h2')).toHaveText('extraction');
+	await expect(page.getByText('mission.extraction.opened')).toBeVisible();
+
+	if (process.env.CAPTURE_PHASE6_MISSION_LIFECYCLE) {
+		await page.setViewportSize({ width: 1440, height: 1100 });
+		await page.screenshot({
+			path: process.env.CAPTURE_PHASE6_MISSION_LIFECYCLE,
+			fullPage: true
+		});
+	}
+
+	await page.getByTestId('extract-party').click();
+	await expect(page.locator('.phase-heading h2')).toHaveText('success');
+	await expect(page.getByText('mission.extracted')).toBeVisible();
+	await page.reload();
+	await expect(page.locator('.phase-heading h2')).toHaveText('success');
+	await expect(page.getByText('7 transitions')).toBeVisible();
+	await expect(page.getByText('Floor 01 is complete.')).toBeVisible();
+});

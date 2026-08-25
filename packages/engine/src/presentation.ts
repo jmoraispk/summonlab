@@ -7,6 +7,7 @@ import {
 	type EngineGameStateV8,
 	type EngineGameStateV9,
 	type EngineGameStateV10,
+	type EngineGameStateV11,
 	type EngineSnapshot,
 	type HeroConversationPresentation,
 	type RoutineKind,
@@ -65,6 +66,7 @@ function poseForHero(
 		| EngineGameStateV8
 		| EngineGameStateV9
 		| EngineGameStateV10
+		| EngineGameStateV11
 	)['heroes'][string]
 ): {
 	pose: SettlementPose;
@@ -99,10 +101,11 @@ export function projectSettlementPresentation(
 		state.schemaVersion !== 7 &&
 		state.schemaVersion !== 8 &&
 		state.schemaVersion !== 9 &&
-		state.schemaVersion !== 10
+		state.schemaVersion !== 10 &&
+		state.schemaVersion !== 11
 	) {
 		throw new Error(
-			`Settlement presentation requires engine-v5 through engine-v10, received v${state.schemaVersion}`
+			`Settlement presentation requires engine-v5 through engine-v11, received v${state.schemaVersion}`
 		);
 	}
 	const gameDate = new Date(projectedGameTime);
@@ -153,7 +156,8 @@ export function projectSettlementPresentation(
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
-		state.schemaVersion === 10
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 			? Object.values(state.heroes)
 					.filter((hero) => hero.lifeState !== 'synthesized')
 					.sort((left, right) => left.heroId.localeCompare(right.heroId))
@@ -245,7 +249,8 @@ export function projectSettlementPresentation(
 			state.schemaVersion === 7 ||
 			state.schemaVersion === 8 ||
 			state.schemaVersion === 9 ||
-			state.schemaVersion === 10
+			state.schemaVersion === 10 ||
+			state.schemaVersion === 11
 				? state.settlement.firstEmber
 				: null,
 		buildings,
@@ -256,7 +261,7 @@ export function projectSettlementPresentation(
 
 function communicationObjectSummary(
 	object: (
-		EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10
+		EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11
 	)['society']['beliefs'][string]['object']
 ): string {
 	if (object.kind === 'text') return object.text;
@@ -275,7 +280,12 @@ export function projectHeroConversationPresentation(
 	const hero = state.heroes[heroId];
 	if (!hero) throw new Error(`Unknown hero: ${heroId}`);
 	let availability: HeroConversationPresentation['availability'] = 'available';
-	if (state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10)
+	if (
+		state.schemaVersion !== 8 &&
+		state.schemaVersion !== 9 &&
+		state.schemaVersion !== 10 &&
+		state.schemaVersion !== 11
+	)
 		availability = 'legacy-history';
 	else {
 		const heroV8 = state.heroes[heroId]!;
@@ -288,7 +298,10 @@ export function projectHeroConversationPresentation(
 	}
 
 	const acts =
-		state.schemaVersion === 8 || state.schemaVersion === 9 || state.schemaVersion === 10
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 			? Object.values(state.society.communicativeActs)
 					.filter((act) => act.witnesses.some((witness) => witness.heroId === heroId))
 					.sort(
@@ -316,7 +329,10 @@ export function projectHeroConversationPresentation(
 					}))
 			: [];
 	const beliefsLearnedFromCommunication =
-		state.schemaVersion === 8 || state.schemaVersion === 9 || state.schemaVersion === 10
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 			? Object.values(state.society.beliefs)
 					.filter(
 						(belief) =>
@@ -345,7 +361,7 @@ export function projectHeroConversationPresentation(
 					}))
 			: [];
 	const turns =
-		state.schemaVersion === 9 || state.schemaVersion === 10
+		state.schemaVersion === 9 || state.schemaVersion === 10 || state.schemaVersion === 11
 			? Object.values(state.society.conversationTurns)
 					.filter((turn) => turn.heroId === heroId)
 					.sort(

@@ -514,6 +514,30 @@ a three-action low-exposure Ash Duct route. Five required story anchors remain i
 slot can select one of two cataloged optional expressions but cannot alter world laws, objective,
 arena truth, reward budget, or required anchors. See ADR 0030.
 
+### Implemented authoritative mission lifecycle
+
+`engine-v11` adds one hash-bound `MissionRunState` to new runs while leaving v1–v10 schemas and
+event bytes unchanged. Bootstrap stores the exact Floor 01 mission id, content version, and SHA-256;
+every mission transition resolves that binding against verified content before deriving legal
+actions or applying an event. Missing or drifted content is a replay-integrity failure, never a
+silent migration.
+
+The lifecycle is `available → preparing → deployed/resolving → extraction → success`, with
+pre-deployment cancellation and boundary-only retreat. Preparation creates a deterministic attempt
+id and a Master-first party, validates the package's 1–5 member limits, and requires every living
+member to be idle at the summoning gate. Prepared/deployed participants lose settlement actions so
+offline routines cannot use the same hero concurrently. Revision and cancellation are legal only
+before deployment; cancellation and retreat release the party and permit a new numbered attempt.
+Success is terminal for this package and therefore cannot be farmed.
+
+Deployment writes every party member's authoritative entry position and the entry visit into
+mission knowledge. The current prototype exposes objective completion through a development-only
+server control, but the command itself is system-sourced and verifies every primary objective id;
+the client cannot claim arbitrary completion. Extraction and retreat require the whole party at an
+authored extraction/retreat boundary. Each transition emits an immutable mission event whose payload
+the reducer recomputes and verifies during strict replay. `/mission/:runId` is a renderer and command
+surface over this state, not an alternative mission engine. See ADR 0031.
+
 ### Implemented reconnect projection
 
 Every new event schedules a run-specific PostgreSQL notification in its command transaction. The
@@ -530,15 +554,16 @@ cannot provide facts, ordering, rewards, or progression values.
 
 ### Implemented living-scene projection
 
-`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v10` snapshot and persisted accelerated
+`GET /api/runs/:runId/projection` reads the cached `engine-v5` through `engine-v11` snapshot and persisted accelerated
 clock after running due catch-up through the normal event path. One pure projection produces game
 time/day phase, building power and assignment capacity, physical occupancy, hero pose, activity
 label, optional engine-provided route nodes, and the bounded First Ember lifecycle, modifiers, and
 immediate reactions. For `engine-v7` through `engine-v9`, the same bounded projection adds each visible hero’s held
 belief count, latest direct observation, relationship language, authority standing, and active
 promise terms. Raw social dimensions and provenance remain available in the development replay
-inspector. `engine-v10` additionally exposes direction lifecycle and influence in the replay
-ledger. The response carries the exact event cursor and state hash that explain the scene.
+inspector. `engine-v10` and `engine-v11` additionally expose direction lifecycle and influence in
+the replay ledger. The response carries the exact event cursor and state hash that explain the
+scene.
 
 The player refreshes this bounded view after each ordered SSE cue and every 15 seconds while the
 page is visible. Code-owned scene layers interpolate travel below completion, grade the approved

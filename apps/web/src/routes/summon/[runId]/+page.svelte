@@ -413,7 +413,12 @@
 				<span>First Ember / Gate 00</span>
 				<code>{snapshot.runId.slice(0, 8)}</code>
 			</div>
-			<a class="forge-link" href={resolve('/forge')}>Abort to forge</a>
+			<nav class="gate-nav" aria-label="Run destinations">
+				<a class="forge-link" href={resolve('/forge')}>Forge</a>
+				<a class="mission-link" href={resolve('/mission/[runId]', { runId: snapshot.runId })}
+					>Floor 01</a
+				>
+			</nav>
 		</header>
 
 		<div class="chamber">
@@ -1036,6 +1041,23 @@
 		font-weight: 800;
 		letter-spacing: 0.24em;
 		text-transform: uppercase;
+	}
+
+	.gate-nav {
+		justify-self: end;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-size: 0.62rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.mission-link {
+		padding: 0.55rem 0.75rem;
+		border: 1px solid rgba(102, 211, 207, 0.42);
+		color: #83d9d5;
+		background: rgba(30, 97, 96, 0.14);
 	}
 
 	.run-meta {

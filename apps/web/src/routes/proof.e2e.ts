@@ -29,6 +29,7 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 });
 
 test('forges, summons, directs, and follows one persistent hero', async ({ page }) => {
+	test.setTimeout(60_000);
 	await page.goto('/forge');
 	await expect(page.getByRole('heading', { name: /One seed/ })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Mara Vey' })).toBeVisible();

@@ -10,7 +10,8 @@ import {
 	type EngineGameStateV7,
 	type EngineGameStateV8,
 	type EngineGameStateV9,
-	type EngineGameStateV10
+	type EngineGameStateV10,
+	type EngineGameStateV11
 } from '@summonlab/contracts';
 import {
 	ENGINE_CONTENT_VERSION,
@@ -66,6 +67,7 @@ async function loadState(
 	| EngineGameStateV8
 	| EngineGameStateV9
 	| EngineGameStateV10
+	| EngineGameStateV11
 > {
 	const snapshot = await sql.begin((transaction) =>
 		getEngineSnapshotInTransaction(transaction, runId)
@@ -77,9 +79,10 @@ async function loadState(
 		snapshot.state.schemaVersion !== 7 &&
 		snapshot.state.schemaVersion !== 8 &&
 		snapshot.state.schemaVersion !== 9 &&
-		snapshot.state.schemaVersion !== 10
+		snapshot.state.schemaVersion !== 10 &&
+		snapshot.state.schemaVersion !== 11
 	) {
-		throw new Error(`Catch-up requires engine-v5 through engine-v10 state: ${runId}`);
+		throw new Error(`Catch-up requires engine-v5 through engine-v11 state: ${runId}`);
 	}
 	return snapshot.state;
 }

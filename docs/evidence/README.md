@@ -75,3 +75,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   showing seven-node authored topology, the low-exposure Ash Duct route, witnessed observations,
   one bounded story patch slot among five immutable anchors, encounter/reward declarations, and the
   explicit no-run-mutation boundary.
+- `phase-6-mission-lifecycle.png` — authoritative Floor 01 threshold during extraction, showing the
+  immutable content binding, deployed Master/hero figures, attempt-two state after a prior retreat,
+  selected party cards, objective-gated extraction action, and append-only mission transitions.

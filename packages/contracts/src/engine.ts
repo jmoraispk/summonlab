@@ -9,6 +9,7 @@ import {
 	RewardDeltaSchema
 } from './event.js';
 import { RunStatusSchema } from './run.js';
+import { MissionArenaKnowledgeSchema, MissionSlugSchema } from './mission.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from './settlement.js';
 import {
 	ConversationActKindSchema,
@@ -1314,10 +1315,145 @@ const EngineGameStateV10BaseSchema = z
 	})
 	.strict();
 
+export const MissionAttemptStatusSchema = z.enum([
+	'preparing',
+	'deployed',
+	'resolving',
+	'extraction',
+	'success',
+	'failure',
+	'retreat',
+	'canceled',
+	'death'
+]);
+
+export const MissionAttemptOutcomeSchema = z.enum([
+	'success',
+	'failure',
+	'retreat',
+	'canceled',
+	'death'
+]);
+
+export const MissionContentBindingSchema = z
+	.object({
+		missionId: MissionSlugSchema,
+		contentVersion: ContentVersionSchema,
+		contentHash: StateHashSchema
+	})
+	.strict();
+
+export const MissionPartySchema = z
+	.object({
+		masterId: EntityIdSchema,
+		heroIds: z.array(EntityIdSchema).max(7),
+		memberIds: z.array(EntityIdSchema).min(1).max(8)
+	})
+	.strict()
+	.superRefine((party, context) => {
+		if (
+			party.memberIds[0] !== party.masterId ||
+			party.memberIds.slice(1).join('|') !== party.heroIds.join('|')
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission party members must be Master first' });
+		}
+		if (
+			new Set(party.heroIds).size !== party.heroIds.length ||
+			new Set(party.memberIds).size !== party.memberIds.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission party members must be unique' });
+		}
+	});
+
+export const MissionAttemptSchema = z
+	.object({
+		attemptId: EntityIdSchema,
+		ordinal: z.number().int().positive(),
+		status: MissionAttemptStatusSchema,
+		party: MissionPartySchema,
+		entryNodeId: MissionSlugSchema,
+		extractionNodeId: MissionSlugSchema,
+		positions: z.record(EntityIdSchema, MissionSlugSchema),
+		knowledge: MissionArenaKnowledgeSchema,
+		completedObjectiveIds: z.array(MissionSlugSchema).max(20),
+		preparedAt: IsoDateTimeSchema,
+		deployedAt: IsoDateTimeSchema.nullable(),
+		extractionOpenedAt: IsoDateTimeSchema.nullable(),
+		endedAt: IsoDateTimeSchema.nullable(),
+		outcome: MissionAttemptOutcomeSchema.nullable()
+	})
+	.strict()
+	.superRefine((attempt, context) => {
+		if (new Set(attempt.completedObjectiveIds).size !== attempt.completedObjectiveIds.length) {
+			context.addIssue({ code: 'custom', message: 'Completed mission objectives must be unique' });
+		}
+		const terminal = ['success', 'failure', 'retreat', 'canceled', 'death'].includes(
+			attempt.status
+		);
+		if (terminal !== (attempt.endedAt !== null) || terminal !== (attempt.outcome !== null)) {
+			context.addIssue({ code: 'custom', message: 'Mission terminal fields are inconsistent' });
+		}
+		if (terminal && attempt.outcome !== attempt.status) {
+			context.addIssue({ code: 'custom', message: 'Mission outcome must match terminal status' });
+		}
+		if (
+			(attempt.status !== 'preparing' && attempt.status !== 'canceled') !==
+			(attempt.deployedAt !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission deployment timestamp is inconsistent' });
+		}
+		if (
+			(['extraction', 'success'].includes(attempt.status) && attempt.extractionOpenedAt === null) ||
+			(['preparing', 'deployed', 'resolving', 'canceled'].includes(attempt.status) &&
+				attempt.extractionOpenedAt !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission extraction timestamp is inconsistent' });
+		}
+		const positionIds = Object.keys(attempt.positions).sort();
+		const memberIds = [...attempt.party.memberIds].sort();
+		const positionsRequired = attempt.status !== 'preparing' && attempt.status !== 'canceled';
+		if (
+			positionsRequired ? positionIds.join('|') !== memberIds.join('|') : positionIds.length !== 0
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission positions must match the deployed party'
+			});
+		}
+	});
+
+export const MissionRunStateSchema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptSchema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		if ((mission.attempt === null) !== (mission.attemptCount === 0)) {
+			context.addIssue({ code: 'custom', message: 'Mission attempt count is inconsistent' });
+		}
+		if (mission.attempt && mission.attempt.ordinal !== mission.attemptCount) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Current mission attempt ordinal is inconsistent'
+			});
+		}
+	});
+
+const EngineGameStateV11BaseSchema = z
+	.object({
+		...EngineGameStateV10BaseSchema.shape,
+		schemaVersion: z.literal(11),
+		mission: MissionRunStateSchema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
-	| z.infer<typeof EngineGameStateV10BaseSchema>;
+	| z.infer<typeof EngineGameStateV10BaseSchema>
+	| z.infer<typeof EngineGameStateV11BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -1664,6 +1800,71 @@ export const EngineGameStateV10Schema = EngineGameStateV10BaseSchema.superRefine
 	}
 );
 
+export const EngineGameStateV11Schema = EngineGameStateV11BaseSchema.superRefine(
+	(state, context) => {
+		validateCommunicationEngineState(state, context);
+		for (const turn of Object.values(state.society.conversationTurns)) {
+			const act = state.society.communicativeActs[turn.communicationActId];
+			if (
+				turn.masterId !== state.master.masterId ||
+				!state.heroes[turn.heroId] ||
+				!act?.witnesses.some(
+					(witness) => witness.heroId === turn.heroId && witness.role === 'intended'
+				)
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Conversation turn participants and addressed witness must exist'
+				});
+			}
+		}
+		for (const directive of Object.values(state.society.directives)) {
+			const witnessObservers = directive.witnessObservationIds.map(
+				(observationId) => state.society.observations[observationId]?.observerHeroId
+			);
+			if (
+				directive.runId !== state.runId ||
+				directive.authorId !== state.master.masterId ||
+				directive.witnessEventId === null ||
+				directive.recipientIds.some(
+					(heroId) => !state.heroes[heroId] || !witnessObservers.includes(heroId)
+				) ||
+				directive.witnessObservationIds.some((observationId) => {
+					const observation = state.society.observations[observationId];
+					return !observation || observation.sourceEventId !== directive.witnessEventId;
+				}) ||
+				(directive.status === 'active' &&
+					directive.expiresAt !== null &&
+					Date.parse(directive.expiresAt) <= Date.parse(state.simulatedAt))
+			) {
+				context.addIssue({ code: 'custom', message: 'Directive lifecycle is inconsistent' });
+			}
+		}
+		for (const influence of Object.values(state.society.directiveInfluences)) {
+			if (!state.heroes[influence.heroId]) {
+				context.addIssue({ code: 'custom', message: 'Directive influence hero must exist' });
+			}
+		}
+		const attempt = state.mission.attempt;
+		if (!attempt) return;
+		if (
+			attempt.party.masterId !== state.master.masterId ||
+			attempt.party.heroIds.some((heroId) => !state.heroes[heroId])
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission party members must exist in the run' });
+		}
+		if (
+			['preparing', 'deployed', 'resolving', 'extraction'].includes(attempt.status) &&
+			attempt.party.heroIds.some((heroId) => state.heroes[heroId]?.lifeState !== 'active')
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'An active mission party requires living heroes'
+			});
+		}
+	}
+);
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
@@ -1674,7 +1875,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV7Schema,
 	EngineGameStateV8Schema,
 	EngineGameStateV9Schema,
-	EngineGameStateV10Schema
+	EngineGameStateV10Schema,
+	EngineGameStateV11Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -1893,6 +2095,37 @@ export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
 	damageKind: z.enum(['hazard', 'training', 'combat'])
 }).strict();
 
+export const PrepareMissionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.prepare'),
+	heroIds: z.array(EntityIdSchema).max(7)
+}).strict();
+
+export const ReviseMissionPartyCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.revise.party'),
+	heroIds: z.array(EntityIdSchema).max(7)
+}).strict();
+
+export const CancelMissionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.cancel')
+}).strict();
+
+export const DeployMissionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.deploy')
+}).strict();
+
+export const OpenMissionExtractionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.open.extraction'),
+	completedObjectiveIds: z.array(MissionSlugSchema).min(1).max(20)
+}).strict();
+
+export const ExtractMissionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.extract')
+}).strict();
+
+export const RetreatMissionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.retreat')
+}).strict();
+
 export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
@@ -1914,7 +2147,24 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	EquipItemCommandSchema,
 	AdvanceSimulationCommandSchema,
 	SyncSimulationClockCommandSchema,
-	ApplyDamageCommandSchema
+	ApplyDamageCommandSchema,
+	PrepareMissionCommandSchema,
+	ReviseMissionPartyCommandSchema,
+	CancelMissionCommandSchema,
+	DeployMissionCommandSchema,
+	OpenMissionExtractionCommandSchema,
+	ExtractMissionCommandSchema,
+	RetreatMissionCommandSchema
+]);
+
+export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
+	z.object({ action: z.literal('prepare'), heroIds: z.array(EntityIdSchema).max(7) }).strict(),
+	z.object({ action: z.literal('revise-party'), heroIds: z.array(EntityIdSchema).max(7) }).strict(),
+	z.object({ action: z.literal('cancel') }).strict(),
+	z.object({ action: z.literal('deploy') }).strict(),
+	z.object({ action: z.literal('prove-objective') }).strict(),
+	z.object({ action: z.literal('extract') }).strict(),
+	z.object({ action: z.literal('retreat') }).strict()
 ]);
 
 export const EntropyDrawSchema = z
@@ -2100,6 +2350,7 @@ export type EngineGameStateV7 = z.infer<typeof EngineGameStateV7Schema>;
 export type EngineGameStateV8 = z.infer<typeof EngineGameStateV8Schema>;
 export type EngineGameStateV9 = z.infer<typeof EngineGameStateV9Schema>;
 export type EngineGameStateV10 = z.infer<typeof EngineGameStateV10Schema>;
+export type EngineGameStateV11 = z.infer<typeof EngineGameStateV11Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -2109,6 +2360,10 @@ export type FirstEmberFacility = z.infer<typeof FirstEmberFacilitySchema>;
 export type FirstEmberRationale = z.infer<typeof FirstEmberRationaleSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
+export type MissionAttempt = z.infer<typeof MissionAttemptSchema>;
+export type MissionAttemptStatus = z.infer<typeof MissionAttemptStatusSchema>;
+export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
+export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
 export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
 export type DirectiveRequest = z.infer<typeof DirectiveRequestSchema>;

@@ -12,6 +12,7 @@ import {
 	type EngineGameStateV8,
 	type EngineGameStateV9,
 	type EngineGameStateV10,
+	type EngineGameStateV11,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -24,7 +25,8 @@ import { deterministicUuid, hashCanonical } from './hash.js';
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
 export const DEFAULT_MEMORY_CHARACTER_LIMIT = 1_800;
-type EngineKnowledgeState = EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10;
+type EngineKnowledgeState =
+	EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -248,7 +250,7 @@ const CONVERSATION_INTENT_TERMS = Object.freeze({
 } as const);
 
 function conversationDirectives(
-	state: EngineGameStateV9 | EngineGameStateV10,
+	state: EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11,
 	heroId: string
 ): PlayerDirective[] {
 	return Object.values(state.society.conversationTurns)
@@ -289,7 +291,7 @@ function conversationDirectives(
 }
 
 function storedDirectives(
-	state: EngineGameStateV10,
+	state: EngineGameStateV10 | EngineGameStateV11,
 	decisionKind: HeroDecisionKind
 ): PlayerDirective[] {
 	return Object.values(state.society.directives)
@@ -336,7 +338,8 @@ export function assembleHeroDecisionPacket(
 	if (
 		snapshot.state.schemaVersion !== 8 &&
 		snapshot.state.schemaVersion !== 9 &&
-		snapshot.state.schemaVersion !== 10
+		snapshot.state.schemaVersion !== 10 &&
+		snapshot.state.schemaVersion !== 11
 	) {
 		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
@@ -531,8 +534,10 @@ export function assembleHeroDecisionPacket(
 		social: { relationships, authority, promises },
 		activeDirectives: applicableDirectives(state, input.heroId, [
 			...(input.directives ?? []),
-			...(state.schemaVersion === 10 ? storedDirectives(state, input.decisionKind) : []),
-			...(state.schemaVersion === 9 || state.schemaVersion === 10
+			...(state.schemaVersion === 10 || state.schemaVersion === 11
+				? storedDirectives(state, input.decisionKind)
+				: []),
+			...(state.schemaVersion === 9 || state.schemaVersion === 10 || state.schemaVersion === 11
 				? conversationDirectives(state, input.heroId)
 				: [])
 		]),

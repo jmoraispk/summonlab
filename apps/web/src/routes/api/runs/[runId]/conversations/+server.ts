@@ -42,7 +42,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const config = getConfig();
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 9 && snapshot.state.schemaVersion !== 10) {
+		if (
+			snapshot.state.schemaVersion !== 9 &&
+			snapshot.state.schemaVersion !== 10 &&
+			snapshot.state.schemaVersion !== 11
+		) {
 			return json(
 				{ message: 'This history predates hero conversation outcomes.' },
 				{ status: 409 }

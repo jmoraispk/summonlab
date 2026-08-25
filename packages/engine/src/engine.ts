@@ -17,6 +17,7 @@ import {
 	EngineGameStateV8Schema,
 	EngineGameStateV9Schema,
 	EngineGameStateV10Schema,
+	EngineGameStateV11Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -28,6 +29,7 @@ import {
 	InjurySchema,
 	LegalActionSchema,
 	NeedStateSchema,
+	MissionRunStateSchema,
 	ResourceKeySchema,
 	RewardDeltaSchema,
 	RoutineResolutionSchema,
@@ -55,6 +57,7 @@ import {
 	type EngineGameStateV8,
 	type EngineGameStateV9,
 	type EngineGameStateV10,
+	type EngineGameStateV11,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
@@ -64,6 +67,8 @@ import {
 	type HeroDecisionPacket,
 	type HeroPolicyResult,
 	type LegalAction,
+	type MissionPackage,
+	type MissionRunState,
 	type RewardDelta,
 	type RoutineKind,
 	type SettlementDefinition,
@@ -74,7 +79,11 @@ import {
 	type DirectiveRecord,
 	type ScheduledEvent
 } from '@summonlab/contracts';
-import { HEARTH_01_DEFINITION, planSettlementRoute } from '@summonlab/content';
+import {
+	HEARTH_01_DEFINITION,
+	TOWER_FLOOR_01_PACKAGE,
+	planSettlementRoute
+} from '@summonlab/content';
 import { z } from 'zod';
 
 import { createEntropyCursor, drawInteger } from './entropy.js';
@@ -83,7 +92,8 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v10';
+export const ENGINE_CONTENT_VERSION = 'engine-v11';
+export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
 export const DIRECTIVE_ENGINE_CONTENT_VERSION = 'engine-v10';
 export const CONVERSATION_ENGINE_CONTENT_VERSION = 'engine-v9';
 export const COMMUNICATION_ENGINE_CONTENT_VERSION = 'engine-v8';
@@ -126,14 +136,16 @@ type EngineGameStateModern =
 	| EngineGameStateV7
 	| EngineGameStateV8
 	| EngineGameStateV9
-	| EngineGameStateV10;
+	| EngineGameStateV10
+	| EngineGameStateV11;
 type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6
 	| EngineGameStateV7
 	| EngineGameStateV8
 	| EngineGameStateV9
-	| EngineGameStateV10;
+	| EngineGameStateV10
+	| EngineGameStateV11;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -492,6 +504,22 @@ const DamagePayloadSchema = EmptyMetadataSchema.extend({
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
+const MissionTransitionPayloadSchema = EmptyMetadataSchema.extend({
+	transition: z.enum([
+		'prepare',
+		'revise-party',
+		'cancel',
+		'deploy',
+		'open-extraction',
+		'extract',
+		'retreat'
+	]),
+	mission: MissionRunStateSchema,
+	heroIds: z.array(z.string().uuid()).max(7),
+	completedObjectiveIds: z.array(z.string()).max(20),
+	nextVersion: z.number().int().positive()
+}).strict();
+
 function systemSource() {
 	return {
 		source: 'system' as const,
@@ -646,8 +674,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
-	const state = EngineGameStateV10Schema.parse({
-		schemaVersion: 10,
+	const missionContent = verifiedMissionContent();
+	const state = EngineGameStateV11Schema.parse({
+		schemaVersion: 11,
 		runId: input.runId,
 		seed: input.seed,
 		contentVersion: ENGINE_CONTENT_VERSION,
@@ -747,6 +776,15 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			}
 		},
 		society: createBootstrapSociety(input.heroId, masterId, eventId, simulatedAt),
+		mission: {
+			binding: {
+				missionId: missionContent.missionId,
+				contentVersion: missionContent.contentVersion,
+				contentHash: missionContent.contentHash
+			},
+			attemptCount: 0,
+			attempt: null
+		},
 		story: { envelopeId: 'first-ember-v1', branch: null }
 	});
 	const stateHash = hashParsedGameState(state);
@@ -786,6 +824,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 }
 
 let verifiedSettlement: SettlementDefinition | undefined;
+let verifiedMission: MissionPackage | undefined;
 
 function verifiedSettlementContent(): SettlementDefinition {
 	if (verifiedSettlement) return verifiedSettlement;
@@ -798,6 +837,19 @@ function verifiedSettlementContent(): SettlementDefinition {
 	}
 	verifiedSettlement = HEARTH_01_DEFINITION;
 	return verifiedSettlement;
+}
+
+function verifiedMissionContent(): MissionPackage {
+	if (verifiedMission) return verifiedMission;
+	const { contentHash, ...payload } = TOWER_FLOOR_01_PACKAGE;
+	const calculatedHash = hashCanonical(payload);
+	if (calculatedHash !== contentHash) {
+		throw new Error(
+			`Tower Floor 01 content hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
+		);
+	}
+	verifiedMission = TOWER_FLOOR_01_PACKAGE;
+	return verifiedMission;
 }
 
 function createBuildingStates(definition: SettlementDefinition) {
@@ -930,7 +982,12 @@ const FIRST_EMBER_PROMISE_TERMS = Object.freeze({
 } as const satisfies Record<FirstEmberRationale, string>);
 
 function buildFirstEmberSociety(
-	state: EngineGameStateV7 | EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10,
+	state:
+		| EngineGameStateV7
+		| EngineGameStateV8
+		| EngineGameStateV9
+		| EngineGameStateV10
+		| EngineGameStateV11,
 	eventId: string,
 	buildingId: FirstEmberFacility,
 	rationale: FirstEmberRationale,
@@ -1091,7 +1148,8 @@ function buildFirstEmberSociety(
 			}
 		}
 	};
-	if (state.schemaVersion === 10) return SocietyStateV4Schema.parse(candidate);
+	if (state.schemaVersion === 10 || state.schemaVersion === 11)
+		return SocietyStateV4Schema.parse(candidate);
 	if (state.schemaVersion === 9) return SocietyStateV3Schema.parse(candidate);
 	return state.schemaVersion === 8
 		? SocietyStateV2Schema.parse(candidate)
@@ -1103,7 +1161,8 @@ type CommunicationInput = Pick<
 	z.infer<typeof CommunicativeActSchema>,
 	'kind' | 'topic' | 'exactText' | 'tone' | 'delivery'
 > & { readonly targetHeroId: string };
-type EngineCommunicationState = EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10;
+type EngineCommunicationState =
+	EngineGameStateV8 | EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11;
 
 function heroCanHearCommunication(hero: EngineCommunicationState['heroes'][string]): boolean {
 	return (
@@ -1250,7 +1309,7 @@ function buildCommunicativeSociety(
 	return {
 		communicativeAct,
 		society:
-			state.schemaVersion === 10
+			state.schemaVersion === 10 || state.schemaVersion === 11
 				? SocietyStateV4Schema.parse(candidate)
 				: state.schemaVersion === 9
 					? SocietyStateV3Schema.parse(candidate)
@@ -1269,7 +1328,7 @@ function nextGameDayStart(gameTime: string): string {
 }
 
 function buildDirectiveChange(
-	state: EngineGameStateV10,
+	state: EngineGameStateV10 | EngineGameStateV11,
 	eventId: string,
 	command: DirectiveIssueCommand
 ): {
@@ -1393,7 +1452,7 @@ function buildDirectiveChange(
 }
 
 function revokeDirective(
-	state: EngineGameStateV10,
+	state: EngineGameStateV10 | EngineGameStateV11,
 	eventId: string,
 	directiveId: string
 ): { directive: DirectiveRecord; society: SocietyStateV4 } {
@@ -1424,8 +1483,8 @@ const ORDER_INTENT_LABELS = Object.freeze({
 } as const satisfies Record<ConversationOrderIntent, string>);
 
 function conversationOrderScore(
-	state: EngineGameStateV9 | EngineGameStateV10,
-	hero: (EngineGameStateV9 | EngineGameStateV10)['heroes'][string],
+	state: EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11,
+	hero: (EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11)['heroes'][string],
 	intent: ConversationOrderIntent,
 	tone: MasterConverseCommand['tone']
 ) {
@@ -1501,7 +1560,9 @@ function conversationOrderScore(
 	};
 }
 
-function conversationVoice(hero: (EngineGameStateV9 | EngineGameStateV10)['heroes'][string]): {
+function conversationVoice(
+	hero: (EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11)['heroes'][string]
+): {
 	prefix: string;
 	question: string;
 } {
@@ -1522,7 +1583,7 @@ function conversationVoice(hero: (EngineGameStateV9 | EngineGameStateV10)['heroe
 }
 
 function buildConversationResponse(
-	state: EngineGameStateV9 | EngineGameStateV10,
+	state: EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11,
 	command: MasterConverseCommand
 ): z.infer<typeof HeroConversationTurnSchema>['response'] {
 	const hero = state.heroes[command.targetHeroId];
@@ -1578,7 +1639,7 @@ function buildConversationResponse(
 }
 
 function buildConversationSociety(
-	state: EngineGameStateV9 | EngineGameStateV10,
+	state: EngineGameStateV9 | EngineGameStateV10 | EngineGameStateV11,
 	eventId: string,
 	command: MasterConverseCommand
 ): {
@@ -1594,7 +1655,7 @@ function buildConversationSociety(
 		delivery: command.delivery
 	});
 	const baseSociety =
-		state.schemaVersion === 10
+		state.schemaVersion === 10 || state.schemaVersion === 11
 			? SocietyStateV4Schema.parse(communication.society)
 			: SocietyStateV3Schema.parse(communication.society);
 	const response = buildConversationResponse(state, command);
@@ -1699,7 +1760,7 @@ function buildConversationSociety(
 		}
 	};
 	const society =
-		state.schemaVersion === 10
+		state.schemaVersion === 10 || state.schemaVersion === 11
 			? SocietyStateV4Schema.parse(societyCandidate)
 			: SocietyStateV3Schema.parse(societyCandidate);
 	return { society, conversationTurn };
@@ -1731,6 +1792,7 @@ function settlementForState(
 		| EngineGameStateV8
 		| EngineGameStateV9
 		| EngineGameStateV10
+		| EngineGameStateV11
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -1775,7 +1837,8 @@ function routeHasCapacity(
 		| EngineGameStateV7
 		| EngineGameStateV8
 		| EngineGameStateV9
-		| EngineGameStateV10,
+		| EngineGameStateV10
+		| EngineGameStateV11,
 	definition: SettlementDefinition,
 	heroId: string,
 	targetNodeId: string,
@@ -1811,7 +1874,8 @@ function travelActions(
 		| EngineGameStateV7
 		| EngineGameStateV8
 		| EngineGameStateV9
-		| EngineGameStateV10,
+		| EngineGameStateV10
+		| EngineGameStateV11,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -1864,7 +1928,8 @@ function currentTravelFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
-		state.schemaVersion === 10
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
@@ -1875,7 +1940,8 @@ function currentRoutineFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
-		state.schemaVersion === 10
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -1890,8 +1956,9 @@ function hasNavigationState(
 	| EngineGameStateV7
 	| EngineGameStateV8
 	| EngineGameStateV9
-	| EngineGameStateV10 {
-	return [3, 4, 5, 6, 7, 8, 9, 10].includes(state.schemaVersion);
+	| EngineGameStateV10
+	| EngineGameStateV11 {
+	return [3, 4, 5, 6, 7, 8, 9, 10, 11].includes(state.schemaVersion);
 }
 
 function hasFacilityState(
@@ -1903,8 +1970,9 @@ function hasFacilityState(
 	| EngineGameStateV7
 	| EngineGameStateV8
 	| EngineGameStateV9
-	| EngineGameStateV10 {
-	return [4, 5, 6, 7, 8, 9, 10].includes(state.schemaVersion);
+	| EngineGameStateV10
+	| EngineGameStateV11 {
+	return [4, 5, 6, 7, 8, 9, 10, 11].includes(state.schemaVersion);
 }
 
 function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
@@ -1914,7 +1982,8 @@ function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
-		state.schemaVersion === 10
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 	);
 }
 
@@ -1925,12 +1994,232 @@ function hasFirstEmberState(
 	| EngineGameStateV7
 	| EngineGameStateV8
 	| EngineGameStateV9
-	| EngineGameStateV10 {
-	return [6, 7, 8, 9, 10].includes(state.schemaVersion);
+	| EngineGameStateV10
+	| EngineGameStateV11 {
+	return [6, 7, 8, 9, 10, 11].includes(state.schemaVersion);
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
 	return state.schemaVersion !== 1;
+}
+
+const ACTIVE_MISSION_STATUSES = new Set(['preparing', 'deployed', 'resolving', 'extraction']);
+
+function missionContentForState(state: EngineGameStateV11): MissionPackage {
+	const mission = verifiedMissionContent();
+	if (
+		state.mission.binding.missionId !== mission.missionId ||
+		state.mission.binding.contentVersion !== mission.contentVersion ||
+		state.mission.binding.contentHash !== mission.contentHash
+	) {
+		throw new ReplayIntegrityError('Mission content binding is unavailable', state.eventCursor);
+	}
+	return mission;
+}
+
+function missionPartyIsReserved(state: EngineGameStateV11, actorId: string): boolean {
+	const attempt = state.mission.attempt;
+	return Boolean(
+		attempt &&
+		ACTIVE_MISSION_STATUSES.has(attempt.status) &&
+		attempt.party.memberIds.includes(actorId)
+	);
+}
+
+function normalizedMissionHeroIds(heroIds: readonly string[]): string[] {
+	return [...heroIds].sort((left, right) => left.localeCompare(right));
+}
+
+function assertMissionPartyReady(state: EngineGameStateV11, heroIds: readonly string[]): void {
+	const mission = missionContentForState(state);
+	const normalized = normalizedMissionHeroIds(heroIds);
+	const partySize = normalized.length + 1;
+	if (
+		new Set(normalized).size !== normalized.length ||
+		partySize < mission.deployment.minimumPartyMembers ||
+		partySize > mission.deployment.maximumPartyMembers ||
+		state.master.lifeState !== 'alive' ||
+		state.master.location !== 'summoning-gate'
+	) {
+		throw new IllegalActionError('mission.party');
+	}
+	for (const heroId of normalized) {
+		const hero = state.heroes[heroId];
+		if (
+			!hero ||
+			hero.lifeState !== 'active' ||
+			hero.location !== 'summoning-gate' ||
+			hero.currentActivity !== null ||
+			hero.currentTravel !== null ||
+			hero.currentRoutine !== null ||
+			hero.assignment !== null
+		) {
+			throw new IllegalActionError('mission.party');
+		}
+	}
+}
+
+function prepareMissionAttempt(
+	state: EngineGameStateV11,
+	commandId: string,
+	heroIds: readonly string[]
+): MissionRunState {
+	assertMissionPartyReady(state, heroIds);
+	const prior = state.mission.attempt;
+	if (prior && !['canceled', 'retreat', 'failure'].includes(prior.status)) {
+		throw new IllegalActionError('mission.prepare');
+	}
+	const mission = missionContentForState(state);
+	const normalized = normalizedMissionHeroIds(heroIds);
+	const ordinal = state.mission.attemptCount + 1;
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attemptCount: ordinal,
+		attempt: {
+			attemptId: deterministicUuid(`${commandId}:mission-attempt:${ordinal}`),
+			ordinal,
+			status: 'preparing',
+			party: {
+				masterId: state.master.masterId,
+				heroIds: normalized,
+				memberIds: [state.master.masterId, ...normalized]
+			},
+			entryNodeId: mission.deployment.entryNodeIds[0]!,
+			extractionNodeId: mission.deployment.extractionNodeIds[0]!,
+			positions: {},
+			knowledge: { discoveryIds: [], visitedNodeIds: [] },
+			completedObjectiveIds: [],
+			preparedAt: state.simulatedAt,
+			deployedAt: null,
+			extractionOpenedAt: null,
+			endedAt: null,
+			outcome: null
+		}
+	});
+}
+
+function reviseMissionParty(
+	state: EngineGameStateV11,
+	heroIds: readonly string[]
+): MissionRunState {
+	const attempt = state.mission.attempt;
+	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.revise.party');
+	assertMissionPartyReady(state, heroIds);
+	const normalized = normalizedMissionHeroIds(heroIds);
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attempt: {
+			...attempt,
+			party: {
+				masterId: state.master.masterId,
+				heroIds: normalized,
+				memberIds: [state.master.masterId, ...normalized]
+			}
+		}
+	});
+}
+
+function cancelMissionPreparation(state: EngineGameStateV11): MissionRunState {
+	const attempt = state.mission.attempt;
+	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.cancel');
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attempt: { ...attempt, status: 'canceled', endedAt: state.simulatedAt, outcome: 'canceled' }
+	});
+}
+
+function deployMissionAttempt(state: EngineGameStateV11): MissionRunState {
+	const attempt = state.mission.attempt;
+	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.deploy');
+	assertMissionPartyReady(state, attempt.party.heroIds);
+	const positions = Object.fromEntries(
+		attempt.party.memberIds.map((memberId) => [memberId, attempt.entryNodeId])
+	);
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attempt: {
+			...attempt,
+			status: 'deployed',
+			positions,
+			knowledge: { discoveryIds: [], visitedNodeIds: [attempt.entryNodeId] },
+			deployedAt: state.simulatedAt
+		}
+	});
+}
+
+function openMissionExtraction(
+	state: EngineGameStateV11,
+	completedObjectiveIds: readonly string[]
+): MissionRunState {
+	const attempt = state.mission.attempt;
+	if (!attempt || !['deployed', 'resolving'].includes(attempt.status)) {
+		throw new IllegalActionError('mission.open.extraction');
+	}
+	const mission = missionContentForState(state);
+	const declaredIds = new Set(mission.objectives.map((objective) => objective.objectiveId));
+	const normalized = [...completedObjectiveIds].sort((left, right) => left.localeCompare(right));
+	const primaryIds = mission.objectives
+		.filter((objective) => objective.primary)
+		.map((objective) => objective.objectiveId);
+	if (
+		new Set(normalized).size !== normalized.length ||
+		normalized.some((objectiveId) => !declaredIds.has(objectiveId)) ||
+		primaryIds.some((objectiveId) => !normalized.includes(objectiveId))
+	) {
+		throw new IllegalActionError('mission.open.extraction');
+	}
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attempt: {
+			...attempt,
+			status: 'extraction',
+			completedObjectiveIds: normalized,
+			extractionOpenedAt: state.simulatedAt
+		}
+	});
+}
+
+function allPartyAtNode(state: EngineGameStateV11, nodeIds: readonly string[]): boolean {
+	const attempt = state.mission.attempt;
+	return Boolean(
+		attempt &&
+		attempt.party.memberIds.every((memberId) => nodeIds.includes(attempt.positions[memberId]!))
+	);
+}
+
+function completeMissionExtraction(state: EngineGameStateV11): MissionRunState {
+	const attempt = state.mission.attempt;
+	const mission = missionContentForState(state);
+	const primaryIds = mission.objectives
+		.filter((objective) => objective.primary)
+		.map((objective) => objective.objectiveId);
+	if (
+		attempt?.status !== 'extraction' ||
+		primaryIds.some((objectiveId) => !attempt.completedObjectiveIds.includes(objectiveId)) ||
+		!allPartyAtNode(state, [attempt.extractionNodeId])
+	) {
+		throw new IllegalActionError('mission.extract');
+	}
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attempt: { ...attempt, status: 'success', endedAt: state.simulatedAt, outcome: 'success' }
+	});
+}
+
+function retreatMissionAttempt(state: EngineGameStateV11): MissionRunState {
+	const attempt = state.mission.attempt;
+	const mission = missionContentForState(state);
+	if (
+		!attempt ||
+		!['deployed', 'resolving', 'extraction'].includes(attempt.status) ||
+		!allPartyAtNode(state, mission.retreat.nodeIds)
+	) {
+		throw new IllegalActionError('mission.retreat');
+	}
+	return MissionRunStateSchema.parse({
+		...state.mission,
+		attempt: { ...attempt, status: 'retreat', endedAt: state.simulatedAt, outcome: 'retreat' }
+	});
 }
 
 function gameDayIndex(gameTime: string): number {
@@ -2015,17 +2304,19 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 10
-			? EngineGameStateV10Schema.parse(stateInput)
-			: stateInput.schemaVersion === 9
-				? EngineGameStateV9Schema.parse(stateInput)
-				: stateInput.schemaVersion === 8
-					? EngineGameStateV8Schema.parse(stateInput)
-					: stateInput.schemaVersion === 7
-						? EngineGameStateV7Schema.parse(stateInput)
-						: stateInput.schemaVersion === 6
-							? EngineGameStateV6Schema.parse(stateInput)
-							: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 11
+			? EngineGameStateV11Schema.parse(stateInput)
+			: stateInput.schemaVersion === 10
+				? EngineGameStateV10Schema.parse(stateInput)
+				: stateInput.schemaVersion === 9
+					? EngineGameStateV9Schema.parse(stateInput)
+					: stateInput.schemaVersion === 8
+						? EngineGameStateV8Schema.parse(stateInput)
+						: stateInput.schemaVersion === 7
+							? EngineGameStateV7Schema.parse(stateInput)
+							: stateInput.schemaVersion === 6
+								? EngineGameStateV6Schema.parse(stateInput)
+								: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -2156,6 +2447,92 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 
 function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 	const actorId = state.master.masterId;
+	if (state.schemaVersion === 11 && state.mission.attempt) {
+		const attempt = state.mission.attempt;
+		if (attempt.status === 'preparing') {
+			return [
+				action({
+					actionId: 'mission.revise.party',
+					actorId,
+					kind: 'interact',
+					label: 'Revise the threshold party',
+					description: 'Replace the reserved hero list before deployment.',
+					targetIds: attempt.party.heroIds,
+					resourceCosts: {},
+					tags: ['mission', 'preparation', 'party']
+				}),
+				action({
+					actionId: 'mission.deploy',
+					actorId,
+					kind: 'move',
+					label: 'Cross the Tower Threshold',
+					description: 'Commit the exact prepared party to the hash-bound Floor 01 attempt.',
+					targetIds: attempt.party.memberIds,
+					resourceCosts: {},
+					tags: ['mission', 'deployment', 'irreversible-step']
+				}),
+				action({
+					actionId: 'mission.cancel',
+					actorId,
+					kind: 'wait',
+					label: 'Stand the party down',
+					description: 'Cancel before deployment and release every reserved hero.',
+					targetIds: attempt.party.memberIds,
+					resourceCosts: {},
+					tags: ['mission', 'preparation', 'cancel']
+				})
+			];
+		}
+		if (attempt.status === 'deployed' || attempt.status === 'resolving') {
+			return allPartyAtNode(state, missionContentForState(state).retreat.nodeIds)
+				? [
+						action({
+							actionId: 'mission.retreat',
+							actorId,
+							kind: 'retreat',
+							label: 'Retreat through the threshold',
+							description: 'End this attempt without preserving the primary objective.',
+							targetIds: attempt.party.memberIds,
+							resourceCosts: {},
+							tags: ['mission', 'retreat', 'authoritative-boundary']
+						})
+					]
+				: [];
+		}
+		if (attempt.status === 'extraction') {
+			const actions: LegalAction[] = [];
+			if (allPartyAtNode(state, [attempt.extractionNodeId])) {
+				actions.push(
+					action({
+						actionId: 'mission.extract',
+						actorId,
+						kind: 'interact',
+						label: 'Carry the First Ember home',
+						description:
+							'Complete the recovered objective across the authored extraction boundary.',
+						targetIds: attempt.party.memberIds,
+						resourceCosts: {},
+						tags: ['mission', 'extraction', 'success']
+					})
+				);
+			}
+			if (allPartyAtNode(state, missionContentForState(state).retreat.nodeIds)) {
+				actions.push(
+					action({
+						actionId: 'mission.retreat',
+						actorId,
+						kind: 'retreat',
+						label: 'Abandon the recovery and retreat',
+						description: 'End the attempt without preserving the primary objective.',
+						targetIds: attempt.party.memberIds,
+						resourceCosts: {},
+						tags: ['mission', 'retreat', 'authoritative-boundary']
+					})
+				);
+			}
+			return actions;
+		}
+	}
 	const actions = [
 		action({
 			actionId: 'master.inspect.gate',
@@ -2169,13 +2546,31 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		})
 	];
 	if (
+		state.schemaVersion === 11 &&
+		(!state.mission.attempt ||
+			['canceled', 'retreat', 'failure'].includes(state.mission.attempt.status))
+	) {
+		actions.push(
+			action({
+				actionId: 'mission.prepare',
+				actorId,
+				kind: 'interact',
+				label: 'Prepare Floor 01 party',
+				description: 'Reserve the Master and up to four ready heroes at the Tower Threshold.',
+				targetIds: [],
+				resourceCosts: {},
+				tags: ['mission', 'preparation', 'content-bound']
+			})
+		);
+	}
+	if (
 		Object.values(state.heroes).some(
 			(hero) =>
 				hero.currentActivity ||
 				currentTravelFor(state, hero.heroId) ||
 				currentRoutineFor(state, hero.heroId)
 		) ||
-		(state.schemaVersion === 10 &&
+		((state.schemaVersion === 10 || state.schemaVersion === 11) &&
 			Object.values(state.society.directives).some(
 				(directive) => directive.status === 'active' && directive.expiresAt !== null
 			))
@@ -2201,7 +2596,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 7 ||
 		state.schemaVersion === 8 ||
 		state.schemaVersion === 9 ||
-		state.schemaVersion === 10
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
 	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
@@ -2261,7 +2657,12 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				);
 			}
 	}
-	if (state.schemaVersion === 8 || state.schemaVersion === 9 || state.schemaVersion === 10) {
+	if (
+		state.schemaVersion === 8 ||
+		state.schemaVersion === 9 ||
+		state.schemaVersion === 10 ||
+		state.schemaVersion === 11
+	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.location !== state.master.location || !heroCanHearCommunication(hero)) {
 				continue;
@@ -2279,7 +2680,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 					tags: ['social', 'communication', 'witness-bounded']
 				})
 			);
-			if (state.schemaVersion === 9 || state.schemaVersion === 10) {
+			if (state.schemaVersion === 9 || state.schemaVersion === 10 || state.schemaVersion === 11) {
 				actions.push(
 					action({
 						actionId: `social.converse.${hero.heroId}`,
@@ -2296,7 +2697,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			}
 		}
 	}
-	if (state.schemaVersion === 10) {
+	if (state.schemaVersion === 10 || state.schemaVersion === 11) {
 		if (
 			Object.values(state.heroes).some(
 				(hero) => hero.location === state.master.location && heroCanHearCommunication(hero)
@@ -2391,6 +2792,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 }
 
 function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalAction[] {
+	if (state.schemaVersion === 11 && missionPartyIsReserved(state, actorId)) return [];
 	const route = routeActions(state, actorId);
 	if (route.length > 0) return route;
 	const hero = state.heroes[actorId];
@@ -2721,7 +3123,7 @@ function earliestScheduledTime(state: EngineGameStateModern): string | null {
 				currentTravelFor(state, hero.heroId)?.arrivesAt,
 				currentRoutineFor(state, hero.heroId)?.completesAt
 			]),
-			...(state.schemaVersion === 10
+			...(state.schemaVersion === 10 || state.schemaVersion === 11
 				? Object.values(state.society.directives).map((directive) =>
 						directive.status === 'active' ? directive.expiresAt : null
 					)
@@ -2761,6 +3163,13 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
 	if (command.commandType === 'simulation.advance') return 'simulation.advance';
 	if (command.commandType === 'simulation.sync.clock') return 'simulation.sync.clock';
+	if (command.commandType === 'mission.prepare') return 'mission.prepare';
+	if (command.commandType === 'mission.revise.party') return 'mission.revise.party';
+	if (command.commandType === 'mission.cancel') return 'mission.cancel';
+	if (command.commandType === 'mission.deploy') return 'mission.deploy';
+	if (command.commandType === 'mission.open.extraction') return 'mission.open.extraction';
+	if (command.commandType === 'mission.extract') return 'mission.extract';
+	if (command.commandType === 'mission.retreat') return 'mission.retreat';
 	return command.targetId === command.actorId
 		? 'simulation.damage.master'
 		: `simulation.damage.hero.${command.targetId}`;
@@ -2770,6 +3179,26 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	if (command.runId !== state.runId) throw new IllegalActionError(command.commandType, []);
 	if (command.expectedVersion !== state.version) {
 		throw new StaleStateVersionError(command.expectedVersion, state.version);
+	}
+	if (command.commandType.startsWith('mission.')) {
+		if (
+			state.schemaVersion !== 11 ||
+			state.status !== 'active' ||
+			state.master.lifeState !== 'alive' ||
+			command.actorId !== state.master.masterId
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		if (command.commandType === 'mission.open.extraction') {
+			if (command.source.source !== 'system' || command.source.timing !== null) {
+				throw new IllegalActionError(command.commandType, []);
+			}
+			openMissionExtraction(state, command.completedObjectiveIds);
+			return;
+		}
+		if (command.source.source !== 'manual' || command.source.timing !== 'step') {
+			throw new IllegalActionError(command.commandType, []);
+		}
 	}
 	if (command.commandType === 'story.recover.first.ember') {
 		if (
@@ -2807,7 +3236,10 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			(command.kind === 'ask' && command.topic === 'hero-memory') ||
 			(command.kind !== 'ask' && command.topic !== 'hero-memory');
 		if (
-			(state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
+			(state.schemaVersion !== 8 &&
+				state.schemaVersion !== 9 &&
+				state.schemaVersion !== 10 &&
+				state.schemaVersion !== 11) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -2829,7 +3261,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	}
 	if (command.commandType === 'master.converse') {
 		if (
-			(state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
+			(state.schemaVersion !== 9 && state.schemaVersion !== 10 && state.schemaVersion !== 11) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -2855,7 +3287,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		command.commandType === 'master.revoke.directive'
 	) {
 		if (
-			state.schemaVersion !== 10 ||
+			(state.schemaVersion !== 10 && state.schemaVersion !== 11) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -2996,6 +3428,15 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		if (!hasRoutineState(state) || !resolveDailyRoutine(state, command.actorId)) {
 			throw new IllegalActionError(required, actionIds);
 		}
+	}
+	if (state.schemaVersion === 11) {
+		if (command.commandType === 'mission.prepare')
+			prepareMissionAttempt(state, command.commandId, command.heroIds);
+		if (command.commandType === 'mission.revise.party') reviseMissionParty(state, command.heroIds);
+		if (command.commandType === 'mission.cancel') cancelMissionPreparation(state);
+		if (command.commandType === 'mission.deploy') deployMissionAttempt(state);
+		if (command.commandType === 'mission.extract') completeMissionExtraction(state);
+		if (command.commandType === 'mission.retreat') retreatMissionAttempt(state);
 	}
 }
 
@@ -3404,6 +3845,71 @@ function skipUnfinishedPlan(hero: EngineRoutineState['heroes'][string], resolved
 }
 
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType.startsWith('mission.')) {
+		if (state.schemaVersion !== 11) throw new IllegalActionError(command.commandType);
+		let mission: MissionRunState;
+		let transition: z.infer<typeof MissionTransitionPayloadSchema>['transition'];
+		let eventType: string;
+		let summary: string;
+		let heroIds: string[] = [];
+		let completedObjectiveIds: string[] = [];
+		if (command.commandType === 'mission.prepare') {
+			transition = 'prepare';
+			eventType = 'mission.preparation.started';
+			heroIds = normalizedMissionHeroIds(command.heroIds);
+			mission = prepareMissionAttempt(state, command.commandId, heroIds);
+			summary = `The Master reserved a ${heroIds.length + 1}-member party for Floor 01.`;
+		} else if (command.commandType === 'mission.revise.party') {
+			transition = 'revise-party';
+			eventType = 'mission.party.revised';
+			heroIds = normalizedMissionHeroIds(command.heroIds);
+			mission = reviseMissionParty(state, heroIds);
+			summary = `The Master revised the threshold party to ${heroIds.length + 1} members.`;
+		} else if (command.commandType === 'mission.cancel') {
+			transition = 'cancel';
+			eventType = 'mission.preparation.canceled';
+			mission = cancelMissionPreparation(state);
+			summary = 'The Master stood the party down before deployment.';
+		} else if (command.commandType === 'mission.deploy') {
+			transition = 'deploy';
+			eventType = 'mission.deployed';
+			mission = deployMissionAttempt(state);
+			summary = 'The prepared party crossed the Tower Threshold as one authoritative deployment.';
+		} else if (command.commandType === 'mission.open.extraction') {
+			transition = 'open-extraction';
+			eventType = 'mission.extraction.opened';
+			completedObjectiveIds = [...command.completedObjectiveIds].sort((left, right) =>
+				left.localeCompare(right)
+			);
+			mission = openMissionExtraction(state, completedObjectiveIds);
+			summary = 'The mission resolver proved the primary objective and opened extraction.';
+		} else if (command.commandType === 'mission.extract') {
+			transition = 'extract';
+			eventType = 'mission.extracted';
+			mission = completeMissionExtraction(state);
+			summary = 'The complete party crossed the extraction boundary with the First Ember.';
+		} else if (command.commandType === 'mission.retreat') {
+			transition = 'retreat';
+			eventType = 'mission.retreated';
+			mission = retreatMissionAttempt(state);
+			summary = 'The complete party retreated through an authored boundary; the attempt ended.';
+		} else {
+			throw new IllegalActionError(command.commandType);
+		}
+		const base = eventBase(state, command, eventType);
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				transition,
+				mission,
+				heroIds,
+				completedObjectiveIds,
+				nextVersion: state.version + 1,
+				...emptyMetadata(summary)
+			}
+		});
+	}
 	if (command.commandType === 'story.recover.first.ember') {
 		if (!hasFirstEmberState(state)) throw new IllegalActionError(command.commandType);
 		const firstEmber = FirstEmberStateSchema.parse({
@@ -3473,7 +3979,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			state.schemaVersion === 7 ||
 			state.schemaVersion === 8 ||
 			state.schemaVersion === 9 ||
-			state.schemaVersion === 10
+			state.schemaVersion === 10 ||
+			state.schemaVersion === 11
 				? buildFirstEmberSociety(
 						state,
 						base.eventId,
@@ -3502,7 +4009,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		command.commandType === 'master.issue.directive' ||
 		command.commandType === 'master.replace.directive'
 	) {
-		if (state.schemaVersion !== 10) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 10 && state.schemaVersion !== 11)
+			throw new IllegalActionError(command.commandType);
 		const eventType =
 			command.commandType === 'master.issue.directive'
 				? 'social.directive.issued'
@@ -3528,7 +4036,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'master.revoke.directive') {
-		if (state.schemaVersion !== 10) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 10 && state.schemaVersion !== 11)
+			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'social.directive.revoked');
 		const previousDirective = state.society.directives[command.directiveId]!;
 		const change = revokeDirective(state, base.eventId, command.directiveId);
@@ -3550,7 +4059,12 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'master.communicate') {
-		if (state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10) {
+		if (
+			state.schemaVersion !== 8 &&
+			state.schemaVersion !== 9 &&
+			state.schemaVersion !== 10 &&
+			state.schemaVersion !== 11
+		) {
 			throw new IllegalActionError(command.commandType);
 		}
 		const base = eventBase(state, command, 'social.communicative.act.recorded');
@@ -3572,7 +4086,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		});
 	}
 	if (command.commandType === 'master.converse') {
-		if (state.schemaVersion !== 9 && state.schemaVersion !== 10)
+		if (state.schemaVersion !== 9 && state.schemaVersion !== 10 && state.schemaVersion !== 11)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'social.conversation.turn.recorded');
 		const { society, conversationTurn } = buildConversationSociety(state, base.eventId, command);
@@ -3963,7 +4477,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		}
 		if (hasRoutineState(state)) {
 			const expiredDirectives =
-				state.schemaVersion === 10
+				state.schemaVersion === 10 || state.schemaVersion === 11
 					? Object.values(state.society.directives)
 							.filter(
 								(directive) =>
@@ -4171,6 +4685,9 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			}
 		});
 	}
+	if (command.commandType !== 'simulation.apply.damage') {
+		throw new IllegalActionError(command.commandType);
+	}
 	const targetKind = command.targetId === state.master.masterId ? 'master' : 'hero';
 	const target = targetKind === 'master' ? state.master : state.heroes[command.targetId];
 	if (!target) throw new IllegalActionError(command.commandType);
@@ -4351,13 +4868,73 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 7) return EngineGameStateV7Schema.parse(value);
 	if (state.schemaVersion === 8) return EngineGameStateV8Schema.parse(value);
 	if (state.schemaVersion === 9) return EngineGameStateV9Schema.parse(value);
-	return EngineGameStateV10Schema.parse(value);
+	if (state.schemaVersion === 10) return EngineGameStateV10Schema.parse(value);
+	return EngineGameStateV11Schema.parse(value);
 }
 
 function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
+	if (
+		[
+			'mission.preparation.started',
+			'mission.party.revised',
+			'mission.preparation.canceled',
+			'mission.deployed',
+			'mission.extraction.opened',
+			'mission.extracted',
+			'mission.retreated'
+		].includes(event.eventType)
+	) {
+		if (
+			state.schemaVersion !== 11 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt
+		) {
+			throw new ReplayIntegrityError('Mission transition precondition failed', event.sequence);
+		}
+		const payload = MissionTransitionPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1) {
+			throw new ReplayIntegrityError('Mission transition version diverged', event.sequence);
+		}
+		const eventTypes = {
+			prepare: 'mission.preparation.started',
+			'revise-party': 'mission.party.revised',
+			cancel: 'mission.preparation.canceled',
+			deploy: 'mission.deployed',
+			'open-extraction': 'mission.extraction.opened',
+			extract: 'mission.extracted',
+			retreat: 'mission.retreated'
+		} as const;
+		if (eventTypes[payload.transition] !== event.eventType) {
+			throw new ReplayIntegrityError('Mission event type diverged', event.sequence);
+		}
+		const expected =
+			payload.transition === 'prepare'
+				? prepareMissionAttempt(state, event.commandId, payload.heroIds)
+				: payload.transition === 'revise-party'
+					? reviseMissionParty(state, payload.heroIds)
+					: payload.transition === 'cancel'
+						? cancelMissionPreparation(state)
+						: payload.transition === 'deploy'
+							? deployMissionAttempt(state)
+							: payload.transition === 'open-extraction'
+								? openMissionExtraction(state, payload.completedObjectiveIds)
+								: payload.transition === 'extract'
+									? completeMissionExtraction(state)
+									: retreatMissionAttempt(state);
+		if (hashCanonical(expected) !== hashCanonical(payload.mission)) {
+			throw new ReplayIntegrityError('Mission transition payload diverged', event.sequence);
+		}
+		return EngineGameStateV11Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			mission: payload.mission
+		});
+	}
 	if (event.eventType === 'story.first.ember.recovered') {
 		if (!hasFirstEmberState(state) || state.settlement.firstEmber.status !== 'unrecovered') {
 			throw new ReplayIntegrityError('First Ember recovery requires engine-v6', event.sequence);
@@ -4413,7 +4990,8 @@ function reduceV2Event(
 			state.schemaVersion === 7 ||
 			state.schemaVersion === 8 ||
 			state.schemaVersion === 9 ||
-			state.schemaVersion === 10
+			state.schemaVersion === 10 ||
+			state.schemaVersion === 11
 		) {
 			society = buildFirstEmberSociety(
 				state,
@@ -4463,7 +5041,7 @@ function reduceV2Event(
 		event.eventType === 'social.directive.revoked'
 	) {
 		if (
-			state.schemaVersion !== 10 ||
+			(state.schemaVersion !== 10 && state.schemaVersion !== 11) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -4520,17 +5098,28 @@ function reduceV2Event(
 				throw new ReplayIntegrityError('Directive delivery projection diverged', event.sequence);
 			}
 		}
-		return EngineGameStateV10Schema.parse({
-			...state,
-			version: payload.nextVersion,
-			eventCursor: event.sequence,
-			entropyCursor: event.seedCursor,
-			society: payload.society
-		});
+		return state.schemaVersion === 11
+			? EngineGameStateV11Schema.parse({
+					...state,
+					version: payload.nextVersion,
+					eventCursor: event.sequence,
+					entropyCursor: event.seedCursor,
+					society: payload.society
+				})
+			: EngineGameStateV10Schema.parse({
+					...state,
+					version: payload.nextVersion,
+					eventCursor: event.sequence,
+					entropyCursor: event.seedCursor,
+					society: payload.society
+				});
 	}
 	if (event.eventType === 'social.communicative.act.recorded') {
 		if (
-			(state.schemaVersion !== 8 && state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
+			(state.schemaVersion !== 8 &&
+				state.schemaVersion !== 9 &&
+				state.schemaVersion !== 10 &&
+				state.schemaVersion !== 11) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -4566,7 +5155,7 @@ function reduceV2Event(
 	}
 	if (event.eventType === 'social.conversation.turn.recorded') {
 		if (
-			(state.schemaVersion !== 9 && state.schemaVersion !== 10) ||
+			(state.schemaVersion !== 9 && state.schemaVersion !== 10 && state.schemaVersion !== 11) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -4602,21 +5191,29 @@ function reduceV2Event(
 		) {
 			throw new ReplayIntegrityError('Conversation turn projection diverged', event.sequence);
 		}
-		return state.schemaVersion === 10
-			? EngineGameStateV10Schema.parse({
+		return state.schemaVersion === 11
+			? EngineGameStateV11Schema.parse({
 					...state,
 					version: payload.nextVersion,
 					eventCursor: event.sequence,
 					entropyCursor: event.seedCursor,
 					society: payload.society
 				})
-			: EngineGameStateV9Schema.parse({
-					...state,
-					version: payload.nextVersion,
-					eventCursor: event.sequence,
-					entropyCursor: event.seedCursor,
-					society: payload.society
-				});
+			: state.schemaVersion === 10
+				? EngineGameStateV10Schema.parse({
+						...state,
+						version: payload.nextVersion,
+						eventCursor: event.sequence,
+						entropyCursor: event.seedCursor,
+						society: payload.society
+					})
+				: EngineGameStateV9Schema.parse({
+						...state,
+						version: payload.nextVersion,
+						eventCursor: event.sequence,
+						entropyCursor: event.seedCursor,
+						society: payload.society
+					});
 	}
 	if (event.eventType === 'simulation.clock.synced') {
 		if (!hasRoutineState(state))
@@ -5039,7 +5636,7 @@ function reduceV2Event(
 					currentRoutine: null
 				};
 			}
-			if (state.schemaVersion === 10) {
+			if (state.schemaVersion === 10 || state.schemaVersion === 11) {
 				const society = SocietyStateV4Schema.parse({
 					...state.society,
 					directives: Object.fromEntries(
@@ -5056,17 +5653,29 @@ function reduceV2Event(
 						])
 					)
 				});
-				return EngineGameStateV10Schema.parse({
-					...state,
-					version: payload.nextVersion,
-					eventCursor: event.sequence,
-					entropyCursor: event.seedCursor,
-					simulatedAt: payload.targetGameTime,
-					heroes,
-					items,
-					settlement,
-					society
-				});
+				return state.schemaVersion === 11
+					? EngineGameStateV11Schema.parse({
+							...state,
+							version: payload.nextVersion,
+							eventCursor: event.sequence,
+							entropyCursor: event.seedCursor,
+							simulatedAt: payload.targetGameTime,
+							heroes,
+							items,
+							settlement,
+							society
+						})
+					: EngineGameStateV10Schema.parse({
+							...state,
+							version: payload.nextVersion,
+							eventCursor: event.sequence,
+							entropyCursor: event.seedCursor,
+							simulatedAt: payload.targetGameTime,
+							heroes,
+							items,
+							settlement,
+							society
+						});
 			}
 			return parseModernState(state, {
 				...state,
@@ -5287,13 +5896,13 @@ function reduceParsedEvent(state: EngineGameState, event: AuthoritativeEvent): E
 		throw new ReplayIntegrityError('Event sequence is not contiguous', event.sequence);
 	const reduced =
 		state.schemaVersion === 1 ? reduceLegacyEvent(state, event) : reduceV2Event(state, event);
-	if (state.schemaVersion !== 10) return reduced;
+	if (state.schemaVersion !== 10 && state.schemaVersion !== 11) return reduced;
 	const influences = z
 		.array(DirectiveInfluenceRecordSchema)
 		.max(16)
 		.parse((event.payload as Record<string, unknown>).directiveInfluences ?? []);
 	if (influences.length === 0) return reduced;
-	if (reduced.schemaVersion !== 10) {
+	if (reduced.schemaVersion !== 10 && reduced.schemaVersion !== 11) {
 		throw new ReplayIntegrityError('Directive influence changed schema version', event.sequence);
 	}
 	const directives = { ...reduced.society.directives };
@@ -5321,14 +5930,17 @@ function reduceParsedEvent(state: EngineGameState, event: AuthoritativeEvent): E
 			});
 		}
 	}
-	return EngineGameStateV10Schema.parse({
+	const next = {
 		...reduced,
 		society: {
 			...reduced.society,
 			directives,
 			directiveInfluences
 		}
-	});
+	};
+	return reduced.schemaVersion === 11
+		? EngineGameStateV11Schema.parse(next)
+		: EngineGameStateV10Schema.parse(next);
 }
 
 export function reduceEvent(
@@ -5409,7 +6021,7 @@ function attachDirectiveInfluences(
 	event: AuthoritativeEvent
 ): AuthoritativeEvent {
 	if (
-		state.schemaVersion !== 10 ||
+		(state.schemaVersion !== 10 && state.schemaVersion !== 11) ||
 		!state.heroes[command.actorId] ||
 		command.source.directiveIds.length === 0
 	) {

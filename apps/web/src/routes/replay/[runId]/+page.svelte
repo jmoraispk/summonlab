@@ -29,7 +29,8 @@
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState
 			: null
 	);
@@ -41,7 +42,8 @@
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState.settlement.navigation
 			: null
 	);
@@ -52,7 +54,8 @@
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState
 			: null
 	);
@@ -62,7 +65,8 @@
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState
 			: null
 	);
@@ -71,7 +75,8 @@
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState
 			: null
 	);
@@ -79,14 +84,16 @@
 		engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState.society
 			: null
 	);
 	const communicationState = $derived(
 		engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11
 			? engineState
 			: null
 	);
@@ -99,7 +106,8 @@
 			engineState.schemaVersion === 7 ||
 			engineState.schemaVersion === 8 ||
 			engineState.schemaVersion === 9 ||
-			engineState.schemaVersion === 10) &&
+			engineState.schemaVersion === 10 ||
+			engineState.schemaVersion === 11) &&
 			hero
 			? engineState.heroes[hero.heroId]
 			: null
@@ -790,7 +798,7 @@
 												</div>
 											</article>
 										{/each}
-										{#if communicationState.schemaVersion === 9 || communicationState.schemaVersion === 10}
+										{#if communicationState.schemaVersion === 9 || communicationState.schemaVersion === 10 || communicationState.schemaVersion === 11}
 											{#each Object.values(communicationState.society.conversationTurns) as turn (turn.turnId)}
 												<article class="communication-act" data-testid="conversation-replay-turn">
 													<header>
@@ -811,7 +819,7 @@
 												</article>
 											{/each}
 										{/if}
-										{#if communicationState.schemaVersion === 10}
+										{#if communicationState.schemaVersion === 10 || communicationState.schemaVersion === 11}
 											{#each Object.values(communicationState.society.directives) as directive (directive.directiveId)}
 												<article class="communication-act" data-testid="directive-replay-record">
 													<header>

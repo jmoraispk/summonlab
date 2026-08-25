@@ -1053,7 +1053,10 @@ Estimated engineering effort: **2–3 weeks**.
   validated authored arena truth, visit/discovery-bounded knowledge projection, deterministic route
   planning, Floor 01 deployment/objective/encounter/reward declarations, and a fixed five-anchor
   story spine with one catalog-bounded optional patch slot;
-- `MIS-002` implement party preparation, deployment, extraction, and retreat;
+- `MIS-002` complete: bind `engine-v11` runs to the exact Floor 01 package hash; implement
+  Master-led party preparation/revision/cancellation, deployment, objective-gated extraction,
+  retreat, retry, participant reservation, immutable lifecycle events, strict replay, and the
+  `/mission/:runId` threshold interface;
 - `MIS-003` implement autonomous initiative and turn resolution;
 - `MIS-004` implement goblin duty policies and Foundry Warden;
 - `MIS-005` author floors 1–5 and their observations/rewards;

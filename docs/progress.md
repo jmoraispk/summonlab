@@ -292,15 +292,16 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` was completed on 2026-08-24. Floor 01 now has a versioned,
-content-addressed package whose canonical arena truth is distinct from visited and discovered
-knowledge. It declares the first recover-and-extract objective, party boundary, deterministic
-encounter purposes, monster duties, reward budget, and fixed story anchors without pretending those
-declarations are executable mission state yet.
+Status: **in progress**. `MIS-001` and `MIS-002` were completed on 2026-08-24. Floor 01 now has both
+a versioned content package and an authoritative, replayable run lifecycle. Authored truth remains
+distinct from visited/discovered knowledge; the browser can reserve a real party, cross the
+threshold, retreat, retry, prove the current prototype objective through a system-only transition,
+and extract without becoming a state authority.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `MIS-001` | Complete: `mission-package-v1` validates deployment/extraction roles, exactly one primary objective, the complete connected arena graph, observations, legal discovery affordances, deterministic entropy names, monster/environment declarations, retreat, reward budget, and bounded story patches; `tower-floor-01-v1` projects five initially known nodes from seven authored nodes, keeps on-entry evidence visit-bound, reveals a three-action low-exposure Ash Duct alternative only through the Oath Hall affordance, and preserves a four-action default objective route | [Mission package evidence](evidence/phase-6-mission-package.png), contract/content/browser tests, `pnpm validate:mission-content`, 41.0 KB measured mission-lab JavaScript, ADR 0030 |
+| `MIS-002` | Complete: `engine-v11` binds every new run to the exact `tower-floor-01-v1` SHA-256, owns Master-first 1–5 member parties, rejects unavailable/busy heroes, reserves participants during preparation and deployment, supports party revision/cancellation, commits deployment positions plus visit-bounded knowledge, allows retreat only at an authored boundary, opens extraction only after a system-proven primary objective, prevents success farming, and creates new IDs for legal retries while leaving v1–v10 replay byte-compatible | [Mission lifecycle evidence](evidence/phase-6-mission-lifecycle.png), engine/property/database/browser tests, 43.0 KB measured mission-route JavaScript, ADR 0031 |
 
 ### Reproduce the checkpoint
 
@@ -317,8 +318,15 @@ from four actions with exposed maximum exposure to three actions with low maximu
 line: its five numbered anchors are fixed, while the agent patch slot can choose only one of two
 cataloged optional beats. The page is a content/knowledge inspector and must not create a run.
 
+Create a fresh `Wait` run in `http://localhost:5173/forge`, open its summoning chamber, and choose
+**Floor 01** in the top navigation. On `/mission/<runId>`, keep or remove the hero roster card,
+lock the threshold roster, deploy, and retreat. Retry to confirm the attempt number advances. In a
+development build, deploy again, choose **Prototype: recover ember**, then extract; reload and open
+the replay inspector to confirm the terminal outcome and exact mission event hashes survive.
+
 ## Next active engineering slice
 
-Begin `MIS-002`: bind a run to the exact Floor 01 content hash and implement authoritative party
-preparation, deployment, extraction, retreat, and cancellation transitions while preserving
-event-derived replay. Phase 3 cohort expansion remains behind its separate human visual gate.
+Begin `MIS-003`: add engine-owned initiative and bounded mission turns inside the deployed attempt,
+replacing the temporary development objective proof with legal encounter resolution. Phase 3 cohort
+expansion remains behind its separate human visual gate. The threshold roster remains a reversible
+card-based candidate pending visual/playtest feedback; deployed members appear as scene figures.
