@@ -444,6 +444,7 @@ vertical-slice finish remains active and `FIN-007` through `FIN-009` are not com
 | `FIN-004` | Complete: a muted-by-default procedural soundscape supplies route ambience and optional full interface cues without assets or canonical writes; every cue is redundant and captioned; v1 local settings migrate before hydration; System motion honors the OS while Reduced removes long movement; skip navigation, visible focus, native settings inputs, arrow-key hero tabs, route focus, and modal containment/restoration form the keyboard baseline | [Desktop settings](evidence/phase-7-fin004-desktop-settings.png), [desktop company](evidence/phase-7-fin004-desktop-company.png), [phone settings](evidence/phase-7-fin004-phone-settings.png), [phone company](evidence/phase-7-fin004-phone-company.png), [phone Hearth](evidence/phase-7-fin004-phone-hearth.png), settings/audio unit tests, accessibility and campaign browser tests, ADR 0048 |
 | `FIN-005` | Complete: content-addressed 832 px/1681 px title WebPs replace the 2.19 MB source PNG on player routes; approved runtime portraits replace source imports where available; exact build, title, and settlement bytes bind a versioned phone report; a real arrived campaign at 390×844/2×, 150 ms/1.6 Mbps simulated 4G, and 4× CPU enforces shell, reconnect, response, frame, and working-set targets in hosted browser CI | [Optimized phone title](evidence/phase-7-fin005-phone-title.png), [arrived phone settlement](evidence/phase-7-fin005-phone-settlement.png), [machine-readable phone report](evidence/phase-7-fin005-phone-performance.json), player-visual/build validators, contract/browser tests, ADR 0049 |
 | `FIN-006` | Complete: undecided and declined browsers send no analytics; affirmative adult consent creates a hashed 30-day device capability; seven strict event types reject raw or unknown properties; names, seeds, dialogue, IPs, user agents, cookies, and third parties stay outside the store; withdrawal/expiry deletes retained sessions/events; the development report exposes aggregate typed counts and a prefix-complete funnel only | [Desktop consent](evidence/phase-7-fin006-desktop-consent.png), [phone consent](evidence/phase-7-fin006-phone-consent.png), [desktop aggregate report](evidence/phase-7-fin006-desktop-aggregate-report.png), [phone aggregate report](evidence/phase-7-fin006-phone-aggregate-report.png), consent/database/browser tests, ADR 0050 |
+| `FIN-007` | In progress: the fixed five-session protocol, separate qualitative consent script, two-phone/three-desktop cohort map, twelve-task coverage model, mandatory finding linkage for prompted/failed tasks, P0–P3 release rubric, checked evidence hash, and development moderation dashboard are complete; the report deliberately says `ready`, 0/5, and `awaiting-sessions` because automated journeys do not count as human playtests | [Desktop readiness](evidence/phase-7-fin007-moderation-readiness-desktop.png), [phone readiness](evidence/phase-7-fin007-moderation-readiness-phone.png), [machine-readable gate](evidence/phase-7-fin007-moderated-playtest.json), [protocol](playtest-protocol.md), schema/generator/browser tests, ADR 0051 |
 
 ### Reproduce the FIN-003 checkpoint
 
@@ -473,7 +474,7 @@ objective control.
 ### Reproduce the FIN-005 checkpoint
 
 Run `pnpm measure:web-build-budget`, `pnpm validate:player-visuals`, and
-`pnpm validate:phone-performance`. The checked report must bind 47.8 KB initial JavaScript, the
+`pnpm validate:phone-performance`. The checked report must bind 47.9 KB initial JavaScript, the
 47.3 KB selected phone title, and the 296.2 KB first Hearth visual to current artifacts. Then run
 `pnpm --filter @summonlab/web exec playwright test src/routes/performance.e2e.ts`; the test creates
 and completes a real campaign before applying the target 390×844/2× simulated-4G/4×-CPU profile.
@@ -498,8 +499,22 @@ the old capability must no longer read or submit data. Run
 `pnpm --filter @summonlab/web exec playwright test src/routes/playtest-analytics.e2e.ts` to prove the
 zero-request decline, strict-property rejection, consented funnel, and deletion path together.
 
+### Reproduce the FIN-007 readiness checkpoint
+
+Run `pnpm validate:moderated-playtest`, start `pnpm dev:app`, and open
+`http://localhost:5173/playtest-moderation`. Before human evidence exists, the dashboard must show
+**0 / 5**, **Ready**, and **Release: awaiting sessions**; all five anonymous device/track slots and
+twelve task families must be visible, and it must not claim a release candidate.
+
+Read `docs/playtest-protocol.md` and conduct only actual disclosed adult sessions. Add sanitized
+structured evidence to `packages/evaluation/fixtures/moderated-playtest-cohort-v1.json`, then run
+`pnpm export:moderated-playtest`. Prompted and failed tasks without linked P0–P3 findings must be
+rejected. FIN-007 remains incomplete until the checked report contains five sessions and says
+`moderationStatus: complete`.
+
 ## Next active engineering slice
 
-Run `FIN-007`: conduct five moderated tests with the FIN-006 consent boundary, record disclosed
-qualitative observations separately, and triage findings by release severity. Phase 3 cohort
-expansion remains behind its separate human visual gate.
+Complete `FIN-007`: recruit five adult participants, follow the separate qualitative-consent script,
+run the fixed two-phone/three-desktop tracks, and triage every prompted or failed task by release
+severity. The protocol and evidence gate are ready at 0/5; automated sessions must not fill the
+human slots. Phase 3 cohort expansion remains behind its separate human visual gate.

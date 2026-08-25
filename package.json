@@ -23,6 +23,8 @@
 		"export:player-visuals": "tsx tools/export-player-visuals.ts",
 		"validate:player-visuals": "tsx tools/export-player-visuals.ts --check",
 		"validate:phone-performance": "tsx tools/validate-phone-performance.ts",
+		"export:moderated-playtest": "tsx tools/export-moderated-playtest.ts",
+		"validate:moderated-playtest": "tsx tools/export-moderated-playtest.ts --check",
 		"export:recognition-audit": "tsx tools/export-recognition-audit.ts",
 		"validate:recognition-audit": "tsx tools/export-recognition-audit.ts --check",
 		"export:agent-evaluation": "tsx tools/export-agent-evaluation.ts",
@@ -58,7 +60,7 @@
 		"test": "pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

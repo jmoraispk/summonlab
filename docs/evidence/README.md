@@ -140,3 +140,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin006-desktop-aggregate-report.png` / `phase-7-fin006-phone-aggregate-report.png` — the
   development-only aggregate signal at both widths: prefix-complete journey funnel, seven typed
   event counts, 30-day expiry, excluded content/device fields, and immediate withdrawal deletion.
+- `phase-7-fin007-moderation-readiness-desktop.png` /
+  `phase-7-fin007-moderation-readiness-phone.png` — the five-slot facilitator dashboard at desktop
+  and 390×844, explicitly showing zero human sessions, twelve unobserved task families, separate
+  qualitative consent, P0–P3 triage, and an awaiting-sessions release state.
+- `phase-7-fin007-moderated-playtest.json` — the checked de-identified cohort gate. It is currently
+  a readiness artifact (`0/5`, not complete), not fabricated participant evidence; only actual
+  sanitized sessions can advance its coverage and release recommendation.

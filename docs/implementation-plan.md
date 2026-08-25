@@ -1172,7 +1172,10 @@ Estimated engineering effort: **2 weeks**.
   types without raw text, seeds, names, IPs, or user agents; bind grants to hashed 30-day device
   capabilities; delete retained sessions/events on withdrawal or expiry; and expose only an
   aggregate development report for moderated-test triage;
-- `FIN-007` run five moderated tests and triage findings;
+- `FIN-007` **in progress** — use the de-identified `moderated-playtest-v1` protocol, fixed
+  two-phone/three-desktop cohort map, bounded task outcomes, mandatory friction findings, and P0–P3
+  release triage; the checked readiness gate is implemented and honestly remains at 0/5 until actual
+  adult participants complete the sessions;
 - `FIN-008` fix all release-blocking defects and package the playtest build;
 - `FIN-009` add a development-time story workshop that generates reviewable, versioned arc proposals.
 

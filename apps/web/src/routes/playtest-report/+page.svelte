@@ -88,6 +88,7 @@
 
 	<footer>
 		<span>Generated {new Date(report.generatedAt).toLocaleString()}</span>
+		<a href={resolve('/playtest-moderation')}>Open moderation gate →</a>
 		<a href={resolve('/api/dev/playtest-report')}>Open machine-readable report →</a>
 	</footer>
 </main>

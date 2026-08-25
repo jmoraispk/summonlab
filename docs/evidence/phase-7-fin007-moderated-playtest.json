@@ -1,0 +1,198 @@
+{
+	"schemaVersion": "moderated-playtest-report-v1",
+	"protocolVersion": "moderated-playtest-v1",
+	"cohortId": "fin007-local-private-v1",
+	"updatedAt": "2026-08-25T00:00:00.000Z",
+	"privacy": {
+		"adultOnly": true,
+		"qualitativeConsentSeparateFromAnalytics": true,
+		"storesParticipantIdentity": false,
+		"storesDirectQuotes": false,
+		"storesRecordings": false,
+		"storesRawNotes": false,
+		"participantMayWithdrawNotes": true
+	},
+	"recruitmentPlan": [
+		{
+			"participantCode": "P01",
+			"track": "new-player-onboarding",
+			"viewport": "phone",
+			"requiredTaskIds": [
+				"start-seeded-run",
+				"complete-summoning-intro",
+				"read-three-hero-dossiers",
+				"converse-and-direct",
+				"understand-autonomy"
+			]
+		},
+		{
+			"participantCode": "P02",
+			"track": "settlement-return",
+			"viewport": "desktop",
+			"requiredTaskIds": [
+				"start-seeded-run",
+				"complete-summoning-intro",
+				"read-three-hero-dossiers",
+				"converse-and-direct",
+				"understand-autonomy",
+				"use-settlement-and-first-ember",
+				"return-and-read-recap"
+			]
+		},
+		{
+			"participantCode": "P03",
+			"track": "iron-moon-autonomy",
+			"viewport": "phone",
+			"requiredTaskIds": [
+				"start-seeded-run",
+				"complete-summoning-intro",
+				"read-three-hero-dossiers",
+				"converse-and-direct",
+				"understand-autonomy",
+				"complete-iron-moon"
+			]
+		},
+		{
+			"participantCode": "P04",
+			"track": "tower-discovery",
+			"viewport": "desktop",
+			"requiredTaskIds": [
+				"start-seeded-run",
+				"complete-summoning-intro",
+				"read-three-hero-dossiers",
+				"converse-and-direct",
+				"understand-autonomy",
+				"complete-tower-band",
+				"recognize-hidden-route"
+			]
+		},
+		{
+			"participantCode": "P05",
+			"track": "consequence-replay",
+			"viewport": "desktop",
+			"requiredTaskIds": [
+				"start-seeded-run",
+				"complete-summoning-intro",
+				"read-three-hero-dossiers",
+				"converse-and-direct",
+				"understand-autonomy",
+				"resolve-permanent-consequence",
+				"inspect-replay-and-causality"
+			]
+		}
+	],
+	"moderationStatus": "ready",
+	"releaseRecommendation": "awaiting-sessions",
+	"qualityGate": {
+		"requiredSessionCount": 5,
+		"conductedSessionCount": 0,
+		"requiredTaskCount": 12,
+		"coveredTaskCount": 0,
+		"allAssignedTasksObserved": false,
+		"allFrictionTriaged": true,
+		"openReleaseBlockerCount": 0
+	},
+	"deviceMix": { "phone": 0, "desktop": 0 },
+	"sessions": [],
+	"taskCoverage": [
+		{
+			"taskId": "start-seeded-run",
+			"assignedSessionCount": 5,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "complete-summoning-intro",
+			"assignedSessionCount": 5,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "read-three-hero-dossiers",
+			"assignedSessionCount": 5,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "converse-and-direct",
+			"assignedSessionCount": 5,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "understand-autonomy",
+			"assignedSessionCount": 5,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "use-settlement-and-first-ember",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "return-and-read-recap",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "complete-iron-moon",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "complete-tower-band",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "recognize-hidden-route",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "resolve-permanent-consequence",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		},
+		{
+			"taskId": "inspect-replay-and-causality",
+			"assignedSessionCount": 1,
+			"attemptedSessionCount": 0,
+			"unassistedCompletionCount": 0,
+			"promptedCompletionCount": 0,
+			"notCompletedCount": 0
+		}
+	],
+	"findingCounts": { "P0": 0, "P1": 0, "P2": 0, "P3": 0 },
+	"findings": [],
+	"reportHash": "3d6e5dd36aed5aa07eaff537ddae4960c89883d221f9140b35483531df80b08d"
+}

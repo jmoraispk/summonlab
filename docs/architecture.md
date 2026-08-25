@@ -856,6 +856,28 @@ individual sessions, event payloads, run IDs, timestamps, or withdrawal capabili
 capability is not identity or authorization for a hosted build; private invite access and owner
 scoping remain prerequisites before remote data collection. See ADR 0050.
 
+### Moderated evidence boundary
+
+FIN-007 separates human qualitative evidence from both canonical game state and FIN-006 analytics.
+`moderated-playtest-v1` requires five actual adult participants; browser automation, scripted
+personas, model simulations, and developer walkthroughs may preflight the protocol but cannot
+increment the session gate. The fixed cohort assigns anonymous codes `P01`–`P05`, two phone tracks,
+three desktop tracks, and twelve definition-of-done task families across common onboarding plus
+settlement, mission, discovery, consequence, and replay observations.
+
+The checked source contains only device/track assignment, build commit, bounded task outcomes,
+moderator prompt counts, and redacted paraphrased findings. It rejects identity fields, direct
+contact details, untriaged prompted/failed tasks, duplicate participants, and findings without an
+observed session. Raw notes, recordings, direct quotes, seeds, run IDs, dialogue, and consent
+capabilities remain outside Git. Qualitative note consent is separate from analytics consent and
+withdrawal removes retained session evidence.
+
+`phase-7-fin007-moderated-playtest.json` derives coverage, device mix, severity counts, and a release
+recommendation from the sanitized source. The report remains honestly `ready` or `in-progress`
+without failing CI; only five fully observed tracks can produce `complete`. Any unverified P0/P1
+finding produces `hold`, which FIN-008 must clear before packaging. `/playtest-moderation` renders
+the same checked evidence for the facilitator. See ADR 0051.
+
 ## Platform
 
 Web remains the first platform:

@@ -5,6 +5,7 @@ export * from './first-band-archive.js';
 export * from './attempt-aftermath.js';
 export * from './master-timing.js';
 export * from './master-fallback.js';
+export * from './moderated-playtest.js';
 export * from './player-journal.js';
 export * from './story-envelope.js';
 export * from './story-patch.js';
