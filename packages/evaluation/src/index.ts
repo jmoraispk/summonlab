@@ -6,4 +6,5 @@ export * from './master-timing.js';
 export * from './master-fallback.js';
 export * from './player-journal.js';
 export * from './story-envelope.js';
+export * from './story-patch.js';
 export * from './schema.js';

@@ -1134,7 +1134,13 @@ Estimated engineering effort: **2–3 weeks**.
   and semantic-facet filters without changing engine state; ship the database-backed mission
   ledger, `/player-journal` prepared checkpoint, public run-journal endpoint, and checked strict
   replay report;
-- `MIS-015` validate one runtime `StoryPatch` against the floors 1–5 envelope.
+- `MIS-015` complete: add opt-in `engine-v21` canonical band-story state and a strict
+  `StoryPatchCandidate`; validate exact envelope/history freshness, causal and cumulative slot
+  bounds, catalog/dormancy, living cast and holder-owned knowledge, and the fixed law/objective/
+  arena/reward/anchor/finale surface through 17 explicit checks; commit `story.patch.applied` with
+  validation/history/patch hashes; revalidate under strict replay; journal the change; ship a real
+  database-backed Floor 04 `/story-patch` checkpoint and deterministic report that blocks 11
+  adversarial cases;
 
 **Feedback gate:** play two contrasting parties through floor 5 and review tactical readability, autonomy, retreat, and emotional consequence.
 
@@ -1230,8 +1236,8 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. Phase 6 is complete through `MIS-014`; the next engineering
-slice is `MIS-015`: validate one runtime story patch against the floors 1–5 envelope.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-015`; the next engineering
+slice is `FIN-001`: make synthesis irreversible, witnessed, socially consequential, and replayable.
 
 ## Accepted product decisions — 2026-08-23
 

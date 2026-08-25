@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-014` are complete. The first five
+Status: **complete** on 2026-08-25. `MIS-001` through `MIS-015` are complete. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -317,6 +317,7 @@ a state authority.
 | `MIS-012` | Complete: opt-in `engine-v19` stores Master timing separately from fallback selection; every mission decision has a stable ID, ordinal, opening, optional authoritative deadline, source, resolved action, and expiry outcome; Wait accepts manual input indefinitely, Countdown accepts takeover only before its persisted deadline, Step resolves one fallback then returns to Wait, and Continuous opens another fallback window until paused or terminal; mode changes visibly pause an active decision, injected wall time preserves engine purity, strict replay recomputes all timing state, and the mission UI exposes countdown, pause/takeover, source, expiry, and logs; the provisional hash-bound baseline prefers hold until MIS-013 | [Machine-readable four-mode report](evidence/phase-6-master-timing.json), engine/evaluation/database/browser tests, `pnpm validate:master-timing`, ADR 0042 |
 | `MIS-013` | Complete: opt-in `engine-v20` captures an immutable policy/direction/safety snapshot into each Master decision; directed scoring and seeded-random selection choose only from engine-owned legal actions and persist packet, legal, tie-break, source, classification, score, explanation, and result hashes; unsupported intent stays explicit; health-with-retreat, unclassified intent, irreversible tags, and a fallback streak can force a replayable Wait boundary; policy changes pause/reopen active windows; `/master-fallback` exposes doctrine editing, takeover, safety state, and evidence without changing independent hero policy | [Visual fallback proof](evidence/phase-6-master-fallback.png), [machine-readable report](evidence/phase-6-master-fallback.json), engine/evaluation/browser tests, `pnpm validate:master-fallback`, ADR 0043 |
 | `MIS-014` | Complete: `player-journal-v1` projects every v1–v20 history without mutating engine state; binds readable entries to exact cursors and resulting state hashes; exposes action and control source, before/after reward/XP/level deltas, cumulative party progress, direction outcomes, story changes, and failures; supports day, mission, floor, hero, event-type, source, and semantic-facet lenses over one hash-bound report; `/player-journal` creates a real trained/prepared checkpoint and the mission page replaces its hash-only log with the full ledger | [Visual journal proof](evidence/phase-6-player-journal.png), [machine-readable report](evidence/phase-6-player-journal.json), engine/evaluation/database/browser tests, `pnpm validate:player-journal`, ADR 0044 |
+| `MIS-015` | Complete: opt-in `engine-v21` binds a canonical runtime story history to the content-addressed first-band envelope; strict `StoryPatchCandidate` selects only catalogued optional beats and binds role expression only to a living evidence holder; 17 engine checks reject stale history, closed/unknown/overfilled slots, foreign or repeated proposals, invalid/dead/uninformed cast, and every authority expansion; `story.patch.applied` stores the validation, resulting history, patch, and state hashes and strictly revalidates on replay; `/story-patch` commits one real Floor 04 choice | [Visual runtime proof](evidence/phase-6-runtime-story-patch.png), [machine-readable report](evidence/phase-6-runtime-story-patch.json), engine/evaluation/database/browser tests, `pnpm validate:story-patch`, ADR 0045 |
 
 ### Reproduce the checkpoint
 
@@ -413,8 +414,16 @@ appears without changing earlier cursors or totals. Use day, mission, floor, her
 selectors together, then reload and confirm the report hash, entry cursors, and state hashes remain
 stable.
 
+Run `pnpm validate:story-patch`, keep `pnpm dev` running, and open
+`http://localhost:5173/story-patch`. Create the prepared Floor 04 company and confirm exactly two
+catalogued choices appear. **A maintenance schematic** must bind only to the ROUTEBEARER, while
+**Which voice crosses the bridge** has no role binding. Commit either choice, confirm all 17 checks
+remain visible, the aperture seals, the cursor advances to 2, and the fixed ledger remains five
+world laws, 25 anchors, `1010/1010` rewards, and three finale constraints. Reload and confirm the
+patch and `REPLAY-BOUND` state survive.
+
 ## Next active engineering slice
 
-Begin `MIS-015`: validate one runtime `StoryPatch` against the floors 1–5 story envelope without
-permitting reward, causal-history, world-law, or fixed-anchor drift. Phase 3 cohort expansion remains
-behind its separate human visual gate.
+Begin `FIN-001`: implement synthesis as an irreversible engine transaction with a concise warning,
+explicit source/recipient eligibility, and witnessed absence/rumor consequences. Phase 3 cohort
+expansion remains behind its separate human visual gate.

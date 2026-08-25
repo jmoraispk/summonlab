@@ -12,7 +12,12 @@ import {
 	RewardDeltaSchema
 } from './event.js';
 import { RunStatusSchema } from './run.js';
-import { MissionArenaKnowledgeSchema, MissionSlugSchema } from './mission.js';
+import {
+	MissionArenaKnowledgeSchema,
+	MissionSlugSchema,
+	RuntimeBandStoryStateSchema,
+	StoryPatchCandidateSchema
+} from './mission.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from './settlement.js';
 import {
 	ConversationActKindSchema,
@@ -2907,6 +2912,14 @@ const EngineGameStateV20BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV21BaseSchema = z
+	.object({
+		...EngineGameStateV20BaseSchema.shape,
+		schemaVersion: z.literal(21),
+		bandStory: RuntimeBandStoryStateSchema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -2920,7 +2933,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV17BaseSchema>
 	| z.infer<typeof EngineGameStateV18BaseSchema>
 	| z.infer<typeof EngineGameStateV19BaseSchema>
-	| z.infer<typeof EngineGameStateV20BaseSchema>;
+	| z.infer<typeof EngineGameStateV20BaseSchema>
+	| z.infer<typeof EngineGameStateV21BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -3277,7 +3291,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV17BaseSchema>
 	| z.infer<typeof EngineGameStateV18BaseSchema>
 	| z.infer<typeof EngineGameStateV19BaseSchema>
-	| z.infer<typeof EngineGameStateV20BaseSchema>;
+	| z.infer<typeof EngineGameStateV20BaseSchema>
+	| z.infer<typeof EngineGameStateV21BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -3449,6 +3464,40 @@ export const EngineGameStateV20Schema = EngineGameStateV20BaseSchema.superRefine
 		}
 	}
 );
+export const EngineGameStateV21Schema = EngineGameStateV21BaseSchema.superRefine(
+	(state, context) => {
+		validateMissionEngineState(state, context);
+		const activeAttempt = state.mission.attempt;
+		const canAwaitDecision =
+			state.status === 'active' &&
+			state.master.lifeState === 'alive' &&
+			activeAttempt !== null &&
+			['deployed', 'resolving'].includes(activeAttempt.status);
+		if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Only an active resolving mission may hold a Master decision window'
+			});
+		}
+		if (
+			state.masterControl.fallback.protectedHeroId !== null &&
+			!state.heroes[state.masterControl.fallback.protectedHeroId]
+		) {
+			context.addIssue({ code: 'custom', message: 'Protected fallback hero must exist' });
+		}
+		for (const patch of state.bandStory.appliedPatches) {
+			if (
+				patch.candidate.roleBindings.some((binding) => !state.heroes[binding.heroId]) ||
+				patch.appliedAt > state.simulatedAt
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Applied story patch cast and time must exist in the run'
+				});
+			}
+		}
+	}
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -3470,7 +3519,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV17Schema,
 	EngineGameStateV18Schema,
 	EngineGameStateV19Schema,
-	EngineGameStateV20Schema
+	EngineGameStateV20Schema,
+	EngineGameStateV21Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -3756,6 +3806,11 @@ export const RetreatMissionCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.retreat')
 }).strict();
 
+export const ApplyStoryPatchCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('story.apply.patch'),
+	candidate: StoryPatchCandidateSchema
+}).strict();
+
 export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
@@ -3789,7 +3844,8 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ResolveMissionTurnCommandSchema,
 	OpenMissionExtractionCommandSchema,
 	ExtractMissionCommandSchema,
-	RetreatMissionCommandSchema
+	RetreatMissionCommandSchema,
+	ApplyStoryPatchCommandSchema
 ]);
 
 export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
@@ -4030,6 +4086,7 @@ export type EngineGameStateV17 = z.infer<typeof EngineGameStateV17Schema>;
 export type EngineGameStateV18 = z.infer<typeof EngineGameStateV18Schema>;
 export type EngineGameStateV19 = z.infer<typeof EngineGameStateV19Schema>;
 export type EngineGameStateV20 = z.infer<typeof EngineGameStateV20Schema>;
+export type EngineGameStateV21 = z.infer<typeof EngineGameStateV21Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;

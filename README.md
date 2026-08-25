@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through the authoritative player journal._
+_Status: Phases 0–2 and 4–6 are complete; Phase 3 remains human-gated, and the first runtime StoryDirector patch is replayable._
 
 </div>
 
@@ -229,6 +229,23 @@ summons voice the same Floor 04 anchor differently while preserving it verbatim.
 
 Run `pnpm validate:story-envelope` to recompute and compare the checked report at
 `docs/evidence/phase-6-story-envelope.json`.
+
+### Runtime StoryDirector checkpoint
+
+`/story-patch` creates an `engine-v21` Floor 04 checkpoint at the Needle Bridge. A scripted
+StoryDirector may choose **A maintenance schematic**, bound only to the living summon who holds the
+route evidence, or **Which voice crosses the bridge**, an unbound complication. The candidate must
+pass 17 engine checks before `story.patch.applied` can enter canonical history.
+
+The strict patch contract has no operation for world laws, objectives, arena facts, rewards,
+required anchors, or finale constraints. The checked evidence accepts and strictly replays one
+real patch while blocking 11 stale, invented, over-budget, over-slot, dead-cast, and
+knowledge-violating cases.
+
+![Runtime StoryDirector checkpoint](docs/evidence/phase-6-runtime-story-patch.png)
+
+Run `pnpm validate:story-patch` to recompute the machine-readable proof at
+`docs/evidence/phase-6-runtime-story-patch.json`.
 
 ### Mortal Master checkpoint
 

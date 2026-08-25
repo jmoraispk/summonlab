@@ -499,15 +499,16 @@ function eventStoryChanges(
 			);
 		}
 	}
-	const storyPatch = record(payload.storyPatch);
-	if (typeof storyPatch?.patchId === 'string') {
+	const storyPatch = record(payload.storyPatch) ?? record(payload.patch);
+	const patchCandidate = record(storyPatch?.candidate) ?? storyPatch;
+	if (typeof patchCandidate?.patchId === 'string') {
 		pushStoryChange(
 			changes,
 			'patch',
-			storyPatch.patchId,
+			patchCandidate.patchId,
 			null,
 			'accepted',
-			`The validated story patch ${storyPatch.patchId} entered the run.`
+			`The validated story patch ${patchCandidate.patchId} entered the run.`
 		);
 	}
 	return { changes, branch: nextBranch, firstEmberStatus: nextFirstEmberStatus };

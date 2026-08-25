@@ -215,6 +215,38 @@ interface HeroDecision {
 
 Intent and dialogue are presentation. Only a validated legal action mutates state.
 
+## Runtime story direction
+
+Sparse story direction uses the same proposal boundary. A `StoryDirector` receives the exact
+content-addressed envelope, canonical public history, open slot, actual living cast, holder-owned
+evidence, and any scoped player direction. It returns a strict `StoryPatchCandidate`; it never
+returns replacement state.
+
+```text
+authored envelope + canonical history + eligible living cast
+                           │
+                           ▼
+              StoryPatchCandidate (selection only)
+                           │
+                           ▼
+       17 engine checks: causality · freshness · bounds
+       cast · knowledge · laws · objective · arena · rewards
+                           │
+              accepted ───┴─── rejected
+                 │                 │
+                 ▼                 ▼
+     story.patch.applied      no state change
+       + strict replay
+```
+
+`engine-v21` stores the accepted candidate, complete validation report, resulting history hash,
+and patch hash in one authoritative event. Selection capacity is cumulative across the canonical
+history. A role-expression proposal must name a living hero who holds the required evidence;
+complications carry no invented role binding. The schema contains no operation for world laws,
+primary objectives, arena entities, discoveries, rewards, required anchors, or finale constraints.
+This lets a future cheap or strong model replace the scripted director without changing its
+authority.
+
 The OpenAI Responses API supports explicit instructions, structured JSON output, independent inputs, and background execution. Summonlab can submit a background response, store its provider response ID on the decision job, and receive completion through a webhook while its own queue remains authoritative. See the official [Responses API reference](https://developers.openai.com/api/reference/cli/resources/responses/methods/create), [background mode guide](https://developers.openai.com/api/docs/guides/background), and [webhook guide](https://developers.openai.com/api/docs/guides/webhooks).
 
 ## Offline and phone-off processing

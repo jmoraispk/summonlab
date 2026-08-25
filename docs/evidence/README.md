@@ -101,3 +101,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-player-journal.png` / `.json` — database-backed company ledger and deterministic report
   proving exact reward/XP/level and party-progress deltas, action/control provenance, direction and
   story records, semantic filters, replay cursors, state hashes, and strict replay.
+- `phase-6-runtime-story-patch.png` / `.json` — database-backed Floor 04 StoryDirector aperture and
+  deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
+  commits once, enters the player journal, and strictly replays while 11 adversarial candidates are
+  blocked without world-law, objective, arena, reward, anchor, or finale drift.

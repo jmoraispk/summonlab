@@ -8,4 +8,5 @@ export * from './journal.js';
 export * from './presentation.js';
 export * from './recap.js';
 export * from './simulation.js';
+export * from './story.js';
 export * from './time.js';

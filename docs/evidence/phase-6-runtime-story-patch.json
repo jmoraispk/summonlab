@@ -1,0 +1,136 @@
+{
+	"reportVersion": "runtime-story-patch-report-v1",
+	"generatorVersion": "runtime-story-patch-generator-v1",
+	"engineContentVersion": "engine-v21",
+	"envelopeId": "first-band-unclaimed-authority",
+	"envelopeContentVersion": "tower-band-01-story-v1",
+	"envelopeContentHash": "e7b59f5c06e4549fb542b40bf0d64f54da87428bbd1fb82b98ebf69dc50b1e6d",
+	"checkpoint": {
+		"floor": 4,
+		"missionId": "tower-floor-04",
+		"slotId": "floor-four-between-pressure-and-opposition",
+		"completedBeatCount": 17,
+		"historyHash": "ad66e0da0599f91231df93f49424567ecc35e9766bc81412bb663c3b9e7054f0",
+		"roleProposalId": "floor-four-surface-discovery",
+		"complicationProposalId": "floor-four-force-choice",
+		"eligibleLivingHeroCount": 1
+	},
+	"acceptedPatch": {
+		"candidateHash": "b79f12ff02dda15865bbf7b3b810db762e55d10fd3ac6174260341342f3e91e5",
+		"validationHash": "833dd8ecd760e9d7f0eced9a79123f370d2002e407b0607d39c92aa489e5fe4f",
+		"patchHash": "8cec2b3b0d54f2df609deeb9934a6787466e2c71ce6d54ee6a03825d3efc6e06",
+		"eventHash": "f67d488fe681a72404124477337a0f61fde5b47736c548595cd5f3a140bfe35a",
+		"beforeStateHash": "471249dfbcb42670fdfcca84abfe226325222bb7db5b709f8751b835478e606e",
+		"afterStateHash": "52cbea5ccb922583f485f0d18d2db6e0da6ff2445ed932042c73854fef09b517",
+		"beforeHistoryHash": "ad66e0da0599f91231df93f49424567ecc35e9766bc81412bb663c3b9e7054f0",
+		"afterHistoryHash": "aeeda41866da72224ce1a30e5e78a757e251d6488e1af01c581e0b17dde20275",
+		"selectedProposalIds": ["floor-four-surface-discovery"],
+		"activatedBeatIds": ["floor-four-optional-discovery"],
+		"roleHeroId": "15500000-0000-4000-8000-000000000002",
+		"passedCheckCount": 17,
+		"totalCheckCount": 17
+	},
+	"alternativePreview": {
+		"proposalId": "floor-four-force-choice",
+		"accepted": true,
+		"passedCheckCount": 17,
+		"roleBindingCount": 0
+	},
+	"fixedAuthority": {
+		"worldLawCount": 5,
+		"anchorCount": 25,
+		"finaleConstraintCount": 3,
+		"rewardBudgetPoints": 1010,
+		"rewardDeclaredCostBefore": 1010,
+		"rewardDeclaredCostAfter": 1010,
+		"rewardDrift": 0
+	},
+	"adversarialCases": [
+		{
+			"caseId": "stale-history-hash",
+			"expectedRejectionCodes": ["stale-history"],
+			"actualRejectionCodes": ["stale-history"],
+			"blocked": true,
+			"candidateHash": "6380010ab815824ac646f1223c860e4020bf016a13f000055072f4aefcccc57b"
+		},
+		{
+			"caseId": "wrong-envelope-hash",
+			"expectedRejectionCodes": ["envelope-binding"],
+			"actualRejectionCodes": ["envelope-binding"],
+			"blocked": true,
+			"candidateHash": "ea3c71a3437f493a32850b2290df663fc8620a5bd8cbd4d5c80ddc564dec89d1"
+		},
+		{
+			"caseId": "unknown-slot",
+			"expectedRejectionCodes": ["slot-known", "slot-open", "selection-bound", "proposal-catalog"],
+			"actualRejectionCodes": ["slot-known", "slot-open", "selection-bound", "proposal-catalog"],
+			"blocked": true,
+			"candidateHash": "284f4b4e7df6af298c830896c125b18fa95fefcfd4f25c267fde638c28639793"
+		},
+		{
+			"caseId": "closed-slot",
+			"expectedRejectionCodes": ["slot-open"],
+			"actualRejectionCodes": ["slot-open"],
+			"blocked": true,
+			"candidateHash": "f3a779e24ecced11f50ab5ddb7b0302c83aa573b19ef30ab53ead45a88b064d5"
+		},
+		{
+			"caseId": "too-many-selections",
+			"expectedRejectionCodes": ["selection-bound"],
+			"actualRejectionCodes": ["selection-bound"],
+			"blocked": true,
+			"candidateHash": "782a5f57e0019b69a275fc5107ecf28a80d6ff9a5eb83611b195e9d6e10a374a"
+		},
+		{
+			"caseId": "unknown-proposal",
+			"expectedRejectionCodes": ["proposal-catalog"],
+			"actualRejectionCodes": ["proposal-catalog"],
+			"blocked": true,
+			"candidateHash": "d171136df852a0335e0a6ba990323fc661e28acda2ddabd3b33a3754b5c33540"
+		},
+		{
+			"caseId": "already-active-proposal",
+			"expectedRejectionCodes": ["proposal-dormant"],
+			"actualRejectionCodes": ["proposal-dormant"],
+			"blocked": true,
+			"candidateHash": "15a060990a41853b1ba93a92f25ba53d6554de90bb8b55d2e7f850c7fe28cc2d"
+		},
+		{
+			"caseId": "missing-role-binding",
+			"expectedRejectionCodes": ["role-binding"],
+			"actualRejectionCodes": ["role-binding"],
+			"blocked": true,
+			"candidateHash": "5618fa2347e813bded5a9ff641b73266cebb85e1360b89d607641283c87bbbef"
+		},
+		{
+			"caseId": "dead-role-holder",
+			"expectedRejectionCodes": ["living-cast"],
+			"actualRejectionCodes": ["living-cast"],
+			"blocked": true,
+			"candidateHash": "b79f12ff02dda15865bbf7b3b810db762e55d10fd3ac6174260341342f3e91e5"
+		},
+		{
+			"caseId": "unheld-knowledge",
+			"expectedRejectionCodes": ["knowledge-boundary"],
+			"actualRejectionCodes": ["knowledge-boundary"],
+			"blocked": true,
+			"candidateHash": "a3e672c4467e24656c2eccd801609f8fa8cba275cb01a0cc2b95fdad3fda33ed"
+		},
+		{
+			"caseId": "forbidden-reward-mutation",
+			"expectedRejectionCodes": ["strict-schema"],
+			"actualRejectionCodes": ["strict-schema"],
+			"blocked": true,
+			"candidateHash": null
+		}
+	],
+	"allAdversarialCasesBlocked": true,
+	"replay": {
+		"eventCount": 2,
+		"verified": true,
+		"hashMatchesCommittedState": true,
+		"activatedProposalIds": ["floor-four-surface-discovery"],
+		"finalStateHash": "52cbea5ccb922583f485f0d18d2db6e0da6ff2445ed932042c73854fef09b517"
+	},
+	"evidenceHash": "cde49b21648086df0c77e90428fcb438669ca7a275729a768d1b890052cab5e8"
+}

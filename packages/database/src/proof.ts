@@ -73,6 +73,14 @@ export interface CreateProofRunInput {
 		readonly enableAttemptAftermath?: boolean;
 		readonly enableMasterTiming?: boolean;
 		readonly enableMasterFallback?: boolean;
+		readonly enableStoryPatch?: boolean;
+		readonly additionalHeroes?: readonly {
+			readonly heroId: string;
+			readonly manifestHash: string;
+			readonly rarityStars?: number;
+			readonly mind?: CharacterDraft['mind'];
+		}[];
+		readonly foundryRouteMemoryHeroId?: string;
 	};
 }
 

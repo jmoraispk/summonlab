@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
 import { CharacterMindSchema } from './character.js';
-import { ContentVersionSchema, StateHashSchema } from './shared.js';
+import {
+	ContentVersionSchema,
+	EntityIdSchema,
+	IsoDateTimeSchema,
+	StateHashSchema
+} from './shared.js';
 
 export const MissionSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u);
 
@@ -886,6 +891,182 @@ export const StoryBeatHistorySchema = z
 		}
 	});
 
+export const StoryPatchRoleBindingSchema = z
+	.object({
+		proposalId: MissionSlugSchema,
+		heroId: EntityIdSchema
+	})
+	.strict();
+
+export const StoryPatchCandidateSchema = z
+	.object({
+		patchVersion: z.literal('story-patch-v1'),
+		patchId: EntityIdSchema,
+		envelopeId: MissionSlugSchema,
+		envelopeContentHash: StateHashSchema,
+		baseHistoryHash: StateHashSchema,
+		slotId: MissionSlugSchema,
+		selectedProposalIds: z.array(MissionSlugSchema).min(1).max(3),
+		roleBindings: z.array(StoryPatchRoleBindingSchema).max(3),
+		publicIntent: z.string().min(1).max(600)
+	})
+	.strict()
+	.superRefine((candidate, context) => {
+		if (new Set(candidate.selectedProposalIds).size !== candidate.selectedProposalIds.length) {
+			context.addIssue({ code: 'custom', message: 'Story patch selections must be unique' });
+		}
+		if (
+			new Set(candidate.roleBindings.map((binding) => binding.proposalId)).size !==
+			candidate.roleBindings.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Story patch role bindings must be unique by proposal'
+			});
+		}
+		for (const binding of candidate.roleBindings) {
+			if (!candidate.selectedProposalIds.includes(binding.proposalId)) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Story patch roles may bind only selected proposals'
+				});
+			}
+		}
+	});
+
+export const StoryPatchCastMemberSchema = z
+	.object({
+		heroId: EntityIdSchema,
+		lifeState: z.enum(['active', 'dead', 'synthesized']),
+		availableProposalIds: z.array(MissionSlugSchema).max(50)
+	})
+	.strict()
+	.superRefine((member, context) => {
+		if (new Set(member.availableProposalIds).size !== member.availableProposalIds.length) {
+			context.addIssue({ code: 'custom', message: 'Available story proposals must be unique' });
+		}
+	});
+
+export const StoryPatchValidationCodeSchema = z.enum([
+	'envelope-binding',
+	'history-causality',
+	'stale-history',
+	'slot-known',
+	'slot-open',
+	'selection-bound',
+	'proposal-catalog',
+	'proposal-dormant',
+	'role-binding',
+	'living-cast',
+	'knowledge-boundary',
+	'world-laws',
+	'primary-objective',
+	'arena-truth',
+	'reward-budget',
+	'required-anchors',
+	'finale-constraints'
+]);
+
+export const StoryPatchValidationCheckSchema = z
+	.object({
+		code: StoryPatchValidationCodeSchema,
+		status: z.enum(['passed', 'rejected']),
+		summary: z.string().min(1).max(360)
+	})
+	.strict();
+
+export const StoryPatchValidationReportSchema = z
+	.object({
+		reportVersion: z.literal('story-patch-validation-v1'),
+		candidateHash: StateHashSchema,
+		accepted: z.boolean(),
+		envelopeId: MissionSlugSchema,
+		envelopeContentHash: StateHashSchema,
+		slotId: MissionSlugSchema,
+		baseHistoryHash: StateHashSchema,
+		resultingHistoryHash: StateHashSchema.nullable(),
+		selectedProposalIds: z.array(MissionSlugSchema).max(3),
+		activatedBeatIds: z.array(MissionSlugSchema).max(3),
+		roleBindings: z.array(StoryPatchRoleBindingSchema).max(3),
+		checks: z.array(StoryPatchValidationCheckSchema).min(10).max(24),
+		rejectionCodes: z.array(StoryPatchValidationCodeSchema).max(24),
+		validationHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((report, context) => {
+		const rejected = report.checks
+			.filter((check) => check.status === 'rejected')
+			.map((check) => check.code);
+		if (
+			report.accepted !== (rejected.length === 0) ||
+			report.accepted !== (report.resultingHistoryHash !== null) ||
+			new Set(report.checks.map((check) => check.code)).size !== report.checks.length ||
+			new Set(report.rejectionCodes).size !== report.rejectionCodes.length ||
+			rejected.join('|') !== report.rejectionCodes.join('|')
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Story patch validation verdict is inconsistent'
+			});
+		}
+	});
+
+export const AppliedStoryPatchSchema = z
+	.object({
+		applicationVersion: z.literal('applied-story-patch-v1'),
+		candidate: StoryPatchCandidateSchema,
+		validation: StoryPatchValidationReportSchema,
+		appliedEventId: EntityIdSchema,
+		appliedAt: IsoDateTimeSchema,
+		patchHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((patch, context) => {
+		if (
+			!patch.validation.accepted ||
+			patch.validation.envelopeId !== patch.candidate.envelopeId ||
+			patch.validation.envelopeContentHash !== patch.candidate.envelopeContentHash ||
+			patch.validation.baseHistoryHash !== patch.candidate.baseHistoryHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Applied story patch validation is inconsistent'
+			});
+		}
+	});
+
+export const RuntimeBandStoryStateSchema = z
+	.object({
+		storyVersion: z.literal('runtime-band-story-v1'),
+		envelopeId: MissionSlugSchema,
+		envelopeContentVersion: ContentVersionSchema,
+		envelopeContentHash: StateHashSchema,
+		history: StoryBeatHistorySchema,
+		appliedPatches: z.array(AppliedStoryPatchSchema).max(20)
+	})
+	.strict()
+	.superRefine((story, context) => {
+		if (
+			new Set(story.appliedPatches.map((patch) => patch.candidate.patchId)).size !==
+			story.appliedPatches.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Applied story patch ids must be unique' });
+		}
+		const activated = new Set(story.history.activatedProposalIds);
+		for (const patch of story.appliedPatches) {
+			if (
+				patch.candidate.envelopeId !== story.envelopeId ||
+				patch.candidate.envelopeContentHash !== story.envelopeContentHash ||
+				patch.candidate.selectedProposalIds.some((proposalId) => !activated.has(proposalId))
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Applied story patches must bind the current envelope and history'
+				});
+			}
+		}
+	});
+
 export const StoryBeatEligibilityRecordSchema = z
 	.object({
 		beatId: MissionSlugSchema,
@@ -1619,6 +1800,14 @@ export type MissionMonsterPolicyDefinition = z.infer<typeof MissionMonsterPolicy
 export type MissionPackage = z.infer<typeof MissionPackageSchema>;
 export type StoryBeatEligibilityReport = z.infer<typeof StoryBeatEligibilityReportSchema>;
 export type StoryBeatHistory = z.infer<typeof StoryBeatHistorySchema>;
+export type AppliedStoryPatch = z.infer<typeof AppliedStoryPatchSchema>;
+export type RuntimeBandStoryState = z.infer<typeof RuntimeBandStoryStateSchema>;
+export type StoryPatchCandidate = z.infer<typeof StoryPatchCandidateSchema>;
+export type StoryPatchCastMember = z.infer<typeof StoryPatchCastMemberSchema>;
+export type StoryPatchRoleBinding = z.infer<typeof StoryPatchRoleBindingSchema>;
+export type StoryPatchValidationCode = z.infer<typeof StoryPatchValidationCodeSchema>;
+export type StoryPatchValidationCheck = z.infer<typeof StoryPatchValidationCheckSchema>;
+export type StoryPatchValidationReport = z.infer<typeof StoryPatchValidationReportSchema>;
 export type StoryExpressionCastMember = z.infer<typeof StoryExpressionCastMemberSchema>;
 export type StoryExpressionFrame = z.infer<typeof StoryExpressionFrameSchema>;
 export type StoryExpressionResolution = z.infer<typeof StoryExpressionResolutionSchema>;
