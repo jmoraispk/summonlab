@@ -8,31 +8,40 @@
 	} from '@summonlab/contracts';
 
 	let { data } = $props();
+	let selectedFloor = $state(1);
 	let selectedNodeId = $state('tower-threshold');
 	let discoveredIds = $state<string[]>([]);
 	let visitedNodeIds = $state<string[]>(['tower-threshold']);
 	let viewMode = $state<'knowledge' | 'truth'>('knowledge');
 	let latestDiscoveryId = $state<string | null>(null);
+	let retainedRouteMemory = $state(false);
+
+	const mission = $derived(
+		data.missions.find((candidate) => candidate.tower?.floor === selectedFloor) ?? data.missions[0]!
+	);
+	const missionRoutes = $derived(data.routes[mission.missionId]!);
+	const floorTitle = $derived(mission.displayName.replace(/^Floor \d+ · /u, ''));
+	const toolTags = $derived(new Set(retainedRouteMemory ? ['relay-route-memory'] : []));
 
 	const discovered = $derived(new Set(discoveredIds));
 	const visited = $derived(new Set(visitedNodeIds));
 	const revealedNodeIds = $derived(
 		new Set(
-			data.mission.arena.discoveries
+			mission.arena.discoveries
 				.filter((discovery) => discovered.has(discovery.discoveryId))
 				.flatMap((discovery) => discovery.revealNodeIds)
 		)
 	);
 	const visibleNodeIds = $derived(
 		new Set(
-			data.mission.arena.nodes
+			mission.arena.nodes
 				.filter((node) => node.initialKnowledge === 'known' || revealedNodeIds.has(node.nodeId))
 				.map((node) => node.nodeId)
 		)
 	);
 	const visibleEdgeIds = $derived(
 		new Set(
-			data.mission.arena.edges
+			mission.arena.edges
 				.filter(
 					(edge) =>
 						visibleNodeIds.has(edge.fromNodeId) &&
@@ -43,11 +52,10 @@
 		)
 	);
 	const selectedNode = $derived(
-		data.mission.arena.nodes.find((node) => node.nodeId === selectedNodeId) ??
-			data.mission.arena.nodes[0]!
+		mission.arena.nodes.find((node) => node.nodeId === selectedNodeId) ?? mission.arena.nodes[0]!
 	);
 	const selectedObservations = $derived(
-		data.mission.arena.observations.filter(
+		mission.arena.observations.filter(
 			(observation) =>
 				observation.nodeId === selectedNodeId &&
 				(observation.reveal.kind === 'discovery'
@@ -56,35 +64,32 @@
 		)
 	);
 	const selectedAffordances = $derived(
-		data.mission.arena.discoveryAffordances.filter(
+		mission.arena.discoveryAffordances.filter(
 			(affordance) =>
 				affordance.nodeId === selectedNodeId &&
 				visited.has(affordance.nodeId) &&
 				affordance.requiresDiscoveryIds.every((id) => discovered.has(id)) &&
-				affordance.requiredToolTags.length === 0 &&
+				affordance.requiredToolTags.every((tag) => toolTags.has(tag)) &&
 				affordance.blockedByDiscoveryIds.every((id) => !discovered.has(id))
 		)
 	);
 	const routeKey = $derived([...discovered].sort().join('|') || 'none');
-	const currentRoute = $derived((data.routes[routeKey] ?? null) as MissionRoutePlan | null);
+	const currentRoute = $derived((missionRoutes[routeKey] ?? null) as MissionRoutePlan | null);
 	const activeRouteEdgeIds = $derived(
 		new Set((currentRoute?.steps ?? []).map((step) => step.edgeId))
 	);
 	const latestDiscovery = $derived(
-		data.mission.arena.discoveries.find(
-			(discovery) => discovery.discoveryId === latestDiscoveryId
-		) ?? null
+		mission.arena.discoveries.find((discovery) => discovery.discoveryId === latestDiscoveryId) ??
+			null
 	);
-	const primaryObjective = $derived(
-		data.mission.objectives.find((objective) => objective.primary)!
-	);
+	const primaryObjective = $derived(mission.objectives.find((objective) => objective.primary)!);
 
 	function pathPoints(edge: MissionArenaEdge): string {
 		return edge.visualPath.map((point) => `${point.x},${point.y}`).join(' ');
 	}
 
 	function nodeStyle(node: MissionArenaNode): string {
-		return `--x:${(node.position.x / data.mission.design.width) * 100}%;--y:${(node.position.y / data.mission.design.height) * 100}%`;
+		return `--x:${(node.position.x / mission.design.width) * 100}%;--y:${(node.position.y / mission.design.height) * 100}%`;
 	}
 
 	function isNodeVisible(node: MissionArenaNode): boolean {
@@ -112,10 +117,20 @@
 	}
 
 	function resetKnowledge(): void {
-		selectedNodeId = data.entryNodeId;
+		selectedNodeId = mission.deployment.entryNodeIds[0]!;
 		discoveredIds = [];
-		visitedNodeIds = [data.entryNodeId];
+		visitedNodeIds = [mission.deployment.entryNodeIds[0]!];
 		latestDiscoveryId = null;
+		viewMode = 'knowledge';
+	}
+
+	function selectFloor(floor: number): void {
+		selectedFloor = floor;
+		selectedNodeId = 'tower-threshold';
+		discoveredIds = [];
+		visitedNodeIds = ['tower-threshold'];
+		latestDiscoveryId = null;
+		retainedRouteMemory = false;
 		viewMode = 'knowledge';
 	}
 
@@ -125,17 +140,17 @@
 </script>
 
 <svelte:head>
-	<title>The Unlit Muster · Mission package lab</title>
+	<title>{floorTitle} · Mission package lab</title>
 	<meta
 		name="description"
-		content="Inspect the validated Tower Floor 01 mission package, arena knowledge boundary, legal discoveries, fixed story anchors, and deployment contract."
+		content="Inspect the validated Tower Band 01 mission packages, arena knowledge boundaries, legal discoveries, fixed story anchors, and reward contracts."
 	/>
 </svelte:head>
 
 <main>
 	<header class="topbar">
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
-		<div><span>MIS-001</span><strong>Mission package lab</strong></div>
+		<div><span>MIS-005</span><strong>First band atlas</strong></div>
 		<nav aria-label="Mission lab links">
 			<a href={resolve('/settlement-lab')}>Hearth 01</a>
 			<a href={resolve('/forge')}>Forge</a>
@@ -144,34 +159,72 @@
 	</header>
 
 	<section class="opening">
-		<div class="floor-mark" aria-hidden="true"><span>01</span><i>Ⅰ</i></div>
+		<div class="floor-mark" aria-hidden="true">
+			<span>{String(selectedFloor).padStart(2, '0')}</span><i>{selectedFloor}</i>
+		</div>
 		<div class="opening-title">
-			<p class="eyebrow">Tower band 01 · floor 01 of 100</p>
-			<h1>The Unlit<br /><em>Muster.</em></h1>
-			<p>{data.mission.tagline}</p>
+			<p class="eyebrow">Tower band 01 · floor {String(selectedFloor).padStart(2, '0')} of 100</p>
+			<h1>{floorTitle}</h1>
+			<p>{mission.tagline}</p>
 		</div>
 		<div class="mission-seal">
 			<span>Primary objective</span>
 			<strong>{primaryObjective.title}</strong>
 			<p>{primaryObjective.summary}</p>
-			<code>{data.mission.contentHash.slice(0, 16)}</code>
+			<code>{mission.contentHash.slice(0, 16)}</code>
 		</div>
 	</section>
 
+	<section class="band-index" aria-label="Tower Band 01 floors">
+		{#each data.missions as candidate (candidate.missionId)}
+			<button
+				type="button"
+				class:active={candidate.tower?.floor === selectedFloor}
+				onclick={() => selectFloor(candidate.tower!.floor)}
+			>
+				<i>{String(candidate.tower!.floor).padStart(2, '0')}</i>
+				<span>{candidate.displayName.replace(/^Floor \d+ · /u, '')}</span>
+				<small>{candidate.objectives.find((objective) => objective.primary)!.kind}</small>
+			</button>
+		{/each}
+	</section>
+
+	{#if selectedFloor === 5}
+		<section class="memory-gate" data-testid="route-memory-gate">
+			<div>
+				<span>Cross-floor knowledge gate</span>
+				<strong>Floor 04 · Foundry maintenance schematic</strong>
+				<p>The route is not a free hint. A hero must have retained the relay archive evidence.</p>
+			</div>
+			<button
+				type="button"
+				class:active={retainedRouteMemory}
+				onclick={() => (retainedRouteMemory = !retainedRouteMemory)}
+			>
+				{retainedRouteMemory ? 'Memory carried' : 'Simulate retained memory'}
+			</button>
+		</section>
+	{/if}
+
 	<section class="boundary-strip" aria-label="Mission package boundaries">
 		<article>
-			<span>Party</span><strong>1–5</strong><small>Master counts · no reserve</small>
+			<span>Party</span><strong
+				>{mission.deployment.minimumPartyMembers}–{mission.deployment.maximumPartyMembers}</strong
+			><small>Master counts · no reserve</small>
 		</article>
 		<article>
-			<span>Entry</span><strong>Tower Threshold</strong><small>One authored deployment node</small>
+			<span>Entry</span><strong
+				>{mission.arena.nodes.find((node) => node.nodeId === mission.deployment.entryNodeIds[0])!
+					.label}</strong
+			><small>One authored deployment node</small>
 		</article>
 		<article>
-			<span>Success</span><strong>Recover + return</strong><small
-				>Extraction completes the objective</small
+			<span>Success</span><strong>{primaryObjective.kind}</strong><small
+				>{primaryObjective.title}</small
 			>
 		</article>
 		<article>
-			<span>Reward budget</span><strong>{data.mission.rewards.budgetPoints}</strong><small
+			<span>Reward budget</span><strong>{mission.rewards.budgetPoints}</strong><small
 				>Immutable package points</small
 			>
 		</article>
@@ -202,9 +255,9 @@
 				<div class="vault-glow" aria-hidden="true"></div>
 				<div class="stone-grid" aria-hidden="true"></div>
 				<svg
-					viewBox={`0 0 ${data.mission.design.width} ${data.mission.design.height}`}
+					viewBox={`0 0 ${mission.design.width} ${mission.design.height}`}
 					role="img"
-					aria-label="Tower Floor 01 arena graph"
+					aria-label={`Tower Floor ${String(selectedFloor).padStart(2, '0')} arena graph`}
 				>
 					<defs>
 						<filter id="ember-glow"><feGaussianBlur stdDeviation="10"></feGaussianBlur></filter>
@@ -213,7 +266,7 @@
 							<stop offset="1" stop-color="#b3874a"></stop>
 						</linearGradient>
 					</defs>
-					{#each data.mission.arena.edges as edge (edge.edgeId)}
+					{#each mission.arena.edges as edge (edge.edgeId)}
 						{@const visibility = edgeVisibility(edge)}
 						{#if visibility !== 'hidden'}
 							<polyline class="edge-shadow" points={pathPoints(edge)}></polyline>
@@ -228,7 +281,7 @@
 					{/each}
 				</svg>
 
-				{#each data.mission.arena.nodes as node, index (node.nodeId)}
+				{#each mission.arena.nodes as node, index (node.nodeId)}
 					{#if isNodeVisible(node)}
 						<button
 							type="button"
@@ -255,7 +308,7 @@
 					<span><i class="secret-dot"></i> Discovered route</span>
 				</div>
 				<div class="map-status">
-					<strong>{visibleNodeIds.size} / {data.mission.arena.nodes.length}</strong>
+					<strong>{visibleNodeIds.size} / {mission.arena.nodes.length}</strong>
 					<span>nodes visible</span>
 				</div>
 			</div>
@@ -326,7 +379,11 @@
 
 	<section class="route-and-story">
 		<article class="route-card" data-testid="mission-route">
-			<p class="eyebrow">Current route to the Ember Vault</p>
+			<p class="eyebrow">
+				Current route to {mission.arena.nodes.find(
+					(node) => node.nodeId === primaryObjective.targetNodeIds[0]
+				)!.label}
+			</p>
 			<header>
 				<h2>{currentRoute?.totalTraversalActions ?? '—'} actions</h2>
 				<span class:danger={currentRoute?.maximumExposure === 'exposed'}
@@ -338,9 +395,7 @@
 					{#each currentRoute.nodeIds as nodeId, index (nodeId)}
 						<li>
 							<i>{String(index + 1).padStart(2, '0')}</i>
-							<strong
-								>{data.mission.arena.nodes.find((node) => node.nodeId === nodeId)!.label}</strong
-							>
+							<strong>{mission.arena.nodes.find((node) => node.nodeId === nodeId)!.label}</strong>
 							{#if index < currentRoute.steps.length}
 								<span>{currentRoute.steps[index]!.exposure}</span>
 							{/if}
@@ -357,21 +412,20 @@
 		<article class="story-card" data-testid="story-envelope">
 			<p class="eyebrow">Fixed spine · bounded expression</p>
 			<h2>Agents may bend the route.<br /><em>Not the truth.</em></h2>
-			<p class="theme">{data.mission.story.openingQuestion}</p>
+			<p class="theme">{mission.story.openingQuestion}</p>
 			<div class="story-line">
-				{#each data.mission.story.anchors as anchor, index (anchor.anchorId)}
+				{#each mission.story.anchors as anchor, index (anchor.anchorId)}
 					<div class="anchor">
 						<i>{String(index + 1).padStart(2, '0')}</i>
 						<strong
-							>{data.mission.story.beats.find((beat) => beat.beatId === anchor.beatId)!
-								.title}</strong
+							>{mission.story.beats.find((beat) => beat.beatId === anchor.beatId)!.title}</strong
 						>
 						<small>{anchor.immutableFact}</small>
 					</div>
 					{#if index === 1}
 						<div class="patch-slot">
 							<span>Agent patch slot</span>
-							<strong>Choose 1 of {data.mission.story.proposalCatalog.length}</strong>
+							<strong>Choose 1 of {mission.story.proposalCatalog.length}</strong>
 							<small>Optional beat only</small>
 						</div>
 					{/if}
@@ -379,7 +433,7 @@
 			</div>
 			<div class="forbidden">
 				<span>Cannot rewrite</span>
-				<p>{data.mission.story.forbiddenChanges.join(' · ')}</p>
+				<p>{mission.story.forbiddenChanges.join(' · ')}</p>
 			</div>
 		</article>
 	</section>
@@ -388,14 +442,14 @@
 		<header>
 			<div>
 				<p class="eyebrow">Content declaration · execution comes later</p>
-				<h2>What Floor 01 promises.</h2>
+				<h2>What Floor {String(selectedFloor).padStart(2, '0')} promises.</h2>
 			</div>
-			<code>{data.mission.contentVersion}</code>
+			<code>{mission.contentVersion}</code>
 		</header>
 		<div class="ledger-grid">
 			<article>
 				<span>Monster duties</span>
-				{#each data.mission.monsterDuties as duty (duty.dutySlotId)}
+				{#each mission.monsterDuties as duty (duty.dutySlotId)}
 					<div>
 						<strong>{duty.dutySlotId.replaceAll('-', ' ')}</strong><small
 							>{duty.count.min}–{duty.count.max} · {duty.policyId}</small
@@ -405,7 +459,7 @@
 			</article>
 			<article>
 				<span>Reward grants</span>
-				{#each data.mission.rewards.grants as grant (grant.grantId)}
+				{#each mission.rewards.grants as grant (grant.grantId)}
 					<div>
 						<strong>{grant.key.replaceAll('-', ' ')}</strong><small
 							>{grant.trigger} · cost {grant.budgetCost}</small
@@ -415,7 +469,7 @@
 			</article>
 			<article>
 				<span>Entropy purposes</span>
-				{#each data.mission.encounterSeedRules.namedPurposes as purpose (purpose)}
+				{#each mission.encounterSeedRules.namedPurposes as purpose (purpose)}
 					<div>
 						<strong>{purpose.replaceAll('-', ' ')}</strong><small>named deterministic draw</small>
 					</div>
@@ -425,8 +479,8 @@
 	</section>
 
 	<footer>
-		<span>MIS-001 · package and arena contract</span>
-		<p>Next: prepare a real party, commit deployment, and make extraction authoritative.</p>
+		<span>MIS-005 · authored first band</span>
+		<p>Next: make the maintenance route and cooling control engine-owned and replayable.</p>
 	</footer>
 </main>
 
@@ -563,13 +617,13 @@
 	h1 {
 		margin-bottom: 1rem;
 		font:
-			400 clamp(4rem, 8vw, 8.8rem) / 0.78 Georgia,
+			400 clamp(3.6rem, 7vw, 7.4rem) / 0.86 Georgia,
 			'Times New Roman',
 			serif;
 		letter-spacing: -0.065em;
+		text-wrap: balance;
 	}
 
-	h1 em,
 	.story-card h2 em {
 		color: #d6864d;
 		font-weight: 400;
@@ -621,6 +675,109 @@
 		border-top: 1px solid rgba(255, 255, 255, 0.07);
 		color: rgba(238, 232, 220, 0.28);
 		font-size: 0.48rem;
+	}
+
+	.band-index {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 1px;
+		margin: 0 clamp(1.2rem, 4vw, 4rem) 1px;
+		background: rgba(255, 255, 255, 0.09);
+	}
+
+	.band-index button {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		gap: 0.7rem;
+		align-items: center;
+		min-width: 0;
+		padding: 0.95rem 1rem;
+		border: 0;
+		background: #0a0d12;
+		color: rgba(238, 232, 220, 0.48);
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.band-index button:hover,
+	.band-index button:focus-visible,
+	.band-index button.active {
+		outline: none;
+		background: linear-gradient(135deg, rgba(104, 50, 28, 0.45), #101116);
+		color: #f0d9bd;
+		box-shadow: inset 0 -2px #da8750;
+	}
+
+	.band-index i {
+		color: #d88b52;
+		font:
+			normal 0.56rem ui-monospace,
+			monospace;
+	}
+
+	.band-index span {
+		overflow: hidden;
+		font:
+			400 0.7rem Georgia,
+			serif;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.band-index small {
+		color: rgba(238, 232, 220, 0.25);
+		font-size: 0.4rem;
+		text-transform: uppercase;
+	}
+
+	.memory-gate {
+		display: flex;
+		justify-content: space-between;
+		gap: 2rem;
+		align-items: center;
+		margin: 0 clamp(1.2rem, 4vw, 4rem) 1px;
+		padding: 1rem 1.2rem;
+		border: 1px solid rgba(67, 180, 188, 0.22);
+		background: linear-gradient(90deg, rgba(24, 73, 78, 0.28), rgba(8, 11, 15, 0.92));
+	}
+
+	.memory-gate span,
+	.memory-gate strong {
+		display: block;
+	}
+
+	.memory-gate span {
+		color: #52b4bc;
+		font-size: 0.43rem;
+		text-transform: uppercase;
+	}
+
+	.memory-gate strong {
+		margin-top: 0.25rem;
+		font:
+			400 0.82rem Georgia,
+			serif;
+	}
+
+	.memory-gate p {
+		margin: 0.3rem 0 0;
+		color: rgba(238, 232, 220, 0.38);
+		font-size: 0.48rem;
+	}
+
+	.memory-gate button {
+		padding: 0.75rem 0.9rem;
+		border: 1px solid rgba(82, 180, 188, 0.35);
+		background: transparent;
+		color: #81ccd2;
+		cursor: pointer;
+		font-size: 0.46rem;
+		text-transform: uppercase;
+	}
+
+	.memory-gate button.active {
+		background: rgba(82, 180, 188, 0.18);
+		box-shadow: 0 0 1.5rem rgba(82, 180, 188, 0.12);
 	}
 
 	.boundary-strip {
@@ -1400,6 +1557,10 @@
 		.story-line {
 			grid-template-columns: repeat(3, 1fr);
 		}
+
+		.band-index {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
 	}
 
 	@media (max-width: 760px) {
@@ -1428,6 +1589,19 @@
 		.boundary-strip,
 		.ledger-grid {
 			grid-template-columns: 1fr 1fr;
+		}
+
+		.band-index {
+			grid-template-columns: 1fr;
+		}
+
+		.band-index small {
+			display: block;
+		}
+
+		.memory-gate {
+			align-items: stretch;
+			flex-direction: column;
 		}
 
 		.panel-heading,

@@ -1,5 +1,5 @@
 import { getConfig } from '@summonlab/config';
-import { loadTowerFloor01, planMissionRoute } from '@summonlab/content';
+import { loadTowerBand01, planMissionRoute } from '@summonlab/content';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
@@ -17,21 +17,28 @@ function keyFor(discoveryIds: readonly string[]): string {
 
 export const load: PageServerLoad = async () => {
 	if (!getConfig().devRoutesEnabled) error(404, 'Not found.');
-	const mission = await loadTowerFloor01();
-	const entryNodeId = mission.deployment.entryNodeIds[0]!;
-	const objectiveNodeId = mission.objectives.find((objective) => objective.primary)!
-		.targetNodeIds[0]!;
+	const missions = await loadTowerBand01();
 	const routes = Object.fromEntries(
-		combinations(mission.arena.discoveries.map((discovery) => discovery.discoveryId)).map(
-			(discoveryIds) => [
-				keyFor(discoveryIds),
-				planMissionRoute(mission, entryNodeId, objectiveNodeId, {
-					discoveryIds,
-					visitedNodeIds: [entryNodeId]
-				})
-			]
-		)
+		missions.map((mission) => {
+			const entryNodeId = mission.deployment.entryNodeIds[0]!;
+			const objectiveNodeId = mission.objectives.find((objective) => objective.primary)!
+				.targetNodeIds[0]!;
+			return [
+				mission.missionId,
+				Object.fromEntries(
+					combinations(mission.arena.discoveries.map((discovery) => discovery.discoveryId)).map(
+						(discoveryIds) => [
+							keyFor(discoveryIds),
+							planMissionRoute(mission, entryNodeId, objectiveNodeId, {
+								discoveryIds,
+								visitedNodeIds: [entryNodeId]
+							})
+						]
+					)
+				)
+			];
+		})
 	);
 
-	return { mission, routes, entryNodeId, objectiveNodeId };
+	return { missions, routes };
 };

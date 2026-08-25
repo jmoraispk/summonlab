@@ -1070,7 +1070,11 @@ Estimated engineering effort: **2–3 weeks**.
   party members in one initiative ledger; resolve alarms, movement, attacks, defense, vitality,
   mission guard, and superseded actions; define the reusable furnace-linked Foundry Warden policy
   without placing it before Floor 05; render threats and resolved effects on the tactical board;
-- `MIS-005` author floors 1–5 and their observations/rewards;
+- `MIS-005` complete: author immutable Floor 02–05 packages and a verified first-band catalog with
+  formation/protection, injury/retreat pressure, relay separation and trust, 34 total bounded
+  observations, 15 legal discoveries, exact per-floor reward budgets, five-anchor story envelopes,
+  retained Floor 04 Foundry-route evidence, a direct Floor 05 assault, a gated cooling route, and the
+  single placement of the versioned Foundry Warden;
 - `MIS-006` implement engine-owned maintenance-route secret;
 - `MIS-007` implement Iron Moon timer, extraction, and ore ledger;
 - `MIS-008` implement injury, death, equipment, memory, and relationship aftermath;

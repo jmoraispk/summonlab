@@ -578,9 +578,27 @@ permadeath, and Master game over remain later explicit boundaries rather than im
 mission guard.
 
 The same catalog defines the Foundry Warden's furnace-linked armor, furnace surge, and exposed
-cooling-control defense. The policy is reusable but not placed on Floor 01; Floor 05 owns that
-content decision in `MIS-005`. The mission page projects active monster tokens, current threat
-intent, guard, and merged initiative from authoritative state. See ADR 0033.
+cooling-control defense. The policy is reusable and Floor 05 now owns its only first-band placement.
+The mission page projects active monster tokens, current threat intent, guard, and merged initiative
+from authoritative state. See ADR 0033.
+
+### Implemented authored first tower band
+
+`tower-band-01-v1` verifies five consecutive immutable mission packages and every referenced monster
+policy before exposing them. Floors 02–05 add formation and protection at the Broken Procession,
+injury and retreat pressure at the Red Tithe, one-person separation and relationship evidence at the
+Severed Relay, and the Living Foundry payoff. Across the band, 34 observations and 15 discoveries
+remain local, visit-bound evidence; every floor retains a default objective route, exact reward
+budget, authored retreat boundary, deterministic entropy names, and a fixed five-anchor story
+envelope with only one catalog-bounded optional patch slot.
+
+Floor 04 can reveal the canonical intake seam and cooling-loop schematic. Floor 05 declares a
+matching maintenance affordance that is not legal without the `relay-route-memory` capability. With
+that retained evidence, the hidden two-person route reaches an authored cooling control; without it,
+the direct exposed route to the Foundry Warden remains valid. Content still cannot change state: the
+route, cooling state transitions, Warden armor effects, and cross-floor memory provenance become
+engine-owned in `MIS-006`. The development Mission Lab can simulate the capability to inspect this
+boundary without mutating a run. See ADR 0034.
 
 ### Implemented reconnect projection
 
