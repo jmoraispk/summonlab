@@ -1163,7 +1163,10 @@ Estimated engineering effort: **2 weeks**.
   optional readable cue captions, route-specific cinematic emphasis, pre-hydration settings
   migration, system-aware reduced motion, skip/focus navigation, native preference controls,
   keyboard hero tabs, and contained/restored modal focus; validate desktop and 390×844 phone paths;
-- `FIN-005` tune performance and asset budgets for target phones;
+- `FIN-005` **complete** — replace player-route source PNG delivery with content-addressed,
+  purpose-sized title variants and approved runtime portraits; bind byte evidence to the current
+  build and manifests; and enforce the 390×844/2× simulated-4G shell, reconnect, interface-response,
+  frame-rate, and working-set budgets in the real campaign browser path;
 - `FIN-006` add analytics and playtest consent;
 - `FIN-007` run five moderated tests and triage findings;
 - `FIN-008` fix all release-blocking defects and package the playtest build;
@@ -1262,7 +1265,10 @@ interface-only pause, device-local presentation settings, and restart lineage th
 never rewrites the prior verified chronicle. `FIN-004` adds the local sensory/accessibility boundary
 in ADR 0048: procedural route soundscapes, redundant captions and visual cues, pre-hydration
 preference migration, system-aware motion, keyboard-first navigation, and modal focus containment.
-The next engineering slice is `FIN-005`: tune performance and asset budgets for target phones.
+`FIN-005` adds the split performance evidence boundary in ADR 0049: reproducible player visual and
+build artifacts are exact, while a fresh throttled Chromium campaign enforces the phone shell,
+reconnect, interface, frame, and working-set targets. The next engineering slice is `FIN-006`: add
+analytics and playtest consent.
 
 ## Accepted product decisions — 2026-08-23
 

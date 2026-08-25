@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "phone-performance-report-v1",
+  "recordedAt": "2026-08-25T22:23:17.906Z",
+  "sourceRevision": "working-tree",
+  "profile": {
+    "name": "mid-range-phone-390x844-2x",
+    "viewportWidth": 390,
+    "viewportHeight": 844,
+    "deviceScaleFactor": 2,
+    "networkLatencyMs": 150,
+    "downloadBytesPerSecond": 200000,
+    "uploadBytesPerSecond": 93750,
+    "cpuSlowdownMultiplier": 4
+  },
+  "budgets": {
+    "interactiveShellMs": 4000,
+    "initialJavaScriptGzipBytes": 700000,
+    "playerTitleVisualBytes": 100000,
+    "firstSettlementVisualBytes": 8000000,
+    "minimumActiveSceneFramesPerSecond": 30,
+    "interfaceResponseMs": 150,
+    "reconnectMs": 4000,
+    "rendererWorkingSetReferenceBytes": 300000000
+  },
+  "measurements": {
+    "interactiveShellMs": 790.1,
+    "initialJavaScriptGzipBytes": 45031,
+    "playerTitleVisualBytes": 47288,
+    "firstSettlementVisualBytes": 296168,
+    "activeSceneFramesPerSecond": 60,
+    "interfaceResponseP95Ms": 30.6,
+    "reconnectMs": 2984.3,
+    "javascriptHeapBytes": 4682136,
+    "decodedImageBytes": 6291456,
+    "rendererWorkingSetReferenceBytes": 10973592
+  },
+  "status": {
+    "interactiveShell": "within-budget",
+    "initialJavaScript": "within-budget",
+    "playerTitleVisual": "within-budget",
+    "firstSettlementVisuals": "within-budget",
+    "activeSceneFrames": "within-budget",
+    "interfaceResponse": "within-budget",
+    "reconnect": "within-budget",
+    "rendererWorkingSetReference": "within-budget"
+  },
+  "methodology": {
+    "browser": "chromium",
+    "interfaceSamples": 5,
+    "frameSampleDurationMs": 2000,
+    "memoryScope": "javascript-heap-plus-decoded-images",
+    "realDeviceReview": "required"
+  }
+}

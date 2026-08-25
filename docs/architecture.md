@@ -814,6 +814,27 @@ Skip navigation, visible focus, route focus reset, native settings inputs, tab s
 containment, Escape close, and focus restoration define the current keyboard baseline. These are
 presentation guarantees, not simulation or replay state. See ADR 0048.
 
+### Phone performance boundary
+
+FIN-005 separates reproducible delivery budgets from browser behavior. `player-visual-exporter-v1`
+derives content-addressed 832 px phone and 1681 px desktop title WebPs from the accepted source and
+checks both encoded and decoded sizes. The title's responsive source selection keeps the phone from
+downloading the desktop candidate. Player Hearth routes resolve approved purpose-sized portrait
+assets on the server and otherwise retain code-native rigs; they do not import multi-megabyte source
+PNGs into the route graph.
+
+`phone-performance-report-v1` measures one real arrived campaign in Chromium at 390×844/2× with
+simulated 4G and 4× CPU slowdown. It covers interactive shell, initial JavaScript, selected title
+visual, first-settlement visual payload, local pause response, reconnect, active-scene frame cadence,
+and a JavaScript-heap-plus-decoded-images working-set reference. The static validator binds the
+report's byte measurements to current build and asset manifests, while hosted browser CI reruns the
+volatile timing/frame/memory assertions. `summonlab:player-ready` is a browser performance mark only
+and cannot affect engine, campaign, or replay state.
+
+The working-set reference intentionally excludes native browser and GPU allocations. It is a
+regression signal under the 300 MB target, not a substitute for the implementation plan's real-device
+review. See ADR 0049.
+
 ## Platform
 
 Web remains the first platform:

@@ -433,8 +433,8 @@ version, message commitment, and replay hash remain unchanged.
 
 ## Phase 7 — synthesis, story, and vertical-slice finish
 
-Status: **in progress**. `FIN-001` through `FIN-004` are complete as of 2026-08-25; the broader
-vertical-slice finish remains active and `FIN-005` through `FIN-009` are not complete.
+Status: **in progress**. `FIN-001` through `FIN-005` are complete as of 2026-08-25; the broader
+vertical-slice finish remains active and `FIN-006` through `FIN-009` are not complete.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -442,6 +442,7 @@ vertical-slice finish remains active and `FIN-005` through `FIN-009` are not com
 | `FIN-002` | Complete: `engine-v23` binds the Floor 05 relight core and sealed archive to successful extraction, preserves one fixed message, and gives only the selected surviving reader and actual witnesses explicit knowledge | First-band archive browser checkpoint, strict replay validation, ADR 0046 |
 | `FIN-003` | Complete: the original summoning image now leads a player-facing title; a seed creates exactly three stable adult human strangers; sequential first-person onboarding records one canonical answer per hero and the first autonomous destination; seven objectives derive from campaign plus engine state and bind the snapshot hash; pause is interface-only; large text, reduced motion, and Wait/five-second timing persist locally; same-seed restart creates a new run while the superseded replay remains verified | [Title evidence](evidence/phase-7-campaign-title.png), [company evidence](evidence/phase-7-campaign-company.png), [pause evidence](evidence/phase-7-campaign-pause.png), [mobile company](evidence/phase-7-campaign-mobile-company.png), [mobile Hearth](evidence/phase-7-campaign-mobile-hearth.png), campaign engine/database/browser tests, ADR 0047 |
 | `FIN-004` | Complete: a muted-by-default procedural soundscape supplies route ambience and optional full interface cues without assets or canonical writes; every cue is redundant and captioned; v1 local settings migrate before hydration; System motion honors the OS while Reduced removes long movement; skip navigation, visible focus, native settings inputs, arrow-key hero tabs, route focus, and modal containment/restoration form the keyboard baseline | [Desktop settings](evidence/phase-7-fin004-desktop-settings.png), [desktop company](evidence/phase-7-fin004-desktop-company.png), [phone settings](evidence/phase-7-fin004-phone-settings.png), [phone company](evidence/phase-7-fin004-phone-company.png), [phone Hearth](evidence/phase-7-fin004-phone-hearth.png), settings/audio unit tests, accessibility and campaign browser tests, ADR 0048 |
+| `FIN-005` | Complete: content-addressed 832 px/1681 px title WebPs replace the 2.19 MB source PNG on player routes; approved runtime portraits replace source imports where available; exact build, title, and settlement bytes bind a versioned phone report; a real arrived campaign at 390×844/2×, 150 ms/1.6 Mbps simulated 4G, and 4× CPU enforces shell, reconnect, response, frame, and working-set targets in hosted browser CI | [Optimized phone title](evidence/phase-7-fin005-phone-title.png), [arrived phone settlement](evidence/phase-7-fin005-phone-settlement.png), [machine-readable phone report](evidence/phase-7-fin005-phone-performance.json), player-visual/build validators, contract/browser tests, ADR 0049 |
 
 ### Reproduce the FIN-003 checkpoint
 
@@ -468,8 +469,21 @@ remain inside each modal and return to its trigger on close. Repeat at 390×844 
 confirm settings scroll, sound controls do not cover the live badge, and captions do not cover the
 objective control.
 
+### Reproduce the FIN-005 checkpoint
+
+Run `pnpm measure:web-build-budget`, `pnpm validate:player-visuals`, and
+`pnpm validate:phone-performance`. The checked report must bind 45.0 KB initial JavaScript, the
+47.3 KB selected phone title, and the 296.2 KB first Hearth visual to current artifacts. Then run
+`pnpm --filter @summonlab/web exec playwright test src/routes/performance.e2e.ts`; the test creates
+and completes a real campaign before applying the target 390×844/2× simulated-4G/4×-CPU profile.
+
+On a physical mid-range phone over Wi-Fi or a shaped 4G connection, open the title, enter an arrived
+Hearth, open/close the pause menu five times, and scroll the living scene. Compare perceived shell
+and reconnect delay, touch response, animation stability, image sharpness, and device warmth against
+the emulated report. Native/GPU memory and thermal behavior remain a real-device gate rather than an
+emulation claim.
+
 ## Next active engineering slice
 
-Review FIN-004 sensory balance and keyboard clarity, then begin `FIN-005`: tune performance and
-asset budgets for target phones. Phase 3 cohort expansion remains behind its separate human visual
-gate.
+Review FIN-005 sharpness and real-device feel, then begin `FIN-006`: add analytics and playtest
+consent. Phase 3 cohort expansion remains behind its separate human visual gate.

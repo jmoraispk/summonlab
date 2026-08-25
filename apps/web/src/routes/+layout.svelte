@@ -7,7 +7,14 @@
 
 	let { children } = $props();
 
-	onMount(() => loadPlayerSettings());
+	onMount(() => {
+		loadPlayerSettings();
+		document.documentElement.dataset.playerReady = 'true';
+		performance.mark('summonlab:player-ready');
+		return () => {
+			delete document.documentElement.dataset.playerReady;
+		};
+	});
 
 	afterNavigate(({ from, to }) => {
 		if (!from || !to || from.url.pathname === to.url.pathname) return;

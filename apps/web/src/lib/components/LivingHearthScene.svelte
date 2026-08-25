@@ -79,7 +79,15 @@
 	data-event-cursor={presentation.eventCursor}
 	aria-label={`Hearth 01 on day ${presentation.dayNumber} at ${presentation.gameTime.slice(11, 16)}, ${occupant?.activityLabel ?? 'hero absent'}`}
 >
-	<img class="environment" src={scene.runtime.publicPath} alt="" />
+	<img
+		class="environment"
+		src={scene.runtime.publicPath}
+		width={scene.runtime.width}
+		height={scene.runtime.height}
+		decoding="async"
+		fetchpriority="high"
+		alt=""
+	/>
 	<div class="phase-grade"></div>
 	<div class="sky-life" aria-hidden="true">
 		<i class="moon"></i>

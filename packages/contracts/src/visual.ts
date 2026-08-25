@@ -693,6 +693,175 @@ export const WebBuildBudgetReportSchema = z
 		}
 	});
 
+export const PlayerVisualAssetSchema = z
+	.object({
+		usage: z.enum(['title-phone', 'title-desktop']),
+		sourceFile: z.string().min(1),
+		sourceContentHash: StateHashSchema,
+		file: z.string().min(1),
+		publicPath: z.string().startsWith('/runtime/player/'),
+		width: z.number().int().positive(),
+		height: z.number().int().positive(),
+		bytes: z.number().int().positive(),
+		contentHash: StateHashSchema,
+		budgetBytes: z.number().int().positive(),
+		budgetStatus: z.literal('within-budget'),
+		decodedRgbaBytes: z.number().int().positive(),
+		decodedMemoryBudgetBytes: z.number().int().positive(),
+		decodedMemoryStatus: z.literal('within-budget'),
+		encoder: z
+			.object({
+				format: z.literal('webp'),
+				quality: z.number().int().min(1).max(100),
+				effort: z.number().int().min(0).max(6),
+				preset: z.literal('picture'),
+				smartSubsample: z.literal(true),
+				metadata: z.literal('stripped')
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((asset, context) => {
+		if (asset.bytes > asset.budgetBytes) {
+			context.addIssue({ code: 'custom', message: `${asset.usage} exceeds its encoded budget` });
+		}
+		if (asset.decodedRgbaBytes !== asset.width * asset.height * 4) {
+			context.addIssue({ code: 'custom', message: `${asset.usage} decoded bytes are stale` });
+		}
+		if (asset.decodedRgbaBytes > asset.decodedMemoryBudgetBytes) {
+			context.addIssue({ code: 'custom', message: `${asset.usage} exceeds its decoded budget` });
+		}
+	});
+
+export const PlayerVisualManifestSchema = z
+	.object({
+		schemaVersion: z.literal('player-visual-manifest-v1'),
+		exporterVersion: z.literal('player-visual-exporter-v1'),
+		manifestHash: StateHashSchema,
+		assets: z.array(PlayerVisualAssetSchema).length(2)
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const usages = new Set(manifest.assets.map((asset) => asset.usage));
+		for (const usage of ['title-phone', 'title-desktop'] as const) {
+			if (!usages.has(usage)) {
+				context.addIssue({ code: 'custom', message: `Missing player visual usage: ${usage}` });
+			}
+		}
+	});
+
+export const PhonePerformanceReportSchema = z
+	.object({
+		schemaVersion: z.literal('phone-performance-report-v1'),
+		recordedAt: z.iso.datetime(),
+		sourceRevision: z.string().min(7),
+		profile: z
+			.object({
+				name: z.literal('mid-range-phone-390x844-2x'),
+				viewportWidth: z.literal(390),
+				viewportHeight: z.literal(844),
+				deviceScaleFactor: z.literal(2),
+				networkLatencyMs: z.literal(150),
+				downloadBytesPerSecond: z.literal(200_000),
+				uploadBytesPerSecond: z.literal(93_750),
+				cpuSlowdownMultiplier: z.literal(4)
+			})
+			.strict(),
+		budgets: z
+			.object({
+				interactiveShellMs: z.literal(4_000),
+				initialJavaScriptGzipBytes: z.literal(700_000),
+				playerTitleVisualBytes: z.literal(100_000),
+				firstSettlementVisualBytes: z.literal(8_000_000),
+				minimumActiveSceneFramesPerSecond: z.literal(30),
+				interfaceResponseMs: z.literal(150),
+				reconnectMs: z.literal(4_000),
+				rendererWorkingSetReferenceBytes: z.literal(300_000_000)
+			})
+			.strict(),
+		measurements: z
+			.object({
+				interactiveShellMs: z.number().nonnegative(),
+				initialJavaScriptGzipBytes: z.number().int().nonnegative(),
+				playerTitleVisualBytes: z.number().int().nonnegative(),
+				firstSettlementVisualBytes: z.number().int().nonnegative(),
+				activeSceneFramesPerSecond: z.number().positive(),
+				interfaceResponseP95Ms: z.number().nonnegative(),
+				reconnectMs: z.number().nonnegative(),
+				javascriptHeapBytes: z.number().int().nonnegative(),
+				decodedImageBytes: z.number().int().nonnegative(),
+				rendererWorkingSetReferenceBytes: z.number().int().nonnegative()
+			})
+			.strict(),
+		status: z
+			.object({
+				interactiveShell: z.literal('within-budget'),
+				initialJavaScript: z.literal('within-budget'),
+				playerTitleVisual: z.literal('within-budget'),
+				firstSettlementVisuals: z.literal('within-budget'),
+				activeSceneFrames: z.literal('within-budget'),
+				interfaceResponse: z.literal('within-budget'),
+				reconnect: z.literal('within-budget'),
+				rendererWorkingSetReference: z.literal('within-budget')
+			})
+			.strict(),
+		methodology: z
+			.object({
+				browser: z.literal('chromium'),
+				interfaceSamples: z.number().int().min(3),
+				frameSampleDurationMs: z.number().int().min(1_000),
+				memoryScope: z.literal('javascript-heap-plus-decoded-images'),
+				realDeviceReview: z.literal('required')
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((report, context) => {
+		const { budgets, measurements } = report;
+		const maximums = [
+			['interactiveShellMs', measurements.interactiveShellMs, budgets.interactiveShellMs],
+			[
+				'initialJavaScriptGzipBytes',
+				measurements.initialJavaScriptGzipBytes,
+				budgets.initialJavaScriptGzipBytes
+			],
+			[
+				'playerTitleVisualBytes',
+				measurements.playerTitleVisualBytes,
+				budgets.playerTitleVisualBytes
+			],
+			[
+				'firstSettlementVisualBytes',
+				measurements.firstSettlementVisualBytes,
+				budgets.firstSettlementVisualBytes
+			],
+			['interfaceResponseP95Ms', measurements.interfaceResponseP95Ms, budgets.interfaceResponseMs],
+			['reconnectMs', measurements.reconnectMs, budgets.reconnectMs],
+			[
+				'rendererWorkingSetReferenceBytes',
+				measurements.rendererWorkingSetReferenceBytes,
+				budgets.rendererWorkingSetReferenceBytes
+			]
+		] as const;
+		for (const [metric, measurement, budget] of maximums) {
+			if (measurement > budget) {
+				context.addIssue({
+					code: 'custom',
+					message: `Phone performance budget exceeded: ${metric}`
+				});
+			}
+		}
+		if (measurements.activeSceneFramesPerSecond < budgets.minimumActiveSceneFramesPerSecond) {
+			context.addIssue({ code: 'custom', message: 'Phone frame-rate budget was not met' });
+		}
+		if (
+			measurements.rendererWorkingSetReferenceBytes !==
+			measurements.javascriptHeapBytes + measurements.decodedImageBytes
+		) {
+			context.addIssue({ code: 'custom', message: 'Renderer working-set reference is stale' });
+		}
+	});
+
 export type CharacterExpression = z.infer<typeof CharacterExpressionSchema>;
 export type CharacterVisualAsset = z.infer<typeof CharacterVisualAssetSchema>;
 export type CharacterVisualCatalog = z.infer<typeof CharacterVisualCatalogSchema>;
@@ -716,6 +885,9 @@ export type RecognitionReviewVerdict = z.infer<typeof RecognitionReviewVerdictSc
 export type VisualRigEquipment = z.infer<typeof VisualRigEquipmentSchema>;
 export type VisualRigPaletteMode = z.infer<typeof VisualRigPaletteModeSchema>;
 export type WebBuildBudgetReport = z.infer<typeof WebBuildBudgetReportSchema>;
+export type PlayerVisualAsset = z.infer<typeof PlayerVisualAssetSchema>;
+export type PlayerVisualManifest = z.infer<typeof PlayerVisualManifestSchema>;
+export type PhonePerformanceReport = z.infer<typeof PhonePerformanceReportSchema>;
 export type SummonCardGenerateRequest = z.infer<typeof SummonCardGenerateRequestSchema>;
 export type SummonCardGenerationResult = z.infer<typeof SummonCardGenerationResultSchema>;
 export type SummonCardGenerationSpec = z.infer<typeof SummonCardGenerationSpecSchema>;

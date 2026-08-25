@@ -125,3 +125,12 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin004-phone-{title,settings,gate,company,hearth,pause}.png` — the same complete path at
   390×844 with Large text, a scroll-bounded settings dialog, compact sound control, scene-safe cue
   captions, stacked navigation, and readable objective/pause controls.
+- `phase-7-fin005-phone-title.png` — the 390×844 title after responsive delivery switched from the
+  2.19 MB source PNG to the 47.3 KB content-addressed phone WebP without changing composition.
+- `phase-7-fin005-phone-hearth.png` — the optimized campaign path's phone arrival frame with the
+  code-native hero rig and no source PNG delivery.
+- `phase-7-fin005-phone-settlement.png` — the fully arrived image-backed Hearth scene measured by
+  the throttled phone browser gate, with the 296.2 KB plate, authoritative overlay, and player HUD.
+- `phase-7-fin005-phone-performance.json` — the versioned 390×844/2×, simulated-4G, 4×-CPU browser
+  report covering shell, JavaScript, title/settlement visuals, pause response, reconnect, frame
+  cadence, and the JS-heap-plus-decoded-images working-set reference.

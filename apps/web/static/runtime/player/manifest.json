@@ -1,0 +1,55 @@
+{
+	"schemaVersion": "player-visual-manifest-v1",
+	"exporterVersion": "player-visual-exporter-v1",
+	"manifestHash": "eddb2873e01c7c96be77063a74d94afdedaeb735450155e79b57cd9fbcc8e79c",
+	"assets": [
+		{
+			"usage": "title-phone",
+			"sourceFile": "assets/agent-summoning-concept.png",
+			"sourceContentHash": "f9fe7807fbc592ba7c0cce621ec149d7bc21449a647dd4fd6a43d9b738fa0d98",
+			"file": "apps/web/static/runtime/player/title-phone.60fb9ea3a1e8.webp",
+			"publicPath": "/runtime/player/title-phone.60fb9ea3a1e8.webp",
+			"width": 832,
+			"height": 463,
+			"bytes": 47288,
+			"contentHash": "60fb9ea3a1e8d8d0084a153eff9f40ac34c91ea6259e8266ea6c81028d4f3af8",
+			"budgetBytes": 100000,
+			"budgetStatus": "within-budget",
+			"decodedRgbaBytes": 1540864,
+			"decodedMemoryBudgetBytes": 2000000,
+			"decodedMemoryStatus": "within-budget",
+			"encoder": {
+				"format": "webp",
+				"quality": 78,
+				"effort": 6,
+				"preset": "picture",
+				"smartSubsample": true,
+				"metadata": "stripped"
+			}
+		},
+		{
+			"usage": "title-desktop",
+			"sourceFile": "assets/agent-summoning-concept.png",
+			"sourceContentHash": "f9fe7807fbc592ba7c0cce621ec149d7bc21449a647dd4fd6a43d9b738fa0d98",
+			"file": "apps/web/static/runtime/player/title-desktop.5829074fd7bb.webp",
+			"publicPath": "/runtime/player/title-desktop.5829074fd7bb.webp",
+			"width": 1681,
+			"height": 935,
+			"bytes": 175324,
+			"contentHash": "5829074fd7bbde47101464abfa3d0f52e1cad07533b072a24755581ebaf88e0c",
+			"budgetBytes": 250000,
+			"budgetStatus": "within-budget",
+			"decodedRgbaBytes": 6286940,
+			"decodedMemoryBudgetBytes": 8000000,
+			"decodedMemoryStatus": "within-budget",
+			"encoder": {
+				"format": "webp",
+				"quality": 82,
+				"effort": 6,
+				"preset": "picture",
+				"smartSubsample": true,
+				"metadata": "stripped"
+			}
+		}
+	]
+}

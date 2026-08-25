@@ -6,6 +6,8 @@ import {
 	CharacterManifestSchema,
 	HealthResponseSchema,
 	LegalActionSchema,
+	PhonePerformanceReportSchema,
+	PlayerVisualManifestSchema,
 	RecognitionReviewCreateRequestSchema,
 	RecognitionReviewListSchema,
 	RecognitionReviewRecordSchema,
@@ -440,6 +442,124 @@ describe('foundation contracts', () => {
 			WebBuildBudgetReportSchema.parse({
 				...report,
 				measurements: { ...report.measurements, initialJavaScriptGzipBytes: 700_001 }
+			})
+		).toThrow();
+	});
+
+	it('binds purpose-sized player title variants to encoded and decoded budgets', () => {
+		const asset = {
+			usage: 'title-phone' as const,
+			sourceFile: 'assets/agent-summoning-concept.png',
+			sourceContentHash: '1'.repeat(64),
+			file: 'apps/web/static/runtime/player/title-phone.123456789abc.webp',
+			publicPath: '/runtime/player/title-phone.123456789abc.webp',
+			width: 768,
+			height: 427,
+			bytes: 40_820,
+			contentHash: '2'.repeat(64),
+			budgetBytes: 100_000,
+			budgetStatus: 'within-budget' as const,
+			decodedRgbaBytes: 768 * 427 * 4,
+			decodedMemoryBudgetBytes: 2_000_000,
+			decodedMemoryStatus: 'within-budget' as const,
+			encoder: {
+				format: 'webp' as const,
+				quality: 78,
+				effort: 6,
+				preset: 'picture' as const,
+				smartSubsample: true as const,
+				metadata: 'stripped' as const
+			}
+		};
+		const manifest = {
+			schemaVersion: 'player-visual-manifest-v1' as const,
+			exporterVersion: 'player-visual-exporter-v1' as const,
+			manifestHash: '3'.repeat(64),
+			assets: [
+				asset,
+				{
+					...asset,
+					usage: 'title-desktop' as const,
+					publicPath: '/runtime/player/title-desktop.456789abcdef.webp',
+					width: 1_681,
+					height: 935,
+					bytes: 175_324,
+					contentHash: '4'.repeat(64),
+					budgetBytes: 250_000,
+					decodedRgbaBytes: 1_681 * 935 * 4,
+					decodedMemoryBudgetBytes: 8_000_000
+				}
+			]
+		};
+		expect(PlayerVisualManifestSchema.parse(manifest).assets).toHaveLength(2);
+		expect(() =>
+			PlayerVisualManifestSchema.parse({
+				...manifest,
+				assets: [asset, { ...asset, usage: 'title-phone' }]
+			})
+		).toThrow();
+	});
+
+	it('rejects a phone performance report when any target budget is missed', () => {
+		const report = {
+			schemaVersion: 'phone-performance-report-v1' as const,
+			recordedAt: '2026-08-25T22:30:00.000Z',
+			sourceRevision: 'working-tree',
+			profile: {
+				name: 'mid-range-phone-390x844-2x' as const,
+				viewportWidth: 390 as const,
+				viewportHeight: 844 as const,
+				deviceScaleFactor: 2 as const,
+				networkLatencyMs: 150 as const,
+				downloadBytesPerSecond: 200_000 as const,
+				uploadBytesPerSecond: 93_750 as const,
+				cpuSlowdownMultiplier: 4 as const
+			},
+			budgets: {
+				interactiveShellMs: 4_000 as const,
+				initialJavaScriptGzipBytes: 700_000 as const,
+				playerTitleVisualBytes: 100_000 as const,
+				firstSettlementVisualBytes: 8_000_000 as const,
+				minimumActiveSceneFramesPerSecond: 30 as const,
+				interfaceResponseMs: 150 as const,
+				reconnectMs: 4_000 as const,
+				rendererWorkingSetReferenceBytes: 300_000_000 as const
+			},
+			measurements: {
+				interactiveShellMs: 900,
+				initialJavaScriptGzipBytes: 44_000,
+				playerTitleVisualBytes: 47_288,
+				firstSettlementVisualBytes: 310_000,
+				activeSceneFramesPerSecond: 58,
+				interfaceResponseP95Ms: 24,
+				reconnectMs: 1_100,
+				javascriptHeapBytes: 20_000_000,
+				decodedImageBytes: 7_000_000,
+				rendererWorkingSetReferenceBytes: 27_000_000
+			},
+			status: {
+				interactiveShell: 'within-budget' as const,
+				initialJavaScript: 'within-budget' as const,
+				playerTitleVisual: 'within-budget' as const,
+				firstSettlementVisuals: 'within-budget' as const,
+				activeSceneFrames: 'within-budget' as const,
+				interfaceResponse: 'within-budget' as const,
+				reconnect: 'within-budget' as const,
+				rendererWorkingSetReference: 'within-budget' as const
+			},
+			methodology: {
+				browser: 'chromium' as const,
+				interfaceSamples: 5,
+				frameSampleDurationMs: 1_500,
+				memoryScope: 'javascript-heap-plus-decoded-images' as const,
+				realDeviceReview: 'required' as const
+			}
+		};
+		expect(PhonePerformanceReportSchema.parse(report).measurements.reconnectMs).toBe(1_100);
+		expect(() =>
+			PhonePerformanceReportSchema.parse({
+				...report,
+				measurements: { ...report.measurements, activeSceneFramesPerSecond: 29 }
 			})
 		).toThrow();
 	});

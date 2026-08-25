@@ -57,7 +57,11 @@ jobs:
         run: pnpm format:check
 
       - name: Validate visual assets
-        run: pnpm validate:visual-assets
+        run: >-
+          pnpm validate:visual-assets &&
+          pnpm validate:runtime-visuals &&
+          pnpm validate:player-visuals &&
+          pnpm validate:phone-performance
 
       - name: Lint
         run: pnpm lint
@@ -72,7 +76,7 @@ jobs:
         run: pnpm test:integration
 
       - name: Production build
-        run: pnpm build
+        run: pnpm build && pnpm validate:web-build-budget
 
       - name: Install Playwright Chromium
         run: pnpm --filter @summonlab/web exec playwright install --with-deps chromium

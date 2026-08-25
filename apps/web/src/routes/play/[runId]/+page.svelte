@@ -9,7 +9,6 @@
 		SimulationClock
 	} from '@summonlab/contracts';
 	import { onMount, tick } from 'svelte';
-	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
@@ -424,8 +423,14 @@
 
 	<section class="hero-hud">
 		<div class="portrait">
-			{#if snapshot.manifest.artKey === 'ember-01-anchor-v1'}
-				<img src={heroAnchor} alt={`${snapshot.manifest.displayName} portrait`} />
+			{#if data.heroPortrait}
+				<img
+					src={data.heroPortrait.publicPath}
+					width={data.heroPortrait.width}
+					height={data.heroPortrait.height}
+					decoding="async"
+					alt={`${snapshot.manifest.displayName} portrait`}
+				/>
 			{:else}
 				<HeroRig manifest={snapshot.manifest} compact />
 			{/if}

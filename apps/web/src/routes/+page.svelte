@@ -2,10 +2,15 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { onMount, tick } from 'svelte';
-	import summonArt from '../../../../assets/agent-summoning-concept.png';
 	import PlayerSettingsPanel from '$lib/components/PlayerSettingsPanel.svelte';
 	import { loadPlayerSettings } from '$lib/player-settings';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
+	import playerVisualManifest from '../../static/runtime/player/manifest.json';
+
+	const titlePhone = playerVisualManifest.assets.find((asset) => asset.usage === 'title-phone')!;
+	const titleDesktop = playerVisualManifest.assets.find(
+		(asset) => asset.usage === 'title-desktop'
+	)!;
 
 	let { data } = $props();
 	let seed = $state('hearth-01');
@@ -63,7 +68,17 @@
 </svelte:head>
 
 <main data-testid="campaign-title" inert={settingsOpen}>
-	<img class="key-art" src={summonArt} alt="An agent hero crossing an arcane summoning gate" />
+	<img
+		class="key-art"
+		src={titleDesktop.publicPath}
+		srcset={`${titlePhone.publicPath} ${titlePhone.width}w, ${titleDesktop.publicPath} ${titleDesktop.width}w`}
+		sizes="(max-width: 650px) 100vw, 78vw"
+		width={titleDesktop.width}
+		height={titleDesktop.height}
+		fetchpriority="high"
+		decoding="async"
+		alt="An agent hero crossing an arcane summoning gate"
+	/>
 	<div class="wash"></div>
 	<div class="grain"></div>
 
