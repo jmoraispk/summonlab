@@ -18,6 +18,7 @@
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
+		"@summonlab/characters": "workspace:*",
 		"fast-check": "^4.9.0"
 	}
 }

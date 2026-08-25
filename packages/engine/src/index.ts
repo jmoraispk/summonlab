@@ -5,6 +5,7 @@ export * from './entropy.js';
 export * from './errors.js';
 export * from './hash.js';
 export * from './journal.js';
+export * from './objectives.js';
 export * from './presentation.js';
 export * from './recap.js';
 export * from './simulation.js';

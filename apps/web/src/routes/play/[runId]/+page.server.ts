@@ -10,6 +10,8 @@ import { HEARTH_01_DEFINITION, loadHearth01Scene } from '@summonlab/content';
 import { projectSettlementPresentation } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
+import { campaignExperienceView } from '$lib/server/campaign';
+
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -35,5 +37,15 @@ export const load: PageServerLoad = async ({ params }) => {
 		engineSnapshot && clock
 			? projectSettlementPresentation(engineSnapshot, HEARTH_01_DEFINITION, clock.projectedGameTime)
 			: null;
-	return { snapshot, clock, eventHead, presentation, scene: await loadHearth01Scene() };
+	const campaignView = await campaignExperienceView(config.databaseUrl, params.runId).catch(
+		() => null
+	);
+	return {
+		snapshot,
+		clock,
+		eventHead,
+		presentation,
+		campaignView,
+		scene: await loadHearth01Scene()
+	};
 };

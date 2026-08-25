@@ -328,6 +328,7 @@ export interface BootstrapEngineInput {
 	readonly rarityStars?: number;
 	readonly simulatedAt?: string;
 	readonly mind?: CharacterMind;
+	readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
 	readonly developmentMissionScenario?: {
 		readonly initialMissionId: string;
 		readonly availableMissionIds: readonly string[];
@@ -1701,6 +1702,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const developmentMissionScenario = input.developmentMissionScenario;
+	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
+		throw new Error('Additional heroes must use one bootstrap boundary');
+	}
 	const bootstrapHeroInputs = [
 		{
 			heroId: input.heroId,
@@ -1708,7 +1712,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			rarityStars: input.rarityStars,
 			mind: input.mind
 		},
-		...(developmentMissionScenario?.additionalHeroes ?? [])
+		...(input.additionalHeroes ?? developmentMissionScenario?.additionalHeroes ?? [])
 	];
 	if (
 		bootstrapHeroInputs.length > 4 ||

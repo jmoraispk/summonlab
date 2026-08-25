@@ -13,6 +13,7 @@
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
+	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
 
 	let { data } = $props();
@@ -471,6 +472,10 @@
 		</div>
 	{/if}
 </main>
+
+{#if data.campaignView}
+	<PlayerMenu runId={snapshot.runId} initialObjectives={data.campaignView.objectives} />
+{/if}
 
 <style>
 	:global(body) {

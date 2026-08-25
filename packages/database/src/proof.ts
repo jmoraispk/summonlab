@@ -66,6 +66,12 @@ export interface CreateProofRunInput {
 	readonly firstObservation: string;
 	readonly choice: ResolvedFirstChoice | null;
 	readonly clockSpeed?: ClockSpeed;
+	readonly additionalHeroes?: readonly {
+		readonly heroId: string;
+		readonly manifestHash: string;
+		readonly rarityStars?: number;
+		readonly mind?: CharacterDraft['mind'];
+	}[];
 	readonly developmentMissionScenario?: {
 		readonly initialMissionId: string;
 		readonly availableMissionIds: readonly string[];
@@ -323,6 +329,7 @@ export async function createProofRun(
 				manifestHash: input.draft.manifestHash,
 				rarityStars: input.draft.manifest.rarityStars,
 				mind: input.draft.mind,
+				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
 				...(input.developmentMissionScenario
 					? { developmentMissionScenario: input.developmentMissionScenario }
 					: {}),

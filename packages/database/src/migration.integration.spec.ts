@@ -28,6 +28,7 @@ describe('database migration', () => {
 				where table_schema = 'public'
 					and table_name in (
 						'summonlab_runtime_metadata',
+						'summonlab_campaign_runs',
 						'summonlab_proof_runs',
 						'summonlab_proof_events',
 						'summonlab_engine_runs',
@@ -43,7 +44,7 @@ describe('database migration', () => {
 						'summonlab_visual_recognition_reviews'
 					)
 			`;
-			expect(rows).toHaveLength(14);
+			expect(rows).toHaveLength(15);
 		} finally {
 			await sql.end({ timeout: 5 });
 		}
