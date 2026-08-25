@@ -795,3 +795,17 @@ acknowledgement, and turns actual full-corpus outputs into measured promotion ev
 8. Decision jobs, context assembly, random and scripted policies.
 9. Model gateway, background workers, budgets, and evaluations.
 10. Responsive client, reconnect, and PWA behavior.
+
+## Executable strategy evidence
+
+Whole-mission strategy claims use the same command and replay boundaries as live runs. The
+`foundry-strategy-report-v1` generator bootstraps a four-hero development company, performs
+preparation and every Floor 05 choice through the legal-action surface, extracts, and then rebuilds
+the final state from the bootstrap plus append-only events. Its fixed matrix is a regression proof
+for known viable paths, not a balance sample. The checked JSON and `/foundry-trials` route consume
+the same report schema; neither may invent outcomes or mutate a run.
+
+The matrix can carry a replayed Floor 04 route-memory fixture in its bootstrap event so Floor 05 can
+be evaluated in isolation. Actual cross-attempt aftermath remains a versioned lifecycle concern:
+v16/v17 consequences have round numbers but no source-attempt identity, so `MIS-010A` must repair
+that boundary without rewriting historical streams.

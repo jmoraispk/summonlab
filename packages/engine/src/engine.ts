@@ -268,7 +268,16 @@ export interface BootstrapEngineInput {
 		readonly availableMissionIds: readonly string[];
 		readonly enableMissionAftermath?: boolean;
 		readonly enableMasterPermadeath?: boolean;
+		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
+		readonly foundryRouteMemoryHeroId?: string;
 	};
+}
+
+export interface BootstrapAdditionalHeroInput {
+	readonly heroId: string;
+	readonly manifestHash: string;
+	readonly rarityStars?: number;
+	readonly mind?: CharacterMind;
 }
 
 export interface BootstrapEngineResult {
@@ -820,6 +829,29 @@ function createBootstrapSociety(
 	});
 }
 
+function createBootstrapCompanySociety(
+	heroIds: readonly string[],
+	masterId: string,
+	eventId: string,
+	observedAt: string
+): SocietyStateV4 {
+	const states = heroIds.map((heroId) =>
+		createBootstrapSociety(heroId, masterId, eventId, observedAt)
+	);
+	return SocietyStateV4Schema.parse({
+		contentVersion: 'society-v4',
+		observations: Object.assign({}, ...states.map((state) => state.observations)),
+		beliefs: Object.assign({}, ...states.map((state) => state.beliefs)),
+		relationships: Object.assign({}, ...states.map((state) => state.relationships)),
+		promises: {},
+		authority: Object.assign({}, ...states.map((state) => state.authority)),
+		communicativeActs: {},
+		conversationTurns: {},
+		directives: {},
+		directiveInfluences: {}
+	});
+}
+
 export function hashGameState(state: EngineGameState): string {
 	return hashParsedGameState(EngineGameStateSchema.parse(state));
 }
@@ -832,8 +864,6 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const masterId = deterministicUuid(`${input.runId}:master`);
 	const commandId = deterministicUuid(`${input.runId}:bootstrap`);
 	const eventId = deterministicUuid(`${commandId}:1:run.initialized`);
-	const bladeId = deterministicUuid(`${input.runId}:${input.heroId}:practice-blade`);
-	const bowId = deterministicUuid(`${input.runId}:${input.heroId}:short-bow`);
 	const simulatedAt = input.simulatedAt ?? ENGINE_EPOCH;
 	const initialResources = { food: 3, 'iron-ore': 2, 'ember-shard': 0 } as const;
 	const resourceLedger = ResourceKeySchema.options.map((resource) => ({
@@ -847,8 +877,41 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	}));
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
-	const mind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
 	const developmentMissionScenario = input.developmentMissionScenario;
+	const bootstrapHeroInputs = [
+		{
+			heroId: input.heroId,
+			manifestHash: input.manifestHash,
+			rarityStars: input.rarityStars,
+			mind: input.mind
+		},
+		...(developmentMissionScenario?.additionalHeroes ?? [])
+	];
+	if (
+		bootstrapHeroInputs.length > 4 ||
+		new Set(bootstrapHeroInputs.map((hero) => hero.heroId)).size !== bootstrapHeroInputs.length
+	) {
+		throw new Error('A development bootstrap supports one to four unique summoned heroes');
+	}
+	const bootstrapHeroes = bootstrapHeroInputs.map((hero) => {
+		const mind = CharacterMindSchema.parse(hero.mind ?? DEFAULT_CHARACTER_MIND);
+		return {
+			...hero,
+			mind,
+			bladeId: deterministicUuid(`${input.runId}:${hero.heroId}:practice-blade`),
+			bowId: deterministicUuid(`${input.runId}:${hero.heroId}:short-bow`)
+		};
+	});
+	const foundryRouteMemoryHeroId = developmentMissionScenario?.foundryRouteMemoryHeroId;
+	if (
+		foundryRouteMemoryHeroId &&
+		!bootstrapHeroes.some((hero) => hero.heroId === foundryRouteMemoryHeroId)
+	) {
+		throw new Error('Development route memory must belong to a bootstrapped hero');
+	}
+	const routeMemoryEvidenceId = foundryRouteMemoryHeroId
+		? deterministicUuid(`${input.runId}:${foundryRouteMemoryHeroId}:foundry-route-memory`)
+		: null;
 	const availableMissionIds = developmentMissionScenario
 		? [...developmentMissionScenario.availableMissionIds]
 		: [TOWER_FLOOR_01_PACKAGE.missionId];
@@ -907,41 +970,44 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			gateInspectionCount: 0,
 			lastGateResonance: null
 		},
-		heroes: {
-			[input.heroId]: {
-				heroId: input.heroId,
-				lifeState: 'active',
-				location: 'summoning-gate',
-				locationNodeId: settlementContent.spawnNodeId,
-				firstArrivalCompleted: false,
-				destination: null,
-				health: 100,
-				maxHealth: 100,
-				manifestHash: input.manifestHash,
-				needs: { hunger: 20, fatigue: 15 },
-				injuries: [],
-				progression: {
-					stars: input.rarityStars ?? 1,
-					level: 1,
-					experience: 0,
-					skills: { swordFighting: { rank: 0, experience: 0 } }
-				},
-				equipment: { mainHand: bladeId },
-				currentActivity: null,
-				currentTravel: null,
-				assignment: null,
-				mind,
-				habit: {
-					habit: mind.dailyHabit,
-					strength: clamp(Math.round(35 + mind.personality.conscientiousness * 0.55)),
-					repetitions: 0,
-					satisfaction: 50,
-					lastTriggeredAt: null
-				},
-				dailyPlan: null,
-				currentRoutine: null
-			}
-		},
+		heroes: Object.fromEntries(
+			bootstrapHeroes.map((hero) => [
+				hero.heroId,
+				{
+					heroId: hero.heroId,
+					lifeState: 'active',
+					location: 'summoning-gate',
+					locationNodeId: settlementContent.spawnNodeId,
+					firstArrivalCompleted: false,
+					destination: null,
+					health: 100,
+					maxHealth: 100,
+					manifestHash: hero.manifestHash,
+					needs: { hunger: 20, fatigue: 15 },
+					injuries: [],
+					progression: {
+						stars: hero.rarityStars ?? 1,
+						level: 1,
+						experience: 0,
+						skills: { swordFighting: { rank: 0, experience: 0 } }
+					},
+					equipment: { mainHand: hero.bladeId },
+					currentActivity: null,
+					currentTravel: null,
+					assignment: null,
+					mind: hero.mind,
+					habit: {
+						habit: hero.mind.dailyHabit,
+						strength: clamp(Math.round(35 + hero.mind.personality.conscientiousness * 0.55)),
+						repetitions: 0,
+						satisfaction: 50,
+						lastTriggeredAt: null
+					},
+					dailyPlan: null,
+					currentRoutine: null
+				}
+			])
+		),
 		settlement: {
 			resources: initialResources,
 			resourceLedger,
@@ -965,32 +1031,57 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				reactions: []
 			}
 		},
-		items: {
-			[bladeId]: {
-				itemId: bladeId,
-				templateId: 'practice-blade',
-				displayName: 'Gatehouse Practice Blade',
-				ownerId: input.heroId,
-				slot: 'main-hand',
-				equippedById: input.heroId,
-				durability: 6,
-				maxDurability: 6
-			},
-			[bowId]: {
-				itemId: bowId,
-				templateId: 'short-bow',
-				displayName: 'Ash Short Bow',
-				ownerId: input.heroId,
-				slot: 'main-hand',
-				equippedById: null,
-				durability: 4,
-				maxDurability: 4
-			}
-		},
-		society: createBootstrapSociety(input.heroId, masterId, eventId, simulatedAt),
+		items: Object.assign(
+			{},
+			...bootstrapHeroes.map((hero) => ({
+				[hero.bladeId]: {
+					itemId: hero.bladeId,
+					templateId: 'practice-blade',
+					displayName: 'Gatehouse Practice Blade',
+					ownerId: hero.heroId,
+					slot: 'main-hand',
+					equippedById: hero.heroId,
+					durability: 6,
+					maxDurability: 6
+				},
+				[hero.bowId]: {
+					itemId: hero.bowId,
+					templateId: 'short-bow',
+					displayName: 'Ash Short Bow',
+					ownerId: hero.heroId,
+					slot: 'main-hand',
+					equippedById: null,
+					durability: 4,
+					maxDurability: 4
+				}
+			}))
+		),
+		society: createBootstrapCompanySociety(
+			bootstrapHeroes.map((hero) => hero.heroId),
+			masterId,
+			eventId,
+			simulatedAt
+		),
 		mission: {
 			binding: missionBinding,
-			...(developmentMissionScenario ? { availableMissionIds, evidence: {} } : {}),
+			...(developmentMissionScenario
+				? {
+						availableMissionIds,
+						evidence:
+							foundryRouteMemoryHeroId && routeMemoryEvidenceId
+								? {
+										[routeMemoryEvidenceId]: {
+											evidenceId: routeMemoryEvidenceId,
+											evidenceKey: 'foundry-maintenance-route',
+											holderActorId: foundryRouteMemoryHeroId,
+											sourceBinding: verifiedMissionBinding('tower-floor-04'),
+											sourceAttemptId: deterministicUuid(`${input.runId}:floor-04-memory-source`),
+											discoveredOnRound: 5
+										}
+									}
+								: {}
+					}
+				: {}),
 			...(masterPermadeathDevelopmentScenario
 				? {
 						aftermath: {
@@ -1039,7 +1130,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		payload: {
 			initialState: state,
 			...emptyMetadata(
-				'The Master awakened beside a stocked gate and one new summon.',
+				bootstrapHeroes.length === 1
+					? 'The Master awakened beside a stocked gate and one new summon.'
+					: `The Master awakened beside a stocked gate and ${bootstrapHeroes.length} new summons.`,
 				rewardDeltas
 			)
 		}

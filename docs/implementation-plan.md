@@ -1099,7 +1099,12 @@ Estimated engineering effort: **2–3 weeks**.
   top-level game over in one round; cancel every unfinished hero activity, travel, routine, and
   daily-plan entry; remove all actor legality while retaining strict replay; telegraph the Red Slag
   hazard before commitment; and ship the database-backed `/last-command` browser checkpoint;
-- `MIS-010` validate three floor-5 strategies and deterministic replay;
+- `MIS-010` complete: execute Hammer Line, Split Cooling, and Full Quench across eight fixed
+  successful regression seeds each; require legal engine commands, intended furnace state,
+  survival, extraction, and exact strict replay; export the hash-bound report and ship the
+  development-only `/foundry-trials` comparison page;
+- `MIS-010A` version the attempt-level aftermath boundary so consequences from a completed or
+  retreated mission cannot violate or contaminate a later attempt, while preserving v16/v17 replay;
 - `MIS-011` implement band story envelopes, beat eligibility, and character-aware expression hooks;
 - `MIS-012` implement Wait, Countdown, Step, and Continuous Master decision timing;
 - `MIS-013` implement directed and seeded-random fallbacks with pause and safety stops;

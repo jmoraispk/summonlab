@@ -1,0 +1,1635 @@
+{
+	"schemaVersion": "foundry-strategy-report-v1",
+	"generatorVersion": "foundry-strategy-generator-v1",
+	"generatedAt": "2026-08-25T00:00:00.000Z",
+	"engineContentVersion": "engine-v17",
+	"missionId": "tower-floor-05",
+	"missionContentVersion": "tower-floor-05-v2",
+	"criteria": {
+		"requiredStrategies": 3,
+		"requiredTrialsPerStrategy": 8,
+		"requiredReplayPassRate": 1,
+		"requiredSurvivalRate": 1,
+		"maximumMissionRounds": 48,
+		"requireLegalEngineCommandsOnly": true,
+		"sampleKind": "fixed-success-regression-matrix",
+		"notWinRateEstimate": true
+	},
+	"definitions": [
+		{
+			"strategyId": "hammer-line",
+			"displayName": "Hammer Line",
+			"thesis": "Preparation can make the obvious route genuinely viable, even while the furnace stays lit.",
+			"preparation": "Train a four-hero line to sword rank 10, cycle both gate weapons, and enter without Floor 04 route knowledge.",
+			"tradeoff": "The Warden keeps all three armor layers, so the company must clear the nave and rotate its exposed front line.",
+			"requiresRouteMemory": false,
+			"targetFurnaceState": "lit"
+		},
+		{
+			"strategyId": "split-cooling",
+			"displayName": "Split Cooling",
+			"thesis": "One remembered secret can shorten the fight without paying the full cost of a quench.",
+			"preparation": "Let the schematic holder expose the seam, test the wheel, and advance the furnace once while the Master holds the heart.",
+			"tradeoff": "The operator draws the Warden into the control room and the company fights through one remaining armor layer.",
+			"requiresRouteMemory": true,
+			"targetFurnaceState": "cooling"
+		},
+		{
+			"strategyId": "full-quench",
+			"displayName": "Full Quench",
+			"thesis": "Trust the isolated operator for one additional turn to remove every furnace-linked armor layer.",
+			"preparation": "Carry the Floor 04 schematic memory, reveal the maintenance path, test the wheel, then operate it twice.",
+			"tradeoff": "The exposed holder endures another intercept before the shortest and hardest-hitting finish.",
+			"requiresRouteMemory": true,
+			"targetFurnaceState": "quenched"
+		}
+	],
+	"qualityGate": {
+		"status": "pass",
+		"viableStrategies": 3,
+		"trialsPassed": 24,
+		"trialsTotal": 24,
+		"replayMismatches": 0,
+		"deaths": 0
+	},
+	"summaries": [
+		{
+			"strategyId": "hammer-line",
+			"status": "viable",
+			"trialsPassed": 8,
+			"trialsTotal": 8,
+			"replayPassRate": 1,
+			"survivalRate": 1,
+			"minimumMasterHealth": 100,
+			"minimumHeroHealth": 50,
+			"missionRoundRange": [16, 16],
+			"wardenStrikeRange": [21, 22],
+			"representativeRunId": "d85c2469-fe13-46c6-a0be-f36b9d1b1ac5"
+		},
+		{
+			"strategyId": "split-cooling",
+			"status": "viable",
+			"trialsPassed": 8,
+			"trialsTotal": 8,
+			"replayPassRate": 1,
+			"survivalRate": 1,
+			"minimumMasterHealth": 100,
+			"minimumHeroHealth": 5,
+			"missionRoundRange": [19, 19],
+			"wardenStrikeRange": [8, 9],
+			"representativeRunId": "8cb2ede9-cdec-4170-90bb-0c5f639ab6fd"
+		},
+		{
+			"strategyId": "full-quench",
+			"status": "viable",
+			"trialsPassed": 8,
+			"trialsTotal": 8,
+			"replayPassRate": 1,
+			"survivalRate": 1,
+			"minimumMasterHealth": 100,
+			"minimumHeroHealth": 5,
+			"missionRoundRange": [19, 19],
+			"wardenStrikeRange": [7, 8],
+			"representativeRunId": "c8c3e61e-a082-4deb-b290-fa7ea93f9359"
+		}
+	],
+	"trials": [
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-03",
+			"runId": "d85c2469-fe13-46c6-a0be-f36b9d1b1ac5",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "11078f4cf1910afbb71b720e03daf4af5b80784045471581c73e1e8094afcef8",
+			"eventLogHash": "640f2af3d0c86bba0ef0f68abea823ab185ab087212beb1fd885296cc9b1c56c",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 22,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 80,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-05",
+			"runId": "674be231-2489-4042-bfae-1372effd4ba7",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "c230b78733e8848de1d77fad926be47c54505854796f4ed396e04bead6ad64b5",
+			"eventLogHash": "8820cdf34dc5f33f31c4714c97d3a7f89b5734f7c0b42b0acb9c76d0fbbd6c4b",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 22,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 70,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-09",
+			"runId": "c4e9ddd8-e201-4110-8a86-4a9da352f7ef",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "e84d1872373c29bfe8b740879f0d427fcb3ab13f41b21741eff9af11c9289da5",
+			"eventLogHash": "6d42e75c629936dccfdb99f2cd58205b6dbf73e4b9f10ba57591fa6e606ca3cc",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 21,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 80,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-14",
+			"runId": "4adda6f0-832f-4b30-9ca6-917d37cf463f",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "1c041f64ee9b3231d3bca2d08068b5d3d919ea72589c94be32468e1234cedc2a",
+			"eventLogHash": "96b5aa73a8a45a4aaa0ec34531ad0f3d8ce4cb8d141e4aa68a6185162cae5309",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 22,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 60,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 60
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 60
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 60
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 60
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-15",
+			"runId": "170368c1-3e4c-402b-a384-732e27d1872f",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "93a5833939055757bd0fcfbb2b5058a97ecdd8e2bd03613b6c15391f05e2a94a",
+			"eventLogHash": "0e6d8bad3b7c866c12339d530ae7661eb6d3dc4b59c6d0ef3656ce74c9af5862",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 22,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 80,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-16",
+			"runId": "ccc5b319-fc76-4114-b893-a4b09324359b",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "331776202211b2f41ee9969706b4d4c363af4fc2deeaab14e112cf3f3cd6eb6f",
+			"eventLogHash": "32f69edd6b9a2501546876c88ba9e9b33c60106250d047a014282e6a08a6c5cf",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 22,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 50,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 50
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 50
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 50
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 50
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-22",
+			"runId": "eafe9d61-449e-4ad6-9daf-73cb0ba294ff",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "691567f12798abc2eeeb43ffaed29341f9ce46db3b8d60bc2f890c44cad47bdc",
+			"eventLogHash": "7a1fc0fc042e4d880190effddf3e34a3a16644933d5be0d0a8489cf026b56b8e",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 21,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 90,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 90
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 90
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 90
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 90
+				}
+			]
+		},
+		{
+			"strategyId": "hammer-line",
+			"seed": "foundry-matrix-27",
+			"runId": "0981d321-f754-4d25-a2da-89d8b91c7969",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "8cf571ef7aa02c1579d80a7c7c1d4bd84c7a5e0f4844cef106b113bd72428be0",
+			"eventLogHash": "aac675cfc99d4451e662752c26a6701a0dccfa8a173d6f4ae17ccf8a0773c2b8",
+			"eventCount": 116,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": false,
+			"furnaceStateAtDefeat": "lit",
+			"missionRounds": 16,
+			"wardenStrikes": 21,
+			"controlActions": 0,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 80,
+			"nonfatalConsequences": 0,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 1",
+					"roundNumber": 5,
+					"furnaceState": "lit",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Rotate and strike the lit Warden · 9",
+					"roundNumber": 13,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Return formation · 3",
+					"roundNumber": 16,
+					"furnaceState": "lit",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-03",
+			"runId": "8cb2ede9-cdec-4170-90bb-0c5f639ab6fd",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "8d4e06b49a8fa34fbd5be8d14e4ec5909e7db49c5689e4c9309be6f5699865d3",
+			"eventLogHash": "328bfc95a4619c78822072e433facef7da7f3bbc6f44c6f3736a28a86d31bd61",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 9,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 25,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-05",
+			"runId": "4a36ff88-a455-49b5-899b-37c025ac0405",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "954ecfec2a9e522baa6cbc68ca261898196e2c1449c6e069a4a4204877b5e37d",
+			"eventLogHash": "e1d91d11782c69eb56fbd2226ce30658529b0158825eb584f3be95b827059284",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 5,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-09",
+			"runId": "c7382405-9ad3-4ab6-94f6-91cfcfc6869d",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "cd9f27d5905e51f552b98a38283b5d1d251c7ac940e53cd60f08793346c27362",
+			"eventLogHash": "6aff013fd4becd28cea7947b377ef478abf9d84ea015ba101614001c4bcaa194",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 25,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-14",
+			"runId": "6034121c-8b24-42f4-b818-a1bf2723dd68",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "793d47a025f019ff6f6408ee678b3b90a8a3f7290e6f74934dc3bff8bb6e9855",
+			"eventLogHash": "7f2ea5a3d6cee692d701fcc9ab372a9eda6eaa7187375ed6a44fa50ff1ca0e69",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 5,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-15",
+			"runId": "f7d8a4d7-59d4-4412-ac7a-b687458110f7",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "59e5d680c041d135d5c4f2fc3a01623d718241538f3a21fa0406de03b07422c8",
+			"eventLogHash": "fe7707bf6755217d12bcedbef6e126c5014ef12853684c02ca873a7d17d84c95",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 9,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-16",
+			"runId": "32a34739-10b9-42dc-bda3-76b7cbc33c56",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "83fbe3b801f693f21ec5252b1f4feefe659c7749d39d3578ecd36a8712025473",
+			"eventLogHash": "81f0f754099c9833194ff911964b140e1cb87e7a26faced294e915c119159969",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 90
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-22",
+			"runId": "be2f2a56-0023-4b93-8626-a103b774e702",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "532c5c922e50449653bb1fdb85138ad4fb62d9027773d7b10e9658c99a279d51",
+			"eventLogHash": "080aa41199b3a63c0ddeb88815bd3e4f8ac1b08aa29e96ce4efe003d31797695",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 9,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "split-cooling",
+			"seed": "foundry-matrix-27",
+			"runId": "8d23165c-24b1-4fba-80f7-654a0c8e01f4",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "fd87ec300d05b5b4d018024bbf5aa7e429f716b4614d2efc44e328a231299a39",
+			"eventLogHash": "7c0968eeeccba220701a7cce0c4731b4a7b93c0e86bce6b40d8fa57e557ec278",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "cooling",
+			"missionRounds": 19,
+			"wardenStrikes": 9,
+			"controlActions": 1,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 10,
+					"furnaceState": "cooling",
+					"wardenVitality": 15,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 7",
+					"roundNumber": 15,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "cooling",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-03",
+			"runId": "c8c3e61e-a082-4deb-b290-fa7ea93f9359",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "8a68941413b51109c1a3bbd328100f518f40056a7f557dd1ef67258eefd60200",
+			"eventLogHash": "9d6f40f0f1ef60cf51aac5652f9b18a057a577f3e39939b3239c6b4b496ec41b",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 7,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-05",
+			"runId": "d6b866f5-3042-4608-ba15-207fc9e96c75",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "fafbce9d6b3a2b29640be74418a7ea3395bb8f4e2d1267b91f57771cee72fb7d",
+			"eventLogHash": "98311521ca2a088c9ed163ffa53f483fd23b966de70f1c5abc4514055bd0b7a7",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-09",
+			"runId": "772a586e-f807-4341-996c-76b4f5bcb326",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "a8dc4f0b2c19f70721db1b57aace2b2656519ebe6460f53e4e7169432baefd5f",
+			"eventLogHash": "986401023d46207e3b1fdcb1222cb85bbb9284b56b71eb9913c09131516b66b0",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-14",
+			"runId": "aa2bf0d5-e4e1-451f-b9dd-a2fa59727e97",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "770e14d0bf1d223fdec49d247d32fd0cff5fefd371f745c7bf112f4ef69619d1",
+			"eventLogHash": "0f283d4a85a2f437585709772742c5ff5d747e24afb5f619d372d47a1a5a4270",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 7,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 25,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 80
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 25
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-15",
+			"runId": "c09f5a64-0b68-447e-93c9-f9e46ab30223",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "89cf3ce50ac1678a0e3475c12bb29928dc35e66c77297b1ad32d97801f5026e1",
+			"eventLogHash": "cfdc23a085f228c395df8bcbb82a7686436b714d009ab2610d42c5a31d092da8",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 7,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-16",
+			"runId": "7318e18d-9a96-4e5b-905e-431239f14729",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "80043e84585712d404f1d158e37e1306c5bd5594444f51110a06ea3ac83df3dd",
+			"eventLogHash": "fbe8291266e9ea3abae0f3d1fb47a427d482cb2a0c07d08b58b09e30210468f0",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 7,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-22",
+			"runId": "f4e42c63-8f56-42b1-88f2-1c945dbba7bf",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "8b19ebdb0badbe69ee95da9d74f675cb395556e6e787a50066ccb400cc5b604f",
+			"eventLogHash": "3d3eeb36a03a1b261251991732e4b9ad36ae3f958c4cb0abeb54fa51ddebc82a",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 15,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 50
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 15
+				}
+			]
+		},
+		{
+			"strategyId": "full-quench",
+			"seed": "foundry-matrix-27",
+			"runId": "8d3fea1e-d744-437e-b71b-88c795dfa5e5",
+			"status": "success",
+			"replayVerified": true,
+			"stateHash": "1730c608f2490851eae3a3c830519a9bc4e8236aa050a231c6fd1a4812336b3a",
+			"eventLogHash": "d11e1345ea401152b5e808b4c4730e49f75a77214a5d7f908268393ca5a0f4a5",
+			"eventCount": 119,
+			"trainingSessionsPerHero": 9,
+			"partyHeroCount": 4,
+			"swordRanksAtDeployment": [10, 10, 10, 10],
+			"routeMemoryUsed": true,
+			"furnaceStateAtDefeat": "quenched",
+			"missionRounds": 19,
+			"wardenStrikes": 8,
+			"controlActions": 2,
+			"masterHealthAfter": 100,
+			"minimumHeroHealthAfter": 5,
+			"nonfatalConsequences": 1,
+			"fatalConsequences": 0,
+			"checkpoints": [
+				{
+					"label": "Deployed beneath the living furnace",
+					"roundNumber": 0,
+					"furnaceState": "lit",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 70
+				},
+				{
+					"label": "Open the cooling circuit",
+					"roundNumber": 6,
+					"furnaceState": "cooling",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Quench the furnace",
+					"roundNumber": 9,
+					"furnaceState": "quenched",
+					"wardenVitality": 18,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Hold and strike at the cooling control · 2",
+					"roundNumber": 11,
+					"furnaceState": "quenched",
+					"wardenVitality": 14,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Hold and strike at the cooling control · 6",
+					"roundNumber": 15,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				},
+				{
+					"label": "Return formation · 4",
+					"roundNumber": 19,
+					"furnaceState": "quenched",
+					"wardenVitality": 0,
+					"masterHealth": 100,
+					"minimumHeroHealth": 5
+				}
+			]
+		}
+	],
+	"reportHash": "b8ec0a8cac9843092ed503d6653021aa79b182c294de3d3392fbca083a9c98de"
+}

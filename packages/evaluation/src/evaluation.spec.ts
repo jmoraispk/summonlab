@@ -5,14 +5,38 @@ import { OpenAIModelPolicy } from '@summonlab/policies/openai';
 import {
 	AgentEvaluationCorpusSchema,
 	AgentEvaluationReportSchema,
+	FoundryStrategyReportSchema,
 	createAgentEvaluationCorpus,
 	createAgentEvaluationReport,
+	createFoundryStrategyReport,
 	createRecordedProviderRun,
 	evaluateRecordedProviderRun,
 	verifyAgentEvaluationCorpus,
 	verifyAgentEvaluationReport,
 	verifyRecordedProviderRun
 } from './index.js';
+
+describe('Floor 05 strategy regression matrix', () => {
+	it('proves three legal strategies across 24 strict deterministic replays', () => {
+		const left = createFoundryStrategyReport();
+		const right = createFoundryStrategyReport();
+
+		expect(left).toEqual(right);
+		expect(FoundryStrategyReportSchema.parse(left)).toEqual(left);
+		expect(left.qualityGate).toEqual({
+			status: 'pass',
+			viableStrategies: 3,
+			trialsPassed: 24,
+			trialsTotal: 24,
+			replayMismatches: 0,
+			deaths: 0
+		});
+		expect(new Set(left.trials.map((trial) => trial.furnaceStateAtDefeat))).toEqual(
+			new Set(['lit', 'cooling', 'quenched'])
+		);
+		expect(left.trials.every((trial) => trial.partyHeroCount === 4)).toBe(true);
+	}, 120_000);
+});
 
 describe('fixed agent evaluation', () => {
 	it('builds ten deterministic, credential-free, hash-bound packets', async () => {

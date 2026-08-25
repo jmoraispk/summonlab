@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-009` are complete. The first five
+Status: **in progress**. `MIS-001` through `MIS-010` are complete. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -311,6 +311,7 @@ a state authority.
 | `MIS-007` | Complete: immutable `iron-moon-v1` binds an eight-round portal and three finite deposits; opt-in `engine-v15` decrements one deterministic timer unit per party round, exposes stable/warning/critical/collapsed pressure, transfers mined ore into bounded per-actor cargo, opens extraction only after the four-ore quota and complete return, credits settlement stock only on crossing, records collapse/retreat losses, gives every hero the authoritative portal context, and strictly replays persisted event-store runs; `/iron-moon` launches the complete local browser checkpoint | [Iron Moon evidence](evidence/phase-6-iron-moon.png), contract/content/context/engine/database/browser tests, `pnpm validate:mission-content`, ADR 0036 |
 | `MIS-008` | Complete: opt-in `engine-v16` turns guard-breaking and exposed impacts into persistent health loss, injuries, equipped-item wear, and permanent hero death; records exact source, location, physical deltas, and surviving co-located witnesses; derives evidence-backed mission memories and Master-relationship changes only for those witnesses; includes the memories in later holder-owned context; ends fatal attempts explicitly; and strictly replays the physical and social aftermath; `/aftermath` launches The Red Tithe database checkpoint | [Mission aftermath evidence](evidence/phase-6-mission-aftermath.png), contract/context/engine/database/browser tests, 47.0 KB measured mission-route JavaScript, ADR 0037 |
 | `MIS-009` | Complete: opt-in `engine-v17` makes the manually controlled Master physically vulnerable inside mission rounds; records exposed harm in `mission-aftermath-v2` with exact source, location, health, injury, and co-located witness evidence; atomically commits Master death, attempt death, and whole-run game over; cancels unfinished hero activity, travel, routines, and daily plans; removes every actor's legal actions while retaining strict replay; and telegraphs Red Slag before commitment; `/last-command` launches the database-backed terminal checkpoint | [Master game-over evidence](evidence/phase-6-master-game-over.png), contract/context/engine/database/browser tests, 47.7 KB measured mission-route JavaScript, ADR 0038 |
+| `MIS-010` | Complete: the credential-free Foundry matrix prepares four rank-10 heroes, executes Hammer Line, Split Cooling, and Full Quench only through legal engine commands, and proves eight successful fixed regression seeds per doctrine; all 24 companies survive and extract, all 24 event streams strictly replay, and the intended lit/cooling/quenched Warden state is explicit; `/foundry-trials` compares route topology, combat cost, health floor, and representative checkpoints while stating that the matrix is not a win-rate estimate | [Foundry strategy evidence](evidence/phase-6-foundry-strategies.png), [machine-readable report](evidence/phase-6-foundry-strategies.json), evaluation/browser tests, ADR 0039 |
 
 ### Reproduce the checkpoint
 
@@ -358,9 +359,17 @@ the hero continues to choose independently. When the Master reaches zero health,
 shows **Game Over**, removes the turn controls, marks the surviving hero **SEALED**, and records the
 fatal source and health delta. Reload, open the sealed replay, and confirm it remains verified.
 
+Run `pnpm validate:foundry-strategies`, start `pnpm dev:app`, and open
+`http://localhost:5173/foundry-trials`. Switch among **Hammer Line**, **Split Cooling**, and **Full
+Quench**. Confirm the map highlights the direct or retained-memory route, the Warden state changes
+between lit/cooling/quenched, and the action log and strike range change with it. The header must
+remain **24 / 24**, with zero replay mismatches and deaths; interpret that as fixed viable-path
+regression evidence, not a sampled win rate.
+
 ## Next active engineering slice
 
-Begin `MIS-010`: validate three Floor 05 strategies and deterministic replay.
+Begin `MIS-010A`: version the attempt-level aftermath boundary discovered by the Foundry matrix so
+old consequences cannot contaminate a later mission attempt. Then begin `MIS-011` story envelopes.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

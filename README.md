@@ -290,6 +290,17 @@ event.
 
 ![Deterministic survival-state inspector](docs/evidence/phase-2-survival-state.png)
 
+## Living Foundry strategy checkpoint
+
+`/foundry-trials` compares three complete Floor 05 doctrines executed by the authoritative engine.
+Hammer Line trains and rotates a four-hero company through the armored direct route; Split Cooling
+uses one holder's retained schematic to strip two armor layers; Full Quench risks a second wheel
+operation to remove them all. The checked matrix contains eight successful seeds per strategy, only
+legal commands, 24 exact strict replays, and no deaths. It is deliberately a viable-path regression
+suite, not a statistical win-rate claim.
+
+![Living Foundry strategy trials](docs/evidence/phase-6-foundry-strategies.png)
+
 ## Local development
 
 The application is a pnpm TypeScript workspace pinned to Node `24.14.1` and pnpm `10.33.0`.
@@ -300,7 +311,7 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` starts Docker PostgreSQL, applies pending migrations, opens the SvelteKit web process on `http://localhost:5173`, and starts the worker health process on `http://localhost:4174/health`. Begin at `http://localhost:5173/forge`, open the Iron Moon resource checkpoint at `http://localhost:5173/iron-moon`, or test persistent mission consequences at `http://localhost:5173/aftermath`. The launcher uses native Docker or Docker inside WSL on Windows. The web server binds to the private LAN by default for local playtesting.
+`pnpm dev` starts Docker PostgreSQL, applies pending migrations, opens the SvelteKit web process on `http://localhost:5173`, and starts the worker health process on `http://localhost:4174/health`. Begin at `http://localhost:5173/forge`, compare the Floor 05 proofs at `http://localhost:5173/foundry-trials`, open the Iron Moon resource checkpoint at `http://localhost:5173/iron-moon`, or test persistent mission consequences at `http://localhost:5173/aftermath`. The launcher uses native Docker or Docker inside WSL on Windows. The web server binds to the private LAN by default for local playtesting.
 
 If Docker is unavailable, use `pnpm dev:app`. Both processes stay runnable and report PostgreSQL as unavailable instead of inventing persistence. Run all local quality gates with `pnpm check`; browser smoke tests use `pnpm test:e2e` after installing Playwright Chromium once with `pnpm --filter @summonlab/web exec playwright install chromium`.
 

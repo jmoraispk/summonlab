@@ -451,6 +451,16 @@ Entries can be filtered by day, mission, floor, hero, or event type and expanded
 - Can players reconstruct every important result from the chronicle?
 - What is the token and latency cost per real day for a growing roster?
 
+## Floor 05 tactical benchmark
+
+The Living Foundry's first complete benchmark supports three doctrines. A prepared four-hero
+Hammer Line can keep the furnace lit by clearing the Forge Nave and rotating away from declared
+Warden targets. A schematic holder can instead expose the two-person maintenance route, advance the
+wheel once for a cooling fight, or accept a second exposed operation for a full quench. These are
+not menu bonuses: route access, positions, target handoffs, armor, impacts, return, and extraction
+all resolve as ordinary legal turns. The fixed development matrix proves those paths exist; it does
+not set their eventual population win rates.
+
 ## Deferred decisions
 
 - Exact pity thresholds beyond the first prototype.

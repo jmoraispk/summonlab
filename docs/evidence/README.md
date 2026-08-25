@@ -89,3 +89,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   controllable Master dies, showing canonical zero vitality, the fatal consequence, empty control
   surface, sealed-run explanation, independently resolved hero intent, and the append-only event
   whose strict replay remains inspectable.
+- `phase-6-foundry-strategies.png` / `.json` — the Living Foundry strategy instrument and its
+  machine-readable fixed regression matrix: three distinct furnace states, eight successful legal
+  trials per doctrine, 24 exact strict replays, no deaths, and an explicit no-win-rate disclaimer.
