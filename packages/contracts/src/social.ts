@@ -101,6 +101,33 @@ export const CommunicationHeroBeliefSchema = HeroBeliefSchema.extend({
 
 export const HeroBeliefV2Schema = z.union([HeroBeliefSchema, CommunicationHeroBeliefSchema]);
 
+export const SynthesisObservationSchema = z
+	.object({
+		observationId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		observerHeroId: EntityIdSchema,
+		observedAt: IsoDateTimeSchema,
+		kind: z.enum(['synthesis-direct', 'synthesis-absence', 'synthesis-rumor']),
+		synthesisReceiptId: EntityIdSchema,
+		summary: z.string().min(1).max(300),
+		subjectIds: z.array(EntityIdSchema).min(1).max(8)
+	})
+	.strict()
+	.refine((observation) => new Set(observation.subjectIds).size === observation.subjectIds.length, {
+		message: 'Observation subjects must be unique'
+	});
+
+export const SocialObservationV3Schema = z.union([
+	SocialObservationV2Schema,
+	SynthesisObservationSchema
+]);
+
+export const SynthesisHeroBeliefSchema = HeroBeliefSchema.extend({
+	predicate: z.enum(['was-synthesized-into', 'is-missing-after-gate-call'])
+}).strict();
+
+export const HeroBeliefV3Schema = z.union([HeroBeliefV2Schema, SynthesisHeroBeliefSchema]);
+
 export const CommunicativeActKindSchema = z.enum([
 	'explain',
 	'tell',
@@ -601,10 +628,46 @@ export const SocietyStateV4Schema = z
 		}
 	});
 
+export const SocietyStateV5Schema = z
+	.object({
+		...SocietyStateV4Schema.shape,
+		contentVersion: z.literal('society-v5'),
+		observations: z.record(EntityIdSchema, SocialObservationV3Schema),
+		beliefs: z.record(EntityIdSchema, HeroBeliefV3Schema)
+	})
+	.strict()
+	.superRefine((society, context) => {
+		const collections = [
+			['observation', society.observations, 'observationId'],
+			['belief', society.beliefs, 'beliefId'],
+			['relationship', society.relationships, 'relationshipId'],
+			['promise', society.promises, 'promiseId'],
+			['authority', society.authority, 'authorityId'],
+			['communicative act', society.communicativeActs, 'actId'],
+			['conversation turn', society.conversationTurns, 'turnId'],
+			['directive', society.directives, 'directiveId'],
+			['directive influence', society.directiveInfluences, 'influenceId']
+		] as const;
+		for (const [label, records, idField] of collections) {
+			if (Object.keys(records).length > 8_192) {
+				context.addIssue({ code: 'custom', message: `Too many ${label} records` });
+			}
+			for (const [key, record] of Object.entries(records)) {
+				if ((record as Record<string, unknown>)[idField] !== key) {
+					context.addIssue({
+						code: 'custom',
+						message: `${label} record key does not match its id`
+					});
+				}
+			}
+		}
+	});
+
 export type SocietyState = z.infer<typeof SocietyStateSchema>;
 export type SocietyStateV2 = z.infer<typeof SocietyStateV2Schema>;
 export type SocietyStateV3 = z.infer<typeof SocietyStateV3Schema>;
 export type SocietyStateV4 = z.infer<typeof SocietyStateV4Schema>;
+export type SocietyStateV5 = z.infer<typeof SocietyStateV5Schema>;
 export type SocialObservation = z.infer<typeof SocialObservationSchema>;
 export type HeroBelief = z.infer<typeof HeroBeliefSchema>;
 export type DirectedRelationship = z.infer<typeof DirectedRelationshipSchema>;

@@ -1,0 +1,83 @@
+{
+	"reportVersion": "synthesis-evidence-v1",
+	"contentVersion": "engine-v22",
+	"warningVersion": "synthesis-warning-v1",
+	"initialActionIds": [
+		"master.inspect.gate",
+		"settlement.synthesis.commit",
+		"simulation.damage.hero.27000000-0000-4000-8000-000000000002",
+		"simulation.damage.hero.27000000-0000-4000-8000-000000000003",
+		"simulation.damage.hero.27000000-0000-4000-8000-000000000004",
+		"simulation.damage.hero.27000000-0000-4000-8000-000000000005",
+		"simulation.damage.master"
+	],
+	"checks": [
+		{ "code": "versioned-boundary", "passed": true },
+		{ "code": "explicit-confirmation", "passed": true },
+		{ "code": "terminal-source", "passed": true },
+		{ "code": "bounded-progression", "passed": true },
+		{ "code": "identity-does-not-transfer", "passed": true },
+		{ "code": "private-witness-boundary", "passed": true },
+		{ "code": "rumor-provenance", "passed": true },
+		{ "code": "social-consequence", "passed": true },
+		{ "code": "canonical-events", "passed": true },
+		{ "code": "strict-replay", "passed": true }
+	],
+	"adversarial": [
+		{ "label": "false confirmation", "blocked": true },
+		{ "label": "source equals recipient", "blocked": true },
+		{ "label": "non-Master initiator", "blocked": true },
+		{ "label": "terminal source reused", "blocked": true },
+		{ "label": "manual hero rumor", "blocked": true },
+		{ "label": "unknown rumor receipt", "blocked": true },
+		{ "label": "rumor to exact witness", "blocked": true }
+	],
+	"receipt": {
+		"receiptId": "63d4c387-5818-4c6c-ba28-fe5407d3ac6e",
+		"sourceHeroId": "27000000-0000-4000-8000-000000000002",
+		"recipientHeroId": "27000000-0000-4000-8000-000000000003",
+		"visibility": "private",
+		"essenceExperience": 40,
+		"recipientLevelBefore": 1,
+		"recipientLevelAfter": 5,
+		"knowledge": [
+			{
+				"heroId": "27000000-0000-4000-8000-000000000003",
+				"knowledge": "participant",
+				"confidence": 100,
+				"trustDelta": -4,
+				"fearDelta": 7,
+				"resentmentDelta": 7
+			},
+			{
+				"heroId": "27000000-0000-4000-8000-000000000004",
+				"knowledge": "absence",
+				"confidence": 35,
+				"trustDelta": -3,
+				"fearDelta": 3,
+				"resentmentDelta": 2
+			},
+			{
+				"heroId": "27000000-0000-4000-8000-000000000005",
+				"knowledge": "absence",
+				"confidence": 35,
+				"trustDelta": -3,
+				"fearDelta": 3,
+				"resentmentDelta": 2
+			}
+		]
+	},
+	"rumor": {
+		"rumorId": "6f5c35df-d784-4278-bcd3-4897a1521b62",
+		"speakerHeroId": "27000000-0000-4000-8000-000000000003",
+		"listenerHeroId": "27000000-0000-4000-8000-000000000005",
+		"confidence": 85,
+		"chainDepth": 1,
+		"originObservationId": "b258cf8c-a622-41e2-a147-1cb2a4467822"
+	},
+	"replay": {
+		"eventTypes": ["run.initialized", "hero.synthesized", "social.synthesis.rumor.shared"],
+		"verified": true,
+		"stateHash": "e10a5d57b4040b1d014ec002863798c5d8d04fe9a20a4fdda7d88dbb6489444d"
+	}
+}

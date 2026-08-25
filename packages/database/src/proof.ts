@@ -74,6 +74,7 @@ export interface CreateProofRunInput {
 		readonly enableMasterTiming?: boolean;
 		readonly enableMasterFallback?: boolean;
 		readonly enableStoryPatch?: boolean;
+		readonly enableSynthesis?: boolean;
 		readonly additionalHeroes?: readonly {
 			readonly heroId: string;
 			readonly manifestHash: string;

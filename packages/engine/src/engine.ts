@@ -28,6 +28,7 @@ import {
 	EngineGameStateV19Schema,
 	EngineGameStateV20Schema,
 	EngineGameStateV21Schema,
+	EngineGameStateV22Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -76,6 +77,10 @@ import {
 	SocietyStateV2Schema,
 	SocietyStateV3Schema,
 	SocietyStateV4Schema,
+	SocietyStateV5Schema,
+	SynthesisReceiptSchema,
+	SynthesisRumorRecordSchema,
+	SynthesisStateSchema,
 	DirectiveRecordSchema,
 	DirectiveInfluenceRecordSchema,
 	type ActivityKind,
@@ -106,6 +111,7 @@ import {
 	type EngineGameStateV19,
 	type EngineGameStateV20,
 	type EngineGameStateV21,
+	type EngineGameStateV22,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
@@ -147,6 +153,9 @@ import {
 	type SocietyStateV2,
 	type SocietyStateV3,
 	type SocietyStateV4,
+	type SocietyStateV5,
+	type SynthesisReceipt,
+	type SynthesisRumorRecord,
 	type DirectiveRecord,
 	type ScheduledEvent,
 	type StoryPatchCastMember
@@ -184,6 +193,7 @@ export const ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION = 'engine-v18';
 export const MASTER_TIMING_ENGINE_CONTENT_VERSION = 'engine-v19';
 export const MASTER_FALLBACK_ENGINE_CONTENT_VERSION = 'engine-v20';
 export const STORY_PATCH_ENGINE_CONTENT_VERSION = 'engine-v21';
+export const SYNTHESIS_ENGINE_CONTENT_VERSION = 'engine-v22';
 export const MISSION_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v13';
 export const MISSION_TURN_ENGINE_CONTENT_VERSION = 'engine-v12';
 export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
@@ -240,7 +250,8 @@ type EngineGameStateModern =
 	| EngineGameStateV18
 	| EngineGameStateV19
 	| EngineGameStateV20
-	| EngineGameStateV21;
+	| EngineGameStateV21
+	| EngineGameStateV22;
 type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6
@@ -258,7 +269,8 @@ type EngineRoutineState =
 	| EngineGameStateV18
 	| EngineGameStateV19
 	| EngineGameStateV20
-	| EngineGameStateV21;
+	| EngineGameStateV21
+	| EngineGameStateV22;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -316,6 +328,7 @@ export interface BootstrapEngineInput {
 		readonly enableMasterTiming?: boolean;
 		readonly enableMasterFallback?: boolean;
 		readonly enableStoryPatch?: boolean;
+		readonly enableSynthesis?: boolean;
 		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
 		readonly foundryRouteMemoryHeroId?: string;
 	};
@@ -844,6 +857,16 @@ const StoryPatchAppliedPayloadSchema = EmptyMetadataSchema.extend({
 	validation: StoryPatchValidationReportSchema,
 	patch: AppliedStoryPatchSchema,
 	bandStory: RuntimeBandStoryStateSchema,
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const SynthesisCommittedPayloadSchema = EmptyMetadataSchema.extend({
+	receipt: SynthesisReceiptSchema,
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const SynthesisRumorSharedPayloadSchema = EmptyMetadataSchema.extend({
+	rumor: SynthesisRumorRecordSchema,
 	nextVersion: z.number().int().positive()
 }).strict();
 
@@ -1621,6 +1644,16 @@ function createBootstrapCompanySociety(
 	});
 }
 
+function createBootstrapCompanySocietyV5(
+	heroIds: readonly string[],
+	masterId: string,
+	eventId: string,
+	observedAt: string
+): SocietyStateV5 {
+	const society = createBootstrapCompanySociety(heroIds, masterId, eventId, observedAt);
+	return SocietyStateV5Schema.parse({ ...society, contentVersion: 'society-v5' });
+}
+
 export function hashGameState(state: EngineGameState): string {
 	return hashParsedGameState(EngineGameStateSchema.parse(state));
 }
@@ -1700,60 +1733,67 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const masterFallbackDevelopmentScenario =
 		developmentMissionScenario?.enableMasterFallback === true;
 	const storyPatchDevelopmentScenario = developmentMissionScenario?.enableStoryPatch === true;
-	const stateSchema = storyPatchDevelopmentScenario
-		? EngineGameStateV21Schema
-		: masterFallbackDevelopmentScenario
-			? EngineGameStateV20Schema
-			: masterTimingDevelopmentScenario
-				? EngineGameStateV19Schema
-				: attemptAftermathDevelopmentScenario
-					? EngineGameStateV18Schema
-					: masterPermadeathDevelopmentScenario
-						? EngineGameStateV17Schema
-						: aftermathDevelopmentScenario
-							? EngineGameStateV16Schema
-							: portalDevelopmentScenario
-								? EngineGameStateV15Schema
-								: developmentMissionScenario
-									? EngineGameStateV14Schema
-									: EngineGameStateV13Schema;
-	const state = stateSchema.parse({
-		schemaVersion: storyPatchDevelopmentScenario
-			? 21
+	const synthesisDevelopmentScenario = developmentMissionScenario?.enableSynthesis === true;
+	const stateSchema = synthesisDevelopmentScenario
+		? EngineGameStateV22Schema
+		: storyPatchDevelopmentScenario
+			? EngineGameStateV21Schema
 			: masterFallbackDevelopmentScenario
-				? 20
+				? EngineGameStateV20Schema
 				: masterTimingDevelopmentScenario
-					? 19
+					? EngineGameStateV19Schema
 					: attemptAftermathDevelopmentScenario
-						? 18
+						? EngineGameStateV18Schema
 						: masterPermadeathDevelopmentScenario
-							? 17
+							? EngineGameStateV17Schema
 							: aftermathDevelopmentScenario
-								? 16
+								? EngineGameStateV16Schema
 								: portalDevelopmentScenario
-									? 15
+									? EngineGameStateV15Schema
 									: developmentMissionScenario
-										? 14
-										: 13,
+										? EngineGameStateV14Schema
+										: EngineGameStateV13Schema;
+	const state = stateSchema.parse({
+		schemaVersion: synthesisDevelopmentScenario
+			? 22
+			: storyPatchDevelopmentScenario
+				? 21
+				: masterFallbackDevelopmentScenario
+					? 20
+					: masterTimingDevelopmentScenario
+						? 19
+						: attemptAftermathDevelopmentScenario
+							? 18
+							: masterPermadeathDevelopmentScenario
+								? 17
+								: aftermathDevelopmentScenario
+									? 16
+									: portalDevelopmentScenario
+										? 15
+										: developmentMissionScenario
+											? 14
+											: 13,
 		runId: input.runId,
 		seed: input.seed,
-		contentVersion: storyPatchDevelopmentScenario
-			? STORY_PATCH_ENGINE_CONTENT_VERSION
-			: masterFallbackDevelopmentScenario
-				? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
-				: masterTimingDevelopmentScenario
-					? MASTER_TIMING_ENGINE_CONTENT_VERSION
-					: attemptAftermathDevelopmentScenario
-						? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
-						: masterPermadeathDevelopmentScenario
-							? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
-							: aftermathDevelopmentScenario
-								? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
-								: portalDevelopmentScenario
-									? PORTAL_ENGINE_CONTENT_VERSION
-									: developmentMissionScenario
-										? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
-										: ENGINE_CONTENT_VERSION,
+		contentVersion: synthesisDevelopmentScenario
+			? SYNTHESIS_ENGINE_CONTENT_VERSION
+			: storyPatchDevelopmentScenario
+				? STORY_PATCH_ENGINE_CONTENT_VERSION
+				: masterFallbackDevelopmentScenario
+					? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
+					: masterTimingDevelopmentScenario
+						? MASTER_TIMING_ENGINE_CONTENT_VERSION
+						: attemptAftermathDevelopmentScenario
+							? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
+							: masterPermadeathDevelopmentScenario
+								? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
+								: aftermathDevelopmentScenario
+									? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
+									: portalDevelopmentScenario
+										? PORTAL_ENGINE_CONTENT_VERSION
+										: developmentMissionScenario
+											? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
+											: ENGINE_CONTENT_VERSION,
 		status: 'active',
 		version: 0,
 		eventCursor: 1,
@@ -1855,12 +1895,19 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				}
 			}))
 		),
-		society: createBootstrapCompanySociety(
-			bootstrapHeroes.map((hero) => hero.heroId),
-			masterId,
-			eventId,
-			simulatedAt
-		),
+		society: synthesisDevelopmentScenario
+			? createBootstrapCompanySocietyV5(
+					bootstrapHeroes.map((hero) => hero.heroId),
+					masterId,
+					eventId,
+					simulatedAt
+				)
+			: createBootstrapCompanySociety(
+					bootstrapHeroes.map((hero) => hero.heroId),
+					masterId,
+					eventId,
+					simulatedAt
+				),
 		mission: {
 			binding: missionBinding,
 			...(developmentMissionScenario
@@ -1881,7 +1928,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 								: {}
 					}
 				: {}),
-			...(storyPatchDevelopmentScenario ||
+			...(synthesisDevelopmentScenario ||
+			storyPatchDevelopmentScenario ||
 			masterFallbackDevelopmentScenario ||
 			masterTimingDevelopmentScenario ||
 			attemptAftermathDevelopmentScenario
@@ -1911,7 +1959,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			attemptCount: 0,
 			attempt: null
 		},
-		...(storyPatchDevelopmentScenario || masterFallbackDevelopmentScenario
+		...(synthesisDevelopmentScenario ||
+		storyPatchDevelopmentScenario ||
+		masterFallbackDevelopmentScenario
 			? {
 					masterControl: {
 						timing: 'wait',
@@ -1951,7 +2001,12 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					}
 				: {}),
 		story: { envelopeId: 'first-ember-v1', branch: null },
-		...(storyPatchDevelopmentScenario ? { bandStory: createStoryPatchCheckpoint() } : {})
+		...(synthesisDevelopmentScenario || storyPatchDevelopmentScenario
+			? { bandStory: createStoryPatchCheckpoint() }
+			: {}),
+		...(synthesisDevelopmentScenario
+			? { synthesis: { contentVersion: 'synthesis-v1', receipts: {}, rumors: {} } }
+			: {})
 	});
 	const stateHash = hashParsedGameState(state);
 	const rewardDeltas = resourceLedger.map((entry): RewardDelta => ({
@@ -2298,7 +2353,8 @@ function buildFirstEmberSociety(
 		| EngineGameStateV18
 		| EngineGameStateV19
 		| EngineGameStateV20
-		| EngineGameStateV21,
+		| EngineGameStateV21
+		| EngineGameStateV22,
 	eventId: string,
 	buildingId: FirstEmberFacility,
 	rationale: FirstEmberRationale,
@@ -2499,7 +2555,8 @@ type EngineCommunicationState =
 	| EngineGameStateV18
 	| EngineGameStateV19
 	| EngineGameStateV20
-	| EngineGameStateV21;
+	| EngineGameStateV21
+	| EngineGameStateV22;
 
 function heroCanHearCommunication(hero: EngineCommunicationState['heroes'][string]): boolean {
 	return (
@@ -3248,6 +3305,7 @@ function settlementForState(
 		| EngineGameStateV19
 		| EngineGameStateV20
 		| EngineGameStateV21
+		| EngineGameStateV22
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -3303,7 +3361,8 @@ function routeHasCapacity(
 		| EngineGameStateV18
 		| EngineGameStateV19
 		| EngineGameStateV20
-		| EngineGameStateV21,
+		| EngineGameStateV21
+		| EngineGameStateV22,
 	definition: SettlementDefinition,
 	heroId: string,
 	targetNodeId: string,
@@ -3350,7 +3409,8 @@ function travelActions(
 		| EngineGameStateV18
 		| EngineGameStateV19
 		| EngineGameStateV20
-		| EngineGameStateV21,
+		| EngineGameStateV21
+		| EngineGameStateV22,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -3460,8 +3520,9 @@ function hasNavigationState(
 	| EngineGameStateV18
 	| EngineGameStateV19
 	| EngineGameStateV20
-	| EngineGameStateV21 {
-	return [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].includes(
+	| EngineGameStateV21
+	| EngineGameStateV22 {
+	return [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(
 		state.schemaVersion
 	);
 }
@@ -3486,8 +3547,9 @@ function hasFacilityState(
 	| EngineGameStateV18
 	| EngineGameStateV19
 	| EngineGameStateV20
-	| EngineGameStateV21 {
-	return [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].includes(
+	| EngineGameStateV21
+	| EngineGameStateV22 {
+	return [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(
 		state.schemaVersion
 	);
 }
@@ -3510,7 +3572,8 @@ function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
-		state.schemaVersion === 21
+		state.schemaVersion === 21 ||
+		state.schemaVersion === 22
 	);
 }
 
@@ -6740,6 +6803,32 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			tags: ['deterministic', 'development-proof']
 		})
 	];
+	if (state.schemaVersion === 22) {
+		const eligible = Object.values(state.heroes).filter(
+			(hero) =>
+				hero.lifeState === 'active' &&
+				hero.location === 'summoning-gate' &&
+				!hero.currentActivity &&
+				!hero.currentTravel &&
+				!hero.currentRoutine &&
+				!hero.assignment
+		);
+		if (eligible.length >= 2 && !state.mission.attempt) {
+			actions.push(
+				action({
+					actionId: 'settlement.synthesis.commit',
+					actorId,
+					kind: 'interact',
+					label: 'Confirm a synthesis pair',
+					description:
+						'Permanently consume one ready summon, grant bounded essence to another, and record witness-bounded fallout.',
+					targetIds: eligible.map((hero) => hero.heroId),
+					resourceCosts: {},
+					tags: ['settlement', 'synthesis', 'irreversible', 'social', 'replay']
+				})
+			);
+		}
+	}
 	if (state.schemaVersion === 21 && state.bandStory.appliedPatches.length === 0) {
 		actions.push(
 			action({
@@ -7055,6 +7144,53 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 }
 
 function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalAction[] {
+	if (state.schemaVersion === 22) {
+		const speaker = state.heroes[actorId];
+		if (speaker?.lifeState === 'active' && heroCanHearCommunication(speaker)) {
+			const rumorActions = Object.values(state.synthesis.receipts).flatMap((receipt) => {
+				const directlyKnows = receipt.socialConsequences.some(
+					(consequence) => consequence.heroId === actorId && consequence.knowledge !== 'absence'
+				);
+				const learnedRumor = Object.values(state.synthesis.rumors).some(
+					(rumor) => rumor.receiptId === receipt.receiptId && rumor.listenerHeroId === actorId
+				);
+				if (!directlyKnows && !learnedRumor) return [];
+				return Object.values(state.heroes)
+					.filter((target) => {
+						if (
+							target.heroId === actorId ||
+							target.lifeState !== 'active' ||
+							target.location !== speaker.location ||
+							target.locationNodeId !== speaker.locationNodeId ||
+							!heroCanHearCommunication(target)
+						)
+							return false;
+						return !Object.values(state.society.observations).some(
+							(observation) =>
+								'synthesisReceiptId' in observation &&
+								observation.synthesisReceiptId === receipt.receiptId &&
+								observation.observerHeroId === target.heroId &&
+								observation.kind !== 'synthesis-absence'
+						);
+					})
+					.sort((left, right) => left.heroId.localeCompare(right.heroId))
+					.map((target) =>
+						action({
+							actionId: `synthesis.rumor.share.${receipt.receiptId.slice(-8)}.${target.heroId.slice(-8)}`,
+							actorId,
+							kind: 'interact',
+							label: `Tell ${target.heroId.slice(0, 8)} what happened`,
+							description:
+								'Share a sourced synthesis claim; confidence falls as the explicit rumor chain grows.',
+							targetIds: [target.heroId],
+							resourceCosts: {},
+							tags: ['social', 'synthesis', 'rumor', 'provenance']
+						})
+					);
+			});
+			if (rumorActions.length > 0) return rumorActions;
+		}
+	}
 	if (
 		(state.schemaVersion === 11 ||
 			state.schemaVersion === 12 ||
@@ -7467,6 +7603,9 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'mission.extract') return 'mission.extract';
 	if (command.commandType === 'mission.retreat') return 'mission.retreat';
 	if (command.commandType === 'story.apply.patch') return 'story.patch.apply';
+	if (command.commandType === 'settlement.synthesize.hero') return 'settlement.synthesis.commit';
+	if (command.commandType === 'hero.share.synthesis.rumor')
+		return `synthesis.rumor.share.${command.receiptId.slice(-8)}.${command.targetHeroId.slice(-8)}`;
 	return command.targetId === command.actorId
 		? 'simulation.damage.master'
 		: `simulation.damage.hero.${command.targetId}`;
@@ -7476,6 +7615,54 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	if (command.runId !== state.runId) throw new IllegalActionError(command.commandType, []);
 	if (command.expectedVersion !== state.version) {
 		throw new StaleStateVersionError(command.expectedVersion, state.version);
+	}
+	if (command.commandType === 'settlement.synthesize.hero') {
+		if (
+			state.schemaVersion !== 22 ||
+			state.status !== 'active' ||
+			state.master.lifeState !== 'alive' ||
+			command.actorId !== state.master.masterId ||
+			command.source.source !== 'manual' ||
+			command.source.timing !== null ||
+			command.source.fallbackPolicy !== null ||
+			command.source.decisionJobId !== null ||
+			command.sourceHeroId === command.recipientHeroId ||
+			state.mission.attempt !== null ||
+			!legalActionsForParsedState(state, command.actorId).some(
+				(candidate) => candidate.actionId === requiredAction(command)
+			)
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		for (const heroId of [command.sourceHeroId, command.recipientHeroId]) {
+			const hero = state.heroes[heroId];
+			if (
+				!hero ||
+				hero.lifeState !== 'active' ||
+				hero.location !== 'summoning-gate' ||
+				hero.currentActivity !== null ||
+				hero.currentTravel !== null ||
+				hero.currentRoutine !== null ||
+				hero.assignment !== null
+			) {
+				throw new IllegalActionError(command.commandType, []);
+			}
+		}
+		return;
+	}
+	if (command.commandType === 'hero.share.synthesis.rumor') {
+		if (
+			state.schemaVersion !== 22 ||
+			state.status !== 'active' ||
+			!['scripted', 'model', 'habit', 'random'].includes(command.source.source) ||
+			command.source.timing !== null ||
+			!legalActionsForParsedState(state, command.actorId).some(
+				(candidate) => candidate.actionId === requiredAction(command)
+			)
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		return;
 	}
 	if (
 		command.commandType === 'master.configure.timing' ||
@@ -8380,7 +8567,464 @@ function skipUnfinishedPlan(hero: EngineRoutineState['heroes'][string], resolved
 	});
 }
 
+type SynthesizeHeroCommand = Extract<EngineCommand, { commandType: 'settlement.synthesize.hero' }>;
+type ShareSynthesisRumorCommand = Extract<
+	EngineCommand,
+	{ commandType: 'hero.share.synthesis.rumor' }
+>;
+
+function synthesisRelationshipDeltas(
+	hero: EngineGameStateV22['heroes'][string],
+	knowledge: 'participant' | 'witness' | 'absence'
+) {
+	const conscience = Math.round((hero.mind.personality.agreeableness - 50) / 20);
+	if (knowledge === 'participant') {
+		return {
+			trust: -4 - Math.max(0, conscience),
+			respect: 2,
+			fear: 7,
+			affection: 0,
+			resentment: 7 + Math.max(0, conscience),
+			debt: 12
+		};
+	}
+	if (knowledge === 'witness') {
+		return {
+			trust: -10 - Math.max(0, conscience),
+			respect: -4,
+			fear: 14,
+			affection: -2,
+			resentment: 12 + Math.max(0, conscience),
+			debt: 0
+		};
+	}
+	return {
+		trust: -3,
+		respect: -1,
+		fear: 3,
+		affection: 0,
+		resentment: 2,
+		debt: 0
+	};
+}
+
+function rumorRelationshipDeltas() {
+	return { trust: -6, respect: -2, fear: 8, affection: 0, resentment: 7, debt: 0 };
+}
+
+function withSynthesisRelationshipEvidence(
+	state: EngineGameStateV22,
+	society: SocietyStateV5,
+	heroId: string,
+	eventId: string,
+	observationId: string,
+	summary: string,
+	deltas: ReturnType<typeof synthesisRelationshipDeltas>
+): SocietyStateV5['relationships'][string] {
+	const relationshipId = deterministicUuid(`${heroId}:${state.master.masterId}:relationship`);
+	const previous = society.relationships[relationshipId];
+	if (!previous) throw new ReplayIntegrityError('Missing Master relationship', state.eventCursor);
+	return {
+		...previous,
+		dimensions: Object.fromEntries(
+			Object.entries(previous.dimensions).map(([key, value]) => [
+				key,
+				clampSocial(value + deltas[key as keyof typeof deltas])
+			])
+		) as typeof previous.dimensions,
+		updatedAt: state.simulatedAt,
+		lastSourceEventId: eventId,
+		evidence: [
+			...previous.evidence,
+			{ sourceEventId: eventId, observationId, summary, deltas }
+		].slice(-64)
+	};
+}
+
+function synthesisEssenceExperience(hero: EngineGameStateV22['heroes'][string]): number {
+	return 20 + hero.progression.stars * 15 + hero.progression.level * 5;
+}
+
+function resolveSynthesis(
+	state: EngineGameStateV22,
+	command: SynthesizeHeroCommand,
+	eventId: string,
+	eventSequence: number
+): {
+	readonly state: EngineGameStateV22;
+	readonly receipt: SynthesisReceipt;
+	readonly canceledScheduledEventIds: readonly string[];
+	readonly rewardDeltas: readonly RewardDelta[];
+} {
+	const source = state.heroes[command.sourceHeroId];
+	const recipient = state.heroes[command.recipientHeroId];
+	if (!source || !recipient) throw new IllegalActionError(command.commandType);
+	const receiptId = deterministicUuid(`${eventId}:synthesis-receipt`);
+	const essenceExperience = synthesisEssenceExperience(source);
+	const recipientExperience = recipient.progression.experience + essenceExperience;
+	const recipientProgression = HeroProgressionSchema.parse({
+		...recipient.progression,
+		experience: recipientExperience,
+		level: levelFor(recipientExperience, recipient.progression.stars)
+	});
+	const observations = { ...state.society.observations };
+	const beliefs = { ...state.society.beliefs };
+	const relationships = { ...state.society.relationships };
+	const consequences = Object.values(state.heroes)
+		.filter((hero) => hero.lifeState === 'active' && hero.heroId !== source.heroId)
+		.sort((left, right) => left.heroId.localeCompare(right.heroId))
+		.map((hero) => {
+			const knowledge =
+				hero.heroId === recipient.heroId
+					? ('participant' as const)
+					: command.visibility === 'open' &&
+						  hero.location === source.location &&
+						  hero.locationNodeId === source.locationNodeId &&
+						  heroCanHearCommunication(hero)
+						? ('witness' as const)
+						: ('absence' as const);
+			const observationId = deterministicUuid(`${receiptId}:${hero.heroId}:observation`);
+			const beliefId = deterministicUuid(`${observationId}:belief`);
+			const relationshipId = deterministicUuid(
+				`${hero.heroId}:${state.master.masterId}:relationship`
+			);
+			const direct = knowledge !== 'absence';
+			const summary = direct
+				? knowledge === 'participant'
+					? `I received ${source.heroId}'s bounded synthesis essence after the Master confirmed the irreversible act.`
+					: `I witnessed the Master synthesize ${source.heroId} into ${recipient.heroId}.`
+				: `${source.heroId} entered the summoning chamber and did not return; I do not know what happened inside.`;
+			observations[observationId] = {
+				observationId,
+				sourceEventId: eventId,
+				observerHeroId: hero.heroId,
+				observedAt: state.simulatedAt,
+				kind: direct ? 'synthesis-direct' : 'synthesis-absence',
+				synthesisReceiptId: receiptId,
+				summary,
+				subjectIds: direct
+					? [source.heroId, recipient.heroId, state.master.masterId]
+					: [source.heroId, state.master.masterId]
+			};
+			beliefs[beliefId] = {
+				beliefId,
+				holderHeroId: hero.heroId,
+				subjectId: source.heroId,
+				predicate: direct ? 'was-synthesized-into' : 'is-missing-after-gate-call',
+				object: direct
+					? { kind: 'entity', entityId: recipient.heroId }
+					: { kind: 'text', text: 'Did not return from a private summoning-gate audience.' },
+				confidence: direct ? 100 : 35,
+				status: 'held',
+				learnedAt: state.simulatedAt,
+				provenance: {
+					kind: direct ? 'observed' : 'inferred',
+					sourceEventId: eventId,
+					observationId,
+					learnedFromId: null,
+					chainDepth: 0
+				}
+			};
+			const relationshipDeltas = synthesisRelationshipDeltas(hero, knowledge);
+			relationships[relationshipId] = withSynthesisRelationshipEvidence(
+				state,
+				{ ...state.society, observations, beliefs, relationships },
+				hero.heroId,
+				eventId,
+				observationId,
+				summary,
+				relationshipDeltas
+			);
+			return {
+				heroId: hero.heroId,
+				knowledge,
+				observationId,
+				beliefId,
+				relationshipId,
+				confidence: direct ? 100 : 35,
+				relationshipDeltas
+			};
+		});
+	const receipt = SynthesisReceiptSchema.parse({
+		receiptVersion: 'synthesis-receipt-v1',
+		receiptId,
+		sourceEventId: eventId,
+		masterId: state.master.masterId,
+		sourceHeroId: source.heroId,
+		recipientHeroId: recipient.heroId,
+		visibility: command.visibility,
+		warningVersion: command.warningVersion,
+		confirmedIrreversible: command.confirmedIrreversible,
+		rationale: command.rationale,
+		committedAt: state.simulatedAt,
+		essenceExperience,
+		sourceProgression: source.progression,
+		recipientProgressionBefore: recipient.progression,
+		recipientProgressionAfter: recipientProgression,
+		socialConsequences: consequences
+	});
+	const canceledScheduledEventIds = [
+		source.currentActivity?.scheduledEventId,
+		source.currentTravel?.scheduledEventId,
+		source.currentRoutine?.scheduledEventId
+	].filter((id): id is string => Boolean(id));
+	const sourceHero = {
+		...source,
+		lifeState: 'synthesized' as const,
+		health: 0,
+		destination: null,
+		equipment: { mainHand: null },
+		currentActivity: null,
+		currentTravel: null,
+		assignment: null,
+		currentRoutine: null,
+		dailyPlan: skipUnfinishedPlan(source, state.simulatedAt)
+	};
+	const settlement = source.assignment
+		? clearBuildingAssignment(state.settlement, source.heroId, source.assignment.buildingId)
+		: state.settlement;
+	const items = Object.fromEntries(
+		Object.entries(state.items).map(([itemId, item]) => [
+			itemId,
+			item.ownerId === source.heroId
+				? { ...item, ownerId: state.master.masterId, equippedById: null }
+				: item
+		])
+	);
+	const nextSociety = SocietyStateV5Schema.parse({
+		...state.society,
+		observations,
+		beliefs,
+		relationships
+	});
+	const nextSynthesis = SynthesisStateSchema.parse({
+		...state.synthesis,
+		receipts: { ...state.synthesis.receipts, [receiptId]: receipt }
+	});
+	const nextState = EngineGameStateV22Schema.parse({
+		...state,
+		version: state.version + 1,
+		eventCursor: eventSequence,
+		heroes: {
+			...state.heroes,
+			[source.heroId]: sourceHero,
+			[recipient.heroId]: { ...recipient, progression: recipientProgression }
+		},
+		items,
+		settlement,
+		society: nextSociety,
+		synthesis: nextSynthesis
+	});
+	const rewardDeltas: RewardDelta[] = [
+		{
+			ownerId: recipient.heroId,
+			kind: 'experience',
+			key: 'hero',
+			before: recipient.progression.experience,
+			after: recipientProgression.experience,
+			delta: recipientProgression.experience - recipient.progression.experience
+		},
+		...(recipientProgression.level === recipient.progression.level
+			? []
+			: [
+					{
+						ownerId: recipient.heroId,
+						kind: 'level' as const,
+						key: 'hero',
+						before: recipient.progression.level,
+						after: recipientProgression.level,
+						delta: recipientProgression.level - recipient.progression.level
+					}
+				]),
+		...consequences.flatMap((consequence) =>
+			Object.entries(consequence.relationshipDeltas)
+				.filter(([, delta]) => delta !== 0)
+				.map(([key]) => {
+					const before =
+						state.society.relationships[consequence.relationshipId]!.dimensions[
+							key as keyof typeof consequence.relationshipDeltas
+						];
+					const after =
+						nextSociety.relationships[consequence.relationshipId]!.dimensions[
+							key as keyof typeof consequence.relationshipDeltas
+						];
+					return {
+						ownerId: consequence.heroId,
+						kind: 'relationship' as const,
+						key,
+						before,
+						after,
+						delta: after - before
+					};
+				})
+		)
+	];
+	return { state: nextState, receipt, canceledScheduledEventIds, rewardDeltas };
+}
+
+function resolveSynthesisRumor(
+	state: EngineGameStateV22,
+	command: ShareSynthesisRumorCommand,
+	eventId: string,
+	eventSequence: number
+): {
+	readonly state: EngineGameStateV22;
+	readonly rumor: SynthesisRumorRecord;
+	readonly rewardDeltas: readonly RewardDelta[];
+} {
+	const receipt = state.synthesis.receipts[command.receiptId];
+	const speaker = state.heroes[command.actorId];
+	const listener = state.heroes[command.targetHeroId];
+	if (!receipt || !speaker || !listener) throw new IllegalActionError(command.commandType);
+	const sourceConsequence = receipt.socialConsequences.find(
+		(consequence) => consequence.heroId === speaker.heroId && consequence.knowledge !== 'absence'
+	);
+	const priorRumor = Object.values(state.synthesis.rumors).find(
+		(candidate) =>
+			candidate.receiptId === receipt.receiptId && candidate.listenerHeroId === speaker.heroId
+	);
+	const originObservationId = sourceConsequence?.observationId ?? priorRumor?.originObservationId;
+	const originBeliefId = sourceConsequence?.beliefId ?? priorRumor?.beliefId;
+	const originBelief = originBeliefId ? state.society.beliefs[originBeliefId] : null;
+	if (!originObservationId || !originBelief) throw new IllegalActionError(command.commandType);
+	const chainDepth = originBelief.provenance.chainDepth + 1;
+	const confidence = Math.max(45, originBelief.confidence - 15);
+	const rumorId = deterministicUuid(`${eventId}:synthesis-rumor`);
+	const observationId = deterministicUuid(`${rumorId}:${listener.heroId}:observation`);
+	const beliefId = deterministicUuid(`${observationId}:belief`);
+	const relationshipId = deterministicUuid(
+		`${listener.heroId}:${state.master.masterId}:relationship`
+	);
+	const summary = `${speaker.heroId} told me the Master synthesized ${receipt.sourceHeroId} into ${receipt.recipientHeroId}.`;
+	const observations = {
+		...state.society.observations,
+		[observationId]: {
+			observationId,
+			sourceEventId: eventId,
+			observerHeroId: listener.heroId,
+			observedAt: state.simulatedAt,
+			kind: 'synthesis-rumor' as const,
+			synthesisReceiptId: receipt.receiptId,
+			summary,
+			subjectIds: [...new Set([receipt.sourceHeroId, receipt.recipientHeroId, speaker.heroId])]
+		}
+	};
+	const beliefs = {
+		...state.society.beliefs,
+		[beliefId]: {
+			beliefId,
+			holderHeroId: listener.heroId,
+			subjectId: receipt.sourceHeroId,
+			predicate: 'was-synthesized-into' as const,
+			object: { kind: 'entity' as const, entityId: receipt.recipientHeroId },
+			confidence,
+			status: 'held' as const,
+			learnedAt: state.simulatedAt,
+			provenance: {
+				kind: 'told' as const,
+				sourceEventId: eventId,
+				observationId,
+				learnedFromId: speaker.heroId,
+				chainDepth
+			}
+		}
+	};
+	const relationshipDeltas = rumorRelationshipDeltas();
+	const relationship = withSynthesisRelationshipEvidence(
+		state,
+		{ ...state.society, observations, beliefs },
+		listener.heroId,
+		eventId,
+		observationId,
+		summary,
+		relationshipDeltas
+	);
+	const society = SocietyStateV5Schema.parse({
+		...state.society,
+		observations,
+		beliefs,
+		relationships: { ...state.society.relationships, [relationshipId]: relationship }
+	});
+	const rumor = SynthesisRumorRecordSchema.parse({
+		rumorVersion: 'synthesis-rumor-v1',
+		rumorId,
+		receiptId: receipt.receiptId,
+		sourceEventId: eventId,
+		originObservationId,
+		speakerHeroId: speaker.heroId,
+		listenerHeroId: listener.heroId,
+		observationId,
+		beliefId,
+		relationshipId,
+		confidence,
+		chainDepth,
+		relationshipDeltas,
+		sharedAt: state.simulatedAt
+	});
+	const nextState = EngineGameStateV22Schema.parse({
+		...state,
+		version: state.version + 1,
+		eventCursor: eventSequence,
+		society,
+		synthesis: {
+			...state.synthesis,
+			rumors: { ...state.synthesis.rumors, [rumorId]: rumor }
+		}
+	});
+	const rewardDeltas = Object.entries(relationshipDeltas).map(([key]) => {
+		const before =
+			state.society.relationships[relationshipId]!.dimensions[
+				key as keyof typeof relationshipDeltas
+			];
+		const after = relationship.dimensions[key as keyof typeof relationshipDeltas];
+		return {
+			ownerId: listener.heroId,
+			kind: 'relationship' as const,
+			key,
+			before,
+			after,
+			delta: after - before
+		};
+	});
+	return { state: nextState, rumor, rewardDeltas };
+}
+
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
+	if (command.commandType === 'settlement.synthesize.hero') {
+		if (state.schemaVersion !== 22) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'hero.synthesized');
+		const resolved = resolveSynthesis(state, command, base.eventId, base.sequence);
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				receipt: resolved.receipt,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The Master irreversibly synthesized ${command.sourceHeroId} into ${command.recipientHeroId}; knowledge remained witness-bounded.`,
+					resolved.rewardDeltas
+				),
+				canceledScheduledEventIds: resolved.canceledScheduledEventIds
+			}
+		});
+	}
+	if (command.commandType === 'hero.share.synthesis.rumor') {
+		if (state.schemaVersion !== 22) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'social.synthesis.rumor.shared');
+		const resolved = resolveSynthesisRumor(state, command, base.eventId, base.sequence);
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				rumor: resolved.rumor,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`${command.actorId} told ${command.targetHeroId} what happened in the synthesis chamber; the claim retained its source and confidence.`,
+					resolved.rewardDeltas
+				)
+			}
+		});
+	}
 	if (command.commandType === 'story.apply.patch') {
 		if (state.schemaVersion !== 21) throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'story.patch.applied');
@@ -9774,13 +10418,98 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 18) return EngineGameStateV18Schema.parse(value);
 	if (state.schemaVersion === 19) return EngineGameStateV19Schema.parse(value);
 	if (state.schemaVersion === 20) return EngineGameStateV20Schema.parse(value);
-	return EngineGameStateV21Schema.parse(value);
+	if (state.schemaVersion === 21) return EngineGameStateV21Schema.parse(value);
+	return EngineGameStateV22Schema.parse(value);
 }
 
 function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
+	if (event.eventType === 'hero.synthesized') {
+		if (
+			state.schemaVersion !== 22 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt ||
+			event.seedCursor !== state.entropyCursor ||
+			event.source.source !== 'manual'
+		) {
+			throw new ReplayIntegrityError('Synthesis precondition failed', event.sequence);
+		}
+		const payload = SynthesisCommittedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
+			throw new ReplayIntegrityError('Synthesis version diverged', event.sequence);
+		}
+		const command = EngineCommandSchema.parse({
+			commandId: event.commandId,
+			runId: event.runId,
+			actorId: event.actorId,
+			expectedVersion: state.version,
+			correlationId: event.correlationId,
+			source: event.source,
+			commandType: 'settlement.synthesize.hero',
+			sourceHeroId: payload.receipt.sourceHeroId,
+			recipientHeroId: payload.receipt.recipientHeroId,
+			visibility: payload.receipt.visibility,
+			warningVersion: payload.receipt.warningVersion,
+			confirmedIrreversible: payload.receipt.confirmedIrreversible,
+			rationale: payload.receipt.rationale
+		}) as SynthesizeHeroCommand;
+		let resolved;
+		try {
+			resolved = resolveSynthesis(state, command, event.eventId, event.sequence);
+		} catch {
+			throw new ReplayIntegrityError('Synthesis could not be recomputed', event.sequence);
+		}
+		if (
+			hashCanonical(resolved.receipt) !== hashCanonical(payload.receipt) ||
+			hashCanonical(resolved.rewardDeltas) !== hashCanonical(payload.rewardDeltas) ||
+			hashCanonical(resolved.canceledScheduledEventIds) !==
+				hashCanonical(payload.canceledScheduledEventIds)
+		) {
+			throw new ReplayIntegrityError('Synthesis payload diverged', event.sequence);
+		}
+		return resolved.state;
+	}
+	if (event.eventType === 'social.synthesis.rumor.shared') {
+		if (
+			state.schemaVersion !== 22 ||
+			!event.actorId ||
+			event.gameTime !== state.simulatedAt ||
+			event.seedCursor !== state.entropyCursor ||
+			!['scripted', 'model', 'habit', 'random'].includes(event.source.source)
+		) {
+			throw new ReplayIntegrityError('Synthesis rumor precondition failed', event.sequence);
+		}
+		const payload = SynthesisRumorSharedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
+			throw new ReplayIntegrityError('Synthesis rumor version diverged', event.sequence);
+		}
+		const command = EngineCommandSchema.parse({
+			commandId: event.commandId,
+			runId: event.runId,
+			actorId: event.actorId,
+			expectedVersion: state.version,
+			correlationId: event.correlationId,
+			source: event.source,
+			commandType: 'hero.share.synthesis.rumor',
+			receiptId: payload.rumor.receiptId,
+			targetHeroId: payload.rumor.listenerHeroId
+		}) as ShareSynthesisRumorCommand;
+		let resolved;
+		try {
+			resolved = resolveSynthesisRumor(state, command, event.eventId, event.sequence);
+		} catch {
+			throw new ReplayIntegrityError('Synthesis rumor could not be recomputed', event.sequence);
+		}
+		if (
+			hashCanonical(resolved.rumor) !== hashCanonical(payload.rumor) ||
+			hashCanonical(resolved.rewardDeltas) !== hashCanonical(payload.rewardDeltas)
+		) {
+			throw new ReplayIntegrityError('Synthesis rumor payload diverged', event.sequence);
+		}
+		return resolved.state;
+	}
 	if (event.eventType === 'story.patch.applied') {
 		if (
 			state.schemaVersion !== 21 ||

@@ -51,6 +51,7 @@ function categoryFor(event: AuthoritativeEvent): JournalEntry['category'] {
 	if (event.eventType.includes('died') || event.eventType.includes('damaged')) return 'failure';
 	if (event.eventType === 'master.safety.stopped') return 'failure';
 	if (event.eventType.startsWith('master.')) return 'control';
+	if (event.eventType === 'hero.synthesized') return 'social';
 	if (event.eventType.startsWith('social.')) return 'social';
 	if (
 		event.eventType.startsWith('story.') ||
@@ -109,6 +110,17 @@ function participantIds(event: AuthoritativeEvent): string[] {
 				result.add((conversationTurn as Record<string, string>)[key]!);
 			}
 		}
+	}
+	const receipt = record(payload.receipt);
+	for (const key of ['masterId', 'sourceHeroId', 'recipientHeroId']) {
+		if (typeof receipt?.[key] === 'string') result.add(receipt[key]);
+	}
+	for (const consequence of arrayRecords(receipt?.socialConsequences)) {
+		if (typeof consequence.heroId === 'string') result.add(consequence.heroId);
+	}
+	const rumor = record(payload.rumor);
+	for (const key of ['speakerHeroId', 'listenerHeroId']) {
+		if (typeof rumor?.[key] === 'string') result.add(rumor[key]);
 	}
 	const mission = record(payload.mission) ?? record(record(payload.initialState)?.mission);
 	const attempt = record(mission?.attempt);

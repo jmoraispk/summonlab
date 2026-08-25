@@ -1150,7 +1150,7 @@ Estimated engineering effort: **2–3 weeks**.
 
 Estimated engineering effort: **2 weeks**.
 
-- `FIN-001` implement synthesis flow, confirmation, witness and rumor consequences;
+- `FIN-001` **complete** — implement synthesis flow, confirmation, witness and rumor consequences;
 - `FIN-002` implement The First Ember story beats and archive reveal;
 - `FIN-003` implement onboarding, objectives, pause, settings, and restart;
 - `FIN-004` add soundscape, premium effects, reduced-motion and accessibility pass;
@@ -1236,8 +1236,13 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. Phase 6 is complete through `MIS-015`; the next engineering
-slice is `FIN-001`: make synthesis irreversible, witnessed, socially consequential, and replayable.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-015`. `FIN-001` adds the
+versioned `engine-v22` synthesis transaction: a short explicit confirmation, Master-only legality,
+permanent source termination, bounded recipient experience with no identity transfer, private/open
+witness rules, relationship fallout, provenance-bound hero rumor relay, canonical database
+persistence, strict replay, and a playable `/synthesis` chamber. The next engineering slice is
+`FIN-002`: implement The First Ember story beats and archive reveal without widening the
+StoryDirector authority aperture.
 
 ## Accepted product decisions — 2026-08-23
 

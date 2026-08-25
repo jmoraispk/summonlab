@@ -21,6 +21,7 @@ import {
 	type EngineGameStateV18,
 	type EngineGameStateV19,
 	type EngineGameStateV20,
+	type EngineGameStateV22,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -45,7 +46,8 @@ type EngineKnowledgeState =
 	| EngineGameStateV17
 	| EngineGameStateV18
 	| EngineGameStateV19
-	| EngineGameStateV20;
+	| EngineGameStateV20
+	| EngineGameStateV22;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -81,7 +83,8 @@ function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: 
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
-		state.schemaVersion === 20
+		state.schemaVersion === 20 ||
+		state.schemaVersion === 22
 			? state.mission.attempt
 			: null;
 	const missionPosition =
@@ -149,13 +152,19 @@ function memoryCandidates(
 			const salience =
 				observation.kind === 'mission-death'
 					? 50
-					: observation.kind === 'mission-injury'
-						? 42
-						: observation.kind === 'first-ember-commitment'
-							? 36
-							: observation.kind === 'communication'
-								? 30
-								: 26;
+					: observation.kind === 'synthesis-direct'
+						? 48
+						: observation.kind === 'synthesis-absence'
+							? 40
+							: observation.kind === 'synthesis-rumor'
+								? 36
+								: observation.kind === 'mission-injury'
+									? 42
+									: observation.kind === 'first-ember-commitment'
+										? 36
+										: observation.kind === 'communication'
+											? 30
+											: 26;
 			const recency = Math.max(0, 40 - Math.floor(ageMinutes / 180));
 			const subjectRelevance = Math.min(
 				40,
@@ -307,7 +316,8 @@ function conversationDirectives(
 		| EngineGameStateV17
 		| EngineGameStateV18
 		| EngineGameStateV19
-		| EngineGameStateV20,
+		| EngineGameStateV20
+		| EngineGameStateV22,
 	heroId: string
 ): PlayerDirective[] {
 	return Object.values(state.society.conversationTurns)
@@ -358,7 +368,8 @@ function storedDirectives(
 		| EngineGameStateV17
 		| EngineGameStateV18
 		| EngineGameStateV19
-		| EngineGameStateV20,
+		| EngineGameStateV20
+		| EngineGameStateV22,
 	decisionKind: HeroDecisionKind
 ): PlayerDirective[] {
 	return Object.values(state.society.directives)
@@ -414,7 +425,8 @@ export function assembleHeroDecisionPacket(
 		snapshot.state.schemaVersion !== 17 &&
 		snapshot.state.schemaVersion !== 18 &&
 		snapshot.state.schemaVersion !== 19 &&
-		snapshot.state.schemaVersion !== 20
+		snapshot.state.schemaVersion !== 20 &&
+		snapshot.state.schemaVersion !== 22
 	) {
 		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
@@ -519,7 +531,8 @@ export function assembleHeroDecisionPacket(
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
 			state.schemaVersion === 19 ||
-			state.schemaVersion === 20) &&
+			state.schemaVersion === 20 ||
+			state.schemaVersion === 22) &&
 		decisionKind === 'mission-action' &&
 		state.mission.attempt?.party.heroIds.includes(input.heroId) &&
 		['deployed', 'resolving'].includes(state.mission.attempt.status)
@@ -536,7 +549,8 @@ export function assembleHeroDecisionPacket(
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
-		state.schemaVersion === 20
+		state.schemaVersion === 20 ||
+		state.schemaVersion === 22
 			? state.mission.binding
 			: null;
 	const packetId = deterministicUuid(
@@ -691,7 +705,8 @@ export function assembleHeroDecisionPacket(
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
 			state.schemaVersion === 19 ||
-			state.schemaVersion === 20
+			state.schemaVersion === 20 ||
+			state.schemaVersion === 22
 				? storedDirectives(state, input.decisionKind)
 				: []),
 			...(state.schemaVersion === 9 ||
@@ -704,7 +719,8 @@ export function assembleHeroDecisionPacket(
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
 			state.schemaVersion === 19 ||
-			state.schemaVersion === 20
+			state.schemaVersion === 20 ||
+			state.schemaVersion === 22
 				? conversationDirectives(state, input.heroId)
 				: [])
 		]),

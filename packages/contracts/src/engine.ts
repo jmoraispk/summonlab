@@ -29,7 +29,9 @@ import {
 	SocietyStateSchema,
 	SocietyStateV2Schema,
 	SocietyStateV3Schema,
-	SocietyStateV4Schema
+	SocietyStateV4Schema,
+	SocietyStateV5Schema,
+	RelationshipDimensionsSchema
 } from './social.js';
 import {
 	ContentVersionSchema,
@@ -2920,6 +2922,110 @@ const EngineGameStateV21BaseSchema = z
 	})
 	.strict();
 
+export const SynthesisVisibilitySchema = z.enum(['private', 'open']);
+export const SynthesisKnowledgeSchema = z.enum(['participant', 'witness', 'absence']);
+
+export const SynthesisSocialConsequenceSchema = z
+	.object({
+		heroId: EntityIdSchema,
+		knowledge: SynthesisKnowledgeSchema,
+		observationId: EntityIdSchema,
+		beliefId: EntityIdSchema,
+		relationshipId: EntityIdSchema,
+		confidence: z.number().int().min(0).max(100),
+		relationshipDeltas: RelationshipDimensionsSchema
+	})
+	.strict();
+
+export const SynthesisReceiptSchema = z
+	.object({
+		receiptVersion: z.literal('synthesis-receipt-v1'),
+		receiptId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		masterId: EntityIdSchema,
+		sourceHeroId: EntityIdSchema,
+		recipientHeroId: EntityIdSchema,
+		visibility: SynthesisVisibilitySchema,
+		warningVersion: z.literal('synthesis-warning-v1'),
+		confirmedIrreversible: z.literal(true),
+		rationale: z.string().min(1).max(240),
+		committedAt: IsoDateTimeSchema,
+		essenceExperience: z.number().int().positive().max(10_000),
+		sourceProgression: HeroProgressionSchema,
+		recipientProgressionBefore: HeroProgressionSchema,
+		recipientProgressionAfter: HeroProgressionSchema,
+		socialConsequences: z.array(SynthesisSocialConsequenceSchema).max(31)
+	})
+	.strict()
+	.superRefine((receipt, context) => {
+		if (receipt.sourceHeroId === receipt.recipientHeroId) {
+			context.addIssue({ code: 'custom', message: 'Synthesis source and recipient must differ' });
+		}
+		if (
+			new Set(receipt.socialConsequences.map((consequence) => consequence.heroId)).size !==
+			receipt.socialConsequences.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Synthesis social consequences must be unique' });
+		}
+	});
+
+export const SynthesisRumorRecordSchema = z
+	.object({
+		rumorVersion: z.literal('synthesis-rumor-v1'),
+		rumorId: EntityIdSchema,
+		receiptId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		originObservationId: EntityIdSchema,
+		speakerHeroId: EntityIdSchema,
+		listenerHeroId: EntityIdSchema,
+		observationId: EntityIdSchema,
+		beliefId: EntityIdSchema,
+		relationshipId: EntityIdSchema,
+		confidence: z.number().int().min(1).max(100),
+		chainDepth: z.number().int().min(1).max(8),
+		relationshipDeltas: RelationshipDimensionsSchema,
+		sharedAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const SynthesisStateSchema = z
+	.object({
+		contentVersion: z.literal('synthesis-v1'),
+		receipts: z.record(EntityIdSchema, SynthesisReceiptSchema),
+		rumors: z.record(EntityIdSchema, SynthesisRumorRecordSchema)
+	})
+	.strict()
+	.superRefine((synthesis, context) => {
+		for (const [receiptId, receipt] of Object.entries(synthesis.receipts)) {
+			if (receipt.receiptId !== receiptId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Synthesis receipt key does not match its id'
+				});
+			}
+		}
+		for (const [rumorId, rumor] of Object.entries(synthesis.rumors)) {
+			if (rumor.rumorId !== rumorId || !synthesis.receipts[rumor.receiptId]) {
+				context.addIssue({ code: 'custom', message: 'Synthesis rumor reference is inconsistent' });
+			}
+		}
+		if (
+			Object.keys(synthesis.receipts).length > 512 ||
+			Object.keys(synthesis.rumors).length > 4_096
+		) {
+			context.addIssue({ code: 'custom', message: 'Synthesis history limit exceeded' });
+		}
+	});
+
+const EngineGameStateV22BaseSchema = z
+	.object({
+		...EngineGameStateV21BaseSchema.shape,
+		schemaVersion: z.literal(22),
+		society: SocietyStateV5Schema,
+		synthesis: SynthesisStateSchema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -2934,7 +3040,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV18BaseSchema>
 	| z.infer<typeof EngineGameStateV19BaseSchema>
 	| z.infer<typeof EngineGameStateV20BaseSchema>
-	| z.infer<typeof EngineGameStateV21BaseSchema>;
+	| z.infer<typeof EngineGameStateV21BaseSchema>
+	| z.infer<typeof EngineGameStateV22BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -3197,6 +3304,7 @@ function validateCommunicationEngineState(
 	for (const belief of Object.values(state.society.beliefs)) {
 		if (belief.provenance.kind !== 'told') continue;
 		const observation = state.society.observations[belief.provenance.observationId];
+		if (observation?.kind === 'synthesis-rumor') continue;
 		const act =
 			observation?.kind === 'communication'
 				? state.society.communicativeActs[observation.communicationActId]
@@ -3292,7 +3400,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV18BaseSchema>
 	| z.infer<typeof EngineGameStateV19BaseSchema>
 	| z.infer<typeof EngineGameStateV20BaseSchema>
-	| z.infer<typeof EngineGameStateV21BaseSchema>;
+	| z.infer<typeof EngineGameStateV21BaseSchema>
+	| z.infer<typeof EngineGameStateV22BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -3498,6 +3607,93 @@ export const EngineGameStateV21Schema = EngineGameStateV21BaseSchema.superRefine
 		}
 	}
 );
+export const EngineGameStateV22Schema = EngineGameStateV22BaseSchema.superRefine(
+	(state, context) => {
+		validateMissionEngineState(state, context);
+		const activeAttempt = state.mission.attempt;
+		const canAwaitDecision =
+			state.status === 'active' &&
+			state.master.lifeState === 'alive' &&
+			activeAttempt !== null &&
+			['deployed', 'resolving'].includes(activeAttempt.status);
+		if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Only an active resolving mission may hold a Master decision window'
+			});
+		}
+		for (const patch of state.bandStory.appliedPatches) {
+			if (
+				patch.candidate.roleBindings.some((binding) => !state.heroes[binding.heroId]) ||
+				patch.appliedAt > state.simulatedAt
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Applied story patch cast and time must exist in the run'
+				});
+			}
+		}
+		for (const receipt of Object.values(state.synthesis.receipts)) {
+			const source = state.heroes[receipt.sourceHeroId];
+			const recipient = state.heroes[receipt.recipientHeroId];
+			if (
+				receipt.masterId !== state.master.masterId ||
+				!source ||
+				source.lifeState !== 'synthesized' ||
+				source.assignment !== null ||
+				source.currentActivity !== null ||
+				source.currentTravel !== null ||
+				source.currentRoutine !== null ||
+				!recipient ||
+				receipt.committedAt > state.simulatedAt
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Synthesis receipt diverged from roster state'
+				});
+			}
+			for (const consequence of receipt.socialConsequences) {
+				const observation = state.society.observations[consequence.observationId];
+				const belief = state.society.beliefs[consequence.beliefId];
+				const relationship = state.society.relationships[consequence.relationshipId];
+				if (
+					!observation ||
+					!('synthesisReceiptId' in observation) ||
+					observation.synthesisReceiptId !== receipt.receiptId ||
+					observation.observerHeroId !== consequence.heroId ||
+					!belief ||
+					belief.holderHeroId !== consequence.heroId ||
+					belief.provenance.observationId !== consequence.observationId ||
+					!relationship ||
+					relationship.fromHeroId !== consequence.heroId ||
+					relationship.toEntityId !== state.master.masterId
+				) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Synthesis social consequence is inconsistent'
+					});
+				}
+			}
+		}
+		for (const rumor of Object.values(state.synthesis.rumors)) {
+			const observation = state.society.observations[rumor.observationId];
+			const belief = state.society.beliefs[rumor.beliefId];
+			if (
+				!state.heroes[rumor.speakerHeroId] ||
+				!state.heroes[rumor.listenerHeroId] ||
+				!observation ||
+				observation.kind !== 'synthesis-rumor' ||
+				observation.synthesisReceiptId !== rumor.receiptId ||
+				!belief ||
+				belief.provenance.kind !== 'told' ||
+				belief.provenance.learnedFromId !== rumor.speakerHeroId ||
+				belief.provenance.observationId !== rumor.observationId
+			) {
+				context.addIssue({ code: 'custom', message: 'Synthesis rumor chain is inconsistent' });
+			}
+		}
+	}
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -3520,7 +3716,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV18Schema,
 	EngineGameStateV19Schema,
 	EngineGameStateV20Schema,
-	EngineGameStateV21Schema
+	EngineGameStateV21Schema,
+	EngineGameStateV22Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -3811,6 +4008,44 @@ export const ApplyStoryPatchCommandSchema = EngineCommandBaseSchema.extend({
 	candidate: StoryPatchCandidateSchema
 }).strict();
 
+export const SynthesizeHeroCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('settlement.synthesize.hero'),
+	sourceHeroId: EntityIdSchema,
+	recipientHeroId: EntityIdSchema,
+	visibility: SynthesisVisibilitySchema,
+	warningVersion: z.literal('synthesis-warning-v1'),
+	confirmedIrreversible: z.literal(true),
+	rationale: z.string().min(1).max(240)
+}).strict();
+
+export const ShareSynthesisRumorCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.share.synthesis.rumor'),
+	receiptId: EntityIdSchema,
+	targetHeroId: EntityIdSchema
+}).strict();
+
+export const SynthesisRequestSchema = z.discriminatedUnion('action', [
+	z
+		.object({
+			action: z.literal('synthesize'),
+			sourceHeroId: EntityIdSchema,
+			recipientHeroId: EntityIdSchema,
+			visibility: SynthesisVisibilitySchema,
+			warningVersion: z.literal('synthesis-warning-v1'),
+			confirmedIrreversible: z.literal(true),
+			rationale: z.string().min(1).max(240)
+		})
+		.strict(),
+	z
+		.object({
+			action: z.literal('share-rumor'),
+			receiptId: EntityIdSchema,
+			speakerHeroId: EntityIdSchema,
+			targetHeroId: EntityIdSchema
+		})
+		.strict()
+]);
+
 export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
@@ -3845,7 +4080,9 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	OpenMissionExtractionCommandSchema,
 	ExtractMissionCommandSchema,
 	RetreatMissionCommandSchema,
-	ApplyStoryPatchCommandSchema
+	ApplyStoryPatchCommandSchema,
+	SynthesizeHeroCommandSchema,
+	ShareSynthesisRumorCommandSchema
 ]);
 
 export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
@@ -4087,6 +4324,7 @@ export type EngineGameStateV18 = z.infer<typeof EngineGameStateV18Schema>;
 export type EngineGameStateV19 = z.infer<typeof EngineGameStateV19Schema>;
 export type EngineGameStateV20 = z.infer<typeof EngineGameStateV20Schema>;
 export type EngineGameStateV21 = z.infer<typeof EngineGameStateV21Schema>;
+export type EngineGameStateV22 = z.infer<typeof EngineGameStateV22Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -4115,6 +4353,11 @@ export type MasterFallbackConfiguration = z.infer<typeof MasterFallbackConfigura
 export type MasterFallbackSelection = z.infer<typeof MasterFallbackSelectionSchema>;
 export type MasterFallbackPriority = z.infer<typeof MasterFallbackPrioritySchema>;
 export type MasterFallbackSafetyStops = z.infer<typeof MasterFallbackSafetyStopsSchema>;
+export type SynthesisReceipt = z.infer<typeof SynthesisReceiptSchema>;
+export type SynthesisRumorRecord = z.infer<typeof SynthesisRumorRecordSchema>;
+export type SynthesisState = z.infer<typeof SynthesisStateSchema>;
+export type SynthesisVisibility = z.infer<typeof SynthesisVisibilitySchema>;
+export type SynthesisRequest = z.infer<typeof SynthesisRequestSchema>;
 export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type MissionRunStateV2 = z.infer<typeof MissionRunStateV2Schema>;
 export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;

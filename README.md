@@ -107,6 +107,20 @@ Synthesis permanently consumes one hero to strengthen another. It is not a conse
 
 A hero cannot permanently leave the roster on their own. Their terminal outcomes are death or synthesis.
 
+### Synthesis checkpoint
+
+`/synthesis` opens a database-backed four-hero chamber. The Master chooses a source, recipient, and
+private or open visibility, then crosses a short explicit warning. The engine atomically ends the
+source hero, grants bounded essence without transferring personality or memories, records who knew
+or merely inferred the absence, applies relationship consequences, and permits a knowing hero to
+relay one provenance-bound rumor. Reload and strict replay preserve the exact receipt and social
+chain.
+
+![Synthesis receipt and social aftermath](docs/evidence/phase-7-synthesis.png)
+
+Run `pnpm validate:synthesis` to regenerate and compare the machine-readable proof at
+`docs/evidence/phase-7-synthesis.json`.
+
 ## Clean-slate people
 
 The first generator focuses on humans. Physiology stays stable unless a major promotion or evolution changes it. Temperament, values, drives, social style, habits, capabilities, loyalties, and beliefs can change through lived experience.

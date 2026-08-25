@@ -105,3 +105,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
   commits once, enters the player journal, and strictly replays while 11 adversarial candidates are
   blocked without world-law, objective, arena, reward, anchor, or finale drift.
+- `phase-7-synthesis.png` / `.json` — database-backed synthesis chamber and deterministic report
+  proving a short explicit warning, irreversible source termination, bounded recipient growth,
+  identity non-transfer, private/open knowledge boundaries, social fallout, sourced rumor relay,
+  seven blocked illegal/adversarial cases, and exact `engine-v22` replay.

@@ -132,7 +132,10 @@ export const RetrievedMemorySchema = z
 			'first-ember-commitment',
 			'mission-injury',
 			'mission-death',
-			'communication'
+			'communication',
+			'synthesis-direct',
+			'synthesis-absence',
+			'synthesis-rumor'
 		]),
 		occurredAt: IsoDateTimeSchema,
 		summary: z.string().min(1).max(300),
