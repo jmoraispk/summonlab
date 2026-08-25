@@ -1122,7 +1122,12 @@ Estimated engineering effort: **2–3 weeks**.
   open decision windows at deployment and after active rounds; use a clearly provisional
   hash-bound hold-first baseline until MIS-013; expose takeover/pause and the live countdown in the
   database-backed mission UI; and export a checked four-mode deterministic report;
-- `MIS-013` implement directed and seeded-random fallbacks with pause and safety stops;
+- `MIS-013` complete: add opt-in `engine-v20` with immutable per-window fallback snapshots;
+  deterministic directed scoring plus seeded tie-breaks; reproducible seeded-random selection;
+  hash-bound packet, legal-action, direction, classification, score, source, and result evidence;
+  explicit unsupported-intent reporting; manual pause/takeover; configurable health, ambiguity,
+  irreversible-action, and fallback-streak stops that force a replayable Wait boundary; expose the
+  doctrine editor and evidence in the database-backed mission UI; and export a checked report;
 - `MIS-014` add the player journal with reward, experience, level, and party-progress deltas;
 - `MIS-015` validate one runtime `StoryPatch` against the floors 1–5 envelope.
 
@@ -1220,8 +1225,9 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. Phase 6 is complete through `MIS-012`; the next engineering
-slice is `MIS-013`: directed and seeded-random fallback selection with explicit safety stops.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-013`; the next engineering
+slice is `MIS-014`: a filterable player journal with reward, experience, level, and party-progress
+deltas.
 
 ## Accepted product decisions — 2026-08-23
 

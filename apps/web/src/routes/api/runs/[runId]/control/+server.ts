@@ -24,32 +24,51 @@ const manualSource: ActionSource = {
 export const PATCH: RequestHandler = async ({ params, request }) => {
 	const parsed = MasterControlRequestSchema.safeParse(await request.json().catch(() => null));
 	if (!parsed.success) {
-		return json(
-			{ message: 'Choose Wait, Countdown, Step, or Continuous timing.' },
-			{ status: 400 }
-		);
+		return json({ message: 'Choose a valid timing or fallback configuration.' }, { status: 400 });
 	}
 	const config = getConfig();
 	try {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 19) {
+		if (snapshot.state.schemaVersion !== 19 && snapshot.state.schemaVersion !== 20) {
 			return json({ message: 'This run predates authoritative Master timing.' }, { status: 409 });
 		}
+		if (parsed.data.action === 'fallback' && snapshot.state.schemaVersion !== 20) {
+			return json({ message: 'This run predates authoritative fallback policy.' }, { status: 409 });
+		}
 		const commandId = randomUUID();
-		const committed = await commitEngineCommand(config.databaseUrl, {
+		const base = {
 			commandId,
 			runId: params.runId,
 			actorId: snapshot.state.master.masterId,
 			expectedVersion: snapshot.state.version,
 			correlationId: commandId,
 			source: manualSource,
-			commandType: 'master.configure.timing',
-			timing: parsed.data.timing,
-			countdownSeconds: parsed.data.countdownSeconds,
 			observedAt: new Date().toISOString()
-		});
-		if (committed.snapshot.state.schemaVersion !== 19) {
+		};
+		const committed = await commitEngineCommand(
+			config.databaseUrl,
+			parsed.data.action === 'timing'
+				? {
+						...base,
+						commandType: 'master.configure.timing',
+						timing: parsed.data.timing,
+						countdownSeconds: parsed.data.countdownSeconds
+					}
+				: {
+						...base,
+						commandType: 'master.configure.fallback',
+						policy: parsed.data.policy,
+						directionText: parsed.data.directionText,
+						priorities: parsed.data.priorities,
+						protectedHeroId: parsed.data.protectedHeroId,
+						safetyStops: parsed.data.safetyStops
+					}
+		);
+		if (
+			committed.snapshot.state.schemaVersion !== 19 &&
+			committed.snapshot.state.schemaVersion !== 20
+		) {
 			throw new Error('Master timing commit changed the engine schema.');
 		}
 		return json({

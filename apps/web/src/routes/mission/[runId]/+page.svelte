@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import type { DecisionTiming, MissionLifecycleRequest } from '@summonlab/contracts';
+	import type {
+		DecisionTiming,
+		FallbackPolicy,
+		MasterFallbackPriority,
+		MissionLifecycleRequest
+	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 
@@ -14,18 +19,46 @@
 	let selectedMasterActionId = $state('');
 	let observedNow = $state(Date.now());
 	let lastAutoDecisionId = $state('');
+	let fallbackInitialized = $state(false);
+	let fallbackPolicy = $state<FallbackPolicy>('directed');
+	let fallbackDirection = $state('Advance the objective while protecting the company.');
+	let fallbackPriorities = $state<MasterFallbackPriority[]>([
+		'focus-objective',
+		'protect-self',
+		'protect-party'
+	]);
+	let stopBeforeIrreversible = $state(true);
+	let stopWhenUnclassified = $state(true);
+	let healthStopEnabled = $state(true);
+	let healthStopThreshold = $state(35);
+	let fallbackLimitEnabled = $state(true);
+	let fallbackLimit = $state(8);
+	const fallbackPriorityOptions: Array<{ id: MasterFallbackPriority; label: string }> = [
+		{ id: 'focus-objective', label: 'Focus objective' },
+		{ id: 'protect-self', label: 'Protect Master' },
+		{ id: 'protect-party', label: 'Protect party' },
+		{ id: 'seek-secrets', label: 'Seek secrets' },
+		{ id: 'conserve-resources', label: 'Conserve resources' }
+	];
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
-	const isMasterTiming = $derived(engineState.schemaVersion === 19);
+	const isMasterFallback = $derived(engineState.schemaVersion === 20);
+	const isMasterTiming = $derived(engineState.schemaVersion === 19 || isMasterFallback);
 	const isAttemptAftermath = $derived(engineState.schemaVersion === 18 || isMasterTiming);
 	const isMasterRisk = $derived(engineState.schemaVersion === 17 || isAttemptAftermath);
 	const isAftermath = $derived(
 		engineState.schemaVersion === 16 || engineState.schemaVersion === 17 || isAttemptAftermath
 	);
 	const masterControl = $derived(
-		engineState.schemaVersion === 19 ? engineState.masterControl : null
+		engineState.schemaVersion === 19 || engineState.schemaVersion === 20
+			? engineState.masterControl
+			: null
 	);
+	const fallbackMasterControl = $derived(
+		engineState.schemaVersion === 20 ? engineState.masterControl : null
+	);
+	const fallbackControl = $derived(fallbackMasterControl?.fallback ?? null);
 	const masterDecision = $derived(masterControl?.activeDecision ?? null);
 	const countdownRemaining = $derived(
 		masterDecision?.expiresAt
@@ -42,7 +75,8 @@
 			engineState.schemaVersion === 16 ||
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
-			engineState.schemaVersion === 19
+			engineState.schemaVersion === 19 ||
+			engineState.schemaVersion === 20
 			? engineState.mission
 			: null
 	);
@@ -56,7 +90,8 @@
 			engineState.schemaVersion === 16 ||
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
-			engineState.schemaVersion === 19
+			engineState.schemaVersion === 19 ||
+			engineState.schemaVersion === 20
 			? (engineState.mission.attempt?.turnState ?? null)
 			: null
 	);
@@ -64,7 +99,8 @@
 		engineState.schemaVersion === 16 ||
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
-			engineState.schemaVersion === 19
+			engineState.schemaVersion === 19 ||
+			engineState.schemaVersion === 20
 			? engineState.mission.aftermath
 			: null
 	);
@@ -93,6 +129,8 @@
 				(check) =>
 					check.eventType.startsWith('mission.') ||
 					check.eventType === 'master.timing.changed' ||
+					check.eventType === 'master.fallback.changed' ||
+					check.eventType === 'master.safety.stopped' ||
 					check.eventType === 'master.decision.opened'
 			)
 			.slice()
@@ -114,6 +152,20 @@
 			(action) => action.actionId === 'mission.retreat'
 		)
 	);
+
+	$effect(() => {
+		if (!isMasterFallback || fallbackInitialized || !fallbackControl) return;
+		fallbackPolicy = fallbackControl.policy;
+		fallbackDirection = fallbackControl.directionText;
+		fallbackPriorities = [...fallbackControl.priorities];
+		stopBeforeIrreversible = fallbackControl.safetyStops.beforeIrreversibleAction;
+		stopWhenUnclassified = fallbackControl.safetyStops.whenUnclassified;
+		healthStopEnabled = fallbackControl.safetyStops.masterHealthThreshold !== null;
+		healthStopThreshold = fallbackControl.safetyStops.masterHealthThreshold ?? 35;
+		fallbackLimitEnabled = fallbackControl.safetyStops.maximumConsecutiveFallbacks !== null;
+		fallbackLimit = fallbackControl.safetyStops.maximumConsecutiveFallbacks ?? 8;
+		fallbackInitialized = true;
+	});
 
 	$effect(() => {
 		if (selectionInitialized || !hero) return;
@@ -209,7 +261,11 @@
 			const response = await fetch(`/api/runs/${engineState.runId}/control`, {
 				method: 'PATCH',
 				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ timing, countdownSeconds: masterControl?.countdownSeconds ?? 5 })
+				body: JSON.stringify({
+					action: 'timing',
+					timing,
+					countdownSeconds: masterControl?.countdownSeconds ?? 5
+				})
 			});
 			const body = (await response.json()) as { message?: string };
 			if (!response.ok) throw new Error(body.message ?? 'The timing change was rejected.');
@@ -221,6 +277,46 @@
 			await invalidateAll();
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The timing change failed.';
+		} finally {
+			busy = false;
+		}
+	}
+
+	function toggleFallbackPriority(priority: MasterFallbackPriority) {
+		fallbackPriorities = fallbackPriorities.includes(priority)
+			? fallbackPriorities.filter((candidate) => candidate !== priority)
+			: [...fallbackPriorities, priority];
+	}
+
+	async function configureFallback() {
+		busy = true;
+		resultMessage = '';
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/control`, {
+				method: 'PATCH',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					action: 'fallback',
+					policy: fallbackPolicy,
+					directionText: fallbackDirection,
+					priorities: fallbackPriorities,
+					protectedHeroId: null,
+					safetyStops: {
+						beforeIrreversibleAction: stopBeforeIrreversible,
+						masterHealthThreshold: healthStopEnabled ? healthStopThreshold : null,
+						whenUnclassified: stopWhenUnclassified,
+						maximumConsecutiveFallbacks: fallbackLimitEnabled ? fallbackLimit : null
+					}
+				})
+			});
+			const body = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(body.message ?? 'The fallback change was rejected.');
+			lastAutoDecisionId = '';
+			resultMessage = `${fallbackPolicy === 'directed' ? 'Directed' : 'Seeded-random'} fallback is now authoritative.`;
+			await invalidateAll();
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The fallback change failed.';
 		} finally {
 			busy = false;
 		}
@@ -249,7 +345,9 @@
 	async function resolveFallback(decisionId: string) {
 		const resolved = await act(
 			{ action: 'resolve-fallback' },
-			'The timing baseline resolved one authoritative Master decision.'
+			isMasterFallback
+				? 'The bound doctrine resolved or safely paused one authoritative Master decision.'
+				: 'The timing baseline resolved one authoritative Master decision.'
 		);
 		if (!resolved && masterDecision?.decisionId === decisionId) lastAutoDecisionId = '';
 	}
@@ -293,7 +391,8 @@
 			engineState.schemaVersion !== 16 &&
 			engineState.schemaVersion !== 17 &&
 			engineState.schemaVersion !== 18 &&
-			engineState.schemaVersion !== 19
+			engineState.schemaVersion !== 19 &&
+			engineState.schemaVersion !== 20
 		)
 			return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
@@ -329,33 +428,39 @@
 			<p class="eyebrow">
 				{isPortal
 					? 'Portal World / extraction clock'
-					: isMasterTiming
-						? 'Tower Floor 01 / four command tempos'
-						: isMasterRisk
-							? 'Tower Floor 03 / the Master is mortal'
-							: isAftermath
-								? 'Tower Floor 03 / persistent consequences'
-								: 'Tower Floor 01 / authoritative threshold'}
+					: isMasterFallback
+						? 'Tower Floor 01 / autonomous doctrine'
+						: isMasterTiming
+							? 'Tower Floor 01 / four command tempos'
+							: isMasterRisk
+								? 'Tower Floor 03 / the Master is mortal'
+								: isAftermath
+									? 'Tower Floor 03 / persistent consequences'
+									: 'Tower Floor 01 / authoritative threshold'}
 			</p>
 			<h1>
 				{isPortal
 					? 'The Closing'
-					: isMasterTiming
-						? 'The Living'
-						: isMasterRisk
-							? 'The Last'
-							: isAftermath
-								? 'The Red'
-								: 'The Unlit'}<br /><em
+					: isMasterFallback
+						? 'The Chosen'
+						: isMasterTiming
+							? 'The Living'
+							: isMasterRisk
+								? 'The Last'
+								: isAftermath
+									? 'The Red'
+									: 'The Unlit'}<br /><em
 					>{isPortal
 						? 'Scar'
-						: isMasterTiming
-							? 'Tempo'
-							: isMasterRisk
-								? 'Command'
-								: isAftermath
-									? 'Tithe'
-									: 'Muster'}</em
+						: isMasterFallback
+							? 'Intent'
+							: isMasterTiming
+								? 'Tempo'
+								: isMasterRisk
+									? 'Command'
+									: isAftermath
+										? 'Tithe'
+										: 'Muster'}</em
 				>
 			</h1>
 		</div>
@@ -525,6 +630,95 @@
 							>
 						{/each}
 					</div>
+					{#if isMasterFallback}
+						<div class="fallback-console" data-testid="fallback-console">
+							<div class="fallback-console__heading">
+								<div>
+									<span>Unattended doctrine</span>
+									<strong>{fallbackControl?.policy ?? 'directed'}</strong>
+								</div>
+								<code>streak {fallbackMasterControl?.consecutiveFallbacks ?? 0}</code>
+							</div>
+							<div class="policy-modes" aria-label="Fallback policy">
+								<button
+									type="button"
+									class:active={fallbackPolicy === 'directed'}
+									onclick={() => (fallbackPolicy = 'directed')}
+									data-testid="fallback-policy-directed">Directed</button
+								>
+								<button
+									type="button"
+									class:active={fallbackPolicy === 'random'}
+									onclick={() => (fallbackPolicy = 'random')}
+									data-testid="fallback-policy-random">Seeded random</button
+								>
+							</div>
+							<label class="direction-field">
+								<span>Direction captured into every new window</span>
+								<textarea bind:value={fallbackDirection} maxlength="600" rows="3"></textarea>
+							</label>
+							<div class="priority-grid" aria-label="Directed priorities">
+								{#each fallbackPriorityOptions as priority (priority.id)}
+									<button
+										type="button"
+										class:active={fallbackPriorities.includes(priority.id)}
+										onclick={() => toggleFallbackPriority(priority.id)}>{priority.label}</button
+									>
+								{/each}
+							</div>
+							<div class="safety-grid">
+								<label
+									><input type="checkbox" bind:checked={stopBeforeIrreversible} /> Pause before irreversible</label
+								>
+								<label
+									><input type="checkbox" bind:checked={stopWhenUnclassified} /> Pause when direction
+									is unclear</label
+								>
+								<label class="number-safety">
+									<input
+										type="checkbox"
+										bind:checked={healthStopEnabled}
+										data-testid="health-stop-enabled"
+									/>
+									Health ≤
+									<input
+										type="number"
+										min="1"
+										max="100"
+										bind:value={healthStopThreshold}
+										disabled={!healthStopEnabled}
+										data-testid="health-stop-threshold"
+									/>
+								</label>
+								<label class="number-safety">
+									<input type="checkbox" bind:checked={fallbackLimitEnabled} /> Fallback streak
+									<input
+										type="number"
+										min="1"
+										max="48"
+										bind:value={fallbackLimit}
+										disabled={!fallbackLimitEnabled}
+									/>
+								</label>
+							</div>
+							<button
+								type="button"
+								class="save-doctrine"
+								disabled={busy || !fallbackDirection.trim()}
+								onclick={configureFallback}
+								data-testid="save-fallback">Bind doctrine</button
+							>
+							{#if fallbackMasterControl?.lastResolution?.fallbackSelection}
+								{@const selection = fallbackMasterControl.lastResolution.fallbackSelection}
+								<div class="fallback-evidence" data-testid="fallback-evidence">
+									<span>{selection.policyId} · {selection.classification}</span>
+									<strong>{selection.selectedActionId}</strong>
+									<p>{selection.explanation}</p>
+									<code>{selection.policyResultHash.slice(0, 12)}</code>
+								</div>
+							{/if}
+						</div>
+					{/if}
 					<div class="control-status">
 						<i class:live={Boolean(masterDecision)}></i>
 						<p>
@@ -532,10 +726,10 @@
 								? masterDecision.timing === 'wait'
 									? 'Paused at a legal boundary. Select and commit the Master’s action.'
 									: masterDecision.timing === 'countdown'
-										? 'You may take over until the server deadline; then the baseline holds.'
+										? `You may take over until the server deadline; then ${isMasterFallback ? 'the bound doctrine' : 'the baseline'} acts.`
 										: masterDecision.timing === 'step'
-											? 'One baseline action is queued; the next decision returns to Wait.'
-											: 'Baseline actions continue until you press Pause / Wait.'
+											? `One ${isMasterFallback ? 'doctrine' : 'baseline'} action is queued; the next decision returns to Wait.`
+											: `${isMasterFallback ? 'Doctrine' : 'Baseline'} actions continue until you press Pause / Wait.`
 								: phase === 'deployed' || phase === 'resolving'
 									? 'The mission needs a decision window before another round can resolve.'
 									: 'Timing is saved now and will bind when the party deploys.'}
@@ -549,6 +743,9 @@
 							Last: {masterControl.lastResolution.outcome} · {masterControl.lastResolution
 								.expiryOutcome}
 							· {masterControl.lastResolution.source.source}
+							{#if fallbackMasterControl?.lastResolution?.fallbackSelection?.safetyStopReason}
+								· safety {fallbackMasterControl.lastResolution.fallbackSelection.safetyStopReason}
+							{/if}
 						</small>
 					{/if}
 				</div>
@@ -966,24 +1163,28 @@
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
-				: isMasterTiming
-					? 'MIS-012 · authoritative Master timing'
-					: isMasterRisk
-						? 'MIS-009 · controllable Master + atomic game over'
-						: isAftermath
-							? 'MIS-008 · persistent mission aftermath'
-							: 'MIS-004 · autonomous monster duties'}</span
+				: isMasterFallback
+					? 'MIS-013 · directed + seeded-random fallback'
+					: isMasterTiming
+						? 'MIS-012 · authoritative Master timing'
+						: isMasterRisk
+							? 'MIS-009 · controllable Master + atomic game over'
+							: isAftermath
+								? 'MIS-008 · persistent mission aftermath'
+								: 'MIS-004 · autonomous monster duties'}</span
 		>
 		<p>
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
-				: isMasterTiming
-					? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
-					: isMasterRisk
-						? 'Next: selectable control modes and per-turn fallback timing.'
-						: isAftermath
-							? 'Next: controllable Master actions and atomic game-over inside missions.'
-							: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+				: isMasterFallback
+					? 'Next: journal filters for policy, timer, fallback, direction, and rewards.'
+					: isMasterTiming
+						? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
+						: isMasterRisk
+							? 'Next: selectable control modes and per-turn fallback timing.'
+							: isAftermath
+								? 'Next: controllable Master actions and atomic game-over inside missions.'
+								: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
 		</p>
 	</footer>
 </main>
@@ -1491,6 +1692,143 @@
 		background: #173334;
 		color: #86e2dc;
 		box-shadow: inset 0 -2px #55cec8;
+	}
+	.fallback-console {
+		padding: 1rem;
+		border-bottom: 1px solid #293437;
+		background:
+			linear-gradient(110deg, rgba(217, 165, 84, 0.07), transparent 42%), rgba(6, 10, 11, 0.72);
+	}
+	.fallback-console__heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		margin-bottom: 0.75rem;
+	}
+	.fallback-console__heading > div {
+		display: grid;
+		gap: 0.2rem;
+	}
+	.fallback-console__heading span,
+	.direction-field span,
+	.fallback-evidence span {
+		color: #798484;
+		font-size: 0.5rem;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+	}
+	.fallback-console__heading strong {
+		color: #e0ae59;
+		font:
+			1.05rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.fallback-console__heading code {
+		color: #778383;
+		font-size: 0.56rem;
+		text-transform: uppercase;
+	}
+	.policy-modes,
+	.priority-grid {
+		display: grid;
+		gap: 0.35rem;
+	}
+	.policy-modes {
+		grid-template-columns: 1fr 1fr;
+		margin-bottom: 0.65rem;
+	}
+	.priority-grid {
+		grid-template-columns: repeat(3, 1fr);
+		margin: 0.65rem 0;
+	}
+	.policy-modes button,
+	.priority-grid button {
+		border: 1px solid #343d3f;
+		background: #101517;
+		color: #768181;
+		padding: 0.55rem 0.4rem;
+		font-size: 0.5rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.policy-modes button.active,
+	.priority-grid button.active {
+		border-color: #b98a41;
+		background: #302512;
+		color: #ebbc6b;
+	}
+	.direction-field {
+		display: grid;
+		gap: 0.4rem;
+	}
+	.direction-field textarea {
+		width: 100%;
+		resize: vertical;
+		border: 1px solid #343d3f;
+		background: #0b1011;
+		color: #d9d1c2;
+		padding: 0.65rem;
+		font:
+			0.68rem/1.45 Inter,
+			sans-serif;
+	}
+	.safety-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.45rem 0.8rem;
+		padding: 0.7rem;
+		border: 1px solid #2e3738;
+		color: #899391;
+		font-size: 0.56rem;
+	}
+	.safety-grid label {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+	.safety-grid input[type='number'] {
+		width: 3.6rem;
+		border: 1px solid #414a4b;
+		background: #0b1011;
+		color: #e2d8c6;
+		padding: 0.25rem;
+	}
+	.save-doctrine {
+		width: 100%;
+		margin-top: 0.65rem;
+		border: 1px solid #bc8d43;
+		background: #2f2412;
+		color: #eabc6c;
+		padding: 0.65rem;
+		font-size: 0.55rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.fallback-evidence {
+		margin-top: 0.65rem;
+		padding: 0.65rem;
+		border-left: 2px solid #52c9c3;
+		background: #0e1819;
+		display: grid;
+		gap: 0.25rem;
+	}
+	.fallback-evidence strong {
+		color: #80ddd7;
+		font-size: 0.66rem;
+	}
+	.fallback-evidence p {
+		margin: 0;
+		color: #8f9b98;
+		font-size: 0.58rem;
+		line-height: 1.4;
+	}
+	.fallback-evidence code {
+		color: #d7a956;
+		font-size: 0.52rem;
 	}
 	.control-status {
 		display: grid;

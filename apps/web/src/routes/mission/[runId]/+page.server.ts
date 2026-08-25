@@ -23,12 +23,14 @@ export const load: PageServerLoad = async ({ params }) => {
 		report.snapshot.state.schemaVersion !== 16 &&
 		report.snapshot.state.schemaVersion !== 17 &&
 		report.snapshot.state.schemaVersion !== 18 &&
-		report.snapshot.state.schemaVersion !== 19
+		report.snapshot.state.schemaVersion !== 19 &&
+		report.snapshot.state.schemaVersion !== 20
 	) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const isPortal = report.snapshot.state.schemaVersion === 15;
-	const isMasterTiming = report.snapshot.state.schemaVersion === 19;
+	const isMasterTiming =
+		report.snapshot.state.schemaVersion === 19 || report.snapshot.state.schemaVersion === 20;
 	const isAttemptAftermath = report.snapshot.state.schemaVersion === 18 || isMasterTiming;
 	const isAftermath = report.snapshot.state.schemaVersion === 16 || isAttemptAftermath;
 	const isMasterRisk = report.snapshot.state.schemaVersion === 17 || isAttemptAftermath;

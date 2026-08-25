@@ -7,11 +7,13 @@ import {
 	AgentEvaluationReportSchema,
 	AttemptAftermathReportSchema,
 	FoundryStrategyReportSchema,
+	MasterFallbackReportSchema,
 	MasterTimingReportSchema,
 	StoryEnvelopeReportSchema,
 	createAgentEvaluationCorpus,
 	createAgentEvaluationReport,
 	generateAttemptAftermathReport,
+	generateMasterFallbackReport,
 	generateMasterTimingReport,
 	generateStoryEnvelopeReport,
 	createFoundryStrategyReport,
@@ -109,6 +111,33 @@ describe('Master decision timing', () => {
 				nextTiming: 'continuous'
 			})
 		]);
+	});
+});
+
+describe('Master fallback doctrine', () => {
+	it('reproduces both policies and all configured safety boundaries under strict replay', () => {
+		const report = generateMasterFallbackReport();
+
+		expect(MasterFallbackReportSchema.parse(report)).toEqual(report);
+		expect(report.replayVerified).toBe(true);
+		expect(report.policyEvidence).toEqual([
+			expect.objectContaining({ policy: 'directed', reproducible: true }),
+			expect.objectContaining({ policy: 'random', reproducible: true })
+		]);
+		expect(
+			report.policyEvidence.every(
+				(entry) => entry.policyResultHash === entry.repeatPolicyResultHash
+			)
+		).toBe(true);
+		expect(report.safetyEvidence.map((entry) => entry.reason)).toEqual([
+			'irreversible-action',
+			'master-health',
+			'fallback-limit',
+			'unclassified-state'
+		]);
+		expect(
+			report.safetyEvidence.slice(1).every((entry) => entry.outcome === 'safety-stopped')
+		).toBe(true);
 	});
 });
 

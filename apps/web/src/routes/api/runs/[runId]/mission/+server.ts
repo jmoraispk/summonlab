@@ -19,7 +19,11 @@ import {
 	IllegalActionError,
 	assembleHeroDecisionPacket,
 	hashCanonical,
-	missionTurnLegalActions
+	masterFallbackActionSource,
+	masterFallbackMissionChoice,
+	masterFallbackSafetySource,
+	missionTurnLegalActions,
+	selectMasterFallback
 } from '@summonlab/engine';
 import { ScriptedPolicy } from '@summonlab/policies';
 import { json } from '@sveltejs/kit';
@@ -46,7 +50,8 @@ async function assembleMissionChoices(
 		snapshot.state.schemaVersion !== 16 &&
 		snapshot.state.schemaVersion !== 17 &&
 		snapshot.state.schemaVersion !== 18 &&
-		snapshot.state.schemaVersion !== 19
+		snapshot.state.schemaVersion !== 19 &&
+		snapshot.state.schemaVersion !== 20
 	) {
 		throw new IllegalActionError('mission.resolve.turn');
 	}
@@ -56,23 +61,28 @@ async function assembleMissionChoices(
 		snapshot.state,
 		snapshot.state.master.masterId
 	).toSorted((left, right) => left.actionId.localeCompare(right.actionId));
+	const v20FallbackChoice =
+		fallback && snapshot.state.schemaVersion === 20
+			? masterFallbackMissionChoice(snapshot.state)
+			: null;
 	const selectedMasterActionId = fallback
-		? (masterActions.find((action) => action.actionId === 'mission.hold')?.actionId ??
+		? (v20FallbackChoice?.actionId ??
+			masterActions.find((action) => action.actionId === 'mission.hold')?.actionId ??
 			masterActions[0]?.actionId)
 		: masterActionId;
 	const masterAction = masterActions.find((action) => action.actionId === selectedMasterActionId);
 	if (!masterAction) throw new IllegalActionError(masterActionId ?? 'mission.resolve.turn');
-	if (fallback && snapshot.state.schemaVersion !== 19) {
+	if (fallback && snapshot.state.schemaVersion !== 19 && snapshot.state.schemaVersion !== 20) {
 		throw new IllegalActionError('mission.resolve.turn');
 	}
 	const decisionId =
-		snapshot.state.schemaVersion === 19
+		snapshot.state.schemaVersion === 19 || snapshot.state.schemaVersion === 20
 			? snapshot.state.masterControl.activeDecision?.decisionId
 			: null;
 	const baselinePolicyId = 'master-timing-baseline-v1';
 	const choices: MissionTurnChoice[] = [
 		fallback
-			? {
+			? (v20FallbackChoice ?? {
 					actorId: snapshot.state.master.masterId,
 					actionId: masterAction.actionId,
 					source: 'scripted',
@@ -90,7 +100,7 @@ async function assembleMissionChoices(
 						decisionId
 					}),
 					publicIntent: `The timing baseline chose to ${masterAction.label.toLowerCase()}.`
-				}
+				})
 			: {
 					actorId: snapshot.state.master.masterId,
 					actionId: masterAction.actionId,
@@ -129,6 +139,12 @@ async function assembleMissionChoices(
 }
 
 function decisionSource(snapshot: EngineSnapshot, fallback: boolean): ActionSource {
+	if (snapshot.state.schemaVersion === 20) {
+		const decision = snapshot.state.masterControl.activeDecision;
+		if (!decision) throw new IllegalActionError('master.decision.open');
+		if (fallback) return masterFallbackActionSource(snapshot.state);
+		return { ...manualSource, timing: decision.timing };
+	}
 	if (snapshot.state.schemaVersion !== 19) {
 		if (fallback) throw new IllegalActionError('mission.resolve.turn');
 		return manualSource;
@@ -167,7 +183,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			snapshot.state.schemaVersion !== 16 &&
 			snapshot.state.schemaVersion !== 17 &&
 			snapshot.state.schemaVersion !== 18 &&
-			snapshot.state.schemaVersion !== 19
+			snapshot.state.schemaVersion !== 19 &&
+			snapshot.state.schemaVersion !== 20
 		) {
 			return json(
 				{ message: 'This history predates authoritative mission turns.' },
@@ -204,32 +221,49 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			command = { ...base, source: manualSource, commandType: 'mission.deploy' };
 		} else if (parsed.data.action === 'resolve-turn' || parsed.data.action === 'resolve-fallback') {
 			const fallback = parsed.data.action === 'resolve-fallback';
-			const source = decisionSource(snapshot, fallback);
 			const resolvedAt = new Date().toISOString();
-			command = {
-				...base,
-				source,
-				commandType: 'mission.resolve.turn',
-				choices: await assembleMissionChoices(
-					snapshot,
-					proof.manifest,
-					parsed.data.action === 'resolve-turn' ? parsed.data.masterActionId : null,
-					fallback
-				),
-				...(snapshot.state.schemaVersion === 19
-					? {
-							decisionId: snapshot.state.masterControl.activeDecision!.decisionId,
-							resolvedAt
-						}
-					: {})
-			};
+			const safetySelection =
+				fallback && snapshot.state.schemaVersion === 20
+					? selectMasterFallback(snapshot.state)
+					: null;
+			if (safetySelection?.safetyStopReason && snapshot.state.schemaVersion === 20) {
+				command = {
+					...base,
+					source: masterFallbackSafetySource(snapshot.state),
+					commandType: 'master.apply.safety-stop',
+					decisionId: snapshot.state.masterControl.activeDecision!.decisionId,
+					observedAt: resolvedAt
+				};
+			} else {
+				command = {
+					...base,
+					source: decisionSource(snapshot, fallback),
+					commandType: 'mission.resolve.turn',
+					choices: await assembleMissionChoices(
+						snapshot,
+						proof.manifest,
+						parsed.data.action === 'resolve-turn' ? parsed.data.masterActionId : null,
+						fallback
+					),
+					...(snapshot.state.schemaVersion === 19 || snapshot.state.schemaVersion === 20
+						? {
+								decisionId: snapshot.state.masterControl.activeDecision!.decisionId,
+								resolvedAt
+							}
+						: {})
+				};
+			}
 		} else if (parsed.data.action === 'extract') {
 			command = { ...base, source: manualSource, commandType: 'mission.extract' };
 		} else {
 			command = { ...base, source: manualSource, commandType: 'mission.retreat' };
 		}
 		let committed = await commitEngineCommand(config.databaseUrl, command);
-		if (parsed.data.action === 'deploy' && committed.snapshot.state.schemaVersion === 19) {
+		if (
+			parsed.data.action === 'deploy' &&
+			(committed.snapshot.state.schemaVersion === 19 ||
+				committed.snapshot.state.schemaVersion === 20)
+		) {
 			const openCommandId = randomUUID();
 			committed = await commitEngineCommand(config.databaseUrl, {
 				commandId: openCommandId,
@@ -248,7 +282,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			committed.snapshot.state.schemaVersion !== 16 &&
 			committed.snapshot.state.schemaVersion !== 17 &&
 			committed.snapshot.state.schemaVersion !== 18 &&
-			committed.snapshot.state.schemaVersion !== 19
+			committed.snapshot.state.schemaVersion !== 19 &&
+			committed.snapshot.state.schemaVersion !== 20
 		) {
 			throw new Error('Mission commit changed the engine schema.');
 		}
@@ -259,7 +294,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			stateHash: committed.snapshot.stateHash,
 			mission: committed.snapshot.state.mission,
 			masterControl:
-				committed.snapshot.state.schemaVersion === 19
+				committed.snapshot.state.schemaVersion === 19 ||
+				committed.snapshot.state.schemaVersion === 20
 					? committed.snapshot.state.masterControl
 					: null,
 			round: committed.snapshot.state.mission.attempt?.turnState.rounds.at(-1) ?? null,

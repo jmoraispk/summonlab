@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through authoritative Master timing._
+_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through bounded Master fallback doctrine._
 
 </div>
 
@@ -177,14 +177,29 @@ Run `pnpm validate:attempt-aftermath` to regenerate and compare the machine-read
 illusion. Wait pauses at a legal boundary; Countdown stores a configurable deadline and permits
 manual takeover before it; Step resolves exactly one fallback and returns to Wait; Continuous
 keeps opening decisions until the player pauses or the mission ends. Every decision identity,
-source, action, deadline, pause, and expiry outcome survives reload and strict replay. The current
-`master-timing-baseline-v1` deliberately prefers **Hold position**; directed and random selection
-plus health-aware safety stops are the next slice.
+source, action, deadline, pause, and expiry outcome survives reload and strict replay. Immutable
+engine-v19 histories retain their original `master-timing-baseline-v1`; new fallback runs use the
+engine-v20 doctrine described below.
 
 ![Authoritative Master timing checkpoint](docs/evidence/phase-6-master-timing.png)
 
 Run `pnpm validate:master-timing` to recompute the four-mode proof at
 `docs/evidence/phase-6-master-timing.json`.
+
+### Master fallback checkpoint
+
+`/master-fallback` creates an `engine-v20` Floor 01 run with timing and unattended choice policy as
+separate controls. **Directed** scores current legal actions against ordered priorities and scoped
+player text; unsupported intent is visibly unclassified. **Seeded random** is reproducible from the
+run, decision, and legal-action boundary. Health while retreat is legal, unclear direction,
+irreversible action tags, or a configurable fallback streak can atomically force Wait. Every window
+captures the exact doctrine snapshot, and every fallback records its packet, legal-action,
+tie-break, direction, classification, score, source, selected action, explanation, and result hash.
+
+![Directed and seeded-random Master fallback checkpoint](docs/evidence/phase-6-master-fallback.png)
+
+Run `pnpm validate:master-fallback` to recompute the policy and safety proof at
+`docs/evidence/phase-6-master-fallback.json`.
 
 ### First-band story envelope
 

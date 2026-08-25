@@ -95,3 +95,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-master-timing.png` / `.json` — database-backed Master control with a visible persisted
   Countdown deadline and a deterministic four-mode report proving manual Wait, expired Countdown,
   one-shot Step reversion, Continuous repetition, pause/takeover, action source, and strict replay.
+- `phase-6-master-fallback.png` / `.json` — database-backed Master doctrine editor and deterministic
+  report proving reproducible directed and seeded-random choices, immutable direction snapshots,
+  health/ambiguity/irreversible/streak safety boundaries, forced Wait, and strict replay.

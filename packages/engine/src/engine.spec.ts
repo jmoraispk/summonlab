@@ -15,6 +15,7 @@ import {
 	EngineGameStateV17Schema,
 	EngineGameStateV18Schema,
 	EngineGameStateV19Schema,
+	EngineGameStateV20Schema,
 	MissionRunStateV8Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
@@ -41,12 +42,17 @@ import {
 	deterministicUuid,
 	drawInteger,
 	hashGameState,
+	isIrreversibleMasterAction,
 	legalActions,
+	masterFallbackActionSource,
+	masterFallbackMissionChoice,
+	masterFallbackSafetySource,
 	projectGameTime,
 	projectJournal,
 	realTimeForGameTime,
 	resolveDailyRoutine,
 	resolveMonsterPolicyIntent,
+	selectMasterFallback,
 	replayEvents,
 	replayEventsStrict,
 	monsterArmorReduction,
@@ -1123,6 +1129,184 @@ describe('deterministic engine', () => {
 		expect(replay.verified).toBe(true);
 		expect(replay.snapshot.state).toEqual(state);
 		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+	});
+
+	it('selects directed and seeded-random fallbacks with replayable safety stops', () => {
+		const runId = deterministicUuid('master-fallback-run');
+		const heroId = deterministicUuid('master-fallback-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'master-fallback-seed',
+			heroId,
+			manifestHash: sha256Hex('master-fallback-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-01',
+				availableMissionIds: ['tower-floor-01'],
+				enableMasterFallback: true
+			}
+		});
+		let state = EngineGameStateV20Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const commit = (key: string, body: object, sourceOverride: ActionSource = manualSource()) => {
+			const result = applyCommand(state, {
+				...commandBase(state, masterId, key),
+				source: sourceOverride,
+				...body
+			} as unknown as EngineCommand);
+			state = EngineGameStateV20Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		const configure = (
+			key: string,
+			observedAt: string,
+			policy: 'directed' | 'random',
+			directionText: string,
+			priorities: Array<
+				'protect-self' | 'protect-party' | 'focus-objective' | 'seek-secrets' | 'conserve-resources'
+			>,
+			safetyStops: {
+				beforeIrreversibleAction: boolean;
+				masterHealthThreshold: number | null;
+				whenUnclassified: boolean;
+				maximumConsecutiveFallbacks: number | null;
+			}
+		) =>
+			commit(key, {
+				commandType: 'master.configure.fallback',
+				policy,
+				directionText,
+				priorities,
+				protectedHeroId: null,
+				safetyStops,
+				observedAt
+			});
+		const setTiming = (key: string, observedAt: string, timing: 'wait' | 'continuous') =>
+			commit(key, {
+				commandType: 'master.configure.timing',
+				timing,
+				countdownSeconds: 5,
+				observedAt
+			});
+		const applySafety = (key: string, observedAt: string) => {
+			const decisionId = state.masterControl.activeDecision!.decisionId;
+			return commit(
+				key,
+				{ commandType: 'master.apply.safety-stop', decisionId, observedAt },
+				masterFallbackSafetySource(state)
+			);
+		};
+		const resolveFallback = (key: string, resolvedAt: string) => {
+			const decisionId = state.masterControl.activeDecision!.decisionId;
+			return commit(
+				key,
+				{
+					commandType: 'mission.resolve.turn',
+					decisionId,
+					resolvedAt,
+					choices: [
+						masterFallbackMissionChoice(state),
+						scriptedMissionChoice(heroId, 'mission.hold')
+					]
+				},
+				masterFallbackActionSource(state)
+			);
+		};
+		const noSafety = {
+			beforeIrreversibleAction: false,
+			masterHealthThreshold: null,
+			whenUnclassified: false,
+			maximumConsecutiveFallbacks: null
+		};
+
+		commit('fallback-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-01'
+		});
+		const deployAction = legalActions(state, masterId).find(
+			(candidate) => candidate.actionId === 'mission.deploy'
+		)!;
+		expect(isIrreversibleMasterAction(deployAction)).toBe(true);
+		commit('fallback-deploy', { commandType: 'mission.deploy' });
+
+		configure(
+			'fallback-health-config',
+			'2030-01-01T00:00:00.000Z',
+			'directed',
+			'Advance the objective while protecting the company.',
+			['focus-objective', 'protect-self', 'protect-party'],
+			{ ...noSafety, masterHealthThreshold: 100 }
+		);
+		setTiming('fallback-health-timing', '2030-01-01T00:00:01.000Z', 'continuous');
+		commit('fallback-health-open', {
+			commandType: 'master.open.decision',
+			observedAt: '2030-01-01T00:00:02.000Z'
+		});
+		const directed = selectMasterFallback(state);
+		expect(selectMasterFallback(state)).toEqual(directed);
+		expect(directed).toMatchObject({
+			policy: 'directed',
+			classification: 'classified',
+			safetyStopReason: 'master-health'
+		});
+		applySafety('fallback-health-stop', '2030-01-01T00:00:03.000Z');
+		expect(state.masterControl).toMatchObject({
+			timing: 'wait',
+			lastResolution: { outcome: 'safety-stopped' },
+			activeDecision: { timing: 'wait' }
+		});
+
+		configure(
+			'fallback-limit-config',
+			'2030-01-01T00:00:04.000Z',
+			'directed',
+			'Seek the objective and defend if threatened.',
+			['focus-objective', 'protect-self'],
+			{ ...noSafety, maximumConsecutiveFallbacks: 1 }
+		);
+		setTiming('fallback-limit-timing', '2030-01-01T00:00:05.000Z', 'continuous');
+		resolveFallback('fallback-limit-first-turn', '2030-01-01T00:00:06.000Z');
+		expect(selectMasterFallback(state).safetyStopReason).toBe('fallback-limit');
+		applySafety('fallback-limit-stop', '2030-01-01T00:00:07.000Z');
+
+		configure(
+			'fallback-random-config',
+			'2030-01-01T00:00:08.000Z',
+			'random',
+			'Let the seed choose among the current legal actions.',
+			[],
+			noSafety
+		);
+		setTiming('fallback-random-timing', '2030-01-01T00:00:09.000Z', 'continuous');
+		const random = selectMasterFallback(state);
+		expect(selectMasterFallback(state)).toEqual(random);
+		expect(random).toMatchObject({ policy: 'random', safetyStopReason: null });
+		resolveFallback('fallback-random-turn', '2030-01-01T00:00:10.000Z');
+
+		configure(
+			'fallback-unclassified-config',
+			'2030-01-01T00:00:11.000Z',
+			'directed',
+			'Dance beautifully.',
+			[],
+			{ ...noSafety, whenUnclassified: true }
+		);
+		expect(selectMasterFallback(state)).toMatchObject({
+			classification: 'unclassified',
+			safetyStopReason: 'unclassified-state'
+		});
+		applySafety('fallback-unclassified-stop', '2030-01-01T00:00:12.000Z');
+
+		const replay = replayEventsStrict(events);
+		expect(replay.verified).toBe(true);
+		expect(replay.snapshot.state).toEqual(state);
+		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+		const tampered = structuredClone(events);
+		const fallbackEvent = tampered.find((event) => event.eventType === 'master.fallback.changed')!;
+		(fallbackEvent.payload as { directionText: string }).directionText = 'Tampered direction.';
+		expect(() => replayEventsStrict(tampered)).toThrow(ReplayIntegrityError);
 	});
 
 	it('extracts finite Iron Moon ore before the deterministic portal collapse', () => {

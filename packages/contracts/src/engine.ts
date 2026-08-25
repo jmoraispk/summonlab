@@ -6,6 +6,7 @@ import {
 	AuthoritativeEventSchema,
 	DecisionTimingSchema,
 	DirectiveScopeSchema,
+	FallbackPolicySchema,
 	JournalEntrySchema,
 	RewardDeltaSchema
 } from './event.js';
@@ -2703,6 +2704,208 @@ const EngineGameStateV19BaseSchema = z
 	})
 	.strict();
 
+export const MasterFallbackPrioritySchema = z.enum([
+	'protect-self',
+	'protect-party',
+	'focus-objective',
+	'seek-secrets',
+	'conserve-resources'
+]);
+
+export const MasterFallbackSafetyStopsSchema = z
+	.object({
+		beforeIrreversibleAction: z.boolean(),
+		masterHealthThreshold: z.number().int().min(1).max(100).nullable(),
+		whenUnclassified: z.boolean(),
+		maximumConsecutiveFallbacks: z.number().int().min(1).max(48).nullable()
+	})
+	.strict();
+
+export const MasterFallbackConfigurationSchema = z
+	.object({
+		configurationVersion: z.literal('master-fallback-v1'),
+		policy: FallbackPolicySchema,
+		directionId: EntityIdSchema,
+		directionText: z.string().min(1).max(600),
+		priorities: z.array(MasterFallbackPrioritySchema).max(5),
+		protectedHeroId: EntityIdSchema.nullable(),
+		safetyStops: MasterFallbackSafetyStopsSchema,
+		configuredAt: IsoDateTimeSchema
+	})
+	.strict()
+	.superRefine((configuration, context) => {
+		if (new Set(configuration.priorities).size !== configuration.priorities.length) {
+			context.addIssue({ code: 'custom', message: 'Fallback priorities must be unique' });
+		}
+	});
+
+export const MasterSafetyStopReasonSchema = z.enum([
+	'irreversible-action',
+	'master-health',
+	'unclassified-state',
+	'fallback-limit'
+]);
+
+export const MasterFallbackSelectionSchema = z
+	.object({
+		selectionVersion: z.literal('master-fallback-selection-v1'),
+		policyId: z.enum(['master-directed-v1', 'master-random-v1']),
+		policy: FallbackPolicySchema,
+		decisionId: EntityIdSchema,
+		directionId: EntityIdSchema,
+		classification: z.enum(['classified', 'unclassified']),
+		selectedActionId: z
+			.string()
+			.regex(/^[a-z][a-z0-9._-]{1,79}$/u)
+			.nullable(),
+		selectedScore: z.number().int().nullable(),
+		consideredActionIds: z
+			.array(z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u))
+			.min(1)
+			.max(64),
+		packetHash: StateHashSchema,
+		legalActionHash: StateHashSchema,
+		tieBreakHash: StateHashSchema,
+		policyResultHash: StateHashSchema,
+		safetyStopReason: MasterSafetyStopReasonSchema.nullable(),
+		explanation: z.string().min(1).max(300)
+	})
+	.strict()
+	.superRefine((selection, context) => {
+		if (selection.policy === 'directed' && selection.policyId !== 'master-directed-v1') {
+			context.addIssue({ code: 'custom', message: 'Directed selection requires its policy id' });
+		}
+		if (selection.policy === 'random' && selection.policyId !== 'master-random-v1') {
+			context.addIssue({ code: 'custom', message: 'Random selection requires its policy id' });
+		}
+		if (
+			(selection.selectedActionId === null) !== (selection.selectedScore === null) ||
+			(selection.safetyStopReason === null && selection.selectedActionId === null) ||
+			(selection.safetyStopReason === 'unclassified-state' &&
+				selection.classification !== 'unclassified')
+		) {
+			context.addIssue({ code: 'custom', message: 'Fallback selection outcome is inconsistent' });
+		}
+	});
+
+export const MasterDecisionWindowV2Schema = MasterDecisionWindowSchema.safeExtend({
+	fallback: MasterFallbackConfigurationSchema
+}).strict();
+
+export const MasterDecisionResolutionV2Schema = z
+	.object({
+		decisionId: EntityIdSchema,
+		ordinal: z.number().int().positive(),
+		timing: DecisionTimingSchema,
+		openedAt: IsoDateTimeSchema,
+		expiresAt: IsoDateTimeSchema.nullable(),
+		fallback: MasterFallbackConfigurationSchema,
+		resolvedAt: IsoDateTimeSchema,
+		outcome: z.enum(['manual', 'fallback', 'paused', 'mission-ended', 'safety-stopped']),
+		expiryOutcome: z.enum([
+			'not-applicable',
+			'manual-before-expiry',
+			'expired-to-fallback',
+			'immediate-fallback',
+			'paused',
+			'mission-ended',
+			'safety-stopped'
+		]),
+		resolvedActionId: z
+			.string()
+			.regex(/^[a-z][a-z0-9._-]{1,79}$/u)
+			.nullable(),
+		source: ActionSourceSchema,
+		fallbackSelection: MasterFallbackSelectionSchema.nullable()
+	})
+	.strict()
+	.superRefine((resolution, context) => {
+		if (Date.parse(resolution.resolvedAt) < Date.parse(resolution.openedAt)) {
+			context.addIssue({ code: 'custom', message: 'Decision cannot resolve before it opens' });
+		}
+		if (
+			['manual', 'fallback'].includes(resolution.outcome) !==
+			(resolution.resolvedActionId !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Only resolved decisions bind an action' });
+		}
+		if (resolution.source.timing !== resolution.timing && resolution.outcome !== 'mission-ended') {
+			context.addIssue({ code: 'custom', message: 'Decision source timing must match its window' });
+		}
+		const expectedExpiry =
+			resolution.outcome === 'paused'
+				? 'paused'
+				: resolution.outcome === 'mission-ended'
+					? 'mission-ended'
+					: resolution.outcome === 'safety-stopped'
+						? 'safety-stopped'
+						: resolution.outcome === 'manual' && resolution.timing === 'countdown'
+							? 'manual-before-expiry'
+							: resolution.outcome === 'fallback' && resolution.timing === 'countdown'
+								? 'expired-to-fallback'
+								: resolution.outcome === 'fallback'
+									? 'immediate-fallback'
+									: 'not-applicable';
+		if (resolution.expiryOutcome !== expectedExpiry) {
+			context.addIssue({ code: 'custom', message: 'Decision expiry outcome is inconsistent' });
+		}
+		const needsSelection =
+			resolution.outcome === 'fallback' || resolution.outcome === 'safety-stopped';
+		if (needsSelection !== (resolution.fallbackSelection !== null)) {
+			context.addIssue({ code: 'custom', message: 'Fallback evidence is missing or unexpected' });
+		}
+		if (
+			resolution.fallbackSelection &&
+			(resolution.fallbackSelection.decisionId !== resolution.decisionId ||
+				resolution.fallbackSelection.directionId !== resolution.fallback.directionId ||
+				resolution.fallbackSelection.policy !== resolution.fallback.policy ||
+				resolution.source.fallbackPolicy !== resolution.fallback.policy)
+		) {
+			context.addIssue({ code: 'custom', message: 'Fallback evidence diverged from its snapshot' });
+		}
+	});
+
+export const MasterControlStateV2Schema = z
+	.object({
+		timing: DecisionTimingSchema,
+		countdownSeconds: z.number().int().min(1).max(60),
+		revision: z.number().int().nonnegative(),
+		decisionOrdinal: z.number().int().nonnegative(),
+		activeDecision: MasterDecisionWindowV2Schema.nullable(),
+		lastResolution: MasterDecisionResolutionV2Schema.nullable(),
+		fallback: MasterFallbackConfigurationSchema,
+		consecutiveFallbacks: z.number().int().nonnegative().max(48)
+	})
+	.strict()
+	.superRefine((control, context) => {
+		if (
+			control.activeDecision &&
+			(control.activeDecision.timing !== control.timing ||
+				control.activeDecision.ordinal !== control.decisionOrdinal ||
+				control.activeDecision.fallback.directionId !== control.fallback.directionId ||
+				control.activeDecision.fallback.configuredAt !== control.fallback.configuredAt)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Active decision must match control configuration'
+			});
+		}
+		if (control.lastResolution && control.lastResolution.ordinal > control.decisionOrdinal) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Decision resolution exceeds the control cursor'
+			});
+		}
+	});
+
+const EngineGameStateV20BaseSchema = z
+	.object({
+		...EngineGameStateV18BaseSchema.shape,
+		schemaVersion: z.literal(20),
+		masterControl: MasterControlStateV2Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -2715,7 +2918,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV16BaseSchema>
 	| z.infer<typeof EngineGameStateV17BaseSchema>
 	| z.infer<typeof EngineGameStateV18BaseSchema>
-	| z.infer<typeof EngineGameStateV19BaseSchema>;
+	| z.infer<typeof EngineGameStateV19BaseSchema>
+	| z.infer<typeof EngineGameStateV20BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -3071,7 +3275,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV16BaseSchema>
 	| z.infer<typeof EngineGameStateV17BaseSchema>
 	| z.infer<typeof EngineGameStateV18BaseSchema>
-	| z.infer<typeof EngineGameStateV19BaseSchema>;
+	| z.infer<typeof EngineGameStateV19BaseSchema>
+	| z.infer<typeof EngineGameStateV20BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -3144,7 +3349,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		const turnAttempt = state.mission.attempt;
 		if (
@@ -3164,7 +3370,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		for (const evidence of Object.values(state.mission.evidence)) {
 			if (
@@ -3218,6 +3425,29 @@ export const EngineGameStateV19Schema = EngineGameStateV19BaseSchema.superRefine
 		}
 	}
 );
+export const EngineGameStateV20Schema = EngineGameStateV20BaseSchema.superRefine(
+	(state, context) => {
+		validateMissionEngineState(state, context);
+		const activeAttempt = state.mission.attempt;
+		const canAwaitDecision =
+			state.status === 'active' &&
+			state.master.lifeState === 'alive' &&
+			activeAttempt !== null &&
+			['deployed', 'resolving'].includes(activeAttempt.status);
+		if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Only an active resolving mission may hold a Master decision window'
+			});
+		}
+		if (
+			state.masterControl.fallback.protectedHeroId !== null &&
+			!state.heroes[state.masterControl.fallback.protectedHeroId]
+		) {
+			context.addIssue({ code: 'custom', message: 'Protected fallback hero must exist' });
+		}
+	}
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -3238,7 +3468,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV16Schema,
 	EngineGameStateV17Schema,
 	EngineGameStateV18Schema,
-	EngineGameStateV19Schema
+	EngineGameStateV19Schema,
+	EngineGameStateV20Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -3407,6 +3638,22 @@ export const OpenMasterDecisionCommandSchema = EngineCommandBaseSchema.extend({
 	observedAt: IsoDateTimeSchema
 }).strict();
 
+export const ConfigureMasterFallbackCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.configure.fallback'),
+	policy: FallbackPolicySchema,
+	directionText: z.string().min(1).max(600),
+	priorities: z.array(MasterFallbackPrioritySchema).max(5),
+	protectedHeroId: EntityIdSchema.nullable(),
+	safetyStops: MasterFallbackSafetyStopsSchema,
+	observedAt: IsoDateTimeSchema
+}).strict();
+
+export const ApplyMasterSafetyStopCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.apply.safety-stop'),
+	decisionId: EntityIdSchema,
+	observedAt: IsoDateTimeSchema
+}).strict();
+
 export const DirectiveRequestSchema = z.discriminatedUnion('action', [
 	z.object({ action: z.literal('issue'), ...DirectiveIssueShape }).strict(),
 	z
@@ -3524,6 +3771,8 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	MasterRevokeDirectiveCommandSchema,
 	ConfigureMasterTimingCommandSchema,
 	OpenMasterDecisionCommandSchema,
+	ConfigureMasterFallbackCommandSchema,
+	ApplyMasterSafetyStopCommandSchema,
 	CreateDailyPlanCommandSchema,
 	StartRoutineCommandSchema,
 	InspectGateCommandSchema,
@@ -3564,12 +3813,25 @@ export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
 	z.object({ action: z.literal('retreat') }).strict()
 ]);
 
-export const MasterControlRequestSchema = z
-	.object({
-		timing: DecisionTimingSchema,
-		countdownSeconds: z.number().int().min(1).max(60).default(5)
-	})
-	.strict();
+export const MasterControlRequestSchema = z.discriminatedUnion('action', [
+	z
+		.object({
+			action: z.literal('timing'),
+			timing: DecisionTimingSchema,
+			countdownSeconds: z.number().int().min(1).max(60).default(5)
+		})
+		.strict(),
+	z
+		.object({
+			action: z.literal('fallback'),
+			policy: FallbackPolicySchema,
+			directionText: z.string().min(1).max(600),
+			priorities: z.array(MasterFallbackPrioritySchema).max(5),
+			protectedHeroId: EntityIdSchema.nullable(),
+			safetyStops: MasterFallbackSafetyStopsSchema
+		})
+		.strict()
+]);
 
 export const MasterDecisionWindowRequestSchema = z.object({}).strict();
 
@@ -3765,6 +4027,7 @@ export type EngineGameStateV16 = z.infer<typeof EngineGameStateV16Schema>;
 export type EngineGameStateV17 = z.infer<typeof EngineGameStateV17Schema>;
 export type EngineGameStateV18 = z.infer<typeof EngineGameStateV18Schema>;
 export type EngineGameStateV19 = z.infer<typeof EngineGameStateV19Schema>;
+export type EngineGameStateV20 = z.infer<typeof EngineGameStateV20Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -3785,8 +4048,14 @@ export type MissionTurnChoice = z.infer<typeof MissionTurnChoiceSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
 export type MasterControlRequest = z.infer<typeof MasterControlRequestSchema>;
 export type MasterControlState = z.infer<typeof MasterControlStateSchema>;
+export type MasterControlStateV2 = z.infer<typeof MasterControlStateV2Schema>;
 export type MasterDecisionResolution = z.infer<typeof MasterDecisionResolutionSchema>;
+export type MasterDecisionResolutionV2 = z.infer<typeof MasterDecisionResolutionV2Schema>;
 export type MasterDecisionWindow = z.infer<typeof MasterDecisionWindowSchema>;
+export type MasterFallbackConfiguration = z.infer<typeof MasterFallbackConfigurationSchema>;
+export type MasterFallbackSelection = z.infer<typeof MasterFallbackSelectionSchema>;
+export type MasterFallbackPriority = z.infer<typeof MasterFallbackPrioritySchema>;
+export type MasterFallbackSafetyStops = z.infer<typeof MasterFallbackSafetyStopsSchema>;
 export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type MissionRunStateV2 = z.infer<typeof MissionRunStateV2Schema>;
 export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;

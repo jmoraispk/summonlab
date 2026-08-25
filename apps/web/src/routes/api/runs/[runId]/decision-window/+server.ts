@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	try {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 19) {
+		if (snapshot.state.schemaVersion !== 19 && snapshot.state.schemaVersion !== 20) {
 			return json({ message: 'This run predates authoritative Master timing.' }, { status: 409 });
 		}
 		const commandId = randomUUID();
@@ -50,7 +50,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			observedAt: new Date().toISOString()
 		} satisfies EngineCommand;
 		const committed = await commitEngineCommand(config.databaseUrl, command);
-		if (committed.snapshot.state.schemaVersion !== 19) {
+		if (
+			committed.snapshot.state.schemaVersion !== 19 &&
+			committed.snapshot.state.schemaVersion !== 20
+		) {
 			throw new Error('Decision opening changed the engine schema.');
 		}
 		return json({

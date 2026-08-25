@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-012` are complete. The first five
+Status: **in progress**. `MIS-001` through `MIS-013` are complete. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -315,6 +315,7 @@ a state authority.
 | `MIS-010A` | Complete: opt-in `engine-v18` / `mission-aftermath-v3` binds every consequence to one source attempt; keeps the active ledger exclusive to the current attempt; archives the prior terminal attempt with its mission binding, outcome, final round, timestamps, and consequences; rejects cross-attempt leakage and false provenance; permits a later mission after a v18 success or retreat; strictly replays the real Floor 04 wound → retreat → Floor 05 preparation boundary while preserving v16/v17 dispatch; `/attempt-aftermath` visualizes the checked proof | [Visual attempt proof](evidence/phase-6-attempt-aftermath.png), [machine-readable report](evidence/phase-6-attempt-aftermath.json), engine/evaluation/database/browser tests, `pnpm validate:attempt-aftermath`, ADR 0040 |
 | `MIS-011` | Complete: `tower-band-01-story-v1` binds the five runtime floor packages into one content-addressed envelope with five immutable laws, opening state, 35 beats, a causal 25-beat default route, 25 anchors, ten optional proposals, five bounded patch slots, five expression hooks, three finale constraints, mission-scoped catalogs, and an exact 1,010-point budget; deterministic eligibility rejects impossible history and over-selection; only living holders may voice an anchor, and personality changes frame, prefix, and habit gesture without changing its fact; `/story-envelope` compares two reproducible summons | [Visual story proof](evidence/phase-6-story-envelope.png), [machine-readable report](evidence/phase-6-story-envelope.json), contract/content/evaluation/browser tests, `pnpm validate:story-envelope`, ADR 0041 |
 | `MIS-012` | Complete: opt-in `engine-v19` stores Master timing separately from fallback selection; every mission decision has a stable ID, ordinal, opening, optional authoritative deadline, source, resolved action, and expiry outcome; Wait accepts manual input indefinitely, Countdown accepts takeover only before its persisted deadline, Step resolves one fallback then returns to Wait, and Continuous opens another fallback window until paused or terminal; mode changes visibly pause an active decision, injected wall time preserves engine purity, strict replay recomputes all timing state, and the mission UI exposes countdown, pause/takeover, source, expiry, and logs; the provisional hash-bound baseline prefers hold until MIS-013 | [Machine-readable four-mode report](evidence/phase-6-master-timing.json), engine/evaluation/database/browser tests, `pnpm validate:master-timing`, ADR 0042 |
+| `MIS-013` | Complete: opt-in `engine-v20` captures an immutable policy/direction/safety snapshot into each Master decision; directed scoring and seeded-random selection choose only from engine-owned legal actions and persist packet, legal, tie-break, source, classification, score, explanation, and result hashes; unsupported intent stays explicit; health-with-retreat, unclassified intent, irreversible tags, and a fallback streak can force a replayable Wait boundary; policy changes pause/reopen active windows; `/master-fallback` exposes doctrine editing, takeover, safety state, and evidence without changing independent hero policy | [Visual fallback proof](evidence/phase-6-master-fallback.png), [machine-readable report](evidence/phase-6-master-fallback.json), engine/evaluation/browser tests, `pnpm validate:master-fallback`, ADR 0043 |
 
 ### Reproduce the checkpoint
 
@@ -390,13 +391,20 @@ commit a Wait action. Select Countdown and either take over before zero or let t
 five-second deadline resolve the baseline. Select Step and confirm exactly one fallback occurs
 before the control returns to Wait. Select Continuous, allow at least two rounds, then press
 **Pause / Wait**; reload and confirm the active decision, last source, expiry outcome, event cursor,
-and replay hashes remain unchanged. The `master-timing-baseline-v1` selector is intentionally
-hold-first evidence, not the directed/random behavior planned for MIS-013.
+and replay hashes remain unchanged. The `master-timing-baseline-v1` selector intentionally
+preserves the historical hold-first proof; use the `engine-v20` checkpoint below for directed
+and seeded-random doctrine behavior.
+
+Run `pnpm validate:master-fallback`, start `pnpm dev`, and open
+`http://localhost:5173/master-fallback`. Create a run, prepare and deploy the party, edit the
+direction and ordered priorities, then compare Directed with Seeded random under Step. Confirm the
+same decision repeats the same result hash after reload. Set the health threshold to 100 and choose
+Continuous to trigger a visible `master-health` safety stop at the threshold; the control must force
+Wait while retaining the blocked action and explanation. Disable that stop to observe uninterrupted
+autonomy, then press **Pause / Wait** and confirm the event cursor and strict replay remain stable.
 
 ## Next active engineering slice
 
-Begin `MIS-013`: implement directed and seeded-random fallback selection, scoped player direction,
-pause/takeover, and configurable safety stops without changing summoned-hero autonomy or the
-authoritative mission action boundary.
-Phase 3 cohort expansion remains behind its separate human visual gate. Master timing is now
-authoritative; directed/random selection and safety ceilings remain `MIS-013`.
+Begin `MIS-014`: add the filterable player journal with fallback/timer/direction evidence plus
+reward, experience, level, and party-progress deltas. Phase 3 cohort expansion remains behind its
+separate human visual gate.

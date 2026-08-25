@@ -1,0 +1,186 @@
+{
+	"schemaVersion": "master-fallback-report-v1",
+	"engineContentVersion": "engine-v20",
+	"replayVerified": true,
+	"runId": "f3f5d75a-8517-476c-92bd-c5f1ab887766",
+	"defaultPolicy": "directed",
+	"policyEvidence": [
+		{
+			"policy": "directed",
+			"policyId": "master-directed-v1",
+			"selectedActionId": "mission.hold",
+			"classification": "classified",
+			"packetHash": "33a836223b201181b0036d2550b54006b27f5ba5ead9bc2df6087f77e78a236b",
+			"legalActionHash": "1870ba4ae0151d6d6815ad1bffeb6cedb99f31a47e2224ad50188865fd755f39",
+			"policyResultHash": "eb0e1b2fb64648e7b0150809da9603f9dcac303be5795739aeb43d9c7989a8a1",
+			"repeatPolicyResultHash": "eb0e1b2fb64648e7b0150809da9603f9dcac303be5795739aeb43d9c7989a8a1",
+			"reproducible": true
+		},
+		{
+			"policy": "random",
+			"policyId": "master-random-v1",
+			"selectedActionId": "mission.move.threshold-to-oath-hall",
+			"classification": "classified",
+			"packetHash": "314aa9855d9a6da4a83768658e30d09c1ad74d30bc2e09d9f48dd2ec547c4619",
+			"legalActionHash": "1870ba4ae0151d6d6815ad1bffeb6cedb99f31a47e2224ad50188865fd755f39",
+			"policyResultHash": "9dba3f3b3ac4fd276ba31a89133953986d596b97aa52f039d5741ec9ad8c3951",
+			"repeatPolicyResultHash": "9dba3f3b3ac4fd276ba31a89133953986d596b97aa52f039d5741ec9ad8c3951",
+			"reproducible": true
+		}
+	],
+	"safetyEvidence": [
+		{
+			"reason": "irreversible-action",
+			"decisionId": null,
+			"blockedActionId": "mission.deploy",
+			"outcome": "classifier-verified",
+			"resultHash": "84fe1bd89f701c2be0b0e539637966de029ade48a1f49dbf48ecbb742cdbb55d"
+		},
+		{
+			"reason": "master-health",
+			"decisionId": "89813ab6-ebbe-467d-b326-491c66a9d81c",
+			"blockedActionId": "mission.hold",
+			"outcome": "safety-stopped",
+			"resultHash": "eb0e1b2fb64648e7b0150809da9603f9dcac303be5795739aeb43d9c7989a8a1"
+		},
+		{
+			"reason": "fallback-limit",
+			"decisionId": "b103c1ee-aff3-4e21-82e4-81525d93af80",
+			"blockedActionId": "mission.hold",
+			"outcome": "safety-stopped",
+			"resultHash": "fd35db3088d77a8e84b0a72da3eca335ec541a911d278f78fdf9177a83c5d61c"
+		},
+		{
+			"reason": "unclassified-state",
+			"decisionId": "c514d290-2fd0-4cfb-bb2e-8a31470a964a",
+			"blockedActionId": "mission.inspect.read-muster-tablet",
+			"outcome": "safety-stopped",
+			"resultHash": "5494626ae5ba94c58f2beb89f867e17930a1c0f228b9f54211f146ded707112a"
+		}
+	],
+	"eventCount": 16,
+	"eventLogHash": "08a2aef8e6624ddeaf20905ea8d00b1c5e99ec75049d69715c9555bcd8af5988",
+	"stateHash": "7d765795e05153112a887526b7c50bf4d18a3ddd9defd60add9ed7ce3a0f41db",
+	"timeline": [
+		{
+			"sequence": 2,
+			"eventType": "mission.preparation.started",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "The Master reserved a 2-member party for tower-floor-01."
+		},
+		{
+			"sequence": 3,
+			"eventType": "mission.deployed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "The prepared party crossed the Tower Threshold; 4 deterministic monster duties activated."
+		},
+		{
+			"sequence": 4,
+			"eventType": "master.fallback.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "Master fallback changed to directed with explicit safety stops."
+		},
+		{
+			"sequence": 5,
+			"eventType": "master.timing.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "Master decision timing changed to continuous."
+		},
+		{
+			"sequence": 6,
+			"eventType": "master.decision.opened",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "Decision 1 opened in continuous timing."
+		},
+		{
+			"sequence": 7,
+			"eventType": "master.safety.stopped",
+			"timing": "continuous",
+			"fallbackPolicy": "directed",
+			"source": "system",
+			"summary": "Safety forced Wait at decision 1: master-health."
+		},
+		{
+			"sequence": 8,
+			"eventType": "master.fallback.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "Decision 2 paused; directed fallback now owns the next window."
+		},
+		{
+			"sequence": 9,
+			"eventType": "master.timing.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "The Master paused decision 3 and changed timing to continuous."
+		},
+		{
+			"sequence": 10,
+			"eventType": "mission.round.resolved",
+			"timing": "continuous",
+			"fallbackPolicy": "directed",
+			"source": "continuous",
+			"summary": "Round 1 resolved 2 party choices and 4 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 11,
+			"eventType": "master.safety.stopped",
+			"timing": "continuous",
+			"fallbackPolicy": "directed",
+			"source": "system",
+			"summary": "Safety forced Wait at decision 5: fallback-limit."
+		},
+		{
+			"sequence": 12,
+			"eventType": "master.fallback.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "Decision 6 paused; random fallback now owns the next window."
+		},
+		{
+			"sequence": 13,
+			"eventType": "master.timing.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "The Master paused decision 7 and changed timing to continuous."
+		},
+		{
+			"sequence": 14,
+			"eventType": "mission.round.resolved",
+			"timing": "continuous",
+			"fallbackPolicy": "random",
+			"source": "continuous",
+			"summary": "Round 2 resolved 2 party choices and 4 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 15,
+			"eventType": "master.fallback.changed",
+			"timing": "step",
+			"fallbackPolicy": null,
+			"source": "manual",
+			"summary": "Decision 9 paused; directed fallback now owns the next window."
+		},
+		{
+			"sequence": 16,
+			"eventType": "master.safety.stopped",
+			"timing": "continuous",
+			"fallbackPolicy": "directed",
+			"source": "system",
+			"summary": "Safety forced Wait at decision 10: unclassified-state."
+		}
+	]
+}

@@ -26,6 +26,7 @@ import {
 	EngineGameStateV17Schema,
 	EngineGameStateV18Schema,
 	EngineGameStateV19Schema,
+	EngineGameStateV20Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
 	HeroBuildingAssignmentSchema,
@@ -56,7 +57,11 @@ import {
 	MissionResolvedEffectSchema,
 	MissionTurnChoiceSchema,
 	MasterControlStateSchema,
+	MasterControlStateV2Schema,
 	MasterDecisionResolutionSchema,
+	MasterDecisionResolutionV2Schema,
+	MasterFallbackConfigurationSchema,
+	MasterFallbackSelectionSchema,
 	ResourceKeySchema,
 	RewardDeltaSchema,
 	RoutineResolutionSchema,
@@ -94,6 +99,7 @@ import {
 	type EngineGameStateV17,
 	type EngineGameStateV18,
 	type EngineGameStateV19,
+	type EngineGameStateV20,
 	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
@@ -104,7 +110,11 @@ import {
 	type HeroPolicyResult,
 	type LegalAction,
 	type MasterControlState,
+	type MasterControlStateV2,
 	type MasterDecisionResolution,
+	type MasterDecisionResolutionV2,
+	type MasterFallbackConfiguration,
+	type MasterFallbackSelection,
 	type MissionPackage,
 	type MissionRunState,
 	type MissionRunStateV2,
@@ -163,6 +173,7 @@ export const MISSION_AFTERMATH_ENGINE_CONTENT_VERSION = 'engine-v16';
 export const MASTER_PERMADEATH_ENGINE_CONTENT_VERSION = 'engine-v17';
 export const ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION = 'engine-v18';
 export const MASTER_TIMING_ENGINE_CONTENT_VERSION = 'engine-v19';
+export const MASTER_FALLBACK_ENGINE_CONTENT_VERSION = 'engine-v20';
 export const MISSION_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v13';
 export const MISSION_TURN_ENGINE_CONTENT_VERSION = 'engine-v12';
 export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
@@ -217,7 +228,8 @@ type EngineGameStateModern =
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19;
+	| EngineGameStateV19
+	| EngineGameStateV20;
 type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6
@@ -233,7 +245,8 @@ type EngineRoutineState =
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19;
+	| EngineGameStateV19
+	| EngineGameStateV20;
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -289,6 +302,7 @@ export interface BootstrapEngineInput {
 		readonly enableMasterPermadeath?: boolean;
 		readonly enableAttemptAftermath?: boolean;
 		readonly enableMasterTiming?: boolean;
+		readonly enableMasterFallback?: boolean;
 		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
 		readonly foundryRouteMemoryHeroId?: string;
 	};
@@ -738,6 +752,46 @@ const MissionMasterTimingTurnResolvedPayloadSchema =
 		decisionResolution: MasterDecisionResolutionSchema
 	}).strict();
 
+const MasterTimingChangedPayloadV2Schema = EmptyMetadataSchema.extend({
+	timing: z.enum(['wait', 'countdown', 'step', 'continuous']),
+	countdownSeconds: z.number().int().min(1).max(60),
+	observedAt: z.string().datetime({ offset: true }),
+	masterControl: MasterControlStateV2Schema,
+	pausedResolution: MasterDecisionResolutionV2Schema.nullable(),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MasterFallbackChangedPayloadSchema = EmptyMetadataSchema.extend({
+	policy: MasterFallbackConfigurationSchema.shape.policy,
+	directionText: MasterFallbackConfigurationSchema.shape.directionText,
+	priorities: MasterFallbackConfigurationSchema.shape.priorities,
+	protectedHeroId: MasterFallbackConfigurationSchema.shape.protectedHeroId,
+	safetyStops: MasterFallbackConfigurationSchema.shape.safetyStops,
+	observedAt: z.string().datetime({ offset: true }),
+	masterControl: MasterControlStateV2Schema,
+	pausedResolution: MasterDecisionResolutionV2Schema.nullable(),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MasterDecisionOpenedPayloadV2Schema = EmptyMetadataSchema.extend({
+	observedAt: z.string().datetime({ offset: true }),
+	masterControl: MasterControlStateV2Schema,
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MasterSafetyStoppedPayloadSchema = EmptyMetadataSchema.extend({
+	observedAt: z.string().datetime({ offset: true }),
+	masterControl: MasterControlStateV2Schema,
+	decisionResolution: MasterDecisionResolutionV2Schema,
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionMasterFallbackTurnResolvedPayloadSchema =
+	MissionAttemptAftermathTurnResolvedPayloadSchema.safeExtend({
+		masterControl: MasterControlStateV2Schema,
+		decisionResolution: MasterDecisionResolutionV2Schema
+	}).strict();
+
 const MissionTransitionPayloadV6Schema = EmptyMetadataSchema.extend({
 	transition: z.enum(['prepare', 'revise-party', 'cancel', 'deploy', 'extract', 'retreat']),
 	mission: MissionRunStateV6Schema,
@@ -765,6 +819,11 @@ const MissionTransitionPayloadV8Schema = EmptyMetadataSchema.extend({
 const MissionTransitionPayloadV9Schema = MissionTransitionPayloadV8Schema.safeExtend({
 	masterControl: MasterControlStateSchema,
 	decisionResolution: MasterDecisionResolutionSchema.nullable()
+}).strict();
+
+const MissionTransitionPayloadV10Schema = MissionTransitionPayloadV8Schema.safeExtend({
+	masterControl: MasterControlStateV2Schema,
+	decisionResolution: MasterDecisionResolutionV2Schema.nullable()
 }).strict();
 
 function systemSource() {
@@ -931,6 +990,471 @@ function endMasterDecision(
 			...control,
 			activeDecision: null,
 			lastResolution: resolution
+		})
+	};
+}
+
+function masterDecisionWindowV2(
+	control: MasterControlStateV2,
+	commandId: string,
+	openedAt: string
+): MasterControlStateV2 {
+	if (control.activeDecision) throw new IllegalActionError('master.decision.open');
+	const ordinal = control.decisionOrdinal + 1;
+	return MasterControlStateV2Schema.parse({
+		...control,
+		decisionOrdinal: ordinal,
+		activeDecision: {
+			decisionId: deterministicUuid(`${commandId}:master-decision:${ordinal}`),
+			ordinal,
+			timing: control.timing,
+			openedAt,
+			expiresAt:
+				control.timing === 'countdown' ? addGameSeconds(openedAt, control.countdownSeconds) : null,
+			fallback: control.fallback
+		}
+	});
+}
+
+function pausedMasterDecisionV2(
+	control: MasterControlStateV2,
+	resolvedAt: string,
+	source: ActionSource
+): MasterDecisionResolutionV2 | null {
+	const active = control.activeDecision;
+	if (!active) return null;
+	return MasterDecisionResolutionV2Schema.parse({
+		...active,
+		resolvedAt,
+		outcome: 'paused',
+		expiryOutcome: 'paused',
+		resolvedActionId: null,
+		source: { ...source, timing: active.timing },
+		fallbackSelection: null
+	});
+}
+
+function configureMasterTimingV2(
+	control: MasterControlStateV2,
+	commandId: string,
+	timing: MasterControlStateV2['timing'],
+	countdownSeconds: number,
+	observedAt: string,
+	source: ActionSource
+): { readonly control: MasterControlStateV2; readonly paused: MasterDecisionResolutionV2 | null } {
+	const paused = pausedMasterDecisionV2(control, observedAt, source);
+	const configured = MasterControlStateV2Schema.parse({
+		...control,
+		timing,
+		countdownSeconds,
+		revision: control.revision + 1,
+		activeDecision: null,
+		lastResolution: paused ?? control.lastResolution,
+		consecutiveFallbacks: timing === 'wait' ? 0 : control.consecutiveFallbacks
+	});
+	return {
+		paused,
+		control: paused ? masterDecisionWindowV2(configured, commandId, observedAt) : configured
+	};
+}
+
+type MasterFallbackConfigurationInput = Pick<
+	Extract<EngineCommand, { commandType: 'master.configure.fallback' }>,
+	| 'commandId'
+	| 'observedAt'
+	| 'source'
+	| 'policy'
+	| 'directionText'
+	| 'priorities'
+	| 'protectedHeroId'
+	| 'safetyStops'
+>;
+
+function configureMasterFallback(
+	control: MasterControlStateV2,
+	command: MasterFallbackConfigurationInput
+): { readonly control: MasterControlStateV2; readonly paused: MasterDecisionResolutionV2 | null } {
+	const paused = pausedMasterDecisionV2(control, command.observedAt, command.source);
+	const fallback = MasterFallbackConfigurationSchema.parse({
+		configurationVersion: 'master-fallback-v1',
+		policy: command.policy,
+		directionId: deterministicUuid(`${command.commandId}:master-fallback-direction`),
+		directionText: command.directionText,
+		priorities: command.priorities,
+		protectedHeroId: command.protectedHeroId,
+		safetyStops: command.safetyStops,
+		configuredAt: command.observedAt
+	});
+	const configured = MasterControlStateV2Schema.parse({
+		...control,
+		fallback,
+		revision: control.revision + 1,
+		activeDecision: null,
+		lastResolution: paused ?? control.lastResolution,
+		consecutiveFallbacks: 0
+	});
+	return {
+		paused,
+		control: paused
+			? masterDecisionWindowV2(configured, command.commandId, command.observedAt)
+			: configured
+	};
+}
+
+function masterFallbackPacket(state: EngineGameStateV20, legal: readonly LegalAction[]) {
+	const active = state.masterControl.activeDecision!;
+	const attempt = state.mission.attempt!;
+	return {
+		runId: state.runId,
+		stateVersion: state.version,
+		missionId: state.mission.binding.missionId,
+		attemptId: attempt.attemptId,
+		roundNumber: attempt.turnState.roundNumber,
+		decision: active,
+		master: {
+			health: state.master.health,
+			maxHealth: state.master.maxHealth,
+			location: state.master.location
+		},
+		legalActionIds: legal.map((candidate) => candidate.actionId),
+		threatIntentHashes: attempt.turnState.currentThreatIntents.map((intent) =>
+			hashCanonical(intent)
+		)
+	};
+}
+
+function directionRecognized(direction: MasterFallbackConfiguration): boolean {
+	return (
+		direction.priorities.length > 0 ||
+		/\b(hold|defend|guard|attack|fight|inspect|search|secret|recover|ember|objective|move|advance|protect|conserve)\b/iu.test(
+			direction.directionText
+		)
+	);
+}
+
+function scoreDirectedAction(action: LegalAction, direction: MasterFallbackConfiguration): number {
+	let score = 0;
+	const id = action.actionId;
+	const tags = new Set(action.tags);
+	for (const [index, priority] of direction.priorities.entries()) {
+		const weight = 100 - index * 10;
+		if (priority === 'protect-self') {
+			if (action.kind === 'defend' || id === 'mission.hold') score += weight;
+			else if (action.kind === 'move') score += Math.round(weight * 0.3);
+			else if (action.kind === 'attack') score += Math.round(weight * 0.15);
+		}
+		if (priority === 'protect-party') {
+			if (action.kind === 'defend' || tags.has('protect')) score += Math.round(weight * 0.8);
+			else if (action.kind === 'attack') score += Math.round(weight * 0.7);
+			else if (action.kind === 'move') score += Math.round(weight * 0.25);
+		}
+		if (priority === 'focus-objective') {
+			if (id.startsWith('mission.recover.')) score += Math.round(weight * 1.2);
+			else if (action.kind === 'interact') score += Math.round(weight * 0.75);
+			else if (action.kind === 'move') score += Math.round(weight * 0.4);
+			else if (action.kind === 'attack') score += Math.round(weight * 0.25);
+		}
+		if (priority === 'seek-secrets') {
+			if (id.startsWith('mission.inspect.')) score += Math.round(weight * 1.2);
+			else if (tags.has('discovery') || tags.has('secret')) score += weight;
+			else if (action.kind === 'interact') score += Math.round(weight * 0.6);
+			else if (action.kind === 'move') score += Math.round(weight * 0.3);
+		}
+		if (priority === 'conserve-resources') {
+			if (Object.keys(action.resourceCosts).length === 0) score += Math.round(weight * 0.55);
+			if (action.kind === 'defend') score += Math.round(weight * 0.25);
+			if (action.kind === 'attack') score -= Math.round(weight * 0.1);
+		}
+	}
+	const text = direction.directionText.toLowerCase();
+	if (/\b(hold|defend|guard)\b/u.test(text) && action.kind === 'defend') score += 60;
+	if (/\b(attack|fight)\b/u.test(text) && action.kind === 'attack') score += 60;
+	if (/\b(inspect|search|secret)\b/u.test(text) && id.startsWith('mission.inspect.')) score += 60;
+	if (/\b(recover|ember|objective)\b/u.test(text) && id.startsWith('mission.recover.')) score += 60;
+	if (/\b(move|advance)\b/u.test(text) && action.kind === 'move') score += 40;
+	if (/\bprotect\b/u.test(text) && (action.kind === 'defend' || tags.has('protect'))) score += 40;
+	if (direction.protectedHeroId && (action.kind === 'defend' || tags.has('protect'))) score += 35;
+	return score;
+}
+
+export function isIrreversibleMasterAction(action: LegalAction): boolean {
+	return (
+		action.tags.some(
+			(tag) => tag.startsWith('irreversible') || ['permanent', 'consume-hero'].includes(tag)
+		) ||
+		action.actionId.startsWith('mission.synthesize.') ||
+		action.actionId.startsWith('mission.evolve.')
+	);
+}
+
+export function selectMasterFallback(stateInput: EngineGameStateV20): MasterFallbackSelection {
+	const state = EngineGameStateV20Schema.parse(stateInput);
+	const active = state.masterControl.activeDecision;
+	if (!active || active.timing === 'wait') throw new IllegalActionError('mission.resolve.turn');
+	const legal = [...missionTurnLegalActions(state, state.master.masterId)].sort((left, right) =>
+		left.actionId.localeCompare(right.actionId)
+	);
+	if (legal.length === 0) throw new IllegalActionError('mission.resolve.turn');
+	const packetHash = hashCanonical(masterFallbackPacket(state, legal));
+	const legalActionHash = hashCanonical(legal);
+	const tieBreakHash = hashCanonical({
+		seed: state.seed,
+		decisionId: active.decisionId,
+		policy: active.fallback.policy,
+		legalActionHash
+	});
+	const classified = active.fallback.policy === 'random' || directionRecognized(active.fallback);
+	let selected: LegalAction;
+	let selectedScore: number;
+	if (active.fallback.policy === 'random') {
+		const index = Number.parseInt(tieBreakHash.slice(0, 8), 16) % legal.length;
+		selected = legal[index]!;
+		selectedScore = 0;
+	} else {
+		const ranked = legal
+			.map((candidate) => ({
+				candidate,
+				score: scoreDirectedAction(candidate, active.fallback),
+				tie: hashCanonical({
+					seed: state.seed,
+					decisionId: active.decisionId,
+					actionId: candidate.actionId
+				})
+			}))
+			.sort((left, right) => right.score - left.score || left.tie.localeCompare(right.tie));
+		selected = ranked[0]!.candidate;
+		selectedScore = ranked[0]!.score;
+	}
+	const stops = active.fallback.safetyStops;
+	const retreatAvailable =
+		state.mission.attempt !== null &&
+		['deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status) &&
+		allPartyAtNode(state, missionContentForState(state).retreat.nodeIds);
+	const safetyStopReason =
+		stops.maximumConsecutiveFallbacks !== null &&
+		state.masterControl.consecutiveFallbacks >= stops.maximumConsecutiveFallbacks
+			? 'fallback-limit'
+			: stops.masterHealthThreshold !== null &&
+				  state.master.health <= stops.masterHealthThreshold &&
+				  retreatAvailable
+				? 'master-health'
+				: stops.whenUnclassified && !classified
+					? 'unclassified-state'
+					: stops.beforeIrreversibleAction && isIrreversibleMasterAction(selected)
+						? 'irreversible-action'
+						: null;
+	const policyId =
+		active.fallback.policy === 'directed' ? 'master-directed-v1' : 'master-random-v1';
+	const explanation = safetyStopReason
+		? `Safety changed ${active.timing} to Wait before ${selected.label.toLowerCase()} (${safetyStopReason}).`
+		: active.fallback.policy === 'random'
+			? `Seeded random selected ${selected.label.toLowerCase()} from ${legal.length} legal actions.`
+			: classified
+				? `Directed scoring selected ${selected.label.toLowerCase()} at ${selectedScore} points.`
+				: `No direction term matched; the disabled classification stop allowed the seeded tie-breaker.`;
+	const resultCore = {
+		selectionVersion: 'master-fallback-selection-v1' as const,
+		policyId,
+		policy: active.fallback.policy,
+		decisionId: active.decisionId,
+		directionId: active.fallback.directionId,
+		classification: classified ? ('classified' as const) : ('unclassified' as const),
+		selectedActionId: selected.actionId,
+		selectedScore,
+		consideredActionIds: legal.map((candidate) => candidate.actionId),
+		packetHash,
+		legalActionHash,
+		tieBreakHash,
+		safetyStopReason,
+		explanation
+	};
+	return MasterFallbackSelectionSchema.parse({
+		...resultCore,
+		policyResultHash: hashCanonical(resultCore)
+	});
+}
+
+export function masterFallbackActionSource(stateInput: EngineGameStateV20): ActionSource {
+	const state = EngineGameStateV20Schema.parse(stateInput);
+	const active = state.masterControl.activeDecision;
+	if (!active || active.timing === 'wait') throw new IllegalActionError('mission.resolve.turn');
+	return {
+		source: active.timing,
+		timing: active.timing,
+		fallbackPolicy: active.fallback.policy,
+		directiveIds: active.fallback.policy === 'directed' ? [active.fallback.directionId] : [],
+		decisionJobId: null
+	};
+}
+
+export function masterFallbackSafetySource(stateInput: EngineGameStateV20): ActionSource {
+	return { ...masterFallbackActionSource(stateInput), source: 'system' };
+}
+
+export function masterFallbackMissionChoice(stateInput: EngineGameStateV20): MissionTurnChoice {
+	const state = EngineGameStateV20Schema.parse(stateInput);
+	const selection = selectMasterFallback(state);
+	if (selection.safetyStopReason) throw new IllegalActionError('master.apply.safety-stop');
+	return MissionTurnChoiceSchema.parse({
+		actorId: state.master.masterId,
+		actionId: selection.selectedActionId,
+		source: selection.policy === 'random' ? 'random' : 'scripted',
+		policyId: selection.policyId,
+		packetHash: selection.packetHash,
+		legalActionHash: selection.legalActionHash,
+		policyResultHash: selection.policyResultHash,
+		publicIntent: selection.explanation
+	});
+}
+
+function resolveMasterDecisionV2(
+	state: EngineGameStateV20,
+	commandId: string,
+	decisionId: string,
+	resolvedAt: string,
+	actionId: string,
+	source: ActionSource,
+	missionContinues: boolean
+): { readonly control: MasterControlStateV2; readonly resolution: MasterDecisionResolutionV2 } {
+	const control = state.masterControl;
+	const active = control.activeDecision;
+	if (!active || active.decisionId !== decisionId || source.timing !== active.timing) {
+		throw new IllegalActionError('mission.resolve.turn');
+	}
+	const resolvedMillis = Date.parse(resolvedAt);
+	const openedMillis = Date.parse(active.openedAt);
+	const expiresMillis = active.expiresAt ? Date.parse(active.expiresAt) : null;
+	if (resolvedMillis < openedMillis) throw new IllegalActionError('mission.resolve.turn');
+	const manual = source.source === 'manual';
+	const fallback =
+		active.timing !== 'wait' &&
+		(source.source === 'countdown' || source.source === 'step' || source.source === 'continuous') &&
+		source.source === active.timing;
+	if (!manual && !fallback) throw new IllegalActionError('mission.resolve.turn');
+	if (manual && active.timing !== 'wait' && active.timing !== 'countdown') {
+		throw new IllegalActionError('mission.resolve.turn');
+	}
+	if (active.timing === 'countdown') {
+		if (
+			expiresMillis === null ||
+			(manual && resolvedMillis >= expiresMillis) ||
+			(fallback && resolvedMillis < expiresMillis)
+		) {
+			throw new IllegalActionError('mission.resolve.turn');
+		}
+	}
+	const selection = fallback ? selectMasterFallback(state) : null;
+	if (selection?.safetyStopReason || (selection && selection.selectedActionId !== actionId)) {
+		throw new IllegalActionError('mission.resolve.turn');
+	}
+	const outcome = manual ? 'manual' : 'fallback';
+	const expiryOutcome =
+		active.timing === 'countdown'
+			? manual
+				? 'manual-before-expiry'
+				: 'expired-to-fallback'
+			: fallback
+				? 'immediate-fallback'
+				: 'not-applicable';
+	const resolution = MasterDecisionResolutionV2Schema.parse({
+		...active,
+		resolvedAt,
+		outcome,
+		expiryOutcome,
+		resolvedActionId: actionId,
+		source,
+		fallbackSelection: selection
+	});
+	let next = MasterControlStateV2Schema.parse({
+		...control,
+		timing: active.timing === 'step' ? 'wait' : control.timing,
+		revision: control.revision + (active.timing === 'step' ? 1 : 0),
+		activeDecision: null,
+		lastResolution: resolution,
+		consecutiveFallbacks: fallback ? control.consecutiveFallbacks + 1 : 0
+	});
+	if (missionContinues) next = masterDecisionWindowV2(next, commandId, resolvedAt);
+	return { control: next, resolution };
+}
+
+function assertFallbackReady(control: MasterControlStateV2, observedAt: string): void {
+	const active = control.activeDecision;
+	if (!active || active.timing === 'wait' || Date.parse(observedAt) < Date.parse(active.openedAt)) {
+		throw new IllegalActionError('master.apply.safety-stop');
+	}
+	if (
+		active.timing === 'countdown' &&
+		(active.expiresAt === null || Date.parse(observedAt) < Date.parse(active.expiresAt))
+	) {
+		throw new IllegalActionError('master.apply.safety-stop');
+	}
+}
+
+function applyMasterSafetyStop(
+	state: EngineGameStateV20,
+	commandId: string,
+	decisionId: string,
+	observedAt: string,
+	source: ActionSource
+): { readonly control: MasterControlStateV2; readonly resolution: MasterDecisionResolutionV2 } {
+	assertFallbackReady(state.masterControl, observedAt);
+	const active = state.masterControl.activeDecision!;
+	if (
+		active.decisionId !== decisionId ||
+		hashCanonical(source) !== hashCanonical(masterFallbackSafetySource(state))
+	) {
+		throw new IllegalActionError('master.apply.safety-stop');
+	}
+	const selection = selectMasterFallback(state);
+	if (!selection.safetyStopReason) throw new IllegalActionError('master.apply.safety-stop');
+	const resolution = MasterDecisionResolutionV2Schema.parse({
+		...active,
+		resolvedAt: observedAt,
+		outcome: 'safety-stopped',
+		expiryOutcome: 'safety-stopped',
+		resolvedActionId: null,
+		source,
+		fallbackSelection: selection
+	});
+	const waiting = MasterControlStateV2Schema.parse({
+		...state.masterControl,
+		timing: 'wait',
+		revision: state.masterControl.revision + 1,
+		activeDecision: null,
+		lastResolution: resolution,
+		consecutiveFallbacks: 0
+	});
+	return {
+		resolution,
+		control: masterDecisionWindowV2(waiting, commandId, observedAt)
+	};
+}
+
+function endMasterDecisionV2(
+	control: MasterControlStateV2,
+	source: ActionSource
+): {
+	readonly control: MasterControlStateV2;
+	readonly resolution: MasterDecisionResolutionV2 | null;
+} {
+	const active = control.activeDecision;
+	if (!active) return { control, resolution: null };
+	const resolution = MasterDecisionResolutionV2Schema.parse({
+		...active,
+		resolvedAt: active.openedAt,
+		outcome: 'mission-ended',
+		expiryOutcome: 'mission-ended',
+		resolvedActionId: null,
+		source: { ...source, source: 'system', timing: null, fallbackPolicy: null },
+		fallbackSelection: null
+	});
+	return {
+		resolution,
+		control: MasterControlStateV2Schema.parse({
+			...control,
+			activeDecision: null,
+			lastResolution: resolution,
+			consecutiveFallbacks: 0
 		})
 	};
 }
@@ -1140,48 +1664,56 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const attemptAftermathDevelopmentScenario =
 		developmentMissionScenario?.enableAttemptAftermath === true;
 	const masterTimingDevelopmentScenario = developmentMissionScenario?.enableMasterTiming === true;
-	const stateSchema = masterTimingDevelopmentScenario
-		? EngineGameStateV19Schema
-		: attemptAftermathDevelopmentScenario
-			? EngineGameStateV18Schema
-			: masterPermadeathDevelopmentScenario
-				? EngineGameStateV17Schema
-				: aftermathDevelopmentScenario
-					? EngineGameStateV16Schema
-					: portalDevelopmentScenario
-						? EngineGameStateV15Schema
-						: developmentMissionScenario
-							? EngineGameStateV14Schema
-							: EngineGameStateV13Schema;
-	const state = stateSchema.parse({
-		schemaVersion: masterTimingDevelopmentScenario
-			? 19
+	const masterFallbackDevelopmentScenario =
+		developmentMissionScenario?.enableMasterFallback === true;
+	const stateSchema = masterFallbackDevelopmentScenario
+		? EngineGameStateV20Schema
+		: masterTimingDevelopmentScenario
+			? EngineGameStateV19Schema
 			: attemptAftermathDevelopmentScenario
-				? 18
+				? EngineGameStateV18Schema
 				: masterPermadeathDevelopmentScenario
-					? 17
+					? EngineGameStateV17Schema
 					: aftermathDevelopmentScenario
-						? 16
+						? EngineGameStateV16Schema
 						: portalDevelopmentScenario
-							? 15
+							? EngineGameStateV15Schema
 							: developmentMissionScenario
-								? 14
-								: 13,
+								? EngineGameStateV14Schema
+								: EngineGameStateV13Schema;
+	const state = stateSchema.parse({
+		schemaVersion: masterFallbackDevelopmentScenario
+			? 20
+			: masterTimingDevelopmentScenario
+				? 19
+				: attemptAftermathDevelopmentScenario
+					? 18
+					: masterPermadeathDevelopmentScenario
+						? 17
+						: aftermathDevelopmentScenario
+							? 16
+							: portalDevelopmentScenario
+								? 15
+								: developmentMissionScenario
+									? 14
+									: 13,
 		runId: input.runId,
 		seed: input.seed,
-		contentVersion: masterTimingDevelopmentScenario
-			? MASTER_TIMING_ENGINE_CONTENT_VERSION
-			: attemptAftermathDevelopmentScenario
-				? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
-				: masterPermadeathDevelopmentScenario
-					? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
-					: aftermathDevelopmentScenario
-						? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
-						: portalDevelopmentScenario
-							? PORTAL_ENGINE_CONTENT_VERSION
-							: developmentMissionScenario
-								? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
-								: ENGINE_CONTENT_VERSION,
+		contentVersion: masterFallbackDevelopmentScenario
+			? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
+			: masterTimingDevelopmentScenario
+				? MASTER_TIMING_ENGINE_CONTENT_VERSION
+				: attemptAftermathDevelopmentScenario
+					? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
+					: masterPermadeathDevelopmentScenario
+						? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
+						: aftermathDevelopmentScenario
+							? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
+							: portalDevelopmentScenario
+								? PORTAL_ENGINE_CONTENT_VERSION
+								: developmentMissionScenario
+									? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
+									: ENGINE_CONTENT_VERSION,
 		status: 'active',
 		version: 0,
 		eventCursor: 1,
@@ -1309,7 +1841,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 								: {}
 					}
 				: {}),
-			...(masterTimingDevelopmentScenario || attemptAftermathDevelopmentScenario
+			...(masterFallbackDevelopmentScenario ||
+			masterTimingDevelopmentScenario ||
+			attemptAftermathDevelopmentScenario
 				? {
 						aftermath: {
 							aftermathVersion: 'mission-aftermath-v3',
@@ -1336,7 +1870,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			attemptCount: 0,
 			attempt: null
 		},
-		...(masterTimingDevelopmentScenario
+		...(masterFallbackDevelopmentScenario
 			? {
 					masterControl: {
 						timing: 'wait',
@@ -1344,10 +1878,37 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 						revision: 0,
 						decisionOrdinal: 0,
 						activeDecision: null,
-						lastResolution: null
+						lastResolution: null,
+						fallback: {
+							configurationVersion: 'master-fallback-v1',
+							policy: 'directed',
+							directionId: deterministicUuid(`${input.runId}:master-fallback-direction:0`),
+							directionText: 'Advance the objective while protecting the company.',
+							priorities: ['focus-objective', 'protect-self', 'protect-party'],
+							protectedHeroId: null,
+							safetyStops: {
+								beforeIrreversibleAction: true,
+								masterHealthThreshold: 35,
+								whenUnclassified: true,
+								maximumConsecutiveFallbacks: 8
+							},
+							configuredAt: simulatedAt
+						},
+						consecutiveFallbacks: 0
 					}
 				}
-			: {}),
+			: masterTimingDevelopmentScenario
+				? {
+						masterControl: {
+							timing: 'wait',
+							countdownSeconds: 5,
+							revision: 0,
+							decisionOrdinal: 0,
+							activeDecision: null,
+							lastResolution: null
+						}
+					}
+				: {}),
 		story: { envelopeId: 'first-ember-v1', branch: null }
 	});
 	const stateHash = hashParsedGameState(state);
@@ -1587,7 +2148,8 @@ function buildFirstEmberSociety(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	eventId: string,
 	buildingId: FirstEmberFacility,
 	rationale: FirstEmberRationale,
@@ -1758,7 +2320,8 @@ function buildFirstEmberSociety(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	)
 		return SocietyStateV4Schema.parse(candidate);
 	if (state.schemaVersion === 9) return SocietyStateV3Schema.parse(candidate);
@@ -1784,7 +2347,8 @@ type EngineCommunicationState =
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19;
+	| EngineGameStateV19
+	| EngineGameStateV20;
 
 function heroCanHearCommunication(hero: EngineCommunicationState['heroes'][string]): boolean {
 	return (
@@ -1940,7 +2504,8 @@ function buildCommunicativeSociety(
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20
 				? SocietyStateV4Schema.parse(candidate)
 				: state.schemaVersion === 9
 					? SocietyStateV3Schema.parse(candidate)
@@ -1969,7 +2534,8 @@ function buildDirectiveChange(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	eventId: string,
 	command: DirectiveIssueCommand
 ): {
@@ -2103,7 +2669,8 @@ function revokeDirective(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	eventId: string,
 	directiveId: string
 ): { directive: DirectiveRecord; society: SocietyStateV4 } {
@@ -2145,7 +2712,8 @@ function conversationOrderScore(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	hero: (
 		| EngineGameStateV9
 		| EngineGameStateV10
@@ -2271,7 +2839,8 @@ function buildConversationResponse(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	command: MasterConverseCommand
 ): z.infer<typeof HeroConversationTurnSchema>['response'] {
 	const hero = state.heroes[command.targetHeroId];
@@ -2338,7 +2907,8 @@ function buildConversationSociety(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	eventId: string,
 	command: MasterConverseCommand
 ): {
@@ -2363,7 +2933,8 @@ function buildConversationSociety(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? SocietyStateV4Schema.parse(communication.society)
 			: SocietyStateV3Schema.parse(communication.society);
 	const response = buildConversationResponse(state, command);
@@ -2477,7 +3048,8 @@ function buildConversationSociety(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? SocietyStateV4Schema.parse(societyCandidate)
 			: SocietyStateV3Schema.parse(societyCandidate);
 	return { society, conversationTurn };
@@ -2518,6 +3090,7 @@ function settlementForState(
 		| EngineGameStateV17
 		| EngineGameStateV18
 		| EngineGameStateV19
+		| EngineGameStateV20
 ): SettlementDefinition {
 	const definition = verifiedSettlementContent();
 	const binding = state.settlement.navigation;
@@ -2571,7 +3144,8 @@ function routeHasCapacity(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	definition: SettlementDefinition,
 	heroId: string,
 	targetNodeId: string,
@@ -2616,7 +3190,8 @@ function travelActions(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -2678,7 +3253,8 @@ function currentTravelFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }
@@ -2698,7 +3274,8 @@ function currentRoutineFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -2722,8 +3299,9 @@ function hasNavigationState(
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19 {
-	return [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(
+	| EngineGameStateV19
+	| EngineGameStateV20 {
+	return [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].includes(
 		state.schemaVersion
 	);
 }
@@ -2746,8 +3324,11 @@ function hasFacilityState(
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19 {
-	return [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(state.schemaVersion);
+	| EngineGameStateV19
+	| EngineGameStateV20 {
+	return [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].includes(
+		state.schemaVersion
+	);
 }
 
 function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
@@ -2766,7 +3347,8 @@ function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	);
 }
 
@@ -2786,8 +3368,9 @@ function hasFirstEmberState(
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19 {
-	return [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(state.schemaVersion);
+	| EngineGameStateV19
+	| EngineGameStateV20 {
+	return [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].includes(state.schemaVersion);
 }
 
 function isModernState(state: EngineGameState): state is EngineGameStateModern {
@@ -2805,7 +3388,8 @@ type MissionEngineState =
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19;
+	| EngineGameStateV19
+	| EngineGameStateV20;
 type MissionEngineRunState =
 	| MissionRunState
 	| MissionRunStateV2
@@ -2817,7 +3401,7 @@ type MissionEngineRunState =
 	| MissionRunStateV8;
 
 function parseMissionRunState(state: MissionEngineState, value: unknown): MissionEngineRunState {
-	return state.schemaVersion === 19 || state.schemaVersion === 18
+	return state.schemaVersion === 20 || state.schemaVersion === 19 || state.schemaVersion === 18
 		? MissionRunStateV8Schema.parse(value)
 		: state.schemaVersion === 17
 			? MissionRunStateV7Schema.parse(value)
@@ -2872,6 +3456,7 @@ function assertMissionPartyReady(
 		state.schemaVersion !== 17 &&
 		state.schemaVersion !== 18 &&
 		state.schemaVersion !== 19 &&
+		state.schemaVersion !== 20 &&
 		missionId !== state.mission.binding.missionId
 	) {
 		throw new IllegalActionError('mission.party');
@@ -2882,7 +3467,8 @@ function assertMissionPartyReady(
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19) &&
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20) &&
 		!state.mission.availableMissionIds.includes(missionId)
 	) {
 		throw new IllegalActionError('mission.party');
@@ -2926,7 +3512,10 @@ function prepareMissionAttempt(
 	if (
 		prior &&
 		!['canceled', 'retreat', 'failure', 'death'].includes(prior.status) &&
-		!((state.schemaVersion === 18 || state.schemaVersion === 19) && prior.status === 'success')
+		!(
+			(state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20) &&
+			prior.status === 'success'
+		)
 	) {
 		throw new IllegalActionError('mission.prepare');
 	}
@@ -2937,7 +3526,7 @@ function prepareMissionAttempt(
 	return parseMissionRunState(state, {
 		...state.mission,
 		binding: verifiedMissionBinding(missionId),
-		...(state.schemaVersion === 18 || state.schemaVersion === 19
+		...(state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20
 			? {
 					aftermath: {
 						...state.mission.aftermath,
@@ -3078,7 +3667,8 @@ function prepareMissionAttempt(
 						  state.schemaVersion === 16 ||
 						  state.schemaVersion === 17 ||
 						  state.schemaVersion === 18 ||
-						  state.schemaVersion === 19
+						  state.schemaVersion === 19 ||
+						  state.schemaVersion === 20
 						? {
 								turnState: {
 									turnVersion: 'mission-turn-v2',
@@ -3147,7 +3737,8 @@ function reviseMissionParty(
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20
 				? {
 						turnState: {
 							...state.mission.attempt!.turnState,
@@ -3218,7 +3809,8 @@ function deployMissionAttempt(state: MissionEngineState): MissionDeploymentResol
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy, entropyDraws)
 			: null;
 	if (combat) entropy = combat.entropy;
@@ -3238,7 +3830,8 @@ function deployMissionAttempt(state: MissionEngineState): MissionDeploymentResol
 							state.schemaVersion === 16 ||
 							state.schemaVersion === 17 ||
 							state.schemaVersion === 18 ||
-							state.schemaVersion === 19
+							state.schemaVersion === 19 ||
+							state.schemaVersion === 20
 								? state.mission.attempt!.turnState
 								: {}),
 							monsters: combat.monsters,
@@ -3632,7 +4225,8 @@ function spawnMissionCombatants(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	attempt: MissionCombatAttempt,
 	positions: Readonly<Record<string, string>>,
 	entropyInput: ReturnType<typeof createEntropyCursor>,
@@ -3694,7 +4288,8 @@ type MissionTurnEngineState =
 	| EngineGameStateV16
 	| EngineGameStateV17
 	| EngineGameStateV18
-	| EngineGameStateV19;
+	| EngineGameStateV19
+	| EngineGameStateV20;
 
 function missionToolTagsForActor(state: MissionTurnEngineState, actorId: string): Set<string> {
 	if (
@@ -3702,7 +4297,8 @@ function missionToolTagsForActor(state: MissionTurnEngineState, actorId: string)
 		state.schemaVersion !== 16 &&
 		state.schemaVersion !== 17 &&
 		state.schemaVersion !== 18 &&
-		state.schemaVersion !== 19
+		state.schemaVersion !== 19 &&
+		state.schemaVersion !== 20
 	)
 		return new Set();
 	return new Set(
@@ -3815,14 +4411,16 @@ function missionTurnActionsForState(state: MissionTurnEngineState, actorId: stri
 					state.schemaVersion === 16 ||
 					state.schemaVersion === 17 ||
 					state.schemaVersion === 18 ||
-					state.schemaVersion === 19
+					state.schemaVersion === 19 ||
+					state.schemaVersion === 20
 						? `Recover ${objectiveDefinition.title}`
 						: 'Lift the First Ember',
 				description:
 					state.schemaVersion === 16 ||
 					state.schemaVersion === 17 ||
 					state.schemaVersion === 18 ||
-					state.schemaVersion === 19
+					state.schemaVersion === 19 ||
+					state.schemaVersion === 20
 						? `Physically recover ${objectiveDefinition.title} before attempting the return route.`
 						: 'Physically recover the primary objective before attempting the return route.',
 				targetIds: [],
@@ -3866,7 +4464,8 @@ function missionTurnActionsForState(state: MissionTurnEngineState, actorId: stri
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		const combatAttempt = state.mission.attempt!;
 		for (const monster of Object.values(combatAttempt.turnState.monsters)
@@ -3892,7 +4491,8 @@ function missionTurnActionsForState(state: MissionTurnEngineState, actorId: stri
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? state.mission.attempt!.turnState.arena
 			: null;
 	if (
@@ -3943,7 +4543,8 @@ export function missionTurnLegalActions(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 		? missionTurnActionsForState(state, actorId)
 		: [];
 }
@@ -3973,6 +4574,7 @@ function normalizedMissionTurnChoices(
 		if (
 			(choice.actorId === attempt.party.masterId &&
 				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20 &&
 				choice.source !== 'manual') ||
 			(choice.actorId !== attempt.party.masterId && choice.source === 'manual') ||
 			!missionTurnActionsForState(state, choice.actorId).some(
@@ -4220,7 +4822,8 @@ function missionAttackPower(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	actorId: string
 ): number {
 	if (actorId === state.master.masterId) return 1;
@@ -4239,7 +4842,8 @@ function resolveMissionCombatTurn(
 		| EngineGameStateV16
 		| EngineGameStateV17
 		| EngineGameStateV18
-		| EngineGameStateV19,
+		| EngineGameStateV19
+		| EngineGameStateV20,
 	choicesInput: readonly MissionTurnChoice[],
 	sourceEventId: string | null = null
 ): MissionCombatTurnResolution {
@@ -4306,7 +4910,8 @@ function resolveMissionCombatTurn(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? { ...state.mission.evidence }
 			: null;
 	const monsters = structuredClone(currentAttempt.turnState.monsters);
@@ -4339,7 +4944,8 @@ function resolveMissionCombatTurn(
 			(state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19) ||
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20) ||
 			amount <= 0
 		)
 			return;
@@ -4347,7 +4953,10 @@ function resolveMissionCombatTurn(
 			throw new ReplayIntegrityError('Mission aftermath lacks a source event', state.eventCursor);
 		}
 		if (
-			(state.schemaVersion === 17 || state.schemaVersion === 18 || state.schemaVersion === 19) &&
+			(state.schemaVersion === 17 ||
+				state.schemaVersion === 18 ||
+				state.schemaVersion === 19 ||
+				state.schemaVersion === 20) &&
 			targetId === master.masterId
 		) {
 			if (master.lifeState !== 'alive') return;
@@ -4446,14 +5055,14 @@ function resolveMissionCombatTurn(
 				return { heroId, observationId, relationshipId };
 			});
 			consequences.push(
-				(state.schemaVersion === 18 || state.schemaVersion === 19
+				(state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20
 					? MissionConsequenceRecordV3Schema
 					: MissionMasterHarmRecordSchema
 				).parse({
 					consequenceKind: 'master-harm',
 					consequenceId,
 					sourceEventId,
-					...(state.schemaVersion === 18 || state.schemaVersion === 19
+					...(state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20
 						? { sourceAttemptId: currentAttempt.attemptId }
 						: {}),
 					sourceKind,
@@ -4592,13 +5201,13 @@ function resolveMissionCombatTurn(
 			return { heroId, observationId, relationshipId };
 		});
 		consequences.push(
-			(state.schemaVersion === 18 || state.schemaVersion === 19
+			(state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20
 				? MissionConsequenceRecordV3Schema
 				: MissionHarmRecordSchema
 			).parse({
 				consequenceId,
 				sourceEventId,
-				...(state.schemaVersion === 18 || state.schemaVersion === 19
+				...(state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20
 					? { sourceAttemptId: currentAttempt.attemptId }
 					: {}),
 				sourceKind,
@@ -4723,7 +5332,8 @@ function resolveMissionCombatTurn(
 							state.schemaVersion === 16 ||
 							state.schemaVersion === 17 ||
 							state.schemaVersion === 18 ||
-							state.schemaVersion === 19) &&
+							state.schemaVersion === 19 ||
+							state.schemaVersion === 20) &&
 						missionContent.missionId === 'tower-floor-04' &&
 						discoveryIds.includes('foundry-maintenance-route')
 					) {
@@ -4744,7 +5354,8 @@ function resolveMissionCombatTurn(
 							state.schemaVersion === 16 ||
 							state.schemaVersion === 17 ||
 							state.schemaVersion === 18 ||
-							state.schemaVersion === 19) &&
+							state.schemaVersion === 19 ||
+							state.schemaVersion === 20) &&
 						missionContent.missionId === 'tower-floor-05' &&
 						discoveryIds.includes('foundry-maintenance-route')
 					) {
@@ -4777,7 +5388,8 @@ function resolveMissionCombatTurn(
 						state.schemaVersion !== 16 &&
 						state.schemaVersion !== 17 &&
 						state.schemaVersion !== 18 &&
-						state.schemaVersion !== 19) ||
+						state.schemaVersion !== 19 &&
+						state.schemaVersion !== 20) ||
 					fromNodeId !== arena.coolingControlNodeId ||
 					!knowledge.discoveryIds.includes('cooling-control-weakness') ||
 					after === before
@@ -4960,7 +5572,8 @@ function resolveMissionCombatTurn(
 				((state.schemaVersion === 16 ||
 					state.schemaVersion === 17 ||
 					state.schemaVersion === 18 ||
-					state.schemaVersion === 19) &&
+					state.schemaVersion === 19 ||
+					state.schemaVersion === 20) &&
 					((targetId === master.masterId && master.lifeState === 'dead') ||
 						heroes[targetId]?.lifeState === 'dead'))
 			) {
@@ -4969,7 +5582,8 @@ function resolveMissionCombatTurn(
 					(state.schemaVersion === 16 ||
 						state.schemaVersion === 17 ||
 						state.schemaVersion === 18 ||
-						state.schemaVersion === 19) &&
+						state.schemaVersion === 19 ||
+						state.schemaVersion === 20) &&
 					((targetId === master.masterId && master.lifeState === 'dead') ||
 						heroes[targetId]?.lifeState === 'dead')
 						? `${monster.label}'s target had already fallen before impact.`
@@ -5022,7 +5636,8 @@ function resolveMissionCombatTurn(
 		(state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19) &&
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20) &&
 		environmentEventIds.includes('red-slag-fall')
 	) {
 		for (const actorId of currentAttempt.party.memberIds) {
@@ -5092,7 +5707,7 @@ function resolveMissionCombatTurn(
 			? deriveMonsterIntents(missionContent, currentAttempt, monsters, positions, objective, arena)
 			: [];
 	const missionSchema =
-		state.schemaVersion === 18 || state.schemaVersion === 19
+		state.schemaVersion === 18 || state.schemaVersion === 19 || state.schemaVersion === 20
 			? MissionRunStateV8Schema
 			: state.schemaVersion === 17
 				? MissionRunStateV7Schema
@@ -5107,13 +5722,15 @@ function resolveMissionCombatTurn(
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? { evidence: missionEvidence }
 			: {}),
 		...(state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 			? {
 					aftermath: {
 						...state.mission.aftermath,
@@ -5600,35 +6217,37 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 19
-			? EngineGameStateV19Schema.parse(stateInput)
-			: stateInput.schemaVersion === 18
-				? EngineGameStateV18Schema.parse(stateInput)
-				: stateInput.schemaVersion === 17
-					? EngineGameStateV17Schema.parse(stateInput)
-					: stateInput.schemaVersion === 16
-						? EngineGameStateV16Schema.parse(stateInput)
-						: stateInput.schemaVersion === 15
-							? EngineGameStateV15Schema.parse(stateInput)
-							: stateInput.schemaVersion === 14
-								? EngineGameStateV14Schema.parse(stateInput)
-								: stateInput.schemaVersion === 13
-									? EngineGameStateV13Schema.parse(stateInput)
-									: stateInput.schemaVersion === 12
-										? EngineGameStateV12Schema.parse(stateInput)
-										: stateInput.schemaVersion === 11
-											? EngineGameStateV11Schema.parse(stateInput)
-											: stateInput.schemaVersion === 10
-												? EngineGameStateV10Schema.parse(stateInput)
-												: stateInput.schemaVersion === 9
-													? EngineGameStateV9Schema.parse(stateInput)
-													: stateInput.schemaVersion === 8
-														? EngineGameStateV8Schema.parse(stateInput)
-														: stateInput.schemaVersion === 7
-															? EngineGameStateV7Schema.parse(stateInput)
-															: stateInput.schemaVersion === 6
-																? EngineGameStateV6Schema.parse(stateInput)
-																: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 20
+			? EngineGameStateV20Schema.parse(stateInput)
+			: stateInput.schemaVersion === 19
+				? EngineGameStateV19Schema.parse(stateInput)
+				: stateInput.schemaVersion === 18
+					? EngineGameStateV18Schema.parse(stateInput)
+					: stateInput.schemaVersion === 17
+						? EngineGameStateV17Schema.parse(stateInput)
+						: stateInput.schemaVersion === 16
+							? EngineGameStateV16Schema.parse(stateInput)
+							: stateInput.schemaVersion === 15
+								? EngineGameStateV15Schema.parse(stateInput)
+								: stateInput.schemaVersion === 14
+									? EngineGameStateV14Schema.parse(stateInput)
+									: stateInput.schemaVersion === 13
+										? EngineGameStateV13Schema.parse(stateInput)
+										: stateInput.schemaVersion === 12
+											? EngineGameStateV12Schema.parse(stateInput)
+											: stateInput.schemaVersion === 11
+												? EngineGameStateV11Schema.parse(stateInput)
+												: stateInput.schemaVersion === 10
+													? EngineGameStateV10Schema.parse(stateInput)
+													: stateInput.schemaVersion === 9
+														? EngineGameStateV9Schema.parse(stateInput)
+														: stateInput.schemaVersion === 8
+															? EngineGameStateV8Schema.parse(stateInput)
+															: stateInput.schemaVersion === 7
+																? EngineGameStateV7Schema.parse(stateInput)
+																: stateInput.schemaVersion === 6
+																	? EngineGameStateV6Schema.parse(stateInput)
+																	: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -5760,7 +6379,7 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 	const actorId = state.master.masterId;
 	const controlActions: LegalAction[] =
-		state.schemaVersion === 19
+		state.schemaVersion === 19 || state.schemaVersion === 20
 			? [
 					action({
 						actionId: 'master.control.configure',
@@ -5773,6 +6392,38 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 						resourceCosts: {},
 						tags: ['master', 'control', 'timing', 'replay']
 					}),
+					...(state.schemaVersion === 20
+						? [
+								action({
+									actionId: 'master.fallback.configure',
+									actorId,
+									kind: 'interact',
+									label: 'Configure unattended selection',
+									description:
+										'Persist directed or seeded-random fallback intent and safety stops.',
+									targetIds: [],
+									resourceCosts: {},
+									tags: ['master', 'control', 'fallback', 'safety', 'replay']
+								}),
+								...(state.masterControl.activeDecision !== null &&
+								state.masterControl.activeDecision.timing !== 'wait' &&
+								selectMasterFallback(state).safetyStopReason
+									? [
+											action({
+												actionId: 'master.safety-stop.apply',
+												actorId,
+												kind: 'wait',
+												label: 'Apply fallback safety stop',
+												description:
+													'Force Wait at this legal boundary and retain the blocked selection evidence.',
+												targetIds: [],
+												resourceCosts: {},
+												tags: ['master', 'control', 'fallback', 'safety-stop', 'replay']
+											})
+										]
+									: [])
+							]
+						: []),
 					...(state.masterControl.activeDecision === null &&
 					state.mission.attempt !== null &&
 					['deployed', 'resolving'].includes(state.mission.attempt.status)
@@ -5801,7 +6452,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19) &&
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20) &&
 		state.mission.attempt
 	) {
 		const attempt = state.mission.attempt;
@@ -5925,7 +6577,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19) &&
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20) &&
 		(!state.mission.attempt ||
 			['canceled', 'retreat', 'failure', 'death'].includes(state.mission.attempt.status) ||
 			(state.schemaVersion >= 18 && state.mission.attempt.status === 'success'))
@@ -5957,7 +6610,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19) &&
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20) &&
 			Object.values(state.society.directives).some(
 				(directive) => directive.status === 'active' && directive.expiresAt !== null
 			))
@@ -5990,7 +6644,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.lifeState !== 'active') continue;
@@ -6060,7 +6715,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		for (const hero of Object.values(state.heroes)) {
 			if (hero.location !== state.master.location || !heroCanHearCommunication(hero)) {
@@ -6088,7 +6744,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				state.schemaVersion === 16 ||
 				state.schemaVersion === 17 ||
 				state.schemaVersion === 18 ||
-				state.schemaVersion === 19
+				state.schemaVersion === 19 ||
+				state.schemaVersion === 20
 			) {
 				actions.push(
 					action({
@@ -6114,7 +6771,8 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		if (
 			Object.values(state.heroes).some(
@@ -6219,7 +6877,8 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19) &&
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20) &&
 		missionPartyIsReserved(state, actorId)
 	) {
 		return state.schemaVersion === 12 ||
@@ -6229,7 +6888,8 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
-			state.schemaVersion === 19
+			state.schemaVersion === 19 ||
+			state.schemaVersion === 20
 			? missionTurnActionsForState(state, actorId)
 			: [];
 	}
@@ -6601,6 +7261,8 @@ function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'master.revoke.directive')
 		return `social.directive.revoke.${command.directiveId}`;
 	if (command.commandType === 'master.configure.timing') return 'master.control.configure';
+	if (command.commandType === 'master.configure.fallback') return 'master.fallback.configure';
+	if (command.commandType === 'master.apply.safety-stop') return 'master.safety-stop.apply';
 	if (command.commandType === 'master.open.decision') return 'master.decision.open';
 	if (command.commandType === 'hero.plan.day') return 'hero.plan.day';
 	if (command.commandType === 'hero.start.routine') return 'hero.follow.plan';
@@ -6629,38 +7291,82 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	}
 	if (
 		command.commandType === 'master.configure.timing' ||
-		command.commandType === 'master.open.decision'
+		command.commandType === 'master.open.decision' ||
+		command.commandType === 'master.configure.fallback' ||
+		command.commandType === 'master.apply.safety-stop'
 	) {
 		if (
-			state.schemaVersion !== 19 ||
+			(state.schemaVersion !== 19 && state.schemaVersion !== 20) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
-			command.source.source !== 'manual' ||
-			command.source.timing !== 'step' ||
 			!legalActions(state, command.actorId).some(
 				(candidate) => candidate.actionId === requiredAction(command)
 			)
 		) {
 			throw new IllegalActionError(command.commandType, []);
 		}
-		if (command.commandType === 'master.configure.timing') {
+		if (
+			command.commandType === 'master.configure.timing' ||
+			command.commandType === 'master.configure.fallback' ||
+			command.commandType === 'master.open.decision'
+		) {
+			if (command.source.source !== 'manual' || command.source.timing !== 'step') {
+				throw new IllegalActionError(command.commandType, []);
+			}
 			if (
 				state.masterControl.activeDecision &&
 				Date.parse(command.observedAt) < Date.parse(state.masterControl.activeDecision.openedAt)
 			) {
 				throw new IllegalActionError(command.commandType, []);
 			}
-			configureMasterTiming(
-				state.masterControl,
+			if (command.commandType === 'master.configure.timing') {
+				if (state.schemaVersion === 20) {
+					configureMasterTimingV2(
+						state.masterControl,
+						command.commandId,
+						command.timing,
+						command.countdownSeconds,
+						command.observedAt,
+						command.source
+					);
+				} else {
+					configureMasterTiming(
+						state.masterControl,
+						command.commandId,
+						command.timing,
+						command.countdownSeconds,
+						command.observedAt,
+						command.source
+					);
+				}
+			} else if (command.commandType === 'master.configure.fallback') {
+				if (state.schemaVersion !== 20) throw new IllegalActionError(command.commandType, []);
+				configureMasterFallback(state.masterControl, command);
+			} else if (state.schemaVersion === 20) {
+				masterDecisionWindowV2(state.masterControl, command.commandId, command.observedAt);
+			} else {
+				masterDecisionWindow(state.masterControl, command.commandId, command.observedAt);
+			}
+		} else {
+			if (state.schemaVersion !== 20) throw new IllegalActionError(command.commandType, []);
+			const active = state.masterControl.activeDecision;
+			if (
+				!active ||
+				command.decisionId !== active.decisionId ||
+				command.source.source !== 'system' ||
+				command.source.timing !== active.timing ||
+				command.source.fallbackPolicy !== active.fallback.policy
+			) {
+				throw new IllegalActionError(command.commandType, []);
+			}
+			applyMasterSafetyStop(
+				state,
 				command.commandId,
-				command.timing,
-				command.countdownSeconds,
+				command.decisionId,
 				command.observedAt,
 				command.source
 			);
-		} else {
-			masterDecisionWindow(state.masterControl, command.commandId, command.observedAt);
 		}
 		return;
 	}
@@ -6674,7 +7380,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19) ||
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId
@@ -6701,11 +7408,12 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20
 			)
 				throw new IllegalActionError(command.commandType, []);
 			const choices = normalizedMissionTurnChoices(state, command.choices);
-			if (state.schemaVersion === 19) {
+			if (state.schemaVersion === 19 || state.schemaVersion === 20) {
 				const masterChoice = choices.find((choice) => choice.actorId === state.master.masterId);
 				if (!masterChoice || !command.decisionId || !command.resolvedAt) {
 					throw new IllegalActionError(command.commandType, []);
@@ -6713,15 +7421,32 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				if ((command.source.source === 'manual') !== (masterChoice.source === 'manual')) {
 					throw new IllegalActionError(command.commandType, []);
 				}
-				resolveMasterDecision(
-					state.masterControl,
-					command.commandId,
-					command.decisionId,
-					command.resolvedAt,
-					masterChoice.actionId,
-					command.source,
-					false
-				);
+				if (state.schemaVersion === 20) {
+					const expected =
+						command.source.source === 'manual' ? null : masterFallbackMissionChoice(state);
+					if (expected && hashCanonical(expected) !== hashCanonical(masterChoice)) {
+						throw new IllegalActionError(command.commandType, []);
+					}
+					resolveMasterDecisionV2(
+						state,
+						command.commandId,
+						command.decisionId,
+						command.resolvedAt,
+						masterChoice.actionId,
+						command.source,
+						false
+					);
+				} else {
+					resolveMasterDecision(
+						state.masterControl,
+						command.commandId,
+						command.decisionId,
+						command.resolvedAt,
+						masterChoice.actionId,
+						command.source,
+						false
+					);
+				}
 			} else if (command.source.source !== 'manual' || command.source.timing !== 'step') {
 				throw new IllegalActionError(command.commandType, []);
 			}
@@ -6777,7 +7502,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19) ||
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -6808,7 +7534,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19) ||
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -6842,7 +7569,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19) ||
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -6993,7 +7721,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
-		state.schemaVersion === 19
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20
 	) {
 		if (command.commandType === 'mission.prepare')
 			prepareMissionAttempt(state, command.commandId, command.heroIds, command.missionId);
@@ -7009,7 +7738,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20
 			)
 				throw new IllegalActionError(command.commandType);
 			if (state.schemaVersion === 15) resolvePortalMissionTurn(state, command.choices);
@@ -7019,7 +7749,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 				state.schemaVersion === 16 ||
 				state.schemaVersion === 17 ||
 				state.schemaVersion === 18 ||
-				state.schemaVersion === 19
+				state.schemaVersion === 19 ||
+				state.schemaVersion === 20
 			)
 				resolveMissionCombatTurn(
 					state,
@@ -7027,7 +7758,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 					state.schemaVersion === 16 ||
 						state.schemaVersion === 17 ||
 						state.schemaVersion === 18 ||
-						state.schemaVersion === 19
+						state.schemaVersion === 19 ||
+						state.schemaVersion === 20
 						? eventBase(state, command, 'mission.round.resolved').eventId
 						: null
 				);
@@ -7447,15 +8179,26 @@ function skipUnfinishedPlan(hero: EngineRoutineState['heroes'][string], resolved
 
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
 	if (command.commandType === 'master.configure.timing') {
-		if (state.schemaVersion !== 19) throw new IllegalActionError(command.commandType);
-		const configured = configureMasterTiming(
-			state.masterControl,
-			command.commandId,
-			command.timing,
-			command.countdownSeconds,
-			command.observedAt,
-			command.source
-		);
+		if (state.schemaVersion !== 19 && state.schemaVersion !== 20)
+			throw new IllegalActionError(command.commandType);
+		const configured =
+			state.schemaVersion === 20
+				? configureMasterTimingV2(
+						state.masterControl,
+						command.commandId,
+						command.timing,
+						command.countdownSeconds,
+						command.observedAt,
+						command.source
+					)
+				: configureMasterTiming(
+						state.masterControl,
+						command.commandId,
+						command.timing,
+						command.countdownSeconds,
+						command.observedAt,
+						command.source
+					);
 		const base = eventBase(state, command, 'master.timing.changed');
 		return AuthoritativeEventSchema.parse({
 			...base,
@@ -7475,13 +8218,61 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			}
 		});
 	}
-	if (command.commandType === 'master.open.decision') {
-		if (state.schemaVersion !== 19) throw new IllegalActionError(command.commandType);
-		const masterControl = masterDecisionWindow(
-			state.masterControl,
+	if (command.commandType === 'master.configure.fallback') {
+		if (state.schemaVersion !== 20) throw new IllegalActionError(command.commandType);
+		const configured = configureMasterFallback(state.masterControl, command);
+		const base = eventBase(state, command, 'master.fallback.changed');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				policy: command.policy,
+				directionText: command.directionText,
+				priorities: command.priorities,
+				protectedHeroId: command.protectedHeroId,
+				safetyStops: command.safetyStops,
+				observedAt: command.observedAt,
+				masterControl: configured.control,
+				pausedResolution: configured.paused,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					configured.paused
+						? `Decision ${configured.paused.ordinal} paused; ${command.policy} fallback now owns the next window.`
+						: `Master fallback changed to ${command.policy} with explicit safety stops.`
+				)
+			}
+		});
+	}
+	if (command.commandType === 'master.apply.safety-stop') {
+		if (state.schemaVersion !== 20) throw new IllegalActionError(command.commandType);
+		const stopped = applyMasterSafetyStop(
+			state,
 			command.commandId,
-			command.observedAt
+			command.decisionId,
+			command.observedAt,
+			command.source
 		);
+		const reason = stopped.resolution.fallbackSelection!.safetyStopReason!;
+		const base = eventBase(state, command, 'master.safety.stopped');
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				observedAt: command.observedAt,
+				masterControl: stopped.control,
+				decisionResolution: stopped.resolution,
+				nextVersion: state.version + 1,
+				...emptyMetadata(`Safety forced Wait at decision ${stopped.resolution.ordinal}: ${reason}.`)
+			}
+		});
+	}
+	if (command.commandType === 'master.open.decision') {
+		if (state.schemaVersion !== 19 && state.schemaVersion !== 20)
+			throw new IllegalActionError(command.commandType);
+		const masterControl =
+			state.schemaVersion === 20
+				? masterDecisionWindowV2(state.masterControl, command.commandId, command.observedAt)
+				: masterDecisionWindow(state.masterControl, command.commandId, command.observedAt);
 		const base = eventBase(state, command, 'master.decision.opened');
 		return AuthoritativeEventSchema.parse({
 			...base,
@@ -7506,7 +8297,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			state.schemaVersion !== 16 &&
 			state.schemaVersion !== 17 &&
 			state.schemaVersion !== 18 &&
-			state.schemaVersion !== 19
+			state.schemaVersion !== 19 &&
+			state.schemaVersion !== 20
 		)
 			throw new IllegalActionError(command.commandType);
 		if (command.commandType === 'mission.resolve.turn') {
@@ -7518,7 +8310,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20
 			)
 				throw new IllegalActionError(command.commandType);
 			const base = eventBase(state, command, 'mission.round.resolved');
@@ -7530,14 +8323,16 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 						  state.schemaVersion === 16 ||
 						  state.schemaVersion === 17 ||
 						  state.schemaVersion === 18 ||
-						  state.schemaVersion === 19
+						  state.schemaVersion === 19 ||
+						  state.schemaVersion === 20
 						? resolveMissionCombatTurn(
 								state,
 								command.choices,
 								state.schemaVersion === 16 ||
 									state.schemaVersion === 17 ||
 									state.schemaVersion === 18 ||
-									state.schemaVersion === 19
+									state.schemaVersion === 19 ||
+									state.schemaVersion === 20
 									? base.eventId
 									: null
 							)
@@ -7545,7 +8340,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			const monsterCount =
 				'monsterActions' in resolution.round ? resolution.round.monsterActions.length : 0;
 			const timingResolution =
-				state.schemaVersion === 19
+				state.schemaVersion === 19 || state.schemaVersion === 20
 					? (() => {
 							const masterChoice = resolution.choices.find(
 								(choice) => choice.actorId === state.master.masterId
@@ -7558,15 +8353,25 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 								resolution.status === 'active' &&
 								resolution.mission.attempt !== null &&
 								['deployed', 'resolving'].includes(resolution.mission.attempt.status);
-							return resolveMasterDecision(
-								state.masterControl,
-								command.commandId,
-								command.decisionId,
-								command.resolvedAt,
-								masterChoice.actionId,
-								command.source,
-								missionContinues
-							);
+							return state.schemaVersion === 20
+								? resolveMasterDecisionV2(
+										state,
+										command.commandId,
+										command.decisionId,
+										command.resolvedAt,
+										masterChoice.actionId,
+										command.source,
+										missionContinues
+									)
+								: resolveMasterDecision(
+										state.masterControl,
+										command.commandId,
+										command.decisionId,
+										command.resolvedAt,
+										masterChoice.actionId,
+										command.source,
+										missionContinues
+									);
 						})()
 					: null;
 			return AuthoritativeEventSchema.parse({
@@ -7587,7 +8392,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 					...((state.schemaVersion === 16 ||
 						state.schemaVersion === 17 ||
 						state.schemaVersion === 18 ||
-						state.schemaVersion === 19) &&
+						state.schemaVersion === 19 ||
+						state.schemaVersion === 20) &&
 					'consequences' in resolution
 						? { consequences: resolution.consequences }
 						: {}),
@@ -7641,7 +8447,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 						  state.schemaVersion === 16 ||
 						  state.schemaVersion === 17 ||
 						  state.schemaVersion === 18 ||
-						  state.schemaVersion === 19
+						  state.schemaVersion === 19 ||
+						  state.schemaVersion === 20
 						? `The prepared party crossed the Tower Threshold; ${Object.keys((deployment.mission as MissionRunStateV3 | MissionRunStateV4 | MissionRunStateV6 | MissionRunStateV7 | MissionRunStateV8).attempt!.turnState.monsters).length} deterministic monster duties activated.`
 						: 'The prepared party crossed the Tower Threshold as one authoritative deployment.';
 		} else if (command.commandType === 'mission.open.extraction') {
@@ -7678,11 +8485,13 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		}
 		const base = eventBase(state, command, eventType);
 		const endedDecision =
-			state.schemaVersion === 19 &&
+			(state.schemaVersion === 19 || state.schemaVersion === 20) &&
 			mission.attempt !== null &&
 			!['deployed', 'resolving'].includes(mission.attempt.status)
-				? endMasterDecision(state.masterControl, command.source)
-				: state.schemaVersion === 19
+				? state.schemaVersion === 20
+					? endMasterDecisionV2(state.masterControl, command.source)
+					: endMasterDecision(state.masterControl, command.source)
+				: state.schemaVersion === 19 || state.schemaVersion === 20
 					? { control: state.masterControl, resolution: null }
 					: null;
 		return AuthoritativeEventSchema.parse({
@@ -7825,7 +8634,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			state.schemaVersion !== 16 &&
 			state.schemaVersion !== 17 &&
 			state.schemaVersion !== 18 &&
-			state.schemaVersion !== 19
+			state.schemaVersion !== 19 &&
+			state.schemaVersion !== 20
 		)
 			throw new IllegalActionError(command.commandType);
 		const eventType =
@@ -7861,7 +8671,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			state.schemaVersion !== 16 &&
 			state.schemaVersion !== 17 &&
 			state.schemaVersion !== 18 &&
-			state.schemaVersion !== 19
+			state.schemaVersion !== 19 &&
+			state.schemaVersion !== 20
 		)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'social.directive.revoked');
@@ -7896,7 +8707,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			state.schemaVersion !== 16 &&
 			state.schemaVersion !== 17 &&
 			state.schemaVersion !== 18 &&
-			state.schemaVersion !== 19
+			state.schemaVersion !== 19 &&
+			state.schemaVersion !== 20
 		) {
 			throw new IllegalActionError(command.commandType);
 		}
@@ -7929,7 +8741,8 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			state.schemaVersion !== 16 &&
 			state.schemaVersion !== 17 &&
 			state.schemaVersion !== 18 &&
-			state.schemaVersion !== 19
+			state.schemaVersion !== 19 &&
+			state.schemaVersion !== 20
 		)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'social.conversation.turn.recorded');
@@ -8724,7 +9537,8 @@ function parseModernState(state: EngineGameStateModern, value: unknown): EngineG
 	if (state.schemaVersion === 16) return EngineGameStateV16Schema.parse(value);
 	if (state.schemaVersion === 17) return EngineGameStateV17Schema.parse(value);
 	if (state.schemaVersion === 18) return EngineGameStateV18Schema.parse(value);
-	return EngineGameStateV19Schema.parse(value);
+	if (state.schemaVersion === 19) return EngineGameStateV19Schema.parse(value);
+	return EngineGameStateV20Schema.parse(value);
 }
 
 function reduceV2Event(
@@ -8732,6 +9546,44 @@ function reduceV2Event(
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
 	if (event.eventType === 'master.timing.changed') {
+		if (state.schemaVersion === 20) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.seedCursor !== state.entropyCursor ||
+				event.source.source !== 'manual' ||
+				event.source.timing !== 'step'
+			) {
+				throw new ReplayIntegrityError(
+					'Master fallback timing precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MasterTimingChangedPayloadV2Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError('Master fallback timing version diverged', event.sequence);
+			}
+			const expected = configureMasterTimingV2(
+				state.masterControl,
+				event.commandId,
+				payload.timing,
+				payload.countdownSeconds,
+				payload.observedAt,
+				event.source
+			);
+			if (
+				hashCanonical(expected.control) !== hashCanonical(payload.masterControl) ||
+				hashCanonical(expected.paused) !== hashCanonical(payload.pausedResolution)
+			) {
+				throw new ReplayIntegrityError('Master fallback timing payload diverged', event.sequence);
+			}
+			return EngineGameStateV20Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				masterControl: payload.masterControl
+			});
+		}
 		if (
 			state.schemaVersion !== 19 ||
 			event.actorId !== state.master.masterId ||
@@ -8765,7 +9617,115 @@ function reduceV2Event(
 			masterControl: payload.masterControl
 		});
 	}
+	if (event.eventType === 'master.fallback.changed') {
+		if (
+			state.schemaVersion !== 20 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt ||
+			event.seedCursor !== state.entropyCursor ||
+			event.source.source !== 'manual' ||
+			event.source.timing !== 'step'
+		) {
+			throw new ReplayIntegrityError('Master fallback change precondition failed', event.sequence);
+		}
+		const payload = MasterFallbackChangedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
+			throw new ReplayIntegrityError('Master fallback change version diverged', event.sequence);
+		}
+		const expected = configureMasterFallback(state.masterControl, {
+			commandId: event.commandId,
+			observedAt: payload.observedAt,
+			source: event.source,
+			policy: payload.policy,
+			directionText: payload.directionText,
+			priorities: payload.priorities,
+			protectedHeroId: payload.protectedHeroId,
+			safetyStops: payload.safetyStops
+		});
+		if (
+			hashCanonical(expected.control) !== hashCanonical(payload.masterControl) ||
+			hashCanonical(expected.paused) !== hashCanonical(payload.pausedResolution)
+		) {
+			throw new ReplayIntegrityError('Master fallback change payload diverged', event.sequence);
+		}
+		return EngineGameStateV20Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			masterControl: payload.masterControl
+		});
+	}
+	if (event.eventType === 'master.safety.stopped') {
+		if (
+			state.schemaVersion !== 20 ||
+			event.actorId !== state.master.masterId ||
+			event.gameTime !== state.simulatedAt ||
+			event.seedCursor !== state.entropyCursor
+		) {
+			throw new ReplayIntegrityError('Master safety stop precondition failed', event.sequence);
+		}
+		const payload = MasterSafetyStoppedPayloadSchema.parse(event.payload);
+		if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
+			throw new ReplayIntegrityError('Master safety stop version diverged', event.sequence);
+		}
+		let expected;
+		try {
+			expected = applyMasterSafetyStop(
+				state,
+				event.commandId,
+				payload.decisionResolution.decisionId,
+				payload.observedAt,
+				event.source
+			);
+		} catch {
+			throw new ReplayIntegrityError('Master safety stop could not be reproduced', event.sequence);
+		}
+		if (
+			hashCanonical(expected.control) !== hashCanonical(payload.masterControl) ||
+			hashCanonical(expected.resolution) !== hashCanonical(payload.decisionResolution)
+		) {
+			throw new ReplayIntegrityError('Master safety stop payload diverged', event.sequence);
+		}
+		return EngineGameStateV20Schema.parse({
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			masterControl: payload.masterControl
+		});
+	}
 	if (event.eventType === 'master.decision.opened') {
+		if (state.schemaVersion === 20) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.seedCursor !== state.entropyCursor ||
+				event.source.source !== 'manual' ||
+				event.source.timing !== 'step'
+			) {
+				throw new ReplayIntegrityError(
+					'Master fallback decision precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MasterDecisionOpenedPayloadV2Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError('Master fallback decision version diverged', event.sequence);
+			}
+			const expected = masterDecisionWindowV2(
+				state.masterControl,
+				event.commandId,
+				payload.observedAt
+			);
+			if (hashCanonical(expected) !== hashCanonical(payload.masterControl)) {
+				throw new ReplayIntegrityError('Master fallback decision payload diverged', event.sequence);
+			}
+			return EngineGameStateV20Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				masterControl: payload.masterControl
+			});
+		}
 		if (
 			state.schemaVersion !== 19 ||
 			event.actorId !== state.master.masterId ||
@@ -8790,6 +9750,97 @@ function reduceV2Event(
 		});
 	}
 	if (event.eventType === 'mission.round.resolved') {
+		if (state.schemaVersion === 20) {
+			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
+				throw new ReplayIntegrityError(
+					'Master fallback mission round precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionMasterFallbackTurnResolvedPayloadSchema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError('Master fallback round version diverged', event.sequence);
+			}
+			const expected = resolveMissionCombatTurn(state, payload.choices, event.eventId);
+			const masterChoice = expected.choices.find(
+				(choice) => choice.actorId === state.master.masterId
+			);
+			if (!masterChoice) {
+				throw new ReplayIntegrityError('Master fallback round omitted the Master', event.sequence);
+			}
+			const fallback = event.source.source !== 'manual';
+			if ((event.source.source === 'manual') !== (masterChoice.source === 'manual')) {
+				throw new ReplayIntegrityError(
+					'Master fallback source and action evidence diverged',
+					event.sequence
+				);
+			}
+			if (fallback) {
+				let expectedChoice: MissionTurnChoice;
+				try {
+					expectedChoice = masterFallbackMissionChoice(state);
+				} catch {
+					throw new ReplayIntegrityError(
+						'Master fallback choice could not be reproduced',
+						event.sequence
+					);
+				}
+				if (
+					hashCanonical(event.source) !== hashCanonical(masterFallbackActionSource(state)) ||
+					hashCanonical(masterChoice) !== hashCanonical(expectedChoice)
+				) {
+					throw new ReplayIntegrityError(
+						'Master fallback policy evidence diverged',
+						event.sequence
+					);
+				}
+			}
+			const missionContinues =
+				expected.status === 'active' &&
+				expected.mission.attempt !== null &&
+				['deployed', 'resolving'].includes(expected.mission.attempt.status);
+			let expectedControl;
+			try {
+				expectedControl = resolveMasterDecisionV2(
+					state,
+					event.commandId,
+					payload.decisionResolution.decisionId,
+					payload.decisionResolution.resolvedAt,
+					masterChoice.actionId,
+					event.source,
+					missionContinues
+				);
+			} catch {
+				throw new ReplayIntegrityError(
+					'Master fallback decision could not be reproduced',
+					event.sequence
+				);
+			}
+			if (
+				expected.entropyCursor !== event.seedCursor ||
+				hashCanonical(expected.entropyDraws) !== hashCanonical(payload.entropyDraws) ||
+				hashCanonical(expected.round) !== hashCanonical(payload.round) ||
+				hashCanonical(expected.consequences) !== hashCanonical(payload.consequences) ||
+				hashCanonical(expected.mission) !== hashCanonical(payload.mission) ||
+				hashCanonical(expectedControl.control) !== hashCanonical(payload.masterControl) ||
+				hashCanonical(expectedControl.resolution) !== hashCanonical(payload.decisionResolution)
+			) {
+				throw new ReplayIntegrityError('Master fallback round payload diverged', event.sequence);
+			}
+			return EngineGameStateV20Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				heroes: expected.heroes,
+				items: expected.items,
+				society: expected.society,
+				master: expected.master,
+				status: expected.status,
+				masterControl: payload.masterControl
+			});
+		}
 		if (state.schemaVersion === 19) {
 			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
 				throw new ReplayIntegrityError(
@@ -9013,6 +10064,96 @@ function reduceV2Event(
 			'mission.retreated'
 		].includes(event.eventType)
 	) {
+		if (state.schemaVersion === 20) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.eventType === 'mission.extraction.opened'
+			) {
+				throw new ReplayIntegrityError(
+					'Master fallback mission transition precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionTransitionPayloadV10Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Master fallback mission transition version diverged',
+					event.sequence
+				);
+			}
+			const eventTypes = {
+				prepare: 'mission.preparation.started',
+				'revise-party': 'mission.party.revised',
+				cancel: 'mission.preparation.canceled',
+				deploy: 'mission.deployed',
+				extract: 'mission.extracted',
+				retreat: 'mission.retreated'
+			} as const;
+			if (eventTypes[payload.transition] !== event.eventType) {
+				throw new ReplayIntegrityError(
+					'Master fallback mission event type diverged',
+					event.sequence
+				);
+			}
+			const expectedMission =
+				payload.transition === 'prepare'
+					? prepareMissionAttempt(
+							state,
+							event.commandId,
+							payload.heroIds,
+							payload.mission.binding.missionId
+						)
+					: payload.transition === 'revise-party'
+						? reviseMissionParty(state, payload.heroIds)
+						: payload.transition === 'cancel'
+							? cancelMissionPreparation(state)
+							: payload.transition === 'deploy'
+								? deployMissionAttempt(state).mission
+								: payload.transition === 'extract'
+									? completeMissionExtraction(state)
+									: retreatMissionAttempt(state);
+			const expectedControl =
+				expectedMission.attempt !== null &&
+				!['deployed', 'resolving'].includes(expectedMission.attempt.status)
+					? endMasterDecisionV2(state.masterControl, event.source)
+					: { control: state.masterControl, resolution: null };
+			if (
+				hashCanonical(expectedMission) !== hashCanonical(payload.mission) ||
+				hashCanonical(expectedControl.control) !== hashCanonical(payload.masterControl) ||
+				hashCanonical(expectedControl.resolution) !== hashCanonical(payload.decisionResolution)
+			) {
+				throw new ReplayIntegrityError(
+					'Master fallback mission transition payload diverged',
+					event.sequence
+				);
+			}
+			if (payload.transition === 'deploy') {
+				const deployment = deployMissionAttempt(state);
+				if (
+					deployment.entropyCursor !== event.seedCursor ||
+					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
+				) {
+					throw new ReplayIntegrityError(
+						'Master fallback deployment entropy diverged',
+						event.sequence
+					);
+				}
+			} else if (event.seedCursor !== state.entropyCursor || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError(
+					'Master fallback transition entropy diverged',
+					event.sequence
+				);
+			}
+			return EngineGameStateV20Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				masterControl: payload.masterControl
+			});
+		}
 		if (state.schemaVersion === 19) {
 			if (
 				event.actorId !== state.master.masterId ||
@@ -9632,7 +10773,8 @@ function reduceV2Event(
 				state.schemaVersion !== 16 &&
 				state.schemaVersion !== 17 &&
 				state.schemaVersion !== 18 &&
-				state.schemaVersion !== 19) ||
+				state.schemaVersion !== 19 &&
+				state.schemaVersion !== 20) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.source.source !== 'manual' ||
@@ -10604,7 +11746,8 @@ function attachDirectiveInfluences(
 			state.schemaVersion !== 13 &&
 			state.schemaVersion !== 16 &&
 			state.schemaVersion !== 18 &&
-			state.schemaVersion !== 19) ||
+			state.schemaVersion !== 19 &&
+			state.schemaVersion !== 20) ||
 		!state.heroes[command.actorId] ||
 		command.source.directiveIds.length === 0
 	) {
