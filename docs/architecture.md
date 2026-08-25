@@ -604,6 +604,17 @@ replay. Existing and new normal Floor 01 runs remain on immutable `engine-v13`; 
 scenario is opt-in until progression unlocks later floors. The Mission Lab remains a non-mutating
 content preview rather than a source of retained evidence. See ADRs 0034–0035.
 
+`engine-v15` adds the first executable portal-world boundary. `iron-moon-v1` wraps an immutable
+mission package with an eight-round timer, pressure thresholds, finite ore deposits, per-actor cargo
+capacity, a four-ore extraction quota, and collapse policy. Mining mutates only the attempt: every
+transfer records deposit and cargo before/after values in an append-only ore ledger. Settlement
+stock remains unchanged until a separate extraction command reunites the complete party at the
+portal scar and atomically converts cargo into an authoritative resource delta. Retreat or timer
+collapse writes loss entries and credits nothing. One resolved party round consumes exactly one
+timer unit, so wall time, animation time, and model latency cannot change the result. Participating
+hero packets include timer, pressure, quota, personal cargo, and finite deposit context. Strict
+replay recomputes the complete portal round and extraction payload. See ADR 0036.
+
 ### Implemented reconnect projection
 
 Every new event schedules a run-specific PostgreSQL notification in its command transaction. The

@@ -609,4 +609,76 @@ describe('engine event store', () => {
 			);
 		}
 	);
+
+	run('persists Iron Moon cargo and credits ore atomically on extraction', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const draft = await generateCharacterDraft(recipeFromSeed(`iron-moon-${randomUUID()}`));
+		const runId = randomUUID();
+		await createProofRun(databaseUrl, {
+			runId,
+			draft,
+			controlMode: 'wait',
+			directive: '',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null,
+			developmentMissionScenario: {
+				initialMissionId: 'iron-moon',
+				availableMissionIds: ['iron-moon']
+			}
+		});
+		let replay = await getEngineReplay(databaseUrl, runId);
+		if (!replay || replay.snapshot.state.schemaVersion !== 15) {
+			throw new Error('Expected engine-v15 portal replay');
+		}
+		const masterId = replay.snapshot.state.master.masterId;
+		const commit = async (fields: Record<string, unknown>) => {
+			const committed = await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, replay!.snapshot.state.version, fields)
+			);
+			expect(committed.snapshot.state.schemaVersion).toBe(15);
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 15) {
+				throw new Error('Expected replayed engine-v15 portal state');
+			}
+		};
+		const turn = (actionId: string) =>
+			commit({
+				commandType: 'mission.resolve.turn',
+				choices: [
+					{
+						actorId: masterId,
+						actionId,
+						source: 'manual',
+						policyId: null,
+						packetHash: null,
+						legalActionHash: null,
+						policyResultHash: null,
+						publicIntent: `The Master chose ${actionId}.`
+					}
+				]
+			});
+
+		await commit({ commandType: 'mission.prepare', heroIds: [], missionId: 'iron-moon' });
+		await commit({ commandType: 'mission.deploy' });
+		await turn('mission.move.gate-to-shelf');
+		await turn('mission.move.shelf-to-crater-heart');
+		await turn('mission.mine.crater-heart-deposit');
+		await turn('mission.mine.crater-heart-deposit');
+		await turn('mission.move.shelf-to-crater-heart');
+		await turn('mission.move.gate-to-shelf');
+		expect(replay.snapshot.state.settlement.resources['iron-ore']).toBe(2);
+		await commit({ commandType: 'mission.extract' });
+
+		expect(replay.verified).toBe(true);
+		expect(replay.hashMatchesPersistedSnapshot).toBe(true);
+		expect(replay.snapshot.state.settlement.resources['iron-ore']).toBe(6);
+		expect(replay.snapshot.state.mission.attempt).toMatchObject({
+			status: 'success',
+			turnState: {
+				portal: { roundsRemaining: 2, extractedAmount: 4, extractionCredited: true }
+			}
+		});
+		expect(replay.checks.at(-1)?.eventType).toBe('mission.extracted');
+	});
 });

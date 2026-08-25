@@ -1,5 +1,6 @@
 import {
 	applyMissionDiscoveryAffordance,
+	loadIronMoonMission,
 	listLegalMissionDiscoveryAffordances,
 	loadTowerBand01,
 	loadTowerBand01Runtime,
@@ -10,6 +11,7 @@ import {
 
 const missions = await loadTowerBand01();
 const runtimeMissions = await loadTowerBand01Runtime();
+const ironMoon = await loadIronMoonMission();
 for (const mission of runtimeMissions) {
 	const purposes = new Set(mission.encounterSeedRules.namedPurposes);
 	for (const duty of mission.monsterDuties.filter(
@@ -179,6 +181,22 @@ process.stdout.write(
 				maintenanceRouteRequires: 'relay-route-memory',
 				coolingRouteActions: coolingRoute.totalTraversalActions,
 				coolingRouteExposure: coolingRoute.maximumExposure
+			},
+			portalMission: {
+				missionId: ironMoon.missionId,
+				contentVersion: ironMoon.contentVersion,
+				contentHash: ironMoon.contentHash,
+				durationRounds: ironMoon.portal.durationRounds,
+				warningAtRemainingRounds: ironMoon.portal.warningAtRemainingRounds,
+				criticalAtRemainingRounds: ironMoon.portal.criticalAtRemainingRounds,
+				extractionQuota: ironMoon.portal.extractionQuota,
+				cargoCapacityPerActor: ironMoon.portal.cargoCapacityPerActor,
+				deposits: ironMoon.portal.deposits.map((deposit) => ({
+					depositId: deposit.depositId,
+					nodeId: deposit.nodeId,
+					initialAmount: deposit.initialAmount,
+					mineAmountPerAction: deposit.mineAmountPerAction
+				}))
 			}
 		},
 		null,

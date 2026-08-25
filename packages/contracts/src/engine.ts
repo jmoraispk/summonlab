@@ -1929,6 +1929,306 @@ export const MissionRunStateV4Schema = z
 		}
 	});
 
+export const PortalPressureStageSchema = z.enum(['stable', 'warning', 'critical', 'collapsed']);
+
+export const PortalDepositStateSchema = z
+	.object({
+		depositId: MissionSlugSchema,
+		nodeId: MissionSlugSchema,
+		resource: z.literal('iron-ore'),
+		initialAmount: z.number().int().positive().max(100),
+		remainingAmount: z.number().int().nonnegative().max(100),
+		mineAmountPerAction: z.number().int().positive().max(20)
+	})
+	.strict()
+	.superRefine((deposit, context) => {
+		if (
+			deposit.remainingAmount > deposit.initialAmount ||
+			deposit.mineAmountPerAction > deposit.initialAmount
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal deposit state is inconsistent' });
+		}
+	});
+
+export const PortalCargoStateSchema = z
+	.object({
+		actorId: EntityIdSchema,
+		resource: z.literal('iron-ore'),
+		amount: z.number().int().nonnegative().max(100),
+		capacity: z.number().int().positive().max(100)
+	})
+	.strict()
+	.refine((cargo) => cargo.amount <= cargo.capacity, {
+		message: 'Portal cargo exceeds actor capacity'
+	});
+
+export const PortalOreLedgerEntrySchema = z
+	.object({
+		entryId: EntityIdSchema,
+		sequence: z.number().int().positive().max(1_000),
+		roundNumber: z.number().int().positive().max(48),
+		kind: z.enum(['mined', 'extracted', 'lost']),
+		actorId: EntityIdSchema,
+		depositId: MissionSlugSchema.nullable(),
+		nodeId: MissionSlugSchema,
+		amount: z.number().int().positive().max(100),
+		cargoBefore: z.number().int().nonnegative().max(100),
+		cargoAfter: z.number().int().nonnegative().max(100),
+		depositBefore: z.number().int().nonnegative().max(100).nullable(),
+		depositAfter: z.number().int().nonnegative().max(100).nullable(),
+		settlementBefore: z.number().int().nonnegative().nullable(),
+		settlementAfter: z.number().int().nonnegative().nullable()
+	})
+	.strict()
+	.superRefine((entry, context) => {
+		if (
+			entry.cargoBefore - entry.cargoAfter !==
+			(entry.kind === 'mined' ? -entry.amount : entry.amount)
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal ore cargo delta is inconsistent' });
+		}
+		if (entry.kind === 'mined') {
+			if (
+				entry.depositId === null ||
+				entry.depositBefore === null ||
+				entry.depositAfter === null ||
+				entry.depositBefore - entry.depositAfter !== entry.amount ||
+				entry.settlementBefore !== null ||
+				entry.settlementAfter !== null
+			) {
+				context.addIssue({ code: 'custom', message: 'Portal mining ledger entry is inconsistent' });
+			}
+		} else if (
+			entry.depositId !== null ||
+			entry.depositBefore !== null ||
+			entry.depositAfter !== null ||
+			(entry.kind === 'extracted'
+				? entry.settlementBefore === null ||
+					entry.settlementAfter === null ||
+					entry.settlementAfter - entry.settlementBefore !== entry.amount
+				: entry.settlementBefore !== null || entry.settlementAfter !== null)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Portal terminal ore ledger entry is inconsistent'
+			});
+		}
+	});
+
+export const PortalMissionObjectiveProgressSchema = z
+	.object({
+		objectiveId: MissionSlugSchema,
+		status: z.enum(['available', 'quota-met', 'delivered']),
+		quota: z.number().int().positive().max(1_000),
+		minedAmount: z.number().int().nonnegative().max(10_000),
+		quotaReachedOnRound: z.number().int().positive().max(48).nullable(),
+		deliveredOnRound: z.number().int().positive().max(48).nullable()
+	})
+	.strict()
+	.superRefine((objective, context) => {
+		if (
+			(objective.status === 'available') !== (objective.quotaReachedOnRound === null) ||
+			(objective.status === 'delivered') !== (objective.deliveredOnRound !== null) ||
+			(objective.status === 'available' && objective.minedAmount >= objective.quota) ||
+			(objective.status !== 'available' && objective.minedAmount < objective.quota)
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal objective progress is inconsistent' });
+		}
+	});
+
+export const PortalRoundWindowSchema = z
+	.object({
+		roundsRemainingBefore: z.number().int().positive().max(48),
+		roundsRemainingAfter: z.number().int().nonnegative().max(47),
+		pressureBefore: PortalPressureStageSchema.exclude(['collapsed']),
+		pressureAfter: PortalPressureStageSchema
+	})
+	.strict()
+	.refine((window) => window.roundsRemainingBefore - window.roundsRemainingAfter === 1, {
+		message: 'Portal round window must consume exactly one round'
+	});
+
+export const MissionRoundV3Schema = z
+	.object({
+		...MissionRoundV2Schema.shape,
+		roundVersion: z.literal('mission-round-v3'),
+		portalWindow: PortalRoundWindowSchema,
+		oreLedgerEntryIds: z.array(EntityIdSchema).max(16)
+	})
+	.strict()
+	.superRefine((round, context) => {
+		const combatRound = Object.fromEntries(
+			Object.entries(round).filter(([key]) => key !== 'portalWindow' && key !== 'oreLedgerEntryIds')
+		);
+		const combat = MissionRoundV2Schema.safeParse({
+			...combatRound,
+			roundVersion: 'mission-round-v2'
+		});
+		if (!combat.success) {
+			context.addIssue({ code: 'custom', message: 'Portal round combat ledger is inconsistent' });
+		}
+		if (new Set(round.oreLedgerEntryIds).size !== round.oreLedgerEntryIds.length) {
+			context.addIssue({ code: 'custom', message: 'Portal round ore ledger ids must be unique' });
+		}
+	});
+
+export const PortalMissionStateSchema = z
+	.object({
+		portalVersion: z.literal('portal-runtime-v1'),
+		portalId: MissionSlugSchema,
+		durationRounds: z.number().int().min(3).max(48),
+		roundsRemaining: z.number().int().nonnegative().max(48),
+		warningAtRemainingRounds: z.number().int().positive().max(47),
+		criticalAtRemainingRounds: z.number().int().positive().max(46),
+		pressureStage: PortalPressureStageSchema,
+		extractionQuota: z.number().int().positive().max(1_000),
+		cargoCapacityPerActor: z.number().int().positive().max(100),
+		deposits: z.record(MissionSlugSchema, PortalDepositStateSchema),
+		cargo: z.record(EntityIdSchema, PortalCargoStateSchema),
+		oreLedger: z.array(PortalOreLedgerEntrySchema).max(1_000),
+		extractedAmount: z.number().int().nonnegative().max(10_000),
+		extractionCredited: z.boolean()
+	})
+	.strict()
+	.superRefine((portal, context) => {
+		if (
+			portal.warningAtRemainingRounds >= portal.durationRounds ||
+			portal.criticalAtRemainingRounds >= portal.warningAtRemainingRounds
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal runtime thresholds are inconsistent' });
+		}
+		const expectedPressure =
+			portal.roundsRemaining === 0
+				? 'collapsed'
+				: portal.roundsRemaining <= portal.criticalAtRemainingRounds
+					? 'critical'
+					: portal.roundsRemaining <= portal.warningAtRemainingRounds
+						? 'warning'
+						: 'stable';
+		if (portal.pressureStage !== expectedPressure) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Portal pressure stage diverged from its timer'
+			});
+		}
+		for (const [depositId, deposit] of Object.entries(portal.deposits)) {
+			if (deposit.depositId !== depositId) {
+				context.addIssue({ code: 'custom', message: 'Portal deposit key must match its id' });
+			}
+		}
+		for (const [actorId, cargo] of Object.entries(portal.cargo)) {
+			if (cargo.actorId !== actorId || cargo.capacity !== portal.cargoCapacityPerActor) {
+				context.addIssue({ code: 'custom', message: 'Portal cargo holder is inconsistent' });
+			}
+		}
+		if (portal.oreLedger.some((entry, index) => entry.sequence !== index + 1)) {
+			context.addIssue({ code: 'custom', message: 'Portal ore ledger sequence is inconsistent' });
+		}
+		const extracted = portal.oreLedger
+			.filter((entry) => entry.kind === 'extracted')
+			.reduce((sum, entry) => sum + entry.amount, 0);
+		if (portal.extractedAmount !== extracted || portal.extractionCredited !== extracted > 0) {
+			context.addIssue({ code: 'custom', message: 'Portal extracted ore total is inconsistent' });
+		}
+	});
+
+export const MissionTurnStateV3Schema = z
+	.object({
+		turnVersion: z.literal('mission-turn-v3'),
+		maximumRounds: z.number().int().min(3).max(48),
+		roundNumber: z.number().int().nonnegative().max(48),
+		objective: PortalMissionObjectiveProgressSchema,
+		policyBinding: MissionMonsterPolicyBindingSchema,
+		monsters: z.record(EntityIdSchema, MissionMonsterStateSchema),
+		partyGuard: z.record(EntityIdSchema, MissionPartyGuardStateSchema),
+		arena: MissionCombatArenaStateSchema,
+		currentThreatIntents: z.array(MissionMonsterIntentSchema).max(40),
+		portal: PortalMissionStateSchema,
+		rounds: z.array(MissionRoundV3Schema).max(48)
+	})
+	.strict()
+	.superRefine((turn, context) => {
+		if (
+			turn.roundNumber !== turn.rounds.length ||
+			turn.maximumRounds !== turn.portal.durationRounds ||
+			turn.portal.roundsRemaining !== turn.maximumRounds - turn.roundNumber
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Portal turn history and timer are inconsistent'
+			});
+		}
+		if (turn.rounds.some((round, index) => round.roundNumber !== index + 1)) {
+			context.addIssue({ code: 'custom', message: 'Portal rounds must be contiguous' });
+		}
+		for (const [monsterId, monster] of Object.entries(turn.monsters)) {
+			if (monster.monsterId !== monsterId) {
+				context.addIssue({ code: 'custom', message: 'Portal monster key must match its id' });
+			}
+		}
+	});
+
+export const MissionAttemptV4Schema = z
+	.object({
+		...MissionAttemptSchema.shape,
+		turnState: MissionTurnStateV3Schema
+	})
+	.strict()
+	.superRefine((attempt, context) => {
+		const lifecycle = MissionAttemptSchema.safeParse(
+			Object.fromEntries(Object.entries(attempt).filter(([key]) => key !== 'turnState'))
+		);
+		if (!lifecycle.success) {
+			context.addIssue({ code: 'custom', message: 'Portal mission lifecycle is inconsistent' });
+		}
+		const memberIds = [...attempt.party.memberIds].sort().join('|');
+		if (
+			Object.keys(attempt.turnState.partyGuard).sort().join('|') !== memberIds ||
+			Object.keys(attempt.turnState.portal.cargo).sort().join('|') !== memberIds
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal party state must match every member' });
+		}
+		const delivered = attempt.turnState.objective.status === 'delivered';
+		if (
+			attempt.completedObjectiveIds.includes(attempt.turnState.objective.objectiveId) !==
+				delivered ||
+			(attempt.status === 'extraction' && !delivered) ||
+			(attempt.status === 'failure') !== (attempt.turnState.portal.pressureStage === 'collapsed') ||
+			(attempt.status === 'success') !== attempt.turnState.portal.extractionCredited
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal mission outcome is inconsistent' });
+		}
+	});
+
+export const MissionRunStateV5Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		availableMissionIds: z.array(MissionSlugSchema).min(1).max(100),
+		evidence: z.record(EntityIdSchema, MissionEvidenceRecordSchema),
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV4Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		if (
+			(mission.attempt === null) !== (mission.attemptCount === 0) ||
+			(mission.attempt !== null && mission.attempt.ordinal !== mission.attemptCount)
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal mission attempt count is inconsistent' });
+		}
+		if (
+			new Set(mission.availableMissionIds).size !== mission.availableMissionIds.length ||
+			!mission.availableMissionIds.includes(mission.binding.missionId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal mission availability is inconsistent' });
+		}
+		for (const [evidenceId, evidence] of Object.entries(mission.evidence)) {
+			if (evidence.evidenceId !== evidenceId) {
+				context.addIssue({ code: 'custom', message: 'Portal evidence key must match its id' });
+			}
+		}
+	});
+
 const EngineGameStateV11BaseSchema = z
 	.object({
 		...EngineGameStateV10BaseSchema.shape,
@@ -1961,6 +2261,14 @@ const EngineGameStateV14BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV15BaseSchema = z
+	.object({
+		...EngineGameStateV11BaseSchema.shape,
+		schemaVersion: z.literal(15),
+		mission: MissionRunStateV5Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -1968,7 +2276,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV11BaseSchema>
 	| z.infer<typeof EngineGameStateV12BaseSchema>
 	| z.infer<typeof EngineGameStateV13BaseSchema>
-	| z.infer<typeof EngineGameStateV14BaseSchema>;
+	| z.infer<typeof EngineGameStateV14BaseSchema>
+	| z.infer<typeof EngineGameStateV15BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -2319,7 +2628,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV11BaseSchema>
 	| z.infer<typeof EngineGameStateV12BaseSchema>
 	| z.infer<typeof EngineGameStateV13BaseSchema>
-	| z.infer<typeof EngineGameStateV14BaseSchema>;
+	| z.infer<typeof EngineGameStateV14BaseSchema>
+	| z.infer<typeof EngineGameStateV15BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -2398,7 +2708,7 @@ function validateMissionEngineState(
 			});
 		}
 	}
-	if (state.schemaVersion === 14) {
+	if (state.schemaVersion === 14 || state.schemaVersion === 15) {
 		for (const evidence of Object.values(state.mission.evidence)) {
 			if (
 				evidence.holderActorId !== state.master.masterId &&
@@ -2422,6 +2732,9 @@ export const EngineGameStateV13Schema = EngineGameStateV13BaseSchema.superRefine
 export const EngineGameStateV14Schema = EngineGameStateV14BaseSchema.superRefine(
 	validateMissionEngineState
 );
+export const EngineGameStateV15Schema = EngineGameStateV15BaseSchema.superRefine(
+	validateMissionEngineState
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -2437,7 +2750,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
-	EngineGameStateV14Schema
+	EngineGameStateV14Schema,
+	EngineGameStateV15Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -2933,6 +3247,7 @@ export type EngineGameStateV11 = z.infer<typeof EngineGameStateV11Schema>;
 export type EngineGameStateV12 = z.infer<typeof EngineGameStateV12Schema>;
 export type EngineGameStateV13 = z.infer<typeof EngineGameStateV13Schema>;
 export type EngineGameStateV14 = z.infer<typeof EngineGameStateV14Schema>;
+export type EngineGameStateV15 = z.infer<typeof EngineGameStateV15Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -2955,7 +3270,11 @@ export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type MissionRunStateV2 = z.infer<typeof MissionRunStateV2Schema>;
 export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;
 export type MissionRunStateV4 = z.infer<typeof MissionRunStateV4Schema>;
+export type MissionRunStateV5 = z.infer<typeof MissionRunStateV5Schema>;
 export type MissionEvidenceRecord = z.infer<typeof MissionEvidenceRecordSchema>;
+export type MissionRoundV3 = z.infer<typeof MissionRoundV3Schema>;
+export type PortalMissionState = z.infer<typeof PortalMissionStateSchema>;
+export type PortalOreLedgerEntry = z.infer<typeof PortalOreLedgerEntrySchema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
 export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
 export type DirectiveRequest = z.infer<typeof DirectiveRequestSchema>;

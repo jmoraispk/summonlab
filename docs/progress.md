@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-006` were completed on 2026-08-24. The first five
+Status: **in progress**. `MIS-001` through `MIS-007` were completed on 2026-08-24. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -308,6 +308,7 @@ a state authority.
 | `MIS-004` | Complete: `engine-v13` binds `monster-policies-v1`, spawns stable Floor 01 goblins from declared count entropy, derives visible Chain Court and Ember Vault duty intents, resolves party and monsters in one initiative order, and persists alarm, movement, vitality, mission guard, defense, environment damage, and superseded actions under strict replay; the Foundry Warden's furnace armor and cooling-control policy are versioned without placing it before Floor 05; the mission board exposes active monsters, threat telegraphs, guard, and the merged resolution ledger | [Monster duty evidence](evidence/phase-6-monster-duties.png), contract/content/engine/database/browser tests, 44.0 KB measured mission-route JavaScript, ADR 0033 |
 | `MIS-005` | Complete: immutable `tower-floor-02-v1` through `tower-floor-05-v1` packages establish formation/protection, hazardous retreat pressure, one-person relay separation, retained Foundry-route knowledge, and the Living Foundry payoff; the verified first-band catalog contains 34 bounded observations, 15 legal discoveries, five fixed five-anchor envelopes, exact reward budgets totaling 1,010 points, and one Floor 05 Warden placement; the lab switches across all floors and demonstrates that Floor 05's maintenance action is absent without Floor 04 route memory while preserving a direct assault | [First-band evidence](evidence/phase-6-first-band.png), content/browser tests, `pnpm validate:mission-content`, 41.0 KB measured mission-lab JavaScript, ADR 0034 |
 | `MIS-006` | Complete: immutable runtime v2 bindings repair complete deterministic duty-count entropy without changing reviewed v1 packages; opt-in `engine-v14` retains the Floor 04 schematic under the discovering actor and its exact source, derives the Floor 05 memory capability only for that holder, owns maintenance-route exposure and `lit → cooling → quenched` furnace state, applies Warden armor and control interception in initiative order, and strictly replays the complete cross-floor event stream while normal Floor 01 runs remain byte-compatible on v13 | Engine/content/contract tests, focused cross-floor replay proof, ADR 0035 |
+| `MIS-007` | Complete: immutable `iron-moon-v1` binds an eight-round portal and three finite deposits; opt-in `engine-v15` decrements one deterministic timer unit per party round, exposes stable/warning/critical/collapsed pressure, transfers mined ore into bounded per-actor cargo, opens extraction only after the four-ore quota and complete return, credits settlement stock only on crossing, records collapse/retreat losses, gives every hero the authoritative portal context, and strictly replays persisted event-store runs; `/iron-moon` launches the complete local browser checkpoint | [Iron Moon evidence](evidence/phase-6-iron-moon.png), contract/content/context/engine/database/browser tests, `pnpm validate:mission-content`, ADR 0036 |
 
 ### Reproduce the checkpoint
 
@@ -333,9 +334,17 @@ ledger. Enter the Chain Court, choose a named goblin strike, and confirm vitalit
 effects are explicit. Recover the First Ember, return every member to the threshold, and extract.
 Reload and open the replay inspector to confirm all nine round events and their exact hashes survive.
 
+Open `http://localhost:5173/iron-moon` and choose **Open the silver scar**. Remove the hero from the
+roster for the shortest manual proof, deploy, then take **Windward Shelf → Crater Heart**, mine twice,
+and return **Crater Heart → Windward Shelf → Portal Scar**. Confirm the clock falls from eight to two,
+the four carried ore does not change the initial two settlement iron, and extraction atomically
+raises settlement stock to six. Reload to confirm the ore ledger and success survive. To test the
+failure branch instead, carry ore and hold until zero; the cargo becomes explicit `lost` entries and
+settlement stock remains two.
+
 ## Next active engineering slice
 
-Begin `MIS-007`: implement the Iron Moon timer, extraction boundary, and ore ledger.
+Begin `MIS-008`: implement injury, death, equipment, memory, and relationship aftermath.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

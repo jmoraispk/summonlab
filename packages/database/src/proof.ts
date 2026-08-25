@@ -65,6 +65,10 @@ export interface CreateProofRunInput {
 	readonly firstObservation: string;
 	readonly choice: ResolvedFirstChoice | null;
 	readonly clockSpeed?: ClockSpeed;
+	readonly developmentMissionScenario?: {
+		readonly initialMissionId: string;
+		readonly availableMissionIds: readonly string[];
+	};
 }
 
 function iso(value: Date | string): string {
@@ -303,6 +307,9 @@ export async function createProofRun(
 				manifestHash: input.draft.manifestHash,
 				rarityStars: input.draft.manifest.rarityStars,
 				mind: input.draft.mind,
+				...(input.developmentMissionScenario
+					? { developmentMissionScenario: input.developmentMissionScenario }
+					: {}),
 				...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
 			});
 			await insertEvent(

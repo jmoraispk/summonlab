@@ -1,6 +1,8 @@
 import {
 	CharacterManifestSchema,
+	EngineCommandSchema,
 	EngineGameStateV13Schema,
+	EngineGameStateV15Schema,
 	EngineSnapshotSchema,
 	HeroDecisionPacketSchema,
 	type CharacterManifest,
@@ -106,6 +108,67 @@ function communicate(state: EngineGameStateV13, heroId: string, key = 'context-w
 }
 
 describe('hero decision context', () => {
+	it('gives an Iron Moon hero the authoritative timer, cargo, quota, and finite deposits', () => {
+		const runId = deterministicUuid('context-iron-moon-run');
+		const heroId = deterministicUuid('context-iron-moon-hero');
+		const heroManifest = manifest(heroId, 'Sumi Vale');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'context-iron-moon-seed',
+			heroId,
+			manifestHash: hashCanonical(heroManifest),
+			developmentMissionScenario: {
+				initialMissionId: 'iron-moon',
+				availableMissionIds: ['iron-moon']
+			}
+		});
+		let state = EngineGameStateV15Schema.parse(bootstrap.snapshot.state);
+		for (const [key, command] of [
+			['prepare', { commandType: 'mission.prepare', heroIds: [heroId], missionId: 'iron-moon' }],
+			['deploy', { commandType: 'mission.deploy' }]
+		] as const) {
+			const commandId = deterministicUuid(`${runId}:${key}`);
+			state = EngineGameStateV15Schema.parse(
+				applyCommand(
+					state,
+					EngineCommandSchema.parse({
+						commandId,
+						runId,
+						actorId: state.master.masterId,
+						expectedVersion: state.version,
+						correlationId: commandId,
+						source: source(),
+						...command
+					})
+				).state
+			);
+		}
+		const packet = assembleHeroDecisionPacket({
+			snapshot: EngineSnapshotSchema.parse({ state, stateHash: hashGameState(state) }),
+			manifest: heroManifest,
+			heroId,
+			decisionKind: 'mission-action'
+		});
+
+		expect(packet.environment.mission).toMatchObject({
+			missionId: 'iron-moon',
+			positionNodeId: 'moon-gate',
+			portal: {
+				roundsRemaining: 8,
+				pressureStage: 'stable',
+				extractionQuota: 4,
+				minedAmount: 0,
+				cargoAmount: 0,
+				cargoCapacity: 4
+			}
+		});
+		expect(packet.environment.mission?.portal?.deposits).toHaveLength(3);
+		expect(packet.legalActions.map((action) => action.actionId)).toContain(
+			'mission.move.gate-to-shelf'
+		);
+		expect(verifyHeroDecisionPacket(packet)).toBe(true);
+	});
+
 	it('assembles a deterministic, hash-bound packet from only the hero view', () => {
 		const { engine, heroId, heroManifest } = bootstrap();
 		if (engine.snapshot.state.schemaVersion !== 13) throw new Error('Expected engine-v13');

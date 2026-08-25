@@ -1081,7 +1081,12 @@ Estimated engineering effort: **2–3 weeks**.
   for that holder; expose the maintenance route and cooling control through legal actions; advance
   the furnace from lit to cooling to quenched; apply the current furnace state to Warden armor and
   control interception; and recompute the entire cross-floor event stream under strict replay;
-- `MIS-007` implement Iron Moon timer, extraction, and ore ledger;
+- `MIS-007` complete: author and hash-bind the Iron Moon portal package; add an opt-in `engine-v15`
+  eight-round extraction clock with stable/warning/critical/collapsed pressure; finite deposits,
+  bounded per-actor attempt cargo, quota progress, and an append-only ore ledger; credit settlement
+  iron only in the separate extraction event; lose cargo explicitly on retreat or collapse; include
+  portal pressure and resources in each hero packet; strictly replay the whole transition; and ship
+  a database-backed `/iron-moon` browser checkpoint;
 - `MIS-008` implement injury, death, equipment, memory, and relationship aftermath;
 - `MIS-009` implement Master actions and atomic game over;
 - `MIS-010` validate three floor-5 strategies and deterministic replay;

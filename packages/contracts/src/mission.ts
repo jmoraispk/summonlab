@@ -931,6 +931,108 @@ export const MissionPackageSchema = z
 		}
 	});
 
+export const PortalMissionDepositSchema = z
+	.object({
+		depositId: MissionSlugSchema,
+		nodeId: MissionSlugSchema,
+		resource: z.literal('iron-ore'),
+		initialAmount: z.number().int().positive().max(100),
+		mineAmountPerAction: z.number().int().positive().max(20)
+	})
+	.strict()
+	.refine((deposit) => deposit.mineAmountPerAction <= deposit.initialAmount, {
+		message: 'Portal deposit action yield cannot exceed its initial amount'
+	});
+
+export const PortalMissionRulesSchema = z
+	.object({
+		portalId: MissionSlugSchema,
+		durationRounds: z.number().int().min(3).max(48),
+		warningAtRemainingRounds: z.number().int().positive().max(47),
+		criticalAtRemainingRounds: z.number().int().positive().max(46),
+		extractionQuota: z.number().int().positive().max(1_000),
+		cargoCapacityPerActor: z.number().int().positive().max(100),
+		deposits: z.array(PortalMissionDepositSchema).min(1).max(20),
+		collapse: z
+			.object({
+				failureRule: z.literal('timer-expired'),
+				cargoDisposition: z.literal('lost')
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((rules, context) => {
+		if (
+			rules.warningAtRemainingRounds >= rules.durationRounds ||
+			rules.criticalAtRemainingRounds >= rules.warningAtRemainingRounds
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal pressure thresholds are inconsistent' });
+		}
+		if (
+			new Set(rules.deposits.map((deposit) => deposit.depositId)).size !== rules.deposits.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal deposit ids must be unique' });
+		}
+		if (
+			rules.deposits.reduce((sum, deposit) => sum + deposit.initialAmount, 0) <
+			rules.extractionQuota
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Portal deposits cannot satisfy the extraction quota'
+			});
+		}
+		if (
+			rules.deposits.some((deposit) => deposit.mineAmountPerAction > rules.cargoCapacityPerActor)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Portal deposit yield exceeds one actor cargo capacity'
+			});
+		}
+	});
+
+export const PortalMissionPackageSchema = z
+	.object({
+		schemaVersion: z.literal('portal-mission-package-v1'),
+		contentVersion: ContentVersionSchema,
+		missionId: MissionSlugSchema,
+		mission: MissionPackageSchema,
+		portal: PortalMissionRulesSchema,
+		contentHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((portalPackage, context) => {
+		const { mission, portal } = portalPackage;
+		if (
+			mission.kind !== 'portal-world' ||
+			mission.tower !== null ||
+			mission.missionId !== portalPackage.missionId ||
+			mission.contentVersion !== portalPackage.contentVersion
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal mission binding is inconsistent' });
+		}
+		const nodes = new Map(mission.arena.nodes.map((node) => [node.nodeId, node]));
+		for (const deposit of portal.deposits) {
+			if (!nodes.get(deposit.nodeId)?.roles.includes('objective')) {
+				context.addIssue({
+					code: 'custom',
+					message: `Portal deposit node is not an objective: ${deposit.depositId}`
+				});
+			}
+		}
+		const primary = mission.objectives.find((objective) => objective.primary);
+		if (
+			primary?.completionRule.kind !== 'recover-ledger-item' ||
+			primary.completionRule.itemKey !== 'iron-ore' ||
+			primary.completionRule.amount !== portal.extractionQuota ||
+			!mission.deployment.extractionNodeIds.includes(primary.completionRule.returnToNodeId) ||
+			!primary.failureRules.includes('timer-expired')
+		) {
+			context.addIssue({ code: 'custom', message: 'Portal ore objective is inconsistent' });
+		}
+	});
+
 export const MissionArenaKnowledgeSchema = z
 	.object({
 		discoveryIds: z.array(MissionSlugSchema).max(40),
@@ -1003,4 +1105,7 @@ export type MissionDiscoveryAffordance = z.infer<typeof MissionDiscoveryAffordan
 export type MissionMonsterPolicyCatalog = z.infer<typeof MissionMonsterPolicyCatalogSchema>;
 export type MissionMonsterPolicyDefinition = z.infer<typeof MissionMonsterPolicyDefinitionSchema>;
 export type MissionPackage = z.infer<typeof MissionPackageSchema>;
+export type PortalMissionDeposit = z.infer<typeof PortalMissionDepositSchema>;
+export type PortalMissionPackage = z.infer<typeof PortalMissionPackageSchema>;
+export type PortalMissionRules = z.infer<typeof PortalMissionRulesSchema>;
 export type MissionRoutePlan = z.infer<typeof MissionRoutePlanSchema>;

@@ -13,9 +13,23 @@
 	let selectedMasterActionId = $state('');
 
 	const engineState = $derived(data.report.snapshot.state);
-	const mission = $derived(engineState.schemaVersion === 13 ? engineState.mission : null);
+	const isPortal = $derived(engineState.schemaVersion === 15);
+	const mission = $derived(
+		engineState.schemaVersion === 13 || engineState.schemaVersion === 15
+			? engineState.mission
+			: null
+	);
 	const attempt = $derived(mission?.attempt ?? null);
 	const turnState = $derived(attempt?.turnState ?? null);
+	const portalTurnState = $derived(
+		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
+	);
+	const combatTurnState = $derived(
+		engineState.schemaVersion === 13 ? (engineState.mission.attempt?.turnState ?? null) : null
+	);
+	const portalSettlementIron = $derived(
+		engineState.schemaVersion === 15 ? engineState.settlement.resources['iron-ore'] : 0
+	);
 	const lastRound = $derived(turnState?.rounds.at(-1) ?? null);
 	const hero = $derived(Object.values(engineState.heroes)[0]);
 	const heroSelected = $derived(hero ? selectedHeroIds.includes(hero.heroId) : false);
@@ -37,6 +51,7 @@
 				action.actionId.startsWith('mission.move.') ||
 				action.actionId.startsWith('mission.inspect.') ||
 				action.actionId.startsWith('mission.recover.') ||
+				action.actionId.startsWith('mission.mine.') ||
 				action.actionId.startsWith('mission.attack.') ||
 				action.actionId === 'mission.hold'
 		)
@@ -90,7 +105,11 @@
 
 	function prepare() {
 		return act(
-			{ action: 'prepare', heroIds: selectedHeroIds },
+			{
+				action: 'prepare',
+				heroIds: selectedHeroIds,
+				...(isPortal ? { missionId: 'iron-moon' } : {})
+			},
 			'The threshold roster is reserved in the authoritative event stream.'
 		);
 	}
@@ -124,11 +143,8 @@
 </script>
 
 <svelte:head>
-	<title>Floor 01 Deployment · summonlab</title>
-	<meta
-		name="description"
-		content="Choose the Master's move while autonomous heroes resolve deterministic Floor 01 turns."
-	/>
+	<title>{data.missionDefinition.displayName} · summonlab</title>
+	<meta name="description" content={data.missionDefinition.tagline} />
 </svelte:head>
 
 <main>
@@ -145,13 +161,19 @@
 
 	<section class="hero-copy">
 		<div>
-			<p class="eyebrow">Tower Floor 01 / authoritative threshold</p>
-			<h1>The Unlit<br /><em>Muster</em></h1>
+			<p class="eyebrow">
+				{isPortal ? 'Portal World / extraction clock' : 'Tower Floor 01 / authoritative threshold'}
+			</p>
+			<h1>{isPortal ? 'The Closing' : 'The Unlit'}<br /><em>{isPortal ? 'Scar' : 'Muster'}</em></h1>
 		</div>
 		<div class="mission-brief">
 			<span class="status-light"></span>
-			<p>Recover the First Ember. Return every survivor across the same black threshold.</p>
-			<small>Master required · 1–5 total · no reserve party</small>
+			<p>{data.missionDefinition.objectiveSummary}</p>
+			<small
+				>Master required · 1–5 total · {isPortal
+					? `${data.missionDefinition.maximumRounds} rounds to return`
+					: 'no reserve party'}</small
+			>
 		</div>
 	</section>
 
@@ -169,7 +191,7 @@
 
 	<section class="threshold-shell" data-testid="mission-threshold">
 		<div class="threshold-scene" class:opened={phase !== 'available' && phase !== 'preparing'}>
-			<div class="tower-number">01</div>
+			<div class="tower-number">{isPortal ? '08' : '01'}</div>
 			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'retreat'].includes(attempt.status)}
 				<div class="tactical-board" data-testid="mission-board">
 					<svg viewBox={`0 0 ${data.arena.width} ${data.arena.height}`} aria-hidden="true">
@@ -215,12 +237,17 @@
 							<span>G</span><small>{monster.vitality}</small>
 						</div>
 					{/each}
-					{#if turnState?.objective.status === 'carried'}
+					{#if !isPortal && combatTurnState?.objective.status === 'carried'}
 						<div class="objective-banner">
-							First Ember carried by {actorName(turnState.objective.carrierId!)}
+							First Ember carried by {actorName(combatTurnState.objective.carrierId!)}
 						</div>
-					{:else if turnState?.objective.status === 'delivered'}
+					{:else if !isPortal && combatTurnState?.objective.status === 'delivered'}
 						<div class="objective-banner delivered">First Ember returned to threshold</div>
+					{:else if portalTurnState}
+						<div class="objective-banner" data-testid="portal-board-status">
+							{portalTurnState.objective.minedAmount}/{portalTurnState.objective.quota} ore secured ·
+							{portalTurnState.portal.roundsRemaining} rounds remain
+						</div>
 					{/if}
 				</div>
 			{:else}
@@ -233,13 +260,34 @@
 				<span>{phase === 'available' ? 'Threshold dormant' : phase.replaceAll('-', ' ')}</span>
 				<strong
 					>{attempt
-						? `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/48`
+						? `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/${data.missionDefinition.maximumRounds}`
 						: 'No attempt committed'}</strong
 				>
 			</div>
 		</div>
 
 		<div class="operations">
+			{#if portalTurnState}
+				<div class="portal-clock {portalTurnState.portal.pressureStage}" data-testid="portal-clock">
+					<div>
+						<span>Scar integrity</span>
+						<strong>{portalTurnState.portal.roundsRemaining}</strong>
+						<small>rounds remaining</small>
+					</div>
+					<div>
+						<span>Pressure</span>
+						<strong>{portalTurnState.portal.pressureStage}</strong>
+						<small>collapse at zero</small>
+					</div>
+					<div>
+						<span>Ore quota</span>
+						<strong
+							>{portalTurnState.objective.minedAmount}/{portalTurnState.objective.quota}</strong
+						>
+						<small>credit only on extraction</small>
+					</div>
+				</div>
+			{/if}
 			<div class="phase-heading">
 				<div>
 					<span>Mission state</span>
@@ -258,7 +306,9 @@
 					<p>
 						{terminal
 							? attempt?.status === 'success'
-								? 'Floor 01 is complete. This run cannot farm the First Ember twice.'
+								? isPortal
+									? `Iron Moon extraction credited ${portalTurnState?.portal.extractedAmount ?? 0} ore.`
+									: 'Floor 01 is complete. This run cannot farm the First Ember twice.'
 								: 'The event stream keeps this outcome. A legal retry creates a new attempt ID.'
 							: 'Choose who crosses with the Master. Selection reserves heroes only after you lock the roster.'}
 					</p>
@@ -322,7 +372,9 @@
 						disabled={busy}
 						onclick={() => act({ action: 'deploy' }, 'Party deployment committed.')}
 						data-testid="deploy-party"
-						><span>Enter Floor 01</span><small>commit all selected members</small></button
+						><span>{isPortal ? 'Cross the silver scar' : 'Enter Floor 01'}</span><small
+							>commit all selected members</small
+						></button
 					>
 					<button
 						disabled={busy}
@@ -339,7 +391,10 @@
 				{:else if phase === 'deployed' || phase === 'resolving'}
 					<div class="turn-objective">
 						<span>Round {(turnState?.roundNumber ?? 0) + 1}</span>
-						<strong>{turnState?.objective.status ?? 'available'} · First Ember</strong>
+						<strong
+							>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
+								.objectiveTitle}</strong
+						>
 						<small>Choose only the Master. Every summoned hero chooses independently.</small>
 					</div>
 					{#if turnState && turnState.currentThreatIntents.length > 0}
@@ -386,9 +441,16 @@
 					<button
 						class="primary ember"
 						disabled={busy}
-						onclick={() => act({ action: 'extract' }, 'Floor 01 extraction succeeded.')}
+						onclick={() =>
+							act(
+								{ action: 'extract' },
+								isPortal
+									? 'Iron Moon ore reached settlement stores.'
+									: 'Floor 01 extraction succeeded.'
+							)}
 						data-testid="extract-party"
-						><span>Extract the First Ember</span><small>all survivors are at the boundary</small
+						><span>{isPortal ? 'Cross before collapse' : 'Extract the First Ember'}</span><small
+							>all survivors are at the boundary</small
 						></button
 					>
 					<button
@@ -404,6 +466,54 @@
 			{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
 		</div>
 	</section>
+
+	{#if portalTurnState}
+		<section class="ore-console" data-testid="ore-console">
+			<div class="ore-heading">
+				<div>
+					<span>Attempt-local cargo</span>
+					<h2>Nothing is yours until you return.</h2>
+				</div>
+				<strong>{portalSettlementIron} settlement iron</strong>
+			</div>
+			<div class="ore-grid">
+				<div>
+					<h3>Finite deposits</h3>
+					{#each Object.values(portalTurnState.portal.deposits) as deposit (deposit.depositId)}
+						<article>
+							<span>{deposit.nodeId.replaceAll('-', ' ')}</span>
+							<strong>{deposit.remainingAmount}/{deposit.initialAmount}</strong>
+							<small>{deposit.mineAmountPerAction} ore / action</small>
+						</article>
+					{/each}
+				</div>
+				<div>
+					<h3>Carried ore</h3>
+					{#each Object.values(portalTurnState.portal.cargo) as cargo (cargo.actorId)}
+						<article>
+							<span>{actorName(cargo.actorId)}</span>
+							<strong>{cargo.amount}/{cargo.capacity}</strong>
+							<small>{cargo.amount > 0 ? 'lost on collapse' : 'cargo empty'}</small>
+						</article>
+					{/each}
+				</div>
+				<div class="ore-events">
+					<h3>Ore ledger</h3>
+					{#if portalTurnState.portal.oreLedger.length === 0}
+						<p>No ore has changed hands.</p>
+					{:else}
+						{#each portalTurnState.portal.oreLedger.slice().reverse() as entry (entry.entryId)}
+							<article>
+								<span>#{entry.sequence} · {entry.kind}</span>
+								<strong>{entry.amount} iron ore</strong>
+								<small>round {entry.roundNumber} · {actorName(entry.actorId)}</small>
+							</article>
+						{/each}
+					{/if}
+				</div>
+			</div>
+		</section>
+	{/if}
 
 	{#if lastRound}
 		<section class="initiative-report" data-testid="initiative-report">
@@ -481,8 +591,16 @@
 	</section>
 
 	<footer>
-		<span>MIS-004 · autonomous monster duties</span>
-		<p>Next: Floor 02–05 threats and the Foundry Warden confrontation.</p>
+		<span
+			>{isPortal
+				? 'MIS-007 · authoritative portal extraction'
+				: 'MIS-004 · autonomous monster duties'}</span
+		>
+		<p>
+			{isPortal
+				? 'Next: injuries, death, equipment durability, and social aftermath.'
+				: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+		</p>
 	</footer>
 </main>
 
@@ -1329,6 +1447,102 @@
 	footer p {
 		margin: 0;
 	}
+	.portal-clock {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		margin: -1px -1px 1.2rem;
+		border: 1px solid #354345;
+		background: linear-gradient(115deg, rgba(52, 107, 113, 0.2), rgba(8, 12, 14, 0.9));
+	}
+	.portal-clock.warning {
+		border-color: #90713d;
+	}
+	.portal-clock.critical,
+	.portal-clock.collapsed {
+		border-color: #9d5147;
+		box-shadow: inset 0 0 2rem rgba(155, 51, 42, 0.12);
+	}
+	.portal-clock > div {
+		padding: 0.85rem;
+		border-right: 1px solid #303c3e;
+		display: grid;
+		gap: 0.15rem;
+	}
+	.portal-clock > div:last-child {
+		border: 0;
+	}
+	.portal-clock span,
+	.portal-clock small,
+	.ore-heading span,
+	.ore-grid h3,
+	.ore-grid small {
+		color: #758182;
+		font-size: 0.54rem;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+	}
+	.portal-clock strong {
+		color: #d6e7e5;
+		font:
+			1.35rem Georgia,
+			serif;
+		text-transform: uppercase;
+	}
+	.ore-console {
+		width: min(92vw, 1320px);
+		margin: 1.5rem auto 4rem;
+		border: 1px solid #293234;
+		background: #0b0f11;
+	}
+	.ore-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		padding: 1.5rem;
+		border-bottom: 1px solid #293234;
+	}
+	.ore-heading h2 {
+		margin: 0.4rem 0 0;
+		font:
+			1.7rem Georgia,
+			serif;
+	}
+	.ore-heading > strong {
+		color: #cfaa67;
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	.ore-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1.25fr;
+	}
+	.ore-grid > div {
+		padding: 1.2rem 1.5rem;
+		border-right: 1px solid #293234;
+	}
+	.ore-grid > div:last-child {
+		border: 0;
+	}
+	.ore-grid h3 {
+		margin: 0 0 0.8rem;
+	}
+	.ore-grid article {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.18rem 1rem;
+		padding: 0.65rem 0;
+		border-top: 1px solid #202729;
+		font-size: 0.72rem;
+		text-transform: capitalize;
+	}
+	.ore-grid article small {
+		grid-column: 1 / -1;
+	}
+	.ore-events p {
+		color: #667172;
+		font-size: 0.7rem;
+	}
 	@media (max-width: 850px) {
 		.topbar {
 			grid-template-columns: 1fr auto;
@@ -1372,6 +1586,15 @@
 		.operations {
 			min-height: 42rem;
 			padding: 1.2rem;
+		}
+		.portal-clock,
+		.ore-grid {
+			grid-template-columns: 1fr;
+		}
+		.portal-clock > div,
+		.ore-grid > div {
+			border-right: 0;
+			border-bottom: 1px solid #293234;
 		}
 		.state-rail {
 			overflow-x: auto;

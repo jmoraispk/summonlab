@@ -282,7 +282,29 @@ export const HeroDecisionPacketSchema = z
 						discoveryIds: z.array(z.string().min(1).max(80)).max(40),
 						objectiveId: z.string().min(1).max(80),
 						objectiveStatus: z.enum(['available', 'carried', 'delivered']),
-						objectiveCarrierId: EntityIdSchema.nullable()
+						objectiveCarrierId: EntityIdSchema.nullable(),
+						portal: z
+							.object({
+								roundsRemaining: z.number().int().nonnegative().max(48),
+								pressureStage: z.enum(['stable', 'warning', 'critical', 'collapsed']),
+								extractionQuota: z.number().int().positive().max(1_000),
+								minedAmount: z.number().int().nonnegative().max(10_000),
+								cargoAmount: z.number().int().nonnegative().max(100),
+								cargoCapacity: z.number().int().positive().max(100),
+								deposits: z
+									.array(
+										z
+											.object({
+												depositId: z.string().min(1).max(80),
+												nodeId: z.string().min(1).max(80),
+												remainingAmount: z.number().int().nonnegative().max(100)
+											})
+											.strict()
+									)
+									.max(20)
+							})
+							.strict()
+							.optional()
 					})
 					.strict()
 					.nullable()

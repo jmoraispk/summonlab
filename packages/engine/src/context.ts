@@ -15,6 +15,7 @@ import {
 	type EngineGameStateV11,
 	type EngineGameStateV12,
 	type EngineGameStateV13,
+	type EngineGameStateV15,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -33,7 +34,8 @@ type EngineKnowledgeState =
 	| EngineGameStateV10
 	| EngineGameStateV11
 	| EngineGameStateV12
-	| EngineGameStateV13;
+	| EngineGameStateV13
+	| EngineGameStateV15;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -62,7 +64,9 @@ function witnessedMasterRole(state: EngineKnowledgeState, heroId: string): boole
 function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: CharacterManifest) {
 	const hero = state.heroes[heroId]!;
 	const missionAttempt =
-		state.schemaVersion === 12 || state.schemaVersion === 13 ? state.mission.attempt : null;
+		state.schemaVersion === 12 || state.schemaVersion === 13 || state.schemaVersion === 15
+			? state.mission.attempt
+			: null;
 	const missionPosition =
 		missionAttempt &&
 		['deployed', 'resolving', 'extraction'].includes(missionAttempt.status) &&
@@ -276,7 +280,8 @@ function conversationDirectives(
 		| EngineGameStateV10
 		| EngineGameStateV11
 		| EngineGameStateV12
-		| EngineGameStateV13,
+		| EngineGameStateV13
+		| EngineGameStateV15,
 	heroId: string
 ): PlayerDirective[] {
 	return Object.values(state.society.conversationTurns)
@@ -317,7 +322,12 @@ function conversationDirectives(
 }
 
 function storedDirectives(
-	state: EngineGameStateV10 | EngineGameStateV11 | EngineGameStateV12 | EngineGameStateV13,
+	state:
+		| EngineGameStateV10
+		| EngineGameStateV11
+		| EngineGameStateV12
+		| EngineGameStateV13
+		| EngineGameStateV15,
 	decisionKind: HeroDecisionKind
 ): PlayerDirective[] {
 	return Object.values(state.society.directives)
@@ -367,7 +377,8 @@ export function assembleHeroDecisionPacket(
 		snapshot.state.schemaVersion !== 10 &&
 		snapshot.state.schemaVersion !== 11 &&
 		snapshot.state.schemaVersion !== 12 &&
-		snapshot.state.schemaVersion !== 13
+		snapshot.state.schemaVersion !== 13 &&
+		snapshot.state.schemaVersion !== 15
 	) {
 		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
@@ -465,15 +476,19 @@ export function assembleHeroDecisionPacket(
 		(building) => building.buildingId === hero.location
 	);
 	const missionAttempt =
-		(state.schemaVersion === 12 || state.schemaVersion === 13) &&
+		(state.schemaVersion === 12 || state.schemaVersion === 13 || state.schemaVersion === 15) &&
 		decisionKind === 'mission-action' &&
 		state.mission.attempt?.party.heroIds.includes(input.heroId) &&
 		['deployed', 'resolving'].includes(state.mission.attempt.status)
 			? state.mission.attempt
 			: null;
+	const portalMissionAttempt =
+		state.schemaVersion === 15 && missionAttempt ? state.mission.attempt : null;
 	const missionPositionNodeId = missionAttempt?.positions[input.heroId] ?? null;
 	const missionBinding =
-		state.schemaVersion === 12 || state.schemaVersion === 13 ? state.mission.binding : null;
+		state.schemaVersion === 12 || state.schemaVersion === 13 || state.schemaVersion === 15
+			? state.mission.binding
+			: null;
 	const packetId = deterministicUuid(
 		`${HERO_DECISION_PACKET_VERSION}:${state.runId}:${input.heroId}:${decisionKind}:${snapshot.stateHash}`
 	);
@@ -567,8 +582,37 @@ export function assembleHeroDecisionPacket(
 							visitedNodeIds: missionAttempt.knowledge.visitedNodeIds,
 							discoveryIds: missionAttempt.knowledge.discoveryIds,
 							objectiveId: missionAttempt.turnState.objective.objectiveId,
-							objectiveStatus: missionAttempt.turnState.objective.status,
-							objectiveCarrierId: missionAttempt.turnState.objective.carrierId
+							objectiveStatus:
+								state.schemaVersion === 15
+									? missionAttempt.turnState.objective.status === 'delivered'
+										? 'delivered'
+										: 'available'
+									: missionAttempt.turnState.objective.status,
+							objectiveCarrierId:
+								'carrierId' in missionAttempt.turnState.objective
+									? missionAttempt.turnState.objective.carrierId
+									: null,
+							...(portalMissionAttempt
+								? {
+										portal: {
+											roundsRemaining: portalMissionAttempt.turnState.portal.roundsRemaining,
+											pressureStage: portalMissionAttempt.turnState.portal.pressureStage,
+											extractionQuota: portalMissionAttempt.turnState.portal.extractionQuota,
+											minedAmount: portalMissionAttempt.turnState.objective.minedAmount,
+											cargoAmount:
+												portalMissionAttempt.turnState.portal.cargo[input.heroId]!.amount,
+											cargoCapacity:
+												portalMissionAttempt.turnState.portal.cargo[input.heroId]!.capacity,
+											deposits: Object.values(portalMissionAttempt.turnState.portal.deposits)
+												.sort((left, right) => left.depositId.localeCompare(right.depositId))
+												.map((deposit) => ({
+													depositId: deposit.depositId,
+													nodeId: deposit.nodeId,
+													remainingAmount: deposit.remainingAmount
+												}))
+										}
+									}
+								: {})
 						}
 					}
 				: {}),
@@ -591,14 +635,16 @@ export function assembleHeroDecisionPacket(
 			...(state.schemaVersion === 10 ||
 			state.schemaVersion === 11 ||
 			state.schemaVersion === 12 ||
-			state.schemaVersion === 13
+			state.schemaVersion === 13 ||
+			state.schemaVersion === 15
 				? storedDirectives(state, input.decisionKind)
 				: []),
 			...(state.schemaVersion === 9 ||
 			state.schemaVersion === 10 ||
 			state.schemaVersion === 11 ||
 			state.schemaVersion === 12 ||
-			state.schemaVersion === 13
+			state.schemaVersion === 13 ||
+			state.schemaVersion === 15
 				? conversationDirectives(state, input.heroId)
 				: [])
 		]),

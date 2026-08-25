@@ -10,6 +10,7 @@ import {
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
 	EngineGameStateV14Schema,
+	EngineGameStateV15Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
 	type ActivityKind,
@@ -439,7 +440,7 @@ describe('deterministic engine', () => {
 				...commandBase(state, masterId, key),
 				source: manualSource(),
 				...command
-			}) as EngineCommand;
+			}) as unknown as EngineCommand;
 		const resolve = (key: string, masterActionId: string, heroActionId: string) =>
 			commit(
 				missionCommand(key, {
@@ -599,6 +600,211 @@ describe('deterministic engine', () => {
 		const replay = replayEventsStrict(events);
 		expect(replay.verified).toBe(true);
 		expect(replay.snapshot.state).toEqual(state);
+	});
+
+	it('extracts finite Iron Moon ore before the deterministic portal collapse', () => {
+		const runId = deterministicUuid('iron-moon-runtime-run');
+		const heroId = deterministicUuid('iron-moon-runtime-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'iron-moon-runtime-seed',
+			heroId,
+			manifestHash: sha256Hex('iron-moon-runtime-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'iron-moon',
+				availableMissionIds: ['iron-moon']
+			}
+		});
+		let state = EngineGameStateV15Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const commit = (command: EngineCommand) => {
+			const result = applyCommand(state, command);
+			state = EngineGameStateV15Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		const missionCommand = (key: string, body: object): EngineCommand =>
+			({
+				...commandBase(state, masterId, key),
+				source: manualSource(),
+				...body
+			}) as unknown as EngineCommand;
+		const resolve = (key: string, masterActionId: string, heroActionId: string) =>
+			commit(
+				missionCommand(key, {
+					commandType: 'mission.resolve.turn',
+					choices: [
+						manualMissionChoice(masterId, masterActionId),
+						scriptedMissionChoice(heroId, heroActionId)
+					]
+				})
+			);
+
+		commit(
+			missionCommand('iron-moon-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'iron-moon'
+			})
+		);
+		commit(missionCommand('iron-moon-deploy', { commandType: 'mission.deploy' }));
+		expect(state.mission.attempt?.turnState.portal).toMatchObject({
+			roundsRemaining: 8,
+			pressureStage: 'stable',
+			extractionCredited: false
+		});
+
+		resolve('iron-moon-shelf', 'mission.move.gate-to-shelf', 'mission.move.gate-to-shelf');
+		resolve(
+			'iron-moon-split',
+			'mission.move.shelf-to-pale-vein',
+			'mission.move.shelf-to-crater-heart'
+		);
+		resolve(
+			'iron-moon-mine-one',
+			'mission.mine.pale-vein-deposit',
+			'mission.mine.crater-heart-deposit'
+		);
+		resolve(
+			'iron-moon-mine-two',
+			'mission.mine.pale-vein-deposit',
+			'mission.mine.crater-heart-deposit'
+		);
+		expect(state.mission.attempt?.turnState.objective).toMatchObject({
+			status: 'quota-met',
+			minedAmount: 6,
+			quotaReachedOnRound: 4
+		});
+		expect(state.mission.attempt?.turnState.portal).toMatchObject({
+			roundsRemaining: 4,
+			pressureStage: 'warning'
+		});
+		expect(
+			Object.fromEntries(
+				Object.entries(state.mission.attempt!.turnState.portal.cargo).map(([actorId, cargo]) => [
+					actorId,
+					cargo.amount
+				])
+			)
+		).toEqual({ [masterId]: 2, [heroId]: 4 });
+
+		resolve(
+			'iron-moon-regroup',
+			'mission.move.shelf-to-pale-vein',
+			'mission.move.shelf-to-crater-heart'
+		);
+		const returned = resolve(
+			'iron-moon-return',
+			'mission.move.gate-to-shelf',
+			'mission.move.gate-to-shelf'
+		);
+		expect(state.mission.attempt).toMatchObject({
+			status: 'extraction',
+			completedObjectiveIds: ['extract-iron-ore'],
+			turnState: {
+				objective: { status: 'delivered', deliveredOnRound: 6 },
+				portal: { roundsRemaining: 2, pressureStage: 'critical', extractionCredited: false }
+			}
+		});
+		expect(returned.events[0]?.payload.rewardDeltas).toEqual([]);
+		expect(state.settlement.resources['iron-ore']).toBe(2);
+
+		const extracted = commit(
+			missionCommand('iron-moon-extract', { commandType: 'mission.extract' })
+		);
+		expect(state.mission.attempt).toMatchObject({
+			status: 'success',
+			turnState: { portal: { extractedAmount: 6, extractionCredited: true } }
+		});
+		expect(state.settlement.resources['iron-ore']).toBe(8);
+		expect(state.settlement.resourceLedger.at(-1)).toMatchObject({
+			resource: 'iron-ore',
+			before: 2,
+			after: 8,
+			delta: 6,
+			reason: 'Iron Moon portal extraction'
+		});
+		expect(extracted.events[0]?.payload.rewardDeltas).toEqual([
+			expect.objectContaining({ kind: 'resource', key: 'iron-ore', before: 2, after: 8, delta: 6 })
+		]);
+		expect(state.mission.attempt?.turnState.portal.oreLedger.map((entry) => entry.kind)).toEqual([
+			'mined',
+			'mined',
+			'mined',
+			'mined',
+			'extracted',
+			'extracted'
+		]);
+
+		const replay = replayEventsStrict(events);
+		expect(replay.snapshot.state).toEqual(state);
+		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+	});
+
+	it('collapses the Iron Moon portal at zero and records carried ore as lost', () => {
+		const runId = deterministicUuid('iron-moon-collapse-run');
+		const heroId = deterministicUuid('iron-moon-collapse-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'iron-moon-collapse-seed',
+			heroId,
+			manifestHash: sha256Hex('iron-moon-collapse-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'iron-moon',
+				availableMissionIds: ['iron-moon']
+			}
+		});
+		let state = EngineGameStateV15Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const apply = (key: string, body: object) => {
+			const result = applyCommand(state, {
+				...commandBase(state, masterId, key),
+				source: manualSource(),
+				...body
+			} as unknown as EngineCommand);
+			state = EngineGameStateV15Schema.parse(result.state);
+			events.push(...result.events);
+		};
+		const turn = (key: string, actionId: string) =>
+			apply(key, {
+				commandType: 'mission.resolve.turn',
+				choices: [manualMissionChoice(masterId, actionId)]
+			});
+
+		apply('collapse-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [],
+			missionId: 'iron-moon'
+		});
+		apply('collapse-deploy', { commandType: 'mission.deploy' });
+		turn('collapse-shelf', 'mission.move.gate-to-shelf');
+		turn('collapse-vein', 'mission.move.shelf-to-pale-vein');
+		turn('collapse-mine-one', 'mission.mine.pale-vein-deposit');
+		turn('collapse-mine-two', 'mission.mine.pale-vein-deposit');
+		for (let round = 5; round <= 8; round += 1) turn(`collapse-hold-${round}`, 'mission.hold');
+
+		expect(state.mission.attempt).toMatchObject({
+			status: 'failure',
+			outcome: 'failure',
+			turnState: {
+				portal: { roundsRemaining: 0, pressureStage: 'collapsed', extractionCredited: false }
+			}
+		});
+		expect(state.mission.attempt?.turnState.portal.cargo[masterId]?.amount).toBe(0);
+		expect(state.mission.attempt?.turnState.portal.oreLedger.at(-1)).toMatchObject({
+			kind: 'lost',
+			actorId: masterId,
+			amount: 2,
+			cargoBefore: 2,
+			cargoAfter: 0
+		});
+		expect(state.settlement.resources['iron-ore']).toBe(2);
+		expect(legalActions(state, masterId).map((action) => action.actionId)).toContain(
+			'mission.prepare'
+		);
+		expect(replayEventsStrict(events).snapshot.state).toEqual(state);
 	});
 
 	it('spawns bound goblin duties, telegraphs threats, and resolves them in the shared ledger', () => {

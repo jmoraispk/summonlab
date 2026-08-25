@@ -1,5 +1,9 @@
 import { getConfig } from '@summonlab/config';
-import { TOWER_FLOOR_01_PACKAGE, projectMissionArenaKnowledge } from '@summonlab/content';
+import {
+	IRON_MOON_PACKAGE,
+	TOWER_FLOOR_01_PACKAGE,
+	projectMissionArenaKnowledge
+} from '@summonlab/content';
 import { getEngineReplay, getProofRun } from '@summonlab/database';
 import { error } from '@sveltejs/kit';
 
@@ -12,19 +16,31 @@ export const load: PageServerLoad = async ({ params }) => {
 		getProofRun(config.databaseUrl, params.runId).catch(() => null)
 	]);
 	if (!report || !proof) error(404, 'This summoned company could not be loaded.');
-	if (report.snapshot.state.schemaVersion !== 13) {
+	if (report.snapshot.state.schemaVersion !== 13 && report.snapshot.state.schemaVersion !== 15) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
+	const isPortal = report.snapshot.state.schemaVersion === 15;
+	const missionPackage = isPortal ? IRON_MOON_PACKAGE.mission : TOWER_FLOOR_01_PACKAGE;
 	const attempt = report.snapshot.state.mission.attempt;
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
-	const projection = projectMissionArenaKnowledge(TOWER_FLOOR_01_PACKAGE, knowledge);
+	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
+	const primaryObjective = missionPackage.objectives.find((objective) => objective.primary)!;
 	return {
 		report,
 		proof,
+		missionDefinition: {
+			isPortal,
+			displayName: missionPackage.displayName,
+			tagline: missionPackage.tagline,
+			objectiveTitle: primaryObjective.title,
+			objectiveSummary: primaryObjective.summary,
+			maximumRounds: isPortal ? IRON_MOON_PACKAGE.portal.durationRounds : 48,
+			portal: isPortal ? IRON_MOON_PACKAGE.portal : null
+		},
 		arena: {
-			width: TOWER_FLOOR_01_PACKAGE.design.width,
-			height: TOWER_FLOOR_01_PACKAGE.design.height,
-			nodes: TOWER_FLOOR_01_PACKAGE.arena.nodes
+			width: missionPackage.design.width,
+			height: missionPackage.design.height,
+			nodes: missionPackage.arena.nodes
 				.filter((node) => projection.nodeIds.includes(node.nodeId))
 				.map((node) => ({
 					nodeId: node.nodeId,
@@ -33,7 +49,7 @@ export const load: PageServerLoad = async ({ params }) => {
 					position: node.position,
 					visited: projection.visitedNodeIds.includes(node.nodeId)
 				})),
-			edges: TOWER_FLOOR_01_PACKAGE.arena.edges
+			edges: missionPackage.arena.edges
 				.filter((edge) => projection.edgeIds.includes(edge.edgeId))
 				.map((edge) => ({
 					edgeId: edge.edgeId,
@@ -42,7 +58,7 @@ export const load: PageServerLoad = async ({ params }) => {
 					exposure: edge.exposure,
 					visualPath: edge.visualPath
 				})),
-			observations: TOWER_FLOOR_01_PACKAGE.arena.observations
+			observations: missionPackage.arena.observations
 				.filter((observation) => projection.observationIds.includes(observation.observationId))
 				.map((observation) => ({
 					observationId: observation.observationId,
