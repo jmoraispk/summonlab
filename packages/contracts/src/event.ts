@@ -188,6 +188,135 @@ export const JournalEntrySchema = z
 		message: 'Journal sequence range is inverted'
 	});
 
+export const PlayerJournalFacetSchema = z.enum([
+	'action',
+	'combat',
+	'reward',
+	'progression',
+	'party',
+	'control',
+	'direction',
+	'story',
+	'failure'
+]);
+
+export const PlayerJournalActionSchema = z
+	.object({
+		actorId: z.string().min(1).max(120),
+		actorKind: z.enum(['master', 'hero', 'monster', 'system']),
+		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,119}$/u),
+		decisionSource: DecisionSourceSchema,
+		policyId: z.string().min(1).max(120).nullable(),
+		publicIntent: z.string().min(1).max(300),
+		outcome: z.enum(['applied', 'superseded', 'recorded'])
+	})
+	.strict();
+
+export const PlayerJournalMissionContextSchema = z
+	.object({
+		missionId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
+		floor: z.number().int().min(1).max(100).nullable(),
+		attemptId: EntityIdSchema.nullable(),
+		attemptOrdinal: z.number().int().positive().nullable(),
+		roundNumber: z.number().int().nonnegative().max(100).nullable(),
+		status: z
+			.enum([
+				'available',
+				'preparing',
+				'deployed',
+				'resolving',
+				'extraction',
+				'success',
+				'failure',
+				'retreat',
+				'canceled',
+				'death'
+			])
+			.nullable(),
+		partyMemberIds: z.array(EntityIdSchema).max(8),
+		completedObjectiveIds: z.array(z.string().min(1).max(100)).max(20),
+		discoveryIds: z.array(z.string().min(1).max(100)).max(100)
+	})
+	.strict();
+
+export const PlayerJournalPartyProgressKindSchema = z.enum([
+	'party-members',
+	'attempts-started',
+	'deployments',
+	'rounds-resolved',
+	'objectives-completed',
+	'discoveries',
+	'threats-defeated',
+	'successful-extractions',
+	'retreats',
+	'casualties'
+]);
+
+export const PlayerJournalPartyProgressDeltaSchema = z
+	.object({
+		kind: PlayerJournalPartyProgressKindSchema,
+		key: z.string().min(1).max(120),
+		before: z.number().int().nonnegative(),
+		after: z.number().int().nonnegative(),
+		delta: z.number().int()
+	})
+	.strict()
+	.refine((value) => value.after - value.before === value.delta, {
+		message: 'Party progress delta must equal after minus before'
+	});
+
+export const PlayerJournalDirectionSchema = z
+	.object({
+		directionId: EntityIdSchema,
+		kind: z.enum(['directive', 'fallback']),
+		text: z.string().min(1).max(1_000),
+		priorities: z.array(z.string().min(1).max(80)).max(12),
+		outcome: z.enum([
+			'advanced',
+			'conflicted',
+			'unavailable',
+			'selected',
+			'unclassified',
+			'safety-stopped',
+			'paused',
+			'mission-ended',
+			'not-evaluated'
+		]),
+		rationale: z.string().min(1).max(300)
+	})
+	.strict();
+
+export const PlayerJournalStoryChangeSchema = z
+	.object({
+		kind: z.enum([
+			'branch',
+			'first-ember',
+			'mission',
+			'objective',
+			'discovery',
+			'evidence',
+			'patch'
+		]),
+		key: z.string().min(1).max(120),
+		before: z.string().max(240).nullable(),
+		after: z.string().min(1).max(240),
+		summary: z.string().min(1).max(360)
+	})
+	.strict();
+
+export const PlayerJournalEntrySchema = JournalEntrySchema.safeExtend({
+	entryVersion: z.literal('player-journal-entry-v1'),
+	eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
+	stateHash: StateHashSchema,
+	dayNumber: z.number().int().positive(),
+	facets: z.array(PlayerJournalFacetSchema).min(1).max(9),
+	mission: PlayerJournalMissionContextSchema.nullable(),
+	actions: z.array(PlayerJournalActionSchema).max(48),
+	partyProgressDeltas: z.array(PlayerJournalPartyProgressDeltaSchema).max(16),
+	directions: z.array(PlayerJournalDirectionSchema).max(16),
+	storyChanges: z.array(PlayerJournalStoryChangeSchema).max(32)
+}).strict();
+
 export const EngineEventHeadSchema = z
 	.object({
 		runId: EntityIdSchema,
@@ -248,6 +377,57 @@ export const ReturnRecapDeltaSchema = z
 	})
 	.strict();
 
+export const PlayerJournalPartyTotalsSchema = z
+	.object({
+		attemptsStarted: z.number().int().nonnegative(),
+		deployments: z.number().int().nonnegative(),
+		roundsResolved: z.number().int().nonnegative(),
+		objectivesCompleted: z.number().int().nonnegative(),
+		discoveries: z.number().int().nonnegative(),
+		threatsDefeated: z.number().int().nonnegative(),
+		successfulExtractions: z.number().int().nonnegative(),
+		retreats: z.number().int().nonnegative(),
+		casualties: z.number().int().nonnegative()
+	})
+	.strict();
+
+export const PlayerJournalFilterOptionsSchema = z
+	.object({
+		days: z.array(z.number().int().positive()).max(10_000),
+		missionIds: z.array(z.string().min(1).max(80)).max(100),
+		floors: z.array(z.number().int().min(1).max(100)).max(100),
+		heroIds: z.array(EntityIdSchema).max(1_000),
+		eventTypes: z.array(z.string().min(1).max(100)).max(1_000),
+		facets: z.array(PlayerJournalFacetSchema).max(9),
+		sources: z.array(DecisionSourceSchema).max(10)
+	})
+	.strict();
+
+export const PlayerJournalReportSchema = z
+	.object({
+		reportVersion: z.literal('player-journal-v1'),
+		runId: EntityIdSchema,
+		fromCursor: z.number().int().positive(),
+		toCursor: z.number().int().positive(),
+		entryCount: z.number().int().positive(),
+		eventStreamHash: StateHashSchema,
+		reportHash: StateHashSchema,
+		entries: z.array(PlayerJournalEntrySchema).min(1).max(10_000),
+		deltaTotals: z.array(ReturnRecapDeltaSchema).max(10_000),
+		partyTotals: PlayerJournalPartyTotalsSchema,
+		filterOptions: PlayerJournalFilterOptionsSchema
+	})
+	.strict()
+	.superRefine((report, context) => {
+		if (
+			report.entryCount !== report.entries.length ||
+			report.fromCursor !== report.entries[0]?.sequenceStart ||
+			report.toCursor !== report.entries.at(-1)?.sequenceEnd
+		) {
+			context.addIssue({ code: 'custom', message: 'Player journal cursor range is inconsistent' });
+		}
+	});
+
 export const ReturnRecapSchema = z
 	.object({
 		runId: EntityIdSchema,
@@ -284,6 +464,17 @@ export type DirectiveRecord = z.infer<typeof DirectiveRecordSchema>;
 export type DirectiveScope = z.infer<typeof DirectiveScopeSchema>;
 export type DirectiveStatus = z.infer<typeof DirectiveStatusSchema>;
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;
+export type PlayerJournalAction = z.infer<typeof PlayerJournalActionSchema>;
+export type PlayerJournalDirection = z.infer<typeof PlayerJournalDirectionSchema>;
+export type PlayerJournalEntry = z.infer<typeof PlayerJournalEntrySchema>;
+export type PlayerJournalFacet = z.infer<typeof PlayerJournalFacetSchema>;
+export type PlayerJournalFilterOptions = z.infer<typeof PlayerJournalFilterOptionsSchema>;
+export type PlayerJournalMissionContext = z.infer<typeof PlayerJournalMissionContextSchema>;
+export type PlayerJournalPartyProgressDelta = z.infer<typeof PlayerJournalPartyProgressDeltaSchema>;
+export type PlayerJournalPartyProgressKind = z.infer<typeof PlayerJournalPartyProgressKindSchema>;
+export type PlayerJournalPartyTotals = z.infer<typeof PlayerJournalPartyTotalsSchema>;
+export type PlayerJournalReport = z.infer<typeof PlayerJournalReportSchema>;
+export type PlayerJournalStoryChange = z.infer<typeof PlayerJournalStoryChangeSchema>;
 export type PlayerDirective = z.infer<typeof PlayerDirectiveSchema>;
 export type ReturnRecap = z.infer<typeof ReturnRecapSchema>;
 export type ReturnRecapCounts = z.infer<typeof ReturnRecapCountsSchema>;

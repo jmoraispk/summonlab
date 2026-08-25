@@ -32,6 +32,8 @@
 		"validate:master-timing": "tsx tools/export-master-timing.ts --check",
 		"export:master-fallback": "tsx tools/export-master-fallback.ts",
 		"validate:master-fallback": "tsx tools/export-master-fallback.ts --check",
+		"export:player-journal": "tsx tools/export-player-journal.ts",
+		"validate:player-journal": "tsx tools/export-player-journal.ts --check",
 		"export:story-envelope": "tsx tools/export-story-envelope.ts",
 		"validate:story-envelope": "tsx tools/export-story-envelope.ts --check",
 		"record:agent-evaluation": "tsx tools/record-agent-evaluation.ts --acknowledge-paid-provider-run",
@@ -47,7 +49,7 @@
 		"test": "pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:story-envelope && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:runtime-visuals && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

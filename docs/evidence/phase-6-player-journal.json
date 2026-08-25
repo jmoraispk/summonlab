@@ -1,0 +1,766 @@
+{
+	"schemaVersion": "player-journal-evidence-v1",
+	"engineContentVersion": "engine-v20",
+	"replayVerified": true,
+	"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+	"assertions": {
+		"experienceGain": 16,
+		"levelGain": 1,
+		"attemptsStarted": 1,
+		"directionRecords": 1,
+		"storyChanges": 1,
+		"exactReplayCursor": true
+	},
+	"journal": {
+		"reportVersion": "player-journal-v1",
+		"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+		"fromCursor": 1,
+		"toCursor": 12,
+		"entryCount": 12,
+		"eventStreamHash": "d5ac5b9ec327ece76adf9a4ac682593fe2f03fe807ffc02183155bbca6c9b8d5",
+		"reportHash": "101229125bbc0a7d24e44396a15f184e4346edefb455a195bcba30d499fcaa4e",
+		"entries": [
+			{
+				"journalEntryId": "9a120040-80ae-4082-a0da-8c3145bd0793",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["c624eb0a-05d8-46cb-a26f-28c29852e45d"],
+				"sequenceStart": 1,
+				"sequenceEnd": 1,
+				"gameTime": "2000-01-01T00:00:00.000Z",
+				"category": "reward",
+				"title": "run initialized",
+				"summary": "The Master awakened beside a stocked gate and one new summon.",
+				"participantIds": [],
+				"deltas": [
+					{
+						"ownerId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"kind": "resource",
+						"key": "food",
+						"before": 0,
+						"after": 3,
+						"delta": 3
+					},
+					{
+						"ownerId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"kind": "resource",
+						"key": "iron-ore",
+						"before": 0,
+						"after": 2,
+						"delta": 2
+					},
+					{
+						"ownerId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"kind": "resource",
+						"key": "ember-shard",
+						"before": 0,
+						"after": 0,
+						"delta": 0
+					}
+				],
+				"source": {
+					"source": "system",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 1,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "run.initialized",
+				"stateHash": "5c36662f18366debfcbeeb7136ccfcd04e171cdd62484da2efcf76d3533724ac",
+				"dayNumber": 1,
+				"facets": ["reward"],
+				"mission": null,
+				"actions": [],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "976d4a87-d0ad-4cf2-8f19-17b22c736d36",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["e4b08b36-5a92-42f3-8d9e-210b228aa93a"],
+				"sequenceStart": 2,
+				"sequenceEnd": 2,
+				"gameTime": "2000-01-01T00:00:00.000Z",
+				"category": "story",
+				"title": "hero destination selected",
+				"summary": "The hero chose the training ground.",
+				"participantIds": ["b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"],
+				"deltas": [],
+				"source": {
+					"source": "scripted",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 2,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "hero.destination.selected",
+				"stateHash": "1c20231cc773b0d092206f2746a89417486de7288672b5d1357f5d973a8c65c5",
+				"dayNumber": 1,
+				"facets": ["action", "story"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"actorKind": "hero",
+						"actionId": "hero.destination.selected",
+						"decisionSource": "scripted",
+						"policyId": null,
+						"publicIntent": "The hero chose the training ground.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": [
+					{
+						"kind": "branch",
+						"key": "first-ember-branch",
+						"before": null,
+						"after": "steel-before-trust",
+						"summary": "The run entered the steel before trust branch."
+					}
+				]
+			},
+			{
+				"journalEntryId": "ed8aec02-b62d-4fed-af5d-4e2cc1a7d1a8",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["68410a05-fe21-48b0-a758-c19e3e2cc38a"],
+				"sequenceStart": 3,
+				"sequenceEnd": 3,
+				"gameTime": "2000-01-01T00:00:00.000Z",
+				"category": "action",
+				"title": "hero travel started",
+				"summary": "The hero began a 126-second route from gate-dais to training-ring; arrival is due at 2000-01-01T00:02:06.000Z.",
+				"participantIds": ["b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"],
+				"deltas": [],
+				"source": {
+					"source": "scripted",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 3,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "hero.travel.started",
+				"stateHash": "9528a9faa37d30bd3c2106f94a4433ab7f68004a07be5ff1e3c281ae9a2f740c",
+				"dayNumber": 1,
+				"facets": ["action"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"actorKind": "hero",
+						"actionId": "hero.travel.started",
+						"decisionSource": "scripted",
+						"policyId": null,
+						"publicIntent": "The hero began a 126-second route from gate-dais to training-ring; arrival is due at 2000-01-01T00:02:06.000Z.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "496582de-085e-44d3-9842-5393b8d9efc5",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["cd0cd4b9-b949-4af1-af81-12ca6fcc0f4a"],
+				"sequenceStart": 4,
+				"sequenceEnd": 4,
+				"gameTime": "2000-01-01T00:02:06.000Z",
+				"category": "action",
+				"title": "simulation advanced",
+				"summary": "One scheduled arrival resolved.",
+				"participantIds": ["d83870c2-83ad-40d4-b53a-73f6eb03e922"],
+				"deltas": [],
+				"source": {
+					"source": "system",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 4,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "simulation.advanced",
+				"stateHash": "cdf562cb1e64e5e029ab501293c8115a973b774ce687aad492928ecad3f23cbe",
+				"dayNumber": 1,
+				"facets": ["action"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"actorKind": "master",
+						"actionId": "simulation.advanced",
+						"decisionSource": "system",
+						"policyId": null,
+						"publicIntent": "One scheduled arrival resolved.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "87e9c213-8767-48ed-b500-2917c601254b",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["8ae5a397-6481-4542-9116-ba055932d3da"],
+				"sequenceStart": 5,
+				"sequenceEnd": 5,
+				"gameTime": "2000-01-01T00:02:06.000Z",
+				"category": "action",
+				"title": "hero activity started",
+				"summary": "The hero began train; completion is due at 2000-01-01T00:32:06.000Z.",
+				"participantIds": ["b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"],
+				"deltas": [],
+				"source": {
+					"source": "scripted",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 5,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "hero.activity.started",
+				"stateHash": "82fcccfa3476a03aa52d8bb00fc64302650b057e747f9d82b8d1079e9a40fceb",
+				"dayNumber": 1,
+				"facets": ["action"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"actorKind": "hero",
+						"actionId": "hero.activity.started",
+						"decisionSource": "scripted",
+						"policyId": null,
+						"publicIntent": "The hero began train; completion is due at 2000-01-01T00:32:06.000Z.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "efc9e0da-8231-488b-bfca-3ca23e343332",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["332ec93c-e695-4981-8284-f8311ad10006"],
+				"sequenceStart": 6,
+				"sequenceEnd": 6,
+				"gameTime": "2000-01-01T00:32:06.000Z",
+				"category": "progression",
+				"title": "simulation advanced",
+				"summary": "One train activity resolved.",
+				"participantIds": ["d83870c2-83ad-40d4-b53a-73f6eb03e922"],
+				"deltas": [
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "experience",
+						"key": "hero",
+						"before": 0,
+						"after": 8,
+						"delta": 8
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "skill",
+						"key": "sword-fighting",
+						"before": 0,
+						"after": 6,
+						"delta": 6
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "need",
+						"key": "hunger",
+						"before": 20,
+						"after": 30,
+						"delta": 10
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "need",
+						"key": "fatigue",
+						"before": 15,
+						"after": 30,
+						"delta": 15
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "durability",
+						"key": "practice-blade",
+						"before": 6,
+						"after": 5,
+						"delta": -1
+					}
+				],
+				"source": {
+					"source": "system",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 6,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "simulation.advanced",
+				"stateHash": "042659dda4648720ee832680ccc3db24c55d13fa8588f7b40ad94e0539e2867c",
+				"dayNumber": 1,
+				"facets": ["action", "progression"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"actorKind": "master",
+						"actionId": "simulation.advanced",
+						"decisionSource": "system",
+						"policyId": null,
+						"publicIntent": "One train activity resolved.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "7e8f924c-8493-4446-b0f0-55900975e83b",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["3d444d70-6ca6-4681-8382-366a6dae585a"],
+				"sequenceStart": 7,
+				"sequenceEnd": 7,
+				"gameTime": "2000-01-01T00:32:06.000Z",
+				"category": "action",
+				"title": "hero activity started",
+				"summary": "The hero began train; completion is due at 2000-01-01T01:02:06.000Z.",
+				"participantIds": ["b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"],
+				"deltas": [],
+				"source": {
+					"source": "scripted",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 7,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "hero.activity.started",
+				"stateHash": "69502384acd20294341daacce53e4650a84960e7e1339f92ea094ef6d0dec3e7",
+				"dayNumber": 1,
+				"facets": ["action"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"actorKind": "hero",
+						"actionId": "hero.activity.started",
+						"decisionSource": "scripted",
+						"policyId": null,
+						"publicIntent": "The hero began train; completion is due at 2000-01-01T01:02:06.000Z.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "984953eb-76ec-4b79-b6a8-d25dea313a6e",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["9082f345-e57c-41ea-9da5-66d3d874c4b0"],
+				"sequenceStart": 8,
+				"sequenceEnd": 8,
+				"gameTime": "2000-01-01T01:02:06.000Z",
+				"category": "progression",
+				"title": "simulation advanced",
+				"summary": "One train activity resolved.",
+				"participantIds": ["d83870c2-83ad-40d4-b53a-73f6eb03e922"],
+				"deltas": [
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "experience",
+						"key": "hero",
+						"before": 8,
+						"after": 16,
+						"delta": 8
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "skill",
+						"key": "sword-fighting",
+						"before": 6,
+						"after": 12,
+						"delta": 6
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "need",
+						"key": "hunger",
+						"before": 30,
+						"after": 40,
+						"delta": 10
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "need",
+						"key": "fatigue",
+						"before": 30,
+						"after": 45,
+						"delta": 15
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "level",
+						"key": "hero",
+						"before": 1,
+						"after": 2,
+						"delta": 1
+					},
+					{
+						"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"kind": "durability",
+						"key": "practice-blade",
+						"before": 5,
+						"after": 4,
+						"delta": -1
+					}
+				],
+				"source": {
+					"source": "system",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 8,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "simulation.advanced",
+				"stateHash": "6554476b73a77063950280144358d7733aa3a3dc7bef8eddec2e7013d567521c",
+				"dayNumber": 1,
+				"facets": ["action", "progression"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"actorKind": "master",
+						"actionId": "simulation.advanced",
+						"decisionSource": "system",
+						"policyId": null,
+						"publicIntent": "One train activity resolved.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "6b72d29c-d27d-43be-a7e1-0857cc093e38",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["55105c4b-f2f0-4ffd-9532-5ecc1e1ecea5"],
+				"sequenceStart": 9,
+				"sequenceEnd": 9,
+				"gameTime": "2000-01-01T01:02:06.000Z",
+				"category": "action",
+				"title": "hero travel started",
+				"summary": "The hero began a 119-second route from training-ring to gate-rail; arrival is due at 2000-01-01T01:04:05.000Z.",
+				"participantIds": ["b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"],
+				"deltas": [],
+				"source": {
+					"source": "scripted",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 9,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "hero.travel.started",
+				"stateHash": "20d0f38124770be02e61e6af7dc7e4a33869826d3aebfcfd3e50af573b0e63ff",
+				"dayNumber": 1,
+				"facets": ["action"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+						"actorKind": "hero",
+						"actionId": "hero.travel.started",
+						"decisionSource": "scripted",
+						"policyId": null,
+						"publicIntent": "The hero began a 119-second route from training-ring to gate-rail; arrival is due at 2000-01-01T01:04:05.000Z.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "2ee94201-0e0f-4c03-acd4-b4922f45692e",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["03eda09b-829d-42f2-b689-9d5a29bf485d"],
+				"sequenceStart": 10,
+				"sequenceEnd": 10,
+				"gameTime": "2000-01-01T01:04:05.000Z",
+				"category": "action",
+				"title": "simulation advanced",
+				"summary": "One scheduled arrival resolved.",
+				"participantIds": ["d83870c2-83ad-40d4-b53a-73f6eb03e922"],
+				"deltas": [],
+				"source": {
+					"source": "system",
+					"timing": null,
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 10,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "simulation.advanced",
+				"stateHash": "9eb0cf1e3776cbf51ae11d15ec5eb36c93539551f44d0a8cc4dfcbee306d31cd",
+				"dayNumber": 1,
+				"facets": ["action"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"actorKind": "master",
+						"actionId": "simulation.advanced",
+						"decisionSource": "system",
+						"policyId": null,
+						"publicIntent": "One scheduled arrival resolved.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "295a3f22-88c8-482e-87f6-6702676e30c7",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["7e7bc3bb-5701-4755-b946-ed18bc2c0a56"],
+				"sequenceStart": 11,
+				"sequenceEnd": 11,
+				"gameTime": "2000-01-01T01:04:05.000Z",
+				"category": "control",
+				"title": "master fallback changed",
+				"summary": "Master fallback changed to directed with explicit safety stops.",
+				"participantIds": ["d83870c2-83ad-40d4-b53a-73f6eb03e922"],
+				"deltas": [],
+				"source": {
+					"source": "manual",
+					"timing": "step",
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 11,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "master.fallback.changed",
+				"stateHash": "a277abb16b93868484466fdf9699df39b3ceab870f2f61b66ee5f5af285fb3e8",
+				"dayNumber": 1,
+				"facets": ["action", "control", "direction"],
+				"mission": null,
+				"actions": [
+					{
+						"actorId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"actorKind": "master",
+						"actionId": "master.fallback.changed",
+						"decisionSource": "manual",
+						"policyId": null,
+						"publicIntent": "Master fallback changed to directed with explicit safety stops.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [],
+				"directions": [
+					{
+						"directionId": "e9659a23-8518-48bd-a4a2-e4ef18e6c9a9",
+						"kind": "fallback",
+						"text": "Advance the objective, but preserve the company when the way is unclear.",
+						"priorities": ["focus-objective", "protect-party", "seek-secrets"],
+						"outcome": "not-evaluated",
+						"rationale": "The Master bound a new fallback doctrine."
+					}
+				],
+				"storyChanges": []
+			},
+			{
+				"journalEntryId": "5dbe9680-05b5-4a2d-a0f1-a148d6469999",
+				"runId": "941beb8b-e2c6-410d-a5c5-ea9ea1886c7f",
+				"eventIds": ["e258cc01-ba49-415a-9cec-bc134c7f3a13"],
+				"sequenceStart": 12,
+				"sequenceEnd": 12,
+				"gameTime": "2000-01-01T01:04:05.000Z",
+				"category": "action",
+				"title": "mission preparation started",
+				"summary": "The Master reserved a 2-member party for tower-floor-01.",
+				"participantIds": [
+					"d83870c2-83ad-40d4-b53a-73f6eb03e922",
+					"b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"
+				],
+				"deltas": [],
+				"source": {
+					"source": "manual",
+					"timing": "step",
+					"fallbackPolicy": null,
+					"directiveIds": [],
+					"decisionJobId": null
+				},
+				"directionOutcome": null,
+				"replayCursor": 12,
+				"entryVersion": "player-journal-entry-v1",
+				"eventType": "mission.preparation.started",
+				"stateHash": "00339ad040a74f1b5342413ecdd67482f2d09fd125161a39ec721d34615a6851",
+				"dayNumber": 1,
+				"facets": ["action", "party"],
+				"mission": {
+					"missionId": "tower-floor-01",
+					"floor": 1,
+					"attemptId": "b68e41ca-43a5-4e16-a3d5-53cc125ba711",
+					"attemptOrdinal": 1,
+					"roundNumber": 0,
+					"status": "preparing",
+					"partyMemberIds": [
+						"d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"
+					],
+					"completedObjectiveIds": [],
+					"discoveryIds": []
+				},
+				"actions": [
+					{
+						"actorId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+						"actorKind": "master",
+						"actionId": "mission.preparation.started",
+						"decisionSource": "manual",
+						"policyId": null,
+						"publicIntent": "The Master reserved a 2-member party for tower-floor-01.",
+						"outcome": "recorded"
+					}
+				],
+				"partyProgressDeltas": [
+					{
+						"kind": "party-members",
+						"key": "b68e41ca-43a5-4e16-a3d5-53cc125ba711",
+						"before": 0,
+						"after": 2,
+						"delta": 2
+					},
+					{
+						"kind": "attempts-started",
+						"key": "tower-floor-01",
+						"before": 0,
+						"after": 1,
+						"delta": 1
+					}
+				],
+				"directions": [],
+				"storyChanges": []
+			}
+		],
+		"deltaTotals": [
+			{
+				"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+				"kind": "durability",
+				"key": "practice-blade",
+				"delta": -2
+			},
+			{
+				"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+				"kind": "experience",
+				"key": "hero",
+				"delta": 16
+			},
+			{
+				"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+				"kind": "level",
+				"key": "hero",
+				"delta": 1
+			},
+			{
+				"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+				"kind": "need",
+				"key": "fatigue",
+				"delta": 30
+			},
+			{
+				"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+				"kind": "need",
+				"key": "hunger",
+				"delta": 20
+			},
+			{
+				"ownerId": "b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30",
+				"kind": "skill",
+				"key": "sword-fighting",
+				"delta": 12
+			},
+			{
+				"ownerId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+				"kind": "resource",
+				"key": "ember-shard",
+				"delta": 0
+			},
+			{
+				"ownerId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+				"kind": "resource",
+				"key": "food",
+				"delta": 3
+			},
+			{
+				"ownerId": "d83870c2-83ad-40d4-b53a-73f6eb03e922",
+				"kind": "resource",
+				"key": "iron-ore",
+				"delta": 2
+			}
+		],
+		"partyTotals": {
+			"attemptsStarted": 1,
+			"deployments": 0,
+			"roundsResolved": 0,
+			"objectivesCompleted": 0,
+			"discoveries": 0,
+			"threatsDefeated": 0,
+			"successfulExtractions": 0,
+			"retreats": 0,
+			"casualties": 0
+		},
+		"filterOptions": {
+			"days": [1],
+			"missionIds": ["tower-floor-01"],
+			"floors": [1],
+			"heroIds": ["b4a0397b-4a0f-4add-92d1-f1f1d1bd5b30"],
+			"eventTypes": [
+				"hero.activity.started",
+				"hero.destination.selected",
+				"hero.travel.started",
+				"master.fallback.changed",
+				"mission.preparation.started",
+				"run.initialized",
+				"simulation.advanced"
+			],
+			"facets": ["action", "control", "direction", "party", "progression", "reward", "story"],
+			"sources": ["manual", "scripted", "system"]
+		}
+	}
+}

@@ -98,3 +98,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-master-fallback.png` / `.json` — database-backed Master doctrine editor and deterministic
   report proving reproducible directed and seeded-random choices, immutable direction snapshots,
   health/ambiguity/irreversible/streak safety boundaries, forced Wait, and strict replay.
+- `phase-6-player-journal.png` / `.json` — database-backed company ledger and deterministic report
+  proving exact reward/XP/level and party-progress deltas, action/control provenance, direction and
+  story records, semantic filters, replay cursors, state hashes, and strict replay.

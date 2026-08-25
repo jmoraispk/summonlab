@@ -9,6 +9,7 @@
 	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import PlayerJournal from '$lib/components/PlayerJournal.svelte';
 
 	let { data } = $props();
 	let busy = $state(false);
@@ -123,19 +124,16 @@
 			? ['success', 'failure', 'retreat', 'canceled', 'death'].includes(attempt.status)
 			: false
 	);
-	const eventRows = $derived(
-		data.report.checks
-			.filter(
-				(check) =>
-					check.eventType.startsWith('mission.') ||
-					check.eventType === 'master.timing.changed' ||
-					check.eventType === 'master.fallback.changed' ||
-					check.eventType === 'master.safety.stopped' ||
-					check.eventType === 'master.decision.opened'
-			)
-			.slice()
-			.reverse()
-	);
+	const journalActorLabels = $derived({
+		[engineState.master.masterId]: 'The Master',
+		...(hero ? { [hero.heroId]: data.proof.manifest.displayName } : {}),
+		...Object.fromEntries(
+			Object.entries(turnState?.monsters ?? {}).map(([monsterId, monster]) => [
+				monsterId,
+				monster.label
+			])
+		)
+	});
 	const masterTurnActions = $derived(
 		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).filter(
 			(action) =>
@@ -1131,40 +1129,14 @@
 		{/each}
 	</section>
 
-	<section class="ledger">
-		<div class="ledger-heading">
-			<div>
-				<span>Append-only mission log</span>
-				<h2>What the engine remembers</h2>
-			</div>
-			<strong>{eventRows.length} transitions</strong>
-		</div>
-		{#if eventRows.length === 0}
-			<p class="empty-log">
-				No mission attempt exists. Settlement routines remain free to continue.
-			</p>
-		{:else}
-			<div class="event-list">
-				{#each eventRows as row (row.sequence)}
-					<article>
-						<span>#{row.sequence}</span>
-						<div>
-							<strong>{row.eventType}</strong>
-							<p>{row.summary}</p>
-						</div>
-						<code>{row.afterStateHash.slice(0, 10)}</code>
-					</article>
-				{/each}
-			</div>
-		{/if}
-	</section>
+	<PlayerJournal journal={data.report.playerJournal} actorLabels={journalActorLabels} />
 
 	<footer>
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
 				: isMasterFallback
-					? 'MIS-013 · directed + seeded-random fallback'
+					? 'MIS-014 · authoritative player journal'
 					: isMasterTiming
 						? 'MIS-012 · authoritative Master timing'
 						: isMasterRisk
@@ -1177,7 +1149,7 @@
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
 				: isMasterFallback
-					? 'Next: journal filters for policy, timer, fallback, direction, and rewards.'
+					? 'Next: queued agent decisions through provider-neutral model jobs.'
 					: isMasterTiming
 						? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
 						: isMasterRisk
@@ -2264,60 +2236,6 @@
 	.state-rail span {
 		font-family: monospace;
 	}
-	.ledger {
-		width: min(92vw, 1120px);
-		margin: 0 auto 6rem;
-	}
-	.ledger-heading {
-		display: flex;
-		justify-content: space-between;
-		align-items: end;
-		margin-bottom: 1.4rem;
-	}
-	.ledger-heading h2 {
-		margin: 0.45rem 0 0;
-		font:
-			2.1rem Georgia,
-			serif;
-	}
-	.ledger-heading > strong {
-		color: #606968;
-		font-size: 0.65rem;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-	}
-	.empty-log {
-		border: 1px dashed #303738;
-		padding: 2rem;
-		color: #687271;
-		text-align: center;
-	}
-	.event-list {
-		border-top: 1px solid #303738;
-	}
-	.event-list article {
-		display: grid;
-		grid-template-columns: 3rem 1fr auto;
-		gap: 1rem;
-		padding: 1rem 0.2rem;
-		border-bottom: 1px solid #232829;
-	}
-	.event-list > article > span {
-		color: #a77b3a;
-		font-family: monospace;
-	}
-	.event-list strong {
-		font-size: 0.78rem;
-	}
-	.event-list p {
-		margin: 0.3rem 0 0;
-		color: #798281;
-		font-size: 0.7rem;
-	}
-	.event-list code {
-		color: #4e7776;
-		font-size: 0.62rem;
-	}
 	footer {
 		padding: 2.5rem 4vw;
 		border-top: 1px solid #252b2c;
@@ -2571,15 +2489,6 @@
 			overflow-x: auto;
 			grid-template-columns: repeat(6, 9rem);
 			margin-bottom: 4rem;
-		}
-		.ledger-heading {
-			align-items: start;
-		}
-		.event-list article {
-			grid-template-columns: 2.4rem 1fr;
-		}
-		.event-list code {
-			display: none;
 		}
 		footer {
 			display: grid;

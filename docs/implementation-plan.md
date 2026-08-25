@@ -1128,7 +1128,12 @@ Estimated engineering effort: **2–3 weeks**.
   explicit unsupported-intent reporting; manual pause/takeover; configurable health, ambiguity,
   irreversible-action, and fallback-streak stops that force a replayable Wait boundary; expose the
   doctrine editor and evidence in the database-backed mission UI; and export a checked report;
-- `MIS-014` add the player journal with reward, experience, level, and party-progress deltas;
+- `MIS-014` complete: project a versioned, hash-bound player journal from canonical events; expose
+  exact action/source, reward, experience, level, party-progress, direction, story, failure, state
+  hash, and replay-cursor evidence; support day, mission, floor, hero, event-type, control-source,
+  and semantic-facet filters without changing engine state; ship the database-backed mission
+  ledger, `/player-journal` prepared checkpoint, public run-journal endpoint, and checked strict
+  replay report;
 - `MIS-015` validate one runtime `StoryPatch` against the floors 1–5 envelope.
 
 **Feedback gate:** play two contrasting parties through floor 5 and review tactical readability, autonomy, retreat, and emotional consequence.
@@ -1225,9 +1230,8 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. Phase 6 is complete through `MIS-013`; the next engineering
-slice is `MIS-014`: a filterable player journal with reward, experience, level, and party-progress
-deltas.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-014`; the next engineering
+slice is `MIS-015`: validate one runtime story patch against the floors 1–5 envelope.
 
 ## Accepted product decisions — 2026-08-23
 

@@ -8,6 +8,7 @@ import {
 	DirectiveScopeSchema,
 	FallbackPolicySchema,
 	JournalEntrySchema,
+	PlayerJournalReportSchema,
 	RewardDeltaSchema
 } from './event.js';
 import { RunStatusSchema } from './run.js';
@@ -3966,6 +3967,7 @@ export const EngineReplayReportSchema = z
 		eventCount: z.number().int().positive(),
 		checks: z.array(ReplayEventCheckSchema),
 		journalEntries: z.array(JournalEntrySchema),
+		playerJournal: PlayerJournalReportSchema,
 		scheduledEvents: z.array(EngineScheduleRecordSchema),
 		clock: SimulationClockSchema,
 		snapshot: EngineSnapshotSchema,

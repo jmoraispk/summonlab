@@ -92,6 +92,6 @@ test('prepares, retreats, retries, and resolves one replayable Floor 01 party', 
 	await expect(page.getByText('mission.extracted')).toBeVisible();
 	await page.reload();
 	await expect(page.locator('.phase-heading h2')).toHaveText('success');
-	await expect(page.getByText('15 transitions')).toBeVisible();
+	await expect(page.getByText('16 transitions')).toBeVisible();
 	await expect(page.getByText('Floor 01 is complete.')).toBeVisible();
 });

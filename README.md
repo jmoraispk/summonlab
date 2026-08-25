@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through bounded Master fallback doctrine._
+_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through the authoritative player journal._
 
 </div>
 
@@ -200,6 +200,22 @@ tie-break, direction, classification, score, source, selected action, explanatio
 
 Run `pnpm validate:master-fallback` to recompute the policy and safety proof at
 `docs/evidence/phase-6-master-fallback.json`.
+
+### Authoritative player journal checkpoint
+
+`/player-journal` creates an `engine-v20` company with two completed training sessions, a bound
+fallback doctrine, and Floor 01 prepared. Its mission page projects the canonical event stream into
+a player-readable company ledger: exact before/after reward, experience, level, and party-progress
+deltas; actions and autonomous policy; Wait/Countdown/Step/Continuous sources; directions and their
+outcomes; story changes; failures; and the exact replay cursor and resulting state hash.
+
+Day, mission, floor, hero, event-type, control-source, and semantic-facet filters are view-only.
+They never rewrite totals or event identity, and generated narration never supplies a number.
+
+![Authoritative company journal checkpoint](docs/evidence/phase-6-player-journal.png)
+
+Run `pnpm validate:player-journal` to recompute the strict-replay, numerical, and hash-bound proof
+at `docs/evidence/phase-6-player-journal.json`.
 
 ### First-band story envelope
 

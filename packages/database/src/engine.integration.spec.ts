@@ -106,6 +106,10 @@ describe('engine event store', () => {
 		expect(replay?.eventCount).toBe(2);
 		expect(replay?.snapshot.state.version).toBe(1);
 		expect(replay?.snapshot.state.entropyCursor).toBe(1);
+		expect(replay?.playerJournal.reportVersion).toBe('player-journal-v1');
+		expect(replay?.playerJournal.entryCount).toBe(2);
+		expect(replay?.playerJournal.toCursor).toBe(replay?.snapshot.state.eventCursor);
+		expect(replay?.playerJournal.reportHash).toMatch(/^[a-f0-9]{64}$/u);
 	});
 
 	run('coalesces concurrent duplicate delivery without consuming entropy twice', async () => {
