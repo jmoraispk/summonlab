@@ -29,7 +29,7 @@ test('exposes a keyboard-first title and honors system motion preferences', asyn
 	await dialog.getByRole('radio', { name: 'System', exact: true }).check();
 	await dialog.focus();
 	await dialog.press('Shift+Tab');
-	await expect(dialog.getByRole('radio', { name: '5-second handoff' })).toBeFocused();
+	await expect(dialog.getByRole('button', { name: 'Play without sharing' })).toBeFocused();
 	await page.keyboard.press('Tab');
 	await expect(dialog.getByRole('button', { name: /Close/ })).toBeFocused();
 	await dialog.press('Escape');

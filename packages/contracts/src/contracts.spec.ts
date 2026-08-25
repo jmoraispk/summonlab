@@ -7,6 +7,9 @@ import {
 	HealthResponseSchema,
 	LegalActionSchema,
 	PhonePerformanceReportSchema,
+	PlaytestAnalyticsEventSchema,
+	PlaytestAnalyticsReportSchema,
+	PlaytestConsentGrantRequestSchema,
 	PlayerVisualManifestSchema,
 	RecognitionReviewCreateRequestSchema,
 	RecognitionReviewListSchema,
@@ -63,6 +66,82 @@ function validCharacterManifest(adultAge = 25) {
 }
 
 describe('foundation contracts', () => {
+	it('keeps playtest consent affirmative and analytics free of arbitrary text', () => {
+		expect(
+			PlaytestConsentGrantRequestSchema.safeParse({
+				noticeVersion: 'playtest-consent-v1',
+				analyticsVersion: 'playtest-analytics-v1',
+				ageConfirmed: true,
+				voluntary: true
+			}).success
+		).toBe(true);
+		expect(
+			PlaytestConsentGrantRequestSchema.safeParse({
+				noticeVersion: 'playtest-consent-v1',
+				analyticsVersion: 'playtest-analytics-v1',
+				ageConfirmed: false,
+				voluntary: true
+			}).success
+		).toBe(false);
+		const event = {
+			eventId: randomUUID(),
+			sessionId: randomUUID(),
+			runId: null,
+			eventType: 'route_viewed' as const,
+			route: 'title' as const,
+			viewport: 'phone' as const,
+			occurredAt: '2026-08-25T22:00:00.000Z'
+		};
+		expect(PlaytestAnalyticsEventSchema.safeParse(event).success).toBe(true);
+		expect(
+			PlaytestAnalyticsEventSchema.safeParse({ ...event, rawQuestion: 'What do you fear?' }).success
+		).toBe(false);
+	});
+
+	it('requires aggregate playtest totals and funnel stages to agree', () => {
+		const report = {
+			schemaVersion: 'playtest-analytics-v1' as const,
+			generatedAt: '2026-08-25T22:00:00.000Z',
+			privacy: {
+				noticeVersion: 'playtest-consent-v1' as const,
+				retentionDays: 30 as const,
+				storesRawText: false as const,
+				storesIpAddress: false as const,
+				storesUserAgent: false as const,
+				withdrawalDeletesEvents: true as const,
+				reportIsAggregateOnly: true as const
+			},
+			consents: { granted: 1, withdrawn: 0, expired: 0 },
+			retainedSessionCount: 1,
+			retainedEventCount: 4,
+			eventCounts: {
+				route_viewed: 1,
+				campaign_started: 1,
+				onboarding_step_completed: 1,
+				hearth_entered: 1,
+				pause_opened: 0,
+				campaign_restarted: 0,
+				reconnect_completed: 0
+			},
+			funnel: {
+				titleViewedSessions: 1,
+				campaignStartedSessions: 1,
+				onboardingCompletedSessions: 1,
+				hearthEnteredSessions: 1
+			}
+		};
+		expect(PlaytestAnalyticsReportSchema.safeParse(report).success).toBe(true);
+		expect(
+			PlaytestAnalyticsReportSchema.safeParse({ ...report, retainedEventCount: 5 }).success
+		).toBe(false);
+		expect(
+			PlaytestAnalyticsReportSchema.safeParse({
+				...report,
+				funnel: { ...report.funnel, hearthEnteredSessions: 2 }
+			}).success
+		).toBe(false);
+	});
+
 	it('accepts an adult deterministic character manifest', () => {
 		const result = CharacterManifestSchema.parse(validCharacterManifest());
 

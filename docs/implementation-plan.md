@@ -1167,7 +1167,11 @@ Estimated engineering effort: **2 weeks**.
   purpose-sized title variants and approved runtime portraits; bind byte evidence to the current
   build and manifests; and enforce the 390×844/2× simulated-4G shell, reconnect, interface-response,
   frame-rate, and working-set budgets in the real campaign browser path;
-- `FIN-006` add analytics and playtest consent;
+- `FIN-006` **complete** — require affirmative versioned adult playtest consent before any
+  analytics request; keep decline device-local; accept only seven strict first-party journey event
+  types without raw text, seeds, names, IPs, or user agents; bind grants to hashed 30-day device
+  capabilities; delete retained sessions/events on withdrawal or expiry; and expose only an
+  aggregate development report for moderated-test triage;
 - `FIN-007` run five moderated tests and triage findings;
 - `FIN-008` fix all release-blocking defects and package the playtest build;
 - `FIN-009` add a development-time story workshop that generates reviewable, versioned arc proposals.
@@ -1267,8 +1271,10 @@ in ADR 0048: procedural route soundscapes, redundant captions and visual cues, p
 preference migration, system-aware motion, keyboard-first navigation, and modal focus containment.
 `FIN-005` adds the split performance evidence boundary in ADR 0049: reproducible player visual and
 build artifacts are exact, while a fresh throttled Chromium campaign enforces the phone shell,
-reconnect, interface, frame, and working-set targets. The next engineering slice is `FIN-006`: add
-analytics and playtest consent.
+reconnect, interface, frame, and working-set targets. `FIN-006` adds the revocable, data-minimized observation boundary in
+ADR 0050: decline is a verified zero-request path; a 30-day capability gates seven strict event
+types; withdrawal/expiry deletes the retained journey; and the development report exposes aggregate
+signal only. The next execution slice is `FIN-007`: run five moderated tests and triage findings.
 
 ## Accepted product decisions — 2026-08-23
 

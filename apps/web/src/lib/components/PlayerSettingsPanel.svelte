@@ -6,6 +6,7 @@
 		type PlayerSettings
 	} from '$lib/player-settings';
 	import { onMount } from 'svelte';
+	import PlaytestConsentPanel from './PlaytestConsentPanel.svelte';
 
 	let { onChange }: { onChange?: (settings: PlayerSettings) => void } = $props();
 	let settings = $state<PlayerSettings>(DEFAULT_PLAYER_SETTINGS);
@@ -146,6 +147,8 @@
 			</label>
 		</div>
 	</div>
+
+	<PlaytestConsentPanel />
 </section>
 
 <style>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
 	import favicon from '$lib/assets/favicon.svg';
+	import PlaytestAnalyticsLayer from '$lib/components/PlaytestAnalyticsLayer.svelte';
 	import PlayerSensoryLayer from '$lib/components/PlayerSensoryLayer.svelte';
 	import { loadPlayerSettings } from '$lib/player-settings';
 	import { onMount } from 'svelte';
@@ -33,6 +34,7 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div id="main-content" tabindex="-1">{@render children()}</div>
 <PlayerSensoryLayer />
+<PlaytestAnalyticsLayer />
 
 <style>
 	:global(*) {

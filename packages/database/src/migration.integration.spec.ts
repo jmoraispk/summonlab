@@ -40,11 +40,14 @@ describe('database migration', () => {
 						'summonlab_decision_jobs',
 						'summonlab_decision_job_attempts',
 						'summonlab_decision_job_transitions',
+						'summonlab_playtest_consents',
+						'summonlab_playtest_sessions',
+						'summonlab_playtest_events',
 						'summonlab_visual_asset_reviews',
 						'summonlab_visual_recognition_reviews'
 					)
 			`;
-			expect(rows).toHaveLength(15);
+			expect(rows).toHaveLength(18);
 		} finally {
 			await sql.end({ timeout: 5 });
 		}

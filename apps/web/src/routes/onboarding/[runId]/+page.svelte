@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
+	import { trackPlaytestEvent } from '$lib/playtest-analytics';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
@@ -61,6 +62,12 @@
 			const body = (await response.json()) as { message?: string };
 			if (!response.ok) throw new Error(body.message ?? 'The gate did not answer.');
 			await refreshView();
+			await trackPlaytestEvent({
+				eventType: 'onboarding_step_completed',
+				route: 'onboarding',
+				runId: view.campaign.runId,
+				step
+			});
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The gate did not answer.';
 		} finally {
@@ -110,7 +117,10 @@
 					trigger: 'step'
 				})
 			});
-			const decisionBody = (await decision.json()) as { message?: string };
+			const decisionBody = (await decision.json()) as {
+				destination?: 'kitchen' | 'training-ground';
+				message?: string;
+			};
 			if (!decision.ok) throw new Error(decisionBody.message ?? 'No first choice was recorded.');
 			const completion = await fetch(`/api/campaigns/${view.campaign.runId}/onboarding`, {
 				method: 'POST',
@@ -119,6 +129,20 @@
 			});
 			const completionBody = (await completion.json()) as { message?: string };
 			if (!completion.ok) throw new Error(completionBody.message ?? 'The prologue stayed open.');
+			await trackPlaytestEvent({
+				eventType: 'onboarding_step_completed',
+				route: 'onboarding',
+				runId: view.campaign.runId,
+				step: 3
+			});
+			if (decisionBody.destination) {
+				await trackPlaytestEvent({
+					eventType: 'hearth_entered',
+					route: 'hearth',
+					runId: view.campaign.runId,
+					destination: decisionBody.destination
+				});
+			}
 			await goto(resolve('/play/[runId]', { runId: view.campaign.runId }));
 		} catch (error) {
 			errorMessage =

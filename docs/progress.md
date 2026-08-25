@@ -433,8 +433,8 @@ version, message commitment, and replay hash remain unchanged.
 
 ## Phase 7 — synthesis, story, and vertical-slice finish
 
-Status: **in progress**. `FIN-001` through `FIN-005` are complete as of 2026-08-25; the broader
-vertical-slice finish remains active and `FIN-006` through `FIN-009` are not complete.
+Status: **in progress**. `FIN-001` through `FIN-006` are complete as of 2026-08-25; the broader
+vertical-slice finish remains active and `FIN-007` through `FIN-009` are not complete.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -443,6 +443,7 @@ vertical-slice finish remains active and `FIN-006` through `FIN-009` are not com
 | `FIN-003` | Complete: the original summoning image now leads a player-facing title; a seed creates exactly three stable adult human strangers; sequential first-person onboarding records one canonical answer per hero and the first autonomous destination; seven objectives derive from campaign plus engine state and bind the snapshot hash; pause is interface-only; large text, reduced motion, and Wait/five-second timing persist locally; same-seed restart creates a new run while the superseded replay remains verified | [Title evidence](evidence/phase-7-campaign-title.png), [company evidence](evidence/phase-7-campaign-company.png), [pause evidence](evidence/phase-7-campaign-pause.png), [mobile company](evidence/phase-7-campaign-mobile-company.png), [mobile Hearth](evidence/phase-7-campaign-mobile-hearth.png), campaign engine/database/browser tests, ADR 0047 |
 | `FIN-004` | Complete: a muted-by-default procedural soundscape supplies route ambience and optional full interface cues without assets or canonical writes; every cue is redundant and captioned; v1 local settings migrate before hydration; System motion honors the OS while Reduced removes long movement; skip navigation, visible focus, native settings inputs, arrow-key hero tabs, route focus, and modal containment/restoration form the keyboard baseline | [Desktop settings](evidence/phase-7-fin004-desktop-settings.png), [desktop company](evidence/phase-7-fin004-desktop-company.png), [phone settings](evidence/phase-7-fin004-phone-settings.png), [phone company](evidence/phase-7-fin004-phone-company.png), [phone Hearth](evidence/phase-7-fin004-phone-hearth.png), settings/audio unit tests, accessibility and campaign browser tests, ADR 0048 |
 | `FIN-005` | Complete: content-addressed 832 px/1681 px title WebPs replace the 2.19 MB source PNG on player routes; approved runtime portraits replace source imports where available; exact build, title, and settlement bytes bind a versioned phone report; a real arrived campaign at 390×844/2×, 150 ms/1.6 Mbps simulated 4G, and 4× CPU enforces shell, reconnect, response, frame, and working-set targets in hosted browser CI | [Optimized phone title](evidence/phase-7-fin005-phone-title.png), [arrived phone settlement](evidence/phase-7-fin005-phone-settlement.png), [machine-readable phone report](evidence/phase-7-fin005-phone-performance.json), player-visual/build validators, contract/browser tests, ADR 0049 |
+| `FIN-006` | Complete: undecided and declined browsers send no analytics; affirmative adult consent creates a hashed 30-day device capability; seven strict event types reject raw or unknown properties; names, seeds, dialogue, IPs, user agents, cookies, and third parties stay outside the store; withdrawal/expiry deletes retained sessions/events; the development report exposes aggregate typed counts and a prefix-complete funnel only | [Desktop consent](evidence/phase-7-fin006-desktop-consent.png), [phone consent](evidence/phase-7-fin006-phone-consent.png), [desktop aggregate report](evidence/phase-7-fin006-desktop-aggregate-report.png), [phone aggregate report](evidence/phase-7-fin006-phone-aggregate-report.png), consent/database/browser tests, ADR 0050 |
 
 ### Reproduce the FIN-003 checkpoint
 
@@ -472,7 +473,7 @@ objective control.
 ### Reproduce the FIN-005 checkpoint
 
 Run `pnpm measure:web-build-budget`, `pnpm validate:player-visuals`, and
-`pnpm validate:phone-performance`. The checked report must bind 45.0 KB initial JavaScript, the
+`pnpm validate:phone-performance`. The checked report must bind 47.8 KB initial JavaScript, the
 47.3 KB selected phone title, and the 296.2 KB first Hearth visual to current artifacts. Then run
 `pnpm --filter @summonlab/web exec playwright test src/routes/performance.e2e.ts`; the test creates
 and completes a real campaign before applying the target 390×844/2× simulated-4G/4×-CPU profile.
@@ -483,7 +484,22 @@ and reconnect delay, touch response, animation stability, image sharpness, and d
 the emulated report. Native/GPU memory and thermal behavior remain a real-device gate rather than an
 emulation claim.
 
+### Reproduce the FIN-006 checkpoint
+
+Run `pnpm db:migrate`, start `pnpm dev:app`, and open `http://localhost:5173`. On the title, choose
+**Play without sharing**, begin a chronicle, and confirm the journey is unchanged and the consent
+panel continues to say **Sharing off**. Return to the title, choose **I’m 18+ · share playtest
+data**, complete onboarding, enter Hearth, and open Pause. Visit `http://localhost:5173/playtest-report`
+to inspect aggregate-only route, campaign, onboarding, Hearth, and pause counts.
+
+In Pause → Settings, review the exact shared/not-shared disclosure, then choose **Withdraw and
+delete**. The panel must report the number of deleted typed events and return to **Sharing off**;
+the old capability must no longer read or submit data. Run
+`pnpm --filter @summonlab/web exec playwright test src/routes/playtest-analytics.e2e.ts` to prove the
+zero-request decline, strict-property rejection, consented funnel, and deletion path together.
+
 ## Next active engineering slice
 
-Review FIN-005 sharpness and real-device feel, then begin `FIN-006`: add analytics and playtest
-consent. Phase 3 cohort expansion remains behind its separate human visual gate.
+Run `FIN-007`: conduct five moderated tests with the FIN-006 consent boundary, record disclosed
+qualitative observations separately, and triage findings by release severity. Phase 3 cohort
+expansion remains behind its separate human visual gate.

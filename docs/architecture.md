@@ -835,6 +835,27 @@ The working-set reference intentionally excludes native browser and GPU allocati
 regression signal under the 300 MB target, not a substitute for the implementation plan's real-device
 review. See ADR 0049.
 
+### Consent and playtest analytics boundary
+
+FIN-006 keeps playtest observation outside canonical game truth. An undecided or declined browser
+sends no analytics request. An affirmative `playtest-consent-v1` grant creates a random,
+30-day consent record and returns a 256-bit device capability; only its SHA-256 hash is persisted.
+The capability can submit `playtest-analytics-v1` events, inspect retained counts, or withdraw.
+Withdrawal and expiry delete related sessions and events and invalidate the capability.
+
+The analytics contract is a strict seven-event union for player-route views, campaign start, three
+onboarding milestones, Hearth entry, pause opening, restart, and reconnect completion. Fields are
+bounded to random identifiers, run correlation, coarse viewport/route categories, declared choices,
+and timing. Names, seeds, dialogue, hero replies, arbitrary text, IP addresses, and user agents are
+not columns or accepted properties. Presentation analytics has no dependency path into engine
+commands, campaign progression, authoritative events, or replay.
+
+`/playtest-report` is a development-only aggregate projection for moderated-test preparation. It
+returns consent/session/event totals, typed event counts, and a prefix-complete journey funnel—never
+individual sessions, event payloads, run IDs, timestamps, or withdrawal capabilities. The local
+capability is not identity or authorization for a hosted build; private invite access and owner
+scoping remain prerequisites before remote data collection. See ADR 0050.
+
 ## Platform
 
 Web remains the first platform:

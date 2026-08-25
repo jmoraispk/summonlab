@@ -134,3 +134,9 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin005-phone-performance.json` — the versioned 390×844/2×, simulated-4G, 4×-CPU browser
   report covering shell, JavaScript, title/settlement visuals, pause response, reconnect, frame
   cadence, and the JS-heap-plus-decoded-images working-set reference.
+- `phase-7-fin006-desktop-consent.png` / `phase-7-fin006-phone-consent.png` — the optional
+  `playtest-consent-v1` title control at desktop and 390×844, with sharing visibly off, explicit
+  adult/voluntary language, exact disclosure, and an equally available no-sharing path.
+- `phase-7-fin006-desktop-aggregate-report.png` / `phase-7-fin006-phone-aggregate-report.png` — the
+  development-only aggregate signal at both widths: prefix-complete journey funnel, seven typed
+  event counts, 30-day expiry, excluded content/device fields, and immediate withdrawal deletion.

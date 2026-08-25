@@ -7,6 +7,7 @@
 		ReturnRecap
 	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
+	import { trackPlaytestEvent } from '$lib/playtest-analytics';
 
 	let {
 		runId,
@@ -30,6 +31,9 @@
 	let eventSource: EventSource | null = null;
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 	let disposed = false;
+	let reconnectStartedAt: number | null = null;
+	// svelte-ignore state_referenced_locally
+	let reconnectCursor = initialCursor;
 	// svelte-ignore state_referenced_locally
 	const seenKey = `summonlab:observed-cursor:${runId}`;
 
@@ -85,6 +89,16 @@
 			const ready = JSON.parse((message as MessageEvent<string>).data) as EngineStreamReady;
 			if (ready.runId !== runId) return;
 			status = 'live';
+			if (reconnectStartedAt !== null) {
+				void trackPlaytestEvent({
+					eventType: 'reconnect_completed',
+					route: 'hearth',
+					runId,
+					durationMs: Math.min(60_000, Math.round(performance.now() - reconnectStartedAt)),
+					missedEventCount: Math.min(10_000, Math.max(0, currentCursor - reconnectCursor))
+				});
+				reconnectStartedAt = null;
+			}
 		});
 		eventSource.addEventListener('engine-event', (message) => {
 			const event = JSON.parse((message as MessageEvent<string>).data) as AuthoritativeEvent;
@@ -103,9 +117,17 @@
 			window.location.reload();
 		});
 		eventSource.addEventListener('stream-error', () => {
+			if (reconnectStartedAt === null) {
+				reconnectStartedAt = performance.now();
+				reconnectCursor = currentCursor;
+			}
 			status = navigator.onLine ? 'reconnecting' : 'offline';
 		});
 		eventSource.onerror = () => {
+			if (reconnectStartedAt === null) {
+				reconnectStartedAt = performance.now();
+				reconnectCursor = currentCursor;
+			}
 			status = navigator.onLine ? 'reconnecting' : 'offline';
 		};
 	}

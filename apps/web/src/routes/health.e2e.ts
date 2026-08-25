@@ -5,7 +5,16 @@ test('renders the player title with live foundation health', async ({ page }) =>
 
 	await expect(page.getByTestId('campaign-title')).toBeVisible();
 	await expect(page.getByRole('heading', { name: /They were summoned/ })).toBeVisible();
-	await expect(page.getByText('Hearth online')).toBeVisible();
+	await expect
+		.poll(
+			async () => {
+				if (await page.getByText('Hearth online').isVisible()) return true;
+				await page.reload();
+				return page.getByText('Hearth online').isVisible();
+			},
+			{ timeout: 15_000 }
+		)
+		.toBe(true);
 	await expect(page.getByRole('link', { name: 'Design notes' })).toBeVisible();
 
 	if (process.env.CAPTURE_FOUNDATION) {

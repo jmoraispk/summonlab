@@ -5,6 +5,7 @@
 	import { onMount, tick } from 'svelte';
 	import PlayerSettingsPanel from './PlayerSettingsPanel.svelte';
 	import { loadPlayerSettings } from '$lib/player-settings';
+	import { trackPlaytestEvent } from '$lib/playtest-analytics';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 
 	let {
@@ -35,6 +36,7 @@
 	});
 
 	async function openMenu(nextTab: typeof tab) {
+		const wasOpen = open;
 		if (!open) {
 			returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		}
@@ -43,6 +45,14 @@
 		confirmRestart = false;
 		await tick();
 		focusDialog(menuDialog);
+		if (!wasOpen) {
+			void trackPlaytestEvent({
+				eventType: 'pause_opened',
+				route: window.location.pathname.startsWith('/play/') ? 'hearth' : 'onboarding',
+				runId,
+				completedObjectiveCount: objectives.completedCount
+			});
+		}
 		const response = await fetch(`/api/campaigns/${runId}`);
 		if (response.ok) {
 			const body = (await response.json()) as { objectives: CampaignObjectiveProjection };
@@ -78,6 +88,12 @@
 				message?: string;
 			};
 			if (!response.ok || !body.campaign) throw new Error(body.message ?? 'Restart failed.');
+			await trackPlaytestEvent({
+				eventType: 'campaign_restarted',
+				route: window.location.pathname.startsWith('/play/') ? 'hearth' : 'onboarding',
+				runId,
+				seedMode: 'same'
+			});
 			await goto(resolve('/onboarding/[runId]', { runId: body.campaign.runId }));
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Restart failed.';

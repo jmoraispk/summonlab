@@ -2,8 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { onMount, tick } from 'svelte';
+	import PlaytestConsentPanel from '$lib/components/PlaytestConsentPanel.svelte';
 	import PlayerSettingsPanel from '$lib/components/PlayerSettingsPanel.svelte';
 	import { loadPlayerSettings } from '$lib/player-settings';
+	import { trackPlaytestEvent } from '$lib/playtest-analytics';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import playerVisualManifest from '../../static/runtime/player/manifest.json';
 
@@ -21,7 +23,9 @@
 	let settingsTrigger = $state<HTMLButtonElement>(null!);
 	let returnFocus: HTMLElement | null = null;
 
-	onMount(() => loadPlayerSettings());
+	onMount(() => {
+		loadPlayerSettings();
+	});
 
 	async function openSettings() {
 		returnFocus =
@@ -51,6 +55,12 @@
 				message?: string;
 			};
 			if (!response.ok || !body.campaign) throw new Error(body.message ?? 'The gate stayed dark.');
+			await trackPlaytestEvent({
+				eventType: 'campaign_started',
+				route: 'title',
+				runId: body.campaign.runId,
+				controlMode: loadPlayerSettings().controlMode
+			});
 			await goto(resolve('/onboarding/[runId]', { runId: body.campaign.runId }));
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The gate stayed dark.';
@@ -134,6 +144,8 @@
 			</p>
 		</form>
 
+		<PlaytestConsentPanel compact />
+
 		{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
 	</section>
 
@@ -146,6 +158,7 @@
 		<nav aria-label="Development tools">
 			<a href={resolve('/forge')}>Forge</a>
 			<a href={resolve('/mission-lab')}>Mission lab</a>
+			<a href={resolve('/playtest-report')}>Playtest signal</a>
 			<a href={resolve('/design-reference')}>Design notes</a>
 		</nav>
 	</footer>

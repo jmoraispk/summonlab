@@ -8,6 +8,7 @@ export * from './decision-jobs.js';
 export * from './proof.js';
 export * from './engine.js';
 export * from './events.js';
+export * from './playtest.js';
 export * from './recognition-review.js';
 export * from './visual-review.js';
 
