@@ -9,6 +9,7 @@ import {
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
+	EngineGameStateV14Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
 	type ActivityKind,
@@ -401,6 +402,203 @@ describe('deterministic engine', () => {
 				heroIds: []
 			})
 		).toThrow(ReplayIntegrityError);
+	});
+
+	it('retains a Floor 04 schematic holder and replays the Floor 05 cooling strategy', () => {
+		const runId = deterministicUuid('foundry-evidence-run');
+		const heroId = deterministicUuid('foundry-evidence-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'foundry-evidence-seed',
+			heroId,
+			manifestHash: sha256Hex('foundry-evidence-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-04',
+				availableMissionIds: ['tower-floor-04', 'tower-floor-05']
+			}
+		});
+		const initial = EngineGameStateV14Schema.parse(bootstrap.snapshot.state);
+		const masterId = initial.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		let state = initial;
+		const commit = (command: EngineCommand) => {
+			const result = applyCommand(state, command);
+			state = EngineGameStateV14Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		type MissionCommand = Extract<EngineCommand, { commandType: `mission.${string}` }>;
+		type MissionCommandInput<T> = T extends MissionCommand
+			? Omit<T, 'commandId' | 'runId' | 'actorId' | 'expectedVersion' | 'correlationId' | 'source'>
+			: never;
+		const missionCommand = (
+			key: string,
+			command: MissionCommandInput<MissionCommand>
+		): EngineCommand =>
+			({
+				...commandBase(state, masterId, key),
+				source: manualSource(),
+				...command
+			}) as EngineCommand;
+		const resolve = (key: string, masterActionId: string, heroActionId: string) =>
+			commit(
+				missionCommand(key, {
+					commandType: 'mission.resolve.turn',
+					choices: [
+						manualMissionChoice(masterId, masterActionId),
+						scriptedMissionChoice(heroId, heroActionId)
+					]
+				})
+			);
+
+		commit(
+			missionCommand('floor-04-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'tower-floor-04'
+			})
+		);
+		commit(missionCommand('floor-04-deploy', { commandType: 'mission.deploy' }));
+		resolve(
+			'floor-04-balance',
+			'mission.move.threshold-to-balance-hall',
+			'mission.move.threshold-to-balance-hall'
+		);
+		resolve(
+			'floor-04-left-relay',
+			'mission.move.balance-hall-to-left-relay',
+			'mission.move.balance-hall-to-left-relay'
+		);
+		resolve('floor-04-open-archive', 'mission.hold', 'mission.inspect.open-archive-niche');
+		resolve(
+			'floor-04-enter-archive',
+			'mission.move.left-relay-to-archive-niche',
+			'mission.move.left-relay-to-archive-niche'
+		);
+		resolve('floor-04-read-schematic', 'mission.hold', 'mission.inspect.read-foundry-schematic');
+		expect(Object.values(state.mission.evidence)).toEqual([
+			expect.objectContaining({
+				evidenceKey: 'foundry-maintenance-route',
+				holderActorId: heroId,
+				sourceBinding: expect.objectContaining({ missionId: 'tower-floor-04' })
+			})
+		]);
+		resolve(
+			'floor-04-leave-archive',
+			'mission.move.left-relay-to-archive-niche',
+			'mission.move.left-relay-to-archive-niche'
+		);
+		resolve(
+			'floor-04-return-balance',
+			'mission.move.balance-hall-to-left-relay',
+			'mission.move.balance-hall-to-left-relay'
+		);
+		resolve(
+			'floor-04-return-threshold',
+			'mission.move.threshold-to-balance-hall',
+			'mission.move.threshold-to-balance-hall'
+		);
+		commit(missionCommand('floor-04-retreat', { commandType: 'mission.retreat' }));
+
+		commit(
+			missionCommand('floor-05-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'tower-floor-05'
+			})
+		);
+		commit(missionCommand('floor-05-deploy', { commandType: 'mission.deploy' }));
+		expect(state.mission.attempt?.turnState.arena).toEqual({
+			furnaceState: 'lit',
+			coolingControlNodeId: 'cooling-control',
+			coolingControlExposed: false
+		});
+		resolve(
+			'floor-05-intake',
+			'mission.move.threshold-to-ash-intake',
+			'mission.move.threshold-to-ash-intake'
+		);
+		expect(legalActions(state, masterId).map((action) => action.actionId)).not.toContain(
+			'mission.inspect.recall-maintenance-seam'
+		);
+		expect(legalActions(state, heroId).map((action) => action.actionId)).toContain(
+			'mission.inspect.recall-maintenance-seam'
+		);
+		resolve(
+			'floor-05-recall',
+			'mission.move.ash-intake-to-forge-nave',
+			'mission.inspect.recall-maintenance-seam'
+		);
+		expect(state.mission.attempt?.turnState.arena.coolingControlExposed).toBe(true);
+		resolve(
+			'floor-05-split',
+			'mission.move.forge-nave-to-furnace-heart',
+			'mission.move.ash-intake-to-maintenance-seam'
+		);
+		const litStrike = resolve(
+			'floor-05-lit-strike',
+			`mission.attack.${Object.values(state.mission.attempt!.turnState.monsters).find((monster) => monster.dutySlotId === 'foundry-warden')!.monsterId}`,
+			'mission.move.maintenance-seam-to-cooling-control'
+		);
+		expect(
+			litStrike.events[0]!.payload.round as { effects: Array<{ kind: string; amount: number }> }
+		).toMatchObject({
+			effects: expect.arrayContaining([
+				expect.objectContaining({ kind: 'vitality-damage', amount: 0 })
+			])
+		});
+		const wheelTest = resolve(
+			'floor-05-test-wheel',
+			'mission.move.cooling-control-to-furnace-heart',
+			'mission.inspect.test-cooling-wheel'
+		);
+		expect(
+			wheelTest.events[0]!.payload.round as {
+				monsterActions: Array<{ kind: string; toNodeId: string }>;
+			}
+		).toMatchObject({
+			monsterActions: expect.arrayContaining([
+				expect.objectContaining({ kind: 'defend-control', toNodeId: 'cooling-control' })
+			])
+		});
+		const wardenId = Object.values(state.mission.attempt!.turnState.monsters).find(
+			(monster) => monster.dutySlotId === 'foundry-warden'
+		)!.monsterId;
+		const cooling = resolve(
+			'floor-05-start-cooling',
+			`mission.attack.${wardenId}`,
+			'mission.control.cooling-wheel'
+		);
+		const quench = resolve('floor-05-quench', 'mission.hold', 'mission.control.cooling-wheel');
+		for (const result of [cooling, quench]) {
+			expect(result.events[0]!.payload.round as { effects: Array<{ kind: string }> }).toMatchObject(
+				{
+					effects: expect.arrayContaining([expect.objectContaining({ kind: 'furnace-change' })])
+				}
+			);
+		}
+		expect(state.mission.attempt?.turnState.arena.furnaceState).toBe('quenched');
+		const warden = Object.values(state.mission.attempt!.turnState.monsters).find(
+			(monster) => monster.dutySlotId === 'foundry-warden'
+		)!;
+		const quenchedStrike = resolve(
+			'floor-05-quenched-strike',
+			`mission.attack.${warden.monsterId}`,
+			'mission.hold'
+		);
+		expect(
+			quenchedStrike.events[0]!.payload.round as {
+				effects: Array<{ kind: string; amount: number }>;
+			}
+		).toMatchObject({
+			effects: expect.arrayContaining([
+				expect.objectContaining({ kind: 'vitality-damage', amount: 1 })
+			])
+		});
+
+		const replay = replayEventsStrict(events);
+		expect(replay.verified).toBe(true);
+		expect(replay.snapshot.state).toEqual(state);
 	});
 
 	it('spawns bound goblin duties, telegraphs threats, and resolves them in the shared ledger', () => {

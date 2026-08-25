@@ -12,6 +12,10 @@ export const TOWER_FLOOR_03_CONTENT_VERSION = 'tower-floor-03-v1';
 export const TOWER_FLOOR_04_CONTENT_VERSION = 'tower-floor-04-v1';
 export const TOWER_FLOOR_05_CONTENT_VERSION = 'tower-floor-05-v1';
 export const TOWER_BAND_01_CONTENT_VERSION = 'tower-band-01-v1';
+export const TOWER_FLOOR_02_RUNTIME_CONTENT_VERSION = 'tower-floor-02-v2';
+export const TOWER_FLOOR_03_RUNTIME_CONTENT_VERSION = 'tower-floor-03-v2';
+export const TOWER_FLOOR_04_RUNTIME_CONTENT_VERSION = 'tower-floor-04-v2';
+export const TOWER_FLOOR_05_RUNTIME_CONTENT_VERSION = 'tower-floor-05-v2';
 
 const standardDeployment = {
 	entryNodeIds: ['tower-threshold'],
@@ -1955,6 +1959,78 @@ export const TOWER_FLOOR_03_PACKAGE = deepFreeze(MissionPackageSchema.parse(floo
 export const TOWER_FLOOR_04_PACKAGE = deepFreeze(MissionPackageSchema.parse(floor04Source));
 export const TOWER_FLOOR_05_PACKAGE = deepFreeze(MissionPackageSchema.parse(floor05Source));
 
+// The reviewed v1 packages remain immutable. These runtime revisions repair the
+// entropy-purpose contract required by deterministic duty spawning.
+const floor02RuntimeSource = {
+	...floor02Source,
+	contentVersion: TOWER_FLOOR_02_RUNTIME_CONTENT_VERSION,
+	encounterSeedRules: {
+		...floor02Source.encounterSeedRules,
+		namedPurposes: [
+			'crossing-chain-watch-count',
+			'plinth-ember-haulers-count',
+			'formation-bell-phase'
+		]
+	},
+	contentHash: '21084f30f2afc8f0a1d5dad601b428744ced8434fc3ab68856dfbf8ba0c9604c'
+} as const;
+
+const floor03RuntimeSource = {
+	...floor03Source,
+	contentVersion: TOWER_FLOOR_03_RUNTIME_CONTENT_VERSION,
+	encounterSeedRules: {
+		...floor03Source.encounterSeedRules,
+		namedPurposes: ['tithe-pit-watch-count', 'salt-cache-hauler-count', 'slag-fall-phase']
+	},
+	contentHash: '0564cf60c457d0fe146d2223f23f752f43a26ca6c6487ded94f482bf9c43b26b'
+} as const;
+
+const floor04RuntimeSource = {
+	...floor04Source,
+	contentVersion: TOWER_FLOOR_04_RUNTIME_CONTENT_VERSION,
+	encounterSeedRules: {
+		...floor04Source.encounterSeedRules,
+		namedPurposes: ['left-relay-watch-count', 'right-relay-haulers-count', 'relay-blackout-phase']
+	},
+	contentHash: 'bedd93fe85c0ae46cd05ab40deb28ca310ccf68e0d0fa0a44371eb46966aaeb7'
+} as const;
+
+const floor05RuntimeSource = {
+	...floor05Source,
+	contentVersion: TOWER_FLOOR_05_RUNTIME_CONTENT_VERSION,
+	encounterSeedRules: {
+		...floor05Source.encounterSeedRules,
+		namedPurposes: [
+			'forge-nave-watch-count',
+			'foundry-warden-count',
+			'warden-initiative-tie',
+			'furnace-surge-phase'
+		]
+	},
+	contentHash: '1ab958c71dcbabad6c29815aa46846124cdb552357f095f5ec428fa649523ad1'
+} as const;
+
+export const TOWER_FLOOR_02_RUNTIME_PACKAGE = deepFreeze(
+	MissionPackageSchema.parse(floor02RuntimeSource)
+);
+export const TOWER_FLOOR_03_RUNTIME_PACKAGE = deepFreeze(
+	MissionPackageSchema.parse(floor03RuntimeSource)
+);
+export const TOWER_FLOOR_04_RUNTIME_PACKAGE = deepFreeze(
+	MissionPackageSchema.parse(floor04RuntimeSource)
+);
+export const TOWER_FLOOR_05_RUNTIME_PACKAGE = deepFreeze(
+	MissionPackageSchema.parse(floor05RuntimeSource)
+);
+
+export const TOWER_BAND_01_RUNTIME_PACKAGES = deepFreeze([
+	TOWER_FLOOR_01_PACKAGE,
+	TOWER_FLOOR_02_RUNTIME_PACKAGE,
+	TOWER_FLOOR_03_RUNTIME_PACKAGE,
+	TOWER_FLOOR_04_RUNTIME_PACKAGE,
+	TOWER_FLOOR_05_RUNTIME_PACKAGE
+] as const);
+
 export const TOWER_BAND_01_PACKAGES = deepFreeze([
 	TOWER_FLOOR_01_PACKAGE,
 	TOWER_FLOOR_02_PACKAGE,
@@ -1987,6 +2063,22 @@ export function loadTowerFloor(floor: number): Promise<MissionPackage> {
 	return verified;
 }
 
+const verifiedRuntimeFloors = new Map<number, Promise<MissionPackage>>();
+
+export function loadTowerRuntimeFloor(floor: number): Promise<MissionPackage> {
+	if (floor === 1) return loadTowerFloor01();
+	const mission = TOWER_BAND_01_RUNTIME_PACKAGES.find(
+		(candidate) => candidate.tower?.floor === floor
+	);
+	if (!mission) return Promise.reject(new Error(`Tower Band 01 does not contain floor ${floor}`));
+	let verified = verifiedRuntimeFloors.get(floor);
+	if (!verified) {
+		verified = verifyFloor(mission);
+		verifiedRuntimeFloors.set(floor, verified);
+	}
+	return verified;
+}
+
 let verifiedBand: Promise<readonly MissionPackage[]> | undefined;
 
 export function loadTowerBand01(): Promise<readonly MissionPackage[]> {
@@ -2014,4 +2106,33 @@ export function loadTowerBand01(): Promise<readonly MissionPackage[]> {
 		return TOWER_BAND_01_PACKAGES;
 	})();
 	return verifiedBand;
+}
+
+let verifiedRuntimeBand: Promise<readonly MissionPackage[]> | undefined;
+
+export function loadTowerBand01Runtime(): Promise<readonly MissionPackage[]> {
+	verifiedRuntimeBand ??= (async () => {
+		const [missions, monsterPolicies] = await Promise.all([
+			Promise.all(
+				TOWER_BAND_01_RUNTIME_PACKAGES.map((mission) => loadTowerRuntimeFloor(mission.tower!.floor))
+			),
+			loadMonsterPolicyCatalog()
+		]);
+		const policyIds = new Set(monsterPolicies.policies.map((policy) => policy.policyId));
+		for (const mission of missions) {
+			const purposes = new Set(mission.encounterSeedRules.namedPurposes);
+			for (const duty of mission.monsterDuties) {
+				if (!policyIds.has(duty.policyId)) {
+					throw new Error(
+						`${mission.missionId} references unknown monster policy ${duty.policyId}`
+					);
+				}
+				if (duty.activation.kind === 'on-deployment' && !purposes.has(`${duty.dutySlotId}-count`)) {
+					throw new Error(`${mission.missionId} omits entropy for ${duty.dutySlotId}`);
+				}
+			}
+		}
+		return TOWER_BAND_01_RUNTIME_PACKAGES;
+	})();
+	return verifiedRuntimeBand;
 }

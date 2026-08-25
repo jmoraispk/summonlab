@@ -201,7 +201,7 @@
 				class:active={retainedRouteMemory}
 				onclick={() => (retainedRouteMemory = !retainedRouteMemory)}
 			>
-				{retainedRouteMemory ? 'Memory carried' : 'Simulate retained memory'}
+				{retainedRouteMemory ? 'Memory previewed' : 'Preview retained memory'}
 			</button>
 		</section>
 	{/if}

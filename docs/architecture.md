@@ -593,12 +593,16 @@ budget, authored retreat boundary, deterministic entropy names, and a fixed five
 envelope with only one catalog-bounded optional patch slot.
 
 Floor 04 can reveal the canonical intake seam and cooling-loop schematic. Floor 05 declares a
-matching maintenance affordance that is not legal without the `relay-route-memory` capability. With
-that retained evidence, the hidden two-person route reaches an authored cooling control; without it,
-the direct exposed route to the Foundry Warden remains valid. Content still cannot change state: the
-route, cooling state transitions, Warden armor effects, and cross-floor memory provenance become
-engine-owned in `MIS-006`. The development Mission Lab can simulate the capability to inspect this
-boundary without mutating a run. See ADR 0034.
+matching maintenance affordance that is not legal without the `relay-route-memory` capability.
+`engine-v14` now records the schematic as holder-specific evidence with its source mission binding,
+attempt, and round. Only that holder receives the derived route-memory tool on Floor 05. A legal
+recall exposes the hidden two-person route and cooling control; legal wheel actions advance the
+engine-owned furnace from `lit` to `cooling` to `quenched`, and each state changes the Warden's
+armor reduction. The Warden can follow the authored edge to intercept an exposed operator. Every
+choice, discovery, arena effect, armor result, and intercept is hash-bound and recomputed by strict
+replay. Existing and new normal Floor 01 runs remain on immutable `engine-v13`; the v14 multi-floor
+scenario is opt-in until progression unlocks later floors. The Mission Lab remains a non-mutating
+content preview rather than a source of retained evidence. See ADRs 0034–0035.
 
 ### Implemented reconnect projection
 

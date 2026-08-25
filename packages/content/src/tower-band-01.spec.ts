@@ -2,7 +2,13 @@ import type { MissionArenaKnowledge } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { monsterPolicy } from './monster-policies.js';
-import { TOWER_BAND_01_PACKAGES, loadTowerBand01, loadTowerFloor } from './tower-band-01.js';
+import {
+	TOWER_BAND_01_PACKAGES,
+	TOWER_BAND_01_RUNTIME_PACKAGES,
+	loadTowerBand01,
+	loadTowerBand01Runtime,
+	loadTowerFloor
+} from './tower-band-01.js';
 import {
 	applyMissionDiscoveryAffordance,
 	calculateMissionContentHash,
@@ -44,6 +50,19 @@ describe('Tower Band 01 mission catalog', () => {
 			expect(defaultRoute, `${mission.missionId} default route`).not.toBeNull();
 			expect(defaultRoute?.maximumExposure).toBe('exposed');
 			expect(mission.arena.discoveries.some((discovery) => discovery.kind === 'route')).toBe(true);
+		}
+	});
+
+	it('binds every executable duty count to declared deterministic entropy', async () => {
+		const missions = await loadTowerBand01Runtime();
+
+		expect(missions).toBe(TOWER_BAND_01_RUNTIME_PACKAGES);
+		for (const mission of missions) {
+			for (const duty of mission.monsterDuties.filter(
+				(candidate) => candidate.activation.kind === 'on-deployment'
+			)) {
+				expect(mission.encounterSeedRules.namedPurposes).toContain(`${duty.dutySlotId}-count`);
+			}
 		}
 	});
 

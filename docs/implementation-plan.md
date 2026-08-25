@@ -1075,7 +1075,12 @@ Estimated engineering effort: **2–3 weeks**.
   observations, 15 legal discoveries, exact per-floor reward budgets, five-anchor story envelopes,
   retained Floor 04 Foundry-route evidence, a direct Floor 05 assault, a gated cooling route, and the
   single placement of the versioned Foundry Warden;
-- `MIS-006` implement engine-owned maintenance-route secret;
+- `MIS-006` complete: preserve the reviewed Floor 02–05 v1 packages while binding executable v2
+  revisions to complete duty-count entropy; add opt-in `engine-v14` multi-floor evidence state;
+  retain the Floor 04 schematic under the discovering actor; derive the Floor 05 memory tool only
+  for that holder; expose the maintenance route and cooling control through legal actions; advance
+  the furnace from lit to cooling to quenched; apply the current furnace state to Warden armor and
+  control interception; and recompute the entire cross-floor event stream under strict replay;
 - `MIS-007` implement Iron Moon timer, extraction, and ore ledger;
 - `MIS-008` implement injury, death, equipment, memory, and relationship aftermath;
 - `MIS-009` implement Master actions and atomic game over;

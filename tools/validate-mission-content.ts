@@ -2,12 +2,24 @@ import {
 	applyMissionDiscoveryAffordance,
 	listLegalMissionDiscoveryAffordances,
 	loadTowerBand01,
+	loadTowerBand01Runtime,
 	planMissionRoute,
 	projectMissionArenaKnowledge,
 	visitMissionNode
 } from '../packages/content/src/index.js';
 
 const missions = await loadTowerBand01();
+const runtimeMissions = await loadTowerBand01Runtime();
+for (const mission of runtimeMissions) {
+	const purposes = new Set(mission.encounterSeedRules.namedPurposes);
+	for (const duty of mission.monsterDuties.filter(
+		(candidate) => candidate.activation.kind === 'on-deployment'
+	)) {
+		if (!purposes.has(`${duty.dutySlotId}-count`)) {
+			throw new Error(`${mission.missionId} runtime omits entropy for ${duty.dutySlotId}`);
+		}
+	}
+}
 const summaries = missions.map((mission) => {
 	const entryNodeId = mission.deployment.entryNodeIds[0]!;
 	const objectiveNodeId = mission.objectives.find((objective) => objective.primary)!
@@ -145,6 +157,11 @@ process.stdout.write(
 	`${JSON.stringify(
 		{
 			contentVersion: 'tower-band-01-v1',
+			runtimeBindings: runtimeMissions.map((mission) => ({
+				missionId: mission.missionId,
+				contentVersion: mission.contentVersion,
+				contentHash: mission.contentHash
+			})),
 			floors: summaries,
 			bandTotals: {
 				floors: missions.length,

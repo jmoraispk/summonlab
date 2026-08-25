@@ -78,7 +78,7 @@ test('previews the authored first band and gates the Floor 05 maintenance route 
 	await expect(
 		page.getByText('No unresolved authored discovery action is legal here.')
 	).toBeVisible();
-	await page.getByRole('button', { name: 'Simulate retained memory' }).click();
+	await page.getByRole('button', { name: 'Preview retained memory' }).click();
 	await expect(page.getByRole('button', { name: /Match the soot seam/ })).toBeVisible();
 	await page.getByRole('button', { name: /Match the soot seam/ }).click();
 

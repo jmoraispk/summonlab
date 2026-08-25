@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-005` were completed on 2026-08-24. The first five
+Status: **in progress**. `MIS-001` through `MIS-006` were completed on 2026-08-24. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -307,6 +307,7 @@ a state authority.
 | `MIS-003` | Complete: `engine-v12` owns a maximum 48-round ledger, per-actor projected legal moves, exact one-choice-per-party validation, seeded initiative, moves and legal discoveries, explicit First Ember custody/delivery, third-round environment pulses, automatic objective-gated extraction, policy evidence hashes, and strict round recomputation while preserving immutable v11 proof-driven streams; `/mission/:runId` now exposes a knowledge-bounded tactical board where the player chooses the Master and the personality-scripted hero acts independently | [Mission turn evidence](evidence/phase-6-mission-turns.png), engine/policy/database/browser tests, 44.5 KB measured mission-route JavaScript, ADR 0032 |
 | `MIS-004` | Complete: `engine-v13` binds `monster-policies-v1`, spawns stable Floor 01 goblins from declared count entropy, derives visible Chain Court and Ember Vault duty intents, resolves party and monsters in one initiative order, and persists alarm, movement, vitality, mission guard, defense, environment damage, and superseded actions under strict replay; the Foundry Warden's furnace armor and cooling-control policy are versioned without placing it before Floor 05; the mission board exposes active monsters, threat telegraphs, guard, and the merged resolution ledger | [Monster duty evidence](evidence/phase-6-monster-duties.png), contract/content/engine/database/browser tests, 44.0 KB measured mission-route JavaScript, ADR 0033 |
 | `MIS-005` | Complete: immutable `tower-floor-02-v1` through `tower-floor-05-v1` packages establish formation/protection, hazardous retreat pressure, one-person relay separation, retained Foundry-route knowledge, and the Living Foundry payoff; the verified first-band catalog contains 34 bounded observations, 15 legal discoveries, five fixed five-anchor envelopes, exact reward budgets totaling 1,010 points, and one Floor 05 Warden placement; the lab switches across all floors and demonstrates that Floor 05's maintenance action is absent without Floor 04 route memory while preserving a direct assault | [First-band evidence](evidence/phase-6-first-band.png), content/browser tests, `pnpm validate:mission-content`, 41.0 KB measured mission-lab JavaScript, ADR 0034 |
+| `MIS-006` | Complete: immutable runtime v2 bindings repair complete deterministic duty-count entropy without changing reviewed v1 packages; opt-in `engine-v14` retains the Floor 04 schematic under the discovering actor and its exact source, derives the Floor 05 memory capability only for that holder, owns maintenance-route exposure and `lit → cooling → quenched` furnace state, applies Warden armor and control interception in initiative order, and strictly replays the complete cross-floor event stream while normal Floor 01 runs remain byte-compatible on v13 | Engine/content/contract tests, focused cross-floor replay proof, ADR 0035 |
 
 ### Reproduce the checkpoint
 
@@ -319,7 +320,7 @@ rail and compare each objective, topology, observations, fixed story anchors, mo
 reward ledger. On Floor 01, confirm **Hero knowledge** shows five nodes while **Author truth** shows
 all seven, then inspect the Oath Hall soot seam to change the Ember Vault route from four exposed
 actions to three low-exposure actions. On Floor 05, select **Ash Intake** and confirm no maintenance
-discovery is legal. Enable **Simulate retained memory**, match the seam to the relay schematic, and
+discovery is legal. Enable **Preview retained memory**, match the seam to the relay schematic, and
 confirm the Maintenance Seam and Cooling Control enter knowledge while the direct Warden route
 remains authored. The page is a content/knowledge inspector and must not create a run.
 
@@ -334,8 +335,7 @@ Reload and open the replay inspector to confirm all nine round events and their 
 
 ## Next active engineering slice
 
-Begin `MIS-006`: make the authored Floor 04 route memory, Floor 05 maintenance discovery, cooling
-control states, and Warden armor changes engine-owned, hash-bound, and strictly replayable.
+Begin `MIS-007`: implement the Iron Moon timer, extraction boundary, and ore ledger.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

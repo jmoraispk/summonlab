@@ -1883,6 +1883,52 @@ export const MissionRunStateV3Schema = z
 		}
 	});
 
+export const MissionEvidenceRecordSchema = z
+	.object({
+		evidenceId: EntityIdSchema,
+		evidenceKey: MissionSlugSchema,
+		holderActorId: EntityIdSchema,
+		sourceBinding: MissionContentBindingSchema,
+		sourceAttemptId: EntityIdSchema,
+		discoveredOnRound: z.number().int().positive().max(48)
+	})
+	.strict();
+
+export const MissionRunStateV4Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		availableMissionIds: z.array(MissionSlugSchema).min(1).max(100),
+		evidence: z.record(EntityIdSchema, MissionEvidenceRecordSchema),
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV3Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		if ((mission.attempt === null) !== (mission.attemptCount === 0)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission evidence attempt count is inconsistent'
+			});
+		}
+		if (mission.attempt && mission.attempt.ordinal !== mission.attemptCount) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission evidence attempt ordinal is inconsistent'
+			});
+		}
+		if (
+			new Set(mission.availableMissionIds).size !== mission.availableMissionIds.length ||
+			!mission.availableMissionIds.includes(mission.binding.missionId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission availability binding is inconsistent' });
+		}
+		for (const [evidenceId, evidence] of Object.entries(mission.evidence)) {
+			if (evidence.evidenceId !== evidenceId) {
+				context.addIssue({ code: 'custom', message: 'Mission evidence key must match its id' });
+			}
+		}
+	});
+
 const EngineGameStateV11BaseSchema = z
 	.object({
 		...EngineGameStateV10BaseSchema.shape,
@@ -1907,13 +1953,22 @@ const EngineGameStateV13BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV14BaseSchema = z
+	.object({
+		...EngineGameStateV11BaseSchema.shape,
+		schemaVersion: z.literal(14),
+		mission: MissionRunStateV4Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
 	| z.infer<typeof EngineGameStateV10BaseSchema>
 	| z.infer<typeof EngineGameStateV11BaseSchema>
 	| z.infer<typeof EngineGameStateV12BaseSchema>
-	| z.infer<typeof EngineGameStateV13BaseSchema>;
+	| z.infer<typeof EngineGameStateV13BaseSchema>
+	| z.infer<typeof EngineGameStateV14BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -2263,7 +2318,8 @@ export const EngineGameStateV10Schema = EngineGameStateV10BaseSchema.superRefine
 type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV11BaseSchema>
 	| z.infer<typeof EngineGameStateV12BaseSchema>
-	| z.infer<typeof EngineGameStateV13BaseSchema>;
+	| z.infer<typeof EngineGameStateV13BaseSchema>
+	| z.infer<typeof EngineGameStateV14BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -2329,7 +2385,7 @@ function validateMissionEngineState(
 			message: 'An active mission party requires living heroes'
 		});
 	}
-	if (state.schemaVersion === 12 || state.schemaVersion === 13) {
+	if (state.schemaVersion === 12 || state.schemaVersion === 13 || state.schemaVersion === 14) {
 		const turnAttempt = state.mission.attempt;
 		if (
 			turnAttempt?.turnState.objective.carrierId !== null &&
@@ -2342,6 +2398,16 @@ function validateMissionEngineState(
 			});
 		}
 	}
+	if (state.schemaVersion === 14) {
+		for (const evidence of Object.values(state.mission.evidence)) {
+			if (
+				evidence.holderActorId !== state.master.masterId &&
+				!state.heroes[evidence.holderActorId]
+			) {
+				context.addIssue({ code: 'custom', message: 'Mission evidence holder must exist' });
+			}
+		}
+	}
 }
 
 export const EngineGameStateV11Schema = EngineGameStateV11BaseSchema.superRefine(
@@ -2351,6 +2417,9 @@ export const EngineGameStateV12Schema = EngineGameStateV12BaseSchema.superRefine
 	validateMissionEngineState
 );
 export const EngineGameStateV13Schema = EngineGameStateV13BaseSchema.superRefine(
+	validateMissionEngineState
+);
+export const EngineGameStateV14Schema = EngineGameStateV14BaseSchema.superRefine(
 	validateMissionEngineState
 );
 
@@ -2367,7 +2436,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV10Schema,
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
-	EngineGameStateV13Schema
+	EngineGameStateV13Schema,
+	EngineGameStateV14Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -2588,7 +2658,8 @@ export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
 
 export const PrepareMissionCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.prepare'),
-	heroIds: z.array(EntityIdSchema).max(7)
+	heroIds: z.array(EntityIdSchema).max(7),
+	missionId: MissionSlugSchema.optional()
 }).strict();
 
 export const ReviseMissionPartyCommandSchema = EngineCommandBaseSchema.extend({
@@ -2655,7 +2726,13 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 ]);
 
 export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
-	z.object({ action: z.literal('prepare'), heroIds: z.array(EntityIdSchema).max(4) }).strict(),
+	z
+		.object({
+			action: z.literal('prepare'),
+			heroIds: z.array(EntityIdSchema).max(4),
+			missionId: MissionSlugSchema.optional()
+		})
+		.strict(),
 	z.object({ action: z.literal('revise-party'), heroIds: z.array(EntityIdSchema).max(4) }).strict(),
 	z.object({ action: z.literal('cancel') }).strict(),
 	z.object({ action: z.literal('deploy') }).strict(),
@@ -2855,6 +2932,7 @@ export type EngineGameStateV10 = z.infer<typeof EngineGameStateV10Schema>;
 export type EngineGameStateV11 = z.infer<typeof EngineGameStateV11Schema>;
 export type EngineGameStateV12 = z.infer<typeof EngineGameStateV12Schema>;
 export type EngineGameStateV13 = z.infer<typeof EngineGameStateV13Schema>;
+export type EngineGameStateV14 = z.infer<typeof EngineGameStateV14Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -2876,6 +2954,8 @@ export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSche
 export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type MissionRunStateV2 = z.infer<typeof MissionRunStateV2Schema>;
 export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;
+export type MissionRunStateV4 = z.infer<typeof MissionRunStateV4Schema>;
+export type MissionEvidenceRecord = z.infer<typeof MissionEvidenceRecordSchema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
 export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
 export type DirectiveRequest = z.infer<typeof DirectiveRequestSchema>;
