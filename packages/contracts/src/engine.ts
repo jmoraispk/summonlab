@@ -2282,6 +2282,45 @@ export const MissionHarmRecordSchema = z
 		}
 	});
 
+export const MissionMasterHarmRecordSchema = z
+	.object({
+		consequenceKind: z.literal('master-harm'),
+		consequenceId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		sourceKind: z.enum(['monster', 'environment']),
+		sourceId: z.string().min(1).max(120),
+		targetMasterId: EntityIdSchema,
+		nodeId: MissionSlugSchema,
+		roundNumber: z.number().int().positive().max(48),
+		guardAfterImpact: z.literal(0),
+		healthBefore: z.number().int().positive().max(100),
+		healthAfter: z.number().int().nonnegative().max(100),
+		damage: z.number().int().positive().max(100),
+		injury: InjurySchema.nullable(),
+		fatal: z.boolean(),
+		witnesses: z.array(MissionHarmWitnessSchema).max(7),
+		summary: z.string().min(1).max(300)
+	})
+	.strict()
+	.superRefine((harm, context) => {
+		if (
+			harm.healthBefore - harm.healthAfter !== harm.damage ||
+			harm.fatal !== (harm.healthAfter === 0) ||
+			(harm.fatal && harm.injury !== null) ||
+			(!harm.fatal && harm.injury === null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission Master harm is inconsistent' });
+		}
+		if (new Set(harm.witnesses.map((witness) => witness.heroId)).size !== harm.witnesses.length) {
+			context.addIssue({ code: 'custom', message: 'Mission Master harm witnesses must be unique' });
+		}
+	});
+
+export const MissionConsequenceRecordV2Schema = z.union([
+	MissionHarmRecordSchema,
+	MissionMasterHarmRecordSchema
+]);
+
 export const MissionAftermathStateSchema = z
 	.object({
 		aftermathVersion: z.literal('mission-aftermath-v1'),
@@ -2313,6 +2352,51 @@ export const MissionRunStateV6Schema = z
 		);
 		if (!evidenceMission.success) {
 			context.addIssue({ code: 'custom', message: 'Mission aftermath lifecycle is inconsistent' });
+		}
+		for (const consequence of mission.aftermath.consequences) {
+			if (!mission.attempt || consequence.roundNumber > mission.attempt.turnState.roundNumber) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Mission consequence exceeds attempt history'
+				});
+			}
+		}
+	});
+
+export const MissionAftermathStateV2Schema = z
+	.object({
+		aftermathVersion: z.literal('mission-aftermath-v2'),
+		consequences: z.array(MissionConsequenceRecordV2Schema).max(1_000)
+	})
+	.strict()
+	.superRefine((aftermath, context) => {
+		if (
+			new Set(aftermath.consequences.map((consequence) => consequence.consequenceId)).size !==
+			aftermath.consequences.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission consequences must be unique' });
+		}
+	});
+
+export const MissionRunStateV7Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		availableMissionIds: z.array(MissionSlugSchema).min(1).max(100),
+		evidence: z.record(EntityIdSchema, MissionEvidenceRecordSchema),
+		aftermath: MissionAftermathStateV2Schema,
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV3Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		const evidenceMission = MissionRunStateV4Schema.safeParse(
+			Object.fromEntries(Object.entries(mission).filter(([key]) => key !== 'aftermath'))
+		);
+		if (!evidenceMission.success) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission Master aftermath lifecycle is inconsistent'
+			});
 		}
 		for (const consequence of mission.aftermath.consequences) {
 			if (!mission.attempt || consequence.roundNumber > mission.attempt.turnState.roundNumber) {
@@ -2372,6 +2456,14 @@ const EngineGameStateV16BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV17BaseSchema = z
+	.object({
+		...EngineGameStateV11BaseSchema.shape,
+		schemaVersion: z.literal(17),
+		mission: MissionRunStateV7Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -2381,7 +2473,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV13BaseSchema>
 	| z.infer<typeof EngineGameStateV14BaseSchema>
 	| z.infer<typeof EngineGameStateV15BaseSchema>
-	| z.infer<typeof EngineGameStateV16BaseSchema>;
+	| z.infer<typeof EngineGameStateV16BaseSchema>
+	| z.infer<typeof EngineGameStateV17BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -2734,7 +2827,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV13BaseSchema>
 	| z.infer<typeof EngineGameStateV14BaseSchema>
 	| z.infer<typeof EngineGameStateV15BaseSchema>
-	| z.infer<typeof EngineGameStateV16BaseSchema>;
+	| z.infer<typeof EngineGameStateV16BaseSchema>
+	| z.infer<typeof EngineGameStateV17BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -2804,7 +2898,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 12 ||
 		state.schemaVersion === 13 ||
 		state.schemaVersion === 14 ||
-		state.schemaVersion === 16
+		state.schemaVersion === 16 ||
+		state.schemaVersion === 17
 	) {
 		const turnAttempt = state.mission.attempt;
 		if (
@@ -2818,7 +2913,12 @@ function validateMissionEngineState(
 			});
 		}
 	}
-	if (state.schemaVersion === 14 || state.schemaVersion === 15 || state.schemaVersion === 16) {
+	if (
+		state.schemaVersion === 14 ||
+		state.schemaVersion === 15 ||
+		state.schemaVersion === 16 ||
+		state.schemaVersion === 17
+	) {
 		for (const evidence of Object.values(state.mission.evidence)) {
 			if (
 				evidence.holderActorId !== state.master.masterId &&
@@ -2848,6 +2948,9 @@ export const EngineGameStateV15Schema = EngineGameStateV15BaseSchema.superRefine
 export const EngineGameStateV16Schema = EngineGameStateV16BaseSchema.superRefine(
 	validateMissionEngineState
 );
+export const EngineGameStateV17Schema = EngineGameStateV17BaseSchema.superRefine(
+	validateMissionEngineState
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -2865,7 +2968,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV13Schema,
 	EngineGameStateV14Schema,
 	EngineGameStateV15Schema,
-	EngineGameStateV16Schema
+	EngineGameStateV16Schema,
+	EngineGameStateV17Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -3363,6 +3467,7 @@ export type EngineGameStateV13 = z.infer<typeof EngineGameStateV13Schema>;
 export type EngineGameStateV14 = z.infer<typeof EngineGameStateV14Schema>;
 export type EngineGameStateV15 = z.infer<typeof EngineGameStateV15Schema>;
 export type EngineGameStateV16 = z.infer<typeof EngineGameStateV16Schema>;
+export type EngineGameStateV17 = z.infer<typeof EngineGameStateV17Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -3387,7 +3492,10 @@ export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;
 export type MissionRunStateV4 = z.infer<typeof MissionRunStateV4Schema>;
 export type MissionRunStateV5 = z.infer<typeof MissionRunStateV5Schema>;
 export type MissionRunStateV6 = z.infer<typeof MissionRunStateV6Schema>;
+export type MissionRunStateV7 = z.infer<typeof MissionRunStateV7Schema>;
 export type MissionHarmRecord = z.infer<typeof MissionHarmRecordSchema>;
+export type MissionMasterHarmRecord = z.infer<typeof MissionMasterHarmRecordSchema>;
+export type MissionConsequenceRecordV2 = z.infer<typeof MissionConsequenceRecordV2Schema>;
 export type MissionEvidenceRecord = z.infer<typeof MissionEvidenceRecordSchema>;
 export type MissionRoundV3 = z.infer<typeof MissionRoundV3Schema>;
 export type PortalMissionState = z.infer<typeof PortalMissionStateSchema>;

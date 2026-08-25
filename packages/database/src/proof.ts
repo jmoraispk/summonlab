@@ -69,6 +69,7 @@ export interface CreateProofRunInput {
 		readonly initialMissionId: string;
 		readonly availableMissionIds: readonly string[];
 		readonly enableMissionAftermath?: boolean;
+		readonly enableMasterPermadeath?: boolean;
 	};
 }
 

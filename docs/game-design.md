@@ -383,6 +383,12 @@ Secret synthesis is possible, but unexplained disappearances remain socially mea
 - Replays remain available after game over.
 - Meta-progression, if any, must not erase the meaning of death; it can unlock knowledge, starting options, or visual records rather than resurrecting the run.
 
+In missions, the Master uses the same guard-first physical consequence boundary as summoned heroes.
+The player controls the Master's legal move, inspection, defense, recovery, and attack choices;
+heroes remain autonomous. A fatal Master impact commits the attempt death and whole-run game over
+atomically. The interface must show predictable environmental hazards before commitment, remove all
+post-death controls, and preserve the sealed chronicle for inspection.
+
 Permadeath creates real stakes, but the first slice should measure whether frequent restarts teach the player or merely waste time.
 
 ## Monster autonomy

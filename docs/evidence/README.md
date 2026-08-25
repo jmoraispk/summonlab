@@ -85,3 +85,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-mission-aftermath.png` — database-backed Floor 03 Red Tithe after exposed harm, showing
   persistent vitality loss, equipped-item wear, the surviving witness count, exact round/source
   evidence, independently chosen hero intent, and the append-only mission ledger before permadeath.
+- `phase-6-master-game-over.png` — database-backed Floor 03 terminal state after the player's
+  controllable Master dies, showing canonical zero vitality, the fatal consequence, empty control
+  surface, sealed-run explanation, independently resolved hero intent, and the append-only event
+  whose strict replay remains inspectable.

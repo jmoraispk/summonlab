@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-007` were completed on 2026-08-24. The first five
+Status: **in progress**. `MIS-001` through `MIS-009` are complete. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -310,6 +310,7 @@ a state authority.
 | `MIS-006` | Complete: immutable runtime v2 bindings repair complete deterministic duty-count entropy without changing reviewed v1 packages; opt-in `engine-v14` retains the Floor 04 schematic under the discovering actor and its exact source, derives the Floor 05 memory capability only for that holder, owns maintenance-route exposure and `lit → cooling → quenched` furnace state, applies Warden armor and control interception in initiative order, and strictly replays the complete cross-floor event stream while normal Floor 01 runs remain byte-compatible on v13 | Engine/content/contract tests, focused cross-floor replay proof, ADR 0035 |
 | `MIS-007` | Complete: immutable `iron-moon-v1` binds an eight-round portal and three finite deposits; opt-in `engine-v15` decrements one deterministic timer unit per party round, exposes stable/warning/critical/collapsed pressure, transfers mined ore into bounded per-actor cargo, opens extraction only after the four-ore quota and complete return, credits settlement stock only on crossing, records collapse/retreat losses, gives every hero the authoritative portal context, and strictly replays persisted event-store runs; `/iron-moon` launches the complete local browser checkpoint | [Iron Moon evidence](evidence/phase-6-iron-moon.png), contract/content/context/engine/database/browser tests, `pnpm validate:mission-content`, ADR 0036 |
 | `MIS-008` | Complete: opt-in `engine-v16` turns guard-breaking and exposed impacts into persistent health loss, injuries, equipped-item wear, and permanent hero death; records exact source, location, physical deltas, and surviving co-located witnesses; derives evidence-backed mission memories and Master-relationship changes only for those witnesses; includes the memories in later holder-owned context; ends fatal attempts explicitly; and strictly replays the physical and social aftermath; `/aftermath` launches The Red Tithe database checkpoint | [Mission aftermath evidence](evidence/phase-6-mission-aftermath.png), contract/context/engine/database/browser tests, 47.0 KB measured mission-route JavaScript, ADR 0037 |
+| `MIS-009` | Complete: opt-in `engine-v17` makes the manually controlled Master physically vulnerable inside mission rounds; records exposed harm in `mission-aftermath-v2` with exact source, location, health, injury, and co-located witness evidence; atomically commits Master death, attempt death, and whole-run game over; cancels unfinished hero activity, travel, routines, and daily plans; removes every actor's legal actions while retaining strict replay; and telegraphs Red Slag before commitment; `/last-command` launches the database-backed terminal checkpoint | [Master game-over evidence](evidence/phase-6-master-game-over.png), contract/context/engine/database/browser tests, 47.7 KB measured mission-route JavaScript, ADR 0038 |
 
 ### Reproduce the checkpoint
 
@@ -350,9 +351,16 @@ hero's guard breaks. Confirm the aftermath ledger records persistent health and 
 surviving witness. Continue until death, then reload and inspect replay: the hero remains dead, has
 no legal action, and every consequence retains its source event and hash.
 
+Open `http://localhost:5173/last-command`, edit the hero's initial direction, and enter as the
+Master. Lock and deploy the two-person roster, then move **Cut Stair → Red Gallery → Tithe Pit → Red
+Gallery**. Read the Red Slag warning before each even round and choose the Master's action manually;
+the hero continues to choose independently. When the Master reaches zero health, confirm the page
+shows **Game Over**, removes the turn controls, marks the surviving hero **SEALED**, and records the
+fatal source and health delta. Reload, open the sealed replay, and confirm it remains verified.
+
 ## Next active engineering slice
 
-Begin `MIS-009`: implement controllable Master actions and atomic Master game over inside missions.
+Begin `MIS-010`: validate three Floor 05 strategies and deterministic replay.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

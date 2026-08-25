@@ -14,11 +14,14 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
-	const isAftermath = $derived(engineState.schemaVersion === 16);
+	const isMasterRisk = $derived(engineState.schemaVersion === 17);
+	const isAftermath = $derived(engineState.schemaVersion === 16 || isMasterRisk);
+	const isGameOver = $derived(engineState.status === 'game_over');
 	const mission = $derived(
 		engineState.schemaVersion === 13 ||
 			engineState.schemaVersion === 15 ||
-			engineState.schemaVersion === 16
+			engineState.schemaVersion === 16 ||
+			engineState.schemaVersion === 17
 			? engineState.mission
 			: null
 	);
@@ -28,20 +31,30 @@
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
 	const combatTurnState = $derived(
-		engineState.schemaVersion === 13 || engineState.schemaVersion === 16
+		engineState.schemaVersion === 13 ||
+			engineState.schemaVersion === 16 ||
+			engineState.schemaVersion === 17
 			? (engineState.mission.attempt?.turnState ?? null)
 			: null
 	);
 	const aftermath = $derived(
-		engineState.schemaVersion === 16 ? engineState.mission.aftermath : null
+		engineState.schemaVersion === 16 || engineState.schemaVersion === 17
+			? engineState.mission.aftermath
+			: null
 	);
 	const portalSettlementIron = $derived(
 		engineState.schemaVersion === 15 ? engineState.settlement.resources['iron-ore'] : 0
 	);
 	const lastRound = $derived(turnState?.rounds.at(-1) ?? null);
+	const phase = $derived(attempt?.status ?? 'available');
+	const redSlagImminent = $derived(
+		isMasterRisk &&
+			(phase === 'deployed' || phase === 'resolving') &&
+			(turnState?.roundNumber ?? 0) + 1 >= 2 &&
+			((turnState?.roundNumber ?? 0) + 1) % 2 === 0
+	);
 	const hero = $derived(Object.values(engineState.heroes)[0]);
 	const heroSelected = $derived(hero ? selectedHeroIds.includes(hero.heroId) : false);
-	const phase = $derived(attempt?.status ?? 'available');
 	const terminal = $derived(
 		attempt
 			? ['success', 'failure', 'retreat', 'canceled', 'death'].includes(attempt.status)
@@ -157,7 +170,7 @@
 	}
 
 	function itemForHero(heroId: string) {
-		if (engineState.schemaVersion !== 16) return null;
+		if (engineState.schemaVersion !== 16 && engineState.schemaVersion !== 17) return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
 		return itemId ? engineState.items[itemId] : null;
 	}
@@ -177,7 +190,9 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div class="run-binding">
 			<span>Run {engineState.runId.slice(0, 8)}</span>
-			<code>v{engineState.version} · cursor {engineState.eventCursor}</code>
+			<code data-testid="run-version"
+				>v{engineState.version} · cursor {engineState.eventCursor}</code
+			>
 		</div>
 		<a class="utility" href={resolve('/replay/[runId]', { runId: engineState.runId })}
 			>inspect replay</a
@@ -189,13 +204,21 @@
 			<p class="eyebrow">
 				{isPortal
 					? 'Portal World / extraction clock'
-					: isAftermath
-						? 'Tower Floor 03 / persistent consequences'
-						: 'Tower Floor 01 / authoritative threshold'}
+					: isMasterRisk
+						? 'Tower Floor 03 / the Master is mortal'
+						: isAftermath
+							? 'Tower Floor 03 / persistent consequences'
+							: 'Tower Floor 01 / authoritative threshold'}
 			</p>
 			<h1>
-				{isPortal ? 'The Closing' : isAftermath ? 'The Red' : 'The Unlit'}<br /><em
-					>{isPortal ? 'Scar' : isAftermath ? 'Tithe' : 'Muster'}</em
+				{isPortal
+					? 'The Closing'
+					: isMasterRisk
+						? 'The Last'
+						: isAftermath
+							? 'The Red'
+							: 'The Unlit'}<br /><em
+					>{isPortal ? 'Scar' : isMasterRisk ? 'Command' : isAftermath ? 'Tithe' : 'Muster'}</em
 				>
 			</h1>
 		</div>
@@ -328,7 +351,7 @@
 			<div class="phase-heading">
 				<div>
 					<span>Mission state</span>
-					<h2>{phase.replaceAll('-', ' ')}</h2>
+					<h2>{isGameOver ? 'game over' : phase.replaceAll('-', ' ')}</h2>
 				</div>
 				<strong
 					>{attempt
@@ -342,31 +365,38 @@
 					<span>{terminal ? 'Attempt sealed' : 'Party preparation'}</span>
 					<p>
 						{terminal
-							? attempt?.status === 'success'
-								? isPortal
-									? `Iron Moon extraction credited ${portalTurnState?.portal.extractedAmount ?? 0} ore.`
-									: 'Floor 01 is complete. This run cannot farm the First Ember twice.'
-								: attempt?.status === 'death'
-									? 'A summoned hero died permanently. The wound, damaged gear, witnesses, and social reaction remain in this run.'
-									: 'The event stream keeps this outcome. A legal retry creates a new attempt ID.'
+							? isGameOver
+								? 'The Master died permanently. Every unfinished activity was canceled; the chronicle and replay remain available.'
+								: attempt?.status === 'success'
+									? isPortal
+										? `Iron Moon extraction credited ${portalTurnState?.portal.extractedAmount ?? 0} ore.`
+										: 'Floor 01 is complete. This run cannot farm the First Ember twice.'
+									: attempt?.status === 'death'
+										? 'A summoned hero died permanently. The wound, damaged gear, witnesses, and social reaction remain in this run.'
+										: 'The event stream keeps this outcome. A legal retry creates a new attempt ID.'
 							: 'Choose who crosses with the Master. Selection reserves heroes only after you lock the roster.'}
 					</p>
 				</div>
 			{/if}
 
 			<div class="party-cards" aria-label="Threshold party">
-				<article class="party-card master-card selected">
+				<article
+					class="party-card master-card selected"
+					class:fatal={isGameOver}
+					data-testid="master-roster-card"
+				>
 					<div class="portrait master-portrait"><span></span></div>
 					<div>
 						<span>Required · leader</span>
 						<strong>The Master</strong>
 						<small
-							>100 / 100 vitality{guardFor(engineState.master.masterId)
+							>{engineState.master.health} / {engineState.master.maxHealth} vitality · {engineState
+								.master.lifeState}{guardFor(engineState.master.masterId)
 								? ` · guard ${guardFor(engineState.master.masterId)!.guard}/${guardFor(engineState.master.masterId)!.maximumGuard}`
 								: ''}</small
 						>
 					</div>
-					<b>LOCKED</b>
+					<b>{isGameOver ? 'DEAD' : 'LOCKED'}</b>
 				</article>
 				{#if hero}
 					<button
@@ -397,13 +427,32 @@
 									: ''}</small
 							>
 						</div>
-						<b>{hero.lifeState === 'active' ? (heroSelected ? 'READY' : 'STAY') : 'DEAD'}</b>
+						<b
+							>{isGameOver
+								? 'SEALED'
+								: hero.lifeState === 'active'
+									? heroSelected
+										? 'READY'
+										: 'STAY'
+									: 'DEAD'}</b
+						>
 					</button>
 				{/if}
 			</div>
 
 			<div class="action-deck">
-				{#if phase === 'available' || (terminal && attempt?.status !== 'success')}
+				{#if isGameOver}
+					<div class="terminal-card" data-testid="mission-game-over">
+						<span>Terminal run state</span>
+						<strong>The Master is dead. The command ends here.</strong>
+						<p>
+							No actor has a legal move. The chronicle and deterministic replay remain inspectable.
+						</p>
+						<a href={resolve('/replay/[runId]', { runId: engineState.runId })}
+							>Open the sealed replay</a
+						>
+					</div>
+				{:else if phase === 'available' || (terminal && attempt?.status !== 'success')}
 					<button class="primary" disabled={busy} onclick={prepare} data-testid="prepare-party">
 						<span>Lock threshold roster</span><small
 							>creates attempt {mission ? mission.attemptCount + 1 : 1}</small
@@ -444,9 +493,16 @@
 						>
 						<small>Choose only the Master. Every summoned hero chooses independently.</small>
 					</div>
-					{#if turnState && turnState.currentThreatIntents.length > 0}
+					{#if turnState && (turnState.currentThreatIntents.length > 0 || redSlagImminent)}
 						<div class="threat-ledger" data-testid="threat-intents">
 							<div><span>Declared threats</span><small>visible before you commit</small></div>
+							{#if redSlagImminent}
+								<article class="hazard-warning" data-testid="red-slag-warning">
+									<strong>RED SLAG VENTS</strong>
+									<p>The Red Gallery will strip 1 guard from every actor beneath its vents.</p>
+									<small>environment · resolves after initiative</small>
+								</article>
+							{/if}
 							{#each turnState.currentThreatIntents as intent (intent.monsterId)}
 								<article>
 									<strong>{actorName(intent.monsterId)}</strong>
@@ -593,7 +649,8 @@
 								<strong>{consequence.fatal ? 'Permanent death' : consequence.injury?.kind}</strong>
 								<p>{consequence.summary}</p>
 								<small
-									>{consequence.healthBefore} → {consequence.healthAfter} health · {consequence.itemWear
+									>{consequence.healthBefore} → {consequence.healthAfter} health · {'itemWear' in
+										consequence && consequence.itemWear
 										? `gear ${consequence.itemWear.durabilityBefore} → ${consequence.itemWear.durabilityAfter}`
 										: 'no equipped gear wear'} · {consequence.witnesses.length} surviving witness{consequence
 										.witnesses.length === 1
@@ -693,16 +750,20 @@
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
-				: isAftermath
-					? 'MIS-008 · persistent mission aftermath'
-					: 'MIS-004 · autonomous monster duties'}</span
+				: isMasterRisk
+					? 'MIS-009 · controllable Master + atomic game over'
+					: isAftermath
+						? 'MIS-008 · persistent mission aftermath'
+						: 'MIS-004 · autonomous monster duties'}</span
 		>
 		<p>
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
-				: isAftermath
-					? 'Next: controllable Master actions and atomic game-over inside missions.'
-					: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+				: isMasterRisk
+					? 'Next: selectable control modes and per-turn fallback timing.'
+					: isAftermath
+						? 'Next: controllable Master actions and atomic game-over inside missions.'
+						: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
 		</p>
 	</footer>
 </main>
@@ -1263,6 +1324,51 @@
 	.threat-ledger article {
 		padding: 0.65rem 0.8rem;
 		border-bottom: 1px solid rgba(130, 67, 53, 0.35);
+	}
+	.threat-ledger .hazard-warning {
+		border-color: #8e372a;
+		background: linear-gradient(100deg, rgba(135, 40, 25, 0.2), rgba(43, 17, 14, 0.3));
+	}
+	.threat-ledger .hazard-warning strong,
+	.threat-ledger .hazard-warning small {
+		color: #e47855;
+	}
+	.terminal-card {
+		margin-top: 1.5rem;
+		padding: 1.4rem;
+		border: 1px solid #823a32;
+		background: linear-gradient(120deg, rgba(119, 27, 23, 0.28), rgba(15, 10, 10, 0.7));
+	}
+	.terminal-card span,
+	.terminal-card strong {
+		display: block;
+	}
+	.terminal-card span {
+		color: #d16b55;
+		font-size: 0.57rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.terminal-card strong {
+		margin-top: 0.55rem;
+		font:
+			1.35rem Georgia,
+			serif;
+	}
+	.terminal-card p {
+		color: #9d8c82;
+		font-size: 0.72rem;
+		line-height: 1.55;
+	}
+	.terminal-card a {
+		color: #e0a060;
+		font-size: 0.65rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	.master-card.fatal {
+		border-color: #7f322c;
+		background: rgba(91, 23, 20, 0.22);
 	}
 	.threat-ledger > div {
 		display: flex;

@@ -158,6 +158,17 @@ and replay preserve the exact source, location, health, item, and witness eviden
 
 ![The Red Tithe persistent aftermath checkpoint](docs/evidence/phase-6-mission-aftermath.png)
 
+### Mortal Master checkpoint
+
+`/last-command` makes the Master an embodied combatant rather than an invulnerable cursor. The
+player chooses the Master's move, defense, inspection, recovery, or attack each round while the
+summoned hero acts independently. Guard-breaking harm changes canonical Master health; periodic Red
+Slag is telegraphed before commitment. A fatal impact atomically kills the Master, ends the attempt
+and entire run, cancels unfinished hero routines, removes every legal action, and leaves the sealed
+chronicle available for verified replay.
+
+![The Last Command atomic game-over checkpoint](docs/evidence/phase-6-master-game-over.png)
+
 ### Conversation and order checkpoint
 
 Free text is now a witnessed social event rather than a hidden command channel. The Master can say,

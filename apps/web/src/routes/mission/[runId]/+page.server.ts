@@ -20,15 +20,17 @@ export const load: PageServerLoad = async ({ params }) => {
 	if (
 		report.snapshot.state.schemaVersion !== 13 &&
 		report.snapshot.state.schemaVersion !== 15 &&
-		report.snapshot.state.schemaVersion !== 16
+		report.snapshot.state.schemaVersion !== 16 &&
+		report.snapshot.state.schemaVersion !== 17
 	) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const isPortal = report.snapshot.state.schemaVersion === 15;
 	const isAftermath = report.snapshot.state.schemaVersion === 16;
+	const isMasterRisk = report.snapshot.state.schemaVersion === 17;
 	const missionPackage = isPortal
 		? IRON_MOON_PACKAGE.mission
-		: isAftermath
+		: isAftermath || isMasterRisk
 			? TOWER_FLOOR_03_RUNTIME_PACKAGE
 			: TOWER_FLOOR_01_PACKAGE;
 	const attempt = report.snapshot.state.mission.attempt;
@@ -41,6 +43,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		missionDefinition: {
 			isPortal,
 			isAftermath,
+			isMasterRisk,
 			displayName: missionPackage.displayName,
 			tagline: missionPackage.tagline,
 			objectiveTitle: primaryObjective.title,

@@ -1093,7 +1093,12 @@ Estimated engineering effort: **2–3 weeks**.
   give only surviving co-located heroes evidence-backed memories and relationship changes; include
   those memories in future engine-owned decision context; strictly replay every physical and social
   mutation; and ship the database-backed `/aftermath` Red Tithe browser checkpoint;
-- `MIS-009` implement Master actions and atomic game over;
+- `MIS-009` complete: add opt-in `engine-v17` / `mission-aftermath-v2`; apply exposed mission harm
+  to canonical Master health; preserve source-, location-, and witness-complete consequences; let
+  co-located heroes remember only what they see; atomically set attempt death, Master death, and
+  top-level game over in one round; cancel every unfinished hero activity, travel, routine, and
+  daily-plan entry; remove all actor legality while retaining strict replay; telegraph the Red Slag
+  hazard before commitment; and ship the database-backed `/last-command` browser checkpoint;
 - `MIS-010` validate three floor-5 strategies and deterministic replay;
 - `MIS-011` implement band story envelopes, beat eligibility, and character-aware expression hooks;
 - `MIS-012` implement Wait, Countdown, Step, and Continuous Master decision timing;

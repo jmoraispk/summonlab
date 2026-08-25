@@ -12,6 +12,7 @@ import {
 	EngineGameStateV14Schema,
 	EngineGameStateV15Schema,
 	EngineGameStateV16Schema,
+	EngineGameStateV17Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
 	type ActivityKind,
@@ -729,6 +730,109 @@ describe('deterministic engine', () => {
 			healthAfter: 0,
 			injury: null
 		});
+		expect(legalActions(state, heroId)).toEqual([]);
+
+		const replay = replayEventsStrict(events);
+		expect(replay.verified).toBe(true);
+		expect(replay.snapshot.state).toEqual(state);
+		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+	});
+
+	it('atomically seals the run when the controllable Master dies in a mission', () => {
+		const runId = deterministicUuid('mission-master-death-run');
+		const heroId = deterministicUuid('mission-master-death-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'mission-master-death-seed',
+			heroId,
+			manifestHash: sha256Hex('mission-master-death-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-03',
+				availableMissionIds: ['tower-floor-03'],
+				enableMasterPermadeath: true
+			}
+		});
+		let state = EngineGameStateV17Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const commit = (key: string, body: object) => {
+			const result = applyCommand(state, {
+				...commandBase(state, masterId, key),
+				source: manualSource(),
+				...body
+			} as unknown as EngineCommand);
+			state = EngineGameStateV17Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		const turn = (key: string, masterActionId: string, heroActionId: string) =>
+			commit(key, {
+				commandType: 'mission.resolve.turn',
+				choices: [
+					manualMissionChoice(masterId, masterActionId),
+					scriptedMissionChoice(heroId, heroActionId)
+				]
+			});
+
+		commit('master-death-direction', {
+			commandType: 'master.issue.directive',
+			text: 'Stay with me and guard the living.',
+			scope: 'mission',
+			recipientIds: [heroId],
+			priorities: ['guard'],
+			tone: 'urgent',
+			delivery: 'private'
+		});
+		commit('master-death-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-03'
+		});
+		commit('master-death-deploy', { commandType: 'mission.deploy' });
+		turn(
+			'master-death-cut-stair',
+			'mission.move.threshold-to-cut-stair',
+			'mission.move.threshold-to-cut-stair'
+		);
+		turn(
+			'master-death-red-gallery',
+			'mission.move.cut-stair-to-red-gallery',
+			'mission.move.cut-stair-to-red-gallery'
+		);
+		turn(
+			'master-death-tithe-pit',
+			'mission.move.red-gallery-to-tithe-pit',
+			'mission.move.red-gallery-to-tithe-pit'
+		);
+		let fatal = turn(
+			'master-death-return-red-gallery',
+			'mission.move.red-gallery-to-tithe-pit',
+			'mission.move.red-gallery-to-tithe-pit'
+		);
+		for (let round = 5; round <= 10 && state.status === 'active'; round += 1) {
+			fatal = turn(`master-death-hold-${round}`, 'mission.hold', 'mission.hold');
+		}
+
+		expect(state).toMatchObject({
+			status: 'game_over',
+			master: { masterId, health: 0, lifeState: 'dead' }
+		});
+		expect(state.mission.attempt).toMatchObject({ status: 'death', outcome: 'death' });
+		expect(state.mission.aftermath.consequences).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					consequenceKind: 'master-harm',
+					targetMasterId: masterId,
+					sourceId: 'red-slag-fall',
+					fatal: true,
+					healthAfter: 0
+				})
+			])
+		);
+		expect(fatal.events[0]!.payload).toMatchObject({
+			summary: expect.stringContaining('run was atomically sealed')
+		});
+		expect(legalActions(state, masterId)).toEqual([]);
 		expect(legalActions(state, heroId)).toEqual([]);
 
 		const replay = replayEventsStrict(events);

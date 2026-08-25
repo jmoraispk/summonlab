@@ -615,6 +615,15 @@ timer unit, so wall time, animation time, and model latency cannot change the re
 hero packets include timer, pressure, quota, personal cargo, and finite deposit context. Strict
 replay recomputes the complete portal round and extraction payload. See ADR 0036.
 
+`engine-v16` makes mission aftermath authoritative for heroes: an exposed impact changes health,
+injury, equipped-item durability, life state, witnessed observation, and relationship evidence in
+the same round event. `engine-v17` extends that ledger with a distinct Master-harm record. A fatal
+Master consequence simultaneously sets the mission attempt to `death`, the Master to `dead`, and
+the run to `game_over`; it clears pending hero activity, travel, routines, and unfinished daily
+plans before the resulting state is hashed. Legal-action projection returns an empty set for every
+actor, while the append-only event stream remains available for strict replay. Earlier schema
+versions retain their original reducers and hashes. See ADRs 0037–0038.
+
 ### Implemented reconnect projection
 
 Every new event schedules a run-specific PostgreSQL notification in its command transaction. The

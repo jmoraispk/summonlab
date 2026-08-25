@@ -102,7 +102,7 @@
 				arrival later.
 			</p>
 			<div class="hash-seal">
-				<span
+				<span data-testid="settlement-route-budget"
 					>{data.definition.contentVersion} · {(
 						data.buildBudget.measurements.settlementRouteLabLoadedJavaScriptGzipBytes / 1000
 					).toFixed(1)} KB route JS</span

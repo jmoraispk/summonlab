@@ -41,7 +41,8 @@ async function assembleMissionChoices(
 	if (
 		snapshot.state.schemaVersion !== 13 &&
 		snapshot.state.schemaVersion !== 15 &&
-		snapshot.state.schemaVersion !== 16
+		snapshot.state.schemaVersion !== 16 &&
+		snapshot.state.schemaVersion !== 17
 	) {
 		throw new IllegalActionError('mission.resolve.turn');
 	}
@@ -105,7 +106,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		if (
 			snapshot.state.schemaVersion !== 13 &&
 			snapshot.state.schemaVersion !== 15 &&
-			snapshot.state.schemaVersion !== 16
+			snapshot.state.schemaVersion !== 16 &&
+			snapshot.state.schemaVersion !== 17
 		) {
 			return json(
 				{ message: 'This history predates authoritative mission turns.' },
@@ -156,7 +158,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		if (
 			committed.snapshot.state.schemaVersion !== 13 &&
 			committed.snapshot.state.schemaVersion !== 15 &&
-			committed.snapshot.state.schemaVersion !== 16
+			committed.snapshot.state.schemaVersion !== 16 &&
+			committed.snapshot.state.schemaVersion !== 17
 		) {
 			throw new Error('Mission commit changed the engine schema.');
 		}

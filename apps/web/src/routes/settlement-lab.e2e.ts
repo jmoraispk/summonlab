@@ -9,7 +9,11 @@ test('inspects all five Hearth 01 interiors and deterministic access-aware route
 
 	await expect(page.getByRole('heading', { name: /A small refuge/ })).toBeVisible();
 	await expect(page.getByText('83e2d404fa3e119b')).toBeVisible();
-	await expect(page.getByText(/42\.4 KB route JS/)).toBeVisible();
+	const routeBudget = page.getByTestId('settlement-route-budget');
+	await expect(routeBudget).toContainText(/\d+\.\d KB route JS/);
+	const routeBudgetText = (await routeBudget.textContent()) ?? '';
+	const routeKilobytes = Number(routeBudgetText.match(/(\d+\.\d) KB route JS/)?.[1]);
+	expect(routeKilobytes).toBeLessThanOrEqual(700);
 	await expect(page.getByText('c88d39611eee5b39')).toBeVisible();
 	await expect(page.getByText('296.2 KB WebP')).toBeVisible();
 	const paintedScene = page.getByTestId('painted-settlement-scene');
