@@ -1155,7 +1155,10 @@ Estimated engineering effort: **2 weeks**.
   recovery to successful extraction; preserve the sealed/recovered/revealed lifecycle, let a chosen
   surviving hero's mind shape delivery without changing the fixed truth, retain explicit knowledge
   holders, and ship strict replay evidence plus the database-backed `/first-band-archive` checkpoint;
-- `FIN-003` implement onboarding, objectives, pause, settings, and restart;
+- `FIN-003` **complete** — implement the player-facing title and four-beat onboarding; bind three
+  stable adult human heroes to the campaign seed; derive seven hash-bound objectives; add an
+  interface-only pause menu, device-local reading/motion/timing settings, and replay-preserving
+  same-seed restart; validate the complete journey at desktop and phone widths;
 - `FIN-004` add soundscape, premium effects, reduced-motion and accessibility pass;
 - `FIN-005` tune performance and asset budgets for target phones;
 - `FIN-006` add analytics and playtest consent;
@@ -1249,8 +1252,12 @@ extract, and only that `mission.extracted` event can recover the authored religh
 fragment. A selected surviving hero then reveals the fixed message through a deterministic delivery
 frame derived from personality, values, drive, social style, and habit. Explicit reader/witness
 knowledge, story history, reward grant IDs, event sources, database persistence, adversarial replay
-checks, and `/first-band-archive` keep the finale causal and inspectable. The next engineering slice
-is `FIN-003`: implement onboarding, objectives, pause, settings, and restart.
+checks, and `/first-band-archive` keep the finale causal and inspectable. `FIN-003` adds the
+replay-adjacent player campaign shell: three stable seed-bound strangers, sequential onboarding with
+canonical conversations and first destination, seven snapshot-bound derived objectives,
+interface-only pause, device-local presentation settings, and restart lineage that supersedes but
+never rewrites the prior verified chronicle. After the FIN-003 playtest review, the next engineering
+slice is `FIN-004`: soundscape, premium effects, reduced motion, and the broader accessibility pass.
 
 ## Accepted product decisions — 2026-08-23
 

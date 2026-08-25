@@ -10,8 +10,7 @@
 		runId,
 		initialObjectives
 	}: { runId: string; initialObjectives: CampaignObjectiveProjection } = $props();
-	// svelte-ignore state_referenced_locally
-	let objectives = $state(initialObjectives);
+	let objectives = $derived(initialObjectives);
 	let open = $state(false);
 	let tab = $state<'objectives' | 'settings'>('objectives');
 	let confirmRestart = $state(false);
@@ -59,9 +58,12 @@
 					controlMode: loadPlayerSettings().controlMode
 				})
 			});
-			const body = (await response.json()) as { resumePath?: string; message?: string };
-			if (!response.ok || !body.resumePath) throw new Error(body.message ?? 'Restart failed.');
-			await goto(body.resumePath);
+			const body = (await response.json()) as {
+				campaign?: { runId: string };
+				message?: string;
+			};
+			if (!response.ok || !body.campaign) throw new Error(body.message ?? 'Restart failed.');
+			await goto(resolve('/onboarding/[runId]', { runId: body.campaign.runId }));
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Restart failed.';
 			restarting = false;
@@ -377,13 +379,21 @@
 
 	@media (max-width: 650px) {
 		.objective-chip {
-			right: 0.7rem;
-			bottom: 0.7rem;
-			left: 0.7rem;
-			grid-template-columns: 1fr 3.4rem;
+			right: 0.55rem;
+			bottom: 0.55rem;
+			left: 0.55rem;
+			grid-template-columns: 1fr 2.9rem;
+		}
+		.objective-chip button:first-child {
+			padding: 0.62rem 0.75rem;
+		}
+		.objective-chip button:first-child > span {
+			display: none;
 		}
 		.objective-chip strong {
-			font-size: 0.8rem;
+			margin-top: 0;
+			font-size: 0.76rem;
+			line-height: 1.2;
 		}
 		.menu h2 {
 			font-size: 2.2rem;
@@ -392,6 +402,9 @@
 		.menu > header {
 			padding-right: 1rem;
 			padding-left: 1rem;
+		}
+		.objective-list small {
+			overflow-wrap: anywhere;
 		}
 		.run-actions {
 			grid-template-columns: 1fr;

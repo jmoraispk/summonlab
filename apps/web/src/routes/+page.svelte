@@ -23,10 +23,12 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ seed, controlMode: loadPlayerSettings().controlMode })
 			});
-			const body = (await response.json()) as { resumePath?: string; message?: string };
-			if (!response.ok || !body.resumePath)
-				throw new Error(body.message ?? 'The gate stayed dark.');
-			await goto(body.resumePath);
+			const body = (await response.json()) as {
+				campaign?: { runId: string };
+				message?: string;
+			};
+			if (!response.ok || !body.campaign) throw new Error(body.message ?? 'The gate stayed dark.');
+			await goto(resolve('/onboarding/[runId]', { runId: body.campaign.runId }));
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The gate stayed dark.';
 			beginning = false;
@@ -442,7 +444,7 @@
 			transform: scale(1.055) translateX(-0.4%);
 		}
 	}
-	:global(html[data-motion='reduced']) .key-art {
+	:global(html[data-player-motion='reduced']) .key-art {
 		animation: none;
 	}
 	@media (max-width: 700px) {

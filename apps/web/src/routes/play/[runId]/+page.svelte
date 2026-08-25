@@ -91,7 +91,10 @@
 	onMount(() => {
 		let arrivalTimeout: number | null = null;
 		if (!snapshot.arrived) {
-			const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 450 : 3_600;
+			const reducedMotion =
+				document.documentElement.dataset.playerMotion === 'reduced' ||
+				window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			const delay = reducedMotion ? 450 : 3_600;
 			arrivalTimeout = window.setTimeout(() => void recordArrival(), delay);
 		}
 		const projectionInterval = window.setInterval(() => {
@@ -1609,6 +1612,26 @@
 	}
 
 	@media (max-width: 560px) {
+		header {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+			height: auto;
+			padding: 0.85rem 1rem;
+		}
+
+		header nav {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			width: 100%;
+		}
+
+		header nav button,
+		header nav a {
+			min-width: 0;
+			padding: 0.55rem 0.35rem;
+			text-align: center;
+		}
+
 		.world {
 			height: 32rem;
 			min-height: 32rem;

@@ -772,6 +772,29 @@ and is hash-committed while sealed; neither the reader nor StoryDirector may rew
 co-located witness IDs become explicit knowledge records, so later clean-slate summons receive no
 retroactive knowledge. Both extraction and reveal recompute under strict replay.
 
+### Player campaign boundary
+
+The player-facing campaign shell is replay-adjacent rather than authoritative. Migration
+`0011_campaign_experience.sql` registers one campaign seed, three stable hero drafts, onboarding
+progress, lifecycle, and restart lineage beside an existing proof/engine run. Sequential onboarding
+steps are presentation metadata, while each first conversation and the primary hero's first
+destination are ordinary canonical engine commands and events.
+
+`campaign-objectives-v1` derives seven ordered objectives from that campaign record and an exact
+`engine-v13` snapshot. The projection records the engine state hash and a deterministic projection
+hash; it never stores a second mutable accomplishment ledger. The persistent objective chip follows
+updated onboarding projections, and the pause menu may refresh the same projection on demand.
+
+Pause is only an input/modal state in the browser. The simulation clock, catch-up path, and pending
+engine work continue on the server. Reading scale, motion, and the player's default Wait/five-second
+handoff preference live in versioned local storage because they are interface preferences, not run
+history.
+
+Restart bootstraps a new engine run, registers it with `restartedFromRunId`, and supersedes the
+prior campaign record without touching its append-only events or snapshots. A same-seed restart
+therefore produces the same three generated identities under a new run ID while the old replay
+remains independently verifiable. See ADR 0047.
+
 ## Platform
 
 Web remains the first platform:

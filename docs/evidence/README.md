@@ -109,3 +109,13 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   proving a short explicit warning, irreversible source termination, bounded recipient growth,
   identity non-transfer, private/open knowledge boundaries, social fallout, sourced rumor relay,
   seven blocked illegal/adversarial cases, and exact `engine-v22` replay.
+- `phase-7-campaign-title.png` — player-facing title composition using the original summoning image,
+  campaign continuation, deterministic seed entry, local settings, and secondary development links.
+- `phase-7-campaign-company.png` — the three stable seed-bound strangers, visible adult dossiers,
+  observable personality boundary, canonical first-question control, and current objective chip.
+- `phase-7-campaign-pause.png` — four completed onboarding objectives inside the seven-objective
+  pause projection with explicit notice that the server-owned settlement clock continues.
+- `phase-7-campaign-mobile-company.png` — 390×844 large-text/reduced-motion onboarding with the
+  three hero tabs, full dossier, compact current-objective control, and unbroken question flow.
+- `phase-7-campaign-mobile-hearth.png` — 390×844 large-text Hearth route with the corrected stacked
+  navigation, autonomous destination, compact objective control, and readable fixed story spine.

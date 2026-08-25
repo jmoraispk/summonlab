@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 
@@ -92,7 +93,7 @@
 			});
 			const completionBody = (await completion.json()) as { message?: string };
 			if (!completion.ok) throw new Error(completionBody.message ?? 'The prologue stayed open.');
-			await goto(`/play/${view.campaign.runId}`);
+			await goto(resolve('/play/[runId]', { runId: view.campaign.runId }));
 		} catch (error) {
 			errorMessage =
 				error instanceof Error ? error.message : 'The company could not enter Hearth 01.';
@@ -110,7 +111,7 @@
 	<div class="stone"></div>
 	<div class="ash"></div>
 	<header>
-		<a href="/">SUMMON<span>LAB</span></a>
+		<a href={resolve('/')}>SUMMON<span>LAB</span></a>
 		<div data-testid="onboarding-step">PROLOGUE · {view.campaign.onboardingStep + 1}/4</div>
 		<p>Seed / {view.campaign.campaignSeed}</p>
 	</header>
@@ -734,8 +735,8 @@
 			transform: rotate(360deg);
 		}
 	}
-	:global(html[data-motion='reduced']) .ring,
-	:global(html[data-motion='reduced']) .signal span {
+	:global(html[data-player-motion='reduced']) .ring,
+	:global(html[data-player-motion='reduced']) .signal span {
 		animation: none;
 	}
 	@media (max-width: 760px) {

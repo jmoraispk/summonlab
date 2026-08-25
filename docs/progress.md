@@ -431,7 +431,29 @@ the survivor's spoken line and habit gesture remain personality-shaped. Confirm 
 three witnesses hold the knowledge, then reload and verify the reveal, extraction event, content
 version, message commitment, and replay hash remain unchanged.
 
+## Phase 7 — synthesis, story, and vertical-slice finish
+
+Status: **in progress**. `FIN-001` through `FIN-003` are complete as of 2026-08-25; the broader
+vertical-slice finish remains active and `FIN-004` through `FIN-009` are not complete.
+
+| Task | Result | Evidence |
+| --- | --- | --- |
+| `FIN-001` | Complete: `engine-v22` commits irreversible synthesis with bounded growth, identity non-transfer, witnessed social fallout, and replay-safe rumor propagation | [Synthesis evidence](evidence/phase-7-synthesis.png), machine-readable synthesis report, engine/database/browser tests |
+| `FIN-002` | Complete: `engine-v23` binds the Floor 05 relight core and sealed archive to successful extraction, preserves one fixed message, and gives only the selected surviving reader and actual witnesses explicit knowledge | First-band archive browser checkpoint, strict replay validation, ADR 0046 |
+| `FIN-003` | Complete: the original summoning image now leads a player-facing title; a seed creates exactly three stable adult human strangers; sequential first-person onboarding records one canonical answer per hero and the first autonomous destination; seven objectives derive from campaign plus engine state and bind the snapshot hash; pause is interface-only; large text, reduced motion, and Wait/five-second timing persist locally; same-seed restart creates a new run while the superseded replay remains verified | [Title evidence](evidence/phase-7-campaign-title.png), [company evidence](evidence/phase-7-campaign-company.png), [pause evidence](evidence/phase-7-campaign-pause.png), [mobile company](evidence/phase-7-campaign-mobile-company.png), [mobile Hearth](evidence/phase-7-campaign-mobile-hearth.png), campaign engine/database/browser tests, ADR 0047 |
+
+### Reproduce the FIN-003 checkpoint
+
+Run `pnpm dev`, open `http://localhost:5173`, and begin a new seed. Follow the reserve bell, spend
+the reserve, inspect all three dossiers, and ask each hero one question. Enter Hearth 01 and confirm
+the first summon chooses the preparation destination before the route opens. Press Escape to review
+all seven objectives and the continuing server-clock notice. In Settings, choose **Large**,
+**Reduced**, and **5-second handoff**, reload, and confirm all three remain selected. Choose
+**Restart same seed**, confirm the new run ID and identical three heroes, then open the prior run at
+`/replay/<oldRunId>` and confirm **Verified** plus **snapshot agrees**.
+
 ## Next active engineering slice
 
-Begin `FIN-003`: implement onboarding, objectives, pause, settings, and restart. Phase 3 cohort
-expansion remains behind its separate human visual gate.
+Review the FIN-003 player journey before beginning `FIN-004`: soundscape, premium effects,
+reduced-motion, and the broader accessibility pass. Phase 3 cohort expansion remains behind its
+separate human visual gate.
