@@ -1,9 +1,12 @@
 import {
 	CharacterMindSchema,
+	EngineCommandSchema,
 	EngineGameStateV17Schema,
+	EngineGameStateV23Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameStateV17,
+	type EngineGameStateV23,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
 import {
@@ -203,6 +206,55 @@ const TRIAL_MIND = CharacterMindSchema.parse({
 	aptitudes: { might: 10, finesse: 10, insight: 7, resolve: 10 }
 });
 
+const ARCHIVE_READER_MINDS = [
+	TRIAL_MIND,
+	CharacterMindSchema.parse({
+		personality: {
+			openness: 74,
+			conscientiousness: 52,
+			extraversion: 92,
+			agreeableness: 34,
+			emotionalVolatility: 36
+		},
+		primaryValue: 'freedom',
+		primaryDrive: 'prove',
+		socialStyle: 'wry',
+		stressResponse: 'confront',
+		dailyHabit: 'checks-exits',
+		aptitudes: { might: 10, finesse: 10, insight: 7, resolve: 10 }
+	}),
+	CharacterMindSchema.parse({
+		personality: {
+			openness: 68,
+			conscientiousness: 58,
+			extraversion: 76,
+			agreeableness: 94,
+			emotionalVolatility: 44
+		},
+		primaryValue: 'mercy',
+		primaryDrive: 'protect',
+		socialStyle: 'warm',
+		stressResponse: 'observe',
+		dailyHabit: 'shares-breakfast',
+		aptitudes: { might: 10, finesse: 10, insight: 7, resolve: 10 }
+	}),
+	CharacterMindSchema.parse({
+		personality: {
+			openness: 62,
+			conscientiousness: 70,
+			extraversion: 28,
+			agreeableness: 55,
+			emotionalVolatility: 86
+		},
+		primaryValue: 'knowledge',
+		primaryDrive: 'survive',
+		socialStyle: 'reserved',
+		stressResponse: 'prepare',
+		dailyHabit: 'catalogues-tools',
+		aptitudes: { might: 10, finesse: 10, insight: 10, resolve: 10 }
+	})
+] as const;
+
 function manualSource() {
 	return {
 		source: 'manual' as const,
@@ -263,46 +315,86 @@ type CommandBody<T = EngineCommand> = T extends EngineCommand
 	? Omit<T, 'commandId' | 'runId' | 'actorId' | 'expectedVersion' | 'correlationId' | 'source'>
 	: never;
 
+export interface FirstBandArchiveCastMember {
+	readonly heroId: string;
+	readonly manifestHash: string;
+	readonly rarityStars: number;
+	readonly mind: z.infer<typeof CharacterMindSchema>;
+}
+
+export interface FirstBandArchiveCast {
+	readonly runId: string;
+	readonly engineSeed: string;
+	readonly members: readonly [
+		FirstBandArchiveCastMember,
+		FirstBandArchiveCastMember,
+		FirstBandArchiveCastMember,
+		FirstBandArchiveCastMember
+	];
+}
+
 class FoundryTrialRunner {
 	readonly runId: string;
 	readonly heroId: string;
 	readonly heroIds: readonly string[];
 	readonly masterId: string;
 	readonly events: AuthoritativeEvent[];
+	readonly commands: EngineCommand[] = [];
 	readonly checkpoints: z.infer<typeof FoundryStrategyCheckpointSchema>[] = [];
-	state: EngineGameStateV17;
+	state: EngineGameStateV17 | EngineGameStateV23;
 	private commandOrdinal = 0;
+	private readonly firstBandArchiveEnabled: boolean;
 
-	constructor(strategyId: FoundryStrategyId, seed: string) {
-		this.runId = deterministicUuid(`mis-010:${strategyId}:${seed}:run`);
-		this.heroId = deterministicUuid(`mis-010:${strategyId}:${seed}:hero`);
-		this.heroIds = [
+	constructor(
+		strategyId: FoundryStrategyId,
+		seed: string,
+		firstBandArchiveEnabled = false,
+		cast?: FirstBandArchiveCast
+	) {
+		this.firstBandArchiveEnabled = firstBandArchiveEnabled;
+		this.runId = cast?.runId ?? deterministicUuid(`mis-010:${strategyId}:${seed}:run`);
+		this.heroId =
+			cast?.members[0].heroId ?? deterministicUuid(`mis-010:${strategyId}:${seed}:hero`);
+		this.heroIds = cast?.members.map((member) => member.heroId) ?? [
 			this.heroId,
 			...Array.from({ length: 3 }, (_, index) =>
 				deterministicUuid(`mis-010:${strategyId}:${seed}:hero:${index + 2}`)
 			)
 		];
+		const primaryCast = cast?.members[0];
 		const bootstrap = createBootstrapEngine({
 			runId: this.runId,
-			seed: `mis-010:${strategyId}:${seed}`,
+			seed: cast?.engineSeed ?? `mis-010:${strategyId}:${seed}`,
 			heroId: this.heroId,
-			manifestHash: sha256Hex(`mis-010:${strategyId}:manifest`),
-			rarityStars: 7,
-			mind: TRIAL_MIND,
+			manifestHash: primaryCast?.manifestHash ?? sha256Hex(`mis-010:${strategyId}:manifest`),
+			rarityStars: primaryCast?.rarityStars ?? 7,
+			mind: primaryCast?.mind ?? (firstBandArchiveEnabled ? ARCHIVE_READER_MINDS[0] : TRIAL_MIND),
 			developmentMissionScenario: {
 				initialMissionId: 'tower-floor-05',
 				availableMissionIds: ['tower-floor-05'],
-				enableMasterPermadeath: true,
+				...(firstBandArchiveEnabled
+					? { enableFirstBandArchive: true }
+					: { enableMasterPermadeath: true }),
 				...(strategyId === 'hammer-line' ? {} : { foundryRouteMemoryHeroId: this.heroId }),
-				additionalHeroes: this.heroIds.slice(1).map((heroId, index) => ({
-					heroId,
-					manifestHash: sha256Hex(`mis-010:${strategyId}:manifest:${index + 2}`),
-					rarityStars: 7,
-					mind: TRIAL_MIND
-				}))
+				additionalHeroes: this.heroIds.slice(1).map((heroId, index) => {
+					const member = cast?.members[index + 1];
+					return {
+						heroId,
+						manifestHash:
+							member?.manifestHash ?? sha256Hex(`mis-010:${strategyId}:manifest:${index + 2}`),
+						rarityStars: member?.rarityStars ?? 7,
+						mind:
+							member?.mind ??
+							(firstBandArchiveEnabled
+								? (ARCHIVE_READER_MINDS[index + 1] ?? TRIAL_MIND)
+								: TRIAL_MIND)
+					};
+				})
 			}
 		});
-		this.state = EngineGameStateV17Schema.parse(bootstrap.snapshot.state);
+		this.state = firstBandArchiveEnabled
+			? EngineGameStateV23Schema.parse(bootstrap.snapshot.state)
+			: EngineGameStateV17Schema.parse(bootstrap.snapshot.state);
 		this.masterId = this.state.master.masterId;
 		this.events = [bootstrap.event];
 	}
@@ -329,7 +421,20 @@ class FoundryTrialRunner {
 			source,
 			...body
 		} as EngineCommand);
-		this.state = EngineGameStateV17Schema.parse(result.state);
+		this.commands.push(
+			EngineCommandSchema.parse({
+				commandId,
+				runId: this.runId,
+				actorId,
+				expectedVersion: this.state.version,
+				correlationId: commandId,
+				source,
+				...body
+			})
+		);
+		this.state = this.firstBandArchiveEnabled
+			? EngineGameStateV23Schema.parse(result.state)
+			: EngineGameStateV17Schema.parse(result.state);
 		this.events.push(...result.events);
 		return result;
 	}
@@ -722,6 +827,15 @@ class FoundryTrialRunner {
 		}
 		this.missionCommand('extract-living-foundry', { commandType: 'mission.extract' });
 	}
+
+	revealArchive(readerHeroId: string) {
+		return this.commit(
+			this.masterId,
+			'reveal-first-band-archive',
+			{ commandType: 'story.reveal.first.archive', readerHeroId },
+			manualSource()
+		);
+	}
 }
 
 export function createFoundryStrategyTrial(
@@ -802,6 +916,93 @@ export function createFoundryStrategyTrial(
 		fatalConsequences: 0,
 		checkpoints: representativeCheckpoints(runner.checkpoints)
 	});
+}
+
+export interface FirstBandArchiveTrial {
+	readonly runId: string;
+	readonly heroIds: readonly string[];
+	readonly readerHeroId: string;
+	readonly events: readonly AuthoritativeEvent[];
+	readonly state: EngineGameStateV23;
+	readonly recoveryStateHash: string;
+	readonly replayVerified: true;
+}
+
+export interface FirstBandArchiveRecoveryTrial {
+	readonly runId: string;
+	readonly heroIds: readonly string[];
+	readonly commands: readonly EngineCommand[];
+	readonly events: readonly AuthoritativeEvent[];
+	readonly state: EngineGameStateV23;
+	readonly replayVerified: true;
+}
+
+function playFirstBandArchiveToRecovery(seed: string, cast?: FirstBandArchiveCast) {
+	const runner = new FoundryTrialRunner('full-quench', seed, true, cast);
+	runner.prepareHeroes();
+	runner.enterFoundry();
+	runner.exposeCoolingRoute();
+	runner.advanceCooling('Open the cooling circuit');
+	const reliefId = runner.rotateCoolingOperator(runner.heroId);
+	runner.advanceCooling('Quench the furnace', reliefId);
+	runner.defeatWarden('full-quench');
+	runner.returnAndExtract();
+	return runner;
+}
+
+export function createFirstBandArchiveRecoveryTrial(
+	seed: string,
+	cast?: FirstBandArchiveCast
+): FirstBandArchiveRecoveryTrial {
+	const runner = playFirstBandArchiveToRecovery(seed, cast);
+	const state = EngineGameStateV23Schema.parse(runner.state);
+	const replay = replayEventsStrict(runner.events);
+	if (
+		state.firstBandArchive.status !== 'recovered' ||
+		!replay.verified ||
+		hashGameState(replay.snapshot.state) !== hashGameState(state)
+	) {
+		throw new Error('Successful Foundry extraction did not recover the first archive');
+	}
+	return {
+		runId: runner.runId,
+		heroIds: runner.heroIds,
+		commands: runner.commands,
+		events: runner.events,
+		state,
+		replayVerified: true
+	};
+}
+
+export function createFirstBandArchiveTrial(seed: string, readerIndex = 0): FirstBandArchiveTrial {
+	const runner = playFirstBandArchiveToRecovery(seed);
+	const recovered = EngineGameStateV23Schema.parse(runner.state);
+	if (recovered.firstBandArchive.status !== 'recovered') {
+		throw new Error('Successful Foundry extraction did not recover the first archive');
+	}
+	const readerHeroId = runner.heroIds[readerIndex];
+	if (!readerHeroId) throw new Error(`Archive reader index ${readerIndex} is unavailable`);
+	const recoveryStateHash = hashGameState(recovered);
+	runner.revealArchive(readerHeroId);
+	const state = EngineGameStateV23Schema.parse(runner.state);
+	const replay = replayEventsStrict(runner.events);
+	if (
+		state.firstBandArchive.status !== 'revealed' ||
+		state.firstBandArchive.reveal?.readerHeroId !== readerHeroId ||
+		!replay.verified ||
+		hashGameState(replay.snapshot.state) !== hashGameState(state)
+	) {
+		throw new Error('First-band archive reveal failed its replay boundary');
+	}
+	return {
+		runId: runner.runId,
+		heroIds: runner.heroIds,
+		readerHeroId,
+		events: runner.events,
+		state,
+		recoveryStateHash,
+		replayVerified: true
+	};
 }
 
 function representativeCheckpoints(

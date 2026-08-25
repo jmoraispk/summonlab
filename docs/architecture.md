@@ -756,6 +756,22 @@ Most monsters use deterministic scripted or utility policies. Intelligent monste
 
 Currency spend, summon result, pity update, hero creation, and receipt commit in one transaction. Synthesis validates the source hero, recipient, social visibility, and irreversible event in one transaction.
 
+### First-band archive boundary
+
+`engine-v23` carries `first-band-archive-v1` with a one-way `sealed → recovered → revealed`
+lifecycle. The fragment may become `recovered` only inside the canonical `mission.extracted`
+transition for a successful `tower-floor-05` attempt. Its receipt binds the mission attempt,
+content hash, surviving hero IDs, completed story-history hash, and the authored
+`hearth-relight-core` / `first-hearth-archive-fragment` grants. Defeating the Warden without crossing
+the extraction boundary does not grant either record.
+
+Reveal is a separate Master action that selects one living extraction survivor. The engine gives
+that hero only the fixed Floor 05 outcome anchor and derives the delivery frame, prefix, and habit
+gesture from their stored mind. The exact archive message remains **“Hearth 01 was not the first.”**
+and is hash-committed while sealed; neither the reader nor StoryDirector may rewrite it. Reader and
+co-located witness IDs become explicit knowledge records, so later clean-slate summons receive no
+retroactive knowledge. Both extraction and reveal recompute under strict replay.
+
 ## Platform
 
 Web remains the first platform:

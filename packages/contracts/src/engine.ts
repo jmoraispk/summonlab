@@ -16,6 +16,7 @@ import {
 	MissionArenaKnowledgeSchema,
 	MissionSlugSchema,
 	RuntimeBandStoryStateSchema,
+	StoryExpressionResolutionSchema,
 	StoryPatchCandidateSchema
 } from './mission.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from './settlement.js';
@@ -3017,12 +3018,101 @@ export const SynthesisStateSchema = z
 		}
 	});
 
+export const FirstBandArchiveKnowledgeSchema = z
+	.object({
+		heroId: EntityIdSchema,
+		role: z.enum(['reader', 'witness']),
+		learnedAt: IsoDateTimeSchema,
+		sourceEventId: EntityIdSchema
+	})
+	.strict();
+
+export const FirstBandExtractionReceiptSchema = z
+	.object({
+		receiptVersion: z.literal('first-band-extraction-receipt-v1'),
+		receiptId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		missionAttemptId: EntityIdSchema,
+		missionBinding: MissionContentBindingSchema,
+		recoveredAt: IsoDateTimeSchema,
+		survivingHeroIds: z.array(EntityIdSchema).max(7),
+		rewardGrantIds: z
+			.tuple([z.literal('hearth-relight-core'), z.literal('first-hearth-archive-fragment')])
+			.readonly(),
+		completedStoryHistoryHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((receipt, context) => {
+		if (
+			receipt.missionBinding.missionId !== 'tower-floor-05' ||
+			new Set(receipt.survivingHeroIds).size !== receipt.survivingHeroIds.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'First-band extraction receipt is inconsistent'
+			});
+		}
+	});
+
+export const FirstBandArchiveRevealSchema = z
+	.object({
+		revealVersion: z.literal('first-band-archive-reveal-v1'),
+		revealId: EntityIdSchema,
+		sourceEventId: EntityIdSchema,
+		readerHeroId: EntityIdSchema,
+		revealedAt: IsoDateTimeSchema,
+		canonicalMessage: z.literal('Hearth 01 was not the first.'),
+		expression: StoryExpressionResolutionSchema,
+		knowledge: z.array(FirstBandArchiveKnowledgeSchema).min(1).max(31)
+	})
+	.strict()
+	.superRefine((reveal, context) => {
+		const readers = reveal.knowledge.filter((record) => record.role === 'reader');
+		if (
+			readers.length !== 1 ||
+			readers[0]?.heroId !== reveal.readerHeroId ||
+			reveal.expression.speakerId !== reveal.readerHeroId ||
+			new Set(reveal.knowledge.map((record) => record.heroId)).size !== reveal.knowledge.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Archive reveal knowledge is inconsistent' });
+		}
+	});
+
+export const FirstBandArchiveStateSchema = z
+	.object({
+		archiveVersion: z.literal('first-band-archive-v1'),
+		status: z.enum(['sealed', 'recovered', 'revealed']),
+		envelopeId: MissionSlugSchema,
+		envelopeContentHash: StateHashSchema,
+		canonicalMessageHash: StateHashSchema,
+		recovery: FirstBandExtractionReceiptSchema.nullable(),
+		reveal: FirstBandArchiveRevealSchema.nullable()
+	})
+	.strict()
+	.superRefine((archive, context) => {
+		if (
+			(archive.status === 'sealed' && (archive.recovery !== null || archive.reveal !== null)) ||
+			(archive.status === 'recovered' && (archive.recovery === null || archive.reveal !== null)) ||
+			(archive.status === 'revealed' && (archive.recovery === null || archive.reveal === null))
+		) {
+			context.addIssue({ code: 'custom', message: 'First-band archive lifecycle is inconsistent' });
+		}
+	});
+
 const EngineGameStateV22BaseSchema = z
 	.object({
 		...EngineGameStateV21BaseSchema.shape,
 		schemaVersion: z.literal(22),
 		society: SocietyStateV5Schema,
 		synthesis: SynthesisStateSchema
+	})
+	.strict();
+
+const EngineGameStateV23BaseSchema = z
+	.object({
+		...EngineGameStateV22BaseSchema.shape,
+		schemaVersion: z.literal(23),
+		firstBandArchive: FirstBandArchiveStateSchema
 	})
 	.strict();
 
@@ -3041,7 +3131,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV19BaseSchema>
 	| z.infer<typeof EngineGameStateV20BaseSchema>
 	| z.infer<typeof EngineGameStateV21BaseSchema>
-	| z.infer<typeof EngineGameStateV22BaseSchema>;
+	| z.infer<typeof EngineGameStateV22BaseSchema>
+	| z.infer<typeof EngineGameStateV23BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -3401,7 +3492,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV19BaseSchema>
 	| z.infer<typeof EngineGameStateV20BaseSchema>
 	| z.infer<typeof EngineGameStateV21BaseSchema>
-	| z.infer<typeof EngineGameStateV22BaseSchema>;
+	| z.infer<typeof EngineGameStateV22BaseSchema>
+	| z.infer<typeof EngineGameStateV23BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -3475,7 +3567,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
-		state.schemaVersion === 20
+		state.schemaVersion === 20 ||
+		state.schemaVersion === 23
 	) {
 		const turnAttempt = state.mission.attempt;
 		if (
@@ -3496,7 +3589,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
-		state.schemaVersion === 20
+		state.schemaVersion === 20 ||
+		state.schemaVersion === 23
 	) {
 		for (const evidence of Object.values(state.mission.evidence)) {
 			if (
@@ -3695,6 +3789,66 @@ export const EngineGameStateV22Schema = EngineGameStateV22BaseSchema.superRefine
 	}
 );
 
+export const EngineGameStateV23Schema = EngineGameStateV23BaseSchema.superRefine(
+	(state, context) => {
+		validateMissionEngineState(state, context);
+		const activeAttempt = state.mission.attempt;
+		const canAwaitDecision =
+			state.status === 'active' &&
+			state.master.lifeState === 'alive' &&
+			activeAttempt !== null &&
+			['deployed', 'resolving'].includes(activeAttempt.status);
+		if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Only an active resolving mission may hold a Master decision window'
+			});
+		}
+		for (const patch of state.bandStory.appliedPatches) {
+			if (
+				patch.candidate.roleBindings.some((binding) => !state.heroes[binding.heroId]) ||
+				patch.appliedAt > state.simulatedAt
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Applied story patch cast and time must exist in the run'
+				});
+			}
+		}
+		for (const receipt of Object.values(state.synthesis.receipts)) {
+			const source = state.heroes[receipt.sourceHeroId];
+			const recipient = state.heroes[receipt.recipientHeroId];
+			if (
+				receipt.masterId !== state.master.masterId ||
+				!source ||
+				source.lifeState !== 'synthesized' ||
+				!recipient ||
+				receipt.committedAt > state.simulatedAt
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Synthesis receipt diverged from roster state'
+				});
+			}
+		}
+		const recovery = state.firstBandArchive.recovery;
+		const reveal = state.firstBandArchive.reveal;
+		if (
+			state.firstBandArchive.envelopeId !== state.bandStory.envelopeId ||
+			state.firstBandArchive.envelopeContentHash !== state.bandStory.envelopeContentHash ||
+			(recovery !== null &&
+				(recovery.recoveredAt > state.simulatedAt ||
+					recovery.survivingHeroIds.some((heroId) => !state.heroes[heroId]))) ||
+			(reveal !== null &&
+				(reveal.revealedAt > state.simulatedAt ||
+					!state.heroes[reveal.readerHeroId] ||
+					reveal.knowledge.some((record) => !state.heroes[record.heroId])))
+		) {
+			context.addIssue({ code: 'custom', message: 'First-band archive diverged from run state' });
+		}
+	}
+);
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
@@ -3717,7 +3871,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV19Schema,
 	EngineGameStateV20Schema,
 	EngineGameStateV21Schema,
-	EngineGameStateV22Schema
+	EngineGameStateV22Schema,
+	EngineGameStateV23Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -4008,6 +4163,11 @@ export const ApplyStoryPatchCommandSchema = EngineCommandBaseSchema.extend({
 	candidate: StoryPatchCandidateSchema
 }).strict();
 
+export const RevealFirstBandArchiveCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('story.reveal.first.archive'),
+	readerHeroId: EntityIdSchema
+}).strict();
+
 export const SynthesizeHeroCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('settlement.synthesize.hero'),
 	sourceHeroId: EntityIdSchema,
@@ -4046,6 +4206,13 @@ export const SynthesisRequestSchema = z.discriminatedUnion('action', [
 		.strict()
 ]);
 
+export const FirstBandArchiveRequestSchema = z
+	.object({
+		action: z.literal('reveal'),
+		readerHeroId: EntityIdSchema
+	})
+	.strict();
+
 export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ChooseDestinationCommandSchema,
 	ArriveDestinationCommandSchema,
@@ -4081,6 +4248,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ExtractMissionCommandSchema,
 	RetreatMissionCommandSchema,
 	ApplyStoryPatchCommandSchema,
+	RevealFirstBandArchiveCommandSchema,
 	SynthesizeHeroCommandSchema,
 	ShareSynthesisRumorCommandSchema
 ]);
@@ -4325,6 +4493,7 @@ export type EngineGameStateV19 = z.infer<typeof EngineGameStateV19Schema>;
 export type EngineGameStateV20 = z.infer<typeof EngineGameStateV20Schema>;
 export type EngineGameStateV21 = z.infer<typeof EngineGameStateV21Schema>;
 export type EngineGameStateV22 = z.infer<typeof EngineGameStateV22Schema>;
+export type EngineGameStateV23 = z.infer<typeof EngineGameStateV23Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -4356,6 +4525,9 @@ export type MasterFallbackSafetyStops = z.infer<typeof MasterFallbackSafetyStops
 export type SynthesisReceipt = z.infer<typeof SynthesisReceiptSchema>;
 export type SynthesisRumorRecord = z.infer<typeof SynthesisRumorRecordSchema>;
 export type SynthesisState = z.infer<typeof SynthesisStateSchema>;
+export type FirstBandArchiveState = z.infer<typeof FirstBandArchiveStateSchema>;
+export type FirstBandExtractionReceipt = z.infer<typeof FirstBandExtractionReceiptSchema>;
+export type FirstBandArchiveReveal = z.infer<typeof FirstBandArchiveRevealSchema>;
 export type SynthesisVisibility = z.infer<typeof SynthesisVisibilitySchema>;
 export type SynthesisRequest = z.infer<typeof SynthesisRequestSchema>;
 export type MissionRunState = z.infer<typeof MissionRunStateSchema>;

@@ -60,6 +60,7 @@ export interface ResolvedFirstChoice {
 export interface CreateProofRunInput {
 	readonly runId: string;
 	readonly draft: CharacterDraft;
+	readonly engineSeed?: string;
 	readonly controlMode: ProofControlMode;
 	readonly directive: string;
 	readonly firstObservation: string;
@@ -75,6 +76,7 @@ export interface CreateProofRunInput {
 		readonly enableMasterFallback?: boolean;
 		readonly enableStoryPatch?: boolean;
 		readonly enableSynthesis?: boolean;
+		readonly enableFirstBandArchive?: boolean;
 		readonly additionalHeroes?: readonly {
 			readonly heroId: string;
 			readonly manifestHash: string;
@@ -316,7 +318,7 @@ export async function createProofRun(
 			`;
 			const engine = await initializeEngineRun(transaction, {
 				runId: input.runId,
-				seed: input.draft.recipe.seed,
+				seed: input.engineSeed ?? input.draft.recipe.seed,
 				heroId: input.draft.manifest.characterId,
 				manifestHash: input.draft.manifestHash,
 				rarityStars: input.draft.manifest.rarityStars,

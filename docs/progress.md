@@ -422,8 +422,16 @@ remain visible, the aperture seals, the cursor advances to 2, and the fixed ledg
 world laws, 25 anchors, `1010/1010` rewards, and three finale constraints. Reload and confirm the
 patch and `REPLAY-BOUND` state survive.
 
+Run `pnpm validate:first-band-archive`, start `pnpm dev`, and open
+`http://localhost:5173/first-band-archive`. Create the prepared company and confirm the causal rail
+reads **Warden defeated → Party extracted → 2 canonical rewards → Archive recovered**, with all five
+required Floor 05 beats complete. Choose each survivor and compare the predicted delivery frame;
+then ask one to read. The revealed record must say **“Hearth 01 was not the first.”** exactly, while
+the survivor's spoken line and habit gesture remain personality-shaped. Confirm one reader plus
+three witnesses hold the knowledge, then reload and verify the reveal, extraction event, content
+version, message commitment, and replay hash remain unchanged.
+
 ## Next active engineering slice
 
-Begin `FIN-001`: implement synthesis as an irreversible engine transaction with a concise warning,
-explicit source/recipient eligibility, and witnessed absence/rumor consequences. Phase 3 cohort
+Begin `FIN-003`: implement onboarding, objectives, pause, settings, and restart. Phase 3 cohort
 expansion remains behind its separate human visual gate.

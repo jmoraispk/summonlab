@@ -418,6 +418,30 @@ export async function commitEngineCommand(
 	}
 }
 
+export async function commitEngineCommands(
+	databaseUrl: string,
+	commandInputs: readonly EngineCommand[]
+): Promise<EngineCommit> {
+	if (commandInputs.length === 0) throw new Error('Engine command batch is empty');
+	const commands = commandInputs.map((command) => EngineCommandSchema.parse(command));
+	const runId = commands[0]!.runId;
+	if (commands.some((command) => command.runId !== runId)) {
+		throw new Error('Engine command batch must target one run');
+	}
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		return await sql.begin(async (transaction) => {
+			let latest: EngineCommit | null = null;
+			for (const command of commands) {
+				latest = await commitEngineCommandInTransaction(transaction, command);
+			}
+			return latest!;
+		});
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
 export async function getEngineSnapshotInTransaction(
 	sql: postgres.TransactionSql,
 	runId: string

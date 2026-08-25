@@ -1151,7 +1151,10 @@ Estimated engineering effort: **2–3 weeks**.
 Estimated engineering effort: **2 weeks**.
 
 - `FIN-001` **complete** — implement synthesis flow, confirmation, witness and rumor consequences;
-- `FIN-002` implement The First Ember story beats and archive reveal;
+- `FIN-002` **complete** — bind the authored Floor 05 finale, first-band rewards, and archive
+  recovery to successful extraction; preserve the sealed/recovered/revealed lifecycle, let a chosen
+  surviving hero's mind shape delivery without changing the fixed truth, retain explicit knowledge
+  holders, and ship strict replay evidence plus the database-backed `/first-band-archive` checkpoint;
 - `FIN-003` implement onboarding, objectives, pause, settings, and restart;
 - `FIN-004` add soundscape, premium effects, reduced-motion and accessibility pass;
 - `FIN-005` tune performance and asset budgets for target phones;
@@ -1240,9 +1243,14 @@ recorded-evidence gate for live models. Phase 6 is complete through `MIS-015`. `
 versioned `engine-v22` synthesis transaction: a short explicit confirmation, Master-only legality,
 permanent source termination, bounded recipient experience with no identity transfer, private/open
 witness rules, relationship fallout, provenance-bound hero rumor relay, canonical database
-persistence, strict replay, and a playable `/synthesis` chamber. The next engineering slice is
-`FIN-002`: implement The First Ember story beats and archive reveal without widening the
-StoryDirector authority aperture.
+persistence, strict replay, and a playable `/synthesis` chamber. `FIN-002` adds `engine-v23` and a
+one-way first-band archive lifecycle. The Floor 05 Warden must fall, the party must successfully
+extract, and only that `mission.extracted` event can recover the authored relight core and sealed
+fragment. A selected surviving hero then reveals the fixed message through a deterministic delivery
+frame derived from personality, values, drive, social style, and habit. Explicit reader/witness
+knowledge, story history, reward grant IDs, event sources, database persistence, adversarial replay
+checks, and `/first-band-archive` keep the finale causal and inspectable. The next engineering slice
+is `FIN-003`: implement onboarding, objectives, pause, settings, and restart.
 
 ## Accepted product decisions — 2026-08-23
 
