@@ -290,9 +290,35 @@ random negative control, inspect all ten fixed choices, and confirm the live can
 can later use `pnpm record:agent-evaluation` after setting `OPENAI_API_KEY`; it writes ignored local
 artifacts and cannot promote a partial corpus run.
 
+## Phase 6 — tower and portal mission loop
+
+Status: **in progress**. `MIS-001` was completed on 2026-08-24. Floor 01 now has a versioned,
+content-addressed package whose canonical arena truth is distinct from visited and discovered
+knowledge. It declares the first recover-and-extract objective, party boundary, deterministic
+encounter purposes, monster duties, reward budget, and fixed story anchors without pretending those
+declarations are executable mission state yet.
+
+| Task | Result | Evidence |
+| --- | --- | --- |
+| `MIS-001` | Complete: `mission-package-v1` validates deployment/extraction roles, exactly one primary objective, the complete connected arena graph, observations, legal discovery affordances, deterministic entropy names, monster/environment declarations, retreat, reward budget, and bounded story patches; `tower-floor-01-v1` projects five initially known nodes from seven authored nodes, keeps on-entry evidence visit-bound, reveals a three-action low-exposure Ash Duct alternative only through the Oath Hall affordance, and preserves a four-action default objective route | [Mission package evidence](evidence/phase-6-mission-package.png), contract/content/browser tests, `pnpm validate:mission-content`, 41.0 KB measured mission-lab JavaScript, ADR 0030 |
+
+### Reproduce the checkpoint
+
+```powershell
+pnpm dev
+```
+
+Open `http://localhost:5173/mission-lab` at desktop or phone width. Confirm **Hero knowledge** shows
+five nodes while **Author truth** shows all seven without converting concealed truth into witnessed
+evidence. Select **Oath Hall**, inspect its on-entry soot trace, then choose **Inspect the warm soot
+seam**. The Ash Duct and two edges should enter knowledge, and the Ember Vault route should change
+from four actions with exposed maximum exposure to three actions with low maximum exposure. Select
+**Shattered Gallery** and test the bell chain to reveal the second optional route. Inspect the story
+line: its five numbered anchors are fixed, while the agent patch slot can choose only one of two
+cataloged optional beats. The page is a content/knowledge inspector and must not create a run.
+
 ## Next active engineering slice
 
-Begin `MIS-001`: define the mission package and arena graph contracts for the first tower slice,
-including authored objectives, legal discovery affordances, party deployment boundaries, and the
-fixed story spine that hero proposals may alter without rewriting. Phase 3 cohort expansion remains
-behind its separate human visual gate.
+Begin `MIS-002`: bind a run to the exact Floor 01 content hash and implement authoritative party
+preparation, deployment, extraction, retreat, and cancellation transitions while preserving
+event-derived replay. Phase 3 cohort expansion remains behind its separate human visual gate.

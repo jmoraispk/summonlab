@@ -72,11 +72,13 @@ const homeKey = await routeNodeKey('src/routes/+page.svelte');
 const runtimeKey = await routeNodeKey('src/routes/visual-lab/runtime-bundles/+page.svelte');
 const recognitionKey = await routeNodeKey('src/routes/visual-lab/recognition/+page.svelte');
 const settlementRouteKey = await routeNodeKey('src/routes/settlement-lab/+page.svelte');
+const missionPackageKey = await routeNodeKey('src/routes/mission-lab/+page.svelte');
 const initialEntries = collect([startKey, appKey, layoutKey, homeKey], false);
 const shellEntries = collect([startKey, appKey, layoutKey], false);
 const runtimeEntries = new Set([...shellEntries, ...collect([runtimeKey], true)]);
 const recognitionEntries = new Set([...shellEntries, ...collect([recognitionKey], true)]);
 const settlementRouteEntries = new Set([...shellEntries, ...collect([settlementRouteKey], true)]);
+const missionPackageEntries = new Set([...shellEntries, ...collect([missionPackageKey], true)]);
 const lazyEntries = [...runtimeEntries].filter((key) => !initialEntries.has(key));
 const lazySizes = await Promise.all(
 	lazyEntries.map(async (key) => ({ key, bytes: await gzipBytes(new Set([key])) }))
@@ -89,6 +91,7 @@ const report = {
 		runtimeInspectorLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		recognitionAuditLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		settlementRouteLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
+		missionPackageLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		runtimeVisualPayloadBytes: runtimeManifest.initialPayloadBudgetBytes
 	},
 	measurements: {
@@ -96,6 +99,7 @@ const report = {
 		runtimeInspectorLoadedJavaScriptGzipBytes: await gzipBytes(runtimeEntries),
 		recognitionAuditLoadedJavaScriptGzipBytes: await gzipBytes(recognitionEntries),
 		settlementRouteLabLoadedJavaScriptGzipBytes: await gzipBytes(settlementRouteEntries),
+		missionPackageLabLoadedJavaScriptGzipBytes: await gzipBytes(missionPackageEntries),
 		largestRuntimeLazyChunkGzipBytes: Math.max(...lazySizes.map(({ bytes }) => bytes)),
 		runtimeVisualPayloadBytes: runtimeManifest.initialPayloadBytes
 	},
@@ -104,6 +108,7 @@ const report = {
 		runtimeInspectorLoadedJavaScript: 'within-budget',
 		recognitionAuditLoadedJavaScript: 'within-budget',
 		settlementRouteLabLoadedJavaScript: 'within-budget',
+		missionPackageLabLoadedJavaScript: 'within-budget',
 		runtimeVisualPayload: 'within-budget'
 	}
 };
@@ -128,6 +133,12 @@ if (
 	report.budgets.settlementRouteLabLoadedJavaScriptGzipBytes
 ) {
 	throw new Error('Loaded settlement route lab JavaScript exceeds the 700 KB compressed budget');
+}
+if (
+	report.measurements.missionPackageLabLoadedJavaScriptGzipBytes >
+	report.budgets.missionPackageLabLoadedJavaScriptGzipBytes
+) {
+	throw new Error('Loaded mission package lab JavaScript exceeds the 700 KB compressed budget');
 }
 if (report.measurements.runtimeVisualPayloadBytes > report.budgets.runtimeVisualPayloadBytes) {
 	throw new Error('Runtime visual payload exceeds the 8 MB phone budget');
@@ -155,6 +166,7 @@ if (process.argv.includes('--write')) {
 		'runtimeInspectorLoadedJavaScriptGzipBytes',
 		'recognitionAuditLoadedJavaScriptGzipBytes',
 		'settlementRouteLabLoadedJavaScriptGzipBytes',
+		'missionPackageLabLoadedJavaScriptGzipBytes',
 		'largestRuntimeLazyChunkGzipBytes'
 	].every((key) => {
 		const storedBytes = storedReport.measurements?.[key];

@@ -647,6 +647,7 @@ export const WebBuildBudgetReportSchema = z
 				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().positive(),
 				recognitionAuditLoadedJavaScriptGzipBytes: z.number().int().positive(),
 				settlementRouteLabLoadedJavaScriptGzipBytes: z.number().int().positive(),
+				missionPackageLabLoadedJavaScriptGzipBytes: z.number().int().positive(),
 				runtimeVisualPayloadBytes: z.number().int().positive()
 			})
 			.strict(),
@@ -656,6 +657,7 @@ export const WebBuildBudgetReportSchema = z
 				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
 				recognitionAuditLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
 				settlementRouteLabLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
+				missionPackageLabLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
 				largestRuntimeLazyChunkGzipBytes: z.number().int().nonnegative(),
 				runtimeVisualPayloadBytes: z.number().int().nonnegative()
 			})
@@ -666,6 +668,7 @@ export const WebBuildBudgetReportSchema = z
 				runtimeInspectorLoadedJavaScript: z.literal('within-budget'),
 				recognitionAuditLoadedJavaScript: z.literal('within-budget'),
 				settlementRouteLabLoadedJavaScript: z.literal('within-budget'),
+				missionPackageLabLoadedJavaScript: z.literal('within-budget'),
 				runtimeVisualPayload: z.literal('within-budget')
 			})
 			.strict()
@@ -677,6 +680,7 @@ export const WebBuildBudgetReportSchema = z
 			'runtimeInspectorLoadedJavaScriptGzipBytes',
 			'recognitionAuditLoadedJavaScriptGzipBytes',
 			'settlementRouteLabLoadedJavaScriptGzipBytes',
+			'missionPackageLabLoadedJavaScriptGzipBytes',
 			'runtimeVisualPayloadBytes'
 		] as const) {
 			if (report.measurements[key] > report.budgets[key]) {

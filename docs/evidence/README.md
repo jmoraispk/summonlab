@@ -71,3 +71,7 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   baseline grades, honest unmeasured live-model gate, and dated cost projection.
 - `phase-5-scoped-directives.png` — engine-v10 witnessed direction control with exact text, selected
   lifetime, packet memory provenance, best-effort boundary, and recorded delivery confirmation.
+- `phase-6-mission-package.png` — phone-scale Floor 01 package inspector after two legal discoveries,
+  showing seven-node authored topology, the low-exposure Ash Duct route, witnessed observations,
+  one bounded story patch slot among five immutable anchors, encounter/reward declarations, and the
+  explicit no-run-mutation boundary.

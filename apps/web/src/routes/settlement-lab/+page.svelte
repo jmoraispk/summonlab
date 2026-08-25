@@ -83,6 +83,7 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>SET-001 · SET-002</span><strong>Hearth 01 settlement lab</strong></div>
 		<nav aria-label="Settlement lab links">
+			<a href={resolve('/mission-lab')}>Mission lab</a>
 			<a href={resolve('/forge')}>Forge</a>
 			<a href={resolve('/visual-lab/recognition')}>Recognition</a>
 			<a href={resolve('/design-reference')}>Design reference</a>

@@ -1049,7 +1049,10 @@ replacement, revocation, packet selection, action influence, and journal project
 
 Estimated engineering effort: **2–3 weeks**.
 
-- `MIS-001` implement mission package schema and arena graph;
+- `MIS-001` complete: add the content-addressed `mission-package-v1` contract, structurally
+  validated authored arena truth, visit/discovery-bounded knowledge projection, deterministic route
+  planning, Floor 01 deployment/objective/encounter/reward declarations, and a fixed five-anchor
+  story spine with one catalog-bounded optional patch slot;
 - `MIS-002` implement party preparation, deployment, extraction, and retreat;
 - `MIS-003` implement autonomous initiative and turn resolution;
 - `MIS-004` implement goblin duty policies and Foundry Warden;

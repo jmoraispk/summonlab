@@ -491,6 +491,29 @@ only that redacted report. Normal browser polling uses a separate minimal client
 packet, provider profile, policy trace, raw result prose, transition details, or provider failure
 message. See ADR 0027.
 
+### Implemented mission content boundary
+
+`MIS-001` adds `mission-package-v1` as immutable, hash-verified authored truth. One package declares
+deployment and extraction boundaries, objectives, the complete arena graph, observations,
+discoveries and their legal affordances, entropy purposes, monster duty slots, environmental
+policies, legal tools, retreat nodes, bounded rewards, and a fixed story envelope. Schema refinement
+validates every reference and rejects disconnected graphs, concealed topology leaked through open
+edges, discoveries with no legal action, required nodes without a default route, reward overspend,
+or optional story proposals that bind required beats.
+
+`MissionArenaKnowledge` is a smaller holder-independent projection input containing discovered ids
+and actually visited nodes. Initial knowledge exposes only authored public topology; visits reveal
+on-entry observations, and discovery records reveal only their declared nodes, edges, observations,
+and facts. `planMissionRoute` operates on that projected graph with stable edge-id tie breaking.
+Neither projection nor the development-only `/mission-lab` creates run state.
+
+`tower-floor-01-v1` binds Floor 01, **The Unlit Muster**, to a seven-node/eight-edge graph and one
+primary recover-and-extract objective. Its four-action default path stays available without a
+secret. Inspecting the soot seam at Oath Hall may later create the persisted discovery that exposes
+a three-action low-exposure Ash Duct route. Five required story anchors remain immutable; one patch
+slot can select one of two cataloged optional expressions but cannot alter world laws, objective,
+arena truth, reward budget, or required anchors. See ADR 0030.
+
 ### Implemented reconnect projection
 
 Every new event schedules a run-specific PostgreSQL notification in its command transaction. The

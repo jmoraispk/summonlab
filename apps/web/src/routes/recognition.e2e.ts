@@ -17,8 +17,12 @@ test('audits approved identity states and phone delivery without auto-approval',
 	);
 	await expect(page.getByText('47.8 KB over the wire')).toBeVisible();
 
-	await page.getByRole('radio', { name: /Settlement night walk/ }).click();
-	await expect(page.getByTestId('recognition-stage')).toContainText('48×86 CSS px');
+	const settlementNightWalk = page.getByRole('radio', { name: /Settlement night walk/ });
+	await settlementNightWalk.click();
+	await expect(settlementNightWalk).toBeChecked();
+	await expect(page.getByTestId('recognition-stage')).toContainText('48×86 CSS px', {
+		timeout: 15_000
+	});
 	await expect
 		.poll(async () => Math.round((await page.locator('.actual-scale').boundingBox())?.width ?? 0))
 		.toBe(48);

@@ -4,6 +4,7 @@ export * from './decision-inspector.js';
 export * from './engine.js';
 export * from './event.js';
 export * from './health.js';
+export * from './mission.js';
 export * from './proof.js';
 export * from './presentation.js';
 export * from './run.js';

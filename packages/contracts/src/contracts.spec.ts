@@ -408,6 +408,7 @@ describe('foundation contracts', () => {
 				runtimeInspectorLoadedJavaScriptGzipBytes: 700_000,
 				recognitionAuditLoadedJavaScriptGzipBytes: 700_000,
 				settlementRouteLabLoadedJavaScriptGzipBytes: 700_000,
+				missionPackageLabLoadedJavaScriptGzipBytes: 700_000,
 				runtimeVisualPayloadBytes: 8_000_000
 			},
 			measurements: {
@@ -415,6 +416,7 @@ describe('foundation contracts', () => {
 				runtimeInspectorLoadedJavaScriptGzipBytes: 371_947,
 				recognitionAuditLoadedJavaScriptGzipBytes: 48_000,
 				settlementRouteLabLoadedJavaScriptGzipBytes: 52_000,
+				missionPackageLabLoadedJavaScriptGzipBytes: 45_000,
 				largestRuntimeLazyChunkGzipBytes: 174_947,
 				runtimeVisualPayloadBytes: 47_758
 			},
@@ -423,6 +425,7 @@ describe('foundation contracts', () => {
 				runtimeInspectorLoadedJavaScript: 'within-budget' as const,
 				recognitionAuditLoadedJavaScript: 'within-budget' as const,
 				settlementRouteLabLoadedJavaScript: 'within-budget' as const,
+				missionPackageLabLoadedJavaScript: 'within-budget' as const,
 				runtimeVisualPayload: 'within-budget' as const
 			}
 		};
