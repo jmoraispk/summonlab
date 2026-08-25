@@ -1,8 +1,8 @@
 import { getConfig } from '@summonlab/config';
 import {
 	IRON_MOON_PACKAGE,
+	TOWER_BAND_01_RUNTIME_PACKAGES,
 	TOWER_FLOOR_01_PACKAGE,
-	TOWER_FLOOR_03_RUNTIME_PACKAGE,
 	projectMissionArenaKnowledge
 } from '@summonlab/content';
 import { getEngineReplay, getProofRun } from '@summonlab/database';
@@ -21,18 +21,21 @@ export const load: PageServerLoad = async ({ params }) => {
 		report.snapshot.state.schemaVersion !== 13 &&
 		report.snapshot.state.schemaVersion !== 15 &&
 		report.snapshot.state.schemaVersion !== 16 &&
-		report.snapshot.state.schemaVersion !== 17
+		report.snapshot.state.schemaVersion !== 17 &&
+		report.snapshot.state.schemaVersion !== 18
 	) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const isPortal = report.snapshot.state.schemaVersion === 15;
-	const isAftermath = report.snapshot.state.schemaVersion === 16;
-	const isMasterRisk = report.snapshot.state.schemaVersion === 17;
+	const isAttemptAftermath = report.snapshot.state.schemaVersion === 18;
+	const isAftermath = report.snapshot.state.schemaVersion === 16 || isAttemptAftermath;
+	const isMasterRisk = report.snapshot.state.schemaVersion === 17 || isAttemptAftermath;
+	const missionBindingId = report.snapshot.state.mission.binding.missionId;
 	const missionPackage = isPortal
 		? IRON_MOON_PACKAGE.mission
-		: isAftermath || isMasterRisk
-			? TOWER_FLOOR_03_RUNTIME_PACKAGE
-			: TOWER_FLOOR_01_PACKAGE;
+		: (TOWER_BAND_01_RUNTIME_PACKAGES.find(
+				(candidate) => candidate.missionId === missionBindingId
+			) ?? TOWER_FLOOR_01_PACKAGE);
 	const attempt = report.snapshot.state.mission.attempt;
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
@@ -44,6 +47,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			isPortal,
 			isAftermath,
 			isMasterRisk,
+			isAttemptAftermath,
 			displayName: missionPackage.displayName,
 			tagline: missionPackage.tagline,
 			objectiveTitle: primaryObjective.title,

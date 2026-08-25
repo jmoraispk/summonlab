@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-010` are complete. The first five
+Status: **in progress**. `MIS-001` through `MIS-010A` are complete. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -312,6 +312,7 @@ a state authority.
 | `MIS-008` | Complete: opt-in `engine-v16` turns guard-breaking and exposed impacts into persistent health loss, injuries, equipped-item wear, and permanent hero death; records exact source, location, physical deltas, and surviving co-located witnesses; derives evidence-backed mission memories and Master-relationship changes only for those witnesses; includes the memories in later holder-owned context; ends fatal attempts explicitly; and strictly replays the physical and social aftermath; `/aftermath` launches The Red Tithe database checkpoint | [Mission aftermath evidence](evidence/phase-6-mission-aftermath.png), contract/context/engine/database/browser tests, 47.0 KB measured mission-route JavaScript, ADR 0037 |
 | `MIS-009` | Complete: opt-in `engine-v17` makes the manually controlled Master physically vulnerable inside mission rounds; records exposed harm in `mission-aftermath-v2` with exact source, location, health, injury, and co-located witness evidence; atomically commits Master death, attempt death, and whole-run game over; cancels unfinished hero activity, travel, routines, and daily plans; removes every actor's legal actions while retaining strict replay; and telegraphs Red Slag before commitment; `/last-command` launches the database-backed terminal checkpoint | [Master game-over evidence](evidence/phase-6-master-game-over.png), contract/context/engine/database/browser tests, 47.7 KB measured mission-route JavaScript, ADR 0038 |
 | `MIS-010` | Complete: the credential-free Foundry matrix prepares four rank-10 heroes, executes Hammer Line, Split Cooling, and Full Quench only through legal engine commands, and proves eight successful fixed regression seeds per doctrine; all 24 companies survive and extract, all 24 event streams strictly replay, and the intended lit/cooling/quenched Warden state is explicit; `/foundry-trials` compares route topology, combat cost, health floor, and representative checkpoints while stating that the matrix is not a win-rate estimate | [Foundry strategy evidence](evidence/phase-6-foundry-strategies.png), [machine-readable report](evidence/phase-6-foundry-strategies.json), evaluation/browser tests, ADR 0039 |
+| `MIS-010A` | Complete: opt-in `engine-v18` / `mission-aftermath-v3` binds every consequence to one source attempt; keeps the active ledger exclusive to the current attempt; archives the prior terminal attempt with its mission binding, outcome, final round, timestamps, and consequences; rejects cross-attempt leakage and false provenance; permits a later mission after a v18 success or retreat; strictly replays the real Floor 04 wound → retreat → Floor 05 preparation boundary while preserving v16/v17 dispatch; `/attempt-aftermath` visualizes the checked proof | [Visual attempt proof](evidence/phase-6-attempt-aftermath.png), [machine-readable report](evidence/phase-6-attempt-aftermath.json), engine/evaluation/database/browser tests, `pnpm validate:attempt-aftermath`, ADR 0040 |
 
 ### Reproduce the checkpoint
 
@@ -366,10 +367,17 @@ between lit/cooling/quenched, and the action log and strike range change with it
 remain **24 / 24**, with zero replay mismatches and deaths; interpret that as fixed viable-path
 regression evidence, not a sampled win rate.
 
+Run `pnpm validate:attempt-aftermath`, keep `pnpm dev:app` running, and open
+`http://localhost:5173/attempt-aftermath`. Confirm Floor 04 retains the real `100 → 75 HP` Master
+wound under attempt 1, Floor 05 is attempt 2 with zero inherited active records, the source attempt
+IDs differ, and the page reports 13 strictly replayed events with zero mismatches. The wound must
+remain persistent on the body while its mission-event provenance remains inside the Floor 04
+archive.
+
 ## Next active engineering slice
 
-Begin `MIS-010A`: version the attempt-level aftermath boundary discovered by the Foundry matrix so
-old consequences cannot contaminate a later mission attempt. Then begin `MIS-011` story envelopes.
+Begin `MIS-011`: implement band story envelopes, beat eligibility, and character-aware expression
+hooks on top of the now-versioned attempt history.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

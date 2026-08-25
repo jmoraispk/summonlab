@@ -2321,6 +2321,19 @@ export const MissionConsequenceRecordV2Schema = z.union([
 	MissionMasterHarmRecordSchema
 ]);
 
+export const MissionHarmRecordV2Schema = MissionHarmRecordSchema.safeExtend({
+	sourceAttemptId: EntityIdSchema
+});
+
+export const MissionMasterHarmRecordV2Schema = MissionMasterHarmRecordSchema.safeExtend({
+	sourceAttemptId: EntityIdSchema
+});
+
+export const MissionConsequenceRecordV3Schema = z.union([
+	MissionHarmRecordV2Schema,
+	MissionMasterHarmRecordV2Schema
+]);
+
 export const MissionAftermathStateSchema = z
 	.object({
 		aftermathVersion: z.literal('mission-aftermath-v1'),
@@ -2408,6 +2421,115 @@ export const MissionRunStateV7Schema = z
 		}
 	});
 
+export const MissionAttemptAftermathArchiveSchema = z
+	.object({
+		attemptId: EntityIdSchema,
+		ordinal: z.number().int().positive(),
+		binding: MissionContentBindingSchema,
+		outcome: MissionAttemptOutcomeSchema,
+		preparedAt: IsoDateTimeSchema,
+		deployedAt: IsoDateTimeSchema.nullable(),
+		endedAt: IsoDateTimeSchema,
+		finalRoundNumber: z.number().int().nonnegative().max(48),
+		consequences: z.array(MissionConsequenceRecordV3Schema).max(1_000)
+	})
+	.strict()
+	.superRefine((archive, context) => {
+		for (const consequence of archive.consequences) {
+			if (
+				consequence.sourceAttemptId !== archive.attemptId ||
+				consequence.roundNumber > archive.finalRoundNumber
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Archived mission consequence exceeds its source attempt'
+				});
+			}
+		}
+	});
+
+export const MissionAftermathStateV3Schema = z
+	.object({
+		aftermathVersion: z.literal('mission-aftermath-v3'),
+		activeAttemptId: EntityIdSchema.nullable(),
+		consequences: z.array(MissionConsequenceRecordV3Schema).max(1_000),
+		archives: z.array(MissionAttemptAftermathArchiveSchema).max(100)
+	})
+	.strict()
+	.superRefine((aftermath, context) => {
+		const allConsequences = [
+			...aftermath.consequences,
+			...aftermath.archives.flatMap((archive) => archive.consequences)
+		];
+		if (
+			new Set(allConsequences.map((consequence) => consequence.consequenceId)).size !==
+			allConsequences.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission consequences must be unique' });
+		}
+		if (allConsequences.length > 1_000) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission consequence history exceeds its bounded archive'
+			});
+		}
+		if (
+			new Set(aftermath.archives.map((archive) => archive.attemptId)).size !==
+			aftermath.archives.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission aftermath archives must be unique' });
+		}
+		if (
+			aftermath.activeAttemptId !== null &&
+			aftermath.archives.some((archive) => archive.attemptId === aftermath.activeAttemptId)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'The active mission attempt cannot already be archived'
+			});
+		}
+	});
+
+export const MissionRunStateV8Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		availableMissionIds: z.array(MissionSlugSchema).min(1).max(100),
+		evidence: z.record(EntityIdSchema, MissionEvidenceRecordSchema),
+		aftermath: MissionAftermathStateV3Schema,
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV3Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		const evidenceMission = MissionRunStateV4Schema.safeParse(
+			Object.fromEntries(Object.entries(mission).filter(([key]) => key !== 'aftermath'))
+		);
+		if (!evidenceMission.success) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission attempt aftermath lifecycle is inconsistent'
+			});
+		}
+		if ((mission.attempt?.attemptId ?? null) !== mission.aftermath.activeAttemptId) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission aftermath must identify the active attempt'
+			});
+		}
+		for (const consequence of mission.aftermath.consequences) {
+			if (
+				!mission.attempt ||
+				consequence.sourceAttemptId !== mission.attempt.attemptId ||
+				consequence.roundNumber > mission.attempt.turnState.roundNumber
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Mission consequence exceeds its active source attempt'
+				});
+			}
+		}
+	});
+
 const EngineGameStateV11BaseSchema = z
 	.object({
 		...EngineGameStateV10BaseSchema.shape,
@@ -2464,6 +2586,14 @@ const EngineGameStateV17BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV18BaseSchema = z
+	.object({
+		...EngineGameStateV11BaseSchema.shape,
+		schemaVersion: z.literal(18),
+		mission: MissionRunStateV8Schema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -2474,7 +2604,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV14BaseSchema>
 	| z.infer<typeof EngineGameStateV15BaseSchema>
 	| z.infer<typeof EngineGameStateV16BaseSchema>
-	| z.infer<typeof EngineGameStateV17BaseSchema>;
+	| z.infer<typeof EngineGameStateV17BaseSchema>
+	| z.infer<typeof EngineGameStateV18BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -2828,7 +2959,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV14BaseSchema>
 	| z.infer<typeof EngineGameStateV15BaseSchema>
 	| z.infer<typeof EngineGameStateV16BaseSchema>
-	| z.infer<typeof EngineGameStateV17BaseSchema>;
+	| z.infer<typeof EngineGameStateV17BaseSchema>
+	| z.infer<typeof EngineGameStateV18BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -2899,7 +3031,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 13 ||
 		state.schemaVersion === 14 ||
 		state.schemaVersion === 16 ||
-		state.schemaVersion === 17
+		state.schemaVersion === 17 ||
+		state.schemaVersion === 18
 	) {
 		const turnAttempt = state.mission.attempt;
 		if (
@@ -2917,7 +3050,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 14 ||
 		state.schemaVersion === 15 ||
 		state.schemaVersion === 16 ||
-		state.schemaVersion === 17
+		state.schemaVersion === 17 ||
+		state.schemaVersion === 18
 	) {
 		for (const evidence of Object.values(state.mission.evidence)) {
 			if (
@@ -2951,6 +3085,9 @@ export const EngineGameStateV16Schema = EngineGameStateV16BaseSchema.superRefine
 export const EngineGameStateV17Schema = EngineGameStateV17BaseSchema.superRefine(
 	validateMissionEngineState
 );
+export const EngineGameStateV18Schema = EngineGameStateV18BaseSchema.superRefine(
+	validateMissionEngineState
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -2969,7 +3106,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV14Schema,
 	EngineGameStateV15Schema,
 	EngineGameStateV16Schema,
-	EngineGameStateV17Schema
+	EngineGameStateV17Schema,
+	EngineGameStateV18Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -3468,6 +3606,7 @@ export type EngineGameStateV14 = z.infer<typeof EngineGameStateV14Schema>;
 export type EngineGameStateV15 = z.infer<typeof EngineGameStateV15Schema>;
 export type EngineGameStateV16 = z.infer<typeof EngineGameStateV16Schema>;
 export type EngineGameStateV17 = z.infer<typeof EngineGameStateV17Schema>;
+export type EngineGameStateV18 = z.infer<typeof EngineGameStateV18Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -3493,9 +3632,13 @@ export type MissionRunStateV4 = z.infer<typeof MissionRunStateV4Schema>;
 export type MissionRunStateV5 = z.infer<typeof MissionRunStateV5Schema>;
 export type MissionRunStateV6 = z.infer<typeof MissionRunStateV6Schema>;
 export type MissionRunStateV7 = z.infer<typeof MissionRunStateV7Schema>;
+export type MissionRunStateV8 = z.infer<typeof MissionRunStateV8Schema>;
 export type MissionHarmRecord = z.infer<typeof MissionHarmRecordSchema>;
+export type MissionHarmRecordV2 = z.infer<typeof MissionHarmRecordV2Schema>;
 export type MissionMasterHarmRecord = z.infer<typeof MissionMasterHarmRecordSchema>;
+export type MissionMasterHarmRecordV2 = z.infer<typeof MissionMasterHarmRecordV2Schema>;
 export type MissionConsequenceRecordV2 = z.infer<typeof MissionConsequenceRecordV2Schema>;
+export type MissionConsequenceRecordV3 = z.infer<typeof MissionConsequenceRecordV3Schema>;
 export type MissionEvidenceRecord = z.infer<typeof MissionEvidenceRecordSchema>;
 export type MissionRoundV3 = z.infer<typeof MissionRoundV3Schema>;
 export type PortalMissionState = z.infer<typeof PortalMissionStateSchema>;

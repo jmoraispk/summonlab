@@ -681,4 +681,111 @@ describe('engine event store', () => {
 		});
 		expect(replay.checks.at(-1)?.eventType).toBe('mission.extracted');
 	});
+
+	run('persists archived attempt aftermath without contaminating the next mission', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const draft = await generateCharacterDraft(recipeFromSeed('foundry-evidence-seed'));
+		const runId = randomUUID();
+		await createProofRun(databaseUrl, {
+			runId,
+			draft,
+			controlMode: 'wait',
+			directive: '',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null,
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-04',
+				availableMissionIds: ['tower-floor-04', 'tower-floor-05'],
+				enableAttemptAftermath: true
+			}
+		});
+		let replay = await getEngineReplay(databaseUrl, runId);
+		if (!replay || replay.snapshot.state.schemaVersion !== 18) {
+			throw new Error('Expected engine-v18 attempt aftermath replay');
+		}
+		const masterId = replay.snapshot.state.master.masterId;
+		const heroId = draft.manifest.characterId;
+		const commit = async (fields: Record<string, unknown>) => {
+			await commitEngineCommand(
+				databaseUrl,
+				engineCommand(runId, masterId, replay!.snapshot.state.version, fields)
+			);
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 18) {
+				throw new Error('Expected replayed engine-v18 aftermath state');
+			}
+		};
+		const choice = (actorId: string, actionId: string, source: 'manual' | 'scripted') => ({
+			actorId,
+			actionId,
+			source,
+			policyId: source === 'scripted' ? 'attempt-aftermath-script-v1' : null,
+			packetHash: source === 'scripted' ? 'a'.repeat(64) : null,
+			legalActionHash: source === 'scripted' ? 'b'.repeat(64) : null,
+			policyResultHash: source === 'scripted' ? 'c'.repeat(64) : null,
+			publicIntent: `The player chose ${actionId}.`
+		});
+		const turn = (masterActionId: string, heroActionId: string) =>
+			commit({
+				commandType: 'mission.resolve.turn',
+				choices: [
+					choice(masterId, masterActionId, 'manual'),
+					choice(heroId, heroActionId, 'scripted')
+				]
+			});
+
+		await commit({
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-04'
+		});
+		const sourceAttemptId = replay.snapshot.state.mission.attempt!.attemptId;
+		await commit({ commandType: 'mission.deploy' });
+		await turn('mission.move.threshold-to-balance-hall', 'mission.move.threshold-to-balance-hall');
+		await turn(
+			'mission.move.balance-hall-to-left-relay',
+			'mission.move.balance-hall-to-left-relay'
+		);
+		await turn('mission.hold', 'mission.inspect.open-archive-niche');
+		await turn(
+			'mission.move.left-relay-to-archive-niche',
+			'mission.move.left-relay-to-archive-niche'
+		);
+		await turn('mission.hold', 'mission.inspect.read-foundry-schematic');
+		await turn(
+			'mission.move.left-relay-to-archive-niche',
+			'mission.move.left-relay-to-archive-niche'
+		);
+		await turn(
+			'mission.move.balance-hall-to-left-relay',
+			'mission.move.balance-hall-to-left-relay'
+		);
+		await turn('mission.move.threshold-to-balance-hall', 'mission.move.threshold-to-balance-hall');
+		const sourceConsequences = [...replay.snapshot.state.mission.aftermath.consequences];
+		expect(
+			sourceConsequences.every((consequence) => consequence.sourceAttemptId === sourceAttemptId)
+		).toBe(true);
+		await commit({ commandType: 'mission.retreat' });
+		await commit({
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-05'
+		});
+
+		expect(replay.verified).toBe(true);
+		expect(replay.hashMatchesPersistedSnapshot).toBe(true);
+		expect(replay.snapshot.state.mission.aftermath.consequences).toEqual([]);
+		expect(replay.snapshot.state.mission.aftermath.archives).toEqual([
+			expect.objectContaining({
+				attemptId: sourceAttemptId,
+				binding: expect.objectContaining({ missionId: 'tower-floor-04' }),
+				outcome: 'retreat',
+				consequences: sourceConsequences
+			})
+		]);
+		expect(replay.snapshot.state.mission.attempt).toMatchObject({
+			ordinal: 2,
+			status: 'preparing'
+		});
+	});
 });

@@ -5,9 +5,11 @@ import { OpenAIModelPolicy } from '@summonlab/policies/openai';
 import {
 	AgentEvaluationCorpusSchema,
 	AgentEvaluationReportSchema,
+	AttemptAftermathReportSchema,
 	FoundryStrategyReportSchema,
 	createAgentEvaluationCorpus,
 	createAgentEvaluationReport,
+	generateAttemptAftermathReport,
 	createFoundryStrategyReport,
 	createRecordedProviderRun,
 	evaluateRecordedProviderRun,
@@ -15,6 +17,33 @@ import {
 	verifyAgentEvaluationReport,
 	verifyRecordedProviderRun
 } from './index.js';
+
+describe('attempt aftermath boundary', () => {
+	it('keeps the archived Floor 04 wound out of the active Floor 05 attempt', () => {
+		const report = generateAttemptAftermathReport();
+
+		expect(AttemptAftermathReportSchema.parse(report)).toEqual(report);
+		expect(report).toMatchObject({
+			replayVerified: true,
+			sourceAttempt: {
+				ordinal: 1,
+				missionId: 'tower-floor-04',
+				status: 'retreat',
+				consequenceCount: 1
+			},
+			activeAttempt: {
+				ordinal: 2,
+				missionId: 'tower-floor-05',
+				status: 'preparing',
+				consequenceCount: 0
+			},
+			activeConsequenceCount: 0,
+			archiveCount: 1
+		});
+		expect(report.archivedConsequences[0]?.sourceAttemptId).toBe(report.sourceAttempt.attemptId);
+		expect(report.activeAttempt.attemptId).not.toBe(report.sourceAttempt.attemptId);
+	});
+});
 
 describe('Floor 05 strategy regression matrix', () => {
 	it('proves three legal strategies across 24 strict deterministic replays', () => {

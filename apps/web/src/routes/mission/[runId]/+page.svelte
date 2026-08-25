@@ -14,14 +14,18 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
-	const isMasterRisk = $derived(engineState.schemaVersion === 17);
-	const isAftermath = $derived(engineState.schemaVersion === 16 || isMasterRisk);
+	const isAttemptAftermath = $derived(engineState.schemaVersion === 18);
+	const isMasterRisk = $derived(engineState.schemaVersion === 17 || isAttemptAftermath);
+	const isAftermath = $derived(
+		engineState.schemaVersion === 16 || engineState.schemaVersion === 17 || isAttemptAftermath
+	);
 	const isGameOver = $derived(engineState.status === 'game_over');
 	const mission = $derived(
 		engineState.schemaVersion === 13 ||
 			engineState.schemaVersion === 15 ||
 			engineState.schemaVersion === 16 ||
-			engineState.schemaVersion === 17
+			engineState.schemaVersion === 17 ||
+			engineState.schemaVersion === 18
 			? engineState.mission
 			: null
 	);
@@ -33,12 +37,15 @@
 	const combatTurnState = $derived(
 		engineState.schemaVersion === 13 ||
 			engineState.schemaVersion === 16 ||
-			engineState.schemaVersion === 17
+			engineState.schemaVersion === 17 ||
+			engineState.schemaVersion === 18
 			? (engineState.mission.attempt?.turnState ?? null)
 			: null
 	);
 	const aftermath = $derived(
-		engineState.schemaVersion === 16 || engineState.schemaVersion === 17
+		engineState.schemaVersion === 16 ||
+			engineState.schemaVersion === 17 ||
+			engineState.schemaVersion === 18
 			? engineState.mission.aftermath
 			: null
 	);
@@ -170,7 +177,12 @@
 	}
 
 	function itemForHero(heroId: string) {
-		if (engineState.schemaVersion !== 16 && engineState.schemaVersion !== 17) return null;
+		if (
+			engineState.schemaVersion !== 16 &&
+			engineState.schemaVersion !== 17 &&
+			engineState.schemaVersion !== 18
+		)
+			return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
 		return itemId ? engineState.items[itemId] : null;
 	}
@@ -657,6 +669,25 @@
 										? ''
 										: 'es'}</small
 								>
+							</div>
+						</article>
+					{/each}
+				</div>
+			{/if}
+			{#if 'archives' in aftermath && aftermath.archives.length > 0}
+				<div class="aftermath-grid archived-attempts" data-testid="aftermath-archives">
+					{#each aftermath.archives.slice().reverse() as archive (archive.attemptId)}
+						<article>
+							<div class="harm-mark">⌁</div>
+							<div>
+								<span>Attempt {archive.ordinal} · {archive.binding.missionId}</span>
+								<strong>{archive.outcome} · {archive.consequences.length} archived</strong>
+								<p>
+									Rounds 0–{archive.finalRoundNumber} remain bound to {archive.attemptId.slice(
+										0,
+										8
+									)}.
+								</p>
 							</div>
 						</article>
 					{/each}

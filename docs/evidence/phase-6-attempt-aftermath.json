@@ -1,0 +1,105 @@
+{
+	"schemaVersion": "attempt-aftermath-report-v1",
+	"engineContentVersion": "engine-v18",
+	"replayVerified": true,
+	"runId": "1547bb45-80ea-42af-bcc2-71b030e9fc8d",
+	"sourceAttempt": {
+		"attemptId": "bb280d48-007f-4822-bef0-5d5ee225e09a",
+		"ordinal": 1,
+		"missionId": "tower-floor-04",
+		"status": "retreat",
+		"outcome": "retreat",
+		"roundNumber": 8,
+		"consequenceCount": 1
+	},
+	"activeAttempt": {
+		"attemptId": "2634865b-98d3-44df-910e-fefca9023fa7",
+		"ordinal": 2,
+		"missionId": "tower-floor-05",
+		"status": "preparing",
+		"outcome": null,
+		"roundNumber": 0,
+		"consequenceCount": 0
+	},
+	"archivedConsequences": [
+		{
+			"consequenceId": "abd2b244-a460-4a38-b35b-c8d4a8e2390f",
+			"sourceAttemptId": "bb280d48-007f-4822-bef0-5d5ee225e09a",
+			"targetKind": "master",
+			"targetId": "f2db7385-7a50-48d2-945d-ee721014b191",
+			"roundNumber": 4,
+			"nodeId": "left-relay",
+			"healthBefore": 100,
+			"healthAfter": 75,
+			"fatal": false,
+			"summary": "The Master suffered 25 persistent damage at left-relay."
+		}
+	],
+	"activeConsequenceCount": 0,
+	"archiveCount": 1,
+	"eventCount": 13,
+	"eventLogHash": "0de38147b6564d54c8d6678c41af1b365d16005f88d991ee024cd1f2ca3ee225",
+	"stateHash": "08a7009552a897d8f5e7911a52a5c4e4c8de5233d4989116f17a906314eb2d53",
+	"timeline": [
+		{
+			"sequence": 2,
+			"eventType": "mission.preparation.started",
+			"summary": "The Master reserved a 2-member party for tower-floor-04."
+		},
+		{
+			"sequence": 3,
+			"eventType": "mission.deployed",
+			"summary": "The prepared party crossed the Tower Threshold; 6 deterministic monster duties activated."
+		},
+		{
+			"sequence": 4,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 1 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 5,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 2 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 6,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 3 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 7,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 4 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 8,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 5 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 9,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 6 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 10,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 7 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 11,
+			"eventType": "mission.round.resolved",
+			"summary": "Round 8 resolved 2 party choices and 6 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 12,
+			"eventType": "mission.retreated",
+			"summary": "The complete party retreated through an authored boundary; the attempt ended."
+		},
+		{
+			"sequence": 13,
+			"eventType": "mission.preparation.started",
+			"summary": "The Master reserved a 2-member party for tower-floor-05."
+		}
+	]
+}

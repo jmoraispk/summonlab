@@ -1103,8 +1103,12 @@ Estimated engineering effort: **2–3 weeks**.
   successful regression seeds each; require legal engine commands, intended furnace state,
   survival, extraction, and exact strict replay; export the hash-bound report and ship the
   development-only `/foundry-trials` comparison page;
-- `MIS-010A` version the attempt-level aftermath boundary so consequences from a completed or
-  retreated mission cannot violate or contaminate a later attempt, while preserving v16/v17 replay;
+- `MIS-010A` complete: add opt-in `engine-v18` / `mission-aftermath-v3`; give every consequence an
+  explicit source attempt; atomically archive the prior terminal attempt, binding, outcome, final
+  round, and consequences when a later attempt is prepared; keep the active consequence ledger
+  exclusive to the new attempt; reject leaked or misattributed records; persist and strictly replay
+  the Floor 04 retreat → Floor 05 preparation boundary; preserve v16/v17 payload dispatch; export a
+  checked deterministic report; and ship the development-only `/attempt-aftermath` proof page;
 - `MIS-011` implement band story envelopes, beat eligibility, and character-aware expression hooks;
 - `MIS-012` implement Wait, Countdown, Step, and Continuous Master decision timing;
 - `MIS-013` implement directed and seeded-random fallbacks with pause and safety stops;
@@ -1205,8 +1209,8 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. The next engineering slice is `AGT-010`: general scoped
-player directives, witnessed delivery, expiry/revocation, and influence records.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-010A`; the next engineering
+slice is `MIS-011`: band story envelopes, beat eligibility, and character-aware expression hooks.
 
 ## Accepted product decisions — 2026-08-23
 

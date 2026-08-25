@@ -13,6 +13,8 @@ import {
 	EngineGameStateV15Schema,
 	EngineGameStateV16Schema,
 	EngineGameStateV17Schema,
+	EngineGameStateV18Schema,
+	MissionRunStateV8Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
 	type ActivityKind,
@@ -609,7 +611,7 @@ describe('deterministic engine', () => {
 		const heroId = deterministicUuid('mission-aftermath-hero');
 		const bootstrap = createBootstrapEngine({
 			runId,
-			seed: 'mission-aftermath-seed',
+			seed: 'foundry-evidence-seed',
 			heroId,
 			manifestHash: sha256Hex('mission-aftermath-manifest'),
 			developmentMissionScenario: {
@@ -736,6 +738,7 @@ describe('deterministic engine', () => {
 		expect(replay.verified).toBe(true);
 		expect(replay.snapshot.state).toEqual(state);
 		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+		expect(JSON.stringify(events)).not.toContain('sourceAttemptId');
 	});
 
 	it('atomically seals the run when the controllable Master dies in a mission', () => {
@@ -834,6 +837,149 @@ describe('deterministic engine', () => {
 		});
 		expect(legalActions(state, masterId)).toEqual([]);
 		expect(legalActions(state, heroId)).toEqual([]);
+
+		const replay = replayEventsStrict(events);
+		expect(replay.verified).toBe(true);
+		expect(replay.snapshot.state).toEqual(state);
+		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+		expect(JSON.stringify(events)).not.toContain('sourceAttemptId');
+	});
+
+	it('archives one attempt aftermath before a later mission and replays both exactly', () => {
+		const runId = deterministicUuid('attempt-aftermath-run');
+		const heroId = deterministicUuid('attempt-aftermath-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'mission-aftermath-seed',
+			heroId,
+			manifestHash: sha256Hex('attempt-aftermath-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-04',
+				availableMissionIds: ['tower-floor-04', 'tower-floor-05'],
+				enableAttemptAftermath: true
+			}
+		});
+		let state = EngineGameStateV18Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const commit = (key: string, body: object) => {
+			const result = applyCommand(state, {
+				...commandBase(state, masterId, key),
+				source: manualSource(),
+				...body
+			} as unknown as EngineCommand);
+			state = EngineGameStateV18Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		const turn = (key: string, masterActionId: string, heroActionId: string) =>
+			commit(key, {
+				commandType: 'mission.resolve.turn',
+				choices: [
+					manualMissionChoice(masterId, masterActionId),
+					scriptedMissionChoice(heroId, heroActionId)
+				]
+			});
+
+		commit('attempt-one-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-04'
+		});
+		const sourceAttemptId = state.mission.attempt!.attemptId;
+		commit('attempt-one-deploy', { commandType: 'mission.deploy' });
+		turn(
+			'attempt-one-balance',
+			'mission.move.threshold-to-balance-hall',
+			'mission.move.threshold-to-balance-hall'
+		);
+		turn(
+			'attempt-one-left-relay',
+			'mission.move.balance-hall-to-left-relay',
+			'mission.move.balance-hall-to-left-relay'
+		);
+		turn('attempt-one-open-archive', 'mission.hold', 'mission.inspect.open-archive-niche');
+		turn(
+			'attempt-one-enter-archive',
+			'mission.move.left-relay-to-archive-niche',
+			'mission.move.left-relay-to-archive-niche'
+		);
+		turn('attempt-one-read-schematic', 'mission.hold', 'mission.inspect.read-foundry-schematic');
+		turn(
+			'attempt-one-leave-archive',
+			'mission.move.left-relay-to-archive-niche',
+			'mission.move.left-relay-to-archive-niche'
+		);
+		turn(
+			'attempt-one-return-balance',
+			'mission.move.balance-hall-to-left-relay',
+			'mission.move.balance-hall-to-left-relay'
+		);
+		turn(
+			'attempt-one-return-threshold',
+			'mission.move.threshold-to-balance-hall',
+			'mission.move.threshold-to-balance-hall'
+		);
+		expect(state.mission.aftermath.consequences).toEqual(
+			expect.arrayContaining([expect.objectContaining({ sourceAttemptId, fatal: false })])
+		);
+
+		commit('attempt-one-retreat', { commandType: 'mission.retreat' });
+		const finalRoundNumber = state.mission.attempt!.turnState.roundNumber;
+
+		commit('attempt-two-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-05'
+		});
+		const activeAttemptId = state.mission.attempt!.attemptId;
+		expect(activeAttemptId).not.toBe(sourceAttemptId);
+		expect(state.mission.aftermath).toMatchObject({
+			aftermathVersion: 'mission-aftermath-v3',
+			activeAttemptId,
+			consequences: [],
+			archives: [
+				{
+					attemptId: sourceAttemptId,
+					ordinal: 1,
+					binding: expect.objectContaining({ missionId: 'tower-floor-04' }),
+					outcome: 'retreat',
+					finalRoundNumber,
+					consequences: [expect.objectContaining({ sourceAttemptId })]
+				}
+			]
+		});
+		expect(
+			MissionRunStateV8Schema.safeParse({
+				...state.mission,
+				aftermath: {
+					...state.mission.aftermath,
+					consequences: state.mission.aftermath.archives[0]!.consequences
+				}
+			}).success
+		).toBe(false);
+		expect(
+			MissionRunStateV8Schema.safeParse({
+				...state.mission,
+				aftermath: {
+					...state.mission.aftermath,
+					archives: state.mission.aftermath.archives.map((archive) => ({
+						...archive,
+						consequences: archive.consequences.map((consequence) => ({
+							...consequence,
+							sourceAttemptId: activeAttemptId
+						}))
+					}))
+				}
+			}).success
+		).toBe(false);
+		commit('attempt-two-deploy', { commandType: 'mission.deploy' });
+		expect(state.mission.attempt).toMatchObject({
+			attemptId: activeAttemptId,
+			ordinal: 2,
+			status: 'deployed',
+			turnState: { roundNumber: 0 }
+		});
 
 		const replay = replayEventsStrict(events);
 		expect(replay.verified).toBe(true);

@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 are complete; Phase 3 is human-gated, Phase 4 is playable, and Phase 5 now includes witnessed conversation plus redacted agent-decision traces._
+_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through the versioned cross-attempt aftermath boundary._
 
 </div>
 
@@ -157,6 +157,19 @@ attempt. Only surviving, co-located heroes receive the memory and relationship c
 and replay preserve the exact source, location, health, item, and witness evidence.
 
 ![The Red Tithe persistent aftermath checkpoint](docs/evidence/phase-6-mission-aftermath.png)
+
+### Cross-attempt aftermath proof
+
+`/attempt-aftermath` executes a checked `engine-v18` scenario across two real missions. Floor 04
+records a persistent Master wound and retreats; preparing Floor 05 atomically archives that
+consequence under its source attempt and starts with an empty active consequence ledger. All 13
+events strictly replay to the same state hash, while immutable `engine-v16` and `engine-v17`
+streams keep their original payload contracts.
+
+![Cross-attempt aftermath proof](docs/evidence/phase-6-attempt-aftermath.png)
+
+Run `pnpm validate:attempt-aftermath` to regenerate and compare the machine-readable proof at
+`docs/evidence/phase-6-attempt-aftermath.json`.
 
 ### Mortal Master checkpoint
 

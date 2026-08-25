@@ -22,7 +22,8 @@ export const GET: RequestHandler = async ({ params }) => {
 		snapshot.state.schemaVersion !== 12 &&
 		snapshot.state.schemaVersion !== 13 &&
 		snapshot.state.schemaVersion !== 16 &&
-		snapshot.state.schemaVersion !== 17
+		snapshot.state.schemaVersion !== 17 &&
+		snapshot.state.schemaVersion !== 18
 	) {
 		return json({ message: 'This history predates scoped directions.' }, { status: 409 });
 	}
@@ -61,7 +62,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			snapshot.state.schemaVersion !== 12 &&
 			snapshot.state.schemaVersion !== 13 &&
 			snapshot.state.schemaVersion !== 16 &&
-			snapshot.state.schemaVersion !== 17
+			snapshot.state.schemaVersion !== 17 &&
+			snapshot.state.schemaVersion !== 18
 		) {
 			return json({ message: 'This history predates scoped directions.' }, { status: 409 });
 		}
@@ -116,7 +118,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			committed.snapshot.state.schemaVersion !== 12 &&
 			committed.snapshot.state.schemaVersion !== 13 &&
 			committed.snapshot.state.schemaVersion !== 16 &&
-			committed.snapshot.state.schemaVersion !== 17
+			committed.snapshot.state.schemaVersion !== 17 &&
+			committed.snapshot.state.schemaVersion !== 18
 		) {
 			throw new Error('Directive commit changed the engine schema.');
 		}
