@@ -1,18 +1,36 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import summonArt from '../../../../assets/agent-summoning-concept.png';
 	import PlayerSettingsPanel from '$lib/components/PlayerSettingsPanel.svelte';
 	import { loadPlayerSettings } from '$lib/player-settings';
+	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 
 	let { data } = $props();
 	let seed = $state('hearth-01');
 	let beginning = $state(false);
 	let errorMessage = $state('');
 	let settingsOpen = $state(false);
+	let settingsDialog = $state<HTMLDivElement>(null!);
+	let settingsTrigger = $state<HTMLButtonElement>(null!);
+	let returnFocus: HTMLElement | null = null;
 
 	onMount(() => loadPlayerSettings());
+
+	async function openSettings() {
+		returnFocus =
+			document.activeElement instanceof HTMLElement ? document.activeElement : settingsTrigger;
+		settingsOpen = true;
+		await tick();
+		focusDialog(settingsDialog);
+	}
+
+	async function closeSettings() {
+		settingsOpen = false;
+		await tick();
+		returnFocus?.focus();
+	}
 
 	async function beginCampaign() {
 		beginning = true;
@@ -44,7 +62,7 @@
 	/>
 </svelte:head>
 
-<main data-testid="campaign-title">
+<main data-testid="campaign-title" inert={settingsOpen}>
 	<img class="key-art" src={summonArt} alt="An agent hero crossing an arcane summoning gate" />
 	<div class="wash"></div>
 	<div class="grain"></div>
@@ -54,7 +72,9 @@
 		<div class="system-state" class:offline={data.health.database.status !== 'available'}>
 			<i></i>{data.health.database.status === 'available' ? 'Hearth online' : 'Hearth offline'}
 		</div>
-		<button type="button" onclick={() => (settingsOpen = true)}>Settings</button>
+		<button bind:this={settingsTrigger} type="button" onclick={openSettings} data-sound-cue="menu"
+			>Settings</button
+		>
 	</header>
 
 	<section class="title-copy">
@@ -85,7 +105,12 @@
 			<label for="campaign-seed">New chronicle seed</label>
 			<div class="seed-row">
 				<input id="campaign-seed" bind:value={seed} minlength="1" maxlength="128" required />
-				<button type="submit" disabled={beginning} data-testid="begin-campaign">
+				<button
+					type="submit"
+					disabled={beginning}
+					data-testid="begin-campaign"
+					data-sound-cue="gate"
+				>
 					{beginning ? 'Opening…' : 'Begin'}
 				</button>
 			</div>
@@ -113,13 +138,21 @@
 
 {#if settingsOpen}
 	<div class="settings-backdrop">
-		<div class="settings-modal" role="dialog" aria-modal="true" aria-label="Player settings">
+		<div
+			bind:this={settingsDialog}
+			class="settings-modal"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="settings-title"
+			tabindex="-1"
+			onkeydown={(event) => handleModalKeydown(event, settingsDialog, closeSettings)}
+		>
 			<header>
 				<div>
 					<span>Local preferences</span>
-					<h2>Settings</h2>
+					<h2 id="settings-title">Settings</h2>
 				</div>
-				<button type="button" onclick={() => (settingsOpen = false)}>Close ×</button>
+				<button type="button" onclick={closeSettings} data-sound-cue="menu">Close ×</button>
 			</header>
 			<PlayerSettingsPanel />
 		</div>
@@ -413,6 +446,8 @@
 	}
 	.settings-modal {
 		width: min(50rem, 100%);
+		max-height: calc(100svh - 2rem);
+		overflow: auto;
 		padding: 1.5rem;
 		border: 1px solid rgba(229, 158, 88, 0.3);
 		background: #0c0b09;

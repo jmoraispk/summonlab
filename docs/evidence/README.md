@@ -119,3 +119,9 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   three hero tabs, full dossier, compact current-objective control, and unbroken question flow.
 - `phase-7-campaign-mobile-hearth.png` — 390×844 large-text Hearth route with the corrected stacked
   navigation, autonomous destination, compact objective control, and readable fixed story spine.
+- `phase-7-fin004-desktop-{title,settings,gate,company,hearth,pause}.png` — the complete desktop
+  campaign sensory/accessibility pass, including persisted Full mix, captions, static reduced-motion
+  cues, player settings, three-hero onboarding, Hearth, and contained pause state.
+- `phase-7-fin004-phone-{title,settings,gate,company,hearth,pause}.png` — the same complete path at
+  390×844 with Large text, a scroll-bounded settings dialog, compact sound control, scene-safe cue
+  captions, stacked navigation, and readable objective/pause controls.

@@ -20,6 +20,22 @@
 		savePlayerSettings(settings);
 		onChange?.(settings);
 	}
+
+	const readingOptions: ReadonlyArray<readonly [PlayerSettings['textScale'], string]> = [
+		['compact', 'Compact'],
+		['standard', 'Standard'],
+		['large', 'Large']
+	];
+	const motionOptions: ReadonlyArray<readonly [PlayerSettings['motion'], string]> = [
+		['system', 'System'],
+		['full', 'Full'],
+		['reduced', 'Reduced']
+	];
+	const soundOptions: ReadonlyArray<readonly [PlayerSettings['sound'], string]> = [
+		['muted', 'Muted'],
+		['ambient', 'Ambient'],
+		['full', 'Full mix']
+	];
 </script>
 
 <section class="settings" data-testid="player-settings">
@@ -29,13 +45,17 @@
 			<small>Applies immediately and stays on this device.</small>
 		</div>
 		<div class="choices" role="radiogroup" aria-label="Reading scale">
-			{#each [['compact', 'Compact'], ['standard', 'Standard'], ['large', 'Large']] as option (option[0])}
-				<button
-					type="button"
-					class:selected={settings.textScale === option[0]}
-					onclick={() => update({ textScale: option[0] as PlayerSettings['textScale'] })}
-					aria-pressed={settings.textScale === option[0]}>{option[1]}</button
-				>
+			{#each readingOptions as option (option[0])}
+				<label class:selected={settings.textScale === option[0]}>
+					<input
+						type="radio"
+						name="reading-scale"
+						value={option[0]}
+						checked={settings.textScale === option[0]}
+						onchange={() => update({ textScale: option[0] })}
+					/>
+					<span>{option[1]}</span>
+				</label>
 			{/each}
 		</div>
 	</div>
@@ -46,15 +66,56 @@
 			<small>Reduced removes camera drift, embers, and long transitions.</small>
 		</div>
 		<div class="choices" role="radiogroup" aria-label="Motion preference">
-			{#each [['system', 'System'], ['full', 'Full'], ['reduced', 'Reduced']] as option (option[0])}
-				<button
-					type="button"
-					class:selected={settings.motion === option[0]}
-					onclick={() => update({ motion: option[0] as PlayerSettings['motion'] })}
-					aria-pressed={settings.motion === option[0]}>{option[1]}</button
-				>
+			{#each motionOptions as option (option[0])}
+				<label class:selected={settings.motion === option[0]}>
+					<input
+						type="radio"
+						name="motion-preference"
+						value={option[0]}
+						checked={settings.motion === option[0]}
+						onchange={() => update({ motion: option[0] })}
+					/>
+					<span>{option[1]}</span>
+				</label>
 			{/each}
 		</div>
+	</div>
+
+	<div class="group">
+		<div>
+			<span>Soundscape</span>
+			<small>Muted by default. Ambient adds atmosphere; Full mix also adds interface cues.</small>
+		</div>
+		<div class="choices" role="radiogroup" aria-label="Soundscape">
+			{#each soundOptions as option (option[0])}
+				<label class:selected={settings.sound === option[0]}>
+					<input
+						type="radio"
+						name="soundscape"
+						value={option[0]}
+						checked={settings.sound === option[0]}
+						onchange={() => update({ sound: option[0] })}
+					/>
+					<span>{option[1]}</span>
+				</label>
+			{/each}
+		</div>
+	</div>
+
+	<div class="group">
+		<div>
+			<span>Sound captions</span>
+			<small>Shows a short readable equivalent whenever the interface presents a sound cue.</small>
+		</div>
+		<label class="switch">
+			<input
+				type="checkbox"
+				checked={settings.soundCaptions}
+				onchange={(event) =>
+					update({ soundCaptions: (event.currentTarget as HTMLInputElement).checked })}
+			/>
+			<span>{settings.soundCaptions ? 'Captions on' : 'Captions off'}</span>
+		</label>
 	</div>
 
 	<div class="group">
@@ -63,18 +124,26 @@
 			<small>Heroes stay autonomous. This only sets the default window for your own choices.</small>
 		</div>
 		<div class="choices two" role="radiogroup" aria-label="Master decision timing">
-			<button
-				type="button"
-				class:selected={settings.controlMode === 'wait'}
-				onclick={() => update({ controlMode: 'wait' })}
-				aria-pressed={settings.controlMode === 'wait'}>Wait for me</button
-			>
-			<button
-				type="button"
-				class:selected={settings.controlMode === 'countdown'}
-				onclick={() => update({ controlMode: 'countdown' })}
-				aria-pressed={settings.controlMode === 'countdown'}>5-second handoff</button
-			>
+			<label class:selected={settings.controlMode === 'wait'}>
+				<input
+					type="radio"
+					name="master-decision-timing"
+					value="wait"
+					checked={settings.controlMode === 'wait'}
+					onchange={() => update({ controlMode: 'wait' })}
+				/>
+				<span>Wait for me</span>
+			</label>
+			<label class:selected={settings.controlMode === 'countdown'}>
+				<input
+					type="radio"
+					name="master-decision-timing"
+					value="countdown"
+					checked={settings.controlMode === 'countdown'}
+					onchange={() => update({ controlMode: 'countdown' })}
+				/>
+				<span>5-second handoff</span>
+			</label>
 		</div>
 	</div>
 </section>
@@ -95,7 +164,7 @@
 		border-bottom: 1px solid rgba(238, 211, 154, 0.12);
 	}
 
-	.group span {
+	.group > div:first-child > span {
 		display: block;
 		margin-bottom: 0.35rem;
 		color: #f5ead4;
@@ -120,23 +189,44 @@
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
-	button {
+	.choices label,
+	.switch {
+		position: relative;
+		display: grid;
 		min-height: 2.7rem;
+		place-items: center;
+		padding: 0.4rem;
 		border: 1px solid rgba(238, 211, 154, 0.16);
 		background: rgba(255, 255, 255, 0.025);
 		color: rgba(245, 234, 212, 0.6);
 		font-size: 0.65rem;
 		letter-spacing: 0.08em;
+		text-align: center;
 		text-transform: uppercase;
 		cursor: pointer;
 	}
 
-	button:hover,
-	button:focus-visible,
-	button.selected {
+	.choices label:hover,
+	.choices label:focus-within,
+	.choices label.selected,
+	.switch:hover,
+	.switch:focus-within {
 		border-color: rgba(224, 139, 68, 0.72);
 		background: rgba(190, 76, 28, 0.18);
 		color: #ffe1ad;
+	}
+
+	.choices input,
+	.switch input {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		opacity: 0;
+	}
+
+	.switch {
+		justify-self: stretch;
 	}
 
 	@media (max-width: 650px) {
@@ -146,11 +236,17 @@
 		}
 
 		.choices {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 
 		.choices.two {
 			grid-template-columns: 1fr 1fr;
+		}
+
+		.choices label,
+		.switch {
+			font-size: 0.58rem;
+			letter-spacing: 0.045em;
 		}
 	}
 </style>

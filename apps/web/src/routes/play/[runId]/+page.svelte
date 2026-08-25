@@ -8,13 +8,14 @@
 		SettlementPresentation,
 		SimulationClock
 	} from '@summonlab/contracts';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
+	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
@@ -32,6 +33,8 @@
 	let selectedEmberFacility = $state<FirstEmberFacility | null>(null);
 	let selectedEmberRationale = $state<FirstEmberRationale>('prepare-tower');
 	let eventCueTimer: ReturnType<typeof setTimeout> | null = null;
+	let emberConfirmDialog = $state<HTMLDialogElement>(null!);
+	let emberReturnFocus: HTMLElement | null = null;
 	const emberOptions: ReadonlyArray<{
 		id: FirstEmberFacility;
 		name: string;
@@ -138,9 +141,19 @@
 		await submitFirstEmber({ action: 'recover' });
 	}
 
-	function prepareFirstEmberChoice(option: (typeof emberOptions)[number]) {
+	async function prepareFirstEmberChoice(option: (typeof emberOptions)[number]) {
+		emberReturnFocus =
+			document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		selectedEmberFacility = option.id;
 		selectedEmberRationale = option.rationale;
+		await tick();
+		focusDialog(emberConfirmDialog);
+	}
+
+	async function closeFirstEmberChoice() {
+		selectedEmberFacility = null;
+		await tick();
+		emberReturnFocus?.focus();
 	}
 
 	async function commitFirstEmber() {
@@ -150,7 +163,7 @@
 			buildingId: selectedEmberFacility,
 			rationale: selectedEmberRationale
 		});
-		selectedEmberFacility = null;
+		await closeFirstEmberChoice();
 	}
 
 	async function submitFirstEmber(body: Record<string, string>) {
@@ -212,6 +225,7 @@
 				type="button"
 				onclick={() => (journalOpen = !journalOpen)}
 				aria-expanded={journalOpen}
+				data-sound-cue="menu"
 			>
 				Journal <span>{snapshot.events.length}</span>
 			</button>
@@ -311,6 +325,7 @@
 					type="button"
 					onclick={recoverFirstEmber}
 					disabled={emberPending}
+					data-sound-cue="threshold"
 					><span>Prototype story bridge</span><strong
 						>{emberPending ? 'Recovering…' : 'Return from Floor 01'}</strong
 					></button
@@ -322,6 +337,7 @@
 							type="button"
 							onclick={() => prepareFirstEmberChoice(option)}
 							disabled={emberPending}
+							data-sound-cue="menu"
 						>
 							<i>0{index + 1}</i>
 							<span>{option.id.replaceAll('-', ' ')}</span>
@@ -365,12 +381,20 @@
 	{/if}
 
 	{#if selectedEmberOption}
-		<div class="ember-confirm-backdrop" role="presentation">
-			<dialog open class="ember-confirm" aria-labelledby="ember-title">
+		<div class="ember-confirm-backdrop">
+			<dialog
+				bind:this={emberConfirmDialog}
+				open
+				class="ember-confirm"
+				aria-modal="true"
+				aria-labelledby="ember-title"
+				tabindex="-1"
+				onkeydown={(event) => handleModalKeydown(event, emberConfirmDialog, closeFirstEmberChoice)}
+			>
 				<button
 					class="ember-close"
 					type="button"
-					onclick={() => (selectedEmberFacility = null)}
+					onclick={closeFirstEmberChoice}
 					aria-label="Close First Ember choice">×</button
 				>
 				<p>Irreversible commitment</p>
@@ -384,13 +408,14 @@
 				</select>
 				<small>This choice cannot be moved later.</small>
 				<div>
-					<button
-						class="secondary-choice"
-						type="button"
-						onclick={() => (selectedEmberFacility = null)}>Keep deciding</button
+					<button class="secondary-choice" type="button" onclick={closeFirstEmberChoice}
+						>Keep deciding</button
 					>
-					<button type="button" onclick={commitFirstEmber} disabled={emberPending}
-						>{emberPending ? 'Binding…' : 'Bind the First Ember'}</button
+					<button
+						type="button"
+						onclick={commitFirstEmber}
+						disabled={emberPending}
+						data-sound-cue="warning">{emberPending ? 'Binding…' : 'Bind the First Ember'}</button
 					>
 				</div>
 			</dialog>

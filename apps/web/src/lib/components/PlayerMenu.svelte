@@ -2,9 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { CampaignObjectiveProjection } from '@summonlab/contracts';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import PlayerSettingsPanel from './PlayerSettingsPanel.svelte';
 	import { loadPlayerSettings } from '$lib/player-settings';
+	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 
 	let {
 		runId,
@@ -16,6 +17,8 @@
 	let confirmRestart = $state(false);
 	let restarting = $state(false);
 	let errorMessage = $state('');
+	let menuDialog = $state<HTMLDivElement>(null!);
+	let returnFocus: HTMLElement | null = null;
 	const activeObjective = $derived(
 		objectives.objectives.find((objective) => objective.status === 'current') ?? null
 	);
@@ -23,23 +26,35 @@
 	onMount(() => {
 		loadPlayerSettings();
 		const onKeydown = (event: KeyboardEvent) => {
-			if (event.key !== 'Escape') return;
-			open = !open;
-			confirmRestart = false;
+			if (event.key !== 'Escape' || event.defaultPrevented) return;
+			if (open) void closeMenu();
+			else void openMenu('objectives');
 		};
 		document.addEventListener('keydown', onKeydown);
 		return () => document.removeEventListener('keydown', onKeydown);
 	});
 
 	async function openMenu(nextTab: typeof tab) {
+		if (!open) {
+			returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		}
 		tab = nextTab;
 		open = true;
 		confirmRestart = false;
+		await tick();
+		focusDialog(menuDialog);
 		const response = await fetch(`/api/campaigns/${runId}`);
 		if (response.ok) {
 			const body = (await response.json()) as { objectives: CampaignObjectiveProjection };
 			objectives = body.objectives;
 		}
+	}
+
+	async function closeMenu() {
+		open = false;
+		confirmRestart = false;
+		await tick();
+		returnFocus?.focus();
 	}
 
 	async function restartSameSeed() {
@@ -81,6 +96,7 @@
 		type="button"
 		onclick={() => openMenu('objectives')}
 		aria-label="Pause menu"
+		data-sound-cue="menu"
 	>
 		<span>Ⅱ</span><small>ESC</small>
 	</button>
@@ -88,13 +104,21 @@
 
 {#if open}
 	<div class="backdrop" role="presentation">
-		<div class="menu" role="dialog" aria-modal="true" aria-label="Paused campaign menu">
+		<div
+			bind:this={menuDialog}
+			class="menu"
+			role="dialog"
+			aria-modal="true"
+			aria-label="Paused campaign menu"
+			tabindex="-1"
+			onkeydown={(event) => handleModalKeydown(event, menuDialog, closeMenu)}
+		>
 			<header>
 				<div>
 					<span>HEARTH 01 / CAMPAIGN</span>
 					<h2>PAUSED</h2>
 				</div>
-				<button type="button" onclick={() => (open = false)} aria-label="Resume game"
+				<button type="button" onclick={closeMenu} aria-label="Resume game" data-sound-cue="menu"
 					>Resume ×</button
 				>
 			</header>
@@ -149,6 +173,7 @@
 						type="button"
 						onclick={restartSameSeed}
 						disabled={restarting}
+						data-sound-cue="warning"
 					>
 						{restarting
 							? 'Opening the gate…'

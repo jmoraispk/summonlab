@@ -17,6 +17,32 @@
 	const stars = (count: number) => '✦'.repeat(count);
 	const words = (value: string) => value.replaceAll('-', ' ');
 
+	function selectHero(ordinal: number) {
+		selectedOrdinal = ordinal;
+	}
+
+	function handleHeroTabKeydown(event: KeyboardEvent, ordinal: number) {
+		const index = view.heroes.findIndex((hero) => hero.ordinal === ordinal);
+		if (index < 0) return;
+		const nextIndex =
+			event.key === 'ArrowRight' || event.key === 'ArrowDown'
+				? (index + 1) % view.heroes.length
+				: event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+					? (index - 1 + view.heroes.length) % view.heroes.length
+					: event.key === 'Home'
+						? 0
+						: event.key === 'End'
+							? view.heroes.length - 1
+							: null;
+		if (nextIndex === null) return;
+		event.preventDefault();
+		selectedOrdinal = view.heroes[nextIndex]!.ordinal;
+		const tabs = (event.currentTarget as HTMLElement).parentElement?.querySelectorAll<HTMLElement>(
+			'[role="tab"]'
+		);
+		tabs?.[nextIndex]?.focus();
+	}
+
 	async function refreshView() {
 		const response = await fetch(`/api/campaigns/${view.campaign.runId}`);
 		if (!response.ok) throw new Error('The chronicle could not be refreshed.');
@@ -131,6 +157,7 @@
 				onclick={() => advance(1)}
 				disabled={pending}
 				data-testid="answer-reserve-bell"
+				data-sound-cue="bell"
 			>
 				Stand and follow the bell <span>→</span>
 			</button>
@@ -154,6 +181,7 @@
 					onclick={() => advance(2)}
 					disabled={pending}
 					data-testid="open-summoning-gate"
+					data-sound-cue="gate"
 				>
 					Spend the reserve <span>→</span>
 				</button>
@@ -166,16 +194,22 @@
 					<p class="eyebrow">First company · no borrowed loyalty</p>
 					<h1>THREE STRANGERS<br /><em>AWAIT CONTEXT.</em></h1>
 				</div>
-				<p>{replyCount}/3 first voices witnessed</p>
+				<p aria-live="polite">{replyCount}/3 first voices witnessed</p>
 			</div>
 
-			<div class="hero-tabs" aria-label="Summoned heroes">
+			<div class="hero-tabs" role="tablist" aria-label="Summoned heroes">
 				{#each view.heroes as hero (hero.draft.manifest.characterId)}
 					<button
 						class:selected={selectedOrdinal === hero.ordinal}
 						class:answered={hero.firstReply !== null}
 						type="button"
-						onclick={() => (selectedOrdinal = hero.ordinal)}
+						onclick={() => selectHero(hero.ordinal)}
+						onkeydown={(event) => handleHeroTabKeydown(event, hero.ordinal)}
+						role="tab"
+						id={`hero-tab-${hero.ordinal}`}
+						aria-selected={selectedOrdinal === hero.ordinal}
+						aria-controls={`hero-panel-${hero.ordinal}`}
+						tabindex={selectedOrdinal === hero.ordinal ? 0 : -1}
 						data-testid="campaign-hero"
 					>
 						<span>0{hero.ordinal}</span><strong>{hero.draft.manifest.displayName}</strong><small
@@ -191,7 +225,12 @@
 					<div class="gate-glow"></div>
 					<HeroRig manifest={selected.draft.manifest} />
 				</div>
-				<div class="dossier">
+				<div
+					class="dossier"
+					role="tabpanel"
+					id={`hero-panel-${selected.ordinal}`}
+					aria-labelledby={`hero-tab-${selected.ordinal}`}
+				>
 					<div class="identity">
 						<div>
 							<span>Summon 0{selected.ordinal}</span>
@@ -248,6 +287,7 @@
 							onclick={askHero}
 							disabled={pending || !question.trim()}
 							data-testid="ask-first-question"
+							data-sound-cue="voice"
 						>
 							{pending ? 'Listening…' : `Ask ${selected.draft.manifest.displayName}`}
 						</button>
@@ -265,6 +305,7 @@
 					disabled={!allAnswered || pending}
 					onclick={enterHearth}
 					data-testid="enter-hearth"
+					data-sound-cue="threshold"
 				>
 					Enter Hearth 01 <span>→</span>
 				</button>

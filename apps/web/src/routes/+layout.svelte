@@ -1,7 +1,21 @@
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
 	import favicon from '$lib/assets/favicon.svg';
+	import PlayerSensoryLayer from '$lib/components/PlayerSensoryLayer.svelte';
+	import { loadPlayerSettings } from '$lib/player-settings';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
+
+	onMount(() => loadPlayerSettings());
+
+	afterNavigate(({ from, to }) => {
+		if (!from || !to || from.url.pathname === to.url.pathname) return;
+		requestAnimationFrame(() => {
+			window.scrollTo({ top: 0, left: 0 });
+			document.getElementById('main-content')?.focus({ preventScroll: true });
+		});
+	});
 </script>
 
 <svelte:head>
@@ -9,7 +23,9 @@
 	<meta name="theme-color" content="#090b12" />
 </svelte:head>
 
-{@render children()}
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="main-content" tabindex="-1">{@render children()}</div>
+<PlayerSensoryLayer />
 
 <style>
 	:global(*) {
@@ -46,8 +62,32 @@
 	}
 
 	:global(button),
-	:global(a) {
+	:global(a),
+	:global(input),
+	:global(textarea),
+	:global(select) {
 		font: inherit;
+	}
+
+	:global(:focus-visible) {
+		outline: 3px solid #ffd17f;
+		outline-offset: 3px;
+	}
+
+	.skip-link {
+		position: fixed;
+		top: 0.75rem;
+		left: 0.75rem;
+		z-index: 1000;
+		padding: 0.75rem 1rem;
+		background: #fff3d6;
+		color: #16100a;
+		font-weight: 800;
+		transform: translateY(-180%);
+	}
+
+	.skip-link:focus {
+		transform: translateY(0);
 	}
 
 	:global(html[data-player-motion='reduced'] *) {
@@ -55,5 +95,24 @@
 		animation-duration: 0.001ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.001ms !important;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(html:not([data-player-motion='full']) *) {
+			scroll-behavior: auto !important;
+			animation-duration: 0.001ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.001ms !important;
+		}
+	}
+
+	@media (forced-colors: active) {
+		:global(button),
+		:global(a),
+		:global(input),
+		:global(textarea),
+		:global(select) {
+			forced-color-adjust: auto;
+		}
 	}
 </style>

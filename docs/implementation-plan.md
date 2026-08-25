@@ -1159,7 +1159,10 @@ Estimated engineering effort: **2 weeks**.
   stable adult human heroes to the campaign seed; derive seven hash-bound objectives; add an
   interface-only pause menu, device-local reading/motion/timing settings, and replay-preserving
   same-seed restart; validate the complete journey at desktop and phone widths;
-- `FIN-004` add soundscape, premium effects, reduced-motion and accessibility pass;
+- `FIN-004` **complete** — add a muted-by-default procedural soundscape with Ambient/Full mix,
+  optional readable cue captions, route-specific cinematic emphasis, pre-hydration settings
+  migration, system-aware reduced motion, skip/focus navigation, native preference controls,
+  keyboard hero tabs, and contained/restored modal focus; validate desktop and 390×844 phone paths;
 - `FIN-005` tune performance and asset budgets for target phones;
 - `FIN-006` add analytics and playtest consent;
 - `FIN-007` run five moderated tests and triage findings;
@@ -1256,8 +1259,10 @@ checks, and `/first-band-archive` keep the finale causal and inspectable. `FIN-0
 replay-adjacent player campaign shell: three stable seed-bound strangers, sequential onboarding with
 canonical conversations and first destination, seven snapshot-bound derived objectives,
 interface-only pause, device-local presentation settings, and restart lineage that supersedes but
-never rewrites the prior verified chronicle. After the FIN-003 playtest review, the next engineering
-slice is `FIN-004`: soundscape, premium effects, reduced motion, and the broader accessibility pass.
+never rewrites the prior verified chronicle. `FIN-004` adds the local sensory/accessibility boundary
+in ADR 0048: procedural route soundscapes, redundant captions and visual cues, pre-hydration
+preference migration, system-aware motion, keyboard-first navigation, and modal focus containment.
+The next engineering slice is `FIN-005`: tune performance and asset budgets for target phones.
 
 ## Accepted product decisions — 2026-08-23
 

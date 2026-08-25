@@ -4,6 +4,30 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
+		<script>
+			try {
+				const raw =
+					localStorage.getItem('summonlab.player-settings.v2') ??
+					localStorage.getItem('summonlab.player-settings.v1');
+				const settings = raw ? JSON.parse(raw) : {};
+				const root = document.documentElement;
+				root.dataset.playerMotion = ['system', 'full', 'reduced'].includes(settings.motion)
+					? settings.motion
+					: 'system';
+				root.dataset.playerText = ['compact', 'standard', 'large'].includes(settings.textScale)
+					? settings.textScale
+					: 'standard';
+				root.dataset.playerSound = ['muted', 'ambient', 'full'].includes(settings.sound)
+					? settings.sound
+					: 'muted';
+				root.dataset.playerSoundCaptions = settings.soundCaptions === false ? 'hidden' : 'visible';
+			} catch {
+				document.documentElement.dataset.playerMotion = 'system';
+				document.documentElement.dataset.playerText = 'standard';
+				document.documentElement.dataset.playerSound = 'muted';
+				document.documentElement.dataset.playerSoundCaptions = 'visible';
+			}
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

@@ -795,6 +795,25 @@ prior campaign record without touching its append-only events or snapshots. A sa
 therefore produces the same three generated identities under a new run ID while the old replay
 remains independently verifiable. See ADR 0047.
 
+### Sensory and accessibility boundary
+
+`PlayerSensoryLayer` is a browser-only subscriber to route context, local preferences, and typed
+interface cue attributes. It owns one procedural Web Audio graph with title, gate, Hearth, tower,
+and silence profiles plus short optional action tones. The graph is muted by default, begins only
+after a user gesture, never downloads an asset, and has no access to engine commands, campaign
+repositories, or event persistence. Its timing is intentionally non-canonical.
+
+Every cue is redundant with visible state and has an optional concise live-region caption. Audio
+cannot carry legality, danger, cost, or consequence by itself. Decorative cue flares animate only in
+Full/System motion and become brief static emphasis under reduced motion. The System preference
+honors `prefers-reduced-motion`; an explicit Full choice is the only override.
+
+Versioned local settings now include Muted/Ambient/Full mix and sound captions. The v2 loader
+migrates FIN-003 preferences field by field and applies them in the document head before hydration.
+Skip navigation, visible focus, route focus reset, native settings inputs, tab semantics, modal focus
+containment, Escape close, and focus restoration define the current keyboard baseline. These are
+presentation guarantees, not simulation or replay state. See ADR 0048.
+
 ## Platform
 
 Web remains the first platform:

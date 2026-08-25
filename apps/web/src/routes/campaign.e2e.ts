@@ -8,13 +8,19 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	test.setTimeout(90_000);
 	const seed = `campaign-e2e-${randomUUID()}`;
 	const viewport = process.env.CAMPAIGN_VIEWPORT === 'phone' ? 'phone' : 'desktop';
-	const captureDirectory = process.env.CAPTURE_FIN003_DIR;
-	const capturePrefix = process.env.CAPTURE_FIN003_PREFIX ?? viewport;
+	const captureDirectory = process.env.CAPTURE_FIN004_DIR ?? process.env.CAPTURE_FIN003_DIR;
+	const capturePrefix =
+		process.env.CAPTURE_FIN004_PREFIX ?? process.env.CAPTURE_FIN003_PREFIX ?? viewport;
 	const captureStates = new Set(
-		(process.env.CAPTURE_FIN003_STATES ?? 'title,gate,company,hearth,pause').split(',')
+		(
+			process.env.CAPTURE_FIN004_STATES ??
+			process.env.CAPTURE_FIN003_STATES ??
+			'title,settings,gate,company,hearth,pause'
+		).split(',')
 	);
 	const capture = async (name: string) => {
 		if (!captureDirectory || !captureStates.has(name)) return;
+		await page.evaluate(() => window.scrollTo({ top: 0, left: 0 }));
 		await page.screenshot({
 			path: `${captureDirectory}/${capturePrefix}-${name}.png`,
 			fullPage: true
@@ -28,38 +34,56 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	await expect(page.getByAltText('An agent hero crossing an arcane summoning gate')).toBeVisible();
 	await capture('title');
 
-	await page.getByRole('button', { name: 'Settings', exact: true }).click();
+	const settingsButton = page.getByRole('button', { name: 'Settings', exact: true });
+	await settingsButton.focus();
+	await settingsButton.press('Enter');
+	const settingsDialog = page.getByRole('dialog', { name: 'Settings' });
+	await expect(settingsDialog).toBeFocused();
 	const titleSettings = page.getByTestId('player-settings');
-	await titleSettings.getByRole('button', { name: 'Large', exact: true }).click();
-	await titleSettings.getByRole('button', { name: 'Reduced', exact: true }).click();
-	await titleSettings.getByRole('button', { name: '5-second handoff', exact: true }).click();
+	await titleSettings.getByRole('radio', { name: 'Large', exact: true }).check();
+	await titleSettings.getByRole('radio', { name: 'Reduced', exact: true }).check();
+	await titleSettings.getByRole('radio', { name: 'Full mix', exact: true }).check();
+	await titleSettings.getByRole('radio', { name: '5-second handoff', exact: true }).check();
+	await expect(titleSettings.getByRole('checkbox', { name: 'Captions on' })).toBeChecked();
 	await expect(page.locator('html')).toHaveAttribute('data-player-text', 'large');
 	await expect(page.locator('html')).toHaveAttribute('data-player-motion', 'reduced');
-	await page.getByRole('button', { name: /Close/ }).click();
+	await expect(page.locator('html')).toHaveAttribute('data-player-sound', 'full');
+	await expect(page.getByTestId('sensory-controls')).toHaveAttribute('data-audio-state', 'active');
+	await capture('settings');
+	await settingsDialog.press('Escape');
+	await expect(settingsButton).toBeFocused();
 	await page.reload();
 	await page.getByRole('button', { name: 'Settings', exact: true }).click();
 	await expect(
-		page.getByTestId('player-settings').getByRole('button', { name: 'Large', exact: true })
-	).toHaveAttribute('aria-pressed', 'true');
+		page.getByTestId('player-settings').getByRole('radio', { name: 'Large', exact: true })
+	).toBeChecked();
 	await expect(
-		page.getByTestId('player-settings').getByRole('button', { name: 'Reduced', exact: true })
-	).toHaveAttribute('aria-pressed', 'true');
+		page.getByTestId('player-settings').getByRole('radio', { name: 'Reduced', exact: true })
+	).toBeChecked();
 	await expect(
 		page
 			.getByTestId('player-settings')
-			.getByRole('button', { name: '5-second handoff', exact: true })
-	).toHaveAttribute('aria-pressed', 'true');
+			.getByRole('radio', { name: '5-second handoff', exact: true })
+	).toBeChecked();
+	await expect(
+		page.getByTestId('player-settings').getByRole('radio', { name: 'Full mix', exact: true })
+	).toBeChecked();
 	await page.getByRole('button', { name: /Close/ }).click();
+	await page.getByRole('button', { name: 'Start sound' }).click();
+	await expect(page.getByTestId('sensory-controls')).toHaveAttribute('data-audio-state', 'active');
 
 	await page.getByLabel('New chronicle seed').fill(seed);
 	await page.getByTestId('begin-campaign').click();
 	await expect(page).toHaveURL(/\/onboarding\/[a-f0-9-]+$/u);
+	await expect(page.locator('#main-content')).toBeFocused();
+	expect(await page.evaluate(() => window.scrollY)).toBe(0);
 	const firstRunId = page.url().split('/').at(-1);
 	if (!firstRunId) throw new Error('Campaign onboarding URL did not include a run ID');
 
 	await expect(page.getByTestId('onboarding-step')).toHaveText('PROLOGUE · 1/4');
 	await expect(page.getByTestId('active-objective')).toContainText('Reach the summoning gate');
 	await page.getByTestId('answer-reserve-bell').click();
+	await expect(page.getByRole('status')).toContainText('reserve bell');
 	await expect(page.getByTestId('onboarding-step')).toHaveText('PROLOGUE · 2/4');
 	await expect(page.getByRole('heading', { name: /The gate has three answers/i })).toBeVisible();
 	await capture('gate');
@@ -71,6 +95,11 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	const firstCompanyNames = await heroes.locator('strong').allTextContents();
 	expect(new Set(firstCompanyNames).size).toBe(3);
 	await capture('company');
+	await expect(heroes.first()).toHaveAttribute('aria-selected', 'true');
+	await heroes.first().press('ArrowRight');
+	await expect(heroes.nth(1)).toHaveAttribute('aria-selected', 'true');
+	await heroes.first().click();
+	await expect(heroes.first()).toBeFocused();
 	for (let answerCount = 1; answerCount <= 3; answerCount += 1) {
 		await page.getByTestId('ask-first-question').click();
 		await expect(heroes.filter({ hasText: 'answered' })).toHaveCount(answerCount);
@@ -94,22 +123,18 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	await page.getByRole('button', { name: 'Pause menu' }).click();
 	const pauseMenu = page.getByRole('dialog', { name: 'Paused campaign menu' });
 	await expect(pauseMenu).toBeVisible();
+	await expect(pauseMenu).toBeFocused();
 	await expect(pauseMenu).toContainText('the server-owned settlement clock continues');
 	await expect(page.getByTestId('campaign-objectives').locator('article')).toHaveCount(7);
 	await expect(page.getByTestId('campaign-objectives').locator('article.complete')).toHaveCount(4);
 	await capture('pause');
 	await pauseMenu.getByRole('button', { name: 'Settings', exact: true }).click();
-	await expect(pauseMenu.getByRole('button', { name: 'Large', exact: true })).toHaveAttribute(
-		'aria-pressed',
-		'true'
-	);
-	await expect(pauseMenu.getByRole('button', { name: 'Reduced', exact: true })).toHaveAttribute(
-		'aria-pressed',
-		'true'
-	);
+	await expect(pauseMenu.getByRole('radio', { name: 'Large', exact: true })).toBeChecked();
+	await expect(pauseMenu.getByRole('radio', { name: 'Reduced', exact: true })).toBeChecked();
 	await expect(
-		pauseMenu.getByRole('button', { name: '5-second handoff', exact: true })
-	).toHaveAttribute('aria-pressed', 'true');
+		pauseMenu.getByRole('radio', { name: '5-second handoff', exact: true })
+	).toBeChecked();
+	await expect(pauseMenu.getByRole('radio', { name: 'Full mix', exact: true })).toBeChecked();
 
 	await pauseMenu.getByRole('button', { name: 'Restart same seed', exact: true }).click();
 	await pauseMenu.getByRole('button', { name: 'Confirm restart', exact: true }).click();
