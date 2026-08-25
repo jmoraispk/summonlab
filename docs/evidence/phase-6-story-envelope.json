@@ -1,0 +1,223 @@
+{
+	"schemaVersion": "story-envelope-report-v1",
+	"generatorVersion": "story-envelope-generator-v1",
+	"envelopeId": "first-band-unclaimed-authority",
+	"contentVersion": "tower-band-01-story-v1",
+	"contentHash": "e7b59f5c06e4549fb542b40bf0d64f54da87428bbd1fb82b98ebf69dc50b1e6d",
+	"recomputedContentHash": "e7b59f5c06e4549fb542b40bf0d64f54da87428bbd1fb82b98ebf69dc50b1e6d",
+	"strictRecomputeMatches": true,
+	"title": "The Authority No One Gave You",
+	"theme": "Authority begins as an emergency claim, becomes a burden shared with strangers, and is judged by preparation, trust, and who survives its exercise.",
+	"emotionalQuestion": "Will the summoned company obey because the Master is strong, cooperate because the settlement needs them, or decide that authority must be earned?",
+	"worldLaws": [
+		{
+			"lawId": "death-is-permanent",
+			"statement": "A dead hero or Master cannot be restored by story direction or mission reward.",
+			"enforcedBy": "engine"
+		},
+		{
+			"lawId": "retreat-remains-history",
+			"statement": "Retreat ends an attempt but preserves its bodily, social, and informational consequences.",
+			"enforcedBy": "aftermath"
+		},
+		{
+			"lawId": "knowledge-has-a-holder",
+			"statement": "A discovery may influence a later beat only through a living character who holds its evidence.",
+			"enforcedBy": "knowledge"
+		},
+		{
+			"lawId": "objectives-remain-authored",
+			"statement": "Optional expression and complications cannot replace a floor primary objective.",
+			"enforcedBy": "content"
+		},
+		{
+			"lawId": "rewards-follow-extraction",
+			"statement": "Only authored triggers and successful extraction can grant the fixed band rewards.",
+			"enforcedBy": "engine"
+		}
+	],
+	"openingFacts": [
+		"Hearth 01 is a walled settlement with no government and only the systems the Master has restored.",
+		"New summons arrive as adults without a shared history or automatic recognition of the Master.",
+		"The Endless Tower is the only known route to the First Ember and the power the settlement needs."
+	],
+	"floors": [
+		{
+			"floor": 1,
+			"missionId": "tower-floor-01",
+			"displayName": "The Unlit Muster",
+			"narrativeJob": "Establish the need and ask who may command.",
+			"mechanicalJob": "Introduce knowledge boundaries and the First Ember.",
+			"requiredBeatCount": 5,
+			"optionalBeatCount": 2,
+			"patchSlotId": "between-need-and-opposition",
+			"openingTitle": "The first company seal",
+			"finaleTitle": "What crossed back"
+		},
+		{
+			"floor": 2,
+			"missionId": "tower-floor-02",
+			"displayName": "The Broken Procession",
+			"narrativeJob": "Complicate strength with mutual dependence.",
+			"mechanicalJob": "Require formation and a second capability.",
+			"requiredBeatCount": 5,
+			"optionalBeatCount": 2,
+			"patchSlotId": "floor-two-between-pressure-and-opposition",
+			"openingTitle": "The empty center",
+			"finaleTitle": "Return in order"
+		},
+		{
+			"floor": 3,
+			"missionId": "tower-floor-03",
+			"displayName": "The Red Tithe",
+			"narrativeJob": "Divide protection, survival, and trust.",
+			"mechanicalJob": "Apply injury, scarcity, and retreat pressure.",
+			"requiredBeatCount": 5,
+			"optionalBeatCount": 2,
+			"patchSlotId": "floor-three-between-pressure-and-opposition",
+			"openingTitle": "Trails that turn back",
+			"finaleTitle": "No wound resets"
+		},
+		{
+			"floor": 4,
+			"missionId": "tower-floor-04",
+			"displayName": "The Severed Relay",
+			"narrativeJob": "Reveal the cost of what the company noticed.",
+			"mechanicalJob": "Test separation, preparation, and held information.",
+			"requiredBeatCount": 5,
+			"optionalBeatCount": 2,
+			"patchSlotId": "floor-four-between-pressure-and-opposition",
+			"openingTitle": "Two lines, one company",
+			"finaleTitle": "Trust has witnesses"
+		},
+		{
+			"floor": 5,
+			"missionId": "tower-floor-05",
+			"displayName": "The Living Foundry",
+			"narrativeJob": "Judge authority by preparation and consequence.",
+			"mechanicalJob": "Pay off the Warden conflict and preserve aftermath.",
+			"requiredBeatCount": 5,
+			"optionalBeatCount": 2,
+			"patchSlotId": "floor-five-between-pressure-and-opposition",
+			"openingTitle": "The furnace answers",
+			"finaleTitle": "The first band remembers"
+		}
+	],
+	"requiredBeatCount": 25,
+	"optionalBeatCount": 10,
+	"anchorCount": 25,
+	"patchSlotCount": 5,
+	"expressionHookCount": 5,
+	"rewardBudgetPoints": 1010,
+	"rewardDeclaredCost": 1010,
+	"eligibilitySnapshots": [
+		{
+			"snapshotId": "threshold",
+			"label": "Before Floor 01",
+			"unlockedFloor": 1,
+			"completedBeatCount": 0,
+			"activatedProposalIds": [],
+			"nextDefaultBeatId": "cross-the-first-threshold",
+			"eligibleBeatIds": ["cross-the-first-threshold"],
+			"eligibilityHash": "2aa7f6609aaf8aea9f74dec078ca0efacc3d8e016fb9e5d663189a309887d56e"
+		},
+		{
+			"snapshotId": "first-rule-learned",
+			"label": "After Floor 01 extraction",
+			"unlockedFloor": 2,
+			"completedBeatCount": 5,
+			"activatedProposalIds": [],
+			"nextDefaultBeatId": "floor-two-opening",
+			"eligibleBeatIds": ["floor-two-opening"],
+			"eligibilityHash": "de71be6be11ae9280498ee5f51cf4f82dd502352bec39c8c542536956401dda9"
+		},
+		{
+			"snapshotId": "relay-patch-open",
+			"label": "Floor 04 patch point",
+			"unlockedFloor": 4,
+			"completedBeatCount": 17,
+			"activatedProposalIds": ["floor-four-surface-discovery"],
+			"nextDefaultBeatId": "floor-four-confrontation",
+			"eligibleBeatIds": ["floor-four-optional-discovery", "floor-four-confrontation"],
+			"eligibilityHash": "483b9ee6e9860182a6ed0081c150c7f08a1094ad16f3a1ab1b044a809e276da8"
+		},
+		{
+			"snapshotId": "foundry-unlocked",
+			"label": "After Floor 04 extraction",
+			"unlockedFloor": 5,
+			"completedBeatCount": 20,
+			"activatedProposalIds": [],
+			"nextDefaultBeatId": "floor-five-opening",
+			"eligibleBeatIds": ["floor-five-opening"],
+			"eligibilityHash": "d77fd37b04ad04f47706122a8280134a1ae325bd5ea0e0d113407b02f335fa61"
+		}
+	],
+	"expressionProof": {
+		"hookId": "floor-four-outcome-anchor-expression",
+		"anchorId": "floor-four-outcome-anchor",
+		"immutableFact": "The Signal Dais exposes a true clue about the Floor 05 Foundry.",
+		"voices": [
+			{
+				"seed": "story-c",
+				"characterId": "c9717e2b-c871-4c98-ab71-8151ca717fbe",
+				"displayName": "Noa Quill",
+				"adultAge": 22,
+				"pronouns": "she/her",
+				"skinTone": "golden tan",
+				"hairColor": "auburn",
+				"clothColor": "#342929",
+				"accentColor": "#c56f61",
+				"primaryValue": "duty",
+				"primaryDrive": "protect",
+				"socialStyle": "direct",
+				"dailyHabit": "stretches-at-dawn",
+				"frame": "operational",
+				"spokenLine": "Then this is what matters: The Signal Dais exposes a true clue about the Floor 05 Foundry.",
+				"deliveryBrief": "Deliver the fixed fact as an actionable company constraint; add no new event or order.",
+				"habitGesture": "Rolls one shoulder as if preparing for the next effort.",
+				"selectionScore": 224
+			},
+			{
+				"seed": "story-e",
+				"characterId": "9d4449ed-9c44-485a-ab44-46c79a444534",
+				"displayName": "Rian Vey",
+				"adultAge": 29,
+				"pronouns": "she/her",
+				"skinTone": "golden tan",
+				"hairColor": "chestnut",
+				"clothColor": "#342929",
+				"accentColor": "#c56f61",
+				"primaryValue": "knowledge",
+				"primaryDrive": "prove",
+				"socialStyle": "warm",
+				"dailyHabit": "practises-knots",
+				"frame": "analytical",
+				"spokenLine": "Remember this together: The Signal Dais exposes a true clue about the Floor 05 Foundry.",
+				"deliveryBrief": "Deliver the fixed fact as evidence to interpret; distinguish observation from inference.",
+				"habitGesture": "Tightens a familiar knot while choosing the exact words.",
+				"selectionScore": 194
+			}
+		],
+		"factsPreserved": true,
+		"voicesDiffer": true,
+		"unknownKnowledgeProducesNoVoice": true
+	},
+	"finaleConstraints": [
+		{
+			"constraintId": "warden-conflict-cannot-be-skipped",
+			"summary": "The company must confront and defeat the authored Foundry Warden.",
+			"enforcedBy": "encounter"
+		},
+		{
+			"constraintId": "archive-truth-survives-victory",
+			"summary": "Victory reveals that Hearth 01 was not the first settlement.",
+			"enforcedBy": "aftermath"
+		},
+		{
+			"constraintId": "band-rewards-require-extraction",
+			"summary": "The relight core and archive fragment become canonical only through extraction.",
+			"enforcedBy": "extraction"
+		}
+	],
+	"evidenceHash": "406f66a1b90696deda5f8957b4956772736d31dca145731d8f0f6ec93d7c0941"
+}

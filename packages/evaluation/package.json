@@ -12,6 +12,7 @@
 	},
 	"dependencies": {
 		"@summonlab/characters": "workspace:*",
+		"@summonlab/content": "workspace:*",
 		"@summonlab/contracts": "workspace:*",
 		"@summonlab/engine": "workspace:*",
 		"@summonlab/policies": "workspace:*",

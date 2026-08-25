@@ -1109,7 +1109,13 @@ Estimated engineering effort: **2–3 weeks**.
   exclusive to the new attempt; reject leaked or misattributed records; persist and strictly replay
   the Floor 04 retreat → Floor 05 preparation boundary; preserve v16/v17 payload dispatch; export a
   checked deterministic report; and ship the development-only `/attempt-aftermath` proof page;
-- `MIS-011` implement band story envelopes, beat eligibility, and character-aware expression hooks;
+- `MIS-011` complete: compile the five runtime mission bindings into the content-addressed
+  `tower-band-01-story-v1` envelope with fixed world laws, opening state, 35 beats, a causal
+  25-beat default route, immutable anchors, mission-scoped catalogs, bounded patch slots, finale
+  constraints, and exact reward budget; derive deterministic eligibility from validated history;
+  bind expression only to living holders of a fact; preserve that fact verbatim while personality,
+  values, drives, social style, and habits select its frame; export checked two-summon evidence and
+  ship the development-only `/story-envelope` inspector;
 - `MIS-012` implement Wait, Countdown, Step, and Continuous Master decision timing;
 - `MIS-013` implement directed and seeded-random fallbacks with pause and safety stops;
 - `MIS-014` add the player journal with reward, experience, level, and party-progress deltas;
@@ -1209,8 +1215,8 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. Phase 6 is complete through `MIS-010A`; the next engineering
-slice is `MIS-011`: band story envelopes, beat eligibility, and character-aware expression hooks.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-011`; the next engineering
+slice is `MIS-012`: Wait, Countdown, Step, and Continuous Master decision timing.
 
 ## Accepted product decisions — 2026-08-23
 

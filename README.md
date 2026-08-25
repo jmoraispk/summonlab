@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through the versioned cross-attempt aftermath boundary._
+_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through the deterministic first-band story envelope._
 
 </div>
 
@@ -170,6 +170,19 @@ streams keep their original payload contracts.
 
 Run `pnpm validate:attempt-aftermath` to regenerate and compare the machine-readable proof at
 `docs/evidence/phase-6-attempt-aftermath.json`.
+
+### First-band story envelope
+
+`/story-envelope` compiles Floors 01–05 into one content-addressed narrative spine: 25 required
+beats, ten optional beats, five bounded patch slots, five immutable world laws, and the exact
+1,010-point reward budget. Eligibility is derived only from completed causal history and an authored
+proposal. Character expression is limited to living holders of the relevant fact; two deterministic
+summons voice the same Floor 04 anchor differently while preserving it verbatim.
+
+![First-band story envelope checkpoint](docs/evidence/phase-6-story-envelope.png)
+
+Run `pnpm validate:story-envelope` to recompute and compare the checked report at
+`docs/evidence/phase-6-story-envelope.json`.
 
 ### Mortal Master checkpoint
 

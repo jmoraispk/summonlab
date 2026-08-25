@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { CharacterMindSchema } from './character.js';
 import { ContentVersionSchema, StateHashSchema } from './shared.js';
 
 export const MissionSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u);
@@ -380,6 +381,14 @@ export const MissionStoryBeatSchema = z
 	})
 	.strict();
 
+export const StoryForbiddenChangesSchema = z.tuple([
+	z.literal('world-laws'),
+	z.literal('primary-objective'),
+	z.literal('arena-truth'),
+	z.literal('reward-budget'),
+	z.literal('required-anchors')
+]);
+
 export const MissionStoryEnvelopeSchema = z
 	.object({
 		storySpineId: MissionSlugSchema,
@@ -425,13 +434,516 @@ export const MissionStoryEnvelopeSchema = z
 					.strict()
 			)
 			.max(8),
-		forbiddenChanges: z.tuple([
-			z.literal('world-laws'),
-			z.literal('primary-objective'),
-			z.literal('arena-truth'),
-			z.literal('reward-budget'),
-			z.literal('required-anchors')
-		])
+		forbiddenChanges: StoryForbiddenChangesSchema
+	})
+	.strict();
+
+export const StoryExpressionFrameSchema = z.enum([
+	'operational',
+	'analytical',
+	'relational',
+	'defiant',
+	'cautious',
+	'plain'
+]);
+
+export const TowerBandStoryBeatSchema = z
+	.object({
+		beatId: MissionSlugSchema,
+		missionId: MissionSlugSchema,
+		floor: z.number().int().min(1).max(100),
+		floorInBand: z.number().int().min(1).max(5),
+		kind: MissionStoryBeatSchema.shape.kind,
+		required: z.boolean(),
+		title: z.string().min(1).max(120),
+		summary: z.string().min(1).max(360),
+		eligibleAfterBeatIds: z.array(MissionSlugSchema).max(12),
+		anchorId: MissionSlugSchema.nullable()
+	})
+	.strict();
+
+export const TowerBandStoryAnchorSchema = z
+	.object({
+		anchorId: MissionSlugSchema,
+		order: z.number().int().positive().max(100),
+		missionId: MissionSlugSchema,
+		floor: z.number().int().min(1).max(100),
+		beatId: MissionSlugSchema,
+		immutableFact: z.string().min(1).max(360)
+	})
+	.strict();
+
+export const TowerBandStoryProposalSchema = z
+	.object({
+		proposalId: MissionSlugSchema,
+		missionId: MissionSlugSchema,
+		floor: z.number().int().min(1).max(100),
+		kind: z.enum(['optional-beat', 'complication', 'role-expression']),
+		beatId: MissionSlugSchema,
+		summary: z.string().min(1).max(320)
+	})
+	.strict();
+
+export const TowerBandStoryPatchSlotSchema = z
+	.object({
+		slotId: MissionSlugSchema,
+		missionId: MissionSlugSchema,
+		floor: z.number().int().min(1).max(100),
+		afterAnchorId: MissionSlugSchema,
+		beforeAnchorId: MissionSlugSchema,
+		allowedProposalIds: z.array(MissionSlugSchema).min(1).max(8),
+		maximumSelections: z.number().int().min(1).max(3)
+	})
+	.strict();
+
+export const StoryExpressionHookSchema = z
+	.object({
+		hookId: MissionSlugSchema,
+		anchorId: MissionSlugSchema,
+		purpose: z.enum(['warning', 'interpretation', 'reflection', 'challenge', 'testimony']),
+		allowedFrames: z.array(StoryExpressionFrameSchema).min(1).max(6),
+		preferredValues: z.array(CharacterMindSchema.shape.primaryValue).max(6),
+		preferredDrives: z.array(CharacterMindSchema.shape.primaryDrive).max(6)
+	})
+	.strict()
+	.superRefine((hook, context) => {
+		for (const values of [hook.allowedFrames, hook.preferredValues, hook.preferredDrives]) {
+			if (new Set(values).size !== values.length) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Story expression hook values must be unique'
+				});
+			}
+		}
+	});
+
+export const TowerBandStoryEnvelopeSchema = z
+	.object({
+		schemaVersion: z.literal('tower-band-story-envelope-v1'),
+		contentVersion: ContentVersionSchema,
+		envelopeId: MissionSlugSchema,
+		towerBand: z
+			.object({
+				band: z.number().int().min(1).max(20),
+				firstFloor: z.number().int().min(1).max(100),
+				lastFloor: z.number().int().min(1).max(100)
+			})
+			.strict(),
+		storySpineId: MissionSlugSchema,
+		title: z.string().min(1).max(160),
+		theme: z.string().min(1).max(320),
+		emotionalQuestion: z.string().min(1).max(320),
+		worldLaws: z
+			.array(
+				z
+					.object({
+						lawId: MissionSlugSchema,
+						statement: z.string().min(1).max(360),
+						enforcedBy: z.enum(['engine', 'content', 'knowledge', 'aftermath'])
+					})
+					.strict()
+			)
+			.min(3)
+			.max(20),
+		openingState: z
+			.object({
+				settlementId: MissionSlugSchema,
+				establishedFacts: z.array(z.string().min(1).max(360)).min(1).max(12),
+				unresolvedGoalIds: z.array(MissionSlugSchema).min(1).max(12)
+			})
+			.strict(),
+		beats: z.array(TowerBandStoryBeatSchema).min(15).max(100),
+		defaultBeatOrder: z.array(MissionSlugSchema).min(15).max(100),
+		anchors: z.array(TowerBandStoryAnchorSchema).min(10).max(100),
+		proposals: z.array(TowerBandStoryProposalSchema).max(50),
+		patchSlots: z.array(TowerBandStoryPatchSlotSchema).max(20),
+		expressionHooks: z.array(StoryExpressionHookSchema).min(1).max(30),
+		finaleConstraints: z
+			.array(
+				z
+					.object({
+						constraintId: MissionSlugSchema,
+						summary: z.string().min(1).max(360),
+						requiredBeatIds: z.array(MissionSlugSchema).min(1).max(12),
+						enforcedBy: z.enum(['objective', 'encounter', 'extraction', 'aftermath'])
+					})
+					.strict()
+			)
+			.min(2)
+			.max(12),
+		contentCatalog: z
+			.object({
+				missionBindings: z
+					.array(
+						z
+							.object({
+								missionId: MissionSlugSchema,
+								floor: z.number().int().min(1).max(100),
+								contentVersion: ContentVersionSchema,
+								contentHash: StateHashSchema,
+								primaryObjectiveId: MissionSlugSchema
+							})
+							.strict()
+					)
+					.length(5),
+				discoveries: z
+					.array(
+						z
+							.object({
+								missionId: MissionSlugSchema,
+								discoveryId: MissionSlugSchema
+							})
+							.strict()
+					)
+					.max(100),
+				enemyPolicyIds: z.array(MissionSlugSchema).max(50),
+				rewardGrants: z
+					.array(
+						z
+							.object({
+								missionId: MissionSlugSchema,
+								grantId: MissionSlugSchema
+							})
+							.strict()
+					)
+					.max(100)
+			})
+			.strict(),
+		rewardBudget: z
+			.object({
+				budgetPoints: z.number().int().positive(),
+				declaredCost: z.number().int().nonnegative()
+			})
+			.strict(),
+		forbiddenChanges: StoryForbiddenChangesSchema,
+		contentHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((envelope, context) => {
+		const unique = (values: readonly string[], label: string) => {
+			if (new Set(values).size !== values.length) {
+				context.addIssue({ code: 'custom', message: `${label} must be unique` });
+			}
+		};
+		unique(
+			envelope.worldLaws.map((law) => law.lawId),
+			'Story world law ids'
+		);
+		unique(envelope.openingState.establishedFacts, 'Story opening facts');
+		unique(envelope.openingState.unresolvedGoalIds, 'Story opening goals');
+		unique(
+			envelope.beats.map((beat) => beat.beatId),
+			'Band story beat ids'
+		);
+		unique(envelope.defaultBeatOrder, 'Band default beat order');
+		unique(
+			envelope.anchors.map((anchor) => anchor.anchorId),
+			'Band story anchor ids'
+		);
+		unique(
+			envelope.anchors.map((anchor) => String(anchor.order)),
+			'Band story anchor order'
+		);
+		unique(
+			envelope.proposals.map((proposal) => proposal.proposalId),
+			'Band story proposal ids'
+		);
+		unique(
+			envelope.patchSlots.map((slot) => slot.slotId),
+			'Band story patch slot ids'
+		);
+		unique(
+			envelope.expressionHooks.map((hook) => hook.hookId),
+			'Story expression hook ids'
+		);
+		unique(
+			envelope.finaleConstraints.map((constraint) => constraint.constraintId),
+			'Story finale constraint ids'
+		);
+		unique(
+			envelope.contentCatalog.missionBindings.map((binding) => binding.missionId),
+			'Story mission bindings'
+		);
+		unique(
+			envelope.contentCatalog.discoveries.map(
+				(discovery) => `${discovery.missionId}:${discovery.discoveryId}`
+			),
+			'Story discovery bindings'
+		);
+		unique(envelope.contentCatalog.enemyPolicyIds, 'Story enemy policy ids');
+		unique(
+			envelope.contentCatalog.rewardGrants.map((grant) => `${grant.missionId}:${grant.grantId}`),
+			'Story reward bindings'
+		);
+
+		const expectedFirstFloor = (envelope.towerBand.band - 1) * 5 + 1;
+		if (
+			envelope.towerBand.firstFloor !== expectedFirstFloor ||
+			envelope.towerBand.lastFloor !== expectedFirstFloor + 4
+		) {
+			context.addIssue({ code: 'custom', message: 'Story band floor range is inconsistent' });
+		}
+		const boundFloors = envelope.contentCatalog.missionBindings
+			.map((binding) => binding.floor)
+			.sort((left, right) => left - right);
+		if (
+			boundFloors.join(',') !==
+			[0, 1, 2, 3, 4].map((offset) => expectedFirstFloor + offset).join(',')
+		) {
+			context.addIssue({ code: 'custom', message: 'Story band must bind five consecutive floors' });
+		}
+
+		const bindings = new Map(
+			envelope.contentCatalog.missionBindings.map((binding) => [binding.missionId, binding])
+		);
+		const beats = new Map(envelope.beats.map((beat) => [beat.beatId, beat]));
+		const defaultIndexes = new Map(
+			envelope.defaultBeatOrder.map((beatId, index) => [beatId, index])
+		);
+		for (const beat of envelope.beats) {
+			const binding = bindings.get(beat.missionId);
+			if (!binding || binding.floor !== beat.floor) {
+				context.addIssue({
+					code: 'custom',
+					message: `Story beat binding is invalid: ${beat.beatId}`
+				});
+			}
+			for (const dependencyId of beat.eligibleAfterBeatIds) {
+				if (!beats.has(dependencyId) || dependencyId === beat.beatId) {
+					context.addIssue({
+						code: 'custom',
+						message: `Band story dependency is invalid: ${beat.beatId}`
+					});
+				}
+				const dependencyIndex = defaultIndexes.get(dependencyId);
+				const beatIndex = defaultIndexes.get(beat.beatId);
+				if (
+					dependencyIndex !== undefined &&
+					beatIndex !== undefined &&
+					dependencyIndex >= beatIndex
+				) {
+					context.addIssue({
+						code: 'custom',
+						message: `Band default route violates dependency order: ${beat.beatId}`
+					});
+				}
+			}
+			if (beat.required && !defaultIndexes.has(beat.beatId)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Required band beat is absent from the default route: ${beat.beatId}`
+				});
+			}
+		}
+		for (const beatId of envelope.defaultBeatOrder) {
+			const beat = beats.get(beatId);
+			if (!beat) {
+				context.addIssue({ code: 'custom', message: `Band default beat is unknown: ${beatId}` });
+			} else if (!beat.required) {
+				context.addIssue({
+					code: 'custom',
+					message: `Band default route cannot contain an optional beat: ${beatId}`
+				});
+			}
+		}
+		const visiting = new Set<string>();
+		const visited = new Set<string>();
+		const visitBeat = (beatId: string): boolean => {
+			if (visiting.has(beatId)) return false;
+			if (visited.has(beatId)) return true;
+			visiting.add(beatId);
+			for (const dependencyId of beats.get(beatId)?.eligibleAfterBeatIds ?? []) {
+				if (!visitBeat(dependencyId)) return false;
+			}
+			visiting.delete(beatId);
+			visited.add(beatId);
+			return true;
+		};
+		if (envelope.beats.some((beat) => !visitBeat(beat.beatId))) {
+			context.addIssue({ code: 'custom', message: 'Band story dependency graph contains a cycle' });
+		}
+
+		const anchors = new Map(envelope.anchors.map((anchor) => [anchor.anchorId, anchor]));
+		const sortedAnchors = [...envelope.anchors].sort((left, right) => left.order - right.order);
+		if (sortedAnchors.some((anchor, index) => anchor.order !== index + 1)) {
+			context.addIssue({ code: 'custom', message: 'Band story anchor order must be contiguous' });
+		}
+		for (const anchor of envelope.anchors) {
+			const beat = beats.get(anchor.beatId);
+			if (
+				!beat?.required ||
+				beat.anchorId !== anchor.anchorId ||
+				beat.missionId !== anchor.missionId ||
+				beat.floor !== anchor.floor
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: `Band story anchor binding is invalid: ${anchor.anchorId}`
+				});
+			}
+		}
+		const proposals = new Map(
+			envelope.proposals.map((proposal) => [proposal.proposalId, proposal])
+		);
+		for (const proposal of envelope.proposals) {
+			const beat = beats.get(proposal.beatId);
+			if (
+				beat?.required !== false ||
+				beat.missionId !== proposal.missionId ||
+				beat.floor !== proposal.floor
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: `Band story proposal binding is invalid: ${proposal.proposalId}`
+				});
+			}
+		}
+		for (const slot of envelope.patchSlots) {
+			const after = anchors.get(slot.afterAnchorId);
+			const before = anchors.get(slot.beforeAnchorId);
+			if (
+				!after ||
+				!before ||
+				after.order >= before.order ||
+				after.missionId !== slot.missionId ||
+				before.missionId !== slot.missionId ||
+				after.floor !== slot.floor ||
+				before.floor !== slot.floor ||
+				slot.maximumSelections > slot.allowedProposalIds.length
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: `Band story patch boundary is invalid: ${slot.slotId}`
+				});
+			}
+			for (const proposalId of slot.allowedProposalIds) {
+				const proposal = proposals.get(proposalId);
+				if (!proposal || proposal.missionId !== slot.missionId) {
+					context.addIssue({
+						code: 'custom',
+						message: `Band story patch proposal is invalid: ${slot.slotId}`
+					});
+				}
+			}
+		}
+		for (const hook of envelope.expressionHooks) {
+			if (!anchors.has(hook.anchorId)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Story expression anchor is unknown: ${hook.hookId}`
+				});
+			}
+		}
+		for (const constraint of envelope.finaleConstraints) {
+			if (
+				constraint.requiredBeatIds.some(
+					(beatId) =>
+						!beats.get(beatId)?.required ||
+						beats.get(beatId)?.floor !== envelope.towerBand.lastFloor
+				)
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: `Story finale constraint requires a non-finale beat: ${constraint.constraintId}`
+				});
+			}
+		}
+		for (const discovery of envelope.contentCatalog.discoveries) {
+			if (!bindings.has(discovery.missionId)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Story discovery binding is unknown: ${discovery.missionId}`
+				});
+			}
+		}
+		for (const grant of envelope.contentCatalog.rewardGrants) {
+			if (!bindings.has(grant.missionId)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Story reward binding is unknown: ${grant.missionId}`
+				});
+			}
+		}
+		if (envelope.rewardBudget.declaredCost > envelope.rewardBudget.budgetPoints) {
+			context.addIssue({ code: 'custom', message: 'Band story rewards exceed their fixed budget' });
+		}
+	});
+
+export const StoryBeatHistorySchema = z
+	.object({
+		historyVersion: z.literal('story-beat-history-v1'),
+		unlockedFloor: z.number().int().min(1).max(100),
+		completedBeatIds: z.array(MissionSlugSchema).max(100),
+		activatedProposalIds: z.array(MissionSlugSchema).max(50)
+	})
+	.strict()
+	.superRefine((history, context) => {
+		if (new Set(history.completedBeatIds).size !== history.completedBeatIds.length) {
+			context.addIssue({ code: 'custom', message: 'Completed story beats must be unique' });
+		}
+		if (new Set(history.activatedProposalIds).size !== history.activatedProposalIds.length) {
+			context.addIssue({ code: 'custom', message: 'Activated story proposals must be unique' });
+		}
+	});
+
+export const StoryBeatEligibilityRecordSchema = z
+	.object({
+		beatId: MissionSlugSchema,
+		missionId: MissionSlugSchema,
+		floor: z.number().int().min(1).max(100),
+		required: z.boolean(),
+		status: z.enum([
+			'completed',
+			'eligible',
+			'locked-floor',
+			'locked-dependency',
+			'optional-dormant'
+		]),
+		missingDependencyIds: z.array(MissionSlugSchema).max(12),
+		activatedByProposalId: MissionSlugSchema.nullable()
+	})
+	.strict();
+
+export const StoryBeatEligibilityReportSchema = z
+	.object({
+		reportVersion: z.literal('story-beat-eligibility-v1'),
+		envelopeId: MissionSlugSchema,
+		envelopeContentHash: StateHashSchema,
+		history: StoryBeatHistorySchema,
+		records: z.array(StoryBeatEligibilityRecordSchema).min(15).max(100),
+		nextDefaultBeatId: MissionSlugSchema.nullable()
+	})
+	.strict();
+
+export const StoryExpressionCastMemberSchema = z
+	.object({
+		characterId: z.string().uuid(),
+		displayName: z.string().min(1).max(80),
+		lifeState: z.enum(['active', 'dead']),
+		mind: CharacterMindSchema,
+		knownAnchorIds: z.array(MissionSlugSchema).max(100)
+	})
+	.strict()
+	.superRefine((member, context) => {
+		if (new Set(member.knownAnchorIds).size !== member.knownAnchorIds.length) {
+			context.addIssue({ code: 'custom', message: 'Known story anchors must be unique' });
+		}
+	});
+
+export const StoryExpressionResolutionSchema = z
+	.object({
+		resolutionVersion: z.literal('story-expression-resolution-v1'),
+		hookId: MissionSlugSchema,
+		anchorId: MissionSlugSchema,
+		immutableFact: z.string().min(1).max(360),
+		speakerId: z.string().uuid(),
+		speakerName: z.string().min(1).max(80),
+		frame: StoryExpressionFrameSchema,
+		spokenLine: z.string().min(1).max(700),
+		deliveryBrief: z.string().min(1).max(360),
+		habitGesture: z.string().min(1).max(240),
+		selectionScore: z.number().int(),
+		selectionBasis: z.array(z.string().min(1).max(120)).min(1).max(12)
 	})
 	.strict();
 
@@ -1105,6 +1617,14 @@ export type MissionDiscoveryAffordance = z.infer<typeof MissionDiscoveryAffordan
 export type MissionMonsterPolicyCatalog = z.infer<typeof MissionMonsterPolicyCatalogSchema>;
 export type MissionMonsterPolicyDefinition = z.infer<typeof MissionMonsterPolicyDefinitionSchema>;
 export type MissionPackage = z.infer<typeof MissionPackageSchema>;
+export type StoryBeatEligibilityReport = z.infer<typeof StoryBeatEligibilityReportSchema>;
+export type StoryBeatHistory = z.infer<typeof StoryBeatHistorySchema>;
+export type StoryExpressionCastMember = z.infer<typeof StoryExpressionCastMemberSchema>;
+export type StoryExpressionFrame = z.infer<typeof StoryExpressionFrameSchema>;
+export type StoryExpressionResolution = z.infer<typeof StoryExpressionResolutionSchema>;
+export type TowerBandStoryAnchor = z.infer<typeof TowerBandStoryAnchorSchema>;
+export type TowerBandStoryBeat = z.infer<typeof TowerBandStoryBeatSchema>;
+export type TowerBandStoryEnvelope = z.infer<typeof TowerBandStoryEnvelopeSchema>;
 export type PortalMissionDeposit = z.infer<typeof PortalMissionDepositSchema>;
 export type PortalMissionPackage = z.infer<typeof PortalMissionPackageSchema>;
 export type PortalMissionRules = z.infer<typeof PortalMissionRulesSchema>;

@@ -292,7 +292,7 @@ artifacts and cannot promote a partial corpus run.
 
 ## Phase 6 — tower and portal mission loop
 
-Status: **in progress**. `MIS-001` through `MIS-010A` are complete. The first five
+Status: **in progress**. `MIS-001` through `MIS-011` are complete. The first five
 floors now have versioned content packages; Floor 01 has an authoritative run lifecycle, bounded
 autonomous turns, and deterministic monster duties. Authored truth remains distinct from
 visited/discovered knowledge; the browser can reserve a real party,
@@ -313,6 +313,7 @@ a state authority.
 | `MIS-009` | Complete: opt-in `engine-v17` makes the manually controlled Master physically vulnerable inside mission rounds; records exposed harm in `mission-aftermath-v2` with exact source, location, health, injury, and co-located witness evidence; atomically commits Master death, attempt death, and whole-run game over; cancels unfinished hero activity, travel, routines, and daily plans; removes every actor's legal actions while retaining strict replay; and telegraphs Red Slag before commitment; `/last-command` launches the database-backed terminal checkpoint | [Master game-over evidence](evidence/phase-6-master-game-over.png), contract/context/engine/database/browser tests, 47.7 KB measured mission-route JavaScript, ADR 0038 |
 | `MIS-010` | Complete: the credential-free Foundry matrix prepares four rank-10 heroes, executes Hammer Line, Split Cooling, and Full Quench only through legal engine commands, and proves eight successful fixed regression seeds per doctrine; all 24 companies survive and extract, all 24 event streams strictly replay, and the intended lit/cooling/quenched Warden state is explicit; `/foundry-trials` compares route topology, combat cost, health floor, and representative checkpoints while stating that the matrix is not a win-rate estimate | [Foundry strategy evidence](evidence/phase-6-foundry-strategies.png), [machine-readable report](evidence/phase-6-foundry-strategies.json), evaluation/browser tests, ADR 0039 |
 | `MIS-010A` | Complete: opt-in `engine-v18` / `mission-aftermath-v3` binds every consequence to one source attempt; keeps the active ledger exclusive to the current attempt; archives the prior terminal attempt with its mission binding, outcome, final round, timestamps, and consequences; rejects cross-attempt leakage and false provenance; permits a later mission after a v18 success or retreat; strictly replays the real Floor 04 wound → retreat → Floor 05 preparation boundary while preserving v16/v17 dispatch; `/attempt-aftermath` visualizes the checked proof | [Visual attempt proof](evidence/phase-6-attempt-aftermath.png), [machine-readable report](evidence/phase-6-attempt-aftermath.json), engine/evaluation/database/browser tests, `pnpm validate:attempt-aftermath`, ADR 0040 |
+| `MIS-011` | Complete: `tower-band-01-story-v1` binds the five runtime floor packages into one content-addressed envelope with five immutable laws, opening state, 35 beats, a causal 25-beat default route, 25 anchors, ten optional proposals, five bounded patch slots, five expression hooks, three finale constraints, mission-scoped catalogs, and an exact 1,010-point budget; deterministic eligibility rejects impossible history and over-selection; only living holders may voice an anchor, and personality changes frame, prefix, and habit gesture without changing its fact; `/story-envelope` compares two reproducible summons | [Visual story proof](evidence/phase-6-story-envelope.png), [machine-readable report](evidence/phase-6-story-envelope.json), contract/content/evaluation/browser tests, `pnpm validate:story-envelope`, ADR 0041 |
 
 ### Reproduce the checkpoint
 
@@ -374,10 +375,18 @@ IDs differ, and the page reports 13 strictly replayed events with zero mismatche
 remain persistent on the body while its mission-event provenance remains inside the Floor 04
 archive.
 
+Run `pnpm validate:story-envelope`, keep `pnpm dev:app` running, and open
+`http://localhost:5173/story-envelope`. Select all five floors and confirm each keeps five required
+beats, two optional beats, one bounded slot, and a distinct narrative/mechanical job. Switch among
+the four eligibility checkpoints; the Floor 04 checkpoint must expose exactly one activated optional
+beat without displacing the required confrontation. Compare Noa Quill and Rian Vey: their frames,
+prefixes, and habit gestures differ, while both lines end with the exact Signal Dais fact. The
+knowledge gate must remain a pass and the fixed reward ledger must show zero drift.
+
 ## Next active engineering slice
 
-Begin `MIS-011`: implement band story envelopes, beat eligibility, and character-aware expression
-hooks on top of the now-versioned attempt history.
+Begin `MIS-012`: implement Wait, Countdown, Step, and Continuous Master decision timing without
+changing summoned-hero autonomy or the authoritative mission action boundary.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

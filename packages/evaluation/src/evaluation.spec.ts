@@ -7,9 +7,11 @@ import {
 	AgentEvaluationReportSchema,
 	AttemptAftermathReportSchema,
 	FoundryStrategyReportSchema,
+	StoryEnvelopeReportSchema,
 	createAgentEvaluationCorpus,
 	createAgentEvaluationReport,
 	generateAttemptAftermathReport,
+	generateStoryEnvelopeReport,
 	createFoundryStrategyReport,
 	createRecordedProviderRun,
 	evaluateRecordedProviderRun,
@@ -17,6 +19,34 @@ import {
 	verifyAgentEvaluationReport,
 	verifyRecordedProviderRun
 } from './index.js';
+
+describe('first-band story envelope', () => {
+	it('recomputes one fixed spine while two real summons express the same fact differently', async () => {
+		const left = await generateStoryEnvelopeReport();
+		const right = await generateStoryEnvelopeReport();
+
+		expect(left).toEqual(right);
+		expect(StoryEnvelopeReportSchema.parse(left)).toEqual(left);
+		expect(left).toMatchObject({
+			strictRecomputeMatches: true,
+			requiredBeatCount: 25,
+			optionalBeatCount: 10,
+			anchorCount: 25,
+			patchSlotCount: 5,
+			rewardBudgetPoints: 1010,
+			rewardDeclaredCost: 1010,
+			expressionProof: {
+				factsPreserved: true,
+				voicesDiffer: true,
+				unknownKnowledgeProducesNoVoice: true
+			}
+		});
+		expect(new Set(left.expressionProof.voices.map((voice) => voice.frame))).toEqual(
+			new Set(['operational', 'analytical'])
+		);
+		expect(left.eligibilitySnapshots[2]?.activatedProposalIds).toHaveLength(1);
+	});
+});
 
 describe('attempt aftermath boundary', () => {
 	it('keeps the archived Floor 04 wound out of the active Floor 05 attempt', () => {

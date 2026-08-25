@@ -234,6 +234,9 @@ importers:
       '@summonlab/characters':
         specifier: workspace:*
         version: link:../characters
+      '@summonlab/content':
+        specifier: workspace:*
+        version: link:../content
       '@summonlab/contracts':
         specifier: workspace:*
         version: link:../contracts
