@@ -68,6 +68,7 @@ export interface CreateProofRunInput {
 	readonly developmentMissionScenario?: {
 		readonly initialMissionId: string;
 		readonly availableMissionIds: readonly string[];
+		readonly enableMissionAftermath?: boolean;
 	};
 }
 

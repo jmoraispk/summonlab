@@ -1087,7 +1087,12 @@ Estimated engineering effort: **2–3 weeks**.
   iron only in the separate extraction event; lose cargo explicitly on retreat or collapse; include
   portal pressure and resources in each hero packet; strictly replay the whole transition; and ship
   a database-backed `/iron-moon` browser checkpoint;
-- `MIS-008` implement injury, death, equipment, memory, and relationship aftermath;
+- `MIS-008` complete: add opt-in `engine-v16` persistent mission consequences; spill exposed guard
+  impacts into health and equipped-item durability; derive nonfatal injuries and permanent hero
+  death in the authoritative round; store source-, location-, and witness-complete aftermath records;
+  give only surviving co-located heroes evidence-backed memories and relationship changes; include
+  those memories in future engine-owned decision context; strictly replay every physical and social
+  mutation; and ship the database-backed `/aftermath` Red Tithe browser checkpoint;
 - `MIS-009` implement Master actions and atomic game over;
 - `MIS-010` validate three floor-5 strategies and deterministic replay;
 - `MIS-011` implement band story envelopes, beat eligibility, and character-aware expression hooks;

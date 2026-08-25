@@ -11,6 +11,7 @@ import {
 	EngineGameStateV13Schema,
 	EngineGameStateV14Schema,
 	EngineGameStateV15Schema,
+	EngineGameStateV16Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
 	type ActivityKind,
@@ -600,6 +601,140 @@ describe('deterministic engine', () => {
 		const replay = replayEventsStrict(events);
 		expect(replay.verified).toBe(true);
 		expect(replay.snapshot.state).toEqual(state);
+	});
+
+	it('persists exposed mission harm, witnessed memory, equipment wear, and permadeath', () => {
+		const runId = deterministicUuid('mission-aftermath-run');
+		const heroId = deterministicUuid('mission-aftermath-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'mission-aftermath-seed',
+			heroId,
+			manifestHash: sha256Hex('mission-aftermath-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-03',
+				availableMissionIds: ['tower-floor-03'],
+				enableMissionAftermath: true
+			}
+		});
+		let state = EngineGameStateV16Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const itemId = state.heroes[heroId]!.equipment.mainHand!;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const commit = (key: string, body: object) => {
+			const result = applyCommand(state, {
+				...commandBase(state, masterId, key),
+				source: manualSource(),
+				...body
+			} as unknown as EngineCommand);
+			state = EngineGameStateV16Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		const turn = (key: string, masterActionId: string, heroActionId: string) =>
+			commit(key, {
+				commandType: 'mission.resolve.turn',
+				choices: [
+					manualMissionChoice(masterId, masterActionId),
+					scriptedMissionChoice(heroId, heroActionId)
+				]
+			});
+
+		commit('aftermath-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-03'
+		});
+		commit('aftermath-deploy', { commandType: 'mission.deploy' });
+		turn(
+			'aftermath-cut-stair',
+			'mission.move.threshold-to-cut-stair',
+			'mission.move.threshold-to-cut-stair'
+		);
+		turn(
+			'aftermath-red-gallery',
+			'mission.move.cut-stair-to-red-gallery',
+			'mission.move.cut-stair-to-red-gallery'
+		);
+		turn(
+			'aftermath-tithe-pit',
+			'mission.move.red-gallery-to-tithe-pit',
+			'mission.move.red-gallery-to-tithe-pit'
+		);
+		turn('aftermath-split-party', 'mission.move.red-gallery-to-tithe-pit', 'mission.hold');
+
+		let injuryEvent: AuthoritativeEvent | null = null;
+		for (let round = 5; round <= 12 && state.mission.attempt?.status === 'resolving'; round += 1) {
+			const heroAction = legalActions(state, heroId).find(
+				(action) =>
+					action.actionId.startsWith('mission.inspect.') ||
+					action.actionId.startsWith('mission.attack.')
+			);
+			expect(heroAction).toBeDefined();
+			const result = turn(`aftermath-pressure-${round}`, 'mission.hold', heroAction!.actionId);
+			if (!injuryEvent && state.mission.aftermath.consequences.length > 0) {
+				injuryEvent = result.events[0]!;
+				break;
+			}
+		}
+
+		expect(injuryEvent).not.toBeNull();
+		const firstConsequence = state.mission.aftermath.consequences[0]!;
+		expect(firstConsequence).toMatchObject({
+			targetHeroId: heroId,
+			nodeId: 'tithe-pit',
+			guardAfterImpact: 0,
+			damage: 25,
+			fatal: false,
+			itemWear: { itemId, durabilityBefore: 6, durabilityAfter: 5 },
+			witnesses: [expect.objectContaining({ heroId })]
+		});
+		expect(state.heroes[heroId]!.health).toBeLessThanOrEqual(75);
+		expect(state.heroes[heroId]).toMatchObject({ lifeState: 'active' });
+		expect(state.heroes[heroId]!.injuries.length).toBeGreaterThanOrEqual(1);
+		expect(state.items[itemId]!.durability).toBeLessThanOrEqual(5);
+		const injuryObservation = Object.values(state.society.observations).find(
+			(observation) => observation.kind === 'mission-injury'
+		);
+		expect(injuryObservation).toMatchObject({
+			sourceEventId: injuryEvent!.eventId,
+			observerHeroId: heroId,
+			subjectIds: [heroId, masterId]
+		});
+		const relationship = Object.values(state.society.relationships).find(
+			(candidate) => candidate.fromHeroId === heroId && candidate.toEntityId === masterId
+		)!;
+		expect(relationship.dimensions.trust).toBeLessThanOrEqual(-3);
+		expect(relationship.dimensions.fear).toBeGreaterThanOrEqual(2);
+		expect(relationship.dimensions.resentment).toBeGreaterThanOrEqual(2);
+		expect(
+			relationship.evidence.some(
+				(evidence) => evidence.observationId === injuryObservation?.observationId
+			)
+		).toBe(true);
+
+		for (let round = 13; round <= 20 && state.mission.attempt?.status === 'resolving'; round += 1) {
+			const heroAction = legalActions(state, heroId).find((action) =>
+				action.actionId.startsWith('mission.attack.')
+			);
+			expect(heroAction).toBeDefined();
+			turn(`aftermath-fatal-${round}`, 'mission.hold', heroAction!.actionId);
+		}
+
+		expect(state.mission.attempt).toMatchObject({ status: 'death', outcome: 'death' });
+		expect(state.heroes[heroId]).toMatchObject({ health: 0, lifeState: 'dead' });
+		expect(state.mission.aftermath.consequences.at(-1)).toMatchObject({
+			targetHeroId: heroId,
+			fatal: true,
+			healthAfter: 0,
+			injury: null
+		});
+		expect(legalActions(state, heroId)).toEqual([]);
+
+		const replay = replayEventsStrict(events);
+		expect(replay.verified).toBe(true);
+		expect(replay.snapshot.state).toEqual(state);
+		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
 	});
 
 	it('extracts finite Iron Moon ore before the deterministic portal collapse', () => {

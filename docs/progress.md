@@ -309,6 +309,7 @@ a state authority.
 | `MIS-005` | Complete: immutable `tower-floor-02-v1` through `tower-floor-05-v1` packages establish formation/protection, hazardous retreat pressure, one-person relay separation, retained Foundry-route knowledge, and the Living Foundry payoff; the verified first-band catalog contains 34 bounded observations, 15 legal discoveries, five fixed five-anchor envelopes, exact reward budgets totaling 1,010 points, and one Floor 05 Warden placement; the lab switches across all floors and demonstrates that Floor 05's maintenance action is absent without Floor 04 route memory while preserving a direct assault | [First-band evidence](evidence/phase-6-first-band.png), content/browser tests, `pnpm validate:mission-content`, 41.0 KB measured mission-lab JavaScript, ADR 0034 |
 | `MIS-006` | Complete: immutable runtime v2 bindings repair complete deterministic duty-count entropy without changing reviewed v1 packages; opt-in `engine-v14` retains the Floor 04 schematic under the discovering actor and its exact source, derives the Floor 05 memory capability only for that holder, owns maintenance-route exposure and `lit → cooling → quenched` furnace state, applies Warden armor and control interception in initiative order, and strictly replays the complete cross-floor event stream while normal Floor 01 runs remain byte-compatible on v13 | Engine/content/contract tests, focused cross-floor replay proof, ADR 0035 |
 | `MIS-007` | Complete: immutable `iron-moon-v1` binds an eight-round portal and three finite deposits; opt-in `engine-v15` decrements one deterministic timer unit per party round, exposes stable/warning/critical/collapsed pressure, transfers mined ore into bounded per-actor cargo, opens extraction only after the four-ore quota and complete return, credits settlement stock only on crossing, records collapse/retreat losses, gives every hero the authoritative portal context, and strictly replays persisted event-store runs; `/iron-moon` launches the complete local browser checkpoint | [Iron Moon evidence](evidence/phase-6-iron-moon.png), contract/content/context/engine/database/browser tests, `pnpm validate:mission-content`, ADR 0036 |
+| `MIS-008` | Complete: opt-in `engine-v16` turns guard-breaking and exposed impacts into persistent health loss, injuries, equipped-item wear, and permanent hero death; records exact source, location, physical deltas, and surviving co-located witnesses; derives evidence-backed mission memories and Master-relationship changes only for those witnesses; includes the memories in later holder-owned context; ends fatal attempts explicitly; and strictly replays the physical and social aftermath; `/aftermath` launches The Red Tithe database checkpoint | [Mission aftermath evidence](evidence/phase-6-mission-aftermath.png), contract/context/engine/database/browser tests, 47.0 KB measured mission-route JavaScript, ADR 0037 |
 
 ### Reproduce the checkpoint
 
@@ -342,9 +343,16 @@ raises settlement stock to six. Reload to confirm the ore ledger and success sur
 failure branch instead, carry ore and hold until zero; the cargo becomes explicit `lost` entries and
 settlement stock remains two.
 
+Open `http://localhost:5173/aftermath`, edit the direction if desired, and descend to Floor 03. Lock
+the two-person party, enter, and move the Master to **Cut Stair → Red Gallery → Tithe Pit → Red
+Gallery** while the hero follows their own legal policy. Hold through the declared threats until the
+hero's guard breaks. Confirm the aftermath ledger records persistent health and gear deltas plus one
+surviving witness. Continue until death, then reload and inspect replay: the hero remains dead, has
+no legal action, and every consequence retains its source event and hash.
+
 ## Next active engineering slice
 
-Begin `MIS-008`: implement injury, death, equipment, memory, and relationship aftermath.
+Begin `MIS-009`: implement controllable Master actions and atomic Master game over inside missions.
 Phase 3 cohort expansion remains behind its separate human visual gate. Master control is Step-only
 in the current mission page; Countdown, Continuous, directed fallback, and seeded-random modes remain
 `MIS-012` and `MIS-013`.

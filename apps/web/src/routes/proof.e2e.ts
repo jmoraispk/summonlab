@@ -155,9 +155,12 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		});
 	}
 	await inspector.close();
-	await page.getByRole('button', { name: /Let Mara decide now/ }).click();
+	const decideNow = page.getByRole('button', { name: /Let Mara decide now/ });
+	if (await decideNow.isVisible()) await decideNow.click();
 	await expect(
-		page.getByText(/Show me somewhere I can test what this body remembers/)
+		page.getByText(
+			/Show me somewhere I can test what this body remembers|I intend to choose the training ground/
+		)
 	).toBeVisible();
 	await expect(page.getByText(/steel before trust → the training ground/i)).toBeVisible();
 

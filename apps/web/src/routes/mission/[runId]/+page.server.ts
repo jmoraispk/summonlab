@@ -2,6 +2,7 @@ import { getConfig } from '@summonlab/config';
 import {
 	IRON_MOON_PACKAGE,
 	TOWER_FLOOR_01_PACKAGE,
+	TOWER_FLOOR_03_RUNTIME_PACKAGE,
 	projectMissionArenaKnowledge
 } from '@summonlab/content';
 import { getEngineReplay, getProofRun } from '@summonlab/database';
@@ -16,11 +17,20 @@ export const load: PageServerLoad = async ({ params }) => {
 		getProofRun(config.databaseUrl, params.runId).catch(() => null)
 	]);
 	if (!report || !proof) error(404, 'This summoned company could not be loaded.');
-	if (report.snapshot.state.schemaVersion !== 13 && report.snapshot.state.schemaVersion !== 15) {
+	if (
+		report.snapshot.state.schemaVersion !== 13 &&
+		report.snapshot.state.schemaVersion !== 15 &&
+		report.snapshot.state.schemaVersion !== 16
+	) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const isPortal = report.snapshot.state.schemaVersion === 15;
-	const missionPackage = isPortal ? IRON_MOON_PACKAGE.mission : TOWER_FLOOR_01_PACKAGE;
+	const isAftermath = report.snapshot.state.schemaVersion === 16;
+	const missionPackage = isPortal
+		? IRON_MOON_PACKAGE.mission
+		: isAftermath
+			? TOWER_FLOOR_03_RUNTIME_PACKAGE
+			: TOWER_FLOOR_01_PACKAGE;
 	const attempt = report.snapshot.state.mission.attempt;
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
@@ -30,6 +40,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		proof,
 		missionDefinition: {
 			isPortal,
+			isAftermath,
 			displayName: missionPackage.displayName,
 			tagline: missionPackage.tagline,
 			objectiveTitle: primaryObjective.title,

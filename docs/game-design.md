@@ -112,6 +112,19 @@ The player can spend as much attention as desired. Micromanagement creates more 
 6. discover, extract, complete, retreat, or die;
 7. return resources and consequences to the settlement.
 
+### Mission harm and aftermath
+
+Mission guard is a short-lived tactical buffer, not health under another name. The impact that
+breaks a hero's remaining guard can wound them; every later exposed impact can do so again. Wounds,
+equipped-item wear, and death are resolved by the engine in the same authoritative round and remain
+part of the hero after the attempt ends.
+
+Aftermath follows physical presence. A wounded survivor remembers their own injury. Other surviving,
+co-located heroes may remember what they saw and revise their relationship with the Master; heroes
+elsewhere learn nothing until a later conversation or rumor carries the fact. A dead hero cannot
+witness their own death. Damage and relationship magnitudes can be balanced, but source-event,
+location, witness, health, equipment, and permanence evidence must remain inspectable and replayable.
+
 Tower missions advance the campaign. Portal missions gather materials and expose optional worlds with different hazards, resources, cultures, and temporary rules.
 
 ### Master loop

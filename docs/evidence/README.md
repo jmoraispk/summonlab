@@ -82,3 +82,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   showing code-native arena topology, separate Master and hero positions, Master legal-action
   selection, personality-scripted hero intent, seeded initiative scores, objective custody, round
   cap, immutable package hash, and append-only `mission.round.resolved` evidence.
+- `phase-6-mission-aftermath.png` — database-backed Floor 03 Red Tithe after exposed harm, showing
+  persistent vitality loss, equipped-item wear, the surviving witness count, exact round/source
+  evidence, independently chosen hero intent, and the append-only mission ledger before permadeath.

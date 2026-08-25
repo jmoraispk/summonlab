@@ -148,6 +148,16 @@ wait-for-step, and a five-second direction handoff without giving the hero direc
 
 ![Character Forge checkpoint](docs/evidence/phase-1-forge.png)
 
+### Persistent mission aftermath checkpoint
+
+`/aftermath` launches **The Red Tithe**, a database-backed Floor 03 mission where the Master gives a
+best-effort direction and the summoned hero still chooses independently. The guard-breaking impact
+can create a persistent injury, equipped gear loses durability, and permanent death seals the
+attempt. Only surviving, co-located heroes receive the memory and relationship consequence; reload
+and replay preserve the exact source, location, health, item, and witness evidence.
+
+![The Red Tithe persistent aftermath checkpoint](docs/evidence/phase-6-mission-aftermath.png)
+
 ### Conversation and order checkpoint
 
 Free text is now a witnessed social event rather than a hidden command channel. The Master can say,
@@ -195,8 +205,8 @@ request.
 1.80 MB anchor exports into separate summon, dialogue, and roster WebP textures totaling 47.8 KB.
 The checked-in manifest binds every file to source and identity hashes, enforces the 8 MB phone
 budget, and loads the summon texture through an actual lazy PixiJS v8 bundle alias. Approval
-candidates are visible in the ledger but produce no runtime files. The build gate measures 37.0 KB
-of initial JavaScript and 296.3 KB with the renderer inspector fully loaded, both gzip and below the
+candidates are visible in the ledger but produce no runtime files. The build gate measures 37.6 KB
+of initial JavaScript and 296.9 KB with the renderer inspector fully loaded, both gzip and below the
 700 KB ceiling.
 
 `/visual-lab/recognition` stress-tests that approved identity through seven deterministic cases:
@@ -279,7 +289,7 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` starts Docker PostgreSQL, applies pending migrations, opens the SvelteKit web process on `http://localhost:5173`, and starts the worker health process on `http://localhost:4174/health`. Begin at `http://localhost:5173/forge`, or open the database-backed Iron Moon mission checkpoint directly at `http://localhost:5173/iron-moon`. The launcher uses native Docker or Docker inside WSL on Windows. The web server binds to the private LAN by default for local playtesting.
+`pnpm dev` starts Docker PostgreSQL, applies pending migrations, opens the SvelteKit web process on `http://localhost:5173`, and starts the worker health process on `http://localhost:4174/health`. Begin at `http://localhost:5173/forge`, open the Iron Moon resource checkpoint at `http://localhost:5173/iron-moon`, or test persistent mission consequences at `http://localhost:5173/aftermath`. The launcher uses native Docker or Docker inside WSL on Windows. The web server binds to the private LAN by default for local playtesting.
 
 If Docker is unavailable, use `pnpm dev:app`. Both processes stay runnable and report PostgreSQL as unavailable instead of inventing persistence. Run all local quality gates with `pnpm check`; browser smoke tests use `pnpm test:e2e` after installing Playwright Chromium once with `pnpm --filter @summonlab/web exec playwright install chromium`.
 

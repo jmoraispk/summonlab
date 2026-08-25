@@ -127,7 +127,13 @@ export const RetrievedMemorySchema = z
 		memoryId: EntityIdSchema,
 		observationId: EntityIdSchema,
 		sourceEventId: EntityIdSchema,
-		kind: z.enum(['awakening', 'first-ember-commitment', 'communication']),
+		kind: z.enum([
+			'awakening',
+			'first-ember-commitment',
+			'mission-injury',
+			'mission-death',
+			'communication'
+		]),
 		occurredAt: IsoDateTimeSchema,
 		summary: z.string().min(1).max(300),
 		subjectIds: z.array(EntityIdSchema).min(1).max(8),

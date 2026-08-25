@@ -14,8 +14,11 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
+	const isAftermath = $derived(engineState.schemaVersion === 16);
 	const mission = $derived(
-		engineState.schemaVersion === 13 || engineState.schemaVersion === 15
+		engineState.schemaVersion === 13 ||
+			engineState.schemaVersion === 15 ||
+			engineState.schemaVersion === 16
 			? engineState.mission
 			: null
 	);
@@ -25,7 +28,12 @@
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
 	const combatTurnState = $derived(
-		engineState.schemaVersion === 13 ? (engineState.mission.attempt?.turnState ?? null) : null
+		engineState.schemaVersion === 13 || engineState.schemaVersion === 16
+			? (engineState.mission.attempt?.turnState ?? null)
+			: null
+	);
+	const aftermath = $derived(
+		engineState.schemaVersion === 16 ? engineState.mission.aftermath : null
 	);
 	const portalSettlementIron = $derived(
 		engineState.schemaVersion === 15 ? engineState.settlement.resources['iron-ore'] : 0
@@ -64,8 +72,19 @@
 
 	$effect(() => {
 		if (selectionInitialized || !hero) return;
-		selectedHeroIds = attempt?.status === 'preparing' ? [...attempt.party.heroIds] : [hero.heroId];
+		selectedHeroIds =
+			attempt?.status === 'preparing'
+				? [...attempt.party.heroIds]
+				: hero.lifeState === 'active'
+					? [hero.heroId]
+					: [];
 		selectionInitialized = true;
+	});
+
+	$effect(() => {
+		if (hero?.lifeState !== 'active' && selectedHeroIds.includes(hero?.heroId ?? '')) {
+			selectedHeroIds = selectedHeroIds.filter((heroId) => heroId !== hero?.heroId);
+		}
 	});
 
 	$effect(() => {
@@ -137,6 +156,12 @@
 		return turnState?.partyGuard[actorId] ?? null;
 	}
 
+	function itemForHero(heroId: string) {
+		if (engineState.schemaVersion !== 16) return null;
+		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
+		return itemId ? engineState.items[itemId] : null;
+	}
+
 	function nodePosition(nodeId: string) {
 		return data.arena.nodes.find((node) => node.nodeId === nodeId)?.position ?? { x: 0, y: 0 };
 	}
@@ -162,9 +187,17 @@
 	<section class="hero-copy">
 		<div>
 			<p class="eyebrow">
-				{isPortal ? 'Portal World / extraction clock' : 'Tower Floor 01 / authoritative threshold'}
+				{isPortal
+					? 'Portal World / extraction clock'
+					: isAftermath
+						? 'Tower Floor 03 / persistent consequences'
+						: 'Tower Floor 01 / authoritative threshold'}
 			</p>
-			<h1>{isPortal ? 'The Closing' : 'The Unlit'}<br /><em>{isPortal ? 'Scar' : 'Muster'}</em></h1>
+			<h1>
+				{isPortal ? 'The Closing' : isAftermath ? 'The Red' : 'The Unlit'}<br /><em
+					>{isPortal ? 'Scar' : isAftermath ? 'Tithe' : 'Muster'}</em
+				>
+			</h1>
 		</div>
 		<div class="mission-brief">
 			<span class="status-light"></span>
@@ -191,8 +224,8 @@
 
 	<section class="threshold-shell" data-testid="mission-threshold">
 		<div class="threshold-scene" class:opened={phase !== 'available' && phase !== 'preparing'}>
-			<div class="tower-number">{isPortal ? '08' : '01'}</div>
-			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'retreat'].includes(attempt.status)}
+			<div class="tower-number">{isPortal ? '08' : isAftermath ? '03' : '01'}</div>
+			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'failure', 'retreat', 'death'].includes(attempt.status)}
 				<div class="tactical-board" data-testid="mission-board">
 					<svg viewBox={`0 0 ${data.arena.width} ${data.arena.height}`} aria-hidden="true">
 						{#each data.arena.edges as edge (edge.edgeId)}
@@ -239,10 +272,14 @@
 					{/each}
 					{#if !isPortal && combatTurnState?.objective.status === 'carried'}
 						<div class="objective-banner">
-							First Ember carried by {actorName(combatTurnState.objective.carrierId!)}
+							{data.missionDefinition.objectiveTitle} carried by {actorName(
+								combatTurnState.objective.carrierId!
+							)}
 						</div>
 					{:else if !isPortal && combatTurnState?.objective.status === 'delivered'}
-						<div class="objective-banner delivered">First Ember returned to threshold</div>
+						<div class="objective-banner delivered">
+							{data.missionDefinition.objectiveTitle} returned to threshold
+						</div>
 					{:else if portalTurnState}
 						<div class="objective-banner" data-testid="portal-board-status">
 							{portalTurnState.objective.minedAmount}/{portalTurnState.objective.quota} ore secured ·
@@ -309,7 +346,9 @@
 								? isPortal
 									? `Iron Moon extraction credited ${portalTurnState?.portal.extractedAmount ?? 0} ore.`
 									: 'Floor 01 is complete. This run cannot farm the First Ember twice.'
-								: 'The event stream keeps this outcome. A legal retry creates a new attempt ID.'
+								: attempt?.status === 'death'
+									? 'A summoned hero died permanently. The wound, damaged gear, witnesses, and social reaction remain in this run.'
+									: 'The event stream keeps this outcome. A legal retry creates a new attempt ID.'
 							: 'Choose who crosses with the Master. Selection reserves heroes only after you lock the roster.'}
 					</p>
 				</div>
@@ -336,7 +375,9 @@
 						class:selected={attempt?.status === 'preparing'
 							? attempt.party.heroIds.includes(hero.heroId)
 							: heroSelected}
-						disabled={busy || (attempt !== null && attempt.status !== 'preparing' && !terminal)}
+						disabled={busy ||
+							hero.lifeState !== 'active' ||
+							(attempt !== null && attempt.status !== 'preparing' && !terminal)}
 						onclick={toggleHero}
 						data-testid="hero-roster-card"
 					>
@@ -347,14 +388,16 @@
 							<span>{'✦'.repeat(data.proof.manifest.rarityStars)} · summoned hero</span>
 							<strong>{data.proof.manifest.displayName}</strong>
 							<small
-								>Lv. {hero.progression.level} · {hero.health} / {hero.maxHealth} vitality{guardFor(
+								>Lv. {hero.progression.level} · {hero.health} / {hero.maxHealth} vitality · {hero.lifeState}{guardFor(
 									hero.heroId
 								)
 									? ` · guard ${guardFor(hero.heroId)!.guard}/${guardFor(hero.heroId)!.maximumGuard}`
+									: ''}{itemForHero(hero.heroId)
+									? ` · gear ${itemForHero(hero.heroId)!.durability}/${itemForHero(hero.heroId)!.maxDurability}`
 									: ''}</small
 							>
 						</div>
-						<b>{heroSelected ? 'READY' : 'STAY'}</b>
+						<b>{hero.lifeState === 'active' ? (heroSelected ? 'READY' : 'STAY') : 'DEAD'}</b>
 					</button>
 				{/if}
 			</div>
@@ -372,9 +415,13 @@
 						disabled={busy}
 						onclick={() => act({ action: 'deploy' }, 'Party deployment committed.')}
 						data-testid="deploy-party"
-						><span>{isPortal ? 'Cross the silver scar' : 'Enter Floor 01'}</span><small
-							>commit all selected members</small
-						></button
+						><span
+							>{isPortal
+								? 'Cross the silver scar'
+								: isAftermath
+									? 'Enter Floor 03'
+									: 'Enter Floor 01'}</span
+						><small>commit all selected members</small></button
 					>
 					<button
 						disabled={busy}
@@ -449,9 +496,13 @@
 									: 'Floor 01 extraction succeeded.'
 							)}
 						data-testid="extract-party"
-						><span>{isPortal ? 'Cross before collapse' : 'Extract the First Ember'}</span><small
-							>all survivors are at the boundary</small
-						></button
+						><span
+							>{isPortal
+								? 'Cross before collapse'
+								: isAftermath
+									? 'Carry the cache home'
+									: 'Extract the First Ember'}</span
+						><small>all survivors are at the boundary</small></button
 					>
 					<button
 						class="quiet"
@@ -515,6 +566,48 @@
 		</section>
 	{/if}
 
+	{#if aftermath}
+		<section class="aftermath-console" data-testid="aftermath-console">
+			<div class="aftermath-heading">
+				<div>
+					<span>Persistent consequence ledger</span>
+					<h2>The body remembers. Witnesses do too.</h2>
+				</div>
+				<strong>{aftermath.consequences.length} recorded</strong>
+			</div>
+			{#if aftermath.consequences.length === 0}
+				<p class="aftermath-empty">
+					Guard absorbs the first blows. Once exposed, the next impact changes settlement state.
+				</p>
+			{:else}
+				<div class="aftermath-grid">
+					{#each aftermath.consequences
+						.slice()
+						.reverse() as consequence (consequence.consequenceId)}
+						<article class:fatal={consequence.fatal} data-testid="aftermath-entry">
+							<div class="harm-mark">{consequence.fatal ? '†' : '✦'}</div>
+							<div>
+								<span
+									>Round {consequence.roundNumber} · {consequence.nodeId.replaceAll('-', ' ')}</span
+								>
+								<strong>{consequence.fatal ? 'Permanent death' : consequence.injury?.kind}</strong>
+								<p>{consequence.summary}</p>
+								<small
+									>{consequence.healthBefore} → {consequence.healthAfter} health · {consequence.itemWear
+										? `gear ${consequence.itemWear.durabilityBefore} → ${consequence.itemWear.durabilityAfter}`
+										: 'no equipped gear wear'} · {consequence.witnesses.length} surviving witness{consequence
+										.witnesses.length === 1
+										? ''
+										: 'es'}</small
+								>
+							</div>
+						</article>
+					{/each}
+				</div>
+			{/if}
+		</section>
+	{/if}
+
 	{#if lastRound}
 		<section class="initiative-report" data-testid="initiative-report">
 			<div class="round-header">
@@ -522,7 +615,13 @@
 					<span>Resolved round</span>
 					<h2>Initiative {lastRound.roundNumber}</h2>
 				</div>
-				<strong>{lastRound.environmentEventIds.length > 0 ? 'EMBER PULSE' : 'FIELD QUIET'}</strong>
+				<strong
+					>{lastRound.environmentEventIds.includes('red-slag-fall')
+						? 'RED SLAG'
+						: lastRound.environmentEventIds.length > 0
+							? 'EMBER PULSE'
+							: 'FIELD QUIET'}</strong
+				>
 			</div>
 			<div class="initiative-actions">
 				{#each lastRound.initiativeOrder as actorId, index (actorId)}
@@ -594,12 +693,16 @@
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
-				: 'MIS-004 · autonomous monster duties'}</span
+				: isAftermath
+					? 'MIS-008 · persistent mission aftermath'
+					: 'MIS-004 · autonomous monster duties'}</span
 		>
 		<p>
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
-				: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+				: isAftermath
+					? 'Next: controllable Master actions and atomic game-over inside missions.'
+					: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
 		</p>
 	</footer>
 </main>
@@ -1543,6 +1646,92 @@
 		color: #667172;
 		font-size: 0.7rem;
 	}
+	.aftermath-console {
+		width: min(92vw, 1320px);
+		margin: 1.5rem auto 4rem;
+		border: 1px solid #4b292b;
+		background: linear-gradient(110deg, rgba(104, 22, 28, 0.13), transparent 42%), #0e0b0c;
+		box-shadow: inset 0 0 5rem rgba(74, 13, 18, 0.08);
+	}
+	.aftermath-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		gap: 2rem;
+		padding: 1.6rem;
+		border-bottom: 1px solid #4b292b;
+	}
+	.aftermath-heading span,
+	.aftermath-grid span,
+	.aftermath-grid small {
+		color: #9c7371;
+		font-size: 0.57rem;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+	}
+	.aftermath-heading h2 {
+		margin: 0.45rem 0 0;
+		font:
+			1.75rem Georgia,
+			serif;
+	}
+	.aftermath-heading > strong {
+		color: #d09672;
+		font-size: 0.68rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	.aftermath-empty {
+		margin: 0;
+		padding: 2rem 1.6rem;
+		color: #817271;
+		font:
+			1rem/1.5 Georgia,
+			serif;
+	}
+	.aftermath-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.aftermath-grid article {
+		min-height: 12rem;
+		padding: 1.4rem;
+		display: grid;
+		grid-template-columns: 3.5rem 1fr;
+		gap: 1rem;
+		border-right: 1px solid #392325;
+		border-bottom: 1px solid #392325;
+	}
+	.aftermath-grid article.fatal {
+		background: linear-gradient(120deg, rgba(133, 19, 26, 0.22), transparent 60%);
+	}
+	.harm-mark {
+		width: 3.2rem;
+		height: 3.2rem;
+		display: grid;
+		place-items: center;
+		border: 1px solid #75343a;
+		border-radius: 50%;
+		color: #dc7d75;
+		font:
+			1.35rem Georgia,
+			serif;
+	}
+	.aftermath-grid strong {
+		display: block;
+		margin-top: 0.38rem;
+		font:
+			1.2rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.aftermath-grid p {
+		min-height: 2.5rem;
+		margin: 0.8rem 0;
+		color: #b8a8a1;
+		font-size: 0.75rem;
+		line-height: 1.55;
+	}
 	@media (max-width: 850px) {
 		.topbar {
 			grid-template-columns: 1fr auto;
@@ -1588,7 +1777,8 @@
 			padding: 1.2rem;
 		}
 		.portal-clock,
-		.ore-grid {
+		.ore-grid,
+		.aftermath-grid {
 			grid-template-columns: 1fr;
 		}
 		.portal-clock > div,

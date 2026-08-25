@@ -3,7 +3,12 @@ import { z } from 'zod';
 import { DirectiveInfluenceRecordSchema, DirectiveRecordSchema } from './event.js';
 import { EntityIdSchema, IsoDateTimeSchema } from './shared.js';
 
-export const SocialObservationKindSchema = z.enum(['awakening', 'first-ember-commitment']);
+export const SocialObservationKindSchema = z.enum([
+	'awakening',
+	'first-ember-commitment',
+	'mission-injury',
+	'mission-death'
+]);
 
 export const SocialObservationSchema = z
 	.object({
