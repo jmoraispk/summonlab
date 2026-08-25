@@ -1,0 +1,128 @@
+{
+	"schemaVersion": "master-timing-report-v1",
+	"engineContentVersion": "engine-v19",
+	"replayVerified": true,
+	"runId": "775091f6-8710-4fce-8362-8f925472717c",
+	"countdownSeconds": 5,
+	"baselinePolicyId": "master-timing-baseline-v1",
+	"modes": [
+		{
+			"timing": "wait",
+			"resolutionCount": 1,
+			"outcome": "manual",
+			"expiryOutcome": "not-applicable",
+			"source": "manual",
+			"nextTiming": "wait",
+			"nextDecisionOrdinal": 2
+		},
+		{
+			"timing": "countdown",
+			"resolutionCount": 1,
+			"outcome": "fallback",
+			"expiryOutcome": "expired-to-fallback",
+			"source": "countdown",
+			"nextTiming": "countdown",
+			"nextDecisionOrdinal": 4
+		},
+		{
+			"timing": "step",
+			"resolutionCount": 1,
+			"outcome": "fallback",
+			"expiryOutcome": "immediate-fallback",
+			"source": "step",
+			"nextTiming": "wait",
+			"nextDecisionOrdinal": 6
+		},
+		{
+			"timing": "continuous",
+			"resolutionCount": 2,
+			"outcome": "fallback",
+			"expiryOutcome": "immediate-fallback",
+			"source": "continuous",
+			"nextTiming": "continuous",
+			"nextDecisionOrdinal": 9
+		}
+	],
+	"eventCount": 12,
+	"eventLogHash": "909ab7a76a4035dcd2603feba652a322368d34a3d12160a0309d7819a910d334",
+	"stateHash": "489f25d96ce100f08d990600a18c9beeca8bad3c8050e81f7b0add433c909234",
+	"timeline": [
+		{
+			"sequence": 2,
+			"eventType": "mission.preparation.started",
+			"timing": "step",
+			"source": "manual",
+			"summary": "The Master reserved a 2-member party for tower-floor-01."
+		},
+		{
+			"sequence": 3,
+			"eventType": "mission.deployed",
+			"timing": "step",
+			"source": "manual",
+			"summary": "The prepared party crossed the Tower Threshold; 3 deterministic monster duties activated."
+		},
+		{
+			"sequence": 4,
+			"eventType": "master.decision.opened",
+			"timing": "step",
+			"source": "manual",
+			"summary": "Decision 1 opened in wait timing."
+		},
+		{
+			"sequence": 5,
+			"eventType": "mission.round.resolved",
+			"timing": "wait",
+			"source": "manual",
+			"summary": "Round 1 resolved 2 party choices and 3 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 6,
+			"eventType": "master.timing.changed",
+			"timing": "step",
+			"source": "manual",
+			"summary": "The Master paused decision 2 and changed timing to countdown."
+		},
+		{
+			"sequence": 7,
+			"eventType": "mission.round.resolved",
+			"timing": "countdown",
+			"source": "countdown",
+			"summary": "Round 2 resolved 2 party choices and 3 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 8,
+			"eventType": "master.timing.changed",
+			"timing": "step",
+			"source": "manual",
+			"summary": "The Master paused decision 4 and changed timing to step."
+		},
+		{
+			"sequence": 9,
+			"eventType": "mission.round.resolved",
+			"timing": "step",
+			"source": "step",
+			"summary": "Round 3 resolved 2 party choices and 3 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 10,
+			"eventType": "master.timing.changed",
+			"timing": "step",
+			"source": "manual",
+			"summary": "The Master paused decision 6 and changed timing to continuous."
+		},
+		{
+			"sequence": 11,
+			"eventType": "mission.round.resolved",
+			"timing": "continuous",
+			"source": "continuous",
+			"summary": "Round 4 resolved 2 party choices and 3 monster duties in seeded initiative order."
+		},
+		{
+			"sequence": 12,
+			"eventType": "mission.round.resolved",
+			"timing": "continuous",
+			"source": "continuous",
+			"summary": "Round 5 resolved 2 party choices and 3 monster duties in seeded initiative order."
+		}
+	]
+}

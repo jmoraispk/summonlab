@@ -19,6 +19,7 @@ import {
 	type EngineGameStateV16,
 	type EngineGameStateV17,
 	type EngineGameStateV18,
+	type EngineGameStateV19,
 	type EngineSnapshot,
 	type HeroDecisionKind,
 	type HeroDecisionPacket,
@@ -41,7 +42,8 @@ type EngineKnowledgeState =
 	| EngineGameStateV15
 	| EngineGameStateV16
 	| EngineGameStateV17
-	| EngineGameStateV18;
+	| EngineGameStateV18
+	| EngineGameStateV19;
 
 export interface AssembleHeroDecisionPacketInput {
 	readonly snapshot: EngineSnapshot;
@@ -75,7 +77,8 @@ function visibleEntities(state: EngineKnowledgeState, heroId: string, manifest: 
 		state.schemaVersion === 15 ||
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
-		state.schemaVersion === 18
+		state.schemaVersion === 18 ||
+		state.schemaVersion === 19
 			? state.mission.attempt
 			: null;
 	const missionPosition =
@@ -299,7 +302,8 @@ function conversationDirectives(
 		| EngineGameStateV15
 		| EngineGameStateV16
 		| EngineGameStateV17
-		| EngineGameStateV18,
+		| EngineGameStateV18
+		| EngineGameStateV19,
 	heroId: string
 ): PlayerDirective[] {
 	return Object.values(state.society.conversationTurns)
@@ -348,7 +352,8 @@ function storedDirectives(
 		| EngineGameStateV15
 		| EngineGameStateV16
 		| EngineGameStateV17
-		| EngineGameStateV18,
+		| EngineGameStateV18
+		| EngineGameStateV19,
 	decisionKind: HeroDecisionKind
 ): PlayerDirective[] {
 	return Object.values(state.society.directives)
@@ -402,7 +407,8 @@ export function assembleHeroDecisionPacket(
 		snapshot.state.schemaVersion !== 15 &&
 		snapshot.state.schemaVersion !== 16 &&
 		snapshot.state.schemaVersion !== 17 &&
-		snapshot.state.schemaVersion !== 18
+		snapshot.state.schemaVersion !== 18 &&
+		snapshot.state.schemaVersion !== 19
 	) {
 		throw new Error('Hero decision packets require witnessed knowledge from engine-v8 or newer');
 	}
@@ -505,7 +511,8 @@ export function assembleHeroDecisionPacket(
 			state.schemaVersion === 15 ||
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
-			state.schemaVersion === 18) &&
+			state.schemaVersion === 18 ||
+			state.schemaVersion === 19) &&
 		decisionKind === 'mission-action' &&
 		state.mission.attempt?.party.heroIds.includes(input.heroId) &&
 		['deployed', 'resolving'].includes(state.mission.attempt.status)
@@ -520,7 +527,8 @@ export function assembleHeroDecisionPacket(
 		state.schemaVersion === 15 ||
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
-		state.schemaVersion === 18
+		state.schemaVersion === 18 ||
+		state.schemaVersion === 19
 			? state.mission.binding
 			: null;
 	const packetId = deterministicUuid(
@@ -673,7 +681,8 @@ export function assembleHeroDecisionPacket(
 			state.schemaVersion === 15 ||
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
-			state.schemaVersion === 18
+			state.schemaVersion === 18 ||
+			state.schemaVersion === 19
 				? storedDirectives(state, input.decisionKind)
 				: []),
 			...(state.schemaVersion === 9 ||
@@ -684,7 +693,8 @@ export function assembleHeroDecisionPacket(
 			state.schemaVersion === 15 ||
 			state.schemaVersion === 16 ||
 			state.schemaVersion === 17 ||
-			state.schemaVersion === 18
+			state.schemaVersion === 18 ||
+			state.schemaVersion === 19
 				? conversationDirectives(state, input.heroId)
 				: [])
 		]),

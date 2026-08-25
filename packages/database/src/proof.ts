@@ -71,6 +71,7 @@ export interface CreateProofRunInput {
 		readonly enableMissionAftermath?: boolean;
 		readonly enableMasterPermadeath?: boolean;
 		readonly enableAttemptAftermath?: boolean;
+		readonly enableMasterTiming?: boolean;
 	};
 }
 

@@ -22,12 +22,14 @@ export const load: PageServerLoad = async ({ params }) => {
 		report.snapshot.state.schemaVersion !== 15 &&
 		report.snapshot.state.schemaVersion !== 16 &&
 		report.snapshot.state.schemaVersion !== 17 &&
-		report.snapshot.state.schemaVersion !== 18
+		report.snapshot.state.schemaVersion !== 18 &&
+		report.snapshot.state.schemaVersion !== 19
 	) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const isPortal = report.snapshot.state.schemaVersion === 15;
-	const isAttemptAftermath = report.snapshot.state.schemaVersion === 18;
+	const isMasterTiming = report.snapshot.state.schemaVersion === 19;
+	const isAttemptAftermath = report.snapshot.state.schemaVersion === 18 || isMasterTiming;
 	const isAftermath = report.snapshot.state.schemaVersion === 16 || isAttemptAftermath;
 	const isMasterRisk = report.snapshot.state.schemaVersion === 17 || isAttemptAftermath;
 	const missionBindingId = report.snapshot.state.mission.binding.missionId;
@@ -48,6 +50,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			isAftermath,
 			isMasterRisk,
 			isAttemptAftermath,
+			isMasterTiming,
 			displayName: missionPackage.displayName,
 			tagline: missionPackage.tagline,
 			objectiveTitle: primaryObjective.title,

@@ -7,10 +7,12 @@ import {
 	AgentEvaluationReportSchema,
 	AttemptAftermathReportSchema,
 	FoundryStrategyReportSchema,
+	MasterTimingReportSchema,
 	StoryEnvelopeReportSchema,
 	createAgentEvaluationCorpus,
 	createAgentEvaluationReport,
 	generateAttemptAftermathReport,
+	generateMasterTimingReport,
 	generateStoryEnvelopeReport,
 	createFoundryStrategyReport,
 	createRecordedProviderRun,
@@ -72,6 +74,41 @@ describe('attempt aftermath boundary', () => {
 		});
 		expect(report.archivedConsequences[0]?.sourceAttemptId).toBe(report.sourceAttempt.attemptId);
 		expect(report.activeAttempt.attemptId).not.toBe(report.sourceAttempt.attemptId);
+	});
+});
+
+describe('Master decision timing', () => {
+	it('proves all four modes and the one-shot Step reversion under strict replay', () => {
+		const report = generateMasterTimingReport();
+
+		expect(MasterTimingReportSchema.parse(report)).toEqual(report);
+		expect(report.replayVerified).toBe(true);
+		expect(report.modes).toEqual([
+			expect.objectContaining({
+				timing: 'wait',
+				outcome: 'manual',
+				expiryOutcome: 'not-applicable',
+				nextTiming: 'wait'
+			}),
+			expect.objectContaining({
+				timing: 'countdown',
+				outcome: 'fallback',
+				expiryOutcome: 'expired-to-fallback',
+				nextTiming: 'countdown'
+			}),
+			expect.objectContaining({
+				timing: 'step',
+				resolutionCount: 1,
+				outcome: 'fallback',
+				nextTiming: 'wait'
+			}),
+			expect.objectContaining({
+				timing: 'continuous',
+				resolutionCount: 2,
+				outcome: 'fallback',
+				nextTiming: 'continuous'
+			})
+		]);
 	});
 });
 

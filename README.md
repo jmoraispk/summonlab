@@ -8,7 +8,7 @@
 
 Climb one hundred floors. Build a life between missions. Learn who your summons become.
 
-_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through the deterministic first-band story envelope._
+_Status: Phases 0–2 and 4–5 are complete; Phase 3 remains human-gated, and Phase 6 is implemented through authoritative Master timing._
 
 </div>
 
@@ -170,6 +170,21 @@ streams keep their original payload contracts.
 
 Run `pnpm validate:attempt-aftermath` to regenerate and compare the machine-readable proof at
 `docs/evidence/phase-6-attempt-aftermath.json`.
+
+### Master timing checkpoint
+
+`/master-timing` creates an `engine-v19` Floor 01 run where pacing is canonical rather than a tab
+illusion. Wait pauses at a legal boundary; Countdown stores a configurable deadline and permits
+manual takeover before it; Step resolves exactly one fallback and returns to Wait; Continuous
+keeps opening decisions until the player pauses or the mission ends. Every decision identity,
+source, action, deadline, pause, and expiry outcome survives reload and strict replay. The current
+`master-timing-baseline-v1` deliberately prefers **Hold position**; directed and random selection
+plus health-aware safety stops are the next slice.
+
+![Authoritative Master timing checkpoint](docs/evidence/phase-6-master-timing.png)
+
+Run `pnpm validate:master-timing` to recompute the four-mode proof at
+`docs/evidence/phase-6-master-timing.json`.
 
 ### First-band story envelope
 

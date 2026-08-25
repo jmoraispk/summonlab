@@ -1116,7 +1116,12 @@ Estimated engineering effort: **2–3 weeks**.
   bind expression only to living holders of a fact; preserve that fact verbatim while personality,
   values, drives, social style, and habits select its frame; export checked two-summon evidence and
   ship the development-only `/story-envelope` inspector;
-- `MIS-012` implement Wait, Countdown, Step, and Continuous Master decision timing;
+- `MIS-012` complete: add opt-in `engine-v19` Master control state with authoritative decision
+  identities, configurable deadlines, injected observed time, persisted pause/expiry/source
+  outcomes, strict replay, and independent Wait, Countdown, one-shot Step, and Continuous timing;
+  open decision windows at deployment and after active rounds; use a clearly provisional
+  hash-bound hold-first baseline until MIS-013; expose takeover/pause and the live countdown in the
+  database-backed mission UI; and export a checked four-mode deterministic report;
 - `MIS-013` implement directed and seeded-random fallbacks with pause and safety stops;
 - `MIS-014` add the player journal with reward, experience, level, and party-progress deltas;
 - `MIS-015` validate one runtime `StoryPatch` against the floors 1–5 envelope.
@@ -1215,8 +1220,8 @@ canonical free-text turns, explicit hero replies and order outcomes, and weighte
 preferences that cannot create or execute actions. `AGT-008` adds versioned provider request
 profiles plus a redacted, hash-bound decision inspector. `AGT-009` adds a fixed packet corpus,
 deterministic baseline graders, a checked-in quality/token/cost report, and an explicit
-recorded-evidence gate for live models. Phase 6 is complete through `MIS-011`; the next engineering
-slice is `MIS-012`: Wait, Countdown, Step, and Continuous Master decision timing.
+recorded-evidence gate for live models. Phase 6 is complete through `MIS-012`; the next engineering
+slice is `MIS-013`: directed and seeded-random fallback selection with explicit safety stops.
 
 ## Accepted product decisions — 2026-08-23
 

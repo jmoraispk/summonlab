@@ -4,6 +4,7 @@ import { CharacterMindSchema, LegalActionSchema } from './character.js';
 import {
 	ActionSourceSchema,
 	AuthoritativeEventSchema,
+	DecisionTimingSchema,
 	DirectiveScopeSchema,
 	JournalEntrySchema,
 	RewardDeltaSchema
@@ -2594,6 +2595,114 @@ const EngineGameStateV18BaseSchema = z
 	})
 	.strict();
 
+export const MasterDecisionExpiryOutcomeSchema = z.enum([
+	'not-applicable',
+	'manual-before-expiry',
+	'expired-to-fallback',
+	'immediate-fallback',
+	'paused',
+	'mission-ended'
+]);
+
+export const MasterDecisionWindowSchema = z
+	.object({
+		decisionId: EntityIdSchema,
+		ordinal: z.number().int().positive(),
+		timing: DecisionTimingSchema,
+		openedAt: IsoDateTimeSchema,
+		expiresAt: IsoDateTimeSchema.nullable()
+	})
+	.strict()
+	.superRefine((window, context) => {
+		if ((window.timing === 'countdown') !== (window.expiresAt !== null)) {
+			context.addIssue({ code: 'custom', message: 'Only Countdown decisions have a deadline' });
+		}
+		if (window.expiresAt && Date.parse(window.expiresAt) <= Date.parse(window.openedAt)) {
+			context.addIssue({ code: 'custom', message: 'Decision deadline must follow its opening' });
+		}
+	});
+
+export const MasterDecisionResolutionSchema = z
+	.object({
+		decisionId: EntityIdSchema,
+		ordinal: z.number().int().positive(),
+		timing: DecisionTimingSchema,
+		openedAt: IsoDateTimeSchema,
+		expiresAt: IsoDateTimeSchema.nullable(),
+		resolvedAt: IsoDateTimeSchema,
+		outcome: z.enum(['manual', 'fallback', 'paused', 'mission-ended']),
+		expiryOutcome: MasterDecisionExpiryOutcomeSchema,
+		resolvedActionId: z
+			.string()
+			.regex(/^[a-z][a-z0-9._-]{1,79}$/u)
+			.nullable(),
+		source: ActionSourceSchema
+	})
+	.strict()
+	.superRefine((resolution, context) => {
+		if (Date.parse(resolution.resolvedAt) < Date.parse(resolution.openedAt)) {
+			context.addIssue({ code: 'custom', message: 'Decision cannot resolve before it opens' });
+		}
+		if (
+			['manual', 'fallback'].includes(resolution.outcome) !==
+			(resolution.resolvedActionId !== null)
+		) {
+			context.addIssue({ code: 'custom', message: 'Only resolved decisions bind an action' });
+		}
+		if (resolution.source.timing !== resolution.timing && resolution.outcome !== 'mission-ended') {
+			context.addIssue({ code: 'custom', message: 'Decision source timing must match its window' });
+		}
+		const expectedExpiry =
+			resolution.outcome === 'paused'
+				? 'paused'
+				: resolution.outcome === 'mission-ended'
+					? 'mission-ended'
+					: resolution.outcome === 'manual' && resolution.timing === 'countdown'
+						? 'manual-before-expiry'
+						: resolution.outcome === 'fallback' && resolution.timing === 'countdown'
+							? 'expired-to-fallback'
+							: resolution.outcome === 'fallback'
+								? 'immediate-fallback'
+								: 'not-applicable';
+		if (resolution.expiryOutcome !== expectedExpiry) {
+			context.addIssue({ code: 'custom', message: 'Decision expiry outcome is inconsistent' });
+		}
+	});
+
+export const MasterControlStateSchema = z
+	.object({
+		timing: DecisionTimingSchema,
+		countdownSeconds: z.number().int().min(1).max(60),
+		revision: z.number().int().nonnegative(),
+		decisionOrdinal: z.number().int().nonnegative(),
+		activeDecision: MasterDecisionWindowSchema.nullable(),
+		lastResolution: MasterDecisionResolutionSchema.nullable()
+	})
+	.strict()
+	.superRefine((control, context) => {
+		if (
+			control.activeDecision &&
+			(control.activeDecision.timing !== control.timing ||
+				control.activeDecision.ordinal !== control.decisionOrdinal)
+		) {
+			context.addIssue({ code: 'custom', message: 'Active decision must match control timing' });
+		}
+		if (control.lastResolution && control.lastResolution.ordinal > control.decisionOrdinal) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Decision resolution exceeds the control cursor'
+			});
+		}
+	});
+
+const EngineGameStateV19BaseSchema = z
+	.object({
+		...EngineGameStateV18BaseSchema.shape,
+		schemaVersion: z.literal(19),
+		masterControl: MasterControlStateSchema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -2605,7 +2714,8 @@ type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV15BaseSchema>
 	| z.infer<typeof EngineGameStateV16BaseSchema>
 	| z.infer<typeof EngineGameStateV17BaseSchema>
-	| z.infer<typeof EngineGameStateV18BaseSchema>;
+	| z.infer<typeof EngineGameStateV18BaseSchema>
+	| z.infer<typeof EngineGameStateV19BaseSchema>;
 
 function validateCommunicationEngineState(
 	state: CommunicationEngineValidationState,
@@ -2960,7 +3070,8 @@ type MissionEngineValidationState =
 	| z.infer<typeof EngineGameStateV15BaseSchema>
 	| z.infer<typeof EngineGameStateV16BaseSchema>
 	| z.infer<typeof EngineGameStateV17BaseSchema>
-	| z.infer<typeof EngineGameStateV18BaseSchema>;
+	| z.infer<typeof EngineGameStateV18BaseSchema>
+	| z.infer<typeof EngineGameStateV19BaseSchema>;
 
 function validateMissionEngineState(
 	state: MissionEngineValidationState,
@@ -3032,7 +3143,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 14 ||
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
-		state.schemaVersion === 18
+		state.schemaVersion === 18 ||
+		state.schemaVersion === 19
 	) {
 		const turnAttempt = state.mission.attempt;
 		if (
@@ -3051,7 +3163,8 @@ function validateMissionEngineState(
 		state.schemaVersion === 15 ||
 		state.schemaVersion === 16 ||
 		state.schemaVersion === 17 ||
-		state.schemaVersion === 18
+		state.schemaVersion === 18 ||
+		state.schemaVersion === 19
 	) {
 		for (const evidence of Object.values(state.mission.evidence)) {
 			if (
@@ -3088,6 +3201,23 @@ export const EngineGameStateV17Schema = EngineGameStateV17BaseSchema.superRefine
 export const EngineGameStateV18Schema = EngineGameStateV18BaseSchema.superRefine(
 	validateMissionEngineState
 );
+export const EngineGameStateV19Schema = EngineGameStateV19BaseSchema.superRefine(
+	(state, context) => {
+		validateMissionEngineState(state, context);
+		const activeAttempt = state.mission.attempt;
+		const canAwaitDecision =
+			state.status === 'active' &&
+			state.master.lifeState === 'alive' &&
+			activeAttempt !== null &&
+			['deployed', 'resolving'].includes(activeAttempt.status);
+		if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Only an active resolving mission may hold a Master decision window'
+			});
+		}
+	}
+);
 
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
@@ -3107,7 +3237,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV15Schema,
 	EngineGameStateV16Schema,
 	EngineGameStateV17Schema,
-	EngineGameStateV18Schema
+	EngineGameStateV18Schema,
+	EngineGameStateV19Schema
 ]);
 
 const EngineCommandBaseSchema = z
@@ -3264,6 +3395,18 @@ export const MasterRevokeDirectiveCommandSchema = EngineCommandBaseSchema.extend
 	directiveId: EntityIdSchema
 }).strict();
 
+export const ConfigureMasterTimingCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.configure.timing'),
+	timing: DecisionTimingSchema,
+	countdownSeconds: z.number().int().min(1).max(60),
+	observedAt: IsoDateTimeSchema
+}).strict();
+
+export const OpenMasterDecisionCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('master.open.decision'),
+	observedAt: IsoDateTimeSchema
+}).strict();
+
 export const DirectiveRequestSchema = z.discriminatedUnion('action', [
 	z.object({ action: z.literal('issue'), ...DirectiveIssueShape }).strict(),
 	z
@@ -3347,7 +3490,9 @@ export const DeployMissionCommandSchema = EngineCommandBaseSchema.extend({
 
 export const ResolveMissionTurnCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.resolve.turn'),
-	choices: z.array(MissionTurnChoiceSchema).min(1).max(8)
+	choices: z.array(MissionTurnChoiceSchema).min(1).max(8),
+	decisionId: EntityIdSchema.optional(),
+	resolvedAt: IsoDateTimeSchema.optional()
 }).strict();
 
 export const OpenMissionExtractionCommandSchema = EngineCommandBaseSchema.extend({
@@ -3377,6 +3522,8 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	MasterIssueDirectiveCommandSchema,
 	MasterReplaceDirectiveCommandSchema,
 	MasterRevokeDirectiveCommandSchema,
+	ConfigureMasterTimingCommandSchema,
+	OpenMasterDecisionCommandSchema,
 	CreateDailyPlanCommandSchema,
 	StartRoutineCommandSchema,
 	InspectGateCommandSchema,
@@ -3412,9 +3559,19 @@ export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
 			masterActionId: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u)
 		})
 		.strict(),
+	z.object({ action: z.literal('resolve-fallback') }).strict(),
 	z.object({ action: z.literal('extract') }).strict(),
 	z.object({ action: z.literal('retreat') }).strict()
 ]);
+
+export const MasterControlRequestSchema = z
+	.object({
+		timing: DecisionTimingSchema,
+		countdownSeconds: z.number().int().min(1).max(60).default(5)
+	})
+	.strict();
+
+export const MasterDecisionWindowRequestSchema = z.object({}).strict();
 
 export const EntropyDrawSchema = z
 	.object({
@@ -3607,6 +3764,7 @@ export type EngineGameStateV15 = z.infer<typeof EngineGameStateV15Schema>;
 export type EngineGameStateV16 = z.infer<typeof EngineGameStateV16Schema>;
 export type EngineGameStateV17 = z.infer<typeof EngineGameStateV17Schema>;
 export type EngineGameStateV18 = z.infer<typeof EngineGameStateV18Schema>;
+export type EngineGameStateV19 = z.infer<typeof EngineGameStateV19Schema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
 export type EngineReplayReport = z.infer<typeof EngineReplayReportSchema>;
 export type EngineScheduleRecord = z.infer<typeof EngineScheduleRecordSchema>;
@@ -3625,6 +3783,10 @@ export type MissionMonsterState = z.infer<typeof MissionMonsterStateSchema>;
 export type MissionResolvedEffect = z.infer<typeof MissionResolvedEffectSchema>;
 export type MissionTurnChoice = z.infer<typeof MissionTurnChoiceSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
+export type MasterControlRequest = z.infer<typeof MasterControlRequestSchema>;
+export type MasterControlState = z.infer<typeof MasterControlStateSchema>;
+export type MasterDecisionResolution = z.infer<typeof MasterDecisionResolutionSchema>;
+export type MasterDecisionWindow = z.infer<typeof MasterDecisionWindowSchema>;
 export type MissionRunState = z.infer<typeof MissionRunStateSchema>;
 export type MissionRunStateV2 = z.infer<typeof MissionRunStateV2Schema>;
 export type MissionRunStateV3 = z.infer<typeof MissionRunStateV3Schema>;

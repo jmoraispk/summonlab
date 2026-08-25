@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import type { MissionLifecycleRequest } from '@summonlab/contracts';
+	import type { DecisionTiming, MissionLifecycleRequest } from '@summonlab/contracts';
+	import { onMount } from 'svelte';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 
 	let { data } = $props();
@@ -11,13 +12,28 @@
 	let resultMessage = $state('');
 	let errorMessage = $state('');
 	let selectedMasterActionId = $state('');
+	let observedNow = $state(Date.now());
+	let lastAutoDecisionId = $state('');
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
-	const isAttemptAftermath = $derived(engineState.schemaVersion === 18);
+	const isMasterTiming = $derived(engineState.schemaVersion === 19);
+	const isAttemptAftermath = $derived(engineState.schemaVersion === 18 || isMasterTiming);
 	const isMasterRisk = $derived(engineState.schemaVersion === 17 || isAttemptAftermath);
 	const isAftermath = $derived(
 		engineState.schemaVersion === 16 || engineState.schemaVersion === 17 || isAttemptAftermath
+	);
+	const masterControl = $derived(
+		engineState.schemaVersion === 19 ? engineState.masterControl : null
+	);
+	const masterDecision = $derived(masterControl?.activeDecision ?? null);
+	const countdownRemaining = $derived(
+		masterDecision?.expiresAt
+			? Math.max(0, Math.ceil((Date.parse(masterDecision.expiresAt) - observedNow) / 1_000))
+			: null
+	);
+	const manualDecisionOpen = $derived(
+		!isMasterTiming || masterDecision?.timing === 'wait' || masterDecision?.timing === 'countdown'
 	);
 	const isGameOver = $derived(engineState.status === 'game_over');
 	const mission = $derived(
@@ -25,7 +41,8 @@
 			engineState.schemaVersion === 15 ||
 			engineState.schemaVersion === 16 ||
 			engineState.schemaVersion === 17 ||
-			engineState.schemaVersion === 18
+			engineState.schemaVersion === 18 ||
+			engineState.schemaVersion === 19
 			? engineState.mission
 			: null
 	);
@@ -38,14 +55,16 @@
 		engineState.schemaVersion === 13 ||
 			engineState.schemaVersion === 16 ||
 			engineState.schemaVersion === 17 ||
-			engineState.schemaVersion === 18
+			engineState.schemaVersion === 18 ||
+			engineState.schemaVersion === 19
 			? (engineState.mission.attempt?.turnState ?? null)
 			: null
 	);
 	const aftermath = $derived(
 		engineState.schemaVersion === 16 ||
 			engineState.schemaVersion === 17 ||
-			engineState.schemaVersion === 18
+			engineState.schemaVersion === 18 ||
+			engineState.schemaVersion === 19
 			? engineState.mission.aftermath
 			: null
 	);
@@ -56,6 +75,7 @@
 	const phase = $derived(attempt?.status ?? 'available');
 	const redSlagImminent = $derived(
 		isMasterRisk &&
+			!isMasterTiming &&
 			(phase === 'deployed' || phase === 'resolving') &&
 			(turnState?.roundNumber ?? 0) + 1 >= 2 &&
 			((turnState?.roundNumber ?? 0) + 1) % 2 === 0
@@ -69,7 +89,12 @@
 	);
 	const eventRows = $derived(
 		data.report.checks
-			.filter((check) => check.eventType.startsWith('mission.'))
+			.filter(
+				(check) =>
+					check.eventType.startsWith('mission.') ||
+					check.eventType === 'master.timing.changed' ||
+					check.eventType === 'master.decision.opened'
+			)
 			.slice()
 			.reverse()
 	);
@@ -99,6 +124,38 @@
 					? [hero.heroId]
 					: [];
 		selectionInitialized = true;
+	});
+
+	$effect(() => {
+		if (
+			!isMasterTiming ||
+			busy ||
+			!masterDecision ||
+			lastAutoDecisionId === masterDecision.decisionId ||
+			!(phase === 'deployed' || phase === 'resolving')
+		) {
+			return;
+		}
+		const fallbackDue =
+			masterDecision.timing === 'step' ||
+			masterDecision.timing === 'continuous' ||
+			(masterDecision.timing === 'countdown' && countdownRemaining === 0);
+		if (!fallbackDue) return;
+		if (masterDecision.timing === 'continuous') {
+			const decisionId = masterDecision.decisionId;
+			const timer = window.setTimeout(() => {
+				lastAutoDecisionId = decisionId;
+				void resolveFallback(decisionId);
+			}, 750);
+			return () => window.clearTimeout(timer);
+		}
+		lastAutoDecisionId = masterDecision.decisionId;
+		void resolveFallback(masterDecision.decisionId);
+	});
+
+	onMount(() => {
+		const timer = window.setInterval(() => (observedNow = Date.now()), 100);
+		return () => window.clearInterval(timer);
 	});
 
 	$effect(() => {
@@ -135,11 +192,66 @@
 			if (!response.ok) throw new Error(body.message ?? 'The mission engine rejected that action.');
 			resultMessage = success;
 			await invalidateAll();
+			return true;
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'The mission transition failed.';
+			return false;
 		} finally {
 			busy = false;
 		}
+	}
+
+	async function configureTiming(timing: DecisionTiming) {
+		busy = true;
+		resultMessage = '';
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/control`, {
+				method: 'PATCH',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ timing, countdownSeconds: masterControl?.countdownSeconds ?? 5 })
+			});
+			const body = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(body.message ?? 'The timing change was rejected.');
+			lastAutoDecisionId = '';
+			resultMessage =
+				timing === 'wait'
+					? 'Autonomy paused. The next action waits for you.'
+					: `${timing[0]!.toUpperCase()}${timing.slice(1)} timing is authoritative.`;
+			await invalidateAll();
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The timing change failed.';
+		} finally {
+			busy = false;
+		}
+	}
+
+	async function openDecision() {
+		busy = true;
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/decision-window`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: '{}'
+			});
+			const body = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(body.message ?? 'The decision could not open.');
+			lastAutoDecisionId = '';
+			await invalidateAll();
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The decision could not open.';
+		} finally {
+			busy = false;
+		}
+	}
+
+	async function resolveFallback(decisionId: string) {
+		const resolved = await act(
+			{ action: 'resolve-fallback' },
+			'The timing baseline resolved one authoritative Master decision.'
+		);
+		if (!resolved && masterDecision?.decisionId === decisionId) lastAutoDecisionId = '';
 	}
 
 	function prepare() {
@@ -180,7 +292,8 @@
 		if (
 			engineState.schemaVersion !== 16 &&
 			engineState.schemaVersion !== 17 &&
-			engineState.schemaVersion !== 18
+			engineState.schemaVersion !== 18 &&
+			engineState.schemaVersion !== 19
 		)
 			return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
@@ -216,21 +329,33 @@
 			<p class="eyebrow">
 				{isPortal
 					? 'Portal World / extraction clock'
-					: isMasterRisk
-						? 'Tower Floor 03 / the Master is mortal'
-						: isAftermath
-							? 'Tower Floor 03 / persistent consequences'
-							: 'Tower Floor 01 / authoritative threshold'}
+					: isMasterTiming
+						? 'Tower Floor 01 / four command tempos'
+						: isMasterRisk
+							? 'Tower Floor 03 / the Master is mortal'
+							: isAftermath
+								? 'Tower Floor 03 / persistent consequences'
+								: 'Tower Floor 01 / authoritative threshold'}
 			</p>
 			<h1>
 				{isPortal
 					? 'The Closing'
-					: isMasterRisk
-						? 'The Last'
-						: isAftermath
-							? 'The Red'
-							: 'The Unlit'}<br /><em
-					>{isPortal ? 'Scar' : isMasterRisk ? 'Command' : isAftermath ? 'Tithe' : 'Muster'}</em
+					: isMasterTiming
+						? 'The Living'
+						: isMasterRisk
+							? 'The Last'
+							: isAftermath
+								? 'The Red'
+								: 'The Unlit'}<br /><em
+					>{isPortal
+						? 'Scar'
+						: isMasterTiming
+							? 'Tempo'
+							: isMasterRisk
+								? 'Command'
+								: isAftermath
+									? 'Tithe'
+									: 'Muster'}</em
 				>
 			</h1>
 		</div>
@@ -259,7 +384,9 @@
 
 	<section class="threshold-shell" data-testid="mission-threshold">
 		<div class="threshold-scene" class:opened={phase !== 'available' && phase !== 'preparing'}>
-			<div class="tower-number">{isPortal ? '08' : isAftermath ? '03' : '01'}</div>
+			<div class="tower-number">
+				{isPortal ? '08' : isMasterTiming ? '01' : isAftermath ? '03' : '01'}
+			</div>
 			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'failure', 'retreat', 'death'].includes(attempt.status)}
 				<div class="tactical-board" data-testid="mission-board">
 					<svg viewBox={`0 0 ${data.arena.width} ${data.arena.height}`} aria-hidden="true">
@@ -371,6 +498,61 @@
 						: `${selectedHeroIds.length + 1}/5`}</strong
 				>
 			</div>
+
+			{#if isMasterTiming}
+				<div class="control-console" data-testid="master-control-console">
+					<div class="control-console__heading">
+						<div>
+							<span>Master decision timing</span>
+							<strong>{masterControl?.timing ?? 'wait'}</strong>
+						</div>
+						{#if masterDecision?.timing === 'countdown'}
+							<div class="decision-clock" data-testid="decision-countdown">
+								<b>{countdownRemaining ?? 0}</b><small>seconds</small>
+							</div>
+						{:else}
+							<code>{masterDecision ? `D-${masterDecision.ordinal}` : 'NO WINDOW'}</code>
+						{/if}
+					</div>
+					<div class="timing-modes" aria-label="Master timing mode">
+						{#each [['wait', 'Pause / Wait'], ['countdown', 'Countdown'], ['step', 'Step once'], ['continuous', 'Continuous']] as timing (timing[0])}
+							<button
+								type="button"
+								class:active={masterControl?.timing === timing[0]}
+								disabled={busy}
+								onclick={() => configureTiming(timing[0] as DecisionTiming)}
+								data-testid={`timing-${timing[0]}`}>{timing[1]}</button
+							>
+						{/each}
+					</div>
+					<div class="control-status">
+						<i class:live={Boolean(masterDecision)}></i>
+						<p>
+							{masterDecision
+								? masterDecision.timing === 'wait'
+									? 'Paused at a legal boundary. Select and commit the Master’s action.'
+									: masterDecision.timing === 'countdown'
+										? 'You may take over until the server deadline; then the baseline holds.'
+										: masterDecision.timing === 'step'
+											? 'One baseline action is queued; the next decision returns to Wait.'
+											: 'Baseline actions continue until you press Pause / Wait.'
+								: phase === 'deployed' || phase === 'resolving'
+									? 'The mission needs a decision window before another round can resolve.'
+									: 'Timing is saved now and will bind when the party deploys.'}
+						</p>
+						{#if !masterDecision && (phase === 'deployed' || phase === 'resolving')}
+							<button type="button" disabled={busy} onclick={openDecision}>open decision</button>
+						{/if}
+					</div>
+					{#if masterControl?.lastResolution}
+						<small class="last-resolution" data-testid="last-decision-resolution">
+							Last: {masterControl.lastResolution.outcome} · {masterControl.lastResolution
+								.expiryOutcome}
+							· {masterControl.lastResolution.source.source}
+						</small>
+					{/if}
+				</div>
+			{/if}
 
 			{#if phase === 'available' || terminal}
 				<div class="instruction">
@@ -529,7 +711,7 @@
 							<button
 								type="button"
 								class:selected={choice.actionId === selectedMasterActionId}
-								disabled={busy}
+								disabled={busy || !manualDecisionOpen || (isMasterTiming && !masterDecision)}
 								onclick={() => (selectedMasterActionId = choice.actionId)}
 							>
 								<strong>{choice.label}</strong><small>{choice.description}</small>
@@ -538,7 +720,10 @@
 					</div>
 					<button
 						class="primary resolve"
-						disabled={busy || !selectedMasterActionId}
+						disabled={busy ||
+							!selectedMasterActionId ||
+							!manualDecisionOpen ||
+							(isMasterTiming && !masterDecision)}
 						onclick={resolveTurn}
 						data-testid="resolve-turn"
 						><span>Commit round</span><small>hero policy → seeded initiative → engine</small
@@ -781,20 +966,24 @@
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
-				: isMasterRisk
-					? 'MIS-009 · controllable Master + atomic game over'
-					: isAftermath
-						? 'MIS-008 · persistent mission aftermath'
-						: 'MIS-004 · autonomous monster duties'}</span
+				: isMasterTiming
+					? 'MIS-012 · authoritative Master timing'
+					: isMasterRisk
+						? 'MIS-009 · controllable Master + atomic game over'
+						: isAftermath
+							? 'MIS-008 · persistent mission aftermath'
+							: 'MIS-004 · autonomous monster duties'}</span
 		>
 		<p>
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
-				: isMasterRisk
-					? 'Next: selectable control modes and per-turn fallback timing.'
-					: isAftermath
-						? 'Next: controllable Master actions and atomic game-over inside missions.'
-						: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+				: isMasterTiming
+					? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
+					: isMasterRisk
+						? 'Next: selectable control modes and per-turn fallback timing.'
+						: isAftermath
+							? 'Next: controllable Master actions and atomic game-over inside missions.'
+							: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
 		</p>
 	</footer>
 </main>
@@ -1221,6 +1410,123 @@
 			2.6rem Georgia,
 			serif;
 		color: #6a7474;
+	}
+	.control-console {
+		border: 1px solid #344144;
+		background: linear-gradient(135deg, rgba(63, 176, 171, 0.08), transparent 48%), #0a0e10;
+		box-shadow: inset 3px 0 #49bcb7;
+	}
+	.control-console__heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 4.3rem;
+		padding: 0.8rem 1rem;
+		border-bottom: 1px solid #293437;
+	}
+	.control-console__heading > div:first-child {
+		display: grid;
+		gap: 0.25rem;
+	}
+	.control-console__heading span,
+	.last-resolution {
+		color: #738081;
+		font-size: 0.54rem;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+	}
+	.control-console__heading strong {
+		color: #6bd9d4;
+		font:
+			1.35rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.control-console__heading code {
+		color: #d4a553;
+		font-size: 0.64rem;
+	}
+	.decision-clock {
+		width: 3.4rem;
+		height: 3.4rem;
+		border: 1px solid #dfa94f;
+		border-radius: 50%;
+		display: grid;
+		place-content: center;
+		text-align: center;
+		box-shadow: 0 0 1.4rem rgba(223, 169, 79, 0.18);
+	}
+	.decision-clock b {
+		color: #f2bd63;
+		font:
+			1.35rem/1 Georgia,
+			serif;
+	}
+	.decision-clock small {
+		color: #82745f;
+		font-size: 0.42rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.timing-modes {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+	}
+	.timing-modes button {
+		min-height: 2.7rem;
+		border: 0;
+		border-right: 1px solid #293437;
+		border-bottom: 1px solid #293437;
+		background: #101517;
+		color: #737e7e;
+		font-size: 0.55rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.timing-modes button:last-child {
+		border-right: 0;
+	}
+	.timing-modes button.active {
+		background: #173334;
+		color: #86e2dc;
+		box-shadow: inset 0 -2px #55cec8;
+	}
+	.control-status {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.75rem 1rem;
+	}
+	.control-status i {
+		width: 0.42rem;
+		height: 0.42rem;
+		border-radius: 50%;
+		background: #555e5e;
+	}
+	.control-status i.live {
+		background: #5bd2cc;
+		box-shadow: 0 0 0.8rem #5bd2cc;
+	}
+	.control-status p {
+		margin: 0;
+		color: #8e9997;
+		font-size: 0.62rem;
+		line-height: 1.4;
+	}
+	.control-status button {
+		border: 1px solid #566263;
+		background: transparent;
+		color: #b8c0bd;
+		padding: 0.45rem 0.6rem;
+		font-size: 0.52rem;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.last-resolution {
+		display: block;
+		padding: 0 1rem 0.8rem 2.1rem;
 	}
 	.instruction {
 		margin: 1.4rem 0 0;

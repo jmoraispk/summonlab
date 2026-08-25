@@ -92,3 +92,6 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-foundry-strategies.png` / `.json` — the Living Foundry strategy instrument and its
   machine-readable fixed regression matrix: three distinct furnace states, eight successful legal
   trials per doctrine, 24 exact strict replays, no deaths, and an explicit no-win-rate disclaimer.
+- `phase-6-master-timing.png` / `.json` — database-backed Master control with a visible persisted
+  Countdown deadline and a deterministic four-mode report proving manual Wait, expired Countdown,
+  one-shot Step reversion, Continuous repetition, pause/takeover, action source, and strict replay.

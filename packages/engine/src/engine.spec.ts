@@ -14,10 +14,12 @@ import {
 	EngineGameStateV16Schema,
 	EngineGameStateV17Schema,
 	EngineGameStateV18Schema,
+	EngineGameStateV19Schema,
 	MissionRunStateV8Schema,
 	SocietyStateSchema,
 	SocietyStateV3Schema,
 	type ActivityKind,
+	type ActionSource,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameStateV1,
@@ -979,6 +981,142 @@ describe('deterministic engine', () => {
 			ordinal: 2,
 			status: 'deployed',
 			turnState: { roundNumber: 0 }
+		});
+
+		const replay = replayEventsStrict(events);
+		expect(replay.verified).toBe(true);
+		expect(replay.snapshot.state).toEqual(state);
+		expect(replay.snapshot.stateHash).toBe(hashGameState(state));
+	});
+
+	it('owns Wait, Countdown, Step, and Continuous Master timing in replayable state', () => {
+		const runId = deterministicUuid('master-timing-run');
+		const heroId = deterministicUuid('master-timing-hero');
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'master-timing-seed',
+			heroId,
+			manifestHash: sha256Hex('master-timing-manifest'),
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-01',
+				availableMissionIds: ['tower-floor-01'],
+				enableMasterTiming: true
+			}
+		});
+		let state = EngineGameStateV19Schema.parse(bootstrap.snapshot.state);
+		const masterId = state.master.masterId;
+		const events: AuthoritativeEvent[] = [bootstrap.event];
+		const controlSource = manualSource();
+		const timingSource = (sourceKind: 'manual' | 'countdown' | 'step' | 'continuous') => ({
+			source: sourceKind,
+			timing: sourceKind === 'manual' ? state.masterControl.timing : sourceKind,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		});
+		const policyChoice = (actionId: string) => ({
+			actorId: masterId,
+			actionId,
+			source: 'scripted' as const,
+			policyId: 'master-timing-baseline-v1',
+			packetHash: sha256Hex(`${state.version}:master:packet`),
+			legalActionHash: sha256Hex(`${state.version}:master:legal`),
+			policyResultHash: sha256Hex(`${state.version}:master:result`),
+			publicIntent: 'The deterministic timing baseline chose to hold position.'
+		});
+		const commit = (key: string, body: object, sourceOverride: ActionSource = controlSource) => {
+			const result = applyCommand(state, {
+				...commandBase(state, masterId, key),
+				source: sourceOverride,
+				...body
+			} as unknown as EngineCommand);
+			state = EngineGameStateV19Schema.parse(result.state);
+			events.push(...result.events);
+			return result;
+		};
+		const resolve = (
+			key: string,
+			resolvedAt: string,
+			sourceKind: 'manual' | 'countdown' | 'step' | 'continuous'
+		) => {
+			const decision = state.masterControl.activeDecision!;
+			return commit(
+				key,
+				{
+					commandType: 'mission.resolve.turn',
+					decisionId: decision.decisionId,
+					resolvedAt,
+					choices: [
+						sourceKind === 'manual'
+							? manualMissionChoice(masterId, 'mission.hold')
+							: policyChoice('mission.hold'),
+						scriptedMissionChoice(heroId, 'mission.hold')
+					]
+				},
+				timingSource(sourceKind)
+			);
+		};
+
+		commit('timing-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-01'
+		});
+		commit('timing-deploy', { commandType: 'mission.deploy' });
+		commit('timing-open-wait', {
+			commandType: 'master.open.decision',
+			observedAt: '2030-01-01T00:00:00.000Z'
+		});
+		expect(state.masterControl.activeDecision).toMatchObject({ timing: 'wait', expiresAt: null });
+		resolve('timing-wait-manual', '2030-01-01T00:00:04.000Z', 'manual');
+		expect(state.masterControl).toMatchObject({
+			timing: 'wait',
+			lastResolution: { outcome: 'manual', expiryOutcome: 'not-applicable' },
+			activeDecision: { timing: 'wait' }
+		});
+
+		commit('timing-countdown', {
+			commandType: 'master.configure.timing',
+			timing: 'countdown',
+			countdownSeconds: 5,
+			observedAt: '2030-01-01T00:00:05.000Z'
+		});
+		const countdown = state.masterControl.activeDecision!;
+		expect(countdown.expiresAt).toBe('2030-01-01T00:00:10.000Z');
+		expect(() => resolve('timing-countdown-late-manual', countdown.expiresAt!, 'manual')).toThrow(
+			IllegalActionError
+		);
+		resolve('timing-countdown-expired', countdown.expiresAt!, 'countdown');
+		expect(state.masterControl.lastResolution).toMatchObject({
+			outcome: 'fallback',
+			expiryOutcome: 'expired-to-fallback'
+		});
+
+		commit('timing-step', {
+			commandType: 'master.configure.timing',
+			timing: 'step',
+			countdownSeconds: 5,
+			observedAt: '2030-01-01T00:00:11.000Z'
+		});
+		resolve('timing-step-once', '2030-01-01T00:00:11.000Z', 'step');
+		expect(state.masterControl).toMatchObject({
+			timing: 'wait',
+			lastResolution: { outcome: 'fallback', expiryOutcome: 'immediate-fallback' },
+			activeDecision: { timing: 'wait' }
+		});
+
+		commit('timing-continuous', {
+			commandType: 'master.configure.timing',
+			timing: 'continuous',
+			countdownSeconds: 5,
+			observedAt: '2030-01-01T00:00:12.000Z'
+		});
+		resolve('timing-continuous-one', '2030-01-01T00:00:12.000Z', 'continuous');
+		resolve('timing-continuous-two', '2030-01-01T00:00:13.000Z', 'continuous');
+		expect(state.masterControl).toMatchObject({
+			timing: 'continuous',
+			lastResolution: { outcome: 'fallback' },
+			activeDecision: { timing: 'continuous', ordinal: 9 }
 		});
 
 		const replay = replayEventsStrict(events);

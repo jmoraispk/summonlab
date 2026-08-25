@@ -788,4 +788,123 @@ describe('engine event store', () => {
 			status: 'preparing'
 		});
 	});
+
+	run('persists Master timing windows and Step reversion through strict replay', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const draft = await generateCharacterDraft(recipeFromSeed(`master-timing-${randomUUID()}`));
+		const runId = randomUUID();
+		await createProofRun(databaseUrl, {
+			runId,
+			draft,
+			controlMode: 'wait',
+			directive: '',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null,
+			developmentMissionScenario: {
+				initialMissionId: 'tower-floor-01',
+				availableMissionIds: ['tower-floor-01'],
+				enableMasterTiming: true
+			}
+		});
+		let replay = await getEngineReplay(databaseUrl, runId);
+		if (!replay || replay.snapshot.state.schemaVersion !== 19) {
+			throw new Error('Expected engine-v19 Master timing replay');
+		}
+		const masterId = replay.snapshot.state.master.masterId;
+		const heroId = draft.manifest.characterId;
+		const commit = async (
+			fields: Record<string, unknown>,
+			source: Record<string, unknown> = {
+				source: 'manual',
+				timing: 'step',
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			}
+		) => {
+			const commandId = randomUUID();
+			await commitEngineCommand(
+				databaseUrl,
+				EngineCommandSchema.parse({
+					commandId,
+					runId,
+					actorId: masterId,
+					expectedVersion: replay!.snapshot.state.version,
+					correlationId: commandId,
+					source,
+					...fields
+				})
+			);
+			replay = await getEngineReplay(databaseUrl, runId);
+			if (!replay || replay.snapshot.state.schemaVersion !== 19) {
+				throw new Error('Expected replayed engine-v19 Master timing state');
+			}
+		};
+
+		await commit({
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-01'
+		});
+		await commit({ commandType: 'mission.deploy' });
+		await commit({
+			commandType: 'master.open.decision',
+			observedAt: '2030-02-01T00:00:00.000Z'
+		});
+		await commit({
+			commandType: 'master.configure.timing',
+			timing: 'step',
+			countdownSeconds: 5,
+			observedAt: '2030-02-01T00:00:01.000Z'
+		});
+		const decisionId = replay.snapshot.state.masterControl.activeDecision!.decisionId;
+		const policyChoice = (actorId: string, policyId: string) => ({
+			actorId,
+			actionId: 'mission.hold',
+			source: 'scripted',
+			policyId,
+			packetHash: 'a'.repeat(64),
+			legalActionHash: 'b'.repeat(64),
+			policyResultHash: 'c'.repeat(64),
+			publicIntent: 'The replayable baseline chose to hold.'
+		});
+		await commit(
+			{
+				commandType: 'mission.resolve.turn',
+				decisionId,
+				resolvedAt: '2030-02-01T00:00:01.000Z',
+				choices: [
+					policyChoice(masterId, 'master-timing-baseline-v1'),
+					policyChoice(heroId, 'scripted-personality-v1')
+				]
+			},
+			{
+				source: 'step',
+				timing: 'step',
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			}
+		);
+
+		expect(replay.verified).toBe(true);
+		expect(replay.hashMatchesPersistedSnapshot).toBe(true);
+		expect(replay.snapshot.state.masterControl).toMatchObject({
+			timing: 'wait',
+			activeDecision: { timing: 'wait' },
+			lastResolution: {
+				decisionId,
+				outcome: 'fallback',
+				expiryOutcome: 'immediate-fallback',
+				source: { source: 'step', timing: 'step' }
+			}
+		});
+		expect(replay.checks.map((check) => check.eventType)).toEqual(
+			expect.arrayContaining([
+				'master.decision.opened',
+				'master.timing.changed',
+				'mission.round.resolved'
+			])
+		);
+	});
 });
