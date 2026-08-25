@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import buildBudget from '../../../../docs/evidence/phase-3-runtime-budget.json' with { type: 'json' };
+
 test('loads only approved content-addressed textures through the PixiJS bundle', async ({
 	page
 }) => {
@@ -9,7 +11,11 @@ test('loads only approved content-addressed textures through the PixiJS bundle',
 	await expect(page.getByText('47.8 KB')).toBeVisible();
 	await expect(page.getByText('0.60% phone budget')).toBeVisible();
 	await expect(page.getByText('97.3%')).toBeVisible();
-	await expect(page.getByText('296.9 KB')).toBeVisible();
+	await expect(
+		page.getByText(
+			`${(buildBudget.measurements.runtimeInspectorLoadedJavaScriptGzipBytes / 1_000).toFixed(1)} KB`
+		)
+	).toBeVisible();
 	await expect(page.getByTestId('pixi-runtime-state')).toContainText('loaded by bundle alias', {
 		timeout: 15_000
 	});
