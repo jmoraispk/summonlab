@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
 
-test('renders the typed foundation health shell', async ({ page }) => {
+test('renders the player title with live foundation health', async ({ page }) => {
 	await page.goto('/');
 
-	await expect(page.getByRole('heading', { name: 'The gate is listening.' })).toBeVisible();
-	await expect(page.getByText('Policy mode')).toBeVisible();
-	await expect(page.getByRole('link', { name: 'Design reference' })).toBeVisible();
+	await expect(page.getByTestId('campaign-title')).toBeVisible();
+	await expect(page.getByRole('heading', { name: /They were summoned/ })).toBeVisible();
+	await expect(page.getByText('Hearth online')).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Design notes' })).toBeVisible();
 
 	if (process.env.CAPTURE_FOUNDATION) {
 		await page.screenshot({ path: process.env.CAPTURE_FOUNDATION, fullPage: true });
