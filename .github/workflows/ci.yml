@@ -83,6 +83,9 @@ jobs:
       - name: Production build
         run: pnpm build && pnpm validate:web-build-budget
 
+      - name: Rehearse private playtest package
+        run: pnpm rehearse:playtest-package --skip-build
+
       - name: Install Playwright Chromium
         run: pnpm --filter @summonlab/web exec playwright install --with-deps chromium
 

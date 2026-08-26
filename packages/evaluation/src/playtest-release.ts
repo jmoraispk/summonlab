@@ -11,6 +11,7 @@ export const PLAYTEST_RELEASE_REPORT_VERSION = 'playtest-release-report-v1' as c
 export const PLAYTEST_RELEASE_ID = 'fin008-private-playtest-v1' as const;
 
 const HashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
+const CommitSchema = z.string().regex(/^[a-f0-9]{40}$/u);
 
 export const PlaytestReleaseCheckSchema = z
 	.object({
@@ -73,6 +74,31 @@ export const PlaytestReleaseReportSchema = z
 	});
 
 export type PlaytestReleaseReport = z.infer<typeof PlaytestReleaseReportSchema>;
+
+export const PlaytestPackageReceiptSchema = z
+	.object({
+		schemaVersion: z.literal('playtest-package-receipt-v1'),
+		mode: z.enum(['release', 'rehearsal']),
+		releaseId: z.literal(PLAYTEST_RELEASE_ID),
+		commit: CommitSchema,
+		archiveName: z.string().regex(/^summonlab-fin008-[a-z0-9-]+\.tar\.gz$/u),
+		sha256: HashSchema,
+		bytes: z.number().int().positive(),
+		releaseReportHash: HashSchema
+	})
+	.strict()
+	.superRefine((receipt, context) => {
+		const isCanonicalArchive = receipt.archiveName === 'summonlab-fin008-private-playtest.tar.gz';
+		if ((receipt.mode === 'release') !== isCanonicalArchive) {
+			context.addIssue({
+				code: 'custom',
+				path: ['archiveName'],
+				message: 'Only release mode may use the canonical private-playtest archive name'
+			});
+		}
+	});
+
+export type PlaytestPackageReceipt = z.infer<typeof PlaytestPackageReceiptSchema>;
 
 function moderatedReportHash(report: ModeratedPlaytestReport): string {
 	const unsigned: Partial<ModeratedPlaytestReport> = { ...report };
@@ -152,13 +178,18 @@ export function createPlaytestReleaseReport(input: ModeratedPlaytestReport): Pla
 	return PlaytestReleaseReportSchema.parse({ ...unsigned, reportHash: hashCanonical(unsigned) });
 }
 
-export function assertPlaytestReleaseReady(report: PlaytestReleaseReport): void {
+export function assertPlaytestReleaseReportIntegrity(report: PlaytestReleaseReport): void {
 	const parsed = PlaytestReleaseReportSchema.parse(report);
 	const unsigned: Partial<PlaytestReleaseReport> = { ...parsed };
 	delete unsigned.reportHash;
 	if (hashCanonical(unsigned) !== parsed.reportHash) {
 		throw new Error('Playtest release report content does not match its report hash.');
 	}
+}
+
+export function assertPlaytestReleaseReady(report: PlaytestReleaseReport): void {
+	const parsed = PlaytestReleaseReportSchema.parse(report);
+	assertPlaytestReleaseReportIntegrity(parsed);
 	if (parsed.status !== 'ready-to-package') {
 		throw new Error(`Playtest release is held: ${parsed.blockers.join(' | ')}`);
 	}

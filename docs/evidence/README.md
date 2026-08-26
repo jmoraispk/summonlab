@@ -153,7 +153,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   package privacy contract, and the explicit statement that no archive has been produced.
 - `phase-7-fin008-playtest-release.json` — the checked release-readiness derivation. It currently
   says `held`; passing validation proves that the hold is current, not that FIN-008 is complete.
-  The eventual ignored artifact and receipt require five actual sessions and verified P0/P1 fixes.
+  The eventual ignored artifact and release receipt require five actual sessions and verified P0/P1
+  fixes. `pnpm rehearse:playtest-package` and hosted CI exercise the same deterministic archive core
+  with a typed, non-canonical rehearsal receipt, clean production install, temporary migration, and
+  web/worker health; those ephemeral outputs deliberately do not appear in this evidence directory.
 - `phase-7-fin009-story-workshop-desktop.png` /
   `phase-7-fin009-story-workshop-phone.png` — the development editorial desk at desktop and
   390×844, comparing two exact-version Band 02 proposals across five floors, ten machine checks,

@@ -1012,3 +1012,17 @@ environment example, and the operator runbook while excluding human notes, ident
 quotes, secrets, development evidence, and source artwork. The ignored artifact receipt binds the
 archive SHA-256 and byte size to the exact Git commit and release-report hash. Readiness does not
 equal packaging: FIN-008 stays open until an archive, receipt, and clean-install smoke test exist.
+
+The same archive core has a non-promotable rehearsal mode. Its distinct archive name and typed
+receipt make it impossible to pass a rehearsal receipt off as the canonical package. The rehearsal
+uses temporary storage and a fresh temporary PostgreSQL database, production-installs the extracted
+workspace from the frozen lockfile, applies the built migration entrypoint, and health-checks the
+web and worker against the tested commit. CI runs this after the production build on every `main`
+push. Rehearsal proves package mechanics only; it always reports `releaseEligible: false` and cannot
+substitute for FIN-007 evidence or the final private-operator smoke test.
+
+Because SvelteKit emits assets for development routes even when production configuration returns a
+404 for them, archive staging also prunes PNG/JPEG development artwork and source maps from the
+copied web build. A post-tar entry validator requires the web, worker, release metadata, and built
+migration entrypoints while rejecting source directories, `node_modules`, `.env`, evidence folders,
+source maps, and source-format artwork before a receipt can be written.

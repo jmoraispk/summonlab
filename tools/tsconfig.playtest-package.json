@@ -1,0 +1,17 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node"]
+	},
+	"include": [
+		"export-playtest-release.ts",
+		"package-playtest-release.ts",
+		"playtest-package-lib.ts",
+		"playtest-package-lib.spec.ts",
+		"rehearse-playtest-package.ts"
+	]
+}

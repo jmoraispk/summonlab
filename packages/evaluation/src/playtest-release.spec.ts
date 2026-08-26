@@ -8,6 +8,7 @@ import {
 	type ModeratedPlaytestSession
 } from './moderated-playtest.js';
 import {
+	PlaytestPackageReceiptSchema,
 	PlaytestReleaseReportSchema,
 	assertPlaytestReleaseReady,
 	createPlaytestReleaseReport
@@ -93,5 +94,30 @@ describe('private playtest release gate', () => {
 
 		expect(release.status).toBe('held');
 		expect(release.checks[0]).toMatchObject({ checkId: 'evidence-integrity', status: 'hold' });
+	});
+
+	it('reserves the canonical archive name for a real release receipt', () => {
+		const receipt = {
+			schemaVersion: 'playtest-package-receipt-v1',
+			mode: 'rehearsal',
+			releaseId: 'fin008-private-playtest-v1',
+			commit: 'a'.repeat(40),
+			archiveName: 'summonlab-fin008-private-playtest.tar.gz',
+			sha256: 'b'.repeat(64),
+			bytes: 42,
+			releaseReportHash: 'c'.repeat(64)
+		};
+
+		expect(() => PlaytestPackageReceiptSchema.parse(receipt)).toThrow(/Only release mode/u);
+		expect(
+			PlaytestPackageReceiptSchema.parse({
+				...receipt,
+				archiveName: 'summonlab-fin008-package-rehearsal.tar.gz'
+			})
+		).toMatchObject({ mode: 'rehearsal' });
+		expect(PlaytestPackageReceiptSchema.parse({ ...receipt, mode: 'release' })).toMatchObject({
+			mode: 'release',
+			archiveName: 'summonlab-fin008-private-playtest.tar.gz'
+		});
 	});
 });

@@ -1177,8 +1177,10 @@ Estimated engineering effort: **2 weeks**.
   release triage; the checked readiness gate is implemented and honestly remains at 0/5 until actual
   adult participants complete the sessions;
 - `FIN-008` **in progress** — a hash-bound, fail-closed release report and acknowledged packaging
-  command now refuse the current 0/5 cohort; after five real sessions, fix and verify every P0/P1,
-  assemble the commit-bound private archive and SHA-256 receipt, then smoke-test a clean extraction;
+  command now refuse the current 0/5 cohort; a non-promotable rehearsal proves deterministic
+  assembly, frozen production install, clean migration, and web/worker health from an extracted
+  archive; after five real sessions, fix and verify every P0/P1, assemble the commit-bound private
+  archive and SHA-256 receipt, then perform the final private-operator smoke test;
 - `FIN-009` **complete** — add a development-time story workshop with an exact versioned brief,
   optional structured model generation, independently validated five-floor proposals, explicit
   six-part human review, retained revision identity, prototype-production holds, checked evidence,
