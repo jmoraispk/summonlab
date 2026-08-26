@@ -63,6 +63,11 @@ jobs:
           pnpm validate:player-visuals &&
           pnpm validate:phone-performance
 
+      - name: Validate private playtest gates
+        run: >-
+          pnpm validate:moderated-playtest &&
+          pnpm validate:playtest-release
+
       - name: Lint
         run: pnpm lint
 

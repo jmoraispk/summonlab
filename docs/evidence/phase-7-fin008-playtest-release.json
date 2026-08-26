@@ -1,0 +1,55 @@
+{
+	"schemaVersion": "playtest-release-report-v1",
+	"releaseId": "fin008-private-playtest-v1",
+	"generatedFrom": {
+		"moderatedPlaytestSchemaVersion": "moderated-playtest-report-v1",
+		"moderatedPlaytestReportHash": "3d6e5dd36aed5aa07eaff537ddae4960c89883d221f9140b35483531df80b08d",
+		"cohortId": "fin007-local-private-v1"
+	},
+	"status": "held",
+	"checks": [
+		{
+			"checkId": "evidence-integrity",
+			"status": "pass",
+			"detail": "FIN-007 evidence hash verified: 3d6e5dd36aed5aa0."
+		},
+		{
+			"checkId": "human-sessions",
+			"status": "hold",
+			"detail": "0/5 de-identified moderated sessions recorded."
+		},
+		{
+			"checkId": "assigned-task-coverage",
+			"status": "hold",
+			"detail": "0/12 task families observed; assigned coverage incomplete."
+		},
+		{
+			"checkId": "release-findings",
+			"status": "hold",
+			"detail": "0 unverified P0/P1 findings; FIN-007 recommendation awaiting-sessions."
+		}
+	],
+	"blockers": [
+		"0/5 de-identified moderated sessions recorded.",
+		"0/12 task families observed; assigned coverage incomplete.",
+		"0 unverified P0/P1 findings; FIN-007 recommendation awaiting-sessions."
+	],
+	"packagePlan": {
+		"archiveName": "summonlab-fin008-private-playtest.tar.gz",
+		"command": "pnpm package:playtest --acknowledge-private-release",
+		"contents": [
+			"production web server build",
+			"production worker build",
+			"database migrations and locked workspace manifests",
+			"private operator runbook",
+			"SHA-256 artifact receipt bound to the packaged commit"
+		],
+		"excludes": [
+			"participant identities, recordings, direct quotations, and raw moderator notes",
+			"local environment secrets and development evidence",
+			"unoptimized source artwork"
+		],
+		"artifactReceiptRequired": true
+	},
+	"reportHash": "11ae8b28648dd1876f45304bf42e194073dc069a9c210ea85e4d9a50adcc6ae3"
+}

@@ -1176,7 +1176,9 @@ Estimated engineering effort: **2 weeks**.
   two-phone/three-desktop cohort map, bounded task outcomes, mandatory friction findings, and P0–P3
   release triage; the checked readiness gate is implemented and honestly remains at 0/5 until actual
   adult participants complete the sessions;
-- `FIN-008` fix all release-blocking defects and package the playtest build;
+- `FIN-008` **in progress** — a hash-bound, fail-closed release report and acknowledged packaging
+  command now refuse the current 0/5 cohort; after five real sessions, fix and verify every P0/P1,
+  assemble the commit-bound private archive and SHA-256 receipt, then smoke-test a clean extraction;
 - `FIN-009` **complete** — add a development-time story workshop with an exact versioned brief,
   optional structured model generation, independently validated five-floor proposals, explicit
   six-part human review, retained revision identity, prototype-production holds, checked evidence,

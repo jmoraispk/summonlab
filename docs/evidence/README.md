@@ -147,6 +147,13 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin007-moderated-playtest.json` — the checked de-identified cohort gate. It is currently
   a readiness artifact (`0/5`, not complete), not fabricated participant evidence; only actual
   sanitized sessions can advance its coverage and release recommendation.
+- `phase-7-fin008-release-gate-desktop.png` /
+  `phase-7-fin008-release-gate-phone.png` — the fail-closed private packaging desk at desktop and
+  390×844, showing the upstream evidence hash, four independent claims, three current blockers, the
+  package privacy contract, and the explicit statement that no archive has been produced.
+- `phase-7-fin008-playtest-release.json` — the checked release-readiness derivation. It currently
+  says `held`; passing validation proves that the hold is current, not that FIN-008 is complete.
+  The eventual ignored artifact and receipt require five actual sessions and verified P0/P1 fixes.
 - `phase-7-fin009-story-workshop-desktop.png` /
   `phase-7-fin009-story-workshop-phone.png` — the development editorial desk at desktop and
   390×844, comparing two exact-version Band 02 proposals across five floors, ten machine checks,

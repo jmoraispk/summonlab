@@ -996,3 +996,19 @@ The matrix can carry a replayed Floor 04 route-memory fixture in its bootstrap e
 be evaluated in isolation. Actual cross-attempt aftermath remains a versioned lifecycle concern:
 v16/v17 consequences have round numbers but no source-attempt identity, so `MIS-010A` must repair
 that boundary without rewriting historical streams.
+
+## Human-gated private packaging
+
+FIN-008 consumes the checked FIN-007 moderation report through `playtest-release-report-v1`. The
+evaluator reparses the strict report and recomputes its canonical hash before considering cohort
+state. Four named checks own evidence integrity, exactly five human sessions, complete assigned task
+coverage, and a `candidate` recommendation with no unverified P0/P1. Any failed claim yields a
+checked `held` report; build success or an empty finding list cannot override it.
+
+`/playtest-release` is a development-only projection of that report. The operator packaging command
+requires explicit private-release acknowledgement and clean tracked inputs before it builds. A
+qualified run stages production web/worker/package output, migrations, locked manifests, an
+environment example, and the operator runbook while excluding human notes, identifiers, recordings,
+quotes, secrets, development evidence, and source artwork. The ignored artifact receipt binds the
+archive SHA-256 and byte size to the exact Git commit and release-report hash. Readiness does not
+equal packaging: FIN-008 stays open until an archive, receipt, and clean-install smoke test exist.

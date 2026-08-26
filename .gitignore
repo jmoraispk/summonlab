@@ -20,6 +20,7 @@ test-results/
 *.log
 *.pid
 artifacts/local-provider-runs/
+artifacts/private-playtest/
 
 # Editors and operating systems
 .DS_Store
