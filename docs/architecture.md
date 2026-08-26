@@ -878,6 +878,39 @@ without failing CI; only five fully observed tracks can produce `complete`. Any 
 finding produces `hold`, which FIN-008 must clear before packaging. `/playtest-moderation` renders
 the same checked evidence for the facilitator. See ADR 0051.
 
+### Development story workshop boundary
+
+FIN-009 adds a proposal pipeline upstream of authored content. `story-workshop-brief-v1` binds one
+five-floor band to exact world laws, opening facts, unresolved goals, objective kinds, mechanics,
+enemy duties, production limits, reward ceiling, forbidden changes, and an emotional question. A
+configured development model receives only that canonical brief and returns two or three strict
+`story-arc-proposal-v1` candidates. The provider request uses a versioned prompt, structured output,
+`store: false`, a server-held credential, and recorded model/response/hash/token provenance.
+
+The provider schema is only the first boundary. `@summonlab/evaluation` independently checks brief
+binding, floor range and rhythm, every catalog reference, unique anchors, reward bounds, and
+production counts. Passing all ten checks makes the exact proposal version eligible for human
+editorial review. Review covers causality, mechanical fit, emotional arc, autonomous-character
+agency, production scope, and envelope compilation; only one exact version may be accepted and
+prototype dependencies keep it on hold.
+
+```text
+versioned brief → structured candidates → 10 reference/bound checks
+                                            │
+                              blocked ───────┴────── reviewable
+                                                        │
+                                   revise/reject ───────┴────── accept
+                                                                  │
+                                                     later envelope compiler
+                                                                  │
+                                               versioned authored content only
+```
+
+Neither generation nor acceptance mutates a run or creates canonical content. The existing mission
+package, band envelope, engine validation, and replay boundaries remain the only route from an
+accepted editorial proposal to playable story. The checked scripted fixture proves the workflow
+without claiming external model authorship. See ADR 0052.
+
 ## Platform
 
 Web remains the first platform:

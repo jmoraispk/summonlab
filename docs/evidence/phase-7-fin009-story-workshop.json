@@ -1,0 +1,574 @@
+{
+	"schemaVersion": "story-workshop-report-v1",
+	"workshopVersion": "story-workshop-v1",
+	"generatedAt": "2026-08-25T00:00:00.000Z",
+	"brief": {
+		"schemaVersion": "story-workshop-brief-v1",
+		"briefId": "band-two-erased-register",
+		"briefVersion": "1.0.0",
+		"targetBand": { "band": 2, "firstFloor": 6, "lastFloor": 10 },
+		"worldBible": {
+			"laws": [
+				{
+					"lawId": "death-is-permanent",
+					"statement": "A dead hero or Master cannot be restored by story direction or mission reward.",
+					"authority": "engine"
+				},
+				{
+					"lawId": "retreat-remains-history",
+					"statement": "Retreat preserves bodily, social, and informational consequences from the attempt.",
+					"authority": "aftermath"
+				},
+				{
+					"lawId": "knowledge-has-a-holder",
+					"statement": "A discovery may affect later events only through a living holder of its evidence.",
+					"authority": "knowledge"
+				},
+				{
+					"lawId": "objectives-remain-authored",
+					"statement": "Optional expression and complications cannot replace a floor primary objective.",
+					"authority": "content"
+				},
+				{
+					"lawId": "rewards-follow-extraction",
+					"statement": "Only authored triggers and successful extraction can grant band rewards.",
+					"authority": "extraction"
+				}
+			],
+			"openingFacts": [
+				"The recovered fragment states that Hearth 01 was not the first settlement.",
+				"The first company has survived five floors but has no inherited allegiance to the Master.",
+				"Floor 06 opens only after the Foundry Warden falls and the archive fragment is extracted."
+			],
+			"unresolvedGoalIds": [
+				"identify-earlier-settlements",
+				"earn-company-recognition",
+				"understand-tower-records"
+			]
+		},
+		"mechanicCatalog": [
+			{
+				"mechanicId": "holder-bound-discoveries",
+				"summary": "Evidence can influence later choices only through living characters who hold it.",
+				"productionStatus": "available"
+			},
+			{
+				"mechanicId": "formation-pressure",
+				"summary": "Declared enemy targets and positioning make party formation an inspectable choice.",
+				"productionStatus": "available"
+			},
+			{
+				"mechanicId": "route-discovery",
+				"summary": "Ordinary inspection and movement actions can expose authored alternate routes.",
+				"productionStatus": "available"
+			},
+			{
+				"mechanicId": "persistent-wounds",
+				"summary": "Exposed impacts can create injuries that survive mission return and alter relationships.",
+				"productionStatus": "available"
+			},
+			{
+				"mechanicId": "extraction-bound-rewards",
+				"summary": "Attempt-local cargo becomes canonical only after a successful extraction event.",
+				"productionStatus": "available"
+			},
+			{
+				"mechanicId": "split-party-relay",
+				"summary": "Separated groups pass holder-owned evidence through a bounded relay action.",
+				"productionStatus": "prototype"
+			},
+			{
+				"mechanicId": "protect-objective",
+				"summary": "A visible entity must survive authored pressure until the extraction condition opens.",
+				"productionStatus": "prototype"
+			}
+		],
+		"enemyFamily": {
+			"familyId": "hollow-bellkeepers",
+			"displayName": "Hollow Bellkeepers",
+			"theme": "Record-keeping constructs preserve commands and tallies while treating unregistered people as omissions.",
+			"dutyCatalog": [
+				{
+					"dutyId": "patrol-ledger-paths",
+					"summary": "Patrol fixed record paths and investigate changes to their sequence."
+				},
+				{
+					"dutyId": "investigate-unregistered-sound",
+					"summary": "Move toward voices or bells that do not match the current register."
+				},
+				{
+					"dutyId": "guard-name-vault",
+					"summary": "Hold the threshold of a vault containing erased settlement records."
+				},
+				{
+					"dutyId": "isolate-unverified-carrier",
+					"summary": "Separate the living holder of evidence that contradicts the register."
+				},
+				{
+					"dutyId": "withdraw-with-record",
+					"summary": "Retreat with the nearest intact record rather than pursue a defeated target."
+				}
+			]
+		},
+		"emotionalQuestion": "When the tower remembers every command but not every person, will the company preserve one another's names or let useful sacrifice become procedure?",
+		"desiredSettlementConsequence": "A recovered register can establish a memorial station in Hearth 01 without identifying every erased settlement yet.",
+		"rewardBudgetPoints": 1250,
+		"productionConstraints": {
+			"maxNewNamedLocations": 5,
+			"maxNewEnemyPolicies": 2,
+			"permittedObjectiveKinds": [
+				"eliminate-target",
+				"protect-entity",
+				"recover-item",
+				"reach-exit",
+				"discover-truth"
+			],
+			"floorRhythm": ["setup", "complication", "division", "consequence", "payoff"]
+		},
+		"forbiddenChanges": [
+			"world-laws",
+			"primary-objective-bypass",
+			"arena-truth",
+			"reward-budget",
+			"required-anchors",
+			"knowledge-without-holder",
+			"death-reversal"
+		]
+	},
+	"briefHash": "baeb157495d2a4245162379a3d18238a44e6c60bb33a9086b1d97c1426a448c8",
+	"generation": {
+		"mode": "scripted-fixture",
+		"promptVersion": "story-workshop-prompt-v1",
+		"generatorId": "curated-story-workshop-fixture-v1",
+		"requestedModel": null,
+		"resolvedModel": null,
+		"providerResponseId": null,
+		"requestHash": null,
+		"outputHash": null,
+		"usage": null
+	},
+	"authorityBoundary": {
+		"developmentOnly": true,
+		"proposalsAreCanonical": false,
+		"modelMayMutateRuntime": false,
+		"acceptedContentRequiresDeveloperReview": true,
+		"acceptedContentRequiresEnvelopeCompilation": true
+	},
+	"status": "generated",
+	"summary": {
+		"proposalCount": 2,
+		"validForReviewCount": 2,
+		"pendingReviewCount": 2,
+		"acceptedCount": 0,
+		"readyForCompilationCount": 0
+	},
+	"proposals": [
+		{
+			"proposal": {
+				"schemaVersion": "story-arc-proposal-v1",
+				"proposalId": "band-two-names-we-carry-v1",
+				"proposalVersion": "1.0.0",
+				"supersedesProposalId": null,
+				"briefId": "band-two-erased-register",
+				"title": "The Names We Carry",
+				"thesis": "A company becomes accountable when its members preserve the people whom systems reduce to useful losses.",
+				"logline": "The company follows the recovered archive into a registry that remembers every order but has methodically erased the people who paid for them.",
+				"worldLawIds": [
+					"death-is-permanent",
+					"retreat-remains-history",
+					"knowledge-has-a-holder",
+					"objectives-remain-authored",
+					"rewards-follow-extraction"
+				],
+				"emotionalProgression": [
+					"Curiosity becomes recognition.",
+					"Recognition becomes obligation.",
+					"Obligation divides the company.",
+					"Division gives earlier choices a name.",
+					"The company chooses what remembrance costs."
+				],
+				"floors": [
+					{
+						"floor": 6,
+						"floorInBand": 1,
+						"narrativeJob": "setup",
+						"title": "The Uncounted Bell",
+						"narrativeTurn": "A bell answers the archive fragment but its ledger records the party as equipment rather than people.",
+						"mechanicalJob": "Use ordinary inspection and holder-bound evidence to identify the bell's authored signal path.",
+						"primaryObjectiveKind": "discover-truth",
+						"mechanicIds": ["route-discovery", "holder-bound-discoveries"],
+						"enemyDutyIds": ["patrol-ledger-paths", "investigate-unregistered-sound"],
+						"requiredAnchor": {
+							"anchorId": "bell-registers-orders-not-people",
+							"immutableFact": "The registry has preserved commands from an earlier settlement while removing every personal name."
+						},
+						"optionalBeat": "A patient listener can locate an alternate stair by comparing the missing intervals between bell strikes.",
+						"carryForwardConsequence": "Only the hero who inspects the ledger can testify that the omissions were deliberate."
+					},
+					{
+						"floor": 7,
+						"floorInBand": 2,
+						"narrativeJob": "complication",
+						"title": "Witness Under Glass",
+						"narrativeTurn": "A damaged index can expose one erased settlement, but Bellkeepers classify its living carrier as a corrupt record.",
+						"mechanicalJob": "Protect the index carrier while declared formations redirect pressure from a fixed threshold.",
+						"primaryObjectiveKind": "protect-entity",
+						"mechanicIds": ["formation-pressure", "persistent-wounds"],
+						"enemyDutyIds": ["guard-name-vault", "isolate-unverified-carrier"],
+						"requiredAnchor": {
+							"anchorId": "correction-means-erasure",
+							"immutableFact": "The Bellkeepers call the removal of a person's name a correction rather than a death."
+						},
+						"optionalBeat": "A holder may reveal the Floor 06 omission to redirect one patrol without changing the protection objective.",
+						"carryForwardConsequence": "Any wound taken for the carrier persists and changes who believes the record was worth saving."
+					},
+					{
+						"floor": 8,
+						"floorInBand": 3,
+						"narrativeJob": "division",
+						"title": "Two Exits, One Ledger",
+						"narrativeTurn": "The safest exit abandons a partial register while the archive route exposes its carrier to a separating patrol.",
+						"mechanicalJob": "Choose a route under formation and wound pressure; neither route can remove the authored extraction condition.",
+						"primaryObjectiveKind": "reach-exit",
+						"mechanicIds": ["route-discovery", "formation-pressure", "persistent-wounds"],
+						"enemyDutyIds": ["isolate-unverified-carrier", "withdraw-with-record"],
+						"requiredAnchor": {
+							"anchorId": "safe-route-leaves-register",
+							"immutableFact": "The low-risk exit cannot carry the partial register out of Floor 08."
+						},
+						"optionalBeat": "A discovered service passage reduces exposure but requires the evidence holder to cross last.",
+						"carryForwardConsequence": "The chosen route records whether the company valued survival, evidence, or a specific holder most."
+					},
+					{
+						"floor": 9,
+						"floorInBand": 4,
+						"narrativeJob": "consequence",
+						"title": "The Cost Column",
+						"narrativeTurn": "The registry reconstructs the company's earlier commands as a tally of who absorbed their consequences.",
+						"mechanicalJob": "Recover a bounded register leaf while holder knowledge opens only the routes earned on prior floors.",
+						"primaryObjectiveKind": "recover-item",
+						"mechanicIds": [
+							"holder-bound-discoveries",
+							"route-discovery",
+							"extraction-bound-rewards"
+						],
+						"enemyDutyIds": ["guard-name-vault", "withdraw-with-record"],
+						"requiredAnchor": {
+							"anchorId": "ledger-binds-orders-to-costs",
+							"immutableFact": "The recovered leaf binds each recorded order to the unnamed person who bore its cost."
+						},
+						"optionalBeat": "A witness to a prior wound can annotate one cost without naming or reviving the dead.",
+						"carryForwardConsequence": "The leaf remains attempt-local cargo until extraction and can still be lost on retreat."
+					},
+					{
+						"floor": 10,
+						"floorInBand": 5,
+						"narrativeJob": "payoff",
+						"title": "Keeper of the Blank Line",
+						"narrativeTurn": "The senior Bellkeeper offers a perfect command history if the company surrenders the names that make its costs personal.",
+						"mechanicalJob": "Defeat the authored keeper, preserve the register as cargo, and reach extraction inside the fixed reward budget.",
+						"primaryObjectiveKind": "eliminate-target",
+						"mechanicIds": ["formation-pressure", "persistent-wounds", "extraction-bound-rewards"],
+						"enemyDutyIds": [
+							"guard-name-vault",
+							"isolate-unverified-carrier",
+							"withdraw-with-record"
+						],
+						"requiredAnchor": {
+							"anchorId": "keeper-chose-useful-history",
+							"immutableFact": "The senior Bellkeeper intentionally preserved useful commands while erasing the people who made them possible."
+						},
+						"optionalBeat": "A living evidence holder may state whose cost the ledger concealed, changing expression but not victory conditions.",
+						"carryForwardConsequence": "Successful extraction makes the register available for a Hearth memorial station; failure preserves only witnessed knowledge."
+					}
+				],
+				"finaleConstraints": [
+					"The senior Bellkeeper must be confronted and defeated through the authored primary objective.",
+					"No erased person is restored, named without evidence, or converted into a reward-bearing character.",
+					"The register and memorial materials become canonical only after successful extraction."
+				],
+				"settlementConsequence": "Hearth 01 may build a memorial station that links future commands to their witnessed human costs.",
+				"rewardBudgetPoints": 1220,
+				"newNamedLocations": [
+					"unaccounted-belfry",
+					"glass-index",
+					"cost-column",
+					"blank-line-vault"
+				],
+				"newEnemyPolicyIds": ["isolate-evidence-holder", "secure-nearest-record"],
+				"productionRisks": [
+					"The ledger language may become exposition-heavy unless each fact is earned through action.",
+					"Protecting a carrier must preserve autonomous hero choices instead of turning the party into escorts."
+				],
+				"openQuestions": [
+					"Should the memorial station change daily routines or remain a journal and conversation affordance?",
+					"How much of an earlier settlement can the register reveal without resolving the larger campaign mystery?"
+				]
+			},
+			"proposalHash": "4fb1545245baf44e7dae77f8303bd579cc125de95d1231f88fde010803264081",
+			"validationChecks": [
+				{
+					"checkId": "brief-binding",
+					"passed": true,
+					"detail": "Proposal binds the exact versioned workshop brief."
+				},
+				{
+					"checkId": "five-floor-range",
+					"passed": true,
+					"detail": "Floors are consecutive and occupy the requested five-floor band."
+				},
+				{
+					"checkId": "floor-rhythm",
+					"passed": true,
+					"detail": "Arc follows setup, complication, division, consequence, and payoff."
+				},
+				{
+					"checkId": "objective-catalog",
+					"passed": true,
+					"detail": "Every primary objective uses the permitted objective catalog."
+				},
+				{
+					"checkId": "mechanic-catalog",
+					"passed": true,
+					"detail": "Every mechanic reference exists in the brief."
+				},
+				{
+					"checkId": "enemy-duty-catalog",
+					"passed": true,
+					"detail": "Every enemy duty reference exists in the brief."
+				},
+				{
+					"checkId": "world-law-catalog",
+					"passed": true,
+					"detail": "Every cited world law is unique and immutable in the supplied bible."
+				},
+				{
+					"checkId": "anchor-identity",
+					"passed": true,
+					"detail": "Each floor contributes a distinct required anchor."
+				},
+				{
+					"checkId": "reward-bound",
+					"passed": true,
+					"detail": "Proposed rewards stay inside the authored band budget."
+				},
+				{
+					"checkId": "production-bound",
+					"passed": true,
+					"detail": "New location and enemy-policy counts stay inside production scope."
+				}
+			],
+			"validForReview": true,
+			"productionWarnings": [],
+			"reviewStatus": "pending",
+			"review": null,
+			"readyForCompilation": false
+		},
+		{
+			"proposal": {
+				"schemaVersion": "story-arc-proposal-v1",
+				"proposalId": "band-two-counted-silence-v1",
+				"proposalVersion": "1.0.0",
+				"supersedesProposalId": null,
+				"briefId": "band-two-erased-register",
+				"title": "The Counted Silence",
+				"thesis": "Silence can protect a company in the moment while making its absent members easier for authority to erase.",
+				"logline": "A tower registry rewards the company for moving without names or testimony, splitting survival from the duty to remain known to one another.",
+				"worldLawIds": [
+					"death-is-permanent",
+					"retreat-remains-history",
+					"knowledge-has-a-holder",
+					"objectives-remain-authored",
+					"rewards-follow-extraction"
+				],
+				"emotionalProgression": [
+					"Silence first feels like competence.",
+					"Competence begins to isolate witnesses.",
+					"Isolation turns trust into a tactical cost.",
+					"The missing testimony changes what the tower records.",
+					"The company decides whether being remembered is worth exposure."
+				],
+				"floors": [
+					{
+						"floor": 6,
+						"floorInBand": 1,
+						"narrativeJob": "setup",
+						"title": "Quiet Entry",
+						"narrativeTurn": "A noiseless route opens easily, but the Bellkeepers record only commands spoken where they can be heard.",
+						"mechanicalJob": "Discover a route by contrasting patrol response to movement, inspection, and attributed sound.",
+						"primaryObjectiveKind": "discover-truth",
+						"mechanicIds": ["route-discovery", "holder-bound-discoveries"],
+						"enemyDutyIds": ["patrol-ledger-paths", "investigate-unregistered-sound"],
+						"requiredAnchor": {
+							"anchorId": "silence-removes-attribution",
+							"immutableFact": "The registry preserves an unattributed action but discards the silent person who performed it."
+						},
+						"optionalBeat": "Waiting through a patrol cycle reveals where the registry listens rather than where it looks.",
+						"carryForwardConsequence": "Only witnesses to the silent action can later restore its human attribution."
+					},
+					{
+						"floor": 7,
+						"floorInBand": 2,
+						"narrativeJob": "complication",
+						"title": "The Speaking Burden",
+						"narrativeTurn": "A damaged witness index survives only while someone speaks its names, drawing every listening patrol.",
+						"mechanicalJob": "Protect a visible objective while formation and sound-responsive duties make testimony costly.",
+						"primaryObjectiveKind": "protect-entity",
+						"mechanicIds": ["protect-objective", "formation-pressure", "persistent-wounds"],
+						"enemyDutyIds": ["investigate-unregistered-sound", "isolate-unverified-carrier"],
+						"requiredAnchor": {
+							"anchorId": "index-needs-living-voice",
+							"immutableFact": "The damaged index retains a name only while a living holder continues its testimony."
+						},
+						"optionalBeat": "A second witness may alternate the burden if both already hold the same evidence.",
+						"carryForwardConsequence": "Wounds and witnessed protection shape who will volunteer to carry testimony again."
+					},
+					{
+						"floor": 8,
+						"floorInBand": 3,
+						"narrativeJob": "division",
+						"title": "Voices Across Stone",
+						"narrativeTurn": "Separated groups can preserve the route or the names, but the relay cannot transmit evidence nobody in the sending group holds.",
+						"mechanicalJob": "Use a bounded party relay under route and formation pressure without granting remote omniscience.",
+						"primaryObjectiveKind": "reach-exit",
+						"mechanicIds": ["split-party-relay", "route-discovery", "formation-pressure"],
+						"enemyDutyIds": ["isolate-unverified-carrier", "patrol-ledger-paths"],
+						"requiredAnchor": {
+							"anchorId": "relay-cannot-invent-holder",
+							"immutableFact": "The relay carries only evidence already held by a living sender and heard by a living receiver."
+						},
+						"optionalBeat": "A previously shared fact can open the quieter exit for the separated group that received it.",
+						"carryForwardConsequence": "The route records who was kept informed and who was treated as expendably silent."
+					},
+					{
+						"floor": 9,
+						"floorInBand": 4,
+						"narrativeJob": "consequence",
+						"title": "Record of No Reply",
+						"narrativeTurn": "The registry presents every earlier silence as consent, forcing the company to confront what it failed to witness.",
+						"mechanicalJob": "Recover a correction plate through holder-bound routes while earlier relay choices constrain legal testimony.",
+						"primaryObjectiveKind": "recover-item",
+						"mechanicIds": [
+							"holder-bound-discoveries",
+							"split-party-relay",
+							"extraction-bound-rewards"
+						],
+						"enemyDutyIds": ["guard-name-vault", "withdraw-with-record"],
+						"requiredAnchor": {
+							"anchorId": "silence-was-recorded-as-consent",
+							"immutableFact": "The earlier settlement's registry converted every unanswered command into a record of consent."
+						},
+						"optionalBeat": "A holder of contradictory evidence may annotate one record without rewriting the original event.",
+						"carryForwardConsequence": "The correction plate remains attempt-local and cannot repair testimony the company never shared."
+					},
+					{
+						"floor": 10,
+						"floorInBand": 5,
+						"narrativeJob": "payoff",
+						"title": "The Last Auditor",
+						"narrativeTurn": "The Last Auditor offers safe passage if the company accepts that unrecorded people never opposed the commands that killed them.",
+						"mechanicalJob": "Defeat the authored Auditor while protecting the correction plate and extracting within fixed consequence bounds.",
+						"primaryObjectiveKind": "eliminate-target",
+						"mechanicIds": ["protect-objective", "formation-pressure", "extraction-bound-rewards"],
+						"enemyDutyIds": [
+							"guard-name-vault",
+							"isolate-unverified-carrier",
+							"withdraw-with-record"
+						],
+						"requiredAnchor": {
+							"anchorId": "auditor-made-silence-legal",
+							"immutableFact": "The Last Auditor authored the rule that transformed missing testimony into consent."
+						},
+						"optionalBeat": "Two living holders may deliver a joint correction whose wording changes with their relationship, never its fact.",
+						"carryForwardConsequence": "Extraction can establish a Hearth testimony practice; retreat preserves only what surviving witnesses remember."
+					}
+				],
+				"finaleConstraints": [
+					"The Last Auditor remains an authored confrontation and cannot be bypassed by testimony alone.",
+					"Silence is never retroactively assigned a speaker, belief, consent, or hidden fact.",
+					"The correction plate and any settlement upgrade require successful extraction."
+				],
+				"settlementConsequence": "Hearth 01 may establish a testimony practice that records attributed dissent alongside future commands.",
+				"rewardBudgetPoints": 1240,
+				"newNamedLocations": [
+					"quiet-entry",
+					"speaking-burden",
+					"relay-stones",
+					"correction-vault",
+					"auditor-dais"
+				],
+				"newEnemyPolicyIds": ["pursue-active-testimony"],
+				"productionRisks": [
+					"The split-party relay needs a proof that player-facing information never becomes hero knowledge automatically.",
+					"Sustained speaking must remain a tactical action rather than a repetitive dialogue prompt."
+				],
+				"openQuestions": [
+					"Is the testimony practice legible as a settlement consequence without adding a sixth building?",
+					"Should the Last Auditor react to player silence, hero silence, or only canonical communication events?"
+				]
+			},
+			"proposalHash": "816e203d2ca12d7542b187182808ea46941fa73ece3d2da0b5893dd098de9ccc",
+			"validationChecks": [
+				{
+					"checkId": "brief-binding",
+					"passed": true,
+					"detail": "Proposal binds the exact versioned workshop brief."
+				},
+				{
+					"checkId": "five-floor-range",
+					"passed": true,
+					"detail": "Floors are consecutive and occupy the requested five-floor band."
+				},
+				{
+					"checkId": "floor-rhythm",
+					"passed": true,
+					"detail": "Arc follows setup, complication, division, consequence, and payoff."
+				},
+				{
+					"checkId": "objective-catalog",
+					"passed": true,
+					"detail": "Every primary objective uses the permitted objective catalog."
+				},
+				{
+					"checkId": "mechanic-catalog",
+					"passed": true,
+					"detail": "Every mechanic reference exists in the brief."
+				},
+				{
+					"checkId": "enemy-duty-catalog",
+					"passed": true,
+					"detail": "Every enemy duty reference exists in the brief."
+				},
+				{
+					"checkId": "world-law-catalog",
+					"passed": true,
+					"detail": "Every cited world law is unique and immutable in the supplied bible."
+				},
+				{
+					"checkId": "anchor-identity",
+					"passed": true,
+					"detail": "Each floor contributes a distinct required anchor."
+				},
+				{
+					"checkId": "reward-bound",
+					"passed": true,
+					"detail": "Proposed rewards stay inside the authored band budget."
+				},
+				{
+					"checkId": "production-bound",
+					"passed": true,
+					"detail": "New location and enemy-policy counts stay inside production scope."
+				}
+			],
+			"validForReview": true,
+			"productionWarnings": [
+				"Prototype mechanic requires production proof: protect-objective",
+				"Prototype mechanic requires production proof: split-party-relay"
+			],
+			"reviewStatus": "pending",
+			"review": null,
+			"readyForCompilation": false
+		}
+	],
+	"reportHash": "0255106f8da99b869662aef7448544d43b41949340c2ca9be101bede0b8bb120"
+}

@@ -433,8 +433,8 @@ version, message commitment, and replay hash remain unchanged.
 
 ## Phase 7 — synthesis, story, and vertical-slice finish
 
-Status: **in progress**. `FIN-001` through `FIN-006` are complete as of 2026-08-25; the broader
-vertical-slice finish remains active and `FIN-007` through `FIN-009` are not complete.
+Status: **in progress**. `FIN-001` through `FIN-006` and `FIN-009` are complete as of 2026-08-25;
+the broader vertical-slice finish remains active because `FIN-007` and `FIN-008` are not complete.
 
 | Task | Result | Evidence |
 | --- | --- | --- |
@@ -445,6 +445,8 @@ vertical-slice finish remains active and `FIN-007` through `FIN-009` are not com
 | `FIN-005` | Complete: content-addressed 832 px/1681 px title WebPs replace the 2.19 MB source PNG on player routes; approved runtime portraits replace source imports where available; exact build, title, and settlement bytes bind a versioned phone report; a real arrived campaign at 390×844/2×, 150 ms/1.6 Mbps simulated 4G, and 4× CPU enforces shell, reconnect, response, frame, and working-set targets in hosted browser CI | [Optimized phone title](evidence/phase-7-fin005-phone-title.png), [arrived phone settlement](evidence/phase-7-fin005-phone-settlement.png), [machine-readable phone report](evidence/phase-7-fin005-phone-performance.json), player-visual/build validators, contract/browser tests, ADR 0049 |
 | `FIN-006` | Complete: undecided and declined browsers send no analytics; affirmative adult consent creates a hashed 30-day device capability; seven strict event types reject raw or unknown properties; names, seeds, dialogue, IPs, user agents, cookies, and third parties stay outside the store; withdrawal/expiry deletes retained sessions/events; the development report exposes aggregate typed counts and a prefix-complete funnel only | [Desktop consent](evidence/phase-7-fin006-desktop-consent.png), [phone consent](evidence/phase-7-fin006-phone-consent.png), [desktop aggregate report](evidence/phase-7-fin006-desktop-aggregate-report.png), [phone aggregate report](evidence/phase-7-fin006-phone-aggregate-report.png), consent/database/browser tests, ADR 0050 |
 | `FIN-007` | In progress: the fixed five-session protocol, separate qualitative consent script, two-phone/three-desktop cohort map, twelve-task coverage model, mandatory finding linkage for prompted/failed tasks, P0–P3 release rubric, checked evidence hash, and development moderation dashboard are complete; the report deliberately says `ready`, 0/5, and `awaiting-sessions` because automated journeys do not count as human playtests | [Desktop readiness](evidence/phase-7-fin007-moderation-readiness-desktop.png), [phone readiness](evidence/phase-7-fin007-moderation-readiness-phone.png), [machine-readable gate](evidence/phase-7-fin007-moderated-playtest.json), [protocol](playtest-protocol.md), schema/generator/browser tests, ADR 0051 |
+| `FIN-008` | Pending: package the private playtest build only after all five FIN-007 sessions exist and every P0/P1 finding is fixed and verified | FIN-007 release recommendation remains `awaiting-sessions` |
+| `FIN-009` | Complete: an exact Band 02 brief binds world laws, opening facts, mechanics, Hollow Bellkeeper duties, objective/reward/production bounds, and one emotional question; a real opt-in structured-output adapter plus an honestly labeled scripted fixture generate versioned five-floor alternatives; ten machine checks precede a six-part human rubric, only one exact version may be accepted, prototype dependencies hold compilation, and no proposal can mutate runtime or become canonical without later strict envelope compilation | [Desktop workshop](evidence/phase-7-fin009-story-workshop-desktop.png), [phone workshop](evidence/phase-7-fin009-story-workshop-phone.png), [machine-readable report](evidence/phase-7-fin009-story-workshop.json), [review protocol](story-workshop.md), contracts/provider/evaluation/browser tests, ADR 0052 |
 
 ### Reproduce the FIN-003 checkpoint
 
@@ -512,9 +514,23 @@ structured evidence to `packages/evaluation/fixtures/moderated-playtest-cohort-v
 rejected. FIN-007 remains incomplete until the checked report contains five sessions and says
 `moderationStatus: complete`.
 
+### Reproduce the FIN-009 checkpoint
+
+Run `pnpm validate:story-workshop`, start `pnpm dev:app`, and open
+`http://localhost:5173/story-workshop`. Compare **The Names We Carry** and **The Counted Silence**
+across floors 06–10. Each must pass ten brief/catalog/bound checks, expose an exact semantic version
+and proposal hash, and remain `pending` with zero candidates ready for compilation. The second
+candidate must visibly retain production holds for `protect-objective` and `split-party-relay`.
+
+Read `docs/story-workshop.md` before recording a review or optional provider generation. Confirm the
+six editorial criteria stay human-owned, the scripted fixture claims no provider provenance, and
+acceptance authorizes only later envelope compilation—not canonical content or runtime mutation.
+
 ## Next active engineering slice
 
 Complete `FIN-007`: recruit five adult participants, follow the separate qualitative-consent script,
 run the fixed two-phone/three-desktop tracks, and triage every prompted or failed task by release
-severity. The protocol and evidence gate are ready at 0/5; automated sessions must not fill the
-human slots. Phase 3 cohort expansion remains behind its separate human visual gate.
+severity. Then complete `FIN-008` by fixing and verifying every observed P0/P1 before packaging the
+private build. The protocol and evidence gate are ready at 0/5; automated sessions must not fill the
+human slots. FIN-009 is independently complete but its proposals deliberately remain pending human
+editorial review. Phase 3 cohort expansion remains behind its separate human visual gate.

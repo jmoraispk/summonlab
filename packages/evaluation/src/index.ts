@@ -9,5 +9,6 @@ export * from './moderated-playtest.js';
 export * from './player-journal.js';
 export * from './story-envelope.js';
 export * from './story-patch.js';
+export * from './story-workshop.js';
 export * from './synthesis.js';
 export * from './schema.js';

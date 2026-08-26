@@ -28,6 +28,7 @@
 	<nav>
 		<a href={resolve('/')} class="wordmark">summonlab</a>
 		<span>narrative systems / band 01</span>
+		<a href={resolve('/story-workshop')}>Story workshop</a>
 		<code>{data.report.contentVersion}</code>
 	</nav>
 

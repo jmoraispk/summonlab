@@ -147,3 +147,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin007-moderated-playtest.json` — the checked de-identified cohort gate. It is currently
   a readiness artifact (`0/5`, not complete), not fabricated participant evidence; only actual
   sanitized sessions can advance its coverage and release recommendation.
+- `phase-7-fin009-story-workshop-desktop.png` /
+  `phase-7-fin009-story-workshop-phone.png` — the development editorial desk at desktop and
+  390×844, comparing two exact-version Band 02 proposals across five floors, ten machine checks,
+  production holds, six human review criteria, and an explicit zero-canonical-content boundary.
+- `phase-7-fin009-story-workshop.json` — the checked versioned brief, honestly labeled scripted
+  generation fixture, two bounded proposal packets and hashes, catalog/reference validation,
+  prototype warnings, pending review state, and zero candidates ready for compilation.

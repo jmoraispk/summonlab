@@ -1177,7 +1177,11 @@ Estimated engineering effort: **2 weeks**.
   release triage; the checked readiness gate is implemented and honestly remains at 0/5 until actual
   adult participants complete the sessions;
 - `FIN-008` fix all release-blocking defects and package the playtest build;
-- `FIN-009` add a development-time story workshop that generates reviewable, versioned arc proposals.
+- `FIN-009` **complete** — add a development-time story workshop with an exact versioned brief,
+  optional structured model generation, independently validated five-floor proposals, explicit
+  six-part human review, retained revision identity, prototype-production holds, checked evidence,
+  and a development comparison desk; proposals and acceptance remain non-canonical until a later
+  strict envelope compilation.
 
 **Exit:** definition of done is met and the next investment decision can be based on observed play rather than speculation.
 
