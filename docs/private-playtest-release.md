@@ -33,8 +33,8 @@ development release desk to return 404. A dirty local run says `sourceTreeStatus
 
 ## Packaging procedure
 
-After the owner sends comments, Codex updates the checked owner evidence, fixes and verifies every
-P0/P1 finding, and commits those inputs:
+After an owner retest reaches every checkpoint, Codex updates the checked owner evidence, fixes and
+verifies every P0/P1 finding, and commits those inputs:
 
 ```sh
 pnpm check

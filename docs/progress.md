@@ -444,7 +444,7 @@ the broader vertical-slice finish remains active because `FIN-007` and `FIN-008`
 | `FIN-004` | Complete: a muted-by-default procedural soundscape supplies route ambience and optional full interface cues without assets or canonical writes; every cue is redundant and captioned; v1 local settings migrate before hydration; System motion honors the OS while Reduced removes long movement; skip navigation, visible focus, native settings inputs, arrow-key hero tabs, route focus, and modal containment/restoration form the keyboard baseline | [Desktop settings](evidence/phase-7-fin004-desktop-settings.png), [desktop company](evidence/phase-7-fin004-desktop-company.png), [phone settings](evidence/phase-7-fin004-phone-settings.png), [phone company](evidence/phase-7-fin004-phone-company.png), [phone Hearth](evidence/phase-7-fin004-phone-hearth.png), settings/audio unit tests, accessibility and campaign browser tests, ADR 0048 |
 | `FIN-005` | Complete: content-addressed 832 px/1681 px title WebPs replace the 2.19 MB source PNG on player routes; approved runtime portraits replace source imports where available; exact build, title, and settlement bytes bind a versioned phone report; a real arrived campaign at 390×844/2×, 150 ms/1.6 Mbps simulated 4G, and 4× CPU enforces shell, reconnect, response, frame, and working-set targets in hosted browser CI | [Optimized phone title](evidence/phase-7-fin005-phone-title.png), [arrived phone settlement](evidence/phase-7-fin005-phone-settlement.png), [machine-readable phone report](evidence/phase-7-fin005-phone-performance.json), player-visual/build validators, contract/browser tests, ADR 0049 |
 | `FIN-006` | Complete: undecided and declined browsers send no analytics; affirmative adult consent creates a hashed 30-day device capability; seven strict event types reject raw or unknown properties; names, seeds, dialogue, IPs, user agents, cookies, and third parties stay outside the store; withdrawal/expiry deletes retained sessions/events; the development report exposes aggregate typed counts and a prefix-complete funnel only | [Desktop consent](evidence/phase-7-fin006-desktop-consent.png), [phone consent](evidence/phase-7-fin006-phone-consent.png), [desktop aggregate report](evidence/phase-7-fin006-desktop-aggregate-report.png), [phone aggregate report](evidence/phase-7-fin006-phone-aggregate-report.png), consent/database/browser tests, ADR 0050 |
-| `FIN-007` | In progress: ADR 0054 replaces the premature five-person study with one owner playthrough on phone or desktop. The owner plays eight natural checkpoints, optionally enables automatic background statistics, and sends ordinary comments; Codex owns the structured evidence and P0–P3 triage. The checked report honestly says `ready`, 0/1, and `awaiting-owner-playtest` because automation cannot claim owner feedback | [Desktop readiness](evidence/phase-7-fin007-moderation-readiness-desktop.png), [phone readiness](evidence/phase-7-fin007-moderation-readiness-phone.png), [machine-readable gate](evidence/phase-7-fin007-moderated-playtest.json), [protocol](playtest-protocol.md), schema/generator/browser tests, ADR 0054 |
+| `FIN-007` | In progress: the first owner playthrough is now recorded honestly as stopped, 1/1 reviewed, and 7/8 checkpoints reached. Four P1 findings hold the experience: realistic identity continuity, opening clarity, contextual autonomy, and an explained Floor 01/First Ember return. ADR 0055 preserves the gate-centered redesign; default-company portrait anchors and a clearer explicit first direction form the first corrective slice | [Corrected summoning desktop](evidence/phase-7-fin007-owner-summoning-desktop.png), [corrected summoning phone](evidence/phase-7-fin007-owner-summoning-phone.png), [machine-readable gate](evidence/phase-7-fin007-moderated-playtest.json), [protocol](playtest-protocol.md), owner evidence, schema/generator/browser tests, ADRs 0054 and 0055 |
 | `FIN-008` | In progress: the hash-bound readiness report independently verifies FIN-007 integrity, the one reviewed owner playthrough, all eight required checkpoints, and zero unverified P0/P1; the acknowledged packaging command refuses held or dirty inputs. The shared archive core deterministically stages built-only workspace output, rewrites runtime exports, and issues typed receipts; its non-promotable rehearsal production-installs an extraction, migrates a fresh temporary database, and passes web/worker health before deleting all rehearsal state. The current checked state honestly remains `held`, so no canonical archive exists yet | [Desktop release gate](evidence/phase-7-fin008-release-gate-desktop.png), [phone release gate](evidence/phase-7-fin008-release-gate-phone.png), [machine-readable gate](evidence/phase-7-fin008-playtest-release.json), [release/rehearsal procedure](private-playtest-release.md), archive-core/release/browser tests, hosted rehearsal, ADRs 0053 and 0054 |
 | `FIN-009` | Complete: an exact Band 02 brief binds world laws, opening facts, mechanics, Hollow Bellkeeper duties, objective/reward/production bounds, and one emotional question; a real opt-in structured-output adapter plus an honestly labeled scripted fixture generate versioned five-floor alternatives; ten machine checks precede a six-part human rubric, only one exact version may be accepted, prototype dependencies hold compilation, and no proposal can mutate runtime or become canonical without later strict envelope compilation | [Desktop workshop](evidence/phase-7-fin009-story-workshop-desktop.png), [phone workshop](evidence/phase-7-fin009-story-workshop-phone.png), [machine-readable report](evidence/phase-7-fin009-story-workshop.json), [review protocol](story-workshop.md), contracts/provider/evaluation/browser tests, ADR 0052 |
 
@@ -504,9 +504,9 @@ zero-request decline, strict-property rejection, consented funnel, and deletion 
 ### Reproduce the FIN-007 readiness checkpoint
 
 Run `pnpm validate:moderated-playtest`, start `pnpm dev:app`, and open
-`http://localhost:5173/playtest-moderation`. Before owner feedback exists, the internal dashboard
-must show **0 / 1**, **Ready**, and **Release: awaiting owner playtest**; the single owner journey and
-eight checkpoints must be visible, and it must not claim a release candidate.
+`http://localhost:5173/playtest-moderation`. The internal dashboard must now show **1 / 1**,
+**In progress**, **7 / 8**, and four open blockers; the stopped owner journey and all eight triaged
+findings must be visible, and it must not claim a release candidate.
 
 For the actual test, the owner opens `http://localhost:5173`, optionally enables background
 statistics once, plays from title through Hearth, the First Ember choice, and the pause menu, and
@@ -519,9 +519,10 @@ FIN-007 remains incomplete until the checked report contains the reviewed owner 
 
 Run `pnpm validate:playtest-release`, start `pnpm dev:app`, and open
 `http://localhost:5173/playtest-release`. The current dashboard must show **held**, four gate claims,
-three active blockers, and **No package has been produced**. Run
+three active blockers (incomplete status, 7/8 coverage, and four open P1 findings), and **No package
+has been produced**. Run
 `pnpm package:playtest --acknowledge-private-release`; it must refuse before building or writing an
-archive while FIN-007 remains at 0/1.
+archive while FIN-007 remains incomplete.
 
 Run `pnpm rehearse:playtest-package`. It must report `releaseEligible: false`, source status `held`,
 and passing production-build, deterministic-archive, frozen-install, clean-migration, web-health,
@@ -547,10 +548,8 @@ acceptance authorizes only later envelope compilation—not canonical content or
 
 ## Next active engineering slice
 
-Complete `FIN-007`: the owner plays one normal player-facing route from title through Hearth, the
-First Ember choice, and the pause menu and sends comments to Codex; Codex records the eight outcomes
-and triages every friction point. Then complete `FIN-008` by fixing and verifying every observed
-P0/P1 before packaging the private build. The owner gate is ready at 0/1; automated sessions cannot
-fill it. A friends round is optional later. FIN-009 is independently complete but its proposals
-remain pending human editorial review. Phase 3 cohort expansion remains behind its separate human
-visual gate.
+Complete the corrective `FIN-007` slice in ADR 0055, then ask the owner to retest the coherent
+gate-to-Hearth route and finish the one unobserved checkpoint. Resolve and verify every P0/P1 before
+FIN-008 packages the private build. Automated sessions cannot replace that owner judgment. A
+friends round is optional later. FIN-009 is independently complete but its proposals remain pending
+human editorial review. Phase 3 cohort expansion remains behind its separate human visual gate.

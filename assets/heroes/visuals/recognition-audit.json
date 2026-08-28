@@ -1,7 +1,7 @@
 {
 	"schemaVersion": "visual-recognition-audit-v1",
 	"catalogVersion": "visual-catalog-v1",
-	"catalogContentHash": "78a270c54e2972777bb1ab532c59116d215c2405c6f32b893c64f7dc10c49c06",
+	"catalogContentHash": "ddb083f0d10b10faae86092de9f317ff7c916650ce37c4843f52f3856943cae0",
 	"characterId": "9aeb01f2-9beb-4385-a8ea-fecc99eb005f",
 	"manifestHash": "a87292d405df053b8dee55fb4b516519419538e11f90e4e2033017997dfbb212",
 	"approvedSourceAssetKey": "ember-01-anchor-v1",
@@ -176,5 +176,5 @@
 		"textureMemoryProxyStatus": "within-reference"
 	},
 	"humanReviewStatus": "pending-human-review",
-	"auditHash": "0a0dec3db1bf198af04f667ab81ca79e45f6370234fbbf661b1fe3e06d726777"
+	"auditHash": "227e37d9ba7a74a7a1fe74591ae380bf7863260ff985bdfd3a9ca95a2740d5d1"
 }

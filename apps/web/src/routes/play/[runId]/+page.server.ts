@@ -7,17 +7,13 @@ import {
 	getSimulationClock
 } from '@summonlab/database';
 import { HEARTH_01_DEFINITION, loadHearth01Scene } from '@summonlab/content';
-import { RuntimeVisualManifestSchema } from '@summonlab/contracts';
 import { projectSettlementPresentation } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
-import runtimeVisualManifestSource from '../../../../static/runtime/visual-catalog-v1/manifest.json';
-
 import { campaignExperienceView } from '$lib/server/campaign';
+import { runtimePortraitFor } from '$lib/server/runtime-portraits';
 
 import type { PageServerLoad } from './$types';
-
-const runtimeVisualManifest = RuntimeVisualManifestSchema.parse(runtimeVisualManifestSource);
 
 export const load: PageServerLoad = async ({ params }) => {
 	const config = getConfig();
@@ -45,24 +41,18 @@ export const load: PageServerLoad = async ({ params }) => {
 	const campaignView = await campaignExperienceView(config.databaseUrl, params.runId).catch(
 		() => null
 	);
-	const heroPortrait = runtimeVisualManifest.bundles
-		.flatMap((bundle) => bundle.assets)
-		.find(
-			(asset) => asset.sourceAssetKey === snapshot.manifest.artKey && asset.usage === 'dialogue'
-		);
+	const heroPortrait = runtimePortraitFor(
+		snapshot.manifestHash,
+		snapshot.manifest.artKey,
+		'dialogue'
+	);
 	return {
 		snapshot,
 		clock,
 		eventHead,
 		presentation,
 		campaignView,
-		heroPortrait: heroPortrait
-			? {
-					publicPath: heroPortrait.publicPath,
-					width: heroPortrait.width,
-					height: heroPortrait.height
-				}
-			: null,
+		heroPortrait,
 		scene: await loadHearth01Scene()
 	};
 };

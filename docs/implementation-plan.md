@@ -1175,9 +1175,10 @@ Estimated engineering effort: **2 weeks**.
 - `FIN-007` **in progress** — use the `owner-playtest-v1` conversational loop: one real owner
   playthrough on phone or desktop, eight natural journey checkpoints, automatic consented background
   statistics, Codex-maintained evidence, mandatory friction findings, and P0–P3 release triage; the
-  checked readiness gate honestly remains at 0/1 until the owner plays and sends feedback;
+  first stopped owner run is recorded at 1/1 reviewed and 7/8 reached, with four P1 corrections now
+  driving the gate-centered redesign in ADR 0055;
 - `FIN-008` **in progress** — a hash-bound, fail-closed release report and acknowledged packaging
-  command now refuse the current 0/1 owner gate; a non-promotable rehearsal proves deterministic
+  command now refuses the incomplete owner journey and four open P1 findings; a non-promotable rehearsal proves deterministic
   assembly, frozen production install, clean migration, and web/worker health from an extracted
   archive; after the owner playthrough, fix and verify every P0/P1, assemble the commit-bound private
   archive and SHA-256 receipt, then perform the final private-operator smoke test;
@@ -1285,7 +1286,8 @@ build artifacts are exact, while a fresh throttled Chromium campaign enforces th
 reconnect, interface, frame, and working-set targets. `FIN-006` adds the revocable, data-minimized observation boundary in
 ADR 0050: decline is a verified zero-request path; a 30-day capability gates seven strict event
 types; withdrawal/expiry deletes the retained journey; and the development report exposes aggregate
-signal only. The next execution slice is `FIN-007`: run the owner playthrough and triage feedback.
+signal only. The first FIN-007 owner playthrough is recorded and triaged; the next execution slice
+implements and retests the gate-to-Hearth correction defined by ADR 0055.
 
 ## Accepted product decisions — 2026-08-23
 

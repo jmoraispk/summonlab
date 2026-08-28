@@ -2,7 +2,114 @@
 	"schemaVersion": "owner-playtest-source-v1",
 	"protocolVersion": "owner-playtest-v1",
 	"playtestId": "fin007-owner-local-v1",
-	"updatedAt": "2026-08-27T00:00:00.000Z",
-	"sessions": [],
-	"findings": []
+	"updatedAt": "2026-08-27T19:37:00.000Z",
+	"sessions": [
+		{
+			"sessionCode": "OWNER-01",
+			"track": "owner-vertical-slice",
+			"buildCommit": "9b6d1ea08c60cd59ff80fe8963d1146a2606e57d",
+			"disposition": "stopped-by-player",
+			"taskResults": [
+				{ "taskId": "start-seeded-run", "outcome": "completed-with-friction" },
+				{ "taskId": "complete-summoning-intro", "outcome": "completed-with-friction" },
+				{ "taskId": "read-three-hero-dossiers", "outcome": "completed-with-friction" },
+				{ "taskId": "converse-and-direct", "outcome": "completed-with-friction" },
+				{ "taskId": "understand-autonomy", "outcome": "blocked" },
+				{ "taskId": "arrive-in-hearth", "outcome": "completed-with-friction" },
+				{ "taskId": "recover-and-bind-first-ember", "outcome": "blocked" },
+				{ "taskId": "review-objectives-and-settings", "outcome": "not-reached" }
+			],
+			"feedbackReviewed": true
+		}
+	],
+	"findings": [
+		{
+			"findingId": "FIN007-001",
+			"severity": "P1",
+			"area": "hero-readability",
+			"summary": "The default company used simplified rigs instead of the required polished realistic hero identities.",
+			"taskIds": ["complete-summoning-intro", "read-three-hero-dossiers"],
+			"status": "open",
+			"disposition": "fix-before-retest",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-002",
+			"severity": "P1",
+			"area": "onboarding",
+			"summary": "The opening screens did not establish the player goal or next action without outside explanation.",
+			"taskIds": ["start-seeded-run", "complete-summoning-intro"],
+			"status": "open",
+			"disposition": "fix-before-retest",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-003",
+			"severity": "P1",
+			"area": "autonomy",
+			"summary": "The first hero departed for training without a legible context, conversation, or player-issued direction.",
+			"taskIds": ["converse-and-direct", "understand-autonomy", "arrive-in-hearth"],
+			"status": "open",
+			"disposition": "fix-before-release",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-004",
+			"severity": "P1",
+			"area": "consequence",
+			"summary": "The prototype Floor 01 return and First Ember choice appeared without enough visible cause or explanation.",
+			"taskIds": ["recover-and-bind-first-ember"],
+			"status": "open",
+			"disposition": "fix-before-retest",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-005",
+			"severity": "P2",
+			"area": "hero-readability",
+			"summary": "The opening background appeared soft and blurry at the tested desktop presentation size.",
+			"taskIds": ["start-seeded-run"],
+			"status": "open",
+			"disposition": "backlog",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-006",
+			"severity": "P2",
+			"area": "settlement",
+			"summary": "The automatic walk through Hearth felt disconnected from summoning and added no useful decision or context.",
+			"taskIds": ["arrive-in-hearth"],
+			"status": "open",
+			"disposition": "fix-before-retest",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-007",
+			"severity": "P2",
+			"area": "settlement",
+			"summary": "The settlement needs pan and zoom plus live skill practice and experience feedback for concurrent activity.",
+			"taskIds": ["arrive-in-hearth"],
+			"status": "open",
+			"disposition": "backlog",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		},
+		{
+			"findingId": "FIN007-008",
+			"severity": "P2",
+			"area": "autonomy",
+			"summary": "Returning heroes need visible portal arrival, a speech signal, and contextual chat for orders and dissent.",
+			"taskIds": ["converse-and-direct", "recover-and-bind-first-ember"],
+			"status": "open",
+			"disposition": "fix-before-release",
+			"resolutionCommit": null,
+			"redactionConfirmed": true
+		}
+	]
 }

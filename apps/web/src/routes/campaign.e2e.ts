@@ -2,6 +2,40 @@ import { randomUUID } from 'node:crypto';
 
 import { expect, test } from '@playwright/test';
 
+test('default company arrives as three realistic inspectable heroes', async ({ page }) => {
+	await page.goto('/');
+	await page.getByLabel('New chronicle seed').fill('hearth-01');
+	await page.getByTestId('begin-campaign').click();
+	await page.getByTestId('answer-reserve-bell').click();
+	await page.getByTestId('open-summoning-gate').click();
+
+	const heroes = page.getByTestId('campaign-hero');
+	await expect(heroes).toHaveCount(3);
+	await expect(heroes.locator('img')).toHaveCount(3);
+	await expect(page.getByTestId('summoned-hero-portrait')).toBeVisible();
+	await expect(page.getByTestId('summoned-hero-portrait')).toHaveAttribute(
+		'src',
+		/^\/runtime\/visual-catalog-v1\/hero-jori-daro-anchor-v1\/summon\.[a-f0-9]{12}\.webp$/u
+	);
+	if (process.env.CAPTURE_FIN007_CORRECTION_DIR) {
+		await page.screenshot({
+			path: `${process.env.CAPTURE_FIN007_CORRECTION_DIR}/phase-7-fin007-owner-summoning-desktop.png`,
+			fullPage: true
+		});
+		await page.setViewportSize({ width: 390, height: 844 });
+		await page.reload();
+		await expect(page.getByTestId('summoned-hero-portrait')).toBeVisible();
+		await page.screenshot({
+			path: `${process.env.CAPTURE_FIN007_CORRECTION_DIR}/phase-7-fin007-owner-summoning-phone.png`,
+			fullPage: true
+		});
+	}
+
+	await heroes.nth(1).click({ button: 'right' });
+	await expect(heroes.nth(1)).toHaveAttribute('aria-selected', 'true');
+	await expect(page.getByTestId('summoned-hero-portrait')).toHaveAttribute('alt', /Dara Zev/u);
+});
+
 test('onboards a stable company and preserves the prior chronicle when restarted', async ({
 	page
 }) => {
@@ -85,7 +119,7 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	await page.getByTestId('answer-reserve-bell').click();
 	await expect(page.getByRole('status')).toContainText('reserve bell');
 	await expect(page.getByTestId('onboarding-step')).toHaveText('PROLOGUE · 2/4');
-	await expect(page.getByRole('heading', { name: /The gate has three answers/i })).toBeVisible();
+	await expect(page.getByRole('heading', { name: /Summon your first company/i })).toBeVisible();
 	await capture('gate');
 	await page.getByTestId('open-summoning-gate').click();
 	await expect(page.getByTestId('onboarding-step')).toHaveText('PROLOGUE · 3/4');
@@ -113,9 +147,7 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 
 	await page.getByTestId('enter-hearth').click();
 	await expect(page).toHaveURL(new RegExp(`/play/${firstRunId}$`, 'u'));
-	await expect(
-		page.getByText(/(?:Walking to|Arrived ·) (?:Kitchen|Training Ground)/)
-	).toBeVisible();
+	await expect(page.getByText(/Arrived · (?:Kitchen|Training Ground)/)).toBeVisible();
 	await expect(page.getByText(/Agent-altered route/)).toBeVisible();
 	await expect(page.getByTestId('active-objective')).toContainText('Recover the First Ember');
 	await capture('hearth');

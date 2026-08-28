@@ -876,8 +876,11 @@ Background statistics remain wholly inside ADR 0050's consent boundary. One expl
 automatic allowlisted event collection and an aggregate-only `/playtest-report`; declining does not
 invalidate the human playthrough. The checked FIN-007 report remains honestly `ready` or
 `in-progress` without failing CI. Only a reviewed owner journey can produce `complete`, and any
-unverified P0/P1 finding produces `hold`. The development `/playtest-moderation` route renders this
-internal review state. Friends are an optional later round. See ADR 0054.
+unverified P0/P1 finding produces `hold`. The first stopped owner run is recorded at 7/8 checkpoints
+with four P1 findings. ADR 0055 binds the correction around manifest-stable realistic portraits, a
+gate-centered summon and first direction, visible contextual returns, and a navigable settlement
+with projected live activity. The development `/playtest-moderation` route renders this internal
+review state. Friends are an optional later round. See ADRs 0054 and 0055.
 
 ### Development story workshop boundary
 

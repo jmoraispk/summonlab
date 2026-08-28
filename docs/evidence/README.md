@@ -142,15 +142,19 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   event counts, 30-day expiry, excluded content/device fields, and immediate withdrawal deletion.
 - `phase-7-fin007-moderation-readiness-desktop.png` /
   `phase-7-fin007-moderation-readiness-phone.png` — the internal owner-review dashboard at desktop
-  and 390×844, showing one player-choice journey, eight checkpoints, automatic consented statistics,
-  and the honest 0/1 gate before owner feedback exists.
-- `phase-7-fin007-moderated-playtest.json` — the checked owner-playtest gate. It is currently a
-  readiness artifact (`0/1`, not complete), not fabricated feedback; only the owner's real
-  playthrough and comments can advance its coverage and release recommendation.
+  and 390×844. These are the pre-session readiness captures; the machine report now supersedes
+  their 0/1 status with the first real owner session.
+- `phase-7-fin007-moderated-playtest.json` — the checked owner-playtest gate. It records one reviewed,
+  stopped owner playthrough, 7/8 reached checkpoints, and eight redacted findings without storing
+  identity, direct quotations, recordings, or raw feedback.
+- `phase-7-fin007-owner-summoning-desktop.png` /
+  `phase-7-fin007-owner-summoning-phone.png` — the first corrective gate slice at desktop and
+  390×844: three realistic manifest-bound default identities, click/right-click inspection, visible
+  skills and personality, first conversation, and an explicit player direction before Hearth.
 - `phase-7-fin008-release-gate-desktop.png` /
   `phase-7-fin008-release-gate-phone.png` — the fail-closed private packaging desk at desktop and
-  390×844, showing the upstream evidence hash, four independent claims, three current blockers, the
-  package privacy contract, and the explicit statement that no archive has been produced.
+  390×844. These are pre-session captures of the same fail-closed desk; the current machine report
+  still has three blockers, now derived from incomplete journey coverage and four open P1 findings.
 - `phase-7-fin008-playtest-release.json` — the checked release-readiness derivation. It currently
   says `held`; passing validation proves that the hold is current, not that FIN-008 is complete.
   The eventual ignored artifact and release receipt require the reviewed owner playthrough and

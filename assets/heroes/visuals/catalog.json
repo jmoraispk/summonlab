@@ -144,6 +144,66 @@
       "productionNote": "Approval candidate. Equipment attaches to the profile rather than redefining the body."
     },
     {
+      "assetKey": "jori-daro-anchor-v1",
+      "role": "anchor",
+      "status": "approved",
+      "characterIds": ["b8471c6b-b747-4ad8-aa47-1f91b9471dfe"],
+      "manifestHashes": ["bbfaca18f7d862f64ea32650bac4ab50b8c1e8dff60148fdcf893ca37e17e363"],
+      "file": "assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 1868256,
+      "contentHash": "e4188af44bd8802e9d85f020307a1a899f10cc0815b483d148bc5065e8690fac",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-27T19:28:42.000Z",
+      "prompt": "Original full-body identity anchor for Jori Daro: age 25, 190 cm, balanced soft-sturdy build, rich ebony skin, angular oval face, fine straight nose, grey eyes, tightly coiled dark-brown braided crown, dimpled chin, formal posture, wrapped forearms, blue-charcoal practical layers, teal accents. Match the approved portraits' premium realistic painterly dark-fantasy finish on midnight navy; no weapon, text, UI, logo, watermark, magic effect, or sexualization.",
+      "referenceAssetKeys": ["ember-01-anchor-v1", "hearth-02-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "b8471c6b-b747-4ad8-aa47-1f91b9471dfe", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Owner-requested default-company anchor. Use for the exact bound manifest while the on-demand portrait pipeline remains deferred."
+    },
+    {
+      "assetKey": "dara-zev-anchor-v1",
+      "role": "anchor",
+      "status": "approved",
+      "characterIds": ["79500750-7a50-48e3-ab50-0a767c500c09"],
+      "manifestHashes": ["26a73e9c2e40dfbb6a57867f55e30a7901ad5efb3cdd960672230389d63ab7c0"],
+      "file": "assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 1932146,
+      "contentHash": "28d15f84e1ba38c8de82da2057d700ac0b05623f44acb5d4a22bf95046f11304",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-27T19:29:42.000Z",
+      "prompt": "Original full-body identity anchor for Dara Zev: age 21, 174 cm, slight wiry build, deep umber skin, angular oval face, soft convex nose, warm brown eyes, straight ash-brown shoulder-length hair, freckled cheeks, guarded posture, ink-blue scarf, blue-charcoal practical layers, teal accents. Match the approved portraits' premium realistic painterly dark-fantasy finish on midnight navy; no weapon, text, UI, logo, watermark, magic effect, or sexualization.",
+      "referenceAssetKeys": ["ember-01-anchor-v1", "hearth-02-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "79500750-7a50-48e3-ab50-0a767c500c09", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Owner-requested default-company anchor. Use for the exact bound manifest while the on-demand portrait pipeline remains deferred."
+    },
+    {
+      "assetKey": "elian-ro-anchor-v1",
+      "role": "anchor",
+      "status": "approved",
+      "characterIds": ["9f0c841a-a00c-45ad-ad0c-80f49e0c8287"],
+      "manifestHashes": ["c0620c4cce21741173249b0a3987324de57e6a677b7b544c0eb38151adf8dc99"],
+      "file": "assets/heroes/visuals/owner-playtest-v1/elian-ro-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 1888510,
+      "contentHash": "742071b4719e5574f1039728eea53fc44465e5b395a85af30d1fb8d3af324170",
+      "generationMode": "built-in-imagegen",
+      "createdAt": "2026-08-27T19:30:42.000Z",
+      "prompt": "Original full-body identity anchor for Elian Ro: age 27, androgynous, 174 cm, slight soft build, rich ebony skin, long face, broad straight nose, warm brown eyes, straight soft-black jaw-length hair, freckled cheeks, restless posture, braided cord belt, charcoal-plum practical layers, bronze accents. Match the approved portraits' premium realistic painterly dark-fantasy finish on midnight navy; no weapon, text, UI, logo, watermark, magic effect, caricature, or sexualization.",
+      "referenceAssetKeys": ["ember-01-anchor-v1", "hearth-02-anchor-v1"],
+      "identityChecks": [
+        { "characterId": "9f0c841a-a00c-45ad-ad0c-80f49e0c8287", "face": true, "hair": true, "silhouette": true, "palette": true, "signatureTraits": true, "score": 5 }
+      ],
+      "productionNote": "Owner-requested default-company anchor. Use for the exact bound manifest while the on-demand portrait pipeline remains deferred."
+    },
+    {
       "assetKey": "hearth-roster-pair-v1",
       "role": "roster-group",
       "status": "approval-candidate",

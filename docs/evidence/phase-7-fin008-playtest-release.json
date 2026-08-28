@@ -3,7 +3,7 @@
 	"releaseId": "fin008-private-playtest-v1",
 	"generatedFrom": {
 		"ownerPlaytestSchemaVersion": "owner-playtest-report-v1",
-		"ownerPlaytestReportHash": "4c269b810730f9be5e2d0ff59171eced706fd0029484f6a35c677f0c7325996d",
+		"ownerPlaytestReportHash": "5b7ab5d91ab034b37e93e8779f1aa97fd5e09abfb272dcff002ae760a823be92",
 		"playtestId": "fin007-owner-local-v1"
 	},
 	"status": "held",
@@ -11,28 +11,28 @@
 		{
 			"checkId": "evidence-integrity",
 			"status": "pass",
-			"detail": "FIN-007 evidence hash verified: 4c269b810730f9be."
+			"detail": "FIN-007 evidence hash verified: 5b7ab5d91ab034b3."
 		},
 		{
 			"checkId": "owner-playtest",
 			"status": "hold",
-			"detail": "0/1 owner playthrough recorded and reviewed."
+			"detail": "1/1 owner playthrough recorded and reviewed."
 		},
 		{
 			"checkId": "required-journey-coverage",
 			"status": "hold",
-			"detail": "0/8 owner-journey checkpoints reached; required journey incomplete."
+			"detail": "7/8 owner-journey checkpoints reached; required journey incomplete."
 		},
 		{
 			"checkId": "release-findings",
 			"status": "hold",
-			"detail": "0 unverified P0/P1 findings; FIN-007 recommendation awaiting-owner-playtest."
+			"detail": "4 unverified P0/P1 findings; FIN-007 recommendation awaiting-owner-playtest."
 		}
 	],
 	"blockers": [
-		"0/1 owner playthrough recorded and reviewed.",
-		"0/8 owner-journey checkpoints reached; required journey incomplete.",
-		"0 unverified P0/P1 findings; FIN-007 recommendation awaiting-owner-playtest."
+		"1/1 owner playthrough recorded and reviewed.",
+		"7/8 owner-journey checkpoints reached; required journey incomplete.",
+		"4 unverified P0/P1 findings; FIN-007 recommendation awaiting-owner-playtest."
 	],
 	"packagePlan": {
 		"archiveName": "summonlab-fin008-private-playtest.tar.gz",
@@ -51,5 +51,5 @@
 		],
 		"artifactReceiptRequired": true
 	},
-	"reportHash": "c06c1c7899049fc9ff29f468bc830401e37f0c535d6deb7c5fcd081ba999b043"
+	"reportHash": "81ef847142b7d8de5bc3155efdd7523e1e5114da8eb6607ba02193e5425f7c97"
 }

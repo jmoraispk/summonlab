@@ -10,9 +10,13 @@
 	let view = $state(data.view);
 	let selectedOrdinal = $state(1);
 	let question = $state('What do you need to understand before you can decide what comes next?');
+	let direction = $state('Choose what you need before we enter the tower.');
 	let pending = $state(false);
 	let errorMessage = $state('');
 	const selected = $derived(view.heroes.find((hero) => hero.ordinal === selectedOrdinal)!);
+	const selectedPortrait = $derived(
+		data.heroPortraits.find((portrait) => portrait.manifestHash === selected.draft.manifestHash)
+	);
 	const replyCount = $derived(view.heroes.filter((hero) => hero.firstReply !== null).length);
 	const allAnswered = $derived(replyCount === view.heroes.length);
 	const stars = (count: number) => '✦'.repeat(count);
@@ -113,7 +117,7 @@
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
-					directive: 'Choose what you need before we enter the tower.',
+					directive: direction.trim(),
 					trigger: 'step'
 				})
 			});
@@ -129,6 +133,14 @@
 			});
 			const completionBody = (await completion.json()) as { message?: string };
 			if (!completion.ok) throw new Error(completionBody.message ?? 'The prologue stayed open.');
+			const arrival = await fetch(`/api/runs/${view.campaign.runId}/arrive`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: '{}'
+			});
+			const arrivalBody = (await arrival.json()) as { message?: string };
+			if (!arrival.ok)
+				throw new Error(arrivalBody.message ?? 'The company could not enter Hearth.');
 			await trackPlaytestEvent({
 				eventType: 'onboarding_step_completed',
 				route: 'onboarding',
@@ -170,11 +182,11 @@
 		<section class="wake panel">
 			<div class="first-person-hands" aria-hidden="true"><i></i><i></i></div>
 			<div class="signal"><span></span><b>RESERVE POWER · 03%</b></div>
-			<p class="eyebrow">You wake beneath a dead tower</p>
-			<h1>HEARTH 01<br />IS STILL <em>LISTENING.</em></h1>
+			<p class="eyebrow">First objective · reach the gate</p>
+			<h1>WAKE THE LAST<br /><em>SUMMONING GATE.</em></h1>
 			<p class="narrative">
-				No court. No army. No inherited loyalty. Only a sealed settlement, a hundred floors above,
-				and enough reserve power to open the summoning gate once.
+				You are alone in Hearth 01. The settlement has enough reserve power for one action: summon
+				three adults who can help restore it. They will arrive without memories or allegiance.
 			</p>
 			<button
 				type="button"
@@ -183,7 +195,7 @@
 				data-testid="answer-reserve-bell"
 				data-sound-cue="bell"
 			>
-				Stand and follow the bell <span>→</span>
+				Go to the summoning gate <span>→</span>
 			</button>
 		</section>
 	{:else if view.campaign.onboardingStep === 1}
@@ -194,11 +206,11 @@
 				<div class="black-sun"></div>
 			</div>
 			<div class="gate-copy">
-				<p class="eyebrow">Last reserve · one company</p>
-				<h1>THE GATE HAS<br /><em>THREE ANSWERS.</em></h1>
+				<p class="eyebrow">Summoning gate · three arrivals</p>
+				<h1>SUMMON YOUR<br /><em>FIRST COMPANY.</em></h1>
 				<p class="narrative">
-					The people beyond it are adults, stable across this seed, and unknown to one another. The
-					gate can bring bodies and instincts. It cannot manufacture trust.
+					The gate will bring three stable adult heroes from this seed. They arrive with bodies,
+					instincts, skills, and personalities—but no past, shared context, or reason to obey you.
 				</p>
 				<button
 					type="button"
@@ -207,7 +219,7 @@
 					data-testid="open-summoning-gate"
 					data-sound-cue="gate"
 				>
-					Spend the reserve <span>→</span>
+					Summon three heroes <span>→</span>
 				</button>
 			</div>
 		</section>
@@ -215,19 +227,26 @@
 		<section class="company panel">
 			<div class="company-heading">
 				<div>
-					<p class="eyebrow">First company · no borrowed loyalty</p>
-					<h1>THREE STRANGERS<br /><em>AWAIT CONTEXT.</em></h1>
+					<p class="eyebrow">Summoning complete · click a hero</p>
+					<h1>THREE PEOPLE<br /><em>NEED ANSWERS.</em></h1>
 				</div>
 				<p aria-live="polite">{replyCount}/3 first voices witnessed</p>
 			</div>
 
 			<div class="hero-tabs" role="tablist" aria-label="Summoned heroes">
 				{#each view.heroes as hero (hero.draft.manifest.characterId)}
+					{@const portrait = data.heroPortraits.find(
+						(entry) => entry.manifestHash === hero.draft.manifestHash
+					)}
 					<button
 						class:selected={selectedOrdinal === hero.ordinal}
 						class:answered={hero.firstReply !== null}
 						type="button"
 						onclick={() => selectHero(hero.ordinal)}
+						oncontextmenu={(event) => {
+							event.preventDefault();
+							selectHero(hero.ordinal);
+						}}
 						onkeydown={(event) => handleHeroTabKeydown(event, hero.ordinal)}
 						role="tab"
 						id={`hero-tab-${hero.ordinal}`}
@@ -235,19 +254,43 @@
 						aria-controls={`hero-panel-${hero.ordinal}`}
 						tabindex={selectedOrdinal === hero.ordinal ? 0 : -1}
 						data-testid="campaign-hero"
+						title={`Inspect ${hero.draft.manifest.displayName}`}
 					>
-						<span>0{hero.ordinal}</span><strong>{hero.draft.manifest.displayName}</strong><small
-							>{stars(hero.draft.manifest.rarityStars)}
-							{hero.firstReply ? '· answered' : '· waiting'}</small
-						>
+						{#if portrait?.roster}
+							<img
+								src={portrait.roster.publicPath}
+								width={portrait.roster.width}
+								height={portrait.roster.height}
+								alt=""
+							/>
+						{/if}
+						<span>0{hero.ordinal}</span>
+						<div>
+							<strong>{hero.draft.manifest.displayName}</strong><small
+								>{stars(hero.draft.manifest.rarityStars)}
+								{hero.firstReply ? '· answered' : '· waiting'}</small
+							>
+						</div>
 					</button>
 				{/each}
 			</div>
 
 			<div class="hero-focus">
 				<div class="portrait">
-					<div class="gate-glow"></div>
-					<HeroRig manifest={selected.draft.manifest} />
+					{#key selected.draft.manifestHash}
+						<div class="gate-glow"></div>
+						{#if selectedPortrait?.summon}
+							<img
+								src={selectedPortrait.summon.publicPath}
+								width={selectedPortrait.summon.width}
+								height={selectedPortrait.summon.height}
+								alt={`${selected.draft.manifest.displayName}, newly summoned at the gate`}
+								data-testid="summoned-hero-portrait"
+							/>
+						{:else}
+							<HeroRig manifest={selected.draft.manifest} />
+						{/if}
+					{/key}
 				</div>
 				<div
 					class="dossier"
@@ -320,18 +363,19 @@
 			</div>
 
 			<div class="enter-row">
-				<div>
-					<span>Next</span>
-					<p>The first summon chooses where preparation begins. You follow.</p>
+				<div class="first-direction">
+					<label for="first-direction">Your first direction to the company</label>
+					<textarea id="first-direction" bind:value={direction} maxlength="600"></textarea>
+					<p>They decide how to act on it. Agreement is not guaranteed.</p>
 				</div>
 				<button
 					type="button"
-					disabled={!allAnswered || pending}
+					disabled={!allAnswered || !direction.trim() || pending}
 					onclick={enterHearth}
 					data-testid="enter-hearth"
 					data-sound-cue="threshold"
 				>
-					Enter Hearth 01 <span>→</span>
+					Issue direction and enter Hearth <span>→</span>
 				</button>
 			</div>
 		</section>
@@ -402,9 +446,11 @@
 		text-align: right;
 	}
 	.panel {
+		box-sizing: border-box;
 		width: min(74rem, calc(100% - 2rem));
 		min-height: calc(100svh - 4rem);
 		margin: 0 auto;
+		padding-bottom: 7rem;
 	}
 	.wake {
 		position: relative;
@@ -566,9 +612,10 @@
 	}
 	.hero-tabs button {
 		display: grid;
-		grid-template-columns: auto 1fr;
+		grid-template-columns: 3rem auto 1fr;
+		align-items: center;
 		gap: 0.15rem 0.8rem;
-		padding: 0.85rem 1rem;
+		padding: 0.55rem 0.75rem;
 		border: 0;
 		border-right: 1px solid rgba(237, 198, 130, 0.13);
 		background: rgba(255, 255, 255, 0.02);
@@ -587,12 +634,22 @@
 	.hero-tabs button.answered small {
 		color: #6fba8b;
 	}
-	.hero-tabs span {
-		grid-row: 1/3;
+	.hero-tabs button > img {
+		width: 3rem;
+		height: 3.6rem;
+		border: 1px solid rgba(237, 198, 130, 0.14);
+		object-fit: cover;
+		object-position: 50% 14%;
+	}
+	.hero-tabs button > span {
 		align-self: center;
 		font:
 			1.2rem Georgia,
 			serif;
+	}
+	.hero-tabs button > div {
+		display: grid;
+		gap: 0.25rem;
 	}
 	.hero-tabs strong {
 		font:
@@ -628,6 +685,17 @@
 		margin: 0;
 		filter: drop-shadow(0 1rem 2rem rgba(0, 0, 0, 0.8));
 	}
+	.portrait > img {
+		position: relative;
+		z-index: 1;
+		display: block;
+		width: min(92%, 27rem);
+		height: 32rem;
+		object-fit: cover;
+		object-position: center top;
+		filter: drop-shadow(0 1rem 2rem rgba(0, 0, 0, 0.8));
+		animation: summon-arrival 850ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+	}
 	.gate-glow {
 		position: absolute;
 		bottom: -26%;
@@ -636,6 +704,7 @@
 		border: 2px solid rgba(213, 111, 49, 0.38);
 		border-radius: 50%;
 		box-shadow: 0 0 7rem rgba(200, 74, 29, 0.25);
+		animation: gate-arrival 1.1s ease-out both;
 	}
 	.dossier {
 		padding: clamp(1.2rem, 3vw, 2.4rem);
@@ -767,6 +836,13 @@
 		border: 1px solid rgba(237, 198, 130, 0.13);
 		border-top: 0;
 	}
+	.first-direction {
+		flex: 1;
+		max-width: 46rem;
+	}
+	.first-direction textarea {
+		min-height: 4.2rem;
+	}
 	.enter-row p {
 		margin: 0.2rem 0 0;
 		color: rgba(243, 231, 206, 0.55);
@@ -800,8 +876,23 @@
 			transform: rotate(360deg);
 		}
 	}
+	@keyframes summon-arrival {
+		from {
+			opacity: 0;
+			transform: translateY(1.5rem) scale(0.97);
+			filter: brightness(1.8) drop-shadow(0 0 3rem rgba(226, 112, 52, 0.8));
+		}
+	}
+	@keyframes gate-arrival {
+		from {
+			opacity: 0;
+			transform: scale(0.78);
+		}
+	}
 	:global(html[data-player-motion='reduced']) .ring,
-	:global(html[data-player-motion='reduced']) .signal span {
+	:global(html[data-player-motion='reduced']) .signal span,
+	:global(html[data-player-motion='reduced']) .portrait > img,
+	:global(html[data-player-motion='reduced']) .gate-glow {
 		animation: none;
 	}
 	@media (max-width: 760px) {

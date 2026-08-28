@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('private release gate refuses to claim an archive before the owner playthrough', async ({
+test('private release gate refuses to claim an archive while owner findings remain', async ({
 	page
 }) => {
 	await page.goto('/playtest-release');
@@ -8,7 +8,9 @@ test('private release gate refuses to claim an archive before the owner playthro
 
 	await expect(page.getByTestId('release-status')).toHaveText('held');
 	await expect(page.getByTestId('release-check')).toHaveCount(4);
-	await expect(dashboard).toContainText('0/1 owner playthrough recorded and reviewed.');
+	await expect(dashboard).toContainText('1/1 owner playthrough recorded and reviewed.');
+	await expect(dashboard).toContainText('7/8 owner-journey checkpoints reached');
+	await expect(dashboard).toContainText('4 unverified P0/P1 findings');
 	await expect(dashboard).toContainText('No package has been produced.');
 	await expect(dashboard).toContainText('participant identities, recordings');
 	await expect(dashboard).not.toContainText('packaged successfully');
