@@ -1,1020 +1,975 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { generateCharacterDraft, recipeFromSeed, rerollRecipe } from '@summonlab/characters';
-	import type {
-		CharacterGenerationCursors,
-		ProofControlMode,
-		ProofRunCreateRequest
-	} from '@summonlab/contracts';
-	import maraAnchor from '../../../../../assets/heroes/ember-01-anchor-v1.png';
-	import remyAnchor from '../../../../../assets/heroes/visuals/hearth-02-anchor-v1.png';
-	import HeroRig from '$lib/components/HeroRig.svelte';
+	import mara from '../../../../../assets/heroes/ember-01-anchor-v1.png';
+	import dara from '../../../../../assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png';
+	import elian from '../../../../../assets/heroes/visuals/owner-playtest-v1/elian-ro-anchor-v1.png';
+	import jori from '../../../../../assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png';
+	import remy from '../../../../../assets/heroes/visuals/hearth-02-anchor-v1.png';
+	import kaviGaro from '../../../../../assets/heroes/visuals/forge-v1/kavi-garo-anchor-v1.webp';
+	import kaviNor from '../../../../../assets/heroes/visuals/forge-v1/kavi-nor-anchor-v1.webp';
+	import lio from '../../../../../assets/heroes/visuals/forge-v1/lio-senn-anchor-v1.webp';
+	import noa from '../../../../../assets/heroes/visuals/forge-v1/noa-kest-anchor-v1.webp';
 
 	let { data } = $props();
-	// svelte-ignore state_referenced_locally
-	let drafts = $state(data.drafts);
-	let selectedIndex = $state(0);
-	let locks = $state<Record<keyof CharacterGenerationCursors, boolean>>({
-		identity: true,
-		body: false,
-		features: false,
-		styling: false,
-		mind: false,
-		rarity: true
-	});
-	let controlMode = $state<ProofControlMode>('autonomous');
-	let directive = $state('');
-	let seedInput = $state('ember-01');
-	let busy = $state(false);
-	let errorMessage = $state('');
+	let channelIndex = $state(0);
+	let selectedHeroIndex = $state(0);
+	let opening = $state(false);
+	let summoned = $state(false);
+	let summonCycle = $state(0);
 
-	const selected = $derived(drafts[selectedIndex]!);
-	const selectedAnchor = $derived(
-		selected.manifest.artKey === 'ember-01-anchor-v1'
-			? maraAnchor
-			: selected.manifest.artKey === 'hearth-02-anchor-v1'
-				? remyAnchor
-				: null
-	);
-	const channels = [
-		{ key: 'identity', label: 'Name & voice' },
-		{ key: 'body', label: 'Age & build' },
-		{ key: 'features', label: 'Face & phenotype' },
-		{ key: 'styling', label: 'Hair & bearing' },
-		{ key: 'mind', label: 'Mind & habits' },
-		{ key: 'rarity', label: 'Rarity' }
-	] as const;
-	const modeOptions: ReadonlyArray<{
-		value: ProofControlMode;
-		label: string;
-		detail: string;
-	}> = [
-		{
-			value: 'autonomous',
-			label: 'Autonomous',
-			detail: 'Hero decides immediately from traits + direction.'
-		},
-		{
-			value: 'random',
-			label: 'Seeded random',
-			detail: 'A legal destination is replayably random.'
-		},
-		{
-			value: 'wait',
-			label: 'Wait for step',
-			detail: 'Hold the decision until you ask the hero to act.'
-		},
-		{
-			value: 'countdown',
-			label: '5-second handoff',
-			detail: 'A short window to add direction, then the hero acts.'
-		}
-	];
+	const portraits: Record<string, string> = {
+		'jori-daro': jori,
+		'mara-vey': mara,
+		'remy-nahl': remy,
+		'dara-zev': dara,
+		'elian-ro': elian,
+		'kavi-nor': kaviNor,
+		'kavi-garo': kaviGaro,
+		'lio-senn': lio,
+		'noa-kest': noa
+	};
+	const aptitudeNames = {
+		might: 'Force handling',
+		finesse: 'Footwork & aim',
+		insight: 'Ward reading',
+		resolve: 'Guard discipline'
+	} as const;
+	const channel = $derived(data.channels[channelIndex]!);
+	const selected = $derived(channel.heroes[selectedHeroIndex]!);
+	const stars = (count: number) => '✦'.repeat(count);
+	const words = (value: string) => value.replaceAll('-', ' ');
+	const indices = (count: number) => Array.from({ length: count }, (_, index) => index);
 
-	async function rerollUnlocked() {
-		busy = true;
-		errorMessage = '';
-		try {
-			const locked = new Set(
-				channels.filter((channel) => locks[channel.key]).map((channel) => channel.key)
-			);
-			drafts[selectedIndex] = await generateCharacterDraft(rerollRecipe(selected.recipe, locked));
-		} catch (error) {
-			errorMessage =
-				error instanceof Error ? error.message : 'The forge failed to resolve this seed.';
-		} finally {
-			busy = false;
-		}
+	function chooseChannel(index: number) {
+		channelIndex = index;
+		selectedHeroIndex = 0;
+		summoned = false;
+		opening = false;
 	}
 
-	async function applySeed() {
-		if (!seedInput.trim()) return;
-		busy = true;
-		errorMessage = '';
-		try {
-			drafts[selectedIndex] = await generateCharacterDraft(recipeFromSeed(seedInput.trim()));
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'That seed could not be forged.';
-		} finally {
-			busy = false;
-		}
-	}
-
-	async function summon() {
-		busy = true;
-		errorMessage = '';
-		try {
-			const payload: ProofRunCreateRequest = {
-				recipe: selected.recipe,
-				controlMode,
-				directive: directive.trim()
-			};
-			const response = await fetch('/api/runs', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify(payload)
-			});
-			const result = (await response.json()) as { runId?: string; message?: string };
-			if (!response.ok || !result.runId)
-				throw new Error(result.message ?? 'The gate did not answer.');
-			await goto(resolve('/summon/[runId]', { runId: result.runId }));
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'The summoning request failed.';
-			busy = false;
-		}
+	async function summonThree() {
+		if (opening) return;
+		opening = true;
+		summoned = false;
+		selectedHeroIndex = 0;
+		summonCycle += 1;
+		await new Promise((resolveDelay) => setTimeout(resolveDelay, 720));
+		summoned = true;
+		opening = false;
 	}
 </script>
 
 <svelte:head>
-	<title>Character Forge · summonlab</title>
+	<title>Summoning Forge · summonlab</title>
 	<meta
 		name="description"
-		content="Inspect deterministic adult hero seeds, lock traits, and begin the summon-to-choice proof."
+		content="Compare three summon channels and inspect realistic deterministic hero cohorts."
 	/>
 </svelte:head>
 
 <main>
 	<header class="topbar">
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
-		<div class="chapter">
-			<span>Story envelope</span>
-			<strong>00 · The First Ember</strong>
-		</div>
-		<nav class="phase">
-			<a href={resolve('/forge/contact-sheet')}>100-seed sheet</a>
-			<a href={resolve('/visual-lab')}><span></span> Phase 3 · visual lab</a>
+		<div><span>Development component</span><strong>Summoning Forge</strong></div>
+		<nav>
+			<a href={resolve('/forge/enemies')}>Enemy roster</a>
+			<a href={resolve('/forge/contact-sheet')}>Seed audit</a>
 		</nav>
 	</header>
 
 	<section class="intro">
 		<div>
-			<p class="eyebrow">Character forge / {selected.manifest.generationVersion}</p>
-			<h1>One seed.<br />One persistent self.</h1>
+			<p class="eyebrow">Component test · no campaign state</p>
+			<h1>Choose a gate.<br /><em>Meet the arrivals.</em></h1>
 		</div>
-		<p>
-			Appearance, mind, habits, and rarity use separate deterministic streams. Lock what you believe
-			belongs to the same person; reroll the rest. Every summon is adult in this slice.
-		</p>
-	</section>
-
-	<section class="forge-shell">
-		<div class="roster-panel">
-			<div class="panel-heading">
-				<div>
-					<p>Seed cohort</p>
-					<h2>12 possible arrivals</h2>
-				</div>
-				<span>select to inspect</span>
-			</div>
-			<div class="seed-grid">
-				{#each drafts as draft, index (draft.manifest.characterId)}
-					<button
-						class:selected={selectedIndex === index}
-						type="button"
-						onclick={() => {
-							selectedIndex = index;
-							seedInput = draft.recipe.seed;
-						}}
-						aria-label={`Inspect ${draft.manifest.displayName}`}
-					>
-						<div class="mini-rig">
-							<HeroRig manifest={draft.manifest} compact />
-						</div>
-						<div class="card-copy">
-							<span>{'✦'.repeat(draft.manifest.rarityStars)}</span>
-							<strong>{draft.manifest.displayName}</strong>
-							<small>{draft.manifest.adultAge} · {draft.manifest.heightCm} cm</small>
-						</div>
-					</button>
-				{/each}
-			</div>
-		</div>
-
-		<article class="selected-hero">
-			<div class="portrait-stage">
-				<div class="scanline"></div>
-				{#if selectedAnchor}
-					<img
-						src={selectedAnchor}
-						alt={`${selected.manifest.displayName}, original full-body hero concept`}
-					/>
-				{:else}
-					<HeroRig manifest={selected.manifest} />
-				{/if}
-				<div class="portrait-caption">
-					<span>Approved visual seed</span>
-					<strong>{selected.manifest.assetProvenance}</strong>
-				</div>
-			</div>
-
-			<div class="identity-sheet">
-				<div class="hero-title">
-					<div>
-						<p>
-							{'✦'.repeat(selected.manifest.rarityStars)}
-							{selected.manifest.rarityStars}-star summon
-						</p>
-						<h2>{selected.manifest.displayName}</h2>
-					</div>
-					<code>{selected.manifestHash.slice(0, 12)}</code>
-				</div>
-
-				<dl class="physicality">
-					<div>
-						<dt>Age</dt>
-						<dd>{selected.manifest.adultAge}</dd>
-					</div>
-					<div>
-						<dt>Height</dt>
-						<dd>{selected.manifest.heightCm} cm</dd>
-					</div>
-					<div>
-						<dt>Build</dt>
-						<dd>{selected.manifest.bodyFrame} / {selected.manifest.bodyBuild}</dd>
-					</div>
-					{#if selected.manifest.physiology}
-						<div>
-							<dt>Physiology</dt>
-							<dd>
-								{selected.manifest.physiology.massKg} kg · tone {selected.manifest.physiology
-									.muscleTone}/10
-							</dd>
-						</div>
-						<div>
-							<dt>Proportions</dt>
-							<dd>
-								{selected.manifest.physiology.limbProportion} limbs · hand {selected.manifest
-									.physiology.handScale}
-							</dd>
-						</div>
-					{/if}
-					<div>
-						<dt>Skin</dt>
-						<dd>{selected.manifest.phenotype.skinTone}</dd>
-					</div>
-					<div>
-						<dt>Hair</dt>
-						<dd>
-							{selected.manifest.phenotype.hairTexture}, {selected.manifest.phenotype.hairStyle}
-						</dd>
-					</div>
-					<div>
-						<dt>Bearing</dt>
-						<dd>{selected.manifest.posture}</dd>
-					</div>
-				</dl>
-
-				<div class="mind-preview">
-					<div>
-						<span>Value</span><strong>{selected.mind.primaryValue}</strong>
-					</div>
-					<div>
-						<span>Drive</span><strong>{selected.mind.primaryDrive}</strong>
-					</div>
-					<div>
-						<span>Habit</span><strong>{selected.mind.dailyHabit.replaceAll('-', ' ')}</strong>
-					</div>
-					<div>
-						<span>Social</span><strong>{selected.mind.socialStyle}</strong>
-					</div>
-				</div>
-
-				<div class="seed-control">
-					<label for="seed">Appearance seed</label>
-					<div>
-						<input id="seed" bind:value={seedInput} maxlength="128" />
-						<button type="button" onclick={applySeed} disabled={busy}>Apply</button>
-					</div>
-				</div>
-
-				<div class="locks">
-					{#each channels as channel (channel.key)}
-						<button
-							type="button"
-							class:locked={locks[channel.key]}
-							aria-pressed={locks[channel.key]}
-							onclick={() => (locks[channel.key] = !locks[channel.key])}
-						>
-							<span>{locks[channel.key] ? '◆' : '◇'}</span>{channel.label}
-							<small>r{selected.recipe.cursors[channel.key]}</small>
-						</button>
-					{/each}
-				</div>
-				<button class="reroll" type="button" onclick={rerollUnlocked} disabled={busy}>
-					<span>↻</span> Reroll unlocked channels
-				</button>
-			</div>
-		</article>
-	</section>
-
-	<section class="control-contract">
-		<div class="contract-copy">
-			<p class="eyebrow">First decision contract</p>
-			<h2>You set the tempo.<br />The hero keeps the choice.</h2>
+		<div class="intro-copy">
 			<p>
-				The opening plot is fixed: summon, orient, choose a first destination. The selected
-				destination opens a durable branch inside that envelope; it cannot invent rewards or bypass
-				world rules.
+				This room isolates the part that matters first: choose a summon, watch three people arrive,
+				then inspect who they are. Nothing here spends resources or changes a chronicle.
 			</p>
+			<span>Fixed review cohorts · economy and final odds are still open</span>
 		</div>
-		<div class="mode-grid" role="radiogroup" aria-label="First decision control mode">
-			{#each modeOptions as mode (mode.value)}
+	</section>
+
+	<section class="channel-picker" aria-labelledby="channel-heading">
+		<div class="section-heading">
+			<div>
+				<span>01</span>
+				<h2 id="channel-heading">Select a summon</h2>
+			</div>
+			<p>The minimum starting star rank changes. Promotion potential does not.</p>
+		</div>
+		<div class="channels" role="radiogroup" aria-label="Summon channel">
+			{#each data.channels as option, index (option.id)}
 				<button
 					type="button"
-					class:selected={controlMode === mode.value}
-					onclick={() => (controlMode = mode.value)}
+					class:selected={channelIndex === index}
+					onclick={() => chooseChannel(index)}
 					role="radio"
-					aria-checked={controlMode === mode.value}
+					aria-checked={channelIndex === index}
+					data-testid={`summon-channel-${option.id}`}
 				>
-					<span>{mode.label}</span>
-					<small>{mode.detail}</small>
+					<div class="channel-top">
+						<span>{String(index + 1).padStart(2, '0')}</span>
+						<b>{option.resonance}</b>
+					</div>
+					<h3>{option.label}</h3>
+					<strong>{option.minimumStars}★+ minimum</strong>
+					<p>{option.detail}</p>
+					<small>{option.cost}</small>
 				</button>
 			{/each}
 		</div>
-		<label class="directive">
-			<span>Optional direction · best effort, never direct control</span>
-			<textarea
-				bind:value={directive}
-				maxlength="500"
-				placeholder="Example: Learn who lives here before thinking about the tower."></textarea>
-			<small>{directive.length}/500 · recorded in the decision log</small>
-		</label>
-		{#if errorMessage}
-			<p class="error" role="alert">{errorMessage}</p>
-		{/if}
-		<button class="summon" type="button" onclick={summon} disabled={busy}>
-			<span>{busy ? 'Opening gate…' : `Summon ${selected.manifest.displayName}`}</span>
-			<small>Persist recipe → observation → choice → branch</small>
-		</button>
+	</section>
+
+	<section class="gate-lab" class:opening class:summoned data-testid="forge-gate">
+		<div class="gate-stage">
+			<div class="gate-machine" aria-hidden="true">
+				{#each indices(channel.minimumStars) as ring (ring)}<i></i>{/each}
+				<div class="gate-core"></div>
+			</div>
+			<div class="gate-copy">
+				<p class="eyebrow">{channel.label} · {channel.resonance}</p>
+				<h2>
+					{opening
+						? 'The gate is resolving…'
+						: summoned
+							? 'Three people arrived.'
+							: 'The gate is ready.'}
+				</h2>
+				<p>
+					{summoned
+						? 'Select any arrival to inspect resonance, temperament, and aptitude signals.'
+						: `This review pull guarantees ${channel.minimumStars}★ or higher. The identities are deterministic and the portraits are bound to this cohort.`}
+				</p>
+				<button type="button" onclick={summonThree} disabled={opening} data-testid="summon-three">
+					<span
+						>{opening ? 'Opening…' : summoned ? 'Replay this summon' : 'Summon three heroes'}</span
+					>
+					<small>{summoned ? `Review pass ${summonCycle}` : 'No resource cost in the Forge'}</small>
+				</button>
+			</div>
+		</div>
+
+		<div class="arrivals" aria-live="polite" aria-label="Summon results">
+			{#if summoned}
+				{#each channel.heroes as entry, index (entry.draft.manifestHash)}
+					<button
+						type="button"
+						class:selected={selectedHeroIndex === index}
+						onclick={() => (selectedHeroIndex = index)}
+						style={`--arrival-index: ${index}`}
+						data-testid="summoned-hero"
+					>
+						<div class="portrait">
+							<img
+								src={portraits[entry.portraitKey]}
+								alt={`${entry.draft.manifest.displayName}, realistic summon portrait`}
+							/>
+							<div class="resonance" aria-hidden="true">
+								{#each indices(entry.draft.manifest.rarityStars) as ring (ring)}<i></i>{/each}
+							</div>
+						</div>
+						<div class="arrival-copy">
+							<span>{stars(entry.draft.manifest.rarityStars)}</span>
+							<strong>{entry.draft.manifest.displayName}</strong>
+							<small>Level cap {entry.draft.manifest.rarityStars * 10}</small>
+						</div>
+					</button>
+				{/each}
+			{:else}
+				{#each indices(3) as index (index)}
+					<div class="arrival-placeholder">
+						<span>0{index + 1}</span>
+						<p>Unresolved</p>
+					</div>
+				{/each}
+			{/if}
+		</div>
+	</section>
+
+	{#if summoned}
+		<section class="dossier" data-testid="hero-dossier">
+			<div class="section-heading">
+				<div>
+					<span>02</span>
+					<h2>Understand the hero</h2>
+				</div>
+				<p>Personality and aptitude are independent from rarity.</p>
+			</div>
+			<div class="dossier-grid">
+				<div class="identity-card">
+					<p class="eyebrow">Selected arrival</p>
+					<h3>{selected.draft.manifest.displayName}</h3>
+					<p>
+						{stars(selected.draft.manifest.rarityStars)} · {selected.draft.manifest.rarityStars}★
+						resonance
+					</p>
+					<dl>
+						<div>
+							<dt>Age</dt>
+							<dd>{selected.draft.manifest.adultAge}</dd>
+						</div>
+						<div>
+							<dt>Height</dt>
+							<dd>{selected.draft.manifest.heightCm} cm</dd>
+						</div>
+						<div>
+							<dt>Build</dt>
+							<dd>{words(selected.draft.manifest.bodyBuild)}</dd>
+						</div>
+						<div>
+							<dt>Bearing</dt>
+							<dd>{words(selected.draft.manifest.posture)}</dd>
+						</div>
+						<div>
+							<dt>Level cap</dt>
+							<dd>{selected.draft.manifest.rarityStars * 10}</dd>
+						</div>
+						<div>
+							<dt>Promotion</dt>
+							<dd>Up to 7★</dd>
+						</div>
+					</dl>
+				</div>
+				<div class="personality-card">
+					<p class="eyebrow">Observable personality</p>
+					<div><span>Values</span><strong>{words(selected.draft.mind.primaryValue)}</strong></div>
+					<div>
+						<span>Driven to</span><strong>{words(selected.draft.mind.primaryDrive)}</strong>
+					</div>
+					<div>
+						<span>Social style</span><strong>{words(selected.draft.mind.socialStyle)}</strong>
+					</div>
+					<div>
+						<span>Under stress</span><strong>{words(selected.draft.mind.stressResponse)}</strong>
+					</div>
+					<div class="habit">
+						<span>Emerging habit</span><strong>{words(selected.draft.mind.dailyHabit)}</strong>
+					</div>
+				</div>
+				<div class="aptitude-card">
+					<p class="eyebrow">Aptitude scan · not learned skills</p>
+					{#each Object.entries(selected.draft.mind.aptitudes) as [key, value] (key)}
+						<div>
+							<span>{aptitudeNames[key as keyof typeof aptitudeNames]}</span>
+							<div class="meter"><i style={`--score: ${value}`}></i></div>
+							<strong>{value}/9</strong>
+						</div>
+					{/each}
+					<small>
+						The Forge can read potential. Actual sword, bow, magic, craft, and social skills must be
+						learned or authored separately.
+					</small>
+				</div>
+			</div>
+		</section>
+	{/if}
+
+	<section class="boundaries">
+		<div>
+			<p class="eyebrow">What to judge now</p>
+			<h2>Does summoning feel understandable—and worth repeating?</h2>
+		</div>
+		<ul>
+			<li>
+				<span>In scope</span> Channel choice, minimum stars, reveal rhythm, realistic people, readable
+				identity.
+			</li>
+			<li>
+				<span>Held back</span> Currency prices, final odds, pity counters, on-demand portrait generation.
+			</li>
+			<li><span>Next component</span> Enemy families and floor-by-floor combat pressure.</li>
+		</ul>
+		<a href={resolve('/forge/enemies')}>Review 16 realistic enemy archetypes <span>→</span></a>
 	</section>
 </main>
 
 <style>
 	:global(body) {
-		background:
-			radial-gradient(circle at 76% 12%, rgba(95, 73, 166, 0.2), transparent 31rem),
-			linear-gradient(180deg, #080a10, #0d0e14 60%, #08090d);
+		background: #07090e;
 	}
-
 	main {
 		min-height: 100vh;
-		background-image: linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-		background-size: 100% 4px;
+		color: #f5f0e5;
+		background:
+			radial-gradient(circle at 50% 26rem, rgba(116, 77, 185, 0.16), transparent 34rem),
+			linear-gradient(180deg, #080a10 0%, #0d0d12 55%, #07080c 100%);
 	}
-
 	a {
 		color: inherit;
 		text-decoration: none;
 	}
-
 	.topbar {
 		display: grid;
 		grid-template-columns: 1fr auto 1fr;
 		align-items: center;
 		gap: 2rem;
-		padding: 1.4rem clamp(1.2rem, 3vw, 3rem);
+		min-height: 5rem;
+		padding: 0 clamp(1rem, 3vw, 3rem);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-		background: rgba(7, 8, 13, 0.8);
-		backdrop-filter: blur(20px);
+		background: rgba(6, 8, 12, 0.82);
+		backdrop-filter: blur(18px);
 	}
-
 	.wordmark {
-		font-size: 0.82rem;
+		font-size: 0.75rem;
 		font-weight: 800;
-		letter-spacing: 0.24em;
+		letter-spacing: 0.23em;
 		text-transform: uppercase;
 	}
-
-	.chapter {
+	.topbar > div {
 		text-align: center;
 	}
-
-	.chapter span,
-	.chapter strong {
+	.topbar > div span,
+	.topbar > div strong {
 		display: block;
 	}
-
-	.chapter span {
-		margin-bottom: 0.25rem;
-		color: rgba(246, 241, 231, 0.38);
-		font-size: 0.52rem;
-		letter-spacing: 0.16em;
+	.topbar > div span {
+		color: #d2a04d;
+		font-size: 0.48rem;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
 	}
-
-	.chapter strong {
-		font-family: Georgia, serif;
-		font-size: 0.9rem;
-		font-weight: 400;
+	.topbar > div strong {
+		margin-top: 0.2rem;
+		font:
+			400 1rem Georgia,
+			serif;
 	}
-
-	.phase {
+	.topbar nav {
 		display: flex;
 		justify-self: end;
-		gap: 1rem;
-		color: rgba(246, 241, 231, 0.55);
-		font-size: 0.62rem;
+		gap: 1.2rem;
+		color: rgba(245, 240, 229, 0.5);
+		font-size: 0.58rem;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
-
-	.phase span {
-		display: inline-block;
-		width: 0.35rem;
-		height: 0.35rem;
-		margin-right: 0.45rem;
-		border-radius: 50%;
-		background: #74d6ae;
-		box-shadow: 0 0 0.75rem #74d6ae;
+	.intro,
+	.channel-picker,
+	.gate-lab,
+	.dossier,
+	.boundaries {
+		max-width: 92rem;
+		margin-inline: auto;
 	}
-
 	.intro {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.55fr);
+		grid-template-columns: 1.15fr 0.85fr;
 		align-items: end;
-		gap: 4rem;
-		max-width: 100rem;
-		margin: 0 auto;
-		padding: clamp(3rem, 7vw, 7rem) clamp(1.2rem, 4vw, 4rem) 3rem;
+		gap: 5rem;
+		padding: clamp(4rem, 8vw, 8rem) clamp(1.2rem, 4vw, 4rem) 4rem;
 	}
-
-	.eyebrow,
-	.panel-heading p {
+	.eyebrow {
 		margin: 0 0 0.7rem;
 		color: #d2a04d;
-		font-size: 0.62rem;
+		font-size: 0.58rem;
 		font-weight: 750;
-		letter-spacing: 0.18em;
+		letter-spacing: 0.17em;
 		text-transform: uppercase;
 	}
-
 	h1,
 	h2,
+	h3,
 	p {
 		margin-top: 0;
 	}
-
 	h1 {
 		margin-bottom: 0;
-		font-family: Georgia, serif;
-		font-size: clamp(3.2rem, 7vw, 7rem);
-		font-weight: 400;
-		line-height: 0.88;
+		font:
+			400 clamp(3.6rem, 7vw, 7.4rem)/0.88 Georgia,
+			serif;
 		letter-spacing: -0.055em;
 	}
-
-	.intro > p,
-	.contract-copy > p:last-child {
-		margin-bottom: 0;
-		color: rgba(246, 241, 231, 0.62);
-		font-size: 0.96rem;
+	h1 em {
+		color: #d9b875;
+		font-weight: 400;
+	}
+	.intro-copy > p {
+		color: rgba(245, 240, 229, 0.64);
+		font-size: 1rem;
 		line-height: 1.75;
 	}
-
-	.forge-shell {
-		display: grid;
-		grid-template-columns: minmax(23rem, 0.75fr) minmax(0, 1.25fr);
-		max-width: 100rem;
-		margin: 0 auto;
-		border: 1px solid rgba(255, 255, 255, 0.09);
-		background: rgba(9, 11, 17, 0.74);
-		box-shadow: 0 3rem 8rem rgba(0, 0, 0, 0.3);
+	.intro-copy > span {
+		color: #76d2e3;
+		font-size: 0.58rem;
+		letter-spacing: 0.11em;
+		text-transform: uppercase;
 	}
-
-	.roster-panel {
-		padding: 1.5rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.08);
+	.channel-picker {
+		padding: 0 clamp(1.2rem, 4vw, 4rem) 3rem;
 	}
-
-	.panel-heading {
+	.section-heading {
 		display: flex;
 		align-items: end;
 		justify-content: space-between;
 		gap: 2rem;
-		margin-bottom: 1.2rem;
+		margin-bottom: 1.25rem;
 	}
-
-	.panel-heading p {
-		margin-bottom: 0.25rem;
+	.section-heading > div {
+		display: flex;
+		align-items: baseline;
+		gap: 0.8rem;
 	}
-
-	.panel-heading h2 {
+	.section-heading > div > span {
+		color: #d2a04d;
+		font:
+			400 0.72rem ui-monospace,
+			monospace;
+	}
+	.section-heading h2 {
 		margin: 0;
-		font-family: Georgia, serif;
-		font-size: 1.45rem;
-		font-weight: 400;
+		font:
+			400 clamp(1.7rem, 3vw, 2.8rem) Georgia,
+			serif;
 	}
-
-	.panel-heading > span {
-		color: rgba(246, 241, 231, 0.3);
-		font-size: 0.55rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
+	.section-heading > p {
+		max-width: 28rem;
+		margin-bottom: 0.25rem;
+		color: rgba(245, 240, 229, 0.45);
+		font-size: 0.75rem;
+		text-align: right;
 	}
-
-	.seed-grid {
+	.channels {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.65rem;
+		gap: 0.75rem;
 	}
-
-	.seed-grid button {
-		position: relative;
-		min-width: 0;
-		padding: 0;
-		overflow: hidden;
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(3, 4, 8, 0.6));
+	.channels button {
+		padding: 1.25rem;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: rgba(13, 16, 23, 0.84);
 		color: inherit;
 		cursor: pointer;
 		text-align: left;
 		transition:
+			transform 180ms ease,
 			border-color 180ms ease,
-			transform 180ms ease;
+			background 180ms ease;
 	}
-
-	.seed-grid button:hover,
-	.seed-grid button:focus-visible {
-		border-color: rgba(210, 160, 77, 0.45);
+	.channels button:hover,
+	.channels button:focus-visible {
+		border-color: rgba(210, 160, 77, 0.5);
 		transform: translateY(-2px);
 	}
-
-	.seed-grid button.selected {
+	.channels button.selected {
 		border-color: #d2a04d;
-		box-shadow:
-			inset 0 0 0 1px rgba(210, 160, 77, 0.3),
-			0 0 2rem rgba(210, 160, 77, 0.12);
+		background: linear-gradient(145deg, rgba(210, 160, 77, 0.12), rgba(14, 16, 24, 0.94));
+		box-shadow: inset 0 0 0 1px rgba(210, 160, 77, 0.2);
 	}
-
-	.mini-rig {
-		height: 9rem;
-		padding: 0.4rem 1rem 0;
-		overflow: hidden;
-		background: radial-gradient(circle at 50% 40%, rgba(104, 87, 164, 0.18), transparent 65%);
-	}
-
-	.card-copy {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		gap: 0.2rem;
-		padding: 0.65rem;
-		background: rgba(5, 6, 10, 0.92);
-	}
-
-	.card-copy span {
-		color: #d2a04d;
-		font-size: 0.5rem;
-		letter-spacing: 0.12em;
-	}
-
-	.card-copy strong {
-		overflow: hidden;
-		font-size: 0.72rem;
-		font-weight: 600;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.card-copy small {
-		color: rgba(246, 241, 231, 0.38);
-		font-size: 0.55rem;
-	}
-
-	.selected-hero {
-		display: grid;
-		grid-template-columns: minmax(18rem, 0.9fr) minmax(22rem, 1.1fr);
-		min-width: 0;
-	}
-
-	.portrait-stage {
-		position: relative;
-		display: flex;
-		min-height: 48rem;
-		align-items: flex-end;
-		justify-content: center;
-		overflow: hidden;
-		background:
-			radial-gradient(circle at 50% 35%, rgba(76, 71, 133, 0.28), transparent 45%), #080a11;
-	}
-
-	.portrait-stage > img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center;
-		filter: saturate(0.88) contrast(1.05);
-	}
-
-	.scanline {
-		position: absolute;
-		z-index: 2;
-		inset: 0;
-		background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-		background-size: 100% 4px;
-		mix-blend-mode: overlay;
-		pointer-events: none;
-	}
-
-	.portrait-caption {
-		position: absolute;
-		z-index: 3;
-		right: 1rem;
-		bottom: 1rem;
-		left: 1rem;
+	.channel-top {
 		display: flex;
 		justify-content: space-between;
-		gap: 1rem;
-		padding: 0.65rem 0.8rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		background: rgba(6, 7, 12, 0.74);
-		backdrop-filter: blur(12px);
-		font-size: 0.54rem;
+		color: rgba(245, 240, 229, 0.35);
+		font-size: 0.5rem;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
-
-	.portrait-caption span {
-		color: rgba(246, 241, 231, 0.42);
+	.channels h3 {
+		margin: 2rem 0 0.35rem;
+		font:
+			400 1.55rem Georgia,
+			serif;
 	}
-
-	.portrait-caption strong {
-		color: #d2a04d;
-		font-weight: 600;
-	}
-
-	.identity-sheet {
-		padding: clamp(1.4rem, 3vw, 3rem);
-		background: rgba(10, 12, 19, 0.94);
-	}
-
-	.hero-title {
-		display: flex;
-		align-items: start;
-		justify-content: space-between;
-		gap: 2rem;
-		padding-bottom: 1.5rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-	}
-
-	.hero-title p {
-		margin-bottom: 0.35rem;
-		color: #d2a04d;
-		font-size: 0.58rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-
-	.hero-title h2 {
-		margin: 0;
-		font-family: Georgia, serif;
-		font-size: clamp(2.2rem, 4vw, 4.2rem);
-		font-weight: 400;
-		letter-spacing: -0.045em;
-	}
-
-	.hero-title code {
-		color: #76d2e3;
-		font-family: ui-monospace, monospace;
-		font-size: 0.6rem;
-	}
-
-	.physicality {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		margin: 1.5rem 0;
-		border-top: 1px solid rgba(255, 255, 255, 0.07);
-		border-left: 1px solid rgba(255, 255, 255, 0.07);
-	}
-
-	.physicality div {
-		min-width: 0;
-		padding: 0.8rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.07);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-	}
-
-	dt,
-	.mind-preview span,
-	.seed-control > label,
-	.directive > span {
-		margin-bottom: 0.35rem;
-		color: rgba(246, 241, 231, 0.34);
-		font-size: 0.52rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-
-	dd {
-		margin: 0;
-		overflow: hidden;
+	.channels button > strong {
+		color: #d9b875;
 		font-size: 0.68rem;
-		text-overflow: ellipsis;
-		text-transform: capitalize;
-		white-space: nowrap;
-	}
-
-	.mind-preview {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.55rem;
-		margin-bottom: 1.5rem;
-	}
-
-	.mind-preview div {
-		padding: 0.75rem;
-		background: rgba(255, 255, 255, 0.035);
-	}
-
-	.mind-preview span,
-	.mind-preview strong {
-		display: block;
-	}
-
-	.mind-preview strong {
-		font-size: 0.72rem;
-		font-weight: 550;
-		text-transform: capitalize;
-	}
-
-	.seed-control > label {
-		display: block;
-	}
-
-	.seed-control > div {
-		display: grid;
-		grid-template-columns: 1fr auto;
-	}
-
-	input,
-	textarea {
-		width: 100%;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 0;
-		outline: 0;
-		background: rgba(2, 3, 7, 0.45);
-		color: #f6f1e7;
-	}
-
-	input {
-		padding: 0.75rem;
-		font-family: ui-monospace, monospace;
-		font-size: 0.7rem;
-	}
-
-	input:focus,
-	textarea:focus {
-		border-color: #d2a04d;
-	}
-
-	.seed-control button {
-		padding: 0 1rem;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		background: rgba(255, 255, 255, 0.06);
-		color: inherit;
-		cursor: pointer;
-		font-size: 0.62rem;
-	}
-
-	.locks {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.45rem;
-		margin-top: 1rem;
-	}
-
-	.locks button {
-		display: grid;
-		grid-template-columns: auto 1fr auto;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.6rem;
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		background: transparent;
-		color: rgba(246, 241, 231, 0.5);
-		cursor: pointer;
-		font-size: 0.58rem;
-		text-align: left;
-	}
-
-	.locks button.locked {
-		border-color: rgba(210, 160, 77, 0.32);
-		background: rgba(210, 160, 77, 0.07);
-		color: #f6f1e7;
-	}
-
-	.locks button > span {
-		color: #d2a04d;
-	}
-
-	.locks small {
-		color: rgba(246, 241, 231, 0.3);
-		font-family: ui-monospace, monospace;
-	}
-
-	.reroll {
-		width: 100%;
-		margin-top: 0.7rem;
-		padding: 0.85rem;
-		border: 1px solid rgba(118, 210, 227, 0.25);
-		background: rgba(118, 210, 227, 0.05);
-		color: #86d5e3;
-		cursor: pointer;
-		font-size: 0.62rem;
-		font-weight: 650;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
-
-	button:disabled {
-		cursor: wait;
-		opacity: 0.55;
+	.channels p {
+		min-height: 2.8rem;
+		margin: 0.8rem 0 1rem;
+		color: rgba(245, 240, 229, 0.5);
+		font-size: 0.68rem;
+		line-height: 1.55;
 	}
-
-	.control-contract {
+	.channels small {
+		color: #76d2e3;
+		font-size: 0.5rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.gate-lab {
+		margin-bottom: 4rem;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: rgba(8, 10, 15, 0.88);
+		box-shadow: 0 3rem 8rem rgba(0, 0, 0, 0.36);
+	}
+	.gate-stage {
 		display: grid;
-		grid-template-columns: 0.7fr 1.3fr;
-		gap: 3rem;
-		max-width: 100rem;
-		margin: 3rem auto 0;
-		padding: clamp(2rem, 5vw, 5rem) clamp(1.2rem, 4vw, 4rem) 6rem;
+		grid-template-columns: minmax(19rem, 0.8fr) minmax(22rem, 1.2fr);
+		min-height: 31rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	}
-
-	.contract-copy h2 {
+	.gate-machine {
+		position: relative;
+		display: grid;
+		place-items: center;
+		min-height: 31rem;
+		overflow: hidden;
+		background: radial-gradient(
+			circle,
+			rgba(205, 154, 74, 0.1),
+			rgba(67, 52, 112, 0.12) 32%,
+			transparent 64%
+		);
+	}
+	.gate-machine > i {
+		position: absolute;
+		width: min(73%, 23rem);
+		aspect-ratio: 1;
+		border: 1px solid rgba(210, 160, 77, 0.38);
+		border-radius: 50%;
+		box-shadow:
+			0 0 2rem rgba(210, 160, 77, 0.12),
+			inset 0 0 2rem rgba(210, 160, 77, 0.08);
+	}
+	.gate-machine > i:nth-child(2) {
+		width: min(58%, 18rem);
+		border-style: dashed;
+		transform: rotate(24deg);
+	}
+	.gate-machine > i:nth-child(3) {
+		width: min(43%, 13rem);
+		transform: rotate(-17deg);
+	}
+	.gate-core {
+		width: min(30%, 9rem);
+		aspect-ratio: 1;
+		border: 1px solid rgba(118, 210, 227, 0.45);
+		border-radius: 50%;
+		background: #05060a;
+		box-shadow: 0 0 4rem rgba(113, 86, 185, 0.3);
+	}
+	.opening .gate-machine > i {
+		animation: gate-spin 720ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	.opening .gate-core {
+		animation: gate-open 720ms ease;
+	}
+	.gate-copy {
+		align-self: center;
+		padding: clamp(2rem, 5vw, 5rem);
+	}
+	.gate-copy h2 {
 		margin-bottom: 1rem;
-		font-family: Georgia, serif;
-		font-size: clamp(2rem, 4vw, 4rem);
-		font-weight: 400;
-		line-height: 1;
+		font:
+			400 clamp(2.5rem, 5vw, 5.2rem)/0.94 Georgia,
+			serif;
 		letter-spacing: -0.04em;
 	}
-
-	.mode-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.65rem;
+	.gate-copy > p:not(.eyebrow) {
+		max-width: 38rem;
+		color: rgba(245, 240, 229, 0.56);
+		line-height: 1.7;
 	}
-
-	.mode-grid button {
-		min-height: 6.5rem;
-		padding: 1rem;
-		border: 1px solid rgba(255, 255, 255, 0.09);
-		background: rgba(255, 255, 255, 0.025);
+	.gate-copy button {
+		display: flex;
+		width: min(100%, 28rem);
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 2rem;
+		padding: 1rem 1.2rem;
+		border: 1px solid #d2a04d;
+		background: #d2a04d;
+		color: #15100a;
+		cursor: pointer;
+		text-align: left;
+	}
+	.gate-copy button:disabled {
+		cursor: wait;
+		opacity: 0.7;
+	}
+	.gate-copy button span {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.gate-copy button small {
+		font-size: 0.5rem;
+		opacity: 0.68;
+	}
+	.arrivals {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		min-height: 26rem;
+	}
+	.arrivals > button {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr;
+		min-width: 0;
+		padding: 0;
+		overflow: hidden;
+		border: 0;
+		border-right: 1px solid rgba(255, 255, 255, 0.08);
+		background: #090b10;
 		color: inherit;
 		cursor: pointer;
 		text-align: left;
+		animation: arrive 520ms calc(var(--arrival-index) * 120ms) both;
 	}
-
-	.mode-grid button.selected {
-		border-color: #d2a04d;
-		background: linear-gradient(135deg, rgba(210, 160, 77, 0.12), rgba(210, 160, 77, 0.02));
+	.arrivals > button:last-child {
+		border-right: 0;
 	}
-
-	.mode-grid span,
-	.mode-grid small {
-		display: block;
+	.arrivals > button.selected {
+		box-shadow: inset 0 0 0 2px #d2a04d;
 	}
-
-	.mode-grid span {
-		margin-bottom: 0.55rem;
-		font-family: Georgia, serif;
-		font-size: 1rem;
+	.portrait {
+		position: relative;
+		height: 23rem;
+		overflow: hidden;
+		background: radial-gradient(circle at 50% 35%, rgba(102, 77, 164, 0.22), transparent 58%);
 	}
-
-	.mode-grid small {
-		color: rgba(246, 241, 231, 0.48);
-		font-size: 0.65rem;
-		line-height: 1.45;
+	.portrait img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 20%;
+		filter: saturate(0.86) contrast(1.05);
+		transition:
+			transform 220ms ease,
+			filter 220ms ease;
 	}
-
-	.directive {
-		display: block;
-		grid-column: 2;
+	.arrivals button:hover img,
+	.arrivals button:focus-visible img {
+		transform: scale(1.025);
+		filter: saturate(1) contrast(1.05);
 	}
-
-	.directive > span {
-		display: block;
+	.resonance {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		pointer-events: none;
 	}
-
-	textarea {
-		min-height: 6rem;
-		padding: 0.85rem;
-		resize: vertical;
-		font: inherit;
-		font-size: 0.76rem;
-		line-height: 1.5;
+	.resonance i {
+		position: absolute;
+		width: 76%;
+		aspect-ratio: 1;
+		border: 1px solid rgba(210, 160, 77, 0.28);
+		border-radius: 50%;
+		box-shadow: 0 0 2rem rgba(210, 160, 77, 0.12);
 	}
-
-	.directive > small {
-		display: block;
-		margin-top: 0.4rem;
-		color: rgba(246, 241, 231, 0.3);
-		font-size: 0.58rem;
-		text-align: right;
+	.resonance i:nth-child(2) {
+		width: 62%;
+		border-style: dashed;
 	}
-
-	.summon {
-		grid-column: 2;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 2rem;
-		padding: 1.2rem 1.4rem;
-		border: 1px solid #d2a04d;
-		background: linear-gradient(100deg, #d2a04d, #ae6d38);
-		color: #090a0f;
-		cursor: pointer;
-		text-align: left;
+	.resonance i:nth-child(3),
+	.resonance i:nth-child(4) {
+		width: 48%;
 	}
-
-	.summon span {
-		font-family: Georgia, serif;
-		font-size: 1.2rem;
+	.arrival-copy {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 2;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: end;
+		gap: 0.2rem 1rem;
+		padding: 1rem;
+		background: linear-gradient(transparent, rgba(4, 5, 8, 0.95) 35%);
 	}
-
-	.summon small {
-		font-size: 0.58rem;
-		letter-spacing: 0.07em;
+	.arrival-copy span {
+		grid-column: 1/-1;
+		color: #d2a04d;
+		font-size: 0.62rem;
+		letter-spacing: 0.14em;
+	}
+	.arrival-copy strong {
+		font:
+			400 1.2rem Georgia,
+			serif;
+	}
+	.arrival-copy small {
+		color: rgba(245, 240, 229, 0.46);
+		font-size: 0.52rem;
 		text-transform: uppercase;
 	}
-
-	.error {
-		grid-column: 2;
-		margin: 0;
-		padding: 0.8rem;
-		border: 1px solid rgba(240, 110, 104, 0.35);
-		color: #f2938f;
+	.arrival-placeholder {
+		display: grid;
+		min-height: 26rem;
+		place-items: center;
+		border-right: 1px solid rgba(255, 255, 255, 0.06);
+		color: rgba(245, 240, 229, 0.16);
+	}
+	.arrival-placeholder span {
+		position: absolute;
+		font:
+			400 5rem Georgia,
+			serif;
+	}
+	.arrival-placeholder p {
+		margin: 5rem 0 0;
+		font-size: 0.52rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.dossier {
+		padding: 0 clamp(1.2rem, 4vw, 4rem) 5rem;
+	}
+	.dossier-grid {
+		display: grid;
+		grid-template-columns: 0.85fr 1fr 1.15fr;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: rgba(10, 12, 18, 0.82);
+	}
+	.dossier-grid > div {
+		min-width: 0;
+		padding: clamp(1.4rem, 3vw, 2.6rem);
+		border-right: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.dossier-grid > div:last-child {
+		border-right: 0;
+	}
+	.identity-card h3 {
+		margin-bottom: 0.35rem;
+		font:
+			400 clamp(2rem, 4vw, 4rem) Georgia,
+			serif;
+		letter-spacing: -0.04em;
+	}
+	.identity-card > p:not(.eyebrow) {
+		color: #d9b875;
+		font-size: 0.7rem;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	dl {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		margin: 2rem 0 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		border-left: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	dl > div {
+		padding: 0.75rem;
+		border-right: 1px solid rgba(255, 255, 255, 0.08);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	dt,
+	.personality-card span,
+	.aptitude-card span {
+		color: rgba(245, 240, 229, 0.35);
+		font-size: 0.48rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	dd {
+		margin: 0.25rem 0 0;
 		font-size: 0.72rem;
+		text-transform: capitalize;
 	}
-
-	@media (max-width: 1180px) {
-		.forge-shell {
-			grid-template-columns: 1fr;
-			margin-inline: 1rem;
+	.personality-card {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.6rem;
+		align-content: start;
+	}
+	.personality-card .eyebrow {
+		grid-column: 1/-1;
+	}
+	.personality-card > div {
+		padding: 0.85rem;
+		background: rgba(255, 255, 255, 0.035);
+	}
+	.personality-card span,
+	.personality-card strong {
+		display: block;
+	}
+	.personality-card strong {
+		margin-top: 0.35rem;
+		font-size: 0.76rem;
+		text-transform: capitalize;
+	}
+	.personality-card .habit {
+		grid-column: 1/-1;
+	}
+	.aptitude-card > div {
+		display: grid;
+		grid-template-columns: 7.6rem 1fr auto;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.8rem;
+	}
+	.aptitude-card > div > strong {
+		color: #76d2e3;
+		font-size: 0.58rem;
+	}
+	.meter {
+		height: 0.25rem;
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.meter i {
+		display: block;
+		width: calc(var(--score) / 9 * 100%);
+		height: 100%;
+		background: linear-gradient(90deg, #6d5aa8, #d2a04d);
+	}
+	.aptitude-card > small {
+		display: block;
+		margin-top: 1.5rem;
+		color: rgba(245, 240, 229, 0.42);
+		font-size: 0.58rem;
+		line-height: 1.65;
+	}
+	.boundaries {
+		display: grid;
+		grid-template-columns: 0.9fr 1.1fr;
+		gap: 5rem;
+		padding: 4rem clamp(1.2rem, 4vw, 4rem) 7rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.boundaries h2 {
+		max-width: 35rem;
+		font:
+			400 clamp(2.3rem, 4vw, 4.5rem)/1 Georgia,
+			serif;
+	}
+	.boundaries ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.boundaries li {
+		padding: 1rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		color: rgba(245, 240, 229, 0.56);
+		font-size: 0.72rem;
+		line-height: 1.6;
+	}
+	.boundaries li span {
+		display: inline-block;
+		width: 7rem;
+		color: #d2a04d;
+		font-size: 0.5rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.boundaries > a {
+		grid-column: 2;
+		display: flex;
+		justify-content: space-between;
+		padding: 1rem 0;
+		color: #76d2e3;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	@keyframes gate-spin {
+		0% {
+			transform: scale(0.8) rotate(-30deg);
+			opacity: 0.25;
 		}
-
-		.roster-panel {
-			border-right: 0;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		55% {
+			opacity: 1;
 		}
-
-		.seed-grid {
-			grid-template-columns: repeat(6, minmax(0, 1fr));
+		100% {
+			transform: scale(1) rotate(120deg);
+			opacity: 0.4;
 		}
 	}
-
-	@media (max-width: 800px) {
+	@keyframes gate-open {
+		0%,
+		100% {
+			transform: scale(0.72);
+			box-shadow: 0 0 2rem rgba(113, 86, 185, 0.2);
+		}
+		55% {
+			transform: scale(1.3);
+			background: #e5bd77;
+			box-shadow: 0 0 7rem rgba(229, 189, 119, 0.8);
+		}
+	}
+	@keyframes arrive {
+		from {
+			opacity: 0;
+			transform: translateY(1rem);
+			filter: blur(8px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+			filter: none;
+		}
+	}
+	@media (max-width: 900px) {
 		.topbar {
 			grid-template-columns: 1fr auto;
 		}
-
-		.chapter {
+		.topbar > div {
 			display: none;
 		}
-
-		.intro,
-		.control-contract,
-		.selected-hero {
+		.intro {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+		.channels {
 			grid-template-columns: 1fr;
 		}
-
-		.intro {
-			gap: 1.5rem;
+		.channels p {
+			min-height: 0;
 		}
-
-		.seed-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+		.gate-stage {
+			grid-template-columns: 1fr;
 		}
-
-		.portrait-stage {
-			min-height: 75vh;
+		.gate-machine {
+			min-height: 20rem;
 		}
-
-		.directive,
-		.summon,
-		.error {
+		.arrivals {
+			grid-template-columns: 1fr;
+		}
+		.arrivals > button {
+			min-height: 26rem;
+			border-right: 0;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		.dossier-grid {
+			grid-template-columns: 1fr;
+		}
+		.dossier-grid > div {
+			border-right: 0;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		.boundaries {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+		.boundaries > a {
 			grid-column: 1;
 		}
 	}
-
-	@media (max-width: 520px) {
-		.seed-grid,
-		.mode-grid,
-		.physicality,
-		.mind-preview,
-		.locks {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+	@media (max-width: 560px) {
+		.topbar nav {
+			gap: 0.7rem;
+			font-size: 0.48rem;
 		}
-
-		.portrait-stage {
-			min-height: 38rem;
+		.section-heading {
+			display: block;
 		}
-
-		.summon {
-			align-items: flex-start;
-			flex-direction: column;
-			gap: 0.5rem;
+		.section-heading > p {
+			margin-top: 0.7rem;
+			text-align: left;
+		}
+		h1 {
+			font-size: 3.4rem;
+		}
+		.aptitude-card > div {
+			grid-template-columns: 6rem 1fr auto;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			scroll-behavior: auto !important;
+			animation-duration: 1ms !important;
+			transition-duration: 1ms !important;
 		}
 	}
 </style>

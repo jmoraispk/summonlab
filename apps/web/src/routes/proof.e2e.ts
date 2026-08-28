@@ -30,21 +30,16 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 
 test('forges, summons, directs, and follows one persistent hero', async ({ page }) => {
 	test.setTimeout(60_000);
-	await page.goto('/forge');
-	await expect(page.getByRole('heading', { name: /One seed/ })).toBeVisible();
-	await expect(page.getByRole('heading', { name: 'Mara Vey' })).toBeVisible();
-	await expect(page.getByText('original-generated-anchor')).toBeVisible();
-
-	if (process.env.CAPTURE_PHASE1_FORGE) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE1_FORGE, fullPage: true });
-	}
-
-	await page.getByRole('radio', { name: /Wait for step/ }).click();
-	await page
-		.getByPlaceholder('Example: Learn who lives here before thinking about the tower.')
-		.fill('Train, exercise, and prepare to fight in the tower.');
-	await page.getByRole('button', { name: /Summon Mara Vey/ }).click();
-	await expect(page).toHaveURL(/\/summon\/[a-f0-9-]+$/u);
+	const created = await page.request.post('/api/runs', {
+		data: {
+			recipe: emberRecipe,
+			controlMode: 'wait',
+			directive: 'Train, exercise, and prepare to fight in the tower.'
+		}
+	});
+	expect(created.status()).toBe(201);
+	const { runId } = (await created.json()) as { runId: string };
+	await page.goto(`/summon/${runId}`);
 
 	await page.getByRole('button', { name: /Break the seal/ }).click();
 	await expect(page.getByRole('heading', { name: 'The hero is waiting to choose.' })).toBeVisible({

@@ -30,6 +30,25 @@ The campaign begins at floor 1 and ends when the Master clears floor 100 or dies
 
 An endless mode is postgame scope. The finite tower comes first because it provides pacing, a measurable goal, and an ending worth balancing.
 
+### Level and skill curve
+
+The tower targets approximately `ceil(floor × 0.7)` as its lower recommended hero level: level 7
+near Floor 10, 35 near Floor 50, and 70 at Floor 100. A party may enter under- or over-levelled;
+the range is guidance, never a lock. The curve intentionally crosses each ten-level cap so
+promotion readiness matters before later bands.
+
+Every floor must declare four pieces of progression content:
+
+- a recommended level range;
+- one primary skill test the party can deliberately prepare for;
+- one new or newly combined enemy pressure;
+- the enemy roles that deliver that pressure.
+
+Numbers alone do not define difficulty. Floors 1–4 introduce one readable pressure at a time,
+Floor 5 combines them in a command test, and later five-floor bands repeat that rhythm with fewer
+safety margins. The checked `tower-progression-preview-v1` content applies this contract to Floors
+1–20 before the remaining bands are authored.
+
 ### Tower objectives
 
 The tower assigns a mission objective when a floor opens:
@@ -315,19 +334,26 @@ Anyone can learn any non-exclusive skill. Learning rate depends on:
 
 ### Summon channels
 
-Initial probability proposal:
+Forge review proposal. The names communicate the minimum starting resonance before any price or
+access rule is finalized:
 
-| Result | Ordinary gate | Focused gate | Milestone summon |
+| Result | Normal summon | Advanced summon | Special summon |
 | --- | ---: | ---: | ---: |
-| 1★ | 85.00% | 60.00% | 0% |
-| 2★ | 14.50% | 37.00% | 0% |
-| 3★ | 0.49% | 2.90% | 100% |
-| 4★ | 0.01% | 0.10% | 0% |
+| 1★ | 85.00% | 0% | 0% |
+| 2★ | 14.50% | 97.00% | 0% |
+| 3★ | 0.49% | 2.90% | 99.90% |
+| 4★ | 0.01% | 0.10% | 0.10% |
 | 5★–7★ | 0% | 0% | 0% |
 
-Values are tuning configuration. The important shape is common `1★–2★`, special `3★`, anomalous natural `4★`, and promotion-only `5★–7★`.
+Values remain tuning configuration. The important shape is an immediately legible floor—Normal
+`1★+`, Advanced `2★+`, Special `3★+`—with anomalous natural `4★` and promotion-only `5★–7★`.
+The Forge uses fixed deterministic review cohorts so its component test does not masquerade as an
+economy simulation.
 
-Pity counters remain visible and transactional. A draft configuration can guarantee `2★+` after ten ordinary pulls, `3★+` after a long configurable drought, and preserve a separate anomaly meter for `4★`. Milestone summons provide known `3★` results rather than named duplicate heroes.
+Pity counters remain visible and transactional in the eventual player gate. A draft configuration
+can grant an Advanced summon after ten Normal pulls, a Special summon after a longer configurable
+drought, and preserve a separate anomaly meter for `4★`. Milestone rewards may grant a Special
+summon rather than a named duplicate hero.
 
 ### What stars mean
 

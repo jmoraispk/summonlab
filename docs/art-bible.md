@@ -3,8 +3,8 @@
 Status: **approval candidate** for the Phase 3 visual gate.
 
 This document converts the broader [visual direction](visual-direction.md) into production rules. It
-applies to original human characters, the Character Forge, settlement scenes, dialogue, summon cards,
-and later rig exports. The current review pair is Mara Vey and Remy Nahl in the
+applies to original human characters, classic enemy families, the Character Forge, settlement
+scenes, dialogue, summon cards, and later rig exports. The current review pair is Mara Vey and Remy Nahl in the
 [visual continuity lab](../apps/web/src/routes/visual-lab/+page.svelte).
 
 ## Visual thesis
@@ -65,6 +65,28 @@ composition implies intelligence, morality, temperament, rarity, combat role, or
 - Leather is matte, creased, and utilitarian; metal is sparse and catches narrow highlights.
 - Settlement stone and wood show use, soot, water, impact, and repair.
 - Magic geometry is precise and emissive; people and buildings remain imperfect.
+
+## Enemy construction
+
+Enemy realism follows the same material world without making every creature humanoid or every boss
+ornate.
+
+- A silhouette should reveal battlefield duty before its species label: reach, armor, speed,
+  ranged posture, spell focus, or command weight.
+- Families share anatomy and material ancestry while rank changes age, equipment quality, posture,
+  scars, and scale. A goblin chieftain is not merely a larger green goblin.
+- Beasts retain believable weight distribution, joints, coat wear, claws, and movement. Fantasy
+  threat does not require oversized heads or impossible musculature.
+- Constructs expose how their material bears load: fingerprints and cracks in clay, jointed blocks
+  in stone, forged articulation in iron, internal stress and refraction in crystal.
+- Giants must preserve human-readable weight and ground contact. Size is established with camera,
+  stride, environmental response, and known scale anchors rather than anatomy distortion.
+- Magic and rarity use restrained emissive cores, marks, or telegraphs. They do not wash the entire
+  creature in colored glow.
+
+Family plates are taxonomy reviews only. Approval still requires individual front/profile/action
+anchors, mission-scale silhouette checks, injury states, and telegraph animation for every runtime
+archetype.
 
 ## Camera tiers
 

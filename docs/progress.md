@@ -448,6 +448,24 @@ the broader vertical-slice finish remains active because `FIN-007` and `FIN-008`
 | `FIN-008` | In progress: the hash-bound readiness report independently verifies FIN-007 integrity, the one reviewed owner playthrough, all eight required checkpoints, and zero unverified P0/P1; the acknowledged packaging command refuses held or dirty inputs. The shared archive core deterministically stages built-only workspace output, rewrites runtime exports, and issues typed receipts; its non-promotable rehearsal production-installs an extraction, migrates a fresh temporary database, and passes web/worker health before deleting all rehearsal state. The current checked state honestly remains `held`, so no canonical archive exists yet | [Desktop release gate](evidence/phase-7-fin008-release-gate-desktop.png), [phone release gate](evidence/phase-7-fin008-release-gate-phone.png), [machine-readable gate](evidence/phase-7-fin008-playtest-release.json), [release/rehearsal procedure](private-playtest-release.md), archive-core/release/browser tests, hosted rehearsal, ADRs 0053 and 0054 |
 | `FIN-009` | Complete: an exact Band 02 brief binds world laws, opening facts, mechanics, Hollow Bellkeeper duties, objective/reward/production bounds, and one emotional question; a real opt-in structured-output adapter plus an honestly labeled scripted fixture generate versioned five-floor alternatives; ten machine checks precede a six-part human rubric, only one exact version may be accepted, prototype dependencies hold compilation, and no proposal can mutate runtime or become canonical without later strict envelope compilation | [Desktop workshop](evidence/phase-7-fin009-story-workshop-desktop.png), [phone workshop](evidence/phase-7-fin009-story-workshop-phone.png), [machine-readable report](evidence/phase-7-fin009-story-workshop.json), [review protocol](story-workshop.md), contracts/provider/evaluation/browser tests, ADR 0052 |
 
+### Owner-directed Forge component checkpoint
+
+Status: **ready for owner review** on 2026-08-28.
+
+The development Forge now compares Normal `1★+`, Advanced `2★+`, and Special `3★+` using three
+fixed deterministic realistic cohorts. It explains resonance, level cap, personality, and aptitude
+without starting or mutating a campaign. A linked enemy lab presents sixteen photorealistic review
+archetypes in four families and a checked Floor 1–20 progression contract with one level range,
+skill test, enemy combination, and new pressure on every floor. Prices, final odds, pity, variable
+pulls, on-demand art generation, and production enemy rigs remain explicitly held for review.
+
+Run `pnpm dev:app`; review `/forge` and `/forge/enemies` using the focused actions in
+[`docs/forge-component-review.md`](forge-component-review.md). The checked browser evidence includes
+[desktop summons](evidence/phase-7-forge-summons-desktop.png),
+[phone summons](evidence/phase-7-forge-summons-phone.png), and the
+[enemy/progression lab](evidence/phase-7-forge-enemies-desktop.png). ADR 0056 records why this
+component checkpoint temporarily precedes broader FIN-007 campaign retesting.
+
 ### Reproduce the FIN-003 checkpoint
 
 Run `pnpm dev`, open `http://localhost:5173`, and begin a new seed. Follow the reserve bell, spend
@@ -548,8 +566,9 @@ acceptance authorizes only later envelope compilation—not canonical content or
 
 ## Next active engineering slice
 
-Complete the corrective `FIN-007` slice in ADR 0055, then ask the owner to retest the coherent
-gate-to-Hearth route and finish the one unobserved checkpoint. Resolve and verify every P0/P1 before
-FIN-008 packages the private build. Automated sessions cannot replace that owner judgment. A
-friends round is optional later. FIN-009 is independently complete but its proposals remain pending
-human editorial review. Phase 3 cohort expansion remains behind its separate human visual gate.
+Collect owner judgment on the isolated Forge: summon-channel clarity, reveal rhythm, portrait
+realism, enemy family direction, and the first twenty floors' pressure curve. Revise those components
+before reintegrating the accepted result into the corrective `FIN-007` gate-to-Hearth route. Resolve
+and verify every P0/P1 before FIN-008 packages the private build. Automated sessions cannot replace
+that owner judgment. A friends round is optional later. FIN-009 is independently complete but its
+proposals remain pending human editorial review.

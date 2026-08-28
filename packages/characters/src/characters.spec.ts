@@ -7,6 +7,7 @@ import {
 	chooseFirstDestination,
 	generateCharacterDraft,
 	hashManifest,
+	recipeAtMinimumRarity,
 	recipeFromSeed,
 	rerollRecipe
 } from './index.js';
@@ -113,6 +114,18 @@ describe('deterministic character generation', () => {
 		);
 		expect(appearanceRerolled.mind).toEqual(original.mind);
 		expect(appearanceRerolled.manifest.phenotype).not.toEqual(original.manifest.phenotype);
+	});
+
+	it('qualifies forge recipes without changing non-rarity channels', async () => {
+		const base = recipeFromSeed('forge-special-01');
+		const qualified = recipeAtMinimumRarity(base, 3);
+		const draft = await generateCharacterDraft(qualified);
+
+		expect(draft.manifest.rarityStars).toBeGreaterThanOrEqual(3);
+		expect(qualified.seed).toBe(base.seed);
+		expect(qualified.generationVersion).toBe(base.generationVersion);
+		expect({ ...qualified.cursors, rarity: base.cursors.rarity }).toEqual(base.cursors);
+		expect(qualified.cursors.rarity).toBeGreaterThanOrEqual(base.cursors.rarity);
 	});
 
 	it('lets an explicit direction influence scripted policy without changing legal options', async () => {

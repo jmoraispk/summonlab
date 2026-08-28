@@ -509,6 +509,22 @@ function generateMind(recipe: CharacterGenerationRecipe): CharacterMind {
 	});
 }
 
+export function recipeAtMinimumRarity(
+	input: CharacterGenerationRecipe,
+	minimumStars: 1 | 2 | 3 | 4
+): CharacterGenerationRecipe {
+	const recipe = CharacterGenerationRecipeSchema.parse(input);
+	if (minimumStars === 1) return recipe;
+	for (let offset = 0; offset < 10_000; offset += 1) {
+		const candidate = CharacterGenerationRecipeSchema.parse({
+			...recipe,
+			cursors: { ...recipe.cursors, rarity: recipe.cursors.rarity + offset }
+		});
+		if (generateManifest(candidate).rarityStars >= minimumStars) return candidate;
+	}
+	throw new Error(`No ${minimumStars}-star recipe could be resolved for ${recipe.seed}`);
+}
+
 export async function generateCharacterDraft(
 	input: CharacterGenerationRecipe
 ): Promise<CharacterDraft> {

@@ -1,5 +1,6 @@
 export * from './hearth-01-scene.js';
 export * from './hearth-01.js';
+export * from './enemy-roster.js';
 export * from './iron-moon.js';
 export * from './monster-policies.js';
 export * from './tower-band-01.js';
