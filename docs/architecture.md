@@ -856,27 +856,28 @@ individual sessions, event payloads, run IDs, timestamps, or withdrawal capabili
 capability is not identity or authorization for a hosted build; private invite access and owner
 scoping remain prerequisites before remote data collection. See ADR 0050.
 
-### Moderated evidence boundary
+### Owner feedback boundary
 
 FIN-007 separates human qualitative evidence from both canonical game state and FIN-006 analytics.
-`moderated-playtest-v1` requires five actual adult participants; browser automation, scripted
-personas, model simulations, and developer walkthroughs may preflight the protocol but cannot
-increment the session gate. The fixed cohort assigns anonymous codes `P01`–`P05`, two phone tracks,
-three desktop tracks, and twelve definition-of-done task families across common onboarding plus
-settlement, mission, discovery, consequence, and replay observations.
+`owner-playtest-v1` requires one real owner playthrough; browser automation, scripted personas, and
+model simulations may preflight the route but cannot create `OWNER-01`. The owner chooses phone or
+desktop and follows one coherent eight-checkpoint player route from title and summoning through
+Hearth, the prototype Floor 01 return, the First Ember choice, and the pause menu. Development-only
+mission routes are not presented as reachable campaign checkpoints.
 
-The checked source contains only device/track assignment, build commit, bounded task outcomes,
-moderator prompt counts, and redacted paraphrased findings. It rejects identity fields, direct
-contact details, untriaged prompted/failed tasks, duplicate participants, and findings without an
-observed session. Raw notes, recordings, direct quotes, seeds, run IDs, dialogue, and consent
-capabilities remain outside Git. Qualitative note consent is separate from analytics consent and
-withdrawal removes retained session evidence.
+The owner does not maintain evidence. They play normally and send conversational comments to Codex.
+Codex records only the tested build, bounded checkpoint outcomes, and short paraphrased findings.
+Device, timestamps, and duration are not manual evidence fields. The strict source rejects identity
+fields, contact details, arbitrary extra properties, untriaged friction, and findings without a
+recorded session. Direct quotes, recordings, raw feedback, seeds, run IDs, dialogue, and consent
+capabilities remain outside Git.
 
-`phase-7-fin007-moderated-playtest.json` derives coverage, device mix, severity counts, and a release
-recommendation from the sanitized source. The report remains honestly `ready` or `in-progress`
-without failing CI; only five fully observed tracks can produce `complete`. Any unverified P0/P1
-finding produces `hold`, which FIN-008 must clear before packaging. `/playtest-moderation` renders
-the same checked evidence for the facilitator. See ADR 0051.
+Background statistics remain wholly inside ADR 0050's consent boundary. One explicit opt-in enables
+automatic allowlisted event collection and an aggregate-only `/playtest-report`; declining does not
+invalidate the human playthrough. The checked FIN-007 report remains honestly `ready` or
+`in-progress` without failing CI. Only a reviewed owner journey can produce `complete`, and any
+unverified P0/P1 finding produces `hold`. The development `/playtest-moderation` route renders this
+internal review state. Friends are an optional later round. See ADR 0054.
 
 ### Development story workshop boundary
 
@@ -999,11 +1000,11 @@ that boundary without rewriting historical streams.
 
 ## Human-gated private packaging
 
-FIN-008 consumes the checked FIN-007 moderation report through `playtest-release-report-v1`. The
-evaluator reparses the strict report and recomputes its canonical hash before considering cohort
-state. Four named checks own evidence integrity, exactly five human sessions, complete assigned task
-coverage, and a `candidate` recommendation with no unverified P0/P1. Any failed claim yields a
-checked `held` report; build success or an empty finding list cannot override it.
+FIN-008 consumes the checked FIN-007 owner report through `playtest-release-report-v2`. The evaluator
+reparses the strict report and recomputes its canonical hash before considering playtest state. Four
+named checks own evidence integrity, the single reviewed owner playthrough, all eight required
+journey checkpoints, and a `candidate` recommendation with no unverified P0/P1. Any failed claim
+yields a checked `held` report; build success or an empty finding list cannot override it.
 
 `/playtest-release` is a development-only projection of that report. The operator packaging command
 requires explicit private-release acknowledgement and clean tracked inputs before it builds. A

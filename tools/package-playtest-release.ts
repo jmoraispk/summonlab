@@ -45,7 +45,7 @@ const created = await createPrivatePlaytestPackage({
 		commit,
 		sourceTreeStatus: 'clean',
 		releaseReportHash: report.reportHash,
-		moderatedPlaytestReportHash: report.generatedFrom.moderatedPlaytestReportHash
+		ownerPlaytestReportHash: report.generatedFrom.ownerPlaytestReportHash
 	}
 });
 

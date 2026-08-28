@@ -2,12 +2,12 @@ import { hashCanonical } from '@summonlab/engine';
 import { z } from 'zod';
 
 import {
-	MODERATED_PLAYTEST_REQUIRED_SESSIONS,
-	ModeratedPlaytestReportSchema,
-	type ModeratedPlaytestReport
+	OWNER_PLAYTEST_REQUIRED_SESSIONS,
+	OwnerPlaytestReportSchema,
+	type OwnerPlaytestReport
 } from './moderated-playtest.js';
 
-export const PLAYTEST_RELEASE_REPORT_VERSION = 'playtest-release-report-v1' as const;
+export const PLAYTEST_RELEASE_REPORT_VERSION = 'playtest-release-report-v2' as const;
 export const PLAYTEST_RELEASE_ID = 'fin008-private-playtest-v1' as const;
 
 const HashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
@@ -17,8 +17,8 @@ export const PlaytestReleaseCheckSchema = z
 	.object({
 		checkId: z.enum([
 			'evidence-integrity',
-			'human-sessions',
-			'assigned-task-coverage',
+			'owner-playtest',
+			'required-journey-coverage',
 			'release-findings'
 		]),
 		status: z.enum(['pass', 'hold']),
@@ -32,9 +32,9 @@ export const PlaytestReleaseReportSchema = z
 		releaseId: z.literal(PLAYTEST_RELEASE_ID),
 		generatedFrom: z
 			.object({
-				moderatedPlaytestSchemaVersion: z.literal('moderated-playtest-report-v1'),
-				moderatedPlaytestReportHash: HashSchema,
-				cohortId: z.literal('fin007-local-private-v1')
+				ownerPlaytestSchemaVersion: z.literal('owner-playtest-report-v1'),
+				ownerPlaytestReportHash: HashSchema,
+				playtestId: z.literal('fin007-owner-local-v1')
 			})
 			.strict(),
 		status: z.enum(['held', 'ready-to-package']),
@@ -100,48 +100,47 @@ export const PlaytestPackageReceiptSchema = z
 
 export type PlaytestPackageReceipt = z.infer<typeof PlaytestPackageReceiptSchema>;
 
-function moderatedReportHash(report: ModeratedPlaytestReport): string {
-	const unsigned: Partial<ModeratedPlaytestReport> = { ...report };
+function ownerReportHash(report: OwnerPlaytestReport): string {
+	const unsigned: Partial<OwnerPlaytestReport> = { ...report };
 	delete unsigned.reportHash;
 	return hashCanonical(unsigned);
 }
 
-export function createPlaytestReleaseReport(input: ModeratedPlaytestReport): PlaytestReleaseReport {
-	const moderated = ModeratedPlaytestReportSchema.parse(input);
-	const actualEvidenceHash = moderatedReportHash(moderated);
-	const evidenceIntact = actualEvidenceHash === moderated.reportHash;
+export function createPlaytestReleaseReport(input: OwnerPlaytestReport): PlaytestReleaseReport {
+	const owner = OwnerPlaytestReportSchema.parse(input);
+	const actualEvidenceHash = ownerReportHash(owner);
+	const evidenceIntact = actualEvidenceHash === owner.reportHash;
 	const sessionsComplete =
-		moderated.moderationStatus === 'complete' &&
-		moderated.qualityGate.conductedSessionCount === MODERATED_PLAYTEST_REQUIRED_SESSIONS;
+		owner.playtestStatus === 'complete' &&
+		owner.qualityGate.conductedSessionCount === OWNER_PLAYTEST_REQUIRED_SESSIONS;
 	const taskCoverageComplete =
-		moderated.qualityGate.coveredTaskCount === moderated.qualityGate.requiredTaskCount &&
-		moderated.qualityGate.allAssignedTasksObserved;
+		owner.qualityGate.coveredTaskCount === owner.qualityGate.requiredTaskCount &&
+		owner.qualityGate.allRequiredTasksObserved;
 	const findingsClear =
-		moderated.releaseRecommendation === 'candidate' &&
-		moderated.qualityGate.openReleaseBlockerCount === 0;
+		owner.releaseRecommendation === 'candidate' && owner.qualityGate.openReleaseBlockerCount === 0;
 
 	const checks = [
 		{
 			checkId: 'evidence-integrity' as const,
 			status: evidenceIntact ? ('pass' as const) : ('hold' as const),
 			detail: evidenceIntact
-				? `FIN-007 evidence hash verified: ${moderated.reportHash.slice(0, 16)}.`
+				? `FIN-007 evidence hash verified: ${owner.reportHash.slice(0, 16)}.`
 				: 'FIN-007 evidence content does not match its recorded report hash.'
 		},
 		{
-			checkId: 'human-sessions' as const,
+			checkId: 'owner-playtest' as const,
 			status: sessionsComplete ? ('pass' as const) : ('hold' as const),
-			detail: `${moderated.qualityGate.conductedSessionCount}/${MODERATED_PLAYTEST_REQUIRED_SESSIONS} de-identified moderated sessions recorded.`
+			detail: `${owner.qualityGate.conductedSessionCount}/${OWNER_PLAYTEST_REQUIRED_SESSIONS} owner playthrough recorded and reviewed.`
 		},
 		{
-			checkId: 'assigned-task-coverage' as const,
+			checkId: 'required-journey-coverage' as const,
 			status: taskCoverageComplete ? ('pass' as const) : ('hold' as const),
-			detail: `${moderated.qualityGate.coveredTaskCount}/${moderated.qualityGate.requiredTaskCount} task families observed; assigned coverage ${moderated.qualityGate.allAssignedTasksObserved ? 'complete' : 'incomplete'}.`
+			detail: `${owner.qualityGate.coveredTaskCount}/${owner.qualityGate.requiredTaskCount} owner-journey checkpoints reached; required journey ${owner.qualityGate.allRequiredTasksObserved ? 'complete' : 'incomplete'}.`
 		},
 		{
 			checkId: 'release-findings' as const,
 			status: findingsClear ? ('pass' as const) : ('hold' as const),
-			detail: `${moderated.qualityGate.openReleaseBlockerCount} unverified P0/P1 findings; FIN-007 recommendation ${moderated.releaseRecommendation}.`
+			detail: `${owner.qualityGate.openReleaseBlockerCount} unverified P0/P1 findings; FIN-007 recommendation ${owner.releaseRecommendation}.`
 		}
 	];
 	const blockers = checks.filter((check) => check.status === 'hold').map((check) => check.detail);
@@ -149,9 +148,9 @@ export function createPlaytestReleaseReport(input: ModeratedPlaytestReport): Pla
 		schemaVersion: PLAYTEST_RELEASE_REPORT_VERSION,
 		releaseId: PLAYTEST_RELEASE_ID,
 		generatedFrom: {
-			moderatedPlaytestSchemaVersion: moderated.schemaVersion,
-			moderatedPlaytestReportHash: moderated.reportHash,
-			cohortId: moderated.cohortId
+			ownerPlaytestSchemaVersion: owner.schemaVersion,
+			ownerPlaytestReportHash: owner.reportHash,
+			playtestId: owner.playtestId
 		},
 		status: blockers.length === 0 ? ('ready-to-package' as const) : ('held' as const),
 		checks,
@@ -167,7 +166,7 @@ export function createPlaytestReleaseReport(input: ModeratedPlaytestReport): Pla
 				'SHA-256 artifact receipt bound to the packaged commit'
 			],
 			excludes: [
-				'participant identities, recordings, direct quotations, and raw moderator notes',
+				'participant identities, recordings, direct quotations, and raw feedback',
 				'local environment secrets and development evidence',
 				'unoptimized source artwork'
 			],

@@ -1,38 +1,38 @@
 {
-	"schemaVersion": "playtest-release-report-v1",
+	"schemaVersion": "playtest-release-report-v2",
 	"releaseId": "fin008-private-playtest-v1",
 	"generatedFrom": {
-		"moderatedPlaytestSchemaVersion": "moderated-playtest-report-v1",
-		"moderatedPlaytestReportHash": "3d6e5dd36aed5aa07eaff537ddae4960c89883d221f9140b35483531df80b08d",
-		"cohortId": "fin007-local-private-v1"
+		"ownerPlaytestSchemaVersion": "owner-playtest-report-v1",
+		"ownerPlaytestReportHash": "4c269b810730f9be5e2d0ff59171eced706fd0029484f6a35c677f0c7325996d",
+		"playtestId": "fin007-owner-local-v1"
 	},
 	"status": "held",
 	"checks": [
 		{
 			"checkId": "evidence-integrity",
 			"status": "pass",
-			"detail": "FIN-007 evidence hash verified: 3d6e5dd36aed5aa0."
+			"detail": "FIN-007 evidence hash verified: 4c269b810730f9be."
 		},
 		{
-			"checkId": "human-sessions",
+			"checkId": "owner-playtest",
 			"status": "hold",
-			"detail": "0/5 de-identified moderated sessions recorded."
+			"detail": "0/1 owner playthrough recorded and reviewed."
 		},
 		{
-			"checkId": "assigned-task-coverage",
+			"checkId": "required-journey-coverage",
 			"status": "hold",
-			"detail": "0/12 task families observed; assigned coverage incomplete."
+			"detail": "0/8 owner-journey checkpoints reached; required journey incomplete."
 		},
 		{
 			"checkId": "release-findings",
 			"status": "hold",
-			"detail": "0 unverified P0/P1 findings; FIN-007 recommendation awaiting-sessions."
+			"detail": "0 unverified P0/P1 findings; FIN-007 recommendation awaiting-owner-playtest."
 		}
 	],
 	"blockers": [
-		"0/5 de-identified moderated sessions recorded.",
-		"0/12 task families observed; assigned coverage incomplete.",
-		"0 unverified P0/P1 findings; FIN-007 recommendation awaiting-sessions."
+		"0/1 owner playthrough recorded and reviewed.",
+		"0/8 owner-journey checkpoints reached; required journey incomplete.",
+		"0 unverified P0/P1 findings; FIN-007 recommendation awaiting-owner-playtest."
 	],
 	"packagePlan": {
 		"archiveName": "summonlab-fin008-private-playtest.tar.gz",
@@ -45,11 +45,11 @@
 			"SHA-256 artifact receipt bound to the packaged commit"
 		],
 		"excludes": [
-			"participant identities, recordings, direct quotations, and raw moderator notes",
+			"participant identities, recordings, direct quotations, and raw feedback",
 			"local environment secrets and development evidence",
 			"unoptimized source artwork"
 		],
 		"artifactReceiptRequired": true
 	},
-	"reportHash": "11ae8b28648dd1876f45304bf42e194073dc069a9c210ea85e4d9a50adcc6ae3"
+	"reportHash": "c06c1c7899049fc9ff29f468bc830401e37f0c535d6deb7c5fcd081ba999b043"
 }

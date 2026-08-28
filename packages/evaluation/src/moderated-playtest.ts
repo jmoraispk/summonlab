@@ -1,77 +1,53 @@
 import { hashCanonical } from '@summonlab/engine';
 import { z } from 'zod';
 
-export const MODERATED_PLAYTEST_SOURCE_VERSION = 'moderated-playtest-source-v1' as const;
-export const MODERATED_PLAYTEST_REPORT_VERSION = 'moderated-playtest-report-v1' as const;
-export const MODERATED_PLAYTEST_PROTOCOL_VERSION = 'moderated-playtest-v1' as const;
-export const MODERATED_PLAYTEST_REQUIRED_SESSIONS = 5 as const;
+export const OWNER_PLAYTEST_SOURCE_VERSION = 'owner-playtest-source-v1' as const;
+export const OWNER_PLAYTEST_REPORT_VERSION = 'owner-playtest-report-v1' as const;
+export const OWNER_PLAYTEST_PROTOCOL_VERSION = 'owner-playtest-v1' as const;
+export const OWNER_PLAYTEST_ID = 'fin007-owner-local-v1' as const;
+export const OWNER_PLAYTEST_REQUIRED_SESSIONS = 1 as const;
 
 const HashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
 const CommitSchema = z.string().regex(/^[a-f0-9]{40}$/u);
 const IsoDateTimeSchema = z.iso.datetime({ offset: true });
 
-export const ModeratedPlaytestParticipantCodeSchema = z.enum(['P01', 'P02', 'P03', 'P04', 'P05']);
-export const ModeratedPlaytestTrackSchema = z.enum([
-	'new-player-onboarding',
-	'settlement-return',
-	'iron-moon-autonomy',
-	'tower-discovery',
-	'consequence-replay'
-]);
-export const ModeratedPlaytestTaskIdSchema = z.enum([
+export const OwnerPlaytestSessionCodeSchema = z.literal('OWNER-01');
+export const OwnerPlaytestTrackSchema = z.literal('owner-vertical-slice');
+export const OwnerPlaytestTaskIdSchema = z.enum([
 	'start-seeded-run',
 	'complete-summoning-intro',
 	'read-three-hero-dossiers',
 	'converse-and-direct',
 	'understand-autonomy',
-	'use-settlement-and-first-ember',
-	'return-and-read-recap',
-	'complete-iron-moon',
-	'complete-tower-band',
-	'recognize-hidden-route',
-	'resolve-permanent-consequence',
-	'inspect-replay-and-causality'
+	'arrive-in-hearth',
+	'recover-and-bind-first-ember',
+	'review-objectives-and-settings'
 ]);
-export const ModeratedPlaytestTaskOutcomeSchema = z.enum([
-	'completed-unassisted',
-	'completed-prompted',
-	'not-completed',
-	'not-attempted'
+export const OWNER_PLAYTEST_REQUIRED_TASK_IDS = OwnerPlaytestTaskIdSchema.options;
+export const OwnerPlaytestTaskOutcomeSchema = z.enum([
+	'completed',
+	'completed-with-friction',
+	'blocked',
+	'not-reached'
 ]);
-export const ModeratedPlaytestSeveritySchema = z.enum(['P0', 'P1', 'P2', 'P3']);
-export const ModeratedPlaytestFindingStatusSchema = z.enum(['open', 'fixed', 'verified']);
+export const OwnerPlaytestSeveritySchema = z.enum(['P0', 'P1', 'P2', 'P3']);
+export const OwnerPlaytestFindingStatusSchema = z.enum(['open', 'fixed', 'verified']);
 
-const ModeratedPlaytestTaskResultSchema = z
+const OwnerPlaytestTaskResultSchema = z
 	.object({
-		taskId: ModeratedPlaytestTaskIdSchema,
-		outcome: ModeratedPlaytestTaskOutcomeSchema,
-		moderatorPromptCount: z.number().int().nonnegative().max(20)
+		taskId: OwnerPlaytestTaskIdSchema,
+		outcome: OwnerPlaytestTaskOutcomeSchema
 	})
 	.strict();
 
-const ModeratorAttestationSchema = z
+export const OwnerPlaytestSessionSchema = z
 	.object({
-		adultParticipationConfirmed: z.literal(true),
-		qualitativeNoteConsentConfirmed: z.literal(true),
-		noRecordingMade: z.literal(true),
-		participantIdentifiersRemoved: z.literal(true),
-		directQuotesParaphrased: z.literal(true),
-		rawNotesKeptOutsideRepository: z.literal(true)
-	})
-	.strict();
-
-export const ModeratedPlaytestSessionSchema = z
-	.object({
-		participantCode: ModeratedPlaytestParticipantCodeSchema,
-		track: ModeratedPlaytestTrackSchema,
-		viewport: z.enum(['phone', 'desktop']),
+		sessionCode: OwnerPlaytestSessionCodeSchema,
+		track: OwnerPlaytestTrackSchema,
 		buildCommit: CommitSchema,
-		startedAt: IsoDateTimeSchema,
-		durationMinutes: z.number().int().min(10).max(180),
-		analyticsChoice: z.enum(['shared', 'declined', 'undecided']),
-		disposition: z.enum(['completed', 'stopped-by-participant', 'stopped-by-blocker']),
-		taskResults: z.array(ModeratedPlaytestTaskResultSchema).min(1),
-		attestation: ModeratorAttestationSchema
+		disposition: z.enum(['completed', 'stopped-by-player', 'stopped-by-blocker']),
+		taskResults: z.array(OwnerPlaytestTaskResultSchema).min(1),
+		feedbackReviewed: z.literal(true)
 	})
 	.strict()
 	.superRefine((session, context) => {
@@ -80,7 +56,7 @@ export const ModeratedPlaytestSessionSchema = z
 			context.addIssue({
 				code: 'custom',
 				path: ['taskResults'],
-				message: 'A session may record each moderated task only once'
+				message: 'The owner session may record each playtest task only once'
 			});
 		}
 	});
@@ -94,10 +70,10 @@ const RedactedSummarySchema = z
 		message: 'Finding summaries may not contain email addresses'
 	});
 
-export const ModeratedPlaytestFindingSchema = z
+export const OwnerPlaytestFindingSchema = z
 	.object({
 		findingId: z.string().regex(/^FIN007-[0-9]{3}$/u),
-		severity: ModeratedPlaytestSeveritySchema,
+		severity: OwnerPlaytestSeveritySchema,
 		area: z.enum([
 			'consent',
 			'onboarding',
@@ -111,22 +87,14 @@ export const ModeratedPlaytestFindingSchema = z
 			'performance'
 		]),
 		summary: RedactedSummarySchema,
-		participantCodes: z.array(ModeratedPlaytestParticipantCodeSchema).min(1).max(5),
-		taskIds: z.array(ModeratedPlaytestTaskIdSchema).min(1),
-		status: ModeratedPlaytestFindingStatusSchema,
-		disposition: z.enum(['fix-before-next-session', 'fix-before-release', 'backlog', 'accepted']),
+		taskIds: z.array(OwnerPlaytestTaskIdSchema).min(1),
+		status: OwnerPlaytestFindingStatusSchema,
+		disposition: z.enum(['fix-before-retest', 'fix-before-release', 'backlog', 'accepted']),
 		resolutionCommit: CommitSchema.nullable(),
 		redactionConfirmed: z.literal(true)
 	})
 	.strict()
 	.superRefine((finding, context) => {
-		if (new Set(finding.participantCodes).size !== finding.participantCodes.length) {
-			context.addIssue({
-				code: 'custom',
-				path: ['participantCodes'],
-				message: 'Finding participant codes must be unique'
-			});
-		}
 		if (new Set(finding.taskIds).size !== finding.taskIds.length) {
 			context.addIssue({
 				code: 'custom',
@@ -150,26 +118,17 @@ export const ModeratedPlaytestFindingSchema = z
 		}
 	});
 
-export const ModeratedPlaytestSourceSchema = z
+export const OwnerPlaytestSourceSchema = z
 	.object({
-		schemaVersion: z.literal(MODERATED_PLAYTEST_SOURCE_VERSION),
-		protocolVersion: z.literal(MODERATED_PLAYTEST_PROTOCOL_VERSION),
-		cohortId: z.literal('fin007-local-private-v1'),
+		schemaVersion: z.literal(OWNER_PLAYTEST_SOURCE_VERSION),
+		protocolVersion: z.literal(OWNER_PLAYTEST_PROTOCOL_VERSION),
+		playtestId: z.literal(OWNER_PLAYTEST_ID),
 		updatedAt: IsoDateTimeSchema,
-		sessions: z.array(ModeratedPlaytestSessionSchema).max(MODERATED_PLAYTEST_REQUIRED_SESSIONS),
-		findings: z.array(ModeratedPlaytestFindingSchema)
+		sessions: z.array(OwnerPlaytestSessionSchema).max(OWNER_PLAYTEST_REQUIRED_SESSIONS),
+		findings: z.array(OwnerPlaytestFindingSchema)
 	})
 	.strict()
 	.superRefine((source, context) => {
-		const participantCodes = source.sessions.map((session) => session.participantCode);
-		if (new Set(participantCodes).size !== participantCodes.length) {
-			context.addIssue({
-				code: 'custom',
-				path: ['sessions'],
-				message: 'A participant code may appear in only one retained session'
-			});
-		}
-
 		const findingIds = source.findings.map((finding) => finding.findingId);
 		if (new Set(findingIds).size !== findingIds.length) {
 			context.addIssue({
@@ -179,188 +138,121 @@ export const ModeratedPlaytestSourceSchema = z
 			});
 		}
 
-		const sessionCodes = new Set(participantCodes);
+		const session = source.sessions[0];
+		if (!session && source.findings.length > 0) {
+			context.addIssue({
+				code: 'custom',
+				path: ['findings'],
+				message: 'Findings require an owner playtest session'
+			});
+			return;
+		}
+		if (!session) return;
+
+		const resultTaskIds = new Set(session.taskResults.map((result) => result.taskId));
 		for (const [findingIndex, finding] of source.findings.entries()) {
-			for (const participantCode of finding.participantCodes) {
-				if (!sessionCodes.has(participantCode)) {
+			for (const taskId of finding.taskIds) {
+				if (!resultTaskIds.has(taskId)) {
 					context.addIssue({
 						code: 'custom',
-						path: ['findings', findingIndex, 'participantCodes'],
-						message: `Finding references missing session ${participantCode}`
+						path: ['findings', findingIndex, 'taskIds'],
+						message: `Finding references unrecorded task ${taskId}`
 					});
 				}
 			}
 		}
 
-		for (const [sessionIndex, session] of source.sessions.entries()) {
-			for (const result of session.taskResults) {
-				if (result.outcome === 'completed-unassisted' || result.outcome === 'not-attempted')
-					continue;
-				const triaged = source.findings.some(
-					(finding) =>
-						finding.participantCodes.includes(session.participantCode) &&
-						finding.taskIds.includes(result.taskId)
-				);
-				if (!triaged) {
-					context.addIssue({
-						code: 'custom',
-						path: ['sessions', sessionIndex, 'taskResults'],
-						message: `${result.taskId} friction requires a triaged finding`
-					});
-				}
+		for (const [resultIndex, result] of session.taskResults.entries()) {
+			if (result.outcome !== 'completed-with-friction' && result.outcome !== 'blocked') continue;
+			if (!source.findings.some((finding) => finding.taskIds.includes(result.taskId))) {
+				context.addIssue({
+					code: 'custom',
+					path: ['sessions', 0, 'taskResults', resultIndex],
+					message: `${result.taskId} friction requires a triaged finding`
+				});
 			}
 		}
 	});
 
-const RecruitmentSlotSchema = z
+const OwnerPlaytestPlanSchema = z
 	.object({
-		participantCode: ModeratedPlaytestParticipantCodeSchema,
-		track: ModeratedPlaytestTrackSchema,
-		viewport: z.enum(['phone', 'desktop']),
-		requiredTaskIds: z.array(ModeratedPlaytestTaskIdSchema).min(1)
+		sessionCode: OwnerPlaytestSessionCodeSchema,
+		track: OwnerPlaytestTrackSchema,
+		viewport: z.literal('player-choice'),
+		requiredTaskIds: z
+			.array(OwnerPlaytestTaskIdSchema)
+			.length(OWNER_PLAYTEST_REQUIRED_TASK_IDS.length)
 	})
 	.strict();
 
-export const MODERATED_PLAYTEST_RECRUITMENT_PLAN = RecruitmentSlotSchema.array()
-	.length(MODERATED_PLAYTEST_REQUIRED_SESSIONS)
-	.parse([
-		{
-			participantCode: 'P01',
-			track: 'new-player-onboarding',
-			viewport: 'phone',
-			requiredTaskIds: [
-				'start-seeded-run',
-				'complete-summoning-intro',
-				'read-three-hero-dossiers',
-				'converse-and-direct',
-				'understand-autonomy'
-			]
-		},
-		{
-			participantCode: 'P02',
-			track: 'settlement-return',
-			viewport: 'desktop',
-			requiredTaskIds: [
-				'start-seeded-run',
-				'complete-summoning-intro',
-				'read-three-hero-dossiers',
-				'converse-and-direct',
-				'understand-autonomy',
-				'use-settlement-and-first-ember',
-				'return-and-read-recap'
-			]
-		},
-		{
-			participantCode: 'P03',
-			track: 'iron-moon-autonomy',
-			viewport: 'phone',
-			requiredTaskIds: [
-				'start-seeded-run',
-				'complete-summoning-intro',
-				'read-three-hero-dossiers',
-				'converse-and-direct',
-				'understand-autonomy',
-				'complete-iron-moon'
-			]
-		},
-		{
-			participantCode: 'P04',
-			track: 'tower-discovery',
-			viewport: 'desktop',
-			requiredTaskIds: [
-				'start-seeded-run',
-				'complete-summoning-intro',
-				'read-three-hero-dossiers',
-				'converse-and-direct',
-				'understand-autonomy',
-				'complete-tower-band',
-				'recognize-hidden-route'
-			]
-		},
-		{
-			participantCode: 'P05',
-			track: 'consequence-replay',
-			viewport: 'desktop',
-			requiredTaskIds: [
-				'start-seeded-run',
-				'complete-summoning-intro',
-				'read-three-hero-dossiers',
-				'converse-and-direct',
-				'understand-autonomy',
-				'resolve-permanent-consequence',
-				'inspect-replay-and-causality'
-			]
-		}
-	]);
+export const OWNER_PLAYTEST_PLAN = OwnerPlaytestPlanSchema.parse({
+	sessionCode: 'OWNER-01',
+	track: 'owner-vertical-slice',
+	viewport: 'player-choice',
+	requiredTaskIds: OWNER_PLAYTEST_REQUIRED_TASK_IDS
+});
 
 const TaskCoverageSchema = z
 	.object({
-		taskId: ModeratedPlaytestTaskIdSchema,
-		assignedSessionCount: z.number().int().nonnegative(),
-		attemptedSessionCount: z.number().int().nonnegative(),
-		unassistedCompletionCount: z.number().int().nonnegative(),
-		promptedCompletionCount: z.number().int().nonnegative(),
-		notCompletedCount: z.number().int().nonnegative()
+		taskId: OwnerPlaytestTaskIdSchema,
+		outcome: OwnerPlaytestTaskOutcomeSchema.nullable()
 	})
 	.strict();
 
 const SessionSummarySchema = z
 	.object({
-		participantCode: ModeratedPlaytestParticipantCodeSchema,
-		track: ModeratedPlaytestTrackSchema,
-		viewport: z.enum(['phone', 'desktop']),
+		sessionCode: OwnerPlaytestSessionCodeSchema,
+		track: OwnerPlaytestTrackSchema,
 		buildCommit: CommitSchema,
-		startedAt: IsoDateTimeSchema,
-		durationMinutes: z.number().int().min(10).max(180),
-		analyticsChoice: z.enum(['shared', 'declined', 'undecided']),
-		disposition: z.enum(['completed', 'stopped-by-participant', 'stopped-by-blocker']),
-		attemptedTaskCount: z.number().int().nonnegative(),
-		unassistedTaskCount: z.number().int().nonnegative(),
-		promptedTaskCount: z.number().int().nonnegative(),
-		notCompletedTaskCount: z.number().int().nonnegative(),
-		moderatorPromptCount: z.number().int().nonnegative()
+		disposition: z.enum(['completed', 'stopped-by-player', 'stopped-by-blocker']),
+		completedTaskCount: z.number().int().nonnegative(),
+		frictionTaskCount: z.number().int().nonnegative(),
+		blockedTaskCount: z.number().int().nonnegative(),
+		notReachedTaskCount: z.number().int().nonnegative(),
+		feedbackReviewed: z.literal(true)
 	})
 	.strict();
 
-export const ModeratedPlaytestReportSchema = z
+export const OwnerPlaytestReportSchema = z
 	.object({
-		schemaVersion: z.literal(MODERATED_PLAYTEST_REPORT_VERSION),
-		protocolVersion: z.literal(MODERATED_PLAYTEST_PROTOCOL_VERSION),
-		cohortId: z.literal('fin007-local-private-v1'),
+		schemaVersion: z.literal(OWNER_PLAYTEST_REPORT_VERSION),
+		protocolVersion: z.literal(OWNER_PLAYTEST_PROTOCOL_VERSION),
+		playtestId: z.literal(OWNER_PLAYTEST_ID),
 		updatedAt: IsoDateTimeSchema,
 		privacy: z
 			.object({
 				adultOnly: z.literal(true),
-				qualitativeConsentSeparateFromAnalytics: z.literal(true),
+				backgroundAnalyticsRequireConsent: z.literal(true),
+				backgroundAnalyticsAreOptional: z.literal(true),
 				storesParticipantIdentity: z.literal(false),
 				storesDirectQuotes: z.literal(false),
 				storesRecordings: z.literal(false),
-				storesRawNotes: z.literal(false),
-				participantMayWithdrawNotes: z.literal(true)
+				storesRawFeedback: z.literal(false)
 			})
 			.strict(),
-		recruitmentPlan: z.array(RecruitmentSlotSchema).length(MODERATED_PLAYTEST_REQUIRED_SESSIONS),
-		moderationStatus: z.enum(['ready', 'in-progress', 'complete']),
-		releaseRecommendation: z.enum(['awaiting-sessions', 'hold', 'candidate']),
+		playtestPlan: OwnerPlaytestPlanSchema,
+		playtestStatus: z.enum(['ready', 'in-progress', 'complete']),
+		releaseRecommendation: z.enum(['awaiting-owner-playtest', 'hold', 'candidate']),
 		qualityGate: z
 			.object({
-				requiredSessionCount: z.literal(MODERATED_PLAYTEST_REQUIRED_SESSIONS),
-				conductedSessionCount: z.number().int().min(0).max(MODERATED_PLAYTEST_REQUIRED_SESSIONS),
-				requiredTaskCount: z.literal(12),
-				coveredTaskCount: z.number().int().min(0).max(12),
-				allAssignedTasksObserved: z.boolean(),
+				requiredSessionCount: z.literal(OWNER_PLAYTEST_REQUIRED_SESSIONS),
+				conductedSessionCount: z.number().int().min(0).max(OWNER_PLAYTEST_REQUIRED_SESSIONS),
+				requiredTaskCount: z.literal(OWNER_PLAYTEST_REQUIRED_TASK_IDS.length),
+				coveredTaskCount: z.number().int().min(0).max(OWNER_PLAYTEST_REQUIRED_TASK_IDS.length),
+				allRequiredTasksObserved: z.boolean(),
 				allFrictionTriaged: z.literal(true),
 				openReleaseBlockerCount: z.number().int().nonnegative()
 			})
 			.strict(),
-		deviceMix: z
+		statistics: z
 			.object({
-				phone: z.number().int().nonnegative().max(MODERATED_PLAYTEST_REQUIRED_SESSIONS),
-				desktop: z.number().int().nonnegative().max(MODERATED_PLAYTEST_REQUIRED_SESSIONS)
+				collection: z.literal('automatic-after-consent'),
+				requiredForRelease: z.literal(false),
+				aggregateReportPath: z.literal('/playtest-report')
 			})
 			.strict(),
-		sessions: z.array(SessionSummarySchema).max(MODERATED_PLAYTEST_REQUIRED_SESSIONS),
-		taskCoverage: z.array(TaskCoverageSchema).length(12),
+		sessions: z.array(SessionSummarySchema).max(OWNER_PLAYTEST_REQUIRED_SESSIONS),
+		taskCoverage: z.array(TaskCoverageSchema).length(OWNER_PLAYTEST_REQUIRED_TASK_IDS.length),
 		findingCounts: z
 			.object({
 				P0: z.number().int().nonnegative(),
@@ -369,86 +261,51 @@ export const ModeratedPlaytestReportSchema = z
 				P3: z.number().int().nonnegative()
 			})
 			.strict(),
-		findings: z.array(ModeratedPlaytestFindingSchema),
+		findings: z.array(OwnerPlaytestFindingSchema),
 		reportHash: HashSchema
 	})
 	.strict();
 
-export type ModeratedPlaytestSource = z.infer<typeof ModeratedPlaytestSourceSchema>;
-export type ModeratedPlaytestSession = z.infer<typeof ModeratedPlaytestSessionSchema>;
-export type ModeratedPlaytestFinding = z.infer<typeof ModeratedPlaytestFindingSchema>;
-export type ModeratedPlaytestReport = z.infer<typeof ModeratedPlaytestReportSchema>;
+export type OwnerPlaytestSource = z.infer<typeof OwnerPlaytestSourceSchema>;
+export type OwnerPlaytestSession = z.infer<typeof OwnerPlaytestSessionSchema>;
+export type OwnerPlaytestFinding = z.infer<typeof OwnerPlaytestFindingSchema>;
+export type OwnerPlaytestReport = z.infer<typeof OwnerPlaytestReportSchema>;
 
-export function createEmptyModeratedPlaytestSource(): ModeratedPlaytestSource {
-	return ModeratedPlaytestSourceSchema.parse({
-		schemaVersion: MODERATED_PLAYTEST_SOURCE_VERSION,
-		protocolVersion: MODERATED_PLAYTEST_PROTOCOL_VERSION,
-		cohortId: 'fin007-local-private-v1',
-		updatedAt: '2026-08-25T00:00:00.000Z',
+export function createEmptyOwnerPlaytestSource(): OwnerPlaytestSource {
+	return OwnerPlaytestSourceSchema.parse({
+		schemaVersion: OWNER_PLAYTEST_SOURCE_VERSION,
+		protocolVersion: OWNER_PLAYTEST_PROTOCOL_VERSION,
+		playtestId: OWNER_PLAYTEST_ID,
+		updatedAt: '2026-08-27T00:00:00.000Z',
 		sessions: [],
 		findings: []
 	});
 }
 
-export function createModeratedPlaytestReport(
-	input: ModeratedPlaytestSource
-): ModeratedPlaytestReport {
-	const source = ModeratedPlaytestSourceSchema.parse(input);
-	const sessionByCode = new Map(
-		source.sessions.map((session) => [session.participantCode, session])
-	);
+export function createOwnerPlaytestReport(input: OwnerPlaytestSource): OwnerPlaytestReport {
+	const source = OwnerPlaytestSourceSchema.parse(input);
+	const session = source.sessions[0];
+	const results = new Map(session?.taskResults.map((result) => [result.taskId, result]) ?? []);
 
-	for (const slot of MODERATED_PLAYTEST_RECRUITMENT_PLAN) {
-		const session = sessionByCode.get(slot.participantCode);
-		if (!session) continue;
-		if (session.track !== slot.track || session.viewport !== slot.viewport) {
-			throw new Error(`${slot.participantCode} must use its assigned track and viewport`);
-		}
-		const results = new Map(session.taskResults.map((result) => [result.taskId, result]));
-		for (const taskId of slot.requiredTaskIds) {
-			if (!results.has(taskId)) {
-				throw new Error(`${slot.participantCode} is missing required task ${taskId}`);
-			}
+	if (session) {
+		for (const taskId of OWNER_PLAYTEST_REQUIRED_TASK_IDS) {
+			if (!results.has(taskId)) throw new Error(`OWNER-01 is missing required task ${taskId}`);
 		}
 	}
 
-	const taskCoverage = ModeratedPlaytestTaskIdSchema.options.map((taskId) => {
-		const assignedSessionCount = MODERATED_PLAYTEST_RECRUITMENT_PLAN.filter((slot) =>
-			slot.requiredTaskIds.includes(taskId)
-		).length;
-		const results = source.sessions.flatMap((session) =>
-			session.taskResults.filter((result) => result.taskId === taskId)
-		);
-		return {
-			taskId,
-			assignedSessionCount,
-			attemptedSessionCount: results.filter((result) => result.outcome !== 'not-attempted').length,
-			unassistedCompletionCount: results.filter(
-				(result) => result.outcome === 'completed-unassisted'
-			).length,
-			promptedCompletionCount: results.filter((result) => result.outcome === 'completed-prompted')
-				.length,
-			notCompletedCount: results.filter((result) => result.outcome === 'not-completed').length
-		};
-	});
-
-	const allAssignedTasksObserved = MODERATED_PLAYTEST_RECRUITMENT_PLAN.every((slot) => {
-		const session = sessionByCode.get(slot.participantCode);
-		if (!session) return false;
-		return slot.requiredTaskIds.every((taskId) =>
-			session.taskResults.some(
-				(result) => result.taskId === taskId && result.outcome !== 'not-attempted'
-			)
-		);
-	});
-	const coveredTaskCount = taskCoverage.filter((task) => task.attemptedSessionCount > 0).length;
+	const taskCoverage = OWNER_PLAYTEST_REQUIRED_TASK_IDS.map((taskId) => ({
+		taskId,
+		outcome: results.get(taskId)?.outcome ?? null
+	}));
+	const coveredTaskCount = taskCoverage.filter(
+		(task) => task.outcome !== null && task.outcome !== 'not-reached'
+	).length;
+	const allRequiredTasksObserved = coveredTaskCount === OWNER_PLAYTEST_REQUIRED_TASK_IDS.length;
 	const conductedSessionCount = source.sessions.length;
-	const moderationStatus =
+	const playtestStatus =
 		conductedSessionCount === 0
 			? 'ready'
-			: conductedSessionCount === MODERATED_PLAYTEST_REQUIRED_SESSIONS &&
-				  coveredTaskCount === ModeratedPlaytestTaskIdSchema.options.length &&
-				  allAssignedTasksObserved
+			: allRequiredTasksObserved && session?.feedbackReviewed
 				? 'complete'
 				: 'in-progress';
 	const openReleaseBlockerCount = source.findings.filter(
@@ -456,8 +313,8 @@ export function createModeratedPlaytestReport(
 			(finding.severity === 'P0' || finding.severity === 'P1') && finding.status !== 'verified'
 	).length;
 	const releaseRecommendation =
-		moderationStatus !== 'complete'
-			? 'awaiting-sessions'
+		playtestStatus !== 'complete'
+			? 'awaiting-owner-playtest'
 			: openReleaseBlockerCount > 0
 				? 'hold'
 				: 'candidate';
@@ -465,63 +322,62 @@ export function createModeratedPlaytestReport(
 	for (const finding of source.findings) findingCounts[finding.severity] += 1;
 
 	const unsigned = {
-		schemaVersion: MODERATED_PLAYTEST_REPORT_VERSION,
-		protocolVersion: MODERATED_PLAYTEST_PROTOCOL_VERSION,
-		cohortId: source.cohortId,
+		schemaVersion: OWNER_PLAYTEST_REPORT_VERSION,
+		protocolVersion: OWNER_PLAYTEST_PROTOCOL_VERSION,
+		playtestId: source.playtestId,
 		updatedAt: source.updatedAt,
 		privacy: {
 			adultOnly: true,
-			qualitativeConsentSeparateFromAnalytics: true,
+			backgroundAnalyticsRequireConsent: true,
+			backgroundAnalyticsAreOptional: true,
 			storesParticipantIdentity: false,
 			storesDirectQuotes: false,
 			storesRecordings: false,
-			storesRawNotes: false,
-			participantMayWithdrawNotes: true
+			storesRawFeedback: false
 		},
-		recruitmentPlan: MODERATED_PLAYTEST_RECRUITMENT_PLAN,
-		moderationStatus,
+		playtestPlan: OWNER_PLAYTEST_PLAN,
+		playtestStatus,
 		releaseRecommendation,
 		qualityGate: {
-			requiredSessionCount: MODERATED_PLAYTEST_REQUIRED_SESSIONS,
+			requiredSessionCount: OWNER_PLAYTEST_REQUIRED_SESSIONS,
 			conductedSessionCount,
-			requiredTaskCount: 12,
+			requiredTaskCount: OWNER_PLAYTEST_REQUIRED_TASK_IDS.length,
 			coveredTaskCount,
-			allAssignedTasksObserved,
+			allRequiredTasksObserved,
 			allFrictionTriaged: true,
 			openReleaseBlockerCount
 		},
-		deviceMix: {
-			phone: source.sessions.filter((session) => session.viewport === 'phone').length,
-			desktop: source.sessions.filter((session) => session.viewport === 'desktop').length
+		statistics: {
+			collection: 'automatic-after-consent' as const,
+			requiredForRelease: false as const,
+			aggregateReportPath: '/playtest-report' as const
 		},
-		sessions: source.sessions.map((session) => ({
-			participantCode: session.participantCode,
-			track: session.track,
-			viewport: session.viewport,
-			buildCommit: session.buildCommit,
-			startedAt: session.startedAt,
-			durationMinutes: session.durationMinutes,
-			analyticsChoice: session.analyticsChoice,
-			disposition: session.disposition,
-			attemptedTaskCount: session.taskResults.filter((result) => result.outcome !== 'not-attempted')
-				.length,
-			unassistedTaskCount: session.taskResults.filter(
-				(result) => result.outcome === 'completed-unassisted'
-			).length,
-			promptedTaskCount: session.taskResults.filter(
-				(result) => result.outcome === 'completed-prompted'
-			).length,
-			notCompletedTaskCount: session.taskResults.filter(
-				(result) => result.outcome === 'not-completed'
-			).length,
-			moderatorPromptCount: session.taskResults.reduce(
-				(sum, result) => sum + result.moderatorPromptCount,
-				0
-			)
-		})),
+		sessions: session
+			? [
+					{
+						sessionCode: session.sessionCode,
+						track: session.track,
+						buildCommit: session.buildCommit,
+						disposition: session.disposition,
+						completedTaskCount: session.taskResults.filter(
+							(result) => result.outcome === 'completed'
+						).length,
+						frictionTaskCount: session.taskResults.filter(
+							(result) => result.outcome === 'completed-with-friction'
+						).length,
+						blockedTaskCount: session.taskResults.filter((result) => result.outcome === 'blocked')
+							.length,
+						notReachedTaskCount: session.taskResults.filter(
+							(result) => result.outcome === 'not-reached'
+						).length,
+						feedbackReviewed: session.feedbackReviewed
+					}
+				]
+			: [],
 		taskCoverage,
 		findingCounts,
 		findings: source.findings
 	};
-	return ModeratedPlaytestReportSchema.parse({ ...unsigned, reportHash: hashCanonical(unsigned) });
+
+	return OwnerPlaytestReportSchema.parse({ ...unsigned, reportHash: hashCanonical(unsigned) });
 }

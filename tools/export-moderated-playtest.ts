@@ -2,8 +2,8 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
-	ModeratedPlaytestSourceSchema,
-	createModeratedPlaytestReport
+	OwnerPlaytestSourceSchema,
+	createOwnerPlaytestReport
 } from '../packages/evaluation/src/index.js';
 import { format } from 'prettier';
 
@@ -13,8 +13,8 @@ const sourcePath = path.join(
 	'packages/evaluation/fixtures/moderated-playtest-cohort-v1.json'
 );
 const outputPath = path.join(root, 'docs/evidence/phase-7-fin007-moderated-playtest.json');
-const source = ModeratedPlaytestSourceSchema.parse(JSON.parse(await readFile(sourcePath, 'utf8')));
-const expected = await format(JSON.stringify(createModeratedPlaytestReport(source)), {
+const source = OwnerPlaytestSourceSchema.parse(JSON.parse(await readFile(sourcePath, 'utf8')));
+const expected = await format(JSON.stringify(createOwnerPlaytestReport(source)), {
 	filepath: outputPath,
 	parser: 'json',
 	useTabs: true,
@@ -25,13 +25,13 @@ const expected = await format(JSON.stringify(createModeratedPlaytestReport(sourc
 if (process.argv.includes('--check')) {
 	const current = await readFile(outputPath, 'utf8').catch(() => '');
 	if (current !== expected) {
-		throw new Error(`Moderated playtest artifact is stale: ${path.relative(root, outputPath)}`);
+		throw new Error(`Owner playtest artifact is stale: ${path.relative(root, outputPath)}`);
 	}
 } else {
 	await writeFile(outputPath, expected, 'utf8');
 }
 
-const report = createModeratedPlaytestReport(source);
+const report = createOwnerPlaytestReport(source);
 process.stdout.write(
-	`${report.moderationStatus}\n${report.qualityGate.conductedSessionCount}/${report.qualityGate.requiredSessionCount} sessions\n${report.releaseRecommendation}\n`
+	`${report.playtestStatus}\n${report.qualityGate.conductedSessionCount}/${report.qualityGate.requiredSessionCount} owner playthrough\n${report.releaseRecommendation}\n`
 );

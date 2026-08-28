@@ -121,7 +121,7 @@ try {
 			commit,
 			sourceTreeStatus,
 			releaseReportHash: report.reportHash,
-			moderatedPlaytestReportHash: report.generatedFrom.moderatedPlaytestReportHash
+			ownerPlaytestReportHash: report.generatedFrom.ownerPlaytestReportHash
 		}
 	});
 	const deterministicVerification = await createPrivatePlaytestPackage({
@@ -134,7 +134,7 @@ try {
 			commit,
 			sourceTreeStatus,
 			releaseReportHash: report.reportHash,
-			moderatedPlaytestReportHash: report.generatedFrom.moderatedPlaytestReportHash
+			ownerPlaytestReportHash: report.generatedFrom.ownerPlaytestReportHash
 		}
 	});
 	if (created.receipt.sha256 !== deterministicVerification.receipt.sha256) {

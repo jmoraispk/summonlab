@@ -89,7 +89,7 @@ describe('private playtest package assembly', () => {
 				commit: 'a'.repeat(40),
 				sourceTreeStatus: 'clean' as const,
 				releaseReportHash: 'b'.repeat(64),
-				moderatedPlaytestReportHash: 'c'.repeat(64)
+				ownerPlaytestReportHash: 'c'.repeat(64)
 			}
 		};
 		const first = await createPrivatePlaytestPackage({ ...options, artifactRoot: firstOutput });

@@ -1,11 +1,11 @@
 # Private playtest release
 
 `FIN-008` is a human-gated private package, not a deployment shortcut. The checked
-`playtest-release-report-v1` derives four claims from the hash-bound FIN-007 report:
+`playtest-release-report-v2` derives four claims from the hash-bound FIN-007 report:
 
 1. the FIN-007 content still matches its report hash;
-2. all five de-identified moderated sessions are recorded;
-3. every assigned task was actually attempted and all twelve task families have coverage;
+2. the single owner playthrough is recorded and reviewed;
+3. all eight required owner-journey checkpoints were reached;
 4. the release recommendation is `candidate` with no unverified P0/P1 finding.
 
 Run `pnpm validate:playtest-release` at any time. A held report is valid evidence: it explains why
@@ -13,8 +13,9 @@ packaging is forbidden. It does not mean FIN-008 is complete.
 
 ## Package rehearsal
 
-Run `pnpm rehearse:playtest-package` before the cohort is complete. Rehearsal uses the current held
-report only as an assembly input and is structurally separate from release authorization:
+Run `pnpm rehearse:playtest-package` before the owner playthrough is complete. Rehearsal uses the
+current held report only as an assembly input and is structurally separate from release
+authorization:
 
 - its receipt mode is `rehearsal`, never `release`;
 - its archive is named `summonlab-fin008-package-rehearsal.tar.gz`, while the receipt schema reserves
@@ -32,7 +33,7 @@ development release desk to return 404. A dirty local run says `sourceTreeStatus
 
 ## Packaging procedure
 
-After the moderator updates the sanitized cohort fixture, exports FIN-007, fixes and verifies every
+After the owner sends comments, Codex updates the checked owner evidence, fixes and verifies every
 P0/P1 finding, and commits those inputs:
 
 ```sh
@@ -41,7 +42,7 @@ pnpm export:playtest-release
 git add packages/evaluation/fixtures/moderated-playtest-cohort-v1.json \
   docs/evidence/phase-7-fin007-moderated-playtest.json \
   docs/evidence/phase-7-fin008-playtest-release.json
-git commit -m "test(playtest): verify moderated cohort"
+git commit -m "test(playtest): verify owner journey"
 pnpm package:playtest --acknowledge-private-release
 ```
 
@@ -61,7 +62,7 @@ clean extraction/install/migration/start smoke test.
 
 ## Privacy and operation boundary
 
-The archive excludes participant identities, recordings, direct quotations, raw notes, local
+The archive excludes participant identities, recordings, direct quotations, raw feedback, local
 secrets, development evidence, and unoptimized source artwork. Copy `.env.example` to `.env`, set
 private credentials and URLs outside the archive, install the frozen workspace dependencies, apply
 the database migrations with `pnpm --filter @summonlab/database migrate`, and start the web server

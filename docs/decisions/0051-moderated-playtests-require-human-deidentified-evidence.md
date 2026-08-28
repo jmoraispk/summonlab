@@ -1,8 +1,12 @@
 # 0051 — Moderated playtests require human, de-identified evidence
 
-**Status:** Accepted
+**Status:** Superseded by ADR 0054
 
 **Date:** 2026-08-25
+
+The five-person cohort described below was appropriate for a broader research round, but it did not
+match the current one-owner development loop. ADR 0054 replaces it as the FIN-007 release gate while
+preserving this document as the rationale for a possible later friends round.
 
 ## Decision
 

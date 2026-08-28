@@ -141,20 +141,20 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   development-only aggregate signal at both widths: prefix-complete journey funnel, seven typed
   event counts, 30-day expiry, excluded content/device fields, and immediate withdrawal deletion.
 - `phase-7-fin007-moderation-readiness-desktop.png` /
-  `phase-7-fin007-moderation-readiness-phone.png` — the five-slot facilitator dashboard at desktop
-  and 390×844, explicitly showing zero human sessions, twelve unobserved task families, separate
-  qualitative consent, P0–P3 triage, and an awaiting-sessions release state.
-- `phase-7-fin007-moderated-playtest.json` — the checked de-identified cohort gate. It is currently
-  a readiness artifact (`0/5`, not complete), not fabricated participant evidence; only actual
-  sanitized sessions can advance its coverage and release recommendation.
+  `phase-7-fin007-moderation-readiness-phone.png` — the internal owner-review dashboard at desktop
+  and 390×844, showing one player-choice journey, eight checkpoints, automatic consented statistics,
+  and the honest 0/1 gate before owner feedback exists.
+- `phase-7-fin007-moderated-playtest.json` — the checked owner-playtest gate. It is currently a
+  readiness artifact (`0/1`, not complete), not fabricated feedback; only the owner's real
+  playthrough and comments can advance its coverage and release recommendation.
 - `phase-7-fin008-release-gate-desktop.png` /
   `phase-7-fin008-release-gate-phone.png` — the fail-closed private packaging desk at desktop and
   390×844, showing the upstream evidence hash, four independent claims, three current blockers, the
   package privacy contract, and the explicit statement that no archive has been produced.
 - `phase-7-fin008-playtest-release.json` — the checked release-readiness derivation. It currently
   says `held`; passing validation proves that the hold is current, not that FIN-008 is complete.
-  The eventual ignored artifact and release receipt require five actual sessions and verified P0/P1
-  fixes. `pnpm rehearse:playtest-package` and hosted CI exercise the same deterministic archive core
+  The eventual ignored artifact and release receipt require the reviewed owner playthrough and
+  verified P0/P1 fixes. `pnpm rehearse:playtest-package` and hosted CI exercise the same deterministic archive core
   with a typed, non-canonical rehearsal receipt, clean production install, temporary migration, and
   web/worker health; those ephemeral outputs deliberately do not appear in this evidence directory.
 - `phase-7-fin009-story-workshop-desktop.png` /

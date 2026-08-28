@@ -33,12 +33,12 @@ Each event may contain its random event/session IDs, the consenting campaign run
 phone/desktop category, a player-route category, and the fields declared for that event. Strict
 schemas and matching database checks reject additional properties. The application does not store
 names, campaign seeds, questions, hero replies, arbitrary feedback text, IP addresses, user agents,
-advertising identifiers, or third-party analytics cookies. Qualitative moderated-test notes remain
-outside this event store and require their own disclosed process.
+advertising identifiers, or third-party analytics cookies. Qualitative owner comments remain outside
+this event store and use the separately documented FIN-007 process.
 
 These records are replay-adjacent presentation observations. They never submit engine commands,
 change campaign metadata, become canonical events, or influence deterministic replay. The
-development-only `/playtest-report` projection contains aggregate counts and a cohort funnel; it
+development-only `/playtest-report` projection contains aggregate counts and a journey funnel; it
 does not return consent capabilities, individual sessions, run IDs, event timestamps, or event
 payloads.
 
@@ -47,11 +47,11 @@ payloads.
 - Product instrumentation cannot silently grow by adding arbitrary JSON keys. A new event or field
   requires a contract, notice, migration/check, test, and documentation review.
 - A declined or undecided browser is a tested zero-analytics path, not merely a UI state.
-- Moderators can see where consenting sessions stop without reading what a participant typed or
-  inspecting an individual history.
+- The owner can see where consenting sessions stop without exposing typed comments or an individual
+  history.
 - A lost browser capability cannot be reconstructed from the database. This deliberately favors
   participant control and data minimization over administrative recovery.
 - Aggregate counts may include sessions that consented after an earlier funnel stage; the report's
   funnel includes only sessions that contain the complete ordered prefix and remains monotonic.
-- FIN-007 may collect five moderated sessions and triage observations, but it may not reinterpret
+- FIN-007 may collect one owner playthrough and triage comments, but it may not reinterpret
   this consent as permission for recordings, raw notes, provider prompts, or hosted public access.

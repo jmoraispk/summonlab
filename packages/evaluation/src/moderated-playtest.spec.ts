@@ -1,157 +1,146 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-	MODERATED_PLAYTEST_RECRUITMENT_PLAN,
-	MODERATED_PLAYTEST_REPORT_VERSION,
-	ModeratedPlaytestReportSchema,
-	ModeratedPlaytestSourceSchema,
-	createEmptyModeratedPlaytestSource,
-	createModeratedPlaytestReport,
-	type ModeratedPlaytestFinding,
-	type ModeratedPlaytestSession,
-	type ModeratedPlaytestSource
+	OWNER_PLAYTEST_PLAN,
+	OWNER_PLAYTEST_REPORT_VERSION,
+	OwnerPlaytestReportSchema,
+	OwnerPlaytestSourceSchema,
+	createEmptyOwnerPlaytestSource,
+	createOwnerPlaytestReport,
+	type OwnerPlaytestFinding,
+	type OwnerPlaytestSession,
+	type OwnerPlaytestSource
 } from './moderated-playtest.js';
 
 const BUILD_COMMIT = 'a'.repeat(40);
 
-function session(
-	index: number,
-	override?: Partial<ModeratedPlaytestSession>
-): ModeratedPlaytestSession {
-	const slot = MODERATED_PLAYTEST_RECRUITMENT_PLAN[index]!;
+function session(override?: Partial<OwnerPlaytestSession>): OwnerPlaytestSession {
 	return {
-		participantCode: slot.participantCode,
-		track: slot.track,
-		viewport: slot.viewport,
+		sessionCode: 'OWNER-01',
+		track: 'owner-vertical-slice',
 		buildCommit: BUILD_COMMIT,
-		startedAt: `2026-08-2${index + 1}T18:00:00.000Z`,
-		durationMinutes: 60,
-		analyticsChoice: index % 2 === 0 ? 'shared' : 'declined',
 		disposition: 'completed',
-		taskResults: slot.requiredTaskIds.map((taskId) => ({
+		taskResults: OWNER_PLAYTEST_PLAN.requiredTaskIds.map((taskId) => ({
 			taskId,
-			outcome: 'completed-unassisted',
-			moderatorPromptCount: 0
+			outcome: 'completed'
 		})),
-		attestation: {
-			adultParticipationConfirmed: true,
-			qualitativeNoteConsentConfirmed: true,
-			noRecordingMade: true,
-			participantIdentifiersRemoved: true,
-			directQuotesParaphrased: true,
-			rawNotesKeptOutsideRepository: true
-		},
+		feedbackReviewed: true,
 		...override
 	};
 }
 
 function source(
-	sessions: ModeratedPlaytestSession[],
-	findings: ModeratedPlaytestFinding[] = []
-): ModeratedPlaytestSource {
-	return ModeratedPlaytestSourceSchema.parse({
-		...createEmptyModeratedPlaytestSource(),
-		updatedAt: '2026-08-25T20:00:00.000Z',
+	sessions: OwnerPlaytestSession[],
+	findings: OwnerPlaytestFinding[] = []
+): OwnerPlaytestSource {
+	return OwnerPlaytestSourceSchema.parse({
+		...createEmptyOwnerPlaytestSource(),
+		updatedAt: '2026-08-27T20:00:00.000Z',
 		sessions,
 		findings
 	});
 }
 
-describe('moderated playtest evidence', () => {
-	it('keeps the empty cohort explicitly ready rather than claiming human evidence', () => {
-		const report = createModeratedPlaytestReport(createEmptyModeratedPlaytestSource());
+describe('owner playtest evidence', () => {
+	it('keeps the empty owner slot ready without claiming human feedback', () => {
+		const report = createOwnerPlaytestReport(createEmptyOwnerPlaytestSource());
 
-		expect(ModeratedPlaytestReportSchema.parse(report)).toEqual(report);
+		expect(OwnerPlaytestReportSchema.parse(report)).toEqual(report);
 		expect(report).toMatchObject({
-			schemaVersion: MODERATED_PLAYTEST_REPORT_VERSION,
-			moderationStatus: 'ready',
-			releaseRecommendation: 'awaiting-sessions',
+			schemaVersion: OWNER_PLAYTEST_REPORT_VERSION,
+			playtestStatus: 'ready',
+			releaseRecommendation: 'awaiting-owner-playtest',
 			qualityGate: {
-				requiredSessionCount: 5,
+				requiredSessionCount: 1,
 				conductedSessionCount: 0,
+				requiredTaskCount: 8,
 				coveredTaskCount: 0,
-				allAssignedTasksObserved: false
+				allRequiredTasksObserved: false
+			},
+			statistics: {
+				collection: 'automatic-after-consent',
+				requiredForRelease: false
 			}
 		});
 	});
 
-	it('marks five fully observed tracks complete and release-candidate', () => {
-		const report = createModeratedPlaytestReport(
-			source(MODERATED_PLAYTEST_RECRUITMENT_PLAN.map((_, index) => session(index)))
-		);
+	it('marks one reviewed owner journey complete and release-candidate', () => {
+		const report = createOwnerPlaytestReport(source([session()]));
 
-		expect(report.moderationStatus).toBe('complete');
+		expect(report.playtestStatus).toBe('complete');
 		expect(report.releaseRecommendation).toBe('candidate');
 		expect(report.qualityGate).toMatchObject({
-			conductedSessionCount: 5,
-			coveredTaskCount: 12,
-			allAssignedTasksObserved: true,
+			conductedSessionCount: 1,
+			coveredTaskCount: 8,
+			allRequiredTasksObserved: true,
 			openReleaseBlockerCount: 0
 		});
-		expect(report.deviceMix).toEqual({ phone: 2, desktop: 3 });
 	});
 
 	it('holds release for triaged P0 or P1 friction', () => {
-		const p01 = session(0);
-		p01.taskResults[1] = {
+		const ownerSession = session();
+		ownerSession.taskResults[1] = {
 			taskId: 'complete-summoning-intro',
-			outcome: 'completed-prompted',
-			moderatorPromptCount: 1
+			outcome: 'completed-with-friction'
 		};
-		const finding: ModeratedPlaytestFinding = {
+		const finding: OwnerPlaytestFinding = {
 			findingId: 'FIN007-001',
 			severity: 'P1',
 			area: 'onboarding',
-			summary:
-				'The participant could not identify the reserve-bell action without a moderator prompt.',
-			participantCodes: ['P01'],
+			summary: 'The reserve-bell action was not understandable without outside explanation.',
 			taskIds: ['complete-summoning-intro'],
 			status: 'open',
 			disposition: 'fix-before-release',
 			resolutionCommit: null,
 			redactionConfirmed: true
 		};
-		const report = createModeratedPlaytestReport(
-			source(
-				[p01, ...MODERATED_PLAYTEST_RECRUITMENT_PLAN.slice(1).map((_, i) => session(i + 1))],
-				[finding]
-			)
-		);
+		const report = createOwnerPlaytestReport(source([ownerSession], [finding]));
 
-		expect(report.moderationStatus).toBe('complete');
+		expect(report.playtestStatus).toBe('complete');
 		expect(report.releaseRecommendation).toBe('hold');
 		expect(report.qualityGate.openReleaseBlockerCount).toBe(1);
 	});
 
-	it('rejects prompted or failed tasks that have no de-identified finding', () => {
-		const p01 = session(0);
-		p01.taskResults[0] = {
-			taskId: 'start-seeded-run',
-			outcome: 'not-completed',
-			moderatorPromptCount: 2
+	it('keeps a journey in progress when a required checkpoint was not reached', () => {
+		const ownerSession = session();
+		ownerSession.taskResults[7] = {
+			taskId: 'review-objectives-and-settings',
+			outcome: 'not-reached'
 		};
+		const report = createOwnerPlaytestReport(source([ownerSession]));
 
-		expect(() => source([p01])).toThrow(/requires a triaged finding/u);
+		expect(report.playtestStatus).toBe('in-progress');
+		expect(report.releaseRecommendation).toBe('awaiting-owner-playtest');
+		expect(report.qualityGate.coveredTaskCount).toBe(7);
 	});
 
-	it('rejects participant identity fields and direct contact details', () => {
+	it('rejects friction that has no summarized finding', () => {
+		const ownerSession = session();
+		ownerSession.taskResults[0] = {
+			taskId: 'start-seeded-run',
+			outcome: 'blocked'
+		};
+
+		expect(() => source([ownerSession])).toThrow(/requires a triaged finding/u);
+	});
+
+	it('rejects identity fields and direct contact details', () => {
 		expect(() =>
-			ModeratedPlaytestSourceSchema.parse({
-				...createEmptyModeratedPlaytestSource(),
-				sessions: [{ ...session(0), participantName: 'Not retained' }]
+			OwnerPlaytestSourceSchema.parse({
+				...createEmptyOwnerPlaytestSource(),
+				sessions: [{ ...session(), participantName: 'Not retained' }]
 			})
 		).toThrow();
 		expect(() =>
-			ModeratedPlaytestSourceSchema.parse({
-				...createEmptyModeratedPlaytestSource(),
+			OwnerPlaytestSourceSchema.parse({
+				...createEmptyOwnerPlaytestSource(),
+				sessions: [session()],
 				findings: [
 					{
 						findingId: 'FIN007-001',
 						severity: 'P2',
 						area: 'onboarding',
-						summary:
-							'Contact tester@example.com because the participant missed the highlighted action.',
-						participantCodes: ['P01'],
+						summary: 'Contact tester@example.com about the unclear highlighted action.',
 						taskIds: ['start-seeded-run'],
 						status: 'open',
 						disposition: 'backlog',

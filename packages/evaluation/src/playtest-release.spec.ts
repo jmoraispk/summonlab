@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-	MODERATED_PLAYTEST_RECRUITMENT_PLAN,
-	ModeratedPlaytestSourceSchema,
-	createEmptyModeratedPlaytestSource,
-	createModeratedPlaytestReport,
-	type ModeratedPlaytestSession
+	OWNER_PLAYTEST_PLAN,
+	OwnerPlaytestSourceSchema,
+	createEmptyOwnerPlaytestSource,
+	createOwnerPlaytestReport,
+	type OwnerPlaytestSession
 } from './moderated-playtest.js';
 import {
 	PlaytestPackageReceiptSchema,
@@ -14,57 +14,44 @@ import {
 	createPlaytestReleaseReport
 } from './playtest-release.js';
 
-function completedSession(index: number): ModeratedPlaytestSession {
-	const slot = MODERATED_PLAYTEST_RECRUITMENT_PLAN[index]!;
+function completedSession(): OwnerPlaytestSession {
 	return {
-		participantCode: slot.participantCode,
-		track: slot.track,
-		viewport: slot.viewport,
+		sessionCode: 'OWNER-01',
+		track: 'owner-vertical-slice',
 		buildCommit: 'a'.repeat(40),
-		startedAt: `2026-08-2${index + 1}T18:00:00.000Z`,
-		durationMinutes: 60,
-		analyticsChoice: 'declined',
 		disposition: 'completed',
-		taskResults: slot.requiredTaskIds.map((taskId) => ({
+		taskResults: OWNER_PLAYTEST_PLAN.requiredTaskIds.map((taskId) => ({
 			taskId,
-			outcome: 'completed-unassisted',
-			moderatorPromptCount: 0
+			outcome: 'completed'
 		})),
-		attestation: {
-			adultParticipationConfirmed: true,
-			qualitativeNoteConsentConfirmed: true,
-			noRecordingMade: true,
-			participantIdentifiersRemoved: true,
-			directQuotesParaphrased: true,
-			rawNotesKeptOutsideRepository: true
-		}
+		feedbackReviewed: true
 	};
 }
 
 describe('private playtest release gate', () => {
-	it('holds the current empty cohort and names every unmet human prerequisite', () => {
+	it('holds the current empty owner slot and names every unmet human prerequisite', () => {
 		const release = createPlaytestReleaseReport(
-			createModeratedPlaytestReport(createEmptyModeratedPlaytestSource())
+			createOwnerPlaytestReport(createEmptyOwnerPlaytestSource())
 		);
 
 		expect(PlaytestReleaseReportSchema.parse(release)).toEqual(release);
 		expect(release.status).toBe('held');
 		expect(release.checks.map((check) => [check.checkId, check.status])).toEqual([
 			['evidence-integrity', 'pass'],
-			['human-sessions', 'hold'],
-			['assigned-task-coverage', 'hold'],
+			['owner-playtest', 'hold'],
+			['required-journey-coverage', 'hold'],
 			['release-findings', 'hold']
 		]);
-		expect(() => assertPlaytestReleaseReady(release)).toThrow(/0\/5/u);
+		expect(() => assertPlaytestReleaseReady(release)).toThrow(/0\/1/u);
 	});
 
-	it('opens packaging only for five fully covered sessions with no unverified P0 or P1', () => {
-		const source = ModeratedPlaytestSourceSchema.parse({
-			...createEmptyModeratedPlaytestSource(),
-			updatedAt: '2026-08-25T20:00:00.000Z',
-			sessions: MODERATED_PLAYTEST_RECRUITMENT_PLAN.map((_, index) => completedSession(index))
+	it('opens packaging after one reviewed owner journey with no unverified P0 or P1', () => {
+		const source = OwnerPlaytestSourceSchema.parse({
+			...createEmptyOwnerPlaytestSource(),
+			updatedAt: '2026-08-27T20:00:00.000Z',
+			sessions: [completedSession()]
 		});
-		const release = createPlaytestReleaseReport(createModeratedPlaytestReport(source));
+		const release = createPlaytestReleaseReport(createOwnerPlaytestReport(source));
 
 		expect(release.status).toBe('ready-to-package');
 		expect(release.blockers).toEqual([]);
@@ -73,12 +60,12 @@ describe('private playtest release gate', () => {
 
 	it('rejects a valid-shaped release report whose hashed content was edited', () => {
 		const release = createPlaytestReleaseReport(
-			createModeratedPlaytestReport(createEmptyModeratedPlaytestSource())
+			createOwnerPlaytestReport(createEmptyOwnerPlaytestSource())
 		);
 		const edited = PlaytestReleaseReportSchema.parse({
 			...release,
 			checks: release.checks.map((check) =>
-				check.checkId === 'human-sessions' ? { ...check, detail: '5/5 claimed by hand.' } : check
+				check.checkId === 'owner-playtest' ? { ...check, detail: '1/1 claimed by hand.' } : check
 			)
 		});
 
@@ -86,10 +73,10 @@ describe('private playtest release gate', () => {
 	});
 
 	it('holds when the FIN-007 content no longer matches its evidence hash', () => {
-		const moderated = createModeratedPlaytestReport(createEmptyModeratedPlaytestSource());
+		const owner = createOwnerPlaytestReport(createEmptyOwnerPlaytestSource());
 		const release = createPlaytestReleaseReport({
-			...moderated,
-			updatedAt: '2026-08-25T01:00:00.000Z'
+			...owner,
+			updatedAt: '2026-08-27T01:00:00.000Z'
 		});
 
 		expect(release.status).toBe('held');

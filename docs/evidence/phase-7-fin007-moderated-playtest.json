@@ -1,198 +1,60 @@
 {
-	"schemaVersion": "moderated-playtest-report-v1",
-	"protocolVersion": "moderated-playtest-v1",
-	"cohortId": "fin007-local-private-v1",
-	"updatedAt": "2026-08-25T00:00:00.000Z",
+	"schemaVersion": "owner-playtest-report-v1",
+	"protocolVersion": "owner-playtest-v1",
+	"playtestId": "fin007-owner-local-v1",
+	"updatedAt": "2026-08-27T00:00:00.000Z",
 	"privacy": {
 		"adultOnly": true,
-		"qualitativeConsentSeparateFromAnalytics": true,
+		"backgroundAnalyticsRequireConsent": true,
+		"backgroundAnalyticsAreOptional": true,
 		"storesParticipantIdentity": false,
 		"storesDirectQuotes": false,
 		"storesRecordings": false,
-		"storesRawNotes": false,
-		"participantMayWithdrawNotes": true
+		"storesRawFeedback": false
 	},
-	"recruitmentPlan": [
-		{
-			"participantCode": "P01",
-			"track": "new-player-onboarding",
-			"viewport": "phone",
-			"requiredTaskIds": [
-				"start-seeded-run",
-				"complete-summoning-intro",
-				"read-three-hero-dossiers",
-				"converse-and-direct",
-				"understand-autonomy"
-			]
-		},
-		{
-			"participantCode": "P02",
-			"track": "settlement-return",
-			"viewport": "desktop",
-			"requiredTaskIds": [
-				"start-seeded-run",
-				"complete-summoning-intro",
-				"read-three-hero-dossiers",
-				"converse-and-direct",
-				"understand-autonomy",
-				"use-settlement-and-first-ember",
-				"return-and-read-recap"
-			]
-		},
-		{
-			"participantCode": "P03",
-			"track": "iron-moon-autonomy",
-			"viewport": "phone",
-			"requiredTaskIds": [
-				"start-seeded-run",
-				"complete-summoning-intro",
-				"read-three-hero-dossiers",
-				"converse-and-direct",
-				"understand-autonomy",
-				"complete-iron-moon"
-			]
-		},
-		{
-			"participantCode": "P04",
-			"track": "tower-discovery",
-			"viewport": "desktop",
-			"requiredTaskIds": [
-				"start-seeded-run",
-				"complete-summoning-intro",
-				"read-three-hero-dossiers",
-				"converse-and-direct",
-				"understand-autonomy",
-				"complete-tower-band",
-				"recognize-hidden-route"
-			]
-		},
-		{
-			"participantCode": "P05",
-			"track": "consequence-replay",
-			"viewport": "desktop",
-			"requiredTaskIds": [
-				"start-seeded-run",
-				"complete-summoning-intro",
-				"read-three-hero-dossiers",
-				"converse-and-direct",
-				"understand-autonomy",
-				"resolve-permanent-consequence",
-				"inspect-replay-and-causality"
-			]
-		}
-	],
-	"moderationStatus": "ready",
-	"releaseRecommendation": "awaiting-sessions",
+	"playtestPlan": {
+		"sessionCode": "OWNER-01",
+		"track": "owner-vertical-slice",
+		"viewport": "player-choice",
+		"requiredTaskIds": [
+			"start-seeded-run",
+			"complete-summoning-intro",
+			"read-three-hero-dossiers",
+			"converse-and-direct",
+			"understand-autonomy",
+			"arrive-in-hearth",
+			"recover-and-bind-first-ember",
+			"review-objectives-and-settings"
+		]
+	},
+	"playtestStatus": "ready",
+	"releaseRecommendation": "awaiting-owner-playtest",
 	"qualityGate": {
-		"requiredSessionCount": 5,
+		"requiredSessionCount": 1,
 		"conductedSessionCount": 0,
-		"requiredTaskCount": 12,
+		"requiredTaskCount": 8,
 		"coveredTaskCount": 0,
-		"allAssignedTasksObserved": false,
+		"allRequiredTasksObserved": false,
 		"allFrictionTriaged": true,
 		"openReleaseBlockerCount": 0
 	},
-	"deviceMix": { "phone": 0, "desktop": 0 },
+	"statistics": {
+		"collection": "automatic-after-consent",
+		"requiredForRelease": false,
+		"aggregateReportPath": "/playtest-report"
+	},
 	"sessions": [],
 	"taskCoverage": [
-		{
-			"taskId": "start-seeded-run",
-			"assignedSessionCount": 5,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "complete-summoning-intro",
-			"assignedSessionCount": 5,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "read-three-hero-dossiers",
-			"assignedSessionCount": 5,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "converse-and-direct",
-			"assignedSessionCount": 5,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "understand-autonomy",
-			"assignedSessionCount": 5,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "use-settlement-and-first-ember",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "return-and-read-recap",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "complete-iron-moon",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "complete-tower-band",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "recognize-hidden-route",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "resolve-permanent-consequence",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		},
-		{
-			"taskId": "inspect-replay-and-causality",
-			"assignedSessionCount": 1,
-			"attemptedSessionCount": 0,
-			"unassistedCompletionCount": 0,
-			"promptedCompletionCount": 0,
-			"notCompletedCount": 0
-		}
+		{ "taskId": "start-seeded-run", "outcome": null },
+		{ "taskId": "complete-summoning-intro", "outcome": null },
+		{ "taskId": "read-three-hero-dossiers", "outcome": null },
+		{ "taskId": "converse-and-direct", "outcome": null },
+		{ "taskId": "understand-autonomy", "outcome": null },
+		{ "taskId": "arrive-in-hearth", "outcome": null },
+		{ "taskId": "recover-and-bind-first-ember", "outcome": null },
+		{ "taskId": "review-objectives-and-settings", "outcome": null }
 	],
 	"findingCounts": { "P0": 0, "P1": 0, "P2": 0, "P3": 0 },
 	"findings": [],
-	"reportHash": "3d6e5dd36aed5aa07eaff537ddae4960c89883d221f9140b35483531df80b08d"
+	"reportHash": "4c269b810730f9be5e2d0ff59171eced706fd0029484f6a35c677f0c7325996d"
 }

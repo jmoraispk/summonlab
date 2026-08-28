@@ -1172,14 +1172,14 @@ Estimated engineering effort: **2 weeks**.
   types without raw text, seeds, names, IPs, or user agents; bind grants to hashed 30-day device
   capabilities; delete retained sessions/events on withdrawal or expiry; and expose only an
   aggregate development report for moderated-test triage;
-- `FIN-007` **in progress** — use the de-identified `moderated-playtest-v1` protocol, fixed
-  two-phone/three-desktop cohort map, bounded task outcomes, mandatory friction findings, and P0–P3
-  release triage; the checked readiness gate is implemented and honestly remains at 0/5 until actual
-  adult participants complete the sessions;
+- `FIN-007` **in progress** — use the `owner-playtest-v1` conversational loop: one real owner
+  playthrough on phone or desktop, eight natural journey checkpoints, automatic consented background
+  statistics, Codex-maintained evidence, mandatory friction findings, and P0–P3 release triage; the
+  checked readiness gate honestly remains at 0/1 until the owner plays and sends feedback;
 - `FIN-008` **in progress** — a hash-bound, fail-closed release report and acknowledged packaging
-  command now refuse the current 0/5 cohort; a non-promotable rehearsal proves deterministic
+  command now refuse the current 0/1 owner gate; a non-promotable rehearsal proves deterministic
   assembly, frozen production install, clean migration, and web/worker health from an extracted
-  archive; after five real sessions, fix and verify every P0/P1, assemble the commit-bound private
+  archive; after the owner playthrough, fix and verify every P0/P1, assemble the commit-bound private
   archive and SHA-256 receipt, then perform the final private-operator smoke test;
 - `FIN-009` **complete** — add a development-time story workshop with an exact versioned brief,
   optional structured model generation, independently validated five-floor proposals, explicit
@@ -1285,7 +1285,7 @@ build artifacts are exact, while a fresh throttled Chromium campaign enforces th
 reconnect, interface, frame, and working-set targets. `FIN-006` adds the revocable, data-minimized observation boundary in
 ADR 0050: decline is a verified zero-request path; a 30-day capability gates seven strict event
 types; withdrawal/expiry deletes the retained journey; and the development report exposes aggregate
-signal only. The next execution slice is `FIN-007`: run five moderated tests and triage findings.
+signal only. The next execution slice is `FIN-007`: run the owner playthrough and triage feedback.
 
 ## Accepted product decisions — 2026-08-23
 

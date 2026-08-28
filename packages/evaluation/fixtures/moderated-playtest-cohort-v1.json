@@ -1,8 +1,8 @@
 {
-	"schemaVersion": "moderated-playtest-source-v1",
-	"protocolVersion": "moderated-playtest-v1",
-	"cohortId": "fin007-local-private-v1",
-	"updatedAt": "2026-08-25T00:00:00.000Z",
+	"schemaVersion": "owner-playtest-source-v1",
+	"protocolVersion": "owner-playtest-v1",
+	"playtestId": "fin007-owner-local-v1",
+	"updatedAt": "2026-08-27T00:00:00.000Z",
 	"sessions": [],
 	"findings": []
 }

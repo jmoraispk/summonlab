@@ -46,7 +46,7 @@ export interface PlaytestPackageMetadata {
 	commit: string;
 	sourceTreeStatus: 'clean' | 'dirty';
 	releaseReportHash: string;
-	moderatedPlaytestReportHash: string;
+	ownerPlaytestReportHash: string;
 }
 
 export interface CreatePlaytestPackageOptions {

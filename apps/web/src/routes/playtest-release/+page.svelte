@@ -5,8 +5,8 @@
 
 	const labels: Record<string, string> = {
 		'evidence-integrity': 'Evidence integrity',
-		'human-sessions': 'Human sessions',
-		'assigned-task-coverage': 'Assigned task coverage',
+		'owner-playtest': 'Owner playtest',
+		'required-journey-coverage': 'Required journey coverage',
 		'release-findings': 'Release findings'
 	};
 </script>
@@ -23,7 +23,7 @@
 	<nav>
 		<a class="wordmark" href={resolve('/')}>SUMMON<span>LAB</span></a>
 		<div>
-			<a href={resolve('/playtest-moderation')}>Moderation desk</a>
+			<a href={resolve('/playtest-moderation')}>Owner review</a>
 			<a href={resolve('/')}>Player title</a>
 		</div>
 	</nav>
@@ -33,8 +33,8 @@
 			<p>FIN-008 · private release boundary</p>
 			<h1>The archive waits<br /><em>for evidence.</em></h1>
 			<p class="lede">
-				Production assembly cannot outrun the human cohort. Every prerequisite below is derived from
-				the hash-bound FIN-007 report; held means no archive is permitted.
+				Production assembly cannot outrun the owner playtest. Every prerequisite below is derived
+				from the hash-bound FIN-007 report; held means no archive is permitted.
 			</p>
 		</div>
 		<section class:ready={data.report.status === 'ready-to-package'} class="status-card">
@@ -50,7 +50,7 @@
 				<span>01 / Gate ledger</span>
 				<h2 id="checks-title">Four claims. No shortcuts.</h2>
 			</div>
-			<code>{data.report.generatedFrom.moderatedPlaytestReportHash.slice(0, 16)}</code>
+			<code>{data.report.generatedFrom.ownerPlaytestReportHash.slice(0, 16)}</code>
 		</header>
 		<div class="check-grid">
 			{#each data.report.checks as check, index (check.checkId)}

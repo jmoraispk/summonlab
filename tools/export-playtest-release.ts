@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
-	ModeratedPlaytestReportSchema,
+	OwnerPlaytestReportSchema,
 	createPlaytestReleaseReport
 } from '../packages/evaluation/src/index.js';
 import { format } from 'prettier';
@@ -10,7 +10,7 @@ import { format } from 'prettier';
 const root = process.cwd();
 const sourcePath = path.join(root, 'docs/evidence/phase-7-fin007-moderated-playtest.json');
 const outputPath = path.join(root, 'docs/evidence/phase-7-fin008-playtest-release.json');
-const source = ModeratedPlaytestReportSchema.parse(JSON.parse(await readFile(sourcePath, 'utf8')));
+const source = OwnerPlaytestReportSchema.parse(JSON.parse(await readFile(sourcePath, 'utf8')));
 const report = createPlaytestReleaseReport(source);
 const expected = await format(JSON.stringify(report), {
 	filepath: outputPath,

@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 
 	let { data } = $props();
+	const recorded = $derived(data.report.sessions[0]);
 
 	const taskLabels: Record<string, string> = {
 		'start-seeded-run': 'Start a seeded run',
@@ -9,13 +10,9 @@
 		'read-three-hero-dossiers': 'Read three hero dossiers',
 		'converse-and-direct': 'Converse and give a direction',
 		'understand-autonomy': 'Explain what heroes choose themselves',
-		'use-settlement-and-first-ember': 'Use the settlement and First Ember',
-		'return-and-read-recap': 'Return and read the causal recap',
-		'complete-iron-moon': 'Complete Iron Moon',
-		'complete-tower-band': 'Complete tower floors 1–5',
-		'recognize-hidden-route': 'Discover or miss the hidden route',
-		'resolve-permanent-consequence': 'Resolve a permanent consequence',
-		'inspect-replay-and-causality': 'Inspect replay and explain causality'
+		'arrive-in-hearth': 'Arrive in Hearth 01',
+		'recover-and-bind-first-ember': 'Recover and bind the First Ember',
+		'review-objectives-and-settings': 'Review objectives and settings'
 	};
 
 	function readable(value: string) {
@@ -24,10 +21,10 @@
 </script>
 
 <svelte:head>
-	<title>Moderated playtest · Summonlab</title>
+	<title>Owner playtest · Summonlab</title>
 	<meta
 		name="description"
-		content="A de-identified five-session protocol and release-severity gate for Summonlab's private moderated playtest."
+		content="One owner playthrough, automatic consented statistics, and conversational feedback for Summonlab."
 	/>
 </svelte:head>
 
@@ -42,80 +39,75 @@
 
 	<header class="hero">
 		<div>
-			<p>FIN-007 · private local cohort</p>
-			<h1>Observe the player.<br /><em>Do not invent them.</em></h1>
+			<p>FIN-007 · owner playtest</p>
+			<h1>Play the game.<br /><em>Tell us what felt wrong.</em></h1>
 			<p class="lede">
-				Five adult participants, five bounded tracks, and one explicit rule: automated journeys are
-				preflight evidence, never substitutes for moderated human play.
+				One normal owner playthrough is the human gate for this private build. Friends can join a
+				later round, but they are not required now.
 			</p>
 		</div>
-		<section class="gate" class:complete={data.report.moderationStatus === 'complete'}>
-			<span>Moderation gate</span>
+		<section class="gate" class:complete={data.report.playtestStatus === 'complete'}>
+			<span>Owner gate</span>
 			<strong data-testid="moderated-session-count"
 				>{data.report.qualityGate.conductedSessionCount} / {data.report.qualityGate
 					.requiredSessionCount}</strong
 			>
-			<p>{readable(data.report.moderationStatus)}</p>
+			<p>{readable(data.report.playtestStatus)}</p>
 			<small>Release: {readable(data.report.releaseRecommendation)}</small>
 		</section>
 	</header>
 
 	<section class="boundary" aria-labelledby="boundary-title">
 		<div>
-			<span>Before each session</span>
-			<h2 id="boundary-title">Consent remains participant-owned.</h2>
+			<span>Your whole protocol</span>
+			<h2 id="boundary-title">Nothing to copy or maintain.</h2>
 		</div>
 		<ul>
-			<li>Confirm adult participation and separate consent for paraphrased moderator notes.</li>
-			<li>Do not record audio, video, identity, contact details, or direct quotations.</li>
-			<li>Analytics sharing remains optional and independent from qualitative notes.</li>
-			<li>Delete the participant’s retained note if they withdraw qualitative consent.</li>
+			<li>Open the player title and play the owner journey on whichever device you prefer.</li>
+			<li>If you opt in once, allowlisted journey statistics collect quietly in the background.</li>
+			<li>Stop whenever something blocks you or after reviewing objectives and settings.</li>
+			<li>Send Codex ordinary comments afterward; Codex handles evidence and triage.</li>
 		</ul>
 	</section>
 
 	<section class="cohort" aria-labelledby="cohort-title">
 		<header>
 			<div>
-				<span>01 / Cohort map</span>
-				<h2 id="cohort-title">Five anonymous sessions.</h2>
+				<span>01 / Owner journey</span>
+				<h2 id="cohort-title">One playthrough.</h2>
 			</div>
-			<p>
-				Two phone sessions, three desktop sessions, and every definition-of-done behavior covered.
-			</p>
+			<p>No facilitator script, assigned cohort, or manual JSON work.</p>
 		</header>
 		<div class="slots">
-			{#each data.report.recruitmentPlan as slot (slot.participantCode)}
-				{@const recorded = data.report.sessions.find(
-					(session) => session.participantCode === slot.participantCode
-				)}
-				<article data-testid="moderated-slot">
-					<div class="slot-top">
-						<strong>{slot.participantCode}</strong>
-						<span class:recorded>{recorded ? 'recorded' : 'open slot'}</span>
-					</div>
-					<h3>{readable(slot.track)}</h3>
-					<p>{slot.viewport} · {slot.requiredTaskIds.length} observed tasks</p>
-					<ul>
-						{#each slot.requiredTaskIds as taskId (taskId)}
-							<li>{taskLabels[taskId]}</li>
-						{/each}
-					</ul>
-					{#if recorded}
-						<footer>
-							<span>{recorded.attemptedTaskCount} attempted</span>
-							<span>{recorded.moderatorPromptCount} prompts</span>
-						</footer>
-					{/if}
-				</article>
-			{/each}
+			<article data-testid="moderated-slot">
+				<div class="slot-top">
+					<strong>{data.report.playtestPlan.sessionCode}</strong>
+					<span class:recorded>{recorded ? 'reviewed' : 'ready to play'}</span>
+				</div>
+				<h3>{readable(data.report.playtestPlan.track)}</h3>
+				<p>
+					phone or desktop · {data.report.playtestPlan.requiredTaskIds.length} journey checkpoints
+				</p>
+				<ul>
+					{#each data.report.playtestPlan.requiredTaskIds as taskId (taskId)}
+						<li>{taskLabels[taskId]}</li>
+					{/each}
+				</ul>
+				{#if recorded}
+					<footer>
+						<span>{recorded.completedTaskCount} clean</span>
+						<span>{recorded.frictionTaskCount + recorded.blockedTaskCount} with feedback</span>
+					</footer>
+				{/if}
+			</article>
 		</div>
 	</section>
 
 	<section class="coverage" aria-labelledby="coverage-title">
 		<header>
 			<div>
-				<span>02 / Observed coverage</span>
-				<h2 id="coverage-title">The gate measures attempts, not optimism.</h2>
+				<span>02 / Journey checkpoints</span>
+				<h2 id="coverage-title">One path from summoning to settlement.</h2>
 			</div>
 			<strong
 				>{data.report.qualityGate.coveredTaskCount} / {data.report.qualityGate
@@ -124,13 +116,10 @@
 		</header>
 		<div class="task-grid">
 			{#each data.report.taskCoverage as task (task.taskId)}
-				<article class:covered={task.attemptedSessionCount > 0}>
-					<span>{task.attemptedSessionCount} observed</span>
+				<article class:covered={task.outcome !== null && task.outcome !== 'not-reached'}>
+					<span>{task.outcome ? readable(task.outcome) : 'not played yet'}</span>
 					<h3>{taskLabels[task.taskId]}</h3>
-					<p>
-						{task.unassistedCompletionCount} unassisted · {task.promptedCompletionCount} prompted ·
-						{task.notCompletedCount} incomplete
-					</p>
+					<p>Comments are summarized after you send them to Codex.</p>
 				</article>
 			{/each}
 		</div>
@@ -153,12 +142,12 @@
 			<article>
 				<b>P1</b>
 				<h3>Hold release</h3>
-				<p>A core journey cannot be completed or understood without moderator rescue.</p>
+				<p>A core journey cannot be completed or understood without outside explanation.</p>
 			</article>
 			<article>
 				<b>P2</b>
 				<h3>Schedule correction</h3>
-				<p>Material friction with a discoverable workaround; does not block the cohort.</p>
+				<p>Material friction with a discoverable workaround; does not block the owner loop.</p>
 			</article>
 			<article>
 				<b>P3</b>
@@ -182,8 +171,8 @@
 			</div>
 		{:else}
 			<p class="empty">
-				No human findings are recorded yet. The release recommendation must remain awaiting
-				sessions.
+				No owner feedback is recorded yet. The release recommendation remains awaiting owner
+				playtest.
 			</p>
 		{/if}
 	</section>
@@ -191,9 +180,7 @@
 	<footer class="page-footer">
 		<div><span>Protocol</span><code>{data.report.protocolVersion}</code></div>
 		<div><span>Evidence hash</span><code>{data.report.reportHash.slice(0, 16)}</code></div>
-		<p>
-			Sanitized summaries belong in the checked report. Raw moderator notes do not belong in Git.
-		</p>
+		<p>Your job is to play and comment. Codex maintains the checked evidence and release triage.</p>
 	</footer>
 </main>
 
@@ -348,7 +335,7 @@
 	}
 	.slots {
 		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
+		grid-template-columns: minmax(0, 42rem);
 		gap: 0.8rem;
 	}
 	.slots article,
@@ -488,7 +475,7 @@
 	}
 	@media (max-width: 980px) {
 		.slots {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-template-columns: minmax(0, 42rem);
 		}
 		.task-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
