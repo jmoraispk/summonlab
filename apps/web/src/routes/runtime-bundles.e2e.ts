@@ -8,9 +8,9 @@ test('loads only approved content-addressed textures through the PixiJS bundle',
 	await page.goto('/visual-lab/runtime-bundles');
 
 	await expect(page.getByRole('heading', { name: /Ship the person/ })).toBeVisible();
-	await expect(page.getByText('47.8 KB')).toBeVisible();
-	await expect(page.getByText('0.60% phone budget')).toBeVisible();
-	await expect(page.getByText('97.3%')).toBeVisible();
+	await expect(page.getByText('195.1 KB')).toBeVisible();
+	await expect(page.getByText('2.44% phone budget')).toBeVisible();
+	await expect(page.getByText('97.4%')).toBeVisible();
 	await expect(
 		page.getByText(
 			`${(buildBudget.measurements.runtimeInspectorLoadedJavaScriptGzipBytes / 1_000).toFixed(1)} KB`
@@ -20,9 +20,10 @@ test('loads only approved content-addressed textures through the PixiJS bundle',
 		timeout: 15_000
 	});
 	await expect(page.locator('.canvas-frame canvas')).toBeVisible();
-	await expect(page.getByAltText('Mara Vey summon runtime texture')).toBeVisible();
-	await expect(page.getByAltText('Mara Vey dialogue runtime texture')).toBeVisible();
-	await expect(page.getByAltText('Mara Vey roster runtime texture')).toBeVisible();
+	await expect(page.getByAltText(/ summon runtime texture$/u)).toHaveCount(4);
+	await expect(page.getByAltText('ember-01-anchor-v1 dialogue runtime texture')).toBeVisible();
+	await expect(page.getByAltText('ember-01-anchor-v1 roster runtime texture')).toBeVisible();
+	await expect(page.getByAltText('jori-daro-anchor-v1 summon runtime texture')).toBeVisible();
 	await expect(page.getByTestId('deferred-runtime-assets')).toContainText('hearth-02-anchor-v1');
 	await expect(page.getByTestId('deferred-runtime-assets')).toContainText(
 		'awaiting-human-approval'

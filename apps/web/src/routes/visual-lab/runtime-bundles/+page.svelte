@@ -150,7 +150,7 @@
 						<figure>
 							<img
 								src={asset.publicPath}
-								alt={`Mara Vey ${asset.usage} runtime texture`}
+								alt={`${asset.sourceAssetKey} ${asset.usage} runtime texture`}
 								width={asset.width}
 								height={asset.height}
 							/>
