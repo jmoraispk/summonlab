@@ -40,6 +40,7 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>Forge component</span><strong>Enemy & progression lab</strong></div>
 		<nav>
+			<a href={resolve('/forge/enemies/all')}>All enemies</a>
 			<a href={resolve('/forge/enemies/pack-2')}>Pack 2 monsters</a>
 			<a href={resolve('/forge')}>Hero summons</a><a href={resolve('/forge/contact-sheet')}
 				>Seed audit</a

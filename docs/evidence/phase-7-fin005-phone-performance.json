@@ -1,7 +1,7 @@
 {
   "schemaVersion": "phone-performance-report-v1",
-  "recordedAt": "2026-08-29T14:00:18.866Z",
-  "sourceRevision": "working-tree:pack-two-revision-proof-review",
+  "recordedAt": "2026-08-29T14:35:31.671Z",
+  "sourceRevision": "working-tree:complete-enemy-gallery",
   "profile": {
     "name": "mid-range-phone-390x844-2x",
     "viewportWidth": 390,
@@ -23,16 +23,16 @@
     "rendererWorkingSetReferenceBytes": 300000000
   },
   "measurements": {
-    "interactiveShellMs": 809,
-    "initialJavaScriptGzipBytes": 48191,
+    "interactiveShellMs": 803.3,
+    "initialJavaScriptGzipBytes": 48260,
     "playerTitleVisualBytes": 47288,
     "firstSettlementVisualBytes": 296168,
     "activeSceneFramesPerSecond": 60,
-    "interfaceResponseP95Ms": 29.2,
-    "reconnectMs": 2521.1,
-    "javascriptHeapBytes": 4798536,
+    "interfaceResponseP95Ms": 30.1,
+    "reconnectMs": 2595.1,
+    "javascriptHeapBytes": 4798804,
     "decodedImageBytes": 6291456,
-    "rendererWorkingSetReferenceBytes": 11089992
+    "rendererWorkingSetReferenceBytes": 11090260
   },
   "status": {
     "interactiveShell": "within-budget",

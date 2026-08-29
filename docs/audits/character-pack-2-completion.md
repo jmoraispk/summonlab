@@ -17,6 +17,8 @@ Release status: **held for human visual approval**
   escalation, with an exact-prompt catalog and dedicated hash-bound review surface.
 - Twenty-four monster archetypes across six families, each with distinct duty, telegraph, and
   counterplay.
+- A consolidated `/forge/enemies/all` archive covering all 40 Pack 1 and Pack 2 enemy archetypes,
+  all ten generated family plates, and both focused enemy proof images.
 - A measured generation benchmark, approval-gated runtime proof, and complete Pack 2 Forge.
 
 ## Completion-criteria map
@@ -35,7 +37,7 @@ Release status: **held for human visual approval**
 | random manifest and procedural representation are interactive | `/forge/pack-2/runtime`; deterministic draw, local rig controls, and sub-100 ms browser gate | Pass |
 | premium first reveal is cached; new generation is asynchronous | approved content-addressed runtime-pool proof makes zero generation calls; candidates are rejected | Pass |
 | provenance, hashes, recognition checks, and approval state | catalogs, exact prompt records, attempt timings, SHA-256 validators, continuity inspections, Forge provenance panels, and exact-asset review controls for all 36 retained candidates | Pass; final human state pending |
-| Forge, tests, asset validation, and performance budgets | full repository check, 47 Playwright tests, Pack 2 validators, 1440px visual inspections, and refreshed web budget | Pass |
+| Forge, tests, asset validation, and performance budgets | full repository check, 48 Playwright tests, Pack 2 validators, 1440px visual inspections, and refreshed web budget | Pass |
 
 ## Measured production evidence
 
@@ -47,8 +49,8 @@ Release status: **held for human visual approval**
 - Correction-aware human candidate latency: 38.2 s median, 67.6 s p90, and 80.6 s p95.
 - Browser interaction gate: approved cached draw through DOM flush and next frame must remain below
   100 ms.
-- Existing phone interface response p95: 29.2 ms, within budget.
-- Web build: 48,191 initial gzip bytes and 195,104 runtime visual bytes, both within budget.
+- Existing phone interface response p95: 30.1 ms, within budget.
+- Web build: 48,260 initial gzip bytes and 195,104 runtime visual bytes, both within budget.
 
 ## Validation record
 
@@ -68,13 +70,14 @@ The full repository check initially identified the expected stale web-budget rep
 routes were added. `pnpm measure:web-build-budget` refreshed the measured report; the budget gate
 then passed. The integration-test command was also run, but its database suites were skipped by
 their environment guard; equivalent database-backed paths, including Pack 2 review persistence,
-passed in the 47-test Playwright stack.
+passed in the 48-test Playwright stack.
 
 ## Required human gate
 
-Review `/forge/pack-2`, `/forge/pack-2/revision`, `/forge/enemies/pack-2`, and
-`/forge/pack-2/runtime`. For each exact human anchor, continuity sheet, Remy progression state, and
-supplemental revision proof, record accept or revise notes against its hash. Review each monster
-plate and the individual Stone Breaker anchor for duty readability and art quality. All 36 retained
-candidates are selectable in the Forge controls. Only accepted assets should be promoted into the
-runtime catalog; review submission itself does not mutate manifests or summon eligibility.
+Start with `/forge/enemies/all` for the complete cross-pack enemy archive. Review `/forge/pack-2`,
+`/forge/pack-2/revision`, `/forge/enemies/pack-2`, and `/forge/pack-2/runtime` for the specialized
+gates. For each exact human anchor, continuity sheet, Remy progression state, and supplemental
+revision proof, record accept or revise notes against its hash. Review each monster plate and the
+individual Stone Breaker anchor for duty readability and art quality. All 36 retained candidates
+are selectable in the Forge controls. Only accepted assets should be promoted into the runtime
+catalog; review submission itself does not mutate manifests or summon eligibility.

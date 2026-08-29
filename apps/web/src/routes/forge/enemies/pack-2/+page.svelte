@@ -100,6 +100,7 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>Creature Forge</span><strong>Pack 2 threat language</strong></div>
 		<nav>
+			<a href={resolve('/forge/enemies/all')}>All enemies</a>
 			<a href={resolve('/forge/enemies')}>Pack 1 monsters</a>
 			<a href={resolve('/forge/pack-2')}>Pack 2 humans</a>
 			<a href={resolve('/forge/pack-2/revision')}>Revision proofs</a>
