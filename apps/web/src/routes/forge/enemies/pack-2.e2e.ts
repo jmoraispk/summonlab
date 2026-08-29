@@ -10,6 +10,9 @@ test('reviews all Pack 2 monster families and battlefield duties', async ({ page
 	await expect(page.getByRole('heading', { name: 'Giant Tower Dragon' })).toBeVisible();
 	await expect(page.getByText('Arena-scale apex boss')).toBeVisible();
 	await expect(page.getByText('Candidate · human review required')).toHaveCount(6);
+	await expect(page.locator('#monster-anchor-title')).toHaveText('Stone Breaker');
 	await expect(page.getByRole('heading', { name: 'Hash-bound monster review' })).toBeVisible();
-	await expect(page.getByLabel('Exact plate').locator('option')).toHaveCount(6);
+	await expect(page.getByLabel('Exact monster asset').locator('option')).toHaveCount(7);
+	await page.getByRole('button', { name: 'Review exact anchor' }).click();
+	await expect(page.getByLabel('Exact monster asset')).toHaveValue('stone-breaker-anchor-v1');
 });

@@ -12,6 +12,7 @@
 	import draconic from '../../../../../../../assets/enemies/review/pack-2/draconic-v1.png';
 	import dungeonPredators from '../../../../../../../assets/enemies/review/pack-2/dungeon-predators-v1.png';
 	import elementals from '../../../../../../../assets/enemies/review/pack-2/elementals-v1.png';
+	import stoneBreakerAnchor from '../../../../../../../assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png';
 	import undead from '../../../../../../../assets/enemies/review/pack-2/undead-v1.png';
 
 	let { data } = $props();
@@ -35,11 +36,11 @@
 	};
 	const monsterById = new Map(PACK_TWO_MONSTER_ARCHETYPES.map((monster) => [monster.id, monster]));
 	const monster = (id: PackTwoMonsterId) => monsterById.get(id)!;
-	const selectedPlate = $derived(
-		data.catalog.plates.find((plate) => plate.assetKey === selectedPlateKey) ??
-			data.catalog.plates[0]!
+	const reviewableAssets = $derived([...data.catalog.plates, ...data.benchmarkAssets]);
+	const selectedAsset = $derived(
+		reviewableAssets.find((asset) => asset.assetKey === selectedPlateKey) ?? reviewableAssets[0]!
 	);
-	const currentReview = $derived(reviewHistory.latestByAsset[selectedPlate.assetKey] ?? null);
+	const currentReview = $derived(reviewHistory.latestByAsset[selectedAsset.assetKey] ?? null);
 
 	async function submitReview() {
 		if (!reviewNote.trim() || !reviewer.trim() || reviewBusy) return;
@@ -52,9 +53,9 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
 					reviewId: crypto.randomUUID(),
-					assetKey: selectedPlate.assetKey,
+					assetKey: selectedAsset.assetKey,
 					catalogVersion: data.catalog.catalogVersion,
-					assetContentHash: selectedPlate.contentHash,
+					assetContentHash: selectedAsset.contentHash,
 					verdict: reviewVerdict,
 					note: reviewNote.trim(),
 					reviewer: reviewer.trim()
@@ -160,6 +161,22 @@
 		{/each}
 	</section>
 
+	<section class="benchmark-anchor" aria-labelledby="monster-anchor-title">
+		<div>
+			<p class="eyebrow">Individual-anchor benchmark</p>
+			<h2 id="monster-anchor-title">Stone Breaker</h2>
+			<p>
+				The family plate establishes taxonomy. This retained single-creature candidate tests the
+				next production step: full-body identity, ground contact, siege silhouette, and exposed
+				impact seams.
+			</p>
+			<button onclick={() => (selectedPlateKey = data.benchmarkAssets[0]!.assetKey)}
+				>Review exact anchor</button
+			>
+		</div>
+		<img src={stoneBreakerAnchor} alt="Individual Stone Breaker production-anchor candidate" />
+	</section>
+
 	<section class="review" aria-labelledby="monster-review-title">
 		<header class="section-heading">
 			<div>
@@ -180,14 +197,14 @@
 				}}
 			>
 				<label>
-					<span>Exact plate</span>
+					<span>Exact monster asset</span>
 					<select bind:value={selectedPlateKey}>
-						{#each data.catalog.plates as plate (plate.assetKey)}
-							<option value={plate.assetKey}>{plate.assetKey}</option>
+						{#each reviewableAssets as asset (asset.assetKey)}
+							<option value={asset.assetKey}>{asset.assetKey}</option>
 						{/each}
 					</select>
 				</label>
-				<code>{selectedPlate.contentHash}</code>
+				<code>{selectedAsset.contentHash}</code>
 				<div class="verdict" role="radiogroup" aria-label="Monster plate verdict">
 					<button
 						type="button"
@@ -225,7 +242,7 @@
 			</form>
 			<article class="decision">
 				<p class="eyebrow">Current decision</p>
-				<h3>{selectedPlate.assetKey}</h3>
+				<h3>{selectedAsset.assetKey}</h3>
 				{#if currentReview}
 					<strong class:revise={currentReview.verdict === 'revise'}>{currentReview.verdict}</strong>
 					<blockquote>{currentReview.note}</blockquote>
@@ -298,10 +315,44 @@
 	}
 	.intro,
 	.families,
+	.benchmark-anchor,
 	.review {
 		max-width: 96rem;
 		margin: 0 auto;
 		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
+	}
+	.benchmark-anchor {
+		display: grid;
+		grid-template-columns: minmax(0, 0.75fr) minmax(18rem, 1.25fr);
+		gap: clamp(1rem, 4vw, 4rem);
+		align-items: center;
+		border-top: 1px solid #ffffff14;
+	}
+	.benchmark-anchor h2 {
+		margin: 0.35rem 0 1rem;
+		font:
+			400 clamp(2rem, 5vw, 4.5rem) Georgia,
+			serif;
+	}
+	.benchmark-anchor p {
+		color: #f4efe56b;
+		line-height: 1.7;
+	}
+	.benchmark-anchor button {
+		margin-top: 1rem;
+		border: 1px solid #d7a85f;
+		padding: 0.75rem 1rem;
+		color: #fff;
+		background: #d7a85f18;
+		cursor: pointer;
+		text-transform: uppercase;
+	}
+	.benchmark-anchor img {
+		display: block;
+		width: 100%;
+		max-height: 52rem;
+		object-fit: contain;
+		background: #090c12;
 	}
 	.intro {
 		display: grid;
@@ -564,6 +615,7 @@
 	}
 	@media (max-width: 850px) {
 		.intro,
+		.benchmark-anchor,
 		.review-grid {
 			grid-template-columns: 1fr;
 		}

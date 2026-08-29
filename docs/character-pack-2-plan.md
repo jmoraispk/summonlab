@@ -502,6 +502,7 @@ Pack 2 is complete when:
 All safe executable work in this plan was completed between 2026-08-28 and 2026-08-29. The final
 evidence map is in `docs/audits/character-pack-2-completion.md`.
 
-Pack 2 is intentionally not marked release-ready. All 18 human anchors, six continuity sheets, and
-six monster-family plates remain approval candidates until a human records accept or revise
-decisions in the Forge. Candidate identities are excluded from the player-facing summon pool.
+Pack 2 is intentionally not marked release-ready. All 18 human anchors, six continuity sheets, two
+human progression states, six monster-family plates, and the individual Stone Breaker benchmark
+anchor remain approval candidates until a human records accept or revise decisions in the Forge.
+Candidate identities are excluded from the player-facing summon pool.

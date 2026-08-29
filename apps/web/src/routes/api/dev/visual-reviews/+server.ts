@@ -11,12 +11,19 @@ import {
 } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 import visualCatalogSource from '../../../../../../../assets/heroes/visuals/catalog.json';
+import packTwoBenchmarkSource from '../../../../../../../assets/benchmarks/pack-two/samples.json';
 import packTwoCatalogSource from '../../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
 import packTwoMonsterCatalogSource from '../../../../../../../assets/enemies/review/pack-2/catalog.json';
 
 import type { RequestHandler } from './$types';
 
 const catalog = CharacterVisualCatalogSchema.parse(visualCatalogSource);
+const humanBenchmarkAssets = packTwoBenchmarkSource.samples.filter(
+	(sample) => sample.assetType !== 'individual-monster-anchor'
+);
+const monsterBenchmarkAssets = packTwoBenchmarkSource.samples.filter(
+	(sample) => sample.assetType === 'individual-monster-anchor'
+);
 const supportedCatalogs = new Map([
 	[
 		catalog.catalogVersion,
@@ -24,14 +31,14 @@ const supportedCatalogs = new Map([
 	],
 	[
 		packTwoCatalogSource.catalogVersion,
-		packTwoCatalogSource.assets.map((asset) => ({
+		[...packTwoCatalogSource.assets, ...humanBenchmarkAssets].map((asset) => ({
 			assetKey: asset.assetKey,
 			contentHash: asset.contentHash
 		}))
 	],
 	[
 		packTwoMonsterCatalogSource.catalogVersion,
-		packTwoMonsterCatalogSource.plates.map((plate) => ({
+		[...packTwoMonsterCatalogSource.plates, ...monsterBenchmarkAssets].map((plate) => ({
 			assetKey: plate.assetKey,
 			contentHash: plate.contentHash
 		}))

@@ -12,6 +12,7 @@
   "samples": [
     {
       "assetType": "individual-monster-anchor",
+      "assetKey": "stone-breaker-anchor-v1",
       "name": "Stone Breaker",
       "requestStartedAt": "2026-08-29T04:32:55.003Z",
       "responseCompletedAt": "2026-08-29T04:33:13.070Z",
@@ -28,6 +29,7 @@
     },
     {
       "assetType": "identity-preserving-state-edit",
+      "assetKey": "remy-esen-equipped-v1",
       "name": "Remy Esen equipment state",
       "requestStartedAt": "2026-08-29T04:33:47.015Z",
       "responseCompletedAt": "2026-08-29T04:34:25.283Z",
@@ -54,6 +56,7 @@
     },
     {
       "assetType": "evolution-variant",
+      "assetKey": "remy-esen-evolution-3star-v1",
       "name": "Remy Esen 3-star evolution",
       "requestStartedAt": "2026-08-29T04:35:00.698Z",
       "responseCompletedAt": "2026-08-29T04:35:36.261Z",

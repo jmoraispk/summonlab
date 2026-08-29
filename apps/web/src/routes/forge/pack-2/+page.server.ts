@@ -5,6 +5,7 @@ import { listVisualAssetReviews } from '@summonlab/database';
 
 import catalog from '../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
 import benchmark from '../../../../../../assets/benchmarks/pack-two/report.json';
+import benchmarkSamples from '../../../../../../assets/benchmarks/pack-two/samples.json';
 
 import type { PageServerLoad } from './$types';
 
@@ -19,6 +20,24 @@ export const load = (async () => {
 	}
 	return {
 		benchmark,
+		benchmarkAssets: benchmarkSamples.samples.flatMap((sample) => {
+			if (
+				sample.assetType === 'individual-monster-anchor' ||
+				!('stateProfile' in sample) ||
+				!sample.stateProfile
+			)
+				return [];
+			const { stateProfile } = sample;
+			return [
+				{
+					assetKey: sample.assetKey,
+					role: sample.assetType,
+					contentHash: sample.contentHash,
+					characterId: stateProfile.characterId,
+					humanStatus: sample.humanStatus
+				}
+			];
+		}),
 		reviewHistory,
 		reviewPersistenceAvailable,
 		catalog: {

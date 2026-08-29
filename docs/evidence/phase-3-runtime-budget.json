@@ -10,12 +10,12 @@
 		"runtimeVisualPayloadBytes": 8000000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 48132,
-		"runtimeInspectorLoadedJavaScriptGzipBytes": 302638,
-		"recognitionAuditLoadedJavaScriptGzipBytes": 51046,
-		"settlementRouteLabLoadedJavaScriptGzipBytes": 48149,
-		"missionPackageLabLoadedJavaScriptGzipBytes": 47746,
-		"missionLifecycleLoadedJavaScriptGzipBytes": 59834,
+		"initialJavaScriptGzipBytes": 48130,
+		"runtimeInspectorLoadedJavaScriptGzipBytes": 302637,
+		"recognitionAuditLoadedJavaScriptGzipBytes": 51045,
+		"settlementRouteLabLoadedJavaScriptGzipBytes": 48147,
+		"missionPackageLabLoadedJavaScriptGzipBytes": 47744,
+		"missionLifecycleLoadedJavaScriptGzipBytes": 59830,
 		"largestRuntimeLazyChunkGzipBytes": 174949,
 		"runtimeVisualPayloadBytes": 195104
 	},

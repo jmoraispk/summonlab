@@ -3,6 +3,7 @@ import { VisualReviewListSchema } from '@summonlab/contracts';
 import { listVisualAssetReviews } from '@summonlab/database';
 
 import catalog from '../../../../../../../assets/enemies/review/pack-2/catalog.json';
+import benchmarkSamples from '../../../../../../../assets/benchmarks/pack-two/samples.json';
 
 import type { PageServerLoad } from './$types';
 
@@ -14,5 +15,17 @@ export const load = (async () => {
 	} catch {
 		reviewPersistenceAvailable = false;
 	}
-	return { catalog, reviewHistory, reviewPersistenceAvailable };
+	return {
+		catalog,
+		benchmarkAssets: benchmarkSamples.samples
+			.filter((sample) => sample.assetType === 'individual-monster-anchor')
+			.map((sample) => ({
+				assetKey: sample.assetKey,
+				name: sample.name,
+				contentHash: sample.contentHash,
+				humanStatus: sample.humanStatus
+			})),
+		reviewHistory,
+		reviewPersistenceAvailable
+	};
 }) satisfies PageServerLoad;

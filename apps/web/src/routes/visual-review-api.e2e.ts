@@ -75,6 +75,28 @@ test('records an idempotent review only against the current asset hash', async (
 	);
 	expect(packTwoListed.status()).toBe(200);
 	expect((await packTwoListed.json()).latestByAsset[packTwoAsset.assetKey]).toBeDefined();
+	const benchmarkSamples = JSON.parse(
+		await readFile(
+			new URL('../../../../assets/benchmarks/pack-two/samples.json', import.meta.url),
+			'utf8'
+		)
+	) as {
+		samples: Array<{ assetType: string; assetKey: string; contentHash: string }>;
+	};
+	const progressionAsset = benchmarkSamples.samples.find(
+		(sample) => sample.assetType === 'evolution-variant'
+	)!;
+	const progressionReview = await request.post('/api/dev/visual-reviews', {
+		data: {
+			...payload,
+			reviewId: randomUUID(),
+			assetKey: progressionAsset.assetKey,
+			catalogVersion: packTwoCatalog.catalogVersion,
+			assetContentHash: progressionAsset.contentHash,
+			note: 'Pack 2 progression-asset routing proof.'
+		}
+	});
+	expect(progressionReview.status()).toBe(201);
 
 	const monsterCatalog = JSON.parse(
 		await readFile(
@@ -102,4 +124,18 @@ test('records an idempotent review only against the current asset hash', async (
 	);
 	expect(monsterListed.status()).toBe(200);
 	expect((await monsterListed.json()).latestByAsset[monsterPlate.assetKey]).toBeDefined();
+	const monsterAnchor = benchmarkSamples.samples.find(
+		(sample) => sample.assetType === 'individual-monster-anchor'
+	)!;
+	const monsterAnchorReview = await request.post('/api/dev/visual-reviews', {
+		data: {
+			...payload,
+			reviewId: randomUUID(),
+			assetKey: monsterAnchor.assetKey,
+			catalogVersion: monsterCatalog.catalogVersion,
+			assetContentHash: monsterAnchor.contentHash,
+			note: 'Pack 2 individual-monster routing proof.'
+		}
+	});
+	expect(monsterAnchorReview.status()).toBe(201);
 });

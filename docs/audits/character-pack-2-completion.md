@@ -32,7 +32,7 @@ Release status: **held for human visual approval**
 | median, p90, and p95 generation evidence | `assets/benchmarks/pack-two/report.json` and drift-checking validator | Pass |
 | random manifest and procedural representation are interactive | `/forge/pack-2/runtime`; deterministic draw, local rig controls, and sub-100 ms browser gate | Pass |
 | premium first reveal is cached; new generation is asynchronous | approved content-addressed runtime-pool proof makes zero generation calls; candidates are rejected | Pass |
-| provenance, hashes, recognition checks, and approval state | catalogs, exact prompt records, attempt timings, SHA-256 validators, continuity inspections, and Forge provenance panels | Pass; final human state pending |
+| provenance, hashes, recognition checks, and approval state | catalogs, exact prompt records, attempt timings, SHA-256 validators, continuity inspections, Forge provenance panels, and exact-asset review controls for all 33 retained candidates | Pass; final human state pending |
 | Forge, tests, asset validation, and performance budgets | full repository check, 46 Playwright tests, Pack 2 validators, 1440px visual inspections, and refreshed web budget | Pass |
 
 ## Measured production evidence
@@ -46,7 +46,7 @@ Release status: **held for human visual approval**
 - Browser interaction gate: approved cached draw through DOM flush and next frame must remain below
   100 ms.
 - Existing phone interface response p95: 31.3 ms, within budget.
-- Web build: 48,132 initial gzip bytes and 195,104 runtime visual bytes, both within budget.
+- Web build: 48,130 initial gzip bytes and 195,104 runtime visual bytes, both within budget.
 
 ## Validation record
 
@@ -70,6 +70,8 @@ passed in the 46-test Playwright stack.
 ## Required human gate
 
 Review `/forge/pack-2`, `/forge/enemies/pack-2`, and `/forge/pack-2/runtime`. For each exact human
-anchor and continuity sheet, record accept or revise notes against its hash. Review each monster
-plate for duty readability and art quality. Only accepted assets should be promoted into the
-runtime catalog; review submission itself does not mutate manifests or summon eligibility.
+anchor, continuity sheet, and Remy progression state, record accept or revise notes against its
+hash. Review each monster plate and the individual Stone Breaker anchor for duty readability and
+art quality. All 33 retained candidates are selectable in the Forge controls. Only accepted assets
+should be promoted into the runtime catalog; review submission itself does not mutate manifests or
+summon eligibility.

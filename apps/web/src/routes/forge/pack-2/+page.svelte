@@ -114,8 +114,14 @@
 		selected.assets.find((asset) => asset.role === 'continuity-sheet')
 	);
 	const anchorReview = $derived(reviewHistory.latestByAsset[selectedAnchor.assetKey] ?? null);
+	const reviewableAssets = $derived([
+		...selected.assets,
+		...data.benchmarkAssets.filter(
+			(asset) => asset.characterId === selected.draft.manifest.characterId
+		)
+	]);
 	const reviewAsset = $derived(
-		selected.assets.find((asset) => asset.assetKey === reviewAssetKey) ?? selectedAnchor
+		reviewableAssets.find((asset) => asset.assetKey === reviewAssetKey) ?? selectedAnchor
 	);
 	const currentReview = $derived(reviewHistory.latestByAsset[reviewAsset.assetKey] ?? null);
 	const feminineCohort = $derived(
@@ -605,7 +611,7 @@
 				<label>
 					<span>Exact asset</span>
 					<select bind:value={reviewAssetKey}>
-						{#each selected.assets as asset (asset.assetKey)}
+						{#each reviewableAssets as asset (asset.assetKey)}
 							<option value={asset.assetKey}>{asset.assetKey} · {words(asset.role)}</option>
 						{/each}
 					</select>

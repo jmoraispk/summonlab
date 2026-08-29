@@ -44,6 +44,7 @@ const BenchmarkSamplesSchema = z.object({
 				'identity-preserving-state-edit',
 				'evolution-variant'
 			]),
+			assetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
 			name: z.string().min(1),
 			requestStartedAt: z.string().datetime(),
 			responseCompletedAt: z.string().datetime(),
