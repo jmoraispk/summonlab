@@ -16,8 +16,8 @@ variety.
 The work must answer four product questions:
 
 1. Can humans vary meaningfully in height, build, and proportion without losing art quality?
-2. Can rarity and level make characters feel cooler without reducing the design to glow, gold, or
-   sexualization?
+2. Can star evolution and leveling make characters feel cooler without reducing the design to
+   glow, gold, or sexualization?
 3. Which new monster families expand the tower's encounter language most effectively?
 4. Which parts of character creation can happen in real time, and which parts must be authored,
    generated ahead of time, cached, or completed asynchronously?
@@ -37,8 +37,19 @@ identifiers.
   principles, but not literal contemporary clothing.
 - Rarity describes resonance capacity, not human worth. Physiology, phenotype, presentation,
   personality, rarity, morality, talent, and combat role remain independent.
+- Leveling and evolution are separate systems. Leveling advances the ordinary level number within
+  the current cap. Evolution raises the star rank, expands the level cap, and may unlock an authored
+  physical or stylistic transformation.
+- **Evolution** is the player-facing term for raising star rank. Existing implementation and
+  historical documents may call this “promotion”; migrate presentation terminology without
+  rewriting versioned replay data.
+- Maximum level equals `star rank × 10`: `1★` caps at level 10, `2★` at 20, through `7★` at level
+  70. A character at the current cap must evolve before gaining additional levels.
 - Feminine characters receive the same height, build, age, role, armor, and visual-polish range as
   other characters. Sexualization is never a rank or class signal.
+- Every character must look polished, realistic, and specific at the first reveal, including a
+  `1★` level-1 summon in modest equipment. The player must never see a rough placeholder that later
+  swaps into the character's “real” appearance.
 - High-value painted art is generated or painted from a canonical identity reference. Runtime
   population and continuity use deterministic manifests, approved modular parts, and compact rigs.
 - No third-party inspiration artwork is shipped as a game asset or used as a direct imitation
@@ -216,10 +227,14 @@ Each pilot identity receives:
 5. a settlement-scale silhouette test;
 6. prompt, reference, provenance, and approval records.
 
+Every pilot anchor must meet the final first-reveal quality bar. Low star rank may mean modest
+equipment and restrained resonance, but never lower anatomy, realism, composition, or rendering
+quality.
+
 After the pilot passes review, expand to an 18-human cohort: six feminine, six masculine, and six
 androgynous presentations with intentionally crossed height, build, and proportion combinations.
 
-## Phase 5 — Define coolness across rarity and level
+## Phase 5 — Define coolness across evolution and level
 
 | Progression | Visual treatment |
 | --- | --- |
@@ -231,11 +246,21 @@ androgynous presentations with intentionally crossed height, build, and proporti
 | `6★` | Mature resonance integrated into equipment and identity symbolism |
 | `7★` | Singular end-state design grounded in the character's accumulated history |
 
-Separate the three progression signals:
+Separate the progression signals:
 
-- **Rarity** controls resonance capacity and magical complexity.
-- **Level** controls competence, fit, maintenance, stance, and evidence of experience.
-- **Promotion** may introduce structural changes but must preserve identity.
+- **Initial rarity** determines the star rank at summon and therefore the starting level cap.
+- **Leveling** advances ordinary levels within that cap. It can improve competence, stance, item
+  handling, maintenance, and evidence of experience, but does not by itself redesign the body.
+- **Equipment progression** changes visible clothing, armor, weapons, tools, materials, and fit based
+  on items the character actually owns and equips. It is not automatically tied to level.
+- **Evolution** raises the star rank and level cap. It may produce an authored change in style,
+  muscle mass, posture, proportions, resonance anatomy, or other physical attributes while
+  preserving the recognizable person.
+
+Every evolution receives a versioned state profile bound to the same character identity. Face,
+durable marks, phenotype, and core recognition cues remain stable unless a specific story event
+explicitly changes one of them. Physical development must be recorded in data and reflected by the
+art; it cannot arise accidentally from image-generation drift.
 
 Higher rank must not collapse into more gold, larger shoulders, brighter glow, or less clothing.
 
@@ -332,7 +357,7 @@ Until the Pack 2 benchmark exists, use this planning envelope:
 The 1–3 minute candidate figure is a production planning allowance, not a measured Summonlab
 service-level guarantee. The benchmark will replace it with median, `p90`, and `p95` results.
 
-## Phase 8 — Use a hybrid procedural runtime
+## Phase 8 — Use a hybrid procedural production pipeline
 
 There are two different meanings of “generate a human”:
 
@@ -343,8 +368,8 @@ traits, and rarity. This is deterministic computation and can happen during a su
 visible wait.
 
 The current compact `HeroRig` is also procedural: it interprets manifest-owned dimensions and can
-render immediately. Pack 2 should improve its silhouettes and replace placeholder-looking geometry
-with approved modular parts.
+render immediately. Pack 2 must improve its silhouettes and replace placeholder-looking geometry
+with realistic, approved modular parts before it can represent a player-facing new summon.
 
 ### Premium image generation
 
@@ -364,13 +389,18 @@ That bitmap process is not suitable for a blocking real-time summon because:
 
 ### Recommended summon flow
 
-1. Draw the deterministic manifest immediately.
-2. Display the procedural rig and summon effects immediately.
-3. Resolve an approved cached portrait by manifest hash when one exists.
-4. Assemble approved clothing, equipment, injury, palette, and rarity layers locally.
-5. If desired, queue a premium cinematic image asynchronously.
-6. Keep the procedural/cached representation if generation fails or remains unapproved.
-7. Never let the returned pixels modify the manifest or authoritative game state.
+1. Build and human-approve a pool of deterministic manifests and premium first-reveal portraits
+   ahead of player sessions.
+2. Randomly draw a manifest from the eligible pool immediately when the summon resolves.
+3. Display its approved, cached premium portrait at the first reveal; do not show a temporary
+   low-quality identity.
+4. Use realistic approved procedural parts for roster, settlement, mission, and equipment changes.
+5. Assemble owned clothing, equipment, injury, palette, and resonance layers locally.
+6. Generate later cinematic or evolution variants asynchronously from the canonical identity
+   anchor, then validate them before use.
+7. If a newly generated manifest lacks approved first-reveal art, keep it outside the player-facing
+   summon pool until its art passes review.
+8. Never let returned pixels modify the manifest or authoritative game state.
 
 Procedural layers should include:
 
@@ -382,10 +412,11 @@ Procedural layers should include:
 - injury and wear layer;
 - rarity geometry;
 - lighting treatment;
-- promotion overlays.
+- evolution overlays.
 
-This approach makes random attribute draws real-time while reserving image generation for premium
-summon cards, dialogue close-ups, promotions, deaths, and other high-value moments.
+This approach keeps the random draw and first reveal real-time without sacrificing initial quality.
+Image generation remains an authoring and expansion process for new pool members, dialogue
+close-ups, evolution states, promotions, deaths, and other high-value moments.
 
 ## Phase 9 — Integrate Pack 2 into the Forge
 
@@ -436,9 +467,9 @@ aspirational while remaining medieval and recognizably Summonlab.
 
 ### Checkpoint C — Runtime strategy
 
-Compare an instant procedural summon against a cached premium portrait and an asynchronously
-completed cinematic candidate. Decide where premium image generation adds enough value to justify
-its latency and review cost.
+Verify that a randomly selected, cached premium identity appears at first reveal with no placeholder
+swap. Compare its approved procedural roster, settlement, mission, equipment, and evolution states
+to confirm that every representation remains attractive and recognizable.
 
 ### Checkpoint D — Expansion
 
@@ -452,10 +483,14 @@ Pack 2 is complete when:
 - old character-generation versions remain byte-stable;
 - Pack 2 humans exhibit obvious height, build, and proportion differences at roster scale;
 - feminine characters demonstrate equivalent body, role, costume, and polish ranges;
-- rarity and level are readable without relying on rainbow colors or sexualization;
+- star evolution and level are readable without relying on rainbow colors or sexualization;
+- every star rank enforces a maximum level of `stars × 10`;
+- every first-reveal portrait is approved, polished, realistic, and available before its manifest
+  enters the player-facing summon pool;
 - every monster archetype has an identifiable battlefield duty;
 - generation timing is backed by recorded median, `p90`, and `p95` evidence;
 - a random manifest and usable procedural representation appear interactively;
-- premium art is cached or asynchronous and has a deterministic fallback;
+- premium first-reveal art is cached; asynchronous generation is reserved for future approved pool
+  members and later state variants;
 - every generated asset has provenance, hashes, recognition checks, and human approval state;
 - Forge review, automated tests, asset validation, and performance budgets pass.
