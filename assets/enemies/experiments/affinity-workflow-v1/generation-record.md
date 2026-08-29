@@ -1,7 +1,7 @@
 # Affinity workflow v1 generation record
 
-Status: **controlled and final correction regressions complete; breadth gate closed; human blind
-review pending**
+Status: **controlled and final correction regressions complete; guarded rerun preparation and
+capacity scheduler complete; breadth gate closed; human blind review pending**
 
 Date: **2026-08-29**
 
@@ -109,8 +109,17 @@ The complete failure classification and resolution history is in `review/evaluat
   candidates max at 10/20, species-review capacity at 21/23, and meaningful non-Normal acceptance
   capacity at 17/20.
 - `review/final-controlled-rerun-plan.json` reserves 24 collision-free v3/v4 coordinates and eight
-  balanced three-worker fallback waves. It is a validated dispatch plan, not authorization to skip
-  the informative v1 review or the breadth gate.
+  balanced three-worker fallback waves. The preparer has validated a temporary 48-manifest preview:
+  24 targets, 24 assignments, 24 distinct canonical prompts, 53 purpose-routed references, and zero
+  live experiment writes. The audited plan retains eight blocking and eight nonblocking pending
+  design risks; it is not authorization to skip the informative v1 review or the breadth gate.
+- `review/wave-plans/pilot-current-task-capacity-v1.json` and its immutable `preflight.json` record
+  an exact four-worker Pilot request against four total task slots. With one orchestrator reserved,
+  only three workers were admitted, so the scheduler stopped before dispatch with zero path
+  collisions and zero image calls.
+- `pnpm check:affinity-plan-completion` derives the experiment state from strict live evidence and
+  remains nonzero until all nine sections—including final results, human blind review, breadth,
+  measured concurrency, accepted visual rules, and the final scale recommendation—are complete.
 
 ## Timing and concurrency
 
@@ -127,9 +136,10 @@ The complete failure classification and resolution history is in `review/evaluat
   and 964.793 seconds of summed audited job time under a dynamic ceiling of three image workers.
 
 The active task exposes four total agent slots, so three image workers is the measured safe ceiling
-when orchestration is reserved. Local configuration requests 16, but configuration alone does not
-prove provisioned capacity. The 8-, 12-, and 16-worker ladder remains pending a task that actually
-exposes those slots.
+when orchestration is reserved. The new exact-concurrency scheduler consequently rejected the
+four-worker Pilot at preflight instead of relabeling a three-worker run. Local configuration
+requests 16, but configuration alone does not prove provisioned capacity. The 4-, 6-, 8-, 12-, and
+16-worker exact ladder remains pending a task that actually exposes the requested slots.
 
 ## Review and continuation
 
@@ -157,3 +167,14 @@ controlled thresholds before dispatching any breadth image generation. The 60- a
 Goblin independence audits are already deterministic and require no image calls. A coherent
 versioned final-protocol controlled rerun and subsequent human blind review remain required;
 producer self-inspection cannot supply recognition or acceptance decisions.
+
+Preparatory and completion checks are available without image calls:
+
+```bash
+pnpm prepare:affinity-final-controlled-rerun
+pnpm check:affinity-plan-completion
+```
+
+The first command validates that preview generation remains possible while live activation stays
+blocked. The second is expected to exit nonzero until the remaining human, image, breadth, capacity,
+and decision evidence exists.

@@ -1,0 +1,33 @@
+{
+	"schemaVersion": "affinity-wave-plan-v1",
+	"runId": "pilot-current-task-capacity-v1",
+	"experimentId": "affinity-workflow-v1",
+	"stage": "pilot",
+	"requestedConcurrency": 4,
+	"reservedOrchestratorSlots": 1,
+	"requireExactConcurrency": true,
+	"runDirectory": "assets/enemies/experiments/affinity-workflow-v1/wave-runs/pilot-current-task-capacity-v1",
+	"stopRules": {
+		"capacityFailureLimit": 3,
+		"stopOnOutputCollision": true,
+		"retryCapacityFailuresInWave": false
+	},
+	"jobs": [
+		{
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/normal.json"
+		},
+		{
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/fire.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/fire.json"
+		},
+		{
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/water.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/water.json"
+		},
+		{
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/wind.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/wind.json"
+		}
+	]
+}

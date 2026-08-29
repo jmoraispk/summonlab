@@ -22,6 +22,10 @@
 		"report-affinity-gate-readiness.spec.ts",
 		"finalize-affinity-evaluation.ts",
 		"finalize-affinity-evaluation.spec.ts",
+		"prepare-final-controlled-rerun.ts",
+		"prepare-final-controlled-rerun.spec.ts",
+		"check-affinity-plan-completion.ts",
+		"check-affinity-plan-completion.spec.ts",
 		"export-affinity-workflow.ts",
 		"validate-affinity-workflow.ts"
 	]

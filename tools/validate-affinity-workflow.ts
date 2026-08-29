@@ -27,6 +27,16 @@ import {
 	AFFINITY_CONTACT_SHEET_PATH,
 	AFFINITY_CONTACT_SHEET_WIDTH
 } from './export-affinity-contact-sheet.js';
+import {
+	FinalControlledRerunPlanSchema,
+	buildFinalControlledRerunBundle,
+	summarizeUnresolvedDesignRisks
+} from './prepare-final-controlled-rerun.js';
+import {
+	AffinityWavePlanSchema,
+	AffinityWavePreflightSchema,
+	nextDispatchDecision
+} from './affinity-wave-scheduler-lib.js';
 import sharp from 'sharp';
 import { z } from 'zod';
 
@@ -131,51 +141,6 @@ const DryRunEvidenceSchema = z
 	})
 	.strict();
 
-const FinalControlledRerunPlanSchema = z
-	.object({
-		schemaVersion: z.literal('affinity-final-controlled-rerun-plan-v1'),
-		experimentId: z.literal('affinity-workflow-v1'),
-		status: z.literal('awaiting-informative-v1-blind-review'),
-		purpose: z.string().min(1),
-		targetCount: z.literal(24),
-		promptProtocol: z.literal('safe-frame-v4'),
-		authoringProtocol: z.literal('semantic-v2'),
-		retryCeiling: z.literal(1),
-		speciesVersions: z.record(z.string(), z.string()),
-		entryGate: z.object({}).passthrough(),
-		fallbackExecution: z
-			.object({
-				activeTaskTotalSlots: z.literal(4),
-				reservedOrchestratorSlots: z.literal(1),
-				effectiveImageWorkers: z.literal(3),
-				waveCount: z.literal(8),
-				waves: z.array(z.array(z.string().min(1)).length(3)).length(8)
-			})
-			.strict(),
-		targets: z
-			.array(
-				z
-					.object({
-						key: z.string().min(1),
-						speciesId: z.enum(['death-knight', 'elemental', 'grey-wolf', 'cave-bear']),
-						affinity: z.enum(['normal', 'wood', 'fire', 'metal', 'water', 'wind']),
-						version: z.enum(['v3', 'v4'])
-					})
-					.strict()
-			)
-			.length(24),
-		plannedPathTemplates: z
-			.object({
-				target: z.string().min(1),
-				assignment: z.string().min(1),
-				candidate: z.string().min(1),
-				result: z.string().min(1)
-			})
-			.strict(),
-		successGate: z.object({}).passthrough()
-	})
-	.strict();
-
 async function listFiles(root: string): Promise<string[]> {
 	const files: string[] = [];
 	for (const entry of await readdir(root, { withFileTypes: true }).catch(() => [])) {
@@ -269,6 +234,7 @@ export interface AffinityWorkflowValidationSummary {
 	readonly controlledContactSheet: boolean;
 	readonly dryRunEvidence: boolean;
 	readonly finalControlledRerunPlan: boolean;
+	readonly capacityPreflight: boolean;
 	readonly evaluationStatus: 'incomplete' | 'passed' | 'failed';
 }
 
@@ -325,10 +291,22 @@ export async function validateAffinityWorkflowWorkspace(
 		dryRunEvidence = true;
 	}
 	let finalControlledRerunPlan = false;
+	let capacityPreflight = false;
 	if (targets.length === 60) {
 		const plan = FinalControlledRerunPlanSchema.parse(
 			await readJson(path.join(experimentRoot, 'review/final-controlled-rerun-plan.json'))
 		);
+		buildFinalControlledRerunBundle(plan, targets);
+		const designRisks = summarizeUnresolvedDesignRisks(plan);
+		if (
+			designRisks.unresolvedBlockingRiskCount !== 8 ||
+			designRisks.unresolvedBlockingCoordinateCount !== 8 ||
+			designRisks.unresolvedNonblockingRiskCount !== 8
+		) {
+			throw new Error(
+				'Final controlled rerun plan must retain all audited pending design risks before activation.'
+			);
+		}
 		const targetKeys = plan.targets.map((target) => target.key);
 		const waveKeys = plan.fallbackExecution.waves.flat();
 		const coordinates = plan.targets.map((target) => `${target.speciesId}:${target.affinity}`);
@@ -357,6 +335,66 @@ export async function validateAffinityWorkflowWorkspace(
 			}
 		}
 		finalControlledRerunPlan = true;
+
+		const capacityPlan = AffinityWavePlanSchema.parse(
+			await readJson(
+				path.join(experimentRoot, 'review/wave-plans/pilot-current-task-capacity-v1.json')
+			)
+		);
+		const preflight = AffinityWavePreflightSchema.parse(
+			await readJson(
+				path.join(experimentRoot, 'wave-runs/pilot-current-task-capacity-v1/preflight.json')
+			)
+		);
+		const expectedCapacityEvidence = {
+			runId: 'pilot-current-task-capacity-v1',
+			stage: 'pilot',
+			requestedConcurrency: 4,
+			availableAgentSlots: 4,
+			reservedOrchestratorSlots: 1,
+			admittedWorkerCapacity: 3,
+			exactConcurrencyReady: false,
+			status: 'blocked-capacity'
+		} as const;
+		for (const [field, expected] of Object.entries(expectedCapacityEvidence)) {
+			if (preflight[field as keyof typeof preflight] !== expected) {
+				throw new Error(`Capacity preflight ${field} no longer matches the observed pilot.`);
+			}
+		}
+		if (
+			capacityPlan.runId !== preflight.runId ||
+			capacityPlan.stage !== preflight.stage ||
+			capacityPlan.requestedConcurrency !== preflight.requestedConcurrency ||
+			capacityPlan.runDirectory !== preflight.runDirectory ||
+			capacityPlan.jobs.length !== preflight.jobs.length ||
+			preflight.collisionPaths.length !== 0
+		) {
+			throw new Error('Capacity preflight no longer matches its scheduler plan.');
+		}
+		for (const [index, job] of capacityPlan.jobs.entries()) {
+			const resolvedJob = preflight.jobs[index];
+			if (
+				resolvedJob?.targetPath !== job.targetPath ||
+				resolvedJob.assignmentPath !== job.assignmentPath
+			) {
+				throw new Error('Capacity preflight job order or manifest binding changed.');
+			}
+		}
+		const stopDecision = nextDispatchDecision(preflight, []);
+		if (
+			!stopDecision.stop ||
+			stopDecision.reason !== 'capacity-preflight-blocked' ||
+			stopDecision.launchTargetIds.length !== 0
+		) {
+			throw new Error('Capacity preflight must stop before dispatching any image job.');
+		}
+		const runFiles = await listFiles(path.resolve(workspaceRoot, preflight.runDirectory));
+		assertExactPaths(
+			runFiles,
+			new Set([path.resolve(workspaceRoot, preflight.runDirectory, 'preflight.json')]),
+			'capacity preflight artifact'
+		);
+		capacityPreflight = true;
 	}
 	const references = new Map<string, string>();
 	for (const target of targets) {
@@ -572,6 +610,7 @@ export async function validateAffinityWorkflowWorkspace(
 		controlledContactSheet,
 		dryRunEvidence,
 		finalControlledRerunPlan,
+		capacityPreflight,
 		evaluationStatus: evaluation.status
 	};
 }

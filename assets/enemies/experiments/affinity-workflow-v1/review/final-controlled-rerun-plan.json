@@ -19,6 +19,159 @@
 		"requiresAllPlannedOutputsAbsent": true,
 		"doesNotAuthorizeBreadth": true
 	},
+	"designRiskReview": {
+		"status": "pending-informative-v1-blind-review",
+		"activationPolicy": {
+			"requiresAllBlockingRisksResolved": true,
+			"prohibitsActivationWhileBlockingRiskPending": true
+		},
+		"risks": [
+			{
+				"riskId": "death-knight-normal-legacy-design",
+				"coordinate": "death-knight-normal-v4",
+				"sourceTargetId": "affinity-workflow-v1-death-knight-normal",
+				"severity": "blocking",
+				"concern": "The canonical basic-v1 source did not reliably preserve the command seal and pennant grammar, and a generic semantic gate can detect but does not prevent another weak commander identity.",
+				"requiredResolution": "After informative v1 blind review, author a plan-owned versioned override that strengthens the command seal, pennant, disciplined guard, compact prop bounds, and explicitly unaffiliated construction before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "death-knight-wood-overlay-design",
+				"coordinate": "death-knight-wood-v4",
+				"sourceTargetId": "affinity-workflow-v1-death-knight-wood",
+				"severity": "blocking",
+				"concern": "The canonical basic-v1 source belongs to the cohort that repeatedly read as ordinary base armor with affinity effects layered over it.",
+				"requiredResolution": "After informative v1 blind review, author a plan-owned versioned override that makes load-bearing root and bark anatomy, resin joints, transformed equipment, command identity, and compact framing explicit before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "death-knight-fire-overlay-design",
+				"coordinate": "death-knight-fire-v4",
+				"sourceTargetId": "affinity-workflow-v1-death-knight-fire",
+				"severity": "blocking",
+				"concern": "The canonical basic-v1 source can reproduce ordinary armor with flames and glow instead of a materially integrated undead Fire construction.",
+				"requiredResolution": "After informative v1 blind review, author a plan-owned versioned override that binds combustion to armor behavior, weapon telegraph, exposed heat sink, command identity, and bounded smoke rather than an external overlay.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "death-knight-water-overlay-design",
+				"coordinate": "death-knight-water-v4",
+				"sourceTargetId": "affinity-workflow-v1-death-knight-water",
+				"severity": "blocking",
+				"concern": "The canonical basic-v1 source can reproduce blue glow or surface water over unchanged armor instead of coherent pressure-bearing undead construction.",
+				"requiredResolution": "After informative v1 blind review, author a plan-owned versioned override that integrates pressure flow, wet armor behavior, weapon telegraph, exposed binding core, command identity, and bounded mist before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "death-knight-wind-overlay-design",
+				"coordinate": "death-knight-wind-v4",
+				"sourceTargetId": "affinity-workflow-v1-death-knight-wind",
+				"severity": "blocking",
+				"concern": "The canonical basic-v1 source can reproduce pale cloth and particles over unchanged armor instead of directional pressure integrated through the commander design.",
+				"requiredResolution": "After informative v1 blind review, author a plan-owned versioned override that integrates directional cloth, pressure channels, weapon behavior, a readable still center, command identity, and bounded debris before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "cave-bear-normal-paw-readability",
+				"coordinate": "cave-bear-normal-v3",
+				"sourceTargetId": "affinity-workflow-v1-cave-bear-normal",
+				"severity": "blocking",
+				"concern": "The source needed its retry because the first attempt hid a rear paw, but it does not own the explicit four-readable-paws correction rule.",
+				"requiredResolution": "After informative v1 blind review, add a plan-owned broadside-to-three-quarter stance, staggered-leg invariant, and objective four-readable-paws gate before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "cave-bear-wood-repeated-paw-readability",
+				"coordinate": "cave-bear-wood-v3",
+				"sourceTargetId": "affinity-workflow-v1-cave-bear-wood-v2",
+				"severity": "blocking",
+				"concern": "The v2 target references the paw-occluded v1 design and again hid the far hind paw on its first attempt before a correction passed.",
+				"requiredResolution": "After informative v1 blind review, route an accepted successful stance or replace the failed design reference, then strengthen independent paw contact and non-overlap instructions before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "cave-bear-wind-unresolved-paw-occlusion",
+				"coordinate": "cave-bear-wind-v3",
+				"sourceTargetId": "affinity-workflow-v1-cave-bear-wind-v2",
+				"severity": "blocking",
+				"concern": "The source references the failed v1 design and every original and v2 attempt still hid the far hind paw, leaving the correction unresolved.",
+				"requiredResolution": "After informative v1 blind review, replace the failed design reference and author a materially different staggered stance or camera solution proven to expose four grounded paws before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "death-knight-metal-framing-and-scale",
+				"coordinate": "death-knight-metal-v4",
+				"sourceTargetId": "affinity-workflow-v1-death-knight-metal-v3",
+				"severity": "risk",
+				"concern": "The semantic design is strong, but v3 still needed a framing correction and its smaller selected scale has not received human visual acceptance.",
+				"requiredResolution": "Use informative v1 feedback to decide whether the selected v3 scale remains elite; if accepted, route that exact successful design with compact finial, sword, and boot bounds, otherwise author a new versioned design.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "elemental-normal-material-ambiguity",
+				"coordinate": "elemental-normal-v4",
+				"sourceTargetId": "affinity-workflow-v1-elemental-normal-v2",
+				"severity": "risk",
+				"concern": "The semantic source needed a material correction because its first attempt read as natural stone rather than explicitly unaffiliated ceramic composite.",
+				"requiredResolution": "Use informative v1 feedback to strengthen manufactured matte ceramic cues or purpose-route the accepted corrected material without importing unrelated pose or anatomy.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "elemental-water-solid-shell-ambiguity",
+				"coordinate": "elemental-water-v4",
+				"sourceTargetId": "affinity-workflow-v1-elemental-water-v2",
+				"severity": "risk",
+				"concern": "The semantic source needed a correction because crystalline facets and seams made its first attempt read as ice, glass armor, or a solid blue golem.",
+				"requiredResolution": "Use informative v1 feedback to strengthen continuous pressurized-liquid anatomy or purpose-route the accepted corrected material while preserving the fixed chassis.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "elemental-wind-solid-shell-ambiguity",
+				"coordinate": "elemental-wind-v4",
+				"sourceTargetId": "affinity-workflow-v1-elemental-wind-v2",
+				"severity": "risk",
+				"concern": "The semantic source needed a correction because its first attempt read as a transparent faceted shell with haze rather than load-bearing directional air.",
+				"requiredResolution": "Use informative v1 feedback to strengthen compressed-air streamlines, pressure ripples, vapor channels, and negative-space anatomy or purpose-route the accepted correction.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "grey-wolf-normal-legacy-design",
+				"coordinate": "grey-wolf-normal-v3",
+				"sourceTargetId": "affinity-workflow-v1-grey-wolf-normal",
+				"severity": "risk",
+				"concern": "The safe-frame-v2 basic source had no demonstrated semantic visual failure, but it lacks the final explicit canine head, shoulders, spine, tail, and four-leg species grammar.",
+				"requiredResolution": "After informative v1 blind review, strengthen the plan-owned Normal target with the complete wolf anatomy grammar and explicit unaffiliated construction before activation.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "elemental-wood-historical-v3-framing",
+				"coordinate": "elemental-wood-v4",
+				"sourceTargetId": "affinity-workflow-v1-elemental-wood-v2",
+				"severity": "risk",
+				"concern": "The semantic source missed the first-attempt frame under safe-frame-v3, whose central lock omission is corrected by the planned v4 protocol.",
+				"requiredResolution": "Confirm after informative v1 review that the v4 central lock and compact target composition preserve the accepted Wood construction without another framing correction.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "grey-wolf-wood-historical-v3-framing",
+				"coordinate": "grey-wolf-wood-v3",
+				"sourceTargetId": "affinity-workflow-v1-grey-wolf-wood",
+				"severity": "risk",
+				"concern": "The semantic source missed its first-attempt frame under safe-frame-v3, whose central lock omission is corrected by the planned v4 protocol.",
+				"requiredResolution": "Confirm after informative v1 review that safe-frame-v4 preserves the accepted wolf and Wood construction while containing every tail, root, and effect extent.",
+				"status": "pending-informative-v1-blind-review"
+			},
+			{
+				"riskId": "grey-wolf-water-historical-v3-framing",
+				"coordinate": "grey-wolf-water-v3",
+				"sourceTargetId": "affinity-workflow-v1-grey-wolf-water",
+				"severity": "risk",
+				"concern": "The semantic source missed its first-attempt frame under safe-frame-v3, whose central lock omission is corrected by the planned v4 protocol.",
+				"requiredResolution": "Confirm after informative v1 review that safe-frame-v4 preserves the accepted wolf and Water construction while containing every tail, splash, mist, and wake extent.",
+				"status": "pending-informative-v1-blind-review"
+			}
+		]
+	},
 	"fallbackExecution": {
 		"activeTaskTotalSlots": 4,
 		"reservedOrchestratorSlots": 1,

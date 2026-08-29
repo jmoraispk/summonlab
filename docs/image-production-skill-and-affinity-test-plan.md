@@ -1,7 +1,7 @@
 # Image-production skill and affinity workload plan
 
-Status: **in execution; controlled generation and final correction regression complete, breadth
-gated on human blind review**
+Status: **in execution; guarded final-rerun and concurrency tooling complete, final activation and
+breadth gated on human blind review**
 
 Date: **2026-08-29**
 
@@ -30,6 +30,15 @@ The plan is now backed by a runnable implementation rather than being a design-o
 - deterministic export, validation, exact-source persistence, result verification, aggregate sync,
   review-evidence export, deterministic blind contact-sheet export, and goblin-independence audit
   tooling is implemented;
+- a guarded preparer deterministically builds all 24 final-protocol targets and assignments in an
+  isolated preview, validates all 24 through the installed skill, and refuses live activation while
+  any audited blocking design risk remains pending;
+- an exact-concurrency scheduler now covers the 2-, 4-, 6-, 8-, 12-, and 16-worker stages with
+  collision preflight, append-only claims, bounded dispatch, capacity/throttle stop rules, and
+  evidence-derived reporting; it never silently records a lower-capacity run as the requested stage;
+- a completion checker derives nine plan sections from live manifests, results, image hashes, blind
+  reviews, Forge projections, concurrency reports, and accepted decision artifacts; it exits
+  nonzero until the full experiment is genuinely complete;
 - the Forge affinity-workflow page presents all 60 targets across 14 collision-free rows, supports
   label-visible inspection and a controlled-only server-stripped blind workflow, verifies candidate
   bytes before serving them, and records append-only hash-bound reviews with server-derived mode
@@ -52,13 +61,20 @@ the gate is not weakened or reinterpreted around the existing evidence.
 
 The exact 24-coordinate final controlled rerun is preplanned in
 `review/final-controlled-rerun-plan.json`. It reserves collision-free v3/v4 namespaces and balances
-all four species across eight three-worker fallback waves for the active four-slot task. The plan is
-validated but intentionally does not create or dispatch those manifests until the informative v1
-human review is recorded.
+all four species across eight three-worker fallback waves for the active four-slot task. The guarded
+preparer has proven 24 valid targets, 24 valid assignments, 24 distinct canonical prompts, and 53
+purpose-routed references in temporary storage without creating any live manifest, result, or image.
+The source audit records eight blocking design risks and eight nonblocking risks. The blockers are
+the five non-Metal Death Knights, whose command and materially integrated affinity cues need
+plan-owned overrides, plus Normal, Wood, and Wind Cave Bears, whose four-readable-paw stance needs a
+stronger or replacement source. Activation remains false until the informative v1 human review is
+recorded and every blocking risk is resolved.
 
 The active Codex task exposes four total agent slots. Reserving one slot for orchestration yields a
 measured ceiling of three concurrent image jobs, even though local configuration requests 16. This
-is an environment-capacity finding, not proof that 8-, 12-, or 16-job execution works. Those ladder
+is now preserved as an exact Pilot preflight: four workers requested, four total slots observed,
+three workers admitted, zero output collisions, and zero jobs dispatched. It is an
+environment-capacity finding, not proof that 4-, 8-, 12-, or 16-job execution works. Those ladder
 stages require a newly provisioned task that actually exposes the requested slots; the manifests,
 ownership boundaries, stop rules, and instrumentation are prepared for that continuation.
 
@@ -492,6 +508,14 @@ Suggested stop conditions for the 12- and 16-job stages:
 - reduce concurrency one step and repeat only the affected targets;
 - classify capacity reduction as a scheduler finding, not a visual-skill failure.
 
+Execution status: [the scheduler](affinity-wave-scheduler.md) implements the full staged protocol.
+The current-task Pilot evidence at
+`assets/enemies/experiments/affinity-workflow-v1/wave-runs/pilot-current-task-capacity-v1/preflight.json`
+records requested concurrency 4, admitted image-worker capacity 3, no collisions, and a mandatory
+pre-dispatch stop. No image, event journal, or performance metric was fabricated for the blocked
+wave. The 16-job plan validator additionally requires exactly two jobs from every one of the eight
+species and affinity counts that differ by at most one.
+
 ### Phase 6 — Final-skill regression
 
 If the skill or its references change materially during testing, regenerate four to eight sentinel
@@ -664,6 +688,17 @@ quality regression.
 - a scale recommendation for producing hundreds of static candidates.
 
 ## Completion criteria
+
+Run the evidence checker at every handoff:
+
+```bash
+pnpm check:affinity-plan-completion
+```
+
+It intentionally exits with status 1 while any of the nine evidence sections is incomplete. A
+preparatory plan, a provisional recommendation, or producer self-review cannot satisfy a missing
+result, human blind review, effective concurrency measurement, accepted later-pack rule, or final
+scale recommendation.
 
 The workflow experiment is complete when:
 

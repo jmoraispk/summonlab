@@ -1,0 +1,62 @@
+{
+	"schemaVersion": "affinity-wave-preflight-v1",
+	"runId": "pilot-current-task-capacity-v1",
+	"experimentId": "affinity-workflow-v1",
+	"stage": "pilot",
+	"createdAt": "2026-08-29T21:08:48.783Z",
+	"status": "blocked-capacity",
+	"requestedConcurrency": 4,
+	"availableAgentSlots": 4,
+	"reservedOrchestratorSlots": 1,
+	"admittedWorkerCapacity": 3,
+	"exactConcurrencyReady": false,
+	"runDirectory": "assets/enemies/experiments/affinity-workflow-v1/wave-runs/pilot-current-task-capacity-v1",
+	"stopRules": {
+		"capacityFailureLimit": 3,
+		"stopOnOutputCollision": true,
+		"retryCapacityFailuresInWave": false
+	},
+	"collisionPaths": [],
+	"jobs": [
+		{
+			"targetId": "affinity-workflow-v1-goblin-normal",
+			"assignmentId": "assignment-affinity-workflow-v1-goblin-normal",
+			"speciesId": "goblin",
+			"affinity": "normal",
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/normal.json",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json"
+		},
+		{
+			"targetId": "affinity-workflow-v1-tunnel-boar-fire",
+			"assignmentId": "assignment-affinity-workflow-v1-tunnel-boar-fire",
+			"speciesId": "tunnel-boar",
+			"affinity": "fire",
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/fire.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/fire.json",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
+			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-fire-v1.json"
+		},
+		{
+			"targetId": "affinity-workflow-v1-cave-drake-water",
+			"assignmentId": "assignment-affinity-workflow-v1-cave-drake-water",
+			"speciesId": "cave-drake",
+			"affinity": "water",
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/water.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/water.json",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/water-v1.png",
+			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-water-v1.json"
+		},
+		{
+			"targetId": "affinity-workflow-v1-tower-basilisk-wind",
+			"assignmentId": "assignment-affinity-workflow-v1-tower-basilisk-wind",
+			"speciesId": "tower-basilisk",
+			"affinity": "wind",
+			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/wind.json",
+			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/wind.json",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wind-v1.png",
+			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-wind-v1.json"
+		}
+	]
+}

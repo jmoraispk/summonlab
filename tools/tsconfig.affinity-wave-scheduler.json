@@ -1,0 +1,15 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"affinity-wave-scheduler-lib.ts",
+		"affinity-wave-scheduler.ts",
+		"affinity-wave-scheduler.spec.ts"
+	]
+}
