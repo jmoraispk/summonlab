@@ -1,12 +1,14 @@
 import { generatePackTwoCohort } from '@summonlab/characters';
 
 import catalog from '../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
+import benchmark from '../../../../../../assets/benchmarks/pack-two/report.json';
 
 import type { PageServerLoad } from './$types';
 
 export const load = (async () => {
 	const drafts = await generatePackTwoCohort();
 	return {
+		benchmark,
 		catalog: {
 			packId: catalog.packId,
 			catalogVersion: catalog.catalogVersion,

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import remyEquipped from '../../../../../../assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
+	import remyEvolved from '../../../../../../assets/heroes/visuals/forge-v2/benchmarks/remy-esen-evolution-3star-v1.png';
 	import brynAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/bryn-vale-anchor-v1.png';
 	import caelAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/cael-hale-anchor-v1.png';
 	import daraAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/dara-aster-anchor-v1.png';
@@ -71,7 +73,15 @@
 	const selectedContinuity = $derived(
 		selected.assets.find((asset) => asset.role === 'continuity-sheet')
 	);
+	const remy = $derived(
+		data.cohort.find((entry) => entry.draft.manifest.displayName === 'Remy Esen')!
+	);
+	const remyAnchorAsset = $derived(remy.assets.find((asset) => asset.role === 'full-body-anchor')!);
+	const humanBenchmark = $derived(
+		data.benchmark.categories.find((entry) => entry.assetType === 'human-full-body-anchor')!
+	);
 	const words = (value: string | undefined) => value?.replaceAll('-', ' ') ?? 'unset';
+	const seconds = (milliseconds: number) => `${(milliseconds / 1000).toFixed(1)} s`;
 </script>
 
 <svelte:head>
@@ -300,6 +310,64 @@
 			{/each}
 		</div>
 	</section>
+
+	<section class="benchmark" aria-labelledby="benchmark-title">
+		<header class="section-heading">
+			<div>
+				<span>05</span>
+				<h2 id="benchmark-title">Equipment is not evolution</h2>
+			</div>
+			<p>One identity, two progression systems, measured authoring latency.</p>
+		</header>
+		<div class="progression-grid" data-testid="pack-two-progression">
+			<article>
+				<img src={images[remyAnchorAsset.assetKey]} alt="Remy Esen at the initial two-star state" />
+				<footer><span>Initial · 2★ · cap 20</span><b>Identity locked</b></footer>
+				<p>Modest workwear, baseline physique, permanent first-reveal quality.</p>
+			</article>
+			<article>
+				<img src={remyEquipped} alt="Remy Esen with upgraded equipment at two stars" />
+				<footer><span>Equipped · 2★ · cap 20</span><b>No body change</b></footer>
+				<p>Hammer, apron, and heat guard improve. Star state and physiology stay fixed.</p>
+			</article>
+			<article>
+				<img src={remyEvolved} alt="Remy Esen evolved to three stars" />
+				<footer><span>Evolved · 3★ · cap 30</span><b>Physical change</b></footer>
+				<p>Functional mass, stance, styling, and restrained resonance advance together.</p>
+			</article>
+		</div>
+		<div class="timing-card">
+			<div>
+				<p class="eyebrow">Measured Pack 2 pipeline</p>
+				<strong>{seconds(humanBenchmark.requestMedianMs)}</strong>
+				<span>median premium human request</span>
+			</div>
+			<dl>
+				<div>
+					<dt>Request p95</dt>
+					<dd>{seconds(humanBenchmark.requestP95Ms)}</dd>
+				</div>
+				<div>
+					<dt>Candidate p95</dt>
+					<dd>{seconds(humanBenchmark.candidateP95Ms)}</dd>
+				</div>
+				<div>
+					<dt>Approval</dt>
+					<dd>{data.benchmark.humanApproval}</dd>
+				</div>
+				<div>
+					<dt>Cost</dt>
+					<dd>Unavailable in built-in path</dd>
+				</div>
+			</dl>
+			<p>
+				<strong>Not real-time artwork.</strong> The random manifest is procedural and can appear immediately;
+				the first reveal should select an already approved cached portrait. New premium art, equipment
+				edits, and evolution variants stay in the asynchronous authoring pipeline.
+			</p>
+			<span class="proof-note">Procedural runtime proof follows in the next review slice.</span>
+		</div>
+	</section>
 </main>
 
 <style>
@@ -361,6 +429,11 @@
 	.inspection,
 	.scale,
 	.survival {
+		max-width: 96rem;
+		margin: 0 auto;
+		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
+	}
+	.benchmark {
 		max-width: 96rem;
 		margin: 0 auto;
 		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
@@ -718,10 +791,72 @@
 	.survival-grid footer {
 		grid-column: 1/-1;
 	}
+	.progression-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1rem;
+	}
+	.progression-grid article {
+		border: 1px solid #ffffff16;
+		background: #090c12;
+	}
+	.progression-grid img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 2/3;
+		object-fit: cover;
+	}
+	.progression-grid article > p {
+		margin: 0;
+		padding: 0 0.8rem 1rem;
+		color: #f4efe566;
+		font-size: 0.68rem;
+		line-height: 1.55;
+	}
+	.timing-card {
+		display: grid;
+		grid-template-columns: 0.8fr 1fr 1.4fr;
+		gap: 2rem;
+		align-items: center;
+		margin-top: 1rem;
+		padding: clamp(1.2rem, 3vw, 2.5rem);
+		border: 1px solid #8aa7dd44;
+		background: linear-gradient(110deg, #8aa7dd12, #090c12 50%);
+	}
+	.timing-card > div > strong,
+	.timing-card > div > span {
+		display: block;
+	}
+	.timing-card > div > strong {
+		font:
+			400 clamp(2.8rem, 5vw, 5rem) Georgia,
+			serif;
+		letter-spacing: -0.05em;
+	}
+	.timing-card > div > span,
+	.timing-card > p {
+		color: #f4efe575;
+		font-size: 0.72rem;
+		line-height: 1.65;
+	}
+	.timing-card > p strong {
+		color: #edc980;
+	}
+	.proof-note {
+		grid-column: 3;
+		color: #8aa7dd;
+		font-size: 0.65rem;
+		text-transform: uppercase;
+	}
 	@media (max-width: 900px) {
 		.intro,
-		.inspection-grid {
+		.inspection-grid,
+		.progression-grid,
+		.timing-card {
 			grid-template-columns: 1fr;
+		}
+		.proof-note {
+			grid-column: auto;
 		}
 		.candidate-grid,
 		.survival-grid {

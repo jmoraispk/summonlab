@@ -1,0 +1,84 @@
+{
+  "benchmarkVersion": "pack-two-generation-benchmark-v1",
+  "generationMode": "built-in-imagegen",
+  "costAvailability": "unavailable-built-in-path",
+  "transferBoundary": "request wall clock includes returned-image transfer to the Codex image store",
+  "normalizationBenchmark": {
+    "source": "exec-24cd4154-fdad-4cf5-9ef3-fecf471ca4d4.png",
+    "operation": "Sharp resize 1023×1537 to 1024×1536 PNG buffer",
+    "elapsedMs": 128,
+    "outputBytes": 2043018
+  },
+  "samples": [
+    {
+      "assetType": "individual-monster-anchor",
+      "name": "Stone Breaker",
+      "requestStartedAt": "2026-08-29T04:32:55.003Z",
+      "responseCompletedAt": "2026-08-29T04:33:13.070Z",
+      "elapsedMs": 18067,
+      "result": "candidate",
+      "humanStatus": "candidate",
+      "sourceOutput": "exec-e2e81a5d-e120-49f7-b7a3-d32028dd5c72.png",
+      "file": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2603356,
+      "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0",
+      "promptHeading": "Stone Breaker individual anchor · attempt 1"
+    },
+    {
+      "assetType": "identity-preserving-state-edit",
+      "name": "Remy Esen equipment state",
+      "requestStartedAt": "2026-08-29T04:33:47.015Z",
+      "responseCompletedAt": "2026-08-29T04:34:25.283Z",
+      "elapsedMs": 38268,
+      "result": "candidate",
+      "humanStatus": "candidate",
+      "sourceOutput": "exec-5a7eeb3b-d87a-419e-b141-9a574cd0e357.png",
+      "file": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2135160,
+      "contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d",
+      "promptHeading": "Remy Esen equipment state · attempt 1",
+      "stateProfile": {
+        "profileId": "remy-esen-equipment-v1",
+        "characterId": "b1083dd4-b208-4f67-a308-40fab408428d",
+        "manifestHash": "a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a",
+        "kind": "equipment",
+        "stars": 2,
+        "levelCap": 20,
+        "identityChanges": [],
+        "equipmentChanges": ["masterwork-smith-hammer", "heat-resistant-apron", "left-heat-guard"]
+      }
+    },
+    {
+      "assetType": "evolution-variant",
+      "name": "Remy Esen 3-star evolution",
+      "requestStartedAt": "2026-08-29T04:35:00.698Z",
+      "responseCompletedAt": "2026-08-29T04:35:36.261Z",
+      "elapsedMs": 35563,
+      "result": "candidate",
+      "humanStatus": "candidate",
+      "sourceOutput": "exec-1fa32157-094e-4d6e-b1ea-bbbec76982b5.png",
+      "file": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-evolution-3star-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2177661,
+      "contentHash": "e0ba2a340172563813d72151c7195a0596eb3dccde6778fe2955513cfe1b9fee",
+      "promptHeading": "Remy Esen evolution state · attempt 1",
+      "stateProfile": {
+        "profileId": "remy-esen-evolution-3star-v1",
+        "characterId": "b1083dd4-b208-4f67-a308-40fab408428d",
+        "manifestHash": "a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a",
+        "kind": "evolution",
+        "fromStars": 2,
+        "toStars": 3,
+        "levelCap": 30,
+        "identityInvariants": ["face", "phenotype", "freckles", "hair-mass", "patched-left-shoulder", "height", "bone-proportions"],
+        "physicalChanges": ["functional-muscle-plus-4kg", "wider-grounded-stance", "hair-secured-one-side"],
+        "resonanceChanges": ["left-forearm-geometric-seam", "apron-hammer-mark"]
+      }
+    }
+  ]
+}
