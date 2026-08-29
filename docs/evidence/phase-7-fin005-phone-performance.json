@@ -1,7 +1,7 @@
 {
   "schemaVersion": "phone-performance-report-v1",
-  "recordedAt": "2026-08-26T00:32:28.301Z",
-  "sourceRevision": "working-tree",
+  "recordedAt": "2026-08-29T05:24:03Z",
+  "sourceRevision": "working-tree:pack-two-final-audit",
   "profile": {
     "name": "mid-range-phone-390x844-2x",
     "viewportWidth": 390,
@@ -24,7 +24,7 @@
   },
   "measurements": {
     "interactiveShellMs": 818.2,
-		"initialJavaScriptGzipBytes": 47948,
+    "initialJavaScriptGzipBytes": 48132,
     "playerTitleVisualBytes": 47288,
     "firstSettlementVisualBytes": 296168,
     "activeSceneFramesPerSecond": 60,

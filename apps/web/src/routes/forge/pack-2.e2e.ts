@@ -33,4 +33,10 @@ test('reviews the 18-person Pack 2 cohort at all required scales', async ({ page
 	await page.getByText('Pixel provenance').click();
 	await expect(page.getByText('fara-pell-anchor-v1').first()).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Hash-bound human review' })).toBeVisible();
+	await page.getByRole('button', { name: /Remy Esen/ }).click();
+	await expect(page.getByLabel('Exact asset').locator('option')).toHaveCount(2);
+	await page.getByLabel('Exact asset').selectOption('remy-esen-continuity-v1');
+	await expect(page.getByLabel('Hash-bound human review').locator('form code')).toContainText(
+		'remy-esen-continuity-v1'
+	);
 });

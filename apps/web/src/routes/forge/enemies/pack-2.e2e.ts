@@ -10,4 +10,6 @@ test('reviews all Pack 2 monster families and battlefield duties', async ({ page
 	await expect(page.getByRole('heading', { name: 'Giant Tower Dragon' })).toBeVisible();
 	await expect(page.getByText('Arena-scale apex boss')).toBeVisible();
 	await expect(page.getByText('Candidate · human review required')).toHaveCount(6);
+	await expect(page.getByRole('heading', { name: 'Hash-bound monster review' })).toBeVisible();
+	await expect(page.getByLabel('Exact plate').locator('option')).toHaveCount(6);
 });

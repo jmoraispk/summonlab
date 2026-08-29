@@ -75,4 +75,31 @@ test('records an idempotent review only against the current asset hash', async (
 	);
 	expect(packTwoListed.status()).toBe(200);
 	expect((await packTwoListed.json()).latestByAsset[packTwoAsset.assetKey]).toBeDefined();
+
+	const monsterCatalog = JSON.parse(
+		await readFile(
+			new URL('../../../../assets/enemies/review/pack-2/catalog.json', import.meta.url),
+			'utf8'
+		)
+	) as {
+		catalogVersion: string;
+		plates: Array<{ assetKey: string; contentHash: string }>;
+	};
+	const monsterPlate = monsterCatalog.plates[0]!;
+	const monsterReview = await request.post('/api/dev/visual-reviews', {
+		data: {
+			...payload,
+			reviewId: randomUUID(),
+			assetKey: monsterPlate.assetKey,
+			catalogVersion: monsterCatalog.catalogVersion,
+			assetContentHash: monsterPlate.contentHash,
+			note: 'Monster catalog routing proof.'
+		}
+	});
+	expect(monsterReview.status()).toBe(201);
+	const monsterListed = await request.get(
+		`/api/dev/visual-reviews?catalogVersion=${monsterCatalog.catalogVersion}&includeAutomated=true`
+	);
+	expect(monsterListed.status()).toBe(200);
+	expect((await monsterListed.json()).latestByAsset[monsterPlate.assetKey]).toBeDefined();
 });

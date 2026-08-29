@@ -1,6 +1,6 @@
 # Character Pack 2 production plan
 
-Status: **proposed**
+Status: **implementation complete; human visual approval pending**
 
 Date: **2026-08-28**
 
@@ -35,6 +35,8 @@ identifiers.
   elemental subtype.
 - Pack 2 remains medieval. Modern fashion references may contribute color blocking or silhouette
   principles, but not literal contemporary clothing.
+- The medieval constraint ends with Pack 2. Packs 3 and later may adopt different coherent eras,
+  genres, and material languages so the wider roster becomes more diverse and playful.
 - Rarity describes resonance capacity, not human worth. Physiology, phenotype, presentation,
   personality, rarity, morality, talent, and combat role remain independent.
 - Leveling and evolution are separate systems. Leveling advances the ordinary level number within
@@ -494,3 +496,12 @@ Pack 2 is complete when:
   members and later state variants;
 - every generated asset has provenance, hashes, recognition checks, and human approval state;
 - Forge review, automated tests, asset validation, and performance budgets pass.
+
+## Execution result
+
+All safe executable work in this plan was completed between 2026-08-28 and 2026-08-29. The final
+evidence map is in `docs/audits/character-pack-2-completion.md`.
+
+Pack 2 is intentionally not marked release-ready. All 18 human anchors, six continuity sheets, and
+six monster-family plates remain approval candidates until a human records accept or revise
+decisions in the Forge. Candidate identities are excluded from the player-facing summon pool.

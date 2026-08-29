@@ -12,6 +12,7 @@ import {
 import { json } from '@sveltejs/kit';
 import visualCatalogSource from '../../../../../../../assets/heroes/visuals/catalog.json';
 import packTwoCatalogSource from '../../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
+import packTwoMonsterCatalogSource from '../../../../../../../assets/enemies/review/pack-2/catalog.json';
 
 import type { RequestHandler } from './$types';
 
@@ -26,6 +27,13 @@ const supportedCatalogs = new Map([
 		packTwoCatalogSource.assets.map((asset) => ({
 			assetKey: asset.assetKey,
 			contentHash: asset.contentHash
+		}))
+	],
+	[
+		packTwoMonsterCatalogSource.catalogVersion,
+		packTwoMonsterCatalogSource.plates.map((plate) => ({
+			assetKey: plate.assetKey,
+			contentHash: plate.contentHash
 		}))
 	]
 ]);

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { VisualReviewRecord, VisualReviewVerdict } from '@summonlab/contracts';
 	import {
 		PACK_TWO_MONSTER_ARCHETYPES,
 		PACK_TWO_MONSTER_FAMILIES,
@@ -13,6 +14,17 @@
 	import elementals from '../../../../../../../assets/enemies/review/pack-2/elementals-v1.png';
 	import undead from '../../../../../../../assets/enemies/review/pack-2/undead-v1.png';
 
+	let { data } = $props();
+	// svelte-ignore state_referenced_locally
+	let reviewHistory = $state(data.reviewHistory);
+	let selectedPlateKey = $state('');
+	let reviewVerdict = $state<VisualReviewVerdict>('approved');
+	let reviewer = $state('');
+	let reviewNote = $state('');
+	let reviewBusy = $state(false);
+	let reviewMessage = $state('');
+	let reviewError = $state('');
+
 	const plates: Record<string, string> = {
 		'elementals-v1': elementals,
 		'arachnids-v1': arachnids,
@@ -23,6 +35,45 @@
 	};
 	const monsterById = new Map(PACK_TWO_MONSTER_ARCHETYPES.map((monster) => [monster.id, monster]));
 	const monster = (id: PackTwoMonsterId) => monsterById.get(id)!;
+	const selectedPlate = $derived(
+		data.catalog.plates.find((plate) => plate.assetKey === selectedPlateKey) ??
+			data.catalog.plates[0]!
+	);
+	const currentReview = $derived(reviewHistory.latestByAsset[selectedPlate.assetKey] ?? null);
+
+	async function submitReview() {
+		if (!reviewNote.trim() || !reviewer.trim() || reviewBusy) return;
+		reviewBusy = true;
+		reviewMessage = '';
+		reviewError = '';
+		try {
+			const response = await fetch('/api/dev/visual-reviews', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					reviewId: crypto.randomUUID(),
+					assetKey: selectedPlate.assetKey,
+					catalogVersion: data.catalog.catalogVersion,
+					assetContentHash: selectedPlate.contentHash,
+					verdict: reviewVerdict,
+					note: reviewNote.trim(),
+					reviewer: reviewer.trim()
+				})
+			});
+			const body = (await response.json()) as VisualReviewRecord & { message?: string };
+			if (!response.ok || !body.reviewId) throw new Error(body.message ?? 'Review was not saved.');
+			reviewHistory = {
+				reviews: [...reviewHistory.reviews, body],
+				latestByAsset: { ...reviewHistory.latestByAsset, [body.assetKey]: body }
+			};
+			reviewMessage = `${body.verdict === 'approved' ? 'Accepted for promotion' : 'Revision requested'} · ${body.assetKey}`;
+			reviewNote = '';
+		} catch (error) {
+			reviewError = error instanceof Error ? error.message : 'Review was not saved.';
+		} finally {
+			reviewBusy = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -76,7 +127,13 @@
 						<span>{String(familyIndex + 1).padStart(2, '0')}</span>
 						<h3>{family.name}</h3>
 					</div>
-					<strong>Candidate · human review required</strong>
+					<div class="family-review">
+						<strong
+							>{reviewHistory.latestByAsset[family.plate]?.verdict ??
+								'Candidate · human review required'}</strong
+						>
+						<button onclick={() => (selectedPlateKey = family.plate)}>Review exact plate</button>
+					</div>
 				</header>
 				<img src={plates[family.plate]} alt={`${family.name}: four battlefield-duty concepts`} />
 				<div class="duties">
@@ -101,6 +158,87 @@
 				</div>
 			</article>
 		{/each}
+	</section>
+
+	<section class="review" aria-labelledby="monster-review-title">
+		<header class="section-heading">
+			<div>
+				<span>02</span>
+				<h2 id="monster-review-title">Hash-bound monster review</h2>
+			</div>
+			<p>
+				{reviewHistory.reviews.length} recorded monster decision{reviewHistory.reviews.length === 1
+					? ''
+					: 's'}
+			</p>
+		</header>
+		<div class="review-grid">
+			<form
+				onsubmit={(event) => {
+					event.preventDefault();
+					void submitReview();
+				}}
+			>
+				<label>
+					<span>Exact plate</span>
+					<select bind:value={selectedPlateKey}>
+						{#each data.catalog.plates as plate (plate.assetKey)}
+							<option value={plate.assetKey}>{plate.assetKey}</option>
+						{/each}
+					</select>
+				</label>
+				<code>{selectedPlate.contentHash}</code>
+				<div class="verdict" role="radiogroup" aria-label="Monster plate verdict">
+					<button
+						type="button"
+						class:active={reviewVerdict === 'approved'}
+						onclick={() => (reviewVerdict = 'approved')}>Accept</button
+					>
+					<button
+						type="button"
+						class:active={reviewVerdict === 'revise'}
+						onclick={() => (reviewVerdict = 'revise')}>Revise</button
+					>
+				</div>
+				<label><span>Reviewer</span><input bind:value={reviewer} maxlength="80" required /></label>
+				<label
+					><span>Decision note</span><textarea bind:value={reviewNote} maxlength="1000" required
+					></textarea></label
+				>
+				<button
+					class="record-review"
+					type="submit"
+					disabled={!data.reviewPersistenceAvailable ||
+						reviewBusy ||
+						!reviewer.trim() ||
+						!reviewNote.trim()}>{reviewBusy ? 'Recording…' : 'Record decision'}</button
+				>
+				{#if !data.reviewPersistenceAvailable}
+					<p class="review-error">
+						Start the local stack with <code>pnpm dev</code> to record decisions.
+					</p>
+				{:else if reviewError}
+					<p class="review-error" role="alert">{reviewError}</p>
+				{:else if reviewMessage}
+					<p class="review-success" data-testid="monster-review-result">{reviewMessage}</p>
+				{/if}
+			</form>
+			<article class="decision">
+				<p class="eyebrow">Current decision</p>
+				<h3>{selectedPlate.assetKey}</h3>
+				{#if currentReview}
+					<strong class:revise={currentReview.verdict === 'revise'}>{currentReview.verdict}</strong>
+					<blockquote>{currentReview.note}</blockquote>
+					<small
+						>{currentReview.reviewer} · {new Date(currentReview.createdAt).toLocaleString()}</small
+					>
+				{:else}
+					<strong>Unreviewed</strong>
+					<p>No decision is bound to this exact plate hash.</p>
+				{/if}
+				<p>Accept records judgment only. Catalog promotion remains a separate audited step.</p>
+			</article>
+		</div>
 	</section>
 </main>
 
@@ -159,7 +297,8 @@
 		text-transform: uppercase;
 	}
 	.intro,
-	.families {
+	.families,
+	.review {
 		max-width: 96rem;
 		margin: 0 auto;
 		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
@@ -259,9 +398,24 @@
 			400 2rem Georgia,
 			serif;
 	}
-	.family > header > strong {
+	.family-review strong {
 		color: #edc980;
 		font-size: 0.52rem;
+		text-transform: uppercase;
+	}
+	.family > header .family-review {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+	}
+	.family-review button,
+	.verdict button,
+	.record-review {
+		border: 1px solid #ffffff20;
+		padding: 0.65rem;
+		color: #f4efe57a;
+		background: transparent;
+		cursor: pointer;
 		text-transform: uppercase;
 	}
 	.family > img {
@@ -317,8 +471,100 @@
 		font-size: 0.62rem;
 		line-height: 1.4;
 	}
+	.review-grid {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: 1rem;
+	}
+	.review form,
+	.decision {
+		margin: 0;
+		border: 1px solid #ffffff16;
+		padding: clamp(1.2rem, 3vw, 2rem);
+		background: #090c12;
+	}
+	.review form label {
+		display: grid;
+		gap: 0.35rem;
+		margin-top: 1rem;
+	}
+	.review form label span {
+		color: #d7a85f;
+		font-size: 0.52rem;
+		text-transform: uppercase;
+	}
+	.review select,
+	.review input,
+	.review textarea {
+		border: 1px solid #ffffff20;
+		padding: 0.65rem;
+		color: #f4efe5;
+		background: #07090d;
+	}
+	.review textarea {
+		min-height: 7rem;
+		resize: vertical;
+	}
+	.review form > code {
+		display: block;
+		margin-top: 0.7rem;
+		overflow-wrap: anywhere;
+		color: #f4efe54f;
+		font-size: 0.55rem;
+	}
+	.verdict {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.4rem;
+		margin-top: 1rem;
+	}
+	.verdict button.active {
+		border-color: #d7a85f;
+		color: #fff;
+		background: #d7a85f18;
+	}
+	.record-review {
+		width: 100%;
+		margin-top: 1rem;
+		border-color: #d7a85f;
+		color: #fff;
+	}
+	.record-review:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+	.review-error {
+		color: #edc980;
+	}
+	.review-success {
+		color: #7fd6a1;
+	}
+	.decision h3 {
+		font:
+			400 2rem Georgia,
+			serif;
+	}
+	.decision > strong {
+		display: block;
+		margin: 1rem 0;
+		color: #7fd6a1;
+		font:
+			400 2rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.decision > strong.revise {
+		color: #edc980;
+	}
+	.decision blockquote,
+	.decision > p,
+	.decision > small {
+		color: #f4efe56b;
+		line-height: 1.6;
+	}
 	@media (max-width: 850px) {
-		.intro {
+		.intro,
+		.review-grid {
 			grid-template-columns: 1fr;
 		}
 		.duties {

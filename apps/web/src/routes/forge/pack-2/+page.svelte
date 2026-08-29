@@ -40,6 +40,7 @@
 	// svelte-ignore state_referenced_locally
 	let reviewHistory = $state(data.reviewHistory);
 	let reviewVerdict = $state<VisualReviewVerdict>('approved');
+	let reviewAssetKey = $state('');
 	let reviewer = $state('');
 	let reviewNote = $state('');
 	let reviewBusy = $state(false);
@@ -112,7 +113,11 @@
 	const selectedContinuity = $derived(
 		selected.assets.find((asset) => asset.role === 'continuity-sheet')
 	);
-	const currentReview = $derived(reviewHistory.latestByAsset[selectedAnchor.assetKey] ?? null);
+	const anchorReview = $derived(reviewHistory.latestByAsset[selectedAnchor.assetKey] ?? null);
+	const reviewAsset = $derived(
+		selected.assets.find((asset) => asset.assetKey === reviewAssetKey) ?? selectedAnchor
+	);
+	const currentReview = $derived(reviewHistory.latestByAsset[reviewAsset.assetKey] ?? null);
 	const feminineCohort = $derived(
 		data.cohort.filter((entry) => entry.draft.manifest.genderPresentation === 'feminine')
 	);
@@ -137,9 +142,9 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
 					reviewId: crypto.randomUUID(),
-					assetKey: selectedAnchor.assetKey,
+					assetKey: reviewAsset.assetKey,
 					catalogVersion: data.catalog.catalogVersion,
-					assetContentHash: selectedAnchor.contentHash,
+					assetContentHash: reviewAsset.contentHash,
 					verdict: reviewVerdict,
 					note: reviewNote.trim(),
 					reviewer: reviewer.trim()
@@ -357,9 +362,9 @@
 					</div>
 				</dl>
 				<div class="gate">
-					<span>Human approval</span><strong>{currentReview?.verdict ?? 'Candidate only'}</strong
+					<span>Human approval</span><strong>{anchorReview?.verdict ?? 'Candidate only'}</strong
 					><small>
-						{currentReview
+						{anchorReview
 							? 'Decision recorded; catalog promotion and runtime export remain separate.'
 							: 'Not eligible for player-facing summons.'}
 					</small>
@@ -595,9 +600,17 @@
 					void submitReview();
 				}}
 			>
-				<p class="eyebrow">Selected full-body anchor</p>
+				<p class="eyebrow">Selected human asset</p>
 				<h3>{selected.draft.manifest.displayName}</h3>
-				<code>{selectedAnchor.assetKey} · {selectedAnchor.contentHash}</code>
+				<label>
+					<span>Exact asset</span>
+					<select bind:value={reviewAssetKey}>
+						{#each selected.assets as asset (asset.assetKey)}
+							<option value={asset.assetKey}>{asset.assetKey} · {words(asset.role)}</option>
+						{/each}
+					</select>
+				</label>
+				<code>{reviewAsset.assetKey} · {reviewAsset.contentHash}</code>
 				<div class="verdict" role="radiogroup" aria-label="Pack 2 visual verdict">
 					<button
 						type="button"
@@ -834,6 +847,7 @@
 		text-transform: uppercase;
 	}
 	.facet-bar select,
+	.review select,
 	.review input,
 	.review textarea {
 		border: 1px solid #ffffff20;
