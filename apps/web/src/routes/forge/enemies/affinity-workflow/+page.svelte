@@ -131,10 +131,31 @@
 			>
 			<form method="GET" action={resolve('/forge/enemies/affinity-workflow')}>
 				<input type="hidden" name="mode" value="blind" />
+				<input type="hidden" name="scope" value="controlled" />
 				<button class:active={data.blind} type="submit">Start blind review</button>
 			</form>
 		</div>
 	</section>
+	{#if data.blind}
+		<section class="blind-progress" aria-label="Blind review scope and progress">
+			<div>
+				<p class="eyebrow">Controlled review progress</p>
+				<strong>{data.reviewedCandidateCount} / {data.reviewableCount}</strong>
+				<span>eligible candidates reviewed in this server-stripped scope</span>
+			</div>
+			<nav aria-label="Blind review scope">
+				<a
+					class:active={data.scope === 'controlled'}
+					href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=controlled"
+					>Controlled · 24</a
+				>
+				<a
+					class:active={data.scope === 'all'}
+					href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=all">All evidence</a
+				>
+			</nav>
+		</section>
+	{/if}
 
 	{#if !data.blind}
 		<section class="controls" aria-label="Affinity cohort filters">
@@ -208,6 +229,24 @@
 			<p>No automatic promotion</p>
 		</header>
 		<div class="governance-grid">
+			<article class="gate-state">
+				<p class="eyebrow">Breadth release gate</p>
+				<strong
+					>{data.gateReadiness.attainableWithExistingControlledCohort
+						? 'Awaiting evidence'
+						: 'Final controlled rerun required'}</strong
+				>
+				<dl>
+					{#each data.gateReadiness.criteria as criterion (criterion.label)}
+						<div>
+							<dt>{criterion.label}</dt>
+							<dd>
+								{criterion.current} current · {criterion.maximum} max · {criterion.threshold} required
+							</dd>
+						</div>
+					{/each}
+				</dl>
+			</article>
 			<article>
 				<p class="eyebrow">Catalog</p>
 				<strong>{data.catalog?.status ?? 'Not available'}</strong>
@@ -245,10 +284,12 @@
 				>
 				<p>
 					{data.reviewPersistenceAvailable
-						? 'Open any verified candidate to record a dedicated affinity review. Decisions never promote experiment assets.'
+						? 'Use server-stripped blind mode to record recognition evidence. Label-visible inspection is read-only, and decisions never promote experiment assets.'
 						: data.reviewPersistenceMessage}
 				</p>
-				<a href="#matrix-title">Choose a verified candidate</a>
+				<a href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=controlled"
+					>Start controlled blind review</a
+				>
 			</article>
 		</div>
 		{#if data.evaluation?.completionNotes?.length}
@@ -400,7 +441,7 @@
 					</details>
 				</div>
 			{/if}
-			{#if selectedCell.mediaUrl && selectedCell.status === 'candidate'}
+			{#if selectedCell.mediaUrl && selectedCell.status === 'candidate' && data.blind}
 				<form
 					method="POST"
 					class="review-form"
@@ -491,6 +532,14 @@
 						{/if}
 					</div>
 				</form>
+			{:else if selectedCell.mediaUrl && selectedCell.status === 'candidate'}
+				<p class="blind-review-required">
+					Review entry is disabled while labels are visible. Open the
+					<a href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=controlled"
+						>server-stripped controlled blind review</a
+					>
+					to record recognition evidence.
+				</p>
 			{/if}
 		</div>
 	</div>
@@ -636,6 +685,48 @@
 		padding-block: 1.5rem;
 		border-block: 1px solid #ffffff14;
 		background: #0c1117;
+	}
+	.blind-progress {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 2rem;
+		max-width: 112rem;
+		margin: 0 auto;
+		padding: 1rem clamp(1rem, 3vw, 3rem);
+		border-bottom: 1px solid #ffffff14;
+		background: #090d12;
+	}
+	.blind-progress strong,
+	.blind-progress span {
+		display: inline-block;
+		margin-top: 0.35rem;
+	}
+	.blind-progress strong {
+		margin-right: 0.6rem;
+		color: #f4efe5;
+		font:
+			400 1.5rem Georgia,
+			serif;
+	}
+	.blind-progress span {
+		color: #f4efe56f;
+		font-size: 0.68rem;
+	}
+	.blind-progress nav {
+		display: flex;
+		border: 1px solid #ffffff20;
+		padding: 0.25rem;
+	}
+	.blind-progress nav a {
+		padding: 0.7rem 0.9rem;
+		color: #f4efe570;
+		font-size: 0.62rem;
+		text-transform: uppercase;
+	}
+	.blind-progress nav a.active {
+		color: #071015;
+		background: #70b7c4;
 	}
 	.mode > div:first-child {
 		max-width: 52rem;
@@ -857,7 +948,7 @@
 	}
 	.governance-grid {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(4, 1fr);
 		gap: 1rem;
 	}
 	.governance-grid article {
@@ -893,6 +984,7 @@
 		line-height: 1.45;
 	}
 	.pending-api p:not(.eyebrow),
+	.gate-state p:not(.eyebrow),
 	.notes {
 		color: #f4efe575;
 		font-size: 0.7rem;
@@ -960,6 +1052,19 @@
 		background: #e5a45b0a;
 		font-size: 0.68rem;
 		line-height: 1.55;
+	}
+	.blind-review-required {
+		margin: 0;
+		border-top: 1px solid #70b7c433;
+		padding: 1rem clamp(1rem, 3vw, 2rem);
+		color: #f4efe58f;
+		background: #70b7c40a;
+		font-size: 0.68rem;
+		line-height: 1.6;
+	}
+	.blind-review-required a {
+		color: #9fd5de;
+		text-decoration: underline;
 	}
 	.provenance,
 	.review-form {

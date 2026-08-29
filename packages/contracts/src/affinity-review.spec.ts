@@ -46,11 +46,16 @@ describe('affinity workflow review contracts', () => {
 	});
 
 	it('keeps latest projections bound to listed reviews and unique target/reviewer pairs', () => {
-		const first = { ...request, reviewedAt: '2026-08-29T19:00:00.000Z' };
+		const first = {
+			...request,
+			reviewMode: 'blind' as const,
+			reviewedAt: '2026-08-29T19:00:00.000Z'
+		};
 		const second = {
 			...request,
 			reviewId: randomUUID(),
 			reviewer: 'second-reviewer',
+			reviewMode: 'blind' as const,
 			reviewedAt: '2026-08-29T19:01:00.000Z'
 		};
 		expect(

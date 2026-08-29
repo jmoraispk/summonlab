@@ -16,6 +16,12 @@
 		"sync-affinity-review.spec.ts",
 		"export-affinity-review-evidence.ts",
 		"export-affinity-review-evidence.spec.ts",
+		"export-affinity-contact-sheet.ts",
+		"export-affinity-contact-sheet.spec.ts",
+		"report-affinity-gate-readiness.ts",
+		"report-affinity-gate-readiness.spec.ts",
+		"finalize-affinity-evaluation.ts",
+		"finalize-affinity-evaluation.spec.ts",
 		"export-affinity-workflow.ts",
 		"validate-affinity-workflow.ts"
 	]

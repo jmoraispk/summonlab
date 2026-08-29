@@ -1,0 +1,80 @@
+{
+	"schemaVersion": "affinity-final-controlled-rerun-plan-v1",
+	"experimentId": "affinity-workflow-v1",
+	"status": "awaiting-informative-v1-blind-review",
+	"purpose": "Repeat all 24 controlled coordinates coherently with the final safe-frame-v4 and semantic-v2 workflow because the immutable v1 cohort cannot satisfy its first-attempt or review-capacity gates.",
+	"targetCount": 24,
+	"promptProtocol": "safe-frame-v4",
+	"authoringProtocol": "semantic-v2",
+	"retryCeiling": 1,
+	"speciesVersions": {
+		"death-knight": "v4",
+		"elemental": "v4",
+		"grey-wolf": "v3",
+		"cave-bear": "v3"
+	},
+	"entryGate": {
+		"requiresInformativeV1BlindReview": true,
+		"requiresCurrentWorkspaceValid": true,
+		"requiresAllPlannedOutputsAbsent": true,
+		"doesNotAuthorizeBreadth": true
+	},
+	"fallbackExecution": {
+		"activeTaskTotalSlots": 4,
+		"reservedOrchestratorSlots": 1,
+		"effectiveImageWorkers": 3,
+		"waveCount": 8,
+		"waves": [
+			["death-knight-normal-v4", "elemental-fire-v4", "grey-wolf-metal-v3"],
+			["cave-bear-water-v3", "death-knight-wood-v4", "elemental-wind-v4"],
+			["grey-wolf-normal-v3", "cave-bear-fire-v3", "death-knight-metal-v4"],
+			["elemental-water-v4", "grey-wolf-wood-v3", "cave-bear-wind-v3"],
+			["death-knight-fire-v4", "elemental-metal-v4", "grey-wolf-water-v3"],
+			["cave-bear-normal-v3", "death-knight-wind-v4", "elemental-wood-v4"],
+			["grey-wolf-fire-v3", "cave-bear-metal-v3", "death-knight-water-v4"],
+			["elemental-normal-v4", "grey-wolf-wind-v3", "cave-bear-wood-v3"]
+		]
+	},
+	"targets": [
+		{"key":"death-knight-normal-v4","speciesId":"death-knight","affinity":"normal","version":"v4"},
+		{"key":"death-knight-wood-v4","speciesId":"death-knight","affinity":"wood","version":"v4"},
+		{"key":"death-knight-fire-v4","speciesId":"death-knight","affinity":"fire","version":"v4"},
+		{"key":"death-knight-metal-v4","speciesId":"death-knight","affinity":"metal","version":"v4"},
+		{"key":"death-knight-water-v4","speciesId":"death-knight","affinity":"water","version":"v4"},
+		{"key":"death-knight-wind-v4","speciesId":"death-knight","affinity":"wind","version":"v4"},
+		{"key":"elemental-normal-v4","speciesId":"elemental","affinity":"normal","version":"v4"},
+		{"key":"elemental-wood-v4","speciesId":"elemental","affinity":"wood","version":"v4"},
+		{"key":"elemental-fire-v4","speciesId":"elemental","affinity":"fire","version":"v4"},
+		{"key":"elemental-metal-v4","speciesId":"elemental","affinity":"metal","version":"v4"},
+		{"key":"elemental-water-v4","speciesId":"elemental","affinity":"water","version":"v4"},
+		{"key":"elemental-wind-v4","speciesId":"elemental","affinity":"wind","version":"v4"},
+		{"key":"grey-wolf-normal-v3","speciesId":"grey-wolf","affinity":"normal","version":"v3"},
+		{"key":"grey-wolf-wood-v3","speciesId":"grey-wolf","affinity":"wood","version":"v3"},
+		{"key":"grey-wolf-fire-v3","speciesId":"grey-wolf","affinity":"fire","version":"v3"},
+		{"key":"grey-wolf-metal-v3","speciesId":"grey-wolf","affinity":"metal","version":"v3"},
+		{"key":"grey-wolf-water-v3","speciesId":"grey-wolf","affinity":"water","version":"v3"},
+		{"key":"grey-wolf-wind-v3","speciesId":"grey-wolf","affinity":"wind","version":"v3"},
+		{"key":"cave-bear-normal-v3","speciesId":"cave-bear","affinity":"normal","version":"v3"},
+		{"key":"cave-bear-wood-v3","speciesId":"cave-bear","affinity":"wood","version":"v3"},
+		{"key":"cave-bear-fire-v3","speciesId":"cave-bear","affinity":"fire","version":"v3"},
+		{"key":"cave-bear-metal-v3","speciesId":"cave-bear","affinity":"metal","version":"v3"},
+		{"key":"cave-bear-water-v3","speciesId":"cave-bear","affinity":"water","version":"v3"},
+		{"key":"cave-bear-wind-v3","speciesId":"cave-bear","affinity":"wind","version":"v3"}
+	],
+	"plannedPathTemplates": {
+		"target": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/{speciesId}/{affinity}-{version}.json",
+		"assignment": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/{speciesId}/{affinity}-{version}.json",
+		"candidate": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/{speciesId}/{affinity}-{version}.png",
+		"result": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/{speciesId}-{affinity}-{version}.json"
+	},
+	"successGate": {
+		"requiredCompletedTargets": 24,
+		"requiredFirstAttemptCandidates": 20,
+		"requiredSpeciesRecognitions": 23,
+		"requiredAffinityRecognitions": 20,
+		"requiredNormalUnaffiliatedRecognitions": 4,
+		"requiredAcceptedMeaningfulAffinities": 20,
+		"maximumAcceptedCriticalVisualFailures": 0,
+		"requiresZeroWorkflowViolations": true
+	}
+}

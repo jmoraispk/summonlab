@@ -93,6 +93,25 @@ continue to match the submitted generation requests.
 
 The complete failure classification and resolution history is in `review/evaluation.json`.
 
+## Reproducible review artifacts
+
+- `review/contact-sheet.png` is a deterministic `1920×1080` blind sheet containing all 24
+  controlled outputs in an opaque hash-derived order. It contains 21 producer candidates and three
+  inspectable revision records, carries no species or affinity labels, and has SHA-256
+  `070e516c3fbdf9633f076015518cbd794da26a55f7c8676758904bc7e010de7c`.
+- `dry-runs/goblin-normal-envelope-preflight-v2.json` proves that a fresh bounded agent could execute
+  target validation, reference routing, canonical prompt rendering, and output ownership from the
+  installed skill, one target, and a dedicated `dryRun: true` envelope without making an image call.
+- Review mode is now server-derived. Label-visible inspection cannot submit review evidence; API and
+  pre-migration records remain explicitly unverified and are excluded from blind-review export.
+- `pnpm report:affinity-gate` reports current, maximum attainable, and required values without
+  mutating evidence. It currently proves the v1 cohort cannot pass review alone: first-attempt
+  candidates max at 10/20, species-review capacity at 21/23, and meaningful non-Normal acceptance
+  capacity at 17/20.
+- `review/final-controlled-rerun-plan.json` reserves 24 collision-free v3/v4 coordinates and eight
+  balanced three-worker fallback waves. It is a validated dispatch plan, not authorization to skip
+  the informative v1 review or the breadth gate.
+
 ## Timing and concurrency
 
 - Individual model image calls were commonly 15–48 seconds.
@@ -127,11 +146,14 @@ append-only, bound to the exact candidate hash, and never promote assets.
 After one reviewer completes the blind set, export their latest hash-bound decisions with:
 
 ```bash
-pnpm export:affinity-review-evidence -- --reviewer <reviewer-name>
+pnpm export:affinity-review-evidence --reviewer <reviewer-name>
 pnpm sync:affinity-review
+pnpm report:affinity-gate
+pnpm finalize:affinity-evaluation
 ```
 
-Re-evaluate the controlled thresholds before dispatching any breadth image generation. The 60- and
-600-manifest Goblin independence audits are already deterministic and require no image calls. The
-remaining release dependency is a human blind review; producer self-inspection cannot supply the
-required species, affinity, or acceptance decisions.
+The finalization command refuses to pass an incomplete or unattainable gate. Re-evaluate the
+controlled thresholds before dispatching any breadth image generation. The 60- and 600-manifest
+Goblin independence audits are already deterministic and require no image calls. A coherent
+versioned final-protocol controlled rerun and subsequent human blind review remain required;
+producer self-inspection cannot supply recognition or acceptance decisions.

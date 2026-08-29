@@ -183,6 +183,7 @@ describe('affinity review synchronization', () => {
 				(attempt) => attempt.attemptId === execution.result.selectedAttemptId
 			)!.output!.contentHash,
 			reviewer: 'human-reviewer',
+			reviewMode: 'blind' as const,
 			reviewedAt: '2026-08-29T18:00:00.000Z',
 			identifiedSpeciesId: 'death-knight' as const,
 			identifiedAffinity: 'fire' as const,

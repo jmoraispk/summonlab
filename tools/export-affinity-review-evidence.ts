@@ -105,7 +105,7 @@ export function buildAffinityBlindReviewEvidence(input: {
 	}
 	const catalogByTarget = new Map(catalog.entries.map((entry) => [entry.targetId, entry]));
 	const selected = reviewList.latestByTargetReviewer
-		.filter((review) => review.reviewer === reviewer)
+		.filter((review) => review.reviewer === reviewer && review.reviewMode === 'blind')
 		.sort((left, right) => left.targetId.localeCompare(right.targetId));
 
 	const reviews = selected.map((review) => {
@@ -141,6 +141,7 @@ export function buildAffinityBlindReviewEvidence(input: {
 			targetId: review.targetId,
 			candidateContentHash: review.candidateContentHash,
 			reviewer: review.reviewer,
+			reviewMode: review.reviewMode,
 			reviewedAt: review.reviewedAt,
 			identifiedSpeciesId: review.identifiedSpeciesId,
 			identifiedAffinity: review.identifiedAffinity,

@@ -6,6 +6,11 @@ import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js'
 const TargetIdSchema = z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u);
 
 export const AffinityWorkflowExperimentIdSchema = z.literal('affinity-workflow-v1');
+export const AffinityWorkflowReviewModeSchema = z.enum([
+	'blind',
+	'api-unverified',
+	'legacy-unverified'
+]);
 
 export const AffinityWorkflowReviewScoresSchema = z
 	.object({
@@ -34,9 +39,15 @@ export const AffinityWorkflowReviewCreateRequestSchema = z
 	})
 	.strict();
 
-export const AffinityWorkflowReviewRecordSchema = AffinityWorkflowReviewCreateRequestSchema.extend({
-	reviewedAt: IsoDateTimeSchema
-}).strict();
+export const AffinityWorkflowReviewPersistenceRequestSchema =
+	AffinityWorkflowReviewCreateRequestSchema.extend({
+		reviewMode: AffinityWorkflowReviewModeSchema
+	}).strict();
+
+export const AffinityWorkflowReviewRecordSchema =
+	AffinityWorkflowReviewPersistenceRequestSchema.extend({
+		reviewedAt: IsoDateTimeSchema
+	}).strict();
 
 export const AffinityWorkflowReviewListSchema = z
 	.object({
@@ -50,7 +61,7 @@ export const AffinityWorkflowReviewListSchema = z
 		const latestKeys = new Set<string>();
 		const expectedLatest = new Map<string, AffinityWorkflowReviewRecord>();
 		for (const review of value.reviews) {
-			const key = `${review.targetId}\u0000${review.reviewer}`;
+			const key = `${review.targetId}\u0000${review.reviewer}\u0000${review.reviewMode}`;
 			const current = expectedLatest.get(key);
 			if (
 				!current ||
@@ -61,7 +72,7 @@ export const AffinityWorkflowReviewListSchema = z
 			}
 		}
 		for (const review of value.latestByTargetReviewer) {
-			const key = `${review.targetId}\u0000${review.reviewer}`;
+			const key = `${review.targetId}\u0000${review.reviewer}\u0000${review.reviewMode}`;
 			if (
 				review.experimentId !== value.experimentId ||
 				!listedReviewIds.has(review.reviewId) ||
@@ -69,13 +80,13 @@ export const AffinityWorkflowReviewListSchema = z
 			) {
 				context.addIssue({
 					code: 'custom',
-					message: `Latest affinity review must reference the newest listed review for ${review.targetId}`
+					message: `Latest affinity review must reference the newest listed ${review.reviewMode} review for ${review.targetId}`
 				});
 			}
 			if (latestKeys.has(key)) {
 				context.addIssue({
 					code: 'custom',
-					message: `Latest affinity reviews must be unique by target and reviewer: ${review.targetId}`
+					message: `Latest affinity reviews must be unique by target, reviewer, and mode: ${review.targetId}`
 				});
 			}
 			latestKeys.add(key);
@@ -94,5 +105,9 @@ export type AffinityWorkflowReviewCreateRequest = z.infer<
 	typeof AffinityWorkflowReviewCreateRequestSchema
 >;
 export type AffinityWorkflowReviewList = z.infer<typeof AffinityWorkflowReviewListSchema>;
+export type AffinityWorkflowReviewMode = z.infer<typeof AffinityWorkflowReviewModeSchema>;
+export type AffinityWorkflowReviewPersistenceRequest = z.infer<
+	typeof AffinityWorkflowReviewPersistenceRequestSchema
+>;
 export type AffinityWorkflowReviewRecord = z.infer<typeof AffinityWorkflowReviewRecordSchema>;
 export type AffinityWorkflowReviewScores = z.infer<typeof AffinityWorkflowReviewScoresSchema>;

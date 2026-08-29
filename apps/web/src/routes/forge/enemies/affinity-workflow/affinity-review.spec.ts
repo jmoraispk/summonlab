@@ -52,10 +52,11 @@ describe('affinity review helpers', () => {
 	});
 
 	it('loads partial workspace artifacts and strips blind semantic metadata', async () => {
-		const data = await loadAffinityReviewData(true);
-		expect(data.targetCount).toBe(60);
-		expect(data.rows).toHaveLength(14);
-		expect(data.rows.flatMap((row) => row.cells)).toHaveLength(84);
+		const data = await loadAffinityReviewData(true, [], 'controlled');
+		expect(data.targetCount).toBe(24);
+		expect(data.scope).toBe('controlled');
+		expect(data.rows).toHaveLength(4);
+		expect(data.rows.flatMap((row) => row.cells)).toHaveLength(24);
 		expect(data.verifiedCandidateCount).toBeGreaterThan(0);
 		const candidate = data.rows.flatMap((row) => row.cells).find((cell) => cell.mediaUrl);
 		expect(candidate?.labels).toBeNull();
@@ -80,6 +81,39 @@ describe('affinity review helpers', () => {
 				contentHash: expect.stringMatching(/^[a-f0-9]{64}$/)
 			})
 		);
+	});
+
+	it('counts only server-derived blind records in blind mode', async () => {
+		const base: AffinityWorkflowReviewRecord = {
+			reviewId: '5a0e7f4e-c8f5-4fca-82a7-116217626597',
+			experimentId: 'affinity-workflow-v1',
+			targetId: 'affinity-workflow-v1-death-knight-fire',
+			candidateContentHash: 'ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56',
+			reviewer: 'visual-director',
+			reviewMode: 'api-unverified',
+			identifiedSpeciesId: 'death-knight',
+			identifiedAffinity: 'fire',
+			scores: {
+				speciesIdentity: 5,
+				affinityReadability: 5,
+				silhouetteAndDuty: 5,
+				materialCredibility: 5,
+				anatomyAndGroundContact: 5,
+				affinityIntegration: 5,
+				styleCohesion: 5
+			},
+			verdict: 'candidate',
+			note: 'Unverified API evidence.',
+			reviewedAt: '2026-08-29T18:00:00.000Z'
+		};
+		const blind = await loadAffinityReviewData(true, [base], 'controlled');
+		const blindCell = blind.rows.flatMap((row) => row.cells).find((cell) => cell.mediaUrl);
+		expect(blindCell?.reviewState.count).toBe(0);
+		const labeled = await loadAffinityReviewData(false, [base]);
+		const labeledCell = labeled.rows
+			.flatMap((row) => row.cells)
+			.find((cell) => cell.labels?.targetId === base.targetId);
+		expect(labeledCell?.reviewState.count).toBe(1);
 	});
 
 	it('keeps versioned correction targets in distinct sparse regression rows', async () => {
@@ -139,6 +173,7 @@ describe('affinity review helpers', () => {
 			targetId: 'affinity-workflow-v1-death-knight-fire',
 			candidateContentHash: 'a'.repeat(64),
 			reviewer: 'Blind reviewer whose name must stay private',
+			reviewMode: 'blind',
 			identifiedSpeciesId: 'death-knight',
 			identifiedAffinity: 'fire',
 			scores: {

@@ -64,7 +64,10 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	try {
-		const result = await createAffinityWorkflowReview(getConfig().databaseUrl, parsed.data);
+		const result = await createAffinityWorkflowReview(getConfig().databaseUrl, {
+			...parsed.data,
+			reviewMode: 'api-unverified'
+		});
 		return json(result.review, {
 			status: result.created ? 201 : 200,
 			headers: { 'cache-control': 'no-store' }

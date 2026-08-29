@@ -28,8 +28,13 @@
 		"check:affinity-review": "tsx tools/sync-affinity-review.ts --check",
 		"export:affinity-review-evidence": "tsx tools/export-affinity-review-evidence.ts --write",
 		"check:affinity-review-evidence": "tsx tools/export-affinity-review-evidence.ts --check",
+		"export:affinity-contact-sheet": "tsx tools/export-affinity-contact-sheet.ts --write",
+		"check:affinity-contact-sheet": "tsx tools/export-affinity-contact-sheet.ts --check",
+		"report:affinity-gate": "tsx tools/report-affinity-gate-readiness.ts",
+		"finalize:affinity-evaluation": "tsx tools/finalize-affinity-evaluation.ts --write",
+		"check:affinity-finalization": "tsx tools/finalize-affinity-evaluation.ts --check",
 		"typecheck:affinity-workflow": "tsc -p tools/tsconfig.image-production.json",
-		"test:affinity-workflow": "vitest run tools/image-production-lib.spec.ts tools/persist-image-production-output.spec.ts tools/sync-affinity-review.spec.ts tools/export-affinity-review-evidence.spec.ts",
+		"test:affinity-workflow": "vitest run tools/image-production-lib.spec.ts tools/persist-image-production-output.spec.ts tools/sync-affinity-review.spec.ts tools/export-affinity-review-evidence.spec.ts tools/export-affinity-contact-sheet.spec.ts tools/report-affinity-gate-readiness.spec.ts tools/finalize-affinity-evaluation.spec.ts",
 		"persist:image-production-output": "tsx tools/persist-image-production-output.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
@@ -82,7 +87,7 @@
 		"test": "pnpm test:packaging && pnpm test:affinity-workflow && pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm validate:affinity-workflow && pnpm check:affinity-review && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm validate:affinity-workflow && pnpm check:affinity-review && pnpm check:affinity-contact-sheet && pnpm report:affinity-gate && pnpm check:affinity-finalization && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

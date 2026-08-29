@@ -69,6 +69,7 @@
 					"targetId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
 					"candidateContentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
 					"reviewer": { "type": "string", "minLength": 1, "maxLength": 100 },
+					"reviewMode": { "type": "string", "const": "blind" },
 					"reviewedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -123,6 +124,7 @@
 					"targetId",
 					"candidateContentHash",
 					"reviewer",
+					"reviewMode",
 					"reviewedAt",
 					"identifiedSpeciesId",
 					"identifiedAffinity",

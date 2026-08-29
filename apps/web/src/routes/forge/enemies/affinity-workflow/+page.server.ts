@@ -29,6 +29,7 @@ function score(formData: FormData, name: string): number {
 
 export const load = (async ({ url }) => {
 	const blind = url.searchParams.get('mode') === 'blind';
+	const scope = blind && url.searchParams.get('scope') !== 'all' ? 'controlled' : 'all';
 	const config = getConfig();
 	let reviewPersistenceAvailable = config.devRoutesEnabled;
 	let reviewPersistenceMessage = config.devRoutesEnabled
@@ -49,7 +50,7 @@ export const load = (async ({ url }) => {
 		}
 	}
 	return {
-		...(await loadAffinityReviewData(blind, reviews.reviews)),
+		...(await loadAffinityReviewData(blind, reviews.reviews, scope)),
 		reviewId: randomUUID(),
 		reviewPersistenceAvailable,
 		reviewPersistenceMessage
@@ -57,10 +58,15 @@ export const load = (async ({ url }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-	default: async ({ request }) => {
+	default: async ({ request, url }) => {
 		const config = getConfig();
 		if (!config.devRoutesEnabled) {
 			return fail(404, { reviewError: 'Review persistence is not enabled.' });
+		}
+		if (url.searchParams.get('mode') !== 'blind') {
+			return fail(409, {
+				reviewError: 'Review evidence can only be recorded from the server-stripped blind mode.'
+			});
 		}
 
 		const formData = await request.formData();
@@ -104,7 +110,10 @@ export const actions = {
 		}
 
 		try {
-			const result = await createAffinityWorkflowReview(config.databaseUrl, parsed.data);
+			const result = await createAffinityWorkflowReview(config.databaseUrl, {
+				...parsed.data,
+				reviewMode: 'blind'
+			});
 			return {
 				reviewSaved: true,
 				reviewCreated: result.created,

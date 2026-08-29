@@ -566,6 +566,7 @@ export const ImageProductionBlindReviewSchema = z
 		targetId: SlugSchema,
 		candidateContentHash: StateHashSchema,
 		reviewer: z.string().trim().min(1).max(100),
+		reviewMode: z.literal('blind'),
 		reviewedAt: IsoDateTimeSchema,
 		identifiedSpeciesId: ImageProductionSpeciesSchema,
 		identifiedAffinity: ImageProductionAffinitySchema,

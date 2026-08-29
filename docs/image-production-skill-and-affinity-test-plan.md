@@ -20,22 +20,41 @@ The plan is now backed by a runnable implementation rather than being a design-o
 
 - the reusable, locally installed `summonlab-image-production` skill is versioned under
   `skills/summonlab-image-production/` and passes the skill-package validator;
+- a fresh bounded subagent completed a no-image Goblin preflight from only the installed skill,
+  immutable target, and dedicated `dryRun: true` envelope; its prompt, reference, ownership, and
+  zero-output evidence is hash-bound under `dry-runs/`;
 - strict target, assignment, attempt, result, catalog, blind-review, evaluation, and dedicated
   affinity-review contracts are implemented and covered by tests;
 - 48 base manifests plus six Elemental semantic-regression and six final correction-regression
   manifests are exported with 120 unique owned output paths;
 - deterministic export, validation, exact-source persistence, result verification, aggregate sync,
-  review-evidence export, and goblin-independence audit tooling is implemented;
+  review-evidence export, deterministic blind contact-sheet export, and goblin-independence audit
+  tooling is implemented;
 - the Forge affinity-workflow page presents all 60 targets across 14 collision-free rows, supports
-  label-visible and server-stripped blind modes, verifies candidate bytes before serving them, and
-  records append-only hash-bound reviews without promotion;
+  label-visible inspection and a controlled-only server-stripped blind workflow, verifies candidate
+  bytes before serving them, and records append-only hash-bound reviews with server-derived mode
+  provenance and no promotion;
 - the Death Knight six-affinity pilot, the first Grey Wolf canaries, and the neutral-chassis
   Elemental regression have produced measured, hash-bound evidence;
 - all 24 controlled results, six Elemental regression results, and six final correction results are
   complete: 30 producer candidates and six bounded `revise` outcomes, all unapproved;
+- the 24 controlled outputs are assembled into a reproducible `1920×1080` opaque contact sheet;
+  its exact bytes are checked in the repository validation pipeline;
 - the controlled matrix has only 10 first-attempt candidates against the 20-target threshold, and
   no blind human recognition evidence has been recorded, so the 24-image breadth phase is not yet
   authorized by its release gate.
+
+The machine-derived gate-readiness report proves that the current controlled cohort cannot become
+passing through review alone: only 21 images are producer candidates, only 17 reviewable non-Normal
+targets can receive acceptance, and the immutable first-attempt count is 10. The experiment therefore
+requires a coherent versioned 24-coordinate final-protocol controlled rerun before breadth can open;
+the gate is not weakened or reinterpreted around the existing evidence.
+
+The exact 24-coordinate final controlled rerun is preplanned in
+`review/final-controlled-rerun-plan.json`. It reserves collision-free v3/v4 namespaces and balances
+all four species across eight three-worker fallback waves for the active four-slot task. The plan is
+validated but intentionally does not create or dispatch those manifests until the informative v1
+human review is recorded.
 
 The active Codex task exposes four total agent slots. Reserving one slot for orchestration yields a
 measured ceiling of three concurrent image jobs, even though local configuration requests 16. This
@@ -384,6 +403,9 @@ have stopped.
 
 Exit gate: a fresh agent can read only the skill, one target, and one execution envelope and produce
 the expected dry-run result without additional coaching.
+
+Execution status: passed with the Goblin Normal `dryRun: true` envelope and hash-bound no-output
+record under `assets/enemies/experiments/affinity-workflow-v1/dry-runs/`.
 
 ### Phase 2 — Death Knight pilot
 

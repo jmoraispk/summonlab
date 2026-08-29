@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "image-production-dry-run-evidence-v1",
+	"dryRunId": "affinity-workflow-v1-goblin-normal-envelope-preflight-v2",
+	"experimentId": "affinity-workflow-v1",
+	"recordedAt": "2026-08-29T20:20:00.000Z",
+	"workflow": "summonlab-image-production",
+	"target": {
+		"path": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json",
+		"targetId": "affinity-workflow-v1-goblin-normal",
+		"contentHash": "05552ef4f3ba9eb099299dd36e19f8f4d791f6bc8db93496e4d59ddf0d67aa35"
+	},
+	"assignment": {
+		"path": "assets/enemies/experiments/affinity-workflow-v1/dry-runs/goblin-normal-assignment-v1.json",
+		"assignmentId": "dry-run-assignment-affinity-workflow-v1-goblin-normal",
+		"contentHash": "afc44b85a09a99a72eb7060332e149be37ea15de47e91b74cf7bf9931365d9ca",
+		"dryRun": true,
+		"retryCeiling": 0
+	},
+	"preflight": {
+		"validator": "skills/summonlab-image-production/scripts/validate_target.py",
+		"status": "pass",
+		"referenceCount": 2,
+		"referencesPresentAndHashMatched": true,
+		"pathsContainedAndNormalized": true,
+		"targetAssignmentIdsMatch": true,
+		"outputsAbsent": true
+	},
+	"canonicalPrompt": {
+		"renderer": "skills/summonlab-image-production/scripts/render_prompt.py",
+		"protocol": "safe-frame-v4",
+		"byteLength": 3619,
+		"contentHash": "12d7f63366a08d5e7de25a07a5c575fa67431e638475de037685ffb91b06bd5e",
+		"submittedToGenerator": false
+	},
+	"ownedOutputs": {
+		"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+		"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json",
+		"candidateCreated": false,
+		"resultCreated": false
+	},
+	"completion": {
+		"generationCallCount": 0,
+		"persistenceCallCount": 0,
+		"sharedFilesEdited": false,
+		"selfPromoted": false,
+		"status": "pass"
+	}
+}

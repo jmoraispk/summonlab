@@ -77,6 +77,7 @@ function review(overrides: Record<string, unknown> = {}) {
 		targetId: TARGET_ID,
 		candidateContentHash: NEW_HASH,
 		reviewer: REVIEWER,
+		reviewMode: 'blind' as const,
 		identifiedSpeciesId: 'death-knight' as const,
 		identifiedAffinity: 'water' as const,
 		scores: {
@@ -157,6 +158,7 @@ describe('affinity review evidence export', () => {
 			targetId: TARGET_ID,
 			candidateContentHash: NEW_HASH,
 			reviewer: REVIEWER,
+			reviewMode: 'blind',
 			reviewedAt: '2026-08-29T18:00:00.000Z',
 			identifiedSpeciesId: 'death-knight',
 			identifiedAffinity: 'water',
@@ -166,6 +168,21 @@ describe('affinity review evidence export', () => {
 			verdict: 'revise',
 			note: 'Species is clear, but this reads as water rather than fire.'
 		});
+	});
+
+	it('excludes labeled, API, and legacy-unverified records from blind evidence', () => {
+		const unverified = review({ reviewMode: 'api-unverified' });
+		const result = buildAffinityBlindReviewEvidence({
+			reviewer: REVIEWER,
+			reviewList: AffinityWorkflowReviewListSchema.parse({
+				experimentId: 'affinity-workflow-v1',
+				reviews: [unverified],
+				latestByTargetReviewer: [unverified]
+			}),
+			catalog: catalog(),
+			targets: [target()]
+		});
+		expect(result.reviews).toEqual([]);
 	});
 
 	it.each([

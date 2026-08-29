@@ -159,6 +159,16 @@ describe('affinity workflow export tooling', () => {
 		temporaryRoots.push(root);
 		const bundle = createAffinityWorkflowExportBundle();
 		for (const artifact of bundle.artifacts) await writeJson(root, artifact.path, artifact.value);
+		for (const relativePath of [
+			`${AFFINITY_EXPERIMENT_ROOT}/targets/goblin/normal.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-assignment-v1.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v2.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json`
+		]) {
+			const destination = path.join(root, relativePath);
+			await mkdir(path.dirname(destination), { recursive: true });
+			await copyFile(path.join(process.cwd(), relativePath), destination);
+		}
 		const references = new Set(
 			bundle.targets.flatMap((target) => target.references.map((entry) => entry.path))
 		);

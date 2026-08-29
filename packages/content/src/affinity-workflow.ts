@@ -597,8 +597,12 @@ const SHARED_PRESENTATION = {
 export const BREADTH_AFFINITY_RELEASE_GATE = {
 	requiresCohort: 'controlled',
 	requiredCompletedTargets: 24,
+	requiredFirstAttemptCandidates: 20,
 	requiredSpeciesRecognitions: 23,
 	requiredAffinityRecognitions: 20,
+	requiredNormalUnaffiliatedRecognitions: 4,
+	requiredAcceptedMeaningfulAffinities: 20,
+	maximumAcceptedCriticalVisualFailures: 0,
 	requiresWorkflowPass: true
 } as const;
 

@@ -38,6 +38,7 @@ describe('affinity workflow review persistence', () => {
 			targetId,
 			candidateContentHash: 'a'.repeat(64),
 			reviewer: 'test:integration-primary',
+			reviewMode: 'blind' as const,
 			identifiedSpeciesId: 'death-knight' as const,
 			identifiedAffinity: 'fire' as const,
 			scores: {

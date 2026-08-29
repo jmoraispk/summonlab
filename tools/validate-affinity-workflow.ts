@@ -22,6 +22,11 @@ import {
 	sha256Json,
 	validateAffinityWorkflowDefinitions
 } from './image-production-lib.js';
+import {
+	AFFINITY_CONTACT_SHEET_HEIGHT,
+	AFFINITY_CONTACT_SHEET_PATH,
+	AFFINITY_CONTACT_SHEET_WIDTH
+} from './export-affinity-contact-sheet.js';
 import sharp from 'sharp';
 import { z } from 'zod';
 
@@ -60,6 +65,114 @@ const GoblinAuditSchema = z
 				passed: z.literal(true)
 			})
 			.strict()
+	})
+	.strict();
+
+const DryRunEvidenceSchema = z
+	.object({
+		schemaVersion: z.literal('image-production-dry-run-evidence-v1'),
+		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v2'),
+		experimentId: z.literal('affinity-workflow-v1'),
+		workflow: z.literal('summonlab-image-production'),
+		target: z
+			.object({
+				path: z.string().min(1),
+				targetId: z.literal('affinity-workflow-v1-goblin-normal'),
+				contentHash: z.string().regex(/^[a-f0-9]{64}$/u)
+			})
+			.strict(),
+		assignment: z
+			.object({
+				path: z.string().min(1),
+				assignmentId: z.literal('dry-run-assignment-affinity-workflow-v1-goblin-normal'),
+				contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+				dryRun: z.literal(true),
+				retryCeiling: z.literal(0)
+			})
+			.strict(),
+		preflight: z
+			.object({
+				validator: z.string().min(1),
+				status: z.literal('pass'),
+				referenceCount: z.number().int().positive(),
+				referencesPresentAndHashMatched: z.literal(true),
+				pathsContainedAndNormalized: z.literal(true),
+				targetAssignmentIdsMatch: z.literal(true),
+				outputsAbsent: z.literal(true)
+			})
+			.strict(),
+		canonicalPrompt: z
+			.object({
+				renderer: z.string().min(1),
+				protocol: z.literal('safe-frame-v4'),
+				byteLength: z.number().int().positive(),
+				contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+				submittedToGenerator: z.literal(false)
+			})
+			.strict(),
+		ownedOutputs: z
+			.object({
+				candidatePath: z.string().min(1),
+				resultPath: z.string().min(1),
+				candidateCreated: z.literal(false),
+				resultCreated: z.literal(false)
+			})
+			.strict(),
+		completion: z
+			.object({
+				generationCallCount: z.literal(0),
+				persistenceCallCount: z.literal(0),
+				sharedFilesEdited: z.literal(false),
+				selfPromoted: z.literal(false),
+				status: z.literal('pass')
+			})
+			.strict(),
+		recordedAt: z.iso.datetime()
+	})
+	.strict();
+
+const FinalControlledRerunPlanSchema = z
+	.object({
+		schemaVersion: z.literal('affinity-final-controlled-rerun-plan-v1'),
+		experimentId: z.literal('affinity-workflow-v1'),
+		status: z.literal('awaiting-informative-v1-blind-review'),
+		purpose: z.string().min(1),
+		targetCount: z.literal(24),
+		promptProtocol: z.literal('safe-frame-v4'),
+		authoringProtocol: z.literal('semantic-v2'),
+		retryCeiling: z.literal(1),
+		speciesVersions: z.record(z.string(), z.string()),
+		entryGate: z.object({}).passthrough(),
+		fallbackExecution: z
+			.object({
+				activeTaskTotalSlots: z.literal(4),
+				reservedOrchestratorSlots: z.literal(1),
+				effectiveImageWorkers: z.literal(3),
+				waveCount: z.literal(8),
+				waves: z.array(z.array(z.string().min(1)).length(3)).length(8)
+			})
+			.strict(),
+		targets: z
+			.array(
+				z
+					.object({
+						key: z.string().min(1),
+						speciesId: z.enum(['death-knight', 'elemental', 'grey-wolf', 'cave-bear']),
+						affinity: z.enum(['normal', 'wood', 'fire', 'metal', 'water', 'wind']),
+						version: z.enum(['v3', 'v4'])
+					})
+					.strict()
+			)
+			.length(24),
+		plannedPathTemplates: z
+			.object({
+				target: z.string().min(1),
+				assignment: z.string().min(1),
+				candidate: z.string().min(1),
+				result: z.string().min(1)
+			})
+			.strict(),
+		successGate: z.object({}).passthrough()
 	})
 	.strict();
 
@@ -153,6 +266,9 @@ export interface AffinityWorkflowValidationSummary {
 	readonly images: number;
 	readonly catalogEntries: number;
 	readonly blindReviews: number;
+	readonly controlledContactSheet: boolean;
+	readonly dryRunEvidence: boolean;
+	readonly finalControlledRerunPlan: boolean;
 	readonly evaluationStatus: 'incomplete' | 'passed' | 'failed';
 }
 
@@ -186,6 +302,62 @@ export async function validateAffinityWorkflowWorkspace(
 	const assignmentsById = new Map(
 		assignments.map((assignment) => [assignment.assignmentId, assignment])
 	);
+	let dryRunEvidence = false;
+	if (targets.length === 60) {
+		const evidence = DryRunEvidenceSchema.parse(
+			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v2.json'))
+		);
+		const dryAssignment = ImageProductionAssignmentSchema.parse(
+			await readJson(path.resolve(workspaceRoot, evidence.assignment.path))
+		);
+		if (
+			sha256(await readFile(path.resolve(workspaceRoot, evidence.target.path))) !==
+				evidence.target.contentHash ||
+			sha256(await readFile(path.resolve(workspaceRoot, evidence.assignment.path))) !==
+				evidence.assignment.contentHash ||
+			dryAssignment.dryRun !== true ||
+			dryAssignment.targetId !== evidence.target.targetId ||
+			dryAssignment.permittedOutputs.candidatePath !== evidence.ownedOutputs.candidatePath ||
+			dryAssignment.permittedOutputs.resultPath !== evidence.ownedOutputs.resultPath
+		) {
+			throw new Error('Fresh-agent dry-run evidence no longer matches its immutable inputs.');
+		}
+		dryRunEvidence = true;
+	}
+	let finalControlledRerunPlan = false;
+	if (targets.length === 60) {
+		const plan = FinalControlledRerunPlanSchema.parse(
+			await readJson(path.join(experimentRoot, 'review/final-controlled-rerun-plan.json'))
+		);
+		const targetKeys = plan.targets.map((target) => target.key);
+		const waveKeys = plan.fallbackExecution.waves.flat();
+		const coordinates = plan.targets.map((target) => `${target.speciesId}:${target.affinity}`);
+		if (
+			new Set(targetKeys).size !== 24 ||
+			new Set(waveKeys).size !== 24 ||
+			new Set(coordinates).size !== 24 ||
+			!targetKeys.every((key) => waveKeys.includes(key))
+		) {
+			throw new Error(
+				'Final controlled rerun plan must schedule 24 unique coordinates exactly once.'
+			);
+		}
+		for (const target of plan.targets) {
+			for (const template of Object.values(plan.plannedPathTemplates)) {
+				const plannedPath = template
+					.replace('{speciesId}', target.speciesId)
+					.replace('{affinity}', target.affinity)
+					.replace('{version}', target.version);
+				try {
+					await readFile(path.resolve(workspaceRoot, plannedPath));
+					throw new Error(`Planned final controlled output already exists: ${plannedPath}`);
+				} catch (error) {
+					if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+				}
+			}
+		}
+		finalControlledRerunPlan = true;
+	}
 	const references = new Map<string, string>();
 	for (const target of targets) {
 		for (const reference of target.references) {
@@ -299,6 +471,19 @@ export async function validateAffinityWorkflowWorkspace(
 	const controlledResults = catalogedResults.filter(
 		(result) => targetsById.get(result.targetId)?.cohort === 'controlled'
 	);
+	let controlledContactSheet = false;
+	if (controlledResults.length === 24) {
+		const contactSheetPath = path.resolve(workspaceRoot, AFFINITY_CONTACT_SHEET_PATH);
+		const contactSheet = await sharp(await readFile(contactSheetPath)).metadata();
+		if (
+			contactSheet.format !== 'png' ||
+			contactSheet.width !== AFFINITY_CONTACT_SHEET_WIDTH ||
+			contactSheet.height !== AFFINITY_CONTACT_SHEET_HEIGHT
+		) {
+			throw new Error('Controlled contact sheet must be the deterministic 1920×1080 PNG.');
+		}
+		controlledContactSheet = true;
+	}
 	const controlledReviews = blindReviews.reviews.filter(
 		(review) => targetsById.get(review.targetId)?.cohort === 'controlled'
 	);
@@ -384,6 +569,9 @@ export async function validateAffinityWorkflowWorkspace(
 		images: candidateFiles.length,
 		catalogEntries: catalog.entries.length,
 		blindReviews: blindReviews.reviews.length,
+		controlledContactSheet,
+		dryRunEvidence,
+		finalControlledRerunPlan,
 		evaluationStatus: evaluation.status
 	};
 }

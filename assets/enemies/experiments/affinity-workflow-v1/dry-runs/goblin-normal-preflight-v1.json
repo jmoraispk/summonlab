@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "image-production-dry-run-evidence-v1",
+  "dryRunId": "affinity-workflow-v1-goblin-normal-preflight-v1",
+  "experimentId": "affinity-workflow-v1",
+  "recordedAt": "2026-08-29T20:15:54.925Z",
+  "repository": {
+    "commitAtStart": "ef4fcdd1e49de3cc64dae2612b3291631a737670",
+    "branchAtStart": "main"
+  },
+  "execution": {
+    "agentContext": "fresh bounded subagent",
+    "mode": "preflight-and-reference-routing-only",
+    "generationCallPermitted": false,
+    "generationCallCount": 0,
+    "persistenceCallCount": 0,
+    "resultVerificationCallCount": 0,
+    "stopBoundary": "after canonical prompt rendering and ordered reference inspection, before image generation",
+    "assignmentDryRunFlag": false,
+    "dryRunOverrideSource": "bounded orchestration request",
+    "dryRunOverrideReason": "The existing assignment is immutable production input. This evidence exercise adds a stricter no-output stop boundary without modifying or copying that assignment.",
+    "outcome": "pass"
+  },
+  "inputs": {
+    "target": {
+      "path": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json",
+      "targetId": "affinity-workflow-v1-goblin-normal",
+      "sha256": "05552ef4f3ba9eb099299dd36e19f8f4d791f6bc8db93496e4d59ddf0d67aa35",
+      "mutated": false
+    },
+    "assignment": {
+      "path": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/normal.json",
+      "assignmentId": "assignment-affinity-workflow-v1-goblin-normal",
+      "targetId": "affinity-workflow-v1-goblin-normal",
+      "sha256": "74442f0c19f0e2f2aa223e8fd13d3c3e9af45448e36ad3f666fcd92560ea6366",
+      "mutated": false
+    }
+  },
+  "skill": {
+    "path": "/home/joao/.codex/skills/summonlab-image-production/SKILL.md",
+    "sha256": "04d716b7f7bfbcfb185bfbb01863a1999893d7f2a2c24ea4e6016d9f74e7d17b",
+    "requiredReferencesRead": [
+      "references/target-schema.md",
+      "references/result-schema.md",
+      "references/species-grammar.md",
+      "references/affinity-grammar.md",
+      "references/review-rubric.md"
+    ],
+    "scripts": {
+      "validateTarget": {
+        "path": "/home/joao/.codex/skills/summonlab-image-production/scripts/validate_target.py",
+        "sha256": "2890f4d4f4ccfdc61a6776c0d4da4e7ce65a9aa37a08e7a4859c5b072db6e973"
+      },
+      "renderPrompt": {
+        "path": "/home/joao/.codex/skills/summonlab-image-production/scripts/render_prompt.py",
+        "sha256": "27d990c52c3612f08e56153e62ec86973668820cf8db65caff776c58a1162c7e"
+      },
+      "verifyResult": {
+        "path": "/home/joao/.codex/skills/summonlab-image-production/scripts/verify_result.py",
+        "sha256": "00a9c2b73f076f3948f9ded9e1912d098df3a42f89f56af594b4ce129f2295cf",
+        "invoked": false,
+        "notInvokedReason": "A no-output dry run intentionally creates neither candidate nor result; verify_result.py only accepts a production result JSON."
+      }
+    }
+  },
+  "preflight": {
+    "command": "python3 /home/joao/.codex/skills/summonlab-image-production/scripts/validate_target.py assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/normal.json /home/joao/Documents/summonlab",
+    "exitCode": 0,
+    "report": {
+      "assignmentId": "assignment-affinity-workflow-v1-goblin-normal",
+      "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+      "dryRun": false,
+      "references": 2,
+      "resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json",
+      "retryCeiling": 1,
+      "status": "valid",
+      "targetId": "affinity-workflow-v1-goblin-normal"
+    },
+    "targetAssignmentIdsMatch": true,
+    "referencesPresentAndHashMatched": true,
+    "pathsContainedAndNormalized": true,
+    "outputsAbsentAtPreflight": true,
+    "status": "pass"
+  },
+  "canonicalPrompt": {
+    "protocol": "safe-frame-v4",
+    "command": "python3 /home/joao/.codex/skills/summonlab-image-production/scripts/render_prompt.py assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json",
+    "stdoutByteLength": 3619,
+    "stdoutSha256": "12d7f63366a08d5e7de25a07a5c575fa67431e638475de037685ffb91b06bd5e",
+    "terminalLineFeed": false,
+    "renderedTwiceWithIdenticalHash": true,
+    "submissionMutation": "none",
+    "submittedToGenerator": false,
+    "status": "pass"
+  },
+  "referenceRouting": [
+    {
+      "order": 1,
+      "path": "assets/enemies/review/goblinoids-v1.webp",
+      "absolutePath": "/home/joao/Documents/summonlab/assets/enemies/review/goblinoids-v1.webp",
+      "declaredSha256": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32",
+      "observedSha256": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32",
+      "hashMatched": true,
+      "inspectedAtOriginalDetail": true,
+      "purpose": "Established goblin species scale, adult proportions, material finish, and four canonical duty cues only; explicitly do not copy its repeated face or uniform ragged outfit distribution",
+      "routingBoundary": "Use only goblin scale, adult proportions, material finish, and duty cues; exclude repeated faces and outfit distribution."
+    },
+    {
+      "order": 2,
+      "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+      "absolutePath": "/home/joao/Documents/summonlab/assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+      "declaredSha256": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e",
+      "observedSha256": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e",
+      "hashMatched": true,
+      "inspectedAtOriginalDetail": true,
+      "purpose": "Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage",
+      "routingBoundary": "Use only finish and neutral presentation; exclude scale, anatomy, weapons, glow, and subject identity."
+    }
+  ],
+  "ownership": {
+    "permittedOutputs": [
+      "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+      "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json"
+    ],
+    "permittedOutputsExactlyMatchTarget": true,
+    "permittedOutputsExactlyMatchAssignment": true,
+    "permittedOutputsCreated": [],
+    "forbiddenPaths": [
+      {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/review/catalog.json",
+        "sha256AtStart": "e202dec60375968cfac8ff0ed9955bc95e7da0ec85338a8652e7372291da4eb0",
+        "sha256AtCompletion": "e202dec60375968cfac8ff0ed9955bc95e7da0ec85338a8652e7372291da4eb0",
+        "mutated": false
+      },
+      {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/review/blind-review.json",
+        "sha256AtStart": "d8375ee814c28e01341a93651d8039fcc83b64c1b48444c4a2bc9085e0097121",
+        "sha256AtCompletion": "d8375ee814c28e01341a93651d8039fcc83b64c1b48444c4a2bc9085e0097121",
+        "mutated": false
+      },
+      {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/review/evaluation.json",
+        "sha256AtStart": "79d85be8533839b836d35f361983bb9161a16d27490cea6158b0dd405ee1468c",
+        "sha256AtCompletion": "79d85be8533839b836d35f361983bb9161a16d27490cea6158b0dd405ee1468c",
+        "mutated": false
+      },
+      {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/review/contact-sheet.png",
+        "sha256AtStart": "070e516c3fbdf9633f076015518cbd794da26a55f7c8676758904bc7e010de7c",
+        "sha256AtCompletion": "070e516c3fbdf9633f076015518cbd794da26a55f7c8676758904bc7e010de7c",
+        "mutated": false
+      },
+      {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/generation-record.md",
+        "sha256AtStart": "26a047e3288efe9cfb4eb67c846b58d0dbc5c7305ed568061852f45a69f677eb",
+        "sha256AtCompletion": "26a047e3288efe9cfb4eb67c846b58d0dbc5c7305ed568061852f45a69f677eb",
+        "mutated": false
+      }
+    ],
+    "sharedFilesEdited": false,
+    "selfPromoted": false,
+    "status": "pass"
+  },
+  "completion": {
+    "candidateAbsent": true,
+    "resultAbsent": true,
+    "candidatePathChecked": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+    "resultPathChecked": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json",
+    "imageGenerated": false,
+    "newFilesOutsideDryRunDirectory": [],
+    "preflightPassed": true,
+    "canonicalPromptPassed": true,
+    "referenceRoutingPassed": true,
+    "ownershipPassed": true,
+    "noOutputBoundaryPassed": true,
+    "status": "pass"
+  }
+}

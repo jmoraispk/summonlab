@@ -8,6 +8,7 @@ import type { AffinityWorkflowReviewRecord } from '@summonlab/contracts';
 export const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
 type Affinity = (typeof AFFINITIES)[number];
 type Cohort = 'controlled' | 'breadth' | 'regression';
+export type AffinityReviewScope = 'all' | 'controlled';
 
 interface ReviewRowDefinition {
 	id: string;
@@ -462,14 +463,27 @@ async function summaryFile(name: string) {
 			schemaVersion: stringValue(value.schemaVersion),
 			generatedAt: stringValue(value.generatedAt),
 			status: stringValue(value.status),
-			entryCount: Array.isArray(value.entries) ? value.entries.length : 0
+			entryCount: Array.isArray(value.entries) ? value.entries.length : 0,
+			controlled: null
 		};
 	}
+	const controlled = isRecord(value.controlled) ? value.controlled : null;
 	return {
 		schemaVersion: stringValue(value.schemaVersion),
 		generatedAt: stringValue(value.generatedAt),
 		status: stringValue(value.status),
 		recommendedSafeConcurrency: numberValue(value.recommendedSafeConcurrency),
+		entryCount: 0,
+		controlled: controlled
+			? {
+					firstAttemptCandidateCount: numberValue(controlled.firstAttemptCandidateCount) ?? 0,
+					speciesCorrectCount: numberValue(controlled.speciesCorrectCount) ?? 0,
+					affinityCorrectCount: numberValue(controlled.affinityCorrectCount) ?? 0,
+					normalUnaffiliatedCount: numberValue(controlled.normalUnaffiliatedCount) ?? 0,
+					acceptedMeaningfulAffinityCount:
+						numberValue(controlled.acceptedMeaningfulAffinityCount) ?? 0
+				}
+			: null,
 		completionNotes: Array.isArray(value.completionNotes)
 			? value.completionNotes.filter((note): note is string => typeof note === 'string')
 			: []
@@ -520,7 +534,8 @@ export function summarizeAffinityReviews(
 
 export async function loadAffinityReviewData(
 	blind: boolean,
-	reviews: readonly AffinityWorkflowReviewRecord[] = []
+	reviews: readonly AffinityWorkflowReviewRecord[] = [],
+	scope: AffinityReviewScope = 'all'
 ) {
 	const [targets, results, catalog, evaluation] = await Promise.all([
 		loadTargets(),
@@ -540,7 +555,12 @@ export async function loadAffinityReviewData(
 		})
 	);
 
-	const species = blind ? buildBlindOrder(SPECIES, 'species') : [...SPECIES];
+	const scopedSpecies =
+		scope === 'controlled' ? SPECIES.filter((entry) => entry.cohort === 'controlled') : SPECIES;
+	const species = blind ? buildBlindOrder(scopedSpecies, `species:${scope}`) : [...scopedSpecies];
+	const reviewEvidence = blind
+		? reviews.filter((review) => review.reviewMode === 'blind')
+		: reviews;
 	const rows: AffinityReviewRow[] = species.map((entry, rowIndex) => {
 		const affinityItems = AFFINITIES.map((id) => ({ id }));
 		const orderedAffinities = blind
@@ -559,7 +579,7 @@ export async function loadAffinityReviewData(
 					: targetByCoordinate.get(`${entry.speciesId}:${entry.cohort}:${affinityEntry.id}`);
 				const result = target ? results.get(target.targetId) : null;
 				const candidate = target ? candidateByTarget.get(target.targetId) : null;
-				const currentReviews = reviewsForCurrentCandidate(reviews, target, candidate);
+				const currentReviews = reviewsForCurrentCandidate(reviewEvidence, target, candidate);
 				let status: CandidateState = 'pending';
 				let statusLabel = 'Pending generation';
 				if (result?.status === 'revise' || result?.status === 'failed') {
@@ -598,16 +618,62 @@ export async function loadAffinityReviewData(
 			})
 		};
 	});
+	const visibleCells = rows.flatMap((row) => row.cells);
+	const scopedTargets =
+		scope === 'controlled' ? targets.filter((target) => target.cohort === 'controlled') : targets;
+	const controlledTargets = targets.filter((target) => target.cohort === 'controlled');
+	const controlledCandidateTargets = controlledTargets.filter((target) => {
+		const result = results.get(target.targetId);
+		return result?.status === 'candidate' && candidateByTarget.get(target.targetId);
+	});
+	const controlledNonNormalCandidateTargets = controlledCandidateTargets.filter(
+		(target) => target.affinity !== 'normal'
+	);
+	const firstAttemptCandidateCount = evaluation?.controlled?.firstAttemptCandidateCount ?? 0;
+	const gateReadiness = {
+		currentlySatisfied: false,
+		attainableWithExistingControlledCohort:
+			firstAttemptCandidateCount >= 20 &&
+			controlledCandidateTargets.length >= 23 &&
+			controlledNonNormalCandidateTargets.length >= 20,
+		criteria: [
+			{
+				label: 'First-attempt candidates',
+				current: firstAttemptCandidateCount,
+				maximum: firstAttemptCandidateCount,
+				threshold: 20
+			},
+			{
+				label: 'Species review capacity',
+				current: evaluation?.controlled?.speciesCorrectCount ?? 0,
+				maximum: controlledCandidateTargets.length,
+				threshold: 23
+			},
+			{
+				label: 'Meaningful affinity acceptance capacity',
+				current: evaluation?.controlled?.acceptedMeaningfulAffinityCount ?? 0,
+				maximum: controlledNonNormalCandidateTargets.length,
+				threshold: 20
+			}
+		]
+	};
 
 	return {
 		experimentId: EXPERIMENT_ID,
 		blind,
+		scope,
 		rows,
-		targetCount: targets.length,
-		resultCount: results.size,
-		verifiedCandidateCount: [...candidateByTarget.values()].filter(Boolean).length,
+		targetCount: scopedTargets.length,
+		resultCount: scopedTargets.filter((target) => results.has(target.targetId)).length,
+		verifiedCandidateCount: scopedTargets.filter((target) => candidateByTarget.get(target.targetId))
+			.length,
+		reviewableCount: visibleCells.filter((cell) => cell.status === 'candidate').length,
+		reviewedCandidateCount: visibleCells.filter(
+			(cell) => cell.status === 'candidate' && cell.reviewState.count > 0
+		).length,
 		catalog,
-		evaluation: blind && evaluation ? { ...evaluation, completionNotes: [] } : evaluation
+		evaluation: blind && evaluation ? { ...evaluation, completionNotes: [] } : evaluation,
+		gateReadiness
 	};
 }
 

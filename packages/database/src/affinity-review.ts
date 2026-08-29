@@ -1,10 +1,10 @@
 import {
 	AffinityWorkflowExperimentIdSchema,
-	AffinityWorkflowReviewCreateRequestSchema,
 	AffinityWorkflowReviewListSchema,
+	AffinityWorkflowReviewPersistenceRequestSchema,
 	AffinityWorkflowReviewRecordSchema,
-	type AffinityWorkflowReviewCreateRequest,
 	type AffinityWorkflowReviewList,
+	type AffinityWorkflowReviewPersistenceRequest,
 	type AffinityWorkflowReviewRecord
 } from '@summonlab/contracts';
 import postgres from 'postgres';
@@ -15,6 +15,7 @@ interface AffinityWorkflowReviewRow {
 	target_id: string;
 	candidate_content_hash: string;
 	reviewer: string;
+	review_mode: string;
 	identified_species_id: string;
 	identified_affinity: string;
 	species_identity_score: number;
@@ -45,6 +46,7 @@ function recordFromRow(row: AffinityWorkflowReviewRow): AffinityWorkflowReviewRe
 		targetId: row.target_id,
 		candidateContentHash: row.candidate_content_hash,
 		reviewer: row.reviewer,
+		reviewMode: row.review_mode,
 		identifiedSpeciesId: row.identified_species_id,
 		identifiedAffinity: row.identified_affinity,
 		scores: {
@@ -67,7 +69,7 @@ function recordFromRow(row: AffinityWorkflowReviewRow): AffinityWorkflowReviewRe
 
 function matchesRequest(
 	review: AffinityWorkflowReviewRecord,
-	request: AffinityWorkflowReviewCreateRequest
+	request: AffinityWorkflowReviewPersistenceRequest
 ): boolean {
 	return (
 		review.reviewId === request.reviewId &&
@@ -75,6 +77,7 @@ function matchesRequest(
 		review.targetId === request.targetId &&
 		review.candidateContentHash === request.candidateContentHash &&
 		review.reviewer === request.reviewer &&
+		review.reviewMode === request.reviewMode &&
 		review.identifiedSpeciesId === request.identifiedSpeciesId &&
 		review.identifiedAffinity === request.identifiedAffinity &&
 		JSON.stringify(review.scores) === JSON.stringify(request.scores) &&
@@ -85,21 +88,21 @@ function matchesRequest(
 
 export async function createAffinityWorkflowReview(
 	databaseUrl: string,
-	input: AffinityWorkflowReviewCreateRequest
+	input: AffinityWorkflowReviewPersistenceRequest
 ): Promise<{ review: AffinityWorkflowReviewRecord; created: boolean }> {
-	const request = AffinityWorkflowReviewCreateRequestSchema.parse(input);
+	const request = AffinityWorkflowReviewPersistenceRequestSchema.parse(input);
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		const inserted = await sql<AffinityWorkflowReviewRow[]>`
 			insert into summonlab_affinity_workflow_reviews (
-				review_id, experiment_id, target_id, candidate_content_hash, reviewer,
+				review_id, experiment_id, target_id, candidate_content_hash, reviewer, review_mode,
 				identified_species_id, identified_affinity,
 				species_identity_score, affinity_readability_score, silhouette_and_duty_score,
 				material_credibility_score, anatomy_and_ground_contact_score,
 				affinity_integration_score, style_cohesion_score, verdict, note
 			) values (
 				${request.reviewId}, ${request.experimentId}, ${request.targetId},
-				${request.candidateContentHash}, ${request.reviewer},
+				${request.candidateContentHash}, ${request.reviewer}, ${request.reviewMode},
 				${request.identifiedSpeciesId}, ${request.identifiedAffinity},
 				${request.scores.speciesIdentity}, ${request.scores.affinityReadability},
 				${request.scores.silhouetteAndDuty}, ${request.scores.materialCredibility},
@@ -155,7 +158,7 @@ export async function listAffinityWorkflowReviews(
 		const reviews = rows.map(recordFromRow);
 		const latest = new Map<string, AffinityWorkflowReviewRecord>();
 		for (const review of reviews) {
-			latest.set(`${review.targetId}\u0000${review.reviewer}`, review);
+			latest.set(`${review.targetId}\u0000${review.reviewer}\u0000${review.reviewMode}`, review);
 		}
 		return AffinityWorkflowReviewListSchema.parse({
 			experimentId: scopedExperimentId,
