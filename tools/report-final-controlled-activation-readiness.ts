@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { lstat, readFile, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
@@ -435,11 +435,64 @@ export function buildFinalControlledActivationReadiness(
 async function readJson(file: string): Promise<unknown> {
 	return JSON.parse(await readFile(file, 'utf8'));
 }
+
+function containedPath(workspaceRoot: string, repositoryPath: string): string {
+	if (
+		path.isAbsolute(repositoryPath) ||
+		repositoryPath.includes('\\') ||
+		repositoryPath
+			.split('/')
+			.some((segment) => segment === '' || segment === '.' || segment === '..')
+	) {
+		throw new Error(`Unsafe repository path: ${repositoryPath}`);
+	}
+	const root = path.resolve(workspaceRoot);
+	const absolute = path.resolve(root, repositoryPath);
+	if (!absolute.startsWith(`${root}${path.sep}`)) {
+		throw new Error(`Path escapes workspace: ${repositoryPath}`);
+	}
+	return absolute;
+}
+
+async function verifiedContainedFile(
+	workspaceRoot: string,
+	repositoryPath: string,
+	rejectDirectSymlink = false
+): Promise<string> {
+	const absolute = containedPath(workspaceRoot, repositoryPath);
+	const metadata = await lstat(absolute);
+	if (!metadata.isFile() && !metadata.isSymbolicLink()) {
+		throw new Error(`Expected regular file: ${repositoryPath}`);
+	}
+	if (rejectDirectSymlink && metadata.isSymbolicLink()) {
+		throw new Error(`Staged target cannot be a symlink: ${repositoryPath}`);
+	}
+	const root = await realpath(path.resolve(workspaceRoot));
+	const resolved = await realpath(absolute);
+	if (!resolved.startsWith(`${root}${path.sep}`)) {
+		throw new Error(`Resolved path escapes workspace: ${repositoryPath}`);
+	}
+	return absolute;
+}
+
+export function expectedStagedTargetPath(
+	plan: FinalControlledRerunPlan,
+	resolution: FinalControlledDesignRiskResolutionCollection['resolutions'][number]
+): string {
+	const coordinate = plan.targets.find((target) => target.key === resolution.coordinate);
+	if (!coordinate) throw new Error(`Unknown staged coordinate: ${resolution.coordinate}`);
+	return `${STAGING_PREFIX}${coordinate.speciesId}/${coordinate.affinity}-${coordinate.version}.json`;
+}
+
 export async function loadStagedVerification(
 	workspaceRoot: string,
-	stagePath: string
+	stagePath: string,
+	expectedPath: string
 ): Promise<StagedVerification> {
-	const absolute = path.resolve(workspaceRoot, stagePath);
+	if (stagePath !== expectedPath) {
+		throw new Error(`Staged target path does not match its plan coordinate: ${stagePath}`);
+	}
+	const absolute = await verifiedContainedFile(workspaceRoot, stagePath, true);
 	const target = ImageProductionTargetSchema.parse(await readJson(absolute));
 	const renderer = path.resolve(
 		workspaceRoot,
@@ -450,15 +503,31 @@ export async function loadStagedVerification(
 	});
 	const referenceHashes: Record<string, string> = {};
 	for (const reference of target.references) {
+		const referencePath = await verifiedContainedFile(workspaceRoot, reference.path);
 		referenceHashes[reference.path] = createHash('sha256')
-			.update(await readFile(path.resolve(workspaceRoot, reference.path)))
+			.update(await readFile(referencePath))
 			.digest('hex');
 	}
 	return { target, exactPrompt, referenceHashes };
 }
-export async function reportCurrentWorkspace(
+
+/** Only ENOENT is evidence of absence; permission, type, and I/O failures propagate. */
+export async function repositoryPathIsAbsent(
+	workspaceRoot: string,
+	repositoryPath: string
+): Promise<boolean> {
+	try {
+		await lstat(containedPath(workspaceRoot, repositoryPath));
+		return false;
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return true;
+		throw error;
+	}
+}
+
+export async function loadCurrentActivationReadinessInput(
 	workspaceRoot = process.cwd()
-): Promise<ActivationReadinessReport> {
+): Promise<ActivationReadinessInput> {
 	const root = path.resolve(workspaceRoot, AFFINITY_EXPERIMENT_ROOT);
 	const plan = await readJson(path.join(root, 'review/final-controlled-rerun-plan.json'));
 	const reviews = await readJson(path.join(root, 'review/blind-review.json'));
@@ -496,24 +565,20 @@ export async function reportCurrentWorkspace(
 			if (resolution.stagedTarget)
 				staged[resolution.stagedTarget.path] = await loadStagedVerification(
 					workspaceRoot,
-					resolution.stagedTarget.path
+					resolution.stagedTarget.path,
+					expectedStagedTargetPath(FinalControlledRerunPlanSchema.parse(plan), resolution)
 				);
 		}
 	}
 	const bundle = buildFinalControlledRerunBundle(plan);
 	const plannedPathsAbsent = await Promise.all(
-		bundle.plannedPaths.map((p) =>
-			readFile(path.resolve(workspaceRoot, p)).then(
-				() => false,
-				() => true
-			)
-		)
+		bundle.plannedPaths.map((plannedPath) => repositoryPathIsAbsent(workspaceRoot, plannedPath))
 	).then((v) => v.every(Boolean));
 	const currentWorkspaceValid = await validateAffinityWorkflowWorkspace(workspaceRoot).then(
 		() => true,
 		() => false
 	);
-	return buildFinalControlledActivationReadiness({
+	return {
 		plan,
 		blindReviews: reviews,
 		catalog,
@@ -523,7 +588,15 @@ export async function reportCurrentWorkspace(
 		staged,
 		currentWorkspaceValid,
 		plannedPathsAbsent
-	});
+	};
+}
+
+export async function reportCurrentWorkspace(
+	workspaceRoot = process.cwd()
+): Promise<ActivationReadinessReport> {
+	return buildFinalControlledActivationReadiness(
+		await loadCurrentActivationReadinessInput(workspaceRoot)
+	);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href)

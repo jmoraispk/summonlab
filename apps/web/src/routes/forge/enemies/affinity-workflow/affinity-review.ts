@@ -5,6 +5,9 @@ import path from 'node:path';
 
 import type { AffinityWorkflowReviewRecord } from '@summonlab/contracts';
 
+import { verifyFinalControlledActivationReceipt } from '../../../../../../../tools/activate-final-controlled-rerun.js';
+import { sha256Json } from '../../../../../../../tools/image-production-lib.js';
+
 export const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
 type Affinity = (typeof AFFINITIES)[number];
 type Cohort = 'controlled' | 'breadth' | 'regression';
@@ -38,6 +41,21 @@ export function parseAffinityReviewScope(value: string | null | undefined): Affi
 	if (value === null || value === undefined || value === '') return 'controlled';
 	if (value === 'all' || value === 'controlled') return value;
 	throw new Error(`Unknown affinity review scope: ${value}`);
+}
+
+export function parseAffinityReviewer(value: string | null | undefined): string | null {
+	if (value === null || value === undefined || value.trim() === '') return null;
+	const reviewer = value.trim();
+	if (
+		reviewer.length > 80 ||
+		[...reviewer].some((character) => {
+			const code = character.charCodeAt(0);
+			return code < 32 || code === 127;
+		})
+	) {
+		throw new Error('Invalid affinity reviewer identity.');
+	}
+	return reviewer;
 }
 
 interface ControlledTargetIdentity {
@@ -752,6 +770,11 @@ async function loadAvailableControlledRounds(): Promise<ControlledRoundDefinitio
 			path.join(EXPERIMENT_ROOT, 'review', 'final-controlled-rerun-plan.json')
 		);
 		if (!plan) return rounds;
+		const activation = await verifyFinalControlledActivationReceipt(
+			REPOSITORY_ROOT,
+			sha256Json(plan)
+		);
+		if (!activation.valid) return rounds;
 		const expectations = finalControlledExpectations(plan);
 		const manifests = await Promise.all(
 			expectations.map(async (expected) => ({
@@ -860,7 +883,8 @@ export async function loadAffinityReviewData(
 	blind: boolean,
 	reviews: readonly AffinityWorkflowReviewRecord[] = [],
 	scope: AffinityReviewScope = 'all',
-	roundId: ControlledRoundId = 'baseline-v1'
+	roundId: ControlledRoundId = 'baseline-v1',
+	activeReviewer: string | null = null
 ) {
 	const [targets, results, catalog, evaluation, controlledRounds] = await Promise.all([
 		loadTargets(),
@@ -893,7 +917,9 @@ export async function loadAffinityReviewData(
 		? buildBlindOrder(scopedSpecies, `species:${scope}:${roundId}`)
 		: [...scopedSpecies];
 	const reviewEvidence = blind
-		? reviews.filter((review) => review.reviewMode === 'blind')
+		? reviews.filter(
+				(review) => review.reviewMode === 'blind' && review.reviewer === activeReviewer
+			)
 		: reviews;
 	const rows: AffinityReviewRow[] = species.map((entry, rowIndex) => {
 		const affinityItems = AFFINITIES.map((id) => ({ id }));
@@ -949,6 +975,10 @@ export async function loadAffinityReviewData(
 		};
 	});
 	const visibleCells = rows.flatMap((row) => row.cells);
+	const reviewableCells = visibleCells.filter((cell) => cell.status === 'candidate');
+	const reviewedCandidateCount = reviewableCells.filter(
+		(cell) => cell.reviewState.count > 0
+	).length;
 	const scopedTargetIds = new Set(
 		scopedSpecies.flatMap((entry) => Object.values(entry.targetIds ?? {}))
 	);
@@ -1056,6 +1086,7 @@ export async function loadAffinityReviewData(
 	return {
 		experimentId: EXPERIMENT_ID,
 		blind,
+		activeReviewer,
 		scope,
 		controlledRound: { id: controlledRound.id, label: controlledRound.label },
 		availableControlledRounds: controlledRounds.map(({ id, label }) => ({ id, label })),
@@ -1064,10 +1095,11 @@ export async function loadAffinityReviewData(
 		resultCount: scopedTargets.filter((target) => results.has(target.targetId)).length,
 		verifiedCandidateCount: scopedTargets.filter((target) => candidateByTarget.get(target.targetId))
 			.length,
-		reviewableCount: visibleCells.filter((cell) => cell.status === 'candidate').length,
-		reviewedCandidateCount: visibleCells.filter(
-			(cell) => cell.status === 'candidate' && cell.reviewState.count > 0
-		).length,
+		reviewableCount: reviewableCells.length,
+		reviseCount: visibleCells.filter((cell) => cell.status === 'revise').length,
+		reviewedCandidateCount,
+		remainingCandidateCount: reviewableCells.length - reviewedCandidateCount,
+		nextUnreviewedCellId: reviewableCells.find((cell) => cell.reviewState.count === 0)?.id ?? null,
 		catalog: roundId === 'baseline-v1' ? catalog : null,
 		evaluation:
 			roundId === 'baseline-v1'

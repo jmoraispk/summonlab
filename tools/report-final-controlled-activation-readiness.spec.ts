@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
@@ -17,6 +18,8 @@ import {
 import {
 	FinalControlledDesignRiskResolutionCollectionSchema,
 	buildFinalControlledActivationReadiness,
+	loadStagedVerification,
+	repositoryPathIsAbsent,
 	type ActivationReadinessInput,
 	type StagedVerification
 } from './report-final-controlled-activation-readiness.js';
@@ -282,5 +285,33 @@ describe('final controlled activation readiness', () => {
 		const second = buildFinalControlledActivationReadiness(input);
 		expect(first).toEqual(second);
 		expect(canonicalJson(input)).toBe(before);
+	});
+	it('rejects coordinate traversal and direct staged-target symlinks before reading them', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-stage-containment-'));
+		try {
+			const expected =
+				'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/death-knight/fire-v4.json';
+			await expect(
+				loadStagedVerification(root, `${expected}/../escape.json`, expected)
+			).rejects.toThrow('does not match');
+			const outside = path.join(root, 'outside.json');
+			await writeFile(outside, '{}');
+			const staged = path.resolve(root, expected);
+			await mkdir(path.dirname(staged), { recursive: true });
+			await symlink(outside, staged);
+			await expect(loadStagedVerification(root, expected, expected)).rejects.toThrow('symlink');
+		} finally {
+			await rm(root, { recursive: true });
+		}
+	});
+	it('does not misclassify an existing non-file path as absent', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-strict-absence-'));
+		try {
+			await mkdir(path.join(root, 'occupied'));
+			expect(await repositoryPathIsAbsent(root, 'occupied')).toBe(false);
+			expect(await repositoryPathIsAbsent(root, 'missing')).toBe(true);
+		} finally {
+			await rm(root, { recursive: true });
+		}
 	});
 });

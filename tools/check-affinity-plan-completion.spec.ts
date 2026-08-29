@@ -8,6 +8,7 @@ import {
 	compositeAffinityWorkspaceIsValid,
 	buildAffinityPlanCompletionReport,
 	buildFinalControlledGateEvidence,
+	finalControlledReceiptFailureInvalidatesWorkspace,
 	findFinalControlledCrossCohortIdConflicts,
 	ScaleRecommendationSchema,
 	validateSchedulerRunEligibility,
@@ -71,6 +72,7 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 		},
 		controlledFinalRerun: {
 			planValidated: true,
+			activationReceiptValid: true,
 			targetManifestCount: 24,
 			assignmentCount: 24,
 			resultCount: 24,
@@ -159,6 +161,7 @@ describe('affinity image-production plan completion', () => {
 		const targets = Array.from({ length: 24 }, (_, index) => finalTarget(index));
 		const finalEvidence = buildFinalControlledGateEvidence({
 			planValidated: true,
+			activationReceiptValid: true,
 			targets,
 			assignmentCount: 24,
 			executions: targets.map(finalExecution),
@@ -223,6 +226,27 @@ describe('affinity image-production plan completion', () => {
 				finalValidationIssues: ['hash mismatch']
 			})
 		).toBe(false);
+	});
+
+	it('distinguishes a pristine pre-activation workspace from receipt-less activation artifacts', () => {
+		expect(
+			finalControlledReceiptFailureInvalidatesWorkspace({
+				receiptPresent: false,
+				plannedArtifactCount: 0
+			})
+		).toBe(false);
+		expect(
+			finalControlledReceiptFailureInvalidatesWorkspace({
+				receiptPresent: false,
+				plannedArtifactCount: 1
+			})
+		).toBe(true);
+		expect(
+			finalControlledReceiptFailureInvalidatesWorkspace({
+				receiptPresent: true,
+				plannedArtifactCount: 0
+			})
+		).toBe(true);
 	});
 
 	it('detects target, assignment, and result IDs reused from immutable base evidence', () => {

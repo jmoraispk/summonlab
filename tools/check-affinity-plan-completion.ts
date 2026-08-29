@@ -20,8 +20,13 @@ import { loadAffinityReviewData } from '../apps/web/src/routes/forge/enemies/aff
 import {
 	AFFINITY_EXPERIMENT_ROOT,
 	ImageProductionBlindReviewCollectionSchema,
-	createAffinityWorkflowExportBundle
+	createAffinityWorkflowExportBundle,
+	sha256Json
 } from './image-production-lib.js';
+import {
+	FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
+	verifyFinalControlledActivationReceipt
+} from './activate-final-controlled-rerun.js';
 import { buildAffinityGateReadiness } from './report-affinity-gate-readiness.js';
 import {
 	AffinityWavePreflightSchema,
@@ -207,6 +212,7 @@ export interface AffinityPlanCompletionEvidence {
 	};
 	readonly controlledFinalRerun: {
 		readonly planValidated: boolean;
+		readonly activationReceiptValid: boolean;
 		readonly targetManifestCount: number;
 		readonly assignmentCount: number;
 		readonly resultCount: number;
@@ -285,6 +291,7 @@ export interface AffinityPlanCompletionReport {
 
 export interface FinalControlledGateEvidenceInput {
 	readonly planValidated: boolean;
+	readonly activationReceiptValid: boolean;
 	readonly targets: readonly ImageProductionTarget[];
 	readonly assignmentCount: number;
 	readonly executions: readonly ValidatedImageProductionExecution[];
@@ -362,6 +369,7 @@ export function buildFinalControlledGateEvidence(
 	return {
 		controlledFinalRerun: {
 			planValidated: input.planValidated,
+			activationReceiptValid: input.activationReceiptValid,
 			targetManifestCount: input.targets.length,
 			assignmentCount: input.assignmentCount,
 			resultCount: input.executions.length,
@@ -405,6 +413,7 @@ export function buildAffinityPlanCompletionReport(
 		evidence.skillAndDryRun.dryRunValidated;
 	const controlledComplete =
 		evidence.controlledFinalRerun.planValidated &&
+		evidence.controlledFinalRerun.activationReceiptValid &&
 		evidence.controlledFinalRerun.targetManifestCount === 24 &&
 		evidence.controlledFinalRerun.assignmentCount === 24 &&
 		evidence.controlledFinalRerun.resultCount === 24 &&
@@ -673,6 +682,13 @@ function finalPlanIsStructurallyValid(
 	);
 }
 
+export function finalControlledReceiptFailureInvalidatesWorkspace(input: {
+	readonly receiptPresent: boolean;
+	readonly plannedArtifactCount: number;
+}): boolean {
+	return input.receiptPresent || input.plannedArtifactCount > 0;
+}
+
 async function inspectFinalControlledExecutionEvidence(input: {
 	readonly workspaceRoot: string;
 	readonly plan: z.infer<typeof FinalControlledRerunPlanSchema> | null;
@@ -690,6 +706,7 @@ async function inspectFinalControlledExecutionEvidence(input: {
 		return {
 			gateEvidence: buildFinalControlledGateEvidence({
 				planValidated: false,
+				activationReceiptValid: false,
 				targets: [],
 				assignmentCount: 0,
 				executions: [],
@@ -711,10 +728,18 @@ async function inspectFinalControlledExecutionEvidence(input: {
 	const targets: ImageProductionTarget[] = [];
 	const executions: ValidatedImageProductionExecution[] = [];
 	const validationIssues: string[] = [];
+	const receiptVerification = await verifyFinalControlledActivationReceipt(
+		input.workspaceRoot,
+		sha256Json(input.plan)
+	);
+	const receiptPresent = await fileExists(
+		path.resolve(input.workspaceRoot, FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH)
+	);
 	const assignmentIds: string[] = [];
 	const resultIds: string[] = [];
 	let assignmentCount = 0;
 	let verifiedImageCount = 0;
+	let plannedArtifactCount = 0;
 	for (const planned of input.plan.targets) {
 		const targetPath = renderPlannedPath(input.plan.plannedPathTemplates.target, planned);
 		const assignmentPath = renderPlannedPath(input.plan.plannedPathTemplates.assignment, planned);
@@ -728,6 +753,7 @@ async function inspectFinalControlledExecutionEvidence(input: {
 			}))
 		);
 		const presentPaths = pathPresence.filter((entry) => entry.present);
+		plannedArtifactCount += presentPaths.length;
 		if (presentPaths.length === 0) continue;
 		if (presentPaths.length !== coordinatePaths.length) {
 			validationIssues.push(
@@ -739,6 +765,7 @@ async function inspectFinalControlledExecutionEvidence(input: {
 				await readJson(path.resolve(input.workspaceRoot, targetPath))
 			);
 			if (
+				target.targetId !== `affinity-workflow-v1-${planned.key}` ||
 				target.cohort !== 'controlled' ||
 				target.speciesId !== planned.speciesId ||
 				target.affinity !== planned.affinity ||
@@ -775,6 +802,17 @@ async function inspectFinalControlledExecutionEvidence(input: {
 			);
 		}
 	}
+	if (
+		!receiptVerification.valid &&
+		finalControlledReceiptFailureInvalidatesWorkspace({
+			receiptPresent,
+			plannedArtifactCount
+		})
+	) {
+		validationIssues.push(
+			...receiptVerification.issues.map((issue) => `Activation receipt: ${issue}`)
+		);
+	}
 	for (const [label, values] of [
 		['target IDs', targets.map((target) => target.targetId)],
 		['assignment IDs', assignmentIds],
@@ -797,6 +835,7 @@ async function inspectFinalControlledExecutionEvidence(input: {
 	return {
 		gateEvidence: buildFinalControlledGateEvidence({
 			planValidated: finalPlanIsStructurallyValid(input.plan),
+			activationReceiptValid: receiptVerification.valid,
 			targets,
 			assignmentCount,
 			executions,

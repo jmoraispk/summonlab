@@ -13,6 +13,7 @@ import {
 	loadAffinityReviewData,
 	makeOpaqueId,
 	parseControlledRoundId,
+	parseAffinityReviewer,
 	readPngDimensions,
 	summarizeAffinityReviews,
 	targetBelongsToReviewSelection
@@ -46,6 +47,12 @@ describe('affinity review helpers', () => {
 		expect(parseControlledRoundId(null)).toBe('baseline-v1');
 		expect(parseControlledRoundId('final-controlled-v1')).toBe('final-controlled-v1');
 		expect(() => parseControlledRoundId('latest')).toThrow('Unknown controlled round');
+	});
+
+	it('normalizes and validates the reviewer identity once per blind session', () => {
+		expect(parseAffinityReviewer('  visual-director  ')).toBe('visual-director');
+		expect(parseAffinityReviewer('')).toBeNull();
+		expect(() => parseAffinityReviewer('bad\nreviewer')).toThrow('Invalid affinity reviewer');
 	});
 
 	it('rejects duplicate controlled coordinates', () => {
@@ -241,6 +248,50 @@ describe('affinity review helpers', () => {
 			.flatMap((row) => row.cells)
 			.find((cell) => cell.labels?.targetId === base.targetId);
 		expect(labeledCell?.reviewState.count).toBe(1);
+	});
+
+	it('scopes progress and resume to the active reviewer and current candidate hash', async () => {
+		const empty = await loadAffinityReviewData(true, [], 'controlled', 'baseline-v1', 'alice');
+		const cell = empty.rows
+			.flatMap((row) => row.cells)
+			.find((entry) => entry.status === 'candidate')!;
+		const opaqueId = cell.mediaUrl!.split('/').at(-1)!.split('?')[0]!;
+		const binding = await findVerifiedMediaByOpaqueId(opaqueId);
+		const review: AffinityWorkflowReviewRecord = {
+			reviewId: '77777777-7777-4777-8777-777777777777',
+			experimentId: 'affinity-workflow-v1',
+			targetId: binding!.targetId,
+			candidateContentHash: binding!.contentHash,
+			reviewer: 'alice',
+			reviewMode: 'blind',
+			identifiedSpeciesId: 'death-knight',
+			identifiedAffinity: 'fire',
+			scores: {
+				speciesIdentity: 3,
+				affinityReadability: 3,
+				silhouetteAndDuty: 3,
+				materialCredibility: 3,
+				anatomyAndGroundContact: 3,
+				affinityIntegration: 3,
+				styleCohesion: 3
+			},
+			verdict: 'candidate',
+			note: 'Blind reviewer evidence.',
+			reviewedAt: '2026-08-29T20:00:00.000Z'
+		};
+		const alice = await loadAffinityReviewData(
+			true,
+			[review],
+			'controlled',
+			'baseline-v1',
+			'alice'
+		);
+		const bob = await loadAffinityReviewData(true, [review], 'controlled', 'baseline-v1', 'bob');
+		expect(alice.reviewedCandidateCount).toBe(1);
+		expect(alice.remainingCandidateCount).toBe(20);
+		expect(bob.reviewedCandidateCount).toBe(0);
+		expect(bob.remainingCandidateCount).toBe(21);
+		expect(alice.nextUnreviewedCellId).not.toBe(cell.id);
 	});
 
 	it('keeps versioned correction targets in distinct sparse regression rows', async () => {

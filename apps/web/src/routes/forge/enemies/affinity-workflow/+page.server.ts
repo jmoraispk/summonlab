@@ -17,7 +17,8 @@ import {
 	findVerifiedMediaByOpaqueId,
 	loadAffinityReviewData,
 	parseAffinityReviewScope,
-	parseControlledRoundId
+	parseControlledRoundId,
+	parseAffinityReviewer
 } from './affinity-review';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -37,11 +38,13 @@ export const load = (async ({ url }) => {
 	const blind = url.searchParams.get('mode') === 'blind';
 	let scope: ReturnType<typeof parseAffinityReviewScope>;
 	let controlledRound: ReturnType<typeof parseControlledRoundId>;
+	let activeReviewer: ReturnType<typeof parseAffinityReviewer>;
 	try {
 		scope = blind ? parseAffinityReviewScope(url.searchParams.get('scope')) : 'all';
 		controlledRound = parseControlledRoundId(url.searchParams.get('round'));
+		activeReviewer = blind ? parseAffinityReviewer(url.searchParams.get('reviewer')) : null;
 	} catch {
-		error(400, 'Unknown affinity review scope or controlled round.');
+		error(400, 'Unknown reviewer, affinity review scope, or controlled round.');
 	}
 	const config = getConfig();
 	let reviewPersistenceAvailable = config.devRoutesEnabled;
@@ -64,7 +67,13 @@ export const load = (async ({ url }) => {
 	}
 	try {
 		return {
-			...(await loadAffinityReviewData(blind, reviews.reviews, scope, controlledRound)),
+			...(await loadAffinityReviewData(
+				blind,
+				reviews.reviews,
+				scope,
+				controlledRound,
+				activeReviewer
+			)),
 			reviewId: randomUUID(),
 			reviewPersistenceAvailable,
 			reviewPersistenceMessage
@@ -92,14 +101,20 @@ export const actions = {
 		const formData = await request.formData();
 		let controlledRound: ReturnType<typeof parseControlledRoundId>;
 		let scope: ReturnType<typeof parseAffinityReviewScope>;
+		let activeReviewer: ReturnType<typeof parseAffinityReviewer>;
 		try {
 			controlledRound = parseControlledRoundId(url.searchParams.get('round'));
 			scope = parseAffinityReviewScope(url.searchParams.get('scope'));
+			activeReviewer = parseAffinityReviewer(url.searchParams.get('reviewer'));
+			if (!activeReviewer)
+				return fail(400, { reviewError: 'Start a named reviewer session first.' });
 			if (formString(formData, 'controlledRound') !== controlledRound) {
 				return fail(409, { reviewError: 'The controlled review round changed. Reload first.' });
 			}
 		} catch {
-			return fail(400, { reviewError: 'Unknown affinity review scope or controlled round.' });
+			return fail(400, {
+				reviewError: 'Unknown reviewer, affinity review scope, or controlled round.'
+			});
 		}
 		const opaqueMediaId = formString(formData, 'opaqueMediaId');
 		let candidate;
@@ -129,7 +144,7 @@ export const actions = {
 			experimentId: EXPERIMENT_ID,
 			targetId: candidate.targetId,
 			candidateContentHash: candidate.contentHash,
-			reviewer: formString(formData, 'reviewer'),
+			reviewer: activeReviewer,
 			identifiedSpeciesId: formString(formData, 'identifiedSpeciesId'),
 			identifiedAffinity: formString(formData, 'identifiedAffinity'),
 			scores: {
@@ -146,7 +161,7 @@ export const actions = {
 		});
 		if (!parsed.success) {
 			return fail(400, {
-				reviewError: 'Complete the reviewer, guesses, seven scores, verdict, and note.'
+				reviewError: 'Complete the guesses, seven scores, verdict, and note.'
 			});
 		}
 

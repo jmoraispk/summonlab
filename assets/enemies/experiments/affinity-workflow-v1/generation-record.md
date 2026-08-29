@@ -9,7 +9,9 @@ Date: **2026-08-29**
 
 The check-only `report:affinity-final-controlled-activation` gate now records explicit blockers without writing files. Current activation remains unauthorized: the 21 original controlled candidates have no blind-review records and no 16-record human resolution ledger exists. Revise results and risk rationale are evidence inputs only and cannot count as blind acceptance. No staged target, activation receipt, live manifest, candidate, or result was created by this work.
 
-Forge now keeps `baseline-v1` and `final-controlled-v1` as exact, non-overlapping review rounds. The final round stays unavailable until all 24 reserved manifests exist and match the rerun plan; media and submitted reviews must belong to the selected round. The exact-concurrency allocation is likewise checked in as `executable: false`: it reserves collision-free work through 16 workers without claiming that unavailable capacity was measured. Only the prior two- and three-worker evidence is currently eligible.
+The receipt-last activation command is now implemented and failure-tested, but has not been run against the live experiment. It requires explicit acknowledgement and recomputes the complete authorization while holding its exclusive lock. Completion and Forge require its verified 48-manifest receipt, so manual or partial target copies cannot become a review round or satisfy the plan.
+
+Forge now keeps `baseline-v1` and `final-controlled-v1` as exact, non-overlapping review rounds. The final round stays unavailable until the activation receipt matches the rerun plan and all 48 receipt-bound target and assignment manifests verify; media and submitted reviews must belong to the selected round. The exact-concurrency allocation is likewise checked in as `executable: false`: it reserves collision-free work through 16 workers without claiming that unavailable capacity was measured. Only the prior two- and three-worker evidence is currently eligible.
 
 This record summarizes execution evidence. Exact prompts, attempt timestamps, source identifiers,
 reference hashes, persistence receipts, dimensions, byte counts, findings, and candidate hashes live
@@ -162,6 +164,7 @@ append-only, bound to the exact candidate hash, and never promote assets.
 After one reviewer completes the blind set, export their latest hash-bound decisions with:
 
 ```bash
+pnpm report:baseline-blind-review --reviewer <reviewer-name>
 pnpm export:affinity-review-evidence --reviewer <reviewer-name>
 pnpm sync:affinity-review
 pnpm report:affinity-gate

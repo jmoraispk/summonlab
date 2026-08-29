@@ -29,6 +29,11 @@
 	let selectedCellId = $state<string | null>(null);
 	let speciesGuess = $state('');
 	let affinityGuess = $state('');
+	$effect(() => {
+		if (form?.reviewSaved && data.blind && data.activeReviewer) {
+			selectedCellId = data.nextUnreviewedCellId;
+		}
+	});
 
 	const filteredRows = $derived(
 		data.rows.filter((row) => data.blind || cohortFilter === 'all' || row.cohort === cohortFilter)
@@ -62,6 +67,13 @@
 
 	function mediaId(mediaUrl: string) {
 		return mediaUrl.split('/').at(-1)?.split('?')[0] ?? '';
+	}
+
+	function blindQuery(scope = data.scope, round = data.controlledRound.id) {
+		const reviewer = data.activeReviewer
+			? `&reviewer=${encodeURIComponent(data.activeReviewer)}`
+			: '';
+		return `mode=blind&scope=${scope}&round=${round}${reviewer}`;
 	}
 </script>
 
@@ -124,17 +136,23 @@
 			</p>
 		</div>
 		<div class="mode-switch">
-			<a
-				class:active={!data.blind}
-				href="{resolve('/forge/enemies/affinity-workflow')}?round={data.controlledRound.id}"
-				aria-current={!data.blind ? 'page' : undefined}>Labels visible</a
-			>
-			<form method="GET" action={resolve('/forge/enemies/affinity-workflow')}>
-				<input type="hidden" name="mode" value="blind" />
-				<input type="hidden" name="scope" value="controlled" />
-				<input type="hidden" name="round" value={data.controlledRound.id} />
-				<button class:active={data.blind} type="submit">Start blind review</button>
-			</form>
+			{#if !data.blind || data.remainingCandidateCount === 0}
+				<a
+					class:active={!data.blind}
+					href="{resolve('/forge/enemies/affinity-workflow')}?round={data.controlledRound.id}"
+					aria-current={!data.blind ? 'page' : undefined}>Labels visible</a
+				>
+			{/if}
+			{#if !data.blind}
+				<form method="GET" action={resolve('/forge/enemies/affinity-workflow')}>
+					<input type="hidden" name="mode" value="blind" />
+					<input type="hidden" name="scope" value="controlled" />
+					<input type="hidden" name="round" value={data.controlledRound.id} />
+					<button type="submit">Start blind review</button>
+				</form>
+			{:else if data.activeReviewer}
+				<strong>Reviewer-bound · {data.activeReviewer}</strong>
+			{/if}
 		</div>
 	</section>
 	<section class="round-controls" aria-label="Controlled review round">
@@ -143,31 +161,52 @@
 			<a
 				class:active={round.id === data.controlledRound.id}
 				href="{resolve('/forge/enemies/affinity-workflow')}?{data.blind
-					? `mode=blind&scope=${data.scope}&round=${round.id}`
+					? blindQuery(data.scope, round.id)
 					: `round=${round.id}`}">{round.label}</a
 			>
 		{/each}
 	</section>
 	{#if data.blind}
 		<section class="blind-progress" aria-label="Blind review scope and progress">
-			<div>
-				<p class="eyebrow">Controlled review progress</p>
-				<strong>{data.reviewedCandidateCount} / {data.reviewableCount}</strong>
-				<span>eligible candidates reviewed in this server-stripped scope</span>
-			</div>
-			<nav aria-label="Blind review scope">
-				<a
-					class:active={data.scope === 'controlled'}
-					href="{resolve(
-						'/forge/enemies/affinity-workflow'
-					)}?mode=blind&scope=controlled&round={data.controlledRound.id}">Controlled · 24</a
+			{#if !data.activeReviewer}
+				<form
+					method="GET"
+					action={resolve('/forge/enemies/affinity-workflow')}
+					class="reviewer-start"
 				>
-				<a
-					class:active={data.scope === 'all'}
-					href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=all&round={data
-						.controlledRound.id}">All evidence</a
-				>
-			</nav>
+					<input type="hidden" name="mode" value="blind" />
+					<input type="hidden" name="scope" value="controlled" />
+					<input type="hidden" name="round" value={data.controlledRound.id} />
+					<label
+						><span>Reviewer identity</span><input name="reviewer" required maxlength="80" /></label
+					>
+					<button type="submit">Begin reviewer-bound session</button>
+				</form>
+			{:else}
+				<div>
+					<p class="eyebrow">Controlled review progress</p>
+					<strong>{data.reviewedCandidateCount} / {data.reviewableCount}</strong>
+					<span
+						>{data.activeReviewer} · {data.remainingCandidateCount} remaining · {data.reviseCount} revision-only</span
+					>
+					{#if data.nextUnreviewedCellId}
+						<button type="button" onclick={() => (selectedCellId = data.nextUnreviewedCellId)}
+							>Review next unreviewed</button
+						>
+					{/if}
+				</div>
+				<nav aria-label="Blind review scope">
+					<a
+						class:active={data.scope === 'controlled'}
+						href="{resolve('/forge/enemies/affinity-workflow')}?{blindQuery('controlled')}"
+						>Controlled · 21 candidates + 3 revise</a
+					>
+					<a
+						class:active={data.scope === 'all'}
+						href="{resolve('/forge/enemies/affinity-workflow')}?{blindQuery('all')}">All evidence</a
+					>
+				</nav>
+			{/if}
 		</section>
 	{/if}
 
@@ -206,15 +245,24 @@
 						<strong>{row.rowLabel}</strong>
 					</div>
 					{#each row.cells as cell (cell.id)}
-						<article class:ready={cell.status === 'candidate'} data-testid="affinity-cell">
+						<article
+							class:ready={cell.status === 'candidate'}
+							class:reviewed={cell.status === 'candidate' && cell.reviewState.count > 0}
+							data-testid="affinity-cell"
+						>
 							<header>
 								<span>{cell.columnLabel}</span>
-								<i class:ready={cell.status === 'candidate'}>{cell.statusLabel}</i>
+								<i class:ready={cell.status === 'candidate'}
+									>{cell.status === 'candidate' && cell.reviewState.count > 0
+										? 'Reviewed'
+										: cell.statusLabel}</i
+								>
 							</header>
 							{#if cell.mediaUrl}
 								<button
 									class="thumbnail"
 									type="button"
+									disabled={data.blind && !data.activeReviewer}
 									onclick={() => inspect(cell)}
 									aria-label={data.blind
 										? 'Inspect unlabeled candidate'
@@ -302,9 +350,9 @@
 						: data.reviewPersistenceMessage}
 				</p>
 				<a
-					href="{resolve(
-						'/forge/enemies/affinity-workflow'
-					)}?mode=blind&scope=controlled&round={data.controlledRound.id}"
+					href="{resolve('/forge/enemies/affinity-workflow')}?{data.blind
+						? blindQuery('controlled')
+						: `mode=blind&scope=controlled&round=${data.controlledRound.id}`}"
 					>Start controlled blind review</a
 				>
 			</article>
@@ -494,10 +542,11 @@
 						</p>
 					{/if}
 					<div class="review-fields">
-						<label>
-							<span>Reviewer</span>
-							<input name="reviewer" autocomplete="name" required maxlength="80" />
-						</label>
+						<div class="bound-reviewer">
+							<span>Reviewer</span><strong>{data.activeReviewer}</strong><small
+								>Bound by this session URL and verified by the server.</small
+							>
+						</div>
 						<label>
 							<span>Species guess</span>
 							<select name="identifiedSpeciesId" bind:value={speciesGuess} required>
@@ -545,7 +594,7 @@
 						<button type="submit" disabled={!data.reviewPersistenceAvailable}>
 							{data.reviewPersistenceAvailable ? 'Save review' : 'Persistence unavailable'}
 						</button>
-						{#if data.blind}
+						{#if data.blind && data.remainingCandidateCount === 0}
 							<a
 								href="{resolve('/forge/enemies/affinity-workflow')}?round={data.controlledRound.id}"
 								>Reveal all labels</a
@@ -727,6 +776,25 @@
 		display: inline-block;
 		margin-top: 0.35rem;
 	}
+	.blind-progress button,
+	.reviewer-start button {
+		margin-left: 0.75rem;
+		border: 1px solid #70b7c455;
+		padding: 0.55rem 0.75rem;
+		color: #bfe7dd;
+		background: #102823;
+		cursor: pointer;
+	}
+	.reviewer-start {
+		display: flex;
+		align-items: end;
+		gap: 0.75rem;
+	}
+	.reviewer-start label,
+	.bound-reviewer {
+		display: grid;
+		gap: 0.35rem;
+	}
 	.blind-progress strong {
 		margin-right: 0.6rem;
 		color: #f4efe5;
@@ -792,7 +860,6 @@
 		display: none;
 	}
 	.mode-switch a.active,
-	.mode-switch button.active,
 	.round-controls a.active,
 	.controls button.active {
 		color: #071015;
@@ -926,6 +993,9 @@
 	}
 	.matrix-grid article.ready {
 		background: #0a1117;
+	}
+	.matrix-grid article.reviewed {
+		box-shadow: inset 0 0 0 2px #70b7c466;
 	}
 	.matrix-grid article header {
 		display: flex;
@@ -1172,6 +1242,11 @@
 		grid-template-columns: repeat(3, 1fr);
 		gap: 1rem;
 		margin-top: 1rem;
+	}
+	.bound-reviewer span,
+	.bound-reviewer small {
+		color: #70b7c4;
+		font-size: 0.52rem;
 	}
 	.review-form label {
 		display: grid;
