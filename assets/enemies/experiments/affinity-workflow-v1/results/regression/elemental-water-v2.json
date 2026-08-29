@@ -1,0 +1,276 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-elemental-water-v2",
+  "targetId": "affinity-workflow-v1-elemental-water-v2",
+  "assignmentId": "assignment-affinity-workflow-v1-elemental-water-v2",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-water-v2-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-elemental-water-v2\".\n\nSubject and threat:\n- Species: elemental.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: bound-frontline-vanguard.\n- Construction mode: substance-bodied.\n- Fixed chassis: bound-vanguard-elemental.\n\nIdentity invariants:\n- exactly the headless Bound Vanguard Elemental shown in the neutral chassis benchmark\n- fixed broad shallow concave chest with a low stable torso\n- fixed broad wedge forearms, short planted legs, and benchmark-matched proportions\n- invariant pale arcane sternum core centered inside the chest concavity\n- pale binding lattice remains local and does not recolor the full body\n\nAnatomy invariants:\n- exactly two arms and two legs\n- no head, face, neck, shoulders above the chest, or substitute head-like mass\n- exactly five major masses: shallow-concave torso, two wedge arms, and two planted legs\n- the declared substance carries the full torso, arm, and leg loads while chassis proportions remain fixed\n\nAffinity: water.\nAffinity expression: Continuous pressurized liquid forms every load-bearing body mass through coherent flow, transparent depth, wet reflection, and restrained mist; no ice or stone substrate.\nCounterplay cue: The pale sternum core remains visible inside a localized low-pressure pocket in the continuous liquid chest.\nAltered dimensions: material; motion; exposed-counterplay.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: extra limbs or detached floating body masses; humanoid head, face, helmet, neck, or shoulder-mounted pseudo-head; domed or convex chest replacing the shallow concavity; dark, affinity-colored, absent, displaced, or oversized sternum core; changed chassis proportions, raised heroic posture, or long humanoid legs; ice, snow, frost, rock, rubble, ceramic, or stone anatomy; blue solid golem with splashes applied around it; shapeless blob that loses the fixed chassis.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png — Exact Bound Vanguard headless shallow-concave chassis, proportions, planted stance, wedge forearms, and pale sternum core only; do not treat its neutral ceramic material as the affinity substance for non-Normal targets.\n2. assets/enemies/review/pack-2/elementals-v1.png — Elementals-v1 plate supplies only the declared substance material behavior, coherent flow, restrained local emission, floor, and lighting; do not transfer any depicted anatomy, pose, proportions, head, duty, or core placement.\n3. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "8a14adc10e1b2e4b9203beb9e271547d447faf12be7ec20d29a969f12b9d0117",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:23:11.314Z",
+      "generationCompletedAt": "2026-08-29T18:23:30.184Z",
+      "inspectionCompletedAt": "2026-08-29T18:23:55.000Z",
+      "generationDurationMs": 18870,
+      "inspectionDurationMs": 24816,
+      "totalWallTimeMs": 43686,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ec2-525e-77a1-8d98-a142e316603d/exec-47c8ad03-133d-4132-bd87-5ba2f25eeffb.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally rendered with a continuous dark backdrop and cracked-stone floor, without blank bands, unfinished regions, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire headless silhouette, both wedge forearms, both planted feet, droplets, and all hard extents remain inside the declared safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Bound Vanguard appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The known target retains the benchmark headless shallow-concave chassis, low center of gravity, wedge forearms, five major masses, and pale sternum core; blind recognition remains pending human review."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Water is strongly indicated by transparent blue depth, wet highlights, droplets, and pooling, but hard facets and bright rigid seams permit an ice, glass, or armored-solid reading."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The body follows the water silhouette, yet crystalline facets and silver panel edges make some load-bearing masses read as a solid golem with water effects rather than unequivocal continuous liquid."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The chassis and core invariants pass, but the prohibited ice or crystalline anatomy and solid-body ambiguity remain visually plausible."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed pale sternum core remains centered in the chest concavity, and the planted wedge-arm guard communicates a frontline vanguard."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The neutral key, dark-fantasy painterly finish, charcoal backdrop, cracked floor, and restrained local emission are cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, watermark, extra subject, head, neck, pseudo-head, extra limb, cropping, or visible published-character resemblance appears."
+        }
+      ],
+      "retryReason": "A targeted material-only edit was required because hard crystalline facets and silver panel seams could read as prohibited ice, glass armor, or a solid blue golem instead of continuous pressurized water."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-water-v2-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-elemental-water-v2-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nThis is a targeted edit of Image 1, not a redesign or new composition.\n\nPrimary correction:\n- Change only the material rendering of the existing creature so every load-bearing torso, arm, forearm, thigh, shin, and foot reads unmistakably as continuous, dynamically pressurized liquid water.\n- Use rounded coherent flow contours, visible current lines within transparent depth, wet reflections, subtle refraction, localized droplets, and restrained mist.\n- Remove every hard crystalline facet, frozen or ice-like surface, glass-crystal cue, rigid plate seam, silver armor edge, and solid blue-golem read.\n- The water itself must carry every load while retaining a stable combat structure; it must not become a shapeless blob.\n\nPreserve exactly from Image 1:\n- Exactly one featured subject.\n- The exact headless Bound Vanguard chassis: broad shallow-concave low torso, no head, no face, no neck, no mass above the chest opening.\n- Exactly two arms and two legs; exactly five major masses: torso, two wedge arms, two short planted legs.\n- The same broad wedge forearms, grounded stance, proportions, pose, camera, centered placement, and at least eight percent safe margin around the full silhouette and all extremities.\n- The invariant pale diamond sternum core, centered and clearly exposed inside a localized low-pressure pocket in the liquid chest.\n- A pale binding lattice remains subtle and local around the core only; it does not become metallic armor or recolor the body.\n- The neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key light, restrained local emission, premium realistic painterly medieval dark-fantasy finish, and fully finished canvas.\n\nConstraints:\n- No ice, frost, snow, rock, rubble, ceramic, metal armor, crystalline anatomy, or detached floating body masses.\n- No extra creature, extra limb, humanoid head, helmet, neck, shoulder pseudo-head, domed chest, raised heroic posture, or long humanoid legs.\n- No labels, text, UI, frame, logo, watermark, cropped extremity, blank band, unfinished region, or abrupt cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "e47d960f569a4b293ebca15822dcab3ea76f0ed656b3da057be7735fc1874985",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:24:05.799Z",
+      "generationCompletedAt": "2026-08-29T18:24:26.258Z",
+      "inspectionCompletedAt": "2026-08-29T18:24:33.131Z",
+      "generationDurationMs": 20459,
+      "inspectionDurationMs": 6873,
+      "totalWallTimeMs": 27332,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ec2-525e-77a1-8d98-a142e316603d/exec-c02893ff-2c1d-4fb2-a0a3-7d9b82f06f5a.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ec2-525e-77a1-8d98-a142e316603d/exec-c02893ff-2c1d-4fb2-a0a3-7d9b82f06f5a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2530951,
+          "contentHash": "116595c83a4ad9466093fcb13c213a031219d4aa5a2c606d3bae41ba82a5fc5d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/water-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2530951,
+          "contentHash": "116595c83a4ad9466093fcb13c213a031219d4aa5a2c606d3bae41ba82a5fc5d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/water-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2530951,
+        "contentHash": "116595c83a4ad9466093fcb13c213a031219d4aa5a2c606d3bae41ba82a5fc5d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every canvas region is intentionally finished with continuous backdrop, floor, mist, and contact detail; there is no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete torso rim, wedge tips, planted feet, liquid wake, and every hard extent retain a clear border on all four sides consistent with the eight-percent safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured creature appears, with no duplicate or incidental subject."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Known-target inspection finds the exact benchmark headless shallow-concave chassis, low torso, broad wedge forearms, short planted legs, five major masses, and pale sternum core; blind recognition remains pending."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Water reads beyond hue through transparent depth, internal current lines, rounded flow contours, wet refraction, droplets, localized mist, and pooling at every ground contact; blind recognition remains pending."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Continuous coherent liquid visibly bears the torso, both arms, wedge forearms, both legs, and feet; no separate stone, ceramic, metal, or frozen substrate is visible."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every identity, anatomy, duty, reference-purpose, and prohibited-trait invariant is visibly satisfied, including the headless concavity and benchmark-matched low proportions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pale diamond sternum core is centered, exposed, and isolated inside a visibly calmer low-pressure pocket while the planted wedge-arm posture reads as a frontline impact guard."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two arms and two legs form coherent contacts and weight paths around one torso, with no head, face, neck, pseudo-head, extra limb, or detached mass."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly materials, controlled neutral lighting, restrained local water emission, cracked-stone floor, and charcoal-to-midnight backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No ice, frost, snow, rock anatomy, metal armor, text, UI, watermark, extra subject, cropping, unfinished region, or visible published-character resemblance appears."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction source was exclusive-copied without normalization; source and retained dimensions, media type, byte count, and SHA-256 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared review file was mutated and the asset was not self-promoted."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-workflow-v1-elemental-water-v2-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T18:21:30.000Z",
+  "completedAt": "2026-08-29T18:26:09.175Z",
+  "totalWallTimeMs": 279175,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/water-v2.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/regression/elemental-water-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

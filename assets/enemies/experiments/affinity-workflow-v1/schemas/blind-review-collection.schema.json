@@ -1,0 +1,95 @@
+{
+	"$id": "https://summonlab.local/schemas/image-production-blind-review-collection-v1.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": { "type": "string", "const": "image-production-blind-reviews-v1" },
+		"experimentId": { "type": "string", "const": "affinity-workflow-v1" },
+		"updatedAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"reviews": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"reviewId": {
+						"type": "string",
+						"format": "uuid",
+						"pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+					},
+					"targetId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+					"candidateContentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+					"reviewer": { "type": "string", "minLength": 1, "maxLength": 100 },
+					"reviewedAt": {
+						"type": "string",
+						"format": "date-time",
+						"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+					},
+					"identifiedSpeciesId": {
+						"type": "string",
+						"enum": [
+							"death-knight",
+							"elemental",
+							"grey-wolf",
+							"cave-bear",
+							"goblin",
+							"tunnel-boar",
+							"cave-drake",
+							"tower-basilisk"
+						]
+					},
+					"identifiedAffinity": {
+						"type": "string",
+						"enum": ["normal", "wood", "fire", "metal", "water", "wind"]
+					},
+					"speciesCorrect": { "type": "boolean" },
+					"affinityCorrect": { "type": "boolean" },
+					"scores": {
+						"type": "object",
+						"properties": {
+							"speciesIdentity": { "type": "integer", "minimum": 1, "maximum": 5 },
+							"affinityReadability": { "type": "integer", "minimum": 1, "maximum": 5 },
+							"silhouetteAndDuty": { "type": "integer", "minimum": 1, "maximum": 5 },
+							"materialCredibility": { "type": "integer", "minimum": 1, "maximum": 5 },
+							"anatomyAndGroundContact": { "type": "integer", "minimum": 1, "maximum": 5 },
+							"affinityIntegration": { "type": "integer", "minimum": 1, "maximum": 5 },
+							"styleCohesion": { "type": "integer", "minimum": 1, "maximum": 5 }
+						},
+						"required": [
+							"speciesIdentity",
+							"affinityReadability",
+							"silhouetteAndDuty",
+							"materialCredibility",
+							"anatomyAndGroundContact",
+							"affinityIntegration",
+							"styleCohesion"
+						],
+						"additionalProperties": false
+					},
+					"verdict": { "type": "string", "enum": ["candidate", "revise"] },
+					"note": { "type": "string", "minLength": 1, "maxLength": 1000 }
+				},
+				"required": [
+					"reviewId",
+					"targetId",
+					"candidateContentHash",
+					"reviewer",
+					"reviewedAt",
+					"identifiedSpeciesId",
+					"identifiedAffinity",
+					"speciesCorrect",
+					"affinityCorrect",
+					"scores",
+					"verdict",
+					"note"
+				],
+				"additionalProperties": false
+			}
+		}
+	},
+	"required": ["schemaVersion", "experimentId", "updatedAt", "reviews"],
+	"additionalProperties": false
+}

@@ -1,0 +1,254 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-elemental-fire-v2",
+  "targetId": "affinity-workflow-v1-elemental-fire-v2",
+  "assignmentId": "assignment-affinity-workflow-v1-elemental-fire-v2",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-fire-v2-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-elemental-fire-v2\".\n\nSubject and threat:\n- Species: elemental.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: bound-frontline-vanguard.\n- Construction mode: substance-bodied.\n- Fixed chassis: bound-vanguard-elemental.\n\nIdentity invariants:\n- exactly the headless Bound Vanguard Elemental shown in the neutral chassis benchmark\n- fixed broad shallow concave chest with a low stable torso\n- fixed broad wedge forearms, short planted legs, and benchmark-matched proportions\n- invariant pale arcane sternum core centered inside the chest concavity\n- pale binding lattice remains local and does not recolor the full body\n\nAnatomy invariants:\n- exactly two arms and two legs\n- no head, face, neck, shoulders above the chest, or substitute head-like mass\n- exactly five major masses: shallow-concave torso, two wedge arms, and two planted legs\n- the declared substance carries the full torso, arm, and leg loads while chassis proportions remain fixed\n\nAffinity: fire.\nAffinity expression: Controlled flame and dense plasma form every load-bearing body mass inside the binding lattice, with minimal dark slag confined to planted contact pads.\nCounterplay cue: The pale sternum core and binding lattice become sharply readable between controlled plasma surges.\nAltered dimensions: material; motion; attack-telegraph.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: extra limbs or detached floating body masses; humanoid head, face, helmet, neck, or shoulder-mounted pseudo-head; domed or convex chest replacing the shallow concavity; dark, affinity-colored, absent, displaced, or oversized sternum core; changed chassis proportions, raised heroic posture, or long humanoid legs; rock, lava-rock, charcoal boulders, or stone anatomy with flames pasted on top; large slag shell obscuring the flame-and-plasma body; uniform orange glow that erases the fixed chassis.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png — Exact Bound Vanguard headless shallow-concave chassis, proportions, planted stance, wedge forearms, and pale sternum core only; do not treat its neutral ceramic material as the affinity substance for non-Normal targets.\n2. assets/enemies/review/pack-2/elementals-v1.png — Elementals-v1 plate supplies only the declared substance material behavior, coherent flow, restrained local emission, floor, and lighting; do not transfer any depicted anatomy, pose, proportions, head, duty, or core placement.\n3. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "2cc3a5af6594414b0bfd488c9dc511bc9a65a3c96e1683d9106f1301b15daa58",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:15:47.792Z",
+      "generationCompletedAt": "2026-08-29T18:16:07.792Z",
+      "inspectionCompletedAt": "2026-08-29T18:16:38.687Z",
+      "generationDurationMs": 20000,
+      "inspectionDurationMs": 30895,
+      "totalWallTimeMs": 50895,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ebb-aa9c-7412-94a9-e5389111d6bb/exec-a4b32781-d17c-466e-8638-32de0c7d5e4f.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The hard chassis is complete, but upper flame and smoke rise inside the required eight-percent top border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one subject appears on a fully rendered floor and backdrop without blank or unfinished regions."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The headless shallow-concave torso, wedge arms, short planted legs, and centered sternum core match the neutral chassis."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The first body reads as a faceted glass-like orange shell with fire around it rather than continuous load-bearing flame and dense plasma."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The fixed anatomy passes, but the orange tracing spreads across nearly the whole shell instead of keeping the pale binding lattice local."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The centered sternum core is visible against the surrounding combustion."
+        }
+      ],
+      "retryReason": "The single permitted corrective edit was used to replace the glass-like shell and uniform body tracing with load-bearing flame and plasma while localizing the pale lattice."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-fire-v2-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-elemental-fire-v2-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "EDIT the supplied image; do not completely regenerate it. Preserve exactly the passing traits: one centered headless Bound Vanguard Elemental, the broad shallow-concave chest, low stable torso, two broad wedge forearms, two short planted legs, exactly five major masses, pale diamond sternum core centered in the chest concavity, grounded frontal advance, complete finished 1536 x 1024 canvas, and at least eight percent margin around every flame and extremity.\n\nMake one targeted correction: replace the current glass-like orange shell and uniform whole-body glow with visibly load-bearing controlled flame and dense plasma volumes throughout the torso, both arms, and both legs. The anatomy itself must be continuous flame/plasma—not rock, lava-rock, charcoal boulders, glass, crystal, or solid armor with fire pasted on. Show internal rolling combustion, translucent-hot plasma depth, directional upward flame motion, restrained smoke, and localized heat distortion while keeping the fixed silhouette readable. Confine any dark slag to minimal small planted foot-contact pads only. Render the pale arcane binding lattice as a sparse, local, neutral-pale structure around key joints and the chest concavity; it must not trace or recolor the entire body. Make the pale sternum core and local pale lattice sharply readable between controlled plasma surges. Avoid uniform orange exposure; retain dark and mid-value internal flame variation and readable material detail.\n\nPreserve all constraints: exactly two arms and two legs; no head, face, neck, helmet, shoulder pseudo-head, extra limbs, detached body masses, domed chest, long humanoid legs, raised heroic posture, oversized or displaced core, large slag shell, extra creature, text, labels, UI, frame, logo, watermark, cropped extremity, blank band, unfinished region, abrupt cutoff, or published-character resemblance. Keep the neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key light, restrained local emission, and premium realistic painterly medieval dark-fantasy finish.",
+      "promptHash": "8d1a21ec4f8a0428e1913cf83703e4c5315bc8a1a98a37bffeaf39910db7e66a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04ebb-aa9c-7412-94a9-e5389111d6bb/exec-a4b32781-d17c-466e-8638-32de0c7d5e4f.png",
+        "contentHash": "dc076e6f64f59888a01e24498ac8a6217c516381a67311215c2fe6d1cba353fb"
+      },
+      "requestStartedAt": "2026-08-29T18:16:52.864Z",
+      "generationCompletedAt": "2026-08-29T18:17:14.464Z",
+      "inspectionCompletedAt": "2026-08-29T18:17:38.674Z",
+      "generationDurationMs": 21600,
+      "inspectionDurationMs": 24210,
+      "totalWallTimeMs": 45810,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ebb-aa9c-7412-94a9-e5389111d6bb/exec-508ba5d9-d1b2-48a6-9b3f-84941e4d3199.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ebb-aa9c-7412-94a9-e5389111d6bb/exec-508ba5d9-d1b2-48a6-9b3f-84941e4d3199.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2456386,
+          "contentHash": "5fa32c011896fe139c39a8e4e32f104105e48e8ec5eb3a7124a045da1353f0f1"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2456386,
+          "contentHash": "5fa32c011896fe139c39a8e4e32f104105e48e8ec5eb3a7124a045da1353f0f1"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2456386,
+        "contentHash": "5fa32c011896fe139c39a8e4e32f104105e48e8ec5eb3a7124a045da1353f0f1"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally rendered with continuous backdrop and stone-floor detail and no blank, unfinished, or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "All hard limbs are complete, but the highest flame and smoke wisps enter the required eight-percent top safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured elemental appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The headless shallow-concave torso, low proportions, two wedge arms, two short planted legs, centered core, and sparse pale joint-and-chest lattice satisfy the declared invariants."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes the load-bearing material, upward internal motion, core exposure telegraph, and local heat-and-smoke wake rather than acting as a color overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pale diamond sternum core and local pale lattice are sharply separated from the darker rolling plasma volumes."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly five coherent major masses preserve the benchmark chassis, with no head, neck, pseudo-head, extra limb, or detached body mass."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Torso, arms, and legs read as continuous internally rolling flame-and-plasma volumes; dark slag is limited to small foot-contact pads."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low planted advance and broad guarding wedge arms communicate a bound frontline vanguard."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The realistic painterly dark-fantasy finish, cracked floor, charcoal backdrop, neutral key, plasma depth, and localized pale lattice remain coherent."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The internal plasma has strong orange emission throughout, but dark value variation and the fixed chassis remain readable, so it does not erase anatomy."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned corrective source was exclusive-copied without normalization; source and retained metadata and SHA-256 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no aggregate review, application, plan, or promotion state was edited."
+        }
+      ],
+      "retryReason": "The correction materially fixed the substance-body and lattice defects, but the top effect wake still violates the strict safe margin and the retry ceiling is exhausted."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-29T18:15:47.792Z",
+  "completedAt": "2026-08-29T18:19:17.865Z",
+  "totalWallTimeMs": 210073,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/regression/elemental-fire-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

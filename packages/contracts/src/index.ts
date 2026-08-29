@@ -1,3 +1,4 @@
+export * from './affinity-review.js';
 export * from './character.js';
 export * from './campaign.js';
 export * from './decision.js';
@@ -5,6 +6,7 @@ export * from './decision-inspector.js';
 export * from './engine.js';
 export * from './event.js';
 export * from './health.js';
+export * from './image-production.js';
 export * from './mission.js';
 export * from './playtest.js';
 export * from './proof.js';

@@ -42,6 +42,7 @@
 		<nav>
 			<a href={resolve('/forge/enemies/all')}>All enemies</a>
 			<a href={resolve('/forge/enemies/pack-2')}>Pack 2 monsters</a>
+			<a href={resolve('/forge/enemies/affinity-workflow')}>Affinity lab</a>
 			<a href={resolve('/forge')}>Hero summons</a><a href={resolve('/forge/contact-sheet')}
 				>Seed audit</a
 			>

@@ -1,0 +1,22 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"image-production-lib.ts",
+		"image-production-lib.spec.ts",
+		"persist-image-production-output.ts",
+		"persist-image-production-output.spec.ts",
+		"sync-affinity-review.ts",
+		"sync-affinity-review.spec.ts",
+		"export-affinity-review-evidence.ts",
+		"export-affinity-review-evidence.spec.ts",
+		"export-affinity-workflow.ts",
+		"validate-affinity-workflow.ts"
+	]
+}

@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-death-knight-wind-v1",
+  "targetId": "affinity-workflow-v1-death-knight-wind",
+  "assignmentId": "assignment-affinity-workflow-v1-death-knight-wind",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-death-knight-wind-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-death-knight-wind\".\n\nSubject and threat:\n- Species: death-knight.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: formation-commander.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- undead armored commander identity\n- skull or death mask\n- small command pennant\n- deliberate sword guard\n- command seal beneath the gorget\n- disciplined military posture\n\nAnatomy invariants:\n- humanoid biped\n- believable armor load paths\n- two arms and two legs\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: random giant horns; implausibly oversized sword; full-body colored glow; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Fourth subject only: Death Knight identity, command silhouette, armor load paths, and restrained necromancy; do not transfer the sentinel, wraith, or bone mage.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n",
+      "promptHash": "ba1982be87e0bf2166997349ac9e2bfed739451910dc6440c6fd3b9274d7e8e8",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T17:21:30.335Z",
+      "generationCompletedAt": "2026-08-29T17:22:25.631Z",
+      "inspectionCompletedAt": "2026-08-29T17:22:40.262Z",
+      "generationDurationMs": 55296,
+      "inspectionDurationMs": 14631,
+      "totalWallTimeMs": 69927,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04e89-a1f0-7e12-8180-950ebde5182f/exec-cb68b5eb-4e6a-4368-b9fd-1396cab9607c.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "single-finished-subject",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The charcoal-to-midnight backdrop and cracked-stone floor are intentionally rendered across the entire canvas with no blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete subject is visible, but the command pennant finial reaches inside the required eight-percent top safe zone."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "identity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured armored undead commander appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "identity",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong Death Knight cues in the skull face, disciplined plate, sword guard, command seal, and pennant."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds strong Wind cues through directional cloth, coherent vapor channels, debris flow, pressure distortion, and a legible force direction."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind visibly changes silhouette, motion, attack telegraph, and environmental wake rather than acting as a pale recolor or directionless particle layer."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Two arms, two legs, grounded feet, coherent plate articulation, believable armor loads, and a convincing sword grip are readable."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The deliberate low sword guard, upright military bearing, command standard, and gorget seal communicate a formation commander."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "identity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All declared identity and anatomy invariants are present, including the armored-undead identity, skull face, small command pennant, deliberate guard, command seal beneath the gorget, and disciplined posture."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly dark-fantasy finish, readable dark metal and cloth, controlled neutral key, cracked-stone floor, and restrained local wind emission are cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "prohibited-trait",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, giant random horn, oversized sword, full-body color wash, transparency-only treatment, or directionless particle field is visible."
+        }
+      ],
+      "retryReason": "One targeted framing edit was required to uniformly scale and recenter the passing design so the command pennant finial and complete wind silhouette cleared the declared eight-percent safe margin."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-death-knight-wind-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-death-knight-wind-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "TARGETED CORRECTION — EDIT, not a complete regeneration.\n\nUsing the exact preceding image as the edit reference, make one change only: uniformly scale down and re-center the entire existing composition so the complete silhouette and every extremity, crown tip, sword tip, command pennant, pennant pole, pennant finial, cloth edge, debris fragment, and wind effect remain at least 8 percent inside all four canvas edges. The present pennant finial is too close to the top edge. Keep the canvas 1536 x 1024 and finish the newly exposed charcoal-to-midnight background and neutral cracked-stone floor seamlessly.\n\nPreserve all passing traits exactly:\n- Exactly one featured subject: a tall, disciplined armored undead Death Knight formation commander at elite / Grade 4 presentation.\n- Armored-undead construction, skull or death mask, small command pennant, deliberate sword guard, command seal beneath the gorget, and disciplined military posture.\n- Humanoid biped with two arms and two legs, coherent joints, believable armor load paths, grounded feet, and believable equipment grips.\n- Wind affinity expressed through strongly directional cloth and cape strips, coherent vapor channels, directional debris flow, pressure distortion with visible force, a directional attack telegraph, and a local environmental wind wake.\n- Preserve the counterplay cue: the still center of the pressure pattern remains visible between directional attacks.\n- Preserve altered dimensions of silhouette, motion, attack telegraph, and environmental wake.\n- Preserve restrained local emission; no full-body color wash, pale recolor, transparency-only treatment, or directionless particles.\n- Preserve the current sword scale and design; no implausibly oversized sword and no random giant horns.\n- Preserve Pack 2 premium realistic painterly medieval dark-fantasy finish, coherent dark metal and cloth materials, controlled linework, grounded anatomy, neutral key lighting, and charcoal-to-midnight backdrop over a neutral cracked-stone floor.\n- Preserve the pose, identity, armor, sword, command equipment, wind design, lighting, colors, detail, and overall composition other than the uniform scale/reframe required for safe margins.\n\nNo labels, text, UI, frame, logo, watermark, extra creature, duplicate subject, cropped extremity, blank band, unfinished region, abrupt cutoff, or resemblance to a published character or reference person.\n",
+      "promptHash": "e1a567b14792efe5677c4f603dd2751c0089f9ea812c8a0436616e8c7ddb1f0f",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T17:22:40.262Z",
+      "generationCompletedAt": "2026-08-29T17:23:44.907Z",
+      "inspectionCompletedAt": "2026-08-29T17:23:52.152Z",
+      "generationDurationMs": 64645,
+      "inspectionDurationMs": 7245,
+      "totalWallTimeMs": 71890,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04e89-a1f0-7e12-8180-950ebde5182f/exec-f40464b5-08d7-4d45-89d2-d95d1181eef3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04e89-a1f0-7e12-8180-950ebde5182f/exec-f40464b5-08d7-4d45-89d2-d95d1181eef3.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2378974,
+          "contentHash": "b052d6a821d808bfa75b4a551bb8b41ea5d3ab5bad9795d4f64e53ad687c5f09"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2378974,
+          "contentHash": "b052d6a821d808bfa75b4a551bb8b41ea5d3ab5bad9795d4f64e53ad687c5f09"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2378974,
+        "contentHash": "b052d6a821d808bfa75b4a551bb8b41ea5d3ab5bad9795d4f64e53ad687c5f09"
+      },
+      "findings": [
+        {
+          "criterionId": "single-finished-subject",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full 1536 by 1024 canvas is intentionally rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank or unfinished region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The crown, sword tip, pennant finial and pole, boots, cape strips, debris, wind wake, and complete subject silhouette clear the declared eight-percent safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "identity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured full-body armored undead commander appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "identity",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds a strong Death Knight read through the skull face, disciplined armor, sword guard, command pennant, and command seal."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds strong Wind cues through streaming cloth, coherent vapor lanes, airborne debris, pressure arcs, and a clear directional wake."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind changes silhouette, motion, attack telegraph, and environmental wake; the extended hand and surrounding pressure lanes preserve a readable still center between directional attacks."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Two arms, two legs, grounded feet, coherent plate articulation, believable armor load paths, and a convincing sword grip remain readable after the framing edit."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The deliberate low sword guard, upright disciplined posture, command standard, and seal beneath the gorget clearly communicate a formation commander."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "identity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All declared identity and anatomy invariants remain present after correction: armored-undead identity, skull face, small command pennant, deliberate guard, command seal, disciplined posture, humanoid limb plan, and believable armor loads."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, readable dark metal and cloth, controlled neutral key, restrained local wind emission, cracked stone, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "prohibited-trait",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, random giant horn, oversized sword, full-body color wash, pale recolor, transparency-only treatment, directionless particle field, or visible published-character resemblance is present."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction source was exclusive-copied without normalization; source and retained dimensions, byte counts, media types, and SHA-256 hashes match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation or self-promotion."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-workflow-v1-death-knight-wind-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T17:21:30.335Z",
+  "completedAt": "2026-08-29T17:25:00.463Z",
+  "totalWallTimeMs": 210128,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wind-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/death-knight-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

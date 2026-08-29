@@ -1,0 +1,40 @@
+{
+	"$id": "https://summonlab.local/schemas/image-production-rubric-finding-v1.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"criterionId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+		"category": {
+			"type": "string",
+			"enum": [
+				"identity",
+				"species-cue-strength",
+				"anatomy",
+				"canvas-completion",
+				"framing",
+				"subject-count",
+				"affinity",
+				"affinity-cue-strength",
+				"affinity-integration",
+				"counterplay",
+				"prohibited-trait",
+				"constraint-safety",
+				"silhouette",
+				"material",
+				"battlefield-duty",
+				"style",
+				"style-cohesion",
+				"manifest-fidelity",
+				"prompt-provenance",
+				"exact-source-persistence",
+				"provenance",
+				"output-ownership"
+			]
+		},
+		"evaluator": { "type": "string", "enum": ["producer", "automated", "human"] },
+		"outcome": { "type": "string", "enum": ["pass", "concern", "fail", "not-applicable"] },
+		"observation": { "type": "string", "minLength": 1, "maxLength": 1000 }
+	},
+	"required": ["criterionId", "category", "evaluator", "outcome", "observation"],
+	"additionalProperties": false
+}

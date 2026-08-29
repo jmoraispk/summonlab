@@ -1,0 +1,290 @@
+{
+	"$id": "https://summonlab.local/schemas/image-production-target-v1.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": { "type": "string", "const": "image-production-target-v1" },
+		"targetId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+		"assetId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+		"packId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+		"experimentId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+		"promptProtocol": {
+			"type": "string",
+			"enum": ["canonical-v1", "safe-frame-v2", "safe-frame-v3", "safe-frame-v4"]
+		},
+		"authoringProtocol": { "type": "string", "enum": ["basic-v1", "semantic-v2"] },
+		"cohort": { "type": "string", "enum": ["controlled", "breadth", "regression"] },
+		"speciesId": {
+			"type": "string",
+			"enum": [
+				"death-knight",
+				"elemental",
+				"grey-wolf",
+				"cave-bear",
+				"goblin",
+				"tunnel-boar",
+				"cave-drake",
+				"tower-basilisk"
+			]
+		},
+		"chassisId": { "type": "string", "const": "bound-vanguard-elemental" },
+		"affinity": { "type": "string", "enum": ["normal", "wood", "fire", "metal", "water", "wind"] },
+		"affinityDesign": {
+			"type": "object",
+			"properties": {
+				"alteredDimensions": {
+					"maxItems": 8,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"material",
+							"silhouette",
+							"motion",
+							"anatomy",
+							"equipment",
+							"attack-telegraph",
+							"environmental-wake",
+							"exposed-counterplay"
+						]
+					}
+				},
+				"expression": { "type": "string", "minLength": 1, "maxLength": 1000 },
+				"counterplayCue": { "type": "string", "minLength": 1, "maxLength": 500 }
+			},
+			"required": ["alteredDimensions", "expression", "counterplayCue"],
+			"additionalProperties": false
+		},
+		"threat": {
+			"type": "object",
+			"properties": {
+				"presentationTier": { "type": "string", "const": "elite" },
+				"referenceGrade": { "type": "number", "const": 4 },
+				"canonicalGrade": {
+					"anyOf": [{ "type": "integer", "minimum": 1, "maximum": 10 }, { "type": "null" }]
+				}
+			},
+			"required": ["presentationTier", "referenceGrade", "canonicalGrade"],
+			"additionalProperties": false
+		},
+		"battlefieldDutyId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+		"constructionMode": {
+			"type": "string",
+			"enum": [
+				"armored-undead",
+				"substance-bodied",
+				"organic-quadruped",
+				"humanoid-enemy",
+				"draconic-quadruped",
+				"six-legged-reptile"
+			]
+		},
+		"identityInvariants": {
+			"minItems": 2,
+			"maxItems": 20,
+			"type": "array",
+			"items": { "type": "string", "minLength": 1, "maxLength": 300 }
+		},
+		"anatomyInvariants": {
+			"minItems": 2,
+			"maxItems": 20,
+			"type": "array",
+			"items": { "type": "string", "minLength": 1, "maxLength": 300 }
+		},
+		"permittedTransformations": {
+			"minItems": 1,
+			"maxItems": 20,
+			"type": "array",
+			"items": { "type": "string", "minLength": 1, "maxLength": 300 }
+		},
+		"prohibitedTraits": {
+			"minItems": 1,
+			"maxItems": 30,
+			"type": "array",
+			"items": { "type": "string", "minLength": 1, "maxLength": 300 }
+		},
+		"goblinVariation": {
+			"type": "object",
+			"properties": {
+				"seed": { "type": "string", "minLength": 1, "maxLength": 120 },
+				"battlefieldDuty": {
+					"type": "string",
+					"enum": ["skirmisher", "archer", "hexweaver", "chieftain", "guard", "scout"]
+				},
+				"stature": { "type": "string", "enum": ["short", "average", "tall"] },
+				"build": { "type": "string", "enum": ["wiry", "lean", "sturdy", "broad"] },
+				"adultAgeBand": {
+					"type": "string",
+					"enum": ["young-adult", "adult", "weathered", "elder"]
+				},
+				"face": {
+					"type": "object",
+					"properties": {
+						"shape": { "type": "string", "minLength": 1, "maxLength": 80 },
+						"nose": { "type": "string", "minLength": 1, "maxLength": 80 },
+						"jaw": { "type": "string", "minLength": 1, "maxLength": 80 },
+						"brow": { "type": "string", "minLength": 1, "maxLength": 80 },
+						"ears": { "type": "string", "minLength": 1, "maxLength": 80 },
+						"scarsOrAsymmetry": { "type": "string", "minLength": 1, "maxLength": 160 }
+					},
+					"required": ["shape", "nose", "jaw", "brow", "ears", "scarsOrAsymmetry"],
+					"additionalProperties": false
+				},
+				"skinPalette": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"localizedMarkings": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"clothingSilhouette": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"clothingLayers": {
+					"minItems": 1,
+					"maxItems": 12,
+					"type": "array",
+					"items": { "type": "string", "minLength": 1, "maxLength": 120 }
+				},
+				"materialCondition": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"footwear": { "type": "string", "minLength": 1, "maxLength": 120 },
+				"headwear": { "type": "string", "minLength": 1, "maxLength": 120 },
+				"armorCoverage": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"handedness": { "type": "string", "enum": ["left", "right", "ambidextrous"] },
+				"weaponOrFocus": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"posture": { "type": "string", "minLength": 1, "maxLength": 160 },
+				"equipmentAnchors": {
+					"minItems": 1,
+					"maxItems": 12,
+					"type": "array",
+					"items": { "type": "string", "minLength": 1, "maxLength": 120 }
+				},
+				"affinityExpression": { "type": "string", "minLength": 1, "maxLength": 300 },
+				"counterplayCue": { "type": "string", "minLength": 1, "maxLength": 300 }
+			},
+			"required": [
+				"seed",
+				"battlefieldDuty",
+				"stature",
+				"build",
+				"adultAgeBand",
+				"face",
+				"skinPalette",
+				"localizedMarkings",
+				"clothingSilhouette",
+				"clothingLayers",
+				"materialCondition",
+				"footwear",
+				"headwear",
+				"armorCoverage",
+				"handedness",
+				"weaponOrFocus",
+				"posture",
+				"equipmentAnchors",
+				"affinityExpression",
+				"counterplayCue"
+			],
+			"additionalProperties": false
+		},
+		"references": {
+			"minItems": 1,
+			"maxItems": 20,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"path": { "type": "string", "minLength": 1, "maxLength": 500 },
+					"purpose": { "type": "string", "minLength": 1, "maxLength": 500 },
+					"contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+				},
+				"required": ["path", "purpose", "contentHash"],
+				"additionalProperties": false
+			}
+		},
+		"presentation": {
+			"type": "object",
+			"properties": {
+				"styleContract": { "type": "string", "minLength": 1, "maxLength": 2000 },
+				"medium": { "type": "string", "minLength": 1, "maxLength": 200 },
+				"background": { "type": "string", "minLength": 1, "maxLength": 500 },
+				"lighting": { "type": "string", "minLength": 1, "maxLength": 500 },
+				"composition": { "type": "string", "minLength": 1, "maxLength": 1000 },
+				"canvas": {
+					"type": "object",
+					"properties": {
+						"width": { "type": "integer", "minimum": 512, "maximum": 8192 },
+						"height": { "type": "integer", "minimum": 512, "maximum": 8192 },
+						"mediaType": { "type": "string", "enum": ["image/png", "image/webp"] },
+						"safeMarginPercent": { "type": "number", "minimum": 0, "maximum": 40 }
+					},
+					"required": ["width", "height", "mediaType", "safeMarginPercent"],
+					"additionalProperties": false
+				},
+				"negativePrompt": {
+					"minItems": 1,
+					"maxItems": 30,
+					"type": "array",
+					"items": { "type": "string", "minLength": 1, "maxLength": 300 }
+				}
+			},
+			"required": [
+				"styleContract",
+				"medium",
+				"background",
+				"lighting",
+				"composition",
+				"canvas",
+				"negativePrompt"
+			],
+			"additionalProperties": false
+		},
+		"acceptanceCriteria": {
+			"minItems": 1,
+			"maxItems": 40,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"criterionId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+					"kind": { "type": "string", "enum": ["objective", "human-review"] },
+					"description": { "type": "string", "minLength": 1, "maxLength": 500 },
+					"required": { "type": "boolean" }
+				},
+				"required": ["criterionId", "kind", "description", "required"],
+				"additionalProperties": false
+			}
+		},
+		"output": {
+			"type": "object",
+			"properties": {
+				"candidatePath": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 500,
+					"pattern": "\\.(?:png|webp)$"
+				},
+				"resultPath": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "\\.json$" }
+			},
+			"required": ["candidatePath", "resultPath"],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"targetId",
+		"assetId",
+		"packId",
+		"experimentId",
+		"promptProtocol",
+		"authoringProtocol",
+		"cohort",
+		"speciesId",
+		"affinity",
+		"affinityDesign",
+		"threat",
+		"battlefieldDutyId",
+		"constructionMode",
+		"identityInvariants",
+		"anatomyInvariants",
+		"permittedTransformations",
+		"prohibitedTraits",
+		"references",
+		"presentation",
+		"acceptanceCriteria",
+		"output"
+	],
+	"additionalProperties": false
+}

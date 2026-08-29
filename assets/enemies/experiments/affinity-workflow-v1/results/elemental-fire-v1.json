@@ -1,0 +1,283 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-elemental-fire-v1",
+  "targetId": "affinity-workflow-v1-elemental-fire",
+  "assignmentId": "assignment-affinity-workflow-v1-elemental-fire",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-elemental-fire\".\n\nSubject and threat:\n- Species: elemental.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: bound-frontline-vanguard.\n- Construction mode: substance-bodied.\n- Fixed chassis: bound-vanguard-elemental.\n\nIdentity invariants:\n- the same Bound Vanguard Elemental chassis in every affinity\n- concentrated hexagonal core at the sternum\n- pale arcane binding lattice that remains locally readable\n- broad wedge forearms and a low stable torso\n\nAnatomy invariants:\n- two arms and two legs\n- no head or neck\n- five major body masses: torso, two wedge arms, and two planted legs\n- affinity substance changes while chassis proportions remain fixed\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: extra limbs; humanoid face; floating amorphous blob; changed chassis proportions; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png — Individual bipedal elemental framing, grounded weight, wedge forearms, and readable core only; preserve the new Bound Vanguard proportions rather than copying the Stone Breaker identity.\n2. assets/enemies/review/pack-2/elementals-v1.png — Elemental material behavior, coherent cores, restrained local emission, floor, and lighting only; do not transfer any one family member’s anatomy or duty.\n3. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n",
+      "promptHash": "899f12ef455539b03ddf3feea8ff75f73bca5ef2876e40b4d5d9493bf122a2e7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T17:36:55.200Z",
+      "generationCompletedAt": "2026-08-29T17:37:14.435Z",
+      "inspectionCompletedAt": "2026-08-29T17:37:39.000Z",
+      "generationDurationMs": 19235,
+      "inspectionDurationMs": 24565,
+      "totalWallTimeMs": 43800,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04e97-b5e2-78c2-982e-75e06eb0aa54/exec-49f1bdf4-1ae6-4692-be0b-b3caf6db6698.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "single-finished-subject",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally rendered with a continuous stone floor and charcoal backdrop, without blank bands or unfinished regions."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The hard body is complete, but the upper flame and effect wake cross the required eight-percent top safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured elemental appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Target-aware inspection finds strong elemental cues through the compact core, broad wedge forearms, grounded weight, and load-bearing affinity substance; blind recognition remains pending human review."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Target-aware inspection finds strong fire cues beyond hue through heat-blackened surfaces, ember seams, combustion, smoke, and heat wake; blind recognition remains pending human review."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes material, motion, attack telegraph, and environmental wake while leaving detailed dark surfaces readable."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The two-arm and two-leg load paths are coherent, but a face-like head and neck appear above the torso contrary to the fixed chassis."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low advance, planted feet, broad guards, and exposed core communicate a bound frontline vanguard."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The compact chassis, sternum core, wedge forearms, and limb count pass, but the prohibited head and humanoid face violate the headless identity invariant."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The realistic painterly dark-fantasy finish, cracked floor, neutral backdrop, readable material, and restrained local emission are cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, blank region, or visible published-character resemblance appears."
+        }
+      ],
+      "retryReason": "A single corrective edit was required to restore the fixed headless chassis and place the complete body plus fire effect wake inside the safe frame while preserving all passing construction and style traits."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-elemental-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied preceding image; do not completely regenerate it. Make one targeted correction to restore the manifest-bound headless chassis and safe framing.\n\nPreserve all passing traits from the supplied image: exactly one featured Bound Vanguard Elemental, premium realistic painterly medieval dark-fantasy finish, heat-blackened load-bearing material, localized ember seams, controlled combustion, smoke and heat distortion, broad wedge forearms, low grounded advance, concentrated hexagonal sternum core, pale locally readable binding lattice, two planted legs, two arms, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key light, restrained local emission, and coherent finished detail across the full canvas.\n\nCorrect these linked silhouette-compliance defects:\n- Remove the humanoid head, face, eyes, jaw, and neck completely. The torso terminates at the shoulders with no head or neck; the hexagonal sternum core is the sole focal point.\n- Preserve exactly five major body masses: torso, two broad wedge arms, and two planted legs. Preserve exactly two arms and two legs, with no extra limb or floating mass.\n- Scale and reposition the entire creature plus every flame, smoke plume, spark, and heat-distortion wake so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides.\n- Keep the fixed Bound Vanguard proportions compact and low; do not copy the Stone Breaker identity.\n\nKeep all invariants: the same Bound Vanguard Elemental chassis in every affinity; concentrated hexagonal core at the sternum; pale arcane binding lattice locally readable; broad wedge forearms and low stable torso; affinity substance changes while chassis proportions remain fixed. Fire remains integrated through heat-blackened surfaces, internal ember seams, controlled combustion, smoke, heat distortion, and an exposed core/heat-sink counterplay cue between combustion cycles.\n\nDo not add labels, text, UI, frame, logo, watermark, extra creature, cropped extremity, blank band, unfinished region, abrupt canvas cutoff, published-character resemblance, humanoid face, floating amorphous blob, changed chassis proportions, extra limbs, or uniform orange full-body glow. Output a finished 1536 x 1024 PNG.",
+      "promptHash": "f8570f4e3f70e46f4c13f4384747e388b083faed6c68253f88f52a5622d74155",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T17:37:42.760Z",
+      "generationCompletedAt": "2026-08-29T17:37:58.762Z",
+      "inspectionCompletedAt": "2026-08-29T17:38:05.000Z",
+      "generationDurationMs": 16002,
+      "inspectionDurationMs": 6238,
+      "totalWallTimeMs": 22240,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04e97-b5e2-78c2-982e-75e06eb0aa54/exec-f14daf3e-3edd-4dda-ae71-76b912d2fb41.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04e97-b5e2-78c2-982e-75e06eb0aa54/exec-f14daf3e-3edd-4dda-ae71-76b912d2fb41.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2035883,
+          "contentHash": "c10e8876e592e493559287364f3c1564e98488622098a796d11167bacd145b92"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2035883,
+          "contentHash": "c10e8876e592e493559287364f3c1564e98488622098a796d11167bacd145b92"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2035883,
+        "contentHash": "c10e8876e592e493559287364f3c1564e98488622098a796d11167bacd145b92"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire 1536 by 1024 canvas is intentionally rendered with continuous backdrop and floor detail, without blank bands, unpainted regions, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The upper torso cap, both wedge forearms, both planted feet, and the complete localized fire and smoke wake remain inside the declared eight-percent safe margin on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Bound Vanguard Elemental appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; known-target inspection finds a compact exposed core, low center of gravity, broad wedge forearms, grounded load paths, and a readable vanguard silhouette."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire-affinity recognition remains pending human review; known-target inspection finds heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and localized heat wake rather than color alone."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire visibly changes load-bearing material, motion, the exposed core attack telegraph, and environmental wake while keeping dark surface and anatomy detail readable."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected headless and neckless chassis reads as one low torso, two coherent wedge-arm masses, and two planted leg masses with believable joints, contact, and weight."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The forward-set wedge guards, low stable torso, concentrated sternum core, and planted advance communicate a bound frontline vanguard and readable impact threat."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The fixed Bound Vanguard proportions, hexagonal sternum core, locally readable pale binding lattice, five major masses, two-arm and two-leg plan, and absence of head, neck, face, or extra limb are preserved."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, controlled neutral lighting, heat-blackened material, cracked floor, charcoal-to-midnight backdrop, and restrained local emission remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, humanoid face, floating anatomy, full-body orange wash, or visible published-character resemblance appears."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned corrective source was exclusive-copied without normalization; source and retained dimensions, media type, byte count, and SHA-256 hash match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation or self-promotion."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-workflow-v1-elemental-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T17:36:40.000Z",
+  "completedAt": "2026-08-29T17:41:15.000Z",
+  "totalWallTimeMs": 275000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/fire-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/elemental-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-grey-wolf-wind",
+  "targetId": "affinity-workflow-v1-grey-wolf-wind",
+  "assignmentId": "assignment-affinity-workflow-v1-grey-wolf-wind",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-grey-wolf-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-grey-wolf-wind\".\n\nSubject and threat:\n- Species: grey-wolf.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: flanking-predator.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- recognizable wolf face\n- fast flanking silhouette\n- natural predatory posture\n\nAnatomy invariants:\n- canine anatomy\n- exactly four legs\n- credible ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: humanoid armor; antlers; wings; dragon anatomy; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — First subject only: established Grey Wolf anatomy, coat, ground contact, and flanking silhouette; do not transfer the Dire Wolf, Cave Bear, or Tunnel Boar.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "41177eec448b3e51660a084017cc2c2d358b733f46461591693c98ae9892e41f",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:32:31.641Z",
+      "generationCompletedAt": "2026-08-29T18:33:12.536Z",
+      "inspectionCompletedAt": "2026-08-29T18:33:21.648Z",
+      "generationDurationMs": 40895,
+      "inspectionDurationMs": 9112,
+      "totalWallTimeMs": 50007,
+      "sourceOutputId": "exec-dcc94f7f-b175-4a45-8501-60806ab12b7a.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04eca-ea9b-7962-94b5-d8b62b996fae/exec-dcc94f7f-b175-4a45-8501-60806ab12b7a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2395678,
+          "contentHash": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2395678,
+          "contentHash": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2395678,
+        "contentHash": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full 1536 by 1024 canvas is intentionally rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The ears, muzzle, all four paws, tail, directional fur, debris, and pressure wake remain inside the declared eight-percent safe margin on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured wolf appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt matches the safe-frame-v3 canonical renderer byte-for-byte at SHA-256 41177eec448b3e51660a084017cc2c2d358b733f46461591693c98ae9892e41f, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The recognizable wolf face, low fast flanking silhouette, natural predatory posture, canine body, exactly four legs, complete tail, grounded paws, and absence of every prohibited trait satisfy the declared manifest."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind changes silhouette through swept directional fur, motion through the left-to-right coat stream, attack telegraph through curved pressure channels, and environmental wake through lifted stone debris and compressed vapor; the affinity is not a pale recolor or transparency effect."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A low-turbulence dark pocket remains visibly readable beneath the chest and inside the curling directional pressure pattern, presenting the declared still center between the surrounding force streams."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds strong wolf head, shoulders, spine, tail, coat, four-leg plan, and prowling posture."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds directional fur, curved pressure channels, debris flow, and a calmer center rather than color alone."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly four coherent legs and paws are visible with plausible canine joints, forward-balanced weight, and credible contact on the cracked-stone floor."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low shoulders, extended lead paw, lateral body line, focused gaze, and strongly directional wake communicate a fast flanking predator."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly dark-fantasy finish, coherent fur, controlled neutral key, restrained pressure highlights, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, humanoid armor, antlers, wings, draconic anatomy, blank region, or abrupt cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The repository helper exclusive-copied the exact returned source without normalization; source and retained dimensions, media type, byte count, and SHA-256 a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no catalog, shared review file, application route, plan, Git state, or promotion decision was edited by this job."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-grey-wolf-wind-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T18:32:31.641Z",
+  "completedAt": "2026-08-29T18:34:02.912Z",
+  "totalWallTimeMs": 91271,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/grey-wolf-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

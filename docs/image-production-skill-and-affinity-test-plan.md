@@ -1,6 +1,7 @@
 # Image-production skill and affinity workload plan
 
-Status: **planned; implementation and image generation not started**
+Status: **in execution; controlled generation and semantic regression complete, breadth gated on
+human blind review and controlled-quality corrections**
 
 Date: **2026-08-29**
 
@@ -12,6 +13,42 @@ This is a post-production extension of [Character Pack 2](character-pack-2-plan.
 accepted Pack 2 monster language as a controlled test bed without changing or automatically
 promoting any accepted Pack 2 candidate. Generated results remain experimental approval candidates
 until a human records a review decision.
+
+## Execution record
+
+The plan is now backed by a runnable implementation rather than being a design-only document:
+
+- the reusable, locally installed `summonlab-image-production` skill is versioned under
+  `skills/summonlab-image-production/` and passes the skill-package validator;
+- strict target, assignment, attempt, result, catalog, blind-review, evaluation, and dedicated
+  affinity-review contracts are implemented and covered by tests;
+- 48 base manifests plus six versioned Elemental semantic-regression manifests are exported with
+  108 unique owned output paths;
+- deterministic export, validation, exact-source persistence, result verification, aggregate sync,
+  review-evidence export, and goblin-independence audit tooling is implemented;
+- the Forge affinity-workflow page presents all 54 coordinates, supports label-visible and
+  server-stripped blind modes, verifies candidate bytes before serving them, and records append-only
+  hash-bound reviews without promotion;
+- the Death Knight six-affinity pilot, the first Grey Wolf canaries, and the neutral-chassis
+  Elemental regression have produced measured, hash-bound evidence;
+- all 24 controlled results and six Elemental regression results are complete: 26 producer
+  candidates and four bounded `revise` outcomes, all unapproved;
+- the controlled matrix has only 10 first-attempt candidates against the 20-target threshold, and
+  no blind human recognition evidence has been recorded, so the 24-image breadth phase is not yet
+  authorized by its release gate.
+
+The active Codex task exposes four total agent slots. Reserving one slot for orchestration yields a
+measured ceiling of three concurrent image jobs, even though local configuration requests 16. This
+is an environment-capacity finding, not proof that 8-, 12-, or 16-job execution works. Those ladder
+stages require a newly provisioned task that actually exposes the requested slots; the manifests,
+ownership boundaries, stop rules, and instrumentation are prepared for that continuation.
+
+Current generation timing shows why parallelism matters. Built-in image calls are commonly around
+20–48 seconds, while a complete auditable job—including task startup, reference inspection, one
+possible correction, exact persistence, structured result writing, and verification—has commonly
+taken roughly 110–214 seconds. Runtime drawing of already-authored modular assets can still be
+real-time; model generation of a novel finished portrait should be treated as asynchronous
+production or background enrichment rather than a frame-time operation.
 
 ## Objective
 

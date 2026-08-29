@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-death-knight-water",
+  "targetId": "affinity-workflow-v1-death-knight-water",
+  "assignmentId": "assignment-affinity-workflow-v1-death-knight-water",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-death-knight-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-death-knight-water\".\n\nSubject and threat:\n- Species: death-knight.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: formation-commander.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- undead armored commander identity\n- skull or death mask\n- small command pennant\n- deliberate sword guard\n- command seal beneath the gorget\n- disciplined military posture\n\nAnatomy invariants:\n- humanoid biped\n- believable armor load paths\n- two arms and two legs\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: random giant horns; implausibly oversized sword; full-body colored glow; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Fourth subject only: Death Knight identity, command silhouette, armor load paths, and restrained necromancy; do not transfer the sentinel, wraith, or bone mage.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n",
+      "promptHash": "469caa305573faed61e4b59c6b30b2973e93559bc1d9a558da4052825539ba04",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T17:14:14.536Z",
+      "generationCompletedAt": "2026-08-29T17:14:58.666Z",
+      "inspectionCompletedAt": "2026-08-29T17:15:54.830Z",
+      "generationDurationMs": 44130,
+      "inspectionDurationMs": 56164,
+      "totalWallTimeMs": 100294,
+      "sourceOutputId": "exec-ce1ae4e3-1a7a-4014-b3f7-a11615b1008e.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The charcoal backdrop and cracked-stone floor were fully rendered across the 1536 by 1024 canvas with no blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete subject was visible, but the pennant finial reached to roughly two percent from the top edge and therefore entered the required eight-percent safe zone."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured full-body commander appeared with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; known-target inspection found strong Death Knight cues in the skull face, disciplined plate, sword guard, command seal, and pennant."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; known-target inspection found strong water cues through pressurized streams, mist, wet reflections, fluid armor transitions, and a localized wake."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Water changed material, motion, attack telegraph, and environmental wake rather than acting as a simple blue recolor."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Two arms, two legs, grounded feet, coherent plate articulation, and believable grips on sword and pennant pole were readable."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The deliberate advance, guarded sword, command standard, seal, and military armor clearly communicated a formation commander."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The armored-undead identity, skull face, command seal beneath the gorget, pennant, sword guard, disciplined posture, humanoid limb plan, and believable armor loads were present."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, controlled neutral lighting, coherent dark metal and water, cracked stone, and charcoal backdrop remained cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, giant horn, oversized sword, full-body wash, or shapeless blue blob was visible."
+        }
+      ],
+      "retryReason": "One targeted framing edit was required to uniformly scale and recenter the passing design so the pennant finial and complete silhouette cleared the declared eight-percent safe margin."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-death-knight-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-death-knight-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "TARGETED CORRECTION — EDIT, not a complete regeneration.\n\nUsing the exact preceding image as the edit reference, make one change only: uniformly scale down and re-center the entire existing composition so the complete silhouette and every extremity, weapon tip, pennant pole, pennant finial, cloth edge, and water effect remain at least 8 percent inside all four canvas edges. The present pennant finial is too close to the top edge. Keep the canvas 1536 x 1024 and finish the newly exposed background and cracked-stone floor seamlessly.\n\nPreserve all passing traits exactly:\n- Exactly one featured subject: a tall, disciplined armored undead Death Knight formation commander at elite / Grade 4 presentation.\n- Armored-undead construction, skull or death mask, small command pennant, deliberate sword guard, command seal beneath the gorget, disciplined military posture.\n- Humanoid biped with two arms and two legs, coherent joints, believable armor load paths, grounded feet, and believable equipment grips.\n- Water affinity expressed through pressurized flow, mist, wet reflection, coherent fluid transitions, a readable structural binding core, a committed-attack pressure telegraph, and a local environmental water wake.\n- Preserve the counterplay cue: pressure loss exposes the coherent binding core after a committed attack.\n- Preserve altered dimensions of material, motion, attack telegraph, and environmental wake.\n- Preserve restrained local emission; no full-body color wash, shapeless blue blob, or generic blue glow.\n- Preserve the current sword scale and design; no implausibly oversized sword and no random giant horns.\n- Preserve Pack 2 premium realistic painterly medieval dark-fantasy finish, coherent dark metal and water materials, controlled linework, grounded anatomy, neutral key lighting, and charcoal-to-midnight backdrop over a neutral cracked-stone floor.\n- Preserve the pose, identity, armor, sword, command equipment, water design, lighting, colors, detail, and overall composition other than the uniform scale/reframe required for safe margins.\n\nNo labels, text, UI, frame, logo, watermark, extra creature, duplicate subject, cropped extremity, blank band, unfinished region, abrupt cutoff, or resemblance to a published character or reference person.\n",
+      "promptHash": "2a6ac7b89ed2592c06db30faeadd466bf03359d3f0895962321c7ccbd7d1bbd3",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T17:15:54.830Z",
+      "generationCompletedAt": "2026-08-29T17:16:17.831Z",
+      "inspectionCompletedAt": "2026-08-29T17:16:21.390Z",
+      "generationDurationMs": 23001,
+      "inspectionDurationMs": 3559,
+      "totalWallTimeMs": 26560,
+      "sourceOutputId": "exec-4159c98e-e5ce-4b78-9288-d6d0563d9369.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04e83-1e30-7e71-ac27-55b86856763a/exec-4159c98e-e5ce-4b78-9288-d6d0563d9369.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2194501,
+          "contentHash": "7cf465d187839d124827474309cae6075f95f727d75c6dc02e0388033da73fa9"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2194501,
+          "contentHash": "7cf465d187839d124827474309cae6075f95f727d75c6dc02e0388033da73fa9"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2194501,
+        "contentHash": "7cf465d187839d124827474309cae6075f95f727d75c6dc02e0388033da73fa9"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire 1536 by 1024 canvas is intentionally rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank or unfinished region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The sword tip, pennant finial, pole, boots, cape, and complete subject silhouette are comfortably contained beyond the declared eight-percent safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured full-body commander is present with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target inspection finds strong Death Knight cues in the skull face, command seal, pennant, sword guard, disciplined posture, and believable armor silhouette."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target inspection finds strong Water cues in pressure streams, mist, wet reflection, fluid armor transitions, and a coherent localized structural core."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Water materially alters armor transitions and sword telegraph, flows directionally around the moving body, and leaves a wet reflected environmental wake rather than a uniform color wash."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Two arms, two legs, grounded feet, coherent plate articulation, and believable grips on sword and pennant pole remain readable after the framing edit."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The deliberate guarded advance, command standard, gorget seal, sword, and precise military armor communicate a formation commander."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The armored-undead identity, skull face, small command pennant, deliberate sword guard, command seal, disciplined posture, humanoid limb plan, and believable armor load paths are all retained."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, controlled neutral lighting, restrained local water emission, coherent materials, cracked stone, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, giant horn, oversized sword, full-body colored glow, shapeless blob, or visible published-character resemblance is present."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction source was exclusive-copied without normalization; source and retained dimensions, byte counts, media types, and SHA-256 hashes match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation or self-promotion."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-death-knight-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T17:14:14.536Z",
+  "completedAt": "2026-08-29T17:17:46.243Z",
+  "totalWallTimeMs": 211707,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/water-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/death-knight-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Summonlab Image Production'
+  short_description: 'Produce one audited manifest-bound game image'
+  default_prompt: 'Use $summonlab-image-production to execute the supplied target and assignment, then return its status, attempt count, owned paths, and concise revision or failure reason.'

@@ -1,0 +1,91 @@
+{
+	"schemaVersion": "image-production-target-v1",
+	"targetId": "affinity-workflow-v1-death-knight-water",
+	"assetId": "affinity-workflow-v1-death-knight-water",
+	"packId": "pack-2",
+	"experimentId": "affinity-workflow-v1",
+	"promptProtocol": "canonical-v1",
+	"authoringProtocol": "basic-v1",
+	"cohort": "controlled",
+	"speciesId": "death-knight",
+	"affinity": "water",
+	"affinityDesign": {
+		"alteredDimensions": ["material", "motion", "attack-telegraph", "environmental-wake"],
+		"expression": "pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core",
+		"counterplayCue": "Pressure loss exposes the coherent binding core after a committed attack."
+	},
+	"threat": { "presentationTier": "elite", "referenceGrade": 4, "canonicalGrade": 4 },
+	"battlefieldDutyId": "formation-commander",
+	"constructionMode": "armored-undead",
+	"identityInvariants": [
+		"undead armored commander identity",
+		"skull or death mask",
+		"small command pennant",
+		"deliberate sword guard",
+		"command seal beneath the gorget",
+		"disciplined military posture"
+	],
+	"anatomyInvariants": ["humanoid biped", "believable armor load paths", "two arms and two legs"],
+	"permittedTransformations": ["material", "motion", "attack telegraph", "environmental wake"],
+	"prohibitedTraits": [
+		"random giant horns",
+		"implausibly oversized sword",
+		"full-body colored glow",
+		"a shapeless blue blob or generic blue glow with no readable structure"
+	],
+	"references": [
+		{
+			"path": "assets/enemies/review/pack-2/undead-v1.png",
+			"purpose": "Fourth subject only: Death Knight identity, command silhouette, armor load paths, and restrained necromancy; do not transfer the sentinel, wraith, or bone mage",
+			"contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+		},
+		{
+			"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+			"purpose": "Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage",
+			"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+		}
+	],
+	"presentation": {
+		"styleContract": "Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.",
+		"medium": "premium realistic painterly raster character concept",
+		"background": "neutral cracked-stone floor against a charcoal-to-midnight backdrop",
+		"lighting": "controlled neutral key with restrained local affinity emission and readable materials",
+		"composition": "Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.",
+		"canvas": { "width": 1536, "height": 1024, "mediaType": "image/png", "safeMarginPercent": 8 },
+		"negativePrompt": [
+			"No labels, text, UI, frame, logo, or watermark.",
+			"No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.",
+			"No resemblance to a published character or reference person."
+		]
+	},
+	"acceptanceCriteria": [
+		{
+			"criterionId": "complete-safe-frame",
+			"kind": "objective",
+			"description": "Entire silhouette and all extremities are complete with at least eight percent safe margin.",
+			"required": true
+		},
+		{
+			"criterionId": "single-finished-subject",
+			"kind": "objective",
+			"description": "Exactly one subject appears and every canvas region is intentionally finished.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-species-identity",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the species without seeing the target label.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-affinity-integration",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the affinity through at least two visual dimensions rather than color alone.",
+			"required": true
+		}
+	],
+	"output": {
+		"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/water-v1.png",
+		"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/death-knight-water-v1.json"
+	}
+}

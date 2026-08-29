@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-cave-bear-normal",
+  "targetId": "affinity-workflow-v1-cave-bear-normal",
+  "assignmentId": "assignment-affinity-workflow-v1-cave-bear-normal",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-cave-bear-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-cave-bear-normal\".\n\nSubject and threat:\n- Species: cave-bear.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: close-range-bruiser.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- recognizable ursine face\n- heavy shoulder mass\n- powerful forelimbs\n\nAnatomy invariants:\n- ursine anatomy\n- exactly four legs\n- four-legged weight distribution\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: Preserve the established species weak point without elemental substitution.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: wolf proportions; humanoid golem anatomy; decorative saddle or rider; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Third subject only: established Cave Bear anatomy, coat, grounded mass, and shoulder weight; do not transfer either wolf or the Tunnel Boar.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "6e21ce433791f77b56163644aea6f32a78439eea8107c9a949a09a8506212f8b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:33:39.710Z",
+      "generationCompletedAt": "2026-08-29T18:34:12.970Z",
+      "inspectionCompletedAt": "2026-08-29T18:34:23.900Z",
+      "generationDurationMs": 33260,
+      "inspectionDurationMs": 10930,
+      "totalWallTimeMs": 44190,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ecc-01b5-72b1-968a-f06d088885b9/exec-c3b89c30-35d7-4bec-965d-9ab6e93f4ac3.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial image rendered the full canvas, backdrop, floor, and single bear without any blank or abrupt region."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "One rear leg and paw were too heavily occluded to satisfy the strict requirement that all four extremities remain clearly readable."
+        }
+      ],
+      "retryReason": "A targeted edit was required to open the stance, preserve the successful neutral Cave Bear design, and make all four legs and paws distinctly readable within the safe frame."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-cave-bear-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-cave-bear-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied preceding output; this is a targeted correction, not a complete regeneration. Preserve the same single premium realistic painterly medieval dark-fantasy Cave Bear, recognizable ursine face and muzzle, heavy shoulder mass, powerful forelimbs, natural dark-brown coat, subtle worn duty-readable harness material, grounded close-range bruiser posture, neutral cracked-stone floor, charcoal-to-midnight background, controlled neutral lighting, finished canvas, and completely unaffiliated appearance with no elemental glow, magical anatomy, or affinity-coded material. Correct only the stance and framing: make exactly four anatomically coherent bear legs and all four paws separately and unmistakably visible, with natural four-legged weight distribution, no limb hidden behind another, and keep the full silhouette and every extremity at least eight percent inside every canvas edge. Preserve an unarmored readable face/muzzle as the visible counterplay area. Keep ordinary ursine proportions and a short bear tail; do not introduce wolf proportions, humanoid golem anatomy, decorative saddle, rider, extra creature, extra limb, text, label, UI, frame, logo, watermark, blank band, unfinished region, abrupt cutoff, or resemblance to a published character.",
+      "promptHash": "d01847c3f395cd5dee50fcfbcd963970a72b4fd2af98c4118c6f2cc2e41f52c0",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:34:24.496Z",
+      "generationCompletedAt": "2026-08-29T18:34:54.646Z",
+      "inspectionCompletedAt": "2026-08-29T18:35:16.832Z",
+      "generationDurationMs": 30150,
+      "inspectionDurationMs": 22186,
+      "totalWallTimeMs": 52336,
+      "sourceOutputId": "exec-e9b6aa41-c2c4-4321-b5aa-97a11bfe1b6d.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 32,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ecc-01b5-72b1-968a-f06d088885b9/exec-e9b6aa41-c2c4-4321-b5aa-97a11bfe1b6d.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2407518,
+          "contentHash": "2facbf837dac20c60474a0e33a81c5c01ce0cdfe3e0727f380a1b7e9f1e5aaf9"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2407518,
+          "contentHash": "2facbf837dac20c60474a0e33a81c5c01ce0cdfe3e0727f380a1b7e9f1e5aaf9"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2407518,
+        "contentHash": "2facbf837dac20c60474a0e33a81c5c01ce0cdfe3e0727f380a1b7e9f1e5aaf9"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete 1536 by 1024 canvas is intentionally rendered with continuous charcoal backdrop and cracked-stone floor detail."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The ears, muzzle, body, all four paws, and full silhouette remain comfortably inside the declared eight-percent safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Cave Bear appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matches the safe-frame-v3 renderer output, including its no-terminal-line-feed byte contract, and both attempt prompts retain exact SHA-256 hashes."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target inspection finds an unmistakable ursine muzzle, small rounded ears, heavy shoulder hump, powerful forelimbs, and broad bear proportions."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds natural dark-brown fur and restrained neutral materials without elemental coding."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Normal preserves organic bear construction, natural coat, neutral floor interaction, and subdued lighting without glow, magical anatomy, elemental wake, or affinity-coded substitution."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly four coherent ursine legs and four paws are visible with believable joints, grounded contact, and four-legged weight distribution; the far rear paw is partly overlapped but remains readable."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The forward-set shoulders, low head, spread forepaws, and grounded mass communicate a close-range bruiser preparing to drive through an opponent."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image preserves the recognizable bear face, heavy shoulder mass, powerful forelimbs, ursine anatomy, four-leg plan, short tail, ordinary proportions, and unarmored facial counterplay without a saddle or rider."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, controlled neutral lighting, coherent fur and worn harness materials, cracked-stone floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, wolf proportions, humanoid golem anatomy, rider, decorative saddle, or visible elemental glow appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction source was exclusive-copied without normalization; source and retained dimensions, media type, byte count, and SHA-256 hash match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation, application edit, target edit, or self-promotion."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-cave-bear-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T18:33:39.710Z",
+  "completedAt": "2026-08-29T18:36:46.262Z",
+  "totalWallTimeMs": 186552,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/cave-bear-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

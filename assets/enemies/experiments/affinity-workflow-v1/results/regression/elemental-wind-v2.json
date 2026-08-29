@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-elemental-wind-v2",
+  "targetId": "affinity-workflow-v1-elemental-wind-v2",
+  "assignmentId": "assignment-affinity-workflow-v1-elemental-wind-v2",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-wind-v2-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-elemental-wind-v2\".\n\nSubject and threat:\n- Species: elemental.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: bound-frontline-vanguard.\n- Construction mode: substance-bodied.\n- Fixed chassis: bound-vanguard-elemental.\n\nIdentity invariants:\n- exactly the headless Bound Vanguard Elemental shown in the neutral chassis benchmark\n- fixed broad shallow concave chest with a low stable torso\n- fixed broad wedge forearms, short planted legs, and benchmark-matched proportions\n- invariant pale arcane sternum core centered inside the chest concavity\n- pale binding lattice remains local and does not recolor the full body\n\nAnatomy invariants:\n- exactly two arms and two legs\n- no head, face, neck, shoulders above the chest, or substitute head-like mass\n- exactly five major masses: shallow-concave torso, two wedge arms, and two planted legs\n- the declared substance carries the full torso, arm, and leg loads while chassis proportions remain fixed\n\nAffinity: wind.\nAffinity expression: Compressed air, directional vapor channels, pressure distortion, and disciplined negative space form every load-bearing body mass with no rock substrate.\nCounterplay cue: The pale sternum core sits in the still low-pressure center of the otherwise directional vapor body.\nAltered dimensions: material; silhouette; motion.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: extra limbs or detached floating body masses; humanoid head, face, helmet, neck, or shoulder-mounted pseudo-head; domed or convex chest replacing the shallow concavity; dark, affinity-colored, absent, displaced, or oversized sternum core; changed chassis proportions, raised heroic posture, or long humanoid legs; rock, rubble, crystal, ceramic, or stone anatomy inside the vapor; pale transparent recolor standing in for wind construction; random fog with no directional pressure or fixed chassis.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png — Exact Bound Vanguard headless shallow-concave chassis, proportions, planted stance, wedge forearms, and pale sternum core only; do not treat its neutral ceramic material as the affinity substance for non-Normal targets.\n2. assets/enemies/review/pack-2/elementals-v1.png — Elementals-v1 plate supplies only the declared substance material behavior, coherent flow, restrained local emission, floor, and lighting; do not transfer any depicted anatomy, pose, proportions, head, duty, or core placement.\n3. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "fad3e84b263fd8104e61547a12991fd9604628a007ff11c31dd25c2c84968645",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:23:37.445Z",
+      "generationCompletedAt": "2026-08-29T18:23:56.778Z",
+      "inspectionCompletedAt": "2026-08-29T18:24:19.000Z",
+      "generationDurationMs": 19333,
+      "inspectionDurationMs": 22222,
+      "totalWallTimeMs": 41555,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ec2-79f3-7b62-8b70-7751c445fca8/exec-b8a6582b-f355-4a5c-9001-66ff20914a19.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete headless silhouette, both wedge-arm tips, both planted feet, and the restrained haze remain within the declared safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one subject appears on a fully rendered cracked-stone floor and charcoal backdrop with no blank or unfinished region."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The headless shallow-concave chassis, pale centered core, five masses, and low proportions pass, but the material reads as a transparent faceted solid."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Wind is presented mainly as pale transparent faceting plus surface haze rather than directional compressed-air anatomy changing multiple construction dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pale diamond sternum core is crisp, exposed, and centered inside the chest concavity."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image preserves the benchmark headless torso, two broad wedge arms, two short planted legs, low center of gravity, and centered core."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The limbs and torso contain glass- or ice-like planar shells prohibited by the target instead of load-bearing vapor and negative space."
+        }
+      ],
+      "retryReason": "Replace the otherwise-correct transparent faceted shell with directional compressed-air streamlines, vapor channels, pressure ripples, and negative-space anatomy while preserving the passing chassis, framing, core, and presentation."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-wind-v2-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-elemental-wind-v2-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied preceding image; do not completely regenerate it. Make one targeted material-construction correction while preserving the exact passing Bound Vanguard chassis, pose, framing, and presentation.\n\nPreserve all passing traits from the supplied image: exactly one featured subject; the exact broad headless and neckless shallow-concave torso; exactly two broad wedge forearms and two short planted legs; exactly five connected major masses; the low stable proportions and grounded advance; the centered pale diamond sternum core; the pale binding lattice kept local; the complete silhouette and every vapor extent inside an empty border of at least 8 percent on all four sides; the cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key light, premium realistic painterly medieval dark-fantasy finish, and fully rendered canvas.\n\nCorrect only the Wind substance construction:\n- Remove every transparent faceted shell, glass-like plane, icy shard, crystal edge, rock, rubble, ceramic plate, metal plate, and solid armor surface from the torso, both wedge arms, and both legs.\n- Rebuild those same five load-bearing masses entirely from tightly bundled compressed-air streamlines, layered directional vapor channels, pressure ripples, and disciplined dark negative-space gaps. The air streams themselves must bear the body's load and preserve the exact benchmark silhouette; there is no invisible or transparent solid body underneath.\n- Give the wind a single readable flow direction: streams enter from lower left, compress around the planted legs and wedge guards, accelerate around the torso, and trail toward upper right. Keep this environmental wake restrained and entirely within the safe border.\n- Keep the pale sternum core crisp and centered in a visibly still, low-pressure pocket inside the chest concavity, creating an obvious counterplay weak point amid the directional flow.\n- Maintain readable limb joints and grounded foot contact through compressed vortices and converging pressure bands, not through opaque or translucent solid anatomy.\n\nDo not add or change the subject count, chassis proportions, stance, limb count, duty, core placement, background, lighting, or camera. No head, face, helmet, neck, pseudo-head, shoulders above the concave chest, extra limb, detached floating mass, domed chest, long humanoid leg, random directionless fog, pale transparent recolor, labels, text, UI, frame, logo, watermark, cropped extremity, blank band, unfinished region, abrupt cutoff, or published-character resemblance. Output a finished 1536 x 1024 PNG.",
+      "promptHash": "b4efeb9f2ea0a8737e65bda06a9e1f8bc84711ed58502d83b4a7a96443808345",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:24:43.798Z",
+      "generationCompletedAt": "2026-08-29T18:25:07.398Z",
+      "inspectionCompletedAt": "2026-08-29T18:25:31.000Z",
+      "generationDurationMs": 23600,
+      "inspectionDurationMs": 23602,
+      "totalWallTimeMs": 47202,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ec2-79f3-7b62-8b70-7751c445fca8/exec-209d2161-3977-4c39-9bd6-429c08125c86.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ec2-79f3-7b62-8b70-7751c445fca8/exec-209d2161-3977-4c39-9bd6-429c08125c86.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2474998,
+          "contentHash": "f5aeeebd96954db6d63500ac42941e7bcd76a2938b2880d36f073cf0005f65ac"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/wind-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2474998,
+          "contentHash": "f5aeeebd96954db6d63500ac42941e7bcd76a2938b2880d36f073cf0005f65ac"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/wind-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2474998,
+        "contentHash": "f5aeeebd96954db6d63500ac42941e7bcd76a2938b2880d36f073cf0005f65ac"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete torso, both wedge-arm tips, both planted feet, and the upper-right directional wake remain inside a clearly empty border on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one subject appears, and the entire cracked-stone floor and charcoal backdrop are intentionally rendered without blank bands or cutoffs."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The headless shallow-concave chest, low proportions, wedge guards, short legs, pale local lattice, and centered pale sternum core match the manifest and reference routing."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind now changes material, silhouette edges, and motion through bundled streamlines, directional vapor channels, pressure bands, and negative-space gaps rather than hue alone."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The bright pale diamond sternum core is crisply exposed in a still dark pocket inside the otherwise moving chest, making the weak point readable."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly five connected major masses retain the benchmark broad concave torso, two wedge arms, two short planted legs, grounded contacts, and low stable center."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The torso, arms, and legs are visibly structured from dense converging air streams and vapor ribbons, with dark gaps and no retained rock, ceramic, crystal, or opaque solid substrate."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong fixed Bound Vanguard chassis cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wind recognition remains pending human review; target-aware inspection finds directional load-bearing air construction beyond color."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, neutral key lighting, restrained pale emission, cracked floor, and charcoal backdrop remain coherent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, head, face, extra limb, detached mass, crop, blank region, or published-character resemblance is visible."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact corrective source was exclusive-copied without normalization; source and retained dimensions, media type, byte count, and SHA-256 are identical."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation or self-promotion."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-workflow-v1-elemental-wind-v2-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T18:23:30.000Z",
+  "completedAt": "2026-08-29T18:25:56.510Z",
+  "totalWallTimeMs": 146510,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/wind-v2.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/regression/elemental-wind-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

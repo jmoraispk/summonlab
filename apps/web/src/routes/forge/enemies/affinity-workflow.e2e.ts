@@ -1,0 +1,65 @@
+import { expect, test } from '@playwright/test';
+
+test('renders partial affinity cohorts without implying approval', async ({ page }) => {
+	await page.goto('/forge/enemies/affinity-workflow');
+	await expect(
+		page.getByRole('heading', { name: 'Recognize the creature. Then read its affinity.' })
+	).toBeVisible();
+	await expect(page.getByTestId('affinity-cell')).toHaveCount(54);
+	await expect(page.getByText('Unapproved candidate').first()).toBeVisible();
+	await expect(page.getByText('Pending generation').first()).toBeVisible();
+	await expect(page.getByText('No automatic promotion')).toBeVisible();
+
+	await page
+		.getByRole('button', { name: /^Inspect / })
+		.first()
+		.click();
+	await expect(page.getByRole('form', { name: 'Review candidate' })).toBeVisible();
+	await expect(page.getByLabel('Species identity')).toBeVisible();
+	await expect(page.getByLabel('Style cohesion')).toBeVisible();
+	await expect(page.getByText('This stores review evidence only.')).toBeVisible();
+	const saveReview = page.getByRole('button', { name: 'Save review' });
+	if (await saveReview.isVisible()) {
+		await page.getByLabel('Reviewer').fill(`test:affinity-page-${Date.now()}`);
+		await page.getByLabel('Species guess').selectOption('death-knight');
+		await page.getByLabel('Affinity guess').selectOption('normal');
+		await page.getByRole('radio', { name: 'Candidate' }).check();
+		await page.getByLabel('Review note').fill('Automated page-action persistence proof.');
+		await saveReview.click();
+		await expect(page.getByRole('status')).toContainText(
+			/Review saved against the verified candidate hash|already saved/
+		);
+	} else {
+		await expect(page.getByRole('button', { name: 'Persistence unavailable' })).toBeDisabled();
+		await page.getByRole('button', { name: 'Close inspector' }).click();
+	}
+
+	await page.getByRole('button', { name: 'Breadth · 4' }).click();
+	await expect(page.getByTestId('affinity-cell')).toHaveCount(24);
+});
+
+test('blind mode withholds semantic labels and uses opaque media sources', async ({ page }) => {
+	await page.goto('/forge/enemies/affinity-workflow?mode=blind');
+	await expect(page.getByText('Blind recognition', { exact: true })).toBeVisible();
+	await expect(page.getByText('Specimen 01')).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Breadth · 4' })).toHaveCount(0);
+
+	const image = page.locator('button.thumbnail img').first();
+	await expect(image).toHaveAttribute('alt', 'Unlabeled experiment candidate');
+	await expect(image).toHaveAttribute(
+		'src',
+		/^\/forge\/enemies\/affinity-workflow\/media\/[a-f0-9]{24}$/
+	);
+	await image.click();
+	await expect(page.getByRole('dialog', { name: 'Candidate inspector' })).toBeVisible();
+	await expect(page.getByLabel('Species guess')).toBeVisible();
+	await expect(page.getByLabel('Affinity guess')).toBeVisible();
+	await expect(page.getByRole('form', { name: 'Review unlabeled candidate' })).toBeVisible();
+	await expect(page.getByText('No target, source, prompt, filename, content hash')).toBeVisible();
+
+	const html = await page.content();
+	expect(html).not.toContain('affinity-workflow-v1-death-knight-');
+	expect(html).not.toContain('normal-v1.png');
+	expect(html).not.toContain('exactPrompt');
+	expect(html).not.toContain('contentHash');
+});

@@ -1,9 +1,10 @@
 import type { DatabaseHealth } from '@summonlab/contracts';
 import postgres from 'postgres';
 
-export * from './clock.js';
+export * from './affinity-review.js';
 export * from './campaign.js';
 export * from './catch-up.js';
+export * from './clock.js';
 export * from './decision-jobs.js';
 export * from './proof.js';
 export * from './engine.js';

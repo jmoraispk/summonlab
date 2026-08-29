@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-grey-wolf-metal",
+  "targetId": "affinity-workflow-v1-grey-wolf-metal",
+  "assignmentId": "assignment-affinity-workflow-v1-grey-wolf-metal",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-grey-wolf-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-grey-wolf-metal\".\n\nSubject and threat:\n- Species: grey-wolf.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: flanking-predator.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- recognizable wolf face\n- fast flanking silhouette\n- natural predatory posture\n\nAnatomy invariants:\n- canine anatomy\n- exactly four legs\n- credible ground contact\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: humanoid armor; antlers; wings; dragon anatomy; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — First subject only: established Grey Wolf anatomy, coat, ground contact, and flanking silhouette; do not transfer the Dire Wolf, Cave Bear, or Tunnel Boar.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "980dda8d3c8e0ddf702442bdfc61590c77c3caea069f8b3f149106b43aa7aecb",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:29:24.016Z",
+      "generationCompletedAt": "2026-08-29T18:29:43.116Z",
+      "inspectionCompletedAt": "2026-08-29T18:30:10.000Z",
+      "generationDurationMs": 19100,
+      "inspectionDurationMs": 26884,
+      "totalWallTimeMs": 45984,
+      "sourceOutputId": "exec-9fbab373-54a9-45e1-a111-d2b62c502152.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 15,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ec7-c2b4-7943-a9c7-7ede0e890c50/exec-9fbab373-54a9-45e1-a111-d2b62c502152.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2226918,
+          "contentHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2226918,
+          "contentHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2226918,
+        "contentHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete 1536 by 1024 canvas is intentionally rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank or abruptly cut region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both ears, muzzle, four paws, tail tip, back plates, and the full silhouette remain comfortably inside the declared eight-percent safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured creature appears with no duplicate, incidental animal, or detached body-like subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt matches the safe-frame-v3 canonical renderer byte-for-byte at SHA-256 980dda8d3c8e0ddf702442bdfc61590c77c3caea069f8b3f149106b43aa7aecb."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A recognizable canine head, paired ears, long muzzle, shoulders, spine, tail, and exactly four grounded legs preserve a strong Grey Wolf read."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All four legs have coherent joints and weight-bearing paw contact; the tail and spinal line follow a credible low quadrupedal stance."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low forward lean, wide planted stride, focused head, and directional body line communicate a fast flanking predator."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image visibly preserves the wolf face, fast flanking silhouette, natural predatory posture, canine four-leg plan, and credible ground contact without humanoid, antlered, winged, or draconic traits."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Metal reads through forged dorsal and limb structure, articulated plate overlaps, metallic claws and marrow-like seams rather than through hue alone."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Material, anatomy, articulation, and exposed-core dimensions are transformed: the plates bear the torso and limbs instead of sitting on an unchanged wolf as ordinary armor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A bright circular magnetic core at the forward shoulder is distinctly exposed against dark forged plates, with surrounding articulated joints also materially legible."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, coherent forged and fur materials, neutral key light, restrained local core emission, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, border, logo, watermark, extra subject, sexualization, ordinary humanoid armor, antlers, wings, or dragon anatomy is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned source was exclusive-copied without normalization; source and retained dimensions, media type, byte count, and SHA-256 hash match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation, application edit, or self-promotion."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target producer inspection records the species cues without asserting human acceptance."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; known-target producer inspection records construction evidence without self-promotion."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-grey-wolf-metal-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T18:29:24.016Z",
+  "completedAt": "2026-08-29T18:31:34.217Z",
+  "totalWallTimeMs": 130201,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/grey-wolf-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

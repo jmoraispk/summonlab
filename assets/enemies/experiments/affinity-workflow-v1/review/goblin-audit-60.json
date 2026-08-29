@@ -1,0 +1,198 @@
+{
+	"version": "goblin-affinity-audit-v1",
+	"seed": "goblin-affinity-independence-60-v1",
+	"sampleSize": 60,
+	"coverage": [
+		{
+			"axis": "affinityId",
+			"expectedValues": 6,
+			"observedValues": 6,
+			"minimumCount": 10,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "duty",
+			"expectedValues": 6,
+			"observedValues": 6,
+			"minimumCount": 8,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "stature",
+			"expectedValues": 3,
+			"observedValues": 3,
+			"minimumCount": 18,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "build",
+			"expectedValues": 4,
+			"observedValues": 4,
+			"minimumCount": 14,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "faceShape",
+			"expectedValues": 6,
+			"observedValues": 6,
+			"minimumCount": 8,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "nose",
+			"expectedValues": 6,
+			"observedValues": 6,
+			"minimumCount": 8,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "jaw",
+			"expectedValues": 5,
+			"observedValues": 5,
+			"minimumCount": 9,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "brow",
+			"expectedValues": 5,
+			"observedValues": 5,
+			"minimumCount": 10,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "earShape",
+			"expectedValues": 5,
+			"observedValues": 5,
+			"minimumCount": 11,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "skinPalette",
+			"expectedValues": 6,
+			"observedValues": 6,
+			"minimumCount": 8,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "clothingSilhouette",
+			"expectedValues": 10,
+			"observedValues": 10,
+			"minimumCount": 4,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "clothingCondition",
+			"expectedValues": 5,
+			"observedValues": 5,
+			"minimumCount": 9,
+			"requiredMinimumCount": 1,
+			"passed": true
+		},
+		{
+			"axis": "battlefieldImportance",
+			"expectedValues": 4,
+			"observedValues": 4,
+			"minimumCount": 15,
+			"requiredMinimumCount": 1,
+			"passed": true
+		}
+	],
+	"correlations": [
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "duty",
+			"biasCorrectedCramersV": 0.2777,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "stature",
+			"biasCorrectedCramersV": 0.1058,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "build",
+			"biasCorrectedCramersV": 0,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "faceShape",
+			"biasCorrectedCramersV": 0.0559,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "nose",
+			"biasCorrectedCramersV": 0,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "jaw",
+			"biasCorrectedCramersV": 0.1067,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "brow",
+			"biasCorrectedCramersV": 0.2069,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "earShape",
+			"biasCorrectedCramersV": 0.0653,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "skinPalette",
+			"biasCorrectedCramersV": 0,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "clothingSilhouette",
+			"biasCorrectedCramersV": 0,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "clothingCondition",
+			"biasCorrectedCramersV": 0.1241,
+			"maximumAllowed": 0.36,
+			"passed": true
+		},
+		{
+			"leftAxis": "affinityId",
+			"rightAxis": "battlefieldImportance",
+			"biasCorrectedCramersV": 0,
+			"maximumAllowed": 0.36,
+			"passed": true
+		}
+	],
+	"gates": { "coveragePassed": true, "correlationPassed": true, "passed": true }
+}

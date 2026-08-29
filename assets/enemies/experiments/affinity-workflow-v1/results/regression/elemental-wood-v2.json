@@ -1,0 +1,308 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-elemental-wood-v2",
+  "targetId": "affinity-workflow-v1-elemental-wood-v2",
+  "assignmentId": "assignment-affinity-workflow-v1-elemental-wood-v2",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-wood-v2-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-elemental-wood-v2\".\n\nSubject and threat:\n- Species: elemental.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: bound-frontline-vanguard.\n- Construction mode: substance-bodied.\n- Fixed chassis: bound-vanguard-elemental.\n\nIdentity invariants:\n- exactly the headless Bound Vanguard Elemental shown in the neutral chassis benchmark\n- fixed broad shallow concave chest with a low stable torso\n- fixed broad wedge forearms, short planted legs, and benchmark-matched proportions\n- invariant pale arcane sternum core centered inside the chest concavity\n- pale binding lattice remains local and does not recolor the full body\n\nAnatomy invariants:\n- exactly two arms and two legs\n- no head, face, neck, shoulders above the chest, or substitute head-like mass\n- exactly five major masses: shallow-concave torso, two wedge arms, and two planted legs\n- the declared substance carries the full torso, arm, and leg loads while chassis proportions remain fixed\n\nAffinity: wood.\nAffinity expression: Continuous load-bearing hardwood forms every major body mass through visible grain, growth rings, root-bundled joints, and restrained resin seams; no stone substrate.\nCounterplay cue: Fresh pale growth rings around the invariant sternum core and root joints expose the binding structure.\nAltered dimensions: material; anatomy; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: extra limbs or detached floating body masses; humanoid head, face, helmet, neck, or shoulder-mounted pseudo-head; domed or convex chest replacing the shallow concavity; dark, affinity-colored, absent, displaced, or oversized sternum core; changed chassis proportions, raised heroic posture, or long humanoid legs; rock, rubble, crystal, ceramic, or stone anatomy beneath decorative bark; foliage or antlers pasted onto an unchanged body; brown recolor standing in for wood construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png — Exact Bound Vanguard headless shallow-concave chassis, proportions, planted stance, wedge forearms, and pale sternum core only; do not treat its neutral ceramic material as the affinity substance for non-Normal targets.\n2. assets/enemies/review/pack-2/elementals-v1.png — Elementals-v1 plate supplies only the declared substance material behavior, coherent flow, restrained local emission, floor, and lighting; do not transfer any depicted anatomy, pose, proportions, head, duty, or core placement.\n3. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "33fa524cfedbe2d51fe0af8d6474cccd549b963b8dbdc7b124d532ff0d0befeb",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:15:58.534Z",
+      "generationCompletedAt": "2026-08-29T18:16:46.129Z",
+      "inspectionCompletedAt": "2026-08-29T18:17:00.000Z",
+      "generationDurationMs": 47595,
+      "inspectionDurationMs": 13871,
+      "totalWallTimeMs": 61466,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ebb-c555-73f2-8f6c-460f029e2739/exec-6e330d54-f45e-45b5-a6f4-1e8d49af0941.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally rendered with continuous cracked floor and charcoal backdrop and no blank or unfinished region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete creature is visible, but the top wooden shoulder mass sits slightly inside the required eight-percent top safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Bound Vanguard Elemental appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The headless shallow-concave low torso, two wedge forearms, two planted legs, pale sternum core, local lattice, and frontline stance match the manifest."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wood changes material, anatomy, joints, and exposed binding cues through structural grain, growth rings, roots, and restrained resin rather than hue alone."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fresh pale growth rings and the local pale lattice visibly converge on the exposed sternum core and root joints."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly five major masses preserve the benchmark's headless shallow-concave torso, broad wedge arms, short legs, low proportions, and grounded contact."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "material",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Continuous hardwood visibly bears the load throughout torso, arms, and legs without a stone, ceramic, crystal, or rubble substrate."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; known-target inspection finds strong fixed Bound Vanguard cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending human review; known-target inspection finds unmistakable structural hardwood construction beyond color."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly dark-fantasy finish, neutral lighting, restrained local emission, floor, and backdrop are cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, prohibited anatomy, or visible published-character resemblance appears."
+        }
+      ],
+      "retryReason": "Use the single permitted correction to increase the top safe margin while preserving the successful chassis, Wood construction, counterplay, pose, and finish."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-elemental-wood-v2-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-elemental-wood-v2-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT / RECOMPOSITION ONLY. Preserve the supplied image’s exact subject design, materials, pose, lighting, floor, and finish. Scale the complete subject down slightly and recenter it so the entire silhouette and every extremity have a clearly visible minimum 8 percent safe margin on all four sides; finish all newly exposed background and floor naturally. Preserve exactly one headless Bound Vanguard Elemental: one broad shallow-concave low torso, exactly two broad wedge forearms, exactly two short planted legs, no head/face/neck/pseudo-head, and exactly five major masses. Preserve the centered pale diamond sternum core, the restrained local pale binding lattice, continuous load-bearing hardwood throughout torso/arms/legs, visible grain and growth rings, root-bundled joints, restrained resin seams, and fresh pale growth rings around the core and root joints as readable counterplay. Preserve the premium realistic painterly Pack 2 medieval dark-fantasy style, neutral key, charcoal-to-midnight backdrop, and cracked-stone floor. Do not introduce stone, ceramic, crystal, rubble, antlers, foliage pasted onto the body, extra limbs, detached masses, text, labels, UI, frame, logo, watermark, extra creatures, blank bands, unfinished regions, cropped extremities, or a published-character resemblance. Output a complete 1536 x 1024 PNG.",
+      "promptHash": "5dfac964970791a016b829bf3b9a3164ab53404b3bfc50bb4320ade06b25bcf9",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+          "contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04ebb-c555-73f2-8f6c-460f029e2739/exec-6e330d54-f45e-45b5-a6f4-1e8d49af0941.png",
+        "contentHash": "0669387d06bc7ff36890fb29dec14dee4641d2b7e27acb7400622559074cdb74"
+      },
+      "requestStartedAt": "2026-08-29T18:17:09.053Z",
+      "generationCompletedAt": "2026-08-29T18:17:42.384Z",
+      "inspectionCompletedAt": "2026-08-29T18:18:15.966Z",
+      "generationDurationMs": 33331,
+      "inspectionDurationMs": 33582,
+      "totalWallTimeMs": 66944,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ebb-c555-73f2-8f6c-460f029e2739/exec-ded4e36e-0baf-47c9-aa50-17de5db81d7e.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ebb-c555-73f2-8f6c-460f029e2739/exec-ded4e36e-0baf-47c9-aa50-17de5db81d7e.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2252020,
+          "contentHash": "1df93dbf6fdb1897eaccc8903772b57aa048abeed51a4db2d6a2b3ef5b7516aa"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/wood-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2252020,
+          "contentHash": "1df93dbf6fdb1897eaccc8903772b57aa048abeed51a4db2d6a2b3ef5b7516aa"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/wood-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2252020,
+        "contentHash": "1df93dbf6fdb1897eaccc8903772b57aa048abeed51a4db2d6a2b3ef5b7516aa"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete 1536 by 1024 canvas has continuous finished backdrop and cracked-floor detail with no blank band, unpainted region, or cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete headless torso, both wedge forearms, and both planted legs sit comfortably inside a clearly empty margin greater than eight percent on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Bound Vanguard Elemental appears with no duplicate, incidental creature, or detached mass."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected image retains every identity, anatomy, duty, reference-purpose, and prohibited-trait invariant, including the low shallow-concave headless chassis."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wood visibly changes the full load-bearing material, growth-ring anatomy, root joint construction, and exposed binding cues rather than acting as a brown surface treatment."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fresh pale growth rings and local binding channels remain readable around the bright sternum core and root joints as exposed counterplay."
+        },
+        {
+          "criterionId": "fixed-chassis-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The benchmark-matched silhouette has exactly one shallow-concave low torso, two broad wedge arms, and two short planted legs with no head, neck, face, pseudo-head, or extra limb."
+        },
+        {
+          "criterionId": "declared-substance-body",
+          "category": "material",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Detailed continuous hardwood grain, cut growth rings, root-bundled joints, and restrained resin seams structurally form all major body masses without hidden rock or ceramic."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; known-target inspection finds strong Bound Vanguard chassis and core cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending human review; known-target inspection finds strong structural hardwood, growth-ring, root-joint, and resin cues beyond hue."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low planted stance, forward wedge guards, stable core, and heavy proportions communicate the declared bound frontline vanguard duty."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, readable hardwood, controlled neutral light, charcoal backdrop, cracked floor, and restrained local emission remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra creature, cropped extremity, blank region, prohibited trait, or visible published-character resemblance appears."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact corrective source was exclusive-copied without normalization; source and retained path, dimensions, media type, bytes, and SHA-256 are recorded."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review artifact, reference, application, or promotion state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-workflow-v1-elemental-wood-v2-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T18:15:50.000Z",
+  "completedAt": "2026-08-29T18:19:00.000Z",
+  "totalWallTimeMs": 190000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/wood-v2.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/regression/elemental-wood-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

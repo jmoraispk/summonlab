@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-cave-bear-wind",
+  "targetId": "affinity-workflow-v1-cave-bear-wind",
+  "assignmentId": "assignment-affinity-workflow-v1-cave-bear-wind",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-cave-bear-wind-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-cave-bear-wind\".\n\nSubject and threat:\n- Species: cave-bear.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: close-range-bruiser.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- recognizable ursine face\n- heavy shoulder mass\n- powerful forelimbs\n\nAnatomy invariants:\n- ursine anatomy\n- exactly four legs\n- four-legged weight distribution\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: wolf proportions; humanoid golem anatomy; decorative saddle or rider; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Third subject only: established Cave Bear anatomy, coat, grounded mass, and shoulder weight; do not transfer either wolf or the Tunnel Boar.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "2a161182888dfa8102dfd84493da18081280f797f958c75293e5c5d5d3db376a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T18:44:07.537Z",
+      "generationCompletedAt": "2026-08-29T18:44:46.364Z",
+      "inspectionCompletedAt": "2026-08-29T18:45:08.500Z",
+      "generationDurationMs": 38827,
+      "inspectionDurationMs": 22136,
+      "totalWallTimeMs": 60963,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ed5-8269-7b01-a7ad-83a75d0350fa/exec-e7919661-16d7-4e56-a3e6-b8dd2365073d.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial image fully renders the charcoal backdrop, cracked-stone floor, bear, and wind wake without a blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The lowest front paw and nearby pressure wake fall slightly inside the required eight-percent bottom safe margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Only three paws are distinctly readable; the far hind leg is too occluded to satisfy the strict all-four-extremities requirement."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind changes the swept silhouette, fur motion, circular pressure telegraph, and debris wake rather than acting as a pale recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A darker low-turbulence pocket remains visible near the bear's center within the surrounding directional pressure ring."
+        }
+      ],
+      "retryReason": "A targeted edit was required to zoom out the full subject and wake while making all four legs and paws distinctly readable without redesigning the successful wind Cave Bear."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-cave-bear-wind-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-cave-bear-wind-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: precise-object-edit.\n\nEdit the supplied preceding render; do not redesign it and do not add a new subject. Preserve the same single wind-affinity Cave Bear, recognizable ursine face, dark natural fur, heavy shoulder mass, powerful forelimbs, premium realistic painterly medieval dark-fantasy finish, restrained local emission, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key light, directional fur, vapor channels, debris flow, pressure distortion, and the clearly visible still center between directional attacks.\n\nMake one targeted correction: zoom the entire bear and its complete wind/debris wake out enough that every hard extent has a clearly empty border of at least eight percent on all four sides. Slightly clarify the natural four-legged stance so exactly four anatomically coherent legs and all four paws are visibly distinct, without changing the low grounded close-range-bruiser pose or four-legged weight distribution.\n\nKeep the wind affinity integrated through at least silhouette, motion, attack telegraph, and environmental wake—not a pale recolor, transparency alone, or directionless particles. Preserve ursine rather than wolf proportions. No humanoid golem anatomy, armor, decorative saddle, rider, labels, text, UI, frame, logo, watermark, extra creature, cropped extremity, blank band, unfinished region, abrupt cutoff, or published-character resemblance. Deliver a finished 1536 x 1024 PNG.",
+      "promptHash": "5cc297a7b0957cff6603433c12e68cc6ebfee2dd995aa9ed5f889ad4595bd7eb",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04ed5-8269-7b01-a7ad-83a75d0350fa/exec-e7919661-16d7-4e56-a3e6-b8dd2365073d.png",
+        "contentHash": "ec01b8c7769bad4d7426cc2ece037bd67e5c774d9fec1a9973c7723a15e13e98"
+      },
+      "requestStartedAt": "2026-08-29T18:45:09.119Z",
+      "generationCompletedAt": "2026-08-29T18:45:46.263Z",
+      "inspectionCompletedAt": "2026-08-29T18:46:43.245Z",
+      "generationDurationMs": 37144,
+      "inspectionDurationMs": 56982,
+      "totalWallTimeMs": 94126,
+      "sourceOutputId": "exec-1630c0e1-7bc4-45f2-8552-4015965649ad.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ed5-8269-7b01-a7ad-83a75d0350fa/exec-1630c0e1-7bc4-45f2-8552-4015965649ad.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2255400,
+          "contentHash": "2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2255400,
+          "contentHash": "2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2255400,
+        "contentHash": "2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected full canvas is intentionally finished with continuous backdrop and floor detail and no blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The ears, muzzle, paws, body, and complete pressure-and-debris wake now retain a clearly empty border exceeding eight percent on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Cave Bear appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt matches the safe-frame-v4 canonical renderer byte-for-byte at SHA-256 2a161182888dfa8102dfd84493da18081280f797f958c75293e5c5d5d3db376a with no terminal newline, and both declared references were supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The corrected bear preserves its ursine face, massive shoulders, powerful forelimbs, low bruiser posture, and all prohibited-trait exclusions, but the far hind extremity remains hidden behind the body."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Only three legs and paws are unmistakably visible; the fourth hind leg is still too occluded to pass the target's strict exactly-four-visible-extremities authoring gate."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lowered head, broad planted forequarters, concentrated gaze, and forward weight communicate a close-range bruiser."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind visibly changes the swept coat silhouette, directional fur motion, circular pressure attack telegraph, and curved stone-debris environmental wake without washing the natural bear material pale."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A readable dark low-turbulence center remains inside the strongly directional pressure ring between the surrounding force streams."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds an unmistakable bear muzzle, small rounded ears, shoulder hump, broad mass, and powerful ursine forelimbs."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds directional coat, pressure channels, force direction, and lifted debris rather than hue alone."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly dark-fantasy finish, coherent fur, controlled neutral key, restrained wind highlights, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, wolf proportions, humanoid golem anatomy, armor, saddle, rider, pale full-body recolor, blank region, or abrupt cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The repository helper exclusive-copied the exact returned correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no catalog, aggregate review file, application route, plan, Git state, or promotion decision was edited."
+        }
+      ],
+      "retryReason": "The correction resolved the safe-frame defect and preserved the successful wind construction, but the fourth hind leg remains occluded; the retry ceiling is exhausted, so the useful retained image is truthfully recorded as revise."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "manifest-fidelity"
+  ],
+  "startedAt": "2026-08-29T18:44:07.537Z",
+  "completedAt": "2026-08-29T18:46:52.745Z",
+  "totalWallTimeMs": 165208,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wind-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/cave-bear-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
