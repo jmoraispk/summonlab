@@ -2,6 +2,9 @@
 
 Status: **approval candidate** for the Phase 3 visual gate.
 
+Pack-specific extensions must preserve this document's identity and representation boundaries. The
+medieval expansion is defined by the [Character Pack 2 art-direction contract](character-pack-2-art-direction.md).
+
 This document converts the broader [visual direction](visual-direction.md) into production rules. It
 applies to original human characters, classic enemy families, the Character Forge, settlement
 scenes, dialogue, summon cards, and later rig exports. The current review pair is Mara Vey and Remy Nahl in the
