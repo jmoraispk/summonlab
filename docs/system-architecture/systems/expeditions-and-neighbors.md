@@ -32,10 +32,11 @@ Party and expedition may become separate packages. This brief defines their seam
 
 ## Masterless mission model
 
-The town Master is not a normal party member. A hero leader coordinates the party. The Master can
-send scoped directives, approve preparation, authorize retreat, and use explicit limited portal/tower
-interventions if later designed. The player may have broad tactical telemetry, but each hero policy
-still receives only holder-owned context.
+The town Master is a nonphysical player presence, not a normal party member or target with health.
+A hero leader coordinates the party. The Master can send scoped directives, approve preparation,
+authorize retreat, and use explicit limited portal/tower interventions if later designed. The
+player can inspect all canonical tactical events, but each hero policy still receives only
+holder-owned context.
 
 Existing mortal-Master attempts remain valid historical rules. New mission content declares a
 ruleset that permits or requires hero-only deployment.
@@ -113,6 +114,7 @@ Publishes:
 | Date | Status | Feedback | Consequence |
 | --- | --- | --- | --- |
 | 2026-08-29 | accepted | The player is town Master, not a hero whose death risks the run. | New hero-only party ruleset; preserve legacy mortal-Master replays. |
+| 2026-08-29 | accepted | The Town Master is the nonphysical player entity through which all game information is conveyed. | Remove Master body/health/location from the target ruleset; omniscient UI remains separate from hero knowledge. |
 | 2026-08-29 | accepted | Multiple parties arrive later. | Party is persistent; attempt is a revision-bound snapshot; mission state becomes a registry. |
 | 2026-08-29 | accepted | Neighbor exploration unlocks after a flying ship or similar. | Ship/dock grants a capability consumed by persistent neighbor expeditions. |
 | 2026-08-29 | accepted | Animal mounts would be valuable. | First-class mount assets share reservation/presentation seams, not hero progression by default. |

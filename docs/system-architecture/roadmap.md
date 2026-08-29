@@ -9,7 +9,7 @@ Goal: make the target product safe for parallel ownership without changing old r
 
 Blocking decisions and contracts:
 
-- ADR for town-bound Master, awareness, vulnerability, and legacy mortal-Master runs;
+- ADR for the nonphysical Master, omniscient awareness, and legacy mortal-Master runs;
 - progression-v2 cap table and effective-power contract;
 - persistent Party, party revision, and general reservation contract;
 - mission registry capable of multiple attempt records rather than one singleton;
@@ -65,9 +65,12 @@ Parallel lanes:
 - **Simulation scale:** hot/warm/cold scheduling proof at 100 heroes, then 1,000 with provider calls
   disabled.
 - **Agency:** petition inbox, response lifecycle, affect decay, durable goal lifecycle.
+- **Motivation:** purpose/challenge/feedback projection plus one reversible schedule, mentorship, or
+  facility intervention that changes voluntary training behavior.
 
-Integration slice: heroes train/work for one offline game day, a leader or specialist recommends a
-next action, one building changes available behavior, and every progression/social delta replays.
+Integration slice: heroes train, work, or idle for one offline game day; a leader or specialist
+recommends a next action; one redesigned goal/facility/schedule changes voluntary behavior; and every
+progression, motivation, and social delta replays.
 
 ## Milestone 3 — first autonomous party
 
@@ -143,8 +146,8 @@ Goal: expand proven generators and contracts, not bespoke exceptions.
 - grow toward twenty reviewed five-floor envelopes and validate each generated 100-floor plan;
 - extend enemy, skill, building, culture, mount, and destination catalogs;
 - balance 6★ levels 51–99 for late campaign;
-- reserve 7★ levels 100–999 for diminishing-return mastery/postgame until playtests show a finite
-  campaign reason to use them;
+- calibrate level 40 around Floors 40–45, level 99 around Floors 85–90, and 100+ for the final
+  Floor-100 push plus diminishing-return postgame mastery;
 - benchmark 1,000 heroes, at least ten concurrent parties, seven game days of catch-up, and sparse
   salient model work;
 - add operational tools for content/version rollout, replay compatibility, and live tuning.
@@ -155,7 +158,7 @@ Goal: expand proven generators and contracts, not bespoke exceptions.
 | --- | --- | --- | --- | --- |
 | Story/tower | Campaign plan contract | Alternate first band | Cross-band recurrence | 20-band breadth |
 | Progression | Cap/effective power | Mastery/promotion | 2- and 3-input fusion | 6★/7★ long tail |
-| Heroes/agency | Affect/goals | Petitions/inbox | Leaders/councils | Sparse deep life at 1,000 |
+| Heroes/agency | Affect/goals | Motivation/petitions | Leaders/councils | Sparse deep life at 1,000 |
 | Visuals | Shared presentation state | Realistic core surfaces | Culture packs/overlays | Mount/neighbor coverage |
 | Settlement | Construction lifecycle | Modules | New sector topology | Shipyard/air dock |
 | Parties/missions | Persistent party | Masterless deployment | Concurrent registry | Fleet/neighbor logistics |

@@ -32,10 +32,20 @@ Use a table, not `rank × 10`:
 1★ 10 · 2★ 20 · 3★ 30 · 4★ 40 · 5★ 50 · 6★ 99 · 7★ 999
 ```
 
-The tower and UI consume a versioned `EffectivePowerProjection`. Levels 51–99 are late-campaign
-mastery. Levels 100–999 are provisional long-tail/postgame capacity with sharply diminishing
-direct-stat gains. A future playtest may change where the finite campaign enters these bands, but
-old receipts retain the cap table version they used.
+The tower and UI consume a versioned `EffectivePowerProjection`. Difficulty rises continuously
+rather than at rank walls. Current calibration anchors are:
+
+| Hero progression | Expected tower reach with sound systems |
+| --- | --- |
+| 4★, near level 40 | approximately Floors 40–45 |
+| 6★, level 99 | approximately Floors 85–90 |
+| 7★, above level 99 | final push toward Floor 100 and postgame |
+
+These are balancing targets, not locks. Skill coverage, party roles, equipment, knowledge,
+cohesion, recovery, motivation, and player-designed training systems can move performance around the
+anchor. A badly designed company can underperform its levels; a coherent one can outperform them.
+Levels 100–999 use sharply diminishing direct-stat gains. Old receipts retain the cap table and
+balance version they used.
 
 Promotion uses tower evidence, portal/neighbor resources, achievements, facilities, and time.
 Synthesis essence may accelerate a path but must always have a non-synthesis alternative.
@@ -96,10 +106,10 @@ Publishes:
 | --- | --- | --- | --- |
 | 2026-08-29 | accepted | Caps are 10/20/30/40/50/99/999. | Replace the formula in a new version; use effective power for content. |
 | 2026-08-29 | accepted | The internal skill tree should be extensive and merge any two or three skills. | Use a hidden typed lattice with deterministic authored/template composition. |
+| 2026-08-29 | accepted | Level 99 should clear roughly Floor 85–90; 4★/level 40 roughly Floor 40–45; 100+ is for Floor 100 and postgame. | Add smooth readiness anchors without hard floor locks or sudden rank walls. |
 
 ## Open decisions
 
-- Is level 999 expected during the one-hundred-floor campaign or explicitly postgame/legacy?
 - Does fusion consume the input skills, preserve them, or consume only fragments/catalysts?
 - How many equipped active/passive skill slots should each promotion expose?
 

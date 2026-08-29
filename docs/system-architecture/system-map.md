@@ -48,7 +48,7 @@ baseline.
 | --- | --- | --- | --- |
 | Shared kernel | IDs, time, entropy, command/event envelope, versions, hashes, idempotency | accepted/rejected command receipts | Feature rules |
 | Character | immutable manifest, stable mind traits, life state, durable body marks | identity/lifecycle facts | XP, relationships, summon price |
-| Affect and goals | mutable mood, concern, durable goal lifecycle | affect/goal events and presentation input | Personality generation, legal actions |
+| Affect, goals, and motivation | mutable mood, concern, durable goal lifecycle, purpose/challenge/feedback state | affect/goal events, motivation projection, and presentation input | Personality generation, legal actions |
 | Progression | XP, level, attributes, learned/mastered/equipped skills, promotion | capability and effective-power projections | Mission result, resource ledger |
 | Skill catalog | definitions, tags, tier budgets, fusion rules, recipe hashes | resolvable skill IDs and recipes | Runtime prose, hero ownership |
 | Society | observations, beliefs, provenance, relationships, promises, authority, speech | holder-owned context and evidence refs | World truth, full-state access |
@@ -87,6 +87,7 @@ Each vertical lane depends on horizontal capabilities instead of recreating them
 | Time/scheduling/leases | settlement, training, travel, affect, construction, jobs | These systems advance while the client is absent. |
 | Identity/presentation | summon, roster, dialogue, base, mission, training, synthesis, memorials | One person must remain recognizable everywhere. |
 | Knowledge/evidence | story, party advice, secrets, synthesis, neighbors, conversation | Knowing is different from truth in every loop. |
+| Motivation/feedback | training, work, parties, facilities, leadership, petitions | Purposeful behavior emerges from several systems, not one obedience score. |
 | Policy/context jobs | habits, petitions, party choices, story selection, dialogue | Models remain independent, stale-safe proposal sources. |
 | Progression checks | training, missions, buildings, synthesis, teaching | Capability has one definition and many consumers. |
 | Ledger/grants | summoning, construction, mission rewards, promotion, ship, mounts | No feature keeps a private currency balance. |

@@ -30,10 +30,10 @@ These statements reflect the latest owner direction. Where they conflict with ol
 ADRs, old event streams remain immutable and a new ruleset or contract version must implement the
 change.
 
-- The player is the **town Master**, not a hero in an ordinary party. The Master can communicate
-  with every owned hero and can inspect or listen to every canonical event in the owned town and
-  connected expeditions. Heroes retain holder-specific knowledge and never become omniscient
-  because the player is.
+- The player is the **town Master**, a nonphysical entity representing the player through the game,
+  not a hero, resident, or ordinary party member. The Master can communicate with every owned hero
+  and can inspect or listen to every canonical event in the owned town and connected expeditions.
+  Heroes retain holder-specific knowledge and never become omniscient because the player is.
 - Summonlab is a leadership game about acquiring people, building a home, forming parties, and
   deciding when they are ready to climb a randomized one-hundred-floor tower.
 - Multiple persistent parties and concurrent expeditions are target architecture, even when early
@@ -46,6 +46,9 @@ change.
 - The requested star caps are `10, 20, 30, 40, 50, 99, 999` for `1★` through `7★`. The large
   6★/7★ ranges require a new progression curve and cannot be dropped into the existing level-70
   balance unchanged.
+- Tower difficulty rises smoothly around readiness anchors rather than discrete level walls. A
+  4★ hero near level 40 should be credible around Floors 40–45, level 99 around Floors 85–90, and
+  levels above 99 are mainly for the final push to Floor 100 and postgame.
 - Skills form a discoverable graph and can be combined. Mechanical effects come from versioned,
   validated definitions; prose or a runtime model cannot invent an effect.
 - Synthesis is irreversible and socially legible. It provides short-term compression but is never
@@ -57,23 +60,28 @@ change.
   persistent neighbor exploration, distinct from temporary portal-resource missions.
 - The architecture must support up to 1,000 individually persistent heroes without simulating or
   calling a model for every hero every minute or every game day.
+- The deepest player skill is designing behavior-motivating systems. Facilities, schedules, party
+  goals, leadership, mentorship, feedback, rewards, and social norms should make purposeful
+  training attractive; boredom, idleness, and loss of purpose remain real systemic outcomes.
 
-## Explicit migration decision still needed
+## Resolved product pivots
 
-One choice needs owner feedback before campaign-loss contracts can be accepted:
+The latest owner direction resolves the two initial architecture questions:
 
-1. Is the town Master a physical person who is safe from ordinary expeditions but vulnerable to a
-   settlement breach, or a nonphysical intelligence bound to the gate/town?
+1. The Master is nonphysical and cannot be modeled through hero health, location, or ordinary
+   mission eligibility. A future run-ending condition must describe loss of the town/campaign, not
+   death of the player entity.
+2. Level 99 targets roughly Floor 85–90. Levels above 99 support the final approach to Floor 100 and
+   postgame; difficulty must interpolate smoothly rather than introduce a sudden promotion wall.
 
-Until answered, the reversible architecture assumption is a **town-bound presence**: not eligible
-for normal expeditions, able to inspect all canonical town and connected-expedition events, and
-vulnerable only through a future explicit settlement-loss rule. Omniscient observation does not
-change a hero's belief, nor does the Master's awareness automatically become admissible evidence in
-a hero decision packet.
+Omniscient observation does not change a hero's belief, nor does the Master's awareness
+automatically become admissible evidence in a hero decision packet. Existing embodied and mortal
+Master histories remain replayable under their original rules.
 
-The cap table is also accepted as the target, while its campaign interpretation is provisional:
-Floors 1–100 should use an effective-power projection rather than raw level, with most tower pacing
-below level 100 and 7★ serving as long-tail mastery until playtests justify another curve.
+The exact per-floor curve remains tuning, not architecture. Floors consume an effective-power and
+preparedness projection rather than treating raw level as a gate, so better player-designed systems
+can let a prepared party outperform the anchor and a purposeless or badly composed party can
+underperform it.
 
 ## Precedence and change control
 

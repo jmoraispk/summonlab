@@ -2,10 +2,11 @@
 
 ## Player fantasy
 
-The player is the Master of a growing settlement built around a summoning gate. The Master does not
-need to become the strongest hero or risk the campaign on every tactical round. Their power is
-attention, provision, coordination, communication, and control over a few irreversible civic
-systems: summoning, construction, expedition authorization, and synthesis.
+The player is the nonphysical Master of a growing settlement built around a summoning gate. The
+Master is the player-facing awareness through which the game can coherently expose everything that
+happens; it is not a hero, body, resident, or combatant. Its power is attention, provision,
+coordination, communication, and control over a few irreversible civic systems: summoning,
+construction, expedition authorization, and synthesis.
 
 The emotional loop is:
 
@@ -43,6 +44,19 @@ legality.
 Buildings are behavioral technology. They add capacity, reduce friction, create schedules, bring
 people together, enable skills, and expose new decisions. Expansion should change what heroes can
 do and whom they meet, not merely raise passive percentages.
+
+### Design systems, not puppets
+
+The game's deepest mastery is designing systems in which autonomous heroes naturally find purpose
+and choose behavior aligned with the town's goals. The Master shapes clear objectives, facilities,
+schedules, party identity, leadership, mentorship, challenge, feedback, recovery, recognition,
+rewards, and social norms. Those systems should make training and useful work intrinsically and
+socially attractive without converting heroes into scripted workers.
+
+Idling, lazing around, boredom, and loss of purpose are valid outcomes. They indicate mismatches
+among goals, challenge, ability, environment, fatigue, relationships, and feedback. The interesting
+player response is to redesign the surrounding system, speak with the affected people, or accept a
+different culture—not press a hidden obedience button.
 
 ### Preparation matters more than grinding
 
@@ -115,14 +129,18 @@ Target star caps:
 | 1★ | 10 | entry and first promotion |
 | 2★ | 20 | early tower competency |
 | 3★ | 30 | specialist foundation |
-| 4★ | 40 | mature early-game build |
+| 4★ | 40 | credible around Floors 40–45 with sound preparation |
 | 5★ | 50 | advanced finite-campaign build |
-| 6★ | 99 | late-campaign mastery range |
-| 7★ | 999 | long-tail mastery and postgame headroom |
+| 6★ | 99 | credible around Floors 85–90 with sound preparation |
+| 7★ | 999 | final Floor-100 push and long-tail postgame mastery |
 
-This is a capacity curve, not a promise of linear power. Content compares a versioned effective
-power/readiness projection, not raw level. Levels above each order-of-magnitude threshold should
-provide diminishing direct stats and more build expression, reliability, mastery, or specialization.
+This is a capacity curve, not a promise of linear power or a set of entry locks. Floor pressure
+interpolates smoothly between playtested readiness anchors: approximately level 40 around Floors
+40–45, level 99 around Floors 85–90, and 100+ for the final approach to Floor 100 and postgame.
+Content compares a versioned effective-power/readiness projection, not raw level. System quality,
+skill coverage, knowledge, equipment, cohesion, rest, and purpose determine whether a party performs
+above or below its level anchor. Levels above 99 should provide diminishing direct stats and more
+build expression, reliability, mastery, or specialization.
 
 Skills are a graph rather than a fully visible tree. Atomic skills can be learned, practiced,
 taught, equipped, and fused. Fusion results preserve recognizable mechanics from their inputs and
@@ -148,10 +166,10 @@ watching other Hearths fail, and living with second-order effects.
 
 ## Failure and stakes
 
-Hero death remains permanent. Synthesis remains permanent. Ordinary tower and portal expeditions no
-longer require the Master as a tactical body. A new campaign-loss condition must be designed around
-the town Master: likely destruction or severing of the Hearth core, rather than ordinary party
-death. Existing mortal-Master runs retain their historical rules.
+Hero death remains permanent. Synthesis remains permanent. The nonphysical Master has no tactical
+body, health, location, or death state and never joins an expedition roster. A new campaign-loss
+condition, if needed, describes failure of the Hearth or campaign rather than death of the player
+entity. Existing mortal-Master runs retain their historical rules.
 
 Failure should create recoverable stories until an explicit campaign terminal event occurs. A
 party may retreat, lose equipment, lose a route, bring back trauma, or fail a deadline without

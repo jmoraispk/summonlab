@@ -137,6 +137,30 @@ for the owning domain linked by `petitionId`; it does not grant a privileged mut
 To support 1,000 heroes, leaders and councils aggregate duplicate concerns, petitions use cooldowns
 and material-change thresholds, and the Master inbox clusters low-urgency items.
 
+## Motivation boundary
+
+Motivation is a derived explanation of why a hero currently favors or avoids an available behavior,
+not a writable aggregate or universal productivity number:
+
+```text
+MotivationProjection
+  heroId · opportunityRef · projectionVersion
+  activeGoalFit · objectiveClarity · perceivedProgress
+  challengeFit · autonomy · socialBelonging · leader/mentorTrust
+  facility/toolAccess · fatigue/stress/recovery · expectedReward
+  supportingEvidenceRefs[] · blockingReasonRefs[] · projectionHash
+```
+
+Settlement, Party, Progression, Society, Affect/Goals, and Economy each publish facts that contribute
+to the projection while continuing to own their state. Simulation and policies consume the bounded
+projection when scoring legal training, work, rest, social, or idle actions. A decision trace can
+explain which conditions mattered, but no command may directly set motivation or obedience.
+
+Changing a goal, schedule, facility, mentor, party norm, feedback loop, reward, or recovery plan
+uses that domain's normal command. The resulting events may change later choices. Boredom, idleness,
+avoidance, and overwork therefore remain reproducible consequences of the surrounding system rather
+than arbitrary model characterization.
+
 ## Progression contract
 
 Progression owns:

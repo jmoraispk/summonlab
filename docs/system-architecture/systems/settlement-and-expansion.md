@@ -54,6 +54,17 @@ Use a few extensible classes:
 Modules specialize a class. A facility changes affordances, friction, schedules, capacity, social
 contact, and available legal actions. Passive bonuses are supporting effects, not its sole purpose.
 
+Settlement systems should create legible motivational loops:
+
+```text
+clear objective → accessible place/tool/mentor → appropriately difficult practice
+→ visible feedback and social recognition → recovery → stronger habit and new goal
+```
+
+Poor systems can produce boredom, congestion, overwork, purposeless idling, avoidance, resentment,
+or status competition. Those are causal signals and design problems, not random flavor or an excuse
+to overwrite hero autonomy.
+
 ## Construction lifecycle
 
 ```text
@@ -106,12 +117,13 @@ Publishes:
 | --- | --- | --- | --- |
 | 2026-08-29 | accepted | Provide ways to increase territory space and a few ways to build. | Discrete sectors plus five building classes/modules, not a giant kind enum. |
 | 2026-08-29 | accepted | Base expansion connects to later flying-ship exploration. | Shipyard/air dock grants the neighbor-expedition capability. |
+| 2026-08-29 | accepted | The player should design systems that make agents train and act toward clear objectives. | Facilities, schedules, mentorship, feedback, recovery, and norms must affect voluntary behavior. |
 
 ## Open decisions
 
 - Which first expansion fantasy is strongest: reclaiming ruins, vertical terraces, or underground?
 - How much construction placement freedom should exist within an authored sector?
-- Is town attack/settlement-core loss the Master's eventual vulnerability condition?
+- What non-death event, if any, should end a campaign for the nonphysical Master?
 
 ## Existing foundations
 

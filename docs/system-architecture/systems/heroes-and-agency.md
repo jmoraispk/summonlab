@@ -59,6 +59,19 @@ For 1,000 heroes, leaders/councils aggregate duplicates, material-change thresho
 petitions, and the inbox clusters low-urgency items. High level can improve evidence quality and
 social weight but is not the permission to speak.
 
+## Motivation and purpose
+
+Motivation is a derived, inspectable interaction among goals, perceived progress, challenge fit,
+autonomy, social belonging, leadership, facility access, fatigue, stress, and expected reward. It is
+not a hidden obedience or productivity score.
+
+Heroes may train hard when they understand a credible objective, see progress, trust the plan, have
+appropriate challenge and recovery, identify with their party, or learn from a respected mentor.
+They may idle, avoid training, or become bored when purpose is missing, work is under- or
+over-challenging, feedback is absent, facilities are blocked, fatigue is high, or the surrounding
+culture rewards something else. Petitions and conversations should surface those causes so the
+Master can redesign the system rather than directly toggle behavior.
+
 ## Visual identity
 
 The canonical manifest separates body/face/voice, attire/culture packs, durable marks, and render
@@ -112,10 +125,10 @@ Publishes:
 | 2026-08-29 | accepted | Higher-level leaders often suggest floors, but any personality may request things. | Typed petitions use leadership/experience as evidence and personality as propensity. |
 | 2026-08-29 | accepted | Realistic people, varied eras/cultures, tattoos and piercings are allowed. | Extend explicit visual slots and content packs; retain identity locks. |
 | 2026-08-29 | accepted | Support up to 1,000 agents without daily interaction from all. | Use hot/warm/cold simulation and clustered attention. |
+| 2026-08-29 | accepted | The game is fundamentally about designing systems that motivate agents toward useful goals. | Make purpose, challenge, feedback, mentorship, schedules, and social norms causal; preserve boredom and idleness as real outcomes. |
 
 ## Open decisions
 
-- Is the town Master physical or nonphysical?
 - How visible should numerical mood be versus expressive cues and explanations?
 
 ## Existing foundations
