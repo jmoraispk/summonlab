@@ -4,7 +4,10 @@
 	import {
 		PACK_TWO_MONSTER_ARCHETYPES,
 		PACK_TWO_MONSTER_FAMILIES,
+		PACK_TWO_MONSTER_GRADES,
+		PACK_TWO_MONSTER_GRADE_VERSION,
 		PACK_TWO_MONSTER_ROSTER_VERSION,
+		createPackTwoMonsterVariant,
 		type PackTwoMonsterId
 	} from '@summonlab/content';
 	import arachnids from '../../../../../../../assets/enemies/review/pack-2/arachnids-v1.png';
@@ -12,6 +15,7 @@
 	import draconic from '../../../../../../../assets/enemies/review/pack-2/draconic-v1.png';
 	import dungeonPredators from '../../../../../../../assets/enemies/review/pack-2/dungeon-predators-v1.png';
 	import elementals from '../../../../../../../assets/enemies/review/pack-2/elementals-v1.png';
+	import gradeEscalationProof from '../../../../../../../assets/enemies/review/pack-2/monster-grade-escalation-v1.png';
 	import stoneBreakerAnchor from '../../../../../../../assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png';
 	import undead from '../../../../../../../assets/enemies/review/pack-2/undead-v1.png';
 
@@ -25,6 +29,7 @@
 	let reviewBusy = $state(false);
 	let reviewMessage = $state('');
 	let reviewError = $state('');
+	let selectedMonsterId = $state<PackTwoMonsterId>('death-knight');
 
 	const plates: Record<string, string> = {
 		'elementals-v1': elementals,
@@ -41,6 +46,11 @@
 		reviewableAssets.find((asset) => asset.assetKey === selectedPlateKey) ?? reviewableAssets[0]!
 	);
 	const currentReview = $derived(reviewHistory.latestByAsset[selectedAsset.assetKey] ?? null);
+	const gradeVariants = $derived(
+		PACK_TWO_MONSTER_GRADES.map((profile) =>
+			createPackTwoMonsterVariant(selectedMonsterId, profile.grade, 'forge-grade-ladder')
+		)
+	);
 
 	async function submitReview() {
 		if (!reviewNote.trim() || !reviewer.trim() || reviewBusy) return;
@@ -81,7 +91,7 @@
 	<title>Pack 2 monsters · Summoning Forge</title>
 	<meta
 		name="description"
-		content="Review 24 Character Pack 2 monster archetypes by family, silhouette, battlefield duty, telegraph, and weak point."
+		content="Review 24 Character Pack 2 monster archetypes and deterministic grade 1–10 escalation by family, silhouette, battlefield duty, telegraph, and weak point."
 	/>
 </svelte:head>
 
@@ -107,7 +117,9 @@
 				only after human approval.
 			</p>
 			<div>
-				<span><b>6</b> families</span><span><b>24</b> duties</span><span><b>0</b> approved</span>
+				<span><b>6</b> families</span><span><b>24</b> species</span><span
+					><b>10</b> grades each</span
+				>
 			</div>
 		</div>
 	</section>
@@ -141,7 +153,7 @@
 					{#each family.monsterIds as monsterId (monsterId)}
 						{@const entry = monster(monsterId)}
 						<div data-testid="pack-two-monster-duty">
-							<span>{entry.sizeBand} · {entry.duty}</span>
+							<span>{entry.sizeBand} · {entry.duty} · G1–G10</span>
 							<h4>{entry.name}</h4>
 							<p>{entry.dutyCue}</p>
 							<dl>
@@ -159,6 +171,78 @@
 				</div>
 			</article>
 		{/each}
+	</section>
+
+	<section class="grade-lab" aria-labelledby="grade-lab-title">
+		<header class="section-heading">
+			<div>
+				<span>02</span>
+				<h2 id="grade-lab-title">Ten grades. One readable species.</h2>
+			</div>
+			<p>{PACK_TWO_MONSTER_GRADE_VERSION} · deterministic preview seed</p>
+		</header>
+		<div class="grade-controls">
+			<label for="grade-monster">Inspect a species across all grades</label>
+			<select id="grade-monster" bind:value={selectedMonsterId}>
+				{#each PACK_TWO_MONSTER_ARCHETYPES as entry (entry.id)}
+					<option value={entry.id}>{entry.name} · {entry.duty}</option>
+				{/each}
+			</select>
+			<p>
+				Adjacent level bands overlap, but their means rise decisively. Physical species gain scale
+				and mass; casters gain controlled glow; weapon-bearing duties gain weapon scale.
+			</p>
+		</div>
+		<div class="grade-track">
+			{#each gradeVariants as variant (variant.grade)}
+				<article data-testid="monster-grade">
+					<header><span>Grade {variant.grade}</span><strong>{variant.gradeTitle}</strong></header>
+					<div class="threat-meter">
+						<div style={`--threat:${variant.sizeScale}`}></div>
+					</div>
+					<dl>
+						<div>
+							<dt>Level band</dt>
+							<dd>{variant.levelBand.min}–{variant.levelBand.max}</dd>
+						</div>
+						<div>
+							<dt>Mean</dt>
+							<dd>{variant.levelBand.mean}</dd>
+						</div>
+						<div>
+							<dt>Size</dt>
+							<dd>×{variant.sizeScale}</dd>
+						</div>
+						<div>
+							<dt>Muscle</dt>
+							<dd>×{variant.musculatureScale}</dd>
+						</div>
+						<div>
+							<dt>Glow</dt>
+							<dd>×{variant.magicGlowScale}</dd>
+						</div>
+						<div>
+							<dt>Weapon</dt>
+							<dd>×{variant.weaponScale}</dd>
+						</div>
+					</dl>
+					<p>{variant.escalationCues.at(-1)}</p>
+				</article>
+			{/each}
+		</div>
+		<figure class="grade-proof">
+			<img
+				src={gradeEscalationProof}
+				alt="Death Knight and Tower Archmage visual progressions at grades four, seven, and ten"
+			/>
+			<figcaption>
+				<strong>Generated escalation proof · not promoted</strong>
+				<span
+					>Death Knight demonstrates scale, mass, and weapon growth; Tower Archmage demonstrates
+					controlled glow and spell-geometry growth.</span
+				>
+			</figcaption>
+		</figure>
 	</section>
 
 	<section class="benchmark-anchor" aria-labelledby="monster-anchor-title">
@@ -180,7 +264,7 @@
 	<section class="review" aria-labelledby="monster-review-title">
 		<header class="section-heading">
 			<div>
-				<span>02</span>
+				<span>03</span>
 				<h2 id="monster-review-title">Hash-bound monster review</h2>
 			</div>
 			<p>
@@ -315,6 +399,7 @@
 	}
 	.intro,
 	.families,
+	.grade-lab,
 	.benchmark-anchor,
 	.review {
 		max-width: 96rem;
@@ -502,6 +587,122 @@
 		font-size: 0.68rem;
 		line-height: 1.5;
 	}
+	.grade-lab {
+		border-top: 1px solid #ffffff14;
+	}
+	.grade-controls {
+		display: grid;
+		grid-template-columns: auto minmax(18rem, 0.8fr) minmax(20rem, 1fr);
+		gap: 1rem;
+		align-items: center;
+		margin-bottom: 2rem;
+	}
+	.grade-controls label {
+		color: #d7a85f;
+		font-size: 0.6rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.grade-controls select {
+		border: 1px solid #ffffff20;
+		padding: 0.75rem;
+		color: #f4efe5;
+		background: #090c12;
+	}
+	.grade-controls p {
+		margin: 0;
+		color: #f4efe575;
+		font-size: 0.7rem;
+		line-height: 1.6;
+	}
+	.grade-track {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		border-top: 1px solid #ffffff16;
+		border-left: 1px solid #ffffff16;
+	}
+	.grade-track > article {
+		min-width: 0;
+		border-right: 1px solid #ffffff16;
+		border-bottom: 1px solid #ffffff16;
+		padding: 1rem;
+		background: #090c12;
+	}
+	.grade-track header span,
+	.grade-track header strong {
+		display: block;
+	}
+	.grade-track header span {
+		color: #d7a85f;
+		font-size: 0.52rem;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+	.grade-track header strong {
+		margin-top: 0.25rem;
+		font:
+			400 1.15rem Georgia,
+			serif;
+	}
+	.threat-meter {
+		display: flex;
+		align-items: end;
+		height: 6rem;
+		margin: 0.8rem 0;
+		border-bottom: 1px solid #ffffff20;
+		background: linear-gradient(transparent, #d7a85f08);
+	}
+	.threat-meter div {
+		width: calc(1.1rem * var(--threat));
+		height: calc(2.5rem * var(--threat));
+		max-height: 5.8rem;
+		margin: 0 auto;
+		border-radius: 50% 50% 24% 24%;
+		background: linear-gradient(#edc980, #7f392c);
+		box-shadow: 0 0 calc(0.4rem * var(--threat)) #d7a85f66;
+	}
+	.grade-track dl {
+		grid-template-columns: 1fr 1fr;
+		gap: 0.3rem 0.6rem;
+	}
+	.grade-track dl div {
+		padding-top: 0.35rem;
+	}
+	.grade-track > article > p {
+		min-height: 2.8rem;
+		color: #f4efe56b;
+		font-size: 0.6rem;
+		line-height: 1.45;
+	}
+	.grade-proof {
+		margin: 2rem 0 0;
+		border: 1px solid #ffffff16;
+		background: #090c12;
+	}
+	.grade-proof img {
+		display: block;
+		width: 100%;
+	}
+	.grade-proof figcaption {
+		display: flex;
+		justify-content: space-between;
+		gap: 2rem;
+		padding: 1rem;
+		border-top: 1px solid #ffffff16;
+	}
+	.grade-proof figcaption strong {
+		color: #d7a85f;
+		font-size: 0.58rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.grade-proof figcaption span {
+		max-width: 42rem;
+		color: #f4efe56b;
+		font-size: 0.65rem;
+		line-height: 1.5;
+	}
 	dl {
 		display: grid;
 		gap: 0.6rem;
@@ -618,6 +819,12 @@
 		.benchmark-anchor,
 		.review-grid {
 			grid-template-columns: 1fr;
+		}
+		.grade-controls {
+			grid-template-columns: 1fr;
+		}
+		.grade-track {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 		.duties {
 			grid-template-columns: repeat(2, 1fr);

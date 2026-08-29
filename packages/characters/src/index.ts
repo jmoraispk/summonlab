@@ -16,6 +16,7 @@ export const LEGACY_CHARACTER_GENERATION_VERSION = 'human-v1';
 export const VISUAL_CHARACTER_GENERATION_VERSION = 'human-v2';
 export const CHARACTER_GENERATION_VERSION = 'human-v3';
 export const PACK_TWO_CHARACTER_GENERATION_VERSION = 'human-v4';
+export const PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION = 'human-v5';
 
 export const PACK_TWO_PILOT_SEEDS = [
 	'pack-two-cohort-264',
@@ -208,6 +209,258 @@ const packTwoHairStyles = [
 	['wrapped braids', 'wrapped']
 ] as const;
 
+export const PACK_TWO_ATTIRE_OPTIONS = {
+	footwear: [
+		'turnshoes',
+		'ankle-boots',
+		'riding-boots',
+		'hobnailed-boots',
+		'wrapped-sandals',
+		'fur-lined-boots',
+		'soft-leather-shoes',
+		'riding-greaves',
+		'sabatons',
+		'moccasin-boots'
+	],
+	legwear: [
+		'fitted-hose',
+		'split-hose-and-breeches',
+		'loose-linen-trousers',
+		'wool-trousers',
+		'quilted-chausses',
+		'leather-riding-trousers',
+		'wrap-skirt-over-leggings',
+		'divided-skirt-trousers',
+		'mail-chausses',
+		'work-breeches'
+	],
+	torso: [
+		'linen-tunic',
+		'belted-wool-tunic',
+		'leather-jerkin',
+		'quilted-gambeson',
+		'mail-shirt',
+		'brigandine-vest',
+		'scholar-robe',
+		'apron-over-tunic',
+		'hooded-surcoat',
+		'fitted-doublet'
+	],
+	arms: [
+		'sleeveless',
+		'rolled-sleeves',
+		'full-linen-sleeves',
+		'quilted-sleeves',
+		'split-sleeves',
+		'mail-sleeves',
+		'leather-vambraces',
+		'wrapped-forearms',
+		'bell-cuffs',
+		'fitted-cuffs'
+	],
+	headwear: [
+		'none',
+		'linen-coif',
+		'wool-hood',
+		'broad-hat',
+		'felt-cap',
+		'mail-coif',
+		'kettle-hat',
+		'nasal-helm',
+		'turban-wrap',
+		'circlet'
+	]
+} as const;
+
+const packTwoFaceShapes = [
+	'round',
+	'oval',
+	'angular oval',
+	'long',
+	'heart-shaped',
+	'square',
+	'diamond',
+	'broad',
+	'tapered',
+	'oblong'
+] as const;
+const packTwoNoseProfiles = [
+	'fine straight',
+	'broad straight',
+	'soft convex',
+	'short rounded',
+	'aquiline',
+	'low bridge',
+	'high bridge',
+	'wide rounded',
+	'narrow hooked',
+	'prominent straight'
+] as const;
+const packTwoEyeShapes = [
+	'almond',
+	'round',
+	'deep-set',
+	'hooded',
+	'upturned',
+	'downturned',
+	'narrow',
+	'wide'
+] as const;
+const packTwoEyeSpacings = ['close-set', 'balanced', 'wide-set'] as const;
+const packTwoBrowShapes = [
+	'straight',
+	'arched',
+	'angular',
+	'soft',
+	'heavy',
+	'fine',
+	'low',
+	'high'
+] as const;
+const packTwoCheekStructures = ['flat', 'rounded', 'high', 'broad', 'hollow', 'soft'] as const;
+const packTwoJawShapes = [
+	'narrow',
+	'tapered',
+	'rounded',
+	'square',
+	'broad',
+	'angular',
+	'soft'
+] as const;
+const packTwoChinShapes = ['small', 'rounded', 'square', 'pointed', 'cleft'] as const;
+const packTwoMouthShapes = [
+	'narrow',
+	'wide',
+	'bowed',
+	'full',
+	'thin',
+	'asymmetric',
+	'downturned'
+] as const;
+
+type PackTwoVisualRole = (typeof packTwoVisualRoles)[number];
+type AttireSlot = keyof typeof PACK_TWO_ATTIRE_OPTIONS;
+type AttireChoice<Slot extends AttireSlot> = (typeof PACK_TWO_ATTIRE_OPTIONS)[Slot][number];
+
+const roleAttirePools: Record<
+	PackTwoVisualRole,
+	{ [Slot in AttireSlot]: readonly AttireChoice<Slot>[] }
+> = {
+	guard: {
+		footwear: ['hobnailed-boots', 'riding-greaves', 'sabatons', 'ankle-boots'],
+		legwear: ['quilted-chausses', 'leather-riding-trousers', 'mail-chausses', 'wool-trousers'],
+		torso: ['quilted-gambeson', 'mail-shirt', 'brigandine-vest', 'hooded-surcoat'],
+		arms: ['quilted-sleeves', 'mail-sleeves', 'leather-vambraces', 'wrapped-forearms'],
+		headwear: ['none', 'mail-coif', 'kettle-hat', 'nasal-helm']
+	},
+	hunter: {
+		footwear: ['ankle-boots', 'riding-boots', 'moccasin-boots', 'fur-lined-boots'],
+		legwear: ['fitted-hose', 'wool-trousers', 'leather-riding-trousers', 'work-breeches'],
+		torso: ['linen-tunic', 'belted-wool-tunic', 'leather-jerkin', 'hooded-surcoat'],
+		arms: ['sleeveless', 'rolled-sleeves', 'leather-vambraces', 'wrapped-forearms'],
+		headwear: ['none', 'wool-hood', 'broad-hat', 'felt-cap']
+	},
+	healer: {
+		footwear: ['turnshoes', 'soft-leather-shoes', 'wrapped-sandals', 'ankle-boots'],
+		legwear: ['fitted-hose', 'loose-linen-trousers', 'wrap-skirt-over-leggings', 'wool-trousers'],
+		torso: ['linen-tunic', 'belted-wool-tunic', 'scholar-robe', 'apron-over-tunic'],
+		arms: ['rolled-sleeves', 'full-linen-sleeves', 'bell-cuffs', 'fitted-cuffs'],
+		headwear: ['none', 'linen-coif', 'wool-hood', 'turban-wrap']
+	},
+	smith: {
+		footwear: ['hobnailed-boots', 'ankle-boots', 'moccasin-boots', 'soft-leather-shoes'],
+		legwear: ['loose-linen-trousers', 'wool-trousers', 'leather-riding-trousers', 'work-breeches'],
+		torso: ['linen-tunic', 'leather-jerkin', 'apron-over-tunic', 'quilted-gambeson'],
+		arms: ['sleeveless', 'rolled-sleeves', 'leather-vambraces', 'wrapped-forearms'],
+		headwear: ['none', 'linen-coif', 'wool-hood', 'felt-cap']
+	},
+	scribe: {
+		footwear: ['turnshoes', 'soft-leather-shoes', 'wrapped-sandals', 'ankle-boots'],
+		legwear: [
+			'fitted-hose',
+			'split-hose-and-breeches',
+			'loose-linen-trousers',
+			'divided-skirt-trousers'
+		],
+		torso: ['linen-tunic', 'scholar-robe', 'fitted-doublet', 'belted-wool-tunic'],
+		arms: ['rolled-sleeves', 'full-linen-sleeves', 'bell-cuffs', 'fitted-cuffs'],
+		headwear: ['none', 'linen-coif', 'broad-hat', 'felt-cap']
+	},
+	traveler: {
+		footwear: ['riding-boots', 'fur-lined-boots', 'moccasin-boots', 'turnshoes'],
+		legwear: [
+			'split-hose-and-breeches',
+			'wool-trousers',
+			'wrap-skirt-over-leggings',
+			'divided-skirt-trousers'
+		],
+		torso: ['belted-wool-tunic', 'leather-jerkin', 'hooded-surcoat', 'linen-tunic'],
+		arms: ['full-linen-sleeves', 'split-sleeves', 'wrapped-forearms', 'fitted-cuffs'],
+		headwear: ['none', 'wool-hood', 'broad-hat', 'turban-wrap']
+	},
+	court: {
+		footwear: ['turnshoes', 'soft-leather-shoes', 'riding-boots', 'wrapped-sandals'],
+		legwear: [
+			'fitted-hose',
+			'split-hose-and-breeches',
+			'wrap-skirt-over-leggings',
+			'divided-skirt-trousers'
+		],
+		torso: ['fitted-doublet', 'scholar-robe', 'hooded-surcoat', 'belted-wool-tunic'],
+		arms: ['full-linen-sleeves', 'split-sleeves', 'bell-cuffs', 'fitted-cuffs'],
+		headwear: ['none', 'broad-hat', 'felt-cap', 'circlet']
+	},
+	mage: {
+		footwear: ['turnshoes', 'soft-leather-shoes', 'wrapped-sandals', 'fur-lined-boots'],
+		legwear: [
+			'loose-linen-trousers',
+			'wrap-skirt-over-leggings',
+			'divided-skirt-trousers',
+			'fitted-hose'
+		],
+		torso: ['scholar-robe', 'hooded-surcoat', 'linen-tunic', 'fitted-doublet'],
+		arms: ['full-linen-sleeves', 'split-sleeves', 'bell-cuffs', 'fitted-cuffs'],
+		headwear: ['none', 'wool-hood', 'turban-wrap', 'circlet']
+	}
+};
+
+const coveredHairStyles = new Set([
+	'linen-coif',
+	'wool-hood',
+	'mail-coif',
+	'kettle-hat',
+	'nasal-helm'
+]);
+
+const torsoArmCompatibility: Record<AttireChoice<'torso'>, readonly AttireChoice<'arms'>[]> = {
+	'linen-tunic': ['sleeveless', 'rolled-sleeves', 'full-linen-sleeves', 'wrapped-forearms'],
+	'belted-wool-tunic': ['rolled-sleeves', 'full-linen-sleeves', 'split-sleeves', 'fitted-cuffs'],
+	'leather-jerkin': ['sleeveless', 'rolled-sleeves', 'leather-vambraces', 'wrapped-forearms'],
+	'quilted-gambeson': ['quilted-sleeves', 'leather-vambraces', 'wrapped-forearms'],
+	'mail-shirt': ['mail-sleeves', 'leather-vambraces'],
+	'brigandine-vest': ['quilted-sleeves', 'mail-sleeves', 'leather-vambraces'],
+	'scholar-robe': ['full-linen-sleeves', 'split-sleeves', 'bell-cuffs', 'fitted-cuffs'],
+	'apron-over-tunic': ['sleeveless', 'rolled-sleeves', 'wrapped-forearms'],
+	'hooded-surcoat': ['full-linen-sleeves', 'quilted-sleeves', 'mail-sleeves', 'split-sleeves'],
+	'fitted-doublet': ['split-sleeves', 'bell-cuffs', 'fitted-cuffs']
+};
+
+const torsoMaterial: Record<
+	AttireChoice<'torso'>,
+	'linen' | 'wool' | 'leather' | 'mail' | 'plate' | 'mixed'
+> = {
+	'linen-tunic': 'linen',
+	'belted-wool-tunic': 'wool',
+	'leather-jerkin': 'leather',
+	'quilted-gambeson': 'mixed',
+	'mail-shirt': 'mail',
+	'brigandine-vest': 'mixed',
+	'scholar-robe': 'wool',
+	'apron-over-tunic': 'leather',
+	'hooded-surcoat': 'mixed',
+	'fitted-doublet': 'wool'
+};
+
 const packTwoHeightRanges = {
 	short: [150, 162],
 	medium: [163, 178],
@@ -398,7 +651,10 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const features = streamFor(recipe, 'features');
 	const styling = streamFor(recipe, 'styling');
 	const rarity = streamFor(recipe, 'rarity');
-	const packTwo = recipe.generationVersion === PACK_TWO_CHARACTER_GENERATION_VERSION;
+	const packTwoVariation =
+		recipe.generationVersion === PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION;
+	const packTwo =
+		recipe.generationVersion === PACK_TWO_CHARACTER_GENERATION_VERSION || packTwoVariation;
 	const packTwoFrame = auxiliaryStreamFor(recipe, 'body', 'pack-two-frame-v1');
 	const packTwoBuild = auxiliaryStreamFor(recipe, 'body', 'pack-two-build-v1');
 	const packTwoHeight = auxiliaryStreamFor(recipe, 'body', 'pack-two-height-v1');
@@ -410,6 +666,9 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const packTwoGrooming = auxiliaryStreamFor(recipe, 'features', 'pack-two-grooming-v1');
 	const packTwoRole = auxiliaryStreamFor(recipe, 'styling', 'pack-two-role-v1');
 	const packTwoHandedness = auxiliaryStreamFor(recipe, 'body', 'pack-two-handedness-v1');
+	const variationFace = auxiliaryStreamFor(recipe, 'features', 'pack-two-face-v2');
+	const variationHair = auxiliaryStreamFor(recipe, 'features', 'pack-two-hair-v2');
+	const variationAttire = auxiliaryStreamFor(recipe, 'styling', 'pack-two-attire-v2');
 	const anchorKey = visualAnchorKey(recipe);
 	const maraAnchor = anchorKey === 'ember-01-anchor-v1';
 	const legacyName = maraAnchor ? names[0] : choose(identity, names);
@@ -453,6 +712,8 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const ageSampleB = packTwo ? packTwoAge() : body();
 	const ageNormal = Math.sqrt(-2 * Math.log(ageSampleA)) * Math.cos(2 * Math.PI * ageSampleB);
 	const age = maraAnchor ? 27 : Math.max(18, Math.min(42, Math.round(26 + ageNormal * 4.5)));
+	const compatibleHairColors = age >= 35 ? hairColors : hairColors.slice(0, -1);
+	const variationHairColor = packTwoVariation ? choose(variationHair, compatibleHairColors) : hair;
 	const posture = maraAnchor
 		? ('guarded' as const)
 		: choose(styling, ['guarded', 'open', 'restless', 'grounded', 'formal'] as const);
@@ -501,7 +762,28 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const legRatio = proportionBase
 		? Number((proportionBase.legRatio + proportionJitter()).toFixed(3))
 		: null;
-	const packTwoHairStyle = packTwo ? choose(packTwoHair, packTwoHairStyles) : null;
+	const visualRole = packTwo ? choose(packTwoRole, packTwoVisualRoles) : null;
+	const attirePools = packTwoVariation && visualRole ? roleAttirePools[visualRole] : null;
+	const attireHeadwear = attirePools ? choose(variationAttire, attirePools.headwear) : null;
+	const variationHairTexture = packTwoVariation
+		? choose(variationHair, ['straight', 'wavy', 'curly', 'coiled', 'tightly coiled'] as const)
+		: null;
+	const compatibleHairStyles = packTwoHairStyles.filter(([style, silhouette]) => {
+		if (attireHeadwear && coveredHairStyles.has(attireHeadwear) && silhouette !== 'close')
+			return false;
+		if (variationHairTexture === 'straight' || variationHairTexture === 'wavy') {
+			return !['cropped coils', 'close curls', 'wrapped braids'].includes(style);
+		}
+		if (variationHairTexture === 'curly') {
+			return !['cropped coils', 'long braid', 'braided crown', 'wrapped braids'].includes(style);
+		}
+		return !['jaw-length', 'loose shoulder-length', 'long braid'].includes(style);
+	});
+	const packTwoHairStyle = packTwo
+		? packTwoVariation
+			? choose(variationHair, compatibleHairStyles)
+			: choose(packTwoHair, packTwoHairStyles)
+		: null;
 	const packTwoGroomingValue = packTwo
 		? choose(packTwoGrooming, ['clean', 'neat', 'weathered'] as const)
 		: null;
@@ -516,7 +798,38 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 				'full-beard'
 			] as const)
 		: null;
-	const visualRole = packTwo ? choose(packTwoRole, packTwoVisualRoles) : null;
+	const attireTorso = attirePools ? choose(variationAttire, attirePools.torso) : null;
+	const compatibleArms =
+		attirePools && attireTorso
+			? attirePools.arms.filter((arms) => torsoArmCompatibility[attireTorso].includes(arms))
+			: [];
+	const attire =
+		attirePools && attireTorso
+			? {
+					footwear: choose(variationAttire, attirePools.footwear),
+					legwear: choose(variationAttire, attirePools.legwear),
+					torso: attireTorso,
+					arms: choose(
+						variationAttire,
+						compatibleArms.length > 0 ? compatibleArms : attirePools.arms
+					),
+					headwear: attireHeadwear!,
+					material: torsoMaterial[attireTorso],
+					condition: choose(variationAttire, [
+						'mended',
+						'maintained',
+						'weathered',
+						'fine'
+					] as const),
+					layering: ['mail-shirt', 'brigandine-vest'].includes(attireTorso)
+						? ('armored' as const)
+						: ['quilted-gambeson', 'hooded-surcoat'].includes(attireTorso)
+							? ('layered' as const)
+							: ['linen-tunic', 'scholar-robe'].includes(attireTorso)
+								? ('light' as const)
+								: ('standard' as const)
+				}
+			: null;
 	const apparentAgeBand = age <= 24 ? 'young-adult' : age <= 34 ? 'adult' : 'mature-adult';
 	const packTwoMassKg = composition
 		? Math.round(
@@ -640,19 +953,24 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 			skinTone: skin[0],
 			faceShape: maraAnchor
 				? 'angular oval'
-				: choose(features, ['round', 'oval', 'angular oval', 'long', 'heart-shaped'] as const),
+				: packTwoVariation
+					? choose(variationFace, packTwoFaceShapes)
+					: choose(features, ['round', 'oval', 'angular oval', 'long', 'heart-shaped'] as const),
 			noseProfile: maraAnchor
 				? 'broad straight'
-				: choose(features, [
-						'fine straight',
-						'broad straight',
-						'soft convex',
-						'short rounded'
-					] as const),
+				: packTwoVariation
+					? choose(variationFace, packTwoNoseProfiles)
+					: choose(features, [
+							'fine straight',
+							'broad straight',
+							'soft convex',
+							'short rounded'
+						] as const),
 			hairTexture: maraAnchor
 				? 'tightly coiled'
-				: choose(features, ['straight', 'wavy', 'curly', 'coiled', 'tightly coiled'] as const),
-			hairColor: hair[0],
+				: (variationHairTexture ??
+					choose(features, ['straight', 'wavy', 'curly', 'coiled', 'tightly coiled'] as const)),
+			hairColor: variationHairColor[0],
 			hairStyle: maraAnchor
 				? 'high coiled knot'
 				: packTwoHairStyle
@@ -678,7 +996,20 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 				? {
 						hairSilhouette: packTwoHairStyle[1],
 						grooming: packTwoGroomingValue,
-						facialHair: packTwoFacialHair
+						facialHair: packTwoFacialHair,
+						...(packTwoVariation
+							? {
+									facialStructure: {
+										eyeShape: choose(variationFace, packTwoEyeShapes),
+										eyeSpacing: choose(variationFace, packTwoEyeSpacings),
+										browShape: choose(variationFace, packTwoBrowShapes),
+										cheekStructure: choose(variationFace, packTwoCheekStructures),
+										jawShape: choose(variationFace, packTwoJawShapes),
+										chinShape: choose(variationFace, packTwoChinShapes),
+										mouthShape: choose(variationFace, packTwoMouthShapes)
+									}
+								}
+							: {})
 					}
 				: {})
 		},
@@ -693,7 +1024,8 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 			: choose(body, ['right', 'right', 'right', 'left', 'ambidextrous'] as const),
 		visualTraits,
 		...(visualRole ? { visualRole } : {}),
-		palette: { skin: skin[1], hair: hair[1], cloth: cloth[0], accent: cloth[1] },
+		...(attire ? { attire } : {}),
+		palette: { skin: skin[1], hair: variationHairColor[1], cloth: cloth[0], accent: cloth[1] },
 		rig: {
 			headScale: packTwo
 				? bounded(
@@ -838,6 +1170,14 @@ export async function generatePackTwoCohort(): Promise<readonly CharacterDraft[]
 	return Promise.all(
 		PACK_TWO_COHORT_SEEDS.map((seed) =>
 			generateCharacterDraft(recipeFromSeed(seed, PACK_TWO_CHARACTER_GENERATION_VERSION))
+		)
+	);
+}
+
+export async function generatePackTwoVariationCohort(): Promise<readonly CharacterDraft[]> {
+	return Promise.all(
+		PACK_TWO_COHORT_SEEDS.map((seed) =>
+			generateCharacterDraft(recipeFromSeed(seed, PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION))
 		)
 	);
 }

@@ -8,8 +8,11 @@ test('renders and exports the deterministic Pack 2 cohort audit', async ({ page 
 	await expect(page.getByTestId('audit-count')).toHaveText('1000');
 	await expect(page.getByTestId('contact-count')).toHaveText('100');
 	await expect(page.getByTestId('contact-card')).toHaveCount(100);
-	await expect(page.getByTestId('independence-check')).toHaveCount(4);
+	await expect(page.getByTestId('independence-check')).toHaveCount(7);
 	await expect(page.getByTestId('independence-check')).toContainText([
+		'Pass',
+		'Pass',
+		'Pass',
 		'Pass',
 		'Pass',
 		'Pass',
@@ -34,14 +37,14 @@ test('renders and exports the deterministic Pack 2 cohort audit', async ({ page 
 	const downloadPromise = page.waitForEvent('download');
 	await page.getByRole('button', { name: 'Download audit JSON' }).click();
 	const download = await downloadPromise;
-	expect(download.suggestedFilename()).toBe('summonlab-human-v4-1000-seed-audit.json');
+	expect(download.suggestedFilename()).toBe('summonlab-human-v5-1000-seed-audit.json');
 	const path = await download.path();
 	expect(path).not.toBeNull();
 	const audit = JSON.parse(await readFile(path!, 'utf8')) as {
 		generationVersion: string;
 		characters: Array<{ recipe: { seed: string }; manifestHash: string }>;
 	};
-	expect(audit.generationVersion).toBe('human-v4');
+	expect(audit.generationVersion).toBe('human-v5');
 	expect(audit.characters).toHaveLength(1_000);
 	expect(audit.characters[0]?.recipe.seed).toBe('pack-two-cohort-0');
 	expect(audit.characters[999]?.recipe.seed).toBe('pack-two-cohort-999');

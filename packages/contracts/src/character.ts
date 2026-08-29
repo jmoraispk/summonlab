@@ -70,7 +70,55 @@ export const CharacterManifestSchema = z
 					.enum(['close', 'jaw', 'shoulder', 'long', 'raised', 'crown', 'wrapped'])
 					.optional(),
 				grooming: z.enum(['clean', 'neat', 'weathered']).optional(),
-				facialHair: z.enum(['none', 'stubble', 'moustache', 'short-beard', 'full-beard']).optional()
+				facialHair: z
+					.enum(['none', 'stubble', 'moustache', 'short-beard', 'full-beard'])
+					.optional(),
+				facialStructure: z
+					.object({
+						eyeShape: z.enum([
+							'almond',
+							'round',
+							'deep-set',
+							'hooded',
+							'upturned',
+							'downturned',
+							'narrow',
+							'wide'
+						]),
+						eyeSpacing: z.enum(['close-set', 'balanced', 'wide-set']),
+						browShape: z.enum([
+							'straight',
+							'arched',
+							'angular',
+							'soft',
+							'heavy',
+							'fine',
+							'low',
+							'high'
+						]),
+						cheekStructure: z.enum(['flat', 'rounded', 'high', 'broad', 'hollow', 'soft']),
+						jawShape: z.enum([
+							'narrow',
+							'tapered',
+							'rounded',
+							'square',
+							'broad',
+							'angular',
+							'soft'
+						]),
+						chinShape: z.enum(['small', 'rounded', 'square', 'pointed', 'cleft']),
+						mouthShape: z.enum([
+							'narrow',
+							'wide',
+							'bowed',
+							'full',
+							'thin',
+							'asymmetric',
+							'downturned'
+						])
+					})
+					.strict()
+					.optional()
 			})
 			.strict(),
 		voice: z
@@ -85,6 +133,74 @@ export const CharacterManifestSchema = z
 		visualTraits: z.array(z.string().min(1).max(80)).max(12),
 		visualRole: z
 			.enum(['guard', 'hunter', 'healer', 'smith', 'scribe', 'traveler', 'court', 'mage'])
+			.optional(),
+		attire: z
+			.object({
+				footwear: z.enum([
+					'turnshoes',
+					'ankle-boots',
+					'riding-boots',
+					'hobnailed-boots',
+					'wrapped-sandals',
+					'fur-lined-boots',
+					'soft-leather-shoes',
+					'riding-greaves',
+					'sabatons',
+					'moccasin-boots'
+				]),
+				legwear: z.enum([
+					'fitted-hose',
+					'split-hose-and-breeches',
+					'loose-linen-trousers',
+					'wool-trousers',
+					'quilted-chausses',
+					'leather-riding-trousers',
+					'wrap-skirt-over-leggings',
+					'divided-skirt-trousers',
+					'mail-chausses',
+					'work-breeches'
+				]),
+				torso: z.enum([
+					'linen-tunic',
+					'belted-wool-tunic',
+					'leather-jerkin',
+					'quilted-gambeson',
+					'mail-shirt',
+					'brigandine-vest',
+					'scholar-robe',
+					'apron-over-tunic',
+					'hooded-surcoat',
+					'fitted-doublet'
+				]),
+				arms: z.enum([
+					'sleeveless',
+					'rolled-sleeves',
+					'full-linen-sleeves',
+					'quilted-sleeves',
+					'split-sleeves',
+					'mail-sleeves',
+					'leather-vambraces',
+					'wrapped-forearms',
+					'bell-cuffs',
+					'fitted-cuffs'
+				]),
+				headwear: z.enum([
+					'none',
+					'linen-coif',
+					'wool-hood',
+					'broad-hat',
+					'felt-cap',
+					'mail-coif',
+					'kettle-hat',
+					'nasal-helm',
+					'turban-wrap',
+					'circlet'
+				]),
+				material: z.enum(['linen', 'wool', 'leather', 'mail', 'plate', 'mixed']),
+				condition: z.enum(['mended', 'maintained', 'weathered', 'fine']),
+				layering: z.enum(['light', 'standard', 'layered', 'armored'])
+			})
+			.strict()
 			.optional(),
 		palette: z
 			.object({

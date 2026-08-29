@@ -288,3 +288,156 @@ export const PACK_TWO_MONSTER_FAMILIES = [
 	readonly plate: string;
 	readonly monsterIds: readonly PackTwoMonsterId[];
 }[];
+
+export const PACK_TWO_MONSTER_GRADE_VERSION = 'pack-two-monster-grades-v1';
+
+export const PACK_TWO_MONSTER_GRADES = [
+	{ grade: 1, levelMin: 1, levelMean: 7, levelMax: 13, title: 'Lurking' },
+	{ grade: 2, levelMin: 9, levelMean: 16, levelMax: 23, title: 'Hardened' },
+	{ grade: 3, levelMin: 18, levelMean: 26, levelMax: 34, title: 'Veteran' },
+	{ grade: 4, levelMin: 29, levelMean: 38, levelMax: 47, title: 'Elite' },
+	{ grade: 5, levelMin: 40, levelMean: 51, levelMax: 62, title: 'Dire' },
+	{ grade: 6, levelMin: 53, levelMean: 65, levelMax: 77, title: 'Tyrant' },
+	{ grade: 7, levelMin: 67, levelMean: 80, levelMax: 93, title: 'Cataclysmic' },
+	{ grade: 8, levelMin: 82, levelMean: 96, levelMax: 110, title: 'Mythic' },
+	{ grade: 9, levelMin: 99, levelMean: 114, levelMax: 129, title: 'Calamity' },
+	{ grade: 10, levelMin: 117, levelMean: 134, levelMax: 151, title: 'Tower-ending' }
+] as const;
+
+export type PackTwoMonsterGrade = (typeof PACK_TWO_MONSTER_GRADES)[number]['grade'];
+export type PackTwoMonsterFamily = (typeof PACK_TWO_MONSTER_ARCHETYPES)[number]['family'];
+
+export interface PackTwoMonsterVariant {
+	readonly variantVersion: typeof PACK_TWO_MONSTER_GRADE_VERSION;
+	readonly archetypeId: PackTwoMonsterId;
+	readonly family: PackTwoMonsterFamily;
+	readonly grade: PackTwoMonsterGrade;
+	readonly gradeTitle: string;
+	readonly level: number;
+	readonly levelBand: { readonly min: number; readonly mean: number; readonly max: number };
+	readonly sizeScale: number;
+	readonly massScale: number;
+	readonly musculatureScale: number;
+	readonly ferocityScale: number;
+	readonly magicGlowScale: number;
+	readonly weaponScale: number;
+	readonly mutationCount: number;
+	readonly escalationCues: readonly string[];
+}
+
+function monsterHash32(value: string): number {
+	let hash = 0x811c9dc5;
+	for (let index = 0; index < value.length; index += 1) {
+		hash ^= value.charCodeAt(index);
+		hash = Math.imul(hash, 0x01000193);
+	}
+	return hash >>> 0;
+}
+
+function monsterRandom(seed: string): () => number {
+	let state = monsterHash32(seed);
+	return () => {
+		state += 0x6d2b79f5;
+		let value = state;
+		value = Math.imul(value ^ (value >>> 15), value | 1);
+		value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+		return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296;
+	};
+}
+
+function scale(value: number): number {
+	return Number(value.toFixed(2));
+}
+
+const familyEscalation: Record<PackTwoMonsterFamily, readonly [string, string, string]> = {
+	elementals: [
+		'larger elemental body and denser core',
+		'brighter binding seams and wider environmental wake',
+		'arena-scale weather or terrain deformation'
+	],
+	'arcane-hostiles': [
+		'more elaborate focus and controlled aura',
+		'additional orbiting spell geometry',
+		'multiple simultaneous casting anchors'
+	],
+	arachnids: [
+		'larger abdomen and thicker load-bearing legs',
+		'denser carapace, silk output, or brood payload',
+		'nest-scale webbing and reinforced weak-point guards'
+	],
+	undead: [
+		'denser spectral binding or heavier burial armor',
+		'larger command weapon and stronger death-light',
+		'legion-scale aura with layered binding seals'
+	],
+	draconic: [
+		'larger frame, deeper musculature, and longer horns',
+		'thicker plates, broader wings, and brighter breath organs',
+		'arena-scale breath, tail, and wing hazards'
+	],
+	'dungeon-predators': [
+		'larger feeding body and more visible predatory anatomy',
+		'additional cores, teeth, eyes, or armor plates',
+		'arena-scale burrow, split, gaze, or ambush footprint'
+	]
+};
+
+function isMagicDuty(family: PackTwoMonsterFamily, duty: string): boolean {
+	return (
+		family === 'arcane-hostiles' || /\b(mage|summoner|wraith|artillery|zone|gaze)\b/iu.test(duty)
+	);
+}
+
+function isWeaponDuty(duty: string): boolean {
+	return /\b(bruiser|tank|defender|commander|brawler|guard|knight|sentinel)\b/iu.test(duty);
+}
+
+export function createPackTwoMonsterVariant(
+	archetypeId: PackTwoMonsterId,
+	grade: PackTwoMonsterGrade,
+	seed: string
+): PackTwoMonsterVariant {
+	const archetype = PACK_TWO_MONSTER_ARCHETYPES.find((candidate) => candidate.id === archetypeId);
+	if (!archetype) throw new Error(`Unknown Pack 2 monster archetype: ${archetypeId}`);
+	const gradeProfile = PACK_TWO_MONSTER_GRADES.find((candidate) => candidate.grade === grade);
+	if (!gradeProfile) throw new Error(`Unknown Pack 2 monster grade: ${grade}`);
+	const random = monsterRandom(
+		`${PACK_TWO_MONSTER_GRADE_VERSION}\u0000${archetypeId}\u0000${grade}\u0000${seed}`
+	);
+	const triangular = (random() + random()) / 2;
+	const level = Math.round(
+		gradeProfile.levelMin + triangular * (gradeProfile.levelMax - gradeProfile.levelMin)
+	);
+	const magicDuty = isMagicDuty(archetype.family, archetype.duty);
+	const weaponDuty = isWeaponDuty(archetype.duty);
+	const sizeJitter = (random() - 0.5) * 0.08;
+	const sizeScale = scale(0.72 + grade * 0.13 + sizeJitter);
+	const musculatureScale = scale(
+		0.78 + grade * (magicDuty ? 0.055 : 0.115) + (random() - 0.5) * 0.06
+	);
+	const magicGlowScale = scale(0.75 + grade * (magicDuty ? 0.26 : 0.1) + (random() - 0.5) * 0.08);
+	const weaponScale = scale(0.78 + grade * (weaponDuty ? 0.15 : 0.065) + (random() - 0.5) * 0.06);
+	const cueCount = grade >= 9 ? 3 : grade >= 6 ? 2 : 1;
+
+	return {
+		variantVersion: PACK_TWO_MONSTER_GRADE_VERSION,
+		archetypeId,
+		family: archetype.family,
+		grade,
+		gradeTitle: gradeProfile.title,
+		level,
+		levelBand: {
+			min: gradeProfile.levelMin,
+			mean: gradeProfile.levelMean,
+			max: gradeProfile.levelMax
+		},
+		sizeScale,
+		massScale: scale(sizeScale ** 2.55),
+		musculatureScale,
+		ferocityScale: scale(0.7 + grade * 0.145 + (random() - 0.5) * 0.08),
+		magicGlowScale,
+		weaponScale,
+		mutationCount: Math.max(0, Math.min(5, Math.floor((grade - 2 + random() * 2) / 2))),
+		escalationCues: familyEscalation[archetype.family].slice(0, cueCount)
+	};
+}

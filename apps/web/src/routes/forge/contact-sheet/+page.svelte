@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import faceProof from '../../../../../../assets/heroes/visuals/forge-v2/revisions/human-v5-face-grammar-proof-v1.png';
+	import variationProof from '../../../../../../assets/heroes/visuals/forge-v2/revisions/human-v5-face-attire-proof-v1.png';
 
 	let { data } = $props();
 
@@ -21,7 +23,7 @@
 		);
 		const anchor = document.createElement('a');
 		anchor.href = url;
-		anchor.download = 'summonlab-human-v4-1000-seed-audit.json';
+		anchor.download = `summonlab-${data.generationVersion}-1000-seed-audit.json`;
 		anchor.click();
 		URL.revokeObjectURL(url);
 	}
@@ -31,7 +33,7 @@
 	<title>Pack 2 cohort audit · summonlab</title>
 	<meta
 		name="description"
-		content="A deterministic human-v4 Pack 2 diversity and independence audit for Summonlab."
+		content="A deterministic human-v5 Pack 2 face, clothing, body, and independence audit for Summonlab."
 	/>
 </svelte:head>
 
@@ -52,14 +54,35 @@
 		</div>
 		<div class="intro-copy">
 			<p>
-				One thousand deterministic adult manifests test body, presentation, phenotype, role, and
-				rarity independence before generated art makes mistakes expensive. The first hundred remain
-				printable below for visual inspection.
+				One thousand deterministic adult manifests test bodies, complete faces, five modular
+				clothing slots, roles, and rarity before generated art makes mistakes expensive. The first
+				hundred remain printable below for visual inspection.
 			</p>
 			<div class="actions">
 				<button type="button" onclick={() => window.print()}>Print / save PDF</button>
 				<button type="button" onclick={downloadAudit}>Download audit JSON</button>
 			</div>
+		</div>
+	</section>
+
+	<section class="visual-proof" aria-labelledby="human-v5-proof-title">
+		<div>
+			<p class="eyebrow">Generated review proof · not promoted</p>
+			<h2 id="human-v5-proof-title">Faces and clothes must both carry identity.</h2>
+			<p>
+				Six manifest-bound directions test separate face geometry and coherent role clothing. This
+				plate is a visual target; the distribution gates below are the systematic guarantee.
+			</p>
+		</div>
+		<div class="proof-images">
+			<img
+				src={variationProof}
+				alt="Six grounded medieval humans with clearly varied faces, builds, roles, and modular outfits"
+			/>
+			<img
+				src={faceProof}
+				alt="Eight adult face studies with deliberately different facial structures, ages, and skin tones"
+			/>
 		</div>
 	</section>
 
@@ -94,6 +117,16 @@
 		<article>
 			<span>Roles</span><strong
 				>{Object.keys(data.summary.visualRoles).length} medieval vocabularies</strong
+			>
+		</article>
+		<article>
+			<span>Face signatures</span><strong>{data.summary.uniqueFaceSignatures} / 1,000 unique</strong
+			>
+		</article>
+		<article>
+			<span>Clothing modules</span><strong
+				>{Object.values(data.summary.attireCoverage).reduce((total, value) => total + value, 0)} / 50
+				represented</strong
 			>
 		</article>
 	</section>
@@ -196,6 +229,10 @@
 					{draft.manifest.genderPresentation} · {draft.manifest.physiology?.proportions?.profile}
 				</p>
 				<p>{draft.manifest.visualRole} · {draft.manifest.phenotype.hairSilhouette}</p>
+				<p class="attire">
+					{draft.manifest.attire?.headwear} · {draft.manifest.attire?.torso} ·
+					{draft.manifest.attire?.legwear} · {draft.manifest.attire?.footwear}
+				</p>
 				<footer>
 					<span>{'✦'.repeat(draft.manifest.rarityStars)}</span><code
 						>{draft.manifestHash.slice(0, 8)}</code
@@ -323,6 +360,35 @@
 		padding: 1px clamp(1.2rem, 3vw, 3rem);
 		gap: 1px;
 		background: transparent;
+	}
+	.visual-proof {
+		display: grid;
+		grid-template-columns: minmax(16rem, 0.6fr) minmax(0, 1.4fr);
+		gap: clamp(1rem, 4vw, 4rem);
+		align-items: center;
+		max-width: 96rem;
+		margin: 0 auto;
+		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
+		border-top: 1px solid #ffffff14;
+	}
+	.visual-proof h2 {
+		margin: 0.5rem 0 1rem;
+		font:
+			400 clamp(2rem, 4vw, 4rem) Georgia,
+			serif;
+	}
+	.visual-proof p:not(.eyebrow) {
+		color: #f6f1e780;
+		line-height: 1.7;
+	}
+	.proof-images {
+		display: grid;
+		gap: 0.8rem;
+	}
+	.visual-proof img {
+		display: block;
+		width: 100%;
+		border: 1px solid #ffffff17;
 	}
 	.summary article {
 		min-width: 0;

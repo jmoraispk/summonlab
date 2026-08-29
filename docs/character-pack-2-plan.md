@@ -1,5 +1,8 @@
 # Character Pack 2 production plan
 
+> Variation revision: the accepted face/clothing feedback and the grade 1–10 monster extension are
+> implemented in [Character Pack 2 variation and monster-grade revision](character-pack-2-variation-revision.md).
+
 Status: **implementation complete; human visual approval pending**
 
 Date: **2026-08-28**

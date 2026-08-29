@@ -1,5 +1,6 @@
 import {
-	PACK_TWO_CHARACTER_GENERATION_VERSION,
+	PACK_TWO_ATTIRE_OPTIONS,
+	PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION,
 	generateCharacterDraft,
 	recipeFromSeed
 } from '@summonlab/characters';
@@ -44,7 +45,7 @@ export const load: PageServerLoad = async () => {
 	const auditDrafts = await Promise.all(
 		Array.from({ length: 1_000 }, (_, index) =>
 			generateCharacterDraft(
-				recipeFromSeed(`pack-two-cohort-${index}`, PACK_TWO_CHARACTER_GENERATION_VERSION)
+				recipeFromSeed(`pack-two-cohort-${index}`, PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION)
 			)
 		)
 	);
@@ -86,6 +87,20 @@ export const load: PageServerLoad = async () => {
 	const repeatedTraits = Object.entries(visualTraitCounts)
 		.sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
 		.slice(0, 6);
+	const faceSignatures = new Set(
+		auditDrafts.map((draft) =>
+			[
+				draft.manifest.phenotype.faceShape,
+				draft.manifest.phenotype.noseProfile,
+				...Object.values(draft.manifest.phenotype.facialStructure ?? {})
+			].join('|')
+		)
+	);
+	const attireCoverage = Object.fromEntries(
+		(Object.keys(PACK_TWO_ATTIRE_OPTIONS) as Array<keyof typeof PACK_TWO_ATTIRE_OPTIONS>).map(
+			(slot) => [slot, new Set(auditDrafts.map((draft) => draft.manifest.attire?.[slot])).size]
+		)
+	);
 	const independenceChecks = [
 		{
 			id: 'presentation-build-cross',
@@ -112,10 +127,27 @@ export const load: PageServerLoad = async () => {
 			passed: Object.values(presentationByRarity).every(
 				(columns) => Object.values(columns).filter((value) => value > 0).length >= 3
 			)
+		},
+		{
+			id: 'attire-module-coverage',
+			label: 'All ten modules appear in every clothing slot',
+			passed: Object.values(attireCoverage).every((value) => value === 10)
+		},
+		{
+			id: 'face-combination-spread',
+			label: 'At least 975 of 1,000 complete face signatures are unique',
+			passed: faceSignatures.size >= 975
+		},
+		{
+			id: 'hair-age-coherence',
+			label: 'Silver hair is reserved for mature adults in automatic draws',
+			passed: auditDrafts.every(
+				(draft) => draft.manifest.phenotype.hairColor !== 'silver' || draft.manifest.adultAge >= 35
+			)
 		}
 	];
 	return {
-		generationVersion: PACK_TWO_CHARACTER_GENERATION_VERSION,
+		generationVersion: PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION,
 		auditSize: auditDrafts.length,
 		displaySize: drafts.length,
 		drafts,
@@ -146,6 +178,8 @@ export const load: PageServerLoad = async () => {
 				auditDrafts.map((draft) => draft.manifest.physiology?.proportions?.profile ?? 'legacy')
 			),
 			visualRoles: counts(auditDrafts.map((draft) => draft.manifest.visualRole ?? 'unset')),
+			attireCoverage,
+			uniqueFaceSignatures: faceSignatures.size,
 			skinTones: counts(auditDrafts.map((draft) => draft.manifest.phenotype.skinTone)),
 			hairTextures: counts(auditDrafts.map((draft) => draft.manifest.phenotype.hairTexture)),
 			hairSilhouettes: counts(

@@ -6,6 +6,8 @@ import {
 	PACK_TWO_COHORT_SEEDS,
 	PACK_TWO_EXPANSION_SEEDS,
 	PACK_TWO_PILOT_SEEDS,
+	PACK_TWO_ATTIRE_OPTIONS,
+	PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION,
 	VISUAL_CHARACTER_GENERATION_VERSION,
 	canonicalJson,
 	chooseFirstDestination,
@@ -179,6 +181,80 @@ describe('deterministic character generation', () => {
 						.map((draft) => draft.manifest.bodyBuild)
 				).size
 			).toBe(builds.length);
+		}
+	});
+
+	it('systematically varies Pack 2 faces and every clothing slot with coherent combinations', async () => {
+		const drafts = await Promise.all(
+			Array.from({ length: 2_000 }, (_, index) =>
+				generateCharacterDraft(
+					recipeFromSeed(
+						`pack-two-variation-${index}`,
+						PACK_TWO_VARIATION_CHARACTER_GENERATION_VERSION
+					)
+				)
+			)
+		);
+		const manifests = drafts.map((draft) => draft.manifest);
+
+		expect(manifests.every((manifest) => manifest.generationVersion === 'human-v5')).toBe(true);
+		for (const slot of Object.keys(PACK_TWO_ATTIRE_OPTIONS) as Array<
+			keyof typeof PACK_TWO_ATTIRE_OPTIONS
+		>) {
+			expect(new Set(manifests.map((manifest) => manifest.attire?.[slot]))).toEqual(
+				new Set(PACK_TWO_ATTIRE_OPTIONS[slot])
+			);
+		}
+
+		expect(new Set(manifests.map((manifest) => manifest.phenotype.faceShape)).size).toBe(10);
+		expect(new Set(manifests.map((manifest) => manifest.phenotype.noseProfile)).size).toBe(10);
+		expect(
+			new Set(manifests.map((manifest) => manifest.phenotype.facialStructure?.eyeShape)).size
+		).toBe(8);
+		expect(
+			new Set(manifests.map((manifest) => manifest.phenotype.facialStructure?.jawShape)).size
+		).toBe(7);
+		const faceSignatures = manifests.map((manifest) =>
+			[
+				manifest.phenotype.faceShape,
+				manifest.phenotype.noseProfile,
+				...Object.values(manifest.phenotype.facialStructure ?? {})
+			].join('|')
+		);
+		expect(new Set(faceSignatures).size).toBeGreaterThan(1_950);
+
+		for (const manifest of manifests) {
+			expect(manifest.attire).toBeDefined();
+			expect(manifest.phenotype.facialStructure).toBeDefined();
+			if (manifest.phenotype.hairColor === 'silver')
+				expect(manifest.adultAge).toBeGreaterThanOrEqual(35);
+			if (
+				manifest.attire &&
+				['linen-coif', 'wool-hood', 'mail-coif', 'kettle-hat', 'nasal-helm'].includes(
+					manifest.attire.headwear
+				)
+			) {
+				expect(manifest.phenotype.hairSilhouette).toBe('close');
+			}
+			if (manifest.attire?.torso === 'mail-shirt') {
+				expect(['mail-sleeves', 'leather-vambraces']).toContain(manifest.attire.arms);
+				expect(manifest.attire.material).toBe('mail');
+				expect(manifest.attire.layering).toBe('armored');
+			}
+		}
+
+		for (const skinTone of new Set(manifests.map((manifest) => manifest.phenotype.skinTone))) {
+			const signatures = manifests
+				.filter((manifest) => manifest.phenotype.skinTone === skinTone)
+				.map((manifest) =>
+					[
+						manifest.phenotype.faceShape,
+						manifest.phenotype.noseProfile,
+						manifest.phenotype.facialStructure?.eyeShape,
+						manifest.phenotype.facialStructure?.jawShape
+					].join('|')
+				);
+			expect(new Set(signatures).size).toBeGreaterThan(180);
 		}
 	});
 
