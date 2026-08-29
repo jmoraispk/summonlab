@@ -61,7 +61,7 @@
 	}
 
 	function mediaId(mediaUrl: string) {
-		return mediaUrl.split('/').at(-1) ?? '';
+		return mediaUrl.split('/').at(-1)?.split('?')[0] ?? '';
 	}
 </script>
 
@@ -126,15 +126,27 @@
 		<div class="mode-switch">
 			<a
 				class:active={!data.blind}
-				href={resolve('/forge/enemies/affinity-workflow')}
+				href="{resolve('/forge/enemies/affinity-workflow')}?round={data.controlledRound.id}"
 				aria-current={!data.blind ? 'page' : undefined}>Labels visible</a
 			>
 			<form method="GET" action={resolve('/forge/enemies/affinity-workflow')}>
 				<input type="hidden" name="mode" value="blind" />
 				<input type="hidden" name="scope" value="controlled" />
+				<input type="hidden" name="round" value={data.controlledRound.id} />
 				<button class:active={data.blind} type="submit">Start blind review</button>
 			</form>
 		</div>
+	</section>
+	<section class="round-controls" aria-label="Controlled review round">
+		<p class="eyebrow">Controlled round</p>
+		{#each data.availableControlledRounds as round (round.id)}
+			<a
+				class:active={round.id === data.controlledRound.id}
+				href="{resolve('/forge/enemies/affinity-workflow')}?{data.blind
+					? `mode=blind&scope=${data.scope}&round=${round.id}`
+					: `round=${round.id}`}">{round.label}</a
+			>
+		{/each}
 	</section>
 	{#if data.blind}
 		<section class="blind-progress" aria-label="Blind review scope and progress">
@@ -146,12 +158,14 @@
 			<nav aria-label="Blind review scope">
 				<a
 					class:active={data.scope === 'controlled'}
-					href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=controlled"
-					>Controlled · 24</a
+					href="{resolve(
+						'/forge/enemies/affinity-workflow'
+					)}?mode=blind&scope=controlled&round={data.controlledRound.id}">Controlled · 24</a
 				>
 				<a
 					class:active={data.scope === 'all'}
-					href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=all">All evidence</a
+					href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=all&round={data
+						.controlledRound.id}">All evidence</a
 				>
 			</nav>
 		</section>
@@ -287,7 +301,10 @@
 						? 'Use server-stripped blind mode to record recognition evidence. Label-visible inspection is read-only, and decisions never promote experiment assets.'
 						: data.reviewPersistenceMessage}
 				</p>
-				<a href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=controlled"
+				<a
+					href="{resolve(
+						'/forge/enemies/affinity-workflow'
+					)}?mode=blind&scope=controlled&round={data.controlledRound.id}"
 					>Start controlled blind review</a
 				>
 			</article>
@@ -449,6 +466,7 @@
 				>
 					<input type="hidden" name="reviewId" value={data.reviewId} />
 					<input type="hidden" name="opaqueMediaId" value={mediaId(selectedCell.mediaUrl)} />
+					<input type="hidden" name="controlledRound" value={data.controlledRound.id} />
 					<header>
 						<div>
 							<p class="eyebrow">Human review</p>
@@ -528,14 +546,20 @@
 							{data.reviewPersistenceAvailable ? 'Save review' : 'Persistence unavailable'}
 						</button>
 						{#if data.blind}
-							<a href={resolve('/forge/enemies/affinity-workflow')}>Reveal all labels</a>
+							<a
+								href="{resolve('/forge/enemies/affinity-workflow')}?round={data.controlledRound.id}"
+								>Reveal all labels</a
+							>
 						{/if}
 					</div>
 				</form>
 			{:else if selectedCell.mediaUrl && selectedCell.status === 'candidate'}
 				<p class="blind-review-required">
 					Review entry is disabled while labels are visible. Open the
-					<a href="{resolve('/forge/enemies/affinity-workflow')}?mode=blind&scope=controlled"
+					<a
+						href="{resolve(
+							'/forge/enemies/affinity-workflow'
+						)}?mode=blind&scope=controlled&round={data.controlledRound.id}"
 						>server-stripped controlled blind review</a
 					>
 					to record recognition evidence.
@@ -626,6 +650,7 @@
 	}
 	.intro,
 	.mode,
+	.round-controls,
 	.controls,
 	.matrix,
 	.governance {
@@ -768,9 +793,27 @@
 	}
 	.mode-switch a.active,
 	.mode-switch button.active,
+	.round-controls a.active,
 	.controls button.active {
 		color: #071015;
 		background: #70b7c4;
+	}
+	.round-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding-block: 0.85rem;
+		border-bottom: 1px solid #ffffff14;
+	}
+	.round-controls .eyebrow {
+		margin-right: 0.75rem;
+	}
+	.round-controls a {
+		border: 1px solid #ffffff17;
+		padding: 0.65rem 0.9rem;
+		color: #f4efe570;
+		font-size: 0.62rem;
+		text-transform: uppercase;
 	}
 	.controls {
 		display: flex;
@@ -1304,6 +1347,7 @@
 			gap: 2rem;
 		}
 		.mode,
+		.round-controls,
 		.controls {
 			align-items: stretch;
 			flex-direction: column;
@@ -1330,6 +1374,7 @@
 			font-size: 3rem;
 		}
 		.mode-switch,
+		.round-controls,
 		.controls,
 		.review-actions {
 			flex-wrap: wrap;

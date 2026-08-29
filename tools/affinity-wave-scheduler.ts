@@ -7,6 +7,7 @@ import {
 	nextDispatchDecision,
 	preflightWave,
 	readPreflight,
+	readWaveAllocationSpec,
 	readWaveEvents,
 	readWavePlan,
 	recordEventExclusive,
@@ -25,6 +26,7 @@ function usage(): never {
 	throw new Error(
 		[
 			'Usage:',
+			'  pnpm exec tsx tools/affinity-wave-scheduler.ts validate-allocation --allocation <path>',
 			'  pnpm exec tsx tools/affinity-wave-scheduler.ts preflight --plan <path> --available-agent-slots <n>',
 			'  pnpm exec tsx tools/affinity-wave-scheduler.ts next --preflight <path>',
 			'  pnpm exec tsx tools/affinity-wave-scheduler.ts record-event --preflight <path> --event <path>',
@@ -37,6 +39,28 @@ async function main(): Promise<void> {
 	const [command, ...args] = process.argv.slice(2);
 	if (!command) usage();
 	const workspaceRoot = process.cwd();
+	if (command === 'validate-allocation') {
+		const allocationPath = option(args, '--allocation');
+		const allocation = await readWaveAllocationSpec(workspaceRoot, allocationPath);
+		process.stdout.write(
+			`${JSON.stringify(
+				{
+					allocationId: allocation.allocationId,
+					status: allocation.status,
+					executable: allocation.executable,
+					futureSentinelCount: allocation.futureSentinelCount,
+					stages: allocation.stages.map((stage) => ({
+						stage: stage.stage,
+						requestedConcurrency: stage.requestedConcurrency,
+						jobCount: stage.jobs.length
+					}))
+				},
+				null,
+				2
+			)}\n`
+		);
+		return;
+	}
 	if (command === 'preflight') {
 		const planPath = option(args, '--plan');
 		const availableAgentSlots = Number(option(args, '--available-agent-slots'));

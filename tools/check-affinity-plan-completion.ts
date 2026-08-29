@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 
 import {
 	ImageProductionAssignmentSchema,
+	ImageProductionConcurrencyStageSchema,
 	ImageProductionResultSchema,
 	ImageProductionTargetSchema,
 	validateImageProductionExecution,
@@ -22,6 +23,13 @@ import {
 	createAffinityWorkflowExportBundle
 } from './image-production-lib.js';
 import { buildAffinityGateReadiness } from './report-affinity-gate-readiness.js';
+import {
+	AffinityWavePreflightSchema,
+	AffinityWaveReportSchema,
+	canonicalJsonSha256,
+	type AffinityWavePreflight,
+	type AffinityWaveReport
+} from './affinity-wave-scheduler-lib.js';
 import {
 	scanAffinityReviewWorkspace,
 	type AffinityReviewSyncIssue,
@@ -98,17 +106,83 @@ const AcceptedLaterPackRulesSchema = z
 	})
 	.strict();
 
-const ScaleRecommendationSchema = z
+export const ScaleRecommendationSchema = z
 	.object({
-		schemaVersion: z.literal('affinity-scale-recommendation-v1'),
+		schemaVersion: z.literal('affinity-scale-recommendation-v2'),
 		experimentId: z.literal('affinity-workflow-v1'),
 		status: z.literal('final'),
 		recommendedSafeConcurrency: z.number().int().min(1).max(16),
 		sourceEffectiveConcurrencyLevels: z.array(z.number().int().min(1).max(16)),
+		sourceRuns: z
+			.array(
+				z
+					.object({
+						runId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
+						effectiveConcurrency: z.number().int().min(1).max(16),
+						preflightPath: z.string().min(1),
+						preflightCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u),
+						reportPath: z.string().min(1),
+						reportCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
+					})
+					.strict()
+			)
+			.min(1),
+		scaleEndpointSource: z.discriminatedUnion('kind', [
+			z
+				.object({
+					kind: z.literal('completed-scale'),
+					runId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
+					reportCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
+				})
+				.strict(),
+			z
+				.object({
+					kind: z.literal('blocked-capacity'),
+					runId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
+					preflightPath: z.string().min(1),
+					preflightCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
+				})
+				.strict()
+		]),
 		productionStrategy: z.string().trim().min(1),
 		fallbackBehavior: z.string().trim().min(1)
 	})
-	.strict();
+	.strict()
+	.superRefine((recommendation, context) => {
+		const declared = [...new Set(recommendation.sourceEffectiveConcurrencyLevels)].sort(
+			(left, right) => left - right
+		);
+		const bound = [
+			...new Set(recommendation.sourceRuns.map((run) => run.effectiveConcurrency))
+		].sort((left, right) => left - right);
+		if (
+			declared.length !== recommendation.sourceEffectiveConcurrencyLevels.length ||
+			JSON.stringify(declared) !== JSON.stringify(recommendation.sourceEffectiveConcurrencyLevels)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['sourceEffectiveConcurrencyLevels'],
+				message: 'Source concurrency levels must be unique and sorted'
+			});
+		}
+		if (JSON.stringify(declared) !== JSON.stringify(bound)) {
+			context.addIssue({
+				code: 'custom',
+				path: ['sourceRuns'],
+				message: 'Every declared concurrency level requires a hash-bound scheduler run'
+			});
+		}
+	});
+
+export interface EligibleSchedulerRun {
+	readonly runId: string;
+	readonly stage: AffinityWaveReport['stage'];
+	readonly effectiveConcurrency: number;
+	readonly preflightPath: string;
+	readonly preflightCanonicalSha256: string;
+	readonly reportPath: string;
+	readonly reportCanonicalSha256: string;
+}
 
 export type AffinityPlanCompletionSectionId =
 	| 'skillAndDryRun'
@@ -162,6 +236,9 @@ export interface AffinityPlanCompletionEvidence {
 	};
 	readonly concurrencyLadder: {
 		readonly effectiveLevels: readonly number[];
+		readonly legacyEffectiveLevels: readonly number[];
+		readonly schedulerEffectiveLevels: readonly number[];
+		readonly eligibleSchedulerRuns: readonly EligibleSchedulerRun[];
 		readonly requiredLevels: readonly number[];
 		readonly recommendedSafeConcurrency: number | null;
 		readonly scaleEndpointEvidenced: boolean;
@@ -181,6 +258,8 @@ export interface AffinityPlanCompletionEvidence {
 		readonly artifactPresent: boolean;
 		readonly finalArtifactValid: boolean;
 		readonly sourceEffectiveConcurrencyLevels: readonly number[];
+		readonly sourceBindingsValid: boolean;
+		readonly matchesEligibleSchedulerLevels: boolean;
 	};
 }
 
@@ -364,6 +443,8 @@ export function buildAffinityPlanCompletionReport(
 	const scaleRecommendationComplete =
 		evidence.scaleRecommendation.artifactPresent &&
 		evidence.scaleRecommendation.finalArtifactValid &&
+		evidence.scaleRecommendation.sourceBindingsValid &&
+		evidence.scaleRecommendation.matchesEligibleSchedulerLevels &&
 		evidence.concurrencyLadder.requiredLevels.every((level) =>
 			evidence.scaleRecommendation.sourceEffectiveConcurrencyLevels.includes(level)
 		);
@@ -728,6 +809,224 @@ async function inspectFinalControlledExecutionEvidence(input: {
 	};
 }
 
+export interface SchedulerRunEligibility {
+	readonly eligible: boolean;
+	readonly reasons: readonly string[];
+}
+
+export function validateSchedulerRunEligibility(
+	preflightInput: unknown,
+	reportInput: unknown
+): SchedulerRunEligibility {
+	const preflight = AffinityWavePreflightSchema.safeParse(preflightInput);
+	const report = AffinityWaveReportSchema.safeParse(reportInput);
+	const reasons: string[] = [];
+	if (!preflight.success) reasons.push('invalid-preflight');
+	if (!report.success) reasons.push('invalid-report');
+	if (!preflight.success || !report.success) return { eligible: false, reasons };
+	const p = preflight.data;
+	const r = report.data;
+	if (p.runId !== r.runId || p.stage !== r.stage || p.experimentId !== r.experimentId) {
+		reasons.push('run-binding-mismatch');
+	}
+	if (p.status !== 'ready' || !p.exactConcurrencyReady) reasons.push('preflight-not-exact-ready');
+	if (
+		p.dispatchGateSatisfied !== true ||
+		p.dispatchGateEvidence?.status !== 'satisfied' ||
+		p.dispatchGateEvidence.gate?.qualityGateSatisfied !== true ||
+		p.dispatchGateEvidence.gate?.authorizedStage !== p.stage ||
+		p.dispatchGateEvidence.expectedCanonicalSha256 !==
+			p.dispatchGateEvidence.observedCanonicalSha256
+	) {
+		reasons.push('promotion-gate-not-evidenced');
+	}
+	if (
+		['breadth', 'load', 'scale'].includes(p.stage) &&
+		p.dispatchGateEvidence?.gate?.humanGateSatisfied !== true
+	) {
+		reasons.push('human-gate-not-evidenced');
+	}
+	if (p.collisionPaths.length !== 0) reasons.push('preflight-output-collision');
+	if (p.jobs.length !== r.targetCount) reasons.push('preflight-report-target-count-mismatch');
+	if (r.status !== 'completed') reasons.push('report-not-completed');
+	if (
+		r.requestedConcurrency !== r.effectiveConcurrency ||
+		r.requestedConcurrency !== p.requestedConcurrency
+	) {
+		reasons.push('requested-effective-concurrency-mismatch');
+	}
+	if (r.workerCount < r.effectiveConcurrency) reasons.push('insufficient-distinct-worker-evidence');
+	if (
+		r.dispatchedCount !== r.targetCount ||
+		r.terminalCount !== r.targetCount ||
+		r.unlaunchedCount !== 0
+	) {
+		reasons.push('incomplete-dispatch-or-terminal-count');
+	}
+	if (
+		r.failedCount !== 0 ||
+		r.capacityFailureCount !== 0 ||
+		r.providerThrottleCount !== 0 ||
+		r.timeoutCount !== 0 ||
+		r.malformedOutputCount !== 0
+	) {
+		reasons.push('scheduler-or-provider-failure');
+	}
+	if (r.provenanceCompletenessRate !== 1) reasons.push('incomplete-provenance');
+	const metrics = r.stageMetrics;
+	if (!metrics) {
+		reasons.push('missing-stage-metrics');
+	} else {
+		if (
+			metrics.stage !== r.stage ||
+			metrics.plannedParallelJobs !== r.requestedConcurrency ||
+			metrics.effectiveParallelJobs !== r.effectiveConcurrency ||
+			metrics.targetCount !== r.targetCount
+		) {
+			reasons.push('stage-metric-binding-mismatch');
+		}
+		if (
+			metrics.failedCount !== 0 ||
+			metrics.throttleCount !== 0 ||
+			metrics.timeoutCount !== 0 ||
+			metrics.missingResultCount !== 0 ||
+			metrics.duplicateIdCount !== 0 ||
+			metrics.pathConflictCount !== 0 ||
+			metrics.integrationErrorCount !== 0 ||
+			metrics.provenanceCompletenessRate !== 1
+		) {
+			reasons.push('stage-quality-or-workflow-violation');
+		}
+	}
+	return { eligible: reasons.length === 0, reasons: [...new Set(reasons)] };
+}
+
+function legacyConcurrencyStageEligible(
+	stage: z.infer<typeof ImageProductionConcurrencyStageSchema>
+): boolean {
+	return (
+		stage.effectiveParallelJobs <= 3 &&
+		stage.candidateCount + stage.reviseCount === stage.targetCount &&
+		stage.failedCount === 0 &&
+		stage.throttleCount === 0 &&
+		stage.timeoutCount === 0 &&
+		stage.provenanceCompletenessRate === 1 &&
+		stage.missingResultCount === 0 &&
+		stage.duplicateIdCount === 0 &&
+		stage.pathConflictCount === 0 &&
+		stage.integrationErrorCount === 0
+	);
+}
+
+interface SchedulerEvidenceScan {
+	readonly eligibleRuns: readonly EligibleSchedulerRun[];
+	readonly blockedScalePreflights: readonly {
+		readonly runId: string;
+		readonly preflightPath: string;
+		readonly preflightCanonicalSha256: string;
+		readonly prerequisiteRunIds: readonly string[];
+	}[];
+}
+
+async function inspectSchedulerEvidence(workspaceRoot: string): Promise<SchedulerEvidenceScan> {
+	const runsRoot = path.resolve(workspaceRoot, AFFINITY_EXPERIMENT_ROOT, 'wave-runs');
+	const entries = await readdir(runsRoot, { withFileTypes: true }).catch(() => []);
+	const basicEligible = new Map<
+		string,
+		{ run: EligibleSchedulerRun; preflight: AffinityWavePreflight }
+	>();
+	const blockedScalePreflights: SchedulerEvidenceScan['blockedScalePreflights'][number][] = [];
+	for (const entry of entries) {
+		if (!entry.isDirectory()) continue;
+		const preflightAbsolute = path.join(runsRoot, entry.name, 'preflight.json');
+		const preflightInput = await readJson(preflightAbsolute).catch(() => null);
+		const preflight = AffinityWavePreflightSchema.safeParse(preflightInput);
+		if (!preflight.success) continue;
+		const preflightPath = path.relative(workspaceRoot, preflightAbsolute);
+		const preflightCanonicalSha256 = canonicalJsonSha256(preflight.data);
+		if (
+			preflight.data.stage === 'scale' &&
+			preflight.data.requestedConcurrency === 16 &&
+			preflight.data.status === 'blocked-capacity' &&
+			preflight.data.exactConcurrencyReady === false &&
+			preflight.data.collisionPaths.length === 0 &&
+			preflight.data.dispatchGateSatisfied === true &&
+			preflight.data.dispatchGateEvidence?.status === 'satisfied' &&
+			preflight.data.dispatchGateEvidence.gate?.authorizedStage === 'scale' &&
+			preflight.data.dispatchGateEvidence.gate.qualityGateSatisfied === true &&
+			preflight.data.dispatchGateEvidence.gate.humanGateSatisfied === true &&
+			preflight.data.dispatchGateEvidence.expectedCanonicalSha256 ===
+				preflight.data.dispatchGateEvidence.observedCanonicalSha256
+		) {
+			blockedScalePreflights.push({
+				runId: preflight.data.runId,
+				preflightPath,
+				preflightCanonicalSha256,
+				prerequisiteRunIds: preflight.data.dispatchGateEvidence.gate.prerequisiteRunIds
+			});
+		}
+		const reportAbsolute = path.join(runsRoot, entry.name, 'report.json');
+		const reportInput = await readJson(reportAbsolute).catch(() => null);
+		const eligibility = validateSchedulerRunEligibility(preflight.data, reportInput);
+		const report = AffinityWaveReportSchema.safeParse(reportInput);
+		if (!eligibility.eligible || !report.success) continue;
+		basicEligible.set(preflight.data.runId, {
+			preflight: preflight.data,
+			run: {
+				runId: preflight.data.runId,
+				stage: report.data.stage,
+				effectiveConcurrency: report.data.effectiveConcurrency,
+				preflightPath,
+				preflightCanonicalSha256,
+				reportPath: path.relative(workspaceRoot, reportAbsolute),
+				reportCanonicalSha256: canonicalJsonSha256(report.data)
+			}
+		});
+	}
+	const eligible = new Map<string, EligibleSchedulerRun>();
+	const precedingStage = {
+		canary: null,
+		pilot: 'canary',
+		controlled: 'pilot',
+		breadth: 'controlled',
+		load: 'breadth',
+		scale: 'load'
+	} as const;
+	let changed = true;
+	while (changed) {
+		changed = false;
+		for (const [runId, candidate] of basicEligible) {
+			if (eligible.has(runId)) continue;
+			const prerequisites =
+				candidate.preflight.dispatchGateEvidence?.gate?.prerequisiteRunIds ?? [];
+			const requiredPrecedingStage = precedingStage[candidate.run.stage];
+			const prerequisitesEligible = prerequisites.every((prerequisite) =>
+				eligible.has(prerequisite)
+			);
+			const precedingStageEvidenced =
+				requiredPrecedingStage === null
+					? prerequisites.length === 0
+					: prerequisites.some(
+							(prerequisite) => eligible.get(prerequisite)?.stage === requiredPrecedingStage
+						);
+			if (prerequisitesEligible && precedingStageEvidenced) {
+				eligible.set(runId, candidate.run);
+				changed = true;
+			}
+		}
+	}
+	return {
+		eligibleRuns: [...eligible.values()].sort(
+			(left, right) => left.effectiveConcurrency - right.effectiveConcurrency
+		),
+		blockedScalePreflights: blockedScalePreflights.filter((preflight) =>
+			preflight.prerequisiteRunIds.some(
+				(prerequisite) => eligible.get(prerequisite)?.stage === 'load'
+			)
+		)
+	};
+}
+
 async function optionalAcceptedRules(workspaceRoot: string) {
 	const filePath = path.resolve(workspaceRoot, ACCEPTED_RULES_PATH);
 	const artifactPresent = await fileExists(filePath);
@@ -741,22 +1040,69 @@ async function optionalAcceptedRules(workspaceRoot: string) {
 	};
 }
 
-async function optionalScaleRecommendation(workspaceRoot: string) {
+async function optionalScaleRecommendation(
+	workspaceRoot: string,
+	schedulerEvidence: SchedulerEvidenceScan
+) {
 	const filePath = path.resolve(workspaceRoot, SCALE_RECOMMENDATION_PATH);
 	const artifactPresent = await fileExists(filePath);
 	if (!artifactPresent)
 		return {
 			artifactPresent,
 			finalArtifactValid: false,
-			sourceEffectiveConcurrencyLevels: [] as number[]
+			sourceEffectiveConcurrencyLevels: [] as number[],
+			sourceBindingsValid: false,
+			matchesEligibleSchedulerLevels: false
 		};
 	const parsed = ScaleRecommendationSchema.safeParse(await readJson(filePath).catch(() => null));
+	const eligibleByRunId = new Map(
+		schedulerEvidence.eligibleRuns.map((run) => [run.runId, run] as const)
+	);
+	const sourceBindingsValid =
+		parsed.success &&
+		parsed.data.sourceRuns.every((source) => {
+			const eligible = eligibleByRunId.get(source.runId);
+			return (
+				eligible !== undefined &&
+				eligible.effectiveConcurrency === source.effectiveConcurrency &&
+				eligible.preflightPath === source.preflightPath &&
+				eligible.preflightCanonicalSha256 === source.preflightCanonicalSha256 &&
+				eligible.reportPath === source.reportPath &&
+				eligible.reportCanonicalSha256 === source.reportCanonicalSha256
+			);
+		});
+	const eligibleLevels = [
+		...new Set(schedulerEvidence.eligibleRuns.map((run) => run.effectiveConcurrency))
+	].sort((left, right) => left - right);
+	const matchesEligibleSchedulerLevels =
+		parsed.success &&
+		JSON.stringify(parsed.data.sourceEffectiveConcurrencyLevels) === JSON.stringify(eligibleLevels);
+	let endpointBound = false;
+	if (parsed.success) {
+		const endpoint = parsed.data.scaleEndpointSource;
+		endpointBound =
+			endpoint.kind === 'completed-scale'
+				? schedulerEvidence.eligibleRuns.some(
+						(run) =>
+							run.stage === 'scale' &&
+							run.runId === endpoint.runId &&
+							run.reportCanonicalSha256 === endpoint.reportCanonicalSha256
+					)
+				: schedulerEvidence.blockedScalePreflights.some(
+						(preflight) =>
+							preflight.runId === endpoint.runId &&
+							preflight.preflightPath === endpoint.preflightPath &&
+							preflight.preflightCanonicalSha256 === endpoint.preflightCanonicalSha256
+					);
+	}
 	return {
 		artifactPresent,
-		finalArtifactValid: parsed.success,
+		finalArtifactValid: parsed.success && endpointBound,
 		sourceEffectiveConcurrencyLevels: parsed.success
 			? parsed.data.sourceEffectiveConcurrencyLevels
-			: []
+			: [],
+		sourceBindingsValid,
+		matchesEligibleSchedulerLevels
 	};
 }
 
@@ -822,15 +1168,23 @@ export async function inspectAffinityPlanCompletionEvidence(
 		({ target, result }) =>
 			['cave-drake', 'tower-basilisk'].includes(target.speciesId) && result.status === 'candidate'
 	);
+	const schedulerEvidence = await inspectSchedulerEvidence(workspaceRoot);
+	const legacyEffectiveLevels = [
+		...new Set(
+			scan.evaluation.concurrencyStages
+				.filter(legacyConcurrencyStageEligible)
+				.map((stage) => stage.effectiveParallelJobs)
+		)
+	].sort((left, right) => left - right);
+	const schedulerEffectiveLevels = [
+		...new Set(schedulerEvidence.eligibleRuns.map((run) => run.effectiveConcurrency))
+	].sort((left, right) => left - right);
 	const effectiveLevels = [
-		...new Set(scan.evaluation.concurrencyStages.map((stage) => stage.effectiveParallelJobs))
+		...new Set([...legacyEffectiveLevels, ...schedulerEffectiveLevels])
 	].sort((left, right) => left - right);
 	const scaleEndpointEvidenced =
-		effectiveLevels.includes(16) ||
-		(scan.evaluation.recommendedSafeConcurrency !== null &&
-			scan.evaluation.failureClassifications.some(
-				(failure) => failure.layer === 'scheduler' && failure.resolution !== null
-			));
+		schedulerEvidence.eligibleRuns.some((run) => run.stage === 'scale') ||
+		schedulerEvidence.blockedScalePreflights.length > 0;
 
 	const presentForgeFiles = (
 		await Promise.all(
@@ -855,7 +1209,7 @@ export async function inspectAffinityPlanCompletionEvidence(
 		blindCells.filter((cell) => cell.status === 'candidate').length === 21;
 
 	const acceptedLaterPackRules = await optionalAcceptedRules(workspaceRoot);
-	const scaleRecommendation = await optionalScaleRecommendation(workspaceRoot);
+	const scaleRecommendation = await optionalScaleRecommendation(workspaceRoot, schedulerEvidence);
 
 	return {
 		workspaceValid,
@@ -885,6 +1239,9 @@ export async function inspectAffinityPlanCompletionEvidence(
 		},
 		concurrencyLadder: {
 			effectiveLevels,
+			legacyEffectiveLevels,
+			schedulerEffectiveLevels,
+			eligibleSchedulerRuns: schedulerEvidence.eligibleRuns,
 			requiredLevels: REQUIRED_CONCURRENCY_LEVELS,
 			recommendedSafeConcurrency: scan.evaluation.recommendedSafeConcurrency,
 			scaleEndpointEvidenced

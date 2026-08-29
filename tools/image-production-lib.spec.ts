@@ -165,6 +165,7 @@ describe('affinity workflow export tooling', () => {
 			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v2.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/wave-plans/pilot-current-task-capacity-v1.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/review/wave-plans/exact-concurrency-final-and-breadth-v1.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/wave-runs/pilot-current-task-capacity-v1/preflight.json`
 		]) {
 			const destination = path.join(root, relativePath);
@@ -323,6 +324,7 @@ describe('affinity workflow export tooling', () => {
 			images: referencedCandidateTargets.length + 1,
 			catalogEntries: 1,
 			capacityPreflight: true,
+			concurrencyAllocation: true,
 			evaluationStatus: 'incomplete'
 		});
 

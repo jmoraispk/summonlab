@@ -33,6 +33,7 @@ import {
 	summarizeUnresolvedDesignRisks
 } from './prepare-final-controlled-rerun.js';
 import {
+	AffinityWaveAllocationSpecSchema,
 	AffinityWavePlanSchema,
 	AffinityWavePreflightSchema,
 	nextDispatchDecision
@@ -235,6 +236,7 @@ export interface AffinityWorkflowValidationSummary {
 	readonly dryRunEvidence: boolean;
 	readonly finalControlledRerunPlan: boolean;
 	readonly capacityPreflight: boolean;
+	readonly concurrencyAllocation: boolean;
 	readonly evaluationStatus: 'incomplete' | 'passed' | 'failed';
 }
 
@@ -292,6 +294,7 @@ export async function validateAffinityWorkflowWorkspace(
 	}
 	let finalControlledRerunPlan = false;
 	let capacityPreflight = false;
+	let concurrencyAllocation = false;
 	if (targets.length === 60) {
 		const plan = FinalControlledRerunPlanSchema.parse(
 			await readJson(path.join(experimentRoot, 'review/final-controlled-rerun-plan.json'))
@@ -395,6 +398,21 @@ export async function validateAffinityWorkflowWorkspace(
 			'capacity preflight artifact'
 		);
 		capacityPreflight = true;
+
+		const allocation = AffinityWaveAllocationSpecSchema.parse(
+			await readJson(
+				path.join(experimentRoot, 'review/wave-plans/exact-concurrency-final-and-breadth-v1.json')
+			)
+		);
+		if (
+			allocation.allocationId !== 'exact-concurrency-final-and-breadth-v1' ||
+			allocation.status !== 'gated' ||
+			allocation.executable !== false ||
+			allocation.futureSentinelCount !== 14
+		) {
+			throw new Error('Exact-concurrency allocation must remain gated and non-executable.');
+		}
+		concurrencyAllocation = true;
 	}
 	const references = new Map<string, string>();
 	for (const target of targets) {
@@ -611,6 +629,7 @@ export async function validateAffinityWorkflowWorkspace(
 		dryRunEvidence,
 		finalControlledRerunPlan,
 		capacityPreflight,
+		concurrencyAllocation,
 		evaluationStatus: evaluation.status
 	};
 }

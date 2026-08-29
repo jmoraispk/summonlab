@@ -1,0 +1,718 @@
+{
+	"schemaVersion": "affinity-wave-allocation-v1",
+	"allocationId": "exact-concurrency-final-and-breadth-v1",
+	"experimentId": "affinity-workflow-v1",
+	"status": "gated",
+	"executable": false,
+	"purpose": "Reserve collision-free coordinates for exact 2/4/6/8/12/16 evidence without authorizing manifests, preflights, dispatch, image generation, or human-gate bypass.",
+	"futureSentinelCount": 14,
+	"gates": [
+		{
+			"gateId": "final-controlled-activation",
+			"status": "blocked",
+			"description": "Informative v1 blind review and every blocking design risk must be resolved before final-controlled manifests are activated.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/review/blind-review.json",
+				"assets/enemies/experiments/affinity-workflow-v1/review/final-controlled-rerun-plan.json"
+			]
+		},
+		{
+			"gateId": "final-controlled-canary-pass",
+			"status": "pending",
+			"description": "The exact two-worker final-controlled canary must complete with eligible scheduler evidence and pass its quality review.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/wave-runs/final-controlled-canary-v1/report.json"
+			]
+		},
+		{
+			"gateId": "final-controlled-pilot-pass",
+			"status": "pending",
+			"description": "The exact four-worker Death Knight pilot must complete with eligible scheduler evidence and pass its promotion review.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/wave-runs/final-controlled-pilot-v1/report.json"
+			]
+		},
+		{
+			"gateId": "final-controlled-human-pass",
+			"status": "pending",
+			"description": "All 24 final-controlled outputs must pass the hash-bound blind human gate before breadth activation.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/review/final-controlled-rerun-plan.json",
+				"assets/enemies/experiments/affinity-workflow-v1/review/blind-review.json"
+			]
+		},
+		{
+			"gateId": "breadth-canary-pass",
+			"status": "pending",
+			"description": "The separate Goblin Normal and Tunnel Boar Fire breadth canaries must pass before the exact breadth wave.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json",
+				"assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-fire-v1.json"
+			]
+		},
+		{
+			"gateId": "breadth-eight-pass",
+			"status": "pending",
+			"description": "The exact eight-worker breadth report must be eligible and its visual/retry promotion review must pass.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/wave-runs/breadth-exact-eight-v1/report.json"
+			]
+		},
+		{
+			"gateId": "load-twelve-pass",
+			"status": "pending",
+			"description": "The exact twelve-worker load report must show stable completion without a throttle cascade.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/wave-runs/load-exact-twelve-v1/report.json"
+			]
+		},
+		{
+			"gateId": "scale-capacity-preflight",
+			"status": "pending",
+			"description": "The running task must advertise at least seventeen total slots so sixteen workers can run with the orchestrator reserved.",
+			"evidencePaths": [
+				"assets/enemies/experiments/affinity-workflow-v1/wave-runs/scale-exact-sixteen-v1/preflight.json"
+			]
+		}
+	],
+	"stages": [
+		{
+			"stage": "canary",
+			"requestedConcurrency": 2,
+			"executable": false,
+			"prerequisiteGateIds": [
+				"final-controlled-activation"
+			],
+			"jobs": [
+				{
+					"key": "final-death-knight-normal-v4",
+					"speciesId": "death-knight",
+					"affinity": "normal",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/death-knight/normal-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/death-knight/normal-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/death-knight/normal-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/death-knight-normal-v4.json"
+				},
+				{
+					"key": "final-death-knight-fire-v4",
+					"speciesId": "death-knight",
+					"affinity": "fire",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/death-knight/fire-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/death-knight/fire-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/death-knight/fire-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/death-knight-fire-v4.json"
+				}
+			]
+		},
+		{
+			"stage": "pilot",
+			"requestedConcurrency": 4,
+			"executable": false,
+			"prerequisiteGateIds": [
+				"final-controlled-canary-pass"
+			],
+			"jobs": [
+				{
+					"key": "final-death-knight-wood-v4",
+					"speciesId": "death-knight",
+					"affinity": "wood",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/death-knight/wood-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/death-knight/wood-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/death-knight/wood-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/death-knight-wood-v4.json"
+				},
+				{
+					"key": "final-death-knight-metal-v4",
+					"speciesId": "death-knight",
+					"affinity": "metal",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/death-knight/metal-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/death-knight/metal-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/death-knight/metal-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/death-knight-metal-v4.json"
+				},
+				{
+					"key": "final-death-knight-water-v4",
+					"speciesId": "death-knight",
+					"affinity": "water",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/death-knight/water-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/death-knight/water-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/death-knight/water-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/death-knight-water-v4.json"
+				},
+				{
+					"key": "final-death-knight-wind-v4",
+					"speciesId": "death-knight",
+					"affinity": "wind",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/death-knight/wind-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/death-knight/wind-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/death-knight/wind-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/death-knight-wind-v4.json"
+				}
+			]
+		},
+		{
+			"stage": "controlled",
+			"requestedConcurrency": 6,
+			"executable": false,
+			"prerequisiteGateIds": [
+				"final-controlled-pilot-pass"
+			],
+			"jobs": [
+				{
+					"key": "final-elemental-normal-v4",
+					"speciesId": "elemental",
+					"affinity": "normal",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/elemental/normal-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/elemental/normal-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/elemental/normal-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/elemental-normal-v4.json"
+				},
+				{
+					"key": "final-elemental-wood-v4",
+					"speciesId": "elemental",
+					"affinity": "wood",
+					"version": "v4",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/elemental/wood-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/elemental/wood-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/elemental/wood-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/elemental-wood-v4.json"
+				},
+				{
+					"key": "final-grey-wolf-fire-v3",
+					"speciesId": "grey-wolf",
+					"affinity": "fire",
+					"version": "v3",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/grey-wolf/fire-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/grey-wolf/fire-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/grey-wolf/fire-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/grey-wolf-fire-v3.json"
+				},
+				{
+					"key": "final-grey-wolf-metal-v3",
+					"speciesId": "grey-wolf",
+					"affinity": "metal",
+					"version": "v3",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/grey-wolf/metal-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/grey-wolf/metal-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/grey-wolf/metal-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/grey-wolf-metal-v3.json"
+				},
+				{
+					"key": "final-cave-bear-water-v3",
+					"speciesId": "cave-bear",
+					"affinity": "water",
+					"version": "v3",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/cave-bear/water-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/cave-bear/water-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/cave-bear/water-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/cave-bear-water-v3.json"
+				},
+				{
+					"key": "final-cave-bear-wind-v3",
+					"speciesId": "cave-bear",
+					"affinity": "wind",
+					"version": "v3",
+					"cohort": "controlled",
+					"manifestState": "gated-final-controlled",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/cave-bear/wind-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/cave-bear/wind-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/cave-bear/wind-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/cave-bear-wind-v3.json"
+				}
+			]
+		},
+		{
+			"stage": "breadth",
+			"requestedConcurrency": 8,
+			"executable": false,
+			"prerequisiteGateIds": [
+				"final-controlled-human-pass",
+				"breadth-canary-pass"
+			],
+			"jobs": [
+				{
+					"key": "breadth-goblin-wood-v1",
+					"speciesId": "goblin",
+					"affinity": "wood",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/wood.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/wood.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wood-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-wood-v1.json"
+				},
+				{
+					"key": "breadth-goblin-fire-v1",
+					"speciesId": "goblin",
+					"affinity": "fire",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/fire.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/fire.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/fire-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-fire-v1.json"
+				},
+				{
+					"key": "breadth-tunnel-boar-normal-v1",
+					"speciesId": "tunnel-boar",
+					"affinity": "normal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/normal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/normal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-normal-v1.json"
+				},
+				{
+					"key": "breadth-tunnel-boar-wood-v1",
+					"speciesId": "tunnel-boar",
+					"affinity": "wood",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/wood.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/wood.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-wood-v1.json"
+				},
+				{
+					"key": "breadth-cave-drake-fire-v1",
+					"speciesId": "cave-drake",
+					"affinity": "fire",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/fire.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/fire.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/fire-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-fire-v1.json"
+				},
+				{
+					"key": "breadth-cave-drake-metal-v1",
+					"speciesId": "cave-drake",
+					"affinity": "metal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/metal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/metal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/metal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-metal-v1.json"
+				},
+				{
+					"key": "breadth-tower-basilisk-water-v1",
+					"speciesId": "tower-basilisk",
+					"affinity": "water",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/water.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/water.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/water-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-water-v1.json"
+				},
+				{
+					"key": "breadth-tower-basilisk-wind-v1",
+					"speciesId": "tower-basilisk",
+					"affinity": "wind",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/wind.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/wind.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wind-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-wind-v1.json"
+				}
+			]
+		},
+		{
+			"stage": "load",
+			"requestedConcurrency": 12,
+			"executable": false,
+			"prerequisiteGateIds": [
+				"breadth-eight-pass"
+			],
+			"jobs": [
+				{
+					"key": "breadth-goblin-wind-v1",
+					"speciesId": "goblin",
+					"affinity": "wind",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/wind.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/wind.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wind-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-wind-v1.json"
+				},
+				{
+					"key": "breadth-tunnel-boar-water-v1",
+					"speciesId": "tunnel-boar",
+					"affinity": "water",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/water.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/water.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/water-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-water-v1.json"
+				},
+				{
+					"key": "breadth-cave-drake-water-v1",
+					"speciesId": "cave-drake",
+					"affinity": "water",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/water.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/water.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/water-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-water-v1.json"
+				},
+				{
+					"key": "breadth-cave-drake-wind-v1",
+					"speciesId": "cave-drake",
+					"affinity": "wind",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/wind.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/wind.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wind-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-wind-v1.json"
+				},
+				{
+					"key": "breadth-tower-basilisk-normal-v1",
+					"speciesId": "tower-basilisk",
+					"affinity": "normal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/normal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/normal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/normal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-normal-v1.json"
+				},
+				{
+					"key": "breadth-tower-basilisk-wood-v1",
+					"speciesId": "tower-basilisk",
+					"affinity": "wood",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/wood.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/wood.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wood-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-wood-v1.json"
+				},
+				{
+					"key": "sentinel-death-knight-fire-v5",
+					"speciesId": "death-knight",
+					"affinity": "fire",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/death-knight/fire-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/death-knight/fire-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/death-knight/fire-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/death-knight-fire-v5.json"
+				},
+				{
+					"key": "sentinel-elemental-normal-v5",
+					"speciesId": "elemental",
+					"affinity": "normal",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/elemental/normal-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/elemental/normal-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/elemental/normal-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/elemental-normal-v5.json"
+				},
+				{
+					"key": "sentinel-elemental-metal-v5",
+					"speciesId": "elemental",
+					"affinity": "metal",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/elemental/metal-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/elemental/metal-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/elemental/metal-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/elemental-metal-v5.json"
+				},
+				{
+					"key": "sentinel-grey-wolf-fire-v4",
+					"speciesId": "grey-wolf",
+					"affinity": "fire",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/grey-wolf/fire-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/grey-wolf/fire-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/grey-wolf/fire-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/grey-wolf-fire-v4.json"
+				},
+				{
+					"key": "sentinel-cave-bear-wood-v4",
+					"speciesId": "cave-bear",
+					"affinity": "wood",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/cave-bear/wood-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/cave-bear/wood-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/cave-bear/wood-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/cave-bear-wood-v4.json"
+				},
+				{
+					"key": "sentinel-cave-bear-metal-v4",
+					"speciesId": "cave-bear",
+					"affinity": "metal",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/cave-bear/metal-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/cave-bear/metal-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/cave-bear/metal-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/cave-bear-metal-v4.json"
+				}
+			]
+		},
+		{
+			"stage": "scale",
+			"requestedConcurrency": 16,
+			"executable": false,
+			"prerequisiteGateIds": [
+				"load-twelve-pass",
+				"scale-capacity-preflight"
+			],
+			"jobs": [
+				{
+					"key": "breadth-goblin-metal-v1",
+					"speciesId": "goblin",
+					"affinity": "metal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/metal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/metal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/metal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-metal-v1.json"
+				},
+				{
+					"key": "breadth-goblin-water-v1",
+					"speciesId": "goblin",
+					"affinity": "water",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/water.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/water.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/water-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-water-v1.json"
+				},
+				{
+					"key": "breadth-tunnel-boar-wind-v1",
+					"speciesId": "tunnel-boar",
+					"affinity": "wind",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/wind.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/wind.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-wind-v1.json"
+				},
+				{
+					"key": "breadth-tunnel-boar-metal-v1",
+					"speciesId": "tunnel-boar",
+					"affinity": "metal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tunnel-boar/metal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tunnel-boar/metal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/metal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-metal-v1.json"
+				},
+				{
+					"key": "breadth-cave-drake-normal-v1",
+					"speciesId": "cave-drake",
+					"affinity": "normal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/normal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/normal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/normal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-normal-v1.json"
+				},
+				{
+					"key": "breadth-cave-drake-wood-v1",
+					"speciesId": "cave-drake",
+					"affinity": "wood",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-drake/wood.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-drake/wood.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wood-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-wood-v1.json"
+				},
+				{
+					"key": "breadth-tower-basilisk-fire-v1",
+					"speciesId": "tower-basilisk",
+					"affinity": "fire",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/fire.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/fire.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/fire-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-fire-v1.json"
+				},
+				{
+					"key": "breadth-tower-basilisk-metal-v1",
+					"speciesId": "tower-basilisk",
+					"affinity": "metal",
+					"version": "v1",
+					"cohort": "breadth",
+					"manifestState": "live-unexecuted-breadth",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/tower-basilisk/metal.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/tower-basilisk/metal.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/metal-v1.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-metal-v1.json"
+				},
+				{
+					"key": "sentinel-death-knight-normal-v5",
+					"speciesId": "death-knight",
+					"affinity": "normal",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/death-knight/normal-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/death-knight/normal-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/death-knight/normal-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/death-knight-normal-v5.json"
+				},
+				{
+					"key": "sentinel-death-knight-wood-v5",
+					"speciesId": "death-knight",
+					"affinity": "wood",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/death-knight/wood-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/death-knight/wood-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/death-knight/wood-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/death-knight-wood-v5.json"
+				},
+				{
+					"key": "sentinel-elemental-fire-v5",
+					"speciesId": "elemental",
+					"affinity": "fire",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/elemental/fire-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/elemental/fire-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/elemental/fire-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/elemental-fire-v5.json"
+				},
+				{
+					"key": "sentinel-elemental-water-v5",
+					"speciesId": "elemental",
+					"affinity": "water",
+					"version": "v5",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/elemental/water-v5.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/elemental/water-v5.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/elemental/water-v5.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/elemental-water-v5.json"
+				},
+				{
+					"key": "sentinel-grey-wolf-normal-v4",
+					"speciesId": "grey-wolf",
+					"affinity": "normal",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/grey-wolf/normal-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/grey-wolf/normal-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/grey-wolf/normal-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/grey-wolf-normal-v4.json"
+				},
+				{
+					"key": "sentinel-grey-wolf-wood-v4",
+					"speciesId": "grey-wolf",
+					"affinity": "wood",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/grey-wolf/wood-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/grey-wolf/wood-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/grey-wolf/wood-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/grey-wolf-wood-v4.json"
+				},
+				{
+					"key": "sentinel-cave-bear-fire-v4",
+					"speciesId": "cave-bear",
+					"affinity": "fire",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/cave-bear/fire-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/cave-bear/fire-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/cave-bear/fire-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/cave-bear-fire-v4.json"
+				},
+				{
+					"key": "sentinel-cave-bear-wind-v4",
+					"speciesId": "cave-bear",
+					"affinity": "wind",
+					"version": "v4",
+					"cohort": "regression",
+					"manifestState": "future-sentinel",
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/cave-bear/wind-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/cave-bear/wind-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/cave-bear/wind-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/cave-bear-wind-v4.json"
+				}
+			]
+		}
+	]
+}

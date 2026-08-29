@@ -9,6 +9,8 @@ import {
 	buildAffinityPlanCompletionReport,
 	buildFinalControlledGateEvidence,
 	findFinalControlledCrossCohortIdConflicts,
+	ScaleRecommendationSchema,
+	validateSchedulerRunEligibility,
 	type AffinityPlanCompletionEvidence
 } from './check-affinity-plan-completion.js';
 import type { ValidatedImageProductionExecution } from './sync-affinity-review.js';
@@ -95,6 +97,9 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 		},
 		concurrencyLadder: {
 			effectiveLevels: [2, 4, 6, 8, 12],
+			legacyEffectiveLevels: [2],
+			schedulerEffectiveLevels: [2, 4, 6, 8, 12],
+			eligibleSchedulerRuns: [],
 			requiredLevels: [2, 4, 6, 8, 12],
 			recommendedSafeConcurrency: 12,
 			scaleEndpointEvidenced: true
@@ -113,7 +118,9 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 		scaleRecommendation: {
 			artifactPresent: true,
 			finalArtifactValid: true,
-			sourceEffectiveConcurrencyLevels: [2, 4, 6, 8, 12]
+			sourceEffectiveConcurrencyLevels: [2, 4, 6, 8, 12],
+			sourceBindingsValid: true,
+			matchesEligibleSchedulerLevels: true
 		}
 	};
 }
@@ -247,6 +254,155 @@ describe('affinity image-production plan completion', () => {
 		expect(report.blockerSummary.capacity).toContain('concurrencyLadder');
 	});
 
+	it('accepts only exact, completed, gate-bound scheduler reports without workflow failures', () => {
+		const preflight = {
+			schemaVersion: 'affinity-wave-preflight-v1',
+			runId: 'canary-eligible',
+			experimentId: 'affinity-workflow-v1',
+			stage: 'canary',
+			createdAt: '2026-08-29T20:00:00.000Z',
+			status: 'ready',
+			requestedConcurrency: 2,
+			availableAgentSlots: 3,
+			reservedOrchestratorSlots: 1,
+			admittedWorkerCapacity: 2,
+			exactConcurrencyReady: true,
+			runDirectory: 'assets/enemies/experiments/affinity-workflow-v1/wave-runs/canary-eligible',
+			stopRules: {
+				capacityFailureLimit: 3,
+				stopOnOutputCollision: true,
+				retryCapacityFailuresInWave: false
+			},
+			dispatchGateSatisfied: true,
+			dispatchGateEvidence: {
+				status: 'satisfied',
+				artifactPath: 'assets/enemies/experiments/affinity-workflow-v1/review/gates/canary.json',
+				expectedCanonicalSha256: 'a'.repeat(64),
+				observedCanonicalSha256: 'a'.repeat(64),
+				gate: {
+					schemaVersion: 'affinity-wave-dispatch-gate-v1',
+					gateId: 'canary-gate',
+					experimentId: 'affinity-workflow-v1',
+					status: 'authorized',
+					authorizedStage: 'canary',
+					qualityGateSatisfied: true,
+					humanGateSatisfied: true,
+					prerequisiteRunIds: [],
+					evidencePaths: ['assets/enemies/experiments/affinity-workflow-v1/review/evaluation.json']
+				}
+			},
+			collisionPaths: [],
+			jobs: [
+				{
+					targetId: 'eligible-target',
+					assignmentId: 'eligible-assignment',
+					speciesId: 'death-knight',
+					affinity: 'normal',
+					targetPath: 'assets/enemies/experiments/affinity-workflow-v1/targets/test.json',
+					assignmentPath: 'assets/enemies/experiments/affinity-workflow-v1/assignments/test.json',
+					candidatePath: 'assets/enemies/experiments/affinity-workflow-v1/candidates/test.png',
+					resultPath: 'assets/enemies/experiments/affinity-workflow-v1/results/test.json'
+				},
+				{
+					targetId: 'eligible-target-two',
+					assignmentId: 'eligible-assignment-two',
+					speciesId: 'death-knight',
+					affinity: 'fire',
+					targetPath: 'assets/enemies/experiments/affinity-workflow-v1/targets/test-two.json',
+					assignmentPath:
+						'assets/enemies/experiments/affinity-workflow-v1/assignments/test-two.json',
+					candidatePath: 'assets/enemies/experiments/affinity-workflow-v1/candidates/test-two.png',
+					resultPath: 'assets/enemies/experiments/affinity-workflow-v1/results/test-two.json'
+				}
+			]
+		};
+		const stageMetrics = {
+			stage: 'canary',
+			plannedParallelJobs: 2,
+			effectiveParallelJobs: 2,
+			targetCount: 2,
+			candidateCount: 2,
+			reviseCount: 0,
+			failedCount: 0,
+			throttleCount: 0,
+			timeoutCount: 0,
+			retryCount: 0,
+			generationMedianMs: 10,
+			generationP90Ms: null,
+			generationP95Ms: null,
+			slowestCompletionMs: 20,
+			waveWallTimeMs: 20,
+			summedJobTimeMs: 30,
+			effectiveSpeedup: 1.5,
+			parallelEfficiency: 0.75,
+			queueDelayMs: null,
+			visualCandidateRate: 1,
+			provenanceCompletenessRate: 1,
+			missingResultCount: 0,
+			duplicateIdCount: 0,
+			pathConflictCount: 0,
+			integrationErrorCount: 0
+		};
+		const report = {
+			schemaVersion: 'affinity-wave-report-v1',
+			runId: 'canary-eligible',
+			experimentId: 'affinity-workflow-v1',
+			stage: 'canary',
+			generatedAt: '2026-08-29T20:00:03.000Z',
+			status: 'completed',
+			requestedConcurrency: 2,
+			admittedWorkerCapacity: 2,
+			effectiveConcurrency: 2,
+			workerCount: 2,
+			startedAt: '2026-08-29T20:00:01.000Z',
+			completedAt: '2026-08-29T20:00:02.000Z',
+			waveWallTimeMs: 1_000,
+			targetCount: 2,
+			dispatchedCount: 2,
+			terminalCount: 2,
+			unlaunchedCount: 0,
+			candidateCount: 2,
+			reviseCount: 0,
+			failedCount: 0,
+			capacityFailureCount: 0,
+			providerThrottleCount: 0,
+			timeoutCount: 0,
+			malformedOutputCount: 0,
+			retryCount: 0,
+			retriedTargetCount: 0,
+			retryRate: 0,
+			generationMedianMs: 10,
+			generationP90Ms: null,
+			generationP95Ms: null,
+			slowestCompletionMs: 20,
+			summedJobTimeMs: 30,
+			effectiveSpeedup: 1.5,
+			parallelEfficiency: 0.75,
+			provenanceCompletenessRate: 1,
+			stopRule: { capacityFailureLimit: 3, triggered: false, triggeredAt: null },
+			stageMetrics
+		};
+
+		expect(validateSchedulerRunEligibility(preflight, report)).toEqual({
+			eligible: true,
+			reasons: []
+		});
+		expect(
+			validateSchedulerRunEligibility(preflight, { ...report, effectiveConcurrency: 1 })
+		).toMatchObject({
+			eligible: false,
+			reasons: expect.arrayContaining(['requested-effective-concurrency-mismatch'])
+		});
+		expect(
+			validateSchedulerRunEligibility(preflight, {
+				...report,
+				failedCount: 1,
+				candidateCount: 1,
+				stageMetrics: { ...stageMetrics, failedCount: 1, candidateCount: 1 }
+			})
+		).toMatchObject({ eligible: false });
+	});
+
 	it('rejects provisional rules and recommendations without accepted final artifacts', () => {
 		const evidence = completeEvidence();
 		const report = buildAffinityPlanCompletionReport({
@@ -259,13 +415,29 @@ describe('affinity image-production plan completion', () => {
 			scaleRecommendation: {
 				artifactPresent: true,
 				finalArtifactValid: false,
-				sourceEffectiveConcurrencyLevels: [2, 4, 6, 8, 12]
+				sourceEffectiveConcurrencyLevels: [2, 4, 6, 8, 12],
+				sourceBindingsValid: false,
+				matchesEligibleSchedulerLevels: false
 			}
 		});
 
 		expect(report.sections.acceptedLaterPackRules.complete).toBe(false);
 		expect(report.sections.scaleRecommendation.complete).toBe(false);
 		expect(report.status).toBe('incomplete');
+	});
+
+	it('rejects claim-only scale recommendations without hash-bound scheduler sources', () => {
+		expect(
+			ScaleRecommendationSchema.safeParse({
+				schemaVersion: 'affinity-scale-recommendation-v1',
+				experimentId: 'affinity-workflow-v1',
+				status: 'final',
+				recommendedSafeConcurrency: 12,
+				sourceEffectiveConcurrencyLevels: [2, 4, 6, 8, 12],
+				productionStrategy: 'Claimed without run evidence.',
+				fallbackBehavior: 'Claimed fallback.'
+			}).success
+		).toBe(false);
 	});
 
 	it('keeps invalid workspace evidence from producing a complete status', () => {

@@ -30,6 +30,18 @@ Preflight, event, and report files use exclusive creation. Target candidate and 
 also checked for collisions before dispatch. Use a new run ID and versioned target outputs for
 every measurement; never reuse completed targets.
 
+The reserved exact-concurrency allocation is
+`assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json`.
+It is a strictly validated planning artifact with `executable: false`; it cannot be passed to
+`preflight`. It reserves unique 2/4/6/8/12/16 coordinates, records every prerequisite gate, and
+includes the 14 additional v4/v5 sentinels needed after the two separate breadth canaries consume
+two base targets. Validate it without activating manifests or making image calls:
+
+```bash
+pnpm exec tsx tools/affinity-wave-scheduler.ts validate-allocation \
+  --allocation assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json
+```
+
 ## Wave plan
 
 Store the plan outside its future run directory. A minimal two-worker canary plan is:
@@ -49,6 +61,10 @@ Store the plan outside its future run directory. A minimal two-worker canary pla
     "stopOnOutputCollision": true,
     "retryCapacityFailuresInWave": false
   },
+  "dispatchGate": {
+    "artifactPath": "assets/enemies/experiments/affinity-workflow-v1/review/gates/<gate>.json",
+    "canonicalSha256": "<canonical JSON SHA-256>"
+  },
   "jobs": [
     {
       "targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/<species>/<affinity>.json",
@@ -64,6 +80,19 @@ Store the plan outside its future run directory. A minimal two-worker canary pla
 
 The stage fixes the requested worker count: Canary 2, Pilot 4, Controlled 6, Breadth 8, Load 12,
 and Scale 16. A plan must contain at least one collision-free target per requested worker.
+
+Every executable wave plan must bind a dispatch-gate artifact by canonical JSON hash. The gate
+authorizes exactly one stage, records whether its quality and human prerequisites passed, names
+preceding eligible scheduler runs, and cites evidence paths. Legacy plans without that pointer may
+still reproduce truthful `blocked-capacity` evidence, but they can never become `ready`; an
+otherwise runnable legacy plan becomes `blocked-gate`. The event journal also rejects every event
+for a non-ready preflight, so bypassing `next` cannot bypass the gate.
+
+Generic early Canary, Pilot, or Controlled work may explicitly record that no human gate was yet
+required. A target under `targets/final-controlled/` is different: preflight recognizes that owned
+namespace and requires `humanGateSatisfied: true` even at Canary. Breadth, Load, and Scale gates
+also require it unconditionally. This prevents the exact Death Knight canary from bypassing the
+informative-v1 activation decision merely because Canary normally precedes later human review.
 
 ### Representative 16-job wave
 
@@ -118,6 +147,10 @@ available capacity. It always records:
 `blocked-capacity` and `blocked-output-collision` are evidence, not permission to degrade or
 overwrite. Start a suitably provisioned task or author new versioned targets, then create a new run
 instead.
+
+`blocked-gate` means capacity and ownership checks passed but the required hash-bound promotion
+artifact was absent, invalid, stale, or authorized a different stage. Resolve the prerequisite and
+create a new gate, plan, and run ID; do not mutate the blocked evidence.
 
 ## Central dispatch loop
 
@@ -188,3 +221,19 @@ unless a future provider exposes an independently bindable backend admission tim
 This report is intentionally not merged into `review/evaluation.json` automatically. The
 orchestrator and human reviewer must first determine whether the wave is valid, visually
 comparable, and eligible for the next ladder stage.
+
+The plan completion checker independently scans scheduler runs before accepting concurrency
+evidence. A run is eligible only when its preflight was exact and gate-authorized, its report is
+complete with requested concurrency equal to measured effective concurrency, every job was
+dispatched and reached a terminal outcome, provenance is complete, and capacity, provider,
+timeout, malformed-output, duplicate-ID, path-conflict, missing-result, and integration counts are
+zero. Gate prerequisite run IDs must themselves resolve to eligible earlier runs. Legacy v1
+measurements may preserve independently valid 2- and 3-worker evidence, but 4, 6, 8, and 12 count
+only from eligible scheduler reports.
+
+A final scale recommendation uses schema `affinity-scale-recommendation-v2`. It binds every source
+run to both its preflight and report by run ID, repository path, and canonical SHA-256; its declared
+level set must exactly equal the eligible scheduler level set. Its Scale endpoint must likewise bind
+either an eligible completed 16-worker report or a gate-authorized, collision-free 16-worker
+capacity-blocked preflight. Prose or a resolved historical scheduler note cannot substitute for
+these artifacts.

@@ -6,22 +6,139 @@ import {
 	AFFINITIES,
 	SPECIES,
 	buildBlindOrder,
+	buildControlledRoundDefinition,
+	buildFinalControlledRoundDefinition,
 	findVerifiedMediaByOpaqueId,
 	isPathWithin,
 	loadAffinityReviewData,
 	makeOpaqueId,
+	parseControlledRoundId,
 	readPngDimensions,
-	summarizeAffinityReviews
+	summarizeAffinityReviews,
+	targetBelongsToReviewSelection
 } from './affinity-review';
+
+const CONTROLLED_SPECIES = ['death-knight', 'elemental', 'grey-wolf', 'cave-bear'] as const;
+
+function controlledTargets(suffix = '') {
+	return CONTROLLED_SPECIES.flatMap((speciesId) =>
+		AFFINITIES.map((affinity) => ({
+			targetId: `affinity-workflow-v1-${speciesId}-${affinity}${suffix}`,
+			cohort: 'controlled' as const,
+			speciesId,
+			affinity
+		}))
+	);
+}
 
 describe('affinity review helpers', () => {
 	it('uses stable opaque media identifiers without semantic path fragments', () => {
-		const id = makeOpaqueId('ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56');
+		const hash = 'ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56';
+		const targetId = 'affinity-workflow-v1-death-knight-fire';
+		const id = makeOpaqueId(targetId, hash);
 		expect(id).toMatch(/^[a-f0-9]{24}$/);
 		expect(id).not.toContain('death');
-		expect(makeOpaqueId('ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56')).toBe(
-			id
+		expect(makeOpaqueId(targetId, hash)).toBe(id);
+		expect(makeOpaqueId('affinity-workflow-v1-elemental-fire', hash)).not.toBe(id);
+	});
+
+	it('rejects unknown controlled rounds', () => {
+		expect(parseControlledRoundId(null)).toBe('baseline-v1');
+		expect(parseControlledRoundId('final-controlled-v1')).toBe('final-controlled-v1');
+		expect(() => parseControlledRoundId('latest')).toThrow('Unknown controlled round');
+	});
+
+	it('rejects duplicate controlled coordinates', () => {
+		const targets = controlledTargets();
+		targets[23] = {
+			...targets[23]!,
+			targetId: 'affinity-workflow-v1-duplicate-coordinate',
+			speciesId: 'death-knight',
+			affinity: 'normal'
+		};
+		expect(() => buildControlledRoundDefinition('baseline-v1', 'Baseline', targets)).toThrow(
+			'Duplicate controlled coordinate'
 		);
+	});
+
+	it('isolates controlled targets by exact round membership', () => {
+		const baseline = buildControlledRoundDefinition('baseline-v1', 'Baseline', controlledTargets());
+		const finalRound = buildControlledRoundDefinition(
+			'final-controlled-v1',
+			'Final',
+			controlledTargets('-v4')
+		);
+		const baselineTarget = controlledTargets()[0]!;
+		const finalTarget = controlledTargets('-v4')[0]!;
+		expect(targetBelongsToReviewSelection(baselineTarget, baseline, 'controlled')).toBe(true);
+		expect(targetBelongsToReviewSelection(finalTarget, baseline, 'controlled')).toBe(false);
+		expect(targetBelongsToReviewSelection(finalTarget, finalRound, 'controlled')).toBe(true);
+		expect(targetBelongsToReviewSelection(baselineTarget, finalRound, 'all')).toBe(false);
+		expect(
+			targetBelongsToReviewSelection({ ...finalTarget, cohort: 'breadth' }, baseline, 'all')
+		).toBe(true);
+	});
+
+	it('derives a final round only from all 24 matching plan-owned manifests', () => {
+		const targets = controlledTargets('-v4');
+		const plannedTargets = targets.map((target) => ({
+			key: `${target.speciesId}-${target.affinity}-v4`,
+			speciesId: target.speciesId,
+			affinity: target.affinity,
+			version: 'v4'
+		}));
+		const templates = {
+			target:
+				'assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/{speciesId}/{affinity}-{version}.json',
+			candidate:
+				'assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/{speciesId}/{affinity}-{version}.png',
+			result:
+				'assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/{speciesId}-{affinity}-{version}.json'
+		};
+		const render = (template: string, target: (typeof plannedTargets)[number]) =>
+			template
+				.replace('{speciesId}', target.speciesId)
+				.replace('{affinity}', target.affinity)
+				.replace('{version}', target.version);
+		const plan = {
+			experimentId: 'affinity-workflow-v1',
+			targetCount: 24,
+			targets: plannedTargets,
+			plannedPathTemplates: templates
+		};
+		const manifests = plannedTargets.map((planned) => {
+			const targetId = `affinity-workflow-v1-${planned.key}`;
+			return {
+				path: render(templates.target, planned),
+				value: {
+					schemaVersion: 'image-production-target-v1',
+					experimentId: 'affinity-workflow-v1',
+					targetId,
+					assetId: targetId,
+					cohort: 'controlled',
+					speciesId: planned.speciesId,
+					affinity: planned.affinity,
+					references: [],
+					output: {
+						candidatePath: render(templates.candidate, planned),
+						resultPath: render(templates.result, planned)
+					}
+				}
+			};
+		});
+		const round = buildFinalControlledRoundDefinition(plan, manifests);
+		expect(round.targetIds['death-knight'].normal).toBe(
+			'affinity-workflow-v1-death-knight-normal-v4'
+		);
+		expect(() => buildFinalControlledRoundDefinition(plan, manifests.slice(1))).toThrow(
+			'requires all 24 live target manifests'
+		);
+		expect(() =>
+			buildFinalControlledRoundDefinition(plan, [
+				{ ...manifests[0]!, value: { ...manifests[0]!.value, affinity: 'fire' } },
+				...manifests.slice(1)
+			])
+		).toThrow('does not match its plan');
 	});
 
 	it('shuffles blind coordinates deterministically', () => {
@@ -68,10 +185,10 @@ describe('affinity review helpers', () => {
 			.flatMap((row) => row.cells)
 			.find((cell) => cell.status === 'revise');
 		expect(reviseEvidence?.mediaUrl).toMatch(
-			/^\/forge\/enemies\/affinity-workflow\/media\/[a-f0-9]{24}$/u
+			/^\/forge\/enemies\/affinity-workflow\/media\/[a-f0-9]{24}\?round=baseline-v1&scope=controlled$/u
 		);
 
-		const opaqueId = candidate?.mediaUrl?.split('/').at(-1);
+		const opaqueId = candidate?.mediaUrl?.split('/').at(-1)?.split('?')[0];
 		expect(opaqueId).toMatch(/^[a-f0-9]{24}$/);
 		const binding = await findVerifiedMediaByOpaqueId(opaqueId!);
 		expect(binding).toEqual(
@@ -81,6 +198,16 @@ describe('affinity review helpers', () => {
 				contentHash: expect.stringMatching(/^[a-f0-9]{64}$/)
 			})
 		);
+	});
+
+	it('keeps baseline as the runtime default even when later rounds become available', async () => {
+		const baseline = await loadAffinityReviewData(true, [], 'controlled', 'baseline-v1');
+		expect(baseline.controlledRound).toEqual({ id: 'baseline-v1', label: 'Baseline v1' });
+		expect(baseline.availableControlledRounds).toContainEqual({
+			id: 'baseline-v1',
+			label: 'Baseline v1'
+		});
+		expect(JSON.stringify(baseline.rows)).not.toContain('final-controlled');
 	});
 
 	it('counts only server-derived blind records in blind mode', async () => {

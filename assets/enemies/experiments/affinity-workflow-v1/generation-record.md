@@ -5,6 +5,12 @@ capacity scheduler complete; breadth gate closed; human blind review pending**
 
 Date: **2026-08-29**
 
+## Final-controlled activation readiness
+
+The check-only `report:affinity-final-controlled-activation` gate now records explicit blockers without writing files. Current activation remains unauthorized: the 21 original controlled candidates have no blind-review records and no 16-record human resolution ledger exists. Revise results and risk rationale are evidence inputs only and cannot count as blind acceptance. No staged target, activation receipt, live manifest, candidate, or result was created by this work.
+
+Forge now keeps `baseline-v1` and `final-controlled-v1` as exact, non-overlapping review rounds. The final round stays unavailable until all 24 reserved manifests exist and match the rerun plan; media and submitted reviews must belong to the selected round. The exact-concurrency allocation is likewise checked in as `executable: false`: it reserves collision-free work through 16 workers without claiming that unavailable capacity was measured. Only the prior two- and three-worker evidence is currently eligible.
+
 This record summarizes execution evidence. Exact prompts, attempt timestamps, source identifiers,
 reference hashes, persistence receipts, dimensions, byte counts, findings, and candidate hashes live
 in the per-target JSON files under `results/`. The machine-validated aggregate is

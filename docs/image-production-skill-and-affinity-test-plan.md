@@ -16,6 +16,10 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Added a read-only final-controlled activation-readiness contract and reporter. It binds any future resolution ledger to the canonical plan, current catalog and execution snapshot, all 21 eligible original-v1 blind reviews, the three immutable revise-result hashes, and all 16 plan-owned risks. Blocking corrections must be full manifests under the review-owned staging namespace and must differ canonically from the risky derived target. No resolution ledger or staged/live artifact has been created; the current report is intentionally unauthorized until genuine human blind review and risk resolution exist.
+- 2026-08-29: Isolated Forge review rounds by exact target-ID registries. The baseline remains the default, while the final-controlled round is unavailable until all 24 plan-owned manifests exist and match their reserved coordinates. Review submissions, media access, counts, and gate projections are scoped to the selected round, preventing baseline and final candidates from being mixed.
+- 2026-08-29: Added a checked-in, non-executable allocation for exact 2-, 4-, 6-, 8-, 12-, and 16-worker stages. Every stage owns exactly its requested number of collision-free target, assignment, candidate, and result paths; the 16-worker stage contains two jobs for each of the eight species and evenly distributed affinities. Dispatch still requires hash-bound gate evidence and exact provisioned capacity. Current eligible measured levels remain 2 and 3, so no higher concurrency claim or scale endpoint is recorded.
+
 The plan is now backed by a runnable implementation rather than being a design-only document:
 
 - the reusable, locally installed `summonlab-image-production` skill is versioned under

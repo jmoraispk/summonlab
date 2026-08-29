@@ -10,9 +10,15 @@ import {
 	createAffinityWorkflowReview,
 	listAffinityWorkflowReviews
 } from '@summonlab/database';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 
-import { findVerifiedMediaByOpaqueId, loadAffinityReviewData } from './affinity-review';
+import {
+	ControlledRoundUnavailableError,
+	findVerifiedMediaByOpaqueId,
+	loadAffinityReviewData,
+	parseAffinityReviewScope,
+	parseControlledRoundId
+} from './affinity-review';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -29,7 +35,14 @@ function score(formData: FormData, name: string): number {
 
 export const load = (async ({ url }) => {
 	const blind = url.searchParams.get('mode') === 'blind';
-	const scope = blind && url.searchParams.get('scope') !== 'all' ? 'controlled' : 'all';
+	let scope: ReturnType<typeof parseAffinityReviewScope>;
+	let controlledRound: ReturnType<typeof parseControlledRoundId>;
+	try {
+		scope = blind ? parseAffinityReviewScope(url.searchParams.get('scope')) : 'all';
+		controlledRound = parseControlledRoundId(url.searchParams.get('round'));
+	} catch {
+		error(400, 'Unknown affinity review scope or controlled round.');
+	}
 	const config = getConfig();
 	let reviewPersistenceAvailable = config.devRoutesEnabled;
 	let reviewPersistenceMessage = config.devRoutesEnabled
@@ -49,12 +62,19 @@ export const load = (async ({ url }) => {
 				'Affinity review history is unavailable. Start PostgreSQL with pnpm dev, then reload.';
 		}
 	}
-	return {
-		...(await loadAffinityReviewData(blind, reviews.reviews, scope)),
-		reviewId: randomUUID(),
-		reviewPersistenceAvailable,
-		reviewPersistenceMessage
-	};
+	try {
+		return {
+			...(await loadAffinityReviewData(blind, reviews.reviews, scope, controlledRound)),
+			reviewId: randomUUID(),
+			reviewPersistenceAvailable,
+			reviewPersistenceMessage
+		};
+	} catch (loadError) {
+		if (loadError instanceof ControlledRoundUnavailableError) {
+			error(409, 'The requested controlled round is not fully validated and available.');
+		}
+		throw loadError;
+	}
 }) satisfies PageServerLoad;
 
 export const actions = {
@@ -70,8 +90,29 @@ export const actions = {
 		}
 
 		const formData = await request.formData();
+		let controlledRound: ReturnType<typeof parseControlledRoundId>;
+		let scope: ReturnType<typeof parseAffinityReviewScope>;
+		try {
+			controlledRound = parseControlledRoundId(url.searchParams.get('round'));
+			scope = parseAffinityReviewScope(url.searchParams.get('scope'));
+			if (formString(formData, 'controlledRound') !== controlledRound) {
+				return fail(409, { reviewError: 'The controlled review round changed. Reload first.' });
+			}
+		} catch {
+			return fail(400, { reviewError: 'Unknown affinity review scope or controlled round.' });
+		}
 		const opaqueMediaId = formString(formData, 'opaqueMediaId');
-		const candidate = await findVerifiedMediaByOpaqueId(opaqueMediaId);
+		let candidate;
+		try {
+			candidate = await findVerifiedMediaByOpaqueId(opaqueMediaId, controlledRound, scope);
+		} catch (bindingError) {
+			if (bindingError instanceof ControlledRoundUnavailableError) {
+				return fail(409, {
+					reviewError: 'This controlled round is no longer fully validated. Reload first.'
+				});
+			}
+			throw bindingError;
+		}
 		if (!candidate) {
 			return fail(409, {
 				reviewError: 'This verified candidate changed or is unavailable. Reload before reviewing.'

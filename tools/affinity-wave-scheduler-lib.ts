@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { access, mkdir, open, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -37,6 +38,62 @@ const RepositoryPathSchema = z
 		{ message: 'Repository paths cannot contain empty, current, or parent segments' }
 	);
 
+export function canonicalJsonSha256(value: unknown): string {
+	const canonicalize = (input: unknown): unknown => {
+		if (Array.isArray(input)) return input.map(canonicalize);
+		if (input !== null && typeof input === 'object') {
+			return Object.fromEntries(
+				Object.entries(input as Record<string, unknown>)
+					.sort(([left], [right]) => left.localeCompare(right))
+					.map(([key, child]) => [key, canonicalize(child)])
+			);
+		}
+		return input;
+	};
+	return createHash('sha256')
+		.update(JSON.stringify(canonicalize(value)))
+		.digest('hex');
+}
+
+export const AffinityWaveDispatchGateSchema = z
+	.object({
+		schemaVersion: z.literal('affinity-wave-dispatch-gate-v1'),
+		gateId: SlugSchema,
+		experimentId: z.literal('affinity-workflow-v1'),
+		status: z.literal('authorized'),
+		authorizedStage: StageSchema,
+		qualityGateSatisfied: z.literal(true),
+		humanGateSatisfied: z.boolean(),
+		prerequisiteRunIds: z.array(SlugSchema),
+		evidencePaths: z.array(RepositoryPathSchema).min(1)
+	})
+	.strict()
+	.superRefine((gate, context) => {
+		if (gate.authorizedStage !== 'canary' && gate.prerequisiteRunIds.length === 0) {
+			context.addIssue({
+				code: 'custom',
+				path: ['prerequisiteRunIds'],
+				message: 'Non-canary dispatch gates require a preceding eligible scheduler run'
+			});
+		}
+		if (['breadth', 'load', 'scale'].includes(gate.authorizedStage) && !gate.humanGateSatisfied) {
+			context.addIssue({
+				code: 'custom',
+				path: ['humanGateSatisfied'],
+				message: 'Breadth, Load, and Scale require explicit human-gate satisfaction'
+			});
+		}
+	});
+
+export type AffinityWaveDispatchGate = z.infer<typeof AffinityWaveDispatchGateSchema>;
+
+const DispatchGatePointerSchema = z
+	.object({
+		artifactPath: RepositoryPathSchema,
+		canonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
+	})
+	.strict();
+
 export const AffinityWavePlanSchema = z
 	.object({
 		schemaVersion: z.literal('affinity-wave-plan-v1'),
@@ -61,6 +118,7 @@ export const AffinityWavePlanSchema = z
 				retryCapacityFailuresInWave: z.literal(false)
 			})
 			.strict(),
+		dispatchGate: DispatchGatePointerSchema.optional(),
 		jobs: z
 			.array(
 				z
@@ -101,6 +159,223 @@ export const AffinityWavePlanSchema = z
 
 export type AffinityWavePlan = z.infer<typeof AffinityWavePlanSchema>;
 
+const AllocationJobSchema = z
+	.object({
+		key: SlugSchema,
+		speciesId: ImageProductionSpeciesSchema,
+		affinity: ImageProductionAffinitySchema,
+		version: z.string().regex(/^v[1-9][0-9]*$/u),
+		cohort: z.enum(['controlled', 'breadth', 'regression']),
+		manifestState: z.enum(['gated-final-controlled', 'live-unexecuted-breadth', 'future-sentinel']),
+		targetPath: RepositoryPathSchema,
+		assignmentPath: RepositoryPathSchema,
+		candidatePath: RepositoryPathSchema,
+		resultPath: RepositoryPathSchema
+	})
+	.strict();
+
+const AllocationGateSchema = z
+	.object({
+		gateId: SlugSchema,
+		status: z.enum(['pending', 'blocked']),
+		description: z.string().trim().min(1),
+		evidencePaths: z.array(RepositoryPathSchema).min(1)
+	})
+	.strict();
+
+export const AffinityWaveAllocationSpecSchema = z
+	.object({
+		schemaVersion: z.literal('affinity-wave-allocation-v1'),
+		allocationId: SlugSchema,
+		experimentId: z.literal('affinity-workflow-v1'),
+		status: z.literal('gated'),
+		executable: z.literal(false),
+		purpose: z.string().trim().min(1),
+		futureSentinelCount: z.literal(14),
+		gates: z.array(AllocationGateSchema).min(1),
+		stages: z
+			.array(
+				z
+					.object({
+						stage: StageSchema,
+						requestedConcurrency: z.union([
+							z.literal(2),
+							z.literal(4),
+							z.literal(6),
+							z.literal(8),
+							z.literal(12),
+							z.literal(16)
+						]),
+						executable: z.literal(false),
+						prerequisiteGateIds: z.array(SlugSchema).min(1),
+						jobs: z.array(AllocationJobSchema).min(1)
+					})
+					.strict()
+			)
+			.length(6)
+	})
+	.strict()
+	.superRefine((allocation, context) => {
+		const gateIds = allocation.gates.map((gate) => gate.gateId);
+		if (new Set(gateIds).size !== gateIds.length) {
+			context.addIssue({ code: 'custom', path: ['gates'], message: 'Gate IDs must be unique' });
+		}
+		const stages = new Map(allocation.stages.map((stage) => [stage.stage, stage]));
+		for (const [stageName, requestedConcurrency] of Object.entries(STAGE_CONCURRENCY)) {
+			const stage = stages.get(stageName as keyof typeof STAGE_CONCURRENCY);
+			if (!stage) {
+				context.addIssue({
+					code: 'custom',
+					path: ['stages'],
+					message: `Allocation must include exactly one ${stageName} stage`
+				});
+				continue;
+			}
+			if (
+				stage.requestedConcurrency !== requestedConcurrency ||
+				stage.jobs.length !== requestedConcurrency
+			) {
+				context.addIssue({
+					code: 'custom',
+					path: ['stages'],
+					message: `${stageName} must allocate exactly ${requestedConcurrency} jobs`
+				});
+			}
+			for (const gateId of stage.prerequisiteGateIds) {
+				if (!gateIds.includes(gateId)) {
+					context.addIssue({
+						code: 'custom',
+						path: ['stages'],
+						message: `${stageName} references unknown prerequisite gate ${gateId}`
+					});
+				}
+			}
+		}
+		const jobs = allocation.stages.flatMap((stage) => stage.jobs);
+		for (const [stageIndex, stage] of allocation.stages.entries()) {
+			for (const [jobIndex, job] of stage.jobs.entries()) {
+				const prefix = `${EXPERIMENT_ROOT}`;
+				const expected =
+					job.manifestState === 'gated-final-controlled'
+						? {
+								targetPath: `${prefix}/targets/final-controlled/${job.speciesId}/${job.affinity}-${job.version}.json`,
+								assignmentPath: `${prefix}/assignments/final-controlled/${job.speciesId}/${job.affinity}-${job.version}.json`,
+								candidatePath: `${prefix}/candidates/final-controlled/${job.speciesId}/${job.affinity}-${job.version}.png`,
+								resultPath: `${prefix}/results/final-controlled/${job.speciesId}-${job.affinity}-${job.version}.json`,
+								cohort: 'controlled' as const
+							}
+						: job.manifestState === 'live-unexecuted-breadth'
+							? {
+									targetPath: `${prefix}/targets/${job.speciesId}/${job.affinity}.json`,
+									assignmentPath: `${prefix}/assignments/${job.speciesId}/${job.affinity}.json`,
+									candidatePath: `${prefix}/candidates/${job.speciesId}/${job.affinity}-v1.png`,
+									resultPath: `${prefix}/results/${job.speciesId}-${job.affinity}-v1.json`,
+									cohort: 'breadth' as const
+								}
+							: {
+									targetPath: `${prefix}/targets/concurrency-sentinels/${job.speciesId}/${job.affinity}-${job.version}.json`,
+									assignmentPath: `${prefix}/assignments/concurrency-sentinels/${job.speciesId}/${job.affinity}-${job.version}.json`,
+									candidatePath: `${prefix}/candidates/concurrency-sentinels/${job.speciesId}/${job.affinity}-${job.version}.png`,
+									resultPath: `${prefix}/results/concurrency-sentinels/${job.speciesId}-${job.affinity}-${job.version}.json`,
+									cohort: 'regression' as const
+								};
+				for (const field of [
+					'targetPath',
+					'assignmentPath',
+					'candidatePath',
+					'resultPath',
+					'cohort'
+				] as const) {
+					if (job[field] !== expected[field]) {
+						context.addIssue({
+							code: 'custom',
+							path: ['stages', stageIndex, 'jobs', jobIndex, field],
+							message: `${field} does not match the coordinate-owned ${job.manifestState} path`
+						});
+					}
+				}
+				if (job.manifestState === 'live-unexecuted-breadth' && job.version !== 'v1') {
+					context.addIssue({
+						code: 'custom',
+						path: ['stages', stageIndex, 'jobs', jobIndex, 'version'],
+						message: 'Base breadth allocations must retain version v1'
+					});
+				}
+				if (
+					job.manifestState === 'future-sentinel' &&
+					!['death-knight', 'elemental', 'grey-wolf', 'cave-bear'].includes(job.speciesId)
+				) {
+					context.addIssue({
+						code: 'custom',
+						path: ['stages', stageIndex, 'jobs', jobIndex, 'speciesId'],
+						message: 'Future sentinels are versioned reruns of the four controlled species'
+					});
+				}
+				if (
+					job.manifestState === 'future-sentinel' &&
+					((['death-knight', 'elemental'] as string[]).includes(job.speciesId)
+						? job.version !== 'v5'
+						: job.version !== 'v4')
+				) {
+					context.addIssue({
+						code: 'custom',
+						path: ['stages', stageIndex, 'jobs', jobIndex, 'version'],
+						message: 'Future sentinels must use v5 for Death Knight/Elemental and v4 for beasts'
+					});
+				}
+			}
+		}
+		for (const [label, values] of [
+			['job keys', jobs.map((job) => job.key)],
+			['target paths', jobs.map((job) => job.targetPath)],
+			['assignment paths', jobs.map((job) => job.assignmentPath)],
+			['candidate paths', jobs.map((job) => job.candidatePath)],
+			['result paths', jobs.map((job) => job.resultPath)]
+		] as const) {
+			if (new Set(values).size !== values.length) {
+				context.addIssue({
+					code: 'custom',
+					path: ['stages'],
+					message: `Allocation has duplicate ${label}`
+				});
+			}
+		}
+		const sentinels = jobs.filter((job) => job.manifestState === 'future-sentinel');
+		if (sentinels.length !== allocation.futureSentinelCount) {
+			context.addIssue({
+				code: 'custom',
+				path: ['futureSentinelCount'],
+				message: `Allocation requires exactly ${allocation.futureSentinelCount} future sentinels; found ${sentinels.length}`
+			});
+		}
+		const scaleJobs = stages.get('scale')?.jobs ?? [];
+		for (const speciesId of SPECIES_IDS) {
+			const count = scaleJobs.filter((job) => job.speciesId === speciesId).length;
+			if (count !== 2) {
+				context.addIssue({
+					code: 'custom',
+					path: ['stages'],
+					message: `Scale allocation requires exactly two ${speciesId} jobs; found ${count}`
+				});
+			}
+		}
+		const scaleAffinityCounts = AFFINITY_IDS.map(
+			(affinity) => scaleJobs.filter((job) => job.affinity === affinity).length
+		);
+		if (
+			scaleAffinityCounts.length > 0 &&
+			Math.max(...scaleAffinityCounts) - Math.min(...scaleAffinityCounts) > 1
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['stages'],
+				message: 'Scale allocation affinities must be distributed evenly'
+			});
+		}
+	});
+
+export type AffinityWaveAllocationSpec = z.infer<typeof AffinityWaveAllocationSpecSchema>;
+
 const ResolvedJobSchema = z
 	.object({
 		targetId: SlugSchema,
@@ -121,7 +396,7 @@ export const AffinityWavePreflightSchema = z
 		experimentId: z.literal('affinity-workflow-v1'),
 		stage: StageSchema,
 		createdAt: z.string().datetime({ offset: true }),
-		status: z.enum(['ready', 'blocked-capacity', 'blocked-output-collision']),
+		status: z.enum(['ready', 'blocked-capacity', 'blocked-output-collision', 'blocked-gate']),
 		requestedConcurrency: z.number().int().positive().max(16),
 		availableAgentSlots: z.number().int().nonnegative(),
 		reservedOrchestratorSlots: z.literal(1),
@@ -129,6 +404,31 @@ export const AffinityWavePreflightSchema = z
 		exactConcurrencyReady: z.boolean(),
 		runDirectory: RepositoryPathSchema,
 		stopRules: AffinityWavePlanSchema.shape.stopRules,
+		dispatchGateSatisfied: z.boolean().optional(),
+		dispatchGateEvidence: z
+			.object({
+				status: z.enum([
+					'satisfied',
+					'missing-plan-pointer',
+					'missing-artifact',
+					'hash-mismatch',
+					'invalid-artifact',
+					'stage-not-authorized',
+					'human-gate-required'
+				]),
+				artifactPath: RepositoryPathSchema.nullable(),
+				expectedCanonicalSha256: z
+					.string()
+					.regex(/^[a-f0-9]{64}$/u)
+					.nullable(),
+				observedCanonicalSha256: z
+					.string()
+					.regex(/^[a-f0-9]{64}$/u)
+					.nullable(),
+				gate: AffinityWaveDispatchGateSchema.nullable()
+			})
+			.strict()
+			.optional(),
 		collisionPaths: z.array(RepositoryPathSchema),
 		jobs: z.array(ResolvedJobSchema).min(1).max(100)
 	})
@@ -175,6 +475,7 @@ export const AffinityWaveDispatchDecisionSchema = z
 			'launch-ready',
 			'capacity-preflight-blocked',
 			'output-collision',
+			'dispatch-gate-blocked',
 			'capacity-stop-rule',
 			'all-targets-terminal',
 			'wave-not-started',
@@ -273,6 +574,95 @@ export async function readWavePlan(
 	return AffinityWavePlanSchema.parse(await readJson(workspacePath(workspaceRoot, planPath)));
 }
 
+export async function readWaveAllocationSpec(
+	workspaceRoot: string,
+	allocationPath: string
+): Promise<AffinityWaveAllocationSpec> {
+	return AffinityWaveAllocationSpecSchema.parse(
+		await readJson(workspacePath(workspaceRoot, allocationPath))
+	);
+}
+
+type DispatchGateEvidence = NonNullable<
+	z.infer<typeof AffinityWavePreflightSchema>['dispatchGateEvidence']
+>;
+
+async function resolveDispatchGate(
+	workspaceRoot: string,
+	plan: AffinityWavePlan,
+	requiresHumanGate: boolean
+): Promise<DispatchGateEvidence> {
+	const pointer = plan.dispatchGate;
+	if (!pointer) {
+		return {
+			status: 'missing-plan-pointer',
+			artifactPath: null,
+			expectedCanonicalSha256: null,
+			observedCanonicalSha256: null,
+			gate: null
+		};
+	}
+	const gatePath = workspacePath(workspaceRoot, pointer.artifactPath);
+	let input: unknown;
+	try {
+		input = await readJson(gatePath);
+	} catch (error) {
+		const missing = (error as NodeJS.ErrnoException).code === 'ENOENT';
+		return {
+			status: missing ? 'missing-artifact' : 'invalid-artifact',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256: null,
+			gate: null
+		};
+	}
+	const observedCanonicalSha256 = canonicalJsonSha256(input);
+	const parsed = AffinityWaveDispatchGateSchema.safeParse(input);
+	if (!parsed.success) {
+		return {
+			status: 'invalid-artifact',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: null
+		};
+	}
+	if (observedCanonicalSha256 !== pointer.canonicalSha256) {
+		return {
+			status: 'hash-mismatch',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: parsed.data
+		};
+	}
+	if (parsed.data.authorizedStage !== plan.stage) {
+		return {
+			status: 'stage-not-authorized',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: parsed.data
+		};
+	}
+	if (requiresHumanGate && !parsed.data.humanGateSatisfied) {
+		return {
+			status: 'human-gate-required',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: parsed.data
+		};
+	}
+	return {
+		status: 'satisfied',
+		artifactPath: pointer.artifactPath,
+		expectedCanonicalSha256: pointer.canonicalSha256,
+		observedCanonicalSha256,
+		gate: parsed.data
+	};
+}
+
 export async function preflightWave(
 	workspaceRoot: string,
 	planInput: unknown,
@@ -350,12 +740,19 @@ export async function preflightWave(
 		Math.max(0, availableAgentSlots - plan.reservedOrchestratorSlots)
 	);
 	const exactConcurrencyReady = admittedWorkerCapacity === plan.requestedConcurrency;
+	const requiresHumanGate = resolvedJobs.some((job) =>
+		job.targetPath.startsWith(`${EXPERIMENT_ROOT}/targets/final-controlled/`)
+	);
+	const dispatchGateEvidence = await resolveDispatchGate(workspaceRoot, plan, requiresHumanGate);
+	const dispatchGateSatisfied = dispatchGateEvidence.status === 'satisfied';
 	const status =
 		collisionPaths.length > 0
 			? 'blocked-output-collision'
-			: exactConcurrencyReady
-				? 'ready'
-				: 'blocked-capacity';
+			: !exactConcurrencyReady
+				? 'blocked-capacity'
+				: dispatchGateSatisfied
+					? 'ready'
+					: 'blocked-gate';
 	return AffinityWavePreflightSchema.parse({
 		schemaVersion: 'affinity-wave-preflight-v1',
 		runId: plan.runId,
@@ -370,6 +767,8 @@ export async function preflightWave(
 		exactConcurrencyReady,
 		runDirectory: plan.runDirectory,
 		stopRules: plan.stopRules,
+		dispatchGateSatisfied,
+		dispatchGateEvidence,
 		collisionPaths,
 		jobs: resolvedJobs
 	});
@@ -412,6 +811,9 @@ export function validateEventJournal(
 ): JournalState {
 	const preflight = AffinityWavePreflightSchema.parse(preflightInput);
 	const parsed = eventInputs.map((event) => AffinityWaveEventSchema.parse(event));
+	if (parsed.length > 0 && preflight.status !== 'ready') {
+		throw new Error(`Wave events require a ready preflight; found ${preflight.status}`);
+	}
 	const eventIds = parsed.map((event) => event.eventId);
 	if (new Set(eventIds).size !== eventIds.length) throw new Error('Wave event IDs must be unique');
 	if (parsed.some((event) => event.runId !== preflight.runId)) {
@@ -454,6 +856,11 @@ export function validateEventJournal(
 			}
 			if (dispatched.has(event.targetId) || terminal.has(event.targetId)) {
 				throw new Error(`Target dispatched more than once: ${event.targetId}`);
+			}
+			if (
+				[...activeTargets].some((targetId) => dispatched.get(targetId)?.workerId === event.workerId)
+			) {
+				throw new Error(`Worker is already active on another target: ${event.workerId}`);
 			}
 			dispatched.set(event.targetId, event);
 			activeTargets.add(event.targetId);
@@ -532,6 +939,7 @@ export function nextDispatchDecision(
 		AffinityWaveDispatchDecisionSchema.parse({ ...common, stop, reason, launchTargetIds });
 	if (preflight.status === 'blocked-output-collision') return decision(true, 'output-collision');
 	if (preflight.status === 'blocked-capacity') return decision(true, 'capacity-preflight-blocked');
+	if (preflight.status === 'blocked-gate') return decision(true, 'dispatch-gate-blocked');
 	if (!state.started) return decision(true, 'wave-not-started');
 	if (state.finished) return decision(true, 'wave-finished');
 	if (state.stopFailures.length >= preflight.stopRules.capacityFailureLimit) {
@@ -566,13 +974,13 @@ function median(values: readonly number[]): number | null {
 }
 
 function maximumConcurrentWorkers(state: JournalState, generatedAt: string): number {
-	const points: Array<{ at: number; delta: number }> = [];
+	const points: Array<{ at: number; delta: number; priority: number }> = [];
 	for (const [targetId, dispatch] of state.dispatched) {
-		points.push({ at: Date.parse(dispatch.at), delta: 1 });
+		points.push({ at: Date.parse(dispatch.at), delta: 1, priority: 0 });
 		const terminal = state.terminal.get(targetId);
-		points.push({ at: Date.parse(terminal?.at ?? generatedAt), delta: -1 });
+		points.push({ at: Date.parse(terminal?.at ?? generatedAt), delta: -1, priority: 1 });
 	}
-	points.sort((left, right) => left.at - right.at || left.delta - right.delta);
+	points.sort((left, right) => left.at - right.at || left.priority - right.priority);
 	let active = 0;
 	let maximum = 0;
 	for (const point of points) {

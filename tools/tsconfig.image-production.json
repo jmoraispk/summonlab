@@ -24,6 +24,8 @@
 		"finalize-affinity-evaluation.spec.ts",
 		"prepare-final-controlled-rerun.ts",
 		"prepare-final-controlled-rerun.spec.ts",
+		"report-final-controlled-activation-readiness.ts",
+		"report-final-controlled-activation-readiness.spec.ts",
 		"check-affinity-plan-completion.ts",
 		"check-affinity-plan-completion.spec.ts",
 		"export-affinity-workflow.ts",

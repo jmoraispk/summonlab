@@ -9,6 +9,103 @@ export const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] a
 type Affinity = (typeof AFFINITIES)[number];
 type Cohort = 'controlled' | 'breadth' | 'regression';
 export type AffinityReviewScope = 'all' | 'controlled';
+export const CONTROLLED_ROUND_IDS = ['baseline-v1', 'final-controlled-v1'] as const;
+export type ControlledRoundId = (typeof CONTROLLED_ROUND_IDS)[number];
+
+const CONTROLLED_SPECIES = ['death-knight', 'elemental', 'grey-wolf', 'cave-bear'] as const;
+type ControlledSpeciesId = (typeof CONTROLLED_SPECIES)[number];
+const FINAL_CONTROLLED_TARGET_TEMPLATE =
+	'assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/{speciesId}/{affinity}-{version}.json';
+const FINAL_CONTROLLED_CANDIDATE_TEMPLATE =
+	'assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/{speciesId}/{affinity}-{version}.png';
+const FINAL_CONTROLLED_RESULT_TEMPLATE =
+	'assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/{speciesId}-{affinity}-{version}.json';
+
+export class ControlledRoundUnavailableError extends Error {
+	public constructor(public readonly roundId: ControlledRoundId) {
+		super(`Controlled round is not available: ${roundId}`);
+		this.name = 'ControlledRoundUnavailableError';
+	}
+}
+
+export function parseControlledRoundId(value: string | null | undefined): ControlledRoundId {
+	if (value === null || value === undefined || value === '') return 'baseline-v1';
+	if (CONTROLLED_ROUND_IDS.includes(value as ControlledRoundId)) return value as ControlledRoundId;
+	throw new Error(`Unknown controlled round: ${value}`);
+}
+
+export function parseAffinityReviewScope(value: string | null | undefined): AffinityReviewScope {
+	if (value === null || value === undefined || value === '') return 'controlled';
+	if (value === 'all' || value === 'controlled') return value;
+	throw new Error(`Unknown affinity review scope: ${value}`);
+}
+
+interface ControlledTargetIdentity {
+	targetId: string;
+	cohort: Cohort;
+	speciesId: string;
+	affinity: Affinity;
+}
+
+export interface ControlledRoundDefinition {
+	id: ControlledRoundId;
+	label: string;
+	targetIds: Record<ControlledSpeciesId, Record<Affinity, string>>;
+}
+
+export function buildControlledRoundDefinition(
+	id: ControlledRoundId,
+	label: string,
+	targets: readonly ControlledTargetIdentity[]
+): ControlledRoundDefinition {
+	if (targets.length !== CONTROLLED_SPECIES.length * AFFINITIES.length) {
+		throw new Error(`Controlled round ${id} must contain exactly 24 targets.`);
+	}
+	const ids = new Set<string>();
+	const coordinates = new Map<string, string>();
+	for (const target of targets) {
+		if (target.cohort !== 'controlled') {
+			throw new Error(`Controlled round ${id} contains a non-controlled target.`);
+		}
+		if (!CONTROLLED_SPECIES.includes(target.speciesId as ControlledSpeciesId)) {
+			throw new Error(`Controlled round ${id} contains an unexpected species.`);
+		}
+		if (ids.has(target.targetId))
+			throw new Error(`Duplicate controlled target ID: ${target.targetId}`);
+		ids.add(target.targetId);
+		const coordinate = `${target.speciesId}:${target.affinity}`;
+		if (coordinates.has(coordinate)) {
+			throw new Error(`Duplicate controlled coordinate: ${coordinate}`);
+		}
+		coordinates.set(coordinate, target.targetId);
+	}
+	const targetIds = Object.fromEntries(
+		CONTROLLED_SPECIES.map((speciesId) => [
+			speciesId,
+			Object.fromEntries(
+				AFFINITIES.map((affinity) => {
+					const targetId = coordinates.get(`${speciesId}:${affinity}`);
+					if (!targetId) throw new Error(`Missing controlled coordinate: ${speciesId}:${affinity}`);
+					return [affinity, targetId];
+				})
+			)
+		])
+	) as ControlledRoundDefinition['targetIds'];
+	return { id, label, targetIds };
+}
+
+const BASELINE_CONTROLLED_ROUND = buildControlledRoundDefinition(
+	'baseline-v1',
+	'Baseline v1',
+	CONTROLLED_SPECIES.flatMap((speciesId) =>
+		AFFINITIES.map((affinity) => ({
+			targetId: `affinity-workflow-v1-${speciesId}-${affinity}`,
+			cohort: 'controlled' as const,
+			speciesId,
+			affinity
+		}))
+	)
+);
 
 interface ReviewRowDefinition {
 	id: string;
@@ -18,28 +115,71 @@ interface ReviewRowDefinition {
 	targetIds?: Partial<Record<Affinity, string>>;
 }
 
+const BASE_TARGET_IDS = (speciesId: string): Record<Affinity, string> =>
+	Object.fromEntries(
+		AFFINITIES.map((affinity) => [affinity, `affinity-workflow-v1-${speciesId}-${affinity}`])
+	) as Record<Affinity, string>;
+
 const ELEMENTAL_REGRESSION_V2_TARGETS = Object.fromEntries(
 	AFFINITIES.map((affinity) => [affinity, `affinity-workflow-v1-elemental-${affinity}-v2`])
 ) as Record<Affinity, string>;
 
 export const SPECIES: readonly ReviewRowDefinition[] = [
-	{ id: 'death-knight', speciesId: 'death-knight', name: 'Death Knight', cohort: 'controlled' },
+	{
+		id: 'death-knight',
+		speciesId: 'death-knight',
+		name: 'Death Knight',
+		cohort: 'controlled',
+		targetIds: BASE_TARGET_IDS('death-knight')
+	},
 	{
 		id: 'elemental',
 		speciesId: 'elemental',
 		name: 'Bound Vanguard Elemental · baseline',
-		cohort: 'controlled'
+		cohort: 'controlled',
+		targetIds: BASE_TARGET_IDS('elemental')
 	},
-	{ id: 'grey-wolf', speciesId: 'grey-wolf', name: 'Grey Wolf', cohort: 'controlled' },
-	{ id: 'cave-bear', speciesId: 'cave-bear', name: 'Cave Bear', cohort: 'controlled' },
-	{ id: 'goblin', speciesId: 'goblin', name: 'Goblin', cohort: 'breadth' },
-	{ id: 'tunnel-boar', speciesId: 'tunnel-boar', name: 'Tunnel Boar', cohort: 'breadth' },
-	{ id: 'cave-drake', speciesId: 'cave-drake', name: 'Cave Drake', cohort: 'breadth' },
+	{
+		id: 'grey-wolf',
+		speciesId: 'grey-wolf',
+		name: 'Grey Wolf',
+		cohort: 'controlled',
+		targetIds: BASE_TARGET_IDS('grey-wolf')
+	},
+	{
+		id: 'cave-bear',
+		speciesId: 'cave-bear',
+		name: 'Cave Bear',
+		cohort: 'controlled',
+		targetIds: BASE_TARGET_IDS('cave-bear')
+	},
+	{
+		id: 'goblin',
+		speciesId: 'goblin',
+		name: 'Goblin',
+		cohort: 'breadth',
+		targetIds: BASE_TARGET_IDS('goblin')
+	},
+	{
+		id: 'tunnel-boar',
+		speciesId: 'tunnel-boar',
+		name: 'Tunnel Boar',
+		cohort: 'breadth',
+		targetIds: BASE_TARGET_IDS('tunnel-boar')
+	},
+	{
+		id: 'cave-drake',
+		speciesId: 'cave-drake',
+		name: 'Cave Drake',
+		cohort: 'breadth',
+		targetIds: BASE_TARGET_IDS('cave-drake')
+	},
 	{
 		id: 'tower-basilisk',
 		speciesId: 'tower-basilisk',
 		name: 'Tower Basilisk',
-		cohort: 'breadth'
+		cohort: 'breadth',
+		targetIds: BASE_TARGET_IDS('tower-basilisk')
 	},
 	{
 		id: 'elemental-regression-v2',
@@ -274,6 +414,133 @@ function parseTarget(value: JsonRecord): TargetRecord | null {
 	};
 }
 
+interface FinalControlledPlanTarget {
+	key: string;
+	speciesId: ControlledSpeciesId;
+	affinity: Affinity;
+	version: string;
+}
+
+interface FinalControlledManifestExpectation extends FinalControlledPlanTarget {
+	targetId: string;
+	targetPath: string;
+	candidatePath: string;
+	resultPath: string;
+}
+
+export interface FinalControlledManifestInput {
+	path: string;
+	value: unknown;
+}
+
+function renderFinalTemplate(template: string, target: FinalControlledPlanTarget): string {
+	return template
+		.replace('{speciesId}', target.speciesId)
+		.replace('{affinity}', target.affinity)
+		.replace('{version}', target.version);
+}
+
+function finalControlledExpectations(planInput: unknown): FinalControlledManifestExpectation[] {
+	if (
+		!isRecord(planInput) ||
+		planInput.experimentId !== EXPERIMENT_ID ||
+		planInput.targetCount !== 24
+	) {
+		throw new Error('Final controlled plan identity or target count is invalid.');
+	}
+	const templates = isRecord(planInput.plannedPathTemplates)
+		? planInput.plannedPathTemplates
+		: null;
+	const targetTemplate = templates ? stringValue(templates.target) : null;
+	const candidateTemplate = templates ? stringValue(templates.candidate) : null;
+	const resultTemplate = templates ? stringValue(templates.result) : null;
+	if (
+		!templates ||
+		targetTemplate !== FINAL_CONTROLLED_TARGET_TEMPLATE ||
+		candidateTemplate !== FINAL_CONTROLLED_CANDIDATE_TEMPLATE ||
+		resultTemplate !== FINAL_CONTROLLED_RESULT_TEMPLATE
+	) {
+		throw new Error('Final controlled plan uses untrusted path templates.');
+	}
+	if (!Array.isArray(planInput.targets) || planInput.targets.length !== 24) {
+		throw new Error('Final controlled plan must declare exactly 24 targets.');
+	}
+	const expectations = planInput.targets.map((entry): FinalControlledManifestExpectation => {
+		if (!isRecord(entry)) throw new Error('Final controlled plan target is invalid.');
+		const speciesId = stringValue(entry.speciesId);
+		const affinity = stringValue(entry.affinity);
+		const version = stringValue(entry.version);
+		const key = stringValue(entry.key);
+		if (
+			!speciesId ||
+			!CONTROLLED_SPECIES.includes(speciesId as ControlledSpeciesId) ||
+			!affinity ||
+			!AFFINITIES.includes(affinity as Affinity) ||
+			!version ||
+			!/^v\d+$/u.test(version) ||
+			key !== `${speciesId}-${affinity}-${version}`
+		) {
+			throw new Error('Final controlled plan target identity is invalid.');
+		}
+		const planned = {
+			key,
+			speciesId: speciesId as ControlledSpeciesId,
+			affinity: affinity as Affinity,
+			version
+		};
+		return {
+			...planned,
+			targetId: `${EXPERIMENT_ID}-${key}`,
+			targetPath: renderFinalTemplate(targetTemplate, planned),
+			candidatePath: renderFinalTemplate(candidateTemplate, planned),
+			resultPath: renderFinalTemplate(resultTemplate, planned)
+		};
+	});
+	buildControlledRoundDefinition(
+		'final-controlled-v1',
+		'Final controlled v1',
+		expectations.map((entry) => ({ ...entry, cohort: 'controlled' as const }))
+	);
+	if (new Set(expectations.map((entry) => entry.targetPath)).size !== expectations.length) {
+		throw new Error('Final controlled plan target paths must be unique.');
+	}
+	return expectations;
+}
+
+export function buildFinalControlledRoundDefinition(
+	planInput: unknown,
+	manifestInputs: readonly FinalControlledManifestInput[]
+): ControlledRoundDefinition {
+	const expectations = finalControlledExpectations(planInput);
+	if (manifestInputs.length !== expectations.length) {
+		throw new Error('Final controlled round requires all 24 live target manifests.');
+	}
+	const manifestsByPath = new Map<string, unknown>();
+	for (const manifest of manifestInputs) {
+		if (manifestsByPath.has(manifest.path)) {
+			throw new Error(`Duplicate final controlled manifest path: ${manifest.path}`);
+		}
+		manifestsByPath.set(manifest.path, manifest.value);
+	}
+	const targets = expectations.map((expected) => {
+		const value = manifestsByPath.get(expected.targetPath);
+		const target = isRecord(value) ? parseTarget(value) : null;
+		if (
+			!target ||
+			target.targetId !== expected.targetId ||
+			target.speciesId !== expected.speciesId ||
+			target.affinity !== expected.affinity ||
+			target.cohort !== 'controlled' ||
+			target.output.candidatePath !== expected.candidatePath ||
+			target.output.resultPath !== expected.resultPath
+		) {
+			throw new Error(`Final controlled manifest does not match its plan: ${expected.targetPath}`);
+		}
+		return target;
+	});
+	return buildControlledRoundDefinition('final-controlled-v1', 'Final controlled v1', targets);
+}
+
 export function isPathWithin(parent: string, candidate: string): boolean {
 	const relative = path.relative(path.resolve(parent), path.resolve(candidate));
 	return (
@@ -298,9 +565,9 @@ export function readPngDimensions(bytes: Uint8Array): { width: number; height: n
 	return { width: view.getUint32(16), height: view.getUint32(20) };
 }
 
-export function makeOpaqueId(contentHash: string): string {
+export function makeOpaqueId(targetId: string, contentHash: string): string {
 	return createHash('sha256')
-		.update(`${EXPERIMENT_ID}:media:${contentHash}`)
+		.update(`${EXPERIMENT_ID}:media:${targetId}:${contentHash}`)
 		.digest('hex')
 		.slice(0, 24);
 }
@@ -429,7 +696,11 @@ async function verifyCandidate(
 			references: referenceInputs,
 			findings
 		};
-		return { mediaId: makeOpaqueId(outputHash), mediaPath: absolutePath, metadata };
+		return {
+			mediaId: makeOpaqueId(target.targetId, outputHash),
+			mediaPath: absolutePath,
+			metadata
+		};
 	} catch {
 		return null;
 	}
@@ -453,6 +724,59 @@ async function loadResults(): Promise<Map<string, JsonRecord>> {
 			return value && targetId ? [[targetId, value] as const] : [];
 		})
 	);
+}
+
+function controlledRoundTargetIdSet(round: ControlledRoundDefinition): Set<string> {
+	return new Set(
+		CONTROLLED_SPECIES.flatMap((speciesId) =>
+			AFFINITIES.map((affinity) => round.targetIds[speciesId][affinity])
+		)
+	);
+}
+
+export function targetBelongsToReviewSelection(
+	target: ControlledTargetIdentity,
+	round: ControlledRoundDefinition,
+	scope: AffinityReviewScope
+): boolean {
+	return (
+		controlledRoundTargetIdSet(round).has(target.targetId) ||
+		(scope === 'all' && target.cohort !== 'controlled')
+	);
+}
+
+async function loadAvailableControlledRounds(): Promise<ControlledRoundDefinition[]> {
+	const rounds = [BASELINE_CONTROLLED_ROUND];
+	try {
+		const plan = await readJson(
+			path.join(EXPERIMENT_ROOT, 'review', 'final-controlled-rerun-plan.json')
+		);
+		if (!plan) return rounds;
+		const expectations = finalControlledExpectations(plan);
+		const manifests = await Promise.all(
+			expectations.map(async (expected) => ({
+				path: expected.targetPath,
+				value: await readJson(path.resolve(REPOSITORY_ROOT, expected.targetPath))
+			}))
+		);
+		rounds.push(buildFinalControlledRoundDefinition(plan, manifests));
+	} catch {
+		// A partial, stale, or invalid final round is deliberately not exposed for review.
+	}
+	return rounds;
+}
+
+function reviewRowsForRound(round: ControlledRoundDefinition): ReviewRowDefinition[] {
+	return SPECIES.map((entry) => {
+		if (entry.cohort !== 'controlled') return entry;
+		const speciesId = entry.speciesId as ControlledSpeciesId;
+		return {
+			...entry,
+			id: `${round.id}-${entry.id}`,
+			name: round.id === 'baseline-v1' ? entry.name : `${entry.name} · final controlled`,
+			targetIds: round.targetIds[speciesId]
+		};
+	});
 }
 
 async function summaryFile(name: string) {
@@ -535,48 +859,54 @@ export function summarizeAffinityReviews(
 export async function loadAffinityReviewData(
 	blind: boolean,
 	reviews: readonly AffinityWorkflowReviewRecord[] = [],
-	scope: AffinityReviewScope = 'all'
+	scope: AffinityReviewScope = 'all',
+	roundId: ControlledRoundId = 'baseline-v1'
 ) {
-	const [targets, results, catalog, evaluation] = await Promise.all([
+	const [targets, results, catalog, evaluation, controlledRounds] = await Promise.all([
 		loadTargets(),
 		loadResults(),
 		summaryFile('catalog.json'),
-		summaryFile('evaluation.json')
+		summaryFile('evaluation.json'),
+		loadAvailableControlledRounds()
 	]);
-	const targetByCoordinate = new Map(
-		targets.map((target) => [`${target.speciesId}:${target.cohort}:${target.affinity}`, target])
-	);
-	const targetById = new Map(targets.map((target) => [target.targetId, target]));
+	const controlledRound = controlledRounds.find((round) => round.id === roundId);
+	if (!controlledRound) throw new ControlledRoundUnavailableError(roundId);
+	const duplicateTargetIds = new Set<string>();
+	const targetById = new Map<string, TargetRecord>();
+	for (const target of targets) {
+		if (targetById.has(target.targetId)) duplicateTargetIds.add(target.targetId);
+		else targetById.set(target.targetId, target);
+	}
+	for (const targetId of duplicateTargetIds) targetById.delete(targetId);
 	const candidateByTarget = new Map<string, VerifiedCandidate | null>();
 	await Promise.all(
-		targets.map(async (target) => {
+		[...targetById.values()].map(async (target) => {
 			const result = results.get(target.targetId);
 			candidateByTarget.set(target.targetId, result ? await verifyCandidate(target, result) : null);
 		})
 	);
 
+	const roundRows = reviewRowsForRound(controlledRound);
 	const scopedSpecies =
-		scope === 'controlled' ? SPECIES.filter((entry) => entry.cohort === 'controlled') : SPECIES;
-	const species = blind ? buildBlindOrder(scopedSpecies, `species:${scope}`) : [...scopedSpecies];
+		scope === 'controlled' ? roundRows.filter((entry) => entry.cohort === 'controlled') : roundRows;
+	const species = blind
+		? buildBlindOrder(scopedSpecies, `species:${scope}:${roundId}`)
+		: [...scopedSpecies];
 	const reviewEvidence = blind
 		? reviews.filter((review) => review.reviewMode === 'blind')
 		: reviews;
 	const rows: AffinityReviewRow[] = species.map((entry, rowIndex) => {
 		const affinityItems = AFFINITIES.map((id) => ({ id }));
 		const orderedAffinities = blind
-			? buildBlindOrder(affinityItems, `affinity:${entry.id}`)
+			? buildBlindOrder(affinityItems, `affinity:${roundId}:${entry.id}`)
 			: affinityItems;
 		return {
-			id: blind ? `specimen-${String(rowIndex + 1).padStart(2, '0')}` : entry.id,
+			id: blind ? `${roundId}-specimen-${String(rowIndex + 1).padStart(2, '0')}` : entry.id,
 			rowLabel: blind ? `Specimen ${String(rowIndex + 1).padStart(2, '0')}` : entry.name,
 			cohort: blind ? null : entry.cohort,
 			cells: orderedAffinities.map((affinityEntry, columnIndex) => {
 				const explicitTargetId = entry.targetIds?.[affinityEntry.id];
-				const target = entry.targetIds
-					? explicitTargetId
-						? targetById.get(explicitTargetId)
-						: undefined
-					: targetByCoordinate.get(`${entry.speciesId}:${entry.cohort}:${affinityEntry.id}`);
+				const target = explicitTargetId ? targetById.get(explicitTargetId) : undefined;
 				const result = target ? results.get(target.targetId) : null;
 				const candidate = target ? candidateByTarget.get(target.targetId) : null;
 				const currentReviews = reviewsForCurrentCandidate(reviewEvidence, target, candidate);
@@ -597,13 +927,13 @@ export async function loadAffinityReviewData(
 					: affinityEntry.id[0]!.toUpperCase() + affinityEntry.id.slice(1);
 				return {
 					id: blind
-						? `${rowIndex + 1}-${columnIndex + 1}`
+						? `${roundId}-${rowIndex + 1}-${columnIndex + 1}`
 						: (target?.targetId ?? `${entry.id}-${affinityEntry.id}`),
 					columnLabel,
 					status,
 					statusLabel,
 					mediaUrl: candidate
-						? `/forge/enemies/affinity-workflow/media/${candidate.mediaId}`
+						? `/forge/enemies/affinity-workflow/media/${candidate.mediaId}?round=${roundId}&scope=${scope}`
 						: null,
 					alt: blind
 						? 'Unlabeled experiment candidate'
@@ -619,9 +949,18 @@ export async function loadAffinityReviewData(
 		};
 	});
 	const visibleCells = rows.flatMap((row) => row.cells);
-	const scopedTargets =
-		scope === 'controlled' ? targets.filter((target) => target.cohort === 'controlled') : targets;
-	const controlledTargets = targets.filter((target) => target.cohort === 'controlled');
+	const scopedTargetIds = new Set(
+		scopedSpecies.flatMap((entry) => Object.values(entry.targetIds ?? {}))
+	);
+	const scopedTargets = [...scopedTargetIds].flatMap((targetId) => {
+		const target = targetById.get(targetId);
+		return target ? [target] : [];
+	});
+	const controlledTargetIds = controlledRoundTargetIdSet(controlledRound);
+	const controlledTargets = [...controlledTargetIds].flatMap((targetId) => {
+		const target = targetById.get(targetId);
+		return target ? [target] : [];
+	});
 	const controlledCandidateTargets = controlledTargets.filter((target) => {
 		const result = results.get(target.targetId);
 		return result?.status === 'candidate' && candidateByTarget.get(target.targetId);
@@ -629,30 +968,86 @@ export async function loadAffinityReviewData(
 	const controlledNonNormalCandidateTargets = controlledCandidateTargets.filter(
 		(target) => target.affinity !== 'normal'
 	);
-	const firstAttemptCandidateCount = evaluation?.controlled?.firstAttemptCandidateCount ?? 0;
+	const firstAttemptCandidateCount = controlledCandidateTargets.filter((target) => {
+		const result = results.get(target.targetId);
+		const attempts = Array.isArray(result?.attempts) ? result.attempts.filter(isRecord) : [];
+		return stringValue(result?.selectedAttemptId) === stringValue(attempts[0]?.attemptId);
+	}).length;
+	const eligibleBlindReviewsByTarget = new Map<string, AffinityWorkflowReviewRecord>();
+	for (const review of reviews
+		.filter((entry) => entry.reviewMode === 'blind')
+		.sort(
+			(left, right) =>
+				Date.parse(left.reviewedAt) - Date.parse(right.reviewedAt) ||
+				left.reviewId.localeCompare(right.reviewId)
+		)) {
+		const candidate = candidateByTarget.get(review.targetId);
+		if (
+			controlledTargetIds.has(review.targetId) &&
+			candidate?.metadata.contentHash === review.candidateContentHash
+		) {
+			eligibleBlindReviewsByTarget.set(review.targetId, review);
+		}
+	}
+	const eligibleBlindReviews = [...eligibleBlindReviewsByTarget.values()];
+	const speciesCorrectCount = eligibleBlindReviews.filter(
+		(review) => targetById.get(review.targetId)?.speciesId === review.identifiedSpeciesId
+	).length;
+	const affinityCorrectCount = eligibleBlindReviews.filter(
+		(review) => targetById.get(review.targetId)?.affinity === review.identifiedAffinity
+	).length;
+	const normalUnaffiliatedCount = eligibleBlindReviews.filter(
+		(review) =>
+			targetById.get(review.targetId)?.affinity === 'normal' &&
+			review.identifiedAffinity === 'normal'
+	).length;
+	const acceptedMeaningfulAffinityCount = controlledNonNormalCandidateTargets.filter(
+		(target) => eligibleBlindReviewsByTarget.get(target.targetId)?.verdict === 'candidate'
+	).length;
+	const unresolvedTargets = controlledTargets.filter((target) => !results.has(target.targetId));
+	const firstAttemptMaximum = firstAttemptCandidateCount + unresolvedTargets.length;
+	const candidateMaximum = controlledCandidateTargets.length + unresolvedTargets.length;
+	const nonNormalMaximum =
+		controlledNonNormalCandidateTargets.length +
+		unresolvedTargets.filter((target) => target.affinity !== 'normal').length;
 	const gateReadiness = {
-		currentlySatisfied: false,
-		attainableWithExistingControlledCohort:
+		currentlySatisfied:
 			firstAttemptCandidateCount >= 20 &&
-			controlledCandidateTargets.length >= 23 &&
-			controlledNonNormalCandidateTargets.length >= 20,
+			speciesCorrectCount >= 23 &&
+			affinityCorrectCount >= 20 &&
+			normalUnaffiliatedCount === 4 &&
+			acceptedMeaningfulAffinityCount === 20,
+		attainableWithExistingControlledCohort:
+			firstAttemptMaximum >= 20 && candidateMaximum >= 23 && nonNormalMaximum >= 20,
 		criteria: [
 			{
 				label: 'First-attempt candidates',
 				current: firstAttemptCandidateCount,
-				maximum: firstAttemptCandidateCount,
+				maximum: firstAttemptMaximum,
 				threshold: 20
 			},
 			{
-				label: 'Species review capacity',
-				current: evaluation?.controlled?.speciesCorrectCount ?? 0,
-				maximum: controlledCandidateTargets.length,
+				label: 'Species-correct blind reviews',
+				current: speciesCorrectCount,
+				maximum: candidateMaximum,
 				threshold: 23
 			},
 			{
-				label: 'Meaningful affinity acceptance capacity',
-				current: evaluation?.controlled?.acceptedMeaningfulAffinityCount ?? 0,
-				maximum: controlledNonNormalCandidateTargets.length,
+				label: 'Affinity-correct blind reviews',
+				current: affinityCorrectCount,
+				maximum: candidateMaximum,
+				threshold: 20
+			},
+			{
+				label: 'Normal recognized as unaffiliated',
+				current: normalUnaffiliatedCount,
+				maximum: 4,
+				threshold: 4
+			},
+			{
+				label: 'Accepted meaningful affinities',
+				current: acceptedMeaningfulAffinityCount,
+				maximum: nonNormalMaximum,
 				threshold: 20
 			}
 		]
@@ -662,6 +1057,8 @@ export async function loadAffinityReviewData(
 		experimentId: EXPERIMENT_ID,
 		blind,
 		scope,
+		controlledRound: { id: controlledRound.id, label: controlledRound.label },
+		availableControlledRounds: controlledRounds.map(({ id, label }) => ({ id, label })),
 		rows,
 		targetCount: scopedTargets.length,
 		resultCount: scopedTargets.filter((target) => results.has(target.targetId)).length,
@@ -671,16 +1068,33 @@ export async function loadAffinityReviewData(
 		reviewedCandidateCount: visibleCells.filter(
 			(cell) => cell.status === 'candidate' && cell.reviewState.count > 0
 		).length,
-		catalog,
-		evaluation: blind && evaluation ? { ...evaluation, completionNotes: [] } : evaluation,
+		catalog: roundId === 'baseline-v1' ? catalog : null,
+		evaluation:
+			roundId === 'baseline-v1'
+				? blind && evaluation
+					? { ...evaluation, completionNotes: [] }
+					: evaluation
+				: null,
 		gateReadiness
 	};
 }
 
-export async function findVerifiedMediaByOpaqueId(opaqueId: string) {
+export async function findVerifiedMediaByOpaqueId(
+	opaqueId: string,
+	roundId: ControlledRoundId = 'baseline-v1',
+	scope: AffinityReviewScope = 'controlled'
+) {
 	if (!/^[a-f0-9]{24}$/.test(opaqueId)) return null;
-	const [targets, results] = await Promise.all([loadTargets(), loadResults()]);
-	for (const target of targets) {
+	const [targets, results, controlledRounds] = await Promise.all([
+		loadTargets(),
+		loadResults(),
+		loadAvailableControlledRounds()
+	]);
+	const controlledRound = controlledRounds.find((round) => round.id === roundId);
+	if (!controlledRound) throw new ControlledRoundUnavailableError(roundId);
+	for (const target of targets.filter((entry) =>
+		targetBelongsToReviewSelection(entry, controlledRound, scope)
+	)) {
 		const result = results.get(target.targetId);
 		if (!result) continue;
 		const candidate = await verifyCandidate(target, result);
