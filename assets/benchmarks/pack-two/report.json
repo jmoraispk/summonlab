@@ -6,7 +6,7 @@
   "categories": [
     { "assetType": "human-full-body-anchor", "requests": 24, "candidateAssets": 18, "requestMedianMs": 35171, "requestP90Ms": 41878, "requestP95Ms": 42099, "candidateMedianMs": 38194, "candidateP90Ms": 67591, "candidateP95Ms": 80606 },
     { "assetType": "human-continuity-sheet", "requests": 7, "candidateAssets": 6, "requestMedianMs": 109332, "requestP90Ms": 138213, "requestP95Ms": 138213, "candidateMedianMs": 103851, "candidateP90Ms": 264150, "candidateP95Ms": 264150 },
-    { "assetType": "monster-family-plate", "requests": 6, "candidateAssets": 6, "requestMedianMs": 23587, "requestP90Ms": 49437, "requestP95Ms": 49437, "candidateMedianMs": 23587, "candidateP90Ms": 49437, "candidateP95Ms": 49437 },
+    { "assetType": "monster-family-plate", "requests": 7, "candidateAssets": 6, "requestMedianMs": 27900, "requestP90Ms": 49437, "requestP95Ms": 49437, "candidateMedianMs": 28679, "candidateP90Ms": 49437, "candidateP95Ms": 49437 },
     { "assetType": "individual-monster-anchor", "requests": 1, "candidateAssets": 1, "requestMedianMs": 18067, "requestP90Ms": 18067, "requestP95Ms": 18067, "candidateMedianMs": 18067, "candidateP90Ms": 18067, "candidateP95Ms": 18067 },
     { "assetType": "identity-preserving-state-edit", "requests": 1, "candidateAssets": 1, "requestMedianMs": 38268, "requestP90Ms": 38268, "requestP95Ms": 38268, "candidateMedianMs": 38268, "candidateP90Ms": 38268, "candidateP95Ms": 38268 },
     { "assetType": "evolution-variant", "requests": 1, "candidateAssets": 1, "requestMedianMs": 35563, "requestP90Ms": 35563, "requestP95Ms": 35563, "candidateMedianMs": 35563, "candidateP90Ms": 35563, "candidateP95Ms": 35563 }

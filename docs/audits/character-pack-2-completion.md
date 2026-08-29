@@ -39,7 +39,7 @@ Release status: **held for human visual approval**
 
 - Human assets: 18 identities, 24 bitmaps, 31 generation attempts, seven correction attempts, and
   49,251,605 checksum-verified bytes.
-- Monster taxonomy: six plates, 24 archetypes, six generation attempts, and 14,361,703
+- Monster taxonomy: six plates, 24 archetypes, seven generation attempts, and 14,332,025
   checksum-verified bytes.
 - Premium human request latency: 35.2 s median, 41.9 s p90, and 42.1 s p95.
 - Correction-aware human candidate latency: 38.2 s median, 67.6 s p90, and 80.6 s p95.

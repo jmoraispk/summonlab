@@ -23,7 +23,16 @@ const HumanCatalogSchema = z.object({
 });
 const MonsterCatalogSchema = z.object({
 	plates: z.array(
-		z.object({ elapsedMs: z.number().int().positive(), humanStatus: z.literal('candidate') })
+		z.object({
+			elapsedMs: z.number().int().positive(),
+			humanStatus: z.literal('candidate'),
+			attempts: z.array(
+				z.object({
+					elapsedMs: z.number().int().positive(),
+					result: z.enum(['candidate', 'revise'])
+				})
+			)
+		})
 	)
 });
 const BenchmarkSamplesSchema = z.object({
@@ -163,8 +172,10 @@ for (const [name, role] of [
 	);
 }
 categories['monster-family-plate'] = metrics(
-	monsterCatalog.plates.map((plate) => plate.elapsedMs),
-	monsterCatalog.plates.map((plate) => plate.elapsedMs)
+	monsterCatalog.plates.flatMap((plate) => plate.attempts.map((attempt) => attempt.elapsedMs)),
+	monsterCatalog.plates.map((plate) =>
+		plate.attempts.reduce((total, attempt) => total + attempt.elapsedMs, 0)
+	)
 );
 for (const sample of benchmark.samples) {
 	categories[sample.assetType] = metrics([sample.elapsedMs], [sample.elapsedMs]);

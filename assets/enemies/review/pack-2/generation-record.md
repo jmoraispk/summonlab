@@ -29,6 +29,9 @@ No text, labels, numerals, UI, frames, panel dividers, logo, watermark, humans, 
 
 ## Arachnids · attempt 1
 
+Result: revise. The returned image did not finish the lower canvas and cropped/crowded multiple
+legs, so it was replaced rather than retained as the catalog candidate.
+
 ```text
 Use case: stylized-concept. Create a 1536×1024 landscape Character Pack 2 monster-family taxonomy plate for Summonlab.
 
@@ -39,6 +42,32 @@ Show exactly four original giant arachnids, fully visible and separated, ordered
 Each silhouette must communicate battlefield duty before labels. Shared floor and camera, realistic chitin, hairs, joints, weight, and contact shadows; restrained midnight, grey, brown, and pale-silk palette with cold gate light and warm rim. Premium painterly key-art quality, intimidating rather than grotesque gore.
 
 No text, labels, numerals, UI, panel dividers, frame, logo, watermark, humans, extra monster, fewer or more than four featured creatures, fantasy insect wings, humanoid faces, cropped legs, overlap that hides silhouettes, rainbow colors, excessive web covering, or bright background.
+```
+
+## Arachnids · attempt 2
+
+- Request wall clock: `27,900 ms`
+- Result: authoring candidate; human review pending
+- Source output: `exec-1c5b2f33-0740-4bd5-a028-bd4d3c13b098.png`
+
+```text
+Use case: stylized-concept
+Asset type: Summonlab Character Pack 2 monster-family taxonomy plate
+Input images: Image 1 is the incomplete failed render and design reference only; Image 2 is the existing cropped taxonomy candidate and design/material reference only. Generate a new complete plate rather than extending black pixels.
+
+Scene/backdrop: cracked near-black stone floor, charcoal-to-midnight studio backdrop, subtle cold gate haze, no scenery clutter.
+Subject: exactly four original giant arachnids, fully visible and separated in a clean left-to-right lineup, each with an anatomically coherent cephalothorax, abdomen, and exactly eight legs:
+1) Tunnel Spider — medium, low and fast flanker; flat dust-grey stone-camouflaged body, long sprinting legs, soft abdomen readable as vulnerable during a turn.
+2) Web Caster — medium ranged restraint specialist; raised pale-silk-wrapped abdomen, braced rear legs, clearly visible pale spinnerets and stored silk, one restrained silk line.
+3) Armored Brood Guard — large chokepoint tank; broad plated cephalothorax, short shield-like front legs, dense stone-dark armor, visibly less-protected side leg joints.
+4) Giant Broodmother — boss scale spawner; much larger suspended abdomen, restrained egg clusters under the body, low guarded nest posture, readable underside vulnerability without gore.
+
+Style/medium: premium realistic painterly dark-fantasy creature key art; coherent chitin plates, hairs, joints, believable weight and contact shadows; intimidating, grounded, and original.
+Composition/framing: landscape 3:2 taxonomy plate. Pull the camera back substantially. Place all four creatures entirely inside a generous safe area. Every abdomen, head, spinneret, egg cluster, all eight legs, and every leg tip must be visible. Leave at least 8% empty margin on the left, right, top, and bottom. Keep clear negative space between silhouettes; no overlap. Shared ground plane and eye-level comparison camera. The broodmother may be tallest but must not touch any edge. Render the entire canvas with finished image detail—no black or blank bands, missing regions, abrupt cutoffs, or unpainted areas.
+Lighting/mood: neutral comparison lighting with cool overhead/gate light and restrained warm rim; dark but legible.
+Color palette: midnight charcoal, stone grey, muted brown, black chitin, pale silk; no rainbow colors.
+Constraints: exactly four featured creatures; correct relative scale; exactly eight visible legs per creature; complete bodies; complete floor and background across the entire canvas; no crop.
+Avoid: text, labels, numerals, UI, panel dividers, frame, logo, watermark, humans, extra monsters, fewer or more than four spiders, missing or duplicate limbs, cropped legs, cropped abdomens, overlap, fantasy insect wings, humanoid faces, excessive web covering, gore, bright background, blank space rendered as pure black, or published-character resemblance.
 ```
 
 ## Arcane hostiles · attempt 1

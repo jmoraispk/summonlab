@@ -33,6 +33,16 @@ const CatalogSchema = z
 						bytes: z.number().int().positive(),
 						contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
 						elapsedMs: z.number().int().positive(),
+						attempts: z
+							.array(
+								z
+									.object({
+										elapsedMs: z.number().int().positive(),
+										result: z.enum(['candidate', 'revise'])
+									})
+									.strict()
+							)
+							.min(1),
 						humanStatus: z.literal('candidate'),
 						authoringInspection: z.enum(['pass', 'concern']),
 						generationMode: z.literal('built-in-imagegen'),
@@ -81,6 +91,12 @@ for (const plate of catalog.plates) {
 	if (!promptRecord.includes(`## ${plate.promptHeading}`)) {
 		throw new Error(`${plate.assetKey} exact prompt is missing`);
 	}
+	if (
+		plate.attempts.at(-1)?.result !== 'candidate' ||
+		plate.attempts.at(-1)?.elapsedMs !== plate.elapsedMs
+	) {
+		throw new Error(`${plate.assetKey} final attempt does not match the retained candidate`);
+	}
 	verifiedBytes += file.size;
 }
 
@@ -90,7 +106,7 @@ process.stdout.write(
 			rosterVersion: catalog.rosterVersion,
 			families: catalog.plates.length,
 			archetypes: PACK_TWO_MONSTER_ARCHETYPES.length,
-			generationAttempts: catalog.plates.length,
+			generationAttempts: catalog.plates.reduce((total, plate) => total + plate.attempts.length, 0),
 			verifiedBytes,
 			humanStatus: 'candidate'
 		},
