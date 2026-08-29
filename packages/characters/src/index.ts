@@ -26,6 +26,26 @@ export const PACK_TWO_PILOT_SEEDS = [
 	'pack-two-cohort-134'
 ] as const;
 
+export const PACK_TWO_EXPANSION_SEEDS = [
+	'pack-two-cohort-51',
+	'pack-two-cohort-631',
+	'pack-two-cohort-110',
+	'pack-two-cohort-168',
+	'pack-two-cohort-228',
+	'pack-two-cohort-240',
+	'pack-two-cohort-374',
+	'pack-two-cohort-295',
+	'pack-two-cohort-7',
+	'pack-two-cohort-100',
+	'pack-two-cohort-131',
+	'pack-two-cohort-40'
+] as const;
+
+export const PACK_TWO_COHORT_SEEDS = [
+	...PACK_TWO_PILOT_SEEDS,
+	...PACK_TWO_EXPANSION_SEEDS
+] as const;
+
 export const ZERO_GENERATION_CURSORS: CharacterGenerationCursors = Object.freeze({
 	identity: 0,
 	body: 0,
@@ -809,6 +829,14 @@ export async function generateCharacterDraft(
 export async function generatePackTwoPilot(): Promise<readonly CharacterDraft[]> {
 	return Promise.all(
 		PACK_TWO_PILOT_SEEDS.map((seed) =>
+			generateCharacterDraft(recipeFromSeed(seed, PACK_TWO_CHARACTER_GENERATION_VERSION))
+		)
+	);
+}
+
+export async function generatePackTwoCohort(): Promise<readonly CharacterDraft[]> {
+	return Promise.all(
+		PACK_TWO_COHORT_SEEDS.map((seed) =>
 			generateCharacterDraft(recipeFromSeed(seed, PACK_TWO_CHARACTER_GENERATION_VERSION))
 		)
 	);

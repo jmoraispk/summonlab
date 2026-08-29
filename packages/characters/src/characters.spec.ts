@@ -3,11 +3,14 @@ import { describe, expect, it } from 'vitest';
 import {
 	LEGACY_CHARACTER_GENERATION_VERSION,
 	PACK_TWO_CHARACTER_GENERATION_VERSION,
+	PACK_TWO_COHORT_SEEDS,
+	PACK_TWO_EXPANSION_SEEDS,
 	PACK_TWO_PILOT_SEEDS,
 	VISUAL_CHARACTER_GENERATION_VERSION,
 	canonicalJson,
 	chooseFirstDestination,
 	generateCharacterDraft,
+	generatePackTwoCohort,
 	generatePackTwoPilot,
 	hashManifest,
 	recipeAtMinimumRarity,
@@ -224,6 +227,54 @@ describe('deterministic character generation', () => {
 		expect(new Set(manifests.map((manifest) => manifest.visualRole)).size).toBeGreaterThanOrEqual(
 			3
 		);
+	});
+
+	it('locks the 18-human Pack 2 cohort to deliberately crossed attributes', async () => {
+		const cohort = await generatePackTwoCohort();
+		const manifests = cohort.map((draft) => draft.manifest);
+		const expansion = cohort.slice(PACK_TWO_PILOT_SEEDS.length);
+
+		expect(PACK_TWO_EXPANSION_SEEDS).toHaveLength(12);
+		expect(PACK_TWO_COHORT_SEEDS).toHaveLength(18);
+		expect(expansion.map((draft) => draft.manifestHash)).toEqual([
+			'2f3bfc72e0cf6bbb7a910db8047ffb434ee60a0187c49edf59d383083e2b8ec0',
+			'cd52d67613e989749c998b494b5b81db742056334147f277810cd113a5b0ecfe',
+			'53c7ca65afaec9304260a92db4faded048043d191d80e0f8b04e4f1a2bd80d18',
+			'869dd30ece536159788b1bdf00c5a476714d61f6e1db7e33413b3fbc352665fe',
+			'37c7e563ef87630dc50459138760a5b75af5d275c1fd04af03b58dcd9bed479f',
+			'e54fac542c36094de70256deb83841e9097597655d7c4c89f05b0497ea1bd213',
+			'147a67d7a5efc9dff329e8366b8c5719764992d27af9dcfef499d8eec69ecf91',
+			'12c6a7d26b12581e53f5939e3249898af5d4f15231af2085cf896168c37aeb4b',
+			'8b87697357f60b7a7b26e8a798e64ba8a9fb4a15ee9ccd1eaf08b84b60b0da1f',
+			'12eded858cc30e6e354b31e2ec2fefc3d5557aec3e346eef489ce5022ad3c422',
+			'bbe88090c9edc4eeebd7f746c73bdca3317d15c3a3fbab292952875950227255',
+			'24a9e1f4cd027d548e833b1f45a4f940806758dca30b9eda3844fc2f0a3ae5a6'
+		]);
+
+		for (const presentation of ['feminine', 'masculine', 'androgynous'] as const) {
+			const presentationCohort = manifests.filter(
+				(manifest) => manifest.genderPresentation === presentation
+			);
+			expect(presentationCohort).toHaveLength(6);
+			expect(
+				new Set(presentationCohort.map((manifest) => manifest.physiology?.heightBand))
+			).toEqual(new Set(['short', 'medium', 'tall', 'exceptional']));
+		}
+
+		const feminine = manifests.filter((manifest) => manifest.genderPresentation === 'feminine');
+		expect(new Set(feminine.map((manifest) => manifest.bodyBuild))).toEqual(
+			new Set(['wiry', 'lean', 'soft', 'athletic', 'sturdy', 'powerful'])
+		);
+		expect(new Set(manifests.map((manifest) => manifest.bodyFrame))).toEqual(
+			new Set(['slight', 'balanced', 'broad'])
+		);
+		expect(new Set(manifests.map((manifest) => manifest.physiology?.proportions?.profile))).toEqual(
+			new Set(['compact', 'balanced', 'long-limbed', 'long-torso'])
+		);
+		expect(new Set(manifests.map((manifest) => manifest.visualRole)).size).toBeGreaterThanOrEqual(
+			7
+		);
+		expect(new Set(manifests.map((manifest) => manifest.rarityStars))).toEqual(new Set([1, 2, 3]));
 	});
 
 	it('rerolls only unlocked generation channels', async () => {
