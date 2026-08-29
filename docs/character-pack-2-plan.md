@@ -509,3 +509,8 @@ Pack 2 is intentionally not marked release-ready. All 18 human anchors, six cont
 human progression states, six monster-family plates, and the individual Stone Breaker benchmark
 anchor remain approval candidates until a human records accept or revise decisions in the Forge.
 Candidate identities are excluded from the player-facing summon pool.
+
+The accepted post-cohort variation revision is implemented as `human-v5` plus
+`pack-two-monster-grades-v1`. Three supplemental generated proofs are separately cataloged with exact
+prompts, timings, hashes, and review state at `/forge/pack-2/revision`; they also remain candidates
+until a human decision is recorded.

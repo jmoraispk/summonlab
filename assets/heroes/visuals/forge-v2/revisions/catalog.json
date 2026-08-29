@@ -1,0 +1,61 @@
+{
+  "packId": "character-pack-2",
+  "catalogVersion": "pack-two-revision-visual-catalog-v1",
+  "status": "approval-candidate",
+  "humanGenerationVersion": "human-v5",
+  "monsterGradeVersion": "pack-two-monster-grades-v1",
+  "promptRecord": "assets/heroes/visuals/forge-v2/revisions/generation-record.md",
+  "assets": [
+    {
+      "assetKey": "human-v5-face-attire-proof-v1",
+      "kind": "human-face-attire-lineup",
+      "file": "assets/heroes/visuals/forge-v2/revisions/human-v5-face-attire-proof-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2736959,
+      "contentHash": "68396959fc5736a91021976a8ec46aa5c28523c37b9296189dece9d56b8956a8",
+      "elapsedMs": 49000,
+      "sourceOutput": "exec-837242a0-0e26-4447-9237-aa9ea3ef8c01.png",
+      "humanStatus": "candidate",
+      "authoringInspection": "concern",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Human v5 face and attire lineup · attempt 1",
+      "createdAt": "2026-08-29T13:35:14.636Z",
+      "reviewFocus": "Clothing and body separation pass; determine whether roster-scale faces remain too compressed."
+    },
+    {
+      "assetKey": "human-v5-face-grammar-proof-v1",
+      "kind": "human-face-grammar",
+      "file": "assets/heroes/visuals/forge-v2/revisions/human-v5-face-grammar-proof-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2622645,
+      "contentHash": "6daaa7f1fdd356acf9d2c0ad1eee4f4dba440628ad42eeb2b7548f8bce9fceac",
+      "elapsedMs": 44700,
+      "sourceOutput": "exec-f62ecc80-fd0e-40a3-8ca0-ff6fa52cbd0d.png",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Human v5 face grammar · attempt 1",
+      "createdAt": "2026-08-29T13:37:49.119Z",
+      "reviewFocus": "Judge whether all eight adults read as separate identities rather than one template with palette changes."
+    },
+    {
+      "assetKey": "monster-grade-escalation-v1",
+      "kind": "monster-grade-escalation",
+      "file": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2817952,
+      "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e",
+      "elapsedMs": 52400,
+      "sourceOutput": "exec-59c0bd9c-04b8-4905-949c-3cd2b642ebc3.png",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Monster grades 4, 7, and 10 · attempt 1",
+      "createdAt": "2026-08-29T13:35:14.640Z",
+      "reviewFocus": "Judge physical and weapon growth for Death Knight against controlled glow growth for Tower Archmage."
+    }
+  ]
+}

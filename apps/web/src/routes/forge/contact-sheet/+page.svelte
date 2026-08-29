@@ -44,6 +44,7 @@
 		<nav>
 			<a href={resolve('/visual-lab')}>Visual lab</a>
 			<a href={resolve('/forge')}>Forge</a>
+			<a href={resolve('/forge/pack-2/revision')}>Revision proofs</a>
 		</nav>
 	</header>
 

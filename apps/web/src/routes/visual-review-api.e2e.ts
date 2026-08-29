@@ -138,4 +138,31 @@ test('records an idempotent review only against the current asset hash', async (
 		}
 	});
 	expect(monsterAnchorReview.status()).toBe(201);
+
+	const revisionCatalog = JSON.parse(
+		await readFile(
+			new URL('../../../../assets/heroes/visuals/forge-v2/revisions/catalog.json', import.meta.url),
+			'utf8'
+		)
+	) as {
+		catalogVersion: string;
+		assets: Array<{ assetKey: string; contentHash: string }>;
+	};
+	const revisionAsset = revisionCatalog.assets[0]!;
+	const revisionReview = await request.post('/api/dev/visual-reviews', {
+		data: {
+			...payload,
+			reviewId: randomUUID(),
+			assetKey: revisionAsset.assetKey,
+			catalogVersion: revisionCatalog.catalogVersion,
+			assetContentHash: revisionAsset.contentHash,
+			note: 'Pack 2 revision-proof routing proof.'
+		}
+	});
+	expect(revisionReview.status()).toBe(201);
+	const revisionListed = await request.get(
+		`/api/dev/visual-reviews?catalogVersion=${revisionCatalog.catalogVersion}&includeAutomated=true`
+	);
+	expect(revisionListed.status()).toBe(200);
+	expect((await revisionListed.json()).latestByAsset[revisionAsset.assetKey]).toBeDefined();
 });

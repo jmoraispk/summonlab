@@ -80,6 +80,13 @@ signal for most species, while arcane specialists grow physically more modestly.
 
 ## Review proofs
 
+All three proofs are registered in
+`assets/heroes/visuals/forge-v2/revisions/catalog.json`. Their unabridged generation prompts,
+source-output identifiers, and measured wall-clock times are preserved in
+`assets/heroes/visuals/forge-v2/revisions/generation-record.md`. Reviewers can inspect and record a
+hash-bound accept/revise decision for each file at `/forge/pack-2/revision`; review does not promote
+an asset automatically.
+
 - `assets/heroes/visuals/forge-v2/revisions/human-v5-face-attire-proof-v1.png`
   (`sha256:68396959fc5736a91021976a8ec46aa5c28523c37b9296189dece9d56b8956a8`) is a built-in
   image-generation review plate derived from six `human-v5` directions. It is not catalog-promoted.
@@ -92,5 +99,4 @@ signal for most species, while arcane specialists grow physically more modestly.
   image-generation review plate showing Death Knight and Tower Archmage at grades 4, 7, and 10. It is
   not catalog-promoted.
 
-The exact prompts are represented by the manifest and grade directions in this document and the Forge
-UI. Promotion still requires explicit visual review and a catalog update.
+Promotion still requires explicit visual review and a catalog update.

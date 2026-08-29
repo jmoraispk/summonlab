@@ -186,7 +186,9 @@
 		<div><span>Character Forge</span><strong>Pack 2 full cohort</strong></div>
 		<nav>
 			<a href={resolve('/forge')}>Pack 1</a><a href={resolve('/forge/enemies/pack-2')}>Monsters</a
-			><a href={resolve('/forge/contact-sheet')}>Seed audit</a>
+			><a href={resolve('/forge/contact-sheet')}>Seed audit</a><a
+				href={resolve('/forge/pack-2/revision')}>Revision proofs</a
+			>
 		</nav>
 	</header>
 

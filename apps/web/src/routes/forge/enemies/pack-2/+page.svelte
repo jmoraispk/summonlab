@@ -102,6 +102,7 @@
 		<nav>
 			<a href={resolve('/forge/enemies')}>Pack 1 monsters</a>
 			<a href={resolve('/forge/pack-2')}>Pack 2 humans</a>
+			<a href={resolve('/forge/pack-2/revision')}>Revision proofs</a>
 		</nav>
 	</header>
 
