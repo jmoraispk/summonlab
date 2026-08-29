@@ -7,9 +7,9 @@
 	function downloadAudit() {
 		const audit = {
 			generationVersion: data.generationVersion,
-			seedPattern: 'cohort-{0..99}',
+			seedPattern: 'pack-two-cohort-{0..999}',
 			summary: data.summary,
-			characters: data.drafts.map((draft) => ({
+			characters: data.auditDrafts.map((draft) => ({
 				recipe: draft.recipe,
 				manifest: draft.manifest,
 				manifestHash: draft.manifestHash,
@@ -21,24 +21,24 @@
 		);
 		const anchor = document.createElement('a');
 		anchor.href = url;
-		anchor.download = 'summonlab-human-v2-100-seed-audit.json';
+		anchor.download = 'summonlab-human-v4-1000-seed-audit.json';
 		anchor.click();
 		URL.revokeObjectURL(url);
 	}
 </script>
 
 <svelte:head>
-	<title>100-seed contact sheet · summonlab</title>
+	<title>Pack 2 cohort audit · summonlab</title>
 	<meta
 		name="description"
-		content="A deterministic, printable 100-seed human-v2 diversity contact sheet for Summonlab."
+		content="A deterministic human-v4 Pack 2 diversity and independence audit for Summonlab."
 	/>
 </svelte:head>
 
 <main>
 	<header class="topbar">
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
-		<div><span>Character Forge</span><strong>100-seed audit</strong></div>
+		<div><span>Character Forge · Pack 2</span><strong>1,000-seed audit</strong></div>
 		<nav>
 			<a href={resolve('/visual-lab')}>Visual lab</a>
 			<a href={resolve('/forge')}>Forge</a>
@@ -47,13 +47,14 @@
 
 	<section class="intro">
 		<div>
-			<p class="eyebrow">{data.generationVersion} · cohort-0…99</p>
+			<p class="eyebrow">{data.generationVersion} · pack-two-cohort-0…999</p>
 			<h1>Variation<br />without drift.</h1>
 		</div>
 		<div class="intro-copy">
 			<p>
-				One hundred deterministic adult manifests expose distribution problems before generated art
-				makes them expensive. Appearance, mind, habit, and rarity retain separate entropy streams.
+				One thousand deterministic adult manifests test body, presentation, phenotype, role, and
+				rarity independence before generated art makes mistakes expensive. The first hundred remain
+				printable below for visual inspection.
 			</p>
 			<div class="actions">
 				<button type="button" onclick={() => window.print()}>Print / save PDF</button>
@@ -64,33 +65,119 @@
 
 	<section class="summary" aria-label="Cohort distribution summary">
 		<article>
-			<span>People</span><strong data-testid="contact-count">{data.drafts.length}</strong>
+			<span>Audited</span><strong data-testid="audit-count">{data.auditSize}</strong>
 		</article>
 		<article>
-			<span>Unique names</span><strong data-testid="unique-name-count"
-				>{data.summary.uniqueNames}</strong
-			>
+			<span>Displayed</span><strong data-testid="contact-count">{data.displaySize}</strong>
 		</article>
 		<article><span>Mean age</span><strong>{data.summary.meanAge}</strong></article>
-		<article><span>Mean height</span><strong>{data.summary.meanHeightCm} cm</strong></article>
 		<article>
-			<span>Presentation</span>
+			<span>Height span</span><strong
+				>{data.summary.minimumHeightCm}–{data.summary.maximumHeightCm} cm</strong
+			>
+		</article>
+		<article>
+			<span>Builds</span>
 			<strong
-				>{Object.entries(data.summary.presentations)
+				>{Object.entries(data.summary.builds)
 					.map(([key, value]) => `${key} ${value}`)
 					.join(' · ')}</strong
 			>
 		</article>
 		<article>
-			<span>Skin tones</span><strong
-				>{Object.keys(data.summary.skinTones).length} represented</strong
+			<span>Proportions</span><strong
+				>{Object.entries(data.summary.proportionProfiles)
+					.map(([key, value]) => `${key} ${value}`)
+					.join(' · ')}</strong
 			>
 		</article>
 		<article>
-			<span>Hair textures</span><strong
-				>{Object.keys(data.summary.hairTextures).length} represented</strong
+			<span>Roles</span><strong
+				>{Object.keys(data.summary.visualRoles).length} medieval vocabularies</strong
 			>
 		</article>
+	</section>
+
+	<section class="independence" aria-labelledby="independence-heading">
+		<header>
+			<div>
+				<p class="eyebrow">Distribution gate</p>
+				<h2 id="independence-heading">Independence is tested, not assumed.</h2>
+			</div>
+			<p>
+				Every cross-tab is calculated from all {data.auditSize} manifests. A green gate means the cohort
+				contains evidence for every required crossing—not that the final art has been approved.
+			</p>
+		</header>
+		<div class="checks">
+			{#each data.summary.independenceChecks as check (check.id)}
+				<article class:passed={check.passed} data-testid="independence-check">
+					<span>{check.passed ? 'Pass' : 'Revise'}</span><strong>{check.label}</strong>
+				</article>
+			{/each}
+		</div>
+		<div class="matrices">
+			<article>
+				<h3>Presentation × build</h3>
+				<table>
+					<thead>
+						<tr
+							><th>Presentation</th>{#each Object.keys(data.summary.builds) as build}<th>{build}</th
+								>{/each}</tr
+						>
+					</thead>
+					<tbody>
+						{#each Object.entries(data.summary.presentationByBuild) as [presentation, columns]}
+							<tr
+								><th>{presentation}</th>{#each Object.keys(data.summary.builds) as build}<td
+										>{columns[build]}</td
+									>{/each}</tr
+							>
+						{/each}
+					</tbody>
+				</table>
+			</article>
+			<article>
+				<h3>Presentation × height</h3>
+				<table>
+					<thead>
+						<tr
+							><th>Presentation</th>{#each Object.keys(data.summary.heightBands) as band}<th
+									>{band}</th
+								>{/each}</tr
+						>
+					</thead>
+					<tbody>
+						{#each Object.entries(data.summary.presentationByHeight) as [presentation, columns]}
+							<tr
+								><th>{presentation}</th>{#each Object.keys(data.summary.heightBands) as band}<td
+										>{columns[band]}</td
+									>{/each}</tr
+							>
+						{/each}
+					</tbody>
+				</table>
+			</article>
+		</div>
+	</section>
+
+	<section class="scale-lineup" aria-labelledby="scale-heading">
+		<header>
+			<div>
+				<p class="eyebrow">Common floor study</p>
+				<h2 id="scale-heading">Height must survive the lineup.</h2>
+			</div>
+			<p>Three deterministic examples per band share one floor and are sized by centimeters.</p>
+		</header>
+		<div class="lineup-stage">
+			{#each data.lineup as draft (draft.manifest.characterId)}
+				<article style={`--height:${draft.manifest.heightCm}`}>
+					<div class="lineup-rig"><HeroRig manifest={draft.manifest} compact /></div>
+					<strong>{draft.manifest.heightCm}</strong>
+					<span>{draft.manifest.physiology?.heightBand} · {draft.manifest.bodyBuild}</span>
+				</article>
+			{/each}
+		</div>
 	</section>
 
 	<section class="contact-sheet" aria-label="One hundred deterministic hero manifests">
@@ -102,10 +189,12 @@
 				<div class="rig"><HeroRig manifest={draft.manifest} compact /></div>
 				<h2>{draft.manifest.displayName}</h2>
 				<p>
-					{draft.manifest.adultAge} · {draft.manifest.heightCm} cm · {draft.manifest
-						.genderPresentation}
+					{draft.manifest.adultAge} · {draft.manifest.heightCm} cm · {draft.manifest.bodyBuild}
 				</p>
-				<p>{draft.manifest.phenotype.skinTone} · {draft.manifest.phenotype.hairTexture}</p>
+				<p>
+					{draft.manifest.genderPresentation} · {draft.manifest.physiology?.proportions?.profile}
+				</p>
+				<p>{draft.manifest.visualRole} · {draft.manifest.phenotype.hairSilhouette}</p>
 				<footer>
 					<span>{'✦'.repeat(draft.manifest.rarityStars)}</span><code
 						>{draft.manifestHash.slice(0, 8)}</code
@@ -120,7 +209,7 @@
 			Manifest bytes are authoritative. These code-native rigs are distribution diagnostics, not
 			approved portrait art.
 		</p>
-		<code>{data.generationVersion} · cohort-0…99 · deterministic export</code>
+		<code>{data.generationVersion} · 1,000 audited · 100 displayed · deterministic export</code>
 	</footer>
 </main>
 
@@ -257,6 +346,143 @@
 		font-size: 0.62rem;
 		line-height: 1.45;
 	}
+	.independence,
+	.scale-lineup {
+		max-width: 100rem;
+		margin: 4rem auto;
+		padding: 0 clamp(1.2rem, 3vw, 3rem);
+	}
+	.independence > header,
+	.scale-lineup > header {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 3rem;
+		margin-bottom: 1.2rem;
+	}
+	.independence h2,
+	.scale-lineup h2 {
+		margin: 0;
+		font:
+			400 clamp(1.8rem, 3vw, 3.2rem) Georgia,
+			serif;
+	}
+	.independence > header > p,
+	.scale-lineup > header > p {
+		max-width: 38rem;
+		margin: 0;
+		color: rgba(246, 241, 231, 0.45);
+		font-size: 0.72rem;
+		line-height: 1.7;
+		text-align: right;
+	}
+	.checks {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1px;
+	}
+	.checks article {
+		padding: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: #0d1017;
+	}
+	.checks span,
+	.checks strong {
+		display: block;
+	}
+	.checks span {
+		color: #e28b7d;
+		font-size: 0.5rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.checks .passed span {
+		color: #72d1b5;
+	}
+	.checks strong {
+		margin-top: 0.45rem;
+		font-size: 0.72rem;
+		line-height: 1.5;
+	}
+	.matrices {
+		display: grid;
+		grid-template-columns: 1.2fr 0.8fr;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+	.matrices article {
+		min-width: 0;
+		padding: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: #0a0d13;
+		overflow-x: auto;
+	}
+	.matrices h3 {
+		margin: 0 0 0.8rem;
+		font:
+			400 1.1rem Georgia,
+			serif;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.58rem;
+	}
+	th,
+	td {
+		padding: 0.55rem;
+		border: 1px solid rgba(255, 255, 255, 0.07);
+		text-align: right;
+	}
+	th:first-child {
+		text-align: left;
+	}
+	thead th {
+		color: #7fd8e9;
+		font-weight: 700;
+	}
+	.lineup-stage {
+		display: flex;
+		align-items: end;
+		min-height: 28rem;
+		padding: 2rem 1rem 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: linear-gradient(transparent 95%, rgba(210, 160, 77, 0.35) 95%), #090c12;
+		overflow-x: auto;
+	}
+	.lineup-stage article {
+		display: grid;
+		flex: 1 0 7rem;
+		min-width: 7rem;
+		place-items: center;
+	}
+	.lineup-rig {
+		width: 6.5rem;
+		height: calc(var(--height) * 1.8px);
+	}
+	.lineup-rig :global(figure),
+	.lineup-rig :global(svg) {
+		width: 100%;
+		height: 100%;
+	}
+	.lineup-stage strong,
+	.lineup-stage span {
+		display: block;
+	}
+	.lineup-stage strong {
+		margin-top: 0.5rem;
+		color: #d2a04d;
+		font:
+			400 0.9rem Georgia,
+			serif;
+	}
+	.lineup-stage span {
+		color: rgba(246, 241, 231, 0.4);
+		font-size: 0.48rem;
+		text-align: center;
+		text-transform: capitalize;
+	}
 	.contact-sheet {
 		display: grid;
 		grid-template-columns: repeat(10, minmax(7.5rem, 1fr));
@@ -357,6 +583,19 @@
 		.summary {
 			grid-template-columns: 1fr 1fr;
 		}
+		.independence > header,
+		.scale-lineup > header {
+			display: block;
+		}
+		.independence > header > p,
+		.scale-lineup > header > p {
+			margin-top: 1rem;
+			text-align: left;
+		}
+		.checks,
+		.matrices {
+			grid-template-columns: 1fr;
+		}
 		.contact-sheet {
 			grid-template-columns: repeat(5, minmax(7.5rem, 1fr));
 		}
@@ -375,6 +614,8 @@
 		.topbar,
 		.intro,
 		.actions,
+		.independence,
+		.scale-lineup,
 		.page-footer {
 			display: none;
 		}

@@ -31,6 +31,14 @@
 			manifest.phenotype.hairStyle.includes('jaw')
 	);
 	const stars = $derived('✦'.repeat(manifest.rarityStars));
+	const packTwo = $derived(manifest.generationVersion === 'human-v4');
+	const proportions = $derived(manifest.physiology?.proportions);
+	const shoulderScale = $derived(packTwo ? manifest.rig.shoulderWidth : 1);
+	const hipScale = $derived(packTwo ? manifest.rig.hipWidth : 1);
+	const torsoScale = $derived(packTwo ? (proportions?.torsoRatio ?? 1) : 1);
+	const armScale = $derived(packTwo ? (proportions?.armRatio ?? 1) / torsoScale : 1);
+	const legScale = $derived(packTwo ? (proportions?.legRatio ?? 1) : 1);
+	const headOffsetY = $derived(packTwo ? (1 - torsoScale) * 52 : 0);
 	const mainHandAnchor = $derived(
 		profile?.anchors.mainHand ?? {
 			x: manifest.handedness === 'left' ? 0.27 : 0.73,
@@ -51,10 +59,13 @@
 	class:injured={paletteMode === 'injured' || expression === 'injured'}
 	data-expression={expression}
 	data-equipment={equipment}
+	data-build={manifest.bodyBuild}
+	data-height-band={manifest.physiology?.heightBand ?? 'legacy'}
+	data-proportion={manifest.physiology?.proportions?.profile ?? 'legacy'}
 	aria-label={`${manifest.displayName}, deterministic modular hero rig`}
 >
 	<svg
-		viewBox="0 0 100 180"
+		viewBox={packTwo ? '0 0 100 184' : '0 0 100 180'}
 		role="img"
 		aria-labelledby={`hero-${manifest.characterId}`}
 		style={`--skin:${manifest.palette.skin};--hair:${manifest.palette.hair};--cloth:${manifest.palette.cloth};--accent:${manifest.palette.accent};--shoulders:${manifest.rig.shoulderWidth};--hips:${manifest.rig.hipWidth};--head:${manifest.rig.headScale};--legs:${manifest.rig.legRatio}`}
@@ -76,42 +87,58 @@
 			</filter>
 		</defs>
 
-		<ellipse class="shadow" cx="50" cy="171" rx="27" ry="5" />
+		<ellipse class="shadow" cx="50" cy={packTwo ? 176 : 171} rx="27" ry="5" />
 		<g class="figure">
-			<path class="cloak-back" d="M29 50 Q50 40 72 51 L78 115 Q51 128 22 113 Z" />
-
-			<g class="leg leg-left">
-				<path class="trouser" d="M34 103 L49 103 L46 150 L31 150 Z" />
-				<path class="boot" d="M31 143 L46 143 L44 169 L25 169 Q23 165 31 160 Z" />
-				<path class="boot-line" d="M29 153 L44 154 M28 160 L43 161" />
-			</g>
-			<g class="leg leg-right">
-				<path class="trouser" d="M50 103 L66 103 L70 150 L54 150 Z" />
-				<path class="boot" d="M55 143 L70 143 L77 167 Q76 170 69 170 L53 169 Z" />
-				<path class="boot-line" d="M56 153 L72 153 M57 160 L74 160" />
-			</g>
-
-			<g class="arm arm-left">
-				<path class="sleeve" d="M30 53 Q23 58 20 79 L27 101 L35 98 L32 78 L39 62 Z" />
-				<path class="bracer" d="M26 92 L36 90 L38 108 L30 112 L25 104 Z" />
-				<path class="skin" d="M30 108 Q35 104 38 109 L38 119 L34 126 L30 121 Z" />
-			</g>
-			<g class="arm arm-right">
-				<path class="sleeve" d="M69 53 Q77 58 81 78 L75 101 L66 98 L69 77 L61 62 Z" />
-				<path class="bracer" d="M65 90 L75 92 L76 105 L71 112 L63 108 Z" />
-				<path class="skin" d="M63 108 Q68 104 72 109 L70 122 L66 126 L62 118 Z" />
+			<g
+				class="lower-body"
+				transform={`translate(50 169) scale(${hipScale} ${legScale}) translate(-50 -169)`}
+			>
+				<g class="leg leg-left">
+					<path class="trouser" d="M34 103 L49 103 L46 150 L31 150 Z" />
+					<path class="boot" d="M31 143 L46 143 L44 169 L25 169 Q23 165 31 160 Z" />
+					<path class="boot-line" d="M29 153 L44 154 M28 160 L43 161" />
+				</g>
+				<g class="leg leg-right">
+					<path class="trouser" d="M50 103 L66 103 L70 150 L54 150 Z" />
+					<path class="boot" d="M55 143 L70 143 L77 167 Q76 170 69 170 L53 169 Z" />
+					<path class="boot-line" d="M56 153 L72 153 M57 160 L74 160" />
+				</g>
 			</g>
 
-			<path class="neck skin" d="M43 39 L57 39 L59 54 L41 54 Z" />
-			<path class="torso" d="M38 48 Q50 43 63 49 L70 77 L65 111 L34 111 L29 78 Z" />
-			<path class="tunic-panel" d="M42 54 L57 53 L61 105 L39 105 Z" />
-			<path class="cape" d="M30 50 Q50 43 70 51 L65 65 Q50 57 34 66 Z" />
-			<path class="belt" d="M33 94 Q50 98 66 94 L66 101 Q50 105 34 101 Z" />
-			<rect class="buckle" x="47" y="96" width="7" height="6" rx="1" />
+			<g
+				class="upper-body"
+				transform={`translate(50 103) scale(${shoulderScale} ${torsoScale}) translate(-50 -103)`}
+			>
+				<path class="cloak-back" d="M29 50 Q50 40 72 51 L78 115 Q51 128 22 113 Z" />
+				<g class="arms" transform={`translate(50 56) scale(1 ${armScale}) translate(-50 -56)`}>
+					<g class="arm arm-left">
+						<path class="sleeve" d="M30 53 Q23 58 20 79 L27 101 L35 98 L32 78 L39 62 Z" />
+						<path class="bracer" d="M26 92 L36 90 L38 108 L30 112 L25 104 Z" />
+						<path class="skin" d="M30 108 Q35 104 38 109 L38 119 L34 126 L30 121 Z" />
+					</g>
+					<g class="arm arm-right">
+						<path class="sleeve" d="M69 53 Q77 58 81 78 L75 101 L66 98 L69 77 L61 62 Z" />
+						<path class="bracer" d="M65 90 L75 92 L76 105 L71 112 L63 108 Z" />
+						<path class="skin" d="M63 108 Q68 104 72 109 L70 122 L66 126 L62 118 Z" />
+					</g>
+				</g>
+
+				<path class="neck skin" d="M43 39 L57 39 L59 54 L41 54 Z" />
+				<path class="torso" d="M38 48 Q50 43 63 49 L70 77 L65 111 L34 111 L29 78 Z" />
+				<path class="tunic-panel" d="M42 54 L57 53 L61 105 L39 105 Z" />
+				<path class="cape" d="M30 50 Q50 43 70 51 L65 65 Q50 57 34 66 Z" />
+				<path class="belt" d="M33 94 Q50 98 66 94 L66 101 Q50 105 34 101 Z" />
+				<rect class="buckle" x="47" y="96" width="7" height="6" rx="1" />
+
+				<g class="clasp" filter={`url(#glow-${manifest.characterId})`}>
+					<circle cx="50" cy="55" r="3.5" />
+					<path d="M50 49 L52 55 L50 61 L48 55 Z" />
+				</g>
+			</g>
 
 			<g
 				class="head"
-				transform={`translate(50 33) scale(${manifest.rig.headScale}) translate(-50 -33)`}
+				transform={`translate(0 ${headOffsetY}) translate(50 33) scale(${manifest.rig.headScale}) translate(-50 -33)`}
 			>
 				{#if hasLongHair}
 					<path class="hair-back" d="M37 19 Q50 7 64 19 L66 48 L36 49 Z" />
@@ -171,11 +198,6 @@
 					{/if}
 				</g>
 			{/if}
-
-			<g class="clasp" filter={`url(#glow-${manifest.characterId})`}>
-				<circle cx="50" cy="55" r="3.5" />
-				<path d="M50 49 L52 55 L50 61 L48 55 Z" />
-			</g>
 		</g>
 	</svg>
 	{#if !compact}
