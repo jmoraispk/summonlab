@@ -15,6 +15,7 @@ import {
 export const LEGACY_CHARACTER_GENERATION_VERSION = 'human-v1';
 export const VISUAL_CHARACTER_GENERATION_VERSION = 'human-v2';
 export const CHARACTER_GENERATION_VERSION = 'human-v3';
+export const PACK_TWO_CHARACTER_GENERATION_VERSION = 'human-v4';
 
 export const ZERO_GENERATION_CURSORS: CharacterGenerationCursors = Object.freeze({
 	identity: 0,
@@ -142,6 +143,86 @@ const clothPalettes = [
 	['#342929', '#c56f61']
 ] as const;
 
+const packTwoBodyBuilds = ['wiry', 'lean', 'soft', 'athletic', 'sturdy', 'powerful'] as const;
+const packTwoHeightBands = [
+	'short',
+	'short',
+	'medium',
+	'medium',
+	'medium',
+	'medium',
+	'tall',
+	'tall',
+	'tall',
+	'exceptional'
+] as const;
+const packTwoProportionProfiles = ['compact', 'balanced', 'long-limbed', 'long-torso'] as const;
+const packTwoVisualRoles = [
+	'guard',
+	'hunter',
+	'healer',
+	'smith',
+	'scribe',
+	'traveler',
+	'court',
+	'mage'
+] as const;
+const packTwoHairStyles = [
+	['shaved', 'close'],
+	['cropped coils', 'close'],
+	['close curls', 'close'],
+	['jaw-length', 'jaw'],
+	['loose shoulder-length', 'shoulder'],
+	['long braid', 'long'],
+	['high knot', 'raised'],
+	['braided crown', 'crown'],
+	['wrapped braids', 'wrapped']
+] as const;
+
+const packTwoHeightRanges = {
+	short: [150, 162],
+	medium: [163, 178],
+	tall: [179, 192],
+	exceptional: [193, 205]
+} as const;
+
+const packTwoBuildComposition = {
+	wiry: { bmi: 19, muscle: 5, bodyFat: 3, stance: 0.92 },
+	lean: { bmi: 21, muscle: 4, bodyFat: 4, stance: 0.95 },
+	soft: { bmi: 27, muscle: 4, bodyFat: 7, stance: 1.03 },
+	athletic: { bmi: 24, muscle: 7, bodyFat: 4, stance: 1 },
+	solid: { bmi: 29, muscle: 6, bodyFat: 6, stance: 1.1 },
+	sturdy: { bmi: 29, muscle: 6, bodyFat: 6, stance: 1.1 },
+	powerful: { bmi: 31, muscle: 9, bodyFat: 5, stance: 1.14 }
+} as const;
+
+const packTwoProportions = {
+	compact: {
+		torsoRatio: 1.08,
+		armRatio: 0.93,
+		legRatio: 0.9,
+		weightDistribution: 'grounded'
+	},
+	balanced: {
+		torsoRatio: 1,
+		armRatio: 1,
+		legRatio: 1,
+		weightDistribution: 'centered'
+	},
+	'long-limbed': {
+		torsoRatio: 0.93,
+		armRatio: 1.1,
+		legRatio: 1.1,
+		weightDistribution: 'light'
+	},
+	'long-torso': {
+		torsoRatio: 1.12,
+		armRatio: 1.03,
+		legRatio: 0.89,
+		weightDistribution: 'forward'
+	}
+} as const;
+
 function hash32(value: string): number {
 	let hash = 0x811c9dc5;
 	for (let index = 0; index < value.length; index += 1) {
@@ -197,6 +278,14 @@ function choose<const Values extends readonly unknown[]>(
 
 function between(stream: Stream, minimum: number, maximum: number): number {
 	return minimum + Math.floor(stream() * (maximum - minimum + 1));
+}
+
+function bounded(value: number, minimum: number, maximum: number): number {
+	return Math.max(minimum, Math.min(maximum, value));
+}
+
+function fixed3(value: number): number {
+	return Number(value.toFixed(3));
 }
 
 function deterministicUuid(value: string): string {
@@ -280,12 +369,24 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const features = streamFor(recipe, 'features');
 	const styling = streamFor(recipe, 'styling');
 	const rarity = streamFor(recipe, 'rarity');
+	const packTwo = recipe.generationVersion === PACK_TWO_CHARACTER_GENERATION_VERSION;
+	const packTwoFrame = auxiliaryStreamFor(recipe, 'body', 'pack-two-frame-v1');
+	const packTwoBuild = auxiliaryStreamFor(recipe, 'body', 'pack-two-build-v1');
+	const packTwoHeight = auxiliaryStreamFor(recipe, 'body', 'pack-two-height-v1');
+	const packTwoAge = auxiliaryStreamFor(recipe, 'body', 'pack-two-age-v1');
+	const packTwoComposition = auxiliaryStreamFor(recipe, 'body', 'pack-two-composition-v1');
+	const packTwoProportion = auxiliaryStreamFor(recipe, 'body', 'pack-two-proportion-v1');
+	const packTwoRig = auxiliaryStreamFor(recipe, 'body', 'pack-two-rig-v1');
+	const packTwoHair = auxiliaryStreamFor(recipe, 'features', 'pack-two-hair-v1');
+	const packTwoGrooming = auxiliaryStreamFor(recipe, 'features', 'pack-two-grooming-v1');
+	const packTwoRole = auxiliaryStreamFor(recipe, 'styling', 'pack-two-role-v1');
+	const packTwoHandedness = auxiliaryStreamFor(recipe, 'body', 'pack-two-handedness-v1');
 	const anchorKey = visualAnchorKey(recipe);
 	const maraAnchor = anchorKey === 'ember-01-anchor-v1';
 	const legacyName = maraAnchor ? names[0] : choose(identity, names);
 	const expandedName = auxiliaryStreamFor(recipe, 'identity', 'expanded-name-v1');
 	const [firstName, lastName] =
-		recipe.generationVersion === CHARACTER_GENERATION_VERSION
+		recipe.generationVersion === CHARACTER_GENERATION_VERSION || packTwo
 			? [choose(expandedName, givenNames), choose(expandedName, familyNames)]
 			: legacyName;
 	const presentation = maraAnchor
@@ -300,15 +401,27 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 	const rarityStars = rarityRoll < 0.78 ? 1 : rarityRoll < 0.98 ? 2 : rarityRoll < 0.999 ? 3 : 4;
 	const bodyFrame = maraAnchor
 		? ('balanced' as const)
-		: choose(body, ['slight', 'balanced', 'broad'] as const);
+		: packTwo
+			? choose(packTwoFrame, ['slight', 'balanced', 'broad'] as const)
+			: choose(body, ['slight', 'balanced', 'broad'] as const);
 	const bodyBuild = maraAnchor
 		? ('athletic' as const)
-		: choose(body, ['wiry', 'soft', 'athletic', 'solid'] as const);
-	const heightBase = presentation === 'masculine' ? 162 : presentation === 'feminine' ? 154 : 158;
-	const heightRange = presentation === 'masculine' ? 37 : presentation === 'feminine' ? 34 : 36;
-	const heightCm = maraAnchor ? 178 : heightBase + Math.floor(body() * heightRange);
-	const ageSampleA = Math.max(body(), Number.EPSILON);
-	const ageSampleB = body();
+		: packTwo
+			? choose(packTwoBuild, packTwoBodyBuilds)
+			: choose(body, ['wiry', 'soft', 'athletic', 'solid'] as const);
+	const heightBand = packTwo ? choose(packTwoHeight, packTwoHeightBands) : null;
+	const heightRange = heightBand ? packTwoHeightRanges[heightBand] : null;
+	const legacyHeightBase =
+		presentation === 'masculine' ? 162 : presentation === 'feminine' ? 154 : 158;
+	const legacyHeightRange =
+		presentation === 'masculine' ? 37 : presentation === 'feminine' ? 34 : 36;
+	const heightCm = maraAnchor
+		? 178
+		: heightRange
+			? between(packTwoHeight, heightRange[0], heightRange[1])
+			: legacyHeightBase + Math.floor(body() * legacyHeightRange);
+	const ageSampleA = Math.max(packTwo ? packTwoAge() : body(), Number.EPSILON);
+	const ageSampleB = packTwo ? packTwoAge() : body();
 	const ageNormal = Math.sqrt(-2 * Math.log(ageSampleA)) * Math.cos(2 * Math.PI * ageSampleB);
 	const age = maraAnchor ? 27 : Math.max(18, Math.min(42, Math.round(26 + ageNormal * 4.5)));
 	const posture = maraAnchor
@@ -336,8 +449,79 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 			];
 
 	const physiology = auxiliaryStreamFor(recipe, 'body', 'physiology-v1');
-	const buildMass = { wiry: -7, soft: 3, athletic: 2, solid: 10 }[bodyBuild];
+	const buildMass = {
+		wiry: -7,
+		lean: -3,
+		soft: 3,
+		athletic: 2,
+		solid: 10,
+		sturdy: 10,
+		powerful: 14
+	}[bodyBuild];
 	const frameMass = { slight: -4, balanced: 0, broad: 6 }[bodyFrame];
+	const proportionProfile = packTwo ? choose(packTwoProportion, packTwoProportionProfiles) : null;
+	const proportionBase = proportionProfile ? packTwoProportions[proportionProfile] : null;
+	const composition = packTwo ? packTwoBuildComposition[bodyBuild] : null;
+	const proportionJitter = () => Number(((packTwoProportion() - 0.5) * 0.04).toFixed(3));
+	const torsoRatio = proportionBase
+		? Number((proportionBase.torsoRatio + proportionJitter()).toFixed(3))
+		: null;
+	const armRatio = proportionBase
+		? Number((proportionBase.armRatio + proportionJitter()).toFixed(3))
+		: null;
+	const legRatio = proportionBase
+		? Number((proportionBase.legRatio + proportionJitter()).toFixed(3))
+		: null;
+	const packTwoHairStyle = packTwo ? choose(packTwoHair, packTwoHairStyles) : null;
+	const packTwoGroomingValue = packTwo
+		? choose(packTwoGrooming, ['clean', 'neat', 'weathered'] as const)
+		: null;
+	const packTwoFacialHair = packTwo
+		? choose(packTwoGrooming, [
+				'none',
+				'none',
+				'none',
+				'stubble',
+				'moustache',
+				'short-beard',
+				'full-beard'
+			] as const)
+		: null;
+	const visualRole = packTwo ? choose(packTwoRole, packTwoVisualRoles) : null;
+	const apparentAgeBand = age <= 24 ? 'young-adult' : age <= 34 ? 'adult' : 'mature-adult';
+	const packTwoMassKg = composition
+		? Math.round(
+				composition.bmi * (heightCm / 100) ** 2 + frameMass + (packTwoComposition() - 0.5) * 4
+			)
+		: null;
+	const packTwoMuscleTone = composition
+		? Math.round(composition.muscle + (packTwoComposition() - 0.5) * 2)
+		: null;
+	const packTwoBodyFat = composition
+		? Math.round(composition.bodyFat + (packTwoComposition() - 0.5) * 2)
+		: null;
+	const packTwoStanceWidth = composition
+		? fixed3(composition.stance + (packTwoProportion() - 0.5) * 0.04)
+		: null;
+	const packTwoFrameWidth = { slight: 0.86, balanced: 1, broad: 1.14 }[bodyFrame];
+	const packTwoShoulderBuild = {
+		wiry: -0.04,
+		lean: -0.02,
+		soft: 0.01,
+		athletic: 0.03,
+		solid: 0.04,
+		sturdy: 0.05,
+		powerful: 0.08
+	}[bodyBuild];
+	const packTwoHipBuild = {
+		wiry: -0.04,
+		lean: -0.02,
+		soft: 0.06,
+		athletic: 0.01,
+		solid: 0.05,
+		sturdy: 0.07,
+		powerful: 0.06
+	}[bodyBuild];
 	return CharacterManifestSchema.parse({
 		characterId: deterministicUuid(
 			canonicalJson({
@@ -357,41 +541,69 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 		generationVersion: recipe.generationVersion,
 		rarityStars,
 		adultAge: age,
+		...(packTwo ? { apparentAgeBand } : {}),
 		genderPresentation: presentation,
 		pronouns,
 		bodyFrame,
 		bodyBuild,
 		heightCm,
 		...(recipe.generationVersion === VISUAL_CHARACTER_GENERATION_VERSION ||
-		recipe.generationVersion === CHARACTER_GENERATION_VERSION
+		recipe.generationVersion === CHARACTER_GENERATION_VERSION ||
+		packTwo
 			? {
 					physiology: {
-						massKg: Math.max(
-							40,
-							Math.min(160, Math.round((heightCm - 100) * 0.82 + buildMass + frameMass))
-						),
-						muscleTone: Math.max(
-							1,
-							Math.min(
-								10,
-								Math.round(
-									(bodyBuild === 'athletic' ? 7 : bodyBuild === 'solid' ? 6 : 4) +
-										(physiology() - 0.5) * 3
-								)
-							)
-						),
-						bodyFat: Math.max(
-							1,
-							Math.min(
-								10,
-								Math.round(
-									(bodyBuild === 'soft' ? 7 : bodyBuild === 'wiry' ? 3 : 4) +
-										(physiology() - 0.5) * 3
-								)
-							)
-						),
-						limbProportion: choose(physiology, ['short', 'balanced', 'balanced', 'long'] as const),
-						handScale: Number((0.86 + physiology() * 0.28).toFixed(3))
+						massKg: packTwoMassKg
+							? bounded(packTwoMassKg, 40, 160)
+							: bounded(Math.round((heightCm - 100) * 0.82 + buildMass + frameMass), 40, 160),
+						muscleTone: packTwoMuscleTone
+							? bounded(packTwoMuscleTone, 1, 10)
+							: bounded(
+									Math.round(
+										(bodyBuild === 'athletic' ? 7 : bodyBuild === 'solid' ? 6 : 4) +
+											(physiology() - 0.5) * 3
+									),
+									1,
+									10
+								),
+						bodyFat: packTwoBodyFat
+							? bounded(packTwoBodyFat, 1, 10)
+							: bounded(
+									Math.round(
+										(bodyBuild === 'soft' ? 7 : bodyBuild === 'wiry' ? 3 : 4) +
+											(physiology() - 0.5) * 3
+									),
+									1,
+									10
+								),
+						limbProportion: proportionProfile
+							? proportionProfile === 'long-limbed'
+								? 'long'
+								: proportionProfile === 'balanced'
+									? 'balanced'
+									: 'short'
+							: choose(physiology, ['short', 'balanced', 'balanced', 'long'] as const),
+						handScale: packTwo
+							? fixed3(0.88 + packTwoRig() * 0.24)
+							: Number((0.86 + physiology() * 0.28).toFixed(3)),
+						...(heightBand &&
+						proportionProfile &&
+						torsoRatio &&
+						armRatio &&
+						legRatio &&
+						packTwoStanceWidth &&
+						proportionBase
+							? {
+									heightBand,
+									proportions: {
+										profile: proportionProfile,
+										torsoRatio,
+										armRatio,
+										legRatio,
+										stanceWidth: bounded(packTwoStanceWidth, 0.8, 1.2),
+										weightDistribution: proportionBase.weightDistribution
+									}
+								}
+							: {})
 					}
 				}
 			: {}),
@@ -414,16 +626,32 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 			hairColor: hair[0],
 			hairStyle: maraAnchor
 				? 'high coiled knot'
-				: choose(styling, [
-						'cropped',
-						'jaw-length',
-						'loose shoulder-length',
-						'high knot',
-						'braided crown'
-					] as const),
+				: packTwoHairStyle
+					? packTwoHairStyle[0]
+					: choose(styling, [
+							'cropped',
+							'jaw-length',
+							'loose shoulder-length',
+							'high knot',
+							'braided crown'
+						] as const),
 			eyeColor: maraAnchor
 				? 'dark brown'
-				: choose(features, ['dark brown', 'warm brown', 'hazel', 'grey', 'green', 'amber'] as const)
+				: choose(features, [
+						'dark brown',
+						'warm brown',
+						'hazel',
+						'grey',
+						'green',
+						'amber'
+					] as const),
+			...(packTwoHairStyle && packTwoGroomingValue && packTwoFacialHair
+				? {
+						hairSilhouette: packTwoHairStyle[1],
+						grooming: packTwoGroomingValue,
+						facialHair: packTwoFacialHair
+					}
+				: {})
 		},
 		voice: {
 			register: choose(identity, ['low', 'mid', 'high'] as const),
@@ -431,18 +659,48 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 			cadence: choose(identity, ['measured', 'quick', 'deliberate', 'lilting'] as const)
 		},
 		posture,
-		handedness: choose(body, ['right', 'right', 'right', 'left', 'ambidextrous'] as const),
+		handedness: packTwo
+			? choose(packTwoHandedness, ['right', 'right', 'right', 'left', 'ambidextrous'] as const)
+			: choose(body, ['right', 'right', 'right', 'left', 'ambidextrous'] as const),
 		visualTraits,
+		...(visualRole ? { visualRole } : {}),
 		palette: { skin: skin[1], hair: hair[1], cloth: cloth[0], accent: cloth[1] },
 		rig: {
-			headScale: Number((0.9 + body() * 0.18).toFixed(3)),
-			shoulderWidth: Number((0.84 + body() * 0.32).toFixed(3)),
-			hipWidth: Number((0.84 + body() * 0.28).toFixed(3)),
-			legRatio: Number((0.88 + body() * 0.24).toFixed(3)),
+			headScale: packTwo
+				? bounded(
+						fixed3(
+							(heightBand === 'short'
+								? 1.03
+								: heightBand === 'medium'
+									? 0.99
+									: heightBand === 'tall'
+										? 0.95
+										: 0.92) +
+								(packTwoRig() - 0.5) * 0.04
+						),
+						0.8,
+						1.2
+					)
+				: Number((0.9 + body() * 0.18).toFixed(3)),
+			shoulderWidth: packTwo
+				? bounded(
+						fixed3(packTwoFrameWidth + packTwoShoulderBuild + (packTwoRig() - 0.5) * 0.04),
+						0.75,
+						1.3
+					)
+				: Number((0.84 + body() * 0.32).toFixed(3)),
+			hipWidth: packTwo
+				? bounded(
+						fixed3(packTwoFrameWidth + packTwoHipBuild + (packTwoRig() - 0.5) * 0.04),
+						0.75,
+						1.3
+					)
+				: Number((0.84 + body() * 0.28).toFixed(3)),
+			legRatio: legRatio ?? Number((0.88 + body() * 0.24).toFixed(3)),
 			anchors: {
 				head: [50, 17],
-				leftHand: [27, 56],
-				rightHand: [73, 56],
+				leftHand: [27, armRatio ? fixed3(56 * armRatio) : 56],
+				rightHand: [73, armRatio ? fixed3(56 * armRatio) : 56],
 				back: [50, 36]
 			}
 		},

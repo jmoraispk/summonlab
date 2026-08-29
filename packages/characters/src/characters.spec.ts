@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	LEGACY_CHARACTER_GENERATION_VERSION,
+	PACK_TWO_CHARACTER_GENERATION_VERSION,
 	VISUAL_CHARACTER_GENERATION_VERSION,
 	canonicalJson,
 	chooseFirstDestination,
@@ -55,6 +56,21 @@ describe('deterministic character generation', () => {
 		);
 	});
 
+	it('keeps human-v3 manifests byte-stable after Pack 2 becomes available', async () => {
+		const [ember, cohort] = await Promise.all([
+			generateCharacterDraft(recipeFromSeed('ember-01')),
+			generateCharacterDraft(recipeFromSeed('cohort-0'))
+		]);
+
+		expect(ember.manifest.generationVersion).toBe('human-v3');
+		expect(ember.manifestHash).toBe(
+			'0fb2a131596cf063839bf6946f15844a2b748c5578215c4ffcbc69c8a36c8a0a'
+		);
+		expect(cohort.manifestHash).toBe(
+			'810c16959d6d711c7a211e3d9f94106ee1af38b0997428de10992c0eedc8ef62'
+		);
+	});
+
 	it('makes different seeds meaningfully distinct while keeping every summon adult', async () => {
 		const drafts = await Promise.all(
 			Array.from({ length: 1_000 }, (_, index) =>
@@ -95,6 +111,69 @@ describe('deterministic character generation', () => {
 			expect(
 				drafts.filter((draft) => draft.manifest.genderPresentation === presentation).length
 			).toBeGreaterThan(250);
+		}
+	});
+
+	it('crosses Pack 2 height, build, proportions, presentation, and visual role independently', async () => {
+		const drafts = await Promise.all(
+			Array.from({ length: 1_000 }, (_, index) =>
+				generateCharacterDraft(
+					recipeFromSeed(`pack-two-cohort-${index}`, PACK_TWO_CHARACTER_GENERATION_VERSION)
+				)
+			)
+		);
+		const builds = ['wiry', 'lean', 'soft', 'athletic', 'sturdy', 'powerful'] as const;
+		const heightBands = ['short', 'medium', 'tall', 'exceptional'] as const;
+		const proportionProfiles = ['compact', 'balanced', 'long-limbed', 'long-torso'] as const;
+		const presentations = ['feminine', 'masculine', 'androgynous'] as const;
+
+		expect(drafts.every((draft) => draft.manifest.generationVersion === 'human-v4')).toBe(true);
+		expect(new Set(drafts.map((draft) => draft.manifest.bodyBuild))).toEqual(new Set(builds));
+		expect(new Set(drafts.map((draft) => draft.manifest.physiology?.heightBand))).toEqual(
+			new Set(heightBands)
+		);
+		expect(new Set(drafts.map((draft) => draft.manifest.physiology?.proportions?.profile))).toEqual(
+			new Set(proportionProfiles)
+		);
+		expect(new Set(drafts.map((draft) => draft.manifest.visualRole)).size).toBe(8);
+		expect(new Set(drafts.map((draft) => draft.manifest.phenotype.hairSilhouette)).size).toBe(7);
+		expect(Math.min(...drafts.map((draft) => draft.manifest.heightCm))).toBe(150);
+		expect(Math.max(...drafts.map((draft) => draft.manifest.heightCm))).toBe(205);
+
+		for (const draft of drafts) {
+			expect(draft.manifest.apparentAgeBand).toBeDefined();
+			expect(draft.manifest.visualRole).toBeDefined();
+			expect(draft.manifest.phenotype.hairSilhouette).toBeDefined();
+			expect(draft.manifest.phenotype.grooming).toBeDefined();
+			expect(draft.manifest.phenotype.facialHair).toBeDefined();
+			expect(draft.manifest.physiology?.proportions).toBeDefined();
+		}
+
+		for (const presentation of presentations) {
+			const cohort = drafts.filter((draft) => draft.manifest.genderPresentation === presentation);
+			for (const build of builds) {
+				expect(cohort.filter((draft) => draft.manifest.bodyBuild === build).length).toBeGreaterThan(
+					30
+				);
+			}
+			for (const band of heightBands) {
+				expect(
+					cohort.filter((draft) => draft.manifest.physiology?.heightBand === band).length
+				).toBeGreaterThan(20);
+			}
+			expect(
+				new Set(cohort.map((draft) => draft.manifest.rarityStars)).size
+			).toBeGreaterThanOrEqual(3);
+		}
+
+		for (const skinTone of new Set(drafts.map((draft) => draft.manifest.phenotype.skinTone))) {
+			expect(
+				new Set(
+					drafts
+						.filter((draft) => draft.manifest.phenotype.skinTone === skinTone)
+						.map((draft) => draft.manifest.bodyBuild)
+				).size
+			).toBe(builds.length);
 		}
 	});
 

@@ -29,10 +29,11 @@ export const CharacterManifestSchema = z
 		generationVersion: ContentVersionSchema,
 		rarityStars: z.number().int().min(1).max(7),
 		adultAge: z.number().int().min(18).max(42),
+		apparentAgeBand: z.enum(['young-adult', 'adult', 'mature-adult']).optional(),
 		genderPresentation: z.enum(['feminine', 'masculine', 'androgynous']),
 		pronouns: z.enum(['she/her', 'he/him', 'they/them']),
 		bodyFrame: z.enum(['slight', 'balanced', 'broad']),
-		bodyBuild: z.enum(['wiry', 'soft', 'athletic', 'solid']),
+		bodyBuild: z.enum(['wiry', 'lean', 'soft', 'athletic', 'solid', 'sturdy', 'powerful']),
 		heightCm: z.number().int().min(140).max(210),
 		physiology: z
 			.object({
@@ -40,7 +41,19 @@ export const CharacterManifestSchema = z
 				muscleTone: z.number().int().min(1).max(10),
 				bodyFat: z.number().int().min(1).max(10),
 				limbProportion: z.enum(['short', 'balanced', 'long']),
-				handScale: z.number().min(0.8).max(1.2)
+				handScale: z.number().min(0.8).max(1.2),
+				heightBand: z.enum(['short', 'medium', 'tall', 'exceptional']).optional(),
+				proportions: z
+					.object({
+						profile: z.enum(['compact', 'balanced', 'long-limbed', 'long-torso']),
+						torsoRatio: z.number().min(0.8).max(1.2),
+						armRatio: z.number().min(0.8).max(1.2),
+						legRatio: z.number().min(0.8).max(1.2),
+						stanceWidth: z.number().min(0.8).max(1.2),
+						weightDistribution: z.enum(['grounded', 'centered', 'forward', 'light'])
+					})
+					.strict()
+					.optional()
 			})
 			.strict()
 			.optional(),
@@ -52,7 +65,12 @@ export const CharacterManifestSchema = z
 				hairTexture: z.string().min(1).max(40),
 				hairColor: z.string().min(1).max(40),
 				hairStyle: z.string().min(1).max(60),
-				eyeColor: z.string().min(1).max(40)
+				eyeColor: z.string().min(1).max(40),
+				hairSilhouette: z
+					.enum(['close', 'jaw', 'shoulder', 'long', 'raised', 'crown', 'wrapped'])
+					.optional(),
+				grooming: z.enum(['clean', 'neat', 'weathered']).optional(),
+				facialHair: z.enum(['none', 'stubble', 'moustache', 'short-beard', 'full-beard']).optional()
 			})
 			.strict(),
 		voice: z
@@ -65,6 +83,9 @@ export const CharacterManifestSchema = z
 		posture: z.enum(['guarded', 'open', 'restless', 'grounded', 'formal']),
 		handedness: z.enum(['right', 'left', 'ambidextrous']),
 		visualTraits: z.array(z.string().min(1).max(80)).max(12),
+		visualRole: z
+			.enum(['guard', 'hunter', 'healer', 'smith', 'scribe', 'traveler', 'court', 'mage'])
+			.optional(),
 		palette: z
 			.object({
 				skin: z.string().regex(/^#[a-f0-9]{6}$/iu),
