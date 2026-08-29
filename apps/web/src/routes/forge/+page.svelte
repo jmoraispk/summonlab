@@ -72,6 +72,7 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>Development component</span><strong>Summoning Forge</strong></div>
 		<nav>
+			<a href={resolve('/forge/pack-2')}>Pack 2 pilot</a>
 			<a href={resolve('/forge/enemies')}>Enemy roster</a>
 			<a href={resolve('/forge/contact-sheet')}>Seed audit</a>
 		</nav>
