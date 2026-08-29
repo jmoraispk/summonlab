@@ -1,0 +1,515 @@
+{
+  "packId": "character-pack-2",
+  "catalogVersion": "visual-catalog-v2",
+  "profileVersion": "visual-profile-v2",
+  "status": "approval-candidate",
+  "generationVersion": "human-v4",
+  "promptRecord": "assets/heroes/visuals/forge-v2/pilot/generation-record.md",
+  "humans": [
+    {
+      "cohortStage": "pilot",
+      "recipe": {
+        "seed": "pack-two-cohort-264",
+        "generationVersion": "human-v4",
+        "cursors": {
+          "identity": 0,
+          "body": 0,
+          "features": 0,
+          "styling": 0,
+          "mind": 0,
+          "rarity": 0
+        }
+      },
+      "characterId": "b1083dd4-b208-4f67-a308-40fab408428d",
+      "displayName": "Remy Esen",
+      "manifestHash": "a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a",
+      "summonEligibility": "awaiting-human-approval",
+      "assetKeys": [
+        "remy-esen-anchor-v1",
+        "remy-esen-continuity-v1"
+      ]
+    },
+    {
+      "cohortStage": "pilot",
+      "recipe": {
+        "seed": "pack-two-cohort-28",
+        "generationVersion": "human-v4",
+        "cursors": {
+          "identity": 0,
+          "body": 0,
+          "features": 0,
+          "styling": 0,
+          "mind": 0,
+          "rarity": 0
+        }
+      },
+      "characterId": "d0a820d4-d1a8-4267-a2a8-23fad3a8258d",
+      "displayName": "Lio Dae",
+      "manifestHash": "238108f3c85f44ab008b1d47396e2183972fcfc46d82b076ae035487f9cc8e0d",
+      "summonEligibility": "awaiting-human-approval",
+      "assetKeys": [
+        "lio-dae-anchor-v1",
+        "lio-dae-continuity-v1"
+      ]
+    },
+    {
+      "cohortStage": "pilot",
+      "recipe": {
+        "seed": "pack-two-cohort-339",
+        "generationVersion": "human-v4",
+        "cursors": {
+          "identity": 0,
+          "body": 0,
+          "features": 0,
+          "styling": 0,
+          "mind": 0,
+          "rarity": 0
+        }
+      },
+      "characterId": "2a603f61-2960-4dce-a860-3c3b27603aa8",
+      "displayName": "Iven Orra",
+      "manifestHash": "369bc4ceae6e301cb96ebcb929be298f094c02ba1ba52517ba1d8b05f211f89d",
+      "summonEligibility": "awaiting-human-approval",
+      "assetKeys": [
+        "iven-orra-anchor-v1",
+        "iven-orra-continuity-v1"
+      ]
+    },
+    {
+      "cohortStage": "pilot",
+      "recipe": {
+        "seed": "pack-two-cohort-55",
+        "generationVersion": "human-v4",
+        "cursors": {
+          "identity": 0,
+          "body": 0,
+          "features": 0,
+          "styling": 0,
+          "mind": 0,
+          "rarity": 0
+        }
+      },
+      "characterId": "05624290-0662-4423-a762-45b608624749",
+      "displayName": "Lio Juno",
+      "manifestHash": "98cda01d112db3888b1ee08bb35989b07d9e4d2026c82f92774056e9bd67804c",
+      "summonEligibility": "awaiting-human-approval",
+      "assetKeys": [
+        "lio-juno-anchor-v1",
+        "lio-juno-continuity-v1"
+      ]
+    },
+    {
+      "cohortStage": "pilot",
+      "recipe": {
+        "seed": "pack-two-cohort-144",
+        "generationVersion": "human-v4",
+        "cursors": {
+          "identity": 0,
+          "body": 0,
+          "features": 0,
+          "styling": 0,
+          "mind": 0,
+          "rarity": 0
+        }
+      },
+      "characterId": "c1987113-c098-4f80-a398-7439c29872a6",
+      "displayName": "Kira Toren",
+      "manifestHash": "7aef986aba4a4d20a5fc7e9e34b01182969a34af9e5e822d54027bdb9cb2a178",
+      "summonEligibility": "awaiting-human-approval",
+      "assetKeys": [
+        "kira-toren-anchor-v1",
+        "kira-toren-continuity-v1"
+      ]
+    },
+    {
+      "cohortStage": "pilot",
+      "recipe": {
+        "seed": "pack-two-cohort-134",
+        "generationVersion": "human-v4",
+        "cursors": {
+          "identity": 0,
+          "body": 0,
+          "features": 0,
+          "styling": 0,
+          "mind": 0,
+          "rarity": 0
+        }
+      },
+      "characterId": "c0e397e4-c1e3-4977-a2e3-9b0ac3e39c9d",
+      "displayName": "Tavi Daro",
+      "manifestHash": "7bff542bd71c23cc9e4616d727a9fe29a4ecf98063524d9787dc4c1a1b13c183",
+      "summonEligibility": "awaiting-human-approval",
+      "assetKeys": [
+        "tavi-daro-anchor-v1",
+        "tavi-daro-continuity-v1"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "assetKey": "remy-esen-anchor-v1",
+      "role": "full-body-anchor",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "b1083dd4-b208-4f67-a308-40fab408428d",
+      "manifestHash": "a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a",
+      "file": "assets/heroes/visuals/forge-v2/pilot/remy-esen-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2087841,
+      "contentHash": "866104127827748900a77e317a3443e1c87c1e8b62b3f1c15514116b4e97503e",
+      "createdAt": "2026-08-29T03:06:18.754Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "Pack 1 finish/material/lighting/framing references only"
+      ],
+      "promptRecord": "generation-record.md#remy-esen-anchor--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 42099,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "remy-esen-continuity-v1",
+      "role": "continuity-sheet",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "b1083dd4-b208-4f67-a308-40fab408428d",
+      "manifestHash": "a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a",
+      "file": "assets/heroes/visuals/forge-v2/pilot/remy-esen-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2264971,
+      "contentHash": "1f4eed9d60c42f90721d7ab626bdf346e86279fcc6061d952c8ef2b314857dec",
+      "createdAt": "2026-08-29T03:17:02.098Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "The same character's Pack 2 full-body anchor"
+      ],
+      "promptRecord": "generation-record.md#remy-esen-continuity--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 96041,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "lio-dae-anchor-v1",
+      "role": "full-body-anchor",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "d0a820d4-d1a8-4267-a2a8-23fad3a8258d",
+      "manifestHash": "238108f3c85f44ab008b1d47396e2183972fcfc46d82b076ae035487f9cc8e0d",
+      "file": "assets/heroes/visuals/forge-v2/pilot/lio-dae-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2006849,
+      "contentHash": "b7d55ae39e0f417b9ceb0b456f21a18a968841ee85a3f1de9ecd6c2223254411",
+      "createdAt": "2026-08-29T03:08:16.095Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "Pack 1 finish/material/lighting/framing references only"
+      ],
+      "promptRecord": "generation-record.md#lio-dae-anchor--attempt-2",
+      "attempts": [
+        {
+          "elapsedMs": 23221,
+          "result": "revise",
+          "note": "Insufficient broad athletic mass."
+        },
+        {
+          "elapsedMs": 38505,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "lio-dae-continuity-v1",
+      "role": "continuity-sheet",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "d0a820d4-d1a8-4267-a2a8-23fad3a8258d",
+      "manifestHash": "238108f3c85f44ab008b1d47396e2183972fcfc46d82b076ae035487f9cc8e0d",
+      "file": "assets/heroes/visuals/forge-v2/pilot/lio-dae-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2211113,
+      "contentHash": "6da32ca2d6af3df8be8b6f0630f8cba438956a28f8f46699906c8c7296506799",
+      "createdAt": "2026-08-29T03:22:21.276Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "The same character's Pack 2 full-body anchor"
+      ],
+      "promptRecord": "generation-record.md#lio-dae-continuity--attempt-2",
+      "attempts": [
+        {
+          "elapsedMs": 134619,
+          "result": "revise",
+          "note": "Full-body panels slimmed from the corrected anchor."
+        },
+        {
+          "elapsedMs": 129531,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "iven-orra-anchor-v1",
+      "role": "full-body-anchor",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "2a603f61-2960-4dce-a860-3c3b27603aa8",
+      "manifestHash": "369bc4ceae6e301cb96ebcb929be298f094c02ba1ba52517ba1d8b05f211f89d",
+      "file": "assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2012376,
+      "contentHash": "b815e893c40879e95c6ef341747612557e2192b372b287af263b96ba3d2cc4ea",
+      "createdAt": "2026-08-29T03:09:22.870Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "Pack 1 finish/material/lighting/framing references only"
+      ],
+      "promptRecord": "generation-record.md#iven-orra-anchor--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 36128,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "iven-orra-continuity-v1",
+      "role": "continuity-sheet",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "2a603f61-2960-4dce-a860-3c3b27603aa8",
+      "manifestHash": "369bc4ceae6e301cb96ebcb929be298f094c02ba1ba52517ba1d8b05f211f89d",
+      "file": "assets/heroes/visuals/forge-v2/pilot/iven-orra-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2146248,
+      "contentHash": "ccfe83b04fdea635eaba67d4ad24ffe5f602509f7bb392583f254f4e03555c4a",
+      "createdAt": "2026-08-29T03:24:42.860Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "The same character's Pack 2 full-body anchor"
+      ],
+      "promptRecord": "generation-record.md#iven-orra-continuity--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 109332,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "lio-juno-anchor-v1",
+      "role": "full-body-anchor",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "05624290-0662-4423-a762-45b608624749",
+      "manifestHash": "98cda01d112db3888b1ee08bb35989b07d9e4d2026c82f92774056e9bd67804c",
+      "file": "assets/heroes/visuals/forge-v2/pilot/lio-juno-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2076426,
+      "contentHash": "0aa12792061d5f360c77245670b676ed97cc61ca63b28a26aa1c485827803157",
+      "createdAt": "2026-08-29T03:11:54.319Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "Pack 1 finish/material/lighting/framing references only"
+      ],
+      "promptRecord": "generation-record.md#lio-juno-anchor--attempt-2",
+      "attempts": [
+        {
+          "elapsedMs": 45435,
+          "result": "revise",
+          "note": "Body read as generic athletic rather than powerful and long-limbed."
+        },
+        {
+          "elapsedMs": 35171,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "lio-juno-continuity-v1",
+      "role": "continuity-sheet",
+      "humanStatus": "candidate",
+      "authoringInspection": "concern",
+      "characterId": "05624290-0662-4423-a762-45b608624749",
+      "manifestHash": "98cda01d112db3888b1ee08bb35989b07d9e4d2026c82f92774056e9bd67804c",
+      "file": "assets/heroes/visuals/forge-v2/pilot/lio-juno-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2269210,
+      "contentHash": "23bb6db9ab0b8d18b02fbdd0d5cdcc2d671f1181e12abbc217ed8a3e9481303c",
+      "createdAt": "2026-08-29T03:27:33.611Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "The same character's Pack 2 full-body anchor"
+      ],
+      "promptRecord": "generation-record.md#lio-juno-continuity--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 138213,
+          "result": "candidate",
+          "note": "Proportion fidelity remains a focused human-review concern."
+        }
+      ],
+      "productionNote": "Approval candidate; long-limb and powerful-mass fidelity needs focused human review."
+    },
+    {
+      "assetKey": "kira-toren-anchor-v1",
+      "role": "full-body-anchor",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "c1987113-c098-4f80-a398-7439c29872a6",
+      "manifestHash": "7aef986aba4a4d20a5fc7e9e34b01182969a34af9e5e822d54027bdb9cb2a178",
+      "file": "assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2062655,
+      "contentHash": "a2267dd064c3fdef92baefb33685c8f29a9b8fd5dfa440311778803a03a6db7e",
+      "createdAt": "2026-08-29T03:13:04.717Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "Pack 1 finish/material/lighting/framing references only"
+      ],
+      "promptRecord": "generation-record.md#kira-toren-anchor--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 37467,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "kira-toren-continuity-v1",
+      "role": "continuity-sheet",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "c1987113-c098-4f80-a398-7439c29872a6",
+      "manifestHash": "7aef986aba4a4d20a5fc7e9e34b01182969a34af9e5e822d54027bdb9cb2a178",
+      "file": "assets/heroes/visuals/forge-v2/pilot/kira-toren-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2082371,
+      "contentHash": "28247a7f8ae9cb48b8aad1a16c736f86be3b6eceaf1e19f355a5902ceb9503ab",
+      "createdAt": "2026-08-29T03:29:37.787Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "The same character's Pack 2 full-body anchor"
+      ],
+      "promptRecord": "generation-record.md#kira-toren-continuity--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 93831,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "tavi-daro-anchor-v1",
+      "role": "full-body-anchor",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "c0e397e4-c1e3-4977-a2e3-9b0ac3e39c9d",
+      "manifestHash": "7bff542bd71c23cc9e4616d727a9fe29a4ecf98063524d9787dc4c1a1b13c183",
+      "file": "assets/heroes/visuals/forge-v2/pilot/tavi-daro-anchor-v1.png",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 1918835,
+      "contentHash": "2a4184715b7036b2a28b50f5b07bd5dbbc96591abe621e32b81d36da6af12197",
+      "createdAt": "2026-08-29T03:14:27.099Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "Pack 1 finish/material/lighting/framing references only"
+      ],
+      "promptRecord": "generation-record.md#tavi-daro-anchor--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 38194,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    },
+    {
+      "assetKey": "tavi-daro-continuity-v1",
+      "role": "continuity-sheet",
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "characterId": "c0e397e4-c1e3-4977-a2e3-9b0ac3e39c9d",
+      "manifestHash": "7bff542bd71c23cc9e4616d727a9fe29a4ecf98063524d9787dc4c1a1b13c183",
+      "file": "assets/heroes/visuals/forge-v2/pilot/tavi-daro-continuity-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2024289,
+      "contentHash": "84244899cbbda1168877f1b170565d5f1465487db243374f7962061f32a93559",
+      "createdAt": "2026-08-29T03:31:56.341Z",
+      "generationMode": "built-in-imagegen",
+      "taxonomy": "stylized-concept",
+      "starState": "initial",
+      "equipmentState": "initial-medieval",
+      "referenceRoles": [
+        "The same character's Pack 2 full-body anchor"
+      ],
+      "promptRecord": "generation-record.md#tavi-daro-continuity--attempt-1",
+      "attempts": [
+        {
+          "elapsedMs": 103851,
+          "result": "candidate"
+        }
+      ],
+      "productionNote": "Approval candidate; deterministic manifest remains identity truth."
+    }
+  ]
+}
+

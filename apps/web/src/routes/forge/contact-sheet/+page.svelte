@@ -122,14 +122,15 @@
 				<table>
 					<thead>
 						<tr
-							><th>Presentation</th>{#each Object.keys(data.summary.builds) as build}<th>{build}</th
+							><th>Presentation</th>{#each Object.keys(data.summary.builds) as build (build)}<th
+									>{build}</th
 								>{/each}</tr
 						>
 					</thead>
 					<tbody>
-						{#each Object.entries(data.summary.presentationByBuild) as [presentation, columns]}
+						{#each Object.entries(data.summary.presentationByBuild) as [presentation, columns] (presentation)}
 							<tr
-								><th>{presentation}</th>{#each Object.keys(data.summary.builds) as build}<td
+								><th>{presentation}</th>{#each Object.keys(data.summary.builds) as build (build)}<td
 										>{columns[build]}</td
 									>{/each}</tr
 							>
@@ -142,16 +143,16 @@
 				<table>
 					<thead>
 						<tr
-							><th>Presentation</th>{#each Object.keys(data.summary.heightBands) as band}<th
+							><th>Presentation</th>{#each Object.keys(data.summary.heightBands) as band (band)}<th
 									>{band}</th
 								>{/each}</tr
 						>
 					</thead>
 					<tbody>
-						{#each Object.entries(data.summary.presentationByHeight) as [presentation, columns]}
+						{#each Object.entries(data.summary.presentationByHeight) as [presentation, columns] (presentation)}
 							<tr
-								><th>{presentation}</th>{#each Object.keys(data.summary.heightBands) as band}<td
-										>{columns[band]}</td
+								><th>{presentation}</th
+								>{#each Object.keys(data.summary.heightBands) as band (band)}<td>{columns[band]}</td
 									>{/each}</tr
 							>
 						{/each}

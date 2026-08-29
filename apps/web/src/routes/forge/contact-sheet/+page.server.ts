@@ -39,7 +39,6 @@ function matrix(
 const presentations = ['feminine', 'masculine', 'androgynous'] as const;
 const builds = ['wiry', 'lean', 'soft', 'athletic', 'sturdy', 'powerful'] as const;
 const heightBands = ['short', 'medium', 'tall', 'exceptional'] as const;
-const proportionProfiles = ['compact', 'balanced', 'long-limbed', 'long-torso'] as const;
 
 export const load: PageServerLoad = async () => {
 	const auditDrafts = await Promise.all(

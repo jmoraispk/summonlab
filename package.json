@@ -18,6 +18,7 @@
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
 		"validate:visual-assets": "tsx tools/validate-visual-assets.ts",
+		"validate:pack-two-visuals": "tsx tools/validate-pack-two-visuals.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
 		"export:player-visuals": "tsx tools/export-player-visuals.ts",
@@ -86,6 +87,7 @@
 		"tsx": "^4.23.12",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.60.1",
-		"vitest": "^4.1.8"
+		"vitest": "^4.1.8",
+		"zod": "^4.4.3"
 	}
 }
