@@ -1,6 +1,18 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import HeroRig from '$lib/components/HeroRig.svelte';
+	import brynAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/bryn-vale-anchor-v1.png';
+	import caelAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/cael-hale-anchor-v1.png';
+	import daraAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/dara-aster-anchor-v1.png';
+	import eddaAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/edda-kade-anchor-v1.png';
+	import elianAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/elian-vale-anchor-v1.png';
+	import faraAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/fara-pell-anchor-v1.png';
+	import galenAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/galen-arden-anchor-v1.png';
+	import lioPellAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/lio-pell-anchor-v1.png';
+	import maraAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/mara-rook-anchor-v1.png';
+	import neriAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/neri-arden-anchor-v1.png';
+	import noaAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/noa-saye-anchor-v1.png';
+	import remyNorAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/remy-nor-anchor-v1.png';
 	import ivenAnchor from '../../../../../../assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png';
 	import ivenContinuity from '../../../../../../assets/heroes/visuals/forge-v2/pilot/iven-orra-continuity-v1.png';
 	import kiraAnchor from '../../../../../../assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png';
@@ -19,6 +31,13 @@
 	let presentation = $state('all');
 
 	const images: Record<string, string> = {
+		'bryn-vale-anchor-v1': brynAnchor,
+		'cael-hale-anchor-v1': caelAnchor,
+		'dara-aster-anchor-v1': daraAnchor,
+		'edda-kade-anchor-v1': eddaAnchor,
+		'elian-vale-anchor-v1': elianAnchor,
+		'fara-pell-anchor-v1': faraAnchor,
+		'galen-arden-anchor-v1': galenAnchor,
 		'iven-orra-anchor-v1': ivenAnchor,
 		'iven-orra-continuity-v1': ivenContinuity,
 		'kira-toren-anchor-v1': kiraAnchor,
@@ -27,41 +46,46 @@
 		'lio-dae-continuity-v1': lioDaeContinuity,
 		'lio-juno-anchor-v1': lioJunoAnchor,
 		'lio-juno-continuity-v1': lioJunoContinuity,
+		'lio-pell-anchor-v1': lioPellAnchor,
+		'mara-rook-anchor-v1': maraAnchor,
+		'neri-arden-anchor-v1': neriAnchor,
+		'noa-saye-anchor-v1': noaAnchor,
 		'remy-esen-anchor-v1': remyAnchor,
 		'remy-esen-continuity-v1': remyContinuity,
+		'remy-nor-anchor-v1': remyNorAnchor,
 		'tavi-daro-anchor-v1': taviAnchor,
 		'tavi-daro-continuity-v1': taviContinuity
 	};
 	const presentations = ['all', 'feminine', 'masculine', 'androgynous'];
 	const filtered = $derived(
-		data.pilot.filter(
+		data.cohort.filter(
 			(entry) => presentation === 'all' || entry.draft.manifest.genderPresentation === presentation
 		)
 	);
 	const selected = $derived(
-		data.pilot.find((entry) => entry.draft.manifestHash === selectedHash) ?? data.pilot[0]!
+		data.cohort.find((entry) => entry.draft.manifestHash === selectedHash) ?? data.cohort[0]!
 	);
 	const selectedAnchor = $derived(
 		selected.assets.find((asset) => asset.role === 'full-body-anchor')!
 	);
 	const selectedContinuity = $derived(
-		selected.assets.find((asset) => asset.role === 'continuity-sheet')!
+		selected.assets.find((asset) => asset.role === 'continuity-sheet')
 	);
 	const words = (value: string | undefined) => value?.replaceAll('-', ' ') ?? 'unset';
 </script>
 
 <svelte:head>
-	<title>Character Pack 2 pilot · Summoning Forge</title>
+	<title>Character Pack 2 cohort · Summoning Forge</title>
 	<meta
 		name="description"
-		content="Review six deterministic Character Pack 2 humans across anchors, continuity, roster, true height, and settlement scale."
+		content="Review 18 deterministic Character Pack 2 humans across anchors, continuity, roster, true height, and settlement scale."
 	/>
 </svelte:head>
 
 <main>
 	<header class="topbar">
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
-		<div><span>Character Forge</span><strong>Pack 2 visual pilot</strong></div>
+		<div><span>Character Forge</span><strong>Pack 2 full cohort</strong></div>
 		<nav>
 			<a href={resolve('/forge')}>Pack 1</a><a href={resolve('/forge/contact-sheet')}>Seed audit</a>
 		</nav>
@@ -69,7 +93,7 @@
 
 	<section class="intro">
 		<div>
-			<p class="eyebrow">{data.catalog.catalogVersion} · six manifest-bound adults</p>
+			<p class="eyebrow">{data.catalog.catalogVersion} · 18 manifest-bound adults</p>
 			<h1>Different bodies.<br /><em>One shared world.</em></h1>
 		</div>
 		<div class="intro-copy">
@@ -78,7 +102,7 @@
 				not rendering care. Generated pixels remain candidates until a human approves them.
 			</p>
 			<div class="summary">
-				<span><b>6</b> anchors</span><span><b>6</b> continuity sheets</span><span
+				<span><b>18</b> anchors</span><span><b>6</b> continuity sheets</span><span
 					><b>0</b> approved</span
 				>
 			</div>
@@ -89,7 +113,7 @@
 		<header class="section-heading">
 			<div>
 				<span>01</span>
-				<h2 id="browser-title">Pilot cohort</h2>
+				<h2 id="browser-title">Full cohort</h2>
 			</div>
 			<div class="filters" aria-label="Presentation filter">
 				{#each presentations as option (option)}
@@ -119,6 +143,7 @@
 						>
 					</div>
 					<i>{entry.human.summonEligibility.replaceAll('-', ' ')}</i>
+					<em>{entry.human.cohortStage}</em>
 				</button>
 			{/each}
 		</div>
@@ -145,17 +170,25 @@
 				/>
 				<footer><span>Full-body anchor</span><b>{selectedAnchor.humanStatus}</b></footer>
 			</article>
-			<article class="continuity-panel">
-				<img
-					src={images[selectedContinuity.assetKey]}
-					alt={`${selected.draft.manifest.displayName} six-panel continuity sheet`}
-				/>
-				<footer>
-					<span>Front · profile · back · expression · action</span><b
-						class:concern={selectedContinuity.authoringInspection === 'concern'}
-						>{selectedContinuity.authoringInspection}</b
-					>
-				</footer>
+			<article class="continuity-panel" class:empty={!selectedContinuity}>
+				{#if selectedContinuity}
+					<img
+						src={images[selectedContinuity.assetKey]}
+						alt={`${selected.draft.manifest.displayName} six-panel continuity sheet`}
+					/>
+					<footer>
+						<span>Front · profile · back · expression · action</span><b
+							class:concern={selectedContinuity.authoringInspection === 'concern'}
+							>{selectedContinuity.authoringInspection}</b
+						>
+					</footer>
+				{:else}
+					<div class="not-authored">
+						<span>Expansion scope</span>
+						<strong>Anchor only</strong>
+						<p>Continuity sheets follow only after anchor approval.</p>
+					</div>
+				{/if}
 			</article>
 			<aside class="manifest-panel">
 				<p class="eyebrow">Manifest truth</p>
@@ -220,7 +253,7 @@
 			<p>Shared floor, fixed image treatment, ordered by generated centimeters.</p>
 		</header>
 		<div class="lineup" data-testid="pack-two-lineup">
-			{#each [...data.pilot].sort((a, b) => a.draft.manifest.heightCm - b.draft.manifest.heightCm) as entry (entry.draft.manifestHash)}
+			{#each [...data.cohort].sort((a, b) => a.draft.manifest.heightCm - b.draft.manifest.heightCm) as entry (entry.draft.manifestHash)}
 				{@const anchor = entry.assets.find((asset) => asset.role === 'full-body-anchor')!}
 				<div class="lineup-person">
 					<div class="height-rule"><span>{entry.draft.manifest.heightCm}</span></div>
@@ -249,7 +282,7 @@
 			</p>
 		</header>
 		<div class="survival-grid">
-			{#each data.pilot as entry (entry.draft.manifestHash)}
+			{#each data.cohort as entry (entry.draft.manifestHash)}
 				{@const anchor = entry.assets.find((asset) => asset.role === 'full-body-anchor')!}
 				<article data-testid="scale-survival-card">
 					<div class="roster">
@@ -476,6 +509,15 @@
 		font-style: normal;
 		text-transform: uppercase;
 	}
+	.candidate-grid em {
+		position: absolute;
+		top: 0.6rem;
+		right: 0.6rem;
+		color: #f4efe56b;
+		font-size: 0.45rem;
+		font-style: normal;
+		text-transform: uppercase;
+	}
 	.inspection-grid {
 		display: grid;
 		grid-template-columns: minmax(15rem, 0.72fr) minmax(26rem, 1.45fr) minmax(15rem, 0.7fr);
@@ -507,6 +549,42 @@
 	}
 	article footer b.concern {
 		color: #edc980;
+	}
+	.continuity-panel.empty {
+		display: grid;
+		min-height: 24rem;
+		place-items: center;
+		background: repeating-linear-gradient(
+			135deg,
+			#0a0d13,
+			#0a0d13 12px,
+			#0d1017 12px,
+			#0d1017 24px
+		);
+	}
+	.not-authored {
+		max-width: 15rem;
+		text-align: center;
+	}
+	.not-authored span,
+	.not-authored strong {
+		display: block;
+	}
+	.not-authored span {
+		color: #8aa7dd;
+		font-size: 0.55rem;
+		text-transform: uppercase;
+	}
+	.not-authored strong {
+		margin: 0.6rem;
+		font:
+			400 2rem Georgia,
+			serif;
+	}
+	.not-authored p {
+		color: #f4efe566;
+		font-size: 0.7rem;
+		line-height: 1.5;
 	}
 	.manifest-panel {
 		padding: 1.4rem;

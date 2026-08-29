@@ -38,7 +38,7 @@ const PackTwoVisualCatalogSchema = z
 						displayName: z.string().min(1),
 						manifestHash: z.string().regex(/^[a-f0-9]{64}$/u),
 						summonEligibility: z.enum(['awaiting-human-approval', 'eligible']),
-						assetKeys: z.array(z.string().min(1)).min(2)
+						assetKeys: z.array(z.string().min(1)).min(1)
 					})
 					.strict()
 			)
@@ -75,7 +75,6 @@ const PackTwoVisualCatalogSchema = z
 	.strict();
 
 const catalog = PackTwoVisualCatalogSchema.parse(JSON.parse(await readFile(catalogPath, 'utf8')));
-const promptRecord = await readFile(resolve(workspaceRoot, catalog.promptRecord), 'utf8');
 const assetKeys = new Set(catalog.assets.map((asset) => asset.assetKey));
 const characters = await Promise.all(
 	catalog.humans.map(async (human) => {
@@ -90,12 +89,16 @@ const characters = await Promise.all(
 		if (human.assetKeys.some((assetKey) => !assetKeys.has(assetKey))) {
 			throw new Error(`Unknown asset key on ${human.displayName}`);
 		}
-		for (const role of ['anchor', 'continuity']) {
-			if (!promptRecord.includes(`## ${human.displayName} ${role}`)) {
-				throw new Error(`Missing exact ${role} prompt record for ${human.displayName}`);
-			}
+		const roles = human.assetKeys.map(
+			(assetKey) => catalog.assets.find((asset) => asset.assetKey === assetKey)?.role
+		);
+		if (!roles.includes('full-body-anchor')) {
+			throw new Error(`Missing full-body anchor for ${human.displayName}`);
 		}
-		return draft.manifest;
+		if (human.cohortStage === 'pilot' && !roles.includes('continuity-sheet')) {
+			throw new Error(`Missing pilot continuity sheet for ${human.displayName}`);
+		}
+		return { manifest: draft.manifest, cohortStage: human.cohortStage };
 	})
 );
 
@@ -121,26 +124,37 @@ for (const asset of catalog.assets) {
 	if (asset.humanStatus !== 'candidate') {
 		throw new Error(`${asset.assetKey} cannot claim human approval in this production run`);
 	}
+	const promptPath = asset.promptRecord.split('#', 1)[0];
+	if (!promptPath) throw new Error(`${asset.assetKey} has no prompt-record path`);
+	const promptRecord = await readFile(
+		resolve(workspaceRoot, dirname(catalog.promptRecord), promptPath),
+		'utf8'
+	);
+	const human = catalog.humans.find((entry) => entry.characterId === asset.characterId);
+	const promptRole = asset.role === 'full-body-anchor' ? 'anchor' : 'continuity';
+	if (!human || !promptRecord.includes(`## ${human.displayName} ${promptRole}`)) {
+		throw new Error(`Missing exact prompt record for ${asset.assetKey}`);
+	}
 }
 
-const presentations = characters.map((manifest) => manifest.genderPresentation).sort();
-const heightBands = characters.map((manifest) => manifest.physiology?.heightBand).sort();
-if (
-	JSON.stringify(presentations) !==
-	JSON.stringify(['androgynous', 'androgynous', 'feminine', 'feminine', 'masculine', 'masculine'])
-) {
-	throw new Error('Pilot presentation matrix changed');
+const manifests = characters.map((character) => character.manifest);
+for (const presentation of ['feminine', 'masculine', 'androgynous'] as const) {
+	const cohort = manifests.filter((manifest) => manifest.genderPresentation === presentation);
+	if (cohort.length !== 6) throw new Error(`${presentation} cohort no longer contains six people`);
+	if (new Set(cohort.map((manifest) => manifest.physiology?.heightBand)).size !== 4) {
+		throw new Error(`${presentation} cohort lost a height band`);
+	}
 }
-if (
-	JSON.stringify(heightBands) !==
-	JSON.stringify(['medium', 'medium', 'short', 'short', 'tall', 'tall'])
-) {
-	throw new Error('Pilot height matrix changed');
+if (new Set(manifests.map((manifest) => manifest.bodyBuild)).size !== 6) {
+	throw new Error('Full cohort lost a build family');
 }
-if (new Set(characters.map((manifest) => manifest.bodyBuild)).size < 4) {
-	throw new Error('Pilot lost build diversity');
+if (new Set(manifests.map((manifest) => manifest.physiology?.proportions?.profile)).size !== 4) {
+	throw new Error('Full cohort lost a proportion profile');
 }
-if (new Set(characters.map((manifest) => manifest.phenotype.hairSilhouette)).size !== 6) {
+const pilot = characters
+	.filter((character) => character.cohortStage === 'pilot')
+	.map((character) => character.manifest);
+if (new Set(pilot.map((manifest) => manifest.phenotype.hairSilhouette)).size !== 6) {
 	throw new Error('Pilot lost hair-silhouette diversity');
 }
 
