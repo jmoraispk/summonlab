@@ -5,10 +5,21 @@ test('renders partial affinity cohorts without implying approval', async ({ page
 	await expect(
 		page.getByRole('heading', { name: 'Recognize the creature. Then read its affinity.' })
 	).toBeVisible();
-	await expect(page.getByTestId('affinity-cell')).toHaveCount(54);
+	await expect(page.getByTestId('affinity-cell')).toHaveCount(84);
 	await expect(page.getByText('Unapproved candidate').first()).toBeVisible();
 	await expect(page.getByText('Pending generation').first()).toBeVisible();
 	await expect(page.getByText('No automatic promotion')).toBeVisible();
+
+	const reviseEvidence = page
+		.getByTestId('affinity-cell')
+		.filter({ hasText: 'Revision required' })
+		.first();
+	await reviseEvidence.getByRole('button', { name: /^Inspect / }).click();
+	const reviseDialog = page.getByRole('dialog', { name: 'Candidate inspector' });
+	await expect(reviseDialog.getByRole('img')).toBeVisible();
+	await expect(reviseDialog.getByText('Revision evidence · inspectable')).toBeVisible();
+	await expect(reviseDialog.getByRole('form', { name: 'Review candidate' })).toHaveCount(0);
+	await reviseDialog.getByRole('button', { name: 'Close inspector' }).click();
 
 	await page
 		.getByRole('button', { name: /^Inspect / })
@@ -44,7 +55,11 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	await expect(page.getByText('Specimen 01')).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Breadth · 4' })).toHaveCount(0);
 
-	const image = page.locator('button.thumbnail img').first();
+	const image = page
+		.getByTestId('affinity-cell')
+		.filter({ hasText: 'Unapproved candidate' })
+		.first()
+		.locator('button.thumbnail img');
 	await expect(image).toHaveAttribute('alt', 'Unlabeled experiment candidate');
 	await expect(image).toHaveAttribute(
 		'src',

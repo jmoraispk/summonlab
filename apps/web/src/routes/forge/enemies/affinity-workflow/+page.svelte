@@ -120,7 +120,7 @@
 			<p>
 				{data.blind
 					? 'Targets, prompts, filenames, source identifiers, and semantic alt text are absent from this server response. Row and affinity order are deterministically shuffled.'
-					: 'Labels and complete generation provenance are available for production audit.'}
+					: 'Labels and retained-output generation provenance are available for production audit.'}
 			</p>
 		</div>
 		<div class="mode-switch">
@@ -139,7 +139,7 @@
 	{#if !data.blind}
 		<section class="controls" aria-label="Affinity cohort filters">
 			<p class="eyebrow">Cohort</p>
-			{#each [{ id: 'all', label: 'All rows' }, { id: 'controlled', label: 'Controlled · 4' }, { id: 'breadth', label: 'Breadth · 4' }, { id: 'regression', label: 'Regression · 1' }] as option (option.id)}
+			{#each [{ id: 'all', label: 'All rows' }, { id: 'controlled', label: 'Controlled · 4' }, { id: 'breadth', label: 'Breadth · 4' }, { id: 'regression', label: 'Regression · 6' }] as option (option.id)}
 				<button
 					type="button"
 					class:active={cohortFilter === option.id}
@@ -282,8 +282,14 @@
 				</div>
 				<button type="button" onclick={closeInspector} aria-label="Close inspector">×</button>
 			</header>
-			{#if selectedCell.mediaUrl && selectedCell.status === 'candidate'}
+			{#if selectedCell.mediaUrl}
 				<img src={selectedCell.mediaUrl} alt={selectedCell.alt} />
+			{/if}
+			{#if selectedCell.mediaUrl && selectedCell.status === 'revise'}
+				<p class="revision-evidence-note">
+					Revision evidence · inspectable, but not eligible for human acceptance until a producer
+					candidate exists.
+				</p>
 			{/if}
 			{#if !data.blind && selectedCell.metadata}
 				<div class="provenance">
@@ -394,7 +400,7 @@
 					</details>
 				</div>
 			{/if}
-			{#if selectedCell.mediaUrl}
+			{#if selectedCell.mediaUrl && selectedCell.status === 'candidate'}
 				<form
 					method="POST"
 					class="review-form"
@@ -945,6 +951,15 @@
 		max-height: 80vh;
 		object-fit: contain;
 		background: #040609;
+	}
+	.revision-evidence-note {
+		margin: 0;
+		border-block: 1px solid #e5a45b33;
+		padding: 0.85rem clamp(1rem, 3vw, 2rem);
+		color: #f2c98f;
+		background: #e5a45b0a;
+		font-size: 0.68rem;
+		line-height: 1.55;
 	}
 	.provenance,
 	.review-form {

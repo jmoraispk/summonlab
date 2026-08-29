@@ -6,7 +6,22 @@ import path from 'node:path';
 import type { AffinityWorkflowReviewRecord } from '@summonlab/contracts';
 
 export const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
-export const SPECIES = [
+type Affinity = (typeof AFFINITIES)[number];
+type Cohort = 'controlled' | 'breadth' | 'regression';
+
+interface ReviewRowDefinition {
+	id: string;
+	speciesId: string;
+	name: string;
+	cohort: Cohort;
+	targetIds?: Partial<Record<Affinity, string>>;
+}
+
+const ELEMENTAL_REGRESSION_V2_TARGETS = Object.fromEntries(
+	AFFINITIES.map((affinity) => [affinity, `affinity-workflow-v1-elemental-${affinity}-v2`])
+) as Record<Affinity, string>;
+
+export const SPECIES: readonly ReviewRowDefinition[] = [
 	{ id: 'death-knight', speciesId: 'death-knight', name: 'Death Knight', cohort: 'controlled' },
 	{
 		id: 'elemental',
@@ -29,7 +44,46 @@ export const SPECIES = [
 		id: 'elemental-regression-v2',
 		speciesId: 'elemental',
 		name: 'Bound Vanguard Elemental · semantic v2',
-		cohort: 'regression'
+		cohort: 'regression',
+		targetIds: ELEMENTAL_REGRESSION_V2_TARGETS
+	},
+	{
+		id: 'death-knight-correction-v2',
+		speciesId: 'death-knight',
+		name: 'Death Knight · metal correction v2',
+		cohort: 'regression',
+		targetIds: { metal: 'affinity-workflow-v1-death-knight-metal-v2' }
+	},
+	{
+		id: 'death-knight-framing-v3',
+		speciesId: 'death-knight',
+		name: 'Death Knight · metal framing v3',
+		cohort: 'regression',
+		targetIds: { metal: 'affinity-workflow-v1-death-knight-metal-v3' }
+	},
+	{
+		id: 'grey-wolf-correction-v2',
+		speciesId: 'grey-wolf',
+		name: 'Grey Wolf · fire correction v2',
+		cohort: 'regression',
+		targetIds: { fire: 'affinity-workflow-v1-grey-wolf-fire-v2' }
+	},
+	{
+		id: 'cave-bear-correction-v2',
+		speciesId: 'cave-bear',
+		name: 'Cave Bear · framing corrections v2',
+		cohort: 'regression',
+		targetIds: {
+			wood: 'affinity-workflow-v1-cave-bear-wood-v2',
+			wind: 'affinity-workflow-v1-cave-bear-wind-v2'
+		}
+	},
+	{
+		id: 'elemental-correction-v3',
+		speciesId: 'elemental',
+		name: 'Bound Vanguard Elemental · fire framing v3',
+		cohort: 'regression',
+		targetIds: { fire: 'affinity-workflow-v1-elemental-fire-v3' }
 	}
 ] as const;
 
@@ -58,7 +112,6 @@ export const EXPERIMENT_ROOT = path.join(
 );
 
 type JsonRecord = Record<string, unknown>;
-type Cohort = 'controlled' | 'breadth' | 'regression';
 type CandidateState = 'candidate' | 'pending' | 'revise' | 'invalid';
 
 interface TargetRecord extends JsonRecord {
@@ -66,7 +119,7 @@ interface TargetRecord extends JsonRecord {
 	assetId: string;
 	cohort: Cohort;
 	speciesId: string;
-	affinity: (typeof AFFINITIES)[number];
+	affinity: Affinity;
 	references: Array<{ path: string; purpose: string; contentHash: string }>;
 	output: { candidatePath: string; resultPath: string };
 }
@@ -191,7 +244,7 @@ function parseTarget(value: JsonRecord): TargetRecord | null {
 		typeof value.assetId !== 'string' ||
 		!['controlled', 'breadth', 'regression'].includes(String(value.cohort)) ||
 		typeof value.speciesId !== 'string' ||
-		!AFFINITIES.includes(value.affinity as (typeof AFFINITIES)[number]) ||
+		!AFFINITIES.includes(value.affinity as Affinity) ||
 		!output ||
 		typeof output.candidatePath !== 'string' ||
 		typeof output.resultPath !== 'string' ||
@@ -214,7 +267,7 @@ function parseTarget(value: JsonRecord): TargetRecord | null {
 		assetId: value.assetId,
 		cohort: value.cohort as Cohort,
 		speciesId: value.speciesId,
-		affinity: value.affinity as (typeof AFFINITIES)[number],
+		affinity: value.affinity as Affinity,
 		references: parsedReferences,
 		output: { candidatePath: output.candidatePath, resultPath: output.resultPath }
 	};
@@ -478,6 +531,7 @@ export async function loadAffinityReviewData(
 	const targetByCoordinate = new Map(
 		targets.map((target) => [`${target.speciesId}:${target.cohort}:${target.affinity}`, target])
 	);
+	const targetById = new Map(targets.map((target) => [target.targetId, target]));
 	const candidateByTarget = new Map<string, VerifiedCandidate | null>();
 	await Promise.all(
 		targets.map(async (target) => {
@@ -497,9 +551,12 @@ export async function loadAffinityReviewData(
 			rowLabel: blind ? `Specimen ${String(rowIndex + 1).padStart(2, '0')}` : entry.name,
 			cohort: blind ? null : entry.cohort,
 			cells: orderedAffinities.map((affinityEntry, columnIndex) => {
-				const target = targetByCoordinate.get(
-					`${entry.speciesId}:${entry.cohort}:${affinityEntry.id}`
-				);
+				const explicitTargetId = entry.targetIds?.[affinityEntry.id];
+				const target = entry.targetIds
+					? explicitTargetId
+						? targetById.get(explicitTargetId)
+						: undefined
+					: targetByCoordinate.get(`${entry.speciesId}:${entry.cohort}:${affinityEntry.id}`);
 				const result = target ? results.get(target.targetId) : null;
 				const candidate = target ? candidateByTarget.get(target.targetId) : null;
 				const currentReviews = reviewsForCurrentCandidate(reviews, target, candidate);

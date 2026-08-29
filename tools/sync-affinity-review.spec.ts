@@ -227,7 +227,7 @@ describe('affinity review synchronization', () => {
 
 		expect(scan.issues).toEqual([]);
 		expect(scan.executions).toHaveLength(1);
-		expect(scan.executions.length + scan.missingResultTargetIds.length).toBe(54);
+		expect(scan.executions.length + scan.missingResultTargetIds.length).toBe(60);
 		expect(scan.executions.every(({ target, result }) => target.targetId === result.targetId)).toBe(
 			true
 		);

@@ -1,0 +1,272 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-cave-bear-wood-v2",
+  "targetId": "affinity-workflow-v1-cave-bear-wood-v2",
+  "assignmentId": "assignment-affinity-workflow-v1-cave-bear-wood-v2",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-cave-bear-wood-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-cave-bear-wood-v2\".\n\nSubject and threat:\n- Species: cave-bear.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: close-range-bruiser.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- recognizable ursine face\n- heavy shoulder mass\n- powerful forelimbs\n\nAnatomy invariants:\n- ursine anatomy\n- exactly four legs\n- four-legged weight distribution\n- all four paws are separately readable with visible ground contact and no hind-paw occlusion\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: wolf proportions; humanoid golem anatomy; decorative saddle or rider; a brown recolor, decorative antlers, or foliage pasted over the silhouette; overlapping legs or stance that hides either hind paw.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one full-body Wood Cave Bear in a grounded broadside-to-three-quarter stance, with staggered legs and all four paws independently visible; every root tip and extremity remains inside the inner eighty-four percent of the finished canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png — Previous Wood Cave Bear candidate supplies the retained ursine identity and load-bearing wood design; preserve those cues while changing the stance so all four paws are independently visible.\n2. assets/enemies/review/beasts-v1.webp — Third subject only: established Cave Bear anatomy, coat, grounded mass, and shoulder weight; do not transfer either wolf or the Tunnel Boar.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "10aab5ed91c08823096ec6ed07478e733514315faa7eedbc61e47d863df325f7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png",
+          "contentHash": "6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8"
+        },
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T19:16:46.967Z",
+      "generationCompletedAt": "2026-08-29T19:17:03.867Z",
+      "inspectionCompletedAt": "2026-08-29T19:17:12.500Z",
+      "generationDurationMs": 16900,
+      "inspectionDurationMs": 8633,
+      "totalWallTimeMs": 25533,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ef3-27f5-7bc3-a108-2721bd8ca5f9/exec-04394776-4677-42ce-ba3c-599f7acb7c04.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The canvas is fully rendered with a continuous charcoal backdrop and cracked-stone floor."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete visible silhouette and root tips remain comfortably inside the central eighty-four percent safe frame."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Cave Bear appears with no duplicate creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The submitted first prompt matches the safe-frame-v4 canonical renderer byte-for-byte at the recorded SHA-256 and both references were supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The ursine identity and close-range bruiser construction pass, but the far hind leg is fully occluded and only three paws are independently readable."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark plates bear load, roots articulate the anatomy, and localized resin seams expose bindings, changing material and anatomy beyond hue."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Amber resin-bright joint seams clearly expose the interruptible binding structure."
+        },
+        {
+          "criterionId": "four-readable-paws",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Only the two forepaws and near hind paw are visible; the far hind paw is absent behind the body."
+        }
+      ],
+      "retryReason": "A complete-regeneration correction was required because the first attempt hid the far hind leg and failed the explicit four-readable-paws gate."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-cave-bear-wood-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-cave-bear-wood-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Correction type: complete regeneration using Image 1 only as the preceding design reference.\n\nRegenerate the same single Wood Cave Bear as a premium realistic painterly medieval dark-fantasy character concept. Preserve all passing traits from Image 1: the recognizable ursine face, heavy shoulder mass, powerful forelimbs, dark bark-plated load-bearing anatomy, root structures, restrained amber resin seams, cracked-stone floor, charcoal-to-midnight background, neutral key lighting, material readability, and one-subject composition.\n\nCorrect exactly this blocking defect: Image 1 hides the far hind leg and shows only three independently readable paws. Turn the bear into a clearer broadside-to-three-quarter stance and stagger all four legs so there are exactly four anatomically coherent legs and exactly four distinct paws. Every paw must be fully visible from ankle to claws, spatially separated from every other paw, visibly touching the cracked-stone floor, and connected to the correct shoulder or hip by a plausible leg. The two hind paws must both be plainly visible beneath and behind the pelvis; no paw may overlap, merge into, or disappear behind another leg.\n\nKeep the bear grounded and weight-bearing, not walking with a raised paw. Preserve the close-range bruiser posture and visibly retain resin-bright binding joints or fresh-cut growth as the interruptible counterplay cue. Wood must remain structural through bark grain, articulated wooden plates, roots, resin seams, and living growth rather than a brown recolor or foliage overlay.\n\nKeep the complete silhouette, all roots, tail area, legs, paws, and claws inside the central 84 percent of the 1536 x 1024 canvas, with a clearly empty border on all four sides. Finish the entire canvas.\n\nConstraints: exactly one subject; no extra creature; no fifth limb; no hidden paw; no wolf proportions; no humanoid golem anatomy; no saddle or rider; no decorative antlers; no labels, text, UI, frame, logo, watermark, blank band, unfinished region, crop, or abrupt cutoff; no resemblance to a published character or reference person.",
+      "promptHash": "b4aecdf474bcdc4629262c26f94b5e66cc21173aed106624a66e39cf99134894",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png",
+          "contentHash": "6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8"
+        },
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04ef3-27f5-7bc3-a108-2721bd8ca5f9/exec-04394776-4677-42ce-ba3c-599f7acb7c04.png",
+        "contentHash": "b669b2c2dd8bf34a3ff6fae94c81c887e8fd95fea7f21da24c6d82b0625ee629"
+      },
+      "requestStartedAt": "2026-08-29T19:17:25.308Z",
+      "generationCompletedAt": "2026-08-29T19:17:45.908Z",
+      "inspectionCompletedAt": "2026-08-29T19:17:54.100Z",
+      "generationDurationMs": 20600,
+      "inspectionDurationMs": 8192,
+      "totalWallTimeMs": 28792,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04ef3-27f5-7bc3-a108-2721bd8ca5f9/exec-e80a3e6e-666c-4051-b638-c64c018b507f.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04ef3-27f5-7bc3-a108-2721bd8ca5f9/exec-e80a3e6e-666c-4051-b638-c64c018b507f.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2209311,
+          "contentHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2209311,
+          "contentHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2209311,
+        "contentHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally rendered with a continuous backdrop and floor and no blank or unfinished region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every branch tip, ear, leg, paw, claw, and the entire silhouette sit comfortably inside the central eighty-four percent framing lock."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Cave Bear appears and no accidental duplicate subject is present."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical first-attempt provenance is intact; the corrective prompt and exact preceding generated reference are recorded with hashes."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The correction preserves a recognizable ursine face, heavy shoulder mass, powerful forelimbs, grounded four-legged distribution, and close-range bruiser stance without prohibited traits."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Layered bark plating bears load across torso and limbs, roots change the silhouette and articulation, and resin seams mark bindings; Wood is structural rather than a color overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Localized amber resin-bright seams at the forelimb, shoulder, torso, and hindquarter bindings read as interruptible joints."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds strong ursine muzzle, ears, shoulder mass, and bear proportions."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds bark load paths, root articulation, and resin joints rather than hue alone."
+        },
+        {
+          "criterionId": "four-readable-paws",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly four coherent paws are independently visible: two separated forepaws, a centered far hind paw, and a separated near hind paw, all connected plausibly and visibly contacting the stone floor."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low head, massive planted shoulders, spread claws, and forward-weighted posture communicate a close-range bruiser."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Realistic painterly dark-fantasy finish, coherent bark and resin materials, controlled neutral lighting, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, fifth limb, wolf anatomy, humanoid golem anatomy, antlers, rider, crop, or unfinished region is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The repository helper exclusive-copied the exact second returned source; source and retained dimensions, bytes, media type, and SHA-256 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared file, catalog, route, plan, or promotion decision was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-cave-bear-wood-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T19:16:46.967Z",
+  "completedAt": "2026-08-29T19:20:20.000Z",
+  "totalWallTimeMs": 213033,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/regression/cave-bear-wood-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

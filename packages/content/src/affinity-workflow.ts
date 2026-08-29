@@ -6,6 +6,7 @@ import {
 
 export const AFFINITY_WORKFLOW_VERSION = 'affinity-workflow-v1';
 export const ELEMENTAL_REGRESSION_VERSION = 'v2';
+export const CORRECTION_REGRESSION_VERSION = 'v2';
 
 const IMMUTABLE_SAFE_FRAME_V3_TARGET_IDS = new Set([
 	'affinity-workflow-v1-grey-wolf-wood',
@@ -1032,6 +1033,235 @@ export function createElementalRegressionTarget(affinityId: AffinityId): Affinit
 	});
 }
 
+const CORRECTION_SOURCE_REFERENCES = {
+	deathKnightMetalV2: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png',
+		contentHash: '24715b4bbb1fa648a547034cc6eec56a29ade33bc093a22f9070a8f4779625bd',
+		purpose:
+			'Retained Metal v2 candidate supplies the successful forged ribcage, metallic marrow, articulated joints, magnetic core, commander identity, and restrained finish only; shorten and raise the sword so its point clears the bottom safe border'
+	},
+	deathKnightNormalContrast: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/normal-v1.png',
+		contentHash: '571a3c96c11e06deea033ad602f74f742b9dcfcdf8004016ff5dc41831675769',
+		purpose:
+			'Normal Death Knight candidate is a negative contrast reference only: the corrected Metal construction must remain recognizably related while differing through structural forged anatomy, articulation, and metallic marrow'
+	},
+	greyWolfFire: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/fire-v1.png',
+		contentHash: 'e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed',
+		purpose:
+			'Previous Fire Grey Wolf candidate supplies the retained wolf identity, fire integration, stance, and finish; reproduce that design through canonical manifest-bound prompt provenance rather than copying unrelated traits'
+	},
+	caveBearWood: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png',
+		contentHash: '6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8',
+		purpose:
+			'Previous Wood Cave Bear candidate supplies the retained ursine identity and load-bearing wood design; preserve those cues while changing the stance so all four paws are independently visible'
+	},
+	caveBearWind: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wind-v1.png',
+		contentHash: '2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc',
+		purpose:
+			'Previous Wind Cave Bear candidate supplies the retained ursine identity, directional fur, vapor channels, and pressure wake; preserve those cues while revealing four independent paws'
+	},
+	elementalFire: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png',
+		contentHash: '5fa32c011896fe139c39a8e4e32f104105e48e8ec5eb3a7124a045da1353f0f1',
+		purpose:
+			'Previous Fire Bound Vanguard candidate supplies the retained headless chassis and continuous load-bearing flame-and-plasma construction; preserve the design while containing every flame and smoke wisp inside the safe frame'
+	}
+} as const satisfies Record<string, ImageProductionReference>;
+
+type CorrectionRegressionConfig = Readonly<{
+	speciesId: 'death-knight' | 'grey-wolf' | 'cave-bear' | 'elemental';
+	affinityId: 'metal' | 'fire' | 'wood' | 'wind';
+	version: 'v2' | 'v3';
+	sourceTarget: AffinityWorkflowTarget;
+	references: readonly ImageProductionReference[];
+	identityInvariants?: readonly string[];
+	anatomyInvariants?: readonly string[];
+	prohibitedTraits?: readonly string[];
+	affinityExpression?: string;
+	composition: string;
+	correctionCriterion: Readonly<{
+		criterionId: string;
+		description: string;
+	}>;
+}>;
+
+const CORRECTION_REGRESSION_CONFIGS = [
+	{
+		speciesId: 'death-knight',
+		affinityId: 'metal',
+		version: CORRECTION_REGRESSION_VERSION,
+		sourceTarget: createAffinityWorkflowTarget('death-knight', 'metal'),
+		references: [CORRECTION_SOURCE_REFERENCES.deathKnightNormalContrast, REFERENCES.deathKnight],
+		identityInvariants: [
+			'the ribcage, spine, limb bones, and joints are themselves forged metal construction rather than a body hidden by ordinary plate armor'
+		],
+		anatomyInvariants: [
+			'articulated metallic marrow visibly carries load through the torso, arms, and legs'
+		],
+		prohibitedTraits: [
+			'ordinary armored knight silhouette with an unchanged body concealed beneath conventional plate',
+			'construction materially indistinguishable from the Normal Death Knight reference'
+		],
+		affinityExpression:
+			'Forged anatomy replaces the ordinary hidden body: articulated load-bearing plates interlock with visible metallic marrow across ribcage, spine, limbs, and joints, while controlled fragments orbit a distinct magnetic core.',
+		composition:
+			'Exactly one full-body Death Knight in a disciplined three-quarter command stance; sword, boots, pennant finial, cape ends, and every controlled fragment remain centered inside the inner eighty-four percent of the finished canvas.',
+		correctionCriterion: {
+			criterionId: 'forged-body-distinction',
+			description:
+				'The Metal variant visibly uses load-bearing forged anatomy, articulated metallic marrow, and a controlling core and cannot be mistaken for the Normal Death Knight merely wearing ordinary armor.'
+		}
+	},
+	{
+		speciesId: 'grey-wolf',
+		affinityId: 'fire',
+		version: CORRECTION_REGRESSION_VERSION,
+		sourceTarget: createAffinityWorkflowTarget('grey-wolf', 'fire'),
+		references: [CORRECTION_SOURCE_REFERENCES.greyWolfFire, REFERENCES.greyWolf],
+		prohibitedTraits: ['uncanonical prompt or incomplete reference provenance'],
+		composition:
+			'Exactly one full-body Fire Grey Wolf in the approved flanking stance; nose, tail, paws, flame tips, smoke, and heat distortion remain centered inside the inner eighty-four percent of the fully finished canvas.',
+		correctionCriterion: {
+			criterionId: 'canonical-provenance-rerun',
+			description:
+				'The accepted design is regenerated from the exact safe-frame-v4 semantic-v2 manifest prompt with every declared reference attached in order and complete retained provenance.'
+		}
+	},
+	{
+		speciesId: 'cave-bear',
+		affinityId: 'wood',
+		version: CORRECTION_REGRESSION_VERSION,
+		sourceTarget: createAffinityWorkflowTarget('cave-bear', 'wood'),
+		references: [CORRECTION_SOURCE_REFERENCES.caveBearWood, REFERENCES.caveBear],
+		anatomyInvariants: [
+			'all four paws are separately readable with visible ground contact and no hind-paw occlusion'
+		],
+		prohibitedTraits: ['overlapping legs or stance that hides either hind paw'],
+		composition:
+			'Exactly one full-body Wood Cave Bear in a grounded broadside-to-three-quarter stance, with staggered legs and all four paws independently visible; every root tip and extremity remains inside the inner eighty-four percent of the finished canvas.',
+		correctionCriterion: {
+			criterionId: 'four-readable-paws',
+			description:
+				'Exactly four anatomically coherent paws are independently readable, visibly contact the floor, and do not overlap or disappear behind another leg.'
+		}
+	},
+	{
+		speciesId: 'cave-bear',
+		affinityId: 'wind',
+		version: CORRECTION_REGRESSION_VERSION,
+		sourceTarget: createAffinityWorkflowTarget('cave-bear', 'wind'),
+		references: [CORRECTION_SOURCE_REFERENCES.caveBearWind, REFERENCES.caveBear],
+		anatomyInvariants: [
+			'all four paws are separately readable with visible ground contact and no hind-paw occlusion'
+		],
+		prohibitedTraits: ['overlapping legs, vapor, or debris that hides either hind paw'],
+		composition:
+			'Exactly one full-body Wind Cave Bear in a grounded broadside-to-three-quarter stance, with staggered legs and all four paws independently visible; paws remain unobscured by vapor, and every wind effect remains inside the inner eighty-four percent of the finished canvas.',
+		correctionCriterion: {
+			criterionId: 'four-readable-paws',
+			description:
+				'Exactly four anatomically coherent paws are independently readable, visibly contact the floor, and remain unobscured by overlapping legs, vapor, or debris.'
+		}
+	},
+	{
+		speciesId: 'elemental',
+		affinityId: 'fire',
+		version: 'v3',
+		sourceTarget: createElementalRegressionTarget('fire'),
+		references: [CORRECTION_SOURCE_REFERENCES.elementalFire, REFERENCES.elementalNeutralChassis],
+		anatomyInvariants: [
+			'every visible flame, plasma tongue, spark, and smoke wisp remains part of the single bounded body presentation and inside the safe frame'
+		],
+		prohibitedTraits: [
+			'flame, sparks, smoke, or heat distortion entering the outer eight-percent border'
+		],
+		composition:
+			'Exactly one full-body Fire Bound Vanguard, deliberately scaled down and centered so its hard chassis plus every flame tip, spark, smoke wisp, and heat-distortion edge remain inside the inner eighty-four percent of the fully finished canvas.',
+		correctionCriterion: {
+			criterionId: 'bounded-combustion-safe-frame',
+			description:
+				'The approved continuous flame-and-plasma body is preserved while every visible combustion effect retains at least eight percent margin from every canvas edge.'
+		}
+	}
+] as const satisfies readonly CorrectionRegressionConfig[];
+
+function createCorrectionRegressionTarget(
+	config: CorrectionRegressionConfig
+): AffinityWorkflowTarget {
+	const source = config.sourceTarget;
+	const semanticCriteria = [
+		{
+			criterionId: 'protocol-provenance',
+			kind: 'objective' as const,
+			description:
+				'The first submitted prompt exactly matches the declared canonical renderer and all retained source provenance is complete.',
+			required: true
+		},
+		{
+			criterionId: 'manifest-fidelity',
+			kind: 'objective' as const,
+			description:
+				'Every identity, anatomy, duty, equipment, reference-purpose, and prohibited-trait invariant is visibly satisfied.',
+			required: true
+		},
+		{
+			criterionId: 'affinity-construction-fidelity',
+			kind: 'objective' as const,
+			description:
+				'The declared affinity visibly changes at least two listed construction dimensions rather than acting as a color or effect overlay.',
+			required: true
+		},
+		{
+			criterionId: 'visible-counterplay-cue',
+			kind: 'objective' as const,
+			description:
+				'The target-declared weak point or counterplay state is visibly readable in this still image.',
+			required: true
+		}
+	];
+	const existingCriterionIds = new Set(
+		source.acceptanceCriteria.map((criterion) => criterion.criterionId)
+	);
+	const targetId = `${AFFINITY_WORKFLOW_VERSION}-${config.speciesId}-${config.affinityId}-${config.version}`;
+	return ImageProductionTargetSchema.parse({
+		...source,
+		targetId,
+		assetId: targetId,
+		promptProtocol: 'safe-frame-v4',
+		authoringProtocol: 'semantic-v2',
+		cohort: 'regression',
+		affinityDesign: {
+			...source.affinityDesign,
+			...(config.affinityExpression ? { expression: config.affinityExpression } : {})
+		},
+		identityInvariants: [...source.identityInvariants, ...(config.identityInvariants ?? [])],
+		anatomyInvariants: [...source.anatomyInvariants, ...(config.anatomyInvariants ?? [])],
+		prohibitedTraits: [...source.prohibitedTraits, ...(config.prohibitedTraits ?? [])],
+		references: [...config.references],
+		presentation: {
+			...source.presentation,
+			composition: config.composition
+		},
+		acceptanceCriteria: [
+			...source.acceptanceCriteria,
+			...semanticCriteria.filter((criterion) => !existingCriterionIds.has(criterion.criterionId)),
+			{
+				...config.correctionCriterion,
+				kind: 'objective',
+				required: true
+			}
+		],
+		output: {
+			candidatePath: `assets/enemies/experiments/${AFFINITY_WORKFLOW_VERSION}/candidates/regression/${config.speciesId}/${config.affinityId}-${config.version}.png`,
+			resultPath: `assets/enemies/experiments/${AFFINITY_WORKFLOW_VERSION}/results/regression/${config.speciesId}-${config.affinityId}-${config.version}.json`
+		}
+	});
+}
+
 function createCohortTargets(cohort: AffinityCohortId): readonly AffinityWorkflowTarget[] {
 	return AFFINITY_SPECIES.filter((species) => species.cohort === cohort).flatMap((species) =>
 		AFFINITY_IDS.map((affinityId) => createAffinityWorkflowTarget(species.id, affinityId))
@@ -1047,9 +1277,48 @@ export const BASE_AFFINITY_TARGETS = [
 export const ELEMENTAL_REGRESSION_TARGETS = AFFINITY_IDS.map((affinityId) =>
 	createElementalRegressionTarget(affinityId)
 );
+export const CORRECTION_REGRESSION_TARGETS = CORRECTION_REGRESSION_CONFIGS.map((config) =>
+	createCorrectionRegressionTarget(config)
+);
+const deathKnightMetalV2 = CORRECTION_REGRESSION_TARGETS.find(
+	(target) => target.targetId === `${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v2`
+)!;
+export const FINAL_FRAMING_REGRESSION_TARGETS = [
+	ImageProductionTargetSchema.parse({
+		...deathKnightMetalV2,
+		targetId: `${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v3`,
+		assetId: `${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v3`,
+		references: [CORRECTION_SOURCE_REFERENCES.deathKnightMetalV2, REFERENCES.deathKnight],
+		prohibitedTraits: [
+			...deathKnightMetalV2.prohibitedTraits,
+			'sword point, pennant finial, cape, or controlled fragment entering the outer eight-percent border'
+		],
+		presentation: {
+			...deathKnightMetalV2.presentation,
+			composition:
+				'Exactly one full-body Metal Death Knight in a disciplined upright three-quarter command stance with a deliberately shorter sword held higher and closer to the body; boots, sword point, pennant finial, cape ends, and every controlled fragment remain clearly inside the inner eighty-four percent of the finished canvas.'
+		},
+		acceptanceCriteria: [
+			...deathKnightMetalV2.acceptanceCriteria,
+			{
+				criterionId: 'bounded-sword-safe-frame',
+				kind: 'objective',
+				description:
+					'The successful forged-body design is preserved while the complete sword point and every other hard or effect extent retain at least eight percent margin from every canvas edge.',
+				required: true
+			}
+		],
+		output: {
+			candidatePath: `assets/enemies/experiments/${AFFINITY_WORKFLOW_VERSION}/candidates/regression/death-knight/metal-v3.png`,
+			resultPath: `assets/enemies/experiments/${AFFINITY_WORKFLOW_VERSION}/results/regression/death-knight-metal-v3.json`
+		}
+	})
+] as const;
 export const ALL_AFFINITY_TARGETS = [
 	...BASE_AFFINITY_TARGETS,
-	...ELEMENTAL_REGRESSION_TARGETS
+	...ELEMENTAL_REGRESSION_TARGETS,
+	...CORRECTION_REGRESSION_TARGETS,
+	...FINAL_FRAMING_REGRESSION_TARGETS
 ] as const;
 
 const GOBLIN_AUDIT_AXES = [

@@ -74,11 +74,13 @@ describe('affinity workflow review persistence', () => {
 		const listed = await listAffinityWorkflowReviews(databaseUrl, base.experimentId, {
 			includeAutomated: true
 		});
-		expect(listed.reviews).toHaveLength(3);
-		expect(listed.latestByTargetReviewer).toEqual(
-			expect.arrayContaining([revised.review, secondReviewer.review])
+		const targetReviews = listed.reviews.filter((review) => review.targetId === targetId);
+		const targetLatest = listed.latestByTargetReviewer.filter(
+			(review) => review.targetId === targetId
 		);
-		expect(listed.latestByTargetReviewer).toHaveLength(2);
+		expect(targetReviews).toHaveLength(3);
+		expect(targetLatest).toEqual(expect.arrayContaining([revised.review, secondReviewer.review]));
+		expect(targetLatest).toHaveLength(2);
 
 		await expect(
 			createAffinityWorkflowReview(databaseUrl, { ...base, note: 'Conflicting retry.' })

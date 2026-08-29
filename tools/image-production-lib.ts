@@ -86,15 +86,23 @@ export function sha256Json(value: unknown): string {
 }
 
 export function targetArtifactPath(target: ImageProductionTarget): string {
-	return target.cohort === 'regression'
-		? `${AFFINITY_EXPERIMENT_ROOT}/targets/regression/${target.speciesId}/${target.affinity}-v2.json`
-		: `${AFFINITY_EXPERIMENT_ROOT}/targets/${target.speciesId}/${target.affinity}.json`;
+	if (target.cohort !== 'regression') {
+		return `${AFFINITY_EXPERIMENT_ROOT}/targets/${target.speciesId}/${target.affinity}.json`;
+	}
+	const version = target.targetId.match(/-(v\d+)$/u)?.[1];
+	if (!version)
+		throw new Error(`Regression target requires a versioned target ID: ${target.targetId}`);
+	return `${AFFINITY_EXPERIMENT_ROOT}/targets/regression/${target.speciesId}/${target.affinity}-${version}.json`;
 }
 
 export function assignmentArtifactPath(target: ImageProductionTarget): string {
-	return target.cohort === 'regression'
-		? `${AFFINITY_EXPERIMENT_ROOT}/assignments/regression/${target.speciesId}/${target.affinity}-v2.json`
-		: `${AFFINITY_EXPERIMENT_ROOT}/assignments/${target.speciesId}/${target.affinity}.json`;
+	if (target.cohort !== 'regression') {
+		return `${AFFINITY_EXPERIMENT_ROOT}/assignments/${target.speciesId}/${target.affinity}.json`;
+	}
+	const version = target.targetId.match(/-(v\d+)$/u)?.[1];
+	if (!version)
+		throw new Error(`Regression target requires a versioned target ID: ${target.targetId}`);
+	return `${AFFINITY_EXPERIMENT_ROOT}/assignments/regression/${target.speciesId}/${target.affinity}-${version}.json`;
 }
 
 export function createImageProductionAssignments(
@@ -129,13 +137,13 @@ export function createImageProductionAssignments(
 }
 
 export interface AffinityWorkflowDefinitionSummary {
-	readonly targetCount: 54;
-	readonly assignmentCount: 54;
+	readonly targetCount: 60;
+	readonly assignmentCount: 60;
 	readonly baseTargetCount: 48;
 	readonly controlledTargetCount: 24;
 	readonly breadthTargetCount: 24;
-	readonly regressionTargetCount: 6;
-	readonly uniqueOutputCount: 108;
+	readonly regressionTargetCount: 12;
+	readonly uniqueOutputCount: 120;
 }
 
 export function validateAffinityWorkflowDefinitions(
@@ -146,19 +154,16 @@ export function validateAffinityWorkflowDefinitions(
 	const assignments = assignmentInputs.map((assignment) =>
 		ImageProductionAssignmentSchema.parse(assignment)
 	);
-	if (targets.length !== 54) throw new Error(`Expected 54 targets, found ${targets.length}`);
-	if (assignments.length !== 54) {
-		throw new Error(`Expected 54 assignments, found ${assignments.length}`);
+	if (targets.length !== 60) throw new Error(`Expected 60 targets, found ${targets.length}`);
+	if (assignments.length !== 60) {
+		throw new Error(`Expected 60 assignments, found ${assignments.length}`);
 	}
 	const targetIds = new Set(targets.map((target) => target.targetId));
 	const assignmentIds = new Set(assignments.map((assignment) => assignment.assignmentId));
 	if (targetIds.size !== targets.length) throw new Error('Target IDs must be unique');
 	if (assignmentIds.size !== assignments.length) throw new Error('Assignment IDs must be unique');
 	const expectedTargetsById = new Map(
-		[...BASE_AFFINITY_TARGETS, ...ELEMENTAL_REGRESSION_TARGETS].map((target) => [
-			target.targetId,
-			target
-		])
+		ALL_AFFINITY_TARGETS.map((target) => [target.targetId, target])
 	);
 	for (const target of targets) {
 		const expected = expectedTargetsById.get(target.targetId);
@@ -180,9 +185,12 @@ export function validateAffinityWorkflowDefinitions(
 			}
 		}
 	}
+	const elementalV2TargetIds = new Set(
+		ELEMENTAL_REGRESSION_TARGETS.map((target) => target.targetId)
+	);
 	for (const affinity of AFFINITY_IDS) {
 		const matches = regressionTargets.filter(
-			(target) => target.speciesId === 'elemental' && target.affinity === affinity
+			(target) => target.targetId === `${AFFINITY_WORKFLOW_VERSION}-elemental-${affinity}-v2`
 		);
 		if (matches.length !== 1) {
 			throw new Error(
@@ -199,8 +207,32 @@ export function validateAffinityWorkflowDefinitions(
 			);
 		}
 	}
-	if (regressionTargets.some((target) => target.speciesId !== 'elemental')) {
-		throw new Error('Only the six explicit Elemental v2 targets may use the regression cohort');
+	const correctionTargets = regressionTargets.filter(
+		(target) => !elementalV2TargetIds.has(target.targetId)
+	);
+	const expectedCorrectionTargetIds = new Set([
+		`${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v2`,
+		`${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v3`,
+		`${AFFINITY_WORKFLOW_VERSION}-grey-wolf-fire-v2`,
+		`${AFFINITY_WORKFLOW_VERSION}-cave-bear-wood-v2`,
+		`${AFFINITY_WORKFLOW_VERSION}-cave-bear-wind-v2`,
+		`${AFFINITY_WORKFLOW_VERSION}-elemental-fire-v3`
+	]);
+	if (
+		correctionTargets.length !== expectedCorrectionTargetIds.size ||
+		correctionTargets.some((target) => !expectedCorrectionTargetIds.has(target.targetId))
+	) {
+		throw new Error(
+			'Regression cohort must contain the six Elemental v2 targets and six explicit versioned corrections'
+		);
+	}
+	if (
+		correctionTargets.some(
+			(target) =>
+				target.promptProtocol !== 'safe-frame-v4' || target.authoringProtocol !== 'semantic-v2'
+		)
+	) {
+		throw new Error('Versioned correction targets must use safe-frame-v4 and semantic-v2');
 	}
 	const assignmentsByTarget = new Map(
 		assignments.map((assignment) => [assignment.targetId, assignment])
@@ -230,20 +262,20 @@ export function validateAffinityWorkflowDefinitions(
 		baseTargets.length !== 48 ||
 		controlledTargetCount !== 24 ||
 		breadthTargetCount !== 24 ||
-		regressionTargetCount !== 6
+		regressionTargetCount !== 12
 	) {
 		throw new Error(
-			`Expected 48 base (24 controlled, 24 breadth) and 6 regression targets; found ${baseTargets.length} base (${controlledTargetCount} controlled, ${breadthTargetCount} breadth) and ${regressionTargetCount} regression`
+			`Expected 48 base (24 controlled, 24 breadth) and 12 regression targets; found ${baseTargets.length} base (${controlledTargetCount} controlled, ${breadthTargetCount} breadth) and ${regressionTargetCount} regression`
 		);
 	}
 	return {
-		targetCount: 54,
-		assignmentCount: 54,
+		targetCount: 60,
+		assignmentCount: 60,
 		baseTargetCount: 48,
 		controlledTargetCount: 24,
 		breadthTargetCount: 24,
-		regressionTargetCount: 6,
-		uniqueOutputCount: 108
+		regressionTargetCount: 12,
+		uniqueOutputCount: 120
 	};
 }
 

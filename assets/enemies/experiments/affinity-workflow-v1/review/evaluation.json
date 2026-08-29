@@ -1,8 +1,8 @@
 {
 	"schemaVersion": "image-production-evaluation-v1",
 	"experimentId": "affinity-workflow-v1",
-	"generatedAt": "2026-08-29T18:46:52.745Z",
-	"catalogHash": "7809df245cda8eb3bced838e2a3b3b31a6f539801027e4fcd50c5b33f0d77d16",
+	"generatedAt": "2026-08-29T19:31:15.409Z",
+	"catalogHash": "681f5931e4ea66c7ccfe80df25bd3eaf1263b4bf2fae65831c8c3c2796921706",
 	"status": "incomplete",
 	"controlled": {
 		"targetCount": 24,
@@ -14,8 +14,8 @@
 		"acceptedCriticalVisualFailureCount": 0
 	},
 	"workflow": {
-		"completedTargetCount": 30,
-		"completeProvenanceCount": 30,
+		"completedTargetCount": 36,
+		"completeProvenanceCount": 36,
 		"pathConflictCount": 0,
 		"sharedFileEditCount": 0,
 		"retryCeilingViolationCount": 0
@@ -144,7 +144,7 @@
 			"targetId": null,
 			"layer": "species-grammar",
 			"description": "Independent known-target audit found unstable command-seal and pennant grammar plus repeated base-armor-and-overlay affinity treatment; Metal was especially difficult to distinguish from Normal.",
-			"resolution": null
+			"resolution": "Metal v2 replaced the hidden ordinary body with a forged ribcage, metallic marrow, articulated joints, and a magnetic core. Metal v3 preserved that construction and passed the strict safe frame as a producer candidate; blind human distinction from Normal remains pending."
 		},
 		{
 			"failureId": "elemental-stone-anchor-bias",
@@ -187,6 +187,34 @@
 			"layer": "scheduler",
 			"description": "Local configuration requests 16 concurrent threads, but this live task exposes four total slots and therefore only three simultaneous image workers when orchestration is reserved.",
 			"resolution": "Use three image workers as the safe ceiling in this environment. Run 8-, 12-, and 16-worker stages only in a newly provisioned task that exposes those slots; do not infer capacity from configuration alone."
+		},
+		{
+			"failureId": "grey-wolf-fire-prompt-provenance-v1",
+			"targetId": "affinity-workflow-v1-grey-wolf-fire",
+			"layer": "execution-contract",
+			"description": "The visually strong Fire Grey Wolf v1 remained revise because its submitted first prompt did not match the immutable canonical prompt bytes.",
+			"resolution": "The versioned safe-frame-v4 semantic-v2 Fire Grey Wolf rerun passed on its first attempt with exact prompt and reference provenance."
+		},
+		{
+			"failureId": "elemental-fire-safe-margin-v2",
+			"targetId": "affinity-workflow-v1-elemental-fire-v2",
+			"layer": "target",
+			"description": "The improved substance-bodied Fire Elemental v2 retained a top-edge flame and smoke safe-margin failure.",
+			"resolution": "Fire Elemental v3 preserved the headless shallow-concave plasma chassis and passed the central-84-percent framing gate on its first attempt."
+		},
+		{
+			"failureId": "cave-bear-wind-paw-occlusion",
+			"targetId": "affinity-workflow-v1-cave-bear-wind-v2",
+			"layer": "generator-variance",
+			"description": "The original Wind Cave Bear and both versioned v2 attempts hid the far hind paw despite explicit broadside-to-three-quarter stance and four-grounded-paw constraints.",
+			"resolution": null
+		},
+		{
+			"failureId": "result-verifier-retry-reason-parity",
+			"targetId": "affinity-workflow-v1-death-knight-metal-v3",
+			"layer": "execution-contract",
+			"description": "The Python result verifier accepted an omitted nullable retryReason on an accepted corrective attempt, while the strict TypeScript schema rejected the record during aggregate sync.",
+			"resolution": "Restored the explicit null in the result and tightened the reusable Python verifier to require retryReason on every attempt, matching the repository contract."
 		}
 	],
 	"recommendedSafeConcurrency": 3,
@@ -197,6 +225,7 @@
 		"Rejected intermediate images retain prompt, source identifier, timing, and findings but not byte-level persistence receipts; complete provenance currently refers to selected retained candidates.",
 		"Safe-frame-v2 produced first-attempt framing passes for five of six Elementals; Fire still required one correction for a top-edge flame wake and head-like chassis. Grey Wolf Normal used its retry for an empty provider response rather than framing.",
 		"The six-target semantic Elemental regression ran at three effective workers in two scheduler waves: five producer candidates, one revise, full provenance, no throttle, timeout, collision, or integration error. The final v4 Bear wave produced two first-attempt candidates and one bounded revise with the same workflow integrity.",
-		"The controlled matrix is complete at 21 producer candidates and 3 revise results, but only 10 of 24 were first-attempt candidates versus the plan threshold of 20. Human blind species/affinity recognition is still zero because no human review has been recorded, so the breadth release gate remains closed."
+		"The controlled matrix is complete at 21 producer candidates and 3 revise results, but only 10 of 24 were first-attempt candidates versus the plan threshold of 20. Human blind species/affinity recognition is still zero because no human review has been recorded, so the breadth release gate remains closed.",
+		"The six-target final correction regression completed with four producer candidates and two revise outcomes across ten model calls, 964793 ms of summed audited job time, zero path conflicts, and complete selected-output provenance. Rejected intermediate images retain their prompt, provider source identifier, timing, and findings but not byte-level persistence receipts. Fire Grey Wolf v2, Wood Cave Bear v2, Fire Elemental v3, and Metal Death Knight v3 are candidates. Metal Death Knight v2 is retained as framing-revision evidence, and Wind Cave Bear v2 remains revise after repeated far-hind-paw occlusion."
 	]
 }

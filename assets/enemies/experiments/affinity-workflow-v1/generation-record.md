@@ -1,6 +1,7 @@
 # Affinity workflow v1 generation record
 
-Status: **controlled matrix complete; breadth gate closed; human blind review pending**
+Status: **controlled and final correction regressions complete; breadth gate closed; human blind
+review pending**
 
 Date: **2026-08-29**
 
@@ -15,8 +16,9 @@ in the per-target JSON files under `results/`. The machine-validated aggregate i
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Controlled | 24 | 24 | 21 | 3 | 0 |
 | Elemental semantic regression | 6 | 6 | 5 | 1 | 0 |
+| Final correction regression | 6 | 6 | 4 | 2 | 0 |
 | Breadth | 24 | 0 | 0 | 0 | 24 |
-| Total | 54 | 30 | 26 | 4 | 24 |
+| Total | 60 | 36 | 30 | 6 | 24 |
 
 No candidate is approved or promoted. Producer status is a bounded authoring decision, not human
 acceptance.
@@ -51,6 +53,32 @@ authoring. Its retained bytes and source hash are known, but its exact tool prom
 to a repository result record. This is recorded as a provenance limitation and is not repeated for
 candidate generation.
 
+## Final correction regression
+
+Six versioned targets tested the final safe-frame-v4 / semantic-v2 workflow against the specific
+weaknesses found in the independent audit:
+
+| Target | Status | Attempts | Outcome |
+| --- | --- | ---: | --- |
+| Fire Grey Wolf v2 | Candidate | 1 | Restored exact canonical prompt provenance while preserving the strong integrated Fire design. |
+| Wood Cave Bear v2 | Candidate | 2 | A targeted stance correction produced four independently readable grounded paws. |
+| Wind Cave Bear v2 | Revise | 2 | Safe framing and affinity passed, but the far hind paw remained occluded in both attempts. |
+| Fire Elemental v3 | Candidate | 1 | Preserved the substance-bodied v2 chassis and contained every combustion extent inside the safe frame. |
+| Metal Death Knight v2 | Revise | 2 | Solved ordinary-armor ambiguity through forged ribs, marrow, joints, and core, but the sword entered the bottom safe band. |
+| Metal Death Knight v3 | Candidate | 2 | Preserved the forged construction and passed the strict border with a shorter, raised sword and smaller composition. |
+
+The batch used ten model calls and 964,793 ms of summed auditable job time. Four targets became
+producer candidates, two stopped honestly at `revise`, and all six retained complete selected-output
+provenance. Rejected intermediate images retain their prompt, provider source identifier, timing, and
+findings, but not byte-level persistence receipts. There were no collisions, shared-file edits,
+throttles, or integration errors. The Wind Bear result is kept as evidence of repeated
+target/generator variance rather than accepted with hidden anatomy.
+
+The immutable Grey Wolf and Fire Elemental correction prompts use `approved` and `accepted` to mean
+producer-retained designs from earlier runs, not human approval or shared-catalog promotion. Future
+manifests use `retained` explicitly; these completed prompt records remain unchanged so their hashes
+continue to match the submitted generation requests.
+
 ## Workflow iterations
 
 1. `canonical-v1` preserved the initial pilot but caused framing retries.
@@ -76,6 +104,8 @@ The complete failure classification and resolution history is in `review/evaluat
   effective speedup over summed job time; full provenance and no capacity errors.
 - Final three-worker v4 Bear wave: 1.838× observed effective speedup; full provenance and no
   capacity errors.
+- Final correction regression: six targets, ten model calls, four candidates, two revise outcomes,
+  and 964.793 seconds of summed audited job time under a dynamic ceiling of three image workers.
 
 The active task exposes four total agent slots, so three image workers is the measured safe ceiling
 when orchestration is reserved. Local configuration requests 16, but configuration alone does not
@@ -102,4 +132,6 @@ pnpm sync:affinity-review
 ```
 
 Re-evaluate the controlled thresholds before dispatching any breadth image generation. The 60- and
-600-manifest Goblin independence audits are already deterministic and require no image calls.
+600-manifest Goblin independence audits are already deterministic and require no image calls. The
+remaining release dependency is a human blind review; producer self-inspection cannot supply the
+required species, affinity, or acceptance decisions.

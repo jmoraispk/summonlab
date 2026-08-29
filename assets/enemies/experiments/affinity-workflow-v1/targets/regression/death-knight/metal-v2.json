@@ -1,0 +1,129 @@
+{
+	"schemaVersion": "image-production-target-v1",
+	"targetId": "affinity-workflow-v1-death-knight-metal-v2",
+	"assetId": "affinity-workflow-v1-death-knight-metal-v2",
+	"packId": "pack-2",
+	"experimentId": "affinity-workflow-v1",
+	"promptProtocol": "safe-frame-v4",
+	"authoringProtocol": "semantic-v2",
+	"cohort": "regression",
+	"speciesId": "death-knight",
+	"affinity": "metal",
+	"affinityDesign": {
+		"alteredDimensions": ["material", "anatomy", "equipment", "exposed-counterplay"],
+		"expression": "Forged anatomy replaces the ordinary hidden body: articulated load-bearing plates interlock with visible metallic marrow across ribcage, spine, limbs, and joints, while controlled fragments orbit a distinct magnetic core.",
+		"counterplayCue": "Articulated joints or the controlling magnetic core remain materially distinct."
+	},
+	"threat": { "presentationTier": "elite", "referenceGrade": 4, "canonicalGrade": 4 },
+	"battlefieldDutyId": "formation-commander",
+	"constructionMode": "armored-undead",
+	"identityInvariants": [
+		"undead armored commander identity",
+		"skull or death mask",
+		"small command pennant",
+		"deliberate sword guard",
+		"command seal beneath the gorget",
+		"disciplined military posture",
+		"the ribcage, spine, limb bones, and joints are themselves forged metal construction rather than a body hidden by ordinary plate armor"
+	],
+	"anatomyInvariants": [
+		"humanoid biped",
+		"believable armor load paths",
+		"two arms and two legs",
+		"articulated metallic marrow visibly carries load through the torso, arms, and legs"
+	],
+	"permittedTransformations": ["material", "articulation", "equipment", "exposed weak point"],
+	"prohibitedTraits": [
+		"random giant horns",
+		"implausibly oversized sword",
+		"full-body colored glow",
+		"ordinary armor presented as an affinity without transformed construction",
+		"ordinary armored knight silhouette with an unchanged body concealed beneath conventional plate",
+		"construction materially indistinguishable from the Normal Death Knight reference"
+	],
+	"references": [
+		{
+			"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/normal-v1.png",
+			"purpose": "Normal Death Knight candidate is a negative contrast reference only: the corrected Metal construction must remain recognizably related while differing through structural forged anatomy, articulation, and metallic marrow",
+			"contentHash": "571a3c96c11e06deea033ad602f74f742b9dcfcdf8004016ff5dc41831675769"
+		},
+		{
+			"path": "assets/enemies/review/pack-2/undead-v1.png",
+			"purpose": "Fourth subject only: Death Knight identity, command silhouette, armor load paths, and restrained necromancy; do not transfer the sentinel, wraith, or bone mage",
+			"contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+		}
+	],
+	"presentation": {
+		"styleContract": "Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.",
+		"medium": "premium realistic painterly raster character concept",
+		"background": "neutral cracked-stone floor against a charcoal-to-midnight backdrop",
+		"lighting": "controlled neutral key with restrained local affinity emission and readable materials",
+		"composition": "Exactly one full-body Death Knight in a disciplined three-quarter command stance; sword, boots, pennant finial, cape ends, and every controlled fragment remain centered inside the inner eighty-four percent of the finished canvas.",
+		"canvas": { "width": 1536, "height": 1024, "mediaType": "image/png", "safeMarginPercent": 8 },
+		"negativePrompt": [
+			"No labels, text, UI, frame, logo, or watermark.",
+			"No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.",
+			"No resemblance to a published character or reference person."
+		]
+	},
+	"acceptanceCriteria": [
+		{
+			"criterionId": "complete-safe-frame",
+			"kind": "objective",
+			"description": "Entire silhouette and all extremities are complete with at least eight percent safe margin.",
+			"required": true
+		},
+		{
+			"criterionId": "single-finished-subject",
+			"kind": "objective",
+			"description": "Exactly one subject appears and every canvas region is intentionally finished.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-species-identity",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the species without seeing the target label.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-affinity-integration",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the affinity through at least two visual dimensions rather than color alone.",
+			"required": true
+		},
+		{
+			"criterionId": "protocol-provenance",
+			"kind": "objective",
+			"description": "The first submitted prompt exactly matches the declared canonical renderer and all retained source provenance is complete.",
+			"required": true
+		},
+		{
+			"criterionId": "manifest-fidelity",
+			"kind": "objective",
+			"description": "Every identity, anatomy, duty, equipment, reference-purpose, and prohibited-trait invariant is visibly satisfied.",
+			"required": true
+		},
+		{
+			"criterionId": "affinity-construction-fidelity",
+			"kind": "objective",
+			"description": "The declared affinity visibly changes at least two listed construction dimensions rather than acting as a color or effect overlay.",
+			"required": true
+		},
+		{
+			"criterionId": "visible-counterplay-cue",
+			"kind": "objective",
+			"description": "The target-declared weak point or counterplay state is visibly readable in this still image.",
+			"required": true
+		},
+		{
+			"criterionId": "forged-body-distinction",
+			"kind": "objective",
+			"description": "The Metal variant visibly uses load-bearing forged anatomy, articulated metallic marrow, and a controlling core and cannot be mistaken for the Normal Death Knight merely wearing ordinary armor.",
+			"required": true
+		}
+	],
+	"output": {
+		"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png",
+		"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/regression/death-knight-metal-v2.json"
+	}
+}

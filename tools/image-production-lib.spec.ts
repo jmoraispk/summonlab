@@ -32,21 +32,21 @@ async function writeJson(root: string, relativePath: string, value: unknown): Pr
 }
 
 describe('affinity workflow export tooling', () => {
-	it('builds 48 immutable base and six versioned regression targets with collision-free assignments', () => {
+	it('builds 48 immutable base and twelve versioned regression targets with collision-free assignments', () => {
 		const bundle = createAffinityWorkflowExportBundle();
 		const summary = validateAffinityWorkflowDefinitions(bundle.targets, bundle.assignments);
 
 		expect(summary).toEqual({
-			targetCount: 54,
-			assignmentCount: 54,
+			targetCount: 60,
+			assignmentCount: 60,
 			baseTargetCount: 48,
 			controlledTargetCount: 24,
 			breadthTargetCount: 24,
-			regressionTargetCount: 6,
-			uniqueOutputCount: 108
+			regressionTargetCount: 12,
+			uniqueOutputCount: 120
 		});
 		expect(new Set(bundle.assignments.map((assignment) => assignment.assignmentId))).toHaveLength(
-			54
+			60
 		);
 		expect(bundle.assignments.every((assignment) => assignment.retryCeiling === 1)).toBe(true);
 	});
@@ -77,6 +77,15 @@ describe('affinity workflow export tooling', () => {
 		expect(assignmentArtifactPath(regression)).toBe(
 			`${AFFINITY_EXPERIMENT_ROOT}/assignments/regression/elemental/normal-v2.json`
 		);
+		const fireV3 = bundle.targets.find(
+			(target) => target.targetId === 'affinity-workflow-v1-elemental-fire-v3'
+		)!;
+		expect(targetArtifactPath(fireV3)).toBe(
+			`${AFFINITY_EXPERIMENT_ROOT}/targets/regression/elemental/fire-v3.json`
+		);
+		expect(assignmentArtifactPath(fireV3)).toBe(
+			`${AFFINITY_EXPERIMENT_ROOT}/assignments/regression/elemental/fire-v3.json`
+		);
 	});
 
 	it('gives image agents only their target outputs while protecting shared aggregates', () => {
@@ -104,9 +113,9 @@ describe('affinity workflow export tooling', () => {
 		);
 
 		expect(generated.filter((artifact) => artifact.path.includes('/schemas/'))).toHaveLength(9);
-		expect(generated.filter((artifact) => artifact.path.includes('/targets/'))).toHaveLength(54);
+		expect(generated.filter((artifact) => artifact.path.includes('/targets/'))).toHaveLength(60);
 		expect(generated.filter((artifact) => artifact.path.includes('/assignments/'))).toHaveLength(
-			54
+			60
 		);
 		expect(generated.filter((artifact) => artifact.path.includes('goblin-audit-'))).toHaveLength(2);
 		expect(aggregates.map((artifact) => artifact.path).sort()).toEqual(
@@ -158,9 +167,17 @@ describe('affinity workflow export tooling', () => {
 			await mkdir(path.dirname(destination), { recursive: true });
 			await copyFile(path.join(process.cwd(), reference), destination);
 		}
+		const referencedCandidateTargets = bundle.targets.filter((candidate) =>
+			references.has(candidate.output.candidatePath)
+		);
+		for (const referencedTarget of referencedCandidateTargets) {
+			const destination = path.join(root, referencedTarget.output.resultPath);
+			await mkdir(path.dirname(destination), { recursive: true });
+			await copyFile(path.join(process.cwd(), referencedTarget.output.resultPath), destination);
+		}
 
 		const target = bundle.targets.find(
-			(candidate) => candidate.speciesId === 'death-knight' && candidate.affinity === 'normal'
+			(candidate) => candidate.speciesId === 'death-knight' && candidate.affinity === 'fire'
 		)!;
 		const assignment = bundle.assignments.find(
 			(candidate) => candidate.targetId === target.targetId
@@ -288,10 +305,10 @@ describe('affinity workflow export tooling', () => {
 		});
 
 		await expect(validateAffinityWorkflowWorkspace(root)).resolves.toMatchObject({
-			targets: 54,
-			assignments: 54,
-			results: 1,
-			images: 1,
+			targets: 60,
+			assignments: 60,
+			results: referencedCandidateTargets.length + 1,
+			images: referencedCandidateTargets.length + 1,
 			catalogEntries: 1,
 			evaluationStatus: 'incomplete'
 		});

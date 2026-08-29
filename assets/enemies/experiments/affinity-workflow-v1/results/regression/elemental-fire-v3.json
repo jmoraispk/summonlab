@@ -1,0 +1,189 @@
+{
+	"schemaVersion": "image-production-result-v1",
+	"resultId": "result-affinity-workflow-v1-elemental-fire-v3",
+	"targetId": "affinity-workflow-v1-elemental-fire-v3",
+	"assignmentId": "assignment-affinity-workflow-v1-elemental-fire-v3",
+	"skillVersion": "summonlab-image-production-v1",
+	"status": "candidate",
+	"attempts": [
+		{
+			"attemptId": "attempt-affinity-workflow-v1-elemental-fire-v3-1",
+			"attemptNumber": 1,
+			"precedingAttemptId": null,
+			"conclusion": "accepted-by-producer",
+			"exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-elemental-fire-v3\".\n\nSubject and threat:\n- Species: elemental.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: bound-frontline-vanguard.\n- Construction mode: substance-bodied.\n- Fixed chassis: bound-vanguard-elemental.\n\nIdentity invariants:\n- exactly the headless Bound Vanguard Elemental shown in the neutral chassis benchmark\n- fixed broad shallow concave chest with a low stable torso\n- fixed broad wedge forearms, short planted legs, and benchmark-matched proportions\n- invariant pale arcane sternum core centered inside the chest concavity\n- pale binding lattice remains local and does not recolor the full body\n\nAnatomy invariants:\n- exactly two arms and two legs\n- no head, face, neck, shoulders above the chest, or substitute head-like mass\n- exactly five major masses: shallow-concave torso, two wedge arms, and two planted legs\n- the declared substance carries the full torso, arm, and leg loads while chassis proportions remain fixed\n- every visible flame, plasma tongue, spark, and smoke wisp remains part of the single bounded body presentation and inside the safe frame\n\nAffinity: fire.\nAffinity expression: Controlled flame and dense plasma form every load-bearing body mass inside the binding lattice, with minimal dark slag confined to planted contact pads.\nCounterplay cue: The pale sternum core and binding lattice become sharply readable between controlled plasma surges.\nAltered dimensions: material; motion; attack-telegraph.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: extra limbs or detached floating body masses; humanoid head, face, helmet, neck, or shoulder-mounted pseudo-head; domed or convex chest replacing the shallow concavity; dark, affinity-colored, absent, displaced, or oversized sternum core; changed chassis proportions, raised heroic posture, or long humanoid legs; rock, lava-rock, charcoal boulders, or stone anatomy with flames pasted on top; large slag shell obscuring the flame-and-plasma body; uniform orange glow that erases the fixed chassis; flame, sparks, smoke, or heat distortion entering the outer eight-percent border.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one full-body Fire Bound Vanguard, deliberately scaled down and centered so its hard chassis plus every flame tip, spark, smoke wisp, and heat-distortion edge remain inside the inner eighty-four percent of the fully finished canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png — Previous Fire Bound Vanguard candidate supplies the retained headless chassis and continuous load-bearing flame-and-plasma construction; preserve the design while containing every flame and smoke wisp inside the safe frame.\n2. assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png — Exact Bound Vanguard headless shallow-concave chassis, proportions, planted stance, wedge forearms, and pale sternum core only; do not treat its neutral ceramic material as the affinity substance for non-Normal targets.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+			"promptHash": "8502a6718578992c373011676fbd88ce6f1c7bcff1d32bd2a02e6a7b1f449494",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png",
+					"contentHash": "5fa32c011896fe139c39a8e4e32f104105e48e8ec5eb3a7124a045da1353f0f1"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/benchmarks/bound-vanguard-neutral-anchor-v1.png",
+					"contentHash": "a934483cc02570e674c16b6c51d0120aeb05029370b8ef0ab0dd9e96727156a1"
+				}
+			],
+			"requestStartedAt": "2026-08-29T19:23:38.413Z",
+			"generationCompletedAt": "2026-08-29T19:23:55.125Z",
+			"inspectionCompletedAt": "2026-08-29T19:24:25.505Z",
+			"generationDurationMs": 16712,
+			"inspectionDurationMs": 30380,
+			"totalWallTimeMs": 47092,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a04ef9-5ae4-7b31-a88e-52aba3ace702/exec-b9f7f611-dda1-44da-9819-1d1633932eeb.png",
+			"persistence": {
+				"operation": "exclusive-copy",
+				"elapsedMs": 29,
+				"source": {
+					"path": "/home/joao/.codex/generated_images/01a04ef9-5ae4-7b31-a88e-52aba3ace702/exec-b9f7f611-dda1-44da-9819-1d1633932eeb.png",
+					"width": 1536,
+					"height": 1024,
+					"mediaType": "image/png",
+					"bytes": 2375249,
+					"contentHash": "d13de2c8b0ef5b61422a7ca19f1a5fd141a6ea00f5b25d2b7b40b0e5b8e3f346"
+				},
+				"retained": {
+					"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v3.png",
+					"width": 1536,
+					"height": 1024,
+					"mediaType": "image/png",
+					"bytes": 2375249,
+					"contentHash": "d13de2c8b0ef5b61422a7ca19f1a5fd141a6ea00f5b25d2b7b40b0e5b8e3f346"
+				}
+			},
+			"output": {
+				"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v3.png",
+				"width": 1536,
+				"height": 1024,
+				"mediaType": "image/png",
+				"bytes": 2375249,
+				"contentHash": "d13de2c8b0ef5b61422a7ca19f1a5fd141a6ea00f5b25d2b7b40b0e5b8e3f346"
+			},
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "canvas-completion",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "The charcoal backdrop and cracked-stone floor are intentionally rendered throughout, with no blank band, unfinished area, or abrupt canvas cutoff."
+				},
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "The complete hard chassis plus every visible flame tip, spark, smoke wisp, and heat wake remain inside the central eighty-four percent, leaving a visibly empty border on all four sides."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one featured Bound Vanguard appears, with no duplicate, incidental creature, or detached body mass."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "The image preserves the headless broad shallow-concave chest, low stable torso, two wedge forearms, two short planted legs, centered pale sternum core, and sparse pale local binding lattice."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Fire changes load-bearing material, internal upward motion, attack telegraph, and environmental wake through controlled plasma and combustion rather than a hue-only overlay."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "The pale diamond sternum core and nearby pale lattice are sharply readable against darker internal plasma, making the declared weak point obvious."
+				},
+				{
+					"criterionId": "fixed-chassis-fidelity",
+					"category": "anatomy",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly five connected major masses preserve the benchmark chassis, coherent limb joints, planted contacts, and low center of gravity without head, neck, pseudo-head, or extra limb."
+				},
+				{
+					"criterionId": "declared-substance-body",
+					"category": "affinity-cue-strength",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Torso, both wedge arms, and both legs read as continuous dense flame-and-plasma volumes; dark slag is confined to small planted contact pads."
+				},
+				{
+					"criterionId": "blind-species-identity",
+					"category": "species-cue-strength",
+					"evaluator": "producer",
+					"outcome": "not-applicable",
+					"observation": "Blind species recognition remains pending human review; target-aware inspection finds strong fixed Bound Vanguard chassis cues."
+				},
+				{
+					"criterionId": "blind-affinity-integration",
+					"category": "affinity-cue-strength",
+					"evaluator": "producer",
+					"outcome": "not-applicable",
+					"observation": "Blind Fire recognition remains pending human review; target-aware inspection finds load-bearing combustion cues beyond color."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "The first submitted prompt matches the safe-frame-v4 canonical renderer byte-for-byte, and the exact returned source was exclusive-copied without normalization."
+				},
+				{
+					"criterionId": "bounded-combustion-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "The successful v2 continuous flame-and-plasma construction is retained while all visible combustion extents stay beyond the required eight-percent margin from every edge."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "battlefield-duty",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "The low planted advance and paired wedge guards communicate a bound frontline vanguard."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "style-cohesion",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Premium realistic painterly dark-fantasy finish, controlled neutral key, restrained local emission, cracked floor, and charcoal backdrop remain coherent."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "constraint-safety",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "No text, UI, frame, logo, watermark, extra subject, sexualization, crop, blank region, or published-character resemblance is visible."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "output-ownership",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation or self-promotion."
+				}
+			],
+			"retryReason": null
+		}
+	],
+	"selectedAttemptId": "attempt-affinity-workflow-v1-elemental-fire-v3-1",
+	"failedCriteria": [],
+	"writtenOutputPaths": [
+		"assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v3.png",
+		"assets/enemies/experiments/affinity-workflow-v1/results/regression/elemental-fire-v3.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false,
+	"startedAt": "2026-08-29T19:23:38.413Z",
+	"completedAt": "2026-08-29T19:26:41.433Z",
+	"totalWallTimeMs": 183020
+}

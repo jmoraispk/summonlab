@@ -153,7 +153,14 @@ def verify_attempts(
                 fail("persistence source receipt is incomplete")
         if output is None and conclusion == "accepted-by-producer":
             fail("an accepted attempt requires an output")
-        if conclusion == "rejected-by-producer" and not attempt.get("retryReason"):
+        if "retryReason" not in attempt:
+            fail("every attempt requires retryReason, using null when no retry is requested")
+        retry_reason = attempt["retryReason"]
+        if retry_reason is not None and (
+            not isinstance(retry_reason, str) or not retry_reason.strip()
+        ):
+            fail("retryReason must be null or a non-empty string")
+        if conclusion == "rejected-by-producer" and retry_reason is None:
             fail("a rejected attempt requires a retryReason")
         findings = attempt.get("findings")
         if not isinstance(findings, list) or not findings:

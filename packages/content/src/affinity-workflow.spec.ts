@@ -7,26 +7,31 @@ import {
 	BASE_AFFINITY_TARGETS,
 	BREADTH_AFFINITY_RELEASE_GATE,
 	BREADTH_AFFINITY_TARGETS,
+	CORRECTION_REGRESSION_TARGETS,
 	CONTROLLED_AFFINITY_TARGETS,
 	ELEMENTAL_REGRESSION_TARGETS,
+	FINAL_FRAMING_REGRESSION_TARGETS,
 	GOBLIN_AFFINITY_AUDIT_60,
 	GOBLIN_AFFINITY_AUDIT_600,
 	GOBLIN_ATTRIBUTE_OPTIONS,
 	createAffinityWorkflowTarget,
+	createElementalRegressionTarget,
 	createGoblinAffinityAttributes,
 	summarizeGoblinManifestAudit
 } from './affinity-workflow.js';
 
 describe('affinity workflow content', () => {
-	it('preserves the complete 48-target base matrix and adds six explicit regression targets', () => {
+	it('preserves the complete 48-target base matrix and adds eleven explicit regression targets', () => {
 		expect(AFFINITY_SPECIES).toHaveLength(8);
 		expect(AFFINITY_IDS).toHaveLength(6);
 		expect(CONTROLLED_AFFINITY_TARGETS).toHaveLength(24);
 		expect(BREADTH_AFFINITY_TARGETS).toHaveLength(24);
 		expect(BASE_AFFINITY_TARGETS).toHaveLength(48);
 		expect(ELEMENTAL_REGRESSION_TARGETS).toHaveLength(6);
-		expect(ALL_AFFINITY_TARGETS).toHaveLength(54);
-		expect(new Set(ALL_AFFINITY_TARGETS.map((target) => target.targetId)).size).toBe(54);
+		expect(CORRECTION_REGRESSION_TARGETS).toHaveLength(5);
+		expect(FINAL_FRAMING_REGRESSION_TARGETS).toHaveLength(1);
+		expect(ALL_AFFINITY_TARGETS).toHaveLength(60);
+		expect(new Set(ALL_AFFINITY_TARGETS.map((target) => target.targetId)).size).toBe(60);
 
 		for (const species of AFFINITY_SPECIES) {
 			const speciesTargets = BASE_AFFINITY_TARGETS.filter(
@@ -48,6 +53,98 @@ describe('affinity workflow content', () => {
 			requiredAffinityRecognitions: 20,
 			requiresWorkflowPass: true
 		});
+	});
+
+	it('adds one bounded final framing sentinel for the successful Metal construction', () => {
+		const target = FINAL_FRAMING_REGRESSION_TARGETS[0];
+		expect(target).toMatchObject({
+			targetId: 'affinity-workflow-v1-death-knight-metal-v3',
+			cohort: 'regression',
+			promptProtocol: 'safe-frame-v4',
+			authoringProtocol: 'semantic-v2'
+		});
+		expect(target.references[0]).toMatchObject({
+			path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png',
+			contentHash: '24715b4bbb1fa648a547034cc6eec56a29ade33bc093a22f9070a8f4779625bd'
+		});
+		expect(target.presentation.composition).toContain('shorter sword');
+		expect(target.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
+			'bounded-sword-safe-frame'
+		);
+	});
+
+	it('versions all five known corrections under the repaired safe-frame protocol', () => {
+		expect(CORRECTION_REGRESSION_TARGETS.map((target) => target.targetId)).toEqual([
+			'affinity-workflow-v1-death-knight-metal-v2',
+			'affinity-workflow-v1-grey-wolf-fire-v2',
+			'affinity-workflow-v1-cave-bear-wood-v2',
+			'affinity-workflow-v1-cave-bear-wind-v2',
+			'affinity-workflow-v1-elemental-fire-v3'
+		]);
+		for (const target of CORRECTION_REGRESSION_TARGETS) {
+			expect(target).toMatchObject({
+				cohort: 'regression',
+				promptProtocol: 'safe-frame-v4',
+				authoringProtocol: 'semantic-v2'
+			});
+			expect(target.output.candidatePath).toBe(
+				`assets/enemies/experiments/affinity-workflow-v1/candidates/regression/${target.speciesId}/${target.affinity}-${target.targetId.endsWith('-v3') ? 'v3' : 'v2'}.png`
+			);
+			expect(target.output.resultPath).toBe(
+				`assets/enemies/experiments/affinity-workflow-v1/results/regression/${target.speciesId}-${target.affinity}-${target.targetId.endsWith('-v3') ? 'v3' : 'v2'}.json`
+			);
+			expect(target.references[0]?.path).toContain(
+				'assets/enemies/experiments/affinity-workflow-v1/candidates/'
+			);
+			expect(target.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
+				'protocol-provenance'
+			);
+		}
+	});
+
+	it('strengthens only the observed correction failures while retaining source invariants', () => {
+		const target = (speciesId: string, affinity: string) =>
+			CORRECTION_REGRESSION_TARGETS.find(
+				(candidate) => candidate.speciesId === speciesId && candidate.affinity === affinity
+			)!;
+		const deathKnight = target('death-knight', 'metal');
+		expect(deathKnight.identityInvariants).toEqual(
+			expect.arrayContaining(
+				createAffinityWorkflowTarget('death-knight', 'metal').identityInvariants
+			)
+		);
+		expect(deathKnight.affinityDesign.expression).toContain('load-bearing plates');
+		expect(deathKnight.affinityDesign.expression).toContain('metallic marrow');
+		expect(deathKnight.prohibitedTraits.join(' ')).toContain('Normal Death Knight');
+		expect(deathKnight.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
+			'forged-body-distinction'
+		);
+
+		const wolf = target('grey-wolf', 'fire');
+		expect(wolf.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
+			'canonical-provenance-rerun'
+		);
+		expect(wolf.references[0]?.contentHash).toBe(
+			'e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed'
+		);
+
+		for (const affinity of ['wood', 'wind']) {
+			const bear = target('cave-bear', affinity);
+			expect(bear.anatomyInvariants.join(' ')).toContain('all four paws');
+			expect(bear.presentation.composition).toContain('broadside-to-three-quarter');
+			expect(bear.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
+				'four-readable-paws'
+			);
+		}
+
+		const elemental = target('elemental', 'fire');
+		expect(elemental.identityInvariants).toEqual(
+			expect.arrayContaining(createElementalRegressionTarget('fire').identityInvariants)
+		);
+		expect(elemental.presentation.composition).toContain('inner eighty-four percent');
+		expect(elemental.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
+			'bounded-combustion-safe-frame'
+		);
 	});
 
 	it('defines a semantic safe-frame v3 Elemental regression across all six affinities', () => {
@@ -167,7 +264,9 @@ describe('affinity workflow content', () => {
 		for (const target of ALL_AFFINITY_TARGETS) {
 			expect(target.references.length).toBeGreaterThanOrEqual(2);
 			for (const reference of target.references) {
-				expect(reference.path).toMatch(/^assets\/enemies\/review\//);
+				expect(reference.path).toMatch(
+					/^assets\/enemies\/(?:review|experiments\/affinity-workflow-v1\/candidates)\//
+				);
 				expect(reference.path).not.toContain('..');
 				expect(reference.contentHash).toMatch(/^[a-f0-9]{64}$/);
 				expect(reference.purpose.length).toBeGreaterThan(30);

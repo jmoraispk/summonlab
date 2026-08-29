@@ -1,7 +1,7 @@
 {
 	"schemaVersion": "image-production-catalog-v1",
 	"experimentId": "affinity-workflow-v1",
-	"generatedAt": "2026-08-29T18:46:52.745Z",
+	"generatedAt": "2026-08-29T19:31:15.409Z",
 	"status": "experimental-unpromoted",
 	"entries": [
 		{
@@ -70,6 +70,19 @@
 			"promoted": false
 		},
 		{
+			"targetId": "affinity-workflow-v1-cave-bear-wind-v2",
+			"resultId": "result-affinity-workflow-v1-cave-bear-wind-v2",
+			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-wind-v2",
+			"speciesId": "cave-bear",
+			"affinity": "wind",
+			"cohort": "regression",
+			"status": "revise",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wind-v2.png",
+			"candidateHash": "2959ed534461995a4d0ca8d9442a992b8ababb7458cb3eecc70ca29faeacd559",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
 			"targetId": "affinity-workflow-v1-cave-bear-wood",
 			"resultId": "result-affinity-workflow-v1-cave-bear-wood",
 			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-wood",
@@ -79,6 +92,19 @@
 			"status": "revise",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png",
 			"candidateHash": "6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-cave-bear-wood-v2",
+			"resultId": "result-affinity-workflow-v1-cave-bear-wood-v2",
+			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-wood-v2",
+			"speciesId": "cave-bear",
+			"affinity": "wood",
+			"cohort": "regression",
+			"status": "candidate",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
+			"candidateHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -105,6 +131,32 @@
 			"status": "candidate",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/metal-v1.png",
 			"candidateHash": "eda3cf74f69dd76dc21a178122c30b51a7ca07bb5725660445d7f8f386f98138",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-death-knight-metal-v2",
+			"resultId": "result-affinity-workflow-v1-death-knight-metal-v2",
+			"assignmentId": "assignment-affinity-workflow-v1-death-knight-metal-v2",
+			"speciesId": "death-knight",
+			"affinity": "metal",
+			"cohort": "regression",
+			"status": "revise",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png",
+			"candidateHash": "24715b4bbb1fa648a547034cc6eec56a29ade33bc093a22f9070a8f4779625bd",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-death-knight-metal-v3",
+			"resultId": "result-affinity-workflow-v1-death-knight-metal-v3",
+			"assignmentId": "assignment-affinity-workflow-v1-death-knight-metal-v3",
+			"speciesId": "death-knight",
+			"affinity": "metal",
+			"cohort": "regression",
+			"status": "candidate",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v3.png",
+			"candidateHash": "ee35e0bd6d5641cf58e0933a29692e15e2f881d898c3b3e4ec83bdcc07f5f0ca",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -183,6 +235,19 @@
 			"status": "revise",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v2.png",
 			"candidateHash": "5fa32c011896fe139c39a8e4e32f104105e48e8ec5eb3a7124a045da1353f0f1",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-elemental-fire-v3",
+			"resultId": "result-affinity-workflow-v1-elemental-fire-v3",
+			"assignmentId": "assignment-affinity-workflow-v1-elemental-fire-v3",
+			"speciesId": "elemental",
+			"affinity": "fire",
+			"cohort": "regression",
+			"status": "candidate",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/elemental/fire-v3.png",
+			"candidateHash": "d13de2c8b0ef5b61422a7ca19f1a5fd141a6ea00f5b25d2b7b40b0e5b8e3f346",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -326,6 +391,19 @@
 			"status": "revise",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/fire-v1.png",
 			"candidateHash": "e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-grey-wolf-fire-v2",
+			"resultId": "result-affinity-workflow-v1-grey-wolf-fire-v2",
+			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-fire-v2",
+			"speciesId": "grey-wolf",
+			"affinity": "fire",
+			"cohort": "regression",
+			"status": "candidate",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/grey-wolf/fire-v2.png",
+			"candidateHash": "772d6d8fbbc19128bbeea77470174351caa1b53443ddcc89df334a38b6c99d15",
 			"reviewState": "pending",
 			"promoted": false
 		},

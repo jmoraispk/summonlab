@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import type { AffinityWorkflowReviewRecord } from '@summonlab/contracts';
 
 import {
+	AFFINITIES,
+	SPECIES,
 	buildBlindOrder,
 	findVerifiedMediaByOpaqueId,
 	isPathWithin,
@@ -51,8 +53,9 @@ describe('affinity review helpers', () => {
 
 	it('loads partial workspace artifacts and strips blind semantic metadata', async () => {
 		const data = await loadAffinityReviewData(true);
-		expect(data.targetCount).toBe(54);
-		expect(data.rows.flatMap((row) => row.cells)).toHaveLength(54);
+		expect(data.targetCount).toBe(60);
+		expect(data.rows).toHaveLength(14);
+		expect(data.rows.flatMap((row) => row.cells)).toHaveLength(84);
 		expect(data.verifiedCandidateCount).toBeGreaterThan(0);
 		const candidate = data.rows.flatMap((row) => row.cells).find((cell) => cell.mediaUrl);
 		expect(candidate?.labels).toBeNull();
@@ -77,6 +80,56 @@ describe('affinity review helpers', () => {
 				contentHash: expect.stringMatching(/^[a-f0-9]{64}$/)
 			})
 		);
+	});
+
+	it('keeps versioned correction targets in distinct sparse regression rows', async () => {
+		const data = await loadAffinityReviewData(false);
+		const regressionRows = data.rows.filter((row) => row.cohort === 'regression');
+		expect(regressionRows).toHaveLength(6);
+		expect(regressionRows.map((row) => row.rowLabel)).toEqual([
+			'Bound Vanguard Elemental · semantic v2',
+			'Death Knight · metal correction v2',
+			'Death Knight · metal framing v3',
+			'Grey Wolf · fire correction v2',
+			'Cave Bear · framing corrections v2',
+			'Bound Vanguard Elemental · fire framing v3'
+		]);
+
+		const semanticV2 = regressionRows[0]!;
+		expect(semanticV2.cells.map((cell) => cell.labels?.targetId)).toEqual(
+			AFFINITIES.map((affinity) => `affinity-workflow-v1-elemental-${affinity}-v2`)
+		);
+		const sparseTargetIds = regressionRows
+			.slice(1)
+			.flatMap((row) =>
+				Object.values(SPECIES.find((entry) => entry.name === row.rowLabel)?.targetIds ?? {})
+			);
+		expect(sparseTargetIds).toEqual(
+			expect.arrayContaining([
+				'affinity-workflow-v1-death-knight-metal-v2',
+				'affinity-workflow-v1-death-knight-metal-v3',
+				'affinity-workflow-v1-grey-wolf-fire-v2',
+				'affinity-workflow-v1-cave-bear-wood-v2',
+				'affinity-workflow-v1-cave-bear-wind-v2',
+				'affinity-workflow-v1-elemental-fire-v3'
+			])
+		);
+
+		for (const row of regressionRows.slice(1)) {
+			const declaredTargetIds = new Set(
+				Object.values(SPECIES.find((entry) => entry.name === row.rowLabel)?.targetIds ?? {})
+			);
+			const resolvedCells = row.cells.filter((cell) => cell.labels);
+			expect(resolvedCells.map((cell) => cell.labels?.targetId)).toEqual(
+				expect.arrayContaining([...declaredTargetIds])
+			);
+			expect(resolvedCells).toHaveLength(declaredTargetIds.size);
+			for (const cell of row.cells.filter((candidate) => !candidate.labels)) {
+				expect(cell).toEqual(
+					expect.objectContaining({ mediaUrl: null, metadata: null, status: 'pending' })
+				);
+			}
+		}
 	});
 
 	it('reduces blind review history to neutral state without guesses or hash bindings', () => {

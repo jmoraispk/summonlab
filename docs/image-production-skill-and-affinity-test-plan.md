@@ -1,7 +1,7 @@
 # Image-production skill and affinity workload plan
 
-Status: **in execution; controlled generation and semantic regression complete, breadth gated on
-human blind review and controlled-quality corrections**
+Status: **in execution; controlled generation and final correction regression complete, breadth
+gated on human blind review**
 
 Date: **2026-08-29**
 
@@ -22,17 +22,17 @@ The plan is now backed by a runnable implementation rather than being a design-o
   `skills/summonlab-image-production/` and passes the skill-package validator;
 - strict target, assignment, attempt, result, catalog, blind-review, evaluation, and dedicated
   affinity-review contracts are implemented and covered by tests;
-- 48 base manifests plus six versioned Elemental semantic-regression manifests are exported with
-  108 unique owned output paths;
+- 48 base manifests plus six Elemental semantic-regression and six final correction-regression
+  manifests are exported with 120 unique owned output paths;
 - deterministic export, validation, exact-source persistence, result verification, aggregate sync,
   review-evidence export, and goblin-independence audit tooling is implemented;
-- the Forge affinity-workflow page presents all 54 coordinates, supports label-visible and
-  server-stripped blind modes, verifies candidate bytes before serving them, and records append-only
-  hash-bound reviews without promotion;
+- the Forge affinity-workflow page presents all 60 targets across 14 collision-free rows, supports
+  label-visible and server-stripped blind modes, verifies candidate bytes before serving them, and
+  records append-only hash-bound reviews without promotion;
 - the Death Knight six-affinity pilot, the first Grey Wolf canaries, and the neutral-chassis
   Elemental regression have produced measured, hash-bound evidence;
-- all 24 controlled results and six Elemental regression results are complete: 26 producer
-  candidates and four bounded `revise` outcomes, all unapproved;
+- all 24 controlled results, six Elemental regression results, and six final correction results are
+  complete: 30 producer candidates and six bounded `revise` outcomes, all unapproved;
 - the controlled matrix has only 10 first-attempt candidates against the 20-target threshold, and
   no blind human recognition evidence has been recorded, so the 24-image breadth phase is not yet
   authorized by its release gate.
@@ -49,6 +49,13 @@ possible correction, exact persistence, structured result writing, and verificat
 taken roughly 110–214 seconds. Runtime drawing of already-authored modular assets can still be
 real-time; model generation of a novel finished portrait should be treated as asynchronous
 production or background enrichment rather than a frame-time operation.
+
+The final correction regression exercised the reusable skill with prior candidates as narrowly
+routed design references. Fire Grey Wolf v2, Wood Cave Bear v2, Fire Elemental v3, and Metal Death
+Knight v3 are verified producer candidates. Metal Death Knight v2 remains immutable framing
+evidence superseded by v3. Wind Cave Bear v2 remains `revise` after both attempts again occluded the
+far hind paw; the repeated target-specific failure is recorded without weakening the four-paw gate
+or starting an unbounded retry loop.
 
 ## Objective
 
@@ -420,7 +427,7 @@ Increase parallelism only after the preceding stage passes:
 
 | Stage | Parallel image jobs | Purpose | Promotion gate |
 | --- | ---: | --- | --- |
-| Canary | 2 | Verify tool invocation, ownership, saving, and result contract | Zero collisions and complete provenance |
+| Canary | 2 | Verify tool invocation, ownership, saving, and result contract | Zero collisions and complete retained-output provenance |
 | Pilot | 4 | Exercise Death Knight affinities after canary correction | No workflow failures |
 | Controlled | 6 | Balanced species/affinity comparison | Visual and workflow thresholds pass |
 | Breadth | 8 | Add goblin attributes and unusual anatomy | No quality or retry-rate regression |
@@ -477,6 +484,12 @@ most common earlier failure. Recommended coverage:
 - one Cave Drake or Tower Basilisk;
 - the species-affinity pair with the lowest review score.
 
+Execution status: the six-target correction regression is complete across armored undead,
+substance-bodied Elementals, and organic quadrupeds. It verified the final prompt/provenance path
+and the most common framing, construction, and anatomy failures. The compound Goblin and unusual
+draconic or six-legged sentinels remain behind the same human-review breadth gate as their source
+cohort; they are not silently waived or producer-self-approved.
+
 ### Phase 7 — Forge review surface
 
 Add an experimental affinity-workflow route with:
@@ -495,7 +508,9 @@ Add an experimental affinity-workflow route with:
 
 ### Workflow success
 
-- 100% of completed targets have complete provenance and valid hashes.
+- 100% of completed targets have complete retained-output provenance and valid hashes; rejected
+  intermediate attempts retain prompts, provider identifiers, timings, and findings even when their
+  image bytes are not persisted.
 - Zero cross-agent output collisions or shared-file edits.
 - Every result stays within its assigned output boundary.
 - Every failed acceptance criterion is reported explicitly.

@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-death-knight-metal-v3",
+  "targetId": "affinity-workflow-v1-death-knight-metal-v3",
+  "assignmentId": "assignment-affinity-workflow-v1-death-knight-metal-v3",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-death-knight-metal-v3-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-death-knight-metal-v3\".\n\nSubject and threat:\n- Species: death-knight.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: formation-commander.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- undead armored commander identity\n- skull or death mask\n- small command pennant\n- deliberate sword guard\n- command seal beneath the gorget\n- disciplined military posture\n- the ribcage, spine, limb bones, and joints are themselves forged metal construction rather than a body hidden by ordinary plate armor\n\nAnatomy invariants:\n- humanoid biped\n- believable armor load paths\n- two arms and two legs\n- articulated metallic marrow visibly carries load through the torso, arms, and legs\n\nAffinity: metal.\nAffinity expression: Forged anatomy replaces the ordinary hidden body: articulated load-bearing plates interlock with visible metallic marrow across ribcage, spine, limbs, and joints, while controlled fragments orbit a distinct magnetic core.\nCounterplay cue: Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: random giant horns; implausibly oversized sword; full-body colored glow; ordinary armor presented as an affinity without transformed construction; ordinary armored knight silhouette with an unchanged body concealed beneath conventional plate; construction materially indistinguishable from the Normal Death Knight reference; sword point, pennant finial, cape, or controlled fragment entering the outer eight-percent border.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one full-body Metal Death Knight in a disciplined upright three-quarter command stance with a deliberately shorter sword held higher and closer to the body; boots, sword point, pennant finial, cape ends, and every controlled fragment remain clearly inside the inner eighty-four percent of the finished canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png — Retained Metal v2 candidate supplies the successful forged ribcage, metallic marrow, articulated joints, magnetic core, commander identity, and restrained finish only; shorten and raise the sword so its point clears the bottom safe border.\n2. assets/enemies/review/pack-2/undead-v1.png — Fourth subject only: Death Knight identity, command silhouette, armor load paths, and restrained necromancy; do not transfer the sentinel, wraith, or bone mage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "8a06a06ea5797614f87e373b25eaf00bfb28312c117fbb92bf9093ed4470e37d",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png",
+          "contentHash": "24715b4bbb1fa648a547034cc6eec56a29ade33bc093a22f9070a8f4779625bd"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        }
+      ],
+      "requestStartedAt": "2026-08-29T19:28:48.882Z",
+      "generationCompletedAt": "2026-08-29T19:29:26.282Z",
+      "inspectionCompletedAt": "2026-08-29T19:29:43.282Z",
+      "generationDurationMs": 37400,
+      "inspectionDurationMs": 17000,
+      "totalWallTimeMs": 54400,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04efe-15d7-7b20-8590-7ebddc084c80/exec-4a06b296-22cf-4da5-ad74-cbcd6f675f3d.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The canvas is fully rendered with continuous backdrop and floor and no blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The standard finial rises into the top eight-percent border and both boots enter the bottom safe band, so the strict central eighty-four-percent framing lock fails."
+        },
+        {
+          "criterionId": "forged-body-distinction",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Open forged ribs, articulated metallic marrow, limb joints, exposed core, and controlled fragments clearly distinguish a structurally Metal body from ordinary plate armor."
+        }
+      ],
+      "retryReason": "The design and Metal construction pass, but the finial and boots violate the strict safe frame; the one permitted correction is limited to rescaling and shortening prop extents."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-death-knight-metal-v3-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-death-knight-metal-v3-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nComplete regeneration of Image 1 with one targeted correction only: fix the composition and safe-frame scale. Preserve the same single Metal Death Knight design, premium realistic painterly medieval dark-fantasy finish, neutral cracked-stone floor and charcoal-to-midnight backdrop.\n\nPreserve all passing invariants exactly: undead armored formation commander; skull or death mask; small command pennant; deliberate sword guard; command seal beneath the gorget; disciplined upright three-quarter posture; two arms and two legs; believable armor load paths; the ribcage, spine, limb bones, and joints are visibly forged metal construction rather than an ordinary body hidden by plate; articulated metallic marrow carries load through torso, arms, and legs; controlled fragments orbit a distinct magnetic core; restrained local emission; articulated joints and the controlling core remain distinct counterplay cues.\n\nChange only framing and prop extent: scale and center the complete character ensemble so every hard and soft extent fits comfortably inside the central 76 percent of the 1536 x 1024 canvas, leaving a visibly empty border of at least 12 percent on all four sides. Shorten the sword and hold it higher and closer to the torso in a deliberate guard. Shorten the command-standard mast and pennant so the finial and cloth remain well below the top safe border. Keep both boots, every cape end, every pennant edge, the sword point, and every orbiting metal fragment fully clear of the empty border.\n\nExactly one featured subject. No labels, text, UI, frame, logo, watermark, extra creature, cropped extremity, blank band, unfinished region, abrupt cutoff, random giant horns, implausibly oversized sword, full-body colored glow, ordinary unchanged plate-armored body, or published-character resemblance.",
+      "promptHash": "2359b398bb844ef166a633009c47d0a6706a22daa173eaf673d133b4f90d875b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v2.png",
+          "contentHash": "24715b4bbb1fa648a547034cc6eec56a29ade33bc093a22f9070a8f4779625bd"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04efe-15d7-7b20-8590-7ebddc084c80/exec-4a06b296-22cf-4da5-ad74-cbcd6f675f3d.png",
+        "contentHash": "7e234d8c7e87617b0da9c3bdb76eae9b1c034228aeea475b618c25659b65f9b8"
+      },
+      "requestStartedAt": "2026-08-29T19:29:49.231Z",
+      "generationCompletedAt": "2026-08-29T19:30:11.031Z",
+      "inspectionCompletedAt": "2026-08-29T19:30:31.031Z",
+      "generationDurationMs": 21800,
+      "inspectionDurationMs": 20000,
+      "totalWallTimeMs": 41800,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04efe-15d7-7b20-8590-7ebddc084c80/exec-c216151c-fc51-475e-95f5-1c2b05a963ac.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04efe-15d7-7b20-8590-7ebddc084c80/exec-c216151c-fc51-475e-95f5-1c2b05a963ac.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2095707,
+          "contentHash": "ee35e0bd6d5641cf58e0933a29692e15e2f881d898c3b3e4ec83bdcc07f5f0ca"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v3.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2095707,
+          "contentHash": "ee35e0bd6d5641cf58e0933a29692e15e2f881d898c3b3e4ec83bdcc07f5f0ca"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v3.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2095707,
+        "contentHash": "ee35e0bd6d5641cf58e0933a29692e15e2f881d898c3b3e4ec83bdcc07f5f0ca"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally rendered with continuous charcoal backdrop and cracked-stone floor."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Crown, finial, shortened raised sword, orbiting fragments, cape ends, and both boots remain fully inside the central eighty-four percent with visibly empty border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete featured Death Knight appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target inspection finds a skull-faced armored corpse commander with crown, standard, seal, and disciplined guard."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target inspection finds forged ribs, metallic marrow, articulated joints, core, and magnetically controlled fragments."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt matches the canonical renderer; ordered manifest references, correction source, exact returned source, exclusive-copy receipt, metadata, and hashes are recorded."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The skull mask, small pennant, seal beneath the gorget, disciplined stance, short guarded sword, two-arm/two-leg anatomy, and forged load paths satisfy the manifest."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Metal changes load-bearing anatomy, material, articulation, exposed core telegraph, equipment treatment, and fragment behavior rather than acting as a color overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The distinct cyan magnetic core is exposed within the forged torso and the articulated joint mechanisms remain readable."
+        },
+        {
+          "criterionId": "forged-body-distinction",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Open forged ribs, visible metallic spinal and abdominal framework, articulated limb marrow, core, and orbiting fragments cannot be mistaken for an unchanged body merely wearing plate."
+        },
+        {
+          "criterionId": "bounded-sword-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The successful forged-body design is preserved while the deliberately shorter sword is raised close to the torso and every extent clears the eight-percent border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The upright guard, crown, command seal, standard, and restrained blade communicate a formation commander rather than a berserker."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Painterly dark-fantasy finish, coherent forged materials, neutral key, cracked floor, and restrained local cyan emission remain cohesive with Pack 2."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, watermark, extra subject, horns, giant sword, full-body color wash, or visible published-character resemblance appears."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared review, catalog, route, plan, promotion, or repository-history state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-workflow-v1-death-knight-metal-v3-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-29T19:28:48.882Z",
+  "completedAt": "2026-08-29T19:31:15.409Z",
+  "totalWallTimeMs": 146527,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v3.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/regression/death-knight-metal-v3.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
