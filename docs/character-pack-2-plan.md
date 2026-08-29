@@ -2,6 +2,10 @@
 
 > Variation revision: the accepted face/clothing feedback and the grade 1–10 monster extension are
 > implemented in [Character Pack 2 variation and monster-grade revision](character-pack-2-variation-revision.md).
+>
+> Follow-up production-system work: the reusable skill, elemental-affinity matrices, added species,
+> and 2-to-16-job concurrency experiment are specified in the
+> [Image-production skill and affinity workload plan](image-production-skill-and-affinity-test-plan.md).
 
 Status: **implementation complete; human visual approval pending**
 
