@@ -1,0 +1,93 @@
+{
+  "packId": "character-pack-2",
+  "catalogVersion": "monster-visual-catalog-v2",
+  "rosterVersion": "pack-two-monsters-v1",
+  "status": "approval-candidate",
+  "promptRecord": "assets/enemies/review/pack-2/generation-record.md",
+  "plates": [
+    {
+      "familyId": "elementals",
+      "assetKey": "elementals-v1",
+      "file": "assets/enemies/review/pack-2/elementals-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2424993,
+      "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786",
+      "elapsedMs": 20747,
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Elementals · attempt 1"
+    },
+    {
+      "familyId": "arachnids",
+      "assetKey": "arachnids-v1",
+      "file": "assets/enemies/review/pack-2/arachnids-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2134382,
+      "contentHash": "acc6ae4e245dbd025613c20e21089727b37edf1fb6e0203097413ae9c8dddf9e",
+      "elapsedMs": 16460,
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Arachnids · attempt 1"
+    },
+    {
+      "familyId": "arcane-hostiles",
+      "assetKey": "arcane-hostiles-v1",
+      "file": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2521811,
+      "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54",
+      "elapsedMs": 49437,
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Arcane hostiles · attempt 1"
+    },
+    {
+      "familyId": "undead",
+      "assetKey": "undead-v1",
+      "file": "assets/enemies/review/pack-2/undead-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2515468,
+      "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa",
+      "elapsedMs": 40958,
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Undead · attempt 1"
+    },
+    {
+      "familyId": "draconic",
+      "assetKey": "draconic-v1",
+      "file": "assets/enemies/review/pack-2/draconic-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2399874,
+      "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9",
+      "elapsedMs": 23587,
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Draconic · attempt 1"
+    },
+    {
+      "familyId": "dungeon-predators",
+      "assetKey": "dungeon-predators-v1",
+      "file": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2365175,
+      "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e",
+      "elapsedMs": 28679,
+      "humanStatus": "candidate",
+      "authoringInspection": "pass",
+      "generationMode": "built-in-imagegen",
+      "promptHeading": "Dungeon predators · attempt 1"
+    }
+  ]
+}

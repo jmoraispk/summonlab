@@ -87,7 +87,8 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>Character Forge</span><strong>Pack 2 full cohort</strong></div>
 		<nav>
-			<a href={resolve('/forge')}>Pack 1</a><a href={resolve('/forge/contact-sheet')}>Seed audit</a>
+			<a href={resolve('/forge')}>Pack 1</a><a href={resolve('/forge/enemies/pack-2')}>Monsters</a
+			><a href={resolve('/forge/contact-sheet')}>Seed audit</a>
 		</nav>
 	</header>
 

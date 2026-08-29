@@ -19,6 +19,7 @@
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
 		"validate:visual-assets": "tsx tools/validate-visual-assets.ts",
 		"validate:pack-two-visuals": "tsx tools/validate-pack-two-visuals.ts",
+		"validate:pack-two-monsters": "tsx tools/validate-pack-two-monsters.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
 		"export:player-visuals": "tsx tools/export-player-visuals.ts",
