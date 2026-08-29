@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { VisualReviewRecord, VisualReviewVerdict } from '@summonlab/contracts';
 	import HeroRig from '$lib/components/HeroRig.svelte';
 	import remyEquipped from '../../../../../../assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 	import remyEvolved from '../../../../../../assets/heroes/visuals/forge-v2/benchmarks/remy-esen-evolution-3star-v1.png';
@@ -31,6 +32,19 @@
 	let { data } = $props();
 	let selectedHash = $state<string>();
 	let presentation = $state('all');
+	let build = $state('all');
+	let proportion = $state('all');
+	let rarity = $state('all');
+	let approval = $state('all');
+	let revealSilhouettes = $state(false);
+	// svelte-ignore state_referenced_locally
+	let reviewHistory = $state(data.reviewHistory);
+	let reviewVerdict = $state<VisualReviewVerdict>('approved');
+	let reviewer = $state('');
+	let reviewNote = $state('');
+	let reviewBusy = $state(false);
+	let reviewMessage = $state('');
+	let reviewError = $state('');
 
 	const images: Record<string, string> = {
 		'bryn-vale-anchor-v1': brynAnchor,
@@ -59,10 +73,35 @@
 		'tavi-daro-continuity-v1': taviContinuity
 	};
 	const presentations = ['all', 'feminine', 'masculine', 'androgynous'];
-	const filtered = $derived(
-		data.cohort.filter(
-			(entry) => presentation === 'all' || entry.draft.manifest.genderPresentation === presentation
+	const builds = $derived([
+		'all',
+		...new Set(data.cohort.map((entry) => entry.draft.manifest.bodyBuild))
+	]);
+	const proportions = $derived([
+		'all',
+		...new Set(
+			data.cohort.map((entry) => entry.draft.manifest.physiology?.proportions?.profile ?? 'unset')
 		)
+	]);
+	const rarities = $derived([
+		'all',
+		...new Set(data.cohort.map((entry) => String(entry.draft.manifest.rarityStars)))
+	]);
+	const approvals = ['all', 'pending', 'approved', 'revise'];
+	const reviewState = (assetKey: string) =>
+		reviewHistory.latestByAsset[assetKey]?.verdict ?? 'pending';
+	const filtered = $derived(
+		data.cohort.filter((entry) => {
+			const manifest = entry.draft.manifest;
+			const anchor = entry.assets.find((asset) => asset.role === 'full-body-anchor')!;
+			return (
+				(presentation === 'all' || manifest.genderPresentation === presentation) &&
+				(build === 'all' || manifest.bodyBuild === build) &&
+				(proportion === 'all' || manifest.physiology?.proportions?.profile === proportion) &&
+				(rarity === 'all' || String(manifest.rarityStars) === rarity) &&
+				(approval === 'all' || reviewState(anchor.assetKey) === approval)
+			);
+		})
 	);
 	const selected = $derived(
 		data.cohort.find((entry) => entry.draft.manifestHash === selectedHash) ?? data.cohort[0]!
@@ -73,6 +112,10 @@
 	const selectedContinuity = $derived(
 		selected.assets.find((asset) => asset.role === 'continuity-sheet')
 	);
+	const currentReview = $derived(reviewHistory.latestByAsset[selectedAnchor.assetKey] ?? null);
+	const feminineCohort = $derived(
+		data.cohort.filter((entry) => entry.draft.manifest.genderPresentation === 'feminine')
+	);
 	const remy = $derived(
 		data.cohort.find((entry) => entry.draft.manifest.displayName === 'Remy Esen')!
 	);
@@ -82,6 +125,40 @@
 	);
 	const words = (value: string | undefined) => value?.replaceAll('-', ' ') ?? 'unset';
 	const seconds = (milliseconds: number) => `${(milliseconds / 1000).toFixed(1)} s`;
+
+	async function submitReview() {
+		if (!reviewNote.trim() || !reviewer.trim() || reviewBusy) return;
+		reviewBusy = true;
+		reviewMessage = '';
+		reviewError = '';
+		try {
+			const response = await fetch('/api/dev/visual-reviews', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					reviewId: crypto.randomUUID(),
+					assetKey: selectedAnchor.assetKey,
+					catalogVersion: data.catalog.catalogVersion,
+					assetContentHash: selectedAnchor.contentHash,
+					verdict: reviewVerdict,
+					note: reviewNote.trim(),
+					reviewer: reviewer.trim()
+				})
+			});
+			const body = (await response.json()) as VisualReviewRecord & { message?: string };
+			if (!response.ok || !body.reviewId) throw new Error(body.message ?? 'Review was not saved.');
+			reviewHistory = {
+				reviews: [...reviewHistory.reviews, body],
+				latestByAsset: { ...reviewHistory.latestByAsset, [body.assetKey]: body }
+			};
+			reviewMessage = `${body.verdict === 'approved' ? 'Accepted for promotion' : 'Revision requested'} · ${body.assetKey}`;
+			reviewNote = '';
+		} catch (error) {
+			reviewError = error instanceof Error ? error.message : 'Review was not saved.';
+		} finally {
+			reviewBusy = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -134,6 +211,36 @@
 				{/each}
 			</div>
 		</header>
+		<div class="facet-bar" data-testid="pack-two-filters">
+			<label>
+				<span>Build</span>
+				<select bind:value={build} aria-label="Build filter">
+					{#each builds as option (option)}<option value={option}>{words(option)}</option>{/each}
+				</select>
+			</label>
+			<label>
+				<span>Proportion</span>
+				<select bind:value={proportion} aria-label="Proportion filter">
+					{#each proportions as option (option)}<option value={option}>{words(option)}</option
+						>{/each}
+				</select>
+			</label>
+			<label>
+				<span>Rarity</span>
+				<select bind:value={rarity} aria-label="Rarity filter">
+					{#each rarities as option (option)}<option value={option}
+							>{option === 'all' ? 'all' : `${option}★`}</option
+						>{/each}
+				</select>
+			</label>
+			<label>
+				<span>Review</span>
+				<select bind:value={approval} aria-label="Approval filter">
+					{#each approvals as option (option)}<option value={option}>{option}</option>{/each}
+				</select>
+			</label>
+			<strong>{filtered.length} / 18 shown</strong>
+		</div>
 		<div class="candidate-grid">
 			{#each filtered as entry (entry.draft.manifestHash)}
 				{@const manifest = entry.draft.manifest}
@@ -157,6 +264,9 @@
 					<em>{entry.human.cohortStage}</em>
 				</button>
 			{/each}
+			{#if filtered.length === 0}
+				<p class="empty-filter">No cohort member matches this intersection.</p>
+			{/if}
 		</div>
 	</section>
 
@@ -247,10 +357,43 @@
 					</div>
 				</dl>
 				<div class="gate">
-					<span>Human approval</span><strong>Candidate only</strong><small
-						>Not eligible for player-facing summons.</small
-					>
+					<span>Human approval</span><strong>{currentReview?.verdict ?? 'Candidate only'}</strong
+					><small>
+						{currentReview
+							? 'Decision recorded; catalog promotion and runtime export remain separate.'
+							: 'Not eligible for player-facing summons.'}
+					</small>
 				</div>
+				<details class="provenance">
+					<summary>Pixel provenance</summary>
+					<dl>
+						<div>
+							<dt>Asset</dt>
+							<dd>{selectedAnchor.assetKey}</dd>
+						</div>
+						<div>
+							<dt>Mode</dt>
+							<dd>{selectedAnchor.generationMode}</dd>
+						</div>
+						<div>
+							<dt>Dimensions</dt>
+							<dd>{selectedAnchor.width} × {selectedAnchor.height}</dd>
+						</div>
+						<div>
+							<dt>Bytes</dt>
+							<dd>{selectedAnchor.bytes.toLocaleString()}</dd>
+						</div>
+						<div>
+							<dt>Attempts</dt>
+							<dd>{selectedAnchor.attempts.length}</dd>
+						</div>
+						<div>
+							<dt>Prompt</dt>
+							<dd>{selectedAnchor.promptRecord}</dd>
+						</div>
+					</dl>
+					<code>{selectedAnchor.contentHash}</code>
+				</details>
 			</aside>
 		</div>
 	</section>
@@ -281,10 +424,72 @@
 		</div>
 	</section>
 
-	<section class="survival" aria-labelledby="survival-title">
+	<section class="silhouettes" aria-labelledby="silhouette-title">
 		<header class="section-heading">
 			<div>
 				<span>04</span>
+				<h2 id="silhouette-title">Unlabeled silhouette test</h2>
+			</div>
+			<button onclick={() => (revealSilhouettes = !revealSilhouettes)}>
+				{revealSilhouettes ? 'Hide identities' : 'Reveal identities'}
+			</button>
+		</header>
+		<div class="silhouette-grid" data-testid="pack-two-silhouettes">
+			{#each data.cohort as entry (entry.draft.manifestHash)}
+				<article>
+					<HeroRig manifest={entry.draft.manifest} compact />
+					{#if revealSilhouettes}
+						<strong>{entry.draft.manifest.displayName}</strong>
+						<small>{entry.draft.manifest.bodyBuild} · {entry.draft.manifest.heightCm} cm</small>
+					{/if}
+				</article>
+			{/each}
+		</div>
+	</section>
+
+	<section class="parity" aria-labelledby="parity-title">
+		<header class="section-heading">
+			<div>
+				<span>05</span>
+				<h2 id="parity-title">Feminine range parity</h2>
+			</div>
+			<p>Six adults; six builds; combat, craft, travel, scholarship, and courtly roles.</p>
+		</header>
+		<div class="parity-summary">
+			<span
+				><b>{new Set(feminineCohort.map((entry) => entry.draft.manifest.bodyBuild)).size}</b> builds</span
+			>
+			<span
+				><b>{new Set(feminineCohort.map((entry) => entry.draft.manifest.visualRole)).size}</b> roles</span
+			>
+			<span
+				><b
+					>{new Set(feminineCohort.map((entry) => entry.draft.manifest.physiology?.heightBand))
+						.size}</b
+				> height bands</span
+			>
+			<span
+				><b>{new Set(feminineCohort.map((entry) => entry.draft.manifest.rarityStars)).size}</b> star ranks</span
+			>
+		</div>
+		<div class="parity-grid">
+			{#each feminineCohort as entry (entry.draft.manifestHash)}
+				{@const manifest = entry.draft.manifest}
+				<article data-testid="feminine-parity-card">
+					<strong>{manifest.displayName}</strong>
+					<span>{manifest.bodyBuild} · {manifest.visualRole}</span>
+					<small
+						>{manifest.heightCm} cm · {words(manifest.physiology?.proportions?.profile)} · {manifest.rarityStars}★</small
+					>
+				</article>
+			{/each}
+		</div>
+	</section>
+
+	<section class="survival" aria-labelledby="survival-title">
+		<header class="section-heading">
+			<div>
+				<span>06</span>
 				<h2 id="survival-title">Scale survival</h2>
 			</div>
 			<p>
@@ -314,7 +519,7 @@
 	<section class="benchmark" aria-labelledby="benchmark-title">
 		<header class="section-heading">
 			<div>
-				<span>05</span>
+				<span>07</span>
 				<h2 id="benchmark-title">Equipment is not evolution</h2>
 			</div>
 			<p>One identity, two progression systems, measured authoring latency.</p>
@@ -368,6 +573,87 @@
 			<a class="proof-note" href={resolve('/forge/pack-2/runtime')}
 				>Open procedural runtime proof →</a
 			>
+		</div>
+	</section>
+
+	<section class="review" aria-labelledby="review-title">
+		<header class="section-heading">
+			<div>
+				<span>08</span>
+				<h2 id="review-title">Hash-bound human review</h2>
+			</div>
+			<p>
+				{reviewHistory.reviews.length} recorded Pack 2 decision{reviewHistory.reviews.length === 1
+					? ''
+					: 's'}
+			</p>
+		</header>
+		<div class="review-grid">
+			<form
+				onsubmit={(event) => {
+					event.preventDefault();
+					void submitReview();
+				}}
+			>
+				<p class="eyebrow">Selected full-body anchor</p>
+				<h3>{selected.draft.manifest.displayName}</h3>
+				<code>{selectedAnchor.assetKey} · {selectedAnchor.contentHash}</code>
+				<div class="verdict" role="radiogroup" aria-label="Pack 2 visual verdict">
+					<button
+						type="button"
+						class:active={reviewVerdict === 'approved'}
+						aria-pressed={reviewVerdict === 'approved'}
+						onclick={() => (reviewVerdict = 'approved')}>Accept</button
+					>
+					<button
+						type="button"
+						class:active={reviewVerdict === 'revise'}
+						aria-pressed={reviewVerdict === 'revise'}
+						onclick={() => (reviewVerdict = 'revise')}>Revise</button
+					>
+				</div>
+				<label><span>Reviewer</span><input bind:value={reviewer} maxlength="80" required /></label>
+				<label>
+					<span>Decision note</span>
+					<textarea bind:value={reviewNote} maxlength="1000" required></textarea>
+				</label>
+				<button
+					class="record-review"
+					type="submit"
+					disabled={!data.reviewPersistenceAvailable ||
+						reviewBusy ||
+						!reviewer.trim() ||
+						!reviewNote.trim()}
+				>
+					{reviewBusy ? 'Recording…' : 'Record decision'}
+				</button>
+				{#if !data.reviewPersistenceAvailable}
+					<p class="review-error">
+						Start the local stack with <code>pnpm dev</code> to record decisions.
+					</p>
+				{:else if reviewError}
+					<p class="review-error" role="alert">{reviewError}</p>
+				{:else if reviewMessage}
+					<p class="review-success" data-testid="pack-two-review-result">{reviewMessage}</p>
+				{/if}
+			</form>
+			<article class="decision">
+				<p class="eyebrow">Current decision</p>
+				{#if currentReview}
+					<strong class:revise={currentReview.verdict === 'revise'}>{currentReview.verdict}</strong>
+					<blockquote>{currentReview.note}</blockquote>
+					<small
+						>{currentReview.reviewer} · {new Date(currentReview.createdAt).toLocaleString()}</small
+					>
+				{:else}
+					<strong>Unreviewed</strong>
+					<p>No decision is bound to these exact pixels.</p>
+				{/if}
+				<p>
+					Accept records the human judgment. It does not silently mutate the manifest, promote the
+					catalog, or enter this identity into the summon pool; those remain explicit audited steps.
+				</p>
+			</article>
 		</div>
 	</section>
 </main>
@@ -430,12 +716,11 @@
 	.browser,
 	.inspection,
 	.scale,
-	.survival {
-		max-width: 96rem;
-		margin: 0 auto;
-		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
-	}
-	.benchmark {
+	.silhouettes,
+	.parity,
+	.survival,
+	.benchmark,
+	.review {
 		max-width: 96rem;
 		margin: 0 auto;
 		padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
@@ -526,6 +811,49 @@
 		border-color: #8aa7dd;
 		color: #e9f0ff;
 		background: #8aa7dd1a;
+	}
+	.facet-bar {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(8rem, 1fr)) auto;
+		gap: 0.7rem;
+		align-items: end;
+		margin-bottom: 1rem;
+		padding: 1rem;
+		border: 1px solid #ffffff12;
+		background: #090c12;
+	}
+	.facet-bar label,
+	.review form label {
+		display: grid;
+		gap: 0.35rem;
+	}
+	.facet-bar label span,
+	.review form label span {
+		color: #8aa7dd;
+		font-size: 0.52rem;
+		text-transform: uppercase;
+	}
+	.facet-bar select,
+	.review input,
+	.review textarea {
+		border: 1px solid #ffffff20;
+		padding: 0.65rem;
+		color: #f4efe5;
+		background: #07090d;
+		text-transform: capitalize;
+	}
+	.facet-bar > strong {
+		padding: 0.7rem;
+		color: #f4efe579;
+		font-size: 0.65rem;
+		white-space: nowrap;
+	}
+	.empty-filter {
+		grid-column: 1/-1;
+		padding: 3rem;
+		border: 1px dashed #ffffff20;
+		color: #f4efe56b;
+		text-align: center;
 	}
 	.candidate-grid {
 		display: grid;
@@ -716,6 +1044,27 @@
 	.gate small {
 		color: #f4efe566;
 	}
+	.provenance {
+		margin-top: 0.8rem;
+		border-top: 1px solid #ffffff14;
+		padding-top: 0.8rem;
+	}
+	.provenance summary {
+		color: #8aa7dd;
+		font-size: 0.6rem;
+		cursor: pointer;
+		text-transform: uppercase;
+	}
+	.provenance dl {
+		margin-top: 0.8rem;
+	}
+	.provenance code,
+	.review form > code {
+		display: block;
+		overflow-wrap: anywhere;
+		color: #f4efe54f;
+		font-size: 0.55rem;
+	}
 	.lineup {
 		display: flex;
 		min-height: 29rem;
@@ -757,6 +1106,83 @@
 		z-index: 2;
 		color: #8aa7dd;
 		font-size: 0.55rem;
+	}
+	.silhouette-grid {
+		display: grid;
+		grid-template-columns: repeat(9, 1fr);
+		gap: 1px;
+		padding: 1.5rem;
+		background: #d8d5cd;
+	}
+	.silhouette-grid article {
+		display: grid;
+		min-height: 18rem;
+		align-content: end;
+		justify-items: center;
+		padding: 0.4rem;
+		color: #0a0b0d;
+		background: #ece9e2;
+	}
+	.silhouette-grid :global(svg) {
+		filter: brightness(0);
+	}
+	.silhouette-grid strong,
+	.silhouette-grid small {
+		position: relative;
+		z-index: 2;
+		text-align: center;
+		text-transform: capitalize;
+	}
+	.silhouette-grid small {
+		font-size: 0.48rem;
+	}
+	.parity-summary,
+	.parity-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1px;
+	}
+	.parity-summary span,
+	.parity-grid article {
+		padding: 1rem;
+		background: #0a0d13;
+	}
+	.parity-summary span {
+		color: #f4efe56b;
+		font-size: 0.62rem;
+		text-transform: uppercase;
+	}
+	.parity-summary b {
+		display: block;
+		color: #f4efe5;
+		font:
+			400 2rem Georgia,
+			serif;
+	}
+	.parity-grid {
+		grid-template-columns: repeat(6, 1fr);
+		margin-top: 1px;
+	}
+	.parity-grid strong,
+	.parity-grid span,
+	.parity-grid small {
+		display: block;
+	}
+	.parity-grid strong {
+		font:
+			400 1.1rem Georgia,
+			serif;
+	}
+	.parity-grid span {
+		margin: 0.35rem 0;
+		color: #8aa7dd;
+		font-size: 0.6rem;
+		text-transform: capitalize;
+	}
+	.parity-grid small {
+		color: #f4efe55c;
+		font-size: 0.52rem;
+		text-transform: capitalize;
 	}
 	.survival-grid {
 		display: grid;
@@ -850,18 +1276,104 @@
 		font-size: 0.65rem;
 		text-transform: uppercase;
 	}
+	.review-grid {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: 1rem;
+	}
+	.review form,
+	.decision {
+		margin: 0;
+		border: 1px solid #ffffff16;
+		padding: clamp(1.2rem, 3vw, 2rem);
+		background: #090c12;
+	}
+	.review form h3 {
+		margin: 0.35rem 0;
+		font:
+			400 2rem Georgia,
+			serif;
+	}
+	.review form label {
+		margin-top: 1rem;
+	}
+	.review textarea {
+		min-height: 7rem;
+		resize: vertical;
+		text-transform: none;
+	}
+	.verdict {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.4rem;
+		margin-top: 1.2rem;
+	}
+	.verdict button,
+	.record-review,
+	.silhouettes .section-heading button {
+		border: 1px solid #ffffff20;
+		padding: 0.7rem;
+		color: #f4efe57a;
+		background: transparent;
+		cursor: pointer;
+		text-transform: uppercase;
+	}
+	.verdict button.active {
+		border-color: #8aa7dd;
+		color: #fff;
+		background: #8aa7dd18;
+	}
+	.record-review {
+		width: 100%;
+		margin-top: 1rem;
+		border-color: #8aa7dd;
+		color: #fff;
+	}
+	.record-review:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+	.review-error {
+		color: #edc980;
+	}
+	.review-success {
+		color: #7fd6a1;
+	}
+	.decision > strong {
+		display: block;
+		margin: 1rem 0;
+		color: #7fd6a1;
+		font:
+			400 2rem Georgia,
+			serif;
+		text-transform: capitalize;
+	}
+	.decision > strong.revise {
+		color: #edc980;
+	}
+	.decision blockquote,
+	.decision > p,
+	.decision > small {
+		color: #f4efe56b;
+		line-height: 1.6;
+	}
 	@media (max-width: 900px) {
 		.intro,
 		.inspection-grid,
 		.progression-grid,
-		.timing-card {
+		.timing-card,
+		.review-grid,
+		.facet-bar {
 			grid-template-columns: 1fr;
 		}
 		.proof-note {
 			grid-column: auto;
 		}
 		.candidate-grid,
-		.survival-grid {
+		.survival-grid,
+		.silhouette-grid,
+		.parity-grid,
+		.parity-summary {
 			grid-template-columns: repeat(2, 1fr);
 		}
 		.topbar {

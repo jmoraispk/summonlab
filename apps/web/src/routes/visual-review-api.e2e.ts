@@ -48,4 +48,31 @@ test('records an idempotent review only against the current asset hash', async (
 	};
 	expect(body.reviews.some((review) => review.reviewId === payload.reviewId)).toBe(true);
 	expect(body.latestByAsset[asset.assetKey]).toBeDefined();
+
+	const packTwoCatalog = JSON.parse(
+		await readFile(
+			new URL('../../../../assets/heroes/visuals/forge-v2/catalog.json', import.meta.url),
+			'utf8'
+		)
+	) as {
+		catalogVersion: string;
+		assets: Array<{ assetKey: string; contentHash: string }>;
+	};
+	const packTwoAsset = packTwoCatalog.assets[0]!;
+	const packTwoReview = await request.post('/api/dev/visual-reviews', {
+		data: {
+			...payload,
+			reviewId: randomUUID(),
+			assetKey: packTwoAsset.assetKey,
+			catalogVersion: packTwoCatalog.catalogVersion,
+			assetContentHash: packTwoAsset.contentHash,
+			note: 'Pack 2 catalog routing proof.'
+		}
+	});
+	expect(packTwoReview.status()).toBe(201);
+	const packTwoListed = await request.get(
+		`/api/dev/visual-reviews?catalogVersion=${packTwoCatalog.catalogVersion}&includeAutomated=true`
+	);
+	expect(packTwoListed.status()).toBe(200);
+	expect((await packTwoListed.json()).latestByAsset[packTwoAsset.assetKey]).toBeDefined();
 });

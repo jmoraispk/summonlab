@@ -1,4 +1,7 @@
 import { generatePackTwoCohort } from '@summonlab/characters';
+import { getConfig } from '@summonlab/config';
+import { VisualReviewListSchema } from '@summonlab/contracts';
+import { listVisualAssetReviews } from '@summonlab/database';
 
 import catalog from '../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
 import benchmark from '../../../../../../assets/benchmarks/pack-two/report.json';
@@ -7,8 +10,17 @@ import type { PageServerLoad } from './$types';
 
 export const load = (async () => {
 	const drafts = await generatePackTwoCohort();
+	let reviewPersistenceAvailable = true;
+	let reviewHistory = VisualReviewListSchema.parse({ reviews: [], latestByAsset: {} });
+	try {
+		reviewHistory = await listVisualAssetReviews(getConfig().databaseUrl, catalog.catalogVersion);
+	} catch {
+		reviewPersistenceAvailable = false;
+	}
 	return {
 		benchmark,
+		reviewHistory,
+		reviewPersistenceAvailable,
 		catalog: {
 			packId: catalog.packId,
 			catalogVersion: catalog.catalogVersion,

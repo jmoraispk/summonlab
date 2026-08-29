@@ -11,15 +11,33 @@ import {
 } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 import visualCatalogSource from '../../../../../../../assets/heroes/visuals/catalog.json';
+import packTwoCatalogSource from '../../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
 
 import type { RequestHandler } from './$types';
 
 const catalog = CharacterVisualCatalogSchema.parse(visualCatalogSource);
+const supportedCatalogs = new Map([
+	[
+		catalog.catalogVersion,
+		catalog.assets.map((asset) => ({ assetKey: asset.assetKey, contentHash: asset.contentHash }))
+	],
+	[
+		packTwoCatalogSource.catalogVersion,
+		packTwoCatalogSource.assets.map((asset) => ({
+			assetKey: asset.assetKey,
+			contentHash: asset.contentHash
+		}))
+	]
+]);
 
 export const GET: RequestHandler = async ({ url }) => {
 	if (!getConfig().devRoutesEnabled) return json({ message: 'Not found.' }, { status: 404 });
+	const catalogVersion = url.searchParams.get('catalogVersion') ?? catalog.catalogVersion;
+	if (!supportedCatalogs.has(catalogVersion)) {
+		return json({ message: 'Unknown visual catalog.' }, { status: 404 });
+	}
 	try {
-		const reviews = await listVisualAssetReviews(getConfig().databaseUrl, catalog.catalogVersion, {
+		const reviews = await listVisualAssetReviews(getConfig().databaseUrl, catalogVersion, {
 			includeAutomated: url.searchParams.get('includeAutomated') === 'true'
 		});
 		return json(VisualReviewListSchema.parse(reviews), {
@@ -45,12 +63,9 @@ export const POST: RequestHandler = async ({ request }) => {
 			{ status: 400 }
 		);
 	}
-	const asset = catalog.assets.find((candidate) => candidate.assetKey === parsed.data.assetKey);
-	if (
-		!asset ||
-		parsed.data.catalogVersion !== catalog.catalogVersion ||
-		parsed.data.assetContentHash !== asset.contentHash
-	) {
+	const assets = supportedCatalogs.get(parsed.data.catalogVersion);
+	const asset = assets?.find((candidate) => candidate.assetKey === parsed.data.assetKey);
+	if (!asset || parsed.data.assetContentHash !== asset.contentHash) {
 		return json(
 			{ message: 'The visual asset changed. Reload the catalog before reviewing it.' },
 			{ status: 409 }
