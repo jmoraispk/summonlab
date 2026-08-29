@@ -365,7 +365,9 @@
 				the first reveal should select an already approved cached portrait. New premium art, equipment
 				edits, and evolution variants stay in the asynchronous authoring pipeline.
 			</p>
-			<span class="proof-note">Procedural runtime proof follows in the next review slice.</span>
+			<a class="proof-note" href={resolve('/forge/pack-2/runtime')}
+				>Open procedural runtime proof →</a
+			>
 		</div>
 	</section>
 </main>
