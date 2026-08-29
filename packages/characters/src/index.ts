@@ -17,6 +17,15 @@ export const VISUAL_CHARACTER_GENERATION_VERSION = 'human-v2';
 export const CHARACTER_GENERATION_VERSION = 'human-v3';
 export const PACK_TWO_CHARACTER_GENERATION_VERSION = 'human-v4';
 
+export const PACK_TWO_PILOT_SEEDS = [
+	'pack-two-cohort-264',
+	'pack-two-cohort-28',
+	'pack-two-cohort-339',
+	'pack-two-cohort-55',
+	'pack-two-cohort-144',
+	'pack-two-cohort-134'
+] as const;
+
 export const ZERO_GENERATION_CURSORS: CharacterGenerationCursors = Object.freeze({
 	identity: 0,
 	body: 0,
@@ -795,6 +804,14 @@ export async function generateCharacterDraft(
 		mind,
 		manifestHash: await hashManifest(manifest)
 	});
+}
+
+export async function generatePackTwoPilot(): Promise<readonly CharacterDraft[]> {
+	return Promise.all(
+		PACK_TWO_PILOT_SEEDS.map((seed) =>
+			generateCharacterDraft(recipeFromSeed(seed, PACK_TWO_CHARACTER_GENERATION_VERSION))
+		)
+	);
 }
 
 export const FIRST_OBSERVATION =

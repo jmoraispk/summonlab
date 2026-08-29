@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest';
 import {
 	LEGACY_CHARACTER_GENERATION_VERSION,
 	PACK_TWO_CHARACTER_GENERATION_VERSION,
+	PACK_TWO_PILOT_SEEDS,
 	VISUAL_CHARACTER_GENERATION_VERSION,
 	canonicalJson,
 	chooseFirstDestination,
 	generateCharacterDraft,
+	generatePackTwoPilot,
 	hashManifest,
 	recipeAtMinimumRarity,
 	recipeFromSeed,
@@ -175,6 +177,53 @@ describe('deterministic character generation', () => {
 				).size
 			).toBe(builds.length);
 		}
+	});
+
+	it('locks the six-human Pack 2 visual pilot to a deliberate cross-section', async () => {
+		const pilot = await generatePackTwoPilot();
+		const manifests = pilot.map((draft) => draft.manifest);
+
+		expect(PACK_TWO_PILOT_SEEDS).toHaveLength(6);
+		expect(pilot.map((draft) => draft.manifestHash)).toEqual([
+			'a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a',
+			'238108f3c85f44ab008b1d47396e2183972fcfc46d82b076ae035487f9cc8e0d',
+			'369bc4ceae6e301cb96ebcb929be298f094c02ba1ba52517ba1d8b05f211f89d',
+			'98cda01d112db3888b1ee08bb35989b07d9e4d2026c82f92774056e9bd67804c',
+			'7aef986aba4a4d20a5fc7e9e34b01182969a34af9e5e822d54027bdb9cb2a178',
+			'7bff542bd71c23cc9e4616d727a9fe29a4ecf98063524d9787dc4c1a1b13c183'
+		]);
+		expect(manifests.map((manifest) => manifest.genderPresentation).sort()).toEqual([
+			'androgynous',
+			'androgynous',
+			'feminine',
+			'feminine',
+			'masculine',
+			'masculine'
+		]);
+		expect(manifests.map((manifest) => manifest.physiology?.heightBand).sort()).toEqual([
+			'medium',
+			'medium',
+			'short',
+			'short',
+			'tall',
+			'tall'
+		]);
+		expect(new Set(manifests.map((manifest) => manifest.bodyBuild)).size).toBeGreaterThanOrEqual(4);
+		expect(new Set(manifests.map((manifest) => manifest.physiology?.proportions?.profile))).toEqual(
+			new Set(['balanced', 'compact', 'long-limbed', 'long-torso'])
+		);
+		expect(new Set(manifests.map((manifest) => manifest.phenotype.hairSilhouette)).size).toBe(6);
+		expect(new Set(manifests.map((manifest) => manifest.rarityStars))).toEqual(new Set([1, 2, 3]));
+		expect(
+			manifests.some(
+				(manifest) =>
+					manifest.genderPresentation === 'feminine' && manifest.bodyBuild === 'powerful'
+			)
+		).toBe(true);
+		expect(manifests.some((manifest) => manifest.bodyBuild === 'soft')).toBe(true);
+		expect(new Set(manifests.map((manifest) => manifest.visualRole)).size).toBeGreaterThanOrEqual(
+			3
+		);
 	});
 
 	it('rerolls only unlocked generation channels', async () => {
