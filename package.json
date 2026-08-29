@@ -62,6 +62,7 @@
 		"validate:settlement-content": "tsx tools/validate-settlement-content.ts",
 		"validate:settlement-scene": "tsx tools/validate-settlement-scene.ts",
 		"validate:mission-content": "tsx tools/validate-mission-content.ts",
+		"validate:wiki": "node tools/validate-wiki.mjs",
 		"measure:web-build-budget": "pnpm --filter @summonlab/web build && node tools/validate-web-build-budget.mjs --write",
 		"validate:web-build-budget": "node tools/validate-web-build-budget.mjs",
 		"format": "prettier --write .",
@@ -73,7 +74,7 @@
 		"test": "pnpm test:packaging && pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:wiki && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

@@ -126,6 +126,7 @@ Publishes:
 | 2026-08-29 | accepted | Realistic people, varied eras/cultures, tattoos and piercings are allowed. | Extend explicit visual slots and content packs; retain identity locks. |
 | 2026-08-29 | accepted | Support up to 1,000 agents without daily interaction from all. | Use hot/warm/cold simulation and clustered attention. |
 | 2026-08-29 | accepted | The game is fundamentally about designing systems that motivate agents toward useful goals. | Make purpose, challenge, feedback, mentorship, schedules, and social norms causal; preserve boredom and idleness as real outcomes. |
+| 2026-08-29 | accepted | Unequal starting talent never removes a person's worthwhile place; systems should find useful work and develop unique contribution. | Preserve intrinsic dignity, revisable roles, growth, preferences, and quiet institutional value without an IQ/worth stat or permanent caste. |
 
 ## Open decisions
 
@@ -134,4 +135,5 @@ Publishes:
 ## Existing foundations
 
 Start with ADRs 0002, 0005, 0015, 0020–0029, 0041, 0048, 0055; character/social/visual
-contracts; decision packets; and the current art bible and recognition audits.
+contracts; decision packets; the [personhood principle](../../wiki/principles/every-person-contributes.md);
+and the current art bible and recognition audits.

@@ -22,6 +22,7 @@ Blocking decisions and contracts:
 
 Repository convergence work:
 
+- maintain the checked wiki catalog as the human-readable rulebook and artifact handoff surface;
 - extract domain-owned contract/event/reducer modules from the current engine monoliths without
   changing historical behavior;
 - replace scattered current-engine gates with one explicit ruleset/capability version manifest;

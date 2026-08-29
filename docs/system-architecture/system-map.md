@@ -94,6 +94,7 @@ Each vertical lane depends on horizontal capabilities instead of recreating them
 | Party reservation | tower, portals, neighbors, vehicles | One hero cannot be in two active places. |
 | Content/version catalogs | skills, floors, buildings, cultures, enemies, mounts | Runtime state binds immutable reviewed definitions. |
 | Journal/observability | every player-facing loop | Cross-system causality must remain explainable. |
+| Wiki/canon/artifacts | every content and implementation workstream | Text briefs, images, code bindings, and evidence return to one checked index. |
 | Accessibility/performance | every visual surface | Phone budgets and redundant cues are product rules. |
 
 ## Dependency graph

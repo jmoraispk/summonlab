@@ -13,15 +13,17 @@ new direction intentionally requires a versioned migration from the current prot
 
 ## Start here
 
-1. [Vision and product rules](vision.md) defines the player role and the non-negotiable design
+1. The [Summonlab Wiki](../wiki/README.md) is the readable rulebook, world bible, bestiary, and
+   visual artifact index shared across workstreams.
+2. [Vision and product rules](vision.md) defines the player role and the non-negotiable design
    properties.
-2. [System map](system-map.md) defines vertical workstreams, horizontal capabilities, ownership,
+3. [System map](system-map.md) defines vertical workstreams, horizontal capabilities, ownership,
    and dependencies.
-3. [Integration contracts](integration-contracts.md) defines how systems exchange commands,
+4. [Integration contracts](integration-contracts.md) defines how systems exchange commands,
    events, receipts, evidence, and projections.
-4. [Parallel roadmap](roadmap.md) defines the convergence work, independent lanes, integration
+5. [Parallel roadmap](roadmap.md) defines the convergence work, independent lanes, integration
    slices, and per-system sequencing.
-5. The [system briefs](systems/) hold each workstream's current model, interfaces, roadmap, open
+6. The [system briefs](systems/) hold each workstream's current model, interfaces, roadmap, open
    questions, and accepted feedback.
 
 ## Current product decisions
@@ -63,6 +65,12 @@ change.
 - The deepest player skill is designing behavior-motivating systems. Facilities, schedules, party
   goals, leadership, mentorship, feedback, rewards, and social norms should make purposeful
   training attractive; boredom, idleness, and loss of purpose remain real systemic outcomes.
+- The checked wiki is both a session input and output. Accepted prose becomes a bounded mechanics or
+  art brief; generated assets, implementation links, and evidence return to the same page with
+  honest status.
+- Every person has intrinsic dignity and potential contribution independent of starting talent or
+  rarity. Systems may allocate scarce expertise and routine work, but roles remain revisable paths
+  to mastery rather than measures of human worth.
 
 ## Resolved product pivots
 

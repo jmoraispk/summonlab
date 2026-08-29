@@ -438,6 +438,8 @@ scripted fallback. Late results are rejected and replanned from fresh engine sta
 
 ## Project documents
 
+- [Summonlab Wiki](docs/wiki/README.md) — the joint rulebook, bestiary, mechanics compendium,
+  subsystem index, visual art book, and checked session input/output loop.
 - [Shared system architecture](docs/system-architecture/README.md) — the target product vision,
   subsystem ownership, integration contracts, parallel roadmap, and feedback ledgers for coordinated
   multi-agent work.

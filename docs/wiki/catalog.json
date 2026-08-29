@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "summonlab-wiki-catalog-v1",
+  "lastReviewed": "2026-08-29",
+  "entries": [
+    {
+      "wikiId": "wiki.root",
+      "path": "docs/wiki/README.md",
+      "pageType": "index",
+      "owner": "architecture",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "wiki.contributing",
+      "path": "docs/wiki/contributing.md",
+      "pageType": "process",
+      "owner": "architecture",
+      "designStatus": "accepted",
+      "implementationStatus": "verified",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "systems.index",
+      "path": "docs/wiki/systems/README.md",
+      "pageType": "system-index",
+      "owner": "architecture",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.attributes",
+      "path": "docs/wiki/mechanics/attributes.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.affinities",
+      "path": "docs/wiki/mechanics/affinities/README.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "affinity.fire",
+      "path": "docs/wiki/mechanics/affinities/fire.md",
+      "pageType": "affinity",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "affinity.wind",
+      "path": "docs/wiki/mechanics/affinities/wind.md",
+      "pageType": "affinity",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "affinity.wood",
+      "path": "docs/wiki/mechanics/affinities/wood.md",
+      "pageType": "affinity",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "creatures.taxonomy",
+      "path": "docs/wiki/creatures/taxonomy.md",
+      "pageType": "taxonomy",
+      "owner": "content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "creatures.monster-families",
+      "path": "docs/wiki/creatures/monster-races/README.md",
+      "pageType": "monster-family-index",
+      "owner": "content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster-family.goblinoids",
+      "path": "docs/wiki/creatures/monster-races/goblinoids.md",
+      "pageType": "monster-family",
+      "owner": "content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable",
+      "assets": [
+        {
+          "assetKey": "goblinoids-v1",
+          "file": "assets/enemies/review/goblinoids-v1.webp",
+          "status": "candidate"
+        }
+      ]
+    },
+    {
+      "wikiId": "art.monster-gallery",
+      "path": "docs/wiki/art/monster-gallery.md",
+      "pageType": "gallery",
+      "owner": "visuals",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public",
+      "assets": [
+        {
+          "assetKey": "goblinoids-v1",
+          "file": "assets/enemies/review/goblinoids-v1.webp",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "beasts-v1",
+          "file": "assets/enemies/review/beasts-v1.webp",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "constructs-v1",
+          "file": "assets/enemies/review/constructs-v1.webp",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "large-threats-v1",
+          "file": "assets/enemies/review/large-threats-v1.webp",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "elementals-v1",
+          "file": "assets/enemies/review/pack-2/elementals-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "arachnids-v1",
+          "file": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "arcane-hostiles-v1",
+          "file": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "undead-v1",
+          "file": "assets/enemies/review/pack-2/undead-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "draconic-v1",
+          "file": "assets/enemies/review/pack-2/draconic-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "dungeon-predators-v1",
+          "file": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "status": "candidate"
+        }
+      ]
+    },
+    {
+      "wikiId": "principles.every-person-contributes",
+      "path": "docs/wiki/principles/every-person-contributes.md",
+      "pageType": "principle",
+      "owner": "product",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    }
+  ]
+}

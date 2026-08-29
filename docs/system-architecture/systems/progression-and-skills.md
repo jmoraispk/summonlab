@@ -107,6 +107,7 @@ Publishes:
 | 2026-08-29 | accepted | Caps are 10/20/30/40/50/99/999. | Replace the formula in a new version; use effective power for content. |
 | 2026-08-29 | accepted | The internal skill tree should be extensive and merge any two or three skills. | Use a hidden typed lattice with deterministic authored/template composition. |
 | 2026-08-29 | accepted | Level 99 should clear roughly Floor 85–90; 4★/level 40 roughly Floor 40–45; 100+ is for Floor 100 and postgame. | Add smooth readiness anchors without hard floor locks or sudden rank walls. |
+| 2026-08-29 | experiment | Heroes and monsters share affinities that can modify derived attributes and apply effects such as Fire/Burn, Wind/Cut, and Wood/Slow. | Define one typed affinity/status resolver in the wiki; keep exact roster and numbers draft pending combat simulation. |
 
 ## Open decisions
 
@@ -117,4 +118,5 @@ Publishes:
 
 Start with `docs/game-design.md` progression sections, ADR 0056, `HeroProgressionSchema`, journal
 reward deltas, `tower-progression-preview-v1`, and current training/synthesis events. Preserve old
-level-70 histories exactly.
+level-70 histories exactly. Use the [affinity wiki](../../wiki/mechanics/affinities/README.md) as the
+current design workspace for shared hero/monster affinity mechanics.
