@@ -755,7 +755,7 @@
 		width: var(--width);
 		height: var(--height);
 		border: 2px solid transparent;
-		border-radius: 12%;
+		border-radius: 6%;
 		background: transparent;
 		color: white;
 		cursor: pointer;
@@ -783,14 +783,16 @@
 		display: flex;
 		align-items: center;
 		gap: 0.55rem;
-		min-width: 7rem;
+		width: max-content;
 		padding: 0.48rem 0.58rem;
 		border: 1px solid rgba(239, 221, 187, 0.28);
+		border-radius: 0.4rem;
 		background: rgba(5, 9, 13, 0.82);
 		box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.34);
 		transform: translate(-50%, -50%) scale(calc(1 / var(--scene-scale)));
 		transform-origin: center;
 		backdrop-filter: blur(8px);
+		white-space: nowrap;
 		pointer-events: none;
 	}
 

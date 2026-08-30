@@ -76,11 +76,23 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		forgeHotspot,
 		dormitoryHotspot
 	]) {
+		const label = hotspot.locator('span');
+		const labelBounds = await label.boundingBox();
 		const dotBounds = await hotspot.locator('i').boundingBox();
 		const textBounds = await hotspot.locator('strong').boundingBox();
+		await expect
+			.poll(() => hotspot.evaluate((element) => getComputedStyle(element).borderTopLeftRadius))
+			.toBe('6%');
+		expect(
+			await label.evaluate((element) => parseFloat(getComputedStyle(element).borderTopLeftRadius))
+		).toBeGreaterThan(5);
+		expect(labelBounds!.width - dotBounds!.width - textBounds!.width).toBeLessThan(32);
 		expect(
 			Math.abs(dotBounds!.y + dotBounds!.height / 2 - (textBounds!.y + textBounds!.height / 2))
 		).toBeLessThan(1);
+	}
+	for (const hotspot of [gateHotspot, towerHotspot]) {
+		expect((await hotspot.locator('span').boundingBox())!.width).toBeLessThan(80);
 	}
 	for (const hotspot of [courtHotspot, towerHotspot, forgeHotspot]) {
 		const hotspotBounds = await hotspot.boundingBox();

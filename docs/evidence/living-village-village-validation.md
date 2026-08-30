@@ -28,7 +28,8 @@ compact find/focus ribbon. No separate roster route was created.
 - Existing Hearth environment with six named facility regions: Gate, Kitchen, Forge, Dormitory,
   Training Grounds, and Tower. Forge, Training Grounds, and Tower labels straddle non-colliding top
   borders; Gate, Kitchen, and Dormitory use lower borders. Gate and Tower use taller interaction
-  regions that push those label-bearing edges away from their focal architecture.
+  regions that push those label-bearing edges away from their focal architecture. Region corners
+  use a restrained 6% radius, while each rounded label shrink-wraps its status dot and text.
 - Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
   two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
   remains available at fitted zoom so the camera never feels inert.
@@ -70,8 +71,9 @@ pnpm --filter @summonlab/web exec playwright test \
 
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
 1536×1024 Hearth asset, six labeled facility regions, enlarged Gate/Tower bounds, intentional label
-edges, vertically centered facility status dots, six true-alpha in-world figures with bounded
-progressive zoom scaling, absence of the destination
+edges, vertically centered facility status dots, content-sized rounded labels, squarer region
+corners, six true-alpha in-world figures with bounded progressive zoom scaling, absence of the
+destination
 panel/resident-count/camera-help annotations, in-world hero selection, ribbon
 focus, anchored popover, details drawer, availability light removal after Court assignment, Court
 training, species hunt, and Dormitory rest popover dismissal and destination state, pointer pan
@@ -166,6 +168,12 @@ route-local label, hover, selection, and camera-drag behavior as the existing re
 Court training and Tower hunting as a primary hero order; it dismisses the command popover, sends
 the hero to an authored Dormitory position, and exposes `Resting in the Dormitory` as their current
 activity without inventing persistence or recovery statistics.
+
+The latest label review removed the fixed seven-rem minimum that left unused space after short names
+such as Gate and Tower. Facility labels now use `max-content` sizing around the aligned dot and text,
+retain exact region-edge centering, and carry modest rounded corners. The interaction regions were
+reduced from a 12% to 6% corner radius so illuminated outlines read more architectural and less
+pill-shaped.
 
 ## Useful review actions
 
