@@ -4,6 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+	FinalControlledDesignRiskResolutionLedgerV2Schema,
 	ImageProductionAssignmentSchema,
 	ImageProductionTargetSchema,
 	type ImageProductionAssignment,
@@ -22,7 +23,6 @@ import {
 	type FinalControlledRerunPlan
 } from './prepare-final-controlled-rerun.js';
 import {
-	FinalControlledDesignRiskResolutionCollectionSchema,
 	RESOLUTION_PATH,
 	buildFinalControlledActivationReadiness,
 	loadCurrentActivationReadinessInput,
@@ -135,8 +135,10 @@ async function prepareArtifacts(input: ActivationReadinessInput): Promise<{
 }> {
 	const plan = buildFinalControlledRerunBundle(input.plan).plan;
 	const derived = buildFinalControlledRerunBundle(plan);
-	const ledger = FinalControlledDesignRiskResolutionCollectionSchema.parse(input.resolutions);
-	const resolutionByCoordinate = new Map(ledger.resolutions.map((item) => [item.coordinate, item]));
+	const ledger = FinalControlledDesignRiskResolutionLedgerV2Schema.parse(input.resolutions);
+	const resolutionByCoordinate = new Map<string, (typeof ledger.resolutions)[number]>(
+		ledger.resolutions.map((item) => [item.coordinate, item])
+	);
 	const targets = plan.targets.map((coordinate, index) => {
 		const resolution = resolutionByCoordinate.get(coordinate.key);
 		if (!resolution?.stagedTarget) return derived.targets[index]!;
@@ -199,7 +201,7 @@ async function prepareArtifacts(input: ActivationReadinessInput): Promise<{
 				resolutionLedgerCanonicalSha256: sha256Json(ledger),
 				blindReviewCanonicalSha256: sha256Json(input.blindReviews),
 				catalogCanonicalSha256: sha256Json(input.catalog),
-				executionSnapshotSha256: ledger.executionSnapshotHash
+				executionSnapshotSha256: ledger.evidenceBindings.executionSnapshotCanonicalSha256
 			},
 			targetCount: 24,
 			assignmentCount: 24,

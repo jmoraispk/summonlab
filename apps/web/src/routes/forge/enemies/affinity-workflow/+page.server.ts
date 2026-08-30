@@ -17,6 +17,7 @@ import {
 	loadLaterPackRuleReviewContext,
 	parseLaterPackRuleActor
 } from '$lib/server/later-pack-rule-review.js';
+import { loadFinalControlledDesignRiskReviewSurface } from '$lib/server/final-controlled-design-risk-review.js';
 
 import {
 	ControlledRoundUnavailableError,
@@ -24,7 +25,7 @@ import {
 	loadAffinityReviewData,
 	parseAffinityReviewScope,
 	parseControlledRoundId,
-	parseAffinityReviewer
+	resolveAffinityReviewActor
 } from './affinity-review';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -42,14 +43,17 @@ function score(formData: FormData, name: string): number {
 
 export const load = (async ({ url }) => {
 	const blind = url.searchParams.get('mode') === 'blind';
+	const config = getConfig();
 	let scope: ReturnType<typeof parseAffinityReviewScope>;
 	let controlledRound: ReturnType<typeof parseControlledRoundId>;
-	let activeReviewer: ReturnType<typeof parseAffinityReviewer>;
+	let activeReviewer: ReturnType<typeof resolveAffinityReviewActor>;
 	let laterPackRuleActor: string | null;
 	try {
 		scope = blind ? parseAffinityReviewScope(url.searchParams.get('scope')) : 'all';
 		controlledRound = parseControlledRoundId(url.searchParams.get('round'));
-		activeReviewer = blind ? parseAffinityReviewer(url.searchParams.get('reviewer')) : null;
+		activeReviewer = blind
+			? resolveAffinityReviewActor(config.affinityReviewActor, url.searchParams.get('reviewer'))
+			: null;
 		const requestedRuleActor = url.searchParams.has('actor')
 			? parseLaterPackRuleActor(url.searchParams.get('actor'))
 			: null;
@@ -60,7 +64,6 @@ export const load = (async ({ url }) => {
 	} catch {
 		error(400, 'Unknown reviewer, rule actor, affinity review scope, or controlled round.');
 	}
-	const config = getConfig();
 	let reviewPersistenceAvailable = config.devRoutesEnabled;
 	let reviewPersistenceMessage = config.devRoutesEnabled
 		? ''
@@ -70,7 +73,7 @@ export const load = (async ({ url }) => {
 		reviews: [],
 		latestByTargetReviewer: []
 	});
-	if (config.devRoutesEnabled) {
+	if (config.devRoutesEnabled && !blind) {
 		try {
 			reviews = await listAffinityWorkflowReviews(config.databaseUrl, EXPERIMENT_ID);
 		} catch {
@@ -87,6 +90,21 @@ export const load = (async ({ url }) => {
 		persistenceAvailable: boolean;
 		message: string;
 	};
+	let finalControlledDesignRiskReview: Awaited<
+		ReturnType<typeof loadFinalControlledDesignRiskReviewSurface>
+	> | null = null;
+	let finalControlledDesignRiskReviewMessage = '';
+	if (config.devRoutesEnabled) {
+		try {
+			finalControlledDesignRiskReview = await loadFinalControlledDesignRiskReviewSurface();
+		} catch {
+			finalControlledDesignRiskReviewMessage =
+				'Final-controlled design-risk review is unavailable. Verify PostgreSQL and the current baseline evidence.';
+		}
+	} else if (!blind) {
+		finalControlledDesignRiskReviewMessage =
+			'Final-controlled design-risk decisions are disabled because developer routes are not enabled.';
+	}
 	try {
 		if (laterPackRuleActor && config.devRoutesEnabled) {
 			const surface = await listLaterPackRuleReviewForActor({
@@ -155,7 +173,11 @@ export const load = (async ({ url }) => {
 			reviewId: randomUUID(),
 			reviewPersistenceAvailable,
 			reviewPersistenceMessage,
-			laterPackRuleReview: safeLaterPackRuleReview
+			laterPackRuleReview: safeLaterPackRuleReview,
+			finalControlledDesignRiskReview: blind ? null : finalControlledDesignRiskReview,
+			finalControlledDesignRiskReviewMessage: blind
+				? 'Design-risk identities are withheld throughout blind review.'
+				: finalControlledDesignRiskReviewMessage
 		};
 	} catch (loadError) {
 		if (loadError instanceof ControlledRoundUnavailableError) {
@@ -180,11 +202,14 @@ export const actions = {
 		const formData = await request.formData();
 		let controlledRound: ReturnType<typeof parseControlledRoundId>;
 		let scope: ReturnType<typeof parseAffinityReviewScope>;
-		let activeReviewer: ReturnType<typeof parseAffinityReviewer>;
+		let activeReviewer: ReturnType<typeof resolveAffinityReviewActor>;
 		try {
 			controlledRound = parseControlledRoundId(url.searchParams.get('round'));
 			scope = parseAffinityReviewScope(url.searchParams.get('scope'));
-			activeReviewer = parseAffinityReviewer(url.searchParams.get('reviewer'));
+			activeReviewer = resolveAffinityReviewActor(
+				config.affinityReviewActor,
+				url.searchParams.get('reviewer')
+			);
 			if (!activeReviewer)
 				return fail(400, { reviewError: 'Start a named reviewer session first.' });
 			if (formString(formData, 'controlledRound') !== controlledRound) {

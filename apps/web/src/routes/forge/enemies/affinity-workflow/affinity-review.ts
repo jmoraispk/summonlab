@@ -58,6 +58,24 @@ export function parseAffinityReviewer(value: string | null | undefined): string 
 	return reviewer;
 }
 
+/**
+ * A configured local review actor is authoritative for evidence-producing blind sessions.
+ * The URL may preserve that actor for resumable links, but cannot select another identity.
+ */
+export function resolveAffinityReviewActor(
+	configuredActor: string | null,
+	requestedReviewer: string | null | undefined
+): string | null {
+	const requested = parseAffinityReviewer(requestedReviewer);
+	if (!configuredActor) return requested;
+	const authoritative = parseAffinityReviewer(configuredActor);
+	if (!authoritative) throw new Error('Invalid configured affinity review actor.');
+	if (requested && requested !== authoritative) {
+		throw new Error('Reviewer session does not match the server-owned affinity review actor.');
+	}
+	return authoritative;
+}
+
 interface ControlledTargetIdentity {
 	targetId: string;
 	cohort: Cohort;

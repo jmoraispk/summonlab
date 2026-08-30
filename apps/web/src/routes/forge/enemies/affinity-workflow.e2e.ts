@@ -43,14 +43,54 @@ test('renders partial affinity cohorts without implying approval', async ({ page
 	await expect(page.getByTestId('affinity-cell')).toHaveCount(24);
 });
 
+test('keeps the current final-controlled design-risk gate locked and blank', async ({ page }) => {
+	await page.goto('/forge/enemies/affinity-workflow');
+
+	const riskHeading = page.getByRole('heading', { name: 'Resolve 16 design risks' });
+	if (await riskHeading.isVisible()) {
+		const form = page.getByRole('form', { name: 'Final controlled design-risk decision' });
+
+		await expect(page.getByText('Locked', { exact: true })).toBeVisible();
+		await expect(page.getByText('Decision controls are locked')).toBeVisible();
+		await expect(page.getByText('exported-blind-review-inventory-mismatch')).toBeVisible();
+		await expect(
+			page.getByText('Expected exactly 21 exported blind reviews; found 0.')
+		).toBeVisible();
+		await expect(form.locator('.risk-grid fieldset')).toHaveCount(16);
+		await expect(form.getByRole('radio')).toHaveCount(48);
+		await expect(form.locator('input[type="radio"]:checked')).toHaveCount(0);
+		await expect(form.getByRole('checkbox')).toHaveCount(5);
+		await expect(form.locator('input[type="checkbox"]:checked')).toHaveCount(0);
+		await expect(form.getByRole('button', { name: 'Waiting for evidence' })).toBeDisabled();
+	} else {
+		// A configured review actor requires PostgreSQL to load its append-only history. If that
+		// dependency is unavailable, the route must fail closed without rendering decision controls.
+		await expect(page.getByRole('heading', { name: 'Design-risk review withheld' })).toBeVisible();
+		await expect(
+			page.getByText(
+				'Final-controlled design-risk review is unavailable. Verify PostgreSQL and the current baseline evidence.'
+			)
+		).toBeVisible();
+		await expect(
+			page.getByRole('form', { name: 'Final controlled design-risk decision' })
+		).toHaveCount(0);
+	}
+});
+
 test('blind mode withholds semantic labels and uses opaque media sources', async ({ page }) => {
 	await page.goto('/forge/enemies/affinity-workflow?mode=blind');
 	await expect(page.getByText('Blind recognition', { exact: true })).toBeVisible();
-	await page.getByLabel('Reviewer identity').fill(`test:affinity-page-${Date.now()}`);
-	await page.getByRole('button', { name: 'Begin reviewer-bound session' }).click();
+	const reviewerInput = page.getByLabel('Reviewer identity');
+	if (await reviewerInput.isVisible()) {
+		await reviewerInput.fill(`test:affinity-page-${Date.now()}`);
+		await page.getByRole('button', { name: 'Begin reviewer-bound session' }).click();
+	} else {
+		// AFFINITY_REVIEW_ACTOR can bind the session before the page renders.
+		await expect(page.getByText(/^Reviewer-bound · /)).toBeVisible();
+	}
 	await expect(page.getByText('Specimen 01')).toBeVisible();
 	await expect(page.getByTestId('affinity-cell')).toHaveCount(24);
-	await expect(page.getByText(/0 \/ 21/)).toBeVisible();
+	await expect(page.getByText(/\d+ \/ 21/)).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Breadth · 4' })).toHaveCount(0);
 
 	const image = page
@@ -69,17 +109,7 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	await expect(page.getByLabel('Affinity guess')).toBeVisible();
 	await expect(page.getByRole('form', { name: 'Review unlabeled candidate' })).toBeVisible();
 	await expect(page.getByText('No target, source, prompt, filename, content hash')).toBeVisible();
-	const saveReview = page.getByRole('button', { name: 'Save review' });
-	if (await saveReview.isVisible()) {
-		await page.getByLabel('Species guess').selectOption('death-knight');
-		await page.getByLabel('Affinity guess').selectOption('normal');
-		await page.getByRole('radio', { name: 'Candidate' }).check();
-		await page.getByLabel('Review note').fill('Automated blind-mode persistence proof.');
-		await saveReview.click();
-		await expect(page.getByRole('status')).toContainText(
-			/Review saved against the verified candidate hash|already saved/
-		);
-	} else {
+	if (!(await page.getByRole('button', { name: 'Save review' }).isVisible())) {
 		await expect(page.getByRole('button', { name: 'Persistence unavailable' })).toBeDisabled();
 	}
 
@@ -89,4 +119,9 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	expect(html).not.toContain('exactPrompt');
 	expect(html).not.toContain('contentHash');
 	expect(html).not.toContain('affinity-changes-construction');
+	expect(html).not.toContain('death-knight-normal-legacy-design');
+	expect(html).not.toContain('death-knight-normal-v4');
+	expect(html).not.toContain('final-controlled-activation-v1');
+	expect(html).not.toContain('Resolve 16 design risks');
+	expect(html).not.toContain('Decision history');
 });

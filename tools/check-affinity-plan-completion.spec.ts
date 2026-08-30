@@ -1,6 +1,13 @@
 import type {
+	FinalControlledDesignRiskDecisionList,
 	ImageProductionBlindReview,
 	ImageProductionTarget
+} from '../packages/contracts/src/index.js';
+import {
+	FinalControlledDesignRiskStagedTargetPaths,
+	FinalControlledDesignRisks,
+	FinalControlledEligibleOriginalCandidateTargetIds,
+	FinalControlledOriginalReviseResults
 } from '../packages/contracts/src/index.js';
 import { describe, expect, it } from 'vitest';
 
@@ -11,15 +18,190 @@ import {
 	finalControlledReceiptFailureInvalidatesWorkspace,
 	findFinalControlledCrossCohortIdConflicts,
 	roundFinalEvaluationMatchesCanonicalDerivation,
+	validateFinalControlledDesignRiskLifecycle,
 	validateSchedulerRunEligibility,
 	type AffinityPlanCompletionEvidence
 } from './check-affinity-plan-completion.js';
 import { AffinityRoundFinalEvaluationSchema } from './finalize-affinity-round-evaluation.js';
 import { AffinityScaleRecommendationV3Schema as ScaleRecommendationSchema } from './finalize-affinity-scale-recommendation.js';
+import { sha256Json } from './image-production-lib.js';
 import { canonicalJsonSha256 } from './affinity-wave-scheduler-lib.js';
 import type { ValidatedImageProductionExecution } from './sync-affinity-review.js';
 
 const FINAL_HASH = 'b'.repeat(64);
+
+function finalControlledDesignRiskLifecycleFixture() {
+	const affinities = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
+	const species = [
+		['death-knight', 'v4'],
+		['elemental', 'v4'],
+		['grey-wolf', 'v3'],
+		['cave-bear', 'v3']
+	] as const;
+	const targets = species.flatMap(([speciesId, version]) =>
+		affinities.map((affinity) => ({
+			key: `${speciesId}-${affinity}-${version}`,
+			speciesId,
+			affinity,
+			version
+		}))
+	);
+	const plan = {
+		schemaVersion: 'affinity-final-controlled-rerun-plan-v1' as const,
+		experimentId: 'affinity-workflow-v1' as const,
+		targets,
+		plannedPathTemplates: {
+			target:
+				'assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/{speciesId}/{affinity}-{version}.json',
+			assignment:
+				'assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/{speciesId}/{affinity}-{version}.json',
+			candidate:
+				'assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/{speciesId}/{affinity}-{version}.png',
+			result:
+				'assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/{speciesId}/{affinity}-{version}.json'
+		}
+	};
+	const evidenceBindings = {
+		planCanonicalSha256: sha256Json(plan),
+		catalogCanonicalSha256: canonicalJsonSha256('catalog'),
+		executionSnapshotCanonicalSha256: canonicalJsonSha256('execution'),
+		blindReviewCollectionCanonicalSha256: canonicalJsonSha256('blind-review'),
+		sourceAuditCanonicalSha256: canonicalJsonSha256('source-audit')
+	};
+	const reviseResults = FinalControlledOriginalReviseResults.map((result, index) => ({
+		...result,
+		contentHash: canonicalJsonSha256(`revise-${index}`)
+	}));
+	const decisions = FinalControlledDesignRisks.map((risk) => ({
+		...risk,
+		decision:
+			risk.severity === 'blocking' ? ('replace-derived-target' as const) : ('retain' as const),
+		humanRationale: `Human resolution for ${risk.riskId}.`
+	}));
+	const decision = {
+		decisionId: '20000000-0000-4000-8000-000000000001',
+		experimentId: 'affinity-workflow-v1' as const,
+		scopeId: 'final-controlled-activation-v1' as const,
+		mode: 'human-interactive' as const,
+		actor: 'visual-director',
+		evidenceBindings,
+		supersedesDecisionId: null,
+		decisions,
+		attestation: {
+			producerDidNotResolveRisks: true as const,
+			reviewedEligibleBlindEvidence: true as const,
+			reviewedCompleteSourceAudit: true as const,
+			deliberatelyResolvedAllRisks: true as const,
+			understandsActivationRequiresIndependentVerification: true as const
+		},
+		decidedAt: '2026-08-29T23:00:00.000Z'
+	};
+	const stagedTargetCanonicalHashes: Record<string, string> = {};
+	const resolutions = decisions.map((humanDecision, index) => {
+		const targetId = `affinity-workflow-v1-${humanDecision.coordinate.replace(/-v\d+$/u, '')}`;
+		const revise = reviseResults.find((result) => result.targetId === targetId);
+		const stagedTarget =
+			humanDecision.decision === 'retain'
+				? null
+				: {
+						path: FinalControlledDesignRiskStagedTargetPaths[index]!,
+						canonicalHash: canonicalJsonSha256(`staged-target-${index}`),
+						promptHash: canonicalJsonSha256(`prompt-${index}`),
+						promptByteLength: 100 + index
+					};
+		if (stagedTarget) stagedTargetCanonicalHashes[stagedTarget.path] = stagedTarget.canonicalHash;
+		return {
+			...humanDecision,
+			status: 'resolved' as const,
+			blindReviewEvidence: revise
+				? []
+				: [
+						{
+							id: `10000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`,
+							targetId,
+							candidateContentHash: canonicalJsonSha256(`candidate-${index}`),
+							contentHash: canonicalJsonSha256(`review-${index}`)
+						}
+					],
+			reviseResultEvidence: revise ? [revise] : [],
+			stagedTarget
+		};
+	});
+	const ledger = {
+		schemaVersion: 'affinity-final-controlled-design-risk-resolutions-v2',
+		experimentId: 'affinity-workflow-v1',
+		scopeId: 'final-controlled-activation-v1',
+		status: 'resolved',
+		resolutionId: decision.decisionId,
+		actor: decision.actor,
+		decidedAt: decision.decidedAt,
+		mode: 'human-interactive-db-export',
+		humanDecisionRecord: {
+			record: decision,
+			recordCanonicalSha256: sha256Json(decision)
+		},
+		evidenceBindings,
+		eligibleOriginalControlledTargetIds: [...FinalControlledEligibleOriginalCandidateTargetIds],
+		reviseResults,
+		resolutions
+	};
+	const artifacts = targets
+		.flatMap((target) => {
+			const targetPath = plan.plannedPathTemplates.target
+				.replace('{speciesId}', target.speciesId)
+				.replace('{affinity}', target.affinity)
+				.replace('{version}', target.version);
+			const assignmentPath = plan.plannedPathTemplates.assignment
+				.replace('{speciesId}', target.speciesId)
+				.replace('{affinity}', target.affinity)
+				.replace('{version}', target.version);
+			const resolution = resolutions.find((item) => item.coordinate === target.key);
+			return [
+				{
+					kind: 'target' as const,
+					livePath: targetPath,
+					canonicalSha256:
+						resolution?.stagedTarget?.canonicalHash ?? canonicalJsonSha256(targetPath),
+					byteSha256: canonicalJsonSha256(`bytes:${targetPath}`),
+					source: resolution?.stagedTarget ? ('staged' as const) : ('derived' as const)
+				},
+				{
+					kind: 'assignment' as const,
+					livePath: assignmentPath,
+					canonicalSha256: canonicalJsonSha256(assignmentPath),
+					byteSha256: canonicalJsonSha256(`bytes:${assignmentPath}`),
+					source: 'derived' as const
+				}
+			];
+		})
+		.toSorted((left, right) => left.livePath.localeCompare(right.livePath));
+	const activationReceipt = {
+		schemaVersion: 'affinity-final-controlled-activation-receipt-v1',
+		experimentId: 'affinity-workflow-v1',
+		activationId: 'final-controlled-0123456789abcdef',
+		status: 'complete',
+		completedAt: '2026-08-29T23:30:00.000Z',
+		bindings: {
+			planCanonicalSha256: evidenceBindings.planCanonicalSha256,
+			resolutionLedgerCanonicalSha256: sha256Json(ledger),
+			blindReviewCanonicalSha256: evidenceBindings.blindReviewCollectionCanonicalSha256,
+			catalogCanonicalSha256: evidenceBindings.catalogCanonicalSha256,
+			executionSnapshotSha256: evidenceBindings.executionSnapshotCanonicalSha256
+		},
+		targetCount: 24,
+		assignmentCount: 24,
+		artifactCount: 48,
+		artifactSetSha256: sha256Json(artifacts),
+		artifacts
+	};
+	const decisionList: FinalControlledDesignRiskDecisionList = {
+		experimentId: 'affinity-workflow-v1',
+		scopeId: 'final-controlled-activation-v1',
+		records: [decision],
+		latestByActor: [decision]
+	};
+	return { plan, ledger, activationReceipt, stagedTargetCanonicalHashes, decisionList, decision };
+}
 
 function finalTarget(index: number): ImageProductionTarget {
 	const affinity = index < 4 ? 'normal' : 'fire';
@@ -76,6 +258,12 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 		controlledFinalRerun: {
 			planValidated: true,
 			activationReceiptValid: true,
+			designRiskLedgerV2Valid: true,
+			embeddedHumanDecisionHashValid: true,
+			humanDecisionDatabaseAuthentic: true,
+			activationReceiptLedgerBindingValid: true,
+			stagedCorrectionCount: 8,
+			stagedCorrectionsValid: true,
 			targetManifestCount: 24,
 			assignmentCount: 24,
 			resultCount: 24,
@@ -204,6 +392,15 @@ describe('affinity image-production plan completion', () => {
 		const finalEvidence = buildFinalControlledGateEvidence({
 			planValidated: true,
 			activationReceiptValid: true,
+			designRiskLifecycle: {
+				designRiskLedgerV2Valid: true,
+				embeddedHumanDecisionHashValid: true,
+				humanDecisionDatabaseAuthentic: true,
+				activationReceiptLedgerBindingValid: true,
+				stagedCorrectionCount: 8,
+				stagedCorrectionsValid: true,
+				issues: []
+			},
 			targets,
 			assignmentCount: 24,
 			executions: targets.map(finalExecution),
@@ -289,6 +486,129 @@ describe('affinity image-production plan completion', () => {
 				plannedArtifactCount: 0
 			})
 		).toBe(true);
+	});
+
+	it('accepts only a strict v2 ledger bound to staged corrections, activation, and latest human DB evidence', () => {
+		const fixture = finalControlledDesignRiskLifecycleFixture();
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: 'visual-director'
+			})
+		).toEqual({
+			designRiskLedgerV2Valid: true,
+			embeddedHumanDecisionHashValid: true,
+			humanDecisionDatabaseAuthentic: true,
+			activationReceiptLedgerBindingValid: true,
+			stagedCorrectionCount: 8,
+			stagedCorrectionsValid: true,
+			issues: []
+		});
+	});
+
+	it('rejects legacy, stale, self-hashed-only, wrong-actor, and missing staged lifecycle evidence', () => {
+		const fixture = finalControlledDesignRiskLifecycleFixture();
+		const legacy = structuredClone(fixture.ledger) as Record<string, unknown>;
+		legacy.schemaVersion = 'affinity-final-controlled-design-risk-resolutions-v1';
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				ledger: legacy,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: 'visual-director'
+			})
+		).toMatchObject({ designRiskLedgerV2Valid: false });
+
+		const selfHashedOnly = validateFinalControlledDesignRiskLifecycle({
+			...fixture,
+			decisionDatabaseAvailable: false,
+			decisionList: null,
+			authoritativeActor: null
+		});
+		expect(selfHashedOnly).toMatchObject({
+			embeddedHumanDecisionHashValid: true,
+			humanDecisionDatabaseAuthentic: false
+		});
+		const invalidEmbeddedHash = structuredClone(fixture.ledger);
+		invalidEmbeddedHash.humanDecisionRecord.recordCanonicalSha256 = '0'.repeat(64);
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				ledger: invalidEmbeddedHash,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: 'visual-director'
+			})
+		).toMatchObject({ embeddedHumanDecisionHashValid: false });
+
+		const staleDecisionList = {
+			...fixture.decisionList,
+			latestByActor: []
+		};
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: null
+			})
+		).toMatchObject({ humanDecisionDatabaseAuthentic: false });
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				decisionDatabaseAvailable: true,
+				decisionList: staleDecisionList,
+				authoritativeActor: 'visual-director'
+			})
+		).toMatchObject({ humanDecisionDatabaseAuthentic: false });
+
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: 'another-director'
+			})
+		).toMatchObject({ humanDecisionDatabaseAuthentic: false });
+
+		const staleReceipt = structuredClone(fixture.activationReceipt);
+		staleReceipt.bindings.resolutionLedgerCanonicalSha256 = '0'.repeat(64);
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				activationReceipt: staleReceipt,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: 'visual-director'
+			})
+		).toMatchObject({ activationReceiptLedgerBindingValid: false });
+
+		const missingStageHashes = { ...fixture.stagedTargetCanonicalHashes };
+		delete missingStageHashes[FinalControlledDesignRiskStagedTargetPaths[0]];
+		expect(
+			validateFinalControlledDesignRiskLifecycle({
+				...fixture,
+				stagedTargetCanonicalHashes: missingStageHashes,
+				decisionDatabaseAvailable: true,
+				authoritativeActor: 'visual-director'
+			})
+		).toMatchObject({ stagedCorrectionsValid: false });
+	});
+
+	it('does not complete from final images when the human v2 lifecycle is absent', () => {
+		const evidence = completeEvidence();
+		const report = buildAffinityPlanCompletionReport({
+			...evidence,
+			controlledFinalRerun: {
+				...evidence.controlledFinalRerun,
+				designRiskLedgerV2Valid: false,
+				embeddedHumanDecisionHashValid: false,
+				humanDecisionDatabaseAuthentic: false,
+				activationReceiptLedgerBindingValid: false,
+				stagedCorrectionCount: 0,
+				stagedCorrectionsValid: false
+			}
+		});
+
+		expect(report.status).toBe('incomplete');
+		expect(report.sections.controlledFinalRerun.complete).toBe(false);
 	});
 
 	it('detects target, assignment, and result IDs reused from immutable base evidence', () => {

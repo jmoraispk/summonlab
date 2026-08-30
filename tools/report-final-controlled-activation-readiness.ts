@@ -5,15 +5,22 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 
+import { getConfig } from '../packages/config/src/index.js';
 import {
+	FinalControlledDesignRiskDecisionListSchema,
+	FinalControlledDesignRiskResolutionLedgerV2Schema,
+	FinalControlledDesignRiskStagedTargetPaths,
+	FinalControlledEligibleOriginalCandidateTargetIds,
+	FinalControlledOriginalReviseResults,
 	ImageProductionCatalogSchema,
 	ImageProductionResultSchema,
 	ImageProductionTargetSchema,
+	type FinalControlledDesignRiskResolutionLedgerV2,
 	type ImageProductionCatalog,
 	type ImageProductionResult,
 	type ImageProductionTarget
 } from '../packages/contracts/src/index.js';
-import { z } from 'zod';
+import { listFinalControlledDesignRiskDecisions } from '../packages/database/src/index.js';
 
 import {
 	AFFINITY_EXPERIMENT_ROOT,
@@ -31,98 +38,8 @@ import { validateAffinityWorkflowWorkspace } from './validate-affinity-workflow.
 
 const execFileAsync = promisify(execFile);
 
-const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
-const Slug = z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u);
 export const RESOLUTION_PATH = `${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-design-risk-resolutions.json`;
 const STAGING_PREFIX = `${AFFINITY_EXPERIMENT_ROOT}/review/activation-staging/targets/`;
-
-const BlindEvidence = z.object({ id: z.string().uuid(), contentHash: Hash }).strict();
-const ResultEvidence = z.object({ id: Slug, contentHash: Hash }).strict();
-const StagedTarget = z
-	.object({
-		path: z.string().startsWith(STAGING_PREFIX).endsWith('.json'),
-		canonicalHash: Hash,
-		promptHash: Hash,
-		promptByteLength: z.number().int().positive()
-	})
-	.strict();
-
-const Resolution = z
-	.object({
-		riskId: Slug,
-		coordinate: Slug,
-		sourceTargetId: Slug,
-		severity: z.enum(['blocking', 'risk']),
-		status: z.enum(['pending', 'resolved']),
-		decision: z.enum(['replace-derived-target', 'replace-reference', 'retain']).nullable(),
-		humanRationale: z.string().trim().min(1).nullable(),
-		blindReviewEvidence: z.array(BlindEvidence),
-		reviseResultEvidence: z.array(ResultEvidence),
-		stagedTarget: StagedTarget.nullable()
-	})
-	.strict()
-	.superRefine((value, context) => {
-		if (
-			value.status === 'pending' &&
-			(value.decision || value.humanRationale || value.stagedTarget)
-		)
-			context.addIssue({
-				code: 'custom',
-				message: 'Pending risks cannot claim a decision or stage'
-			});
-		if (value.status === 'resolved' && (!value.decision || !value.humanRationale))
-			context.addIssue({
-				code: 'custom',
-				message: 'Resolved risks require a decision and human rationale'
-			});
-		if (value.severity === 'blocking' && value.status === 'resolved' && !value.stagedTarget)
-			context.addIssue({
-				code: 'custom',
-				message: 'Resolved blocking risks require a staged target'
-			});
-		if (
-			value.decision === 'retain' &&
-			(value.severity === 'blocking' || !value.blindReviewEvidence.length)
-		)
-			context.addIssue({
-				code: 'custom',
-				message: 'Retain is only allowed for nonblocking risks with blind evidence'
-			});
-		if (value.decision?.startsWith('replace-') && !value.stagedTarget)
-			context.addIssue({
-				code: 'custom',
-				message: 'Replacement decisions require a staged target'
-			});
-	});
-
-export const FinalControlledDesignRiskResolutionCollectionSchema = z
-	.object({
-		schemaVersion: z.literal('affinity-final-controlled-design-risk-resolutions-v1'),
-		experimentId: z.literal('affinity-workflow-v1'),
-		planContentHash: Hash,
-		blindReviewCollectionHash: Hash,
-		catalogContentHash: Hash,
-		executionSnapshotHash: Hash,
-		eligibleOriginalControlledTargetIds: z.array(Slug).length(21),
-		reviseResults: z.array(ResultEvidence.extend({ targetId: Slug })).length(3),
-		resolutions: z.array(Resolution).length(16)
-	})
-	.strict()
-	.superRefine((value, context) => {
-		for (const field of ['eligibleOriginalControlledTargetIds'] as const)
-			if (new Set(value[field]).size !== value[field].length)
-				context.addIssue({ code: 'custom', path: [field], message: 'Values must be unique' });
-		for (const field of ['riskId', 'coordinate'] as const)
-			if (new Set(value.resolutions.map((entry) => entry[field])).size !== 16)
-				context.addIssue({
-					code: 'custom',
-					path: ['resolutions'],
-					message: `${field} values must be unique`
-				});
-	});
-export type FinalControlledDesignRiskResolutionCollection = z.infer<
-	typeof FinalControlledDesignRiskResolutionCollectionSchema
->;
 
 export interface StagedVerification {
 	readonly target: unknown;
@@ -136,6 +53,8 @@ export interface ActivationReadinessInput {
 	readonly originalTargets: readonly unknown[];
 	readonly results: readonly unknown[];
 	readonly resolutions?: unknown;
+	readonly decisionList?: unknown;
+	readonly decisionDatabaseAvailable: boolean;
 	readonly staged?: Readonly<Record<string, StagedVerification>>;
 	readonly currentWorkspaceValid: boolean;
 	readonly plannedPathsAbsent: boolean;
@@ -245,9 +164,9 @@ export function buildFinalControlledActivationReadiness(
 			code: 'planned-path-collision',
 			detail: 'One or more live final-controlled paths exist'
 		});
-	const parsed = FinalControlledDesignRiskResolutionCollectionSchema.safeParse(input.resolutions);
+	const parsed = FinalControlledDesignRiskResolutionLedgerV2Schema.safeParse(input.resolutions);
 	if (!parsed.success) {
-		blockers.push({ code: 'missing-or-invalid-resolutions', detail: parsed.error.message });
+		blockers.push({ code: 'missing-or-invalid-v2-resolutions', detail: parsed.error.message });
 		return {
 			schemaVersion: 'affinity-final-controlled-activation-readiness-v1',
 			authorized: false,
@@ -263,11 +182,61 @@ export function buildFinalControlledActivationReadiness(
 	}
 	const ledger = parsed.data;
 	const expectedSnapshotHash = sha256Json(snapshot(originals, results));
+	if (
+		ledger.humanDecisionRecord.recordCanonicalSha256 !==
+		sha256Json(ledger.humanDecisionRecord.record)
+	)
+		blockers.push({
+			code: 'invalid-human-decision-record-hash',
+			detail: 'The embedded DB decision canonical hash is invalid'
+		});
+	if (!input.decisionDatabaseAvailable) {
+		blockers.push({
+			code: 'decision-database-unavailable',
+			detail: 'Authoritative design-risk decision evidence is unavailable'
+		});
+	} else {
+		const decisionList = FinalControlledDesignRiskDecisionListSchema.safeParse(input.decisionList);
+		if (!decisionList.success) {
+			blockers.push({
+				code: 'invalid-decision-database-evidence',
+				detail: 'Authoritative design-risk decision evidence is invalid'
+			});
+		} else {
+			const latestForActor = decisionList.data.latestByActor.filter(
+				(record) => record.actor === ledger.actor
+			);
+			if (
+				latestForActor.length !== 1 ||
+				latestForActor[0]?.decisionId !== ledger.resolutionId ||
+				canonicalJson(latestForActor[0]) !== canonicalJson(ledger.humanDecisionRecord.record)
+			) {
+				blockers.push({
+					code: 'noncurrent-or-inauthentic-human-decision',
+					detail:
+						'The ledger does not embed the actor’s latest unsuperseded authoritative DB decision'
+				});
+			}
+		}
+	}
 	for (const [label, actual, expected] of [
-		['plan', ledger.planContentHash, sha256Json(plan)],
-		['blind-review', ledger.blindReviewCollectionHash, sha256Json(reviews)],
-		['catalog', ledger.catalogContentHash, sha256Json(catalog)],
-		['execution-snapshot', ledger.executionSnapshotHash, expectedSnapshotHash]
+		['plan', ledger.evidenceBindings.planCanonicalSha256, sha256Json(plan)],
+		['catalog', ledger.evidenceBindings.catalogCanonicalSha256, sha256Json(catalog)],
+		[
+			'execution-snapshot',
+			ledger.evidenceBindings.executionSnapshotCanonicalSha256,
+			expectedSnapshotHash
+		],
+		[
+			'blind-review',
+			ledger.evidenceBindings.blindReviewCollectionCanonicalSha256,
+			sha256Json(reviews)
+		],
+		[
+			'source-audit',
+			ledger.evidenceBindings.sourceAuditCanonicalSha256,
+			sha256Json(plan.designRiskReview)
+		]
 	] as const)
 		if (actual !== expected)
 			blockers.push({
@@ -275,38 +244,34 @@ export function buildFinalControlledActivationReadiness(
 				detail: `${label} hash does not match current evidence`
 			});
 	if (
-		canonicalJson(ledger.eligibleOriginalControlledTargetIds.toSorted()) !==
-		canonicalJson(candidateIds)
+		canonicalJson(ledger.eligibleOriginalControlledTargetIds) !==
+			canonicalJson(FinalControlledEligibleOriginalCandidateTargetIds) ||
+		canonicalJson(candidateIds) !== canonicalJson(FinalControlledEligibleOriginalCandidateTargetIds)
 	)
 		blockers.push({
 			code: 'eligible-target-binding-mismatch',
 			detail: 'The 21 eligible target IDs are not canonical'
 		});
-	const expectedRevises = reviseResults.map((r) => ({
-		id: r.resultId,
-		targetId: r.targetId,
-		contentHash: sha256Json(r)
-	}));
+	const expectedRevises = FinalControlledOriginalReviseResults.map((expected) => {
+		const result = reviseResults.find(
+			(candidate) => candidate.resultId === expected.id && candidate.targetId === expected.targetId
+		);
+		return result ? { ...expected, contentHash: sha256Json(result) } : null;
+	});
 	if (
-		canonicalJson(ledger.reviseResults.toSorted((a, b) => a.targetId.localeCompare(b.targetId))) !==
-		canonicalJson(expectedRevises)
+		expectedRevises.some((result) => result === null) ||
+		canonicalJson(ledger.reviseResults) !== canonicalJson(expectedRevises)
 	)
 		blockers.push({
 			code: 'revise-binding-mismatch',
 			detail: 'The three revise result hashes are not immutable/current'
 		});
-	const reviewHashes = new Map(
-		eligibleReviews.map((review) => [review.reviewId, sha256Json(review)])
-	);
 	const eligibleReviewByTarget = new Map(
 		eligibleReviews.map((review) => [review.targetId, review])
 	);
-	const reviseEvidenceByResultId = new Map(
-		reviseResults.map((result) => [result.resultId, sha256Json(result)])
-	);
 	const planned = buildFinalControlledRerunBundle(plan);
-	for (const risk of plan.designRiskReview.risks) {
-		const resolution = ledger.resolutions.find((r) => r.riskId === risk.riskId);
+	for (const [index, risk] of plan.designRiskReview.risks.entries()) {
+		const resolution = ledger.resolutions[index];
 		if (
 			!resolution ||
 			resolution.coordinate !== risk.coordinate ||
@@ -319,16 +284,29 @@ export function buildFinalControlledActivationReadiness(
 			});
 			continue;
 		}
-		if (resolution.status !== 'resolved')
-			blockers.push({ code: 'unresolved-risk', detail: `Risk ${risk.riskId} remains pending` });
 		for (const evidence of resolution.blindReviewEvidence)
-			if (reviewHashes.get(evidence.id) !== evidence.contentHash)
+			if (
+				!eligibleReviews.some(
+					(review) =>
+						review.reviewId === evidence.id &&
+						review.targetId === evidence.targetId &&
+						review.candidateContentHash === evidence.candidateContentHash &&
+						sha256Json(review) === evidence.contentHash
+				)
+			)
 				blockers.push({
 					code: 'invalid-risk-review-evidence',
 					detail: `Risk ${risk.riskId} cites non-eligible blind evidence`
 				});
 		for (const evidence of resolution.reviseResultEvidence)
-			if (reviseEvidenceByResultId.get(evidence.id) !== evidence.contentHash)
+			if (
+				!reviseResults.some(
+					(result) =>
+						result.resultId === evidence.id &&
+						result.targetId === evidence.targetId &&
+						sha256Json(result) === evidence.contentHash
+				)
+			)
 				blockers.push({
 					code: 'invalid-risk-revise-evidence',
 					detail: `Risk ${risk.riskId} cites non-eligible revise evidence`
@@ -343,13 +321,15 @@ export function buildFinalControlledActivationReadiness(
 		const originalResult = original
 			? results.find((result) => result.targetId === original.targetId)
 			: undefined;
-		if (resolution.status === 'resolved' && originalResult?.status === 'candidate') {
+		if (originalResult?.status === 'candidate') {
 			const requiredReview = eligibleReviewByTarget.get(originalResult.targetId);
 			if (
 				!requiredReview ||
 				!resolution.blindReviewEvidence.some(
 					(evidence) =>
 						evidence.id === requiredReview.reviewId &&
+						evidence.targetId === requiredReview.targetId &&
+						evidence.candidateContentHash === requiredReview.candidateContentHash &&
 						evidence.contentHash === sha256Json(requiredReview)
 				)
 			) {
@@ -359,12 +339,14 @@ export function buildFinalControlledActivationReadiness(
 				});
 			}
 		}
-		if (resolution.status === 'resolved' && originalResult?.status === 'revise') {
+		if (originalResult?.status === 'revise') {
 			const resultHash = sha256Json(originalResult);
 			if (
 				!resolution.reviseResultEvidence.some(
 					(evidence) =>
-						evidence.id === originalResult.resultId && evidence.contentHash === resultHash
+						evidence.id === originalResult.resultId &&
+						evidence.targetId === originalResult.targetId &&
+						evidence.contentHash === resultHash
 				)
 			) {
 				blockers.push({
@@ -373,7 +355,7 @@ export function buildFinalControlledActivationReadiness(
 				});
 			}
 		}
-		if (resolution.stagedTarget) {
+		if (resolution.decision.startsWith('replace-') && resolution.stagedTarget) {
 			const verification = input.staged?.[resolution.stagedTarget.path];
 			if (!verification || !expected) {
 				blockers.push({
@@ -392,17 +374,22 @@ export function buildFinalControlledActivationReadiness(
 			}
 			const target = targetResult.data;
 			const validPath =
-				resolution.stagedTarget.path ===
-				`${STAGING_PREFIX}${target.speciesId}/${target.affinity}-${risk.coordinate.match(/v\d+$/u)?.[0]}.json`;
+				resolution.stagedTarget.path === FinalControlledDesignRiskStagedTargetPaths[index];
 			const promptHash = createHash('sha256').update(verification.exactPrompt).digest('hex');
-			const refsValid = target.references.every(
-				(ref) => verification.referenceHashes[ref.path] === ref.contentHash
-			);
+			const refsValid =
+				target.references.length === Object.keys(verification.referenceHashes).length &&
+				target.references.every(
+					(ref) => verification.referenceHashes[ref.path] === ref.contentHash
+				);
 			if (
 				!validPath ||
 				target.targetId !== expected.targetId ||
+				target.assetId !== expected.assetId ||
+				target.experimentId !== expected.experimentId ||
+				target.packId !== expected.packId ||
 				target.speciesId !== expected.speciesId ||
 				target.affinity !== expected.affinity ||
+				target.cohort !== expected.cohort ||
 				canonicalJson(target.output) !== canonicalJson(expected.output) ||
 				target.promptProtocol !== plan.promptProtocol ||
 				target.authoringProtocol !== plan.authoringProtocol ||
@@ -426,7 +413,7 @@ export function buildFinalControlledActivationReadiness(
 			eligibleBlindReviews: eligibleReviews.length,
 			reviseResults: reviseResults.length,
 			risks: plan.designRiskReview.risks.length,
-			resolvedRisks: ledger.resolutions.filter((r) => r.status === 'resolved').length
+			resolvedRisks: ledger.resolutions.length
 		},
 		blockers
 	};
@@ -477,7 +464,7 @@ async function verifiedContainedFile(
 
 export function expectedStagedTargetPath(
 	plan: FinalControlledRerunPlan,
-	resolution: FinalControlledDesignRiskResolutionCollection['resolutions'][number]
+	resolution: FinalControlledDesignRiskResolutionLedgerV2['resolutions'][number]
 ): string {
 	const coordinate = plan.targets.find((target) => target.key === resolution.coordinate);
 	if (!coordinate) throw new Error(`Unknown staged coordinate: ${resolution.coordinate}`);
@@ -557,8 +544,19 @@ export async function loadCurrentActivationReadinessInput(
 	const resolutions = await readJson(path.resolve(workspaceRoot, RESOLUTION_PATH)).catch(
 		() => undefined
 	);
+	let decisionList: unknown;
+	let decisionDatabaseAvailable = true;
+	try {
+		decisionList = await listFinalControlledDesignRiskDecisions(
+			getConfig().databaseUrl,
+			'affinity-workflow-v1',
+			'final-controlled-activation-v1'
+		);
+	} catch {
+		decisionDatabaseAvailable = false;
+	}
 	const parsedResolutions =
-		FinalControlledDesignRiskResolutionCollectionSchema.safeParse(resolutions);
+		FinalControlledDesignRiskResolutionLedgerV2Schema.safeParse(resolutions);
 	const staged: Record<string, StagedVerification> = {};
 	if (parsedResolutions.success) {
 		for (const resolution of parsedResolutions.data.resolutions) {
@@ -585,6 +583,8 @@ export async function loadCurrentActivationReadinessInput(
 		originalTargets: targets,
 		results,
 		resolutions,
+		decisionList,
+		decisionDatabaseAvailable,
 		staged,
 		currentWorkspaceValid,
 		plannedPathsAbsent

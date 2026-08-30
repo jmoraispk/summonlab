@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import FinalControlledDesignRiskReview from '$lib/components/FinalControlledDesignRiskReview.svelte';
 
 	let { data, form } = $props();
 	type CohortFilter = 'all' | 'controlled' | 'breadth' | 'regression';
@@ -654,6 +655,27 @@
 			</div>
 		{/if}
 	</section>
+
+	{#if !data.blind && data.finalControlledDesignRiskReview}
+		<div class="design-risk-shell">
+			<FinalControlledDesignRiskReview
+				ready={data.finalControlledDesignRiskReview.ready}
+				evidenceFingerprint={data.finalControlledDesignRiskReview.evidenceFingerprint}
+				actionEndpoint={resolve('/api/dev/final-controlled-design-risk-decisions')}
+				actor={data.finalControlledDesignRiskReview.actor}
+				risks={data.finalControlledDesignRiskReview.risks}
+				blockers={data.finalControlledDesignRiskReview.blockers}
+				history={data.finalControlledDesignRiskReview.history}
+				onRefresh={invalidateAll}
+			/>
+		</div>
+	{:else}
+		<section class="design-risk-unavailable" aria-labelledby="design-risk-unavailable-title">
+			<p class="eyebrow">Final controlled activation · human gate</p>
+			<h2 id="design-risk-unavailable-title">Design-risk review withheld</h2>
+			<p>{data.finalControlledDesignRiskReviewMessage}</p>
+		</section>
+	{/if}
 </main>
 
 {#if selectedCell}
@@ -994,7 +1016,9 @@
 	.controls,
 	.matrix,
 	.governance,
-	.rule-review {
+	.rule-review,
+	.design-risk-shell,
+	.design-risk-unavailable {
 		max-width: 112rem;
 		margin: 0 auto;
 		padding-inline: clamp(1rem, 3vw, 3rem);
@@ -1193,8 +1217,21 @@
 	}
 	.matrix,
 	.governance,
-	.rule-review {
+	.rule-review,
+	.design-risk-shell,
+	.design-risk-unavailable {
 		padding-block: clamp(2rem, 5vw, 5rem);
+	}
+	.design-risk-unavailable {
+		border-top: 1px solid #ffffff17;
+	}
+	.design-risk-unavailable h2 {
+		margin-top: 0.5rem;
+	}
+	.design-risk-unavailable > p:last-child {
+		max-width: 54rem;
+		color: #f4efe575;
+		line-height: 1.65;
 	}
 	.section-heading {
 		display: flex;

@@ -82,9 +82,35 @@ until a human records a review decision.
   verifier. It embeds the exact append-only database decision and its canonical hash, binds all 16
   ordered resolutions to plan identities and source evidence, permits staging only for human-
   selected replacements, and confines each stage to its coordinate-owned collision-safe path. No
-  ledger or staged target was created. An optional normalized `AFFINITY_REVIEW_ACTOR` configuration
-  value is prepared for the forthcoming server-owned Forge integration, but is not yet treated as
-  authentication or used to authorize a decision.
+  ledger or staged target was created. The optional normalized `AFFINITY_REVIEW_ACTOR`
+  configuration value is reserved for a server-owned local operator identity; it is not presented
+  as general-purpose authentication.
+- 2026-08-29: Connected the final-controlled design-risk gate to Forge and a dev-gated API. The
+  server derives the actor from `AFFINITY_REVIEW_ACTOR`, recomputes readiness and all five evidence
+  hashes on every submission, accepts only the 16 blank-by-default choices plus five attestations,
+  and returns `409` with refreshed state when evidence or history changes. Actor, decision ID,
+  supersession, and evidence bindings are never client authorities. Blind-mode page data withholds
+  this surface, and the client bundle receives risk identities only as server data in label-visible
+  mode. The UI resets all drafts after a stale response or changed fingerprint.
+- 2026-08-29: Added the guarded DB-to-ledger v2 exporter. It selects the actor's latest
+  unsuperseded decision, recomputes the exact `21 / 3 / 16` evidence sets and all five hashes,
+  verifies every requested replacement against an already-existing coordinate-owned staged target,
+  and exclusively creates the ledger only in explicit write mode. Check mode and incomplete live
+  evidence remain zero-write; the current zero-review workspace produces no ledger.
+- 2026-08-29: Upgraded final-controlled activation to reject legacy v1 ledgers and require the v2
+  export. Both readiness checks around the guarded writer re-read the decision database and require
+  the ledger to embed the actor's exact latest unsuperseded row, then independently verify its
+  canonical hash, all five current evidence bindings, the exact `21 / 3 / 16` sets, and every
+  staged target. Database failures are sanitized blockers. Adversarial tests prove that v1,
+  forged, stale, superseded, and database-unavailable evidence writes no activation artifact.
+- 2026-08-29: Bound completion to the same v2 evidence chain and added a Forge end-to-end privacy
+  check. Completion now rejects missing configured actors, non-latest database decisions, stale or
+  forged ledgers, invalid staged replacements, and activation receipts that do not name the exact
+  ledger hash. The label-visible Forge route renders 16 blank decision rows and five blank
+  attestations, while the blind route withholds risk identifiers, coordinates, scope, and history
+  from rendered HTML. The contracts package is explicitly side-effect-free so unused server-only
+  risk schemas are tree-shaken; a production bundle audit confirms that the protected risk IDs,
+  coordinates, and scope identifier are absent from all client chunks.
 
 The plan is now backed by a runnable implementation rather than being a design-only document:
 
@@ -179,6 +205,8 @@ pnpm dev:app
 # Baseline human review readiness and guarded final activation.
 pnpm report:baseline-blind-review -- --reviewer <reviewer>
 pnpm report:final-controlled-design-risk-readiness -- --reviewer <reviewer>
+# Complete all 16 Forge decisions, then stage only human-selected replacements.
+pnpm export:final-controlled-design-risk-resolutions -- --actor <same-reviewer>
 pnpm report:affinity-final-controlled-activation
 pnpm activate:affinity-final-controlled-rerun -- --acknowledge-live-manifest-activation
 

@@ -7,6 +7,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
+	FinalControlledDesignRiskResolutionLedgerV2Schema,
 	ImageProductionCatalogSchema,
 	type ImageProductionTarget
 } from '../packages/contracts/src/index.js';
@@ -16,7 +17,6 @@ import {
 	type FinalControlledRerunPlan
 } from './prepare-final-controlled-rerun.js';
 import {
-	FinalControlledDesignRiskResolutionCollectionSchema,
 	buildFinalControlledActivationReadiness,
 	loadStagedVerification,
 	repositoryPathIsAbsent,
@@ -125,10 +125,25 @@ async function fixture(): Promise<ActivationReadinessInput> {
 			status: 'resolved',
 			decision: risk.severity === 'blocking' ? 'replace-derived-target' : 'retain',
 			humanRationale: 'Human reviewed the blind evidence and selected this resolution.',
-			blindReviewEvidence: review ? [{ id: review.reviewId, contentHash: sha256Json(review) }] : [],
+			blindReviewEvidence: review
+				? [
+						{
+							id: review.reviewId,
+							targetId: review.targetId,
+							candidateContentHash: review.candidateContentHash,
+							contentHash: sha256Json(review)
+						}
+					]
+				: [],
 			reviseResultEvidence:
 				originalResult.status === 'revise'
-					? [{ id: originalResult.resultId, contentHash: sha256Json(originalResult) }]
+					? [
+							{
+								id: originalResult.resultId,
+								targetId: originalResult.targetId,
+								contentHash: sha256Json(originalResult)
+							}
+						]
 					: [],
 			stagedTarget
 		};
@@ -145,13 +160,54 @@ async function fixture(): Promise<ActivationReadinessInput> {
 			};
 		})
 		.toSorted((a, b) => a.targetId.localeCompare(b.targetId));
-	const ledger = {
-		schemaVersion: 'affinity-final-controlled-design-risk-resolutions-v1',
+	const evidenceBindings = {
+		planCanonicalSha256: sha256Json(plan),
+		catalogCanonicalSha256: sha256Json(catalog),
+		executionSnapshotCanonicalSha256: sha256Json(snapshot),
+		blindReviewCollectionCanonicalSha256: sha256Json(reviews),
+		sourceAuditCanonicalSha256: sha256Json(plan.designRiskReview)
+	};
+	const humanDecisionRecord = {
+		decisionId: '00000000-0000-4000-8000-000000000100',
 		experimentId: 'affinity-workflow-v1',
-		planContentHash: sha256Json(plan),
-		blindReviewCollectionHash: sha256Json(reviews),
-		catalogContentHash: sha256Json(catalog),
-		executionSnapshotHash: sha256Json(snapshot),
+		scopeId: 'final-controlled-activation-v1',
+		mode: 'human-interactive',
+		actor: 'Human reviewer',
+		evidenceBindings,
+		supersedesDecisionId: null,
+		decisions: resolutions.map(
+			({ riskId, coordinate, sourceTargetId, severity, decision, humanRationale }) => ({
+				riskId,
+				coordinate,
+				sourceTargetId,
+				severity,
+				decision,
+				humanRationale
+			})
+		),
+		attestation: {
+			producerDidNotResolveRisks: true,
+			reviewedEligibleBlindEvidence: true,
+			reviewedCompleteSourceAudit: true,
+			deliberatelyResolvedAllRisks: true,
+			understandsActivationRequiresIndependentVerification: true
+		},
+		decidedAt: '2026-08-29T20:30:00.000Z'
+	};
+	const ledger = {
+		schemaVersion: 'affinity-final-controlled-design-risk-resolutions-v2',
+		experimentId: 'affinity-workflow-v1',
+		scopeId: 'final-controlled-activation-v1',
+		status: 'resolved',
+		resolutionId: humanDecisionRecord.decisionId,
+		actor: humanDecisionRecord.actor,
+		decidedAt: humanDecisionRecord.decidedAt,
+		mode: 'human-interactive-db-export',
+		humanDecisionRecord: {
+			record: humanDecisionRecord,
+			recordCanonicalSha256: sha256Json(humanDecisionRecord)
+		},
+		evidenceBindings,
 		eligibleOriginalControlledTargetIds: candidateIds,
 		reviseResults: results
 			.filter((r) => r.status === 'revise')
@@ -166,6 +222,13 @@ async function fixture(): Promise<ActivationReadinessInput> {
 		originalTargets,
 		results,
 		resolutions: ledger,
+		decisionList: {
+			experimentId: 'affinity-workflow-v1',
+			scopeId: 'final-controlled-activation-v1',
+			records: [humanDecisionRecord],
+			latestByActor: [humanDecisionRecord]
+		},
+		decisionDatabaseAvailable: true,
 		staged,
 		currentWorkspaceValid: true,
 		plannedPathsAbsent: true
@@ -175,9 +238,7 @@ async function fixture(): Promise<ActivationReadinessInput> {
 describe('final controlled activation readiness', () => {
 	it('authorizes only a complete, canonically bound synthetic fixture', async () => {
 		const input = await fixture();
-		expect(
-			FinalControlledDesignRiskResolutionCollectionSchema.parse(input.resolutions)
-		).toBeTruthy();
+		expect(FinalControlledDesignRiskResolutionLedgerV2Schema.parse(input.resolutions)).toBeTruthy();
 		const report = buildFinalControlledActivationReadiness(input);
 		expect(report.authorized, JSON.stringify(report.blockers)).toBe(true);
 		expect(report.counts).toMatchObject({
@@ -193,7 +254,13 @@ describe('final controlled activation readiness', () => {
 		const blindReviews = structuredClone(input.blindReviews as any);
 		blindReviews.reviews.pop();
 		const resolutions = structuredClone(input.resolutions as any);
-		resolutions.blindReviewCollectionHash = sha256Json(blindReviews);
+		resolutions.evidenceBindings.blindReviewCollectionCanonicalSha256 = sha256Json(blindReviews);
+		resolutions.humanDecisionRecord.record.evidenceBindings = structuredClone(
+			resolutions.evidenceBindings
+		);
+		resolutions.humanDecisionRecord.recordCanonicalSha256 = sha256Json(
+			resolutions.humanDecisionRecord.record
+		);
 		resolutions.resolutions[0].humanRationale += ' Revise evidence considered.';
 		resolutions.resolutions[0].reviseResultEvidence = [resolutions.reviseResults[0]];
 		const report = buildFinalControlledActivationReadiness({ ...input, blindReviews, resolutions });
@@ -205,7 +272,7 @@ describe('final controlled activation readiness', () => {
 		const resolutions = structuredClone(input.resolutions as any);
 		resolutions.resolutions[0].sourceTargetId = 'obsolete-source';
 		let report = buildFinalControlledActivationReadiness({ ...input, resolutions });
-		expect(report.blockers.map((b) => b.code)).toContain('risk-binding-mismatch');
+		expect(report.blockers.map((b) => b.code)).toContain('missing-or-invalid-v2-resolutions');
 		const clean = await fixture();
 		const risk = (clean.plan as FinalControlledRerunPlan).designRiskReview.risks.find(
 			(r) => r.severity === 'blocking'
@@ -234,7 +301,7 @@ describe('final controlled activation readiness', () => {
 		candidateResolution.blindReviewEvidence = [otherReview];
 		let report = buildFinalControlledActivationReadiness({ ...input, resolutions });
 		expect(report.blockers.map((blocker) => blocker.code)).toContain(
-			'missing-coordinate-review-evidence'
+			'missing-or-invalid-v2-resolutions'
 		);
 
 		const reviseInput = await fixture();
@@ -248,7 +315,113 @@ describe('final controlled activation readiness', () => {
 			resolutions: reviseLedger
 		});
 		expect(report.blockers.map((blocker) => blocker.code)).toContain(
-			'missing-coordinate-revise-evidence'
+			'missing-or-invalid-v2-resolutions'
+		);
+	});
+	it('rejects v1 ledgers and a forged embedded DB decision hash', async () => {
+		const input = await fixture();
+		const v1 = structuredClone(input.resolutions as any);
+		v1.schemaVersion = 'affinity-final-controlled-design-risk-resolutions-v1';
+		let report = buildFinalControlledActivationReadiness({ ...input, resolutions: v1 });
+		expect(report.blockers.map((blocker) => blocker.code)).toContain(
+			'missing-or-invalid-v2-resolutions'
+		);
+
+		const forged = structuredClone(input.resolutions as any);
+		forged.humanDecisionRecord.recordCanonicalSha256 = '0'.repeat(64);
+		report = buildFinalControlledActivationReadiness({ ...input, resolutions: forged });
+		expect(report.blockers.map((blocker) => blocker.code)).toContain(
+			'invalid-human-decision-record-hash'
+		);
+	});
+	it('requires canonical equality with the latest unsuperseded DB decision', async () => {
+		const staleInput = await fixture();
+		const staleList = structuredClone(staleInput.decisionList as any);
+		staleList.records[0].decisions[0].humanRationale += ' Database drift.';
+		staleList.latestByActor = [staleList.records[0]];
+		let report = buildFinalControlledActivationReadiness({
+			...staleInput,
+			decisionList: staleList
+		});
+		expect(report.blockers.map((blocker) => blocker.code)).toContain(
+			'noncurrent-or-inauthentic-human-decision'
+		);
+
+		const nonlatestInput = await fixture();
+		const oldRecord = (nonlatestInput.decisionList as any).records[0];
+		const newerRecord = structuredClone(oldRecord);
+		newerRecord.decisionId = '00000000-0000-4000-8000-000000000101';
+		newerRecord.supersedesDecisionId = oldRecord.decisionId;
+		newerRecord.decidedAt = '2026-08-29T20:31:00.000Z';
+		report = buildFinalControlledActivationReadiness({
+			...nonlatestInput,
+			decisionList: {
+				...(nonlatestInput.decisionList as any),
+				records: [oldRecord, newerRecord],
+				latestByActor: [newerRecord]
+			}
+		});
+		expect(report.blockers.map((blocker) => blocker.code)).toContain(
+			'noncurrent-or-inauthentic-human-decision'
+		);
+	});
+	it('reports a sanitized blocker when DB decision evidence is unavailable', async () => {
+		const input = await fixture();
+		const report = buildFinalControlledActivationReadiness({
+			...input,
+			decisionList: undefined,
+			decisionDatabaseAvailable: false
+		});
+		expect(report.blockers).toContainEqual({
+			code: 'decision-database-unavailable',
+			detail: 'Authoritative design-risk decision evidence is unavailable'
+		});
+		expect(JSON.stringify(report)).not.toContain('postgresql://');
+	});
+	it('recomputes all five evidence bindings, including the source audit', async () => {
+		const bindingKeys = [
+			'planCanonicalSha256',
+			'catalogCanonicalSha256',
+			'executionSnapshotCanonicalSha256',
+			'blindReviewCollectionCanonicalSha256',
+			'sourceAuditCanonicalSha256'
+		] as const;
+		for (const key of bindingKeys) {
+			const input = await fixture();
+			const ledger = structuredClone(input.resolutions as any);
+			ledger.evidenceBindings[key] = 'f'.repeat(64);
+			ledger.humanDecisionRecord.record.evidenceBindings[key] = 'f'.repeat(64);
+			ledger.humanDecisionRecord.recordCanonicalSha256 = sha256Json(
+				ledger.humanDecisionRecord.record
+			);
+			const report = buildFinalControlledActivationReadiness({ ...input, resolutions: ledger });
+			expect(
+				report.blockers.map((blocker) => blocker.code),
+				key
+			).toContain('stale-binding');
+		}
+	});
+	it('rejects reordered risks and retention of a blocking risk', async () => {
+		const input = await fixture();
+		const reordered = structuredClone(input.resolutions as any);
+		[reordered.resolutions[0], reordered.resolutions[1]] = [
+			reordered.resolutions[1],
+			reordered.resolutions[0]
+		];
+		let report = buildFinalControlledActivationReadiness({ ...input, resolutions: reordered });
+		expect(report.blockers.map((blocker) => blocker.code)).toContain(
+			'missing-or-invalid-v2-resolutions'
+		);
+
+		const retainedBlocker = structuredClone(input.resolutions as any);
+		retainedBlocker.resolutions[0].decision = 'retain';
+		retainedBlocker.resolutions[0].stagedTarget = null;
+		report = buildFinalControlledActivationReadiness({
+			...input,
+			resolutions: retainedBlocker
+		});
+		expect(report.blockers.map((blocker) => blocker.code)).toContain(
+			'missing-or-invalid-v2-resolutions'
 		);
 	});
 	it('rejects nonblind review payloads and stale canonical hashes', async () => {
@@ -258,7 +431,11 @@ describe('final controlled activation readiness', () => {
 		let report = buildFinalControlledActivationReadiness({ ...input, blindReviews: reviews });
 		expect(report.blockers[0]?.code).toBe('invalid-input');
 		const resolutions = structuredClone(input.resolutions as any);
-		resolutions.planContentHash = 'f'.repeat(64);
+		resolutions.evidenceBindings.planCanonicalSha256 = 'f'.repeat(64);
+		resolutions.humanDecisionRecord.record.evidenceBindings.planCanonicalSha256 = 'f'.repeat(64);
+		resolutions.humanDecisionRecord.recordCanonicalSha256 = sha256Json(
+			resolutions.humanDecisionRecord.record
+		);
 		report = buildFinalControlledActivationReadiness({ ...input, resolutions });
 		expect(report.blockers.map((b) => b.code)).toContain('stale-binding');
 	});

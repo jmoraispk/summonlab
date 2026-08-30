@@ -5,6 +5,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+	FinalControlledDesignRiskDecisionListSchema,
+	FinalControlledDesignRiskResolutionLedgerV2Schema,
 	ImageProductionAssignmentSchema,
 	ImageProductionConcurrencyStageSchema,
 	ImageProductionResultSchema,
@@ -15,6 +17,7 @@ import {
 	type ImageProductionTarget
 } from '../packages/contracts/src/index.js';
 import { getConfig } from '../packages/config/src/index.js';
+import { listFinalControlledDesignRiskDecisions } from '../packages/database/src/index.js';
 import { z } from 'zod';
 
 import { loadAffinityReviewData } from '../apps/web/src/routes/forge/enemies/affinity-workflow/affinity-review.js';
@@ -37,6 +40,7 @@ import {
 } from './finalize-affinity-round-evaluation.js';
 import {
 	FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
+	FinalControlledActivationReceiptSchema,
 	verifyFinalControlledActivationReceipt
 } from './final-controlled-activation-evidence.js';
 import { ACCEPTED_LATER_PACK_RULES_PATH } from './report-later-pack-visual-rules-readiness.js';
@@ -87,6 +91,8 @@ const REQUIRED_FORGE_FILES = [
 ] as const;
 const SCALE_RECOMMENDATION_PATH =
 	`${AFFINITY_EXPERIMENT_ROOT}/review/scale-recommendation.json` as const;
+const FINAL_CONTROLLED_DESIGN_RISK_LEDGER_PATH =
+	`${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-design-risk-resolutions.json` as const;
 
 const FinalControlledRerunPlanSchema = z
 	.object({
@@ -149,6 +155,12 @@ export interface AffinityPlanCompletionEvidence {
 	readonly controlledFinalRerun: {
 		readonly planValidated: boolean;
 		readonly activationReceiptValid: boolean;
+		readonly designRiskLedgerV2Valid: boolean;
+		readonly embeddedHumanDecisionHashValid: boolean;
+		readonly humanDecisionDatabaseAuthentic: boolean;
+		readonly activationReceiptLedgerBindingValid: boolean;
+		readonly stagedCorrectionCount: number;
+		readonly stagedCorrectionsValid: boolean;
 		readonly targetManifestCount: number;
 		readonly assignmentCount: number;
 		readonly resultCount: number;
@@ -228,6 +240,7 @@ export interface AffinityPlanCompletionReport {
 export interface FinalControlledGateEvidenceInput {
 	readonly planValidated: boolean;
 	readonly activationReceiptValid: boolean;
+	readonly designRiskLifecycle?: FinalControlledDesignRiskLifecycleEvidence;
 	readonly targets: readonly ImageProductionTarget[];
 	readonly assignmentCount: number;
 	readonly executions: readonly ValidatedImageProductionExecution[];
@@ -239,6 +252,26 @@ export interface FinalControlledGateEvidenceInput {
 export interface FinalControlledGateEvidence {
 	readonly controlledFinalRerun: AffinityPlanCompletionEvidence['controlledFinalRerun'];
 	readonly humanBlindEvidence: AffinityPlanCompletionEvidence['humanBlindEvidence'];
+}
+
+export interface FinalControlledDesignRiskLifecycleInput {
+	readonly plan: z.infer<typeof FinalControlledRerunPlanSchema>;
+	readonly ledger: unknown;
+	readonly activationReceipt: unknown;
+	readonly stagedTargetCanonicalHashes: Readonly<Record<string, string>>;
+	readonly decisionDatabaseAvailable: boolean;
+	readonly decisionList: unknown;
+	readonly authoritativeActor: string | null;
+}
+
+export interface FinalControlledDesignRiskLifecycleEvidence {
+	readonly designRiskLedgerV2Valid: boolean;
+	readonly embeddedHumanDecisionHashValid: boolean;
+	readonly humanDecisionDatabaseAuthentic: boolean;
+	readonly activationReceiptLedgerBindingValid: boolean;
+	readonly stagedCorrectionCount: number;
+	readonly stagedCorrectionsValid: boolean;
+	readonly issues: readonly string[];
 }
 
 export interface CrossCohortIdSets {
@@ -289,6 +322,130 @@ export function compositeAffinityWorkspaceIsValid(input: {
 	);
 }
 
+/**
+ * Verify the human design-risk lifecycle independently of the activation tool.
+ * A canonical hash on an embedded record is only an integrity check; it is not proof that the
+ * record came from the append-only decision database.
+ */
+export function validateFinalControlledDesignRiskLifecycle(
+	input: FinalControlledDesignRiskLifecycleInput
+): FinalControlledDesignRiskLifecycleEvidence {
+	const issues: string[] = [];
+	const parsedLedger = FinalControlledDesignRiskResolutionLedgerV2Schema.safeParse(input.ledger);
+	const parsedReceipt = FinalControlledActivationReceiptSchema.safeParse(input.activationReceipt);
+	if (!parsedLedger.success) {
+		return {
+			designRiskLedgerV2Valid: false,
+			embeddedHumanDecisionHashValid: false,
+			humanDecisionDatabaseAuthentic: false,
+			activationReceiptLedgerBindingValid: false,
+			stagedCorrectionCount: 0,
+			stagedCorrectionsValid: false,
+			issues: ['The final-controlled design-risk ledger is missing or is not the strict v2 schema.']
+		};
+	}
+	const ledger = parsedLedger.data;
+	const embeddedHumanDecisionHashValid =
+		ledger.humanDecisionRecord.recordCanonicalSha256 ===
+		sha256Json(ledger.humanDecisionRecord.record);
+	if (!embeddedHumanDecisionHashValid) {
+		issues.push('The embedded human decision record canonical hash is invalid.');
+	}
+
+	let humanDecisionDatabaseAuthentic = false;
+	if (!input.decisionDatabaseAvailable) {
+		issues.push('The authoritative human decision database is unavailable.');
+	} else {
+		const parsedDecisionList = FinalControlledDesignRiskDecisionListSchema.safeParse(
+			input.decisionList
+		);
+		if (!parsedDecisionList.success) {
+			issues.push('The authoritative human decision database projection is invalid.');
+		} else {
+			const latestForActor = parsedDecisionList.data.latestByActor.filter(
+				(record) => record.actor === ledger.actor
+			);
+			humanDecisionDatabaseAuthentic =
+				!ledger.actor.startsWith('test:') &&
+				input.authoritativeActor !== null &&
+				input.authoritativeActor === ledger.actor &&
+				latestForActor.length === 1 &&
+				latestForActor[0]?.decisionId === ledger.resolutionId &&
+				sha256Json(latestForActor[0]) === sha256Json(ledger.humanDecisionRecord.record);
+			if (!humanDecisionDatabaseAuthentic) {
+				issues.push(
+					'The ledger does not embed the authoritative actor’s latest unsuperseded human DB decision.'
+				);
+			}
+		}
+	}
+
+	let activationReceiptLedgerBindingValid = false;
+	if (!parsedReceipt.success) {
+		issues.push('The final-controlled activation receipt is missing or invalid.');
+	} else {
+		const receipt = parsedReceipt.data;
+		activationReceiptLedgerBindingValid =
+			receipt.bindings.resolutionLedgerCanonicalSha256 === sha256Json(ledger) &&
+			receipt.bindings.planCanonicalSha256 === ledger.evidenceBindings.planCanonicalSha256 &&
+			receipt.bindings.planCanonicalSha256 === sha256Json(input.plan) &&
+			receipt.bindings.catalogCanonicalSha256 === ledger.evidenceBindings.catalogCanonicalSha256 &&
+			receipt.bindings.executionSnapshotSha256 ===
+				ledger.evidenceBindings.executionSnapshotCanonicalSha256 &&
+			receipt.bindings.blindReviewCanonicalSha256 ===
+				ledger.evidenceBindings.blindReviewCollectionCanonicalSha256;
+		if (!activationReceiptLedgerBindingValid) {
+			issues.push('The activation receipt is stale or is not bound to the verified v2 ledger.');
+		}
+	}
+
+	const stagedResolutions = ledger.resolutions.filter(
+		(resolution) => resolution.stagedTarget !== null
+	);
+	let stagedCorrectionsValid = parsedReceipt.success;
+	if (parsedReceipt.success) {
+		const stagedReceiptArtifacts = parsedReceipt.data.artifacts.filter(
+			(artifact) => artifact.source === 'staged'
+		);
+		if (stagedReceiptArtifacts.length !== stagedResolutions.length) {
+			stagedCorrectionsValid = false;
+		}
+		for (const resolution of stagedResolutions) {
+			const stagedTarget = resolution.stagedTarget!;
+			const planned = input.plan.targets.find((target) => target.key === resolution.coordinate);
+			const livePath = planned
+				? renderPlannedPath(input.plan.plannedPathTemplates.target, planned)
+				: null;
+			const receiptArtifact = livePath
+				? stagedReceiptArtifacts.find(
+						(artifact) => artifact.kind === 'target' && artifact.livePath === livePath
+					)
+				: undefined;
+			if (
+				input.stagedTargetCanonicalHashes[stagedTarget.path] !== stagedTarget.canonicalHash ||
+				receiptArtifact?.canonicalSha256 !== stagedTarget.canonicalHash
+			) {
+				stagedCorrectionsValid = false;
+			}
+		}
+	}
+	if (!stagedCorrectionsValid) {
+		issues.push(
+			'One or more human-directed staged corrections are missing, stale, or absent from activation.'
+		);
+	}
+
+	return {
+		designRiskLedgerV2Valid: true,
+		embeddedHumanDecisionHashValid,
+		humanDecisionDatabaseAuthentic,
+		activationReceiptLedgerBindingValid,
+		stagedCorrectionCount: stagedResolutions.length,
+		stagedCorrectionsValid,
+		issues
+	};
+}
+
 /** Derive final-cohort gates without consulting or inheriting the immutable v1 evaluation. */
 export function buildFinalControlledGateEvidence(
 	input: FinalControlledGateEvidenceInput
@@ -302,10 +459,25 @@ export function buildFinalControlledGateEvidence(
 	});
 	const valid = validationIssues.length === 0;
 	const criteria = readiness.criteria;
+	const lifecycle = input.designRiskLifecycle ?? {
+		designRiskLedgerV2Valid: false,
+		embeddedHumanDecisionHashValid: false,
+		humanDecisionDatabaseAuthentic: false,
+		activationReceiptLedgerBindingValid: false,
+		stagedCorrectionCount: 0,
+		stagedCorrectionsValid: false,
+		issues: ['Final-controlled design-risk lifecycle evidence was not supplied.']
+	};
 	return {
 		controlledFinalRerun: {
 			planValidated: input.planValidated,
 			activationReceiptValid: input.activationReceiptValid,
+			designRiskLedgerV2Valid: lifecycle.designRiskLedgerV2Valid,
+			embeddedHumanDecisionHashValid: lifecycle.embeddedHumanDecisionHashValid,
+			humanDecisionDatabaseAuthentic: lifecycle.humanDecisionDatabaseAuthentic,
+			activationReceiptLedgerBindingValid: lifecycle.activationReceiptLedgerBindingValid,
+			stagedCorrectionCount: lifecycle.stagedCorrectionCount,
+			stagedCorrectionsValid: lifecycle.stagedCorrectionsValid,
 			targetManifestCount: input.targets.length,
 			assignmentCount: input.assignmentCount,
 			resultCount: input.executions.length,
@@ -350,6 +522,12 @@ export function buildAffinityPlanCompletionReport(
 	const controlledComplete =
 		evidence.controlledFinalRerun.planValidated &&
 		evidence.controlledFinalRerun.activationReceiptValid &&
+		evidence.controlledFinalRerun.designRiskLedgerV2Valid &&
+		evidence.controlledFinalRerun.embeddedHumanDecisionHashValid &&
+		evidence.controlledFinalRerun.humanDecisionDatabaseAuthentic &&
+		evidence.controlledFinalRerun.activationReceiptLedgerBindingValid &&
+		evidence.controlledFinalRerun.stagedCorrectionCount > 0 &&
+		evidence.controlledFinalRerun.stagedCorrectionsValid &&
 		evidence.controlledFinalRerun.targetManifestCount === 24 &&
 		evidence.controlledFinalRerun.assignmentCount === 24 &&
 		evidence.controlledFinalRerun.resultCount === 24 &&
@@ -407,7 +585,7 @@ export function buildAffinityPlanCompletionReport(
 			controlledComplete,
 			evidence.controlledFinalRerun,
 			[
-				'A planned rerun is not execution evidence: all 24 final-protocol manifests, assignments, images, and results must exist and the controlled evaluation must pass.'
+				'A planned rerun is not execution evidence: a genuine latest human DB decision, its strict v2 ledger, every staged correction, a ledger-bound activation receipt, all 24 final-protocol outputs, and a passing controlled evaluation must exist.'
 			],
 			['human', 'gated', 'implementable']
 		),
@@ -671,6 +849,45 @@ async function inspectFinalControlledExecutionEvidence(input: {
 	const receiptPresent = await fileExists(
 		path.resolve(input.workspaceRoot, FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH)
 	);
+	const ledgerInput = await readJson(
+		path.resolve(input.workspaceRoot, FINAL_CONTROLLED_DESIGN_RISK_LEDGER_PATH)
+	).catch(() => null);
+	const parsedLedger = FinalControlledDesignRiskResolutionLedgerV2Schema.safeParse(ledgerInput);
+	const stagedTargetCanonicalHashes: Record<string, string> = {};
+	if (parsedLedger.success) {
+		for (const resolution of parsedLedger.data.resolutions) {
+			if (!resolution.stagedTarget) continue;
+			const staged = await readJson(
+				path.resolve(input.workspaceRoot, resolution.stagedTarget.path)
+			).catch(() => null);
+			if (staged !== null)
+				stagedTargetCanonicalHashes[resolution.stagedTarget.path] = sha256Json(staged);
+		}
+	}
+	const config = getConfig();
+	let decisionList: unknown = null;
+	let decisionDatabaseAvailable = false;
+	if (parsedLedger.success) {
+		try {
+			decisionList = await listFinalControlledDesignRiskDecisions(
+				config.databaseUrl,
+				'affinity-workflow-v1',
+				'final-controlled-activation-v1'
+			);
+			decisionDatabaseAvailable = true;
+		} catch {
+			decisionDatabaseAvailable = false;
+		}
+	}
+	const designRiskLifecycle = validateFinalControlledDesignRiskLifecycle({
+		plan: input.plan,
+		ledger: ledgerInput,
+		activationReceipt: receiptVerification.receipt ?? null,
+		stagedTargetCanonicalHashes,
+		decisionDatabaseAvailable,
+		decisionList,
+		authoritativeActor: config.affinityReviewActor
+	});
 	const assignmentIds: string[] = [];
 	const resultIds: string[] = [];
 	let assignmentCount = 0;
@@ -749,6 +966,19 @@ async function inspectFinalControlledExecutionEvidence(input: {
 			...receiptVerification.issues.map((issue) => `Activation receipt: ${issue}`)
 		);
 	}
+	if (
+		!designRiskLifecycle.designRiskLedgerV2Valid ||
+		!designRiskLifecycle.embeddedHumanDecisionHashValid ||
+		!designRiskLifecycle.humanDecisionDatabaseAuthentic ||
+		!designRiskLifecycle.activationReceiptLedgerBindingValid ||
+		!designRiskLifecycle.stagedCorrectionsValid
+	) {
+		if (receiptPresent || plannedArtifactCount > 0) {
+			validationIssues.push(
+				...designRiskLifecycle.issues.map((issue) => `Design-risk lifecycle: ${issue}`)
+			);
+		}
+	}
 	for (const [label, values] of [
 		['target IDs', targets.map((target) => target.targetId)],
 		['assignment IDs', assignmentIds],
@@ -772,6 +1002,7 @@ async function inspectFinalControlledExecutionEvidence(input: {
 		gateEvidence: buildFinalControlledGateEvidence({
 			planValidated: finalPlanIsStructurallyValid(input.plan),
 			activationReceiptValid: receiptVerification.valid,
+			designRiskLifecycle,
 			targets,
 			assignmentCount,
 			executions,

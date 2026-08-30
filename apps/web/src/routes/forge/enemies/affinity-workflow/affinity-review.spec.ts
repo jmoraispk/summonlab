@@ -15,6 +15,7 @@ import {
 	parseControlledRoundId,
 	parseAffinityReviewer,
 	readPngDimensions,
+	resolveAffinityReviewActor,
 	summarizeAffinityReviews,
 	targetBelongsToReviewSelection
 } from './affinity-review';
@@ -53,6 +54,17 @@ describe('affinity review helpers', () => {
 		expect(parseAffinityReviewer('  visual-director  ')).toBe('visual-director');
 		expect(parseAffinityReviewer('')).toBeNull();
 		expect(() => parseAffinityReviewer('bad\nreviewer')).toThrow('Invalid affinity reviewer');
+	});
+
+	it('uses a configured server-owned actor instead of accepting a client-selected reviewer', () => {
+		expect(resolveAffinityReviewActor('visual-director', null)).toBe('visual-director');
+		expect(resolveAffinityReviewActor('visual-director', ' visual-director ')).toBe(
+			'visual-director'
+		);
+		expect(() => resolveAffinityReviewActor('visual-director', 'another-actor')).toThrow(
+			'server-owned affinity review actor'
+		);
+		expect(resolveAffinityReviewActor(null, 'guest-reviewer')).toBe('guest-reviewer');
 	});
 
 	it('rejects duplicate controlled coordinates', () => {

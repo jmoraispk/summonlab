@@ -132,12 +132,22 @@ async function authorizedInput(): Promise<ActivationReadinessInput> {
 			status: 'resolved',
 			decision: risk.severity === 'blocking' ? 'replace-derived-target' : 'retain',
 			humanRationale: 'Human reviewed the blind evidence and selected this resolution.',
-			blindReviewEvidence: review ? [{ id: review.reviewId, contentHash: sha256Json(review) }] : [],
+			blindReviewEvidence: review
+				? [
+						{
+							id: review.reviewId,
+							targetId: review.targetId,
+							candidateContentHash: review.candidateContentHash,
+							contentHash: sha256Json(review)
+						}
+					]
+				: [],
 			reviseResultEvidence:
 				originalResult.status === 'revise'
 					? [
 							{
 								id: originalResult.resultId,
+								targetId: originalResult.targetId,
 								contentHash: sha256Json(originalResult)
 							}
 						]
@@ -157,6 +167,40 @@ async function authorizedInput(): Promise<ActivationReadinessInput> {
 			};
 		})
 		.toSorted((left, right) => left.targetId.localeCompare(right.targetId));
+	const evidenceBindings = {
+		planCanonicalSha256: sha256Json(plan),
+		catalogCanonicalSha256: sha256Json(catalog),
+		executionSnapshotCanonicalSha256: sha256Json(snapshot),
+		blindReviewCollectionCanonicalSha256: sha256Json(reviews),
+		sourceAuditCanonicalSha256: sha256Json(plan.designRiskReview)
+	};
+	const humanDecisionRecord = {
+		decisionId: '00000000-0000-4000-8000-000000000100',
+		experimentId: 'affinity-workflow-v1',
+		scopeId: 'final-controlled-activation-v1',
+		mode: 'human-interactive',
+		actor: 'Human reviewer',
+		evidenceBindings,
+		supersedesDecisionId: null,
+		decisions: resolutions.map(
+			({ riskId, coordinate, sourceTargetId, severity, decision, humanRationale }) => ({
+				riskId,
+				coordinate,
+				sourceTargetId,
+				severity,
+				decision,
+				humanRationale
+			})
+		),
+		attestation: {
+			producerDidNotResolveRisks: true,
+			reviewedEligibleBlindEvidence: true,
+			reviewedCompleteSourceAudit: true,
+			deliberatelyResolvedAllRisks: true,
+			understandsActivationRequiresIndependentVerification: true
+		},
+		decidedAt: '2026-08-29T20:30:00.000Z'
+	};
 	return {
 		plan,
 		blindReviews: reviews,
@@ -164,12 +208,19 @@ async function authorizedInput(): Promise<ActivationReadinessInput> {
 		originalTargets,
 		results,
 		resolutions: {
-			schemaVersion: 'affinity-final-controlled-design-risk-resolutions-v1',
+			schemaVersion: 'affinity-final-controlled-design-risk-resolutions-v2',
 			experimentId: 'affinity-workflow-v1',
-			planContentHash: sha256Json(plan),
-			blindReviewCollectionHash: sha256Json(reviews),
-			catalogContentHash: sha256Json(catalog),
-			executionSnapshotHash: sha256Json(snapshot),
+			scopeId: 'final-controlled-activation-v1',
+			status: 'resolved',
+			resolutionId: humanDecisionRecord.decisionId,
+			actor: humanDecisionRecord.actor,
+			decidedAt: humanDecisionRecord.decidedAt,
+			mode: 'human-interactive-db-export',
+			humanDecisionRecord: {
+				record: humanDecisionRecord,
+				recordCanonicalSha256: sha256Json(humanDecisionRecord)
+			},
+			evidenceBindings,
 			eligibleOriginalControlledTargetIds: candidateIds,
 			reviseResults: results
 				.filter((result) => result.status === 'revise')
@@ -181,6 +232,13 @@ async function authorizedInput(): Promise<ActivationReadinessInput> {
 				.toSorted((left, right) => left.targetId.localeCompare(right.targetId)),
 			resolutions
 		},
+		decisionList: {
+			experimentId: 'affinity-workflow-v1',
+			scopeId: 'final-controlled-activation-v1',
+			records: [humanDecisionRecord],
+			latestByActor: [humanDecisionRecord]
+		},
+		decisionDatabaseAvailable: true,
 		staged,
 		currentWorkspaceValid: true,
 		plannedPathsAbsent: true
@@ -209,6 +267,12 @@ describe('guarded final-controlled activation', () => {
 		expect(first.receipt.artifacts.filter((artifact) => artifact.source === 'staged')).toHaveLength(
 			8
 		);
+		expect(first.receipt.bindings.resolutionLedgerCanonicalSha256).toBe(
+			sha256Json(input.resolutions)
+		);
+		expect(first.receipt.bindings.executionSnapshotSha256).toBe(
+			(input.resolutions as any).evidenceBindings.executionSnapshotCanonicalSha256
+		);
 		const verification = await verifyFinalControlledActivationReceipt(root);
 		expect(verification.valid, verification.issues.join('\n')).toBe(true);
 		const second = await activateFinalControlledRerun({
@@ -230,6 +294,64 @@ describe('guarded final-controlled activation', () => {
 			})
 		).rejects.toThrow('unauthorized');
 		await expect(lstat(path.join(root, 'assets'))).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('rejects stale or unverifiable DB-bound v2 ledgers before writing activation artifacts', async () => {
+		for (const tamper of [
+			'v1',
+			'record-hash',
+			'source-audit',
+			'nonlatest-db-row',
+			'database-unavailable'
+		] as const) {
+			const root = await workspace();
+			const input = await authorizedInput();
+			const resolutions = structuredClone(input.resolutions as any);
+			let decisionList = structuredClone(input.decisionList as any);
+			let decisionDatabaseAvailable = true;
+			if (tamper === 'v1')
+				resolutions.schemaVersion = 'affinity-final-controlled-design-risk-resolutions-v1';
+			if (tamper === 'record-hash') {
+				resolutions.humanDecisionRecord.recordCanonicalSha256 = '0'.repeat(64);
+			}
+			if (tamper === 'source-audit') {
+				resolutions.evidenceBindings.sourceAuditCanonicalSha256 = 'f'.repeat(64);
+				resolutions.humanDecisionRecord.record.evidenceBindings.sourceAuditCanonicalSha256 =
+					'f'.repeat(64);
+				resolutions.humanDecisionRecord.recordCanonicalSha256 = sha256Json(
+					resolutions.humanDecisionRecord.record
+				);
+			}
+			if (tamper === 'nonlatest-db-row') {
+				const oldRecord = decisionList.records[0];
+				const newerRecord = structuredClone(oldRecord);
+				newerRecord.decisionId = '00000000-0000-4000-8000-000000000101';
+				newerRecord.supersedesDecisionId = oldRecord.decisionId;
+				newerRecord.decidedAt = '2026-08-29T20:31:00.000Z';
+				decisionList = {
+					...decisionList,
+					records: [oldRecord, newerRecord],
+					latestByActor: [newerRecord]
+				};
+			}
+			if (tamper === 'database-unavailable') {
+				decisionList = undefined;
+				decisionDatabaseAvailable = false;
+			}
+			await expect(
+				activateFinalControlledRerun({
+					workspaceRoot: root,
+					acknowledgeLiveManifestActivation: true,
+					loadInput: async () => ({
+						...input,
+						resolutions,
+						decisionList,
+						decisionDatabaseAvailable
+					})
+				})
+			).rejects.toThrow('unauthorized');
+			await expect(lstat(path.join(root, 'assets'))).rejects.toMatchObject({ code: 'ENOENT' });
+		}
 	});
 
 	it('rolls back only transaction-owned files after an interrupted publish', async () => {
