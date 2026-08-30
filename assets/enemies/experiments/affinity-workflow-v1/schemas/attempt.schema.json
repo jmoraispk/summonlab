@@ -12,6 +12,17 @@
 			"type": "string",
 			"enum": ["accepted-by-producer", "rejected-by-producer", "provider-failure"]
 		},
+		"failureKind": {
+			"type": "string",
+			"enum": [
+				"capacity",
+				"provider-throttle",
+				"timeout",
+				"malformed-output",
+				"persistence",
+				"other"
+			]
+		},
 		"exactPrompt": { "type": "string", "minLength": 1, "maxLength": 30000 },
 		"promptHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
 		"referenceInputs": {

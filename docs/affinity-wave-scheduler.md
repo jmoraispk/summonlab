@@ -9,8 +9,8 @@ The scheduler closes four gaps in the affinity experiment:
 
 - it records requested concurrency separately from the capacity admitted by the running task;
 - it prevents an 8-, 12-, or 16-worker stage from silently running as a lower-concurrency stage;
-- it gives the orchestrator a bounded dispatch decision and enforces the three-capacity-or-throttle
-  stop rule in an append-only event journal;
+- it gives the orchestrator a bounded dispatch decision and enforces configured technical-failure
+  stop rules in an append-only event journal;
 - it derives candidate, retry, timing, speedup, efficiency, and failure metrics from strict result
   records without inventing metrics when no image job completed.
 
@@ -41,6 +41,22 @@ two base targets. Validate it without activating manifests or making image calls
 pnpm exec tsx tools/affinity-wave-scheduler.ts validate-allocation \
   --allocation assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json
 ```
+
+The 14 future sentinel manifests are derived from passed final-controlled sources and accepted
+visual rules. They must exist before the allocation's Load-12 and Scale-16 jobs can be materialized;
+they cannot depend on a completed Breadth round because those later stages contain 14 of the 24
+Breadth targets. Prepare and publish them without generating an image:
+
+```bash
+pnpm report:affinity-concurrency-sentinel-readiness -- --actor <actor>
+pnpm activate:affinity-concurrency-sentinels -- \
+  --actor <same-actor> \
+  --acknowledge-live-sentinel-activation
+```
+
+Activation rechecks every prerequisite under an exclusive lock, refuses all path collisions, and
+writes a hash-bound 28-manifest receipt last. It does not grant dispatch permission. Breadth-8
+promotion still gates Load-12 dispatch, and eligible Load-12 promotion still gates Scale-16.
 
 ## Wave plan
 
@@ -111,9 +127,9 @@ pnpm write:affinity-dispatch-gate -- --profile load --concurrency 16 \
 
 The writer recomputes each profile's fixed evidence chain and publishes with exclusive,
 no-overwrite semantics. Final binds the verified activation receipt and all 48 activated
-manifests. Breadth binds a passed final-controlled round. Load-12 and Scale-16 bind a passed Breadth
-round, and Scale-16 additionally requires an eligible Load-12 predecessor. `--check` is zero-write
-and exits nonzero until the exact expected gate already exists.
+manifests. Breadth binds a passed final-controlled round. Load-12 binds the eligible Breadth-8
+promotion, and Scale-16 binds the eligible Load-12 promotion. `--check` is zero-write and exits
+nonzero until the exact expected gate already exists.
 
 Generic early Canary, Pilot, or Controlled work may explicitly record that no human gate was yet
 required. A target under `targets/final-controlled/` is different: preflight recognizes that owned

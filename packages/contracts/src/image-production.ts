@@ -356,12 +356,22 @@ export const ImageProductionPersistenceSchema = z
 	})
 	.strict();
 
+export const ImageProductionFailureKindSchema = z.enum([
+	'capacity',
+	'provider-throttle',
+	'timeout',
+	'malformed-output',
+	'persistence',
+	'other'
+]);
+
 export const ImageProductionAttemptSchema = z
 	.object({
 		attemptId: SlugSchema,
 		attemptNumber: z.number().int().positive(),
 		precedingAttemptId: SlugSchema.nullable(),
 		conclusion: z.enum(['accepted-by-producer', 'rejected-by-producer', 'provider-failure']),
+		failureKind: ImageProductionFailureKindSchema.optional(),
 		exactPrompt: z.string().min(1).max(30_000),
 		promptHash: StateHashSchema,
 		referenceInputs: z
@@ -442,6 +452,13 @@ export const ImageProductionAttemptSchema = z
 		if (attempt.conclusion === 'provider-failure' && attempt.output !== null) {
 			context.addIssue({ code: 'custom', message: 'Provider failures cannot claim an output' });
 		}
+		if (attempt.conclusion !== 'provider-failure' && attempt.failureKind !== undefined) {
+			context.addIssue({
+				code: 'custom',
+				path: ['failureKind'],
+				message: 'Only provider-failure attempts may declare a failure kind'
+			});
+		}
 		if (attempt.totalWallTimeMs < attempt.generationDurationMs + attempt.inspectionDurationMs) {
 			context.addIssue({
 				code: 'custom',
@@ -488,6 +505,17 @@ export const ImageProductionResultSchema = z
 				context.addIssue({
 					code: 'custom',
 					message: 'Each retry must link to the preceding attempt'
+				});
+			}
+			if (
+				result.status === 'failed' &&
+				attempt.conclusion === 'provider-failure' &&
+				attempt.failureKind === undefined
+			) {
+				context.addIssue({
+					code: 'custom',
+					path: ['attempts', index, 'failureKind'],
+					message: 'Terminal failed results must classify every provider failure'
 				});
 			}
 		}

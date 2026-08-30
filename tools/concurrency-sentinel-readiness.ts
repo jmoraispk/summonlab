@@ -53,10 +53,8 @@ const SENTINEL_FORBIDDEN_PATHS = [
 	`${affinityRoundRoot('final-controlled-v1')}/integration-receipt.json`,
 	`${affinityRoundRoot('final-controlled-v1')}/final-evaluation.json`,
 	`${affinityRoundRoot('final-controlled-v1')}/final-evaluation-receipt.json`,
-	`${affinityRoundRoot('breadth-v1')}/integration-receipt.json`,
-	`${affinityRoundRoot('breadth-v1')}/final-evaluation.json`,
-	`${affinityRoundRoot('breadth-v1')}/final-evaluation-receipt.json`,
-	ACCEPTED_LATER_PACK_RULES_PATH
+	ACCEPTED_LATER_PACK_RULES_PATH,
+	`${AFFINITY_EXPERIMENT_ROOT}/review/concurrency-sentinel-activation-receipt.json`
 ] as const;
 
 type SentinelJob = AffinityWaveAllocationSpec['stages'][number]['jobs'][number];
@@ -242,7 +240,7 @@ export interface ConcurrencySentinelReadinessDependencies {
 }
 
 export interface ConcurrencySentinelReadinessReport {
-	readonly schemaVersion: 'affinity-concurrency-sentinel-readiness-v1';
+	readonly schemaVersion: 'affinity-concurrency-sentinel-readiness-v2';
 	readonly experimentId: 'affinity-workflow-v1';
 	readonly status: 'ready' | 'blocked';
 	readonly preparationOnly: true;
@@ -259,8 +257,7 @@ export interface ConcurrencySentinelReadinessReport {
 	readonly scaleCount: number;
 	readonly finalControlledIntegrationReceiptCanonicalSha256: string | null;
 	readonly finalControlledEvaluationReceiptCanonicalSha256: string | null;
-	readonly breadthIntegrationReceiptCanonicalSha256: string | null;
-	readonly breadthEvaluationReceiptCanonicalSha256: string | null;
+	readonly assignedAt: string | null;
 	readonly acceptedRulesCanonicalSha256: string | null;
 	readonly repositorySkillTreeSha256: string | null;
 	readonly installedSkillTreeSha256: string | null;
@@ -285,12 +282,12 @@ async function readJsonRegular(workspaceRoot: string, repositoryPath: string): P
 	return JSON.parse(await readFile(absolute, 'utf8'));
 }
 
-async function defaultLoadAllocation(workspaceRoot: string) {
+export async function defaultLoadConcurrencySentinelAllocation(workspaceRoot: string) {
 	const allocation = await readJsonRegular(workspaceRoot, CONCURRENCY_SENTINEL_ALLOCATION_PATH);
 	return { allocation, canonicalSha256: sha256Json(allocation) };
 }
 
-async function defaultLoadRound(
+export async function defaultLoadConcurrencySentinelRound(
 	workspaceRoot: string,
 	roundId: 'final-controlled-v1' | 'breadth-v1'
 ): Promise<VerifiedSentinelRound> {
@@ -352,6 +349,7 @@ async function listTree(root: string, prefix = ''): Promise<string[]> {
 		entries.map(async (entry) => {
 			const relative = path.posix.join(prefix.split(path.sep).join('/'), entry.name);
 			if (entry.isSymbolicLink()) throw new Error(`Skill tree contains symlink: ${relative}`);
+			if (entry.name === '__pycache__' || entry.name.endsWith('.pyc')) return [];
 			return entry.isDirectory() ? listTree(root, relative) : [relative];
 		})
 	);
@@ -446,9 +444,9 @@ export async function reportConcurrencySentinelReadiness(
 	const workspaceRoot = path.resolve(options.workspaceRoot ?? process.cwd());
 	const dependencies = options.dependencies ?? {};
 	const blockers: string[] = [];
-	let allocationLoad: Awaited<ReturnType<typeof defaultLoadAllocation>> | null = null;
+	let allocationLoad: Awaited<ReturnType<typeof defaultLoadConcurrencySentinelAllocation>> | null =
+		null;
 	let finalRound: VerifiedSentinelRound | null = null;
-	let breadthRound: VerifiedSentinelRound | null = null;
 	let accepted = { valid: false, canonicalSha256: null as string | null };
 	let skill: SentinelSkillState = {
 		matchesInstalled: false,
@@ -456,21 +454,22 @@ export async function reportConcurrencySentinelReadiness(
 		installedTreeSha256: null
 	};
 	try {
-		allocationLoad = await (dependencies.loadAllocation ?? defaultLoadAllocation)(workspaceRoot);
+		allocationLoad = await (
+			dependencies.loadAllocation ?? defaultLoadConcurrencySentinelAllocation
+		)(workspaceRoot);
 		if (allocationLoad.canonicalSha256 !== EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256)
 			blockers.push('allocation-hash-mismatch');
 		AffinityWaveAllocationSpecSchema.parse(allocationLoad.allocation);
 	} catch {
 		blockers.push('allocation-missing-invalid-or-stale');
 	}
-	for (const roundId of ['final-controlled-v1', 'breadth-v1'] as const) {
-		try {
-			const round = await (dependencies.loadRound ?? defaultLoadRound)(workspaceRoot, roundId);
-			if (roundId === 'final-controlled-v1') finalRound = round;
-			else breadthRound = round;
-		} catch {
-			blockers.push(`${roundId}-not-finalized`);
-		}
+	try {
+		finalRound = await (dependencies.loadRound ?? defaultLoadConcurrencySentinelRound)(
+			workspaceRoot,
+			'final-controlled-v1'
+		);
+	} catch {
+		blockers.push('final-controlled-v1-not-finalized');
 	}
 	try {
 		accepted = await (dependencies.verifyAcceptedRules ?? defaultVerifyAcceptedRules)(
@@ -490,7 +489,7 @@ export async function reportConcurrencySentinelReadiness(
 		blockers.push('production-skill-not-current-or-installed');
 	}
 	let bundle: ConcurrencySentinelBundle | null = null;
-	if (allocationLoad && finalRound && breadthRound) {
+	if (allocationLoad && finalRound) {
 		try {
 			bundle = buildConcurrencySentinelBundle({
 				allocation: allocationLoad.allocation,
@@ -498,7 +497,7 @@ export async function reportConcurrencySentinelReadiness(
 					targetPath: entry.targetPath,
 					target: entry.target
 				})),
-				assignedAt: breadthRound.completedAt
+				assignedAt: finalRound.completedAt
 			});
 			if (
 				!(await (dependencies.validateReferences ?? defaultValidateReferences)(
@@ -516,7 +515,7 @@ export async function reportConcurrencySentinelReadiness(
 		}
 	}
 	return {
-		schemaVersion: 'affinity-concurrency-sentinel-readiness-v1',
+		schemaVersion: 'affinity-concurrency-sentinel-readiness-v2',
 		experimentId: 'affinity-workflow-v1',
 		status: blockers.length === 0 ? 'ready' : 'blocked',
 		preparationOnly: true,
@@ -535,10 +534,7 @@ export async function reportConcurrencySentinelReadiness(
 			finalRound?.integrationReceiptCanonicalSha256 ?? null,
 		finalControlledEvaluationReceiptCanonicalSha256:
 			finalRound?.finalEvaluationReceiptCanonicalSha256 ?? null,
-		breadthIntegrationReceiptCanonicalSha256:
-			breadthRound?.integrationReceiptCanonicalSha256 ?? null,
-		breadthEvaluationReceiptCanonicalSha256:
-			breadthRound?.finalEvaluationReceiptCanonicalSha256 ?? null,
+		assignedAt: finalRound?.completedAt ?? null,
 		acceptedRulesCanonicalSha256: accepted.canonicalSha256,
 		repositorySkillTreeSha256: skill.repositoryTreeSha256,
 		installedSkillTreeSha256: skill.installedTreeSha256,
@@ -548,6 +544,62 @@ export async function reportConcurrencySentinelReadiness(
 			: null,
 		blockers: [...new Set(blockers)]
 	};
+}
+
+export interface PreparedConcurrencySentinels {
+	readonly report: ConcurrencySentinelReadinessReport;
+	readonly bundle: ConcurrencySentinelBundle | null;
+}
+
+/**
+ * Loads a current, hash-bound snapshot for the guarded publisher. Readiness remains
+ * a zero-write operation; callers must re-run this function while holding their
+ * publication lock before creating any live manifest.
+ */
+export async function prepareCurrentConcurrencySentinels(
+	options: {
+		readonly workspaceRoot?: string;
+		readonly actor?: string | null;
+		readonly databaseUrl?: string;
+		readonly dependencies?: ConcurrencySentinelReadinessDependencies;
+		readonly allowExistingOwnedPaths?: boolean;
+	} = {}
+): Promise<PreparedConcurrencySentinels> {
+	const workspaceRoot = path.resolve(options.workspaceRoot ?? process.cwd());
+	const dependencies: ConcurrencySentinelReadinessDependencies = {
+		...(options.dependencies ?? {}),
+		...(options.allowExistingOwnedPaths ? { pathsAbsent: async () => true } : {})
+	};
+	const report = await reportConcurrencySentinelReadiness({
+		workspaceRoot,
+		dependencies,
+		...(options.actor !== undefined ? { actor: options.actor } : {}),
+		...(options.databaseUrl !== undefined ? { databaseUrl: options.databaseUrl } : {})
+	});
+	if (report.status !== 'ready') return { report, bundle: null };
+	const [allocationLoad, finalRound] = await Promise.all([
+		(dependencies.loadAllocation ?? defaultLoadConcurrencySentinelAllocation)(workspaceRoot),
+		(dependencies.loadRound ?? defaultLoadConcurrencySentinelRound)(
+			workspaceRoot,
+			'final-controlled-v1'
+		)
+	]);
+	const bundle = buildConcurrencySentinelBundle({
+		allocation: allocationLoad.allocation,
+		finalControlledSources: finalRound.entries.map((entry) => ({
+			targetPath: entry.targetPath,
+			target: entry.target
+		})),
+		assignedAt: finalRound.completedAt
+	});
+	if (
+		report.allocationCanonicalSha256 !== bundle.allocationCanonicalSha256 ||
+		report.sourceSetCanonicalSha256 !== sha256Json(bundle.sourceBindings) ||
+		report.sentinelBundleCanonicalSha256 !==
+			sha256Json({ targets: bundle.targets, assignments: bundle.assignments })
+	)
+		throw new Error('Sentinel preparation changed while the readiness snapshot was loaded.');
+	return { report, bundle };
 }
 
 export function parseConcurrencySentinelArgs(args: readonly string[]): { actor: string | null } {

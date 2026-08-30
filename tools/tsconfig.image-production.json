@@ -51,6 +51,8 @@
 		"verify-accepted-later-pack-rules-completion.spec.ts",
 		"concurrency-sentinel-readiness.ts",
 		"concurrency-sentinel-readiness.spec.ts",
+		"activate-concurrency-sentinels.ts",
+		"activate-concurrency-sentinels.spec.ts",
 		"finalize-affinity-scale-recommendation.ts",
 		"finalize-affinity-scale-recommendation.spec.ts",
 		"write-affinity-dispatch-gate.ts",

@@ -15,6 +15,14 @@ from render_prompt import render as render_canonical_prompt
 from validate_target import absolute_project_path, load_json, validate
 
 RESULT_VERSION = "image-production-result-v1"
+FAILURE_KINDS = {
+    "capacity",
+    "provider-throttle",
+    "timeout",
+    "malformed-output",
+    "persistence",
+    "other",
+}
 
 
 def fail(message: str) -> None:
@@ -58,6 +66,20 @@ def image_dimensions(path: Path, media_type: str) -> tuple[int, int]:
     fail(f"unsupported media type: {media_type}")
 
 
+def verify_failure_kind_contract(attempt: dict[str, Any], result_status: str) -> None:
+    conclusion = attempt.get("conclusion")
+    has_failure_kind = "failureKind" in attempt
+    failure_kind = attempt.get("failureKind")
+    if conclusion != "provider-failure":
+        if has_failure_kind:
+            fail("only provider-failure attempts may declare failureKind")
+        return
+    if has_failure_kind and failure_kind not in FAILURE_KINDS:
+        fail("provider-failure attempt failureKind is invalid")
+    if result_status == "failed" and not has_failure_kind:
+        fail("terminal failed results must classify every provider failure")
+
+
 def verify_attempts(
     target: dict[str, Any], assignment: dict[str, Any], result: dict[str, Any]
 ) -> None:
@@ -85,6 +107,7 @@ def verify_attempts(
             "provider-failure",
         }:
             fail("attempt conclusion is invalid")
+        verify_failure_kind_contract(attempt, result.get("status"))
         prompt = attempt.get("exactPrompt")
         if not isinstance(prompt, str) or not prompt:
             fail("attempt exactPrompt is missing")

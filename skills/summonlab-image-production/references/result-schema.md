@@ -22,6 +22,10 @@ Each attempt records:
 - request, generation-completion, and inspection-completion timestamps;
 - generation, inspection, and total wall times;
 - `conclusion`: producer accepted, producer rejected, or provider failure;
+- `failureKind` on provider failures: `capacity`, `provider-throttle`, `timeout`,
+  `malformed-output`, `persistence`, or `other`; omit it on non-provider attempts. Every
+  provider-failure attempt in a terminal `failed` result must declare it. Older nonterminal
+  `candidate` or `revise` evidence may retain a provider failure without this field;
 - exact prompt plus prompt SHA-256;
 - `referenceInputs`: the complete target-declared reference provenance in manifest order, retained
   on every attempt even when a corrective edit uses only the preceding render as its tool input;

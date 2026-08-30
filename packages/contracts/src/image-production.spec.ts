@@ -249,6 +249,59 @@ describe('image-production contracts', () => {
 		).toThrow(/maximum of 1 attempts/u);
 	});
 
+	it('requires classified provider failures only for terminal failed results', () => {
+		const failedAttempt = {
+			...attempt(1, false),
+			conclusion: 'provider-failure' as const,
+			failureKind: 'capacity' as const,
+			sourceOutputId: null,
+			persistence: null,
+			output: null,
+			retryReason: null
+		};
+		const failed = {
+			...validResult(),
+			status: 'failed' as const,
+			attempts: [failedAttempt],
+			selectedAttemptId: null,
+			failedCriteria: ['full-frame'],
+			writtenOutputPaths: [resultPath]
+		};
+
+		expect(ImageProductionResultSchema.safeParse(failed).success).toBe(true);
+		const unclassifiedAttempt: Record<string, unknown> = { ...failedAttempt };
+		delete unclassifiedAttempt.failureKind;
+		expect(
+			ImageProductionResultSchema.safeParse({ ...failed, attempts: [unclassifiedAttempt] }).success
+		).toBe(false);
+	});
+
+	it('preserves legacy nonterminal failures and forbids failure kinds on other conclusions', () => {
+		const providerFailure = {
+			...attempt(1, false),
+			conclusion: 'provider-failure' as const,
+			sourceOutputId: null,
+			persistence: null,
+			output: null,
+			retryReason: null
+		};
+		const legacyRevise = {
+			...validResult(),
+			status: 'revise' as const,
+			attempts: [providerFailure, attempt(2, false)],
+			selectedAttemptId: null,
+			failedCriteria: ['full-frame']
+		};
+
+		expect(ImageProductionResultSchema.safeParse(legacyRevise).success).toBe(true);
+		expect(
+			ImageProductionResultSchema.safeParse({
+				...validResult(),
+				attempts: [{ ...attempt(1, false), failureKind: 'capacity' }, attempt(2, true)]
+			}).success
+		).toBe(false);
+	});
+
 	it('rejects writes and generated dimensions outside the assignment contract', () => {
 		const result = validResult();
 		result.writtenOutputPaths.push(

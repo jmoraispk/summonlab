@@ -166,7 +166,7 @@ describe('concurrency sentinel readiness', () => {
 		).toThrow('not final protocol');
 	});
 
-	it('reports ready only with every current gate while never authorizing publication', async () => {
+	it('reports ready after the final-controlled gate without waiting for breadth completion', async () => {
 		const input = await allocation();
 		const report = await reportConcurrencySentinelReadiness({
 			workspaceRoot: WORKSPACE_ROOT,
@@ -174,6 +174,7 @@ describe('concurrency sentinel readiness', () => {
 			dependencies: readyDependencies(input)
 		});
 		expect(report).toMatchObject({
+			schemaVersion: 'affinity-concurrency-sentinel-readiness-v2',
 			status: 'ready',
 			preparationOnly: true,
 			livePublicationAuthorized: false,
@@ -184,8 +185,10 @@ describe('concurrency sentinel readiness', () => {
 			ownedPathCount: 56,
 			loadCount: 6,
 			scaleCount: 8,
+			assignedAt: '2026-08-29T23:00:00.000Z',
 			blockers: []
 		});
+		expect(report).not.toHaveProperty('breadthIntegrationReceiptCanonicalSha256');
 	});
 
 	it('fails closed on reference drift and any owned-path collision', async () => {
@@ -217,7 +220,6 @@ describe('concurrency sentinel readiness', () => {
 			expect.arrayContaining([
 				'allocation-missing-invalid-or-stale',
 				'final-controlled-v1-not-finalized',
-				'breadth-v1-not-finalized',
 				'accepted-rules-not-current',
 				'production-skill-not-current-or-installed'
 			])

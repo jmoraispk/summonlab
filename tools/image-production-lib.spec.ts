@@ -162,7 +162,7 @@ describe('affinity workflow export tooling', () => {
 		for (const relativePath of [
 			`${AFFINITY_EXPERIMENT_ROOT}/targets/goblin/normal.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-assignment-v1.json`,
-			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v3.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v4.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/wave-plans/pilot-current-task-capacity-v1.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/wave-plans/exact-concurrency-final-and-breadth-v1.json`,

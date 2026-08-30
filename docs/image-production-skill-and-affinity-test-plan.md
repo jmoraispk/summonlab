@@ -69,13 +69,24 @@ until a human records a review decision.
 - 2026-08-29: Added a checked-in, non-executable allocation for exact 2-, 4-, 6-, 8-, 12-, and 16-worker stages. Every stage owns exactly its requested number of collision-free target, assignment, candidate, and result paths; the 16-worker stage contains two jobs for each of the eight species and evenly distributed affinities. Dispatch still requires hash-bound gate evidence and exact provisioned capacity. Current eligible measured levels remain 2 and 3, so no higher concurrency claim or scale endpoint is recorded.
 - 2026-08-29: Closed the final-controlled manifest activation lifecycle without activating it. The guarded writer recomputes authorization before and under an exclusive lock, overlays the human-approved staged corrections, regenerates all 24 assignments, rejects any of the 96 reserved-path collisions, and publishes a hash-bound 48-manifest receipt last. Failure injection proves transaction-owned rollback and receipt-bound idempotence. Completion and Forge now reject receipt-less or drifted final-controlled manifests; the live workspace remains intentionally unactivated.
 - 2026-08-29: Made baseline blind review reviewer-scoped and resumable. A reviewer identity is normalized once and bound server-side, progress counts only that reviewer's current-hash records, reviewed cells are marked, and the next unreviewed candidate opens after a save. A zero-write readiness command verifies the exact 21-candidate/3-revise baseline inventory and prints the reviewer-specific export, sync, and activation handoff commands.
-- 2026-08-29: Added a zero-write concurrency-sentinel readiness path for the future Load-6 and
-  Scale-8 jobs. It verifies the immutable allocation hash, passed final-controlled and Breadth
-  receipts, DB-authenticated accepted rules, the installed production-skill tree, 14 exact
-  final-protocol sources, reference hashes, and all 56 collision-free owned paths. It derives the
-  14 targets and assignments only in memory, reports reproducible source-set and bundle hashes,
-  and never authorizes or publishes live manifests. The current live report is correctly blocked
-  before human review and leaves the sentinel namespace empty.
+- 2026-08-29: Repaired and operationalized concurrency-sentinel preparation for the future Load-12
+  and Scale-16 jobs. Readiness now depends on the passed final-controlled round, DB-authenticated
+  accepted rules, current installed skill, immutable allocation, source/reference hashes, and 56
+  collision-free owned paths—not on the unfinished Breadth round that the sentinels are needed to
+  complete. A guarded publisher rechecks readiness before and under an exclusive lock, creates 14
+  targets and 14 assignments without overwrite, rolls back only transaction-owned files, and
+  commits a 28-artifact hash-bound receipt last. Live publication remains correctly blocked before
+  human review; no sentinel manifest was activated.
+- 2026-08-29: Aligned production failure evidence across the shared TypeScript contract, generated
+  JSON schemas, Python skill verifier, and operator instructions. New provider-failure attempts use
+  one explicit kind (`capacity`, `provider-throttle`, `timeout`, `malformed-output`, `persistence`,
+  or `other`); terminal failed results require it, non-provider outcomes forbid it, and immutable
+  historical candidate/revise records remain readable.
+- 2026-08-29: Re-ran the final skill through a fresh-agent Goblin Normal dry run after making
+  `dryRun` an explicit pre-generation stopping branch and correcting the skill-relative result
+  verifier path. The v4 receipt reproduces validation, two purpose-bound reference inspections,
+  canonical prompt bytes without submission, and zero output writes. Skill-tree digests now exclude
+  generated Python cache files so validation cannot make its own evidence stale.
 - 2026-08-29: Repaired the later-pack rule-history query for Zod 4 by validating its read scope
   with a dedicated unrefined contract. A focused query-entry regression now prevents the prior
   runtime `.pick()` failure. The available local database was subsequently migrated through `0017`
@@ -245,6 +256,11 @@ pnpm export:accepted-later-pack-visual-rules -- --actor <actor>
 
 # Read-only derivation check for the 14 future Load/Scale sentinels.
 pnpm report:affinity-concurrency-sentinel-readiness -- --actor <actor>
+
+# Only after the report is ready: publish the exact 28 manifests and receipt.
+pnpm activate:affinity-concurrency-sentinels -- \
+  --actor <same-actor> \
+  --acknowledge-live-sentinel-activation
 
 # Derived promotion gate and measured concurrency recommendation.
 pnpm write:affinity-dispatch-gate -- --profile <normal|final|breadth|load> [...]

@@ -95,7 +95,7 @@ export function canonicalGoblinAuditMatches(input: unknown, sampleSize: 60 | 600
 const DryRunEvidenceSchema = z
 	.object({
 		schemaVersion: z.literal('image-production-dry-run-evidence-v2'),
-		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v3'),
+		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v4'),
 		experimentId: z.literal('affinity-workflow-v1'),
 		workflow: z.literal('summonlab-image-production'),
 		executor: z.literal('fresh-bounded-subagent'),
@@ -103,7 +103,7 @@ const DryRunEvidenceSchema = z
 			.object({
 				installedPath: z.literal('/home/joao/.codex/skills/summonlab-image-production'),
 				resolvedRepositoryPath: z.literal('skills/summonlab-image-production'),
-				digestAlgorithm: z.literal('sha256-framed-tree-v1'),
+				digestAlgorithm: z.literal('sha256-framed-source-tree-v2'),
 				fileCount: z.number().int().positive(),
 				contentHash: z.string().regex(/^[a-f0-9]{64}$/u)
 			})
@@ -182,7 +182,9 @@ const DryRunEvidenceSchema = z
 const execFileAsync = promisify(execFile);
 
 async function hashFramedTree(root: string): Promise<{ fileCount: number; contentHash: string }> {
-	const files = await listFiles(root);
+	const files = (await listFiles(root)).filter(
+		(file) => !file.includes(`${path.sep}__pycache__${path.sep}`) && !file.endsWith('.pyc')
+	);
 	const hash = createHash('sha256');
 	for (const file of files) {
 		const relative = path.relative(root, file).split(path.sep).join('/');
@@ -328,7 +330,7 @@ export async function validateAffinityWorkflowWorkspace(
 	let dryRunEvidence = false;
 	if (targets.length === 60) {
 		const evidence = DryRunEvidenceSchema.parse(
-			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v3.json'))
+			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v4.json'))
 		);
 		const installedSkillRoot = path.resolve(evidence.skill.installedPath);
 		const repositorySkillRoot = path.resolve(workspaceRoot, evidence.skill.resolvedRepositoryPath);

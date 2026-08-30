@@ -1,0 +1,84 @@
+{
+	"schemaVersion": "image-production-dry-run-evidence-v2",
+	"dryRunId": "affinity-workflow-v1-goblin-normal-envelope-preflight-v4",
+	"experimentId": "affinity-workflow-v1",
+	"recordedAt": "2026-08-30T02:54:01.000Z",
+	"workflow": "summonlab-image-production",
+	"executor": "fresh-bounded-subagent",
+	"skill": {
+		"installedPath": "/home/joao/.codex/skills/summonlab-image-production",
+		"resolvedRepositoryPath": "skills/summonlab-image-production",
+		"digestAlgorithm": "sha256-framed-source-tree-v2",
+		"fileCount": 11,
+		"contentHash": "71f698d4c251f56f05116f48755237e43a57707cae7c681a684f817164ced744"
+	},
+	"target": {
+		"path": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/normal.json",
+		"targetId": "affinity-workflow-v1-goblin-normal",
+		"contentHash": "05552ef4f3ba9eb099299dd36e19f8f4d791f6bc8db93496e4d59ddf0d67aa35"
+	},
+	"assignment": {
+		"path": "assets/enemies/experiments/affinity-workflow-v1/dry-runs/goblin-normal-assignment-v1.json",
+		"assignmentId": "dry-run-assignment-affinity-workflow-v1-goblin-normal",
+		"contentHash": "afc44b85a09a99a72eb7060332e149be37ea15de47e91b74cf7bf9931365d9ca",
+		"dryRun": true,
+		"retryCeiling": 0
+	},
+	"preflight": {
+		"validator": "skills/summonlab-image-production/scripts/validate_target.py",
+		"status": "pass",
+		"report": {
+			"assignmentId": "dry-run-assignment-affinity-workflow-v1-goblin-normal",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+			"dryRun": true,
+			"references": 2,
+			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json",
+			"retryCeiling": 0,
+			"status": "valid",
+			"targetId": "affinity-workflow-v1-goblin-normal"
+		},
+		"referenceCount": 2,
+		"referencesPresentAndHashMatched": true,
+		"pathsContainedAndNormalized": true,
+		"targetAssignmentIdsMatch": true,
+		"outputsAbsent": true
+	},
+	"canonicalPrompt": {
+		"renderer": "skills/summonlab-image-production/scripts/render_prompt.py",
+		"protocol": "safe-frame-v4",
+		"byteLength": 3619,
+		"contentHash": "12d7f63366a08d5e7de25a07a5c575fa67431e638475de037685ffb91b06bd5e",
+		"terminalLineFeed": false,
+		"submittedToGenerator": false
+	},
+	"references": [
+		{
+			"path": "assets/enemies/review/goblinoids-v1.webp",
+			"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32",
+			"width": 1536,
+			"height": 768,
+			"inspectedAtOriginalDetail": true
+		},
+		{
+			"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+			"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e",
+			"width": 1536,
+			"height": 1024,
+			"inspectedAtOriginalDetail": true
+		}
+	],
+	"ownedOutputs": {
+		"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+		"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json",
+		"candidateCreated": false,
+		"resultCreated": false
+	},
+	"completion": {
+		"generationCallCount": 0,
+		"persistenceCallCount": 0,
+		"filesEditedByExecutor": 0,
+		"sharedFilesEdited": false,
+		"selfPromoted": false,
+		"status": "pass"
+	}
+}
