@@ -769,7 +769,9 @@
 		z-index: 30;
 		left: 50%;
 		top: 0;
-		display: grid;
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
 		min-width: 7rem;
 		padding: 0.48rem 0.58rem;
 		border: 1px solid rgba(239, 221, 187, 0.28);
@@ -788,9 +790,8 @@
 	}
 
 	.facility-hotspot i {
-		position: absolute;
-		left: 0.35rem;
-		top: 0.55rem;
+		position: static;
+		flex: 0 0 auto;
 		width: 0.35rem;
 		height: 0.35rem;
 		border-radius: 50%;
@@ -803,7 +804,7 @@
 	}
 
 	.facility-hotspot strong {
-		padding-left: 0.75rem;
+		padding-left: 0;
 		text-align: left;
 	}
 

@@ -27,7 +27,8 @@ compact find/focus ribbon. No separate roster route was created.
   and collapse into two shallow rows on phone.
 - Existing Hearth environment with named Gate, Court, and Tower hotspots. Training Grounds and
   Tower labels straddle the middle of their top borders; the Gate label straddles the middle of its
-  bottom border to preserve the gate artwork.
+  bottom border to preserve the gate artwork. Gate and Tower use taller interaction regions that
+  push those label-bearing edges away from their focal architecture.
 - Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
   two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
   remains available at fitted zoom so the camera never feels inert.
@@ -67,8 +68,9 @@ pnpm --filter @summonlab/web exec playwright test \
 ```
 
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
-1536×1024 Hearth asset, top-border Court/Tower labels, bottom-border Gate label, six true-alpha
-in-world figures with bounded progressive zoom scaling, absence of the destination
+1536×1024 Hearth asset, enlarged Gate/Tower regions, top-border Court/Tower labels, bottom-border
+Gate label, vertically centered facility status dots, six true-alpha in-world figures with bounded
+progressive zoom scaling, absence of the destination
 panel/resident-count/camera-help annotations, in-world hero selection, ribbon
 focus, anchored popover, details drawer, availability light removal after Court assignment, Court
 training and species hunt popover dismissal, pointer pan beginning inside a facility region at
@@ -150,6 +152,11 @@ their regions' top borders and moved the Gate label to the middle of its bottom 
 rejected fixed-pixel hero sizing during camera zoom because the residents appeared to shrink
 against the enlarged map. Hero figures now grow progressively through the zoom range, with a 1.75×
 cap that preserves readable residents without allowing them to dominate the world.
+
+The latest hotspot review expanded both vertical bounds of the Gate and Tower regions so their
+labels sit farther from the gate face and tower threshold art. All three facility labels now use a
+shared flex row whose status dot and text are geometrically center-aligned instead of relying on
+hand-tuned absolute offsets.
 
 ## Useful review actions
 

@@ -65,6 +65,13 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
 	const towerHotspot = page.getByRole('button', { name: 'Inspect Tower Threshold' });
+	for (const hotspot of [gateHotspot, courtHotspot, towerHotspot]) {
+		const dotBounds = await hotspot.locator('i').boundingBox();
+		const textBounds = await hotspot.locator('strong').boundingBox();
+		expect(
+			Math.abs(dotBounds!.y + dotBounds!.height / 2 - (textBounds!.y + textBounds!.height / 2))
+		).toBeLessThan(1);
+	}
 	for (const hotspot of [courtHotspot, towerHotspot]) {
 		const hotspotBounds = await hotspot.boundingBox();
 		const labelBounds = await hotspot.locator('span').boundingBox();
@@ -76,6 +83,9 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		expect(Math.abs(labelBounds!.y + labelBounds!.height / 2 - hotspotBounds!.y)).toBeLessThan(2);
 	}
 	const gateBounds = await gateHotspot.boundingBox();
+	const towerBounds = await towerHotspot.boundingBox();
+	expect(gateBounds!.height).toBeGreaterThan(towerBounds!.height);
+	expect(towerBounds!.height).toBeGreaterThan(180);
 	const gateLabelBounds = await gateHotspot.locator('span').boundingBox();
 	expect(
 		Math.abs(
