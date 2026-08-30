@@ -1,0 +1,23 @@
+{
+	"schemaVersion": "affinity-review-round-evaluation-v1",
+	"experimentId": "affinity-workflow-v1",
+	"roundId": "breadth-v1",
+	"generatedAt": "2026-08-30T05:26:47.455Z",
+	"status": "incomplete",
+	"catalogCanonicalSha256": "e5cf42bc4d4a15f20cf419f1d8c6801a81dec5b4bfc6363de4eac28600c7e163",
+	"counts": {
+		"targets": 24,
+		"results": 24,
+		"candidates": 15,
+		"revise": 9,
+		"failed": 0,
+		"firstAttemptCandidates": 4
+	},
+	"workflow": {
+		"completeProvenanceCount": 24,
+		"pathConflictCount": 0,
+		"sharedFileEditCount": 0,
+		"retryCeilingViolationCount": 0
+	},
+	"activationReceiptCanonicalSha256": null
+}

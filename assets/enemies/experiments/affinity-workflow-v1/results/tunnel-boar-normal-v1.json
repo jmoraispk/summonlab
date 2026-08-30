@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-tunnel-boar-normal",
+  "targetId": "affinity-workflow-v1-tunnel-boar-normal",
+  "assignmentId": "assignment-affinity-workflow-v1-tunnel-boar-normal",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-tunnel-boar-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "provider-failure",
+      "failureKind": "malformed-output",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tunnel-boar-normal\".\n\nSubject and threat:\n- Species: tunnel-boar.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: armored-line-breaker.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- low charging body\n- thick neck\n- tusks\n- head-down charge line\n\nAnatomy invariants:\n- porcine anatomy\n- exactly four legs\n- cloven feet\n- load-bearing shoulders\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: Preserve the established species weak point without elemental substitution.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: generic horned beast; upright humanoid posture; obscured head and tusks; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Fourth subject only: established Tunnel Boar anatomy, tusks, shoulders, cloven feet, and charge line; do not transfer the wolves or Cave Bear.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "c2bb62106363a5a6cda685e59999a51557ed58dbd66b5d5a9bfe9f6884e07389",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T04:54:50.000Z",
+      "generationCompletedAt": "2026-08-30T04:55:05.900Z",
+      "inspectionCompletedAt": "2026-08-30T04:55:05.900Z",
+      "generationDurationMs": 15900,
+      "inspectionDurationMs": 0,
+      "totalWallTimeMs": 15900,
+      "sourceOutputId": null,
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "protocol-provenance",
+          "category": "provenance",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial provider call completed but exposed no bindable source payload, output identifier, or inspectable canvas to this worker, so its pixels could not be persisted or audited truthfully."
+        }
+      ],
+      "retryReason": "The single permitted retry was used as a complete regeneration with the unchanged canonical prompt and ordered manifest references because the first call exposed no bindable source payload."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-tunnel-boar-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-tunnel-boar-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tunnel-boar-normal\".\n\nSubject and threat:\n- Species: tunnel-boar.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: armored-line-breaker.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- low charging body\n- thick neck\n- tusks\n- head-down charge line\n\nAnatomy invariants:\n- porcine anatomy\n- exactly four legs\n- cloven feet\n- load-bearing shoulders\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: Preserve the established species weak point without elemental substitution.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: generic horned beast; upright humanoid posture; obscured head and tusks; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Fourth subject only: established Tunnel Boar anatomy, tusks, shoulders, cloven feet, and charge line; do not transfer the wolves or Cave Bear.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "c2bb62106363a5a6cda685e59999a51557ed58dbd66b5d5a9bfe9f6884e07389",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T04:55:20.400Z",
+      "generationCompletedAt": "2026-08-30T04:55:38.532Z",
+      "inspectionCompletedAt": "2026-08-30T04:55:52.000Z",
+      "generationDurationMs": 18132,
+      "inspectionDurationMs": 13468,
+      "totalWallTimeMs": 31600,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-4d16364e-7424-4439-871f-5698cd99be8f.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-4d16364e-7424-4439-871f-5698cd99be8f.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2155676,
+          "contentHash": "13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2155676,
+          "contentHash": "13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2155676,
+        "contentHash": "13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full 1536 by 1024 canvas is intentionally finished with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The spear tip, ragged standard, armored back, tusks, tail, four hooves, and full charging silhouette remain inside the declared eight-percent safety border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Tunnel Boar appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Both calls submitted the exact safe-frame-v4 canonical prompt without a terminal newline at SHA-256 c2bb62106363a5a6cda685e59999a51557ed58dbd66b5d5a9bfe9f6884e07389 and supplied both references in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Target-aware inspection finds coherent porcine anatomy, exactly four grounded legs with cloven feet, a thick neck, load-bearing shoulders, and balanced weight."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low head-down stance, forward tusks, plated shoulders, planted hooves, and duty-readable back standard communicate an armored line breaker preparing to charge."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low charging body, thick neck, paired tusks, four-leg porcine plan, cloven feet, and head-down charge line preserve every declared identity and anatomy invariant."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Natural dark bristles, worn mundane armor, restrained dust, neutral lighting, and ordinary floor contact carry no elemental glow, affinity-coded material substitution, magical anatomy, or elemental wake."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong boar head, snout, tusks, shoulders, bristled body, cloven feet, and low charge silhouette."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated recognition remains pending human review; target-aware inspection finds ordinary organic and forged materials without elemental coding."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly Pack 2 finish, coherent bristle and worn-metal materials, controlled neutral lighting, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, humanoid posture, unexplained magic, cropped extremity, or unfinished region is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact returned retry source without normalization; source and retained dimensions, media type, byte count, and SHA-256 13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, application route, manifest, promotion decision, or repository history was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-tunnel-boar-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T04:54:50.000Z",
+  "completedAt": "2026-08-30T04:56:40.019Z",
+  "totalWallTimeMs": 110019,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

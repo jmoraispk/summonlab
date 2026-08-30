@@ -1,0 +1,267 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-goblin-wood",
+  "targetId": "affinity-workflow-v1-goblin-wood",
+  "assignmentId": "assignment-affinity-workflow-v1-goblin-wood",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-goblin-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-goblin-wood\".\n\nSubject and threat:\n- Species: goblin.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: chieftain.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- adult goblin identity\n- individual face\n- duty-readable equipment\n\nAnatomy invariants:\n- humanoid biped\n- two arms and two legs\n- goblin-range stature\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: childlike proportions; repeated default face; affinity-locked duty or build; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nGoblin compound variation:\n- seed: goblin-affinity-01.\n- battlefieldDuty: chieftain.\n- stature: tall.\n- build: lean.\n- adultAgeBand: adult.\n- face: shape=narrow-diamond; nose=upturned; jaw=underbitten; brow=arched; ears=notched; scarsOrAsymmetry=brow-cut; subtle-eye-height.\n- skinPalette: moss-olive.\n- localizedMarkings: freckles.\n- clothingSilhouette: hooded-work-smock.\n- clothingLayers: hooded-work-smock, frayed-underlayer.\n- materialCondition: frayed.\n- footwear: rope-soled-shoes.\n- headwear: one-sided-scout-hood.\n- armorCoverage: none.\n- handedness: left.\n- weaponOrFocus: axe-and-round-shield.\n- posture: low-cautious.\n- equipmentAnchors: axe-and-round-shield, one-sided-scout-hood, rope-soled-shoes.\n- affinityExpression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth.\n- counterplayCue: Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Established goblin species scale, adult proportions, material finish, and four canonical duty cues only; explicitly do not copy its repeated face or uniform ragged outfit distribution.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "e67a143f881b5f559d749b3cab33776548d9fba6e746ad550ede4f6bc6f86469",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T05:12:44.461Z",
+      "generationCompletedAt": "2026-08-30T05:13:05.461Z",
+      "inspectionCompletedAt": "2026-08-30T05:13:18.000Z",
+      "generationDurationMs": 21000,
+      "inspectionDurationMs": 12539,
+      "totalWallTimeMs": 33539,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-b3c7daa1-f43c-46a1-aaf2-94bc7bdafbb0.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire initial canvas, charcoal backdrop, and cracked-stone floor were intentionally rendered without a blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The figure and equipment were complete, but the forward rope-soled shoe entered the outer eight-percent bottom border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Goblin appeared with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the safe-frame-v4 canonical renderer without a terminal newline at SHA-256 e67a143f881b5f559d749b3cab33776548d9fba6e746ad550ede4f6bc6f86469, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The face, body, clothing, chieftain equipment, hood, shoes, and posture matched the compound target, but the declared left-handed Goblin held the axe in the right hand and shield on the left arm."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark and root material changed the axe and shield; living wooden articulation changed the shoulder and forearm; resin seams exposed binding joints, exceeding a brown recolor or pasted foliage."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright amber resin at the shoulder, forearm, shield bindings, and fresh-cut wooden seams exposes the interruptible structure."
+        }
+      ],
+      "retryReason": "A targeted equipment-handedness correction was required to put the axe in the declared left hand and shield on the right arm while preserving the successful individual and Wood design."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-goblin-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-goblin-wood-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Goblin Wood render; do not redesign or regenerate a different character.\n\nPreserve exactly: one tall lean adult moss-olive goblin chieftain; coherent humanoid biped with two arms and two legs; narrow-diamond individual face; upturned nose; underbitten jaw; arched brow; notched ears; brow cut and subtle eye-height asymmetry; freckles; one-sided scout hood; hooded work smock over a frayed underlayer; no armor; rope-soled shoes; low cautious posture; the same axe and round shield; bark grain, load-bearing roots, resin seams, wooden articulation, purposeful living growth, and resin-bright exposed binding joints/fresh-cut counterplay; no decorative antlers or pasted foliage; the same premium realistic painterly medieval dark-fantasy finish, cracked-stone floor, charcoal-to-midnight backdrop, neutral lighting, proportions, expression, materials, and detail.\n\nChange only equipment handedness and its necessary grip: place the axe securely in the goblin's left hand and the round shield securely on the goblin's right arm, with anatomically coherent wrists, fingers, elbows, and load paths. Do not mirror or change the face, scars, hood, clothing, posture, body, affinity construction, footwear, weapon, or shield design. Keep exactly two arms and two legs. Preserve a fully finished 1536 x 1024 canvas and keep every hard extent—including hood, ears, fingers, axe blade and haft, shield rim, shoes, and resin growth—inside the central 84 percent with a clearly empty border of at least 8 percent on all four sides; uniformly scale or recenter only if strictly necessary to preserve that existing framing constraint. No extra subject, extra limb, text, label, UI, frame, logo, or watermark.",
+      "promptHash": "bf1edfc23a2d587b6225823c5a829137f1206a41f207f1fddace0c9765d21b66",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-b3c7daa1-f43c-46a1-aaf2-94bc7bdafbb0.png",
+        "contentHash": "7cd69a68e86db25c91765a32c37aaef1fe62a8ab3f3a514913c4b4dfc7b6b71e"
+      },
+      "requestStartedAt": "2026-08-30T05:13:52.909Z",
+      "generationCompletedAt": "2026-08-30T05:14:22.109Z",
+      "inspectionCompletedAt": "2026-08-30T05:14:35.000Z",
+      "generationDurationMs": 29200,
+      "inspectionDurationMs": 12891,
+      "totalWallTimeMs": 42091,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-2a1d267a-bf5d-46ff-aa49-a17d956e5334.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-2a1d267a-bf5d-46ff-aa49-a17d956e5334.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2130956,
+          "contentHash": "7ec01b47b2f1feca24e0e74f6088fc0844c40c84fd62972e46d1d4769ee6ee25"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2130956,
+          "contentHash": "7ec01b47b2f1feca24e0e74f6088fc0844c40c84fd62972e46d1d4769ee6ee25"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2130956,
+        "contentHash": "7ec01b47b2f1feca24e0e74f6088fc0844c40c84fd62972e46d1d4769ee6ee25"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The retained canvas remains fully finished across the charcoal backdrop and cracked-stone floor without a blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The hood, ears, hands, axe, shield, roots, and full silhouette are complete, but the forward rope-soled shoe remains about fourteen pixels inside the required bottom safety border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Goblin chieftain appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted correction retain exact SHA-256 hashes; target references remain recorded in manifest order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image presents one coherent tall lean adult Goblin biped with exactly two arms, two legs, readable hands, grounded rope-soled shoes, and credible weight."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The guarded low stance, broad round shield, substantial axe, confident gaze, and distinct Wood bindings communicate an elite chieftain independent of the affinity."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected Goblin has a tall lean adult moss-olive body; individual narrow face, upturned nose, underbite, arched brow, notched ears, brow cut, subtle eye asymmetry and freckles; one-sided hood, frayed hooded work smock, no armor, rope-soled shoes, low-cautious posture, left-handed axe, and right-arm round shield."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain and load-bearing roots construct the axe and shield; woody articulation transforms shoulder and forearm anatomy; amber resin binds joints and exposed fresh cuts, exceeding a brown recolor or pasted foliage."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Resin-bright shoulder, forearm, shield bindings, and fresh-cut seams visibly expose the interruptible Wood structure."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong adult Goblin facial, ear, stature, and equipment cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending human review; target-aware inspection finds structural bark, root, articulation, and resin evidence rather than hue alone."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, coherent organic and cloth materials, restrained amber resin, cracked floor, charcoal backdrop, and neutral key remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, extra limb, childlike proportion, armor, decorative antler, pasted foliage, blank region, or abrupt cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 7ec01b47b2f1feca24e0e74f6088fc0844c40c84fd62972e46d1d4769ee6ee25 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, application route, manifest, promotion decision, repository history, or unrelated file was edited."
+        }
+      ],
+      "retryReason": "The single correction fixed the declared left-handed equipment layout while preserving the individual and Wood design, but the forward shoe still enters the bottom eight-percent margin; the retry ceiling is exhausted and this useful render is retained as revise."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T05:12:44.461Z",
+  "completedAt": "2026-08-30T05:14:59.272Z",
+  "totalWallTimeMs": 134811,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wood-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/goblin-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

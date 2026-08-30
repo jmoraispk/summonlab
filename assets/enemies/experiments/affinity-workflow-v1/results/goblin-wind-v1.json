@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-goblin-wind",
+  "targetId": "affinity-workflow-v1-goblin-wind",
+  "assignmentId": "assignment-affinity-workflow-v1-goblin-wind",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-goblin-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-goblin-wind\".\n\nSubject and threat:\n- Species: goblin.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: archer.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- adult goblin identity\n- individual face\n- duty-readable equipment\n\nAnatomy invariants:\n- humanoid biped\n- two arms and two legs\n- goblin-range stature\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; repeated default face; affinity-locked duty or build; a pale recolor, transparency alone, or effects with no directional force.\n\nGoblin compound variation:\n- seed: goblin-affinity-05.\n- battlefieldDuty: archer.\n- stature: short.\n- build: lean.\n- adultAgeBand: adult.\n- face: shape=broad-square; nose=short-hooked; jaw=heavy; brow=heavy-ridged; ears=broad-drooping; scarsOrAsymmetry=burn-patch; balanced.\n- skinPalette: ochre-olive.\n- localizedMarkings: mud-stripes.\n- clothingSilhouette: patched-longcoat.\n- clothingLayers: patched-longcoat, patched-underlayer.\n- materialCondition: patched.\n- footwear: ankle-boots.\n- headwear: none.\n- armorCoverage: light.\n- handedness: left.\n- weaponOrFocus: sling-and-side-knife.\n- posture: upright-commanding.\n- equipmentAnchors: sling-and-side-knife, none, ankle-boots.\n- affinityExpression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force.\n- counterplayCue: The still center of the pressure pattern remains visible between directional attacks.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Established goblin species scale, adult proportions, material finish, and four canonical duty cues only; explicitly do not copy its repeated face or uniform ragged outfit distribution.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "2099973635cb28a35f2cab12a64ee71aa7a9d0491fe7ce486d94061a1d31d83c",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/goblinoids-v1.webp", "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "requestStartedAt": "2026-08-30T05:06:09.900Z",
+      "generationCompletedAt": "2026-08-30T05:06:29.000Z",
+      "inspectionCompletedAt": "2026-08-30T05:06:50.000Z",
+      "generationDurationMs": 19100,
+      "inspectionDurationMs": 21000,
+      "totalWallTimeMs": 40100,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-cb81f526-44cc-4df9-ad16-61af122933f2.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was fully rendered with a continuous charcoal backdrop and cracked-stone floor."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The directional vortex reached the top and side safety regions, and the boot soles sat too close to the lower edge for the strict eight-percent border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one adult Goblin appeared with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched safe-frame-v4 at SHA-256 2099973635cb28a35f2cab12a64ee71aa7a9d0491fe7ce486d94061a1d31d83c, with references supplied in manifest order."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Swept fur and cloth, taut sling motion, a coherent clockwise vapor channel, pressure distortion, and debris flow established one strong directional force rather than a pale recolor."}
+      ],
+      "retryReason": "A targeted framing edit was required to preserve the successful design while scaling the complete Goblin, sling, and directional Wind wake into the central eighty-four percent."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-goblin-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-goblin-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nTargeted edit of the supplied Goblin Wind render, not a redesign. Preserve the same one adult short lean Goblin archer; individual broad-square ochre-olive face, short hooked nose, heavy jaw, heavy-ridged brow, broad drooping ears, balanced burn-patch asymmetry, mud-stripe markings; no headwear; patched longcoat and patched underlayer; light armor; ankle boots; left-handed sling; visible side knife; upright commanding posture; coherent two-arm, two-leg anatomy; and the same premium realistic painterly medieval dark-fantasy finish.\n\nPreserve the Wind construction exactly: the directional swept fur and coat, taut sling telegraph, coherent clockwise vapor channel, pressure distortion, debris flow, and visibly still center of the pressure pattern. Keep all force moving in one legible direction; do not reduce it to pale color, transparency, or directionless particles.\n\nChange only framing and scale: uniformly reduce and recenter the complete existing Goblin, sling and stone, knife, clothing tails, boots, every extremity, and the entire visible vortex/debris wake so every hard extent and effect fits inside the central 84 percent of both canvas dimensions. Leave a clearly empty finished border of at least 8 percent on all four sides of the 1536 x 1024 canvas. Keep exactly one subject and finish the full neutral cracked-stone floor and charcoal-to-midnight backdrop.\n\nDo not crop, redesign the face or clothing, change handedness or equipment, add or remove a limb, add a subject, add text, add UI, add a frame, add a logo, or add a watermark.",
+      "promptHash": "6233a7d89d4f99cf9035e9bd92dfc22b0203dc0e85b310f5dda522d234a8d78d",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/goblinoids-v1.webp", "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-cb81f526-44cc-4df9-ad16-61af122933f2.png",
+        "contentHash": "586f95f750aa20de09900320188ee58cdca6da435f451aad1826ad2a0dab11a3"
+      },
+      "requestStartedAt": "2026-08-30T05:06:52.900Z",
+      "generationCompletedAt": "2026-08-30T05:07:16.000Z",
+      "inspectionCompletedAt": "2026-08-30T05:07:35.000Z",
+      "generationDurationMs": 23100,
+      "inspectionDurationMs": 19000,
+      "totalWallTimeMs": 42100,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-8d1bc5e4-f987-4dfb-a194-25456fd3fcd3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-8d1bc5e4-f987-4dfb-a194-25456fd3fcd3.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1990478, "contentHash": "96014cced19157d53ef873da7b62d002c7a448781c1f1eba9d32f261859dc5f7"},
+        "retained": {"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1990478, "contentHash": "96014cced19157d53ef873da7b62d002c7a448781c1f1eba9d32f261859dc5f7"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1990478, "contentHash": "96014cced19157d53ef873da7b62d002c7a448781c1f1eba9d32f261859dc5f7"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The full 1536 by 1024 canvas is intentionally finished with continuous charcoal backdrop and cracked-stone floor detail."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The head, ears, complete sling, stone, knife, coat tails, boots, debris, and entire visible vortex sit inside the central eighty-four percent with empty borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Goblin Wind archer appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The canonical first prompt and targeted correction retain exact SHA-256 hashes; target references remain ordered and the exact preceding render is bound as correction input."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "The image presents a coherent adult humanoid biped with two arms, two legs, grounded weight, short lean goblin-range stature, and a credible left-handed sling action."},
+        {"criterionId": "manifest-fidelity", "category": "battlefield-duty", "evaluator": "producer", "outcome": "pass", "observation": "The tensioned sling, visible ammunition pouch and side knife, upright commanding stance, and ready feet clearly communicate a mobile ranged duty."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The individual broad-square ochre-olive face has a short hooked nose, heavy jaw and brow, broad drooping ears, balanced burn-patch texture and mud stripes; the unhooded Goblin wears a patched longcoat, patched layers, light coverage, and ankle boots with the declared sling and knife."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wind changes silhouette, motion, telegraph, and wake: fur and coat stream together, the sling traces the force, a clockwise vapor channel bends around the body, pressure distorts the air, and debris follows the same vector."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The quiet central pocket between the directional vapor arcs remains visibly readable around the Goblin's torso between sling attacks."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; target-aware inspection finds strong adult Goblin facial, ear, stature, and body cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; target-aware inspection finds strong directional Wind construction across cloth, telegraph, vapor pressure, and debris."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "The premium realistic painterly Pack 2 finish, readable skin, leather and cloth, controlled neutral light, restrained vapor, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No text, UI, frame, logo, watermark, extra subject, childlike proportion, sexualization, pale recolor-only affinity, blank region, or abrupt cutoff is visible."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact correction source; source and retained dimensions, media type, byte count, and SHA-256 96014cced19157d53ef873da7b62d002c7a448781c1f1eba9d32f261859dc5f7 match."},
+        {"criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, manifest, plan, application route, git state, or promotion decision was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-goblin-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T05:06:09.900Z",
+  "completedAt": "2026-08-30T05:07:47.717Z",
+  "totalWallTimeMs": 97817,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wind-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/goblin-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

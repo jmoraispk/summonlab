@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-goblin-water",
+  "targetId": "affinity-workflow-v1-goblin-water",
+  "assignmentId": "assignment-affinity-workflow-v1-goblin-water",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-goblin-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-goblin-water\".\n\nSubject and threat:\n- Species: goblin.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: hexweaver.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- adult goblin identity\n- individual face\n- duty-readable equipment\n\nAnatomy invariants:\n- humanoid biped\n- two arms and two legs\n- goblin-range stature\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; repeated default face; affinity-locked duty or build; a shapeless blue blob or generic blue glow with no readable structure.\n\nGoblin compound variation:\n- seed: goblin-affinity-04.\n- battlefieldDuty: hexweaver.\n- stature: average.\n- build: sturdy.\n- adultAgeBand: weathered.\n- face: shape=long-oval; nose=sharp-ridged; jaw=tapered; brow=split-scarred; ears=uneven-pair; scarsOrAsymmetry=none; off-center-nose.\n- skinPalette: desaturated-jade.\n- localizedMarkings: ash-smudge.\n- clothingSilhouette: cross-wrapped-tunic.\n- clothingLayers: cross-wrapped-tunic, frayed-underlayer.\n- materialCondition: frayed.\n- footwear: soft-hide-shoes.\n- headwear: cheek-guard-helmet.\n- armorCoverage: asymmetric-medium.\n- handedness: right.\n- weaponOrFocus: bone-focus-and-hex-tags.\n- posture: side-on-mobile.\n- equipmentAnchors: bone-focus-and-hex-tags, cheek-guard-helmet, soft-hide-shoes.\n- affinityExpression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core.\n- counterplayCue: Pressure loss exposes the coherent binding core after a committed attack.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Established goblin species scale, adult proportions, material finish, and four canonical duty cues only; explicitly do not copy its repeated face or uniform ragged outfit distribution.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "c50ba030caba3edd44355162d226daa7ab103bfc65faf4c158faacc8a5378fb2",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T05:18:17.126Z",
+      "generationCompletedAt": "2026-08-30T05:18:34.726Z",
+      "inspectionCompletedAt": "2026-08-30T05:18:47.000Z",
+      "generationDurationMs": 17600,
+      "inspectionDurationMs": 12274,
+      "totalWallTimeMs": 29874,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-15fc1750-c9da-4852-a152-8494940eba01.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial canvas, charcoal backdrop, and wet cracked-stone floor were fully rendered without a blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete figure and equipment were visible, but the highest mist droplets entered the outer eight-percent top border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Goblin hexweaver appeared with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the safe-frame-v4 canonical renderer without a terminal newline at SHA-256 c50ba030caba3edd44355162d226daa7ab103bfc65faf4c158faacc8a5378fb2, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The target-aware inspection found the weathered sturdy adult, individual long face and uneven ears, right-handed bone focus and hex tags, helmet, asymmetric armor, cross-wrapped frayed layers, soft shoes, and mobile side-on posture."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow formed a coherent attack spiral; mist and droplets carried motion; wet reflections changed material response and floor wake; a dark binding core remained structurally readable without ice, blob anatomy, or glow-only treatment."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The dark coherent core suspended inside the thinning pressure loop visibly reads as exposed when pressure drops after the committed cast."
+        }
+      ],
+      "retryReason": "A framing-only correction was required to preserve the successful individual and Water construction while moving all mist droplets and wake inside the central eighty-four-percent region."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-goblin-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-goblin-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Goblin Water render; do not redesign or regenerate a different character.\n\nPreserve exactly: one average-height sturdy weathered adult desaturated-jade goblin hexweaver; coherent humanoid biped with two arms and two legs; long-oval individual face, sharp-ridged off-center nose, tapered jaw, split-scarred brow, uneven ears, ash smudge; cheek-guard helmet; asymmetric medium armor; cross-wrapped tunic over a frayed underlayer; soft-hide shoes; side-on mobile posture; right-handed bone focus with hanging hex tags; the same coherent pressurized water spiral, mist, wet reflections, fluid transitions, readable dark binding core, pressure-loss counterplay, and restrained non-icy non-blob Water construction; absolutely no extra subject, extra limb, ice, shapeless blue blob, generic blue glow, text, label, UI, frame, logo, or watermark; the same premium realistic painterly medieval dark-fantasy finish, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, pose, proportions, face, clothing, equipment, expression, and detail.\n\nChange only framing: uniformly scale the complete existing goblin, bone focus, hex tags, and entire water-and-mist effect system down slightly and recenter them so every hard extent and effect-wake extent—including helmet, ears, fingers, staff ornament, hanging tags, both shoes, the complete pressure spiral, all droplets, mist, wet wake, and exposed core—fits inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving a clearly empty border of at least 8 percent on all four sides. Do not crop, hide, reshape, add, remove, mirror, or alter any body part, face cue, clothing layer, armor piece, equipment item, affinity feature, counterplay cue, or pose. Finish every canvas region.",
+      "promptHash": "b76dfad46f916efeb06078370ebd40534fe0a02efd706e87216c6c80d78d1ce2",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-15fc1750-c9da-4852-a152-8494940eba01.png",
+        "contentHash": "ecbb5d668b14e9ddc09cf566e4fbf92f54097cd7a413ddf2eb579b381f47c430"
+      },
+      "requestStartedAt": "2026-08-30T05:19:02.722Z",
+      "generationCompletedAt": "2026-08-30T05:19:23.722Z",
+      "inspectionCompletedAt": "2026-08-30T05:19:35.000Z",
+      "generationDurationMs": 21000,
+      "inspectionDurationMs": 11278,
+      "totalWallTimeMs": 32278,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-bf24c786-704d-4793-8621-e934b17f3a5a.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-bf24c786-704d-4793-8621-e934b17f3a5a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2182439,
+          "contentHash": "e565c3becee6c22a2723dfc55934d8bf8795b31da00c6ea9afdc03397d852175"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2182439,
+          "contentHash": "e565c3becee6c22a2723dfc55934d8bf8795b31da00c6ea9afdc03397d852175"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2182439,
+        "contentHash": "e565c3becee6c22a2723dfc55934d8bf8795b31da00c6ea9afdc03397d852175"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected canvas remains fully finished across the charcoal backdrop and wet cracked-stone floor without a blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The helmet, ears, fingers, bone focus, hanging tags, both shoes, complete pressure spiral, all droplets, mist, wet wake, and dark core remain within the central eighty-four percent with a clearly empty border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Goblin hexweaver appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted framing correction retain exact SHA-256 hashes; target references remain recorded in manifest order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image presents one coherent sturdy adult Goblin biped with exactly two arms, two legs, readable hands and soft-hide shoes, credible ground contact, and goblin-range stature."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The right-handed bone focus, hanging hex tags, raised casting hand, pressure spiral, and side-on mobile stance clearly communicate a hexweaver independent of Water affinity."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The weathered desaturated-jade Goblin has an individual long-oval face, sharp ridged off-center nose, tapered jaw, split-scarred brow, uneven ears, ash smudge, cheek-guard helmet, asymmetric medium armor, cross-wrapped frayed tunic, soft-hide shoes, right-handed focus and tags, and mobile posture."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow changes attack telegraph; coherent spiral motion and mist show direction; wet cloth, armor and floor reflections alter material response; the local wake and binding core provide structure beyond generic blue glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The dark coherent binding core remains visible inside the thinning pressure loop, clearly exposing the focus as pressure falls after the committed cast."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong adult Goblin facial, ear, stature, clothing, and equipment cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Water recognition remains pending human review; target-aware inspection finds pressure, flow, mist, wet reflection, wake, and structural-core evidence rather than hue alone."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, coherent wet cloth and metal materials, restrained local water highlights, cracked floor, charcoal backdrop, and neutral key remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, extra limb, childlike proportion, ice, shapeless blob, generic blue wash, blank region, or abrupt cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 e565c3becee6c22a2723dfc55934d8bf8795b31da00c6ea9afdc03397d852175 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, application route, manifest, promotion decision, repository history, or unrelated file was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-goblin-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T05:18:17.126Z",
+  "completedAt": "2026-08-30T05:19:58.720Z",
+  "totalWallTimeMs": 101594,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/water-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/goblin-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

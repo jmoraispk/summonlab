@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-tunnel-boar-wind",
+  "targetId": "affinity-workflow-v1-tunnel-boar-wind",
+  "assignmentId": "assignment-affinity-workflow-v1-tunnel-boar-wind",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-tunnel-boar-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tunnel-boar-wind\".\n\nSubject and threat:\n- Species: tunnel-boar.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: armored-line-breaker.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- low charging body\n- thick neck\n- tusks\n- head-down charge line\n\nAnatomy invariants:\n- porcine anatomy\n- exactly four legs\n- cloven feet\n- load-bearing shoulders\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: generic horned beast; upright humanoid posture; obscured head and tusks; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Fourth subject only: established Tunnel Boar anatomy, tusks, shoulders, cloven feet, and charge line; do not transfer the wolves or Cave Bear.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "b949bf3e3ed35e1ea6f576d7b3b0d24fb8f41018997db9325a2d7e2bdc7a642a",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/beasts-v1.webp", "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "requestStartedAt": "2026-08-30T05:15:25.500Z",
+      "generationCompletedAt": "2026-08-30T05:15:43.000Z",
+      "inspectionCompletedAt": "2026-08-30T05:16:05.000Z",
+      "generationDurationMs": 17500,
+      "inspectionDurationMs": 22000,
+      "totalWallTimeMs": 39500,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-3d1adf06-b58e-4288-bf81-6c888e3ab564.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was fully rendered with continuous backdrop, floor, pressure wake, and debris."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The outer Wind wake entered the top and right eight-percent safety bands."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "fail", "observation": "The two forelegs were clear, but both rear legs and rear cloven feet were obscured by the head-on body and wake."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one Tunnel Boar appeared with a clear head, snout, and paired tusks."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched safe-frame-v4 at SHA-256 b949bf3e3ed35e1ea6f576d7b3b0d24fb8f41018997db9325a2d7e2bdc7a642a, with references supplied in manifest order."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wind changed swept bristle silhouette, charge telegraph, vapor channels, pressure distortion, and debris wake along one coherent rearward force direction."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The still center of the pressure pattern remained visibly readable around the lowered snout and head between the surrounding flow bands."}
+      ],
+      "retryReason": "A targeted edit was required to retain the strong charge and Wind design while revealing exactly four complete legs and cloven feet and fitting the whole wake inside the safe frame."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-tunnel-boar-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-tunnel-boar-wind-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nTargeted corrective edit of the supplied Tunnel Boar Wind render, not a redesign. Preserve the same single low charging porcine beast; thick neck; load-bearing armored shoulders; clearly visible boar head and paired tusks; head-down line-breaker charge; dark swept bristles; coherent directional vapor channels, pressure distortion, debris flow, and the visibly still center of the pressure pattern around the head; and the same premium realistic painterly medieval dark-fantasy finish.\n\nCorrect only leg visibility and framing. Keep exactly four anatomically connected porcine legs—no more and no fewer. Adjust the rear legs laterally just enough that both rear legs, both front legs, all four complete feet, and every cloven split are separately visible beneath and beside the low body without changing the forward charge line. Uniformly scale and recenter the complete existing boar, tusks, ears, bristles, all four legs and feet, and the entire directional vapor/debris wake so every hard extent and effect fits inside the central 84 percent of both canvas dimensions. Leave a clearly empty finished border of at least 8 percent on all four sides of the 1536 x 1024 canvas.\n\nKeep the Wind force coherent and directional through swept fur, pressure channels, motion telegraph, and debris; do not reduce it to pale color, transparency, or directionless particles. Preserve the same neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, exactly one subject, and fully finished canvas. Do not obscure the head or tusks, create a generic horned beast, make the animal upright, add or remove a leg, crop, add another creature, add text, add UI, add a frame, add a logo, or add a watermark.",
+      "promptHash": "97a34d10568dfddef7737235b4329cce050ccfc2eb6f196836e626945e5b0d39",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/beasts-v1.webp", "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-3d1adf06-b58e-4288-bf81-6c888e3ab564.png", "contentHash": "2be08a797903ab0db7b6d1d2b05f846754664413ce73898982a5b18cc6449f53"},
+      "requestStartedAt": "2026-08-30T05:16:07.900Z",
+      "generationCompletedAt": "2026-08-30T05:16:27.000Z",
+      "inspectionCompletedAt": "2026-08-30T05:16:49.000Z",
+      "generationDurationMs": 19100,
+      "inspectionDurationMs": 22000,
+      "totalWallTimeMs": 41100,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-51708463-3b63-420c-9a0a-697a65fc683e.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 18,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-51708463-3b63-420c-9a0a-697a65fc683e.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2214517, "contentHash": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0"},
+        "retained": {"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2214517, "contentHash": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2214517, "contentHash": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The full corrected canvas is intentionally finished with continuous charcoal backdrop, cracked floor, pressure channels, and debris."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete boar, tusks, visible feet, swept bristles, vapor channels, pressure wake, and debris sit inside the central eighty-four percent with empty borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Tunnel Boar appears, with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and corrective prompts retain exact SHA-256 hashes, ordered target references, and exact preceding-render correction linkage."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "fail", "observation": "Two front cloven feet and the near rear cloven foot are readable, but the far rear leg and fourth foot remain hidden behind the head-on body; the exactly-four-leg presentation is therefore not fully inspectable."},
+        {"criterionId": "manifest-fidelity", "category": "battlefield-duty", "evaluator": "producer", "outcome": "pass", "observation": "The low forward mass, thick neck, load-bearing shoulders, planted forefeet, lowered skull, and unobscured tusks create a clear armored line-breaker charge."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "Porcine head, snout, ears, paired tusks, low body, thick neck, shoulders, charge line, and three visible cloven feet are strong, but complete visibility of all four legs and feet remains missing."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wind changes silhouette, bristle direction, charge telegraph, vapor flow, pressure distortion, and debris wake along one coherent rearward vector rather than color alone."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The quiet center around the lowered head and snout remains visibly distinct between the surrounding directional pressure channels."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; target-aware inspection finds strong Tunnel Boar cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; target-aware inspection finds strong Wind construction through fur, pressure, motion, and debris."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "The premium realistic painterly Pack 2 finish, coherent fur and armor, controlled neutral light, restrained blue pressure accents, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No generic horned-beast anatomy, upright posture, obscured head, pale recolor-only effect, text, UI, frame, logo, watermark, extra subject, blank region, or cutoff is visible."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; source and retained dimensions, type, bytes, and SHA-256 6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0 match."},
+        {"criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result were written; no shared file, manifest, plan, application route, git state, or promotion decision was edited."}
+      ],
+      "retryReason": "The retained render is strong Wind-affinity review evidence, but the single correction was exhausted while the fourth rear leg and cloven foot remained hidden; no additional call is permitted."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": ["manifest-fidelity"],
+  "startedAt": "2026-08-30T05:15:25.500Z",
+  "completedAt": "2026-08-30T05:17:02.632Z",
+  "totalWallTimeMs": 97132,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

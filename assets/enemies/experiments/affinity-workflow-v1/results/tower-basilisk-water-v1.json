@@ -1,0 +1,272 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-tower-basilisk-water",
+  "targetId": "affinity-workflow-v1-tower-basilisk-water",
+  "assignmentId": "assignment-affinity-workflow-v1-tower-basilisk-water",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-tower-basilisk-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tower-basilisk-water\".\n\nSubject and threat:\n- Species: tower-basilisk.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: gaze-lane-controller.\n- Construction mode: six-legged-reptile.\n\nIdentity invariants:\n- low heavy reptile\n- rigid group of forward-facing gaze organs\n- one controlled attack lane\n- vulnerable blind flank\n\nAnatomy invariants:\n- exactly six grounded legs visible as three coherent pairs\n- reptilian torso and tail\n- credible ground contact for all six legs\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: snake body; ordinary four-legged lizard; eight legs; many-eyed amorphous mass; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Third subject only: Tower Basilisk low posture, gaze-lane organs, material finish, and blind flank; the ambiguous plate is not evidence for leg count, so follow the target’s textual six-leg invariant.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "9bb2110acca72de34d5f717c0fedfd002c16e502f229738a11dfcb610650e3f6",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T05:24:47.307Z",
+      "generationCompletedAt": "2026-08-30T05:25:07.007Z",
+      "inspectionCompletedAt": "2026-08-30T05:25:42.530Z",
+      "generationDurationMs": 19700,
+      "inspectionDurationMs": 35523,
+      "totalWallTimeMs": 55223,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-a0f4ecba-c415-4819-9fd5-d018f23bb435.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full 1536 by 1024 canvas was intentionally rendered with continuous backdrop, wet cracked-stone floor, and no blank band."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Although the body and extremities were complete, the forward water jet and splash wake reached the lower-left canvas edges instead of remaining within the required empty eight-percent border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Tower Basilisk appeared without a duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt exactly matched safe-frame-v4 at SHA-256 9bb2110acca72de34d5f717c0fedfd002c16e502f229738a11dfcb610650e3f6, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial render showed exactly six connected grounded legs and feet arranged as three coherent staggered pairs."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The rigid forward gaze cluster, directed pressure jet, planted low posture, and open flank communicated the declared narrow gaze-lane controller duty."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow through a stable armored body, fluid transitions, mist, wet reflections, and directional wake integrated Water across material, motion, telegraph, and environment without becoming ice or a shapeless blob."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The bright coherent binding core was exposed high on the torso while pressure visibly discharged through the committed frontal jet."
+        }
+      ],
+      "retryReason": "A targeted framing edit was required to shorten and redirect the pressure jet and contain the complete environmental wake inside the eight-percent safe border."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-tower-basilisk-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-tower-basilisk-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "TARGETED EDIT of the supplied preceding output. Preserve the same single premium realistic painterly Water Tower Basilisk, its low heavy reptilian torso and tail, its rigid group of forward-facing gaze organs, its narrow controlled forward attack lane, its visibly vulnerable blind flank, its dark grounded Pack 2 materials, its pressurized-flow anatomy, mist, wet reflections, coherent fluid transitions, readable structural core, and its pressure-loss counterplay cue. Preserve exactly six connected, separately readable, grounded reptilian legs and feet arranged as three coherent pairs with credible ground contact—do not add, remove, merge, detach, crop, or obscure any leg or foot. Preserve the stable structural pressure-and-flow Water construction; do not turn it into ice, a shapeless blob, a generic blue glow, a snake, a four-legged lizard, an eight-legged creature, or a many-eyed amorphous mass. Make only this targeted framing correction: shorten and redirect the forward water jet and contain every splash, droplet, mist extent, tail tip, spine, and extremity within the central 84 percent of the 1536 x 1024 canvas, leaving a clearly empty uninterrupted border of at least 8 percent on all four sides. Keep exactly one complete subject on the neutral cracked-stone floor against the charcoal-to-midnight backdrop. Finish every canvas region. No text, labels, UI, frame, logo, watermark, extra creature, blank band, or abrupt cutoff.",
+      "promptHash": "b80df59f9f51a900e026651db65693bf5687ff68095ce110519caaf24bf78049",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-a0f4ecba-c415-4819-9fd5-d018f23bb435.png",
+        "contentHash": "7d5348b401b59f2e0345e59b3e75ed4b54f64051e5005067652ad6243607e825"
+      },
+      "requestStartedAt": "2026-08-30T05:25:42.530Z",
+      "generationCompletedAt": "2026-08-30T05:26:00.030Z",
+      "inspectionCompletedAt": "2026-08-30T05:26:22.000Z",
+      "generationDurationMs": 17500,
+      "inspectionDurationMs": 21970,
+      "totalWallTimeMs": 39470,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-01243e25-2529-43bc-9cad-4edac9880878.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-01243e25-2529-43bc-9cad-4edac9880878.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2214529,
+          "contentHash": "e4491638baa9ebec42351bf78d3389a125e6dda2475f25320a6b03e2a571feae"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2214529,
+          "contentHash": "e4491638baa9ebec42351bf78d3389a125e6dda2475f25320a6b03e2a571feae"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2214529,
+        "contentHash": "e4491638baa9ebec42351bf78d3389a125e6dda2475f25320a6b03e2a571feae"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas is intentionally finished with continuous charcoal backdrop, wet cracked-stone floor, localized mist, reflections, and no blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete reptile, six feet, tail tip, dorsal spines, pressure jet, spray, and mist remain inside the central eighty-four percent with clearly empty borders on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Tower Basilisk appears, without a duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical initial prompt and targeted correction retain exact hashes; manifest references remain recorded in order and the precise preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low heavy reptile, complete torso and tail, rigid grouped forward-facing gaze organs, narrow frontal lane, and exposed side and rear blind flank preserve strong Tower Basilisk identity."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly six connected load-bearing legs and separately readable grounded feet remain visible as three coherent staggered pairs, with no seventh or eighth limb."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The rigid frontal gaze cluster, directed narrow pressure jet, low planted controller stance, and visibly vulnerable flank communicate the declared gaze-lane duty."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Water changes internal pressure flow, coherent structural material, discharge motion, frontal attack telegraph, mist, wet reflections, and environmental wake while preserving stable readable anatomy instead of ice, a blob, or generic blue emission."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The bright coherent binding core is visibly exposed high on the torso as pressure discharges through the committed forward jet, clearly locating the pressure-loss counterplay state."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong Tower Basilisk cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Water recognition remains pending human review; target-aware inspection finds integrated pressure flow, structural core, mist, wet reflection, discharge motion, and wake."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly Pack 2 finish, controlled neutral key, restrained cyan Water emission, wet cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra creature, cropped extremity, blank region, snake body, four-legged plan, eight-leg plan, ice construction, shapeless blob, or amorphous eye mass is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact corrected source without normalization; source and retained size, type, 2214529-byte count, and SHA-256 e4491638baa9ebec42351bf78d3389a125e6dda2475f25320a6b03e2a571feae match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, manifest, application code, promotion decision, repository history, or other job output was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-tower-basilisk-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T05:24:47.307Z",
+  "completedAt": "2026-08-30T05:26:47.455Z",
+  "totalWallTimeMs": 120148,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/water-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-tower-basilisk-wood",
+  "targetId": "affinity-workflow-v1-tower-basilisk-wood",
+  "assignmentId": "assignment-affinity-workflow-v1-tower-basilisk-wood",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-tower-basilisk-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tower-basilisk-wood\".\n\nSubject and threat:\n- Species: tower-basilisk.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: gaze-lane-controller.\n- Construction mode: six-legged-reptile.\n\nIdentity invariants:\n- low heavy reptile\n- rigid group of forward-facing gaze organs\n- one controlled attack lane\n- vulnerable blind flank\n\nAnatomy invariants:\n- exactly six grounded legs visible as three coherent pairs\n- reptilian torso and tail\n- credible ground contact for all six legs\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: snake body; ordinary four-legged lizard; eight legs; many-eyed amorphous mass; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Third subject only: Tower Basilisk low posture, gaze-lane organs, material finish, and blind flank; the ambiguous plate is not evidence for leg count, so follow the target’s textual six-leg invariant.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "81ed3b6be98da80b596cf0fafe874d74064eb9738249026b408415728ecdb4ed",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T04:54:39.459Z",
+      "generationCompletedAt": "2026-08-30T04:55:00.559Z",
+      "inspectionCompletedAt": "2026-08-30T04:55:30.177Z",
+      "generationDurationMs": 21100,
+      "inspectionDurationMs": 29618,
+      "totalWallTimeMs": 50718,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-c4d91bf1-03f9-4fa2-a623-80eb51fc95fe.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete canvas, charcoal backdrop, cracked-stone floor, and entire creature were intentionally rendered with clear empty borders and no cutoff."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Tower Basilisk appeared without a duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The submitted first prompt exactly matched the safe-frame-v4 renderer at SHA-256 81ed3b6be98da80b596cf0fafe874d74064eb9738249026b408415728ecdb4ed, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The render retained a strong low reptilian body and rigid forward gaze cluster, but only five grounded feet were unambiguously readable rather than the required six legs in three coherent pairs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark-grain surfaces, rootlike dorsal growth, wooden articulation, and amber resin seams changed material, anatomy, and local joint structure beyond a brown recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Amber resin seams and brighter fresh-growth joints visibly exposed interruptible binding points."
+        }
+      ],
+      "retryReason": "A targeted anatomy edit was required to reveal exactly six grounded legs as three coherent pairs while preserving the successful gaze cluster and wood construction."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-tower-basilisk-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-tower-basilisk-wood-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Correction type: targeted edit of the preceding Tower Basilisk render.\nPrimary correction: make exactly six grounded legs clearly visible as three coherent anatomical pairs, with six distinct load-bearing feet contacting the stone floor. Reveal the currently occluded rear-side leg and foot without adding a seventh or eighth leg.\nPreserve unchanged: exactly one low heavy reptilian Tower Basilisk; reptilian torso and tail; the rigid grouped forward-facing mineral gaze organs and their narrow controlled attack lane; the vulnerable blind flank; bark-grain hide, load-bearing root anatomy, resin seams, wooden articulation, purposeful living growth, and resin-bright interruptible binding joints; premium realistic painterly medieval dark-fantasy finish; neutral cracked-stone floor; charcoal-to-midnight backdrop; controlled neutral key and restrained local affinity emission; fully rendered 1536x1024 canvas; the entire creature, tail, and all extremities inside an eight-percent safe margin.\nConstraints: no snake body, no ordinary four-legged lizard, no eight legs, no amorphous eye mass, no decorative antlers, no foliage pasted over an unchanged silhouette, no extra creature, no text, no labels, no UI, no frame, no logo, no watermark, no cropped extremity, no blank band, no unfinished region, and no abrupt canvas cutoff.",
+      "promptHash": "7616b7502c81a3079648e1755d6948b817c87725c13370c8b286650c3310175a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-c4d91bf1-03f9-4fa2-a623-80eb51fc95fe.png",
+        "contentHash": "06a45e9b959335462be3f358c9ccec85acd2c9d6a7aecc52209c0ff749251841"
+      },
+      "requestStartedAt": "2026-08-30T04:55:30.177Z",
+      "generationCompletedAt": "2026-08-30T04:55:53.577Z",
+      "inspectionCompletedAt": "2026-08-30T04:56:51.900Z",
+      "generationDurationMs": 23400,
+      "inspectionDurationMs": 58323,
+      "totalWallTimeMs": 81723,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-1f3f1246-c911-40fd-8b10-fc06bb8f2ab5.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-1f3f1246-c911-40fd-8b10-fc06bb8f2ab5.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2437142,
+          "contentHash": "5e5120a4e6b20f8e639a78ebe33017d02771d7eda4ee78693c1085495ffda9ff"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2437142,
+          "contentHash": "5e5120a4e6b20f8e639a78ebe33017d02771d7eda4ee78693c1085495ffda9ff"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2437142,
+        "contentHash": "5e5120a4e6b20f8e639a78ebe33017d02771d7eda4ee78693c1085495ffda9ff"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas remains intentionally finished, and every hard extent sits inside the central safe region with a visible empty border on all sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Tower Basilisk appears with no duplicate subject or unfinished region."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted correction retain exact hashes; target references remain recorded in manifest order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low heavy reptile, complete tail, armored bark silhouette, rigid grouped forward-facing mineral gaze organs, narrow frontal attack lane, and unguarded flank read clearly."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Five distinct grounded feet are clearly readable, but a sixth far-side rear leg remains occluded; the required three coherent pairs are therefore not visually proven."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The planted low posture and rigid forward gaze cluster communicate a gaze-lane controller with one narrow attack direction and a vulnerable side and rear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wood affinity changes load-bearing surface material, joint articulation, rootlike dorsal anatomy, and resin binding rather than relying on hue or pasted foliage."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright amber resin seams and fresh-growth joint gaps visibly identify interruptible structural weak points."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong Tower Basilisk cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind wood-affinity recognition remains pending human review; target-aware inspection finds multiple integrated wood and resin dimensions."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The detailed realistic painterly Pack 2 finish, coherent dark bark materials, cracked floor, restrained resin emission, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra creature, blank region, cropped extremity, snake body, or amorphous eye mass is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 5e5120a4e6b20f8e639a78ebe33017d02771d7eda4ee78693c1085495ffda9ff match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, plan, review evidence, manifest, application code, promotion decision, or repository history was edited."
+        }
+      ],
+      "retryReason": "The single authorized correction still leaves the sixth far-side rear foot occluded; the retry ceiling is exhausted, so this useful render is retained for revision rather than accepted."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "manifest-fidelity"
+  ],
+  "startedAt": "2026-08-30T04:54:39.459Z",
+  "completedAt": "2026-08-30T04:57:42.615Z",
+  "totalWallTimeMs": 183156,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wood-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/tower-basilisk-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,7 +1,7 @@
 # Affinity workflow v1 generation record
 
-Status: **controlled and final correction regressions complete; generation-first Breadth production
-active with 3/24 jobs complete; human blind acceptance review pending**
+Status: **all 60 live image targets complete; Breadth production integrated at 24/24; human blind
+acceptance review pending**
 
 Date: **2026-08-29**
 
@@ -25,8 +25,8 @@ in the per-target JSON files under `results/`. The machine-validated aggregate i
 | Controlled | 24 | 24 | 21 | 3 | 0 |
 | Elemental semantic regression | 6 | 6 | 5 | 1 | 0 |
 | Final correction regression | 6 | 6 | 4 | 2 | 0 |
-| Breadth | 24 | 3 | 1 | 2 | 21 |
-| Total | 60 | 39 | 31 | 8 | 21 |
+| Breadth | 24 | 24 | 15 | 9 | 0 |
+| Total | 60 | 60 | 45 | 15 | 0 |
 
 No candidate is approved or promoted. Producer status is a bounded authoring decision, not human
 acceptance.
@@ -46,8 +46,35 @@ completed one humanoid, one organic quadruped, and one draconic target:
 
 All three result verifiers pass. The wave used six model calls and 453,787 ms of summed auditable
 job time, with zero output collisions, shared-file violations, or provider failures. Catalog sync
-now exposes 39 total experiment executions and leaves the 21 ungenerated Breadth targets explicit.
-This wave does not count as a completed `breadth-v1` review round and does not approve any image.
+exposed 39 total experiment executions at that checkpoint and left the 21 then-ungenerated Breadth
+targets explicit. This wave alone did not count as a completed `breadth-v1` review round and did not
+approve any image.
+
+### Breadth completion
+
+Seven additional three-worker waves completed the remaining 21 targets. The complete Breadth
+matrix now contains 24 verified retained images and 24 result records, with 15 producer candidates
+and nine bounded `revise` outcomes:
+
+| Species | Candidate | Revise | Attempts |
+| --- | ---: | ---: | ---: |
+| Cave Drake | 5 | 1 | 10 |
+| Goblin | 4 | 2 | 12 |
+| Tower Basilisk | 3 | 3 | 12 |
+| Tunnel Boar | 3 | 3 | 10 |
+
+The full Breadth run used 44 model calls and 2,679,185 ms of summed auditable job time. Four targets
+became candidates on their first attempt. The nine revisions record two safe-frame failures, seven
+manifest-fidelity failures, and one prompt-provenance failure; Cave Drake Water contributes both a
+frame and fidelity failure. Repeated fidelity failures chiefly came from hidden quadruped feet and
+the Tower Basilisk's exact six-connected-leg requirement. One malformed provider response was
+recovered within the existing retry ceiling. There were zero output collisions, shared-file
+violations, unverified results, missing outputs, or catalog integration errors.
+
+The exact `breadth-v1` round is integrated with all 24 current targets/results. Its deterministic
+opaque contact sheet has SHA-256
+`77b340d3f428f095074ef6c24c6d20d526b8e21f321adfd1938d88e2dedb582a`. The round remains
+unapproved and awaits human blind review; image generation is complete.
 
 ## Controlled outcomes
 

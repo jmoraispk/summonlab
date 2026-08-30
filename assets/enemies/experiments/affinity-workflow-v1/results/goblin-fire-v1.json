@@ -1,0 +1,244 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-goblin-fire",
+  "targetId": "affinity-workflow-v1-goblin-fire",
+  "assignmentId": "assignment-affinity-workflow-v1-goblin-fire",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-goblin-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-goblin-fire\".\n\nSubject and threat:\n- Species: goblin.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: hexweaver.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- adult goblin identity\n- individual face\n- duty-readable equipment\n\nAnatomy invariants:\n- humanoid biped\n- two arms and two legs\n- goblin-range stature\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; repeated default face; affinity-locked duty or build; a uniform orange full-body glow that destroys material and anatomy detail.\n\nGoblin compound variation:\n- seed: goblin-affinity-02.\n- battlefieldDuty: hexweaver.\n- stature: tall.\n- build: wiry.\n- adultAgeBand: young-adult.\n- face: shape=round-heavy; nose=sharp-ridged; jaw=square; brow=uneven; ears=short-pointed; scarsOrAsymmetry=none; crooked-smile.\n- skinPalette: lichen-grey.\n- localizedMarkings: none.\n- clothingSilhouette: asymmetric-shoulder-mantle.\n- clothingLayers: asymmetric-shoulder-mantle, patched-underlayer.\n- materialCondition: patched.\n- footwear: shin-high-riding-boots.\n- headwear: iron-skullcap.\n- armorCoverage: heavy.\n- handedness: right.\n- weaponOrFocus: rune-staff-and-charm-bag.\n- posture: braced-defensive.\n- equipmentAnchors: rune-staff-and-charm-bag, iron-skullcap, shin-high-riding-boots.\n- affinityExpression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion.\n- counterplayCue: The internal core or heat sink becomes exposed between combustion cycles.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Established goblin species scale, adult proportions, material finish, and four canonical duty cues only; explicitly do not copy its repeated face or uniform ragged outfit distribution.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "6b3ec08ea65d07820dd8b4dd3be4c397e01da12179764720cc40ba51a6967ffe",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T04:54:25.800Z",
+      "generationCompletedAt": "2026-08-30T04:54:46.000Z",
+      "inspectionCompletedAt": "2026-08-30T04:55:08.000Z",
+      "generationDurationMs": 20200,
+      "inspectionDurationMs": 22000,
+      "totalWallTimeMs": 42200,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-f994afd3-27ea-4777-937c-54ae0019f81f.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The first 1536 by 1024 canvas was fully rendered with a continuous charcoal backdrop and cracked-stone floor."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The staff flame wake and boot soles remained inside the canvas but did not maintain the strict eight-percent empty border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Goblin appeared with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the no-terminal-LF safe-frame-v4 canonical renderer at SHA-256 6b3ec08ea65d07820dd8b4dd3be4c397e01da12179764720cc40ba51a6967ffe, with both references supplied in manifest order."
+        }
+      ],
+      "retryReason": "A targeted framing edit was required to preserve the successful Goblin Fire design while moving the staff wake, boots, and every hard extent inside the central eighty-four percent."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-goblin-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-goblin-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nTargeted edit of the supplied Goblin Fire render. Preserve the same single character, individual adult goblin face, tall wiry proportions, lichen-grey skin, short pointed ears, iron skullcap, asymmetric shoulder mantle, patched underlayer, heavy armor, shin-high riding boots, right-handed rune staff, charm bag, braced defensive posture, heat-blackened materials, ember seams, restrained smoke and heat distortion, and the visibly exposed chest heat-sink core.\n\nChange only framing and scale: uniformly reduce the complete character, staff, hanging charms, flame/smoke wake, cape edges, boots, and every other hard extent enough that all of them fit inside the central 84 percent of both canvas dimensions. Center the complete silhouette and leave a clearly empty border of at least 8 percent on all four sides. Keep exactly one subject and finish the entire 1536 x 1024 canvas.\n\nPreserve the premium realistic painterly medieval dark-fantasy style, neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key, readable materials, and restrained local fire emission. Do not redesign, crop, add or remove equipment, alter anatomy, add a subject, add text, add UI, add a frame, add a logo, or add a watermark.",
+      "promptHash": "6988e81fa7a3cfba1499baf998fa33e3b00ffbe1b1e5aeac19c8074083a04f16",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-f994afd3-27ea-4777-937c-54ae0019f81f.png",
+        "contentHash": "6b2825e49cf6a4852d84f090da643da6767876381dfbf1c10fc553d246205c77"
+      },
+      "requestStartedAt": "2026-08-30T04:55:09.400Z",
+      "generationCompletedAt": "2026-08-30T04:55:46.000Z",
+      "inspectionCompletedAt": "2026-08-30T04:56:10.000Z",
+      "generationDurationMs": 36600,
+      "inspectionDurationMs": 24000,
+      "totalWallTimeMs": 60600,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-0f0899e0-6475-46c5-959f-c2a3fc40ec68.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-0f0899e0-6475-46c5-959f-c2a3fc40ec68.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1966901,
+          "contentHash": "3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1966901,
+          "contentHash": "3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1966901,
+        "contentHash": "3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full 1536 by 1024 canvas has a continuous finished charcoal backdrop and cracked-stone floor."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete staff flame wake, hanging charms, ears, cape, hands, boots, and silhouette sit within the central eighty-four percent with a clearly empty finished border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Goblin Fire hexweaver appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted correction retain exact SHA-256 hashes; target references remain recorded in order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image presents a coherent adult humanoid biped with two arms, two legs, grounded weight, goblin-range stature, and a credible right-handed staff grip."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The rune staff, hanging ward charms, exposed furnace focus, charm bag, and braced stance clearly communicate an elite hexweaver duty."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The tall wiry young-adult Goblin has an individual round-heavy lichen-grey face, sharp ridged nose, square jaw, uneven brow, short pointed ears, crooked smile, iron skullcap, asymmetric shoulder mantle, patched layers, heavy armor, shin-high boots, rune staff, and charm bag."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes multiple declared dimensions beyond hue: heat-blackened armor and staff materials, internal ember seams, a controlled combustion telegraph, rising smoke, localized flame, and a directional ember wake."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A bright caged heat-sink core is visibly exposed through the center of the chest armor between combustion cycles."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong adult Goblin face, ears, stature, and grounded goblinoid anatomy."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds strong Fire construction through charred material, ember seams, combustion, smoke, and heat-sink telegraph."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The realistic painterly Pack 2 finish, coherent metal, leather and cloth materials, controlled neutral light, restrained local emission, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, extra limb, childlike proportion, uniform orange wash, sexualization, blank region, or abrupt cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, application route, manifest, git state, or promotion decision was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-goblin-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T04:54:25.800Z",
+  "completedAt": "2026-08-30T04:57:42.929Z",
+  "totalWallTimeMs": 197129,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/fire-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/goblin-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

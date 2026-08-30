@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-cave-drake-wind",
+  "targetId": "affinity-workflow-v1-cave-drake-wind",
+  "assignmentId": "assignment-affinity-workflow-v1-cave-drake-wind",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-cave-drake-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-cave-drake-wind\".\n\nSubject and threat:\n- Species: cave-drake.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ambush-brawler.\n- Construction mode: draconic-quadruped.\n\nIdentity invariants:\n- wingless low dragon\n- digging shoulders\n- battering skull\n- readable throat vulnerability\n\nAnatomy invariants:\n- exactly four legs\n- large foreclaws\n- credible draconic joints\n- tail balance\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: wings; wyvern anatomy; hidden throat counterplay; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — First subject only: Wingless Cave Drake anatomy, grounded joints, digging forequarters, tunnel-lunge duty, and throat counterplay; do not transfer the wyvern or larger drakes.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "2e9d2c17f150f2336978da92e486d83d56cc7ce5bcf1789588102e5a59727204",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T05:23:59.493Z",
+      "generationCompletedAt": "2026-08-30T05:24:19.993Z",
+      "inspectionCompletedAt": "2026-08-30T05:24:46.504Z",
+      "generationDurationMs": 20500,
+      "inspectionDurationMs": 26511,
+      "totalWallTimeMs": 47011,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-ff48b386-f3cb-4b84-a33e-1c05e90ba7e9.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial canvas was fully rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete drake was visible, but the rightmost tail and pressure wake approached or entered the declared outer eight-percent border and required a framing-only correction."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wind Cave Drake appeared with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the safe-frame-v4 canonical renderer without a terminal newline at SHA-256 2e9d2c17f150f2336978da92e486d83d56cc7ce5bcf1789588102e5a59727204, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Known-target inspection found one wingless low four-legged drake with digging shoulders, large foreclaws, battering skull, credible joints, full balancing tail, and exposed throat vulnerability."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind altered the swept silhouette, directional motion, pressure telegraph, and debris-bearing environmental wake through coherent vapor channels and visible force rather than hue or transparency alone."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed blue-lit throat and calm central pocket inside the surrounding directional pressure loop visibly read as the still counterplay window."
+        }
+      ],
+      "retryReason": "A targeted framing edit was required to preserve the successful Wind Cave Drake while moving the complete tail and directional pressure-and-debris wake into the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-cave-drake-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-cave-drake-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Cave Drake Wind render; do not redesign or regenerate a different creature.\n\nPreserve exactly: one elite Grade-4 wingless low quadrupedal cave drake ambush-brawler; exactly four legs with large foreclaws, credible draconic joints, digging shoulders and forequarters, battering skull, tail balance, and no wings or wyvern anatomy; the same readable exposed throat vulnerability and still center between directional attacks; the same dry directional Wind construction through swept scale silhouette, vapor channels, debris flow, visible pressure distortion, attack telegraph, and environmental wake, with no pale recolor, transparency-only treatment, directionless particles, water, or ice; the same premium realistic painterly medieval dark-fantasy finish, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, pose, proportions, materials, expression, and detail; absolutely no extra subject, extra limb, text, label, UI, frame, logo, or watermark.\n\nChange only framing: uniformly scale the complete existing drake and its entire directional Wind pressure-and-debris wake down slightly and recenter them so every hard extent and effect-wake extent—including skull spikes, all four feet and every claw, throat, tail tip, all vapor channels, pressure arcs, and debris—fits inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving a clearly empty border of at least 8 percent on all four sides. Do not crop, hide, reshape, add, remove, mirror, or alter any body part, affinity feature, counterplay cue, or pose. Finish every canvas region.",
+      "promptHash": "36719b11b48aa20e3a738e92347848906858f7888055009443c5f393eb73bf72",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-ff48b386-f3cb-4b84-a33e-1c05e90ba7e9.png",
+        "contentHash": "44e1feee07f1374f23aabb52b12ec6675ec48e406b68bbdb10c9b67c6197361a"
+      },
+      "requestStartedAt": "2026-08-30T05:24:58.856Z",
+      "generationCompletedAt": "2026-08-30T05:25:14.656Z",
+      "inspectionCompletedAt": "2026-08-30T05:25:37.000Z",
+      "generationDurationMs": 15800,
+      "inspectionDurationMs": 22344,
+      "totalWallTimeMs": 38144,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-ac813b61-7611-4f2f-a7af-13e5d680d458.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-ac813b61-7611-4f2f-a7af-13e5d680d458.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2216097,
+          "contentHash": "94fae2cf743eb34ce2d22df11cf2efe7b39bb09a01b2802628a530dbd050b084"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2216097,
+          "contentHash": "94fae2cf743eb34ce2d22df11cf2efe7b39bb09a01b2802628a530dbd050b084"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2216097,
+        "contentHash": "94fae2cf743eb34ce2d22df11cf2efe7b39bb09a01b2802628a530dbd050b084"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected 1536 by 1024 canvas is fully finished with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every skull spike, all four feet and claws, complete tail tip, vapor channel, pressure arc, and debris wake remain inside the central eighty-four percent with a clearly empty border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Cave Drake appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted framing correction retain exact SHA-256 hashes; target references remain recorded in order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The creature remains a wingless low dragon with exactly four grounded legs, oversized digging foreclaws, believable draconic joints, a battering skull, and a complete balancing tail."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low forward-loaded pose, digging shoulders, planted foreclaws, and battering skull communicate a tunnel-lunging ambush brawler."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All identity and anatomy invariants remain visible without wings, wyvern anatomy, hidden throat counterplay, or implausible joints."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Swept scale silhouette, coherent vapor channels, a dry debris-bearing pressure loop, and strong directional distortion change silhouette, motion, attack telegraph, and environmental wake rather than acting as a pale recolor or transparent overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed blue-lit throat and visibly calmer center between surrounding directional pressure arcs clearly communicate the vulnerable still window."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong wingless low Cave Drake silhouette, digging anatomy, battering head, and balancing tail."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wind recognition remains pending human review; target-aware inspection finds integrated directional silhouette, vapor channels, pressure distortion, and debris flow rather than a hue-only treatment."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly Pack 2 finish, coherent scale materials, restrained local emission, cracked floor, charcoal backdrop, and controlled light remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, wing, cropped extremity, blank region, abrupt cutoff, or transparency-only affinity treatment is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 94fae2cf743eb34ce2d22df11cf2efe7b39bb09a01b2802628a530dbd050b084 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, application route, manifest, promotion decision, repository history, or unrelated file was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-cave-drake-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T05:23:59.493Z",
+  "completedAt": "2026-08-30T05:26:19.364Z",
+  "totalWallTimeMs": 139871,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wind-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

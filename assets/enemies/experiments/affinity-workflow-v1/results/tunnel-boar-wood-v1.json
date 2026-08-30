@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-tunnel-boar-wood",
+  "targetId": "affinity-workflow-v1-tunnel-boar-wood",
+  "assignmentId": "assignment-affinity-workflow-v1-tunnel-boar-wood",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-tunnel-boar-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tunnel-boar-wood\".\n\nSubject and threat:\n- Species: tunnel-boar.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: armored-line-breaker.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- low charging body\n- thick neck\n- tusks\n- head-down charge line\n\nAnatomy invariants:\n- porcine anatomy\n- exactly four legs\n- cloven feet\n- load-bearing shoulders\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: generic horned beast; upright humanoid posture; obscured head and tusks; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Fourth subject only: established Tunnel Boar anatomy, tusks, shoulders, cloven feet, and charge line; do not transfer the wolves or Cave Bear.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "058129728f0a90f8a407bd67073ecd794f0ff4b98fb8953b55c878d9740d9e24",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T05:20:41.513Z",
+      "generationCompletedAt": "2026-08-30T05:20:59.913Z",
+      "inspectionCompletedAt": "2026-08-30T05:22:10.000Z",
+      "generationDurationMs": 18400,
+      "inspectionDurationMs": 70087,
+      "totalWallTimeMs": 88487,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-0fa88a12-de70-450d-ae83-97a26f9b3f4b.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 35,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-0fa88a12-de70-450d-ae83-97a26f9b3f4b.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2367670,
+          "contentHash": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2367670,
+          "contentHash": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2367670,
+        "contentHash": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire 1536 by 1024 canvas is intentionally finished with a continuous charcoal backdrop, cracked-stone floor, and no blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete boar, all four feet, tusks, dorsal spines, and rear silhouette remain comfortably inside the central eighty-four percent with clear empty borders."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Tunnel Boar is present with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the safe-frame-v4 canonical renderer at SHA-256 058129728f0a90f8a407bd67073ecd794f0ff4b98fb8953b55c878d9740d9e24, and both target references were supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The broad porcine snout, small ears, multiple prominent tusks, low thick neck, forward-loaded shoulders, and compact body preserve strong Tunnel Boar identity."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly four coherent load-bearing legs are separately visible—two forelegs and two hindlegs—with readable grounded cloven feet and plausible porcine joints."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lowered head, compressed body, heavy shoulder mass, forward tusks, and planted stance clearly communicate a committed armored line-breaking charge."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Overlapping bark plates, load-bearing root braces, resin-bound seams, wooden limb articulation, and purposeful dorsal growth reconstruct the creature throughout rather than applying a brown recolor or foliage overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright amber resin visibly binds the shoulder harness, torso seams, and rear ankle joint, exposing a readable interruptible structural network."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds an unmistakable low charging boar silhouette."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds strong wood cues in structural material, anatomy, root equipment, and exposed resin joints."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Detailed realistic painterly bark, restrained amber resin emission, neutral key light, cracked-stone floor, and charcoal backdrop form a cohesive Pack 2 presentation."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra creature, cropped extremity, blank region, upright posture, obscured head, decorative antler, or pasted foliage is visible; the long curved wooden forms are attached load-bearing root braces."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact returned source without normalization; source and retained dimensions, type, 2367670-byte count, and SHA-256 cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review evidence, plan, manifest, application code, promotion decision, repository history, or other job output was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-workflow-v1-tunnel-boar-wood-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T05:20:41.513Z",
+  "completedAt": "2026-08-30T05:22:24.957Z",
+  "totalWallTimeMs": 103444,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

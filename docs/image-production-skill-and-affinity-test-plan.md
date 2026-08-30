@@ -1,7 +1,7 @@
 # Image-production skill and affinity workload plan
 
-Status: **in active production; all Final/Breadth/Load/Scale workloads are allocated, Breadth
-generation is preflight-ready, and candidate generation now precedes human acceptance review**
+Status: **live image generation complete; all 60 manifest-bound targets and the 24-image Breadth
+round are integrated, while human acceptance and conditional future workloads remain pending**
 
 Date: **2026-08-29**
 
@@ -16,6 +16,14 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Completed generation-first Breadth production. All 24 Goblin, Tunnel Boar, Cave
+  Drake, and Tower Basilisk coordinates now have collision-free retained images and verified result
+  records: 15 producer candidates and nine bounded revisions across 44 model calls. The exact
+  `breadth-v1` round is integrated, the 24-image opaque contact sheet is reproducible at SHA-256
+  `77b340d3f428f095074ef6c24c6d20d526b8e21f321adfd1938d88e2dedb582a`, and the global catalog
+  contains all 60 live executions with zero missing results, path conflicts, or integration errors.
+  No output is human-approved or promoted. Conditional final-controlled reruns and Load/Scale
+  sentinels remain non-live future work and were not fabricated as current image deliverables.
 - 2026-08-29: Changed the operating sequence from review-first to generation-first at the product
   owner's direction. Valid, collision-free assignments may now produce experimental candidates
   immediately; human review remains mandatory only for acceptance, promotion, and later-pack rule
@@ -204,8 +212,11 @@ The plan is now backed by a runnable implementation rather than being a design-o
 - the 24 controlled outputs are assembled into a reproducible `1920×1080` opaque contact sheet;
   its exact bytes are checked in the repository validation pipeline;
 - the controlled matrix has only 10 first-attempt candidates against the 20-target threshold, and
-  no blind human recognition evidence has been recorded, so the 24-image breadth phase is not yet
-  authorized by its release gate.
+  no blind human recognition evidence has been recorded. At the product owner's direction,
+  experimental Breadth production proceeded without weakening the separate human acceptance and
+  promotion gates; all 24 Breadth images are now complete and unapproved;
+- the integrated Breadth matrix contains 15 producer candidates and nine bounded `revise` outcomes,
+  with all 24 retained images and result records present in the Forge catalog and contact sheet.
 
 The machine-derived gate-readiness report proves that the current controlled cohort cannot become
 passing through review alone: only 21 images are producer candidates, only 17 reviewable non-Normal
@@ -261,17 +272,18 @@ production cadence is three jobs per wave. A future task exposing the configured
 may run one orchestrator plus as many as 16 image workers, but only after the measured concurrency
 ladder confirms that provider capacity, persistence, and quality remain acceptable.
 
-Immediate production order:
+Completed production order:
 
-1. **Wave 1:** Goblin Normal, Tunnel Boar Fire, and Cave Drake Normal.
-2. **Wave 2+:** consume the remaining preflight-ready Breadth assignments in three-job batches,
-   preserving species and affinity coverage rather than finishing one family at a time.
-3. **After every wave:** verify each result independently, synchronize candidate catalog metadata,
-   record failures without silent replacement, and publish the image paths for visual feedback.
-4. **After enough measured evidence:** advance 3 → 4 → 8 → 12 → 16 workers only when the prior
-   stage passes collision, provider-failure, retry-rate, and visual-quality gates.
-5. **Review boundary:** blind review determines acceptance, revision, and promotion; it does not
-   prevent creation of an experimental candidate.
+1. **Wave 1:** generated Goblin Normal, Tunnel Boar Fire, and Cave Drake Normal.
+2. **Waves 2–8:** consumed the remaining 21 Breadth assignments in balanced rolling three-worker
+   batches, preserving species and affinity coverage rather than finishing one family at a time.
+3. **After every wave:** independently verified results and retained images; after the final wave,
+   synchronized all 60 live executions and integrated the exact 24-target `breadth-v1` round.
+4. **Current boundary:** the generated Breadth set awaits human blind review; no candidate is
+   approved or promoted.
+5. **Conditional continuation:** the 4 → 8 → 12 → 16 measured concurrency ladder remains future
+   evidence work and must use new collision-free sentinel coordinates rather than relabeling this
+   three-worker production run.
 
 ```bash
 # Human baseline review after candidate production (requires an accessible PostgreSQL database
@@ -420,8 +432,9 @@ states to four previously established Summonlab enemies:
 Breadth total: **24 additional unique targets**. The complete planned ceiling is therefore **48
 unique images**, plus only the retries or final regressions justified by observed failures.
 
-The breadth phase is gated. It is not necessary to generate all 48 images if the controlled matrix
-already reveals a fundamental skill, prompt, quality, or capacity problem.
+The breadth phase was originally release-gated. The product owner subsequently authorized
+generation-first experimental production while preserving review gates for acceptance and
+promotion. All 24 Breadth coordinates have now been generated and integrated.
 
 ## Shared visual controls
 
@@ -705,6 +718,11 @@ compound variation or higher concurrency begins.
 - Run one Goblin and one Tunnel Boar as targeted breadth canaries.
 - Revise only rules supported by repeated or structurally explained failures.
 
+Execution status: complete for image production. The deterministic 60- and 600-manifest audits
+pass, all 24 Breadth manifests have verified retained outputs/results, and the integrated round
+contains 15 candidates plus nine bounded revisions. Human recognition and acceptance remain
+pending.
+
 ### Phase 5 — Concurrency ladder
 
 Increase parallelism only after the preceding stage passes:
@@ -728,6 +746,11 @@ Together, Breadth Canary, Breadth-8, Load-12, and Scale-16 cover all 24 Breadth 
 once. Goblins vary manifest-owned duty, build, face, clothing, equipment, and affinity; the other
 families vary species grammar and elemental construction without requiring the same humanoid
 attribute matrix.
+
+The generation-first product run completed those 24 coordinates in rolling three-worker waves
+outside the formal promotion-gated scheduler. It proves image completion, ownership, and
+provenance, but it is not mislabeled as 8-, 12-, or 16-worker performance evidence. Future measured
+Load/Scale runs require their separately activated collision-free sentinels.
 
 | Stage | Parallel image jobs | Purpose | Promotion gate |
 | --- | ---: | --- | --- |
@@ -800,9 +823,9 @@ most common earlier failure. Recommended coverage:
 
 Execution status: the six-target correction regression is complete across armored undead,
 substance-bodied Elementals, and organic quadrupeds. It verified the final prompt/provenance path
-and the most common framing, construction, and anatomy failures. The compound Goblin and unusual
-draconic or six-legged sentinels remain behind the same human-review breadth gate as their source
-cohort; they are not silently waived or producer-self-approved.
+and the most common framing, construction, and anatomy failures. The completed Breadth matrix now
+adds compound Goblin, draconic, and six-legged coverage. Conditional Load/Scale sentinels remain
+future work and are not silently waived or producer-self-approved.
 
 ### Phase 7 — Forge review surface
 

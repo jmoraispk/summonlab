@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-cave-drake-water",
+  "targetId": "affinity-workflow-v1-cave-drake-water",
+  "assignmentId": "assignment-affinity-workflow-v1-cave-drake-water",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-cave-drake-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-cave-drake-water\".\n\nSubject and threat:\n- Species: cave-drake.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ambush-brawler.\n- Construction mode: draconic-quadruped.\n\nIdentity invariants:\n- wingless low dragon\n- digging shoulders\n- battering skull\n- readable throat vulnerability\n\nAnatomy invariants:\n- exactly four legs\n- large foreclaws\n- credible draconic joints\n- tail balance\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: wings; wyvern anatomy; hidden throat counterplay; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — First subject only: Wingless Cave Drake anatomy, grounded joints, digging forequarters, tunnel-lunge duty, and throat counterplay; do not transfer the wyvern or larger drakes.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "976baa7b3c5f7eb6291598208d597f034d034e28127e609ac6b48006cac92659",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "requestStartedAt": "2026-08-30T05:10:45.800Z",
+      "generationCompletedAt": "2026-08-30T05:11:06.000Z",
+      "inspectionCompletedAt": "2026-08-30T05:11:33.000Z",
+      "generationDurationMs": 20200,
+      "inspectionDurationMs": 27000,
+      "totalWallTimeMs": 47200,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-bb5d0917-d7f3-40a6-9473-dc73eb9f1fec.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The first canvas was completely rendered with a continuous charcoal backdrop, wet cracked-stone floor, and no blank or abrupt region."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The left foreclaws entered the declared eight-percent safety border."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "fail", "observation": "Exactly four legs were present, but the far rear leg was too occluded for the required complete-extremity presentation."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one wingless Cave Drake appeared without a duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched safe-frame-v4 at SHA-256 976baa7b3c5f7eb6291598208d597f034d034e28127e609ac6b48006cac92659, with both references in manifest order."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Water altered scale material, pressurized seams, throat telegraph, mist, wet reflection, dorsal flow, and environmental wake while retaining a stable load-bearing structure."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent binding core was visibly exposed through the open throat after pressure loss."}
+      ],
+      "retryReason": "A targeted edit was required to preserve the successful Cave Drake Water construction while exposing all four complete legs and moving every extent inside the central eighty-four percent."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-cave-drake-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-cave-drake-water-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nTargeted corrective edit of the supplied Cave Drake Water render, not a redesign. Preserve the same single wingless low dragon; broad battering skull; digging shoulders; large foreclaws; low ambush-brawler posture; credible draconic joints; full balancing tail; dark coherent scale structure; pressurized water flowing through and between load-bearing scales; mist, wet reflections, fluid transitions, and local water wake; and the bright coherent binding core visibly exposed in the throat after pressure loss.\n\nCorrect only anatomy visibility and framing. Keep exactly four legs—no more and no fewer—and reposition the partially obscured rear leg just enough that all four complete legs, all four feet, and every claw are separately visible and anatomically connected. Uniformly scale and recenter the entire existing drake, full tail tip, every claw, dorsal spray, mist, and fluid wake so all hard extents and effects fit within the central 84 percent of both canvas dimensions, leaving a clearly empty finished border of at least 8 percent on all four sides of the 1536 x 1024 canvas.\n\nPreserve the stable pressure-bearing Water construction; do not turn it into ice, a shapeless blue blob, or generic blue glow. Preserve exactly one subject, no wings, no wyvern anatomy, the same premium realistic painterly medieval dark-fantasy finish, neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral light, and readable wet materials. Do not crop, hide the throat core, add a creature, add or remove a leg, add text, add UI, add a frame, add a logo, or add a watermark.",
+      "promptHash": "d89da26ed326dcc76d75e13897deabd3e7403eab01107eae7caeb3f23bf230c0",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-bb5d0917-d7f3-40a6-9473-dc73eb9f1fec.png", "contentHash": "dc0c95620510e86da46079b031c41754e12ae57177364a987fc1eafc7c573c36"},
+      "requestStartedAt": "2026-08-30T05:11:35.200Z",
+      "generationCompletedAt": "2026-08-30T05:11:50.000Z",
+      "inspectionCompletedAt": "2026-08-30T05:12:14.000Z",
+      "generationDurationMs": 14800,
+      "inspectionDurationMs": 24000,
+      "totalWallTimeMs": 38800,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-c467578f-d914-49bb-adf9-3513e279835f.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 15,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-c467578f-d914-49bb-adf9-3513e279835f.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2246280, "contentHash": "793563f39f8f6c5f2defd9250970b7f4cef69473888b150497ad9e3a78f6ee08"},
+        "retained": {"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2246280, "contentHash": "793563f39f8f6c5f2defd9250970b7f4cef69473888b150497ad9e3a78f6ee08"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2246280, "contentHash": "793563f39f8f6c5f2defd9250970b7f4cef69473888b150497ad9e3a78f6ee08"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The entire corrected canvas is intentionally finished with continuous backdrop, wet floor, mist, and reflections."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The full tail remains visible but its tip and local fluid wake still enter the right-side eight-percent safety band."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete wingless Cave Drake appears without a duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and corrective prompts retain exact SHA-256 hashes, ordered target references, and exact preceding-render correction linkage."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "fail", "observation": "The drake has exactly four anatomically connected legs and four feet, but the far rear leg remains partially obscured rather than completely separated for inspection."},
+        {"criterionId": "manifest-fidelity", "category": "battlefield-duty", "evaluator": "producer", "outcome": "pass", "observation": "The low forward-loaded posture, massive digging shoulders, broad skull, planted claws, and open pressure throat communicate an ambush brawler."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "Wingless low-dragon identity, battering skull, digging forequarters, exactly four legs, large claws, tail balance, and exposed throat are present, but complete far-rear-leg visibility remains below the strict presentation requirement."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Pressurized flow is integrated through coherent scale seams, dorsal transitions, throat telegraph, mist, dripping water, wet reflection, and wake without becoming ice, a blob, or generic glow."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Pressure loss exposes a bright coherent binding core inside the open throat, materially distinct from the stable dark scale structure."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong wingless Cave Drake silhouette."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; target-aware inspection finds strong Water construction through pressure, flow, mist, reflection, and structural core."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "The premium realistic painterly Pack 2 finish, coherent wet scales, controlled emission, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No wings, wyvern anatomy, ice, shapeless blob, text, UI, frame, logo, watermark, extra creature, blank region, or abrupt cutoff is visible."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; source and retained dimensions, type, byte count, and SHA-256 793563f39f8f6c5f2defd9250970b7f4cef69473888b150497ad9e3a78f6ee08 match."},
+        {"criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result were written; no shared file, manifest, plan, application route, git state, or promotion decision was edited."}
+      ],
+      "retryReason": "The retained render is useful Water-affinity review evidence, but the single correction was exhausted with strict framing and complete far-rear-leg visibility still failing; no additional call is permitted."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": ["complete-safe-frame", "manifest-fidelity"],
+  "startedAt": "2026-08-30T05:10:45.800Z",
+  "completedAt": "2026-08-30T05:12:30.746Z",
+  "totalWallTimeMs": 104946,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/water-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/cave-drake-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
