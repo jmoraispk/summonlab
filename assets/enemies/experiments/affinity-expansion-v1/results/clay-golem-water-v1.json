@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-water",
+  "targetId": "affinity-expansion-v1-clay-golem-water",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-water\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "92c343c0509688cc45f7eefbd74b2994ddc007e9264742d240ae91ceafdfc638",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:55:46.292Z",
+      "generationCompletedAt": "2026-08-30T08:56:30.992Z",
+      "inspectionCompletedAt": "2026-08-30T08:56:37.992Z",
+      "generationDurationMs": 44700,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 51700,
+      "sourceOutputId": "exec-1630f4dd-8226-495d-8c1f-b80b3980d8cd.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was continuously finished across the charcoal backdrop, water contact, and cracked-stone floor."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "A few upper splash droplets entered the declared top eight-percent border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Clay Golem appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical safe-frame-v4 prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The broad hand-compressed clay guardian, compression seams, crushing hands, exactly two arms and two load-bearing legs, manufactured joints, attrition-wall stance, and exposed reforming core preserved every identity and duty invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wet reflective clay, pressurized joint channels, coherent runoff, mist, splash telegraph, and ground puddle changed material, motion, attack telegraph, and environmental wake without becoming a blue blob or coating."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent circular core remains visibly stable and exposed between high-pressure joint flows, communicating the pressure-loss weak point after commitment."}
+      ],
+      "retryReason": "A framing-only edit was required to scale and recenter the complete Clay Golem and every mist, droplet, runoff, splash, puddle, and contact extent inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the supplied preceding Clay Golem Water render. Preserve the passing design: exactly one immediately recognizable broad hand-shaped Clay Golem; manufactured body with exactly two articulated arms and two load-bearing legs; complete crushing hands and feet, credible compression seams, hinges, joints, ground contact, slow attrition-wall mass, and one coherent exposed controlling/reforming core; the same wet reflective clay, pressurized water through joint channels, mist, runoff, splash telegraph, and visible pressure-loss opening around the stable core. Preserve the premium realistic painterly Pack 2 dark-fantasy finish, neutral lighting, cracked-stone floor, charcoal-to-midnight backdrop, restrained localized blue water highlights, and fully finished canvas. Make only this correction: uniformly scale and recompose the existing complete golem, every finger and toe, all mist, water jets, droplets, runoff, splash, puddle and contact shadow inward so every hard extent fits inside the central 84 percent of both 1536×1024 canvas dimensions, leaving a clearly empty border of at least eight percent on all four sides. Keep exactly one constructed subject, the same pose, clay compression material, manufactured anatomy, core, Water construction, attack telegraph, wake, and counterplay cue. Do not crop, redesign, mirror, recolor, add, or remove any limb, digit, core part, water channel, or effect. Do not introduce living human anatomy, a shapeless blue blob, generic blue overlay, another creature, text, labels, UI, frame, logo, watermark, sexualization, published-character resemblance, or any new story element. This is an edit, not a complete regeneration.",
+      "promptHash": "aa564d2713109fd0c783e26ad83f4119cbe0d7d7bbf84363f4fc027c8031ebf5",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-1630f4dd-8226-495d-8c1f-b80b3980d8cd.png", "contentHash": "ea9d4d37e7e0ff6dd83b4aeef00ca65659108c7ded0ff607b471452b7571b8e1"},
+      "requestStartedAt": "2026-08-30T08:57:33.697Z",
+      "generationCompletedAt": "2026-08-30T08:57:56.897Z",
+      "inspectionCompletedAt": "2026-08-30T08:58:03.897Z",
+      "generationDurationMs": 23200,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 30200,
+      "sourceOutputId": "exec-0f1112e5-e9c9-40dc-82fe-89b2df40d6d0.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 13,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-0f1112e5-e9c9-40dc-82fe-89b2df40d6d0.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2090742, "contentHash": "7b1346b635d52a72cde9a2e66d5160fd853a9b196be353c485a9c490e69e013a"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2090742, "contentHash": "7b1346b635d52a72cde9a2e66d5160fd853a9b196be353c485a9c490e69e013a"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2090742, "contentHash": "7b1346b635d52a72cde9a2e66d5160fd853a9b196be353c485a9c490e69e013a"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete head, shoulders, both crushing hands and feet, every droplet, water jet, runoff strand, splash, puddle, and contact shadow fit inside a generous finished border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Clay Golem appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the targeted edit used the exact preceding source and retained the explicit correction source byte-for-byte."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The broad hand-compressed clay mass, deep compression seams, complete crushing grips, manufactured hinges, attrition-wall stance, body-block silhouette, and exposed reforming core preserve every identity and duty cue."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two articulated arms and two load-bearing legs have manufactured joints, complete digits, planted ground contact, and one coherent controlling core; no living-human anatomy or extra limb appears."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wet reflective clay, pressurized joint channels, coherent transitions around the manufactured hinges, runoff, mist, hand drips, ground splash, and puddle alter material, motion, attack telegraph, and environmental wake beyond hue."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent circular core remains structurally framed and exposed between high-pressure channels, clearly communicating pressure loss and blunt-weapon weak-point timing after commitment."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Clay Golem cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Water recognition remains pending human review; known-target inspection finds strong wet-material, pressure-channel, mist, runoff, splash, and puddle cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, dark hand-shaped clay, restrained blue water highlights, cracked floor, charcoal backdrop, readable materials, and all constraint-safety requirements remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,090,742 bytes, and SHA-256 7b1346b635d52a72cde9a2e66d5160fd853a9b196be353c485a9c490e69e013a match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-clay-golem-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:55:46.292Z",
+  "completedAt": "2026-08-30T08:59:09.089Z",
+  "totalWallTimeMs": 202797,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

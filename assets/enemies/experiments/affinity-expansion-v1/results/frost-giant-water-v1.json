@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-giant-water",
+  "targetId": "affinity-expansion-v1-frost-giant-water",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-giant-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-frost-giant-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-giant-water\".\n\nSubject and threat:\n- Species: frost-giant.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: frost-giant-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Frost Giant remains immediately recognizable\n- Battlefield duty remains Environmental threshold boss\n- ancient commanding giant with cold-weather layers, old iron, and whiteout authority\n- Signature skills remain visually supportable: Cold field, Ancient iron, Whiteout command.\n- Counterplay remains visible: The still image preserves readable counterplay for Cold survival, Formation command, Sustained focus.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: The still image preserves readable counterplay for Cold survival, Formation command, Sustained focus. Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 4 only: Frost Giant identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "3ef953da448d47bc526bb980b29b3e4f227a3e20a87ad969a7d8d50152096939",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T08:55:02.178Z",
+      "generationCompletedAt": "2026-08-30T08:55:26.778Z",
+      "inspectionCompletedAt": "2026-08-30T08:56:13.000Z",
+      "generationDurationMs": 24600,
+      "inspectionDurationMs": 46222,
+      "totalWallTimeMs": 70822,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-72052397-3bf6-48ef-83a4-d04f2c584c93.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The full giant, hammer, and standard were rendered, but the standard finial entered the top eight-percent border." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Frost Giant appeared." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt was submitted without terminal newline at SHA-256 3ef953da448d47bc526bb980b29b3e4f227a3e20a87ad969a7d8d50152096939 with references in order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The organic ancient giant had exactly two arms and legs, cold-weather fur, old iron, hammer, command standard, whiteout authority, complete hands and feet, and grounded command weight." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Pressurized circular flow, mist, wet cloth and fur, reflective iron, coherent fluid transitions, motion, command telegraph, and environmental wake express Water beyond hue without replacing the organic body." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The exposed belt and chest binding medallions, visibly thinning pressure arcs after the committed field, formation standard, and stable planted stance preserve cold survival, command, focus, and pressure-loss counterplay." }
+      ],
+      "retryReason": "A framing-only edit was required to retain the successful Frost Giant while moving the complete command standard inside the safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-frost-giant-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-frost-giant-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Frost Giant Water render; do not redesign or regenerate a different creature.\n\nPreserve exactly: one standard ancient commanding organic Frost Giant environmental-threshold boss; one giant humanoid with exactly two arms and two legs, two complete credible hands, two complete broad grounded feet, the same blue-grey cold-adapted face and skin, white hair and beard, cold-weather fur and layered hide, old iron plates and fittings, ancient iron hammer held in one hand, complete command standard held in the other, pressure-wet cloak, circular pressurized water wake, coherent fluid transitions, mist, wet reflections, readable belt and chest binding structure, whiteout authority, grounded command stance, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, restrained blue-white local emission, premium realistic painterly Pack 2 finish, and every successful detail. Preserve the cold-field, ancient-iron, whiteout-command, cold-survival, formation-command, sustained-focus, pressure-loss, and coherent-core readability. Preserve the organic giant identity; do not turn it into an elemental, golem, or shapeless water body.\n\nChange only framing: uniformly scale the complete existing giant, both hands and feet, every finger and toe, the entire hammer, the entire command standard including its highest spear finial, crossbar, chains and every cloth tip, all fur, hair, beard, cloak, water, mist, wake and shadow extents down slightly and recenter them so every hard extent fits inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving at least 8 percent clearly empty border on all four sides. The highest standard finial must remain clearly below the top safety line, and all other extents must remain inside the remaining safety lines. Do not crop, hide, reshape, add, remove, duplicate, mirror, or alter any anatomy, equipment, pose, Water feature, counterplay cue, material, lighting, or surface detail.\n\nNo extra subject, extra limb, ordinary human scale, shapeless blue blob, generic blue glow-only treatment, elemental or golem anatomy, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance. Finish every canvas region.",
+      "promptHash": "6857eda5dbd46d184874e53bbdc8e426e8ffabf761a3ff41ce76115e6ef58524",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-72052397-3bf6-48ef-83a4-d04f2c584c93.png", "contentHash": "30de88108310f63f1829ae917d60fd8e78c9ad6edcc5e8a122b03ad61714f3cc" },
+      "requestStartedAt": "2026-08-30T08:56:23.618Z",
+      "generationCompletedAt": "2026-08-30T08:56:48.118Z",
+      "inspectionCompletedAt": "2026-08-30T08:57:47.117Z",
+      "generationDurationMs": 24500,
+      "inspectionDurationMs": 58999,
+      "totalWallTimeMs": 83499,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-3de4fbc7-5741-4512-8b46-b525d5f3283e.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 17,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-3de4fbc7-5741-4512-8b46-b525d5f3283e.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2277823, "contentHash": "f4327eb3b6fca1e2cda4bace28ecaccc5e6a4464814983cb5f2b92601b0f55f9" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2277823, "contentHash": "f4327eb3b6fca1e2cda4bace28ecaccc5e6a4464814983cb5f2b92601b0f55f9" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2277823, "contentHash": "f4327eb3b6fca1e2cda4bace28ecaccc5e6a4464814983cb5f2b92601b0f55f9" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete giant, hands, feet, hammer, standard finial, crossbar, chains, banner, fur, cloak, water wake, mist, and shadow fit well inside the central eighty-four percent on a fully finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Frost Giant appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and framing-correction prompts retain exact hashes, ordered target-reference provenance, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The ancient organic cold-adapted giant has exactly two arms and legs, complete hands and feet, layered fur and hide, old iron, hammer, command standard, whiteout authority, and grounded commanding posture." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Pressurized flow, wet fur and cloth, reflective iron, coherent arcs, mist, motion, field telegraph, and environmental wake integrate Water across four declared dimensions without making the giant a blob or golem." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Exposed belt and chest binding medallions remain readable as the pressure wake thins after commitment; standard, stable feet, and clear body center preserve cold-survival, formation-command, and sustained-focus counterplay." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware Frost Giant cues are strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Water recognition remains pending human review; target-aware pressure, wetness, reflection, mist, transition, and wake cues are strong." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly skin, fur, hide, iron, cloth, water, cracked floor, charcoal backdrop, and controlled neutral light are cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No extra limb, ordinary-human scale, crop, shapeless blue blob, generic glow-only treatment, elemental/golem anatomy, text, UI, watermark, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 2,277,823 bytes, and SHA-256 f4327eb3b6fca1e2cda4bace28ecaccc5e6a4464814983cb5f2b92601b0f55f9 match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Frost Giant Water candidate and result paths were written; no shared file, unrelated path, or git history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-frost-giant-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:55:02.178Z",
+  "completedAt": "2026-08-30T08:57:47.117Z",
+  "totalWallTimeMs": 164939,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-giant-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

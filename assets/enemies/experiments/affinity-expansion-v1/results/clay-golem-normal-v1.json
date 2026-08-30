@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-normal",
+  "targetId": "affinity-expansion-v1-clay-golem-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-normal\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "eb957febf1431ecf66e58d6f8c27325755ba45f462e39b0cf253c085b59f13a7",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T09:08:02.900Z",
+      "generationCompletedAt": "2026-08-30T09:08:22.700Z",
+      "inspectionCompletedAt": "2026-08-30T09:08:59.900Z",
+      "generationDurationMs": 19800,
+      "inspectionDurationMs": 37200,
+      "totalWallTimeMs": 57000,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-a10d259d-5e49-4139-8487-5d78535c9d69.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The head entered the top eight-percent safety border." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete manufactured golem appeared on a fully finished canvas." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt was submitted without terminal newline at SHA-256 eb957febf1431ecf66e58d6f8c27325755ba45f462e39b0cf253c085b59f13a7 with references in order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "Broad hand-shaped clay, compression seams, two arms and legs, huge complete grip hands, grounded feet, manufactured joints, slow-wall stance, and a readable reforming core preserved the Clay Golem duty." },
+        { "criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "fail", "observation": "The torso core emitted strong golden-orange light, creating accidental affinity-coded magical anatomy in a Normal target." }
+      ],
+      "retryReason": "One targeted edit was required to neutralize accidental core emission and scale the otherwise successful golem into the safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Clay Golem Normal render; do not redesign or regenerate a different creature.\n\nPreserve exactly: one standard broad hand-shaped Clay Golem slow attrition wall; one manufactured constructed humanoid with exactly two articulated arms and two load-bearing legs, two complete oversized compression-shaped hands, two complete broad grounded feet, the same blunt clay face, heavy shoulders, massive forearms, credible manufactured joints, hand-compressed wet-earth clay slabs, fingerprints and compression seams, shedding neutral clay crumbs, crushing-grip readiness, body-block stance, reforming-core readability, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, premium realistic painterly Pack 2 finish, and every successful detail. Preserve the body-block, crushing-grip, re-form, blunt-weapon, weak-point-study, and resource-pacing readability.\n\nChange only two related Normal-fidelity presentation defects. First, remove all golden/orange emission, illumination, magical glow, ember appearance, heat, elemental color, and luminous seams from the torso core and body. Make the single round controlling core visibly non-emissive and entirely mundane clay: a dense recessed spiral of tightly compressed slightly smoother moist earthen clay, readable only by physical spiral structure, compression density, cracks, shadows, and neutral reflected key light, with no self-lighting and no elemental or affinity-coded material. Second, uniformly scale the complete existing golem and every clay crumb down slightly and recenter them so every hard extent fits inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving at least 8 percent clearly empty border on all four sides. Keep the highest head, both shoulder caps, all fingers, both lowest feet, every crumb, and all shadow extents clearly within the safety region.\n\nDo not crop, hide, reshape, add, remove, duplicate, mirror, or alter any anatomy, pose, Clay Golem identity, clay construction, duty cue, counterplay cue, material wear, backdrop, lighting direction, or surface detail except to neutralize the accidental emission and correct framing. No living human anatomy, decorative affinity coating, fire, glow, magic, affinity-coded material substitution, unexplained magical anatomy, extra or missing limb, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, published-character resemblance, or extra subject. Finish every canvas region.",
+      "promptHash": "5865e20c0514d7ae07291c58649a282aeca149b094bdcfe588a6dc1330afd91d",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-a10d259d-5e49-4139-8487-5d78535c9d69.png", "contentHash": "09b2afc21012abfa129ffb59592a46be425fa6aa00f593eb59f586ccf1805db8" },
+      "requestStartedAt": "2026-08-30T09:09:00.563Z",
+      "generationCompletedAt": "2026-08-30T09:09:21.563Z",
+      "inspectionCompletedAt": "2026-08-30T09:09:53.628Z",
+      "generationDurationMs": 21000,
+      "inspectionDurationMs": 32065,
+      "totalWallTimeMs": 53065,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-e1626d11-e561-48e5-9b5c-0756421ae654.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-e1626d11-e561-48e5-9b5c-0756421ae654.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2240070, "contentHash": "7bf8d910b212d5a9229c342c363c76452453011d83bdb87b5630310ff230b5a7" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2240070, "contentHash": "7bf8d910b212d5a9229c342c363c76452453011d83bdb87b5630310ff230b5a7" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2240070, "contentHash": "7bf8d910b212d5a9229c342c363c76452453011d83bdb87b5630310ff230b5a7" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete head, shoulders, arms, fingers, legs, feet, crumbs, wake, and shadow fit well inside the central eighty-four percent on a fully finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Clay Golem appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and targeted-correction prompts retain exact hashes, ordered target-reference provenance, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The broad hand-shaped clay guardian has exactly two articulated arms and two load-bearing legs, complete compression-shaped hands and feet, credible joints, compression seams, a single controlling core, body-block stance, crushing-grip silhouette, shedding re-form material, and grounded weight." },
+        { "criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "The corrected spiral core is non-emissive mundane compressed clay readable through structure, density, shadow, cracks, and neutral reflection; the body and wake contain no unexplained elemental glow, material, anatomy, or affinity code." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The recessed structurally distinct spiral core provides weak-point study, broad clay masses invite blunt damage, and visible shedding/reforming crumbs communicate the attrition and resource-pacing loop." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware Clay Golem cues are strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Normal recognition remains pending human review; target-aware mundane-clay and non-emissive cues are strong." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly clay, compression marks, cracks, floor, charcoal backdrop, and controlled neutral light are cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No living human anatomy, decorative affinity coating, elemental glow, extra or missing limb, crop, text, UI, watermark, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 2,240,070 bytes, and SHA-256 7bf8d910b212d5a9229c342c363c76452453011d83bdb87b5630310ff230b5a7 match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Clay Golem Normal candidate and result paths were written; no shared file, unrelated path, or git history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-clay-golem-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:08:02.900Z",
+  "completedAt": "2026-08-30T09:09:53.628Z",
+  "totalWallTimeMs": 110728,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

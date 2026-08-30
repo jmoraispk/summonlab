@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-crystal-guardian-normal",
+  "targetId": "affinity-expansion-v1-crystal-guardian-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-crystal-guardian-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-crystal-guardian-normal\".\n\nSubject and threat:\n- Species: crystal-guardian.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: crystal-guardian-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Crystal Guardian remains immediately recognizable\n- Battlefield duty remains Reflective magic boss\n- faceted reflective construct organized around one exposed refracting core\n- Signature skills remain visually supportable: Refraction, Core beam, Shard field.\n- Counterplay remains visible: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 4 only: Crystal Guardian identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "81251a4a74cccccae19301ab81ebb16477faba20426182fc6aa944cee85072d4",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:04:36.000Z",
+      "generationCompletedAt": "2026-08-30T09:05:04.502Z",
+      "inspectionCompletedAt": "2026-08-30T09:05:12.502Z",
+      "generationDurationMs": 28502,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 36502,
+      "sourceOutputId": "exec-51c83b58-2c63-4ce4-9551-8268cf1296f7",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The highest orbiting shards and spark motes enter the required top safety band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, exposed refracting core, core-beam posture, and shard field remain clear."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established transparent crystal and restrained warm-white refraction remain species-native rather than elemental material substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One exposed central refracting core and articulated facet gaps remain available for core targeting and damage-type control."
+        }
+      ],
+      "retryReason": "Scale and recenter the guardian plus every orbiting shard, refraction ring, and mote while preserving an unaffiliated neutral crystal baseline."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-normal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing and neutral-baseline correction only. Preserve this exact single Crystal Guardian identity, faceted reflective constructed humanoid with exactly two articulated arms and two load-bearing legs, one exposed amber-white refracting core, shard-field duty, pose, grounded feet, lighting, and premium painterly finish. Keep the Normal version unaffiliated: crystal refraction may remain restrained amber-white and neutral, but remove any affinity-coded elemental anatomy or unexplained colored emission. Uniformly scale the full guardian, head crystal, shoulder facets, both hands and fingers, both feet, every orbiting shard, all refraction rings, spark motes, and the entire shard-field wake down by about 20 percent and recenter slightly downward so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No redesign, extra or missing limbs, elemental affinity, text, crop, or affinity change.",
+      "promptHash": "c589ba656fddfab8e60c98fcbd5c9be67784cf5bba15e73d70c9ded7609799d2",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-51c83b58-2c63-4ce4-9551-8268cf1296f7.png",
+        "contentHash": "f5491f56e01092def11118abcbbc8de513e80532e0d3fda43ca069eb15fc7e32"
+      },
+      "requestStartedAt": "2026-08-30T09:05:21.000Z",
+      "generationCompletedAt": "2026-08-30T09:05:42.668Z",
+      "inspectionCompletedAt": "2026-08-30T09:05:50.668Z",
+      "generationDurationMs": 21668,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 29668,
+      "sourceOutputId": "exec-f065dc1f-883f-4fef-98b0-7a4f4fc18444",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-f065dc1f-883f-4fef-98b0-7a4f4fc18444.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1986467,
+          "contentHash": "ed247eaff77ef99da73ba489995befbe09847cb248651485f6507c3786fac98a"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1986467,
+          "contentHash": "ed247eaff77ef99da73ba489995befbe09847cb248651485f6507c3786fac98a"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1986467,
+        "contentHash": "ed247eaff77ef99da73ba489995befbe09847cb248651485f6507c3786fac98a"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Head crystal, shoulder facets, hands and fingers, feet, every orbiting shard, all refraction rings, motes, and the complete shard field remain inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, exposed refracting core, core-beam posture, and shard field remain clear."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established transparent crystal and restrained amber-white refraction remain species-native, neutral, and free from affinity-coded elemental anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One exposed central refracting core and articulated facet gaps remain available for core targeting and damage-type control."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-normal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:04:36.000Z",
+  "completedAt": "2026-08-30T09:05:52.000Z",
+  "totalWallTimeMs": 76000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

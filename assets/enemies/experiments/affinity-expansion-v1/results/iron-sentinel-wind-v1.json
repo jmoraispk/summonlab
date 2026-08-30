@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-iron-sentinel-wind",
+  "targetId": "affinity-expansion-v1-iron-sentinel-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-iron-sentinel-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-iron-sentinel-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-iron-sentinel-wind\".\n\nSubject and threat:\n- Species: iron-sentinel.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: iron-sentinel-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Iron Sentinel remains immediately recognizable\n- Battlefield duty remains Disciplined counter-attacker\n- disciplined forged guardian with shielded stance and counter-attacking weapon guard\n- Signature skills remain visually supportable: Parry, Counter, Lock formation.\n- Counterplay remains visible: The still image preserves readable counterplay for Feinting, Magic penetration, Action economy.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Feinting, Magic penetration, Action economy. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 3 only: Iron Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "7cc39912ebfbea8c7d86d02be44f44b6424d008aa0c268ee77f5d7775b0a7880",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:19:20.677Z",
+      "generationCompletedAt": "2026-08-30T09:20:22.115Z",
+      "inspectionCompletedAt": "2026-08-30T09:20:29.115Z",
+      "generationDurationMs": 61438,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 68438,
+      "sourceOutputId": "exec-cbec163b-ad5f-4b69-9b0f-c420310eee60.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, vapor rings, directional streamers, flying debris, wake, and contact shadows were continuously finished across the canvas."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The back-mounted standard tip and upper cloth streamers entered the declared top eight-percent safety border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Iron Sentinel appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The disciplined forged guardian, shielded parry stance, counter-attacking sword guard, exactly two arms and two load-bearing legs, manufactured joints, and formation standard preserved identity and duty invariants."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional cloth streamers, vapor channels, spiraling debris, weapon and shield pressure wakes, and visible distortion altered silhouette, motion, attack telegraph, and environmental wake beyond pale recolor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent blue still center remains visible in the chest between directional pressure rings and debris paths."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the Sentinel, standard tip, every streamer, shield, sword, vapor ring, flying fragment, debris particle, wake, feet, and contact shadow inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-iron-sentinel-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-iron-sentinel-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Iron Sentinel identity, disciplined forged armor, shielded parry stance, left-side counter-attacking sword, exactly two articulated arms and two load-bearing legs, coherent still blue pressure core, back-mounted standard, directional cloth streamers, vapor channels, debris flow, pressure distortion, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete subject together with the standard spear tip, every streamer and cloth tip, all armor edges, full sword tip and wake, every shield point, both feet, every vapor ring, flying stone fragment, debris particle, environmental wake, and contact shadow so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Do not crop, omit, add, duplicate, recolor, or redesign any anatomy, core, plate, shield, weapon, standard, streamer, fragment, or effect. No text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "6f67277ef566bddcc09cafb9d3f7dc0d5b9b497bf0900d20f57a334c5f54df3b",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-cbec163b-ad5f-4b69-9b0f-c420310eee60.png", "contentHash": "edf5a92be9376ec1428f23945faf2e01360628482eb9562641d189552570eeda"},
+      "requestStartedAt": "2026-08-30T09:20:41.897Z",
+      "generationCompletedAt": "2026-08-30T09:21:14.080Z",
+      "inspectionCompletedAt": "2026-08-30T09:21:21.080Z",
+      "generationDurationMs": 32183,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 39183,
+      "sourceOutputId": "exec-d35486e1-84f5-4141-969e-21474dcdfcb2.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 26,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-d35486e1-84f5-4141-969e-21474dcdfcb2.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1952933, "contentHash": "9b67ebd5c82ddc6fb259a3481e199c62939765a4c81e0a8ea0beb90c9adc0b9e"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1952933, "contentHash": "9b67ebd5c82ddc6fb259a3481e199c62939765a4c81e0a8ea0beb90c9adc0b9e"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1952933, "contentHash": "9b67ebd5c82ddc6fb259a3481e199c62939765a4c81e0a8ea0beb90c9adc0b9e"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete standard tip, streamers, helmet, armor, shield, sword, feet, vapor rings, fragments, debris, wake, and contact shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Iron Sentinel appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The disciplined forged guardian, shielded parry stance, lowered counterblade guard, exactly two arms and two legs, credible manufactured articulation, and lock-formation standard preserve every identity and battlefield-duty cue."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Long directional streamers reshape the silhouette, coherent vapor and debris paths communicate force and motion, sword and shield wakes telegraph attacks, and the ground ring records the environmental wake beyond hue."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent circular blue still center remains exposed in the chest between directional pressure bands, supporting feint and commitment timing."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Iron Sentinel cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds strong directional cloth, vapor, debris, pressure, and wake cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent forged metal, restrained blue emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 1,952,933 bytes, and SHA-256 9b67ebd5c82ddc6fb259a3481e199c62939765a4c81e0a8ea0beb90c9adc0b9e match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-iron-sentinel-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:19:20.677Z",
+  "completedAt": "2026-08-30T09:21:29.377Z",
+  "totalWallTimeMs": 128700,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/iron-sentinel-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-wind",
+  "targetId": "affinity-expansion-v1-clay-golem-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-wind\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "86561e8df269c58f5f6fec0766a403fb4431825ce092ab1eff5fc66173a1e34a",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:02:59.334Z",
+      "generationCompletedAt": "2026-08-30T09:03:39.671Z",
+      "inspectionCompletedAt": "2026-08-30T09:03:46.671Z",
+      "generationDurationMs": 40337,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 47337,
+      "sourceOutputId": "exec-3c26c5e5-d731-4e2e-9976-8711bfd1dea3.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked-stone floor, contact shadows, vapor rings, and debris field were continuously finished across the canvas."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "Upper vapor wisps and right-side flying stone fragments entered the declared eight-percent safety border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Clay Golem appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The broad hand-shaped clay guardian, compression seams, crushing hands, manufactured joints, exactly two arms and two load-bearing legs, attrition-wall stance, and coherent reforming core preserved the identity and duty invariants."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional vapor channels, streamed cloth, spiraling debris, and pressure distortion altered silhouette, motion, attack telegraph, and environmental wake rather than adding a decorative coating."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The bright coherent still center inside the chest pressure pattern remains visible between directional rings and debris streams."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete golem together with every wind wisp, cloth tip, stone fragment, and environmental wake inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Clay Golem identity, broad hand-shaped clay body, compression seams, reforming wind core, exactly two articulated arms and two load-bearing legs, pose, materials, lighting, cracked-stone floor, dark backdrop, painterly finish, directional vapor channels, cloth flow, debris flow, pressure distortion, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete subject together with every wind wisp, cloth tip, flying stone fragment, debris particle, and environmental wake so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Do not crop, omit, add, duplicate, or redesign any anatomy or effect. No text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "1bdd0d9bee420ed0e6a0082ddeb39a60b22df0af44aa029e5e3d4a9e5746d2e8",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-3c26c5e5-d731-4e2e-9976-8711bfd1dea3.png", "contentHash": "d49f7c1eb178c68df28b49ea56fd0179d99b74b4324b32f163f859746c6f90ea"},
+      "requestStartedAt": "2026-08-30T09:04:02.456Z",
+      "generationCompletedAt": "2026-08-30T09:04:33.980Z",
+      "inspectionCompletedAt": "2026-08-30T09:04:40.980Z",
+      "generationDurationMs": 31524,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 38524,
+      "sourceOutputId": "exec-c31d51fa-7aac-49f1-a1a0-3660bdcc8cf3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-c31d51fa-7aac-49f1-a1a0-3660bdcc8cf3.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2148852, "contentHash": "02b7e427db2acdc43efc56e0c16f67a4a93bbb28bf717aa3553b2b555e84dc60"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2148852, "contentHash": "02b7e427db2acdc43efc56e0c16f67a4a93bbb28bf717aa3553b2b555e84dc60"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2148852, "contentHash": "02b7e427db2acdc43efc56e0c16f67a4a93bbb28bf717aa3553b2b555e84dc60"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete head, shoulders, both hands and feet, cloth tips, all vapor rings, flying fragments, debris particles, wake, floor contact, and shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Clay Golem appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The broad compressed clay mass, hand-shaped construction, deep seams, crushing grips, body-block silhouette, slow attrition-wall stance, and coherent reforming core preserve every identity and battlefield-duty cue."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two articulated arms and two load-bearing legs retain credible manufactured joints, complete digits, planted ground contact, and one coherent controlling core without living-human anatomy or extra limbs."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional vapor channels wrap through the joints, cloth streams consistently, debris follows visible pressure paths, and distorted wakes change silhouette, motion, attack telegraph, and environment beyond hue."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent circular still center remains clearly exposed within the chest pressure pattern, supporting weak-point study and post-commitment counterplay."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Clay Golem cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds strong directional vapor, cloth, debris, and pressure cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, clay material fidelity, restrained pale-cyan emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,148,852 bytes, and SHA-256 02b7e427db2acdc43efc56e0c16f67a4a93bbb28bf717aa3553b2b555e84dc60 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-clay-golem-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:02:59.334Z",
+  "completedAt": "2026-08-30T09:04:46.358Z",
+  "totalWallTimeMs": 107024,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

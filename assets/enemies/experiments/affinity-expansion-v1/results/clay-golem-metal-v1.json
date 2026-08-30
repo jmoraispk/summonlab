@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-metal",
+  "targetId": "affinity-expansion-v1-clay-golem-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-metal\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "de19cd31ec35b5e0354a019283c612dbdd2e027b2a6860511e976877475ff571",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:02:39.222Z",
+      "generationCompletedAt": "2026-08-30T09:03:08.401Z",
+      "inspectionCompletedAt": "2026-08-30T09:03:40.782Z",
+      "generationDurationMs": 29179,
+      "inspectionDurationMs": 32381,
+      "totalWallTimeMs": 61560,
+      "sourceOutputId": "exec-624a2085-bf7b-4656-ae19-eb5d54520347.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The crown and upper magnetic fragments did not leave the required eight-percent finished border."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Metal cues were strong but risked reading as armor added over clay rather than exposed structural marrow and joint anatomy."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "An undeclared chain flail weakened the intended body-block and crushing-grip read."
+        }
+      ],
+      "retryReason": "Pull all extents into the central 84 percent, remove the chain flail, and expose structural metallic marrow and articulated joint rings while preserving the clay guardian."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab enemy production correction\nPrimary request: Targeted edit of the preceding Clay Golem Metal render. Preserve the same single broad, squat, hand-shaped clay guardian, its compression seams, rough brown clay masses, slow attrition-wall stance, heavy crushing hands, exactly two articulated arms, exactly two load-bearing legs, coherent ground contact, one exposed controlling core, realistic painterly Pack 2 finish, cracked-stone floor, charcoal-to-midnight backdrop, and restrained local emission. Pull the entire subject inward so the crown, both hands, both feet, every controlled fragment, and all equipment remain at least eight percent inside every canvas edge. Remove the chain flail and do not replace it with a weapon. Make Metal construction unmistakably structural rather than ordinary armor: expose forged metallic marrow through clay gaps, use load-bearing articulated metal joint rings at shoulders, elbows, hips, and knees, and show a few tightly controlled magnetic fragments aligned around the core. Keep abundant visibly hand-compressed clay across the head, torso, limbs, hands, and feet; the golem must not become an Iron Sentinel or plated knight. Keep the controlling magnetic core and joint gaps materially distinct as readable counterplay. Preserve finished detail across the full 1536x1024 canvas.\nInput images: Image 1 is the edit target and preceding generated render; preserve all passing traits while making only the framing, structural Metal integration, and weapon-removal correction.\nScene/backdrop: neutral cracked-stone floor against a charcoal-to-midnight backdrop\nSubject: exactly one Clay Golem with Metal affinity, slow attrition wall\nStyle/medium: premium realistic painterly dark-fantasy raster creature concept\nComposition/framing: centered complete full-body subject; minimum eight-percent clear safe margin on all sides\nLighting/mood: controlled neutral key with restrained local magnetic-core emission and readable clay and metal materials\nConstraints: exactly two arms and two legs; one coherent controlling core; credible manufactured joints; hand-shaped clay compression; full extremities; no living human anatomy; Metal changes material, anatomy, articulation, and exposed counterplay rather than acting as armor decoration\nAvoid: ordinary armor upgrade, Iron Sentinel silhouette, chain flail, any weapon, extra or missing limbs, decorative coating, cropped extremity, blank band, unfinished region, abrupt cutoff, extra creature, duplicate body, labels, text, UI, frame, logo, watermark, published-character resemblance, sexualized anatomy, costume, or pose\nCorrection mode: targeted edit, not complete regeneration.",
+      "promptHash": "c9e3fedeae543311cc4769812c23e5902d86d2df1b083f8a1a1db24a81a653c7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-624a2085-bf7b-4656-ae19-eb5d54520347.png",
+        "contentHash": "a3fc171a7f3ffb5f49d6f977eb60cb7e993dcd5f698fcf0d37db498ca1cfbfa5"
+      },
+      "requestStartedAt": "2026-08-30T09:03:40.782Z",
+      "generationCompletedAt": "2026-08-30T09:04:00.151Z",
+      "inspectionCompletedAt": "2026-08-30T09:06:49.375Z",
+      "generationDurationMs": 19369,
+      "inspectionDurationMs": 169224,
+      "totalWallTimeMs": 188593,
+      "sourceOutputId": "exec-ba829ec9-8387-49fa-a3de-e6ad061fe986.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-ba829ec9-8387-49fa-a3de-e6ad061fe986.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2199929,
+          "contentHash": "b16b3889a9541d123f82c0eda453b285baa47485012307143daf5b9fb6d9cce3"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2199929,
+          "contentHash": "b16b3889a9541d123f82c0eda453b285baa47485012307143daf5b9fb6d9cce3"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2199929,
+        "contentHash": "b16b3889a9541d123f82c0eda453b285baa47485012307143daf5b9fb6d9cce3"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Crown, both hands, both feet, controlled fragments, and full silhouette remain inside a clearly finished border of at least eight percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete golem appears on a fully rendered cracked-stone floor and charcoal backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt matches the canonical renderer, manifest references remain ordered, correction linkage is exact, and retained persistence is source-bound."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The broad hand-compressed clay guardian has exactly two articulated arms, two load-bearing legs, one controlling core, credible joints, planted ground contact, crushing hands, and a slow body-block stance."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Metal changes anatomy, articulation, material, and counterplay through exposed forged marrow, load-bearing joint rings, a magnetic core cage, and tightly controlled fragments while abundant compressed clay remains visible."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The bright controlling magnetic core and dark articulated joint gaps are materially distinct and readable for weak-point study and blunt disruption."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending; known-target hand-shaped clay cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Metal recognition remains pending; known-target structural Metal cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No weapon, living anatomy, extra or missing limb, decorative-only affinity coating, Iron Sentinel substitution, crop, blank band, text, UI, frame, logo, watermark, or sexualization is visible."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-clay-golem-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:02:39.222Z",
+  "completedAt": "2026-08-30T09:06:49.375Z",
+  "totalWallTimeMs": 250153,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

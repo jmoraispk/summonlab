@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-crystal-guardian-fire",
+  "targetId": "affinity-expansion-v1-crystal-guardian-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-crystal-guardian-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-crystal-guardian-fire\".\n\nSubject and threat:\n- Species: crystal-guardian.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: crystal-guardian-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Crystal Guardian remains immediately recognizable\n- Battlefield duty remains Reflective magic boss\n- faceted reflective construct organized around one exposed refracting core\n- Signature skills remain visually supportable: Refraction, Core beam, Shard field.\n- Counterplay remains visible: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 4 only: Crystal Guardian identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "1ecae7f95531c02b3d7010fb3d6d2d4d327410f995cb7b2c54d90fe2a2dd6a09",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:11:11.000Z",
+      "generationCompletedAt": "2026-08-30T09:11:50.078Z",
+      "inspectionCompletedAt": "2026-08-30T09:11:58.078Z",
+      "generationDurationMs": 39078,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 47078,
+      "sourceOutputId": "exec-bb00e097-0a0a-499f-ab74-ca1ba5e2e4f2",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The core beam exits through the right canvas edge while upper shards, smoke, and lower effect wake enter required safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, one exposed core, core beam, and shard field remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened crystal, localized internal ember seams, controlled combustion, smoke, sparks, and heat distortion express Fire without hiding the facets."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed refracting heat-sink core and articulated facet gaps preserve core targeting and spell-control counterplay."
+        }
+      ],
+      "retryReason": "Scale and recenter every hard/effect extent and shorten the core beam so it terminates inside the contained shard field."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing correction only. Preserve this exact single Fire Crystal Guardian identity, faceted reflective constructed humanoid with exactly two articulated arms and two load-bearing legs, heat-blackened crystal, localized internal ember seams, one exposed refracting heat-sink core, core-beam attack, shard field, pose, lighting, and premium painterly finish. Uniformly scale the full guardian, head crystal, shoulder facets, both hands and fingers, both feet, every orbiting shard, smoke, sparks, heat-distortion wake, and the complete shard field down by about 28 percent and recenter slightly downward. Shorten the horizontal core beam into a controlled attack telegraph that terminates well inside the shard field instead of crossing the canvas. Fit every hard/effect extent inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No redesign, extra or missing limbs, uniform orange full-body glow, text, crop, or affinity change.",
+      "promptHash": "de62f34fdc3ed1600070608141ed24641ac20cd5c92c5842e37fd76594363104",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-bb00e097-0a0a-499f-ab74-ca1ba5e2e4f2.png",
+        "contentHash": "e1c3901b9218b9f76c0f84c65cc6b96671db2a9c017eac74ba0d7c1cdad8c004"
+      },
+      "requestStartedAt": "2026-08-30T09:12:02.000Z",
+      "generationCompletedAt": "2026-08-30T09:12:21.683Z",
+      "inspectionCompletedAt": "2026-08-30T09:12:29.683Z",
+      "generationDurationMs": 19683,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 27683,
+      "sourceOutputId": "exec-ea285414-5024-4a9a-8391-3457d6b87085",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-ea285414-5024-4a9a-8391-3457d6b87085.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2155695,
+          "contentHash": "188d19e1b827f81d7d887045420ce561e99fc98d39c0a7446adc03dca3f0f57d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2155695,
+          "contentHash": "188d19e1b827f81d7d887045420ce561e99fc98d39c0a7446adc03dca3f0f57d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2155695,
+        "contentHash": "188d19e1b827f81d7d887045420ce561e99fc98d39c0a7446adc03dca3f0f57d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Head crystal, shoulder facets, hands and fingers, feet, every shard, contained core beam, smoke, sparks, heat wake, and complete shard field remain inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, one exposed core, contained core beam, and shard field remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened crystal, localized internal ember seams, controlled combustion, smoke, sparks, and heat distortion express Fire without hiding the facets."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed refracting heat-sink core and articulated facet gaps preserve core targeting and spell-control counterplay."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:11:11.000Z",
+  "completedAt": "2026-08-30T09:12:31.000Z",
+  "totalWallTimeMs": 80000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

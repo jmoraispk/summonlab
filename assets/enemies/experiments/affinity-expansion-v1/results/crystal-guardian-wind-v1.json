@@ -1,0 +1,192 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-crystal-guardian-wind",
+  "targetId": "affinity-expansion-v1-crystal-guardian-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-crystal-guardian-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-crystal-guardian-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-crystal-guardian-wind\".\n\nSubject and threat:\n- Species: crystal-guardian.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: crystal-guardian-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Crystal Guardian remains immediately recognizable\n- Battlefield duty remains Reflective magic boss\n- faceted reflective construct organized around one exposed refracting core\n- Signature skills remain visually supportable: Refraction, Core beam, Shard field.\n- Counterplay remains visible: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 4 only: Crystal Guardian identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "d45cceaba5c6ad39c3d2dbd4e45402f3c75476d0dbfc5d0c61f8e99062defe5e",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:19:27.314Z",
+      "generationCompletedAt": "2026-08-30T09:20:13.033Z",
+      "inspectionCompletedAt": "2026-08-30T09:20:47.026Z",
+      "generationDurationMs": 45719,
+      "inspectionDurationMs": 33993,
+      "totalWallTimeMs": 79712,
+      "sourceOutputId": "exec-150218eb-a3de-43bb-9e39-72e3ae2bf7cf.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-150218eb-a3de-43bb-9e39-72e3ae2bf7cf.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2611567,
+          "contentHash": "a076f6d480a01c4550e27700fc73215d9f5738592147cad735fa88b9b9a0af57"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2611567,
+          "contentHash": "a076f6d480a01c4550e27700fc73215d9f5738592147cad735fa88b9b9a0af57"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2611567,
+        "contentHash": "a076f6d480a01c4550e27700fc73215d9f5738592147cad735fa88b9b9a0af57"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The head crest, outer pressure ring, and several airborne shards entered the declared eight-percent safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete faceted construct appears on a fully finished floor and backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt is the exact canonical safe-frame-v4 output with references in manifest order and source-bound persistence."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The reflective manufactured guardian has exactly two articulated arms, two load-bearing legs, credible crystal joints, planted feet, one exposed refracting chest core, and a reflective magic-boss casting posture."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind changes silhouette, motion, attack telegraph, and environmental wake through force-leaning facets, directional vapor channels, aligned shards, pressure distortion, and a floor-debris vortex rather than pale color alone."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed chest core occupies a visibly still center within the surrounding directional pressure pattern."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending; known-target faceted Crystal Guardian cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wind recognition remains pending; known-target directional force cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No living anatomy, extra limb, pale recolor, transparency-only treatment, directionless particle field, duplicate, text, UI, frame, logo, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": "Compress every construct and Wind extent into the central 84 percent and simplify the separate held shard while preserving the still core and clockwise pressure flow."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-crystal-guardian-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-crystal-guardian-wind-attempt-1",
+      "conclusion": "provider-failure",
+      "failureKind": "malformed-output",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab enemy production correction\nPrimary request: Targeted edit of the preceding Wind-affinity Crystal Guardian render. Preserve exactly one faceted reflective manufactured guardian with exactly two articulated arms, exactly two load-bearing legs, one exposed refracting chest core, credible crystal joints, planted ground contact, reflective magic-boss presence, premium realistic painterly Pack 2 finish, cracked-stone floor, charcoal-to-midnight backdrop, and complete finished canvas. Preserve strong Wind construction through a single clearly clockwise pressure pattern: faceted shoulder and forearm planes lean with the force direction, two narrow vapor channels curl from left to right around the torso, crystal shards align in that same flow, floor dust forms a directional wake, and local pressure distortion bends reflections near the casting hand. Maintain an unmistakably still, sharply defined central pocket around the exposed chest core between directional attacks, readable for spell control, damage typing, and core targeting. Remove the oversized separate held crystal blade and replace it with a compact connected forearm refraction plane that visibly supports Core beam and Shard field without reading as a weapon. Scale and recenter the complete construct, head crest, shoulders, hands, feet, every shard, vapor channel, dust wake, and pressure distortion inside the central 84 percent of the canvas, leaving at least eight percent empty finished border on every side. Keep all crystal facets materially opaque/reflective and grounded; Wind must read from directional silhouette, motion, attack telegraph, and environmental wake, not pale color or transparency alone.\nInput images: Image 1 is the edit target and preceding generated render; preserve all passing traits while changing only safe framing, effect containment, blade simplification, and clearer directional pressure organization.\nScene/backdrop: neutral cracked-stone floor against a charcoal-to-midnight backdrop\nSubject: exactly one Wind-affinity Crystal Guardian, reflective magic boss\nStyle/medium: premium realistic painterly dark-fantasy raster creature concept\nComposition/framing: centered complete full-body subject and every effect; minimum eight-percent empty finished border on all four sides\nLighting/mood: controlled neutral key with restrained local core emission and readable reflective crystal materials\nConstraints: exactly two arms and two legs; one exposed refracting core; credible joints and ground contact; faceted reflective anatomy; one clockwise Wind force direction; still center around the core; Refraction, Core beam, and Shard field remain visually supportable\nAvoid: separate weapon, oversized blade, pale recolor, transparency alone, directionless particles, decorative coating, living human anatomy, extra or missing limbs, crop, effect crossing safe margin, blank band, unfinished region, abrupt cutoff, extra creature, duplicate body, labels, text, UI, frame, logo, watermark, published-character resemblance, sexualized anatomy, costume, or pose\nCorrection mode: targeted edit, not complete regeneration.",
+      "promptHash": "7f48f2fdad880ee5fcde299de0c98a4b8dbcf8026389500cba295b7da567d08a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-150218eb-a3de-43bb-9e39-72e3ae2bf7cf.png",
+        "contentHash": "a076f6d480a01c4550e27700fc73215d9f5738592147cad735fa88b9b9a0af57"
+      },
+      "requestStartedAt": "2026-08-30T09:20:47.026Z",
+      "generationCompletedAt": "2026-08-30T09:21:13.679Z",
+      "inspectionCompletedAt": "2026-08-30T09:23:20.428Z",
+      "generationDurationMs": 26653,
+      "inspectionDurationMs": 126749,
+      "totalWallTimeMs": 153402,
+      "sourceOutputId": "exec-07d09588-ae75-4bd0-b119-cc5f80030704.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The correction returned a 1402×1122 PNG whose aspect ratio is outside the helper's supported near-match tolerance for 1536×1024, so it could not be persisted without prohibited distortion or cropping."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Visual inspection of the unsupported correction found the subject and directional effects pulled inward, but the malformed output dimensions prevent it from becoming the retained project asset."
+        }
+      ],
+      "retryReason": "Retry ceiling exhausted after a malformed-aspect correction; retain the exact first render for review with its safe-margin defect recorded."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T09:19:27.314Z",
+  "completedAt": "2026-08-30T09:23:20.428Z",
+  "totalWallTimeMs": 233114,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

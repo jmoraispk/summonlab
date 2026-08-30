@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-crystal-guardian-wood",
+  "targetId": "affinity-expansion-v1-crystal-guardian-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-crystal-guardian-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-wood-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-crystal-guardian-wood\".\n\nSubject and threat:\n- Species: crystal-guardian.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: crystal-guardian-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Crystal Guardian remains immediately recognizable\n- Battlefield duty remains Reflective magic boss\n- faceted reflective construct organized around one exposed refracting core\n- Signature skills remain visually supportable: Refraction, Core beam, Shard field.\n- Counterplay remains visible: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting. Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 4 only: Crystal Guardian identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "55bcd394b4fc6f4a00949cf9f68108b3861ade3c0dc6c01ffee010db4f2ea5ab",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:08:00.000Z",
+      "generationCompletedAt": "2026-08-30T09:08:38.039Z",
+      "inspectionCompletedAt": "2026-08-30T09:08:46.039Z",
+      "generationDurationMs": 38039,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 46039,
+      "sourceOutputId": "exec-3c5322b2-8b2e-4416-a4fb-9ece2be534e4",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The head crystal, root feet, and lowest shard-field effects enter the required top and bottom safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wood Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, exposed refracting core, and dual shard-field duty remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain, load-bearing roots, wooden articulation, resin seams, and restrained purposeful growth structurally replace load paths around retained crystal facets."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One exposed refracting sternum core and resin-bright binding joints preserve spell-control and core-targeting counterplay."
+        }
+      ],
+      "retryReason": "Uniformly scale and recenter the preserved guardian and every shard-field/effect extent to meet the complete safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-wood-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-wood-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing correction only. Preserve this exact single Wood Crystal Guardian identity, faceted reflective crystal plates, exactly two articulated arms and two load-bearing root legs, structural bark grain and wooden articulation, restrained moss, amber resin seams, one exposed refracting sternum core, dual shard fields, pose, lighting, and premium painterly finish. Uniformly scale the full guardian, head crystal, shoulder facets, root crown, both hands and fingers, both root feet, every orbiting shard, all refraction rings, resin sparks, and the complete dual shard-field wake down by about 24 percent and recenter slightly downward so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No redesign, extra or missing limbs, decorative antlers, pasted foliage, brown recolor, text, crop, or affinity change.",
+      "promptHash": "40b10dd383c3b7cf5600dbc37bd9ac08efa1a5fbf4189a3bafc7302551d89b14",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-3c5322b2-8b2e-4416-a4fb-9ece2be534e4.png",
+        "contentHash": "b23197bd72f0557bc7e58fd8378361d2ddaa3373c98890f0d0e1eb3d26784fa2"
+      },
+      "requestStartedAt": "2026-08-30T09:08:50.000Z",
+      "generationCompletedAt": "2026-08-30T09:09:08.820Z",
+      "inspectionCompletedAt": "2026-08-30T09:09:16.820Z",
+      "generationDurationMs": 18820,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 26820,
+      "sourceOutputId": "exec-2b116d98-982e-4ed6-a4f8-b0509273b73a",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-2b116d98-982e-4ed6-a4f8-b0509273b73a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2046605,
+          "contentHash": "bcb28a5a3f221b5df99410e6ae7d86a4d08d7001464fc6d303bd9ff36adbd877"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2046605,
+          "contentHash": "bcb28a5a3f221b5df99410e6ae7d86a4d08d7001464fc6d303bd9ff36adbd877"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2046605,
+        "contentHash": "bcb28a5a3f221b5df99410e6ae7d86a4d08d7001464fc6d303bd9ff36adbd877"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Head crystal, shoulder facets, root crown, hands and fingers, root feet, every shard, all refraction rings, resin sparks, and dual shard fields remain inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wood Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, exposed refracting core, and dual shard-field duty remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain, load-bearing roots, wooden articulation, resin seams, and restrained purposeful growth structurally replace load paths around retained crystal facets."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One exposed refracting sternum core and resin-bright binding joints preserve spell-control and core-targeting counterplay."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-wood-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:08:00.000Z",
+  "completedAt": "2026-08-30T09:09:18.000Z",
+  "totalWallTimeMs": 78000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

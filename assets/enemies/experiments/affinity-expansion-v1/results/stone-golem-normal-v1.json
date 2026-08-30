@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-stone-golem-normal",
+  "targetId": "affinity-expansion-v1-stone-golem-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-stone-golem-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-stone-golem-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-stone-golem-normal\".\n\nSubject and threat:\n- Species: stone-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: stone-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Stone Golem remains immediately recognizable\n- Battlefield duty remains Armor and pattern check\n- quarry-stone defender with blocky guard plates and ground-slam weight\n- Signature skills remain visually supportable: Stone guard, Ground slam, Pattern reset.\n- Counterplay remains visible: The still image preserves readable counterplay for Armor breaking, Pattern memory, Stagger timing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Armor breaking, Pattern memory, Stagger timing.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 2 only: Stone Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "639816b6eaa4d7c07d75e0862b0293d60cb319f3ab0714ebbc10a7c1b5551744",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:06:49.081Z",
+      "generationCompletedAt": "2026-08-30T09:07:26.806Z",
+      "inspectionCompletedAt": "2026-08-30T09:07:33.806Z",
+      "generationDurationMs": 37725,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 44725,
+      "sourceOutputId": "exec-53193695-49a3-466b-b281-d243e870086a.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked-stone floor, neutral dust, contact shadow, and subject were continuously finished across the canvas."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The two fortress-like back-guard tops and both planted feet entered the declared top and bottom eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Stone Golem appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The quarry-stone defender, blocky guard plates, heavy fists, manufactured joints, exactly two arms and two load-bearing legs, armored stance, and ground-slam weight preserved identity and duty invariants."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Established stone materials, armor wear, restrained dust, and neutral wake remained free of elemental glow, affinity-coded substitution, or unexplained magical anatomy."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Segmented breakable armor plates, readable joint gaps, symmetrical guard pattern, and heavy planted posture support armor-breaking, pattern-memory, and stagger timing."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete golem together with both back guards, every extremity, dust, chips, contact shadow, and neutral wake inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-stone-golem-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-stone-golem-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Stone Golem identity, quarry-stone construction, blocky guard plates, fortress-like back guards, exactly two articulated arms and two load-bearing legs, coherent controlling mechanism, pose, armor wear, manufactured joints, ground-slam weight, neutral lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete subject together with both back-guard tops, every finger, both feet, dust, stone chips, contact shadow, and restrained neutral wake so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Do not crop, omit, add, duplicate, recolor, or redesign any anatomy, plate, guard, mechanism, or effect. Do not introduce elemental glow or affinity-coded material. No text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "efd2e5af9e05375eb10de6b6394f2050c9f410b1f372c6cdf6840fcd223de81c",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/constructs-v1.webp", "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-53193695-49a3-466b-b281-d243e870086a.png", "contentHash": "9765e5b74386e005fc0e869b664aecc24c219156b169905a1b46b65cf968de91"},
+      "requestStartedAt": "2026-08-30T09:07:41.494Z",
+      "generationCompletedAt": "2026-08-30T09:08:10.103Z",
+      "inspectionCompletedAt": "2026-08-30T09:08:17.103Z",
+      "generationDurationMs": 28609,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 35609,
+      "sourceOutputId": "exec-8c934500-8626-4625-aca8-17a273cdaa71.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 26,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-8c934500-8626-4625-aca8-17a273cdaa71.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1918971, "contentHash": "ed78e5e5c37de72079967fb72286720295cd23d7fb8bb82953ebfcfb4f0a1df0"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1918971, "contentHash": "ed78e5e5c37de72079967fb72286720295cd23d7fb8bb82953ebfcfb4f0a1df0"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1918971, "contentHash": "ed78e5e5c37de72079967fb72286720295cd23d7fb8bb82953ebfcfb4f0a1df0"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete fortress guards, head, shoulders, hands, fingers, legs, feet, dust, stone chips, contact shadow, and neutral wake fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Stone Golem appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "Quarry-stone construction, layered blocky guard plates, fortress-like defensive silhouette, massive slam-ready fists, armor pattern, and ground-slam weight preserve every species and battlefield-duty cue."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two articulated arms and two load-bearing legs retain credible manufactured joints, complete stone digits, planted ground contact, and one coherent controlling mechanism without living-human anatomy or extra limbs."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Established quarry stone, chips, abrasion, restrained neutral dust, and contact wake express the Normal construction without elemental glow, affinity-coded replacement, coating, or unexplained magic."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Layered breakable plates, exposed articulation gaps, symmetrical repeated guard pattern, and planted weight clearly support armor breaking, pattern memory, and stagger timing."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Stone Golem cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Normal recognition remains pending human review; known-target inspection finds strong neutral quarry-stone and restrained-wake cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent quarry material, restrained neutral lighting, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 1,918,971 bytes, and SHA-256 ed78e5e5c37de72079967fb72286720295cd23d7fb8bb82953ebfcfb4f0a1df0 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-stone-golem-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:06:49.081Z",
+  "completedAt": "2026-08-30T09:08:22.462Z",
+  "totalWallTimeMs": 93381,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/stone-golem-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

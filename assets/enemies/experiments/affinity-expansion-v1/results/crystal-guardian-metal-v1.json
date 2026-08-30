@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-crystal-guardian-metal",
+  "targetId": "affinity-expansion-v1-crystal-guardian-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-crystal-guardian-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-metal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-crystal-guardian-metal\".\n\nSubject and threat:\n- Species: crystal-guardian.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: crystal-guardian-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Crystal Guardian remains immediately recognizable\n- Battlefield duty remains Reflective magic boss\n- faceted reflective construct organized around one exposed refracting core\n- Signature skills remain visually supportable: Refraction, Core beam, Shard field.\n- Counterplay remains visible: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: The still image preserves readable counterplay for Spell control, Damage typing, Core targeting. Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 4 only: Crystal Guardian identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "7ba36fb22ebab6107f7b4040a553211cf8c90625a5e9b78fcf1aa64066452bde",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:14:13.000Z",
+      "generationCompletedAt": "2026-08-30T09:14:52.871Z",
+      "inspectionCompletedAt": "2026-08-30T09:15:00.871Z",
+      "generationDurationMs": 39871,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 47871,
+      "sourceOutputId": "exec-7e34c02d-433a-4f89-b794-4f0b34609959",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The command standard pierces the top safety band while the sword tip, feet, and ground fragments enter lower safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Metal Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Crystal identity, exact anatomy, core, and shard field read, but undeclared sword and command standard shift the duty toward a military sentinel."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial forged treatment reads as ordinary crystal armor and equipment rather than transformed load-bearing Metal construction."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed refracting core and articulated facet gaps remain available for core targeting and spell control."
+        }
+      ],
+      "retryReason": "Remove all weapons and standards, restore empty shard-control hands, strengthen forged load-path anatomy, and contain every extent."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-crystal-guardian-metal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-metal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted manifest, Metal-construction, and framing correction. Preserve this exact single Crystal Guardian face, faceted reflective crystal identity, exactly two articulated arms and two load-bearing legs, exposed refracting sternum core, shard-field stance, neutral backdrop, lighting, and premium painterly finish. Remove the sword, command standard, banner, chains, and all military equipment completely; both hands must be empty and openly controlling the shard field. Strengthen Metal affinity beyond ordinary armor: forged dark-steel anatomy and articulated load-bearing plates must visibly replace localized shoulder, forearm, rib, hip, thigh, and shin load paths beneath retained transparent crystal facets, with glimpses of metallic marrow at controlled seams and one materially distinct exposed magnetic-refracting sternum core; keep a small number of controlled metal-crystal fragments visibly tethered to that core. Uniformly scale the full guardian, head crystal, shoulder facets, both empty hands and fingers, both feet, every controlled fragment, all refraction rings, and the complete shard field down by about 26 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No sword, staff, banner, extra or missing limbs, ordinary armor-only affinity, text, crop, or affinity change.",
+      "promptHash": "5ea56bc027222579228a085e3468f919363508b0ce91987dedb37777fc1035f4",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-7e34c02d-433a-4f89-b794-4f0b34609959.png",
+        "contentHash": "62471d8fcc41e47216dbab171c1e22807f05572c68f8d4d5cc358fd74eba5f81"
+      },
+      "requestStartedAt": "2026-08-30T09:15:11.000Z",
+      "generationCompletedAt": "2026-08-30T09:15:42.323Z",
+      "inspectionCompletedAt": "2026-08-30T09:15:50.323Z",
+      "generationDurationMs": 31323,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 39323,
+      "sourceOutputId": "exec-dc789604-16e7-441b-9779-3559f52bee27",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 17,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-dc789604-16e7-441b-9779-3559f52bee27.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2159638,
+          "contentHash": "838fc1d52bd1d5c35a1c723d8642348e6cee6d099ffed3c9108f4ffb7e55fe44"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2159638,
+          "contentHash": "838fc1d52bd1d5c35a1c723d8642348e6cee6d099ffed3c9108f4ffb7e55fe44"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2159638,
+        "contentHash": "838fc1d52bd1d5c35a1c723d8642348e6cee6d099ffed3c9108f4ffb7e55fe44"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Head crystal, shoulder facets, both empty hands and fingers, feet, every controlled fragment, all refraction rings, and the complete shard field remain inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Metal Crystal Guardian appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Faceted reflective construct identity, exact two-arm/two-leg articulation, empty shard-control hands, exposed refracting core, and shard field remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged dark-steel load paths and articulated plates visibly replace shoulder, forearm, rib, hip, thigh, and shin anatomy beneath retained crystal facets around one magnetic-refracting core."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The materially distinct exposed magnetic-refracting core and articulated metal-crystal seams preserve core targeting and spell-control counterplay."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-crystal-guardian-metal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:14:13.000Z",
+  "completedAt": "2026-08-30T09:15:52.000Z",
+  "totalWallTimeMs": 99000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

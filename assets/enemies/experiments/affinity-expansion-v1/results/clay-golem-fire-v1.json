@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-fire",
+  "targetId": "affinity-expansion-v1-clay-golem-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-fire\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "018cd14710411297b48266a4ec9789502fd815d896699e6440f56fe5b7ee1b7a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:57:16.216Z",
+      "generationCompletedAt": "2026-08-30T08:58:00.222Z",
+      "inspectionCompletedAt": "2026-08-30T08:58:34.240Z",
+      "generationDurationMs": 44006,
+      "inspectionDurationMs": 34018,
+      "totalWallTimeMs": 78024,
+      "sourceOutputId": "exec-0e3e5bd0-efc7-4a29-a5fd-14d3af7ad142.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Smoke crossed the top margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "material",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Body masses read as stone rather than hand-compressed clay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Core was a bright furnace rather than exposed cooling sink."
+        }
+      ],
+      "retryReason": "Contain combustion, restore clay compression, and expose the cool heat sink."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Fire Clay Golem image; do not redesign it.\n\nPreserve exactly one broad manufactured guardian with exactly two articulated arms, two load-bearing legs, huge crushing hands, slow body-block posture, one chest core, controlled Fire treatment, Pack 2 finish, floor and backdrop.\n\nCorrections:\n1. Scale/recenter the entire construct plus all smoke, flame, embers, sparks, heat distortion, fingers, and toes inside the central 84 percent, leaving at least 8 percent empty finished border on all sides.\n2. Make every body mass unmistakably hand-shaped heat-blackened CLAY: compressed slabs, thumb/finger impressions, stacked coil seams, smeared edges, baked terracotta cracks, credible reformable joints. Not stone or living anatomy.\n3. Localize ember seams and combustion primarily along crushing forearms, shoulder load paths, and planted-foot wake; keep most clay dark and readable, no uniform orange glow.\n4. Show the core between combustion cycles: expose one DARK COOL NON-EMISSIVE ceramic heat sink inside the open chest ring, distinct from surrounding embers, for Blunt weapons, Weak-point study, and Resource pacing.\n\nExactly two arms/legs, one core, no extra/missing limb, crop, text, UI, watermark, frame, sexualization, or resemblance. Complete 1536x1024 PNG. Targeted edit, not regeneration.",
+      "promptHash": "1e855cab46994dcfee74a86362b8a8cea13116cb0379160f9d6013952ece9350",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-0e3e5bd0-efc7-4a29-a5fd-14d3af7ad142.png",
+        "contentHash": "57ee9a7cb14f9dec1260c8e949896193dd048c7ddf7c72ad9d7aefdf48100547"
+      },
+      "requestStartedAt": "2026-08-30T08:58:34.240Z",
+      "generationCompletedAt": "2026-08-30T08:58:56.421Z",
+      "inspectionCompletedAt": "2026-08-30T08:59:48.827Z",
+      "generationDurationMs": 22181,
+      "inspectionDurationMs": 52406,
+      "totalWallTimeMs": 74587,
+      "sourceOutputId": "exec-c9ce7c89-d303-4b0e-b8a1-5c7e4f25f3e8.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-c9ce7c89-d303-4b0e-b8a1-5c7e4f25f3e8.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2282431,
+          "contentHash": "6ad09936fbff82050c52ce4538a488e3983e85f0f8ddc112d2310438077ebaf3"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2282431,
+          "contentHash": "6ad09936fbff82050c52ce4538a488e3983e85f0f8ddc112d2310438077ebaf3"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2282431,
+        "contentHash": "6ad09936fbff82050c52ce4538a488e3983e85f0f8ddc112d2310438077ebaf3"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All clay, limb, smoke, ember, spark, and ground-wake extents stay within the central 84 percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete construct appears on a finished floor and backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical prompt, ordered references, correction linkage, and exact persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The broad hand-compressed clay guardian has exactly two arms/legs, huge crushing hands, manufactured joints, slow body-block posture, and one reforming core."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes heat-blackened baked clay, localized forearm/shoulder ember seams, combustion motion, planted-foot telegraph, smoke, distortion, and ground wake without a uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One dark cool ceramic heat sink is exposed inside the chest ring between combustion cycles."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition pending; known-target clay cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition pending; known-target cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No living human anatomy, extra limb, stone substitution, uniform glow, crop, text, UI, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-clay-golem-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:57:16.216Z",
+  "completedAt": "2026-08-30T08:59:48.827Z",
+  "totalWallTimeMs": 152611,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

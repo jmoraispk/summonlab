@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-iron-sentinel-normal",
+  "targetId": "affinity-expansion-v1-iron-sentinel-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-iron-sentinel-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-iron-sentinel-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-iron-sentinel-normal\".\n\nSubject and threat:\n- Species: iron-sentinel.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: iron-sentinel-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Iron Sentinel remains immediately recognizable\n- Battlefield duty remains Disciplined counter-attacker\n- disciplined forged guardian with shielded stance and counter-attacking weapon guard\n- Signature skills remain visually supportable: Parry, Counter, Lock formation.\n- Counterplay remains visible: The still image preserves readable counterplay for Feinting, Magic penetration, Action economy.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Feinting, Magic penetration, Action economy.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 3 only: Iron Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a01394cce1533a82e61cab497724a4a3601ae38a3d90ebc588f70ac0b4afd27a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:07:39.466Z",
+      "generationCompletedAt": "2026-08-30T09:08:05.830Z",
+      "inspectionCompletedAt": "2026-08-30T09:08:36.751Z",
+      "generationDurationMs": 26364,
+      "inspectionDurationMs": 30921,
+      "totalWallTimeMs": 57285,
+      "sourceOutputId": "exec-951753ad-f255-4dbe-9ec3-4f7b49a14603.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The controlling core was not visibly distinguishable from the shield boss."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The low sword point approached the required bottom safe margin."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Worn iron remained neutral and unaffiliated with no elemental material, glow, anatomy, or wake."
+        }
+      ],
+      "retryReason": "Expose one dull mechanical sternum core and increase the sword-tip margin while preserving the shield-first counter-attacker."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-iron-sentinel-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-iron-sentinel-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab enemy production correction\nPrimary request: Targeted edit of the preceding unaffiliated Normal Iron Sentinel render. Preserve exactly one disciplined forged guardian, exactly two articulated arms, exactly two load-bearing legs, its helmeted manufactured head with no living anatomy, shield-first stance, practical counter-attacking sword guard, worn dark iron plates, credible joints, grounded feet, premium realistic painterly Pack 2 finish, cracked-stone floor, charcoal-to-midnight backdrop, and complete finished canvas. Expose exactly one small dull non-emissive mechanical controlling core through a narrow inspection aperture beneath the sternum, visibly distinct from the shield boss. Keep it neutral iron/brass with no magical glow, elemental material, magical anatomy, or affinity-coded wake. Preserve the restrained counter-attacker read: shield covering the centerline, sword held low and ready to answer a feint, articulated joint gaps readable for timing and magic penetration. Scale and recenter the full sentinel, sword point, shield tip, hands, and feet so every hard extent remains clearly at least eight percent inside all four canvas edges. Do not redesign the sentinel or change its equipment.\nInput images: Image 1 is the edit target and preceding generated render; preserve all passing traits while making only the core visibility and safe-frame correction.\nScene/backdrop: neutral cracked-stone floor against a charcoal-to-midnight backdrop\nSubject: exactly one unaffiliated Normal Iron Sentinel, disciplined counter-attacker\nStyle/medium: premium realistic painterly dark-fantasy raster creature concept\nComposition/framing: centered complete full-body subject and equipment; minimum eight-percent empty finished border on all sides\nLighting/mood: controlled neutral key, readable worn forged materials, absolutely no local elemental emission\nConstraints: exactly two arms and two legs; one dull mechanical controlling core; shield-first stance; practical counter-attacking weapon guard; no living human anatomy; Normal must remain explicitly unaffiliated\nAvoid: elemental glow, elemental material, magical anatomy, affinity-coded wake, extra or missing limbs, oversized weapon, crop, blank band, unfinished region, abrupt cutoff, extra creature, duplicate body, labels, text, UI, frame, logo, watermark, published-character resemblance, sexualized anatomy, costume, or pose\nCorrection mode: targeted edit, not complete regeneration.",
+      "promptHash": "4db596c6f31c9ef974f2c1618362e13dfacf7b174441ae3086f0b7783884384c",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-951753ad-f255-4dbe-9ec3-4f7b49a14603.png",
+        "contentHash": "bae86c2aeef8eb302d95e7440c8c1003f2564fac2a2c294d3a214c56195414b7"
+      },
+      "requestStartedAt": "2026-08-30T09:08:36.751Z",
+      "generationCompletedAt": "2026-08-30T09:09:00.713Z",
+      "inspectionCompletedAt": "2026-08-30T09:10:00.676Z",
+      "generationDurationMs": 23962,
+      "inspectionDurationMs": 59963,
+      "totalWallTimeMs": 83925,
+      "sourceOutputId": "exec-faa138a9-78e2-4486-ba0c-f24338ca02c2.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-faa138a9-78e2-4486-ba0c-f24338ca02c2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2161077,
+          "contentHash": "7e92f0374ba7942f46a46a11e43b3ca0dd148f0cdd015f4c1c6c9856b3bb355d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2161077,
+          "contentHash": "7e92f0374ba7942f46a46a11e43b3ca0dd148f0cdd015f4c1c6c9856b3bb355d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2161077,
+        "contentHash": "7e92f0374ba7942f46a46a11e43b3ca0dd148f0cdd015f4c1c6c9856b3bb355d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Helmet, sword point, shield tip, hands, and planted feet stay fully inside a clearly finished border of at least eight percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete manufactured sentinel appears on a fully rendered floor and backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered manifest references, correction linkage, and exact source-bound persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The disciplined forged guardian has exactly two articulated arms, two load-bearing legs, credible manufactured joints, a shield-first stance, a practical counter-guard sword, planted feet, and one dull sternum core distinct from the shield boss."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Worn dark iron, brass mechanics, and neutral lighting remain explicitly unaffiliated without elemental material, emission, magical anatomy, or coded wake."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending; known-target Iron Sentinel cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated reading remains pending; known-target Normal cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No living anatomy, extra or missing limb, elemental effect, crop, blank band, duplicate, text, UI, frame, logo, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-iron-sentinel-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:07:39.466Z",
+  "completedAt": "2026-08-30T09:10:00.676Z",
+  "totalWallTimeMs": 141210,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/iron-sentinel-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

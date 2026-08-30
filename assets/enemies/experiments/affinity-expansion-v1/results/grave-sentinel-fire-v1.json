@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-grave-sentinel-fire",
+  "targetId": "affinity-expansion-v1-grave-sentinel-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-grave-sentinel-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-grave-sentinel-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-grave-sentinel-fire\".\n\nSubject and threat:\n- Species: grave-sentinel.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: grave-sentinel-duty.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- Grave Sentinel remains immediately recognizable\n- Battlefield duty remains Attrition defender\n- shield-first corpse in collapsed burial armor with rooted feet\n- shield scrapes inward before a locking counter\n- Counterplay remains visible: exposed binding nails behind the shield\n\nAnatomy invariants:\n- humanoid corpse with exactly two arms and two legs\n- believable armor load paths, weapon grip, and grounded military stance\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: exposed binding nails behind the shield The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living healthy face; random giant horns; implausibly oversized weapon; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 1 only: Grave Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "e6b43c8baa545605c06c050d5c20bcc1b50732a68102d2927e5270feb19b0e84",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:21:10.000Z",
+      "generationCompletedAt": "2026-08-30T09:21:49.482Z",
+      "inspectionCompletedAt": "2026-08-30T09:21:57.482Z",
+      "generationDurationMs": 39482,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 47482,
+      "sourceOutputId": "exec-90798d79-9465-440c-9668-fe8e7f017f13",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The command-standard finial breaches the top border while sword tip, shield roots, and feet enter the bottom safety band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Grave Sentinel appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dead armored corpse identity, exact two-arm/two-leg anatomy, shield-first rooted stance, nail-studded burial shield, and modest sword remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened burial armor, localized internal ember seams, controlled combustion, smoke, sparks, and heat distortion express Fire without flattening the corpse into orange glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Binding nails are visible but the combustion-cycle heat sink needs a materially distinct exposed cavity."
+        }
+      ],
+      "retryReason": "Remove the undeclared standard, expose a cool sternum heat sink, retain binding nails, and scale all remaining hard/effect extents into the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-grave-sentinel-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-grave-sentinel-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire-counterplay and framing correction. Preserve this exact single Grave Sentinel identity, dead skeletal face, collapsed burial armor, exactly two arms and two rooted legs, shield-first locking-counter stance, nail-studded burial shield, modest sword, heat-blackened materials, localized ember seams, controlled combustion, pose, lighting, and premium painterly finish. Remove the command standard, spear, banner, chains, and every item behind the sword arm completely. Expose a materially cool dark heat-sink cavity at the lower sternum between combustion seams, and keep the shield's binding nails readable—especially several raised nails behind its inner rim—without spreading uniform orange glow over the whole body. Uniformly scale the full corpse, helmet, smoke, sparks, shield and every nail, modest sword and tip, both hands, all cloth strips, both rooted feet, and the complete heat wake down by about 24 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No banner, extra limbs, living face, giant horns, oversized weapon, uniform orange glow, text, crop, or affinity change.",
+      "promptHash": "97915d05973aa7d78cf5de6d368c42e083bf237c2dc8b278d6effa9b30de0307",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-90798d79-9465-440c-9668-fe8e7f017f13.png",
+        "contentHash": "66dd7933271d71dcc97a6d4f28cf3a9e9d1f4641f3e6ed31425e729e47b9613a"
+      },
+      "requestStartedAt": "2026-08-30T09:22:05.000Z",
+      "generationCompletedAt": "2026-08-30T09:22:25.147Z",
+      "inspectionCompletedAt": "2026-08-30T09:22:33.147Z",
+      "generationDurationMs": 20147,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 28147,
+      "sourceOutputId": "exec-f6085a0f-5bf6-4987-9d7c-316fe928fb14",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-f6085a0f-5bf6-4987-9d7c-316fe928fb14.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1949100,
+          "contentHash": "34937e081b36b68744f97ec561c9b280eb732f3abbaa8aa4ba6eaf4e696ee3c1"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1949100,
+          "contentHash": "34937e081b36b68744f97ec561c9b280eb732f3abbaa8aa4ba6eaf4e696ee3c1"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1949100,
+        "contentHash": "34937e081b36b68744f97ec561c9b280eb732f3abbaa8aa4ba6eaf4e696ee3c1"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Helmet, smoke, sparks, shield and every nail, modest sword and tip, hands, cloth strips, rooted feet, and complete heat wake remain inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Grave Sentinel appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dead armored corpse identity, exact two-arm/two-leg anatomy, shield-first rooted stance, nail-studded burial shield, and modest sword remain clear without the undeclared standard."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened burial armor, localized internal ember seams, controlled combustion, smoke, sparks, and heat distortion express Fire without flattening the corpse into orange glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Raised binding nails behind the shield rim and a cool dark lower-sternum heat-sink cavity preserve locking-counter and combustion-cycle timing."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-grave-sentinel-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:21:10.000Z",
+  "completedAt": "2026-08-30T09:22:35.000Z",
+  "totalWallTimeMs": 85000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/grave-sentinel-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
