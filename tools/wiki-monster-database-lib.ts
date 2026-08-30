@@ -79,7 +79,7 @@ Runtime status: **${monster.debutFloor === null ? 'not scheduled' : 'roster defi
 
 ## Visual matrix
 
-The online plate above leads with the unaffiliated reference, then presents Wood, Fire, Metal,
+The online plate above leads with the identity reference, then presents Wood, Fire, Metal,
 Water, and Wind as variants of the same monster identity. Affinity may change material, effect,
 equipment treatment, or local anatomy only where the bound production manifest permits it.
 

@@ -38,13 +38,12 @@
 			<figure class="neutral">
 				<img
 					src={normal.thumbnailPath}
-					alt={`${monster.name}, unaffiliated visual candidate`}
+					alt={`${monster.name} visual candidate`}
 					width="720"
 					height="480"
 					fetchpriority="high"
 				/>
 				<figcaption>
-					<div><span>Base class</span><strong>Unaffiliated</strong></div>
 					<i class:revise={normal.status === 'revise'}>{normal.status}</i>
 				</figcaption>
 			</figure>
@@ -52,7 +51,7 @@
 				<span>Identity anchor</span>
 				<h2>Read the creature before the element.</h2>
 				<p>
-					The neutral study establishes anatomy, silhouette, equipment, and battlefield duty. Every
+					The base study establishes anatomy, silhouette, equipment, and battlefield duty. Every
 					affinity below must remain recognizably this same monster.
 				</p>
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external GitHub source -->
@@ -185,6 +184,9 @@
 		gap: 1rem;
 		padding: 4rem 1rem 1rem;
 		background: linear-gradient(transparent, rgba(3, 5, 7, 0.94));
+	}
+	.neutral figcaption {
+		justify-content: flex-end;
 	}
 	figcaption div {
 		display: grid;

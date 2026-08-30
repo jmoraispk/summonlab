@@ -22,7 +22,7 @@ required views. The
 automatically approved runtime assets.
 
 The [monster database](../creatures/monsters/README.md) is the individual production/review surface:
-one page per authored monster, with the unaffiliated identity anchor first and five affinity
+one page per authored monster, with the identity reference first and five affinity
 variants beneath it. The checked export converts production PNGs into compact web derivatives while
 retaining source paths, hashes, versions, and review status.
 

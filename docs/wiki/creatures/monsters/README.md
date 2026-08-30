@@ -3,7 +3,7 @@
 Wiki ID: `creatures.monster-database`
 
 This is the visual identity index for the **40 currently authored monster archetypes**. Every card
-opens a dedicated monster page. Each page leads with the unaffiliated class reference and keeps
+opens a dedicated monster page. Each page leads with the identity reference and keeps
 Wood, Fire, Metal, Water, and Wind directly beneath it as variants of the same identity.
 
 The online images are web derivatives of hash-bound production candidates. Candidate and revision

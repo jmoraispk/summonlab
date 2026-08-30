@@ -40,8 +40,8 @@
 			<p>Summonlab bestiary · 40 identities · 240 visual candidates</p>
 			<h1 id="monster-database-heading">Monster database</h1>
 			<span>
-				Every neutral class anchors five affinity variants. Open an identity to compare the complete
-				set and inspect its current combat language.
+				Every monster identity anchors five affinity variants. Open an identity to compare the
+				complete set and inspect its current combat language.
 			</span>
 		</div>
 		<nav aria-label="Monster families">
@@ -59,17 +59,17 @@
 			</header>
 			<div class="monster-grid">
 				{#each family.monsters as monster (monster.id)}
-					{@const neutral = monster.variants[0]}
+					{@const base = monster.variants[0]}
 					<a class="monster-card" href={resolve(`/wiki/creatures/monsters/${monster.id}`)}>
 						<img
-							src={neutral?.thumbnailPath ?? ''}
-							alt={`${monster.name}, unaffiliated visual candidate`}
+							src={base?.thumbnailPath ?? ''}
+							alt={`${monster.name} visual candidate`}
 							width="720"
 							height="480"
 							loading="lazy"
 						/>
-						<div class="affinity-pips" aria-label="Six affinity studies available">
-							{#each monster.variants as variant (variant.affinity)}
+						<div class="affinity-pips" aria-label="Five affinity variants available">
+							{#each monster.variants.slice(1) as variant (variant.affinity)}
 								<i class={`affinity-${variant.affinity}`}></i>
 							{/each}
 						</div>
@@ -257,9 +257,6 @@
 		aspect-ratio: 1;
 		border-radius: 50%;
 		background: var(--affinity);
-	}
-	.affinity-normal {
-		--affinity: #b8b4aa;
 	}
 	.affinity-wood {
 		--affinity: #87a85c;

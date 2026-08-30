@@ -33,7 +33,7 @@ review images do not yet prove production combat rigs.
 
 See the [monster visual gallery](../../art/monster-gallery.md) for all current plates and honest
 candidate status. The [monster database](../monsters/README.md) separates the forty authored
-archetypes one by one and presents each unaffiliated reference above its five affinity variants.
+archetypes one by one and presents each identity reference above its five affinity variants.
 
 ## Supplied thirty-race generator bestiary
 
