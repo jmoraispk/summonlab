@@ -49,11 +49,9 @@ describe('online wiki registry', () => {
 
 	it('publishes the collision-safe Living Village parallel plan', () => {
 		const plan = getWikiPage('roadmap/living-village-parallel-plan');
-		expect(plan?.html).toContain(
-			'Use <strong>one integration owner plus thirteen focused workers</strong>'
-		);
-		expect(plan?.html).toContain('Village surface');
-		expect(plan?.html).toContain('Summon experience');
-		expect(plan?.html).toContain('No lane may add');
+		expect(plan?.html).toContain('one coordinator plus four screen-owning agents');
+		expect(plan?.html).toContain('/living-village-lab/village');
+		expect(plan?.html).toContain('/living-village-lab/summon');
+		expect(plan?.html).toContain('Summon ×10 + 1 bonus');
 	});
 });

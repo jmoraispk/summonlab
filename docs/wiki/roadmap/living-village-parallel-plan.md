@@ -1,177 +1,110 @@
-# Living Village parallel production plan
+# Living Village four-agent plan
 
 Wiki ID: `roadmap.living-village-parallel-plan`
 
 Design status: **draft for owner review**
 
-This is the execution map for producing the three-screen Living Village prototype in parallel. It
-turns the [Living Village milestone](../milestones/living-village.md) and
-[v1 release matrix](living-village-v1.md) into bounded worker assignments. The fixed prototype
-roster is **Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl**. No lane may add,
-generate, reroll, or replace a face.
+The workable team is **one coordinator plus four screen-owning agents**. Each worker delivers a
+separate browser route that can be reviewed without waiting for the complete game, while also
+carrying the smallest subsystem needed to make that screen meaningful.
 
-## Recommended team shape
+The prototype roster remains **Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy
+Nahl**. Screen experiments must use these six identities and existing visual anchors; they may not
+generate another face.
 
-Use **one integration owner plus thirteen focused workers**. The twelve production workers can
-begin as soon as the integration owner publishes the first interface packet; the QA owner can
-scaffold immediately and starts full verification when the first screen labs render. If fewer
-workers are available, merge the two hero-derivative lanes, combine mechanics fixtures with the
-combat adapter, and combine the skill and equipment visual lanes. Do not merge integration
-ownership into a production lane.
+## The five active threads
 
-| Owner | Independent assignment | Primary output | Starts when |
+| Thread | Testable route | Screen responsibility | Subsystem responsibility |
 | --- | --- | --- | --- |
-| 0. Integration and contracts | Freeze view models, fixture IDs, asset dimensions, capability flags, and promotion rules; compose reviewed work | versioned interface packet and integrated build | immediately |
-| 1. Village surface | Build Hearth navigation, zoom/pan, fit/reset, touch and keyboard controls, and Gate/Court/Tower hotspots | isolated Village screen lab | interface packet exists |
-| 2. Roster / Hero surface | Polish fixed-six roster, hero sheet, equipment, party, and short training flow across desktop and phone | isolated Roster/Hero screen lab | projection fixtures exist |
-| 3. Tower surface | Polish floor selection, party confirmation, combat playback/report, and return-to-training state | isolated Tower screen lab | tower and combat receipt fixtures exist |
-| 4. Summon experience | Compare three summon presentations with skip, reduced motion, timing, and sound hooks | isolated summon lab plus recommendation | fixed summon presentation model exists |
-| 5. Loop mechanics | Implement deterministic fixed-six acquisition, party/training/reward fixtures, idempotency, and rejection cases | engine fixtures and tests | IDs and commands are frozen |
-| 6. Tower/combat adapter | Implement Floor 1 first behind `CombatRequest`/`CombatReceipt`, then provide the Floors 2–10 scaling seam | resolver adapter and deterministic traces | combat fields are frozen |
-| 7. Hero derivatives A | Finish Dara, Mara, and Jori portrait crops, summon crops, and compact combat figures | owned asset packet and manifest fragment | dimensions and anchors are frozen |
-| 8. Hero derivatives B | Finish Kira, Iven, and Remy portrait crops, summon crops, and compact combat figures | owned asset packet and manifest fragment | dimensions and anchors are frozen |
-| 9. Village and environment visuals | Produce one layered Hearth scene for useful zoom ranges, hotspot states, and depth treatment | environment packet and layer manifest | Village camera brief exists |
-| 10. Monsters and tower visuals | Produce the three selected runtime monsters, one boss treatment, and one reusable tower backdrop | owned enemy/environment packets | race IDs and camera brief exist |
-| 11. Skill and VFX visuals | Produce icons for the initial twelve skills and VFX elements only for visible active skills, summon, and combat states | owned icon/VFX packet and manifest fragment | skill IDs and effect profiles exist |
-| 12. Equipment and UI objects | Produce inventory icons for the selected starter/drop items and shared object-frame treatments | owned equipment packet and manifest fragment | item IDs and icon profile exist |
-| 13. QA and playtest | Verify keyboard, phone, 200% browser zoom, reduced motion, determinism, performance, visual regression, and the ten-minute loop | automated checks and evidence report | can scaffold immediately; verifies every gate |
+| Coordinator | all reviewed routes | shared shell, final navigation, integration | contracts, fixtures, capability flags, conflict resolution |
+| Village agent | `/living-village-lab/village` | Hearth view, zoom/pan, hotspots, summaries | static settlement navigation and camera behavior |
+| Roster agent | `/living-village-lab/roster` | roster, hero sheet, equipment, party, training | hero projection and direct progression flow |
+| Tower agent | `/living-village-lab/tower` | floors, party confirmation, combat report, return | tower progression and deterministic combat presentation |
+| Summon agent | `/living-village-lab/summon` | portal, banners, currencies, rates, reveal animations | summon offer and presentation proposal |
 
-This recommended shape uses fourteen concurrent agents in total and leaves three slots of the
-current seventeen-agent capacity for short audits or a temporarily split visual packet. Avoid
-keeping those extra slots full until the first Floor-1 loop is integrated; additional permanent
-lanes would mostly compete for shared files or create art that has no proven runtime use.
+This is deliberately the entire first wave. Monster art, skill art, equipment art, broad mechanics,
+and extra QA agents wait until these four screen prototypes reveal what the game actually needs.
+Each screen owner must provide desktop and phone evidence plus a small interaction test.
 
-## The three screen contracts
+## Worktrees and branches
 
-Each screen worker develops against fixtures in an isolated lab route. Only the integration owner
-moves reviewed components into shared navigation or production routes.
+Use **one worktree and one branch per coding agent**. Four workers changing Svelte routes, tests, and
+styles in one checkout will eventually overwrite or entangle each other's work. Worktrees keep
+dependencies shared by Git while giving every worker an independent index and branch.
 
-| Screen | Consumes | Produces | Must prove |
-| --- | --- | --- | --- |
-| Village | `VillageViewModel`, current roster summary, destination state | destination intent, camera state, selected return action | the whole Hearth is understandable; zoom never hides recovery; all three destinations are reachable without precision clicking |
-| Roster / Hero | `HeroRosterProjection`, `TrainingPreview`, item and party projections | selection, equip, party, and training intents | the six identities remain recognizable; training takes select hero → select focus → confirm |
-| Tower | `TowerViewModel`, `CombatReceipt`, reward and unlock projections | floor selection, deployment, playback, result, and return intents | a player can explain the result and reach **Train returning heroes** directly |
+Recommended branches:
 
-The summon sequence is an overlay or focused state reached from the Village, not a fourth permanent
-top-level screen. It consumes one `SummonPresentationModel` containing the summon receipt, fixed
-hero ID, portrait/figure bindings, revealed mechanics, and already-owned rejection state.
+- `codex/lv-village-screen`
+- `codex/lv-roster-screen`
+- `codex/lv-tower-screen`
+- `codex/lv-summon-screen`
 
-## Summon experiments
-
-The summon owner should prototype all three variants against the same fixed receipt so the choice
-is about experience rather than content:
-
-1. **Gate ignition** — Hearth gate charges in layers, silhouette crosses the threshold, identity
-   resolves, then the mechanical card appears.
-2. **Constellation assembly** — affinity and skill marks gather into a human outline before the
-   persistent portrait resolves.
-3. **Immediate identity** — a fast portrait-first reveal with restrained parallax and information
-   staged afterward; optimized for repeat summons.
-
-Every version needs a skip path, a reduced-motion version, no unskippable wait after identity is
-known, and a defined duration to first recognizable face. The review output is a comparison capture
-and one recommended default—not three production animations. Because Living Village contains only
-six unique acquisitions, novelty should come from pacing and identity detail rather than fake
-rarity spectacle or duplicate-roll logic.
-
-## Shared interfaces to freeze first
-
-The integration owner publishes one compact packet before lane work begins:
-
-- `VillageViewModel`: destination availability, summary counters, return emphasis, and camera
-  bounds;
-- `HeroRosterProjection`: fixed identity, progression, skills, equipment, party, training, and
-  availability;
-- `SummonPresentationModel`: receipt ID, hero ID, presentation assets, reveal facts, and state;
-- `TowerViewModel`: floor states, party eligibility, reward preview, and current attempt;
-- `CombatRequest` / `CombatReceipt`: frozen party input and deterministic explanatory trace;
-- `TrainingPreview`: eligible targets, focus choices, exact projected delta, and rejection reason;
-- asset profiles for portrait, summon portrait, compact figure, monster figure, icon, VFX element,
-  Hearth layers, and tower backdrop.
-
-Workers may request changes through a proposed contract fragment. They do not independently edit a
-shared contract, content catalog, wiki catalog, runtime allowlist, or production route.
+All four should begin from the same accepted integration commit. The coordinator remains on the
+integration branch, reviews one route at a time, and merges or cherry-picks only accepted commits.
+Agents must not merge their own work into the integration branch.
 
 ## Collision-safe ownership
 
-Give every agent a written packet with exactly six fields: objective, owned paths, read-only
-dependencies, required inputs, acceptance evidence, and forbidden edits.
-
-- Screen workers own separate lab-route and component folders. They may read shared styles and
-  fixtures but do not change navigation, global CSS, or another screen's files.
-- Mechanics workers own separate engine or content domains and their tests. They do not encode
-  presentation timing or choose visual assets.
-- Visual workers own named asset work directories and manifest **fragments**. They never promote
-  files into shared catalogs or silently replace an approved anchor.
-- The integration owner alone owns shared contracts, capability manifests, catalog indexes,
-  production composition, and cross-lane conflict resolution.
-- The QA owner may add tests and evidence but reports product defects to the owning lane instead of
-  rewriting that lane's implementation.
-
-## Integration sequence
-
-### Gate 0 — contracts and fixtures
-
-Freeze the six hero IDs, initial skill/equipment/monster subset, screen projections, commands,
-receipt schemas, asset dimensions, and reduced-motion policy. All screen labs can now run on static
-fixtures while mechanics and visual production proceed.
-
-### Gate 1 — separate screen reviews
-
-Review Village zoom and hotspots, Roster/Hero decision density, Tower result comprehension, and the
-three summon experiments independently. A screen must pass desktop, phone, keyboard, and 200%
-browser zoom before production integration.
-
-### Gate 2 — one real Floor-1 loop
-
-Integrate exactly three starting heroes, one summon presentation, one party, one encounter, one
-reward, and one training block. Do not multiply floors or assets until deterministic replay and the
-short result-to-training path pass.
-
-### Gate 3 — complete fixed-six arc
-
-Add Kira at Floor 3, Iven at Floor 6, and Remy at Floor 9; apply the proven encounter adapter through
-Floor 10; bind the three selected monsters and boss treatment. No new faces enter the pool.
-
-### Gate 4 — playtest candidate
-
-Promote reviewed visuals, settle the default summon animation, tune zoom and responsive behavior,
-run performance/accessibility/visual regression checks, and complete the ten-minute acceptance
-path from fresh run through improved retry.
-
-## Parallel dependency map
+Each worker owns only its named route, component folder, route-local fixtures/tests, and evidence
+prefix. The coordinator alone owns shared layouts, homepage navigation, production routes, shared
+contracts, content catalogs, capability manifests, and wiki catalog entries.
 
 ```text
-integration packet
-├── Village lab ───────────────┐
-├── Roster/Hero lab ───────────┤
-├── Tower lab ─────────────────┤
-├── summon experiments ────────┤
-├── loop mechanics ────────────┼── one Floor-1 loop ── fixed-six Floors 1–10 ── playtest
-├── combat adapter ────────────┤
-├── hero derivatives A/B ──────┤
-├── Village visuals ───────────┤
-├── monster/tower visuals ─────┤
-├── skill and equipment art ───┤
-└── QA and playtest ───────────┘
+apps/web/src/routes/living-village-lab/<screen>/**
+apps/web/src/lib/components/living-village/<screen>/**
+docs/evidence/living-village-<screen>-*
 ```
 
-The safe unit of parallelism is an independently reviewable packet, not a feature name. Village
-zoom, a summon animation, or one hero derivative set can be accepted or rejected without forcing
-another lane to rebase or reinterpret the game rules.
+Existing settlement, mission, summon-card, wiki, and production routes are read-only references.
+An agent may propose a shared change in its handoff but may not make it.
 
-## Agent kickoff template
+## Portal direction
 
-```text
-Objective: <one reviewable outcome>
-Owned paths: <exclusive files/directories>
-Read-only dependencies: <contracts, fixtures, references>
-Required inputs: <IDs, dimensions, view model version>
-Acceptance evidence: <tests, captures, timings, interaction checklist>
-Forbidden edits: shared catalogs/contracts/routes; other agents' owned paths
-Return: implementation + evidence + unresolved decisions; do not self-promote shared assets
-```
+The summon screen should use the supplied reference's information hierarchy, translated into the
+Summonlab visual language:
 
-The integration owner should record every accepted decision back into the milestone, release
-matrix, or owning system page. The plan is coordination scaffolding; it must not become a second
-source of truth for game rules.
+1. visible free and premium currency balances;
+2. a compact banner selector;
+3. large featured-hero art as the emotional anchor;
+4. a transparent pity/progress meter;
+5. rates and details within one action;
+6. cost printed directly on **Summon ×1** and **Summon ×10 + 1 bonus**;
+7. a beautiful, skippable, reduced-motion-safe reveal.
+
+The `10 + 1` offer is accepted as the intended broader summon rule. It is a **non-committing visual
+and economy proposal** in the fixed-six Living Village lab until duplicate handling, currency
+values, rates, and synthesis are accepted. The agent may replay reveal presentations using only the
+six fixed identities, but must label the batch as a simulation and must not create eleven durable
+hero instances.
+
+The summon agent compares three presentations against the same test receipt:
+
+- **Gate ignition** — portal energy builds, a silhouette crosses, then identity and mechanics
+  resolve;
+- **Constellation assembly** — affinity and skill marks form the person before the portrait reveal;
+- **Immediate identity** — portrait-first, restrained parallax, then staged mechanical details.
+
+The review should decide one production direction, not ship three permanent animation systems.
+
+## Merge order
+
+1. Review Village zoom and destination clarity.
+2. Review Roster/Hero decision density and the three-step training flow.
+3. Review Tower result comprehension and the direct return-to-training action.
+4. Review portal hierarchy, `10 + 1` communication, and animation preference.
+5. The coordinator creates the shared shell only after the four isolated routes are accepted.
+
+No worker needs another worker's code to start. Static, clearly labeled screen fixtures are correct
+for this wave. The coordinator reconciles them into shared contracts after product review instead
+of forcing premature interfaces onto every branch.
+
+## Ready-to-paste prompts
+
+- [Village screen agent](../../agent-prompts/living-village/01-village-screen.md)
+- [Roster and Hero screen agent](../../agent-prompts/living-village/02-roster-screen.md)
+- [Tower and combat screen agent](../../agent-prompts/living-village/03-tower-screen.md)
+- [Summoning Portal screen agent](../../agent-prompts/living-village/04-summon-screen.md)
+
+The [prompt index](../../agent-prompts/living-village/README.md) contains the worktree workflow and
+review order. Accepted screen decisions must return to the owning wiki system or milestone page;
+these prompts are assignments, not a second rules authority.
