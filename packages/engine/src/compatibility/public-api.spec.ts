@@ -20,18 +20,55 @@ describe('engine public API compatibility', () => {
 		expect(engine.StaleStateVersionError).toBe(StaleStateVersionError);
 		expect(engine.ReplayIntegrityError).toBe(ReplayIntegrityError);
 
-		expect(new engine.IllegalActionError('hero.wait', ['hero.train'])).toMatchObject({
-			code: 'ILLEGAL_ACTION',
-			legalActionIds: ['hero.train']
-		});
-		expect(new engine.StaleStateVersionError(3, 4)).toMatchObject({
-			code: 'STALE_RUN_VERSION',
-			expectedVersion: 3,
-			latestVersion: 4
-		});
-		const replayIntegrity = new engine.ReplayIntegrityError('Replay diverged', 7);
-		expect(replayIntegrity).toMatchObject({ sequence: 7 });
-		expect(replayIntegrity).not.toHaveProperty('code');
+		const exactError = (
+			error: Error,
+			expected: Record<string, unknown>,
+			expectedKeys: readonly string[]
+		) => {
+			expect(Reflect.ownKeys(error).sort()).toEqual([...expectedKeys].sort());
+			for (const [key, value] of Object.entries(expected)) {
+				expect(Object.getOwnPropertyDescriptor(error, key)).toEqual({
+					value,
+					writable: true,
+					enumerable: key !== 'message',
+					configurable: true
+				});
+			}
+			expect(Object.getOwnPropertyDescriptor(error, 'stack')).toEqual({
+				get: expect.any(Function),
+				set: expect.any(Function),
+				enumerable: false,
+				configurable: true
+			});
+		};
+
+		exactError(
+			new engine.IllegalActionError('hero.wait', ['hero.train']),
+			{
+				name: 'IllegalActionError',
+				message: 'Action is not legal in the current state: hero.wait',
+				code: 'ILLEGAL_ACTION',
+				legalActionIds: ['hero.train']
+			},
+			['stack', 'message', 'legalActionIds', 'code', 'name']
+		);
+		exactError(
+			new engine.StaleStateVersionError(3, 4),
+			{
+				name: 'StaleStateVersionError',
+				message: 'Command expected run version 3, but latest is 4',
+				code: 'STALE_RUN_VERSION',
+				expectedVersion: 3,
+				latestVersion: 4
+			},
+			['stack', 'message', 'expectedVersion', 'latestVersion', 'code', 'name']
+		);
+		exactError(
+			new engine.ReplayIntegrityError('Replay diverged', 7),
+			{ name: 'ReplayIntegrityError', message: 'Replay diverged', sequence: 7 },
+			['stack', 'message', 'sequence', 'name']
+		);
+		expect(new engine.ReplayIntegrityError('Replay diverged', 7)).not.toHaveProperty('code');
 	});
 
 	it('keeps the manually audited event discriminator inventory unique', () => {
