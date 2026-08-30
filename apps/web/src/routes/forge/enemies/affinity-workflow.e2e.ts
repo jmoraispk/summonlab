@@ -82,8 +82,11 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	await expect(page.getByText('Blind recognition', { exact: true })).toBeVisible();
 	const reviewerInput = page.getByLabel('Reviewer identity');
 	if (await reviewerInput.isVisible()) {
-		await reviewerInput.fill(`test:affinity-page-${Date.now()}`);
-		await page.getByRole('button', { name: 'Begin reviewer-bound session' }).click();
+		const reviewer = `test:affinity-page-${Date.now()}`;
+		await page.goto(
+			`/forge/enemies/affinity-workflow?mode=blind&scope=controlled&round=baseline-v1&reviewer=${encodeURIComponent(reviewer)}`
+		);
+		await expect(page.getByText(/^Reviewer-bound · /)).toBeVisible();
 	} else {
 		// AFFINITY_REVIEW_ACTOR can bind the session before the page renders.
 		await expect(page.getByText(/^Reviewer-bound · /)).toBeVisible();
