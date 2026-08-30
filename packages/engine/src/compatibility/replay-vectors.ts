@@ -25,7 +25,6 @@ import {
 	applyCommand,
 	createBootstrapEngine,
 	deterministicUuid,
-	EMPTY_STATE_HASH,
 	hashCanonical,
 	hashGameState,
 	legalActions,
@@ -68,6 +67,9 @@ export interface EngineReplayVectorCase {
 	readonly canceledScheduledEventIds: readonly string[];
 }
 
+export const REPLAY_VECTOR_EMPTY_STATE_HASH =
+	'74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b';
+
 function checkedExpectation(
 	input: Omit<ReplayExpectation, 'beforeHashes' | 'canceledScheduledEventIds'> & {
 		readonly canceledScheduledEventIds?: readonly string[];
@@ -75,7 +77,7 @@ function checkedExpectation(
 ): ReplayExpectation {
 	return {
 		...input,
-		beforeHashes: [EMPTY_STATE_HASH, ...input.afterHashes.slice(0, -1)],
+		beforeHashes: [REPLAY_VECTOR_EMPTY_STATE_HASH, ...input.afterHashes.slice(0, -1)],
 		canceledScheduledEventIds: input.canceledScheduledEventIds ?? []
 	};
 }

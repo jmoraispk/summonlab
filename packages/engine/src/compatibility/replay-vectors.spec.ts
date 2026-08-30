@@ -1,9 +1,19 @@
 import { describe, expect, it } from 'vitest';
 
 import { hashGameState, replayEventsStrict } from '../index.js';
-import { ENGINE_REPLAY_VECTOR_CASES, actualMasterLegalActionIds } from './replay-vectors.js';
+import {
+	ENGINE_REPLAY_VECTOR_CASES,
+	REPLAY_VECTOR_EMPTY_STATE_HASH,
+	actualMasterLegalActionIds
+} from './replay-vectors.js';
 
 describe('versioned replay vectors', () => {
+	it('pins the empty-state hash independently from production code', () => {
+		expect(REPLAY_VECTOR_EMPTY_STATE_HASH).toBe(
+			'74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b'
+		);
+	});
+
 	it('covers every previously uncovered compatibility family', () => {
 		expect(ENGINE_REPLAY_VECTOR_CASES.map(({ vector }) => vector.schemaVersion)).toEqual([
 			5, 8, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
