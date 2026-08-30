@@ -73,4 +73,113 @@ describe('engine public API compatibility', () => {
 		const inventory = new Set<string>(ENGINE_EVENT_TYPES);
 		expect(emitted.every((eventType) => inventory.has(eventType))).toBe(true);
 	});
+
+	it('contains every event emitted by representative existing builder scenarios', () => {
+		const bootstrap = engine.createBootstrapEngine({
+			runId: engine.deterministicUuid('compatibility-builder-run'),
+			seed: 'compatibility-builder-seed',
+			heroId: engine.deterministicUuid('compatibility-builder-hero'),
+			manifestHash: engine.sha256Hex('compatibility-builder-manifest')
+		});
+		const initial = bootstrap.snapshot.state;
+		const heroId = Object.keys(initial.heroes)[0]!;
+		const masterId = initial.master.masterId;
+		const source = {
+			source: 'manual' as const,
+			timing: 'step' as const,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		};
+		const command = (state: typeof initial, actorId: string, key: string) => ({
+			commandId: engine.deterministicUuid(`compatibility-builder-${key}`),
+			runId: state.runId,
+			actorId,
+			expectedVersion: state.version,
+			correlationId: engine.deterministicUuid(`compatibility-builder-${key}`),
+			source
+		});
+		const inspected = engine.applyCommand(initial, {
+			...command(initial, masterId, 'inspect'),
+			commandType: 'master.inspect.gate'
+		});
+		const chosen = engine.applyCommand(initial, {
+			...command(initial, heroId, 'choose'),
+			commandType: 'hero.choose.destination',
+			destination: 'training-ground',
+			firstLine: 'I will train.',
+			storyBranch: 'steel-before-trust'
+		});
+		const traveling = engine.applyCommand(chosen.state, {
+			...command(chosen.state, heroId, 'travel'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'training-ring'
+		});
+		const arrived = engine.applyCommand(traveling.state, {
+			...command(traveling.state, masterId, 'arrive'),
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
+		});
+		const communication = engine.applyCommand(initial, {
+			...command(initial, masterId, 'communication'),
+			commandType: 'master.communicate',
+			targetHeroId: heroId,
+			kind: 'explain',
+			topic: 'master-role',
+			exactText: 'I will protect the company.',
+			tone: 'neutral',
+			delivery: 'private'
+		});
+		const conversation = engine.applyCommand(initial, {
+			...command(initial, masterId, 'conversation'),
+			commandType: 'master.converse',
+			targetHeroId: heroId,
+			kind: 'ask',
+			exactText: 'Are you ready?',
+			tone: 'neutral',
+			delivery: 'private',
+			orderIntent: null
+		});
+		const directive = engine.applyCommand(initial, {
+			...command(initial, masterId, 'directive'),
+			commandType: 'master.issue.directive',
+			text: 'Choose training before the tower.',
+			scope: 'decision',
+			recipientIds: [heroId],
+			priorities: ['training'],
+			tone: 'firm',
+			delivery: 'private'
+		});
+		const prepared = engine.applyCommand(initial, {
+			...command(initial, masterId, 'prepare'),
+			commandType: 'mission.prepare',
+			heroIds: [heroId]
+		});
+		const deployed = engine.applyCommand(prepared.state, {
+			...command(prepared.state, masterId, 'deploy'),
+			commandType: 'mission.deploy'
+		});
+		const damaged = engine.applyCommand(initial, {
+			...command(initial, masterId, 'damage'),
+			commandType: 'simulation.apply.damage',
+			targetId: heroId,
+			amount: 1,
+			damageKind: 'hazard'
+		});
+		const emitted = [
+			bootstrap.event,
+			...inspected.events,
+			...chosen.events,
+			...traveling.events,
+			...arrived.events,
+			...communication.events,
+			...conversation.events,
+			...directive.events,
+			...prepared.events,
+			...deployed.events,
+			...damaged.events
+		].map((event) => event.eventType);
+		const inventory = new Set<string>(ENGINE_EVENT_TYPES);
+		expect(emitted.every((eventType) => inventory.has(eventType))).toBe(true);
+	});
 });

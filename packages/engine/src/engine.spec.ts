@@ -209,6 +209,266 @@ describe('deterministic engine', () => {
 		}
 	});
 
+	it('keeps ordered legal-action ids at every characterized decision boundary', () => {
+		const bootstrap = fixture();
+		const initial = bootstrap.snapshot.state;
+		const heroId = Object.keys(initial.heroes)[0]!;
+		const masterId = initial.master.masterId;
+		const baseActions = (targetHeroId: string) => [
+			'master.inspect.gate',
+			'mission.prepare',
+			`settlement.assign.${targetHeroId}.summoning-gate`,
+			`settlement.assign.${targetHeroId}.kitchen`,
+			`settlement.assign.${targetHeroId}.dormitory`,
+			`settlement.assign.${targetHeroId}.training-ground`,
+			`settlement.assign.${targetHeroId}.workshop`,
+			`social.communicate.${targetHeroId}`,
+			`social.converse.${targetHeroId}`,
+			'social.directive.issue',
+			`simulation.damage.hero.${targetHeroId}`,
+			'simulation.damage.master'
+		];
+		const chosen = applyCommand(initial, {
+			...commandBase(initial, heroId, 'compatibility-choose'),
+			commandType: 'hero.choose.destination',
+			destination: 'training-ground',
+			firstLine: 'I will train before we enter the tower.',
+			storyBranch: 'steel-before-trust'
+		});
+		const traveling = applyCommand(chosen.state, {
+			...commandBase(chosen.state, heroId, 'compatibility-travel'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'training-ring'
+		});
+		const settled = applyCommand(traveling.state, {
+			...commandBase(traveling.state, masterId, 'compatibility-arrive'),
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
+		});
+		const communication = applyCommand(initial, {
+			...commandBase(initial, masterId, 'compatibility-communication'),
+			source: manualSource(),
+			commandType: 'master.communicate',
+			targetHeroId: heroId,
+			kind: 'explain',
+			topic: 'master-role',
+			exactText: 'I will keep the company safe.',
+			tone: 'neutral',
+			delivery: 'private'
+		});
+		const conversation = applyCommand(initial, {
+			...commandBase(initial, masterId, 'compatibility-conversation'),
+			source: manualSource(),
+			commandType: 'master.converse',
+			targetHeroId: heroId,
+			kind: 'ask',
+			exactText: 'Are you ready to train?',
+			tone: 'neutral',
+			delivery: 'private',
+			orderIntent: null
+		});
+		const directive = applyCommand(initial, {
+			...commandBase(initial, masterId, 'compatibility-directive'),
+			source: manualSource(),
+			commandType: 'master.issue.directive',
+			text: 'Choose training before the tower.',
+			scope: 'decision',
+			recipientIds: [heroId],
+			priorities: ['training'],
+			tone: 'firm',
+			delivery: 'private'
+		});
+		if (directive.state.schemaVersion !== 13) throw new Error('Expected engine-v13 state');
+		const directiveId = Object.keys(directive.state.society.directives)[0]!;
+		const preparation = applyCommand(initial, {
+			...commandBase(initial, masterId, 'compatibility-prepare'),
+			source: manualSource(),
+			commandType: 'mission.prepare',
+			heroIds: [heroId]
+		});
+		const deployment = applyCommand(preparation.state, {
+			...commandBase(preparation.state, masterId, 'compatibility-deploy'),
+			source: manualSource(),
+			commandType: 'mission.deploy'
+		});
+		const development = (
+			key: string,
+			flags: {
+				readonly initialMissionId: string;
+				readonly availableMissionIds: readonly string[];
+				readonly enableAttemptAftermath?: boolean;
+				readonly enableStoryPatch?: boolean;
+				readonly enableSynthesis?: boolean;
+				readonly enableFirstBandArchive?: boolean;
+			}
+		) =>
+			createBootstrapEngine({
+				runId: deterministicUuid(`compatibility-${key}-run`),
+				seed: `compatibility-${key}-seed`,
+				heroId: deterministicUuid(`compatibility-${key}-hero`),
+				manifestHash: sha256Hex(`compatibility-${key}-manifest`),
+				developmentMissionScenario: flags
+			}).snapshot.state;
+		const developmentScenario = {
+			initialMissionId: 'tower-floor-01',
+			availableMissionIds: ['tower-floor-01']
+		} as const;
+		const aftermath = development('aftermath', {
+			...developmentScenario,
+			enableAttemptAftermath: true
+		});
+		const storyPatch = development('story-patch', {
+			...developmentScenario,
+			enableStoryPatch: true
+		});
+		const synthesis = development('synthesis', {
+			...developmentScenario,
+			enableSynthesis: true
+		});
+		const firstBandArchive = development('first-band-archive', {
+			...developmentScenario,
+			enableFirstBandArchive: true
+		});
+		const aftermathHeroId = Object.keys(aftermath.heroes)[0]!;
+		const storyPatchHeroId = Object.keys(storyPatch.heroes)[0]!;
+		const synthesisHeroId = Object.keys(synthesis.heroes)[0]!;
+		const firstBandArchiveHeroId = Object.keys(firstBandArchive.heroes)[0]!;
+		const cases = [
+			{ boundary: 'bootstrap', state: initial, actorId: masterId, expected: baseActions(heroId) },
+			{
+				boundary: 'settlement idle',
+				state: settled.state,
+				actorId: masterId,
+				expected: [
+					'master.inspect.gate',
+					'mission.prepare',
+					`settlement.assign.${heroId}.summoning-gate`,
+					`settlement.assign.${heroId}.kitchen`,
+					`settlement.assign.${heroId}.dormitory`,
+					`settlement.assign.${heroId}.training-ground`,
+					`settlement.assign.${heroId}.workshop`,
+					`simulation.damage.hero.${heroId}`,
+					'simulation.damage.master'
+				]
+			},
+			{
+				boundary: 'travel',
+				state: traveling.state,
+				actorId: masterId,
+				expected: [
+					'master.inspect.gate',
+					'mission.prepare',
+					'simulation.advance',
+					`settlement.assign.${heroId}.summoning-gate`,
+					`settlement.assign.${heroId}.kitchen`,
+					`settlement.assign.${heroId}.dormitory`,
+					`settlement.assign.${heroId}.training-ground`,
+					`settlement.assign.${heroId}.workshop`,
+					`simulation.damage.hero.${heroId}`,
+					'simulation.damage.master'
+				]
+			},
+			{
+				boundary: 'communication',
+				state: communication.state,
+				actorId: masterId,
+				expected: baseActions(heroId)
+			},
+			{
+				boundary: 'conversation',
+				state: conversation.state,
+				actorId: masterId,
+				expected: baseActions(heroId)
+			},
+			{
+				boundary: 'directive',
+				state: directive.state,
+				actorId: masterId,
+				expected: [
+					'master.inspect.gate',
+					'mission.prepare',
+					`settlement.assign.${heroId}.summoning-gate`,
+					`settlement.assign.${heroId}.kitchen`,
+					`settlement.assign.${heroId}.dormitory`,
+					`settlement.assign.${heroId}.training-ground`,
+					`settlement.assign.${heroId}.workshop`,
+					`social.communicate.${heroId}`,
+					`social.converse.${heroId}`,
+					'social.directive.issue',
+					`social.directive.replace.${directiveId}`,
+					`social.directive.revoke.${directiveId}`,
+					`simulation.damage.hero.${heroId}`,
+					'simulation.damage.master'
+				]
+			},
+			{
+				boundary: 'mission preparation',
+				state: preparation.state,
+				actorId: masterId,
+				expected: ['mission.revise.party', 'mission.deploy', 'mission.cancel']
+			},
+			{
+				boundary: 'mission deployment',
+				state: deployment.state,
+				actorId: masterId,
+				expected: ['mission.hold', 'mission.move.threshold-to-oath-hall', 'mission.retreat']
+			},
+			{
+				boundary: 'mission turn',
+				state: deployment.state,
+				actorId: heroId,
+				expected: ['mission.hold', 'mission.move.threshold-to-oath-hall']
+			},
+			{
+				boundary: 'aftermath',
+				state: aftermath,
+				actorId: aftermath.master.masterId,
+				expected: baseActions(aftermathHeroId)
+			},
+			{
+				boundary: 'story patch',
+				state: storyPatch,
+				actorId: storyPatch.master.masterId,
+				expected: [
+					'master.inspect.gate',
+					'story.patch.apply',
+					`simulation.damage.hero.${storyPatchHeroId}`,
+					'simulation.damage.master'
+				]
+			},
+			{
+				boundary: 'synthesis',
+				state: synthesis,
+				actorId: synthesis.master.masterId,
+				expected: [
+					'master.inspect.gate',
+					`simulation.damage.hero.${synthesisHeroId}`,
+					'simulation.damage.master'
+				]
+			},
+			{
+				boundary: 'first-band archive',
+				state: firstBandArchive,
+				actorId: firstBandArchive.master.masterId,
+				expected: [
+					'master.inspect.gate',
+					'mission.prepare',
+					`simulation.damage.hero.${firstBandArchiveHeroId}`,
+					'simulation.damage.master'
+				]
+			}
+		] as const;
+
+		for (const legalActionCase of cases) {
+			expect(
+				legalActions(legalActionCase.state, legalActionCase.actorId).map(
+					(action) => action.actionId
+				),
+				legalActionCase.boundary
+			).toEqual(legalActionCase.expected);
+		}
+	});
+
 	it('produces a stable named entropy fixture and advances exactly once', () => {
 		const first = drawInteger(createEntropyCursor('fixture-seed'), 'gate.resonance', 0, 99);
 		const repeated = drawInteger(createEntropyCursor('fixture-seed'), 'gate.resonance', 0, 99);
