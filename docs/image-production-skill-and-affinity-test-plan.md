@@ -59,8 +59,19 @@ until a human records a review decision.
   before human review and leaves the sentinel namespace empty.
 - 2026-08-29: Repaired the later-pack rule-history query for Zod 4 by validating its read scope
   with a dedicated unrefined contract. A focused query-entry regression now prevents the prior
-  runtime `.pick()` failure. The available local database still needs migration `0015` before it
-  can persist or list these human rule decisions.
+  runtime `.pick()` failure. The available local database was subsequently migrated through `0017`
+  and can persist or list both human decision types.
+- 2026-08-29: Added the append-only foundation for the 16 final-controlled design-risk decisions.
+  The strict contract fixes every risk ID, coordinate, source target, severity, evidence binding,
+  rationale, and attestation in plan order; blocking risks cannot be retained. Migration `0016`
+  and an advisory-lock-serialized database API provide server timestamps, exact idempotency, and a
+  linear latest decision per actor without creating a decision or activating a manifest. Migration
+  `0017` normalizes two PostgreSQL index names that would otherwise exceed its identifier limit.
+- 2026-08-29: Added a read-only affinity-review database doctor. It checks connectivity, the full
+  migration ledger through `0017`, and the exact review/decision tables, columns, and indexes in a
+  PostgreSQL read-only transaction. After the separately invoked additive migrations, the live
+  probe reports `ready` with all 17 migrations and no missing schema objects; the doctor itself
+  neither applies migrations nor exposes connection credentials.
 
 The plan is now backed by a runnable implementation rather than being a design-only document:
 
@@ -146,7 +157,9 @@ shown:
 
 ```bash
 # Human baseline review (requires an accessible PostgreSQL database with current migrations).
+pnpm doctor:affinity-review-db
 pnpm db:migrate
+pnpm doctor:affinity-review-db
 pnpm dev:app
 # Open /forge/enemies/affinity-workflow?mode=blind&scope=controlled&round=baseline-v1&reviewer=<reviewer>
 
@@ -225,6 +238,11 @@ The initial work must answer five questions:
   approve or promote its own result.
 - The default retry allowance is one corrective retry per target. A second failure is recorded as
   `revise` rather than inviting an unbounded loop.
+- Human design-risk review chooses a direction after the informative baseline evidence and before
+  producer-authored replacement targets. The decision alone cannot stage targets or activate
+  manifests; replacement targets are subsequently hash-verified, and the generated final images
+  still require their own blind review. A second human approval of the exact staged prompt is not
+  required.
 - Affinity, monster grade, level, battlefield duty, and random physical attributes remain separate
   axes. They may be combined only in a test that explicitly declares compound variation.
 - The controlled affinity matrix holds presentation at Grade 4 / Elite. Grades 7–10 are a later

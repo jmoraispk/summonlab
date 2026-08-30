@@ -1,0 +1,5 @@
+alter index if exists summonlab_final_controlled_design_risk_decisions_first_actor_id
+  rename to summonlab_fc_design_risk_first_actor_idx;
+
+alter index if exists summonlab_final_controlled_design_risk_decisions_superseded_onc
+  rename to summonlab_fc_design_risk_superseded_once_idx;

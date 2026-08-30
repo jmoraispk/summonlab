@@ -1,0 +1,11 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": ["affinity-review-database-doctor.ts", "affinity-review-database-doctor.spec.ts"]
+}

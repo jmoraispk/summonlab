@@ -5,6 +5,7 @@ export * from './decision.js';
 export * from './decision-inspector.js';
 export * from './engine.js';
 export * from './event.js';
+export * from './final-controlled-design-risk-decisions.js';
 export * from './health.js';
 export * from './image-production.js';
 export * from './later-pack-rules.js';
