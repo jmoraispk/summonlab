@@ -10,7 +10,7 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-TARGET_VERSION = "image-production-target-v1"
+TARGET_VERSIONS = {"image-production-target-v1", "image-production-target-v2"}
 ASSIGNMENT_VERSION = "image-production-assignment-v1"
 ID_PATTERN = re.compile(r"^[a-z][a-z0-9-]{1,79}$")
 
@@ -64,7 +64,7 @@ def validate(
     *,
     allow_existing_outputs: bool = False,
 ) -> dict[str, Any]:
-    if target.get("schemaVersion") != TARGET_VERSION:
+    if target.get("schemaVersion") not in TARGET_VERSIONS:
         fail("unsupported target schemaVersion")
     if assignment.get("schemaVersion") != ASSIGNMENT_VERSION:
         fail("unsupported assignment schemaVersion")
@@ -199,15 +199,24 @@ def validate(
 
 
 def main() -> None:
-    if len(sys.argv) != 4:
-        raise SystemExit("usage: validate_target.py TARGET ASSIGNMENT WORKSPACE_ROOT")
+    allow_existing_outputs = len(sys.argv) == 5 and sys.argv[4] == "--allow-existing-outputs"
+    if len(sys.argv) not in {4, 5} or (len(sys.argv) == 5 and not allow_existing_outputs):
+        raise SystemExit(
+            "usage: validate_target.py TARGET ASSIGNMENT WORKSPACE_ROOT "
+            "[--allow-existing-outputs]"
+        )
     target_path = Path(sys.argv[1]).resolve()
     assignment_path = Path(sys.argv[2]).resolve()
     workspace = Path(sys.argv[3]).resolve()
     if workspace not in target_path.parents or workspace not in assignment_path.parents:
         raise SystemExit("target validation failed: input file is outside workspace")
     try:
-        report = validate(load_json(target_path), load_json(assignment_path), workspace)
+        report = validate(
+            load_json(target_path),
+            load_json(assignment_path),
+            workspace,
+            allow_existing_outputs=allow_existing_outputs,
+        )
     except (OSError, json.JSONDecodeError, ValueError) as error:
         raise SystemExit(f"target validation failed: {error}") from error
     print(json.dumps(report, indent=2, sort_keys=True))

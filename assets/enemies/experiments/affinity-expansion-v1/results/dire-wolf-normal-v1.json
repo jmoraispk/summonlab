@@ -1,0 +1,231 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-dire-wolf-normal",
+  "targetId": "affinity-expansion-v1-dire-wolf-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-dire-wolf-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-dire-wolf-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-dire-wolf-normal\".\n\nSubject and threat:\n- Species: dire-wolf.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: dire-wolf-duty.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- Dire Wolf remains immediately recognizable\n- Battlefield duty remains Relentless pursuit\n- large scarred pursuit wolf with long stride, heavy neck, and relentless forward posture\n- Signature skills remain visually supportable: Coordinated hunt, Hamstring, Fear scent.\n- Counterplay remains visible: The still image preserves readable counterplay for Stamina, Rescue movement, Composure.\n\nAnatomy invariants:\n- exactly four legs with credible animal joints and paw contact\n- coherent head, shoulders, spine, tail, and quadrupedal weight distribution\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Stamina, Rescue movement, Composure.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: humanoid posture or armor; antlers or wings; extra or missing legs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Subject 2 only: Dire Wolf identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "0e5ed600c94f989207ad83213ffd43eae2b190ca44c3c4e782ea205c98172e21",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:44:10.558Z",
+      "generationCompletedAt": "2026-08-30T07:44:28.753Z",
+      "inspectionCompletedAt": "2026-08-30T07:44:46.064Z",
+      "generationDurationMs": 18195,
+      "inspectionDurationMs": 17311,
+      "totalWallTimeMs": 35506,
+      "sourceOutputId": "exec-4a451fbb-0a27-4359-8300-256872730632.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The first render completed the wolf but placed the tail tip inside the declared eight-percent left safety margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The large scarred Dire Wolf, exactly four canine legs, heavy neck, coherent tail, long-stride pursuit posture, grounded paws, restrained animal-duty straps, and readable counterplay otherwise passed."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Natural dark fur, leather wear, scars, neutral atmosphere, and ordinary anatomy remain explicitly unaffiliated with no elemental material, glow, magical anatomy, or affinity-coded wake."
+        }
+      ],
+      "retryReason": "Use the one allowed targeted edit to pull the complete tail and silhouette inside the left safety lock while preserving every passing species, anatomy, duty, and Normal-unaffiliated trait."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-dire-wolf-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-dire-wolf-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCorrection mode: targeted edit of the supplied preceding render.\n\nChange only framing and scale: pull the camera back and reduce/recenter the complete wolf enough that every hard extent—including the full tail and tail tip, both ears, muzzle, every fur tuft, all four legs, all four paws and claws, restrained animal-duty straps, and the complete forward-pursuit silhouette—fits inside the central 84 percent of both canvas dimensions, leaving at least 8 percent clearly empty finished border on all four sides. Re-render the complete 1536 x 1024 canvas with finished charcoal-to-midnight backdrop and cracked-stone floor; no blank or abrupt region.\n\nPreserve every passing trait exactly:\n- exactly one immediately recognizable adult Dire Wolf;\n- organic quadruped with exactly four canine legs, credible animal joints, four grounded paws, coherent wolf head, shoulders, spine, tail, and quadrupedal weight distribution;\n- dense large scarred pursuit frame, long stride, heavy neck, relentless forward posture, and readable Coordinated hunt, Hamstring, Fear scent, Stamina, Rescue movement, and Composure cues;\n- natural dark grey and charcoal fur, individual scars, restrained practical animal-duty straps and foreleg wrap, grounded materials, and non-humanoid silhouette;\n- explicitly Normal and unaffiliated presentation using established species materials and restrained neutral atmosphere only, with no elemental material, elemental glow, magical anatomy, affinity-coded wake, or hidden affinity;\n- premium realistic painterly Pack 2 dark-fantasy finish, controlled neutral key, readable fur and leather, cracked-stone floor, and charcoal backdrop.\n\nDo not redesign the subject. No extra creature, duplicate body, extra or missing leg, humanoid posture, humanoid armor, antlers, wings, bear anatomy, dragon anatomy, oversized head, elemental glow, magical anatomy, affinity-coded material substitution, unexplained magical wake, text, label, UI, frame, logo, watermark, published-character resemblance, crop, blank band, or unfinished canvas.",
+      "promptHash": "be5a32a528e12ccec21c38ed62425b818999eb8373068b519057cfebabcba4cf",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-4a451fbb-0a27-4359-8300-256872730632.png",
+        "contentHash": "065bb1bf4c8bef22e1c736b79bf24872a5fb12727cf363ef77a96d8764b2d5ea"
+      },
+      "requestStartedAt": "2026-08-30T07:45:02.976Z",
+      "generationCompletedAt": "2026-08-30T07:45:19.040Z",
+      "inspectionCompletedAt": "2026-08-30T07:45:29.232Z",
+      "generationDurationMs": 16064,
+      "inspectionDurationMs": 10192,
+      "totalWallTimeMs": 26256,
+      "sourceOutputId": "exec-615d9368-08eb-4028-8b88-ab2e4f996c62.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-615d9368-08eb-4028-8b88-ab2e4f996c62.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2021598,
+          "contentHash": "d183fae2c892306f7c426293e8e2fa75d05c56b1832bf42586cb07427e9526ef"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2021598,
+          "contentHash": "d183fae2c892306f7c426293e8e2fa75d05c56b1832bf42586cb07427e9526ef"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2021598,
+        "contentHash": "d183fae2c892306f7c426293e8e2fa75d05c56b1832bf42586cb07427e9526ef"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete canvas has continuous finished charcoal backdrop and cracked-stone floor detail with no blank band, unpainted region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full tail and tip, ears, muzzle, fur tufts, all four legs, four paws and claws, straps, and complete forward-pursuit silhouette remain inside the central 84 percent with clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured adult Dire Wolf appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial submission exactly matches the canonical safe-frame-v4 renderer; the targeted correction, preceding-source linkage, and retained provenance are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The immediately recognizable large scarred Dire Wolf, dense pursuit frame, heavy neck, long stride, relentless forward posture, restrained duty straps, and readable Stamina, Rescue movement, and Composure counterplay preserve every declared invariant."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established dark-grey fur, ordinary scars, worn leather, physical floor contact, and restrained neutral atmosphere read as explicitly unaffiliated, with no elemental material, glow, magical anatomy, affinity-coded wake, or hidden affinity."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong large pursuit-wolf and Dire Wolf cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds an entirely neutral natural-material presentation."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly four canine legs are separately readable with credible joints, four grounded paws, coherent head, shoulders, spine and tail, balanced quadrupedal weight, and no bear or draconic anatomy."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lowered head, heavy forward shoulder, long braced stride, exposed teeth, scarred pursuit frame, and measured animal equipment communicate Relentless pursuit, Coordinated hunt, Hamstring, and Fear scent."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, readable fur, scars and leather, restrained neutral lighting, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, extra or missing leg, humanoid posture or armor, antlers, wings, elemental glow, magical anatomy, affinity substitution, or sexualization appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact explicitly returned correction PNG was exclusive-copied without normalization; source and retained dimensions, media type, bytes, and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared file, review decision, application route, catalog, or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-dire-wolf-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:44:10.558Z",
+  "completedAt": "2026-08-30T07:46:45.000Z",
+  "totalWallTimeMs": 154442,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/dire-wolf-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

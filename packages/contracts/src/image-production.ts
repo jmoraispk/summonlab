@@ -251,6 +251,210 @@ export const ImageProductionTargetSchema = z
 		}
 	});
 
+export const ImageProductionExpansionSpeciesSchema = z.enum([
+	'goblin-skirmisher',
+	'goblin-archer',
+	'goblin-hexweaver',
+	'goblin-chieftain',
+	'dire-wolf',
+	'ember-wisp',
+	'stone-breaker',
+	'storm-stalker',
+	'frost-colossus',
+	'clay-golem',
+	'stone-golem',
+	'iron-sentinel',
+	'crystal-guardian',
+	'grave-sentinel',
+	'tower-wraith',
+	'bone-mage',
+	'venom-wyvern',
+	'armored-elder-drake',
+	'giant-tower-dragon',
+	'hungry-mimic',
+	'slime-colony',
+	'burrowing-worm',
+	'ogoblin-brute',
+	'cave-troll',
+	'hill-giant',
+	'frost-giant',
+	'hex-adept',
+	'ward-mage',
+	'tower-summoner',
+	'tower-archmage',
+	'tunnel-spider',
+	'web-caster',
+	'armored-brood-guard',
+	'giant-broodmother'
+]);
+
+export const ImageProductionExpansionThreatSchema = z
+	.object({
+		presentationTier: z.enum(['standard', 'elite', 'boss', 'apex']),
+		referenceGrade: z.number().int().min(1).max(10),
+		canonicalGrade: z.number().int().min(1).max(10).nullable()
+	})
+	.strict();
+
+export const ImageProductionExpansionConstructionModeSchema = z.enum([
+	'humanoid-enemy',
+	'organic-quadruped',
+	'substance-bodied',
+	'constructed-humanoid',
+	'armored-undead',
+	'incorporeal-undead',
+	'skeletal-undead',
+	'winged-draconic',
+	'draconic-quadruped',
+	'object-bodied',
+	'amorphous-colony',
+	'limbless-segmented',
+	'giant-humanoid',
+	'eight-legged-arachnid'
+]);
+
+const EXPANSION_CONSTRUCTION_MODE_BY_SPECIES = {
+	'goblin-skirmisher': 'humanoid-enemy',
+	'goblin-archer': 'humanoid-enemy',
+	'goblin-hexweaver': 'humanoid-enemy',
+	'goblin-chieftain': 'humanoid-enemy',
+	'dire-wolf': 'organic-quadruped',
+	'ember-wisp': 'substance-bodied',
+	'stone-breaker': 'substance-bodied',
+	'storm-stalker': 'substance-bodied',
+	'frost-colossus': 'substance-bodied',
+	'clay-golem': 'constructed-humanoid',
+	'stone-golem': 'constructed-humanoid',
+	'iron-sentinel': 'constructed-humanoid',
+	'crystal-guardian': 'constructed-humanoid',
+	'grave-sentinel': 'armored-undead',
+	'tower-wraith': 'incorporeal-undead',
+	'bone-mage': 'skeletal-undead',
+	'venom-wyvern': 'winged-draconic',
+	'armored-elder-drake': 'draconic-quadruped',
+	'giant-tower-dragon': 'winged-draconic',
+	'hungry-mimic': 'object-bodied',
+	'slime-colony': 'amorphous-colony',
+	'burrowing-worm': 'limbless-segmented',
+	'ogoblin-brute': 'giant-humanoid',
+	'cave-troll': 'giant-humanoid',
+	'hill-giant': 'giant-humanoid',
+	'frost-giant': 'giant-humanoid',
+	'hex-adept': 'humanoid-enemy',
+	'ward-mage': 'humanoid-enemy',
+	'tower-summoner': 'humanoid-enemy',
+	'tower-archmage': 'humanoid-enemy',
+	'tunnel-spider': 'eight-legged-arachnid',
+	'web-caster': 'eight-legged-arachnid',
+	'armored-brood-guard': 'eight-legged-arachnid',
+	'giant-broodmother': 'eight-legged-arachnid'
+} as const;
+
+export const ImageProductionExpansionTargetSchema = z
+	.object({
+		schemaVersion: z.literal('image-production-target-v2'),
+		targetId: SlugSchema,
+		assetId: SlugSchema,
+		packId: SlugSchema,
+		experimentId: SlugSchema,
+		promptProtocol: z.literal('safe-frame-v4'),
+		authoringProtocol: z.literal('semantic-v2'),
+		cohort: z.literal('breadth'),
+		speciesId: ImageProductionExpansionSpeciesSchema,
+		affinity: ImageProductionAffinitySchema,
+		affinityDesign: z
+			.object({
+				alteredDimensions: z
+					.array(
+						z.enum([
+							'material',
+							'silhouette',
+							'motion',
+							'anatomy',
+							'equipment',
+							'attack-telegraph',
+							'environmental-wake',
+							'exposed-counterplay'
+						])
+					)
+					.max(8),
+				expression: NonEmptyTextSchema.max(1_000),
+				counterplayCue: NonEmptyTextSchema.max(500)
+			})
+			.strict(),
+		threat: ImageProductionExpansionThreatSchema,
+		battlefieldDutyId: SlugSchema,
+		constructionMode: ImageProductionExpansionConstructionModeSchema,
+		identityInvariants: z.array(NonEmptyTextSchema.max(300)).min(2).max(20),
+		anatomyInvariants: z.array(NonEmptyTextSchema.max(300)).min(2).max(20),
+		permittedTransformations: z.array(NonEmptyTextSchema.max(300)).min(1).max(20),
+		prohibitedTraits: z.array(NonEmptyTextSchema.max(300)).min(1).max(30),
+		references: z.array(ImageProductionReferenceSchema).min(1).max(20),
+		presentation: z
+			.object({
+				styleContract: NonEmptyTextSchema.max(2_000),
+				medium: NonEmptyTextSchema.max(200),
+				background: NonEmptyTextSchema.max(500),
+				lighting: NonEmptyTextSchema.max(500),
+				composition: NonEmptyTextSchema.max(1_000),
+				canvas: z
+					.object({
+						width: z.number().int().min(512).max(8_192),
+						height: z.number().int().min(512).max(8_192),
+						mediaType: z.enum(['image/png', 'image/webp']),
+						safeMarginPercent: z.number().min(0).max(40)
+					})
+					.strict(),
+				negativePrompt: z.array(NonEmptyTextSchema.max(300)).min(1).max(30)
+			})
+			.strict(),
+		acceptanceCriteria: z.array(ImageProductionAcceptanceCriterionSchema).min(1).max(40),
+		output: z
+			.object({
+				candidatePath: CandidateImagePathSchema,
+				resultPath: JsonPathSchema
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((target, context) => {
+		const expectedMode = EXPANSION_CONSTRUCTION_MODE_BY_SPECIES[target.speciesId];
+		if (target.constructionMode !== expectedMode) {
+			context.addIssue({
+				code: 'custom',
+				path: ['constructionMode'],
+				message: `${target.speciesId} requires ${expectedMode} construction`
+			});
+		}
+		const dimensions = target.affinityDesign.alteredDimensions;
+		if (target.affinity !== 'normal' && new Set(dimensions).size < 2) {
+			context.addIssue({
+				code: 'custom',
+				path: ['affinityDesign', 'alteredDimensions'],
+				message: 'Elemental affinities must alter at least two meaningful visual dimensions'
+			});
+		}
+		if (new Set(dimensions).size !== dimensions.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['affinityDesign', 'alteredDimensions'],
+				message: 'Altered visual dimensions must be unique'
+			});
+		}
+		const criterionIds = target.acceptanceCriteria.map((criterion) => criterion.criterionId);
+		if (new Set(criterionIds).size !== criterionIds.length) {
+			context.addIssue({ code: 'custom', message: 'Acceptance criterion IDs must be unique' });
+		}
+		for (const kind of ['objective', 'human-review'] as const) {
+			if (!target.acceptanceCriteria.some((criterion) => criterion.kind === kind)) {
+				context.addIssue({
+					code: 'custom',
+					message: `Targets require at least one ${kind} acceptance criterion`
+				});
+			}
+		}
+	});
+
 export const ImageProductionAssignmentSchema = z
 	.object({
 		schemaVersion: z.literal('image-production-assignment-v1'),
@@ -912,6 +1116,12 @@ export type ImageProductionCatalogEntry = z.infer<typeof ImageProductionCatalogE
 export type ImageProductionConcurrencyStage = z.infer<typeof ImageProductionConcurrencyStageSchema>;
 export type ImageProductionEvaluation = z.infer<typeof ImageProductionEvaluationSchema>;
 export type ImageProductionExecution = z.infer<typeof ImageProductionExecutionSchema>;
+export type ImageProductionExpansionConstructionMode = z.infer<
+	typeof ImageProductionExpansionConstructionModeSchema
+>;
+export type ImageProductionExpansionSpecies = z.infer<typeof ImageProductionExpansionSpeciesSchema>;
+export type ImageProductionExpansionTarget = z.infer<typeof ImageProductionExpansionTargetSchema>;
+export type ImageProductionExpansionThreat = z.infer<typeof ImageProductionExpansionThreatSchema>;
 export type ImageProductionOutput = z.infer<typeof ImageProductionOutputSchema>;
 export type ImageProductionReference = z.infer<typeof ImageProductionReferenceSchema>;
 export type ImageProductionResult = z.infer<typeof ImageProductionResultSchema>;

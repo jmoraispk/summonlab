@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-storm-stalker-wood",
+  "targetId": "affinity-expansion-v1-storm-stalker-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-storm-stalker-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-storm-stalker-wood\".\n\nSubject and threat:\n- Species: storm-stalker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: storm-stalker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Storm Stalker remains immediately recognizable\n- Battlefield duty remains Lane assassin\n- lean quadrupedal thunderhead with forward prongs and trailing vapor\n- prongs align and a straight ionized lane appears before the charge\n- Counterplay remains visible: grounded rear condensate node\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: grounded rear condensate node Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 3 only: Storm Stalker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a14781efdb19d6b76a05118bfa871ea42555eeafb47a2f20cc55542dcb0c74d8",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T08:03:13.045Z",
+      "generationCompletedAt": "2026-08-30T08:03:37.245Z",
+      "inspectionCompletedAt": "2026-08-30T08:04:28.303Z",
+      "generationDurationMs": 24200,
+      "inspectionDurationMs": 51058,
+      "totalWallTimeMs": 75258,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-542d1d0a-dc8e-4d83-a9be-8eabccd601d6.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The straight ionized lane entered the declared eight-percent border at the lower left." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Storm Stalker appeared on a fully finished canvas." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt was submitted without terminal newline at SHA-256 a14781efdb19d6b76a05118bfa871ea42555eeafb47a2f20cc55542dcb0c74d8 with references in order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "The intended two aligned forward prongs read as two separate animal heads rather than one coherent faceless thunderhead structure." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Bark, structural roots, resin seams, wooden articulation, and living growth visibly bore load and changed material and anatomy." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The grounded rear condensate node and resin-bright joints were clearly exposed." }
+      ],
+      "retryReason": "A targeted edit was required to merge the false dual-head read into one faceless thunderhead with two prongs and move the complete charge lane into the safe frame."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-storm-stalker-wood-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Storm Stalker Wood render; preserve its successful premium realistic painterly Pack 2 finish, charcoal-to-midnight backdrop, cracked-stone floor, controlled neutral lighting, lean low charging quadrupedal silhouette, exactly four connected weight-bearing legs and four complete grounded feet, load-bearing bark plates and roots, resin-bright seams and joints, wooden articulation, purposeful living growth, trailing vapor, straight ionized charge lane, clearly grounded rear condensate node, and full-canvas completion.\n\nPreserve exactly one elite Storm Stalker Lane assassin: one coherent substance-bodied quadrupedal thunderhead organized around one readable core; exactly four legs, no more and no fewer; one low shoulder mass; one forward thunderhead structure; exactly two aligned forward prongs; resin-bright interruptible binding joints and fresh-cut growth; the same lane-charge telegraph and exposed rear condensate-node counterplay. Wood must remain structural and load-bearing, never decorative foliage or a brown recolor.\n\nChange the incorrect forward structure only: merge the two animal-like heads into one single faceless wedge-shaped thunderhead chassis and retain their two narrow projections only as exactly two parallel aligned forward prongs. Remove every eye, mouth, muzzle, jaw, ear, animal face, duplicate skull, and natural-wolf cue. The prongs must visibly align with one straight ionized charge lane. Scale and recenter the complete existing creature, all four feet, both prong tips, rear condensate node, every root and vapor tip, the complete ionized lane, and all emission down just enough to fit inside the central 84 percent of the fully finished 1536 x 1024 canvas, leaving at least 8 percent clearly empty border on all four sides.\n\nDo not alter the number or placement of legs, grounded weight, pose, core, material construction, resin seams, rear node, lighting, style, or battlefield duty. No extra limb, fifth leg, humanoid, natural wolf, antler, foliage overlay, extra subject, duplicate creature, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance.",
+      "promptHash": "3a4744ef0b83744b2fe2cce398bbb8964101bcc7b6f9cfb18959db6fe3400b2d",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-542d1d0a-dc8e-4d83-a9be-8eabccd601d6.png", "contentHash": "1a468cf65d316aa28bdc67fbb42c74b6ce073961aee3806cf5c57afa864f2944" },
+      "requestStartedAt": "2026-08-30T08:04:49.334Z",
+      "generationCompletedAt": "2026-08-30T08:05:09.334Z",
+      "inspectionCompletedAt": "2026-08-30T08:05:46.951Z",
+      "generationDurationMs": 20000,
+      "inspectionDurationMs": 37617,
+      "totalWallTimeMs": 57617,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-4a1d2ef8-671b-4fef-94f3-6af37de60ec3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-4a1d2ef8-671b-4fef-94f3-6af37de60ec3.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2227581, "contentHash": "2a21208da3469851b5bffbde4b47528292193bf1f1efc96049c3d6e8609845e2" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wood-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2227581, "contentHash": "2a21208da3469851b5bffbde4b47528292193bf1f1efc96049c3d6e8609845e2" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wood-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2227581, "contentHash": "2a21208da3469851b5bffbde4b47528292193bf1f1efc96049c3d6e8609845e2" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The full creature, four feet, prongs, ionized lane, vapor, roots, rear node, and shadow fit inside the central eighty-four percent on a completely finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Storm Stalker appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and targeted correction prompts retain exact hashes, ordered references, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "One lean low quadrupedal thunderhead has exactly four connected legs, one faceless wedge structure, exactly two aligned forward prongs, a straight ionized lane, one coherent core plan, trailing vapor, and a grounded rear condensate node without natural-wolf or extra-limb drift." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Load-bearing bark plates, structural root limbs, resin seams, wooden articulation, and purposeful growth change material, anatomy, articulation, and exposed counterplay rather than acting as recolor, antlers, or foliage overlay." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The grounded rear condensate node and resin-bright joints remain plainly exposed and interruptible behind the committed lane charge." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware Storm Stalker cues are strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wood recognition remains pending human review; target-aware structural bark, root, resin, and growth cues are strong." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly materials, controlled light, charcoal backdrop, cracked floor, and restrained local emission remain cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No humanoid, animal face, natural wolf, fifth leg, decorative antler, foliage overlay, text, UI, watermark, crop, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 2,227,581 bytes, and SHA-256 2a21208da3469851b5bffbde4b47528292193bf1f1efc96049c3d6e8609845e2 match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Wood candidate and result paths were written; no shared file, unrelated path, or git history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-storm-stalker-wood-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:03:13.045Z",
+  "completedAt": "2026-08-30T08:06:00.000Z",
+  "totalWallTimeMs": 166955,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/storm-stalker-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

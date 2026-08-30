@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-colossus-fire",
+  "targetId": "affinity-expansion-v1-frost-colossus-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-colossus-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-frost-colossus-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-colossus-fire\".\n\nSubject and threat:\n- Species: frost-colossus.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: frost-colossus-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Frost Colossus remains immediately recognizable\n- Battlefield duty remains Zone-denial boss\n- towering glacier torso, broad planted feet, and one sweeping ice arm\n- frost rings crawl across the floor before a freezing sweep\n- Counterplay remains visible: dark stone heart visible through cracked chest ice\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: dark stone heart visible through cracked chest ice The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 4 only: Frost Colossus identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "649288d8a01bf27236ee1e7b061a9168834126815a653fc8c3d52681a52f0f81",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:12:41.000Z",
+      "generationCompletedAt": "2026-08-30T08:13:27.988Z",
+      "inspectionCompletedAt": "2026-08-30T08:13:35.988Z",
+      "generationDurationMs": 46988,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 54988,
+      "sourceOutputId": "exec-ea335d1f-c421-47b8-bbb7-cf693077888a",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Top combustion wake and bottom frost ring breach the required central 84 percent safe frame."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one coherent finished Fire Frost Colossus appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the framing correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Towering glacier torso, broad planted feet, smaller heavy arm, enormous shoulder-grown sweeping ice arm, frost ring, and exposed dark stone heart preserve the zone-denial Frost Colossus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened load-bearing stone and ice, internal ember seams, localized combustion, smoke, sparks, and heat distortion create structural Fire affinity without a uniform orange glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The dark stone chest heart and brighter heat-sink seams remain clearly exposed between combustion cycles."
+        }
+      ],
+      "retryReason": "Scale down and recenter the complete Fire Frost Colossus, sweeping arm, combustion, and full frost ring while preserving all passing traits."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-frost-colossus-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-frost-colossus-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing correction only. Preserve this exact single Fire Frost Colossus design, low substance-bodied glacier anatomy, broad planted block feet, smaller heavy left arm, enormous shoulder-grown sweeping ice arm, heat-blackened load-bearing surfaces, localized ember seams and combustion, exposed dark stone chest heart, circular frost wake, lighting, and painterly finish. Uniformly scale the complete colossus and every flame, spark, smoke, ice shard, sweeping-arm tip, and full frost-ring extent down by about 26 percent and recenter it slightly upward so every hard or effect extent fits inside the central 84 percent of the 1536 x 1024 canvas, leaving a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No redesign, extra limbs, held weapon, uniform orange glow, text, crop, or affinity change.",
+      "promptHash": "026dc52a1236a05b4fc23541ba7fc08303970c10c4de20d4fa220484e7182555",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-ea335d1f-c421-47b8-bbb7-cf693077888a.png",
+        "contentHash": "4dcb5bfccab94da5f9a56367cddee694a51294ad016f719383610c878c966be4"
+      },
+      "requestStartedAt": "2026-08-30T08:13:42.000Z",
+      "generationCompletedAt": "2026-08-30T08:14:05.169Z",
+      "inspectionCompletedAt": "2026-08-30T08:14:12.169Z",
+      "generationDurationMs": 23169,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 30169,
+      "sourceOutputId": "exec-2bf4563c-177a-4873-95a9-1045164ae4cc",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-2bf4563c-177a-4873-95a9-1045164ae4cc.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2236270,
+          "contentHash": "cb9e6a6957d7600f4d5ce8373b764f700d47f1b69f4fc73df345aed3aff10c5d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2236270,
+          "contentHash": "cb9e6a6957d7600f4d5ce8373b764f700d47f1b69f4fc73df345aed3aff10c5d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2236270,
+        "contentHash": "cb9e6a6957d7600f4d5ce8373b764f700d47f1b69f4fc73df345aed3aff10c5d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Full colossus, sweeping-arm tip, feet, flames, smoke, sparks, ice shards, and frost ring now remain inside a clearly empty safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one coherent finished Fire Frost Colossus appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the framing correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Towering glacier torso, broad planted feet, smaller heavy arm, enormous shoulder-grown sweeping ice arm, frost ring, and exposed dark stone heart preserve the zone-denial Frost Colossus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened load-bearing stone and ice, internal ember seams, localized combustion, smoke, sparks, and heat distortion create structural Fire affinity without a uniform orange glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The dark stone chest heart and brighter heat-sink seams remain clearly exposed between combustion cycles."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-frost-colossus-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:12:41.000Z",
+  "completedAt": "2026-08-30T08:14:19.000Z",
+  "totalWallTimeMs": 98000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-stone-breaker-normal",
+  "targetId": "affinity-expansion-v1-stone-breaker-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-stone-breaker-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-stone-breaker-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-stone-breaker-normal\".\n\nSubject and threat:\n- Species: stone-breaker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: stone-breaker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Stone Breaker remains immediately recognizable\n- Battlefield duty remains Siege bruiser\n- massive wedge forearms and a low quarry-stone center of gravity\n- plants both feet and raises one slab arm before impact\n- Counterplay remains visible: bright binding seams after a missed smash\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: bright binding seams after a missed smash\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 2 only: Stone Breaker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png — Individual Stone Breaker framing, wedge forearms, grounded quarry mass, and readable core only.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f3e2dd0a1f36691851a34679faaab7855cb255d433a9a7776905f7acb918b449",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:50:17.000Z",
+      "generationCompletedAt": "2026-08-30T07:50:36.663Z",
+      "inspectionCompletedAt": "2026-08-30T07:50:44.663Z",
+      "generationDurationMs": 19663,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 27663,
+      "sourceOutputId": "exec-1bb7afef-96b8-44c5-853b-c5b4bee90ff5",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The raised left slab-arm tip reaches above the required central 84 percent safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Stone Breaker appears on a fully rendered stone-floor canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low quarry-stone center of gravity, two massive wedge forearms, coherent core, and planted bipedal stance remain clear."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established dark quarry-stone construction and restrained neutral binding seams remain unaffiliated without substituted elemental anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright binding seams remain exposed across the chest and both wedge arms after the committed smash pose."
+        }
+      ],
+      "retryReason": "Scale down and lower the complete Stone Breaker so the raised wedge-arm tip and all debris clear the safe frame while preserving every passing trait."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-stone-breaker-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-stone-breaker-normal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing correction only. Preserve this exact Stone Breaker design, pose, dark quarry-stone material, wedge forearms, anatomy, lighting, neutral background, and finished quality. Recompose the complete creature slightly smaller and slightly lower so every hard extent—including the raised left slab-arm tip, both feet, the grounded right slab arm, all debris, and every effect fragment—fits inside the central 84 percent of a 1536 x 1024 canvas, leaving a clearly empty border of at least 8 percent on all four sides. Exactly one subject. Do not redesign, add limbs, add text, crop anything, or introduce a new elemental affinity.",
+      "promptHash": "cfc96099e0bcc21c5ed7c4daf7adf2cf557ded0241565a101d54dbd683791c13",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-1bb7afef-96b8-44c5-853b-c5b4bee90ff5.png",
+        "contentHash": "9ba478280903734316bf0f425cacb13d64ced49132ed21c2652f128d08e84ac5"
+      },
+      "requestStartedAt": "2026-08-30T07:50:48.000Z",
+      "generationCompletedAt": "2026-08-30T07:51:05.600Z",
+      "inspectionCompletedAt": "2026-08-30T07:51:12.600Z",
+      "generationDurationMs": 17600,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 24600,
+      "sourceOutputId": "exec-aa1d2bd6-af35-4b67-ad08-97a5dda259fe",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-aa1d2bd6-af35-4b67-ad08-97a5dda259fe.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2050674,
+          "contentHash": "f951b6691ca45c14c38ba4db9d84a98dec9ac558dd5e44f35b8078fdb46307d7"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2050674,
+          "contentHash": "f951b6691ca45c14c38ba4db9d84a98dec9ac558dd5e44f35b8078fdb46307d7"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2050674,
+        "contentHash": "f951b6691ca45c14c38ba4db9d84a98dec9ac558dd5e44f35b8078fdb46307d7"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Raised slab-arm tip, both feet, grounded right wedge arm, debris, and every effect extent now sit comfortably inside the safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Stone Breaker appears on a complete stone-floor canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Initial prompt matches the canonical renderer and the correction used the exact preceding output as its design reference."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low quarry-stone center of gravity, two massive wedge forearms, coherent core, and planted bipedal stance remain immediately readable."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established dark quarry-stone construction and restrained neutral binding seams remain unaffiliated without substituted elemental anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright binding seams remain exposed across the chest and wedge forearms after the committed impact pose."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-stone-breaker-normal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:50:17.000Z",
+  "completedAt": "2026-08-30T07:51:19.000Z",
+  "totalWallTimeMs": 62000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

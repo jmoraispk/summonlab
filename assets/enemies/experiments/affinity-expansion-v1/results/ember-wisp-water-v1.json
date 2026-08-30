@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ember-wisp-water",
+  "targetId": "affinity-expansion-v1-ember-wisp-water",
+  "assignmentId": "assignment-affinity-expansion-v1-ember-wisp-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ember-wisp-water\".\n\nSubject and threat:\n- Species: ember-wisp.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ember-wisp-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Ember Wisp remains immediately recognizable\n- Battlefield duty remains Ignition harrier\n- small airborne coal body, streaming sparks, no defended front\n- compresses to white heat before a darting ignition pass\n- Counterplay remains visible: cool mineral core exposed after its pass\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: cool mineral core exposed after its pass Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 1 only: Ember Wisp identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "9ffe3ae465cafa637bad0633e361f0e55ac14ad58d5b2a371e93d6a4f885c3cf",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:53:25.920Z",
+      "generationCompletedAt": "2026-08-30T07:54:14.245Z",
+      "inspectionCompletedAt": "2026-08-30T07:54:25.189Z",
+      "generationDurationMs": 48325,
+      "inspectionDurationMs": 10944,
+      "totalWallTimeMs": 59269,
+      "sourceOutputId": "exec-ed8a9983-1e12-462b-9bf8-a6f832038843.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The initial coherent Water Wisp completed the canvas, but its highest droplets and sparks entered the declared eight-percent top safety margin."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The compact airborne coal/mineral body, one exposed core, undefended front, compressed ignition-pass posture, streaming sparks, and harrier duty otherwise passed."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Pressurized load-bearing flow, coherent transitions, mist, wet reflection, compressed motion, and a directional water wake change material, motion, telegraph, and environment rather than applying blue color."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The cool mineral binding core remains exposed through the fluid structure after the committed compressed pass."}
+      ],
+      "retryReason": "Use the one allowed framing-only correction to bring the complete Water, droplet, mist, spark, and pressure wake inside the top safety lock while preserving every passing trait."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ember-wisp-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCorrection mode: targeted edit of the supplied preceding render.\n\nChange only framing and scale: pull the camera back and reduce/recenter the complete airborne Wisp plus every Water and spark effect enough that every hard, fluid, mist, droplet, spark, reflection, and wake extent—including the highest droplets and sparks, longest rearward water stream, exposed core, compressed forward point, pressure trail, and floor-facing spray—fits inside the central 84 percent of both canvas dimensions, leaving at least 8 percent clearly empty finished border on all four sides. Re-render the complete 1536 x 1024 canvas with finished charcoal-to-midnight backdrop and cracked-stone floor; no blank or abrupt region.\n\nPreserve every passing trait exactly:\n- exactly one immediately recognizable small airborne Ember Wisp;\n- one coherent non-humanoid elemental body plan around one readable cool mineral core, with no limbs and no defended front;\n- compact coal/mineral body, streaming sparks, asymmetric fluid flame silhouette, compressed white-pressure point, and directional darting ignition-pass wake;\n- Ignition harrier duty with readable committed attack telegraph and cool core exposed after pressure loss;\n- Water affinity built through pressurized load-bearing flow, coherent fluid transitions, mist, droplets, wet reflection, compressed motion, attack telegraph, and directional environmental wake rather than a shapeless blue blob or generic blue glow;\n- premium realistic painterly Pack 2 dark-fantasy finish, controlled neutral key, restrained local emission, cracked-stone floor, and charcoal backdrop.\n\nDo not redesign the subject. No extra creature, duplicate body, humanoid, face, arm, leg, wing, extra limb, armor, decorative Water overlay, shapeless blue blob, generic blue glow, hidden core, directionless particles, text, label, UI, frame, logo, watermark, published-character resemblance, crop, blank band, or unfinished canvas.",
+      "promptHash": "17729a45392f93ee60a185d5804ad71f2086e6a317789d2548ba285a76e37b87",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-ed8a9983-1e12-462b-9bf8-a6f832038843.png",
+        "contentHash": "c9dca50310cc47c9b2041320c8c2d21ba53cb101df141149a0b5f0a97c35508e"
+      },
+      "requestStartedAt": "2026-08-30T07:54:43.527Z",
+      "generationCompletedAt": "2026-08-30T07:54:55.424Z",
+      "inspectionCompletedAt": "2026-08-30T07:55:05.239Z",
+      "generationDurationMs": 11897,
+      "inspectionDurationMs": 9815,
+      "totalWallTimeMs": 21712,
+      "sourceOutputId": "exec-75e415ee-8b85-4a2e-a5b3-5e17a9586083.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 17,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-75e415ee-8b85-4a2e-a5b3-5e17a9586083.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1973800, "contentHash": "33ff93d432969267adbfe610fc48cd3fe46027a053bde46fa6aa1b57bb569111"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1973800, "contentHash": "33ff93d432969267adbfe610fc48cd3fe46027a053bde46fa6aa1b57bb569111"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1973800, "contentHash": "33ff93d432969267adbfe610fc48cd3fe46027a053bde46fa6aa1b57bb569111"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop and cracked-stone floor are fully finished without blank regions or cutoffs."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "Every hard, fluid, mist, droplet, spark, reflection, pressure-trail, and floor-spray extent stays inside the central 84 percent with clearly empty finished border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one compact airborne elemental body appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The initial text exactly matches the canonical safe-frame-v4 renderer; correction linkage and retained provenance are complete."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The immediately recognizable compact Ember Wisp retains one coherent coal/mineral body, one exposed core, no defended front, streaming sparks, compressed ignition posture, and darting harrier wake."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Water forms the load-bearing body and changes material, motion, attack telegraph, and environmental wake through pressurized flow, coherent transitions, mist, droplets, wet reflection, and directional spray rather than a blue overlay."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The cool blue mineral binding core remains clearly exposed through the pressure structure, visibly vulnerable after committed pressure loss."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Ember Wisp recognition remains pending human review; known-target inspection finds strong compact airborne core, asymmetric flame-form, and directional wake cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Water recognition remains pending human review; known-target inspection finds pressure, fluid-body, transition, mist, reflection, droplet, and wake cues."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One non-humanoid limbless elemental plan coherently surrounds one core; Water carries every body mass and forms the directional wake with no extra limb."},
+        {"criterionId": "manifest-fidelity", "category": "battlefield-duty", "evaluator": "producer", "outcome": "pass", "observation": "The compressed forward point, directional spark and pressure wake, exposed core, and committed dive communicate a fast Ignition harrier pass and its recovery window."},
+        {"criterionId": "manifest-fidelity", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly dark-fantasy finish, readable coal, mineral and Water surfaces, restrained local emission, neutral key, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No text, UI, watermark, extra subject, humanoid, limb, armor, shapeless blob, generic glow, hidden core, crop, or sexualization appears."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The exact returned correction PNG was exclusive-copied without normalization; source and retained metadata and SHA-256 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ember-wisp-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:53:25.920Z",
+  "completedAt": "2026-08-30T07:56:30.000Z",
+  "totalWallTimeMs": 184080,
+  "writtenOutputPaths": ["assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/water-v1.png", "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-water-v1.json"],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

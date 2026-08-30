@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-stone-breaker-wind",
+  "targetId": "affinity-expansion-v1-stone-breaker-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-stone-breaker-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-stone-breaker-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-stone-breaker-wind\".\n\nSubject and threat:\n- Species: stone-breaker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: stone-breaker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Stone Breaker remains immediately recognizable\n- Battlefield duty remains Siege bruiser\n- massive wedge forearms and a low quarry-stone center of gravity\n- plants both feet and raises one slab arm before impact\n- Counterplay remains visible: bright binding seams after a missed smash\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: bright binding seams after a missed smash The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 2 only: Stone Breaker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png — Individual Stone Breaker framing, wedge forearms, grounded quarry mass, and readable core only.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "eae49cdcb62474b3f9faad3acd42b93894862bf48cfbda7b9a33c6e7001d600f",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"},
+        {"path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png", "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:09:41.242Z",
+      "generationCompletedAt": "2026-08-30T08:09:59.942Z",
+      "inspectionCompletedAt": "2026-08-30T08:10:09.942Z",
+      "generationDurationMs": 18700,
+      "inspectionDurationMs": 10000,
+      "totalWallTimeMs": 28700,
+      "sourceOutputId": "exec-e9388678-2c37-4b0d-9c15-a3e84ad73abf.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was fully rendered across the dark backdrop and cracked-stone floor."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The raised wedge tip and highest pressure wake entered the required outer eight-percent top border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Stone Breaker appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and all three ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "The lowered wedge forearm fully occluded the second grounded foot, preventing separate confirmation of both planted feet despite a coherent two-leg body plan."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Strong directional vapor channels, coherent pressure distortion, airborne quarry debris, wake-shaped silhouette, and impact telegraph changed four declared dimensions with a legible circular force direction."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Bright binding seams and the dense still center remained visible inside the directional pressure pattern."}
+      ],
+      "retryReason": "A targeted composition correction was required to restore the eight-percent border and reveal the separately planted second foot from behind the lowered wedge."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-stone-breaker-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-stone-breaker-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied generated image with one targeted composition-and-occlusion correction; do not redesign the creature. Uniformly scale the complete Wind Stone Breaker and every vapor, pressure, and debris extent down slightly and recenter them so all hard extents, especially the raised wedge tip and highest wake, fit inside the central 84 percent of both canvas dimensions with a clearly empty border on all four sides. Subtly angle the lowered wedge forearm outward only enough to reveal the complete second grounded foot and its continuous leg, so exactly two legs and two planted feet are separately readable while one slab arm remains raised before impact. Preserve exactly one coherent two-arm/two-leg Stone Breaker, low quarry-stone center of gravity, massive wedge forearms, bright vulnerable binding seams after a missed smash, a visible still center around the readable core, strongly directional vapor channels, pressure distortion and debris flow with one clear force direction, cracked-stone floor, charcoal-to-midnight backdrop, restrained emission, painterly dark-fantasy finish, and all other passing traits. Keep the full canvas intentionally finished. Do not crop any extremity or effect. No extra creature, limb, weapon, text, label, UI, frame, logo, or watermark.",
+      "promptHash": "3e23698f88d86588e2768b8774fab300699ccebd161a24671b7eabb8371145af",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"},
+        {"path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png", "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-e9388678-2c37-4b0d-9c15-a3e84ad73abf.png", "contentHash": "aaab77698a43a72cc6b60ed783e354ac7d7176cd1f10893408bc14de663d2d16"},
+      "requestStartedAt": "2026-08-30T08:10:37.005Z",
+      "generationCompletedAt": "2026-08-30T08:10:54.505Z",
+      "inspectionCompletedAt": "2026-08-30T08:11:04.505Z",
+      "generationDurationMs": 17500,
+      "inspectionDurationMs": 10000,
+      "totalWallTimeMs": 27500,
+      "sourceOutputId": "exec-4053a91b-a1ec-4b2c-8bb9-e90da3e573e3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-4053a91b-a1ec-4b2c-8bb9-e90da3e573e3.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2302791, "contentHash": "43d5f1648c62c90a22ba3c989b21dedcb8bde72b95cf653a168acfa658972b2d"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2302791, "contentHash": "43d5f1648c62c90a22ba3c989b21dedcb8bde72b95cf653a168acfa658972b2d"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2302791, "contentHash": "43d5f1648c62c90a22ba3c989b21dedcb8bde72b95cf653a168acfa658972b2d"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The raised wedge, lowered wedge, two feet, vapor crown, pressure wake, debris fragments, and shadow now sit well inside finished borders on all four sides."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Wind Stone Breaker appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the correction used the exact preceding source, and persistence retained exact returned bytes."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two wedge arms and two continuous legs terminating in two separately visible planted feet support a low quarry-stone siege-bruiser mass; one slab arm remains raised before impact and bright seams remain exposed."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "One coherent clockwise pressure system shapes the silhouette, drives strongly directional vapor channels and quarry debris, reinforces the raised-arm telegraph, and produces a clear environmental wake rather than a pale recolor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Bright binding seams and the dense still center around the chest remain visually distinct between the circulating directional attacks."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; known-target inspection finds strong Stone Breaker cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds multiple strong directional Wind cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 materials, controlled neutral light, restrained seam emission, cracked-stone floor, charcoal backdrop, and all constraint-safety requirements remain coherent."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, app code, review decision, plan, git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-stone-breaker-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:09:41.242Z",
+  "completedAt": "2026-08-30T08:11:26.916Z",
+  "totalWallTimeMs": 105674,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

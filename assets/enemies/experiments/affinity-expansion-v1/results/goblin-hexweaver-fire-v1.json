@@ -1,0 +1,238 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-hexweaver-fire",
+  "targetId": "affinity-expansion-v1-goblin-hexweaver-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-hexweaver-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-hexweaver-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-hexweaver-fire\".\n\nSubject and threat:\n- Species: goblin-hexweaver.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-hexweaver-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Hexweaver remains immediately recognizable\n- Battlefield duty remains Telegraphed magical control\n- goblin caster with a compact ritual focus, binding marks, and open casting hand\n- Signature skills remain visually supportable: Ember hex, Binding mark, Concentration.\n- Counterplay remains visible: The still image preserves readable counterplay for Ward reading, Interrupts, Focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Ward reading, Interrupts, Focus. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 3 only: Goblin Hexweaver identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b7a65a1cd3f2609c708f814d5797df5ad8c44edfa83eb1d5d6dbc37e56cdf8aa",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:32:05.296Z",
+      "generationCompletedAt": "2026-08-30T07:32:29.396Z",
+      "inspectionCompletedAt": "2026-08-30T07:32:40.396Z",
+      "generationDurationMs": 24100,
+      "inspectionDurationMs": 11000,
+      "totalWallTimeMs": 35100,
+      "sourceOutputId": "exec-8464b682-c17f-4496-933f-75be69185d8b.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The first render completed the character and effect, but the top of the combustion glyph and heat wake entered the declared eight-percent top safety margin."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened cloth and metal, internal ember seams, localized focus combustion, smoke, heat distortion, and directional wake changed multiple declared dimensions without obscuring anatomy."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The adult goblin identity, two-arm/two-leg anatomy, compact chained focus, binding marks, open hand, concentration pose, counterplay, clothing, and grounded duty otherwise passed."
+        }
+      ],
+      "retryReason": "Use the one allowed targeted edit to pull the camera back and place the complete combustion glyph and wake inside the safety lock while preserving every passing trait."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-goblin-hexweaver-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-goblin-hexweaver-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCorrection mode: targeted edit of the supplied preceding render.\n\nChange only framing and scale: pull the camera back and reduce the complete subject plus all Fire effects enough that every hard and luminous extent—including the top of the combustion glyph, smoke and heat-distortion wake, open fingertips, chained ritual focus and pendant, ears, hood, clothing tails, hands, and feet—fits inside the central 84 percent of both canvas dimensions, leaving at least 8 percent clearly empty finished border on all four sides. Re-render the complete 1536 x 1024 canvas with finished charcoal-to-midnight backdrop and cracked-stone floor; no blank or abrupt region.\n\nPreserve every passing trait exactly:\n- exactly one immediately recognizable adult Goblin Hexweaver;\n- adult humanoid biped with exactly two arms and two legs, coherent hands, feet, joints, grounded weight, and equipment grip;\n- telegraphed magical-control duty with compact chained ritual focus, binding marks, one open casting hand, concentrated pose, and readable Ward reading, Interrupts, Focus, Ember hex, Binding mark, and Concentration support;\n- individual goblin face, pointed ears, practical layered scavenged hooded clothing, wrapped boots, and nonsexualized presentation;\n- Fire affinity built through heat-blackened surfaces, internal ember seams, controlled combustion, smoke, heat distortion, localized attack telegraph, environmental wake, and the exposed ember-bright focus/heat sink between combustion cycles;\n- restrained local emission that preserves skin, cloth, leather, metal, anatomy, binding marks, and material detail rather than a uniform orange full-body glow;\n- premium realistic painterly Pack 2 dark-fantasy finish, controlled neutral key, cracked-stone floor, and charcoal backdrop.\n\nDo not redesign the subject. No extra creature, duplicate body, extra limb, childlike proportion, glamour, sexualization, uniform orange body wash, effects that hide anatomy, text, label, UI, frame, logo, watermark, published-character resemblance, crop, blank band, or unfinished canvas.",
+      "promptHash": "d02eeeca935e54f2acba2d3c3d104fe18183fc34f6e58019871d8be866842e36",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-8464b682-c17f-4496-933f-75be69185d8b.png",
+        "contentHash": "77a65f4bce7ddce984fa86407a4913b34319c987bdace2536551d2a232cb625e"
+      },
+      "requestStartedAt": "2026-08-30T07:33:00.132Z",
+      "generationCompletedAt": "2026-08-30T07:33:24.332Z",
+      "inspectionCompletedAt": "2026-08-30T07:33:35.332Z",
+      "generationDurationMs": 24200,
+      "inspectionDurationMs": 11000,
+      "totalWallTimeMs": 35200,
+      "sourceOutputId": "exec-d5e7828e-0461-40eb-83c5-fd59b2446a1f.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 25,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-d5e7828e-0461-40eb-83c5-fd59b2446a1f.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2019486,
+          "contentHash": "e981986f0580abdc6edc9681818b8f2ec97ef273d6bcd0016cb80d8a5a734297"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2019486,
+          "contentHash": "e981986f0580abdc6edc9681818b8f2ec97ef273d6bcd0016cb80d8a5a734297"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2019486,
+        "contentHash": "e981986f0580abdc6edc9681818b8f2ec97ef273d6bcd0016cb80d8a5a734297"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete canvas has continuous finished charcoal backdrop and cracked-stone floor detail with no blank band, unpainted region, or cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full combustion glyph and wake, open fingers, chained focus and pendants, ears, hood, clothing tails, hands, and both feet remain inside the central 84 percent with clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured adult goblin appears with no duplicate body or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial submission exactly matches the canonical safe-frame-v4 renderer; the targeted correction, source linkage, and retained provenance are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The distinct adult Goblin Hexweaver, compact chained focus, binding marks, open casting hand, concentration stance, layered hooded scavenged attire, and visible interruption window preserve every declared identity, anatomy, duty, and counterplay invariant."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes material, motion, attack telegraph, and environmental wake through heat-blackened cloth and metal, internal ember seams, controlled focus combustion, rising smoke, localized heat distortion, and directional particles rather than a flat color overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The ember-bright compact focus and localized seams expose the heat sink between combustion cycles, while the fixed open-hand concentration pose remains clearly interruptible for Ward reading and Focus counterplay."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong adult goblin and ritual-control caster cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending human review; known-target inspection finds strong combustion, ember-seam, smoke, heat-distortion, focus, and wake cues."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two arms and two legs are visible with coherent joints, readable fingers, planted feet, stable weight, and a credible chained-focus grip."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The deliberate focus grip, binding discs, fixed gaze, open casting hand, concentrated stance, and localized telegraph communicate magical control and a readable interrupt window."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, restrained local Fire emission, coherent skin, worn cloth, leather and metal, neutral key, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, extra limb, childlike body, glamour, sexualization, uniform orange full-body wash, or effect-hidden anatomy appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact explicitly returned correction PNG was exclusive-copied without normalization; source and retained dimensions, media type, bytes, and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared file, review decision, application route, catalog, or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-hexweaver-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:32:05.296Z",
+  "completedAt": "2026-08-30T07:34:00.000Z",
+  "totalWallTimeMs": 114704,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-hexweaver-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

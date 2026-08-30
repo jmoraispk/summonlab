@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-stone-breaker-fire",
+  "targetId": "affinity-expansion-v1-stone-breaker-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-stone-breaker-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-stone-breaker-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-stone-breaker-fire\".\n\nSubject and threat:\n- Species: stone-breaker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: stone-breaker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Stone Breaker remains immediately recognizable\n- Battlefield duty remains Siege bruiser\n- massive wedge forearms and a low quarry-stone center of gravity\n- plants both feet and raises one slab arm before impact\n- Counterplay remains visible: bright binding seams after a missed smash\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: bright binding seams after a missed smash The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 2 only: Stone Breaker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png — Individual Stone Breaker framing, wedge forearms, grounded quarry mass, and readable core only.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "42fa83d9e1d1c5eefe2fd7c0601ff7f835bcbbcf528e3590372cc7b69488e951",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:57:12.000Z",
+      "generationCompletedAt": "2026-08-30T07:57:33.782Z",
+      "inspectionCompletedAt": "2026-08-30T07:57:40.782Z",
+      "generationDurationMs": 21782,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 28782,
+      "sourceOutputId": "exec-0e2825cd-aab2-4608-a147-bd88509984f2",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The flame crown above the raised left wedge arm breaches the required top safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Stone Breaker appears on a fully rendered stone-floor canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction uses the exact preceding output as its design reference."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low quarry-stone siege mass, two planted feet, two massive wedge forearms, one readable chest core, and committed raised-slab impact pose remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened load-bearing stone, internal ember seams, localized controlled combustion, smoke, sparks, and directional impact wake create Fire construction without a uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The brighter exposed chest heat sink and wedge-arm binding seams remain materially distinct between combustion cycles."
+        }
+      ],
+      "retryReason": "Scale down and recenter the full Fire Stone Breaker and every flame, smoke, spark, rock, and impact extent while preserving all passing traits."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-stone-breaker-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-stone-breaker-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing correction only. Preserve this exact single Fire Stone Breaker design, low siege-bruiser pose, heat-blackened quarry-stone body, exactly two massive wedge forearms, two planted legs, internal ember seams, exposed chest heat sink, controlled smoke and combustion, anatomy, lighting, cracked-stone floor, and painterly finish. Uniformly scale the complete creature and every flame, smoke, spark, flying rock, and heat-distortion extent down by about 24 percent and recenter it slightly lower so the raised left slab-arm tip, flame crown, grounded right wedge arm, both feet, impact burst, and every environmental wake fit inside the central 84 percent of the 1536 x 1024 canvas, leaving a clearly empty finished border of at least 8 percent on all four sides. Exactly one coherent subject. No redesign, extra limbs, uniform orange glow, text, crop, or affinity change.",
+      "promptHash": "ef4f42ccd5f0f00dd67ed3fd5c7ab2e0d68b407d077e3f3e9609f2148debb7f6",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-0e2825cd-aab2-4608-a147-bd88509984f2.png",
+        "contentHash": "cb0e4717cd322f9efd116462e3b4d2cd60cbaa9ddb74122145bef3e8d11098c5"
+      },
+      "requestStartedAt": "2026-08-30T07:57:44.000Z",
+      "generationCompletedAt": "2026-08-30T07:58:02.507Z",
+      "inspectionCompletedAt": "2026-08-30T07:58:09.507Z",
+      "generationDurationMs": 18507,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 25507,
+      "sourceOutputId": "exec-f83e0731-891a-42da-8a3b-b8bb33fe590c",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-f83e0731-891a-42da-8a3b-b8bb33fe590c.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2008770,
+          "contentHash": "308867628e304ddb3358556761ca9a86d86a7872e84000efc1bf6c5d5e2ce925"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2008770,
+          "contentHash": "308867628e304ddb3358556761ca9a86d86a7872e84000efc1bf6c5d5e2ce925"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2008770,
+        "contentHash": "308867628e304ddb3358556761ca9a86d86a7872e84000efc1bf6c5d5e2ce925"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Flame crown, raised wedge tip, grounded wedge, both feet, smoke, sparks, rocks, and impact wake now remain inside a generous safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Stone Breaker appears on a fully rendered stone-floor canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction uses the exact preceding output as its design reference."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low quarry-stone siege mass, two planted feet, two massive wedge forearms, one readable chest core, and committed raised-slab impact pose remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened load-bearing stone, internal ember seams, localized controlled combustion, smoke, sparks, and directional impact wake create Fire construction without a uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The brighter exposed chest heat sink and wedge-arm binding seams remain materially distinct between combustion cycles."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-stone-breaker-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:57:12.000Z",
+  "completedAt": "2026-08-30T07:58:16.000Z",
+  "totalWallTimeMs": 64000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-dire-wolf-wood",
+  "targetId": "affinity-expansion-v1-dire-wolf-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-dire-wolf-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-dire-wolf-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-dire-wolf-wood\".\n\nSubject and threat:\n- Species: dire-wolf.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: dire-wolf-duty.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- Dire Wolf remains immediately recognizable\n- Battlefield duty remains Relentless pursuit\n- large scarred pursuit wolf with long stride, heavy neck, and relentless forward posture\n- Signature skills remain visually supportable: Coordinated hunt, Hamstring, Fear scent.\n- Counterplay remains visible: The still image preserves readable counterplay for Stamina, Rescue movement, Composure.\n\nAnatomy invariants:\n- exactly four legs with credible animal joints and paw contact\n- coherent head, shoulders, spine, tail, and quadrupedal weight distribution\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: The still image preserves readable counterplay for Stamina, Rescue movement, Composure. Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: humanoid posture or armor; antlers or wings; extra or missing legs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Subject 2 only: Dire Wolf identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b220f5a9749045a6fc5753a6fb750402e37956abab67f251aaa056986b822ec9",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/beasts-v1.webp", "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:46:38.436Z",
+      "generationCompletedAt": "2026-08-30T07:46:59.136Z",
+      "inspectionCompletedAt": "2026-08-30T07:47:08.136Z",
+      "generationDurationMs": 20700,
+      "inspectionDurationMs": 9000,
+      "totalWallTimeMs": 29700,
+      "sourceOutputId": "exec-7ee76b0f-e13e-4e09-9395-cae2c96a4759.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 22,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-7ee76b0f-e13e-4e09-9395-cae2c96a4759.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2305481, "contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2305481, "contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2305481, "contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The nose, ears, bark projections, coherent tail, all four paws, root strands, and contact shadow remain complete within a clear eight-percent border on a fully finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Dire Wolf appears against the coherent charcoal backdrop and stone floor." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both manifest references were submitted in order, and the helper retained exact source bytes." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The large scarred wolf head, heavy neck, dense pursuit frame, long forward stride, coherent spine and tail, and relentless posture preserve duty and identity." },
+        { "criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four separately readable canine legs have credible joints, paws, contact, and quadrupedal weight distribution; no antlers, wings, armor, or humanoid anatomy appear." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Load-bearing bark plates, root-built limb articulation, living twig structure, vine binding, and resin seams alter material, anatomy, and counterplay rather than recoloring the wolf or pasting foliage onto it." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Fresh amber resin at shoulder, flank, and limb-binding seams exposes interruptible joints while the committed pursuit stance preserves stamina, rescue-movement, and composure counterplay." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; known-target inspection finds strong Dire Wolf cues." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wood recognition remains pending human review; known-target inspection finds strong bark, root, vine, wood-articulation, and resin cues." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, readable fur and wood materials, restrained resin emission, neutral key, stone floor, and charcoal backdrop remain cohesive and constraint-safe." },
+        { "criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, app code, review decision, plan, git state, or unrelated path was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-dire-wolf-wood-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:46:38.436Z",
+  "completedAt": "2026-08-30T07:47:40.000Z",
+  "totalWallTimeMs": 61564,
+  "writtenOutputPaths": ["assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png", "assets/enemies/experiments/affinity-expansion-v1/results/dire-wolf-wood-v1.json"],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

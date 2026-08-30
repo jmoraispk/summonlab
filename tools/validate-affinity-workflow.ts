@@ -94,8 +94,8 @@ export function canonicalGoblinAuditMatches(input: unknown, sampleSize: 60 | 600
 
 const DryRunEvidenceSchema = z
 	.object({
-		schemaVersion: z.literal('image-production-dry-run-evidence-v2'),
-		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v4'),
+		schemaVersion: z.literal('image-production-dry-run-evidence-v3'),
+		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v5'),
 		experimentId: z.literal('affinity-workflow-v1'),
 		workflow: z.literal('summonlab-image-production'),
 		executor: z.literal('fresh-bounded-subagent'),
@@ -133,7 +133,9 @@ const DryRunEvidenceSchema = z
 				referencesPresentAndHashMatched: z.literal(true),
 				pathsContainedAndNormalized: z.literal(true),
 				targetAssignmentIdsMatch: z.literal(true),
-				outputsAbsent: z.literal(true)
+				collisionPolicy: z.literal('allow-existing-completed-owned-outputs'),
+				outputsAbsent: z.literal(false),
+				outputsPresentAtAudit: z.literal(true)
 			})
 			.strict(),
 		canonicalPrompt: z
@@ -162,7 +164,9 @@ const DryRunEvidenceSchema = z
 				candidatePath: z.string().min(1),
 				resultPath: z.string().min(1),
 				candidateCreated: z.literal(false),
-				resultCreated: z.literal(false)
+				resultCreated: z.literal(false),
+				candidatePresentAtAudit: z.literal(true),
+				resultPresentAtAudit: z.literal(true)
 			})
 			.strict(),
 		completion: z
@@ -330,7 +334,7 @@ export async function validateAffinityWorkflowWorkspace(
 	let dryRunEvidence = false;
 	if (targets.length === 60) {
 		const evidence = DryRunEvidenceSchema.parse(
-			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v4.json'))
+			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v5.json'))
 		);
 		const installedSkillRoot = path.resolve(evidence.skill.installedPath);
 		const repositorySkillRoot = path.resolve(workspaceRoot, evidence.skill.resolvedRepositoryPath);
@@ -352,25 +356,23 @@ export async function validateAffinityWorkflowWorkspace(
 		if (outputsAbsent[0] !== outputsAbsent[1]) {
 			throw new Error('Dry-run-owned production outputs are only partially present.');
 		}
-		// The preflight validator is intentionally collision-sensitive. Re-run it while the job is
-		// unstarted; after production, preserve its hash-bound historical report and let the strict
-		// result/candidate validation below prove the completed execution.
-		const validatorReport = outputsAbsent.every(Boolean)
-			? (JSON.parse(
-					(
-						await execFileAsync(
-							'python3',
-							[
-								path.resolve(workspaceRoot, evidence.preflight.validator),
-								path.resolve(workspaceRoot, evidence.target.path),
-								path.resolve(workspaceRoot, evidence.assignment.path),
-								workspaceRoot
-							],
-							{ encoding: 'utf8' }
-						)
-					).stdout
-				) as unknown)
-			: evidence.preflight.report;
+		// Revalidate the completed dry-run envelope without allowing the validator to mutate or
+		// replace its already-owned candidate/result pair.
+		const validatorReport = JSON.parse(
+			(
+				await execFileAsync(
+					'python3',
+					[
+						path.resolve(workspaceRoot, evidence.preflight.validator),
+						path.resolve(workspaceRoot, evidence.target.path),
+						path.resolve(workspaceRoot, evidence.assignment.path),
+						workspaceRoot,
+						...(outputsAbsent.every(Boolean) ? [] : ['--allow-existing-outputs'])
+					],
+					{ encoding: 'utf8' }
+				)
+			).stdout
+		) as unknown;
 		const prompt = await execFileAsync(
 			'python3',
 			[

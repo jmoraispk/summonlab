@@ -1,0 +1,197 @@
+{
+	"schemaVersion": "image-production-result-v1",
+	"resultId": "result-affinity-expansion-v1-goblin-archer-water",
+	"targetId": "affinity-expansion-v1-goblin-archer-water",
+	"assignmentId": "assignment-affinity-expansion-v1-goblin-archer-water",
+	"skillVersion": "summonlab-image-production-v2",
+	"status": "candidate",
+	"attempts": [
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-archer-water-1",
+			"attemptNumber": 1,
+			"precedingAttemptId": null,
+			"conclusion": "rejected-by-producer",
+			"exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-archer-water\".\n\nSubject and threat:\n- Species: goblin-archer.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-archer-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Archer remains immediately recognizable\n- Battlefield duty remains Ranged lane control\n- ranged shortbow hunter with quiver, braced draw, and lane-reading posture\n- Signature skills remain visually supportable: Shortbow, Repositioning, Target marking.\n- Counterplay remains visible: The still image preserves readable counterplay for Cover use, Shield use, Closing distance.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: The still image preserves readable counterplay for Cover use, Shield use, Closing distance. Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 2 only: Goblin Archer identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+			"promptHash": "02dc3beab364f42c69f8484210b6885ab6fb00f3a59f167953d6b9635e8693cf",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": null,
+			"requestStartedAt": "2026-08-30T07:23:43.000Z",
+			"generationCompletedAt": "2026-08-30T07:24:02.322Z",
+			"inspectionCompletedAt": "2026-08-30T07:24:09.322Z",
+			"generationDurationMs": 19322,
+			"inspectionDurationMs": 7000,
+			"totalWallTimeMs": 26322,
+			"sourceOutputId": "exec-5818aa1d-53e3-409d-ae45-c7ef6d4e5f9a",
+			"persistence": null,
+			"output": null,
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "fail",
+					"observation": "The upper bow limb and liquid crest breach the declared central 84 percent safe area."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished adult goblin archer appears on a fully rendered stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Adult goblin archer identity, shortbow, quiver, full draw, coherent grip, layered clothing, and ranged duty remain clear."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Water affinity changes the bow and arrow construction, wet garments, circular wake, and liquid motion arcs."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Draw hand, bow grip, exposed joints, and concentrated arrow path preserve readable closing-distance counterplay."
+				}
+			],
+			"retryReason": "Scale down and recenter the complete archer and its water wake while preserving all passing traits."
+		},
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-archer-water-2",
+			"attemptNumber": 2,
+			"precedingAttemptId": "attempt-affinity-expansion-v1-goblin-archer-water-1",
+			"conclusion": "accepted-by-producer",
+			"exactPrompt": "Edit the supplied Goblin Archer Water image. Preserve the exact same single adult goblin identity, face, wet hooded layered clothing, shortbow, quiver, arrow, full draw pose, grounded feet, water-affinity bow construction, water arrowhead, circular wake, dark painterly finish, lighting, and neutral cracked-stone environment. Correct only the safe framing: uniformly scale the complete subject and every water effect down by about 18 percent and recenter it so the upper bow limb, arrowhead, quiver, cloak wake, both feet, and every hard or liquid extent sit comfortably inside the central 84 percent of both canvas dimensions, with a clearly empty border on all four sides. Keep the entire canvas intentionally finished at 1536 x 1024. Exactly one subject. No text, labels, UI, watermark, extra limbs, extra creature, crop, blank band, or redesign.",
+			"promptHash": "3a541085ae1735b41306cb55f7d8b5e50a8220deaf0faea62285f017ec0aae66",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": {
+				"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-5818aa1d-53e3-409d-ae45-c7ef6d4e5f9a.png",
+				"contentHash": "53d2ae4cdc2db07e15c6ed87e82eaa809a499949c0c7127f25dbbb197e9da090"
+			},
+			"requestStartedAt": "2026-08-30T07:24:25.000Z",
+			"generationCompletedAt": "2026-08-30T07:24:47.829Z",
+			"inspectionCompletedAt": "2026-08-30T07:24:53.829Z",
+			"generationDurationMs": 22829,
+			"inspectionDurationMs": 6000,
+			"totalWallTimeMs": 28829,
+			"sourceOutputId": "exec-5c095b79-f937-47dd-a499-095b9c765477",
+			"persistence": {
+				"operation": "exclusive-copy",
+				"elapsedMs": 17,
+				"source": {
+					"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-5c095b79-f937-47dd-a499-095b9c765477.png",
+					"width": 1536,
+					"height": 1024,
+					"mediaType": "image/png",
+					"bytes": 2074306,
+					"contentHash": "b5f3a770e42a4384fac35f3fb6ea9be21e6f586aab6657724cad18b9f5edaba2"
+				},
+				"retained": {
+					"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/water-v1.png",
+					"mediaType": "image/png",
+					"width": 1536,
+					"height": 1024,
+					"bytes": 2074306,
+					"contentHash": "b5f3a770e42a4384fac35f3fb6ea9be21e6f586aab6657724cad18b9f5edaba2"
+				}
+			},
+			"output": {
+				"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/water-v1.png",
+				"mediaType": "image/png",
+				"width": 1536,
+				"height": 1024,
+				"bytes": 2074306,
+				"contentHash": "b5f3a770e42a4384fac35f3fb6ea9be21e6f586aab6657724cad18b9f5edaba2"
+			},
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Full archer, bow, arrow, quiver, cloak wake, feet, and liquid extents now sit comfortably inside the safe frame."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished adult goblin archer appears on a fully rendered stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Adult goblin archer identity, shortbow, quiver, full draw, coherent grip, layered clothing, and ranged duty remain clear."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Water affinity changes the bow and arrow construction, wet garments, circular wake, and liquid motion arcs."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Draw hand, bow grip, exposed joints, and concentrated arrow path preserve readable closing-distance counterplay."
+				}
+			],
+			"retryReason": null
+		}
+	],
+	"selectedAttemptId": "attempt-affinity-expansion-v1-goblin-archer-water-2",
+	"failedCriteria": [],
+	"startedAt": "2026-08-30T07:23:43.000Z",
+	"completedAt": "2026-08-30T07:25:00.000Z",
+	"totalWallTimeMs": 77000,
+	"writtenOutputPaths": [
+		"assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/water-v1.png",
+		"assets/enemies/experiments/affinity-expansion-v1/results/goblin-archer-water-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
+

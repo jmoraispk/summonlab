@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ember-wisp-normal",
+  "targetId": "affinity-expansion-v1-ember-wisp-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-ember-wisp-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ember-wisp-normal\".\n\nSubject and threat:\n- Species: ember-wisp.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ember-wisp-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Ember Wisp remains immediately recognizable\n- Battlefield duty remains Ignition harrier\n- small airborne coal body, streaming sparks, no defended front\n- compresses to white heat before a darting ignition pass\n- Counterplay remains visible: cool mineral core exposed after its pass\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: cool mineral core exposed after its pass\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 1 only: Ember Wisp identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "42eb24b003dba9a36b6e465d9778d1692902de9aa1a59fe7836517079ef16cb8",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T07:48:12.143Z",
+      "generationCompletedAt": "2026-08-30T07:48:33.843Z",
+      "inspectionCompletedAt": "2026-08-30T07:49:10.626Z",
+      "generationDurationMs": 21700,
+      "inspectionDurationMs": 36783,
+      "totalWallTimeMs": 58483,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-f35bc1b4-f212-44b1-a24e-05837576dcca.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was fully finished and safely framed." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "fail", "observation": "The render presented a winged draconic main body plus a detached second mineral core rather than one coherent Wisp body around one readable core." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact no-terminal-newline canonical prompt was submitted at SHA-256 42eb24b003dba9a36b6e465d9778d1692902de9aa1a59fe7836517079ef16cb8 with references in manifest order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "Wings, draconic anatomy, and two apparent cores violated the small asymmetric single-core coal-body contract." },
+        { "criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "fail", "observation": "Active orange flame, ember seams, and combustion wake made the Normal coordinate read as Fire-affiliated." }
+      ],
+      "retryReason": "Complete regeneration was required to replace the incorrect winged, dual-core, Fire-affiliated creature with the declared single-core unaffiliated cooled Ember Wisp."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ember-wisp-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Complete regeneration using the supplied preceding Ember Wisp Normal render only as evidence of the successful premium realistic painterly Pack 2 finish, charcoal-to-midnight backdrop, cracked-stone floor, controlled neutral lighting, and full-canvas completion. Do not edit or preserve its incorrect creature design.\n\nRebuild exactly one elite Ember Wisp in its declared unaffiliated Normal, cooled post-ignition-pass state: one small airborne asymmetrical coal-and-cool-mineral body organized around exactly one exposed readable cool mineral core; a compact darting harrier silhouette with no defended front; all coal plates, mineral masses, articulations, and its short directional wake belong to the same single coherent body. Communicate that it can compress before a darting ignition pass through the aerodynamic compressed silhouette and spent post-pass trajectory, while the current still frame visibly exposes the cool mineral core for counterplay. The restrained wake may contain only nonluminous inert coal chips, cool grey mineral dust, and spent dark spark-shaped fragments moving in one direction. Established species materials remain readable and load-bearing. Keep the complete creature and all wake extents inside the central 84 percent of a fully finished 1536 x 1024 canvas with at least 8 percent clearly empty border on all four sides.\n\nReject and remove every failed trait from the preceding render: no active flame, ember seam, white-hot glow, orange or affinity-coded emission, combustion, smoke, heat distortion, magical anatomy, elemental material substitution, decorative affinity overlay, wing, bat anatomy, bird anatomy, draconic head, beak, horn, limb, ordinary humanoid, extra limb, second core, satellite orb, detached body mass, duplicate creature, or featureless sphere. Do not depict the pre-pass white-heat moment; depict only the declared cooled post-pass counterplay state. No text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, extra subject, sexualization, or published-character resemblance.",
+      "promptHash": "df0bc0793dcc655326ce76b515c47139dc470ce199cbf1203f7c3a9b58e702ac",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-f35bc1b4-f212-44b1-a24e-05837576dcca.png", "contentHash": "676a8775809f6e2496949434bdd3bc8e8347e681336655cbdcf51a20d5699779" },
+      "requestStartedAt": "2026-08-30T07:49:26.741Z",
+      "generationCompletedAt": "2026-08-30T07:49:46.041Z",
+      "inspectionCompletedAt": "2026-08-30T07:50:18.579Z",
+      "generationDurationMs": 19300,
+      "inspectionDurationMs": 32538,
+      "totalWallTimeMs": 51838,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-1d8d8afb-37db-4b35-8253-0865518573a7.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-1d8d8afb-37db-4b35-8253-0865518573a7.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1937192, "contentHash": "2fd4b93c825afc7267ae8eb3fb209b733172de4327b0764bb562222f3950b904" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1937192, "contentHash": "2fd4b93c825afc7267ae8eb3fb209b733172de4327b0764bb562222f3950b904" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1937192, "contentHash": "2fd4b93c825afc7267ae8eb3fb209b733172de4327b0764bb562222f3950b904" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The corrected canvas is fully finished, and the complete body, core, inert fragment wake, and shadow remain inside the central eighty-four percent." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one coherent airborne Wisp appears with one connected coal-mineral body and one readable core; trailing fragments form a directional wake rather than another creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and complete-regeneration prompts retain exact hashes, ordered target references, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The small asymmetric airborne coal body, compressed darting harrier silhouette, exposed cool mineral core, coherent material plan, unguarded front, and directional spent wake satisfy identity, duty, anatomy, and counterplay invariants without wings, limbs, humanoid anatomy, or a second core." },
+        { "criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Cool grey mineral, soot-black coal plates, nonluminous chips, and inert dust communicate an unaffiliated post-pass state with no flame, ember seam, combustion, smoke, heat distortion, affinity-coded material, or elemental wake." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware inspection finds the declared Wisp cues strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind unaffiliated reading remains pending human review; target-aware inspection finds the cooled neutral construction legible." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly materials, controlled neutral lighting, charcoal backdrop, cracked floor, and restrained emission remain cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No text, UI, watermark, crop, blank region, extra subject, duplicate body, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact correction source; dimensions, media type, 1,937,192 bytes, and SHA-256 2fd4b93c825afc7267ae8eb3fb209b733172de4327b0764bb562222f3950b904 match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared files, application code, repository history, or unrelated paths were edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ember-wisp-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:48:12.143Z",
+  "completedAt": "2026-08-30T07:50:30.000Z",
+  "totalWallTimeMs": 137857,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

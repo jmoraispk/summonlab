@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-storm-stalker-wind",
+  "targetId": "affinity-expansion-v1-storm-stalker-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-storm-stalker-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-storm-stalker-wind\".\n\nSubject and threat:\n- Species: storm-stalker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: storm-stalker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Storm Stalker remains immediately recognizable\n- Battlefield duty remains Lane assassin\n- lean quadrupedal thunderhead with forward prongs and trailing vapor\n- prongs align and a straight ionized lane appears before the charge\n- Counterplay remains visible: grounded rear condensate node\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: grounded rear condensate node The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 3 only: Storm Stalker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b19e1b631e8aa68449fd3523de0d1009fba34eb4b924ad3dd351a3bd7521fa12",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:09:40.874Z",
+      "generationCompletedAt": "2026-08-30T08:10:25.426Z",
+      "inspectionCompletedAt": "2026-08-30T08:10:41.387Z",
+      "generationDurationMs": 44552,
+      "inspectionDurationMs": 15961,
+      "totalWallTimeMs": 60513,
+      "sourceOutputId": "exec-95914337-e842-4fae-b625-5df877c927f8.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The initial complete Wind Stalker placed the outer right-side vapor and debris wake inside the declared eight-percent safety margin."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The lean four-legged thunderhead, aligned prongs, straight lane, trailing vapor, grounded rear node, coherent body, and Lane assassin posture otherwise passed."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional pressure anatomy, aligned vapor channels, debris flow, distortion, straight telegraph, and environmental wake changed silhouette, motion, attack lane, and wake rather than color."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The distinct grounded condensate node and still center remained readable between directional attacks."}
+      ],
+      "retryReason": "Use the single framing correction to contain the full right-side Wind wake and all extents while preserving four legs, aligned prongs, straight lane, and rear-node counterplay."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-storm-stalker-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCorrection mode: targeted edit of the supplied preceding render.\n\nChange only framing and scale: pull the camera back and reduce/recenter the complete Storm Stalker plus every Wind, vapor-channel, pressure-distortion, debris, prong, ionized-lane, rear-node, tail, spark, and environmental-wake extent enough that the outermost right-side vapor and debris wake, highest channel, full straight ground lane, aligned prong tips, all four feet, and grounded rear condensate node fit inside the central 84 percent of both canvas dimensions, leaving at least 8 percent clearly empty finished border on all four sides. Re-render the complete 1536 x 1024 canvas with finished charcoal-to-midnight backdrop and cracked-stone floor; no blank or abrupt region.\n\nPreserve every passing trait exactly:\n- exactly one immediately recognizable lean quadrupedal Storm Stalker thunderhead;\n- exactly four connected locomotor legs and no more, with four readable roots, joints, grounded contacts, and coherent pressure-bearing anatomy around one readable core;\n- aligned paired forward prongs, trailing vapor, straight ionized charge lane, and grounded rear condensate node;\n- Lane assassin duty with a low committed posture, clearly aligned forward force direction, readable lane, and recovery opening at the node;\n- Wind affinity built through load-bearing pressure anatomy, strongly directional vapor channels, aligned debris flow, visible pressure distortion, straight attack telegraph, and coherent environmental wake rather than a pale recolor, transparency, or directionless particles;\n- readable counterplay through the still center of the pressure pattern and distinct grounded rear condensate node between directional attacks;\n- premium realistic painterly Pack 2 dark-fantasy finish, controlled neutral key, restrained local emission, cracked-stone floor, and charcoal backdrop.\n\nDo not redesign the subject or reverse the force direction. No extra creature, duplicate body, humanoid, natural wolf, face redesign, extra or missing leg, fifth leg, wing, decorative Wind overlay, pale recolor, transparency alone, directionless particle cloud, hidden prongs, curved or forked charge lane, hidden rear node, text, label, UI, frame, logo, watermark, published-character resemblance, crop, blank band, or unfinished canvas.",
+      "promptHash": "aa05ba3f2f26ab2314ca92749be04ae2a5fe00044807a49072c64da4d09c43c8",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-95914337-e842-4fae-b625-5df877c927f8.png", "contentHash": "46e9e22a38bf7b7bb09c04cbdae7fd1dd86c98942e3618b3794aabe7a2be9393"},
+      "requestStartedAt": "2026-08-30T08:11:09.403Z",
+      "generationCompletedAt": "2026-08-30T08:11:24.592Z",
+      "inspectionCompletedAt": "2026-08-30T08:11:40.057Z",
+      "generationDurationMs": 15189,
+      "inspectionDurationMs": 15465,
+      "totalWallTimeMs": 30654,
+      "sourceOutputId": "exec-5596ac7b-9143-4c58-8f5f-1cf9c1314e0f.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 33,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-5596ac7b-9143-4c58-8f5f-1cf9c1314e0f.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2044880, "contentHash": "238c5e8ba85e75b637a4bbe6daae9e01a35bb23ac15bb31b02800308d7c136d3"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2044880, "contentHash": "238c5e8ba85e75b637a4bbe6daae9e01a35bb23ac15bb31b02800308d7c136d3"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2044880, "contentHash": "238c5e8ba85e75b637a4bbe6daae9e01a35bb23ac15bb31b02800308d7c136d3"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop and cracked-stone floor are fully finished without blank regions or cutoffs."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "Every vapor channel, pressure ribbon, debris fragment, prong, lane, foot, node, tail, spark, and wake extent stays inside the central 84 percent with empty finished border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one Storm Stalker appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The initial text exactly matches safe-frame-v4; correction linkage, ordered references, and retained provenance are complete."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The lean quadrupedal thunderhead, four-legged plan, aligned paired prongs, trailing vapor, straight ionized lane, grounded rear node, and Lane assassin posture preserve every declared invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wind changes silhouette, motion, telegraph, and wake through load-bearing pressure anatomy, aligned vapor channels, directional debris, visible distortion, and one coherent force direction rather than pale color or transparency."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The distinct grounded rear condensate node sits at the visually still center of the pressure pattern, preserving the recovery opening between attacks."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Storm Stalker recognition remains pending human review; known-target inspection finds strong thunderhead, prong, vapor, lane, and node cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds strong directional channel, debris, pressure-distortion, force, and wake cues."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four connected pressure-bearing legs are readable with four roots, coherent joints, grounded contacts, and no fifth limb; one body and one node remain coherent."},
+        {"criterionId": "manifest-fidelity", "category": "battlefield-duty", "evaluator": "producer", "outcome": "pass", "observation": "The low committed posture, paired forward prongs, straight lane, rearward force channels, and exposed node clearly communicate a Lane assassin charge and recovery state."},
+        {"criterionId": "manifest-fidelity", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly dark-fantasy finish, coherent pressure/mineral surfaces, restrained local emission, neutral key, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No text, UI, watermark, extra subject, humanoid, natural wolf recolor, extra/missing leg, wing, pale overlay, transparency-only treatment, hidden prong/node, crop, or sexualization appears."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The exact returned correction PNG was exclusive-copied; source and retained metadata and SHA-256 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-storm-stalker-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:09:40.874Z",
+  "completedAt": "2026-08-30T08:13:00.000Z",
+  "totalWallTimeMs": 199126,
+  "writtenOutputPaths": ["assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wind-v1.png", "assets/enemies/experiments/affinity-expansion-v1/results/storm-stalker-wind-v1.json"],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

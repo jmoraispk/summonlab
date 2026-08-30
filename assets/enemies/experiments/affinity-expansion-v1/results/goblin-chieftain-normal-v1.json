@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-chieftain-normal",
+  "targetId": "affinity-expansion-v1-goblin-chieftain-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-chieftain-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-chieftain-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-chieftain-normal\".\n\nSubject and threat:\n- Species: goblin-chieftain.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-chieftain-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Chieftain remains immediately recognizable\n- Battlefield duty remains Formation leader\n- broad command silhouette with rally standard, heavy cleaver, and layered trophies\n- Signature skills remain visually supportable: Command, Heavy cleave, Rally.\n- Counterplay remains visible: The still image preserves readable counterplay for Formation fighting, Disruption, Threat priority.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Formation fighting, Disruption, Threat priority.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 4 only: Goblin Chieftain identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "220cfd5f581b3cc0d21887af1d920f399d1e0019b8d6cb7949cb294cefe0920e",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/goblinoids-v1.webp", "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:33:38.923Z",
+      "generationCompletedAt": "2026-08-30T07:34:05.223Z",
+      "inspectionCompletedAt": "2026-08-30T07:34:14.223Z",
+      "generationDurationMs": 26300,
+      "inspectionDurationMs": 9000,
+      "totalWallTimeMs": 35300,
+      "sourceOutputId": "exec-fd2aab39-e8e9-47c0-aaca-4721a2e83a8d.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was fully rendered with continuous charcoal backdrop and cracked-stone floor detail." },
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The full standard was visible, but its highest spear tip entered the declared outer eight-percent top border." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished adult goblin chieftain appeared with no duplicate or incidental subject." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical safe-frame-v4 prompt bytes and both ordered manifest references were submitted." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The broad adult goblin, heavy cleaver, rally standard, layered trophies, command posture, anatomy, and equipment grips satisfied the identity and duty contract." },
+        { "criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Only worn hide, cloth, wood, iron, bone, natural goblin anatomy, and neutral environmental treatment were visible." }
+      ],
+      "retryReason": "A targeted framing edit was required to move the rally-standard spear tip and every hard extent into the central eighty-four-percent safety region without changing the successful chieftain design."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-goblin-chieftain-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-goblin-chieftain-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Goblin Chieftain Normal render; do not redesign or regenerate a different character.\n\nPreserve exactly: one standard-threat adult Goblin Chieftain with exactly two arms and two legs; the same mature broad individual goblin face, pointed ears, command silhouette, proportions, pose, expression, and grounded stance; the same rally standard, heavy cleaver, layered trophies, command medallion, armor, cloak, clothing, hands, feet, joints, and equipment grips; readable formation-leader duty supporting Command, Heavy cleave, and Rally; readable formation-fighting, disruption, and threat-priority counterplay; strictly unaffiliated Normal construction using only worn hide, cloth, wood, iron, bone, and natural goblin anatomy; the same neutral lighting, charcoal-to-midnight backdrop, cracked-stone floor, premium realistic painterly Pack 2 finish, material wear, and detail. Preserve absolutely no elemental glow, affinity-coded material substitution, magical anatomy, magical wake, extra subject, extra limb, childlike proportions, glamour, sexualization, text, label, UI, frame, logo, watermark, or published-character resemblance.\n\nChange only framing: uniformly scale the complete existing chieftain and every equipment extent down and recenter the whole composition so the rally standard's highest spear tip, both horn tips, every hanging trophy and cloth tail, the complete heavy cleaver and both blade tips, both ears, both hands and every finger, both feet and every toe, the cloak, and the full contact shadow fit inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving a clearly empty border of at least 8 percent on all four sides. Do not crop, hide, reshape, add, remove, mirror, or alter any body part, equipment item, material, counterplay cue, unaffiliated treatment, or pose. Finish every canvas region.",
+      "promptHash": "ad481986961c38ac02008ad6eff0fcb65a9b801edd016565efb46be9356dbc3c",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/goblinoids-v1.webp", "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-fd2aab39-e8e9-47c0-aaca-4721a2e83a8d.png",
+        "contentHash": "63dc5d43b5af8e8140860f770129dbb89959b7bfa563df1fe0ec0e47d3bf8e4c"
+      },
+      "requestStartedAt": "2026-08-30T07:34:34.208Z",
+      "generationCompletedAt": "2026-08-30T07:35:12.508Z",
+      "inspectionCompletedAt": "2026-08-30T07:35:21.508Z",
+      "generationDurationMs": 38300,
+      "inspectionDurationMs": 9000,
+      "totalWallTimeMs": 47300,
+      "sourceOutputId": "exec-c024f022-97e5-4db3-bcd3-929b0a1cbe0a.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-c024f022-97e5-4db3-bcd3-929b0a1cbe0a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2132335,
+          "contentHash": "7bde0da4e7ff500a4cd1c41aae65f4633aecfda1a4d71f28b180fbbb20a99858"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2132335,
+          "contentHash": "7bde0da4e7ff500a4cd1c41aae65f4633aecfda1a4d71f28b180fbbb20a99858"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2132335,
+        "contentHash": "7bde0da4e7ff500a4cd1c41aae65f4633aecfda1a4d71f28b180fbbb20a99858"
+      },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "Every canvas region is intentionally finished with a continuous charcoal backdrop and cracked-stone floor." },
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The highest standard tip, horns, trophies, cloth tails, complete cleaver, ears, fingers, feet, cloak, and contact shadow now sit inside a generous empty border." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished adult goblin chieftain appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer, and the correction used only the exact preceding source with its recorded hash." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "A mature broad individual goblin with rally standard, practical heavy cleaver, layered bone trophies, command medallion, grounded formation-leader stance, and readable disruption priority preserves every declared invariant." },
+        { "criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two arms and two legs remain visible with coherent joints, five-digit fantasy hands, feet, cleaver grip, standard grip, and stable floor contact." },
+        { "criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "The retained chieftain uses natural goblin anatomy and worn hide, cloth, wood, iron, bone, and stone only, with no elemental substance, glow, magical anatomy, or magical wake." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong adult Goblin Chieftain, command-standard, heavy-cleaver, and trophy cues." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds no elemental material, glow, magical anatomy, or affinity wake." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent worn materials, controlled neutral lighting, cracked floor, and charcoal backdrop remain cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No text, UI, frame, logo, watermark, extra creature, extra limb, childlike form, human glamour, sexualization, glow, or published-character cue is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact correction source without normalization; dimensions, media type, byte count, and SHA-256 match." },
+        { "criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared files, review decisions, application code, plan, repository history, or unrelated file was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-chieftain-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:33:38.923Z",
+  "completedAt": "2026-08-30T07:38:00.000Z",
+  "totalWallTimeMs": 261077,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-chieftain-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-skirmisher-wood",
+  "targetId": "affinity-expansion-v1-goblin-skirmisher-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-skirmisher-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-skirmisher-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-skirmisher-wood\".\n\nSubject and threat:\n- Species: goblin-skirmisher.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-skirmisher-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Skirmisher remains immediately recognizable\n- Battlefield duty remains Mobile melee pressure\n- lean mobile knife fighter with light layered scavenged clothing\n- Signature skills remain visually supportable: Knife fighting, Feinting, Pack movement.\n- Counterplay remains visible: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus. Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 1 only: Goblin Skirmisher identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "d29a37603bf3c94700c11b77066f3068ee97650000ba143a504b441ebb05f392",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T07:15:58.141Z",
+      "generationCompletedAt": "2026-08-30T07:16:16.641Z",
+      "inspectionCompletedAt": "2026-08-30T07:16:35.709Z",
+      "generationDurationMs": 18500,
+      "inspectionDurationMs": 19068,
+      "totalWallTimeMs": 37568,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-71ec342d-1301-40af-85b0-1f4fe99d2be3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-71ec342d-1301-40af-85b0-1f4fe99d2be3.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2022107,
+          "contentHash": "05ed339ddd1c6d3efc70e273890594d3487193ad68e2e21bd9107cf259593f12"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2022107,
+          "contentHash": "05ed339ddd1c6d3efc70e273890594d3487193ad68e2e21bd9107cf259593f12"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2022107,
+        "contentHash": "05ed339ddd1c6d3efc70e273890594d3487193ad68e2e21bd9107cf259593f12"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The 1536 by 1024 canvas is fully rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The head, ears, both knife tips, both hands, both feet, clothing tails, roots, and localized growth remain inside the central eighty-four percent with a clearly empty border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete adult goblin appears with no duplicate or incidental subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The submitted prompt exactly matched the safe-frame-v4 canonical renderer without a terminal newline at SHA-256 d29a37603bf3c94700c11b77066f3068ee97650000ba143a504b441ebb05f392, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The character is an adult goblin biped with exactly two arms and two legs, coherent hands and feet, grounded weight, believable joints, and secure dual-knife grips."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low side-on ready stance, lean build, paired short knives, exposed weapon hands, and light scavenged layers clearly communicate mobile melee pressure, feinting, and pack movement."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The goblin remains immediately recognizable and adult without childlike proportions, ogre mass, glamour, sexualization, role drift, or extra limbs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark-textured localized anatomy, root-bound armor and clothing interfaces, resin-seamed wooden knife construction, and living articulation change material, anatomy, equipment, and counterplay rather than acting as a brown recolor or pasted foliage."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright resin seams and fresh growth lines remain visible at the knife bindings, wrists, and exposed joints, while the open guard makes weapon handling and interruption points readable."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong adult Goblin Skirmisher face, ears, lean body, paired knives, and mobile posture."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending human review; target-aware inspection finds integrated bark, roots, resin, wooden equipment, and purposeful living growth across multiple dimensions."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly Pack 2 finish, coherent bark, hide, cloth, wood, and resin materials, restrained local emission, cracked floor, charcoal backdrop, and neutral key light remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, duplicate body, crop, blank region, decorative antlers, pasted foliage, sexualization, or published-character resemblance is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact built-in imagegen source without normalization; source and retained dimensions, media type, byte count, and SHA-256 05ed339ddd1c6d3efc70e273890594d3487193ad68e2e21bd9107cf259593f12 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared manifest, catalog, review evidence, plan, application code, promotion decision, repository history, or unrelated file was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-skirmisher-wood-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:15:58.141Z",
+  "completedAt": "2026-08-30T07:17:03.817Z",
+  "totalWallTimeMs": 65676,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-skirmisher-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

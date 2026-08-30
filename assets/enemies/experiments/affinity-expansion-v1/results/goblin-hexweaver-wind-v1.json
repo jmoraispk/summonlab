@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-hexweaver-wind",
+  "targetId": "affinity-expansion-v1-goblin-hexweaver-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-hexweaver-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-hexweaver-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-hexweaver-wind\".\n\nSubject and threat:\n- Species: goblin-hexweaver.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-hexweaver-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Hexweaver remains immediately recognizable\n- Battlefield duty remains Telegraphed magical control\n- goblin caster with a compact ritual focus, binding marks, and open casting hand\n- Signature skills remain visually supportable: Ember hex, Binding mark, Concentration.\n- Counterplay remains visible: The still image preserves readable counterplay for Ward reading, Interrupts, Focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Ward reading, Interrupts, Focus. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 3 only: Goblin Hexweaver identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "64b4bcd639fb3ab35a7729bb3ec055bffc46a29375865bf03d3035171177a4ec",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T07:34:06.008Z",
+      "generationCompletedAt": "2026-08-30T07:34:26.108Z",
+      "inspectionCompletedAt": "2026-08-30T07:35:43.958Z",
+      "generationDurationMs": 20100,
+      "inspectionDurationMs": 77850,
+      "totalWallTimeMs": 97950,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-9a262047-858f-4e0c-a581-2bf5dd3b7e0b.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial 1536 by 1024 canvas was fully rendered with a continuous charcoal backdrop and cracked-stone floor and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete Hexweaver was visible, but the top Wind vortex, outer-right debris wake, and lowest foot entered the declared eight-percent border and required a framing-only correction."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Goblin Hexweaver appeared with no duplicate or incidental subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the safe-frame-v4 canonical renderer without a terminal newline at SHA-256 64b4bcd639fb3ab35a7729bb3ec055bffc46a29375865bf03d3035171177a4ec, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Known-target inspection found one adult two-arm/two-leg goblin caster with compact ritual focus, visible binding marks, open casting hand, coherent grounded anatomy, and telegraphed concentration."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind changed the swept clothing silhouette, directional motion, vortex attack telegraph, and debris-bearing environmental wake through coherent pressure channels rather than hue or transparency alone."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed focus and open hand frame a readable still center within the directional pressure pattern, preserving ward reading, interruption, and focus counterplay."
+        }
+      ],
+      "retryReason": "A targeted framing edit was required to preserve the successful Wind Hexweaver while moving the complete body, focus, clothing tails, debris, pressure wake, and contact shadow into the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-goblin-hexweaver-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-goblin-hexweaver-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Goblin Hexweaver Wind render; do not redesign or regenerate a different character.\n\nPreserve exactly: one standard-threat adult goblin hexweaver with exactly two arms and two legs; recognizable mature goblin face and ears; compact ritual focus held securely in one hand, visible binding marks, and one open casting hand; credible hands, fingers, feet, joints, equipment grip, and grounded weight; telegraphed magical-control posture supporting Ember hex, Binding mark, and Concentration; practical layered worn leather, hide, cloth, wraps, belt, charms, and footwear; readable focus, ward, and interrupt counterplay; the same strongly directional Wind construction through swept cloth silhouette, coherent vapor channels, debris flow, pressure distortion, telegraphed vortex, environmental wake, and calm still center around the committed concentration, with no pale recolor, transparency-only treatment, or directionless particles; the same premium realistic painterly Pack 2 dark-fantasy finish, charcoal-to-midnight backdrop, cracked-stone floor, controlled neutral light, pose, face, proportions, expression, clothing, equipment, and detail; absolutely no extra subject, extra limb, childlike proportions, glamour, sexualization, text, label, UI, frame, logo, or watermark.\n\nChange only framing: uniformly scale the complete existing hexweaver, every equipment extent, and the entire Wind pressure-and-debris wake down slightly and recenter them so the ritual focus and all hanging elements, both ears, both hands and every finger, both feet and every toe, every swept clothing tail, all vapor channels, every debris fragment, the calm center, and the complete contact shadow fit inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving a clearly empty border of at least 8 percent on all four sides. Do not crop, hide, reshape, add, remove, mirror, or alter any body part, equipment item, affinity feature, counterplay cue, or pose. Finish every canvas region.",
+      "promptHash": "fd2d78fcac935ab856dea755baf777ec9da0c2b6ce8c62dd756bea6422049fe6",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-9a262047-858f-4e0c-a581-2bf5dd3b7e0b.png",
+        "contentHash": "55872507c56641d65fb1ef3ea10704a81f2f7989a57c20297ece6d56edbd9873"
+      },
+      "requestStartedAt": "2026-08-30T07:35:58.963Z",
+      "generationCompletedAt": "2026-08-30T07:36:38.663Z",
+      "inspectionCompletedAt": "2026-08-30T07:37:03.219Z",
+      "generationDurationMs": 39700,
+      "inspectionDurationMs": 24556,
+      "totalWallTimeMs": 64256,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-2b50ed63-0932-4814-ab96-523733187ab4.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-2b50ed63-0932-4814-ab96-523733187ab4.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2172467,
+          "contentHash": "e59ae994a367a182096307739f800fcd2b0327ca6de3e6f01030a52c1e9db903"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2172467,
+          "contentHash": "e59ae994a367a182096307739f800fcd2b0327ca6de3e6f01030a52c1e9db903"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2172467,
+        "contentHash": "e59ae994a367a182096307739f800fcd2b0327ca6de3e6f01030a52c1e9db903"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected 1536 by 1024 canvas is fully finished with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The ritual focus, both ears, both hands, both feet, all clothing tails, complete vortex and vapor channels, every debris fragment, calm center, and contact shadow remain inside the central eighty-four percent with a clearly empty border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete adult Goblin Hexweaver appears, with no duplicate or incidental subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted framing correction retain exact SHA-256 hashes; target references remain recorded in order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The character remains an adult goblin biped with exactly two arms and two legs, coherent hands and feet, grounded weight, believable joints, and secure focus grip."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The compact ritual focus, visible binding marks, open casting hand, planted concentration stance, and readable vortex center clearly communicate telegraphed magical control."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All identity, anatomy, duty, equipment, and counterplay cues remain visible without childlike proportions, glamour, sexualization, role drift, or extra limbs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Swept clothing silhouette, coherent vapor channels, debris flow, pressure distortion, vortex telegraph, and wake change silhouette, motion, attack telegraph, and environmental wake rather than acting as a pale recolor or transparent overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The calm still center around the exposed concentration gesture and compact focus remains legible within the surrounding directional pressure arcs, preserving ward reading, interruption, and focus responses."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong adult Goblin Hexweaver face, ears, ritual focus, binding marks, open casting hand, and concentration silhouette."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wind recognition remains pending human review; target-aware inspection finds integrated directional cloth, vapor, debris, pressure distortion, vortex, and attack wake rather than a hue-only treatment."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly Pack 2 finish, coherent leather, cloth, metal, skin, vapor, and debris materials, cracked floor, charcoal backdrop, and controlled neutral key remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, duplicate body, crop, blank region, sexualization, transparency-only treatment, directionless particle field, or published-character resemblance is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 e59ae994a367a182096307739f800fcd2b0327ca6de3e6f01030a52c1e9db903 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared manifest, catalog, review evidence, plan, application code, promotion decision, repository history, or unrelated file was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-hexweaver-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:34:06.008Z",
+  "completedAt": "2026-08-30T07:37:55.000Z",
+  "totalWallTimeMs": 228992,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-hexweaver-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

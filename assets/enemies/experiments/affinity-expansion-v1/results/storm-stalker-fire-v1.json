@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-storm-stalker-fire",
+  "targetId": "affinity-expansion-v1-storm-stalker-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-storm-stalker-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-storm-stalker-fire\".\n\nSubject and threat:\n- Species: storm-stalker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: storm-stalker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Storm Stalker remains immediately recognizable\n- Battlefield duty remains Lane assassin\n- lean quadrupedal thunderhead with forward prongs and trailing vapor\n- prongs align and a straight ionized lane appears before the charge\n- Counterplay remains visible: grounded rear condensate node\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: grounded rear condensate node The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 3 only: Storm Stalker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a0fb7369c176a4766672b11362f12a79c5c0c5ebd0eb054dae809a305587279c",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T08:09:09.638Z",
+      "generationCompletedAt": "2026-08-30T08:09:38.338Z",
+      "inspectionCompletedAt": "2026-08-30T08:10:22.626Z",
+      "generationDurationMs": 28700,
+      "inspectionDurationMs": 44288,
+      "totalWallTimeMs": 72988,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-58795fae-4bcc-4e9f-bee7-9574219e09c9.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The ionized charge lane extended through the lower-left safety border." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Fire Storm Stalker appeared." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt was submitted without terminal newline at SHA-256 a0fb7369c176a4766672b11362f12a79c5c0c5ebd0eb054dae809a305587279c with references in order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "The prong structure read as a toothed jawed animal head and only three feet were clearly countable, so the declared faceless exactly-four-legged thunderhead anatomy was not fully legible." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Blackened plates, ember seams, combustion, smoke, heat distortion, motion, telegraph, and wake formed strong integrated Fire construction." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The grounded rear condensate heat-sink node remained exposed." }
+      ],
+      "retryReason": "A targeted edit was required to reveal exactly four legs, remove the jawed animal-head read, and move the complete ionized lane into the safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-storm-stalker-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Storm Stalker Fire render; preserve its successful premium realistic painterly Pack 2 finish, charcoal-to-midnight backdrop, cracked-stone floor, controlled neutral lighting, lean low lane-charge pose, heat-blackened load-bearing surfaces, internal ember seams, controlled combustion, smoke, localized heat distortion, directional motion, straight ionized charge lane, grounded rear condensate heat-sink node, and full-canvas completion.\n\nPreserve exactly one elite Storm Stalker Lane assassin: one coherent substance-bodied faceless quadrupedal thunderhead around one readable core; exactly four connected weight-bearing legs and exactly four individually countable complete grounded feet, no more and no fewer; one low shoulder mass; one forward wedge thunderhead; exactly two narrow aligned forward prongs; trailing smoke-vapor; a straight ionized lane before the charge; and the existing exposed grounded rear condensate heat-sink node between combustion cycles. Fire must remain structural through blackened plates, ember seams, combustion, smoke, and heat distortion without a uniform orange wash.\n\nCorrect only anatomy, forward read, and framing: reveal and separate all four leg roots, joints, and feet clearly beneath the same body while preserving the low charge pose and believable weight; merge the jaw-like front into one solid faceless wedge chassis, remove every eye, mouth, tooth, jaw, muzzle, nostril, ear, animal face, and natural-wolf or dragon cue, and retain exactly two parallel projections solely as aligned charge prongs. Uniformly scale and recenter the complete existing creature, all four feet, both prong tips, full smoke wake, rear node, complete ionized lane, sparks, heat distortion, and shadow so every extent fits inside the central 84 percent of a fully finished 1536 x 1024 canvas with at least 8 percent clearly empty border on all four sides.\n\nDo not alter the Fire materials, rear node, one-core plan, pose, battlefield duty, lighting, or style. No extra limb, fifth leg, humanoid, animal head, natural wolf, dragon, wing, decorative overlay, extra subject, duplicate creature, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance.",
+      "promptHash": "6273c008c0062e42722a02f1b0635bb918e94fd43a9344cc0e43093f85f45b0f",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-58795fae-4bcc-4e9f-bee7-9574219e09c9.png", "contentHash": "a4ca3e16dde22cf0374b43be9c3facdab65b1881559710b4c391eccf4e29e5fe" },
+      "requestStartedAt": "2026-08-30T08:10:44.374Z",
+      "generationCompletedAt": "2026-08-30T08:11:02.674Z",
+      "inspectionCompletedAt": "2026-08-30T08:11:41.318Z",
+      "generationDurationMs": 18300,
+      "inspectionDurationMs": 38644,
+      "totalWallTimeMs": 56944,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-e5b30613-beaa-46ff-9a7a-4f11b0bed74e.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-e5b30613-beaa-46ff-9a7a-4f11b0bed74e.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2024772, "contentHash": "c1169e2b2925a363eb1bcc5dff2f1bc40a814bf88c1d91b57799b62d83bb8276" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/fire-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2024772, "contentHash": "c1169e2b2925a363eb1bcc5dff2f1bc40a814bf88c1d91b57799b62d83bb8276" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/fire-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2024772, "contentHash": "c1169e2b2925a363eb1bcc5dff2f1bc40a814bf88c1d91b57799b62d83bb8276" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete four-legged body, both prongs, full lane, smoke, sparks, rear node, heat distortion, and shadow fit within the central eighty-four percent on a fully finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Fire Storm Stalker appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and correction prompts retain exact hashes, ordered target references, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "One lean low faceless thunderhead has exactly four connected weight-bearing legs and four countable feet, one coherent core plan, one wedge front, exactly two aligned prongs, straight lane, trailing smoke-vapor, and grounded rear node without animal-head, wolf, dragon, or extra-limb drift." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Heat-blackened load-bearing plates, internal ember seams, controlled combustion, smoke, localized distortion, directional charge motion, ionized telegraph, and environmental wake change material, motion, attack telegraph, and wake without a uniform glow." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The grounded rear condensate heat-sink node remains visibly exposed behind the committed lane charge between combustion cycles." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware Storm Stalker cues are strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Fire recognition remains pending human review; target-aware material, combustion, smoke, heat, and wake cues are strong." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly materials, charcoal backdrop, cracked floor, controlled neutral key, and restrained local emission remain cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No humanoid, animal face, wolf, dragon, wing, fifth leg, uniform orange wash, text, UI, watermark, crop, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 2,024,772 bytes, and SHA-256 c1169e2b2925a363eb1bcc5dff2f1bc40a814bf88c1d91b57799b62d83bb8276 match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Fire candidate and result paths were written; no shared file, unrelated path, or git history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-storm-stalker-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:09:09.638Z",
+  "completedAt": "2026-08-30T08:11:55.000Z",
+  "totalWallTimeMs": 165362,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/storm-stalker-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

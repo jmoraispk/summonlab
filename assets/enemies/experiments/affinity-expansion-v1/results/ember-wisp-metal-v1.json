@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ember-wisp-metal",
+  "targetId": "affinity-expansion-v1-ember-wisp-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-ember-wisp-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ember-wisp-metal\".\n\nSubject and threat:\n- Species: ember-wisp.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ember-wisp-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Ember Wisp remains immediately recognizable\n- Battlefield duty remains Ignition harrier\n- small airborne coal body, streaming sparks, no defended front\n- compresses to white heat before a darting ignition pass\n- Counterplay remains visible: cool mineral core exposed after its pass\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: cool mineral core exposed after its pass Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 1 only: Ember Wisp identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "925812b756a52ced8cd2e0f9b993ec11fffe67819306776854ea57ca2d38df62",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:50:16.972Z",
+      "generationCompletedAt": "2026-08-30T07:50:57.726Z",
+      "inspectionCompletedAt": "2026-08-30T07:51:10.648Z",
+      "generationDurationMs": 40754,
+      "inspectionDurationMs": 12922,
+      "totalWallTimeMs": 53676,
+      "sourceOutputId": "exec-dc86335a-e170-4723-b4e9-40facb485cbd.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-dc86335a-e170-4723-b4e9-40facb485cbd.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2282863,
+          "contentHash": "a1089acb62b482756f1eeb9bdd412aaa7ff600a289bda5e794ac9320a6f60d93"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2282863,
+          "contentHash": "a1089acb62b482756f1eeb9bdd412aaa7ff600a289bda5e794ac9320a6f60d93"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2282863,
+        "contentHash": "a1089acb62b482756f1eeb9bdd412aaa7ff600a289bda5e794ac9320a6f60d93"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full charcoal backdrop and cracked-stone floor are continuously finished with no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every articulated plate, hard tip, controlled fragment, spark, and complete directional wake remains inside the central 84 percent with visible finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one small airborne elemental body appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The submitted text exactly matches the canonical safe-frame-v4 renderer and retained provenance is complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The compact airborne Ember Wisp, streaming sparks, exposed undefended front, compressed ignition posture, one coherent body around one core, and darting harrier wake preserve every identity, anatomy, and duty invariant."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Metal forms the anatomy through forged interlocking plates, articulated load paths, metallic marrow, magnetically spaced fragments, transformed directional spars, and a materially distinct core rather than an armor overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The cool pale-blue mineral core is completely exposed at the undefended front while articulated joints and fragment gaps materially reveal the controlling structure after its pass."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Ember Wisp recognition remains pending human review; known-target inspection finds strong compact airborne core, asymmetric ignition, and directional spark-wake cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Metal recognition remains pending human review; known-target inspection finds strong forged anatomy, articulated plates, metallic marrow, controlled fragments, and magnetic-core cues."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One coherent non-humanoid body plan surrounds one readable core; forged material carries every connected mass and the tapered fragments form directional wake rather than extra limbs."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pointed compressed body, exposed front core, white-hot seams, forward articulated spars, and long tapered fragment wake support an Ignition harrier preparing a darting pass."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, readable forged surfaces, restrained local heat, neutral key, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, watermark, duplicate, humanoid, ordinary armor, decorative overlay, extra limb, crop, or sexualization appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned PNG was exclusive-copied without normalization; source and retained dimensions, media type, bytes, and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ember-wisp-metal-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:50:16.972Z",
+  "completedAt": "2026-08-30T07:52:30.000Z",
+  "totalWallTimeMs": 133028,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

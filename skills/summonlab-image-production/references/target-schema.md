@@ -4,7 +4,9 @@ Read this reference before every production job.
 
 ## Target
 
-The target is immutable input with `schemaVersion: image-production-target-v1`.
+The target is immutable input with `schemaVersion: image-production-target-v1` for the original
+60-image experiment or `image-production-target-v2` for the isolated 34-archetype expansion. The
+version is part of the immutable contract; never translate one version into the other inside a job.
 
 Required top-level fields:
 
@@ -59,11 +61,15 @@ references, shared catalogs, application code, review evidence, or repository hi
 
 ## Path rules
 
-All paths are normalized, workspace-relative, and contained beneath:
+All paths are normalized, workspace-relative, and contained beneath the target's declared experiment
+root:
 
 ```text
-assets/enemies/experiments/affinity-workflow-v1/
+assets/enemies/experiments/<experiment-id>/
 ```
+
+The current supported roots are `affinity-workflow-v1` and `affinity-expansion-v1`. A target and
+assignment may own paths in exactly one root and must never write into the other experiment.
 
 The affinity experiment's first-run candidate paths use:
 

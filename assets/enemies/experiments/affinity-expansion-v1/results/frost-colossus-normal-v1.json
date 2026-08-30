@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-colossus-normal",
+  "targetId": "affinity-expansion-v1-frost-colossus-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-colossus-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-frost-colossus-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-colossus-normal\".\n\nSubject and threat:\n- Species: frost-colossus.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: frost-colossus-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Frost Colossus remains immediately recognizable\n- Battlefield duty remains Zone-denial boss\n- towering glacier torso, broad planted feet, and one sweeping ice arm\n- frost rings crawl across the floor before a freezing sweep\n- Counterplay remains visible: dark stone heart visible through cracked chest ice\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: dark stone heart visible through cracked chest ice\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 4 only: Frost Colossus identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f5e04d7c9e617386062407ce55c837a96131fc0875b46c26854db1cd97823895",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:15:47.615Z",
+      "generationCompletedAt": "2026-08-30T08:16:35.979Z",
+      "inspectionCompletedAt": "2026-08-30T08:20:04.280Z",
+      "generationDurationMs": 48364,
+      "inspectionDurationMs": 208301,
+      "totalWallTimeMs": 256665,
+      "sourceOutputId": "exec-cf6e7584-0421-4605-b7f4-8c8873d4f771.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial sweep arm and outer frost ring entered the declared eight-percent safety margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial chest core read as blue crystalline ice rather than the required non-emissive dark stone heart."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered Frost Colossus appeared on a complete floor and backdrop."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The towering coherent glacier biped, broad planted feet, dominant sweeping arm, and native floor-ring telegraph remained recognizable and connected."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The render used established species-native glacier material and restrained neutral frost effects without a second affinity construction."
+        }
+      ],
+      "retryReason": "Use the single targeted edit to restore the central-84-percent safe frame and make the counterplay core visibly dark, rough, non-emissive stone while preserving every passing Frost Colossus trait."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-frost-colossus-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-frost-colossus-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Frost Colossus image; do not create a different creature or composition.\n\nPreserve all passing traits exactly: one premium realistic painterly Pack 2 dark-fantasy Frost Colossus; exactly one coherent substance-bodied elemental biped; towering glacier torso; broad planted feet; one dominant sweeping ice arm; readable frost rings crawling across the cracked-stone floor before a freezing sweep; neutral charcoal-to-midnight backdrop; controlled neutral key; restrained local effects; no armor, equipment, text, UI, frame, logo, watermark, extra creature, duplicate body, extra limbs, sexualization, or published-character resemblance.\n\nMake only these targeted corrections:\n1. Scale and reposition the entire creature AND every frost-ring/effect-wake extent so every hard extent fits inside the central 84 percent of both canvas dimensions. Leave a clearly empty border of at least 8 percent on all four sides. Nothing may approach or cross the safe-area boundary.\n2. Replace the blue crystalline/emissive chest core with one clearly visible DARK CHARCOAL STONE HEART seen through cracked chest ice. The heart must read as non-emissive rough stone, not blue ice, not a gemstone, not metal, and not magical glow. Keep only restrained neutral icy light elsewhere.\n\nKeep the same 1536 x 1024 image/png canvas and fully finish every region. This is a targeted edit, not a complete regeneration.",
+      "promptHash": "aa3c77ed7ef81801a4fc024335e37a2dd6a52188d52b6a042b2e9711c9309788",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-cf6e7584-0421-4605-b7f4-8c8873d4f771.png",
+        "contentHash": "49c51fdbc246288f36ad8718d5c5fdc5f72a8f146ab9a1bb3eec255b9f5e32ac"
+      },
+      "requestStartedAt": "2026-08-30T08:20:04.280Z",
+      "generationCompletedAt": "2026-08-30T08:20:28.122Z",
+      "inspectionCompletedAt": "2026-08-30T08:22:00.799Z",
+      "generationDurationMs": 23842,
+      "inspectionDurationMs": 92677,
+      "totalWallTimeMs": 116519,
+      "sourceOutputId": "exec-347a654a-490a-4b52-bf8a-ec7d1c171246.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-347a654a-490a-4b52-bf8a-ec7d1c171246.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2634522,
+          "contentHash": "5b4f7be063209465e8ee907709050cbaffbfe581c57c0b7fbfaf40da2ecd90a4"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2634522,
+          "contentHash": "5b4f7be063209465e8ee907709050cbaffbfe581c57c0b7fbfaf40da2ecd90a4"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2634522,
+        "contentHash": "5b4f7be063209465e8ee907709050cbaffbfe581c57c0b7fbfaf40da2ecd90a4"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The charcoal backdrop and cracked-stone floor are fully finished with no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The crown, both arms, both broad feet, complete frost ring, loose fragments, and every hard effect extent remain inside the central 84 percent with clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Frost Colossus appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted text exactly matches the canonical renderer; ordered references and correction linkage are retained."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The result is an immediately recognizable towering glacier biped with one coherent core-centered body, broad planted feet, and one dominant sweeping ice arm rather than an armored humanoid."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full crawling frost ring and poised sweeping arm clearly communicate the Zone-denial boss telegraph and impending freezing sweep."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A large non-emissive dark charcoal stone heart is clearly visible through cracked chest ice as the intended counterplay point."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only established species-native glacier mass and restrained neutral frost telegraph remain; there is no added affinity-coded material substitution, colored glow, or unexplained foreign elemental anatomy."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong glacier torso, sweep-arm, planted-feet, frost-ring, and stone-heart cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds no foreign affinity treatment beyond native Frost Colossus materials and duty telegraph."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, coherent translucent ice, rough stone heart, controlled neutral key, and restrained emission remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, watermark, equipment, extra limb, ordinary armor, sexualization, published-character resemblance, crop, or unfinished region appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction PNG was exclusive-copied; source and retained dimensions, bytes, media type, and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-frost-colossus-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:15:47.615Z",
+  "completedAt": "2026-08-30T08:22:00.799Z",
+  "totalWallTimeMs": 373184,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

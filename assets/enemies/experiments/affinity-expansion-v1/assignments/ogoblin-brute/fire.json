@@ -1,0 +1,27 @@
+{
+	"schemaVersion": "image-production-assignment-v1",
+	"assignmentId": "assignment-affinity-expansion-v1-ogoblin-brute-fire",
+	"targetId": "affinity-expansion-v1-ogoblin-brute-fire",
+	"skillVersion": "summonlab-image-production-v2",
+	"assignedAt": "2026-08-30T20:00:00.000Z",
+	"dryRun": false,
+	"retryCeiling": 1,
+	"permittedOutputs": {
+		"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/fire-v1.png",
+		"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ogoblin-brute-fire-v1.json"
+	},
+	"forbiddenSharedPaths": [
+		"assets/enemies/experiments/affinity-expansion-v1/manifest.json",
+		"assets/enemies/experiments/affinity-expansion-v1/review/catalog.json",
+		"assets/enemies/experiments/affinity-expansion-v1/review/blind-review.json",
+		"assets/enemies/experiments/affinity-expansion-v1/review/evaluation.json",
+		"assets/enemies/experiments/affinity-expansion-v1/review/contact-sheet.png",
+		"assets/enemies/experiments/affinity-expansion-v1/generation-record.md"
+	],
+	"completionContract": {
+		"oneTargetOneImage": true,
+		"structuredResultRequired": true,
+		"sharedFilesMustRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

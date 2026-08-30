@@ -1,0 +1,121 @@
+{
+	"schemaVersion": "image-production-result-v1",
+	"resultId": "result-affinity-expansion-v1-goblin-skirmisher-metal",
+	"targetId": "affinity-expansion-v1-goblin-skirmisher-metal",
+	"assignmentId": "assignment-affinity-expansion-v1-goblin-skirmisher-metal",
+	"skillVersion": "summonlab-image-production-v2",
+	"status": "candidate",
+	"attempts": [
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-skirmisher-metal-1",
+			"attemptNumber": 1,
+			"precedingAttemptId": null,
+			"conclusion": "accepted-by-producer",
+			"exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-skirmisher-metal\".\n\nSubject and threat:\n- Species: goblin-skirmisher.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-skirmisher-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Skirmisher remains immediately recognizable\n- Battlefield duty remains Mobile melee pressure\n- lean mobile knife fighter with light layered scavenged clothing\n- Signature skills remain visually supportable: Knife fighting, Feinting, Pack movement.\n- Counterplay remains visible: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus. Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 1 only: Goblin Skirmisher identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+			"promptHash": "1a53cdc8305b743b522dcdce665b6a713ef133e8215b99dd468d344210b5924e",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": null,
+			"requestStartedAt": "2026-08-30T07:15:16.000Z",
+			"generationCompletedAt": "2026-08-30T07:15:46.958Z",
+			"inspectionCompletedAt": "2026-08-30T07:15:55.958Z",
+			"generationDurationMs": 30958,
+			"inspectionDurationMs": 9000,
+			"totalWallTimeMs": 39958,
+			"sourceOutputId": "exec-d4b024c0-1b6e-4a46-aec4-0e89c4572ae4",
+			"persistence": {
+				"operation": "exclusive-copy",
+				"elapsedMs": 29,
+				"source": {
+					"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-d4b024c0-1b6e-4a46-aec4-0e89c4572ae4.png",
+					"width": 1536,
+					"height": 1024,
+					"mediaType": "image/png",
+					"bytes": 2111158,
+					"contentHash": "a4a514a0cfb84d3746477562954015bd5b108150da18a88be48fb4eb8c983e2f"
+				},
+				"retained": {
+					"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/metal-v1.png",
+					"mediaType": "image/png",
+					"width": 1536,
+					"height": 1024,
+					"bytes": 2111158,
+					"contentHash": "a4a514a0cfb84d3746477562954015bd5b108150da18a88be48fb4eb8c983e2f"
+				}
+			},
+			"output": {
+				"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/metal-v1.png",
+				"mediaType": "image/png",
+				"width": 1536,
+				"height": 1024,
+				"bytes": 2111158,
+				"contentHash": "a4a514a0cfb84d3746477562954015bd5b108150da18a88be48fb4eb8c983e2f"
+			},
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Full goblin silhouette, knife, feet, and orbiting metal fragments remain complete inside a generous border."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished goblin subject appears on a fully rendered stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the safe-frame-v4 canonical renderer and all references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Adult mobile goblin skirmisher anatomy, knife grip, grounded feint posture, layered scavenged clothing, and readable joints are preserved."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Metal affinity changes articulated anatomy, load-bearing armor-like plates, weapon construction, and magnetic fragment motion rather than applying a hue wash."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Bright chest core and exposed articulated joints remain distinct and readable as counterplay cues."
+				}
+			],
+			"retryReason": null
+		}
+	],
+	"selectedAttemptId": "attempt-affinity-expansion-v1-goblin-skirmisher-metal-1",
+	"failedCriteria": [],
+	"startedAt": "2026-08-30T07:15:16.000Z",
+	"completedAt": "2026-08-30T07:16:11.000Z",
+	"totalWallTimeMs": 55000,
+	"writtenOutputPaths": [
+		"assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/metal-v1.png",
+		"assets/enemies/experiments/affinity-expansion-v1/results/goblin-skirmisher-metal-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
+

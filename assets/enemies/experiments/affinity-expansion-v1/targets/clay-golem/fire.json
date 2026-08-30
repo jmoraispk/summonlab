@@ -1,0 +1,118 @@
+{
+	"schemaVersion": "image-production-target-v2",
+	"targetId": "affinity-expansion-v1-clay-golem-fire",
+	"assetId": "affinity-expansion-v1-clay-golem-fire",
+	"packId": "affinity-expansion",
+	"experimentId": "affinity-expansion-v1",
+	"promptProtocol": "safe-frame-v4",
+	"authoringProtocol": "semantic-v2",
+	"cohort": "breadth",
+	"speciesId": "clay-golem",
+	"affinity": "fire",
+	"affinityDesign": {
+		"alteredDimensions": ["material", "motion", "attack-telegraph", "environmental-wake"],
+		"expression": "heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion",
+		"counterplayCue": "The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. The internal core or heat sink becomes exposed between combustion cycles."
+	},
+	"threat": { "presentationTier": "standard", "referenceGrade": 4, "canonicalGrade": null },
+	"battlefieldDutyId": "clay-golem-duty",
+	"constructionMode": "constructed-humanoid",
+	"identityInvariants": [
+		"Clay Golem remains immediately recognizable",
+		"Battlefield duty remains Slow attrition wall",
+		"broad hand-shaped clay guardian with compression seams and a reforming core",
+		"Signature skills remain visually supportable: Body block, Crushing grip, Re-form.",
+		"Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing."
+	],
+	"anatomyInvariants": [
+		"exactly two articulated arms and two load-bearing legs",
+		"one coherent controlling core with credible manufactured joints and ground contact"
+	],
+	"permittedTransformations": ["material", "motion", "attack telegraph", "environmental wake"],
+	"prohibitedTraits": [
+		"living human anatomy",
+		"decorative affinity coating",
+		"extra or missing limbs",
+		"a uniform orange full-body glow that destroys material and anatomy detail"
+	],
+	"references": [
+		{
+			"path": "assets/enemies/review/constructs-v1.webp",
+			"purpose": "Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member",
+			"contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+		},
+		{
+			"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+			"purpose": "Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale",
+			"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+		}
+	],
+	"presentation": {
+		"styleContract": "Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.",
+		"medium": "premium realistic painterly raster creature concept",
+		"background": "neutral cracked-stone floor against a charcoal-to-midnight backdrop",
+		"lighting": "controlled neutral key with restrained local affinity emission and readable materials",
+		"composition": "Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.",
+		"canvas": { "width": 1536, "height": 1024, "mediaType": "image/png", "safeMarginPercent": 8 },
+		"negativePrompt": [
+			"No labels, text, UI, frame, logo, or watermark.",
+			"No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.",
+			"No resemblance to a published character or reference person.",
+			"No sexualized anatomy, costume, or pose."
+		]
+	},
+	"acceptanceCriteria": [
+		{
+			"criterionId": "complete-safe-frame",
+			"kind": "objective",
+			"description": "Entire silhouette, equipment, wings, tail, and every extremity are complete with at least eight percent safe margin.",
+			"required": true
+		},
+		{
+			"criterionId": "single-finished-subject",
+			"kind": "objective",
+			"description": "Exactly one subject appears and every canvas region is intentionally finished.",
+			"required": true
+		},
+		{
+			"criterionId": "protocol-provenance",
+			"kind": "objective",
+			"description": "The first submitted prompt exactly matches the canonical renderer and retained provenance is complete.",
+			"required": true
+		},
+		{
+			"criterionId": "manifest-fidelity",
+			"kind": "objective",
+			"description": "Every identity, anatomy, duty, counterplay, and prohibited-trait invariant is visibly satisfied.",
+			"required": true
+		},
+		{
+			"criterionId": "affinity-construction-fidelity",
+			"kind": "objective",
+			"description": "The affinity visibly changes at least two declared construction dimensions rather than acting as a color overlay.",
+			"required": true
+		},
+		{
+			"criterionId": "visible-counterplay-cue",
+			"kind": "objective",
+			"description": "The declared weak point or counterplay state remains readable through the affinity transformation.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-species-identity",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the exact archetype without seeing its label.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-affinity-integration",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the affinity through multiple visual dimensions.",
+			"required": true
+		}
+	],
+	"output": {
+		"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/fire-v1.png",
+		"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-fire-v1.json"
+	}
+}

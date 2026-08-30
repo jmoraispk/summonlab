@@ -1,0 +1,251 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-archer-normal",
+  "targetId": "affinity-expansion-v1-goblin-archer-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-archer-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-archer-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-archer-normal\".\n\nSubject and threat:\n- Species: goblin-archer.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-archer-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Archer remains immediately recognizable\n- Battlefield duty remains Ranged lane control\n- ranged shortbow hunter with quiver, braced draw, and lane-reading posture\n- Signature skills remain visually supportable: Shortbow, Repositioning, Target marking.\n- Counterplay remains visible: The still image preserves readable counterplay for Cover use, Shield use, Closing distance.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Cover use, Shield use, Closing distance.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 2 only: Goblin Archer identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6a4cb15f96de995148d5b447756ce67de8c5a8c3ed851acfbcbea45877e21e3a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T07:20:35.704Z",
+      "generationCompletedAt": "2026-08-30T07:20:53.904Z",
+      "inspectionCompletedAt": "2026-08-30T07:21:15.758Z",
+      "generationDurationMs": 18200,
+      "inspectionDurationMs": 21854,
+      "totalWallTimeMs": 40054,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-e38c75c7-2291-4d7b-bfa2-10fcbdbca698.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The initial canvas was fully rendered with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete archer was visible, but the upper bow tip and leading foot entered the declared outer eight-percent vertical border and required a framing-only correction."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult goblin archer appeared with no duplicate or incidental subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matched the safe-frame-v4 canonical renderer without a terminal newline at SHA-256 6a4cb15f96de995148d5b447756ce67de8c5a8c3ed851acfbcbea45877e21e3a, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Known-target inspection found one adult two-arm/two-leg goblin archer with a shortbow, quiver, braced draw, lane-reading posture, coherent equipment grip, and visible approach counterplay."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The character used only worn hide, leather, cloth, wood, iron, and natural goblin anatomy, with no elemental glow, affinity-coded material substitution, magical anatomy, or magical wake."
+        }
+      ],
+      "retryReason": "A targeted framing edit was required to preserve the successful unaffiliated Goblin Archer while moving the upper bow tip, front foot, and every equipment extent into the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-goblin-archer-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-goblin-archer-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Goblin Archer Normal render; do not redesign or regenerate a different character.\n\nPreserve exactly: one standard-threat adult goblin archer with exactly two arms and two legs; recognizable mature goblin face and ears; lean ranged-hunter build; braced shortbow draw with one securely nocked arrow, complete bow and bowstring, visible quiver and arrows; credible hands, fingers, feet, joints, equipment grip, and grounded weight; lane-reading combat posture supporting Shortbow, Repositioning, and Target marking; light layered worn leather, hide, cloth, wraps, belt, pouches, and practical footwear; readable open approach and committed draw counterplay for Cover use, Shield use, and Closing distance; strictly unaffiliated Normal materials with no elemental glow, affinity-coded material substitution, magical anatomy, or unexplained magical wake; the same premium realistic painterly Pack 2 dark-fantasy finish, charcoal-to-midnight backdrop, cracked-stone floor, controlled neutral light, pose, face, proportions, expression, clothing, equipment, and detail; absolutely no extra subject, extra limb, childlike proportions, glamour, sexualization, text, label, UI, frame, logo, or watermark.\n\nChange only framing: uniformly scale the complete existing archer and every equipment extent down slightly and recenter them so the whole bow—including both tips and string—the nocked arrow and arrowhead, all quiver arrows, both ears, both hands and every finger, both feet and every toe, every clothing tail, and the complete floor contact shadow fit inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving a clearly empty border of at least 8 percent on all four sides. Do not crop, hide, reshape, add, remove, mirror, or alter any body part, equipment item, counterplay cue, unaffiliated treatment, or pose. Finish every canvas region.",
+      "promptHash": "0486c5450b7f17afacfc0631fde8ef88bb49a5fb59e05030fb8aa656cd027e3a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-e38c75c7-2291-4d7b-bfa2-10fcbdbca698.png",
+        "contentHash": "b1a9bad6591edf5df71d8e66a0ed4a93319d229565435447bb4e78514b9f4767"
+      },
+      "requestStartedAt": "2026-08-30T07:21:35.220Z",
+      "generationCompletedAt": "2026-08-30T07:21:56.920Z",
+      "inspectionCompletedAt": "2026-08-30T07:22:30.894Z",
+      "generationDurationMs": 21700,
+      "inspectionDurationMs": 33974,
+      "totalWallTimeMs": 55674,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-7e7a7b9f-0ae7-4f9f-a058-935842ee55dc.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 17,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-7e7a7b9f-0ae7-4f9f-a058-935842ee55dc.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1959466,
+          "contentHash": "8d1a34d167809d768f02014ef2df807d917a3f153b3e7d4e132c179462bd3341"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1959466,
+          "contentHash": "8d1a34d167809d768f02014ef2df807d917a3f153b3e7d4e132c179462bd3341"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1959466,
+        "contentHash": "8d1a34d167809d768f02014ef2df807d917a3f153b3e7d4e132c179462bd3341"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected 1536 by 1024 canvas is fully finished with continuous charcoal backdrop and cracked-stone floor detail and no blank band or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both bow tips and the full string, nocked arrow and arrowhead, all quiver arrows, both ears, both hands and feet, clothing tails, and contact shadow remain inside the central eighty-four percent with a clearly empty border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete adult Goblin Archer appears, with no duplicate or incidental subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted framing correction retain exact SHA-256 hashes; target references remain recorded in order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The character remains an adult goblin biped with exactly two arms and two legs, coherent hands and feet, grounded weight, believable joints, and a secure braced bow-and-arrow grip."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lean side-on draw, complete shortbow, nocked arrow, visible quiver, planted reposition-ready stance, and line of aim clearly communicate ranged lane control, target marking, and closing-distance counterplay."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All identity, anatomy, duty, equipment, and counterplay cues remain visible without childlike proportions, glamour, sexualization, role drift, or extra limbs."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The retained archer uses natural goblin anatomy and restrained worn leather, hide, cloth, wood, iron, and stone materials with no elemental substance, colored glow, magical anatomy, or unexplained affinity wake."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; target-aware inspection finds a strong adult Goblin Archer face, ears, shortbow, quiver, braced draw, and lane-reading silhouette."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated recognition remains pending human review; target-aware inspection finds no elemental material, anatomy, glow, or wake."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The premium realistic painterly Pack 2 finish, coherent leather, hide, cloth, wood, iron, and skin materials, cracked floor, charcoal backdrop, and controlled neutral key remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra subject, duplicate body, crop, blank region, sexualization, elemental glow, magical anatomy, or published-character resemblance is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact correction source without normalization; source and retained dimensions, media type, byte count, and SHA-256 8d1a34d167809d768f02014ef2df807d917a3f153b3e7d4e132c179462bd3341 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared manifest, catalog, review evidence, plan, application code, promotion decision, repository history, or unrelated file was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-archer-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:20:35.704Z",
+  "completedAt": "2026-08-30T07:22:56.857Z",
+  "totalWallTimeMs": 141153,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-archer-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

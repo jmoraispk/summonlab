@@ -1,0 +1,197 @@
+{
+	"schemaVersion": "image-production-result-v1",
+	"resultId": "result-affinity-expansion-v1-goblin-hexweaver-water",
+	"targetId": "affinity-expansion-v1-goblin-hexweaver-water",
+	"assignmentId": "assignment-affinity-expansion-v1-goblin-hexweaver-water",
+	"skillVersion": "summonlab-image-production-v2",
+	"status": "candidate",
+	"attempts": [
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-water-1",
+			"attemptNumber": 1,
+			"precedingAttemptId": null,
+			"conclusion": "rejected-by-producer",
+			"exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-hexweaver-water\".\n\nSubject and threat:\n- Species: goblin-hexweaver.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-hexweaver-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Hexweaver remains immediately recognizable\n- Battlefield duty remains Telegraphed magical control\n- goblin caster with a compact ritual focus, binding marks, and open casting hand\n- Signature skills remain visually supportable: Ember hex, Binding mark, Concentration.\n- Counterplay remains visible: The still image preserves readable counterplay for Ward reading, Interrupts, Focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: The still image preserves readable counterplay for Ward reading, Interrupts, Focus. Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 3 only: Goblin Hexweaver identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+			"promptHash": "9db7ffc7ecb37f9ab9ac16e56f3ae0c9d856328c2e4ddffe6b2c85c3a9427a4e",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": null,
+			"requestStartedAt": "2026-08-30T07:30:43.000Z",
+			"generationCompletedAt": "2026-08-30T07:31:02.965Z",
+			"inspectionCompletedAt": "2026-08-30T07:31:10.965Z",
+			"generationDurationMs": 19965,
+			"inspectionDurationMs": 8000,
+			"totalWallTimeMs": 27965,
+			"sourceOutputId": "exec-74b07e4b-49ef-44d5-bd9b-6a9e18e55c41",
+			"persistence": null,
+			"output": null,
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "fail",
+					"observation": "Top focus crest and lowest foot and water effects breach the central 84 percent safe area."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished adult goblin hexweaver appears on a complete stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Distinct goblin caster identity, hood, compact chained focus, binding marks, open hand, and concentration duty remain readable."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Water affinity changes focus construction, wet clothing, local anatomy, circular current, droplets, and ground wake."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Occupied focus hand, open concentration hand, hanging bindings, and concentrated water circle preserve interruptible counterplay."
+				}
+			],
+			"retryReason": "Scale down and recenter the complete caster and water wake while preserving all passing traits."
+		},
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-water-2",
+			"attemptNumber": 2,
+			"precedingAttemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-water-1",
+			"conclusion": "accepted-by-producer",
+			"exactPrompt": "Edit the supplied Goblin Hexweaver Water image. Preserve the exact same single adult goblin identity, severe face, hooded layered clothing, compact chained water focus, open casting hand, binding marks and tags, water-affinity anatomy and equipment, circular current, dark painterly finish, lighting, and neutral cracked-stone environment. Correct only the safe framing: uniformly scale the complete subject and every water effect down by about 16 percent and recenter it so the focus crest, droplets, circular water arc, garment hems, both feet, and every hard or liquid extent sit comfortably inside the central 84 percent of both canvas dimensions, with a clearly empty border on all four sides. Keep the focus visibly compact and interruptible rather than a grand heroic staff. Keep the entire canvas intentionally finished at 1536 x 1024. Exactly one subject. No text, labels, UI, watermark, extra limbs, extra creature, crop, blank band, or redesign.",
+			"promptHash": "4d8cd1c13ea0c809819768ae0a398a3d4dbf53e6a43394fbc1532e7854762417",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": {
+				"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-74b07e4b-49ef-44d5-bd9b-6a9e18e55c41.png",
+				"contentHash": "34c5855aae1d3514ba2a2ab35563d5795fdaff860999619bc157809448554eba"
+			},
+			"requestStartedAt": "2026-08-30T07:31:39.000Z",
+			"generationCompletedAt": "2026-08-30T07:32:03.829Z",
+			"inspectionCompletedAt": "2026-08-30T07:32:10.829Z",
+			"generationDurationMs": 24829,
+			"inspectionDurationMs": 7000,
+			"totalWallTimeMs": 31829,
+			"sourceOutputId": "exec-16a04bd4-8b47-4602-beb2-b02c4a3ab249",
+			"persistence": {
+				"operation": "exclusive-copy",
+				"elapsedMs": 29,
+				"source": {
+					"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-16a04bd4-8b47-4602-beb2-b02c4a3ab249.png",
+					"width": 1536,
+					"height": 1024,
+					"mediaType": "image/png",
+					"bytes": 2124506,
+					"contentHash": "b9fe454446e0de0bb141f06a1dad47848c74ca7824b1409f2f1e49ed72572229"
+				},
+				"retained": {
+					"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/water-v1.png",
+					"mediaType": "image/png",
+					"width": 1536,
+					"height": 1024,
+					"bytes": 2124506,
+					"contentHash": "b9fe454446e0de0bb141f06a1dad47848c74ca7824b1409f2f1e49ed72572229"
+				}
+			},
+			"output": {
+				"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/water-v1.png",
+				"mediaType": "image/png",
+				"width": 1536,
+				"height": 1024,
+				"bytes": 2124506,
+				"contentHash": "b9fe454446e0de0bb141f06a1dad47848c74ca7824b1409f2f1e49ed72572229"
+			},
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Full caster, focus, droplets, circular current, garment hems, feet, and water wake now sit comfortably inside the safe frame."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished adult goblin hexweaver appears on a complete stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Distinct goblin caster identity, hood, compact chained focus, binding marks, open hand, and concentration duty remain readable."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Water affinity changes focus construction, wet clothing, local anatomy, circular current, droplets, and ground wake."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Occupied focus hand, open concentration hand, hanging bindings, and concentrated water circle preserve interruptible counterplay."
+				}
+			],
+			"retryReason": null
+		}
+	],
+	"selectedAttemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-water-2",
+	"failedCriteria": [],
+	"startedAt": "2026-08-30T07:30:43.000Z",
+	"completedAt": "2026-08-30T07:32:17.000Z",
+	"totalWallTimeMs": 94000,
+	"writtenOutputPaths": [
+		"assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/water-v1.png",
+		"assets/enemies/experiments/affinity-expansion-v1/results/goblin-hexweaver-water-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
+

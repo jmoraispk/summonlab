@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-skirmisher-fire",
+  "targetId": "affinity-expansion-v1-goblin-skirmisher-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-skirmisher-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-skirmisher-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "provider-failure",
+      "failureKind": "persistence",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-skirmisher-fire\".\n\nSubject and threat:\n- Species: goblin-skirmisher.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-skirmisher-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Skirmisher remains immediately recognizable\n- Battlefield duty remains Mobile melee pressure\n- lean mobile knife fighter with light layered scavenged clothing\n- Signature skills remain visually supportable: Knife fighting, Feinting, Pack movement.\n- Counterplay remains visible: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 1 only: Goblin Skirmisher identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "8d10039855bcad5a6a1de3d0886eaf0ddccebfaf7a459c4b40ac83fd3e6b7831",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:15:00.000Z",
+      "generationCompletedAt": "2026-08-30T07:15:20.100Z",
+      "inspectionCompletedAt": "2026-08-30T07:15:20.100Z",
+      "generationDurationMs": 20100,
+      "inspectionDurationMs": 0,
+      "totalWallTimeMs": 20100,
+      "sourceOutputId": null,
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The canonical prompt was submitted and the generation call completed, but the local tool wrapper failed while serializing the returned receipt; the exact source path was therefore unavailable and no first-attempt pixels were inspected or persisted."
+        }
+      ],
+      "retryReason": "The exact returned source could not be bound after a local receipt-serialization failure, so the sole permitted retry was used as a complete regeneration with the unchanged canonical prompt and ordered manifest references."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-goblin-skirmisher-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-goblin-skirmisher-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-skirmisher-fire\".\n\nSubject and threat:\n- Species: goblin-skirmisher.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-skirmisher-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Skirmisher remains immediately recognizable\n- Battlefield duty remains Mobile melee pressure\n- lean mobile knife fighter with light layered scavenged clothing\n- Signature skills remain visually supportable: Knife fighting, Feinting, Pack movement.\n- Counterplay remains visible: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 1 only: Goblin Skirmisher identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "8d10039855bcad5a6a1de3d0886eaf0ddccebfaf7a459c4b40ac83fd3e6b7831",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:16:24.900Z",
+      "generationCompletedAt": "2026-08-30T07:16:45.800Z",
+      "inspectionCompletedAt": "2026-08-30T07:17:10.800Z",
+      "generationDurationMs": 20900,
+      "inspectionDurationMs": 25000,
+      "totalWallTimeMs": 45900,
+      "sourceOutputId": "exec-da503b6c-dc4a-46cd-849f-591fee53bca8.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-da503b6c-dc4a-46cd-849f-591fee53bca8.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2029061,
+          "contentHash": "02e9cd6b39f3501820a6ccd1caa4538a7769845a9f21690f5c9fdbafb6e611f1"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2029061,
+          "contentHash": "02e9cd6b39f3501820a6ccd1caa4538a7769845a9f21690f5c9fdbafb6e611f1"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2029061,
+        "contentHash": "02e9cd6b39f3501820a6ccd1caa4538a7769845a9f21690f5c9fdbafb6e611f1"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire canvas has continuous finished charcoal backdrop and cracked-stone floor detail with no blank band, unpainted region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both knife tips, ears, hands, feet, clothing tails, smoke, and the complete silhouette remain comfortably inside the declared safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured adult goblin appears with no duplicate body or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first and retained submissions use the exact canonical safe-frame-v4 renderer bytes and recorded SHA-256."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A lean adult goblin with pointed ears, mobile knife-fighting posture, two readable weapon grips, light layered scavenged clothing, and grounded weight preserves the declared identity, anatomy, duty, and feinting cues."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire alters multiple declared dimensions through heat-blackened clothing and blades, internal ember seams, directional combustion along the mantle, smoke, sparks, and a localized heat-distortion wake rather than a uniform orange wash."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed ember-bright shoulder heat vent is materially distinct between combustion streams, while both knife grips and the committed wide stance remain readable for guard timing, weapon handling, and target focus."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong adult goblin and mobile skirmisher cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending human review; known-target inspection finds strong material, combustion, smoke, motion, and wake cues."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two arms and two legs are visible with coherent joints, hands, feet, dual knife grips, and stable contact on the stone floor."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, restrained local emission, coherent worn materials, neutral key light, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, duplicate subject, extra limb, childlike body, sexualization, or full-body orange glow appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact explicitly returned PNG source was exclusive-copied without normalization; source and retained dimensions, media type, bytes, and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared file, catalog, application route, review decision, or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-skirmisher-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:15:00.000Z",
+  "completedAt": "2026-08-30T07:18:40.000Z",
+  "totalWallTimeMs": 220000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-skirmisher-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

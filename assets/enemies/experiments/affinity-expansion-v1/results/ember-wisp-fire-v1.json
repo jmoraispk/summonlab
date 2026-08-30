@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ember-wisp-fire",
+  "targetId": "affinity-expansion-v1-ember-wisp-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-ember-wisp-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ember-wisp-fire\".\n\nSubject and threat:\n- Species: ember-wisp.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ember-wisp-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Ember Wisp remains immediately recognizable\n- Battlefield duty remains Ignition harrier\n- small airborne coal body, streaming sparks, no defended front\n- compresses to white heat before a darting ignition pass\n- Counterplay remains visible: cool mineral core exposed after its pass\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: cool mineral core exposed after its pass The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 1 only: Ember Wisp identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "37b9e3b02278adfa2991a580c69ddc12af87d857e622769924eef14288cdb940",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T07:56:34.985Z",
+      "generationCompletedAt": "2026-08-30T07:56:54.785Z",
+      "inspectionCompletedAt": "2026-08-30T07:57:40.464Z",
+      "generationDurationMs": 19800,
+      "inspectionDurationMs": 45679,
+      "totalWallTimeMs": 65479,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-ffaae5c5-b6fb-4d1e-bbeb-465bf505e6b1.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial full canvas was finished and safely framed." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one connected airborne substance-bodied subject appeared." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact no-terminal-newline canonical prompt was submitted at SHA-256 37b9e3b02278adfa2991a580c69ddc12af87d857e622769924eef14288cdb940 with references in manifest order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "A circular orange frontal concentration and paired upper flame plumes could read as a second core and a phoenix-like head-and-wing silhouette rather than one asymmetric Wisp around the sole exposed mineral core." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Heat-blackened plates, ember seams, combustion, smoke, directional motion, and spark wake provided strong Fire construction beyond color." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The cool blue-grey mineral heat sink was clearly exposed between combustion cycles." }
+      ],
+      "retryReason": "A targeted edit was required to eliminate a misleading second-core and paired-wing read while preserving the successful Fire materials, trajectory, and exposed cool heat sink."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ember-wisp-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Ember Wisp Fire render; preserve its successful premium realistic painterly Pack 2 finish, 1536 x 1024 charcoal-to-midnight backdrop, cracked-stone floor, controlled neutral lighting, complete safe framing, heat-blackened coal plates, internal ember seams, controlled combustion, smoke, heat distortion, streaming sparks, darting motion, environmental wake, exposed blue-grey cool mineral core, and contact shadow.\n\nPreserve exactly one elite Ember Wisp: one small airborne asymmetrical coal-and-Fire body organized around exactly one readable core, the existing exposed blue-grey cool mineral core; one coherent connected substance-body plan; no defended front; a compressed darting ignition-harrier trajectory; the same material detail and restrained local emission. Keep every body and wake extent inside the central 84 percent with at least 8 percent clearly empty border on all four sides.\n\nChange only the misleading species and core read: remove the circular concentrated orange frontal node so it cannot read as a second core, retaining only narrow internal ember seams through the heat-blackened coal plates; reshape the pointed front into an irregular compressed coal prow rather than a bird or draconic beak; make the upper combustion stream and side wake clearly unequal, ragged, and directional rather than a paired wing silhouette. The exposed blue-grey mineral core must remain the sole core and stay visibly connected to the surrounding coal-and-combustion body as the vulnerable heat sink between cycles. Do not add, remove, duplicate, or detach any other body mass.\n\nNo humanoid, face, eye, bird, phoenix, bat, dragon, beak, horn, wing, limb, extra core, satellite orb, separate creature, featureless sphere, uniform orange full-body wash, decorative overlay, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance.",
+      "promptHash": "ba655e95b0ce5c7f84ce961bfa1db8e92cd0a027fd10dc4fce6aa7821dfb2c3d",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-ffaae5c5-b6fb-4d1e-bbeb-465bf505e6b1.png", "contentHash": "76c824d80b1ccb9971b825a8ad095787fb02038e5b4ab8919a102716b80e45b9" },
+      "requestStartedAt": "2026-08-30T07:57:58.152Z",
+      "generationCompletedAt": "2026-08-30T07:58:13.152Z",
+      "inspectionCompletedAt": "2026-08-30T07:58:55.061Z",
+      "generationDurationMs": 15000,
+      "inspectionDurationMs": 41909,
+      "totalWallTimeMs": 56909,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-064d6cd3-17f7-4365-98cb-1a662aed4570.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-064d6cd3-17f7-4365-98cb-1a662aed4570.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1936299, "contentHash": "eaa5bfa359fcf7e87ea2b913230a33bf4d5f120d97f406c420683c1eed8cac0a" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/fire-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1936299, "contentHash": "eaa5bfa359fcf7e87ea2b913230a33bf4d5f120d97f406c420683c1eed8cac0a" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/fire-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1936299, "contentHash": "eaa5bfa359fcf7e87ea2b913230a33bf4d5f120d97f406c420683c1eed8cac0a" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The corrected full canvas is finished, and every coal plate, combustion stream, spark, cool core, wake extent, and contact shadow stays inside the central eighty-four percent with clear borders." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one connected airborne Wisp appears; the combustion loop and heat-sink shell are continuous parts of the same body rather than a second creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and targeted correction prompts retain exact hashes, ordered target references, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The corrected small airborne asymmetrical coal body has no face, eye, beak, wing, limb, or second core; narrow ember seams, a compressed irregular coal prow, unequal directional combustion streams, one exposed cool mineral core, and an undefended front preserve Wisp identity, duty, body plan, and counterplay." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Heat-blackened load-bearing coal plates, internal ember seams, controlled combustion, smoke, heat distortion, compressed darting motion, ignition telegraph, and directional environmental wake change material, motion, attack telegraph, and wake without a uniform orange wash." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The sole blue-grey cool mineral core remains exposed, connected, and visually distinct as the vulnerable heat sink between combustion cycles." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware inspection finds the Ember Wisp cues strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Fire recognition remains pending human review; target-aware inspection finds integrated material, combustion, motion, heat, and wake cues." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 material detail, restrained local emission, charcoal backdrop, cracked floor, and controlled neutral lighting remain cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No humanoid, face, eye, bird, phoenix, dragon, limb, featureless sphere, uniform wash, text, UI, watermark, crop, blank region, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 1,936,299 bytes, and SHA-256 eaa5bfa359fcf7e87ea2b913230a33bf4d5f120d97f406c420683c1eed8cac0a match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Fire candidate and result paths were written; no shared or unrelated file and no repository history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ember-wisp-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:56:34.985Z",
+  "completedAt": "2026-08-30T07:59:10.000Z",
+  "totalWallTimeMs": 155015,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-colossus-metal",
+  "targetId": "affinity-expansion-v1-frost-colossus-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-colossus-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-frost-colossus-metal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-colossus-metal\".\n\nSubject and threat:\n- Species: frost-colossus.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: frost-colossus-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Frost Colossus remains immediately recognizable\n- Battlefield duty remains Zone-denial boss\n- towering glacier torso, broad planted feet, and one sweeping ice arm\n- frost rings crawl across the floor before a freezing sweep\n- Counterplay remains visible: dark stone heart visible through cracked chest ice\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: dark stone heart visible through cracked chest ice Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 4 only: Frost Colossus identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "9f6e3e56d4676273ead09dd2298c720d0ec361e3336786c377363fafba0bd9c2",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:16:38.000Z",
+      "generationCompletedAt": "2026-08-30T08:17:00.904Z",
+      "inspectionCompletedAt": "2026-08-30T08:17:08.904Z",
+      "generationDurationMs": 22904,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 30904,
+      "sourceOutputId": "exec-07224738-5416-4f42-8dde-9dd46f62fd9b",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The left frost-ring wake enters the required 8 percent safety band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one coherent finished Metal Frost Colossus appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Glacier torso, broad planted feet, smaller heavy arm, enormous shoulder-grown sweeping ice arm, circular frost wake, and exposed dark stone heart preserve the zone-denial Frost Colossus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fused articulated load-bearing plates, metallic marrow, materially distinct joints, controlled fragments, and a controlling core form the body itself rather than a removable armor shell."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed dark stone/magnetic chest core and articulated joint gaps remain materially distinct and readable."
+        }
+      ],
+      "retryReason": "Clarify that metal plates are the load-bearing anatomy and scale down the entire colossus, fragments, ice arm, and frost ring into the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-frost-colossus-metal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-frost-colossus-metal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted construction and framing correction. Preserve the exact single Metal Frost Colossus identity, broad planted feet, glacier torso, smaller heavy arm, enormous shoulder-grown sweeping ice arm, dark stone heart, circular frost wake, cold dark-metal palette, and painterly finish. Make the forged metal visibly substance-bodied rather than wearable armor: fused articulated load-bearing plates form the muscles, spine, hips, feet, and joints around metallic marrow, with no clothing, straps, helmet, or separate armor shell. Keep ice localized to the recognizable glacier ridges, sweeping arm, and frost ring. Preserve materially distinct joints and the exposed controlling stone/magnetic chest core. Uniformly scale the full colossus, ice arm, controlled fragments, and entire frost-ring wake down by about 22 percent and recenter so all hard and effect extents fit inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one non-humanoid elemental subject. No extra limbs, held weapon, ordinary knight silhouette, text, crop, or affinity change.",
+      "promptHash": "7342d76a811ae50539d8b24b5896005a1aa9ef6cd95ac860dcfdb7d8523c5cc4",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-07224738-5416-4f42-8dde-9dd46f62fd9b.png",
+        "contentHash": "ceba47aad65a29787b7ce689d62a02605e3f2b111403ef9b9d15877fb150033b"
+      },
+      "requestStartedAt": "2026-08-30T08:17:16.000Z",
+      "generationCompletedAt": "2026-08-30T08:17:32.805Z",
+      "inspectionCompletedAt": "2026-08-30T08:17:39.805Z",
+      "generationDurationMs": 16805,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 23805,
+      "sourceOutputId": "exec-a802bd78-754a-4d3c-b144-02b6b66b6f8f",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 19,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-a802bd78-754a-4d3c-b144-02b6b66b6f8f.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2177024,
+          "contentHash": "e35a19685f83c0573ac05b0e8a211b2b3dacb09d423e5422e0610c62594d93d5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2177024,
+          "contentHash": "e35a19685f83c0573ac05b0e8a211b2b3dacb09d423e5422e0610c62594d93d5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2177024,
+        "contentHash": "e35a19685f83c0573ac05b0e8a211b2b3dacb09d423e5422e0610c62594d93d5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Full colossus, ice arm, feet, fragments, and frost ring remain inside a clearly empty safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one coherent finished Metal Frost Colossus appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Glacier torso, broad planted feet, smaller heavy arm, enormous shoulder-grown sweeping ice arm, circular frost wake, and exposed dark stone heart preserve the zone-denial Frost Colossus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fused articulated load-bearing plates, metallic marrow, materially distinct joints, controlled fragments, and a controlling core form the body itself rather than a removable armor shell."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed dark stone/magnetic chest core and articulated joint gaps remain materially distinct and readable."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-frost-colossus-metal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:16:38.000Z",
+  "completedAt": "2026-08-30T08:17:46.000Z",
+  "totalWallTimeMs": 68000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

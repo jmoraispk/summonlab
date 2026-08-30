@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-colossus-wood",
+  "targetId": "affinity-expansion-v1-frost-colossus-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-colossus-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-frost-colossus-wood-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-colossus-wood\".\n\nSubject and threat:\n- Species: frost-colossus.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: frost-colossus-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Frost Colossus remains immediately recognizable\n- Battlefield duty remains Zone-denial boss\n- towering glacier torso, broad planted feet, and one sweeping ice arm\n- frost rings crawl across the floor before a freezing sweep\n- Counterplay remains visible: dark stone heart visible through cracked chest ice\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: dark stone heart visible through cracked chest ice Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 4 only: Frost Colossus identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "64f9fd6efe85aeb274a02993cb6b0334157aa1e235cd403d87af778ac73fc5dd",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:08:30.000Z",
+      "generationCompletedAt": "2026-08-30T08:09:15.845Z",
+      "inspectionCompletedAt": "2026-08-30T08:09:23.845Z",
+      "generationDurationMs": 45845,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 53845,
+      "sourceOutputId": "exec-fc9a99a4-b593-4a06-8fa1-fda6e01a3ce4",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The frost ring reaches the canvas edges and breaches the required safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished creature appears on a complete canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt exactly matches the canonical renderer with references in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The tall armored humanoid and weapon-like arm read as a frost knight rather than a low massive substance-bodied Frost Colossus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Wood appears mainly as decorative vine overlay while ice remains the load-bearing construction."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A dark stone heart remains visible through the cracked chest ice."
+        }
+      ],
+      "retryReason": "Completely regenerate a low massive non-armored Frost Colossus with structural Wood anatomy, an integrated sweeping ice arm, and the entire frost ring inside the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-frost-colossus-wood-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-frost-colossus-wood-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Complete regeneration to correct species construction, Wood affinity integration, and safe framing. Create exactly one Frost Colossus as a non-armored substance-bodied zone-denial boss—not a knight or ordinary humanoid. Preserve a towering asymmetrical glacier torso, broad planted block-like feet, one enormous sweeping ice arm grown directly from the shoulder, a smaller heavy elemental arm, crawling frost rings, and a dark stone heart visible through cracked chest ice. Transform every load-bearing mass and joint through Wood affinity: thick bark-grain glacier plates, structural root legs and shoulder bindings, wooden articulation, fresh-cut resin-bright seams, and purposeful living growth; ice remains localized to the recognizable glacier torso, sweeping arm, and frost-ring wake. No decorative vines pasted over armor, no sword or held weapon, no crown, no extra limbs. Show a low massive colossus rather than human proportions. Exactly one complete finished subject on the neutral cracked-stone floor. Scale the entire colossus, sweeping arm, both feet, roots, ice shards, and full frost-ring wake to fit inside the central 84 percent of a 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Premium realistic painterly dark fantasy, no text, UI, crop, or blank band.",
+      "promptHash": "e6bcb731217d3f9eb4b2bba3073d7e61b64df08adc6d8b1e0f55876ee8ce9a79",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-fc9a99a4-b593-4a06-8fa1-fda6e01a3ce4.png",
+        "contentHash": "e9d56c76ee85a21f6dac8eddeb0680e78324deab20048c35fa752388dec510ae"
+      },
+      "requestStartedAt": "2026-08-30T08:09:40.000Z",
+      "generationCompletedAt": "2026-08-30T08:10:07.577Z",
+      "inspectionCompletedAt": "2026-08-30T08:10:15.577Z",
+      "generationDurationMs": 27577,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 35577,
+      "sourceOutputId": "exec-1ed1e767-cb3a-46f5-91a1-c5971dbebf46",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-1ed1e767-cb3a-46f5-91a1-c5971dbebf46.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2730638,
+          "contentHash": "bd033d8becee6ef6bf1e9ef88bffe0302cecddc371a10518c8655fb7d9319b99"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2730638,
+          "contentHash": "bd033d8becee6ef6bf1e9ef88bffe0302cecddc371a10518c8655fb7d9319b99"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2730638,
+        "contentHash": "bd033d8becee6ef6bf1e9ef88bffe0302cecddc371a10518c8655fb7d9319b99"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The corrected frost-ring wake still enters the left and bottom 8 percent safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one coherent finished Frost Colossus appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt is canonical; the complete regeneration references the exact preceding output; retained-source provenance is complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low massive non-armored glacier torso, broad root-block feet, smaller heavy arm, enormous shoulder-grown sweeping ice arm, crawling frost ring, and exposed dark stone heart preserve the zone-denial Frost Colossus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Thick bark-grain plates, load-bearing root legs and shoulder bindings, wooden articulation, fresh-cut resin seams, and purposeful living growth transform every structural mass while ice stays localized to the glacier identity and sweep wake."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The dark stone chest heart and resin-bright structural joints remain clearly visible as interruptible counterplay cues."
+        }
+      ],
+      "retryReason": "The regenerated design now passes species, construction, subject, and counterplay checks, but the retry ceiling is exhausted while the frost-ring wake remains inside the left and bottom safety margins."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T08:08:30.000Z",
+  "completedAt": "2026-08-30T08:10:22.000Z",
+  "totalWallTimeMs": 112000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

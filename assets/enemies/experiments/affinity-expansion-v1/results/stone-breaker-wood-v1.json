@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-stone-breaker-wood",
+  "targetId": "affinity-expansion-v1-stone-breaker-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-stone-breaker-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-stone-breaker-wood-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-stone-breaker-wood\".\n\nSubject and threat:\n- Species: stone-breaker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: stone-breaker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Stone Breaker remains immediately recognizable\n- Battlefield duty remains Siege bruiser\n- massive wedge forearms and a low quarry-stone center of gravity\n- plants both feet and raises one slab arm before impact\n- Counterplay remains visible: bright binding seams after a missed smash\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: bright binding seams after a missed smash Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 2 only: Stone Breaker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png — Individual Stone Breaker framing, wedge forearms, grounded quarry mass, and readable core only.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "8dfed200525e39fa8d2c888c8dc4740831786e39732edaa80a55de41c65e60bf",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:54:19.000Z",
+      "generationCompletedAt": "2026-08-30T07:54:40.809Z",
+      "inspectionCompletedAt": "2026-08-30T07:54:47.809Z",
+      "generationDurationMs": 21809,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 28809,
+      "sourceOutputId": "exec-4488c284-e36a-4ff5-90d5-e54598667001",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The raised left wedge-arm tip and lowest impact debris breach the required central 84 percent safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wood Stone Breaker appears on a fully rendered stone-floor canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction uses the exact preceding output as its design reference."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low siege-bruiser center, two planted feet, two massive wedge forearms, one readable core, and the committed raised-slab impact pose remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain, load-bearing roots, wooden articulation, and resin seams form every load-bearing mass rather than appearing as pasted foliage or a brown recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fresh-cut resin-bright seams expose the interruptible chest and wedge-arm bindings after the committed smash."
+        }
+      ],
+      "retryReason": "Scale down and recenter the complete Wood Stone Breaker and every debris extent while preserving all passing design traits."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-stone-breaker-wood-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-stone-breaker-wood-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Framing correction only. Preserve this exact single Wood Stone Breaker design, pose, bark-and-root load-bearing anatomy, two massive wedge forearms, resin-bright binding seams, readable core, planted two-legged stance, lighting, charcoal backdrop, cracked-stone floor, and painterly finish. Uniformly scale the complete creature and every debris extent down by about 18 percent and recenter it so the top of the raised left wooden wedge arm, the full grounded right wedge arm, both feet, every root tip, splinter, and resin effect all fit inside the central 84 percent of the 1536 x 1024 canvas, leaving a clearly empty finished border of at least 8 percent on all four sides. Exactly one coherent subject. No redesign, extra limbs, antlers, pasted foliage, text, crop, or affinity change.",
+      "promptHash": "a1b479b65203dfad5853a0655972c2c13808609fa74d9ccc43b8cbe021f0599e",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+          "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-4488c284-e36a-4ff5-90d5-e54598667001.png",
+        "contentHash": "59ff16954b6c0478ad16b429a2bfb8bed8dab5408b61aa47436cc14100f2ccef"
+      },
+      "requestStartedAt": "2026-08-30T07:54:52.000Z",
+      "generationCompletedAt": "2026-08-30T07:55:10.406Z",
+      "inspectionCompletedAt": "2026-08-30T07:55:17.406Z",
+      "generationDurationMs": 18406,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 25406,
+      "sourceOutputId": "exec-2d7e5e03-55ff-445a-a225-1e1f0d0b002e",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 18,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-2d7e5e03-55ff-445a-a225-1e1f0d0b002e.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2082256,
+          "contentHash": "cc3c95a9f06c3a51c44c16aeed4249caf74ad7c8d0b60ad23f26421e74697c5a"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2082256,
+          "contentHash": "cc3c95a9f06c3a51c44c16aeed4249caf74ad7c8d0b60ad23f26421e74697c5a"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2082256,
+        "contentHash": "cc3c95a9f06c3a51c44c16aeed4249caf74ad7c8d0b60ad23f26421e74697c5a"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Raised wooden wedge-arm tip, grounded right wedge, both feet, root tips, splinters, and resin effects sit inside a clearly empty safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wood Stone Breaker appears on a fully rendered stone-floor canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction uses the exact preceding output as its design reference."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Low siege-bruiser center, two planted feet, two massive wedge forearms, one readable core, and the committed raised-slab impact pose remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain, load-bearing roots, wooden articulation, and resin seams form every load-bearing mass rather than appearing as pasted foliage or a brown recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fresh-cut resin-bright seams expose the interruptible chest and wedge-arm bindings after the committed smash."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-stone-breaker-wood-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:54:19.000Z",
+  "completedAt": "2026-08-30T07:55:24.000Z",
+  "totalWallTimeMs": 65000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

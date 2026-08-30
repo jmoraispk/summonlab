@@ -1,0 +1,279 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-goblin-skirmisher-wind",
+  "targetId": "affinity-expansion-v1-goblin-skirmisher-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-goblin-skirmisher-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-goblin-skirmisher-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-skirmisher-wind\".\n\nSubject and threat:\n- Species: goblin-skirmisher.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-skirmisher-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Skirmisher remains immediately recognizable\n- Battlefield duty remains Mobile melee pressure\n- lean mobile knife fighter with light layered scavenged clothing\n- Signature skills remain visually supportable: Knife fighting, Feinting, Pack movement.\n- Counterplay remains visible: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Guard timing, Weapon handling, Target focus. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 1 only: Goblin Skirmisher identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6410f3e59005a01806a74e3d994087d89850a3bcceb5ba5bb5743f951b8e84f3",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T07:19:59.121Z",
+      "generationCompletedAt": "2026-08-30T07:20:20.421Z",
+      "inspectionCompletedAt": "2026-08-30T07:20:53.112Z",
+      "generationDurationMs": 21300,
+      "inspectionDurationMs": 32691,
+      "totalWallTimeMs": 53991,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-7390ed08-de5f-49d2-bb01-9f1ebecb001a.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full canvas was intentionally rendered with continuous backdrop, cracked-stone floor, directional wake, and no blank region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "An undeclared tall spear and pennant extended through the upper safe margin, preventing strict safe-frame candidacy."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Goblin Skirmisher appeared without a duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt exactly matched safe-frame-v4 at SHA-256 6410f3e59005a01806a74e3d994087d89850a3bcceb5ba5bb5743f951b8e84f3, with both references supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two coherent arms and two grounded legs were visible with plausible joints, hands, feet, and dual knife grips."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The tall spear and command pennant were foreign equipment transferred from the finish reference and muddied the declared light knife-skirmisher identity."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Directional cloth, curved vapor channels, debris flow, visible pressure distortion, and a coherent environmental wake integrated Wind across four declared dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The planted goblin and open guard remained a visibly still center inside the strongly directional pressure pattern."
+        }
+      ],
+      "retryReason": "A targeted edit was required to remove the undeclared spear and pennant, restore the skirmisher equipment silhouette, and clear the upper safe margin without changing the successful Wind construction."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-goblin-skirmisher-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-goblin-skirmisher-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "TARGETED EDIT of the supplied preceding output. Remove the entire undeclared spear, pole, pennant, banner, hanging banner strips, and every attachment associated with it from behind the goblin; reconstruct the emptied backdrop and directional wind flow naturally. Do not replace it with any other object or weapon. Preserve unchanged exactly one adult lean Goblin Skirmisher with exactly two connected arms and two connected legs, two grounded feet, credible joints and hands, two short fighting knives held with plausible grips, light layered scavenged clothing, practical wraps and footwear, mobile melee pressure, feint-ready asymmetric stance, and immediately recognizable goblin face and pointed ears. Preserve the successful Wind affinity through strongly directional cloth and loose straps, curved vapor channels, debris flow, pressure distortion, one readable force direction, and a visibly calm still center around the planted combat stance. Keep the affinity integrated across silhouette, motion, attack telegraph, and environmental wake; do not use a pale recolor, transparency alone, or directionless particles. Keep exactly one subject and no extra creature. Keep the complete goblin, both knife tips, every cloth strip, every debris fragment, and the complete wind wake inside the central 84 percent of the 1536 x 1024 canvas, leaving at least eight percent clearly empty border on all four sides. Preserve the premium realistic painterly Pack 2 dark-fantasy finish, neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key light, restrained local emission, and finished full canvas. No childlike proportions, human glamour, sexualization, extra limbs, text, labels, UI, frame, logo, watermark, crop, blank band, or abrupt cutoff.",
+      "promptHash": "0280cfe6ffdcc86a669228268b46546d9ba27893a366295ea37770540c9d72cf",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-7390ed08-de5f-49d2-bb01-9f1ebecb001a.png",
+        "contentHash": "903dafb218ff94f7dd3e1b92d7e9fc2d6dfb143bad2f87d2b3d785a0d8e15606"
+      },
+      "requestStartedAt": "2026-08-30T07:20:53.112Z",
+      "generationCompletedAt": "2026-08-30T07:21:07.912Z",
+      "inspectionCompletedAt": "2026-08-30T07:21:33.000Z",
+      "generationDurationMs": 14800,
+      "inspectionDurationMs": 25088,
+      "totalWallTimeMs": 39888,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-80e030eb-a203-449b-80f6-fa909376f774.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 32,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-80e030eb-a203-449b-80f6-fa909376f774.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2083707,
+          "contentHash": "b12550c87437f5cf38ea61462de7e7fe30de6ea477a8e53a098f08f9e10c40a8"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2083707,
+          "contentHash": "b12550c87437f5cf38ea61462de7e7fe30de6ea477a8e53a098f08f9e10c40a8"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2083707,
+        "contentHash": "b12550c87437f5cf38ea61462de7e7fe30de6ea477a8e53a098f08f9e10c40a8"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete canvas is intentionally finished with continuous charcoal backdrop, cracked-stone floor, directional vapor, pressure wake, and no blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete goblin, both knife tips, all directional cloth strips, debris fragments, and the hard readable Wind wake remain bounded with clear empty borders; faint upper atmospheric falloff does not form a cropped hard extent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Goblin Skirmisher appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical initial prompt and targeted correction retain exact hashes; both manifest references remain recorded in order and the exact preceding render is bound as the correction input."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The adult lean goblinoid frame, olive face, pointed ears, wary expression, light scavenged clothing, and compact knife equipment preserve exact Goblin Skirmisher identity."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two connected arms and two legs remain visible; both hands grip short knives plausibly, both feet contact the floor, and the crouched joints carry believable weight."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The low asymmetric ready stance, paired short knives, streaming light layers, and open movement line communicate mobile melee pressure, feinting, and pack movement without command equipment."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The edit fully removes the foreign pole and pennant; practical wraps, light layered clothing, ordinary knife equipment, exposed guard, and planted center retain the declared identity and counterplay."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wind changes the outward cloth silhouette, directional strap motion, knife-line telegraph, curved vapor channels, pressure distortion, debris flow, and environmental wake rather than applying a pale recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The planted feet, open guard, and stable body remain a visibly calm still center between the circulating directional pressure paths, preserving guard-timing and weapon-handling counterplay."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; target-aware inspection finds strong Goblin Skirmisher identity."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wind recognition remains pending human review; target-aware inspection finds integrated direction in silhouette, motion, telegraph, vapor, debris, and wake."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly materials, controlled neutral light, restrained cyan pressure emission, cracked floor, and charcoal backdrop form a cohesive Pack 2 presentation."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra creature, duplicate body, crop, blank region, childlike proportion, glamour, sexualization, extra limb, pale recolor, or directionless particle field is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The persistence helper exclusive-copied the exact corrected source without normalization; source and retained dimensions, type, 2083707-byte count, and SHA-256 b12550c87437f5cf38ea61462de7e7fe30de6ea477a8e53a098f08f9e10c40a8 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no manifest, catalog, review evidence, contact sheet, plan, application code, promotion decision, repository history, or other target output was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-goblin-skirmisher-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:19:59.121Z",
+  "completedAt": "2026-08-30T07:21:59.672Z",
+  "totalWallTimeMs": 120551,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/goblin-skirmisher-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

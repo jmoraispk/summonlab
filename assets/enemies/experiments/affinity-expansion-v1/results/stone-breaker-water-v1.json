@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-stone-breaker-water",
+  "targetId": "affinity-expansion-v1-stone-breaker-water",
+  "assignmentId": "assignment-affinity-expansion-v1-stone-breaker-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-stone-breaker-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-stone-breaker-water\".\n\nSubject and threat:\n- Species: stone-breaker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: stone-breaker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Stone Breaker remains immediately recognizable\n- Battlefield duty remains Siege bruiser\n- massive wedge forearms and a low quarry-stone center of gravity\n- plants both feet and raises one slab arm before impact\n- Counterplay remains visible: bright binding seams after a missed smash\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: bright binding seams after a missed smash Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 2 only: Stone Breaker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png — Individual Stone Breaker framing, wedge forearms, grounded quarry mass, and readable core only.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "e60c7ec7e18f66103b4a87030d0101fc2840db5327173b22aeb8f67f57b647ac",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"},
+        {"path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png", "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:05:24.177Z",
+      "generationCompletedAt": "2026-08-30T08:05:43.677Z",
+      "inspectionCompletedAt": "2026-08-30T08:05:53.677Z",
+      "generationDurationMs": 19500,
+      "inspectionDurationMs": 10000,
+      "totalWallTimeMs": 29500,
+      "sourceOutputId": "exec-82a81867-969d-47fe-af81-0700db85a83e.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was fully rendered across the misty backdrop and wet cracked-stone floor."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The raised liquid wedge tip and highest droplets entered the required outer eight-percent top border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Stone Breaker appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and all three ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The two-arm/two-leg planted siege bruiser, massive wedges, raised impact arm, low mass, core, and bright seams preserved every declared identity cue."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Stable pressurized liquid masses, continuous flow joints, wet reflections, mist, droplets, and splash wake changed material, motion, telegraph, and environment beyond color."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Bright binding seams and the coherent core remained visible through the transparent Water construction."}
+      ],
+      "retryReason": "A framing-only correction was required to fit the raised wedge and its complete liquid wake inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-stone-breaker-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-stone-breaker-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied generated image. Change only the composition and framing: uniformly scale the complete Water Stone Breaker and every splash, mist, droplet, reflection, and wake extent down slightly and recenter the whole design so all hard extents, especially the raised wedge tip and highest droplets, fit inside the central 84 percent of both canvas dimensions with a clearly empty border on all four sides. Preserve exactly one coherent two-arm/two-leg planted Stone Breaker, its low quarry mass, massive wedge forearms, one raised slab arm before impact, stable pressurized liquid-water anatomy with coherent flow transitions rather than ice or a shapeless blob, readable binding core, bright vulnerable seams exposed by pressure loss, wet cracked-stone floor, charcoal-to-midnight backdrop, restrained emission, painterly dark-fantasy finish, and all other passing traits. Keep the full canvas intentionally finished. Do not crop any extremity or effect. No extra creature, limb, weapon, text, label, UI, frame, logo, or watermark.",
+      "promptHash": "6c48f940fced8853a611d4101991abc139eb7564ab5a9014ee6df8762a10b50e",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"},
+        {"path": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png", "contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-82a81867-969d-47fe-af81-0700db85a83e.png", "contentHash": "2900ad7f249da0e0568420b1a9174a2300932df1cf5d7fe9449eddac50d51aed"},
+      "requestStartedAt": "2026-08-30T08:06:08.768Z",
+      "generationCompletedAt": "2026-08-30T08:06:25.868Z",
+      "inspectionCompletedAt": "2026-08-30T08:06:35.868Z",
+      "generationDurationMs": 17100,
+      "inspectionDurationMs": 10000,
+      "totalWallTimeMs": 27100,
+      "sourceOutputId": "exec-68734a54-de15-4d85-9a29-dbab8df9b212.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-7b5c-7332-9e22-46240d12b7b6/exec-68734a54-de15-4d85-9a29-dbab8df9b212.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2227800, "contentHash": "cec4f55242ad2aace597113113d00ab8afa78c2a8fa5348c249ed8cc8a1aa89a"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2227800, "contentHash": "cec4f55242ad2aace597113113d00ab8afa78c2a8fa5348c249ed8cc8a1aa89a"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2227800, "contentHash": "cec4f55242ad2aace597113113d00ab8afa78c2a8fa5348c249ed8cc8a1aa89a"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The raised wedge, lowered wedge, both feet, droplets, mist, splash wake, reflections, and shadow sit inside generous finished borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Water Stone Breaker appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the correction used the exact preceding source, and persistence retained exact returned bytes."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two arms and two planted legs support the low siege-bruiser mass; massive wedge forearms, one raised impact arm, a readable core, and bright seams preserve every invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Pressurized liquid-water body masses, coherent flowing joints, wet reflections, mist, directional droplets, and ground splash alter material, motion, attack telegraph, and environmental wake without becoming a blob."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The coherent blue binding core and bright seams remain visible through thinner pressure transitions after the committed raised-arm attack."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind recognition remains pending human review; known-target inspection finds strong Stone Breaker cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Water recognition remains pending human review; known-target inspection finds multiple structural and motion Water cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, restrained blue emission, readable wet surfaces, cracked-stone floor, charcoal backdrop, and all constraint-safety requirements remain coherent."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, app code, review decision, plan, git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-stone-breaker-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:05:24.177Z",
+  "completedAt": "2026-08-30T08:06:50.827Z",
+  "totalWallTimeMs": 86650,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

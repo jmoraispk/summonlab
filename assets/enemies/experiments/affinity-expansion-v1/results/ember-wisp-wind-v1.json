@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ember-wisp-wind",
+  "targetId": "affinity-expansion-v1-ember-wisp-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-ember-wisp-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ember-wisp-wind\".\n\nSubject and threat:\n- Species: ember-wisp.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ember-wisp-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Ember Wisp remains immediately recognizable\n- Battlefield duty remains Ignition harrier\n- small airborne coal body, streaming sparks, no defended front\n- compresses to white heat before a darting ignition pass\n- Counterplay remains visible: cool mineral core exposed after its pass\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: cool mineral core exposed after its pass The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 1 only: Ember Wisp identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6a7736d97824be08530b7df6eded522a7251328a98082b98f66974e5a6bfb04c",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T07:58:15.099Z",
+      "generationCompletedAt": "2026-08-30T07:58:35.474Z",
+      "inspectionCompletedAt": "2026-08-30T07:58:48.269Z",
+      "generationDurationMs": 20375,
+      "inspectionDurationMs": 12795,
+      "totalWallTimeMs": 33170,
+      "sourceOutputId": "exec-94fce065-d0d3-41de-b6ed-84dd4a254734.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The initial coherent Wind Wisp completed the canvas, but its highest vapor arc entered the declared eight-percent top safety margin."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The compact airborne coal/mineral body, exposed core, undefended front, compressed white-heat pass, sparks, and Ignition harrier duty otherwise passed."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Strongly directional vapor channels, aligned debris flow, pressure distortion, curved telegraph, and coherent wake change silhouette, motion, attack telegraph, and environment rather than applying pale color."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The cool mineral core remains exposed at the still center of the directional pressure pattern between committed attacks."}
+      ],
+      "retryReason": "Use the one allowed framing-only correction to bring the highest vapor arc and all Wind/debris extents inside the safety lock while preserving force direction and every passing trait."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ember-wisp-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ember-wisp-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCorrection mode: targeted edit of the supplied preceding render.\n\nChange only framing and scale: pull the camera back and reduce/recenter the complete airborne Wisp plus every Wind, ember, spark, debris, vapor-channel, pressure-distortion, and environmental-wake extent enough that the highest vapor arcs, longest trailing pressure ribbons, every floating rock, every spark, the exposed core, compressed front, and floor-facing wake fit inside the central 84 percent of both canvas dimensions, leaving at least 8 percent clearly empty finished border on all four sides. Re-render the complete 1536 x 1024 canvas with finished charcoal-to-midnight backdrop and cracked-stone floor; no blank or abrupt region.\n\nPreserve every passing trait exactly:\n- exactly one immediately recognizable small airborne Ember Wisp;\n- one coherent non-humanoid elemental body plan around one readable cool mineral core, with no limbs and no defended front;\n- compact coal/mineral body, streaming sparks, asymmetric flame-and-vapor silhouette, compressed white-heat front, and directional darting ignition-pass wake;\n- Ignition harrier duty with readable committed attack direction, recovery opening, exposed core, and still center in the pressure pattern;\n- Wind affinity built through coherent load-bearing pressure anatomy, strongly aligned vapor channels, directional debris flow, visible pressure distortion, curved attack telegraph, and environmental wake rather than pale recolor, transparency, or directionless particles;\n- premium realistic painterly Pack 2 dark-fantasy finish, controlled neutral key, restrained local emission, cracked-stone floor, and charcoal backdrop.\n\nDo not redesign the subject or reverse the force direction. No extra creature, duplicate body, humanoid, face, arm, leg, wing, extra limb, armor, decorative Wind overlay, pale recolor, transparency alone, directionless particle cloud, hidden core, text, label, UI, frame, logo, watermark, published-character resemblance, crop, blank band, or unfinished canvas.",
+      "promptHash": "4e6c5140616f689e4a80c68f9ae5cabbeea79e2438c0910fb65e720f879d9b11",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-94fce065-d0d3-41de-b6ed-84dd4a254734.png", "contentHash": "cc29a24258a1d5df3dac85923fd13b43af1b42282d912bada1fb846bdea34005"},
+      "requestStartedAt": "2026-08-30T07:59:09.568Z",
+      "generationCompletedAt": "2026-08-30T07:59:23.762Z",
+      "inspectionCompletedAt": "2026-08-30T07:59:35.578Z",
+      "generationDurationMs": 14194,
+      "inspectionDurationMs": 11816,
+      "totalWallTimeMs": 26010,
+      "sourceOutputId": "exec-f3bb597a-dc5b-4205-a122-af223dde7d03.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {"path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-f3bb597a-dc5b-4205-a122-af223dde7d03.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1949940, "contentHash": "a98900b418b5a09b1a7cf7a6eed1f4bd3222aec96fc20e0364fb4d3dab22f484"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1949940, "contentHash": "a98900b418b5a09b1a7cf7a6eed1f4bd3222aec96fc20e0364fb4d3dab22f484"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1949940, "contentHash": "a98900b418b5a09b1a7cf7a6eed1f4bd3222aec96fc20e0364fb4d3dab22f484"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop and cracked-stone floor are fully finished without blank regions or cutoffs."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "Every vapor arc, pressure ribbon, rock, spark, core, front, and floor-facing wake extent stays inside the central 84 percent with clearly empty finished border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one compact airborne elemental body appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The initial text exactly matches the canonical safe-frame-v4 renderer; correction linkage and retained provenance are complete."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The immediately recognizable compact Ember Wisp retains one coherent coal/mineral body, one exposed core, no defended front, streaming sparks, compressed ignition posture, and darting harrier wake."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wind changes silhouette, motion, attack telegraph, and environmental wake through load-bearing pressure anatomy, strongly aligned vapor channels, directional debris flow, visible distortion, and one curved force direction rather than a pale overlay."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The cool mineral core remains clearly exposed at the visually still center of the sweeping pressure pattern, preserving the recovery opening between directional passes."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Ember Wisp recognition remains pending human review; known-target inspection finds strong compact airborne core, asymmetric flame form, sparks, and darting wake cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds strong directional channel, debris, pressure-distortion, curved-telegraph, and wake cues."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One non-humanoid limbless elemental plan coherently surrounds one core; coal and pressure material form the body and directional wake without extra limbs."},
+        {"criterionId": "manifest-fidelity", "category": "battlefield-duty", "evaluator": "producer", "outcome": "pass", "observation": "The compressed front, white-heat seams, exposed core, sweeping force direction, sparks, and curved pressure wake communicate a fast Ignition harrier pass and its recovery window."},
+        {"criterionId": "manifest-fidelity", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly dark-fantasy finish, readable coal and vapor surfaces, restrained local emission, neutral key, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No text, UI, watermark, extra subject, humanoid, limb, armor, pale recolor, transparency-only treatment, directionless particle cloud, hidden core, crop, or sexualization appears."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The exact returned correction PNG was exclusive-copied without normalization; source and retained metadata and SHA-256 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ember-wisp-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T07:58:15.099Z",
+  "completedAt": "2026-08-30T08:01:00.000Z",
+  "totalWallTimeMs": 164901,
+  "writtenOutputPaths": ["assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/wind-v1.png", "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-wind-v1.json"],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

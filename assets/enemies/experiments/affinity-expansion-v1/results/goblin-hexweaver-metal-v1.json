@@ -1,0 +1,197 @@
+{
+	"schemaVersion": "image-production-result-v1",
+	"resultId": "result-affinity-expansion-v1-goblin-hexweaver-metal",
+	"targetId": "affinity-expansion-v1-goblin-hexweaver-metal",
+	"assignmentId": "assignment-affinity-expansion-v1-goblin-hexweaver-metal",
+	"skillVersion": "summonlab-image-production-v2",
+	"status": "candidate",
+	"attempts": [
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-metal-1",
+			"attemptNumber": 1,
+			"precedingAttemptId": null,
+			"conclusion": "rejected-by-producer",
+			"exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-goblin-hexweaver-metal\".\n\nSubject and threat:\n- Species: goblin-hexweaver.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: goblin-hexweaver-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Goblin Hexweaver remains immediately recognizable\n- Battlefield duty remains Telegraphed magical control\n- goblin caster with a compact ritual focus, binding marks, and open casting hand\n- Signature skills remain visually supportable: Ember hex, Binding mark, Concentration.\n- Counterplay remains visible: The still image preserves readable counterplay for Ward reading, Interrupts, Focus.\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: The still image preserves readable counterplay for Ward reading, Interrupts, Focus. Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Subject 3 only: Goblin Hexweaver identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+			"promptHash": "2785eb386f72463990abc3f8490677c444b8931abaf378b3a6deca1320624691",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": null,
+			"requestStartedAt": "2026-08-30T07:26:47.000Z",
+			"generationCompletedAt": "2026-08-30T07:27:11.430Z",
+			"inspectionCompletedAt": "2026-08-30T07:27:18.430Z",
+			"generationDurationMs": 24430,
+			"inspectionDurationMs": 7000,
+			"totalWallTimeMs": 31430,
+			"sourceOutputId": "exec-4cc9e78e-030c-4875-9f16-b07efc081732",
+			"persistence": null,
+			"output": null,
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "fail",
+					"observation": "Highest floating shard and feet breach the central 84 percent safe area."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished adult goblin hexweaver appears on a complete stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Distinct adult goblin caster identity, hood, compact focus, binding chains, open casting hand, and concentration duty remain readable."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Metal affinity changes articulated anatomy, load-bearing plates, chained focus equipment, floating fragments, and core construction."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Bright focus and chest core, exposed joints, and visibly occupied concentration hand preserve interruptible counterplay."
+				}
+			],
+			"retryReason": "Scale down and recenter all subject and focus extents while preserving the passing caster identity and metal construction."
+		},
+		{
+			"attemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-metal-2",
+			"attemptNumber": 2,
+			"precedingAttemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-metal-1",
+			"conclusion": "accepted-by-producer",
+			"exactPrompt": "Edit the supplied Goblin Hexweaver Metal image. Preserve the exact same single adult goblin identity, hood, distinct severe face, compact hex focus, binding chains and tags, open casting hand, articulated metal-affinity anatomy, chest core, dark painterly finish, lighting, and neutral cracked-stone environment. Correct only the safe framing and slightly reinforce the interruptible caster duty: uniformly scale the complete subject and every floating metal fragment down by about 18 percent and recenter it so the highest shard, hanging focus tips, chains, both feet, and every hard extent sit comfortably inside the central 84 percent of both canvas dimensions, with a clearly empty border on all four sides. Keep one hand visibly concentrating on the compact floating hex focus and the other gripping the binding implement. Keep the entire canvas intentionally finished at 1536 x 1024. Exactly one subject. No text, labels, UI, watermark, extra limbs, extra creature, crop, blank band, oversized melee weapon, or redesign.",
+			"promptHash": "d7b177164f792f065e6686c7f2dcaa3a73ae4e48fb617efb45a214a5c00bfd92",
+			"referenceInputs": [
+				{
+					"path": "assets/enemies/review/goblinoids-v1.webp",
+					"contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+				},
+				{
+					"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+					"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+				}
+			],
+			"correctionReferenceInput": {
+				"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-4cc9e78e-030c-4875-9f16-b07efc081732.png",
+				"contentHash": "a0ee8f3c18b5dc2e9d665ae40691beb35842b677db9d94bed583b1fd1cb3a65c"
+			},
+			"requestStartedAt": "2026-08-30T07:27:32.000Z",
+			"generationCompletedAt": "2026-08-30T07:27:55.643Z",
+			"inspectionCompletedAt": "2026-08-30T07:28:01.643Z",
+			"generationDurationMs": 23643,
+			"inspectionDurationMs": 6000,
+			"totalWallTimeMs": 29643,
+			"sourceOutputId": "exec-9cb9f0b2-4770-40bf-8a86-af09eede368d",
+			"persistence": {
+				"operation": "exclusive-copy",
+				"elapsedMs": 15,
+				"source": {
+					"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-9cb9f0b2-4770-40bf-8a86-af09eede368d.png",
+					"width": 1536,
+					"height": 1024,
+					"mediaType": "image/png",
+					"bytes": 1992571,
+					"contentHash": "f3201f7d4bbaf999fa7474e10f07fa97b228b24fdd9131bf73e732f6c0c62c47"
+				},
+				"retained": {
+					"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/metal-v1.png",
+					"mediaType": "image/png",
+					"width": 1536,
+					"height": 1024,
+					"bytes": 1992571,
+					"contentHash": "f3201f7d4bbaf999fa7474e10f07fa97b228b24fdd9131bf73e732f6c0c62c47"
+				}
+			},
+			"output": {
+				"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/metal-v1.png",
+				"mediaType": "image/png",
+				"width": 1536,
+				"height": 1024,
+				"bytes": 1992571,
+				"contentHash": "f3201f7d4bbaf999fa7474e10f07fa97b228b24fdd9131bf73e732f6c0c62c47"
+			},
+			"findings": [
+				{
+					"criterionId": "complete-safe-frame",
+					"category": "framing",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Full goblin, focus, shards, chains, garment hems, and feet now sit comfortably inside the safe frame."
+				},
+				{
+					"criterionId": "single-finished-subject",
+					"category": "subject-count",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Exactly one finished adult goblin hexweaver appears on a complete stone-floor canvas."
+				},
+				{
+					"criterionId": "protocol-provenance",
+					"category": "prompt-provenance",
+					"evaluator": "automated",
+					"outcome": "pass",
+					"observation": "Initial prompt matches the canonical renderer and target references were supplied in manifest order."
+				},
+				{
+					"criterionId": "manifest-fidelity",
+					"category": "manifest-fidelity",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Distinct adult goblin caster identity, hood, compact focus, binding chains, open casting hand, and concentration duty remain readable."
+				},
+				{
+					"criterionId": "affinity-construction-fidelity",
+					"category": "affinity-integration",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Metal affinity changes articulated anatomy, load-bearing plates, chained focus equipment, floating fragments, and core construction."
+				},
+				{
+					"criterionId": "visible-counterplay-cue",
+					"category": "counterplay",
+					"evaluator": "producer",
+					"outcome": "pass",
+					"observation": "Bright focus and chest core, exposed joints, and visibly occupied concentration hand preserve interruptible counterplay."
+				}
+			],
+			"retryReason": null
+		}
+	],
+	"selectedAttemptId": "attempt-affinity-expansion-v1-goblin-hexweaver-metal-2",
+	"failedCriteria": [],
+	"startedAt": "2026-08-30T07:26:47.000Z",
+	"completedAt": "2026-08-30T07:28:08.000Z",
+	"totalWallTimeMs": 81000,
+	"writtenOutputPaths": [
+		"assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/metal-v1.png",
+		"assets/enemies/experiments/affinity-expansion-v1/results/goblin-hexweaver-metal-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
+

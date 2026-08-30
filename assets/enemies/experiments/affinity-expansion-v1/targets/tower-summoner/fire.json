@@ -1,0 +1,118 @@
+{
+	"schemaVersion": "image-production-target-v2",
+	"targetId": "affinity-expansion-v1-tower-summoner-fire",
+	"assetId": "affinity-expansion-v1-tower-summoner-fire",
+	"packId": "affinity-expansion",
+	"experimentId": "affinity-expansion-v1",
+	"promptProtocol": "safe-frame-v4",
+	"authoringProtocol": "semantic-v2",
+	"cohort": "breadth",
+	"speciesId": "tower-summoner",
+	"affinity": "fire",
+	"affinityDesign": {
+		"alteredDimensions": ["material", "motion", "attack-telegraph", "environmental-wake"],
+		"expression": "heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion",
+		"counterplayCue": "paired focus pylons break the channel The internal core or heat sink becomes exposed between combustion cycles."
+	},
+	"threat": { "presentationTier": "elite", "referenceGrade": 4, "canonicalGrade": 4 },
+	"battlefieldDutyId": "tower-summoner-duty",
+	"constructionMode": "humanoid-enemy",
+	"identityInvariants": [
+		"Tower Summoner remains immediately recognizable",
+		"Battlefield duty remains Reinforcement controller",
+		"wide ritual frame, two grounded focus pylons, and both hands occupied",
+		"empty gate geometry assembles on the floor before an add arrives",
+		"Counterplay remains visible: paired focus pylons break the channel"
+	],
+	"anatomyInvariants": [
+		"adult humanoid biped with exactly two arms and two legs",
+		"credible hands, feet, joints, equipment grip, and grounded weight"
+	],
+	"permittedTransformations": ["material", "motion", "attack telegraph", "environmental wake"],
+	"prohibitedTraits": [
+		"childlike proportions",
+		"human glamour or sexualization",
+		"extra limbs",
+		"a uniform orange full-body glow that destroys material and anatomy detail"
+	],
+	"references": [
+		{
+			"path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+			"purpose": "Subject 3 only: Tower Summoner identity, anatomy, duty silhouette, and material language; do not transfer another family member",
+			"contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+		},
+		{
+			"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+			"purpose": "Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale",
+			"contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+		}
+	],
+	"presentation": {
+		"styleContract": "Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.",
+		"medium": "premium realistic painterly raster creature concept",
+		"background": "neutral cracked-stone floor against a charcoal-to-midnight backdrop",
+		"lighting": "controlled neutral key with restrained local affinity emission and readable materials",
+		"composition": "Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.",
+		"canvas": { "width": 1536, "height": 1024, "mediaType": "image/png", "safeMarginPercent": 8 },
+		"negativePrompt": [
+			"No labels, text, UI, frame, logo, or watermark.",
+			"No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.",
+			"No resemblance to a published character or reference person.",
+			"No sexualized anatomy, costume, or pose."
+		]
+	},
+	"acceptanceCriteria": [
+		{
+			"criterionId": "complete-safe-frame",
+			"kind": "objective",
+			"description": "Entire silhouette, equipment, wings, tail, and every extremity are complete with at least eight percent safe margin.",
+			"required": true
+		},
+		{
+			"criterionId": "single-finished-subject",
+			"kind": "objective",
+			"description": "Exactly one subject appears and every canvas region is intentionally finished.",
+			"required": true
+		},
+		{
+			"criterionId": "protocol-provenance",
+			"kind": "objective",
+			"description": "The first submitted prompt exactly matches the canonical renderer and retained provenance is complete.",
+			"required": true
+		},
+		{
+			"criterionId": "manifest-fidelity",
+			"kind": "objective",
+			"description": "Every identity, anatomy, duty, counterplay, and prohibited-trait invariant is visibly satisfied.",
+			"required": true
+		},
+		{
+			"criterionId": "affinity-construction-fidelity",
+			"kind": "objective",
+			"description": "The affinity visibly changes at least two declared construction dimensions rather than acting as a color overlay.",
+			"required": true
+		},
+		{
+			"criterionId": "visible-counterplay-cue",
+			"kind": "objective",
+			"description": "The declared weak point or counterplay state remains readable through the affinity transformation.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-species-identity",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the exact archetype without seeing its label.",
+			"required": true
+		},
+		{
+			"criterionId": "blind-affinity-integration",
+			"kind": "human-review",
+			"description": "A blind reviewer recognizes the affinity through multiple visual dimensions.",
+			"required": true
+		}
+	],
+	"output": {
+		"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/fire-v1.png",
+		"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-summoner-fire-v1.json"
+	}
+}
