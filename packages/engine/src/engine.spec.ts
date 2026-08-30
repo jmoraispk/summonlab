@@ -171,6 +171,44 @@ describe('deterministic engine', () => {
 		expect(ENGINE_INVARIANTS).toContain('no-wall-clock');
 	});
 
+	it('keeps bootstrap legal-action ids in their public order', () => {
+		const bootstrap = fixture();
+		const heroId = Object.keys(bootstrap.snapshot.state.heroes)[0]!;
+		const legalActionCases = [
+			{
+				boundary: 'bootstrap',
+				actorId: bootstrap.snapshot.state.master.masterId,
+				expected: [
+					'master.inspect.gate',
+					'mission.prepare',
+					`settlement.assign.${heroId}.summoning-gate`,
+					`settlement.assign.${heroId}.kitchen`,
+					`settlement.assign.${heroId}.dormitory`,
+					`settlement.assign.${heroId}.training-ground`,
+					`settlement.assign.${heroId}.workshop`,
+					`social.communicate.${heroId}`,
+					`social.converse.${heroId}`,
+					'social.directive.issue',
+					`simulation.damage.hero.${heroId}`,
+					'simulation.damage.master'
+				]
+			},
+			{
+				boundary: 'bootstrap hero choice',
+				actorId: heroId,
+				expected: ['hero.choose.kitchen', 'hero.choose.training-ground']
+			}
+		] as const;
+
+		for (const legalActionCase of legalActionCases) {
+			expect(
+				legalActions(bootstrap.snapshot.state, legalActionCase.actorId).map(
+					(action) => action.actionId
+				)
+			).toEqual(legalActionCase.expected);
+		}
+	});
+
 	it('produces a stable named entropy fixture and advances exactly once', () => {
 		const first = drawInteger(createEntropyCursor('fixture-seed'), 'gate.resonance', 0, 99);
 		const repeated = drawInteger(createEntropyCursor('fixture-seed'), 'gate.resonance', 0, 99);
