@@ -72,7 +72,7 @@ describe('monster wiki database export', () => {
 			id: 'test-wolf',
 			name: 'Test Wolf',
 			familyId: 'beasts',
-			familyName: 'Tower beasts',
+			familyName: 'Beasts',
 			role: 'Fast flanking predator',
 			telegraph: 'Lowers its shoulders before a rush.',
 			counterplay: 'Open flank after the rush.',
@@ -82,8 +82,9 @@ describe('monster wiki database export', () => {
 
 		expect(page).toContain('# Test Wolf');
 		expect(page).toContain('Wiki ID: `monster.test-wolf`');
-		expect(page).toContain('Tower beasts');
+		expect(page).toContain('Beasts');
 		expect(page).toContain('Fast flanking predator');
-		expect(page).toContain('The visual matrix above is generated');
+		expect(page).toContain('current production artwork');
+		expect(page).not.toMatch(/candidate matrix|hash-bound|hashes, and statuses/iu);
 	});
 });

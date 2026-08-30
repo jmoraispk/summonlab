@@ -144,10 +144,10 @@ Wiki ID: \`creatures.monster-database\`
 
 This is the visual identity index for the **40 currently authored monster archetypes**. Every card
 opens a dedicated monster page. Each page leads with the identity reference and keeps
-Wood, Fire, Metal, Water, and Wind directly beneath it as variants of the same identity.
+Wood, Fire, Metal, Water, and Wind available as selectable variants of the same identity.
 
-The online images are web derivatives of hash-bound production candidates. Candidate and revision
-labels remain visible; appearing in this database does not silently approve an image for runtime.
+The online images are web derivatives of the current production artwork. Source provenance and
+review state remain in the internal visual catalog rather than the public presentation.
 
 ${sections}
 

@@ -260,7 +260,7 @@ export const PACK_TWO_MONSTER_FAMILIES = [
 	},
 	{
 		id: 'arachnids',
-		name: 'Tower arachnids',
+		name: 'Arachnids',
 		plate: 'arachnids-v1',
 		monsterIds: ['tunnel-spider', 'web-caster', 'armored-brood-guard', 'giant-broodmother']
 	},

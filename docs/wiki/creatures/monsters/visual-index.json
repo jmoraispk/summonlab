@@ -12,6 +12,322 @@
   ],
   "monsters": [
     {
+      "id": "armored-brood-guard",
+      "name": "Armored Brood Guard",
+      "familyId": "arachnids",
+      "familyName": "Arachnids",
+      "role": "Chokepoint tank",
+      "telegraph": "front plates close before a straight shove",
+      "counterplay": "leg joints exposed from the side",
+      "skills": [],
+      "debutFloor": null,
+      "variants": [
+        {
+          "targetId": "affinity-expansion-v1-armored-brood-guard-normal",
+          "speciesId": "armored-brood-guard",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/normal-v1.png",
+          "contentHash": "1dd4dda59f359af7f564a4f56b51fdfd2b70491f42944f6ccc391a6d446b55bc",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/normal.webp",
+          "thumbnailHash": "7a4857597863d4af641cf512cc56a07d7fed2ca220a0df75d3e48affff405ae7"
+        },
+        {
+          "targetId": "affinity-expansion-v1-armored-brood-guard-wood",
+          "speciesId": "armored-brood-guard",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wood-v1.png",
+          "contentHash": "aad2951d0b2792928806c3a3a27c4aa0e9459075d9e47484b2612f85f370aded",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/wood.webp",
+          "thumbnailHash": "423e701e4bf07306c8cacb4c741cf71bc349b0cd97d12e32798bf774d86975cf"
+        },
+        {
+          "targetId": "affinity-expansion-v1-armored-brood-guard-fire",
+          "speciesId": "armored-brood-guard",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v2.png",
+          "contentHash": "47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f",
+          "version": 2,
+          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/fire.webp",
+          "thumbnailHash": "d63b9519e78288ec913f3322efc931f3bd3a0932613baca7f9f22a7eb78c8250"
+        },
+        {
+          "targetId": "affinity-expansion-v1-armored-brood-guard-metal",
+          "speciesId": "armored-brood-guard",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/metal-v1.png",
+          "contentHash": "71793e937c6611f1031c09691336b82c308b0b0e221a4940854d6e5586765800",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/metal.webp",
+          "thumbnailHash": "408c3b591c60205bd767c0316b8ce237056caec65bf505c2901c6642d6152d1d"
+        },
+        {
+          "targetId": "affinity-expansion-v1-armored-brood-guard-water",
+          "speciesId": "armored-brood-guard",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/water-v1.png",
+          "contentHash": "ef6e3f3193ea57e0c5e90af8e66cc78697f4835ecbaa07ab22fb554c5267bed8",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/water.webp",
+          "thumbnailHash": "deecc079ff6ccea6971048ab4f0b87a8ddc51c04c3ec89d2c0d102833eca8976"
+        },
+        {
+          "targetId": "affinity-expansion-v1-armored-brood-guard-wind",
+          "speciesId": "armored-brood-guard",
+          "affinity": "wind",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wind-v2.png",
+          "contentHash": "0721e283f1cca981dbec4b8819b58f2174b366c98d3735ef23842fdaf58713dd",
+          "version": 2,
+          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/wind.webp",
+          "thumbnailHash": "f59da4ca893cef6f94d609128cc8c33881601c82d2b83daea0544ca086d568cc"
+        }
+      ]
+    },
+    {
+      "id": "giant-broodmother",
+      "name": "Giant Broodmother",
+      "familyId": "arachnids",
+      "familyName": "Arachnids",
+      "role": "Spawner boss",
+      "telegraph": "one egg cluster pulses before hatching or bursting",
+      "counterplay": "abdomen underside while deploying brood",
+      "skills": [],
+      "debutFloor": null,
+      "variants": [
+        {
+          "targetId": "affinity-expansion-v1-giant-broodmother-normal",
+          "speciesId": "giant-broodmother",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/normal-v1.png",
+          "contentHash": "d0447e8489a7ccfb23baebce4398b7a17eccbc2a6c16626fe05ae835096a49c5",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/normal.webp",
+          "thumbnailHash": "5bf75f7ee050bc204a8ea6432a1bd678f7a7bb6b91132555ad7114fb0de32a98"
+        },
+        {
+          "targetId": "affinity-expansion-v1-giant-broodmother-wood",
+          "speciesId": "giant-broodmother",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wood-v1.png",
+          "contentHash": "7ab32fdae8a471b2ba187b2736dcb1013c00f2b1764c990f613a2e6a709b735a",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/wood.webp",
+          "thumbnailHash": "cee750d761c01d5f7243ab8546b21495f37cd8e9bacb4ddcb71cc3daf4704533"
+        },
+        {
+          "targetId": "affinity-expansion-v1-giant-broodmother-fire",
+          "speciesId": "giant-broodmother",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/fire-v1.png",
+          "contentHash": "189e1e307bf6ed90f81149bb20f2f6861b6b8f819d66aa1748bd7d3e11ed4556",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/fire.webp",
+          "thumbnailHash": "a02eba244f7e24f77ee40897c28f4d6338fd19e79156fefded458206a2e860b0"
+        },
+        {
+          "targetId": "affinity-expansion-v1-giant-broodmother-metal",
+          "speciesId": "giant-broodmother",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
+          "contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/metal.webp",
+          "thumbnailHash": "3e07d3b08975b5fd977824c2aa7cc2246fe83de679a20ed5080eb93c874a2d47"
+        },
+        {
+          "targetId": "affinity-expansion-v1-giant-broodmother-water",
+          "speciesId": "giant-broodmother",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/water-v1.png",
+          "contentHash": "26e7d658388aa57a8196a757f6cbb916185bb3f4923b007b768d18a40638f0dd",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/water.webp",
+          "thumbnailHash": "34a6c0f034b46f3b32983a0835ca5deb20e2f61eef26b217696daad15c8926f6"
+        },
+        {
+          "targetId": "affinity-expansion-v1-giant-broodmother-wind",
+          "speciesId": "giant-broodmother",
+          "affinity": "wind",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wind-v1.png",
+          "contentHash": "e410dd6831eb5ef4e04434eaa94162bde8bc973919d0414523ab8d3689130d28",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/wind.webp",
+          "thumbnailHash": "7622ae2a245da3df1a6634a5694b2c86e7723a3c865993e866d0a96e41c8d569"
+        }
+      ]
+    },
+    {
+      "id": "tunnel-spider",
+      "name": "Tunnel Spider",
+      "familyId": "arachnids",
+      "familyName": "Arachnids",
+      "role": "Low flanker",
+      "telegraph": "outer legs lower before a lateral rush",
+      "counterplay": "soft abdomen during a turn",
+      "skills": [],
+      "debutFloor": null,
+      "variants": [
+        {
+          "targetId": "affinity-expansion-v1-tunnel-spider-normal",
+          "speciesId": "tunnel-spider",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/normal-v1.png",
+          "contentHash": "f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/normal.webp",
+          "thumbnailHash": "a4ccd390a4c62347f66b15103c458555b1dd48068ddf0643a3b2ec4528f9ca00"
+        },
+        {
+          "targetId": "affinity-expansion-v1-tunnel-spider-wood",
+          "speciesId": "tunnel-spider",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wood-v1.png",
+          "contentHash": "6777118d1ab47db2bae4a97adcf72bc49b68f285921380abfbdf22a3383a3b7f",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/wood.webp",
+          "thumbnailHash": "78296ae8098b7c49890edc3f595e214f15c1fac1d6e63d5cf8c22054458b6788"
+        },
+        {
+          "targetId": "affinity-expansion-v1-tunnel-spider-fire",
+          "speciesId": "tunnel-spider",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/fire-v1.png",
+          "contentHash": "a1956c56a33928ec0ce3f213c4d5bafc62c86909dd0f80d9917a58efd22aaa8a",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/fire.webp",
+          "thumbnailHash": "536db4c80d2eaa7980f5297bff3b0be34caf001cdd398aef0d2a6f309f5759b3"
+        },
+        {
+          "targetId": "affinity-expansion-v1-tunnel-spider-metal",
+          "speciesId": "tunnel-spider",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/metal-v1.png",
+          "contentHash": "5fdbeda143cbff85d4b1edf21a0d1655a947ce8ae2f49f5f58d74c95a47472a5",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/metal.webp",
+          "thumbnailHash": "69c4e24ec1fb5581e688e76bf9d15f226771b46e6b949be154ae745ce334f6cd"
+        },
+        {
+          "targetId": "affinity-expansion-v1-tunnel-spider-water",
+          "speciesId": "tunnel-spider",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/water-v1.png",
+          "contentHash": "03fa24229d9f5008b10f217ddb0dc7665e7c4eaa45152fe8e824a807b367e6d4",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/water.webp",
+          "thumbnailHash": "faf25bdf5fe3428a2362b6555273d8af3c677fd7ae3eb090d05aa93b900be69a"
+        },
+        {
+          "targetId": "affinity-expansion-v1-tunnel-spider-wind",
+          "speciesId": "tunnel-spider",
+          "affinity": "wind",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wind-v1.png",
+          "contentHash": "2eabc6a864b31bf89de22ab6fca919b4d88bfe051dd7683efd4fbb609a24b614",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/wind.webp",
+          "thumbnailHash": "71a3637ea80a887b0639698b77088492e62387fa13f2d234fd9159810ab492f4"
+        }
+      ]
+    },
+    {
+      "id": "web-caster",
+      "name": "Web Caster",
+      "familyId": "arachnids",
+      "familyName": "Arachnids",
+      "role": "Ranged restraint",
+      "telegraph": "abdomen tilts and a pale silk line traces the target zone",
+      "counterplay": "spinnerets after a cast",
+      "skills": [],
+      "debutFloor": null,
+      "variants": [
+        {
+          "targetId": "affinity-expansion-v1-web-caster-normal",
+          "speciesId": "web-caster",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/normal-v1.png",
+          "contentHash": "5c949c434f2bfc35d6843dbf0a7683f8698ece3a2bf981533e9e5fd7ab7c7b57",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/web-caster/normal.webp",
+          "thumbnailHash": "d42da76e2eb0ba51624bd12ddd6667b5e4ace137b1623f8924a2426a581e028c"
+        },
+        {
+          "targetId": "affinity-expansion-v1-web-caster-wood",
+          "speciesId": "web-caster",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
+          "contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/web-caster/wood.webp",
+          "thumbnailHash": "ec51400d103e6bf03d5a31573916d4434ad565b7786fa7201705499cb7691cb2"
+        },
+        {
+          "targetId": "affinity-expansion-v1-web-caster-fire",
+          "speciesId": "web-caster",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/fire-v1.png",
+          "contentHash": "27f2534d949c7731e5f8af54e5a6e6c7802c96598b211aab05771744a66a0b5d",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/web-caster/fire.webp",
+          "thumbnailHash": "3055de4bbf37063f06fefa3f727bf5fa845a2a5f7dc844bcbe379085d134d3e5"
+        },
+        {
+          "targetId": "affinity-expansion-v1-web-caster-metal",
+          "speciesId": "web-caster",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v2.png",
+          "contentHash": "6a012b761bb88dcf9a6eb0daff75bc5116728dc78936f047bbfd2d2965584dd4",
+          "version": 2,
+          "thumbnailPath": "/wiki-media/monsters/web-caster/metal.webp",
+          "thumbnailHash": "a8b82770b3f4acd772521af1ae6967facd7eb47172741257925a9942d96200e7"
+        },
+        {
+          "targetId": "affinity-expansion-v1-web-caster-water",
+          "speciesId": "web-caster",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/water-v1.png",
+          "contentHash": "2b1f6e9d5a66b82838597807bb96dc78dd11ca666458cf3f07234be77c59bac5",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/web-caster/water.webp",
+          "thumbnailHash": "cd3e8c68d197eaccfe1e6e6a8cea350289a7c59cb030cf1bd0e3c5498572eca2"
+        },
+        {
+          "targetId": "affinity-expansion-v1-web-caster-wind",
+          "speciesId": "web-caster",
+          "affinity": "wind",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wind-v1.png",
+          "contentHash": "73eb7b9fbfe261ce55b54f5c2f757119b9e6a527ee6392b2b12208849857f411",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/web-caster/wind.webp",
+          "thumbnailHash": "910da9ff991ce092f5655a979f75d5066fa801af25701e507c1b1e5e9b5bf41d"
+        }
+      ]
+    },
+    {
       "id": "hex-adept",
       "name": "Hex Adept",
       "familyId": "arcane-hostiles",
@@ -324,6 +640,338 @@
           "version": 1,
           "thumbnailPath": "/wiki-media/monsters/ward-mage/wind.webp",
           "thumbnailHash": "ea3bd2ee1e7b28f580645663ca176a0eb3e165b82adf6e37d69b8e2ef5a2f130"
+        }
+      ]
+    },
+    {
+      "id": "cave-bear",
+      "name": "Cave Bear",
+      "familyId": "beasts",
+      "familyName": "Beasts",
+      "role": "Close-range damage test",
+      "telegraph": "Signature actions: Maul, Roar, Overrun.",
+      "counterplay": "Teaches Spacing, Guard discipline, Injury control.",
+      "skills": [
+        "Maul",
+        "Roar",
+        "Overrun"
+      ],
+      "debutFloor": 9,
+      "variants": [
+        {
+          "targetId": "affinity-workflow-v1-cave-bear-normal",
+          "speciesId": "cave-bear",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png",
+          "contentHash": "2facbf837dac20c60474a0e33a81c5c01ce0cdfe3e0727f380a1b7e9f1e5aaf9",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/cave-bear/normal.webp",
+          "thumbnailHash": "8d4f879ee4a4ac36a4a366ef097ce3e2ba47c242e390ac4b5e6f712b073ea550"
+        },
+        {
+          "targetId": "affinity-workflow-v1-cave-bear-wood-v2",
+          "speciesId": "cave-bear",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
+          "contentHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c",
+          "version": 2,
+          "thumbnailPath": "/wiki-media/monsters/cave-bear/wood.webp",
+          "thumbnailHash": "126bb9ff60fe58b7b694118427822b1c863eacd97e645dc1631a054ea2c7fe25"
+        },
+        {
+          "targetId": "affinity-workflow-v1-cave-bear-fire",
+          "speciesId": "cave-bear",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/fire-v1.png",
+          "contentHash": "a36c9c4da2439c8557cfbb71d0e997f0147b1c06d444969ad7acb960cb563e6a",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/cave-bear/fire.webp",
+          "thumbnailHash": "b6a582e180843d132bea9de2c0ee0c8ed8ea47a01d52307165041bb32525e14f"
+        },
+        {
+          "targetId": "affinity-workflow-v1-cave-bear-metal",
+          "speciesId": "cave-bear",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/metal-v1.png",
+          "contentHash": "54ddc74f76d84dbdc057847412f036a165c530c406b4bf710bdf6ca1f06488c1",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/cave-bear/metal.webp",
+          "thumbnailHash": "6de915d4f1bc054261000ffa2af329a7e23eb8940a883f2b602c8466f34b7120"
+        },
+        {
+          "targetId": "affinity-workflow-v1-cave-bear-water",
+          "speciesId": "cave-bear",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/water-v1.png",
+          "contentHash": "7aeb280568a852d6b9526a7f83da2c69b1e7e263caf8624d2913cc06460ba1fc",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/cave-bear/water.webp",
+          "thumbnailHash": "b2942ef3393d330c0ee23df0e3ec8366e2d5e4ac1633a69d5645c82734d05bd0"
+        },
+        {
+          "targetId": "affinity-workflow-v1-cave-bear-wind-v2",
+          "speciesId": "cave-bear",
+          "affinity": "wind",
+          "status": "revise",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wind-v2.png",
+          "contentHash": "2959ed534461995a4d0ca8d9442a992b8ababb7458cb3eecc70ca29faeacd559",
+          "version": 2,
+          "thumbnailPath": "/wiki-media/monsters/cave-bear/wind.webp",
+          "thumbnailHash": "e9d8970fc6586be1375554292435d9716ea3c3903f26823a2b8925f4e8468858"
+        }
+      ]
+    },
+    {
+      "id": "dire-wolf",
+      "name": "Dire Wolf",
+      "familyId": "beasts",
+      "familyName": "Beasts",
+      "role": "Relentless pursuit",
+      "telegraph": "Signature actions: Coordinated hunt, Hamstring, Fear scent.",
+      "counterplay": "Teaches Stamina, Rescue movement, Composure.",
+      "skills": [
+        "Coordinated hunt",
+        "Hamstring",
+        "Fear scent"
+      ],
+      "debutFloor": 7,
+      "variants": [
+        {
+          "targetId": "affinity-expansion-v1-dire-wolf-normal",
+          "speciesId": "dire-wolf",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png",
+          "contentHash": "d183fae2c892306f7c426293e8e2fa75d05c56b1832bf42586cb07427e9526ef",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/dire-wolf/normal.webp",
+          "thumbnailHash": "83a6df699cdd1686c8d78af11bffef765242690ee1209d59c33da1e58a9245ff"
+        },
+        {
+          "targetId": "affinity-expansion-v1-dire-wolf-wood",
+          "speciesId": "dire-wolf",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png",
+          "contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/dire-wolf/wood.webp",
+          "thumbnailHash": "00373a6edc0af7ab4248e96fd729f83b67ec664340da08447dbfeb29273e0822"
+        },
+        {
+          "targetId": "affinity-expansion-v1-dire-wolf-fire",
+          "speciesId": "dire-wolf",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/fire-v1.png",
+          "contentHash": "3a395bbef7da436cbab7311940e908b7bb37f00b6c7bd45b0c59865d1dedbffc",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/dire-wolf/fire.webp",
+          "thumbnailHash": "0569177d925d618d36a4f9c472928e76a0954202bd8704408d8fd122f55e3b91"
+        },
+        {
+          "targetId": "affinity-expansion-v1-dire-wolf-metal",
+          "speciesId": "dire-wolf",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/metal-v1.png",
+          "contentHash": "d9bcc6c5a2784eb747726aeab71983472c651363514346adc0613e41a9c6737b",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/dire-wolf/metal.webp",
+          "thumbnailHash": "05de90ba52977ac28f5da94b145b76bb88e1107b670da66831e186dbb3a4738b"
+        },
+        {
+          "targetId": "affinity-expansion-v1-dire-wolf-water",
+          "speciesId": "dire-wolf",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/water-v1.png",
+          "contentHash": "434a659f0dfaa6c916ebdb80e7c27b1fe6dec5e4886b6ce5bca35b9be344af10",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/dire-wolf/water.webp",
+          "thumbnailHash": "e8ce6f5a87b888fc4b82ab306cec9ffcb223ee03e17936ee749928d7f8165831"
+        },
+        {
+          "targetId": "affinity-expansion-v1-dire-wolf-wind",
+          "speciesId": "dire-wolf",
+          "affinity": "wind",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wind-v1.png",
+          "contentHash": "f380ed1487a0c9d7e6a20571caba8f51310f91b6bc442ee52f73ad01fed21626",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/dire-wolf/wind.webp",
+          "thumbnailHash": "73880c5ea307d77ff327ffb10de49c150a0b45f124a13d5dacc85b8eb67b0088"
+        }
+      ]
+    },
+    {
+      "id": "grey-wolf",
+      "name": "Grey Wolf",
+      "familyId": "beasts",
+      "familyName": "Beasts",
+      "role": "Fast flanking predator",
+      "telegraph": "Signature actions: Pursuit, Flanking, Trip attack.",
+      "counterplay": "Teaches Footwork, Perception, Ally protection.",
+      "skills": [
+        "Pursuit",
+        "Flanking",
+        "Trip attack"
+      ],
+      "debutFloor": 3,
+      "variants": [
+        {
+          "targetId": "affinity-workflow-v1-grey-wolf-normal",
+          "speciesId": "grey-wolf",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/normal-v1.png",
+          "contentHash": "c6fb5e9523f741c34503a97dcd4a5a7a0bf9e9ede447ef97d2778548d94c0777",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/grey-wolf/normal.webp",
+          "thumbnailHash": "599f2bca864e806394e2d9d944f84e26e01355f7eda70b6bc0d7cdd9663509a8"
+        },
+        {
+          "targetId": "affinity-workflow-v1-grey-wolf-wood",
+          "speciesId": "grey-wolf",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
+          "contentHash": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/grey-wolf/wood.webp",
+          "thumbnailHash": "8aa58fc58ed57bb1b0f572fbaa5771bf325705a330a2cdddca3cf9a33661dd4c"
+        },
+        {
+          "targetId": "affinity-workflow-v1-grey-wolf-fire-v2",
+          "speciesId": "grey-wolf",
+          "affinity": "fire",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/grey-wolf/fire-v2.png",
+          "contentHash": "772d6d8fbbc19128bbeea77470174351caa1b53443ddcc89df334a38b6c99d15",
+          "version": 2,
+          "thumbnailPath": "/wiki-media/monsters/grey-wolf/fire.webp",
+          "thumbnailHash": "262c0755e98c69803187945b738fdecfc5d27c6e37529db93c038837048ed6b2"
+        },
+        {
+          "targetId": "affinity-workflow-v1-grey-wolf-metal",
+          "speciesId": "grey-wolf",
+          "affinity": "metal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
+          "contentHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/grey-wolf/metal.webp",
+          "thumbnailHash": "148c42bcd59d3098ebd8edff369c4cd37ed3ca91e847123c1f8f3bf1a71f9f07"
+        },
+        {
+          "targetId": "affinity-workflow-v1-grey-wolf-water",
+          "speciesId": "grey-wolf",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/water-v1.png",
+          "contentHash": "c49cef7a3291189961b887721e5e98e5b13c275bef97e3377a49a09b1eea28c4",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/grey-wolf/water.webp",
+          "thumbnailHash": "59dc8d7e39998e0e1d3e16f419cbc68ac54eeac24fb29413737547f17045b82d"
+        },
+        {
+          "targetId": "affinity-workflow-v1-grey-wolf-wind",
+          "speciesId": "grey-wolf",
+          "affinity": "wind",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
+          "contentHash": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/grey-wolf/wind.webp",
+          "thumbnailHash": "1d1f9dc8992dcfa77386c7857e8bd1340177a1ec31f3dcf02a7b17a2e7f39628"
+        }
+      ]
+    },
+    {
+      "id": "tunnel-boar",
+      "name": "Tunnel Boar",
+      "familyId": "beasts",
+      "familyName": "Beasts",
+      "role": "Armored line breaker",
+      "telegraph": "Signature actions: Charge, Brace, Trample.",
+      "counterplay": "Teaches Dodge timing, Bracing, Terrain use.",
+      "skills": [
+        "Charge",
+        "Brace",
+        "Trample"
+      ],
+      "debutFloor": 6,
+      "variants": [
+        {
+          "targetId": "affinity-workflow-v1-tunnel-boar-normal",
+          "speciesId": "tunnel-boar",
+          "affinity": "normal",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
+          "contentHash": "13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/normal.webp",
+          "thumbnailHash": "4c23cc226ab5e7c824a793249ba89293fa7dca137775f0dd61ceee8d0691ccb4"
+        },
+        {
+          "targetId": "affinity-workflow-v1-tunnel-boar-wood",
+          "speciesId": "tunnel-boar",
+          "affinity": "wood",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
+          "contentHash": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/wood.webp",
+          "thumbnailHash": "d60379618d2fbb080a1a5eafb699b8ea618a11e08b077bc6ce8f362d405c125e"
+        },
+        {
+          "targetId": "affinity-workflow-v1-tunnel-boar-fire",
+          "speciesId": "tunnel-boar",
+          "affinity": "fire",
+          "status": "revise",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
+          "contentHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/fire.webp",
+          "thumbnailHash": "a7db51588b12a83c5b936694064ca67e321eb2b7638eb95bf3ff50d7b166f0cb"
+        },
+        {
+          "targetId": "affinity-workflow-v1-tunnel-boar-metal",
+          "speciesId": "tunnel-boar",
+          "affinity": "metal",
+          "status": "revise",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/metal-v1.png",
+          "contentHash": "5c3fa7b40dad93dc6fdc8f6c2d908d5b552630d4feec304a6c11986bef422bce",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/metal.webp",
+          "thumbnailHash": "a0300b933f13aed44e2b0497964da77c66237b544a721b0b95af2422ad54c0d7"
+        },
+        {
+          "targetId": "affinity-workflow-v1-tunnel-boar-water",
+          "speciesId": "tunnel-boar",
+          "affinity": "water",
+          "status": "candidate",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/water-v1.png",
+          "contentHash": "8e81c97f8b9370f99cfd89c279352fc4ce3c157dcca06b6d10e684bd89d687a2",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/water.webp",
+          "thumbnailHash": "31d13486cc3eb9a286b35343e34cdeb47adecb7d10d5b4a807e50c4b87f1870a"
+        },
+        {
+          "targetId": "affinity-workflow-v1-tunnel-boar-wind",
+          "speciesId": "tunnel-boar",
+          "affinity": "wind",
+          "status": "revise",
+          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png",
+          "contentHash": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0",
+          "version": 1,
+          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/wind.webp",
+          "thumbnailHash": "505174cc1c5b5e9fb10f71697bf588ed7d94dde91473ef29f2be12e3994d12fd"
         }
       ]
     },
@@ -2584,654 +3232,6 @@
           "version": 1,
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/wind.webp",
           "thumbnailHash": "c8690d49ace90d079322b3508717829bc94ddbe021332eebbb423c4c84452f56"
-        }
-      ]
-    },
-    {
-      "id": "armored-brood-guard",
-      "name": "Armored Brood Guard",
-      "familyId": "arachnids",
-      "familyName": "Tower arachnids",
-      "role": "Chokepoint tank",
-      "telegraph": "front plates close before a straight shove",
-      "counterplay": "leg joints exposed from the side",
-      "skills": [],
-      "debutFloor": null,
-      "variants": [
-        {
-          "targetId": "affinity-expansion-v1-armored-brood-guard-normal",
-          "speciesId": "armored-brood-guard",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/normal-v1.png",
-          "contentHash": "1dd4dda59f359af7f564a4f56b51fdfd2b70491f42944f6ccc391a6d446b55bc",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/normal.webp",
-          "thumbnailHash": "7a4857597863d4af641cf512cc56a07d7fed2ca220a0df75d3e48affff405ae7"
-        },
-        {
-          "targetId": "affinity-expansion-v1-armored-brood-guard-wood",
-          "speciesId": "armored-brood-guard",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wood-v1.png",
-          "contentHash": "aad2951d0b2792928806c3a3a27c4aa0e9459075d9e47484b2612f85f370aded",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/wood.webp",
-          "thumbnailHash": "423e701e4bf07306c8cacb4c741cf71bc349b0cd97d12e32798bf774d86975cf"
-        },
-        {
-          "targetId": "affinity-expansion-v1-armored-brood-guard-fire",
-          "speciesId": "armored-brood-guard",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v2.png",
-          "contentHash": "47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f",
-          "version": 2,
-          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/fire.webp",
-          "thumbnailHash": "d63b9519e78288ec913f3322efc931f3bd3a0932613baca7f9f22a7eb78c8250"
-        },
-        {
-          "targetId": "affinity-expansion-v1-armored-brood-guard-metal",
-          "speciesId": "armored-brood-guard",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/metal-v1.png",
-          "contentHash": "71793e937c6611f1031c09691336b82c308b0b0e221a4940854d6e5586765800",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/metal.webp",
-          "thumbnailHash": "408c3b591c60205bd767c0316b8ce237056caec65bf505c2901c6642d6152d1d"
-        },
-        {
-          "targetId": "affinity-expansion-v1-armored-brood-guard-water",
-          "speciesId": "armored-brood-guard",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/water-v1.png",
-          "contentHash": "ef6e3f3193ea57e0c5e90af8e66cc78697f4835ecbaa07ab22fb554c5267bed8",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/water.webp",
-          "thumbnailHash": "deecc079ff6ccea6971048ab4f0b87a8ddc51c04c3ec89d2c0d102833eca8976"
-        },
-        {
-          "targetId": "affinity-expansion-v1-armored-brood-guard-wind",
-          "speciesId": "armored-brood-guard",
-          "affinity": "wind",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wind-v2.png",
-          "contentHash": "0721e283f1cca981dbec4b8819b58f2174b366c98d3735ef23842fdaf58713dd",
-          "version": 2,
-          "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/wind.webp",
-          "thumbnailHash": "f59da4ca893cef6f94d609128cc8c33881601c82d2b83daea0544ca086d568cc"
-        }
-      ]
-    },
-    {
-      "id": "giant-broodmother",
-      "name": "Giant Broodmother",
-      "familyId": "arachnids",
-      "familyName": "Tower arachnids",
-      "role": "Spawner boss",
-      "telegraph": "one egg cluster pulses before hatching or bursting",
-      "counterplay": "abdomen underside while deploying brood",
-      "skills": [],
-      "debutFloor": null,
-      "variants": [
-        {
-          "targetId": "affinity-expansion-v1-giant-broodmother-normal",
-          "speciesId": "giant-broodmother",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/normal-v1.png",
-          "contentHash": "d0447e8489a7ccfb23baebce4398b7a17eccbc2a6c16626fe05ae835096a49c5",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/normal.webp",
-          "thumbnailHash": "5bf75f7ee050bc204a8ea6432a1bd678f7a7bb6b91132555ad7114fb0de32a98"
-        },
-        {
-          "targetId": "affinity-expansion-v1-giant-broodmother-wood",
-          "speciesId": "giant-broodmother",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wood-v1.png",
-          "contentHash": "7ab32fdae8a471b2ba187b2736dcb1013c00f2b1764c990f613a2e6a709b735a",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/wood.webp",
-          "thumbnailHash": "cee750d761c01d5f7243ab8546b21495f37cd8e9bacb4ddcb71cc3daf4704533"
-        },
-        {
-          "targetId": "affinity-expansion-v1-giant-broodmother-fire",
-          "speciesId": "giant-broodmother",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/fire-v1.png",
-          "contentHash": "189e1e307bf6ed90f81149bb20f2f6861b6b8f819d66aa1748bd7d3e11ed4556",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/fire.webp",
-          "thumbnailHash": "a02eba244f7e24f77ee40897c28f4d6338fd19e79156fefded458206a2e860b0"
-        },
-        {
-          "targetId": "affinity-expansion-v1-giant-broodmother-metal",
-          "speciesId": "giant-broodmother",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
-          "contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/metal.webp",
-          "thumbnailHash": "3e07d3b08975b5fd977824c2aa7cc2246fe83de679a20ed5080eb93c874a2d47"
-        },
-        {
-          "targetId": "affinity-expansion-v1-giant-broodmother-water",
-          "speciesId": "giant-broodmother",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/water-v1.png",
-          "contentHash": "26e7d658388aa57a8196a757f6cbb916185bb3f4923b007b768d18a40638f0dd",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/water.webp",
-          "thumbnailHash": "34a6c0f034b46f3b32983a0835ca5deb20e2f61eef26b217696daad15c8926f6"
-        },
-        {
-          "targetId": "affinity-expansion-v1-giant-broodmother-wind",
-          "speciesId": "giant-broodmother",
-          "affinity": "wind",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wind-v1.png",
-          "contentHash": "e410dd6831eb5ef4e04434eaa94162bde8bc973919d0414523ab8d3689130d28",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/giant-broodmother/wind.webp",
-          "thumbnailHash": "7622ae2a245da3df1a6634a5694b2c86e7723a3c865993e866d0a96e41c8d569"
-        }
-      ]
-    },
-    {
-      "id": "tunnel-spider",
-      "name": "Tunnel Spider",
-      "familyId": "arachnids",
-      "familyName": "Tower arachnids",
-      "role": "Low flanker",
-      "telegraph": "outer legs lower before a lateral rush",
-      "counterplay": "soft abdomen during a turn",
-      "skills": [],
-      "debutFloor": null,
-      "variants": [
-        {
-          "targetId": "affinity-expansion-v1-tunnel-spider-normal",
-          "speciesId": "tunnel-spider",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/normal-v1.png",
-          "contentHash": "f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/normal.webp",
-          "thumbnailHash": "a4ccd390a4c62347f66b15103c458555b1dd48068ddf0643a3b2ec4528f9ca00"
-        },
-        {
-          "targetId": "affinity-expansion-v1-tunnel-spider-wood",
-          "speciesId": "tunnel-spider",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wood-v1.png",
-          "contentHash": "6777118d1ab47db2bae4a97adcf72bc49b68f285921380abfbdf22a3383a3b7f",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/wood.webp",
-          "thumbnailHash": "78296ae8098b7c49890edc3f595e214f15c1fac1d6e63d5cf8c22054458b6788"
-        },
-        {
-          "targetId": "affinity-expansion-v1-tunnel-spider-fire",
-          "speciesId": "tunnel-spider",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/fire-v1.png",
-          "contentHash": "a1956c56a33928ec0ce3f213c4d5bafc62c86909dd0f80d9917a58efd22aaa8a",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/fire.webp",
-          "thumbnailHash": "536db4c80d2eaa7980f5297bff3b0be34caf001cdd398aef0d2a6f309f5759b3"
-        },
-        {
-          "targetId": "affinity-expansion-v1-tunnel-spider-metal",
-          "speciesId": "tunnel-spider",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/metal-v1.png",
-          "contentHash": "5fdbeda143cbff85d4b1edf21a0d1655a947ce8ae2f49f5f58d74c95a47472a5",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/metal.webp",
-          "thumbnailHash": "69c4e24ec1fb5581e688e76bf9d15f226771b46e6b949be154ae745ce334f6cd"
-        },
-        {
-          "targetId": "affinity-expansion-v1-tunnel-spider-water",
-          "speciesId": "tunnel-spider",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/water-v1.png",
-          "contentHash": "03fa24229d9f5008b10f217ddb0dc7665e7c4eaa45152fe8e824a807b367e6d4",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/water.webp",
-          "thumbnailHash": "faf25bdf5fe3428a2362b6555273d8af3c677fd7ae3eb090d05aa93b900be69a"
-        },
-        {
-          "targetId": "affinity-expansion-v1-tunnel-spider-wind",
-          "speciesId": "tunnel-spider",
-          "affinity": "wind",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wind-v1.png",
-          "contentHash": "2eabc6a864b31bf89de22ab6fca919b4d88bfe051dd7683efd4fbb609a24b614",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-spider/wind.webp",
-          "thumbnailHash": "71a3637ea80a887b0639698b77088492e62387fa13f2d234fd9159810ab492f4"
-        }
-      ]
-    },
-    {
-      "id": "web-caster",
-      "name": "Web Caster",
-      "familyId": "arachnids",
-      "familyName": "Tower arachnids",
-      "role": "Ranged restraint",
-      "telegraph": "abdomen tilts and a pale silk line traces the target zone",
-      "counterplay": "spinnerets after a cast",
-      "skills": [],
-      "debutFloor": null,
-      "variants": [
-        {
-          "targetId": "affinity-expansion-v1-web-caster-normal",
-          "speciesId": "web-caster",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/normal-v1.png",
-          "contentHash": "5c949c434f2bfc35d6843dbf0a7683f8698ece3a2bf981533e9e5fd7ab7c7b57",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/web-caster/normal.webp",
-          "thumbnailHash": "d42da76e2eb0ba51624bd12ddd6667b5e4ace137b1623f8924a2426a581e028c"
-        },
-        {
-          "targetId": "affinity-expansion-v1-web-caster-wood",
-          "speciesId": "web-caster",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
-          "contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/web-caster/wood.webp",
-          "thumbnailHash": "ec51400d103e6bf03d5a31573916d4434ad565b7786fa7201705499cb7691cb2"
-        },
-        {
-          "targetId": "affinity-expansion-v1-web-caster-fire",
-          "speciesId": "web-caster",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/fire-v1.png",
-          "contentHash": "27f2534d949c7731e5f8af54e5a6e6c7802c96598b211aab05771744a66a0b5d",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/web-caster/fire.webp",
-          "thumbnailHash": "3055de4bbf37063f06fefa3f727bf5fa845a2a5f7dc844bcbe379085d134d3e5"
-        },
-        {
-          "targetId": "affinity-expansion-v1-web-caster-metal",
-          "speciesId": "web-caster",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v2.png",
-          "contentHash": "6a012b761bb88dcf9a6eb0daff75bc5116728dc78936f047bbfd2d2965584dd4",
-          "version": 2,
-          "thumbnailPath": "/wiki-media/monsters/web-caster/metal.webp",
-          "thumbnailHash": "a8b82770b3f4acd772521af1ae6967facd7eb47172741257925a9942d96200e7"
-        },
-        {
-          "targetId": "affinity-expansion-v1-web-caster-water",
-          "speciesId": "web-caster",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/water-v1.png",
-          "contentHash": "2b1f6e9d5a66b82838597807bb96dc78dd11ca666458cf3f07234be77c59bac5",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/web-caster/water.webp",
-          "thumbnailHash": "cd3e8c68d197eaccfe1e6e6a8cea350289a7c59cb030cf1bd0e3c5498572eca2"
-        },
-        {
-          "targetId": "affinity-expansion-v1-web-caster-wind",
-          "speciesId": "web-caster",
-          "affinity": "wind",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wind-v1.png",
-          "contentHash": "73eb7b9fbfe261ce55b54f5c2f757119b9e6a527ee6392b2b12208849857f411",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/web-caster/wind.webp",
-          "thumbnailHash": "910da9ff991ce092f5655a979f75d5066fa801af25701e507c1b1e5e9b5bf41d"
-        }
-      ]
-    },
-    {
-      "id": "cave-bear",
-      "name": "Cave Bear",
-      "familyId": "beasts",
-      "familyName": "Tower beasts",
-      "role": "Close-range damage test",
-      "telegraph": "Signature actions: Maul, Roar, Overrun.",
-      "counterplay": "Teaches Spacing, Guard discipline, Injury control.",
-      "skills": [
-        "Maul",
-        "Roar",
-        "Overrun"
-      ],
-      "debutFloor": 9,
-      "variants": [
-        {
-          "targetId": "affinity-workflow-v1-cave-bear-normal",
-          "speciesId": "cave-bear",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png",
-          "contentHash": "2facbf837dac20c60474a0e33a81c5c01ce0cdfe3e0727f380a1b7e9f1e5aaf9",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/cave-bear/normal.webp",
-          "thumbnailHash": "8d4f879ee4a4ac36a4a366ef097ce3e2ba47c242e390ac4b5e6f712b073ea550"
-        },
-        {
-          "targetId": "affinity-workflow-v1-cave-bear-wood-v2",
-          "speciesId": "cave-bear",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
-          "contentHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c",
-          "version": 2,
-          "thumbnailPath": "/wiki-media/monsters/cave-bear/wood.webp",
-          "thumbnailHash": "126bb9ff60fe58b7b694118427822b1c863eacd97e645dc1631a054ea2c7fe25"
-        },
-        {
-          "targetId": "affinity-workflow-v1-cave-bear-fire",
-          "speciesId": "cave-bear",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/fire-v1.png",
-          "contentHash": "a36c9c4da2439c8557cfbb71d0e997f0147b1c06d444969ad7acb960cb563e6a",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/cave-bear/fire.webp",
-          "thumbnailHash": "b6a582e180843d132bea9de2c0ee0c8ed8ea47a01d52307165041bb32525e14f"
-        },
-        {
-          "targetId": "affinity-workflow-v1-cave-bear-metal",
-          "speciesId": "cave-bear",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/metal-v1.png",
-          "contentHash": "54ddc74f76d84dbdc057847412f036a165c530c406b4bf710bdf6ca1f06488c1",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/cave-bear/metal.webp",
-          "thumbnailHash": "6de915d4f1bc054261000ffa2af329a7e23eb8940a883f2b602c8466f34b7120"
-        },
-        {
-          "targetId": "affinity-workflow-v1-cave-bear-water",
-          "speciesId": "cave-bear",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/water-v1.png",
-          "contentHash": "7aeb280568a852d6b9526a7f83da2c69b1e7e263caf8624d2913cc06460ba1fc",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/cave-bear/water.webp",
-          "thumbnailHash": "b2942ef3393d330c0ee23df0e3ec8366e2d5e4ac1633a69d5645c82734d05bd0"
-        },
-        {
-          "targetId": "affinity-workflow-v1-cave-bear-wind-v2",
-          "speciesId": "cave-bear",
-          "affinity": "wind",
-          "status": "revise",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wind-v2.png",
-          "contentHash": "2959ed534461995a4d0ca8d9442a992b8ababb7458cb3eecc70ca29faeacd559",
-          "version": 2,
-          "thumbnailPath": "/wiki-media/monsters/cave-bear/wind.webp",
-          "thumbnailHash": "e9d8970fc6586be1375554292435d9716ea3c3903f26823a2b8925f4e8468858"
-        }
-      ]
-    },
-    {
-      "id": "dire-wolf",
-      "name": "Dire Wolf",
-      "familyId": "beasts",
-      "familyName": "Tower beasts",
-      "role": "Relentless pursuit",
-      "telegraph": "Signature actions: Coordinated hunt, Hamstring, Fear scent.",
-      "counterplay": "Teaches Stamina, Rescue movement, Composure.",
-      "skills": [
-        "Coordinated hunt",
-        "Hamstring",
-        "Fear scent"
-      ],
-      "debutFloor": 7,
-      "variants": [
-        {
-          "targetId": "affinity-expansion-v1-dire-wolf-normal",
-          "speciesId": "dire-wolf",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png",
-          "contentHash": "d183fae2c892306f7c426293e8e2fa75d05c56b1832bf42586cb07427e9526ef",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/dire-wolf/normal.webp",
-          "thumbnailHash": "83a6df699cdd1686c8d78af11bffef765242690ee1209d59c33da1e58a9245ff"
-        },
-        {
-          "targetId": "affinity-expansion-v1-dire-wolf-wood",
-          "speciesId": "dire-wolf",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png",
-          "contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/dire-wolf/wood.webp",
-          "thumbnailHash": "00373a6edc0af7ab4248e96fd729f83b67ec664340da08447dbfeb29273e0822"
-        },
-        {
-          "targetId": "affinity-expansion-v1-dire-wolf-fire",
-          "speciesId": "dire-wolf",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/fire-v1.png",
-          "contentHash": "3a395bbef7da436cbab7311940e908b7bb37f00b6c7bd45b0c59865d1dedbffc",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/dire-wolf/fire.webp",
-          "thumbnailHash": "0569177d925d618d36a4f9c472928e76a0954202bd8704408d8fd122f55e3b91"
-        },
-        {
-          "targetId": "affinity-expansion-v1-dire-wolf-metal",
-          "speciesId": "dire-wolf",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/metal-v1.png",
-          "contentHash": "d9bcc6c5a2784eb747726aeab71983472c651363514346adc0613e41a9c6737b",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/dire-wolf/metal.webp",
-          "thumbnailHash": "05de90ba52977ac28f5da94b145b76bb88e1107b670da66831e186dbb3a4738b"
-        },
-        {
-          "targetId": "affinity-expansion-v1-dire-wolf-water",
-          "speciesId": "dire-wolf",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/water-v1.png",
-          "contentHash": "434a659f0dfaa6c916ebdb80e7c27b1fe6dec5e4886b6ce5bca35b9be344af10",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/dire-wolf/water.webp",
-          "thumbnailHash": "e8ce6f5a87b888fc4b82ab306cec9ffcb223ee03e17936ee749928d7f8165831"
-        },
-        {
-          "targetId": "affinity-expansion-v1-dire-wolf-wind",
-          "speciesId": "dire-wolf",
-          "affinity": "wind",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wind-v1.png",
-          "contentHash": "f380ed1487a0c9d7e6a20571caba8f51310f91b6bc442ee52f73ad01fed21626",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/dire-wolf/wind.webp",
-          "thumbnailHash": "73880c5ea307d77ff327ffb10de49c150a0b45f124a13d5dacc85b8eb67b0088"
-        }
-      ]
-    },
-    {
-      "id": "grey-wolf",
-      "name": "Grey Wolf",
-      "familyId": "beasts",
-      "familyName": "Tower beasts",
-      "role": "Fast flanking predator",
-      "telegraph": "Signature actions: Pursuit, Flanking, Trip attack.",
-      "counterplay": "Teaches Footwork, Perception, Ally protection.",
-      "skills": [
-        "Pursuit",
-        "Flanking",
-        "Trip attack"
-      ],
-      "debutFloor": 3,
-      "variants": [
-        {
-          "targetId": "affinity-workflow-v1-grey-wolf-normal",
-          "speciesId": "grey-wolf",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/normal-v1.png",
-          "contentHash": "c6fb5e9523f741c34503a97dcd4a5a7a0bf9e9ede447ef97d2778548d94c0777",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/grey-wolf/normal.webp",
-          "thumbnailHash": "599f2bca864e806394e2d9d944f84e26e01355f7eda70b6bc0d7cdd9663509a8"
-        },
-        {
-          "targetId": "affinity-workflow-v1-grey-wolf-wood",
-          "speciesId": "grey-wolf",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
-          "contentHash": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/grey-wolf/wood.webp",
-          "thumbnailHash": "8aa58fc58ed57bb1b0f572fbaa5771bf325705a330a2cdddca3cf9a33661dd4c"
-        },
-        {
-          "targetId": "affinity-workflow-v1-grey-wolf-fire-v2",
-          "speciesId": "grey-wolf",
-          "affinity": "fire",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/grey-wolf/fire-v2.png",
-          "contentHash": "772d6d8fbbc19128bbeea77470174351caa1b53443ddcc89df334a38b6c99d15",
-          "version": 2,
-          "thumbnailPath": "/wiki-media/monsters/grey-wolf/fire.webp",
-          "thumbnailHash": "262c0755e98c69803187945b738fdecfc5d27c6e37529db93c038837048ed6b2"
-        },
-        {
-          "targetId": "affinity-workflow-v1-grey-wolf-metal",
-          "speciesId": "grey-wolf",
-          "affinity": "metal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
-          "contentHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/grey-wolf/metal.webp",
-          "thumbnailHash": "148c42bcd59d3098ebd8edff369c4cd37ed3ca91e847123c1f8f3bf1a71f9f07"
-        },
-        {
-          "targetId": "affinity-workflow-v1-grey-wolf-water",
-          "speciesId": "grey-wolf",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/water-v1.png",
-          "contentHash": "c49cef7a3291189961b887721e5e98e5b13c275bef97e3377a49a09b1eea28c4",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/grey-wolf/water.webp",
-          "thumbnailHash": "59dc8d7e39998e0e1d3e16f419cbc68ac54eeac24fb29413737547f17045b82d"
-        },
-        {
-          "targetId": "affinity-workflow-v1-grey-wolf-wind",
-          "speciesId": "grey-wolf",
-          "affinity": "wind",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
-          "contentHash": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/grey-wolf/wind.webp",
-          "thumbnailHash": "1d1f9dc8992dcfa77386c7857e8bd1340177a1ec31f3dcf02a7b17a2e7f39628"
-        }
-      ]
-    },
-    {
-      "id": "tunnel-boar",
-      "name": "Tunnel Boar",
-      "familyId": "beasts",
-      "familyName": "Tower beasts",
-      "role": "Armored line breaker",
-      "telegraph": "Signature actions: Charge, Brace, Trample.",
-      "counterplay": "Teaches Dodge timing, Bracing, Terrain use.",
-      "skills": [
-        "Charge",
-        "Brace",
-        "Trample"
-      ],
-      "debutFloor": 6,
-      "variants": [
-        {
-          "targetId": "affinity-workflow-v1-tunnel-boar-normal",
-          "speciesId": "tunnel-boar",
-          "affinity": "normal",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
-          "contentHash": "13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/normal.webp",
-          "thumbnailHash": "4c23cc226ab5e7c824a793249ba89293fa7dca137775f0dd61ceee8d0691ccb4"
-        },
-        {
-          "targetId": "affinity-workflow-v1-tunnel-boar-wood",
-          "speciesId": "tunnel-boar",
-          "affinity": "wood",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
-          "contentHash": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/wood.webp",
-          "thumbnailHash": "d60379618d2fbb080a1a5eafb699b8ea618a11e08b077bc6ce8f362d405c125e"
-        },
-        {
-          "targetId": "affinity-workflow-v1-tunnel-boar-fire",
-          "speciesId": "tunnel-boar",
-          "affinity": "fire",
-          "status": "revise",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
-          "contentHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/fire.webp",
-          "thumbnailHash": "a7db51588b12a83c5b936694064ca67e321eb2b7638eb95bf3ff50d7b166f0cb"
-        },
-        {
-          "targetId": "affinity-workflow-v1-tunnel-boar-metal",
-          "speciesId": "tunnel-boar",
-          "affinity": "metal",
-          "status": "revise",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/metal-v1.png",
-          "contentHash": "5c3fa7b40dad93dc6fdc8f6c2d908d5b552630d4feec304a6c11986bef422bce",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/metal.webp",
-          "thumbnailHash": "a0300b933f13aed44e2b0497964da77c66237b544a721b0b95af2422ad54c0d7"
-        },
-        {
-          "targetId": "affinity-workflow-v1-tunnel-boar-water",
-          "speciesId": "tunnel-boar",
-          "affinity": "water",
-          "status": "candidate",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/water-v1.png",
-          "contentHash": "8e81c97f8b9370f99cfd89c279352fc4ce3c157dcca06b6d10e684bd89d687a2",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/water.webp",
-          "thumbnailHash": "31d13486cc3eb9a286b35343e34cdeb47adecb7d10d5b4a807e50c4b87f1870a"
-        },
-        {
-          "targetId": "affinity-workflow-v1-tunnel-boar-wind",
-          "speciesId": "tunnel-boar",
-          "affinity": "wind",
-          "status": "revise",
-          "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png",
-          "contentHash": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0",
-          "version": 1,
-          "thumbnailPath": "/wiki-media/monsters/tunnel-boar/wind.webp",
-          "thumbnailHash": "505174cc1c5b5e9fb10f71697bf588ed7d94dde91473ef29f2be12e3994d12fd"
         }
       ]
     }

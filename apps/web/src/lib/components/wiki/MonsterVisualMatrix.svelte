@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 
+	import AffinityIcon from './AffinityIcon.svelte';
+
+	type ElementalAffinity = 'wood' | 'fire' | 'metal' | 'water' | 'wind';
+
 	type Variant = {
 		affinity: string;
 		status: string;
@@ -18,11 +22,29 @@
 	};
 
 	let { monster }: { monster: Monster } = $props();
+	let selectedIndex = $state(0);
+
+	function elementalAffinity(affinity: string): ElementalAffinity {
+		if (['wood', 'fire', 'metal', 'water', 'wind'].includes(affinity)) {
+			return affinity as ElementalAffinity;
+		}
+		throw new Error(`Unsupported monster affinity: ${affinity}`);
+	}
 
 	const normal = $derived(monster.variants[0]);
-	const affinityVariants = $derived(monster.variants.slice(1));
+	const affinityVariants = $derived(
+		monster.variants.slice(1).map((variant) => ({
+			...variant,
+			affinity: elementalAffinity(variant.affinity)
+		}))
+	);
+	const selectedVariant = $derived(affinityVariants[selectedIndex]);
 	const label = (affinity: string) => affinity[0]?.toUpperCase() + affinity.slice(1);
 	const sourceUrl = (path: string) => `https://github.com/jmoraispk/summonlab/blob/main/${path}`;
+
+	function moveSelection(offset: number) {
+		selectedIndex = (selectedIndex + offset + affinityVariants.length) % affinityVariants.length;
+	}
 </script>
 
 <section class="matrix" aria-labelledby="monster-matrix-heading">
@@ -38,63 +60,87 @@
 			<figure class="neutral">
 				<img
 					src={normal.thumbnailPath}
-					alt={`${monster.name} visual candidate`}
+					alt={`${monster.name} base form`}
 					width="720"
 					height="480"
 					fetchpriority="high"
 				/>
-				<figcaption>
-					<i class:revise={normal.status === 'revise'}>{normal.status}</i>
-				</figcaption>
 			</figure>
 			<div class="neutral-copy">
-				<span>Identity anchor</span>
-				<h2>Read the creature before the element.</h2>
-				<p>
-					The base study establishes anatomy, silhouette, equipment, and battlefield duty. Every
-					affinity below must remain recognizably this same monster.
-				</p>
+				<div>
+					<h2>Base Form</h2>
+					<p>
+						The base form establishes anatomy, silhouette, equipment, and battlefield duty. Every
+						variant remains recognizably this same monster.
+					</p>
+				</div>
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external GitHub source -->
-				<a href={sourceUrl(normal.candidatePath)}>Inspect full-resolution source ↗</a>
-				<code>{normal.contentHash.slice(0, 16)}… · v{normal.version}</code>
+				<a href={sourceUrl(normal.candidatePath)}>Full-resolution source ↗</a>
 			</div>
 		</div>
 	{/if}
 
 	<div class="variant-heading">
-		<div>
-			<span>Affinity studies</span>
-			<h2>One identity, five transformations</h2>
-		</div>
-		<p>Candidate status is not runtime approval.</p>
+		<h2>Affinity Variants</h2>
 	</div>
-	<div class="variant-grid">
-		{#each affinityVariants as variant (variant.affinity)}
-			<figure class={`variant affinity-${variant.affinity}`}>
+
+	{#if selectedVariant}
+		<div class="variant-viewer">
+			<figure
+				class={`variant-stage affinity-${selectedVariant.affinity}`}
+				id="selected-affinity-variant"
+				aria-live="polite"
+			>
 				<img
-					src={variant.thumbnailPath}
-					alt={`${monster.name}, ${label(variant.affinity)} affinity visual candidate`}
+					src={selectedVariant.thumbnailPath}
+					alt={`${monster.name}, ${label(selectedVariant.affinity)} affinity variant`}
 					width="720"
 					height="480"
-					loading="lazy"
 				/>
-				<!-- eslint-disable svelte/no-navigation-without-resolve -- external GitHub source -->
-				<a
-					href={sourceUrl(variant.candidatePath)}
-					aria-label={`Open ${label(variant.affinity)} source`}
+				<span class="variant-mark">
+					<AffinityIcon affinity={selectedVariant.affinity} />
+				</span>
+				<button
+					class="carousel-control previous"
+					type="button"
+					aria-label="Previous affinity variant"
+					onclick={() => moveSelection(-1)}>←</button
 				>
-					Source ↗
-				</a>
-				<!-- eslint-enable svelte/no-navigation-without-resolve -->
+				<button
+					class="carousel-control next"
+					type="button"
+					aria-label="Next affinity variant"
+					onclick={() => moveSelection(1)}>→</button
+				>
 				<figcaption>
-					<div>
-						<span>{variant.affinity} affinity</span><strong>{label(variant.affinity)}</strong>
-					</div>
-					<i class:revise={variant.status === 'revise'}>{variant.status}</i>
+					<!-- eslint-disable svelte/no-navigation-without-resolve -- external GitHub source -->
+					<a
+						href={sourceUrl(selectedVariant.candidatePath)}
+						aria-label={`Open ${label(selectedVariant.affinity)} full-resolution source`}
+					>
+						Full-resolution source ↗
+					</a>
+					<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				</figcaption>
 			</figure>
-		{/each}
-	</div>
+
+			<div class="variant-selector" role="group" aria-label="Choose an affinity variant">
+				{#each affinityVariants as variant, index (variant.affinity)}
+					<button
+						class={`affinity-${variant.affinity}`}
+						type="button"
+						aria-label={`${label(variant.affinity)} affinity variant`}
+						aria-controls="selected-affinity-variant"
+						aria-pressed={selectedIndex === index}
+						title={label(variant.affinity)}
+						onclick={() => (selectedIndex = index)}
+					>
+						<AffinityIcon affinity={variant.affinity} />
+					</button>
+				{/each}
+			</div>
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -108,7 +154,7 @@
 	.matrix > header,
 	.neutral-layout,
 	.variant-heading,
-	.variant-grid {
+	.variant-viewer {
 		max-width: 92rem;
 		margin-inline: auto;
 	}
@@ -118,47 +164,45 @@
 	.matrix > header > a {
 		display: inline-block;
 		margin-bottom: 2.5rem;
-		color: rgba(243, 234, 217, 0.56);
+		color: rgba(243, 234, 217, 0.68);
 		font:
-			0.64rem ui-monospace,
+			0.68rem ui-monospace,
 			monospace;
-		letter-spacing: 0.11em;
+		letter-spacing: 0.1em;
 		text-decoration: none;
 		text-transform: uppercase;
 	}
-	.matrix > header p,
-	.neutral-copy > span,
-	.variant-heading span {
+	.matrix > header p {
 		margin: 0 0 0.65rem;
 		color: #70c7d2;
 		font:
-			0.66rem ui-monospace,
+			0.68rem ui-monospace,
 			monospace;
 		font-weight: 800;
-		letter-spacing: 0.16em;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
 	}
 	.matrix > header h1 {
 		margin: 0;
 		font:
-			400 clamp(3.4rem, 8vw, 7.4rem) / 0.87 Georgia,
+			400 clamp(3.4rem, 8vw, 6rem) / 0.9 Georgia,
 			serif;
-		letter-spacing: -0.06em;
+		letter-spacing: -0.04em;
+		text-wrap: balance;
 	}
 	.matrix > header > span {
 		display: block;
 		margin-top: 1.2rem;
-		color: rgba(243, 234, 217, 0.58);
+		color: rgba(243, 234, 217, 0.68);
 		font:
-			1.05rem Georgia,
+			1.08rem Georgia,
 			serif;
 	}
 	.neutral-layout {
-		display: grid;
-		grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.7fr);
-		gap: 1px;
+		display: flex;
+		flex-direction: column;
 		border: 1px solid var(--line);
-		background: var(--line);
+		background: #06090d;
 	}
 	figure {
 		position: relative;
@@ -174,62 +218,17 @@
 		aspect-ratio: 3 / 2;
 		object-fit: cover;
 	}
-	figure figcaption {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		left: 0;
+	.neutral-copy {
 		display: flex;
 		align-items: end;
 		justify-content: space-between;
-		gap: 1rem;
-		padding: 4rem 1rem 1rem;
-		background: linear-gradient(transparent, rgba(3, 5, 7, 0.94));
-	}
-	.neutral figcaption {
-		justify-content: flex-end;
-	}
-	figcaption div {
-		display: grid;
-		gap: 0.2rem;
-	}
-	figcaption span {
-		color: #70c7d2;
-		font:
-			0.55rem ui-monospace,
-			monospace;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-	figcaption strong {
-		font:
-			400 1.35rem Georgia,
-			serif;
-	}
-	figcaption i {
-		padding: 0.28rem 0.46rem;
-		border: 1px solid rgba(107, 194, 156, 0.28);
-		border-radius: 2rem;
-		background: rgba(33, 109, 77, 0.24);
-		color: #89d5ae;
-		font:
-			0.5rem ui-monospace,
-			monospace;
-		font-style: normal;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-	}
-	figcaption i.revise {
-		border-color: rgba(229, 158, 75, 0.35);
-		background: rgba(142, 77, 30, 0.3);
-		color: #e8b16d;
-	}
-	.neutral-copy {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		padding: clamp(2rem, 4vw, 4rem);
+		gap: clamp(2rem, 5vw, 6rem);
+		padding: clamp(1.5rem, 3vw, 2.5rem);
+		border-top: 1px solid var(--line);
 		background: #0a0e13;
+	}
+	.neutral-copy > div {
+		max-width: 52rem;
 	}
 	.neutral-copy h2,
 	.variant-heading h2 {
@@ -238,114 +237,175 @@
 			400 clamp(2rem, 3.7vw, 3.5rem) / 1 Georgia,
 			serif;
 		letter-spacing: -0.04em;
+		text-wrap: balance;
 	}
 	.neutral-copy p {
-		margin: 1.5rem 0;
-		color: rgba(243, 234, 217, 0.64);
+		max-width: 68ch;
+		margin: 0.8rem 0 0;
+		color: rgba(243, 234, 217, 0.7);
 		font:
 			1rem/1.65 Georgia,
 			serif;
+		text-wrap: pretty;
 	}
-	.neutral-copy a {
+	.neutral-copy a,
+	.variant-stage figcaption a {
+		flex: none;
 		color: #70c7d2;
 		font:
-			0.65rem ui-monospace,
+			0.68rem ui-monospace,
 			monospace;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.07em;
 		text-decoration: none;
 		text-transform: uppercase;
-	}
-	.neutral-copy code {
-		margin-top: 0.8rem;
-		color: rgba(243, 234, 217, 0.34);
-		font-size: 0.58rem;
 	}
 	.variant-heading {
-		display: flex;
-		align-items: end;
-		justify-content: space-between;
-		gap: 2rem;
-		margin-top: 5rem;
-		margin-bottom: 1.2rem;
+		margin-top: clamp(4rem, 8vw, 7rem);
+		margin-bottom: 1.5rem;
 	}
-	.variant-heading p {
-		margin: 0;
-		color: rgba(243, 234, 217, 0.4);
-		font:
-			0.62rem ui-monospace,
-			monospace;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
+	.variant-stage {
+		--affinity: #f3ead9;
+		border: 1px solid color-mix(in srgb, var(--affinity) 46%, transparent);
 	}
-	.variant-grid {
-		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: 0.55rem;
-	}
-	.variant {
-		border: 1px solid var(--line);
-		border-top: 2px solid var(--affinity);
-		border-radius: 0.28rem;
-	}
-	.variant figcaption {
-		padding-top: 3rem;
-	}
-	.variant figcaption strong {
-		font-size: 1.08rem;
-	}
-	.variant > a {
+	.variant-stage figcaption {
 		position: absolute;
-		top: 0.6rem;
-		right: 0.6rem;
-		padding: 0.35rem 0.45rem;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 0.2rem;
-		background: rgba(4, 6, 8, 0.72);
-		color: rgba(255, 255, 255, 0.65);
-		font:
-			0.5rem ui-monospace,
-			monospace;
-		text-decoration: none;
-		text-transform: uppercase;
+		right: 1rem;
+		bottom: 1rem;
+		padding: 0.65rem 0.75rem;
+		border-radius: 0.25rem;
+		background: rgba(4, 6, 8, 0.86);
+	}
+	.variant-mark {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		display: grid;
+		width: 3.5rem;
+		height: 3.5rem;
+		place-items: center;
+		border: 1px solid color-mix(in srgb, var(--affinity) 52%, transparent);
+		border-radius: 50%;
+		background: rgba(4, 6, 8, 0.82);
+		color: var(--affinity);
+	}
+	.carousel-control {
+		position: absolute;
+		top: 50%;
+		display: grid;
+		width: 3rem;
+		height: 3.5rem;
+		padding: 0;
+		place-items: center;
+		transform: translateY(-50%);
+		border: 1px solid rgba(243, 234, 217, 0.28);
+		border-radius: 0.25rem;
+		background: rgba(4, 6, 8, 0.78);
+		color: #f3ead9;
+		font-size: 1.35rem;
+		cursor: pointer;
+		transition:
+			background 160ms ease,
+			border-color 160ms ease;
+	}
+	.carousel-control:hover {
+		border-color: rgba(243, 234, 217, 0.58);
+		background: rgba(4, 6, 8, 0.94);
+	}
+	.carousel-control.previous {
+		left: 1rem;
+	}
+	.carousel-control.next {
+		right: 1rem;
+	}
+	.variant-selector {
+		display: flex;
+		justify-content: center;
+		gap: 0.7rem;
+		padding-top: 1rem;
+	}
+	.variant-selector button {
+		--affinity: #f3ead9;
+		display: grid;
+		width: 3.75rem;
+		height: 3.75rem;
+		padding: 0;
+		place-items: center;
+		border: 1px solid rgba(243, 234, 217, 0.18);
+		border-radius: 50%;
+		background: #0a0e13;
+		color: rgba(243, 234, 217, 0.45);
+		cursor: pointer;
+		transition:
+			color 160ms ease,
+			border-color 160ms ease,
+			background 160ms ease;
+	}
+	.variant-selector button:hover {
+		color: var(--affinity);
+		border-color: color-mix(in srgb, var(--affinity) 58%, transparent);
+	}
+	.variant-selector button[aria-pressed='true'] {
+		border-color: var(--affinity);
+		background: color-mix(in srgb, var(--affinity) 12%, #0a0e13);
+		color: var(--affinity);
+	}
+	.carousel-control:focus-visible,
+	.variant-selector button:focus-visible,
+	.matrix a:focus-visible {
+		outline: 2px solid #f3ead9;
+		outline-offset: 3px;
 	}
 	.affinity-wood {
-		--affinity: #87a85c;
+		--affinity: #9ab968;
 	}
 	.affinity-fire {
-		--affinity: #e26f3d;
+		--affinity: #f07842;
 	}
 	.affinity-metal {
-		--affinity: #c0b07e;
+		--affinity: #c9b982;
 	}
 	.affinity-water {
-		--affinity: #4fa8cf;
+		--affinity: #58b4de;
 	}
 	.affinity-wind {
 		--affinity: #c7e8ec;
-	}
-	@media (max-width: 78rem) {
-		.variant-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
 	}
 	@media (max-width: 58rem) {
 		.matrix {
 			padding-inline: 1rem;
 		}
-		.neutral-layout {
-			grid-template-columns: 1fr;
-		}
-		.variant-heading {
+		.neutral-copy {
 			align-items: start;
 			flex-direction: column;
+			gap: 1.5rem;
 		}
 	}
 	@media (max-width: 39rem) {
 		.matrix > header h1 {
 			font-size: 3.15rem;
 		}
-		.variant-grid {
-			grid-template-columns: 1fr;
+		.variant-mark {
+			width: 3rem;
+			height: 3rem;
+		}
+		.carousel-control {
+			width: 2.75rem;
+		}
+		.variant-stage figcaption {
+			display: none;
+		}
+		.variant-selector {
+			gap: 0.45rem;
+		}
+		.variant-selector button {
+			width: 3.25rem;
+			height: 3.25rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.carousel-control,
+		.variant-selector button {
+			transition: none;
 		}
 	}
 </style>

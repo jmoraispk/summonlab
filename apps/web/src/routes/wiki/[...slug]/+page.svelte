@@ -87,7 +87,7 @@
 				<span>{data.wikiPage.section}</span>
 				<i>Design · {data.wikiPage.designStatus}</i>
 				<i>Implementation · {data.wikiPage.implementationStatus}</i>
-				<i>Visual · {data.wikiPage.visualStatus}</i>
+				{#if !data.monsterVisual}<i>Visual · {data.wikiPage.visualStatus}</i>{/if}
 			</header>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
 			<div class="article-body">{@html data.wikiPage.html}</div>

@@ -37,7 +37,7 @@
 <section class="database" aria-labelledby="monster-database-heading">
 	<header>
 		<div>
-			<p>Summonlab bestiary · 40 identities · 240 visual candidates</p>
+			<p>Summonlab bestiary · 40 identities · 240 visual studies</p>
 			<h1 id="monster-database-heading">Monster database</h1>
 			<span>
 				Every monster identity anchors five affinity variants. Open an identity to compare the
@@ -55,7 +55,6 @@
 		<section class="family" id={`database-${family.id}`}>
 			<header>
 				<h2>{family.name}</h2>
-				<span>{family.monsters.length} known classes</span>
 			</header>
 			<div class="monster-grid">
 				{#each family.monsters as monster (monster.id)}
@@ -63,16 +62,11 @@
 					<a class="monster-card" href={resolve(`/wiki/creatures/monsters/${monster.id}`)}>
 						<img
 							src={base?.thumbnailPath ?? ''}
-							alt={`${monster.name} visual candidate`}
+							alt={monster.name}
 							width="720"
 							height="480"
 							loading="lazy"
 						/>
-						<div class="affinity-pips" aria-label="Five affinity variants available">
-							{#each monster.variants.slice(1) as variant (variant.affinity)}
-								<i class={`affinity-${variant.affinity}`}></i>
-							{/each}
-						</div>
 						<span>{monster.familyName}</span>
 						<strong>{monster.name}</strong>
 						<small>{monster.role}</small>
@@ -114,7 +108,7 @@
 		font:
 			400 clamp(3.5rem, 8vw, 7.4rem) / 0.84 Georgia,
 			serif;
-		letter-spacing: -0.06em;
+		letter-spacing: -0.04em;
 	}
 	.database > header div > span {
 		display: block;
@@ -171,18 +165,10 @@
 			serif;
 		letter-spacing: -0.035em;
 	}
-	.family > header span {
-		color: rgba(243, 234, 217, 0.42);
-		font:
-			0.62rem ui-monospace,
-			monospace;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-	}
 	.monster-grid {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 0.7rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.9rem;
 	}
 	.monster-card {
 		position: relative;
@@ -241,42 +227,9 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	.affinity-pips {
-		position: absolute;
-		top: 0.65rem;
-		right: 0.65rem;
-		display: flex;
-		gap: 0.22rem;
-		padding: 0.35rem;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 2rem;
-		background: rgba(4, 6, 8, 0.78);
-		backdrop-filter: blur(10px);
-	}
-	.affinity-pips i {
-		width: 0.42rem;
-		aspect-ratio: 1;
-		border-radius: 50%;
-		background: var(--affinity);
-	}
-	.affinity-wood {
-		--affinity: #87a85c;
-	}
-	.affinity-fire {
-		--affinity: #e26f3d;
-	}
-	.affinity-metal {
-		--affinity: #c0b07e;
-	}
-	.affinity-water {
-		--affinity: #4fa8cf;
-	}
-	.affinity-wind {
-		--affinity: #c7e8ec;
-	}
 	@media (max-width: 74rem) {
 		.monster-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 	@media (max-width: 54rem) {
@@ -286,9 +239,6 @@
 		.database > header {
 			grid-template-columns: 1fr;
 			margin-bottom: 3rem;
-		}
-		.monster-grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 	@media (max-width: 34rem) {

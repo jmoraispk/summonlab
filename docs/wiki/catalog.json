@@ -684,6 +684,46 @@
       "spoilerScope": "discoverable"
     },
     {
+      "wikiId": "monster.armored-brood-guard",
+      "path": "docs/wiki/creatures/monsters/armored-brood-guard.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.giant-broodmother",
+      "path": "docs/wiki/creatures/monsters/giant-broodmother.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tunnel-spider",
+      "path": "docs/wiki/creatures/monsters/tunnel-spider.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.web-caster",
+      "path": "docs/wiki/creatures/monsters/web-caster.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
       "wikiId": "monster.hex-adept",
       "path": "docs/wiki/creatures/monsters/hex-adept.md",
       "pageType": "monster-entry",
@@ -716,6 +756,46 @@
     {
       "wikiId": "monster.ward-mage",
       "path": "docs/wiki/creatures/monsters/ward-mage.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.cave-bear",
+      "path": "docs/wiki/creatures/monsters/cave-bear.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.dire-wolf",
+      "path": "docs/wiki/creatures/monsters/dire-wolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.grey-wolf",
+      "path": "docs/wiki/creatures/monsters/grey-wolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tunnel-boar",
+      "path": "docs/wiki/creatures/monsters/tunnel-boar.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",
@@ -996,86 +1076,6 @@
     {
       "wikiId": "monster.ogoblin-brute",
       "path": "docs/wiki/creatures/monsters/ogoblin-brute.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.armored-brood-guard",
-      "path": "docs/wiki/creatures/monsters/armored-brood-guard.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.giant-broodmother",
-      "path": "docs/wiki/creatures/monsters/giant-broodmother.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.tunnel-spider",
-      "path": "docs/wiki/creatures/monsters/tunnel-spider.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.web-caster",
-      "path": "docs/wiki/creatures/monsters/web-caster.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.cave-bear",
-      "path": "docs/wiki/creatures/monsters/cave-bear.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.dire-wolf",
-      "path": "docs/wiki/creatures/monsters/dire-wolf.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.grey-wolf",
-      "path": "docs/wiki/creatures/monsters/grey-wolf.md",
-      "pageType": "monster-entry",
-      "owner": "visuals-content",
-      "designStatus": "draft",
-      "implementationStatus": "partial",
-      "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
-    },
-    {
-      "wikiId": "monster.tunnel-boar",
-      "path": "docs/wiki/creatures/monsters/tunnel-boar.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",

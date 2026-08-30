@@ -159,7 +159,7 @@ export const ENEMY_REVIEW_FAMILIES = [
 	},
 	{
 		id: 'beasts',
-		name: 'Tower beasts',
+		name: 'Beasts',
 		plate: 'beasts-v1',
 		enemyIds: ['grey-wolf', 'dire-wolf', 'cave-bear', 'tunnel-boar']
 	},

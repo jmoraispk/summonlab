@@ -4,10 +4,17 @@ Wiki ID: `creatures.monster-database`
 
 This is the visual identity index for the **40 currently authored monster archetypes**. Every card
 opens a dedicated monster page. Each page leads with the identity reference and keeps
-Wood, Fire, Metal, Water, and Wind directly beneath it as variants of the same identity.
+Wood, Fire, Metal, Water, and Wind available as selectable variants of the same identity.
 
-The online images are web derivatives of hash-bound production candidates. Candidate and revision
-labels remain visible; appearing in this database does not silently approve an image for runtime.
+The online images are web derivatives of the current production artwork. Source provenance and
+review state remain in the internal visual catalog rather than the public presentation.
+
+## Arachnids
+
+- [Armored Brood Guard](armored-brood-guard.md) — Chokepoint tank
+- [Giant Broodmother](giant-broodmother.md) — Spawner boss
+- [Tunnel Spider](tunnel-spider.md) — Low flanker
+- [Web Caster](web-caster.md) — Ranged restraint
 
 ## Arcane hostiles
 
@@ -15,6 +22,13 @@ labels remain visible; appearing in this database does not silently approve an i
 - [Tower Archmage](tower-archmage.md) — Multi-phase commander
 - [Tower Summoner](tower-summoner.md) — Reinforcement controller
 - [Ward Mage](ward-mage.md) — Barrier support
+
+## Beasts
+
+- [Cave Bear](cave-bear.md) — Close-range damage test
+- [Dire Wolf](dire-wolf.md) — Relentless pursuit
+- [Grey Wolf](grey-wolf.md) — Fast flanking predator
+- [Tunnel Boar](tunnel-boar.md) — Armored line breaker
 
 ## Bound undead
 
@@ -64,20 +78,6 @@ labels remain visible; appearing in this database does not silently approve an i
 - [Frost Giant](frost-giant.md) — Environmental threshold boss
 - [Hill Giant](hill-giant.md) — Arena-scale displacement
 - [Ogoblin Brute](ogoblin-brute.md) — Boss-scale bruiser
-
-## Tower arachnids
-
-- [Armored Brood Guard](armored-brood-guard.md) — Chokepoint tank
-- [Giant Broodmother](giant-broodmother.md) — Spawner boss
-- [Tunnel Spider](tunnel-spider.md) — Low flanker
-- [Web Caster](web-caster.md) — Ranged restraint
-
-## Tower beasts
-
-- [Cave Bear](cave-bear.md) — Close-range damage test
-- [Dire Wolf](dire-wolf.md) — Relentless pursuit
-- [Grey Wolf](grey-wolf.md) — Fast flanking predator
-- [Tunnel Boar](tunnel-boar.md) — Armored line breaker
 
 ## Production synchronization
 
