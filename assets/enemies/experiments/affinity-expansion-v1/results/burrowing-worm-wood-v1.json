@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-burrowing-worm-wood",
+  "targetId": "affinity-expansion-v1-burrowing-worm-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-burrowing-worm-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-burrowing-worm-wood\".\n\nSubject and threat:\n- Species: burrowing-worm.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: burrowing-worm-duty.\n- Construction mode: limbless-segmented.\n\nIdentity invariants:\n- Burrowing Worm remains immediately recognizable\n- Battlefield duty remains Ground-eruption disruptor\n- segmented stone-boring body, circular mouth, and no defended rear\n- a moving ridge and concentric floor cracks reveal the eruption path\n- Counterplay remains visible: soft rear segments after surfacing\n\nAnatomy invariants:\n- one continuous limbless segmented body with a circular mouth and tapered rear\n- credible weight, compression, and ground contact along the visible body\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: soft rear segments after surfacing Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: legs or wings; separate duplicate worm; hidden circular mouth; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 4 only: Burrowing Worm identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b9185b5a3ac6685079db22e6c9c00e78ba9f8f13a2198980945f63f5eca08ee8",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/dungeon-predators-v1.png", "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:11:26.417Z",
+      "generationCompletedAt": "2026-08-30T10:12:02.607Z",
+      "inspectionCompletedAt": "2026-08-30T10:12:09.607Z",
+      "generationDurationMs": 36190,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 43190,
+      "sourceOutputId": "exec-35526237-286f-48c0-a4fa-fafa58df41cb.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked-stone floor, complete worm, roots, rubble wake, and contact shadow were intentionally finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The tapered rear and outer root, rubble, ridge, and concentric-crack extents entered the required eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Burrowing Worm appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One continuous limbless segmented body connects the visible circular mouth to the complete tapered rear with credible weight and ground contact; no limbs or duplicate worm appear."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Bark-grain annular armor, wooden articulation, root fibers, and resin seams transform material and localized anatomy rather than applying foliage or a flat brown recolor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "fail", "observation": "The connected rear is present but its softer flexible segments and resin-bright binding joints are too subdued to read reliably as the exposed interruptible structure."}
+      ],
+      "retryReason": "A targeted exact-source edit was required to bring the entire worm and eruption wake inside the safety border while clarifying only the existing soft rear and resin-bright joint counterplay."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-burrowing-worm-wood-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Burrowing Worm identity, one continuous limbless segmented body, visible circular toothed mouth, connected tapered rear, credible compression and ground contact, bark-grain armor, wooden annular articulation, load-bearing root fibers, resin seams, moving ridge, concentric floor cracks, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only safe framing and exposed counterplay readability: uniformly scale down and recenter the entire connected worm together with its circular mouth, every bark spur, complete tapered tail tip, all root fibers, rubble, moving ridge, concentric cracks, dust, resin, and contact shadow so every hard and effect extent fits inside the central 84 percent of both canvas dimensions with a clearly empty border of at least 8 percent on all four sides. At the rear only, clarify the already present final tapered segments as visibly softer flexible young wood with lighter fresh-cut bark edges and resin-bright binding joints, clearly exposed after surfacing; keep those segments connected to the same single body and do not add a second worm. Keep the canvas exactly 1536 x 1024 PNG. Preserve the circular mouth, continuous worm anatomy, wooden construction, and front armor. Do not add legs, wings, branches that read as limbs, decorative antlers, pasted foliage, duplicate bodies, equipment, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "59e358f3da7763128bdc1c349986332bf5fb36e2d686bfec1b89132090c20771",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/dungeon-predators-v1.png", "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-35526237-286f-48c0-a4fa-fafa58df41cb.png", "contentHash": "16c26d62833f91d6aa28cf7880263472cf6af3c6493a5b7249532f2fa3a33d79"},
+      "requestStartedAt": "2026-08-30T10:12:34.250Z",
+      "generationCompletedAt": "2026-08-30T10:13:06.700Z",
+      "inspectionCompletedAt": "2026-08-30T10:13:13.700Z",
+      "generationDurationMs": 32450,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 39450,
+      "sourceOutputId": "exec-46040a6c-a053-473b-a3a3-5b744df0da6a.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-46040a6c-a053-473b-a3a3-5b744df0da6a.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2219045, "contentHash": "df17215aa9ce9543f1aa1c5fab5180c4b5b31b455bc1f19608785d79c2e6404e"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wood-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2219045, "contentHash": "df17215aa9ce9543f1aa1c5fab5180c4b5b31b455bc1f19608785d79c2e6404e"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wood-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2219045, "contentHash": "df17215aa9ce9543f1aa1c5fab5180c4b5b31b455bc1f19608785d79c2e6404e"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The circular mouth, every bark spur, complete tapered rear, all root fibers, rubble, moving ridge, concentric cracks, resin, dust, and contact shadow fit inside a clearly empty border of at least eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Burrowing Worm appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One continuous limbless annulated body connects the visible circular toothed mouth to the complete tapered rear, with credible compression and ground contact and no legs, wings, branches-as-limbs, or duplicate worm."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Bark-grain armor, wooden annular articulation, load-bearing root fibers, localized resin seams, and young-wood rear growth alter material, anatomy, and exposed counterplay without decorative antlers or pasted foliage."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The lighter, visibly softer flexible young-wood rear segments and resin-bright binding edges are exposed after surfacing as the interruptible structure."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Burrowing Worm cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wood recognition remains pending human review; known-target inspection finds integrated bark, roots, resin, wooden articulation, and young-growth cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent wood materials, restrained resin emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,219,045 bytes, and SHA-256 df17215aa9ce9543f1aa1c5fab5180c4b5b31b455bc1f19608785d79c2e6404e match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-burrowing-worm-wood-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:11:26.417Z",
+  "completedAt": "2026-08-30T10:13:31.106Z",
+  "totalWallTimeMs": 124689,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/burrowing-worm-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

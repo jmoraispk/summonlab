@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-burrowing-worm-wind",
+  "targetId": "affinity-expansion-v1-burrowing-worm-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-burrowing-worm-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-burrowing-worm-wind\".\n\nSubject and threat:\n- Species: burrowing-worm.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: burrowing-worm-duty.\n- Construction mode: limbless-segmented.\n\nIdentity invariants:\n- Burrowing Worm remains immediately recognizable\n- Battlefield duty remains Ground-eruption disruptor\n- segmented stone-boring body, circular mouth, and no defended rear\n- a moving ridge and concentric floor cracks reveal the eruption path\n- Counterplay remains visible: soft rear segments after surfacing\n\nAnatomy invariants:\n- one continuous limbless segmented body with a circular mouth and tapered rear\n- credible weight, compression, and ground contact along the visible body\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: soft rear segments after surfacing The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: legs or wings; separate duplicate worm; hidden circular mouth; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 4 only: Burrowing Worm identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "fb332ac507f1c178cb50949bbb19e5badadb9b3b261381e47fbedb0285c2abfa",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:19:16.959Z",
+      "generationCompletedAt": "2026-08-30T10:19:35.263Z",
+      "inspectionCompletedAt": "2026-08-30T10:19:44.508Z",
+      "generationDurationMs": 18304,
+      "inspectionDurationMs": 9245,
+      "totalWallTimeMs": 27549,
+      "sourceOutputId": "exec-a67de2a7-51a2-444c-9fa4-3b0f48749225.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete worm remains uncropped, but the outer pressure arcs and dust wake extend into the required eight-percent border at the left and right edges."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One continuous limbless body retains its exposed circular mouth, armored front, surfaced soft rear, tapered tip, ground compression, and cracked eruption ridge."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Directional vapor channels, pressure distortion, aligned debris, and a clockwise floor wake make Wind legible beyond hue."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The unarmored pale rear segments are fully visible after surfacing and a calmer pocket remains beneath the pressure spiral."
+        }
+      ],
+      "retryReason": "Pull the otherwise successful directional pressure and debris envelope inside the central 84 percent while sharpening the calm still center and preserving the worm."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-burrowing-worm-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab monster candidate correction\nPrimary request: Targeted edit of the preceding Wind-affinity Burrowing Worm render. Preserve the worm's exact body pose, scale, circular grinding mouth, armored front rings, dark segmented middle, fully visible pale soft rear segments, single tapered rear tip, cracked-stone floor, lighting, material detail, and premium realistic painterly Pack 2 finish. Change only the Wind-effect envelope and its nearby debris: pull every vapor channel, pressure arc, dust streak, and airborne stone fragment inward so every effect hard extent stays inside the central 84 percent of the 1536 by 1024 canvas, leaving at least eight percent clearly empty finished charcoal/floor border on all four sides. Organize the retained airflow into one clearly directional clockwise pressure sweep from the lower-left eruption ridge, over the armored back, toward the soft rear and lower-right floor wake. Preserve a small sharply defined calm still center in the pressure pattern at the exposed transition into the soft rear, readable between directional attacks.\nAnatomy invariants: Exactly one continuous limbless segmented Burrowing Worm from one exposed circular mouth through armored front rings and connected middle into surfaced soft rear segments and one tapered rear tip. Preserve credible heavy weight, compression, and ground contact. No legs, wings, duplicate worm, detached segment, or hidden mouth.\nBattlefield duty: Preserve the ground-eruption disruptor telegraph through the moving floor ridge and concentric cracked-stone disturbance.\nWind construction: Preserve multiple cues beyond color: pressure-bent silhouette edges, coherent directional vapor channels, aligned debris flow, pressure distortion, and the directional floor wake. This must not become a pale recolor, transparency-only body, or directionless particles.\nCounterplay: Keep the unarmored soft rear segments fully visible after surfacing and keep the calm still center at their transition readable.\nPreserve unchanged: exactly one subject; restrained neutral lighting; charcoal-to-midnight backdrop; complete finished canvas; no redesign of the creature.\nAvoid: any airflow, debris, dust, crack, body, mouth, or rear tip entering the outer eight-percent border; crop; oversized effect halo; legs; wings; extra creature; duplicate body; hidden mouth; defended or armored rear; pale recolor; transparency alone; directionless particles; text; labels; UI; frame; logo; watermark; blank band; unfinished region; abrupt cutoff; published-character resemblance; sexualized anatomy, costume, or pose.\nCorrection mode: targeted edit of the preceding render, not complete regeneration; preserve all passing traits and change only effect containment and the calm-center readability.",
+      "promptHash": "ef209702bdd0e05f98197ab51bcdae92b657c762a2c39135090c7ec37de645e5",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-a67de2a7-51a2-444c-9fa4-3b0f48749225.png",
+        "contentHash": "27729d3badfe59de0ceeef67879e248b2e3038255f7ff1c0717d1a71403851da"
+      },
+      "requestStartedAt": "2026-08-30T10:20:05.436Z",
+      "generationCompletedAt": "2026-08-30T10:20:26.695Z",
+      "inspectionCompletedAt": "2026-08-30T10:20:35.720Z",
+      "generationDurationMs": 21259,
+      "inspectionDurationMs": 9025,
+      "totalWallTimeMs": 30284,
+      "sourceOutputId": "exec-fd0b1afc-9d08-4998-b5bf-687a0e967166.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-fd0b1afc-9d08-4998-b5bf-687a0e967166.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2388330,
+          "contentHash": "0879e288706e4e483c193e5bbcead22ee647520b8beda56f42c610bc0f4146e4"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2388330,
+          "contentHash": "0879e288706e4e483c193e5bbcead22ee647520b8beda56f42c610bc0f4146e4"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2388330,
+        "contentHash": "0879e288706e4e483c193e5bbcead22ee647520b8beda56f42c610bc0f4146e4"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The circular mouth, full connected body, rear tip, floor cracks, vapor channels, pressure arcs, and debris all remain inside the central 84 percent with an empty finished border on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Burrowing Worm appears on a fully rendered cracked-stone floor and charcoal backdrop, without duplicate anatomy or unfinished canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt exactly matches the canonical renderer; ordered references, precise correction linkage, and exact source-bound persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One continuous limbless segmented body runs from its visible circular grinding mouth through armored front rings into clearly surfaced soft rear segments and one tapered tip, with credible compression and a cracked eruption ridge."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A clockwise pressure sweep bends the silhouette edge, channels coherent vapor around the body, aligns airborne debris, distorts the local air, and leaves a directional floor wake rather than a pale recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pale unarmored rear is fully exposed and the dark, sharply quiet pocket beneath its transition reads as the still center between directional attacks."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending; known-target Burrowing Worm cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending; known-target Wind construction cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No legs, wings, duplicate worm, detached segment, hidden mouth, pale recolor, transparency-only anatomy, directionless particles, crop, text, UI, frame, logo, watermark, extra subject, or sexualization appears."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-burrowing-worm-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:19:10.077Z",
+  "completedAt": "2026-08-30T10:20:35.720Z",
+  "totalWallTimeMs": 85643,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/burrowing-worm-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

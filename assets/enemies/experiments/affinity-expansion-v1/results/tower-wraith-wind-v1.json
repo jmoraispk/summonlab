@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-wraith-wind",
+  "targetId": "affinity-expansion-v1-tower-wraith-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-wraith-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-wraith-wind\".\n\nSubject and threat:\n- Species: tower-wraith.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-wraith-duty.\n- Construction mode: incorporeal-undead.\n\nIdentity invariants:\n- Tower Wraith remains immediately recognizable\n- Battlefield duty remains Phasing pursuer\n- forward-drifting shroud, absent feet, and long grasping arms\n- body thins to a black edge before passing through cover\n- Counterplay remains visible: solid mask during its grasp\n\nAnatomy invariants:\n- one continuous spectral torso, two arms, and a tapering footless shroud\n- solid mask and grasping hands remain connected to the phasing body\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: solid mask during its grasp The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary robed living human; separate duplicate ghost; solid booted legs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 2 only: Tower Wraith identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "ce5c7c14ca52b4bbe7b26f3ebac48da6e9a27f77547ef13a28e310436f7f11a9",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:48:21.683Z",
+      "generationCompletedAt": "2026-08-30T09:49:27.580Z",
+      "inspectionCompletedAt": "2026-08-30T09:49:34.580Z",
+      "generationDurationMs": 65897,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 72897,
+      "sourceOutputId": "exec-b1a1a366-1caf-4ba1-b375-a96ca041eb37.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, footless shroud, vapor ring, debris field, wake, and shadow were continuously finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The upper vapor wake and lower taper entered the declared top and bottom eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Tower Wraith appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The forward-drifting footless shroud, one continuous tapering torso, exactly two long connected grasping arms, solid mask, and black phasing edge preserved every Tower Wraith invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional shroud streamers, coherent vapor channels, flying debris, grasp pressure paths, and ground disturbance altered silhouette, motion, attack telegraph, and environmental wake beyond pale recolor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The solid mask and quiet torso center remain readable between the directional pressure bands while both hands commit to the grasp."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete wraith, mask, fingertips, streamers, vapor channels, debris, taper, ground disturbance, and wake inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-wraith-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Tower Wraith identity, forward-drifting shroud, completely absent feet, one continuous tapering spectral torso, exactly two long connected grasping arms and hands, solid pale mask, black phasing edge, readable still center, directional shroud streamers, coherent vapor channels, flying debris, pressure distortion, grasp pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete wraith together with the mask crest, every fingertip, chain end, cloth streamer and tip, vapor channel, flying stone fragment, debris particle, tapering footless tail, pressure wake, ground disturbance, and shadow so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve the solid mask and quiet pressure center during the grasp. Do not crop, omit, add, duplicate, recolor, or redesign anatomy, arms, hands, mask, chains, shroud, debris, or wind effects. No legs, boots, halo, horns, weapon, banner, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "30bf90bdb82dca5b14207995d9202f7c245d034ac532362723bb25e666c4bc3a",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-b1a1a366-1caf-4ba1-b375-a96ca041eb37.png", "contentHash": "749f3b15ce590ff49421693847a9bc4a18627156cdce8b0b4017dd3a2597d426"},
+      "requestStartedAt": "2026-08-30T09:49:52.219Z",
+      "generationCompletedAt": "2026-08-30T09:50:28.275Z",
+      "inspectionCompletedAt": "2026-08-30T09:50:35.275Z",
+      "generationDurationMs": 36056,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 43056,
+      "sourceOutputId": "exec-2365e708-9e71-40d7-97d5-597f32d17419.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-2365e708-9e71-40d7-97d5-597f32d17419.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2154051, "contentHash": "4a33b8be367199d20f16dc6081f45f3edd342af138bfc5a5188ca4184cbeb293"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2154051, "contentHash": "4a33b8be367199d20f16dc6081f45f3edd342af138bfc5a5188ca4184cbeb293"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2154051, "contentHash": "4a33b8be367199d20f16dc6081f45f3edd342af138bfc5a5188ca4184cbeb293"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete mask, fingertips, chains, cloth streamers, vapor channels, fragments, debris, footless taper, pressure wake, ground disturbance, and shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Tower Wraith appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The forward-drifting footless shroud, one continuous tapering torso, exactly two long connected grasping arms, solid mask, and black phasing edge preserve every Tower Wraith invariant without solid legs or unrelated equipment."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Long directional streamers reshape the silhouette, coherent vapor and debris paths communicate force and motion, the hands sit within converging grasp telegraphs, and the lower ring records the environmental wake beyond hue."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The solid pale mask and calm dark torso center remain distinctly legible between directional pressure bands while both hands commit forward."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Tower Wraith cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds strong directional cloth, vapor, debris, pressure, and wake cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, black phasing shroud, restrained pale-cyan wind emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,154,051 bytes, and SHA-256 4a33b8be367199d20f16dc6081f45f3edd342af138bfc5a5188ca4184cbeb293 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-wraith-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:48:21.683Z",
+  "completedAt": "2026-08-30T09:50:46.634Z",
+  "totalWallTimeMs": 144951,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-wraith-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

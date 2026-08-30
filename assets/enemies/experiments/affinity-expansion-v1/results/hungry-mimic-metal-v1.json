@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hungry-mimic-metal",
+  "targetId": "affinity-expansion-v1-hungry-mimic-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-hungry-mimic-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-hungry-mimic-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hungry-mimic-metal\".\n\nSubject and threat:\n- Species: hungry-mimic.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hungry-mimic-duty.\n- Construction mode: object-bodied.\n\nIdentity invariants:\n- Hungry Mimic remains immediately recognizable\n- Battlefield duty remains Object ambusher\n- broken chest silhouette opening into weight-bearing jaws and grasping tongue\n- false hinges flex and dust falls before the object unfolds\n- Counterplay remains visible: inner hinge after a bite\n\nAnatomy invariants:\n- one chest-like object body with connected lid, hinges, weight-bearing jaws, and tongue\n- one coherent ambush creature rather than an object beside a separate monster\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: inner hinge after a bite Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: separate chest and monster; humanoid limbs; weightless disconnected jaws; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 1 only: Hungry Mimic identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6f49f9fd034e0c12715b378fe54da6ec96c2a0ed52f6407c05c2ba7cf2cd0b89",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:00:14.739Z",
+      "generationCompletedAt": "2026-08-30T10:00:38.052Z",
+      "inspectionCompletedAt": "2026-08-30T10:00:55.308Z",
+      "generationDurationMs": 23313,
+      "inspectionDurationMs": 17256,
+      "totalWallTimeMs": 40569,
+      "sourceOutputId": "exec-18ea6614-7cb2-4856-8e35-fcb9a6554f14.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-18ea6614-7cb2-4856-8e35-fcb9a6554f14.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2325334,
+          "contentHash": "09823f34d7a6197628336648a102a57901edb008a346db511ab5b0e0f38dc33d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2325334,
+          "contentHash": "09823f34d7a6197628336648a102a57901edb008a346db511ab5b0e0f38dc33d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2325334,
+        "contentHash": "09823f34d7a6197628336648a102a57901edb008a346db511ab5b0e0f38dc33d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete lid, tongue tip, all jaw teeth, four support limbs and terminal claws, chains, and fragment wake remain inside a clearly empty finished border of at least eight percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one unified chest-bodied creature appears on a fully rendered cracked-stone floor and charcoal backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical prompt bytes, ordered reference provenance, exact source selection, and exclusive-copy persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The broken chest silhouette unfolds through connected lid hinges into load-bearing upper and lower jaw rows, one short segmented grasping tongue, and four non-humanoid support limbs; no separate monster appears."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged chest anatomy, articulated load-bearing bands and support joints, metallic marrow, controlled fragments, and multiple distinct core fittings transform the object construction rather than merely armoring it."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Inner hinge mechanics are exposed behind the bitten-open lid while amber controlling cores on the lid and front face remain materially distinct."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending; known-target Hungry Mimic cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending; known-target Metal construction cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No separate chest and monster, humanoid limb, disconnected jaw, ordinary armor-only reading, duplicate subject, crop, text, UI, frame, logo, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-hungry-mimic-metal-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:00:01.432Z",
+  "completedAt": "2026-08-30T10:00:55.308Z",
+  "totalWallTimeMs": 53876,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hungry-mimic-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

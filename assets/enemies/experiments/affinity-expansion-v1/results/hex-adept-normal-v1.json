@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hex-adept-normal",
+  "targetId": "affinity-expansion-v1-hex-adept-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-hex-adept-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hex-adept-normal\".\n\nSubject and threat:\n- Species: hex-adept.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hex-adept-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Hex Adept remains immediately recognizable\n- Battlefield duty remains Debuff skirmisher\n- mobile one-handed caster with dangling curse tags and an open off-hand\n- three tags lift and point at the marked target\n- Counterplay remains visible: interruptible casting hand\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: interruptible casting hand\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 1 only: Hex Adept identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "5c3b7136a868ba09cd9e29c7603dedba2feea5960a995a208a45ac52fe54db88",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:17:35.000Z",
+      "generationCompletedAt": "2026-08-30T10:18:31.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:18:39.000Z",
+      "generationDurationMs": 56000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 64000,
+      "sourceOutputId": "exec-71d0794e-404b-4913-96b1-76f49816ef96",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The highest airborne tag and smoke enter the top safety band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The adult two-arm/two-leg caster is strong, but a segmented tail-like appendage with terminal tag reads as an extra limb and fourth airborne tag."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark cloth, leather, metal, pale neutral tag light and restrained smoke remain explicitly unaffiliated."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The raised right casting hand is open and exposed while curse tags lift toward one target."
+        }
+      ],
+      "retryReason": "Remove the tail and fourth airborne tag, keep exactly three lifted tags, expose the casting wrist, and scale all tags/effects inside the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hex-adept-normal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Normal Hex Adept anatomy, tag-count, and safe-framing correction. Preserve this exact single adult masked humanoid debuff skirmisher, exactly two arms and two grounded legs, right casting hand, open left off-hand, dark unaffiliated cloth/leather/metal equipment, mobile stance, cracked-stone setting, and premium painterly finish. Remove the entire tail-like segmented appendage, its terminal cage tag, and any body extension behind the robe; restore a normal trailing garment silhouette with no tail or third limb. Keep many curse tags dangling inertly from the belt and sleeves, but exactly three tags must lift in one clearly connected fan from the right casting hand and point toward the same marked target; remove any fourth airborne tag. Keep emission restrained, pale and neutral with no elemental material or aura. Make the open casting hand and wrist joint clearly exposed and interruptible. Uniformly scale the complete body, mask, both hands/fingers, all garments, every dangling tag and chain, exactly three lifted tags and their full chains/smoke, both complete feet, floor shadow and wake down by about 18 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No tail, extra limb, fourth airborne tag, childlike proportion, glamour, sexualization, elemental glow, text, frame, crop, or affinity change.",
+      "promptHash": "4ff44878abb793426a043c7da234633b62ab86df838328f25f84995d780716af",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-71d0794e-404b-4913-96b1-76f49816ef96.png",
+        "contentHash": "f1f4f7e71f64633e8cc44ec9a86ead4c9d9d0c1359bc0bc50ac9f0e07677e273"
+      },
+      "requestStartedAt": "2026-08-30T10:18:46.000Z",
+      "generationCompletedAt": "2026-08-30T10:19:14.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:19:22.000Z",
+      "generationDurationMs": 28000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 36000,
+      "sourceOutputId": "exec-99342d3a-0d69-4d83-ac83-9633019dfd40",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-99342d3a-0d69-4d83-ac83-9633019dfd40.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2092924,
+          "contentHash": "257f95378104cf89b52f0eb14c509ad6846f5de7ab1721cfdc03dfdc3d1c929c"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2092924,
+          "contentHash": "257f95378104cf89b52f0eb14c509ad6846f5de7ab1721cfdc03dfdc3d1c929c"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2092924,
+        "contentHash": "257f95378104cf89b52f0eb14c509ad6846f5de7ab1721cfdc03dfdc3d1c929c"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete body, mask, hands and fingers, garments, dangling tags, exactly three lifted tags with chains/smoke, feet and floor shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid caster has exactly two arms and two grounded legs, credible hands/feet and joints, no tail, open off-hand, and exactly three lifted curse tags."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark neutral equipment, restrained pale tag light and smoke remain explicitly unaffiliated without elemental material substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The right casting hand and wrist remain open, exposed and visibly connected to the three-target tag fan."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hex-adept-normal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:17:35.000Z",
+  "completedAt": "2026-08-30T10:19:24.000Z",
+  "totalWallTimeMs": 109000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

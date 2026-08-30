@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-armored-elder-drake-normal",
+  "targetId": "affinity-expansion-v1-armored-elder-drake-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-armored-elder-drake-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-armored-elder-drake-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-armored-elder-drake-normal\".\n\nSubject and threat:\n- Species: armored-elder-drake.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: armored-elder-drake-duty.\n- Construction mode: draconic-quadruped.\n\nIdentity invariants:\n- Armored Elder Drake remains immediately recognizable\n- Battlefield duty remains Breath-line tank\n- heavy quadruped, overlapping mineral plates, and a furnace throat\n- neck plates spread and trace the breath lane with heat\n- Counterplay remains visible: plate gaps along the expanded neck\n\nAnatomy invariants:\n- exactly four grounded legs and no wings\n- credible draconic shoulders, neck, plate gaps, tail balance, and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: plate gaps along the expanded neck\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: wyvern limb plan; extra or missing legs; hidden throat and plate counterplay; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 3 only: Armored Elder Drake identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "00c05e860576d41c1b7a93dd565230575a95d5252ce3c8bb0df53bd92874a33d",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:48:10.000Z",
+      "generationCompletedAt": "2026-08-30T09:49:05.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:49:13.000Z",
+      "generationDurationMs": 55000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 63000,
+      "sourceOutputId": "exec-cce50577-f458-44b7-aad3-83eebcdc3c3a",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The banner spear tip enters the top safety band and the foremost toes approach the bottom band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Armored Elder Drake appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Heavy overlapping plates, furnace throat and connected tail read clearly, but an imported command standard and an obscured fourth foot weaken the declared four-leg tank identity."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark mineral plates and restrained natural furnace warmth remain unaffiliated with no elemental material substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Expanded neck plates and heated gaps are present, but the plate-gap sequence should be clearer."
+        }
+      ],
+      "retryReason": "Remove the imported standard, expose all four complete grounded legs and neck plate gaps, and scale every extent inside the safety border."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-armored-elder-drake-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-armored-elder-drake-normal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Normal Armored Elder Drake identity, anatomy, and framing correction. Preserve this exact single heavy armored draconic quadruped, overlapping dark mineral plates, furnace throat, broad tank stance, connected neck and tail, neutral unaffiliated material palette, cracked-stone setting, and premium painterly finish. Remove the entire command banner, pole, spear tip, chains, harness socket, heraldry, and every commander/standard cue from its back; restore uninterrupted overlapping mineral plates there. Make exactly four grounded draconic legs complete and countable: separate both forelegs and both hind legs with clear negative space, show every full foot and toe, credible shoulders/hips, and no fifth limb or wing. Spread the expanded neck plates just enough to expose a sequence of clearly readable dark plate gaps along the throat; retain only restrained natural furnace warmth inside the throat and gaps, with no elemental aura or material substitution. Uniformly scale the entire drake, all four legs and toes, head and horns, all plates/spines, complete connected tail and tip, restrained throat vapor, floor wake and shadow down by about 15 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No banner, pole, chains, armor standard, wings, hidden or extra leg, accidental elemental glow, cropped tail, text, frame, or affinity change.",
+      "promptHash": "d37cb36584aa17c71726f3f2bd2a83690a73f7c7abd63a7bf2d69f7cb49c9d19",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-cce50577-f458-44b7-aad3-83eebcdc3c3a.png",
+        "contentHash": "87ab7e5a860ee3b0f3340401dfd976944decb20a75ed0e7498a87063632f7ad5"
+      },
+      "requestStartedAt": "2026-08-30T09:49:20.000Z",
+      "generationCompletedAt": "2026-08-30T09:49:44.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:49:52.000Z",
+      "generationDurationMs": 24000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 32000,
+      "sourceOutputId": "exec-a7bfb3c1-88d5-4264-91ca-29633649418b",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-a7bfb3c1-88d5-4264-91ca-29633649418b.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2305487,
+          "contentHash": "00264e7e1b9ecd6f886e865ce8d8a148068cd1388b7480551715ad20902963a5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2305487,
+          "contentHash": "00264e7e1b9ecd6f886e865ce8d8a148068cd1388b7480551715ad20902963a5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2305487,
+        "contentHash": "00264e7e1b9ecd6f886e865ce8d8a148068cd1388b7480551715ad20902963a5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Head, horns, all plates, four legs and full feet, complete tail and tip, throat vapor, floor wake and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Armored Elder Drake appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A heavy wingless quadruped has exactly four countable grounded legs, credible shoulders and hips, overlapping mineral plates, connected neck and tail, and a readable furnace throat."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark mineral plates and restrained natural furnace warmth remain explicitly unaffiliated with no elemental aura or substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Expanded neck plates expose a clear sequence of dark gaps tracing the restrained furnace throat."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-armored-elder-drake-normal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:48:10.000Z",
+  "completedAt": "2026-08-30T09:49:54.000Z",
+  "totalWallTimeMs": 104000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/armored-elder-drake-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

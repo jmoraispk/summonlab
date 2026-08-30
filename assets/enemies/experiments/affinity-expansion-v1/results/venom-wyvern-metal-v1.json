@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-venom-wyvern-metal",
+  "targetId": "affinity-expansion-v1-venom-wyvern-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-venom-wyvern-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-venom-wyvern-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-venom-wyvern-metal\".\n\nSubject and threat:\n- Species: venom-wyvern.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: venom-wyvern-duty.\n- Construction mode: winged-draconic.\n\nIdentity invariants:\n- Venom Wyvern remains immediately recognizable\n- Battlefield duty remains Aerial poison striker\n- two-legged wing silhouette, hooked tail stinger, and narrow diving head\n- tail sac brightens and wings fold before a toxic dive\n- Counterplay remains visible: stinger sac after discharge\n\nAnatomy invariants:\n- the declared wyvern or dragon limb plan remains exact, complete, and countable\n- connected head, neck, torso, tail, wing joints, and every grounded foot remain visible\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: stinger sac after discharge Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: wrong declared limb plan; extra wings or limbs; cropped tail or wings; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 2 only: Venom Wyvern identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a06e1abe1f5ccd489fea0bd32c075e35c6adc6b84a7c91248dfb82daf7386dcf",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:47:58.985Z",
+      "generationCompletedAt": "2026-08-30T09:48:18.314Z",
+      "inspectionCompletedAt": "2026-08-30T09:48:26.027Z",
+      "generationDurationMs": 19329,
+      "inspectionDurationMs": 7713,
+      "totalWallTimeMs": 27042,
+      "sourceOutputId": "exec-49655df8-3d49-40ca-b450-6d90d51d7c8c.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Both outer wing tips enter the top and side safe margins despite remaining uncropped."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two hind legs and two wings are connected and countable with no forelegs, plus a narrow head and continuous hooked stinger tail."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged body anatomy, articulated load-bearing wing spars, metallic joints, and a distinct controlling core transform construction beyond ordinary armor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The bright discharged stinger sac and materially distinct violet controlling core remain exposed."
+        }
+      ],
+      "retryReason": "Scale and recenter the otherwise passing wyvern so both full wings and every extremity clear the required eight-percent safe margin."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-venom-wyvern-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-venom-wyvern-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab monster candidate correction\nPrimary request: Targeted edit of the preceding Metal Venom Wyvern render. Scale the entire creature and all effects down by about fifteen percent and recenter it so every hard extent remains inside the central eighty-four percent of the 1536 x 1024 canvas, leaving at least eight percent clearly empty finished border on all four sides. Preserve the successful design unchanged.\nAnatomy invariants: Exactly one true wyvern with exactly two connected hind legs and exactly two connected wings; no separate forelegs or arms; one narrow diving head, connected neck and torso, one continuous tail ending in one hooked stinger and discharged venom sac. Both complete grounded feet and all toes, both complete wings and every wing tip, the head, tail, stinger, and venom drip must be visible and countable.\nMetal construction: Preserve forged anatomy, articulated load-bearing wing spars and body plates, metallic marrow at joints, controlled magnetic fragments, and the materially distinct compact magnetic core. This is transformed construction, not ordinary armor over an organic creature.\nDuty and counterplay: Preserve the aerial poison striker silhouette, folded-pre-dive wing tension, bright discharged stinger sac, and exposed articulated joints or controlling core.\nPreserve unchanged: black forged plates, restrained violet venom emission, premium realistic painterly Pack 2 finish, cracked-stone floor, charcoal-to-midnight backdrop, neutral key light, exactly one subject, and fully finished canvas.\nAvoid: changing anatomy, adding forelegs, adding wings or limbs, cropping, oversized wings, wing tips near canvas edges, cropped tail, ordinary armor-only reading, extra subject, text, labels, UI, frame, logo, watermark, blank band, unfinished region, or abrupt cutoff.\nCorrection mode: targeted scale-and-recenter edit, not complete regeneration; preserve all passing traits.",
+      "promptHash": "c02e000fe83611a812066d2435e306b57033f579b8b400170615b2a4778c18fd",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-49655df8-3d49-40ca-b450-6d90d51d7c8c.png",
+        "contentHash": "605f4ae8e486fda3d72e0b1a6736be2b6943c49ffa9537d12c685f2326ba6456"
+      },
+      "requestStartedAt": "2026-08-30T09:48:44.362Z",
+      "generationCompletedAt": "2026-08-30T09:49:02.088Z",
+      "inspectionCompletedAt": "2026-08-30T09:49:11.822Z",
+      "generationDurationMs": 17726,
+      "inspectionDurationMs": 9734,
+      "totalWallTimeMs": 27460,
+      "sourceOutputId": "exec-5d5a71fa-61cb-4a8b-bd9b-e451f308d3cb.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-5d5a71fa-61cb-4a8b-bd9b-e451f308d3cb.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1912958,
+          "contentHash": "33842e1bda6fa034fe5374f4891a537ef597615e87e91d07f4c94b66e01ef2bd"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1912958,
+          "contentHash": "33842e1bda6fa034fe5374f4891a537ef597615e87e91d07f4c94b66e01ef2bd"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1912958,
+        "contentHash": "33842e1bda6fa034fe5374f4891a537ef597615e87e91d07f4c94b66e01ef2bd"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both complete wings and tips, two grounded feet and toes, head, tail, hooked stinger, discharged sac, and venom drip sit inside a clearly empty finished border of at least eight percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Venom Wyvern appears on a fully finished cracked-stone floor and charcoal backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction linkage, and source-bound persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The true-wyvern plan is exact and countable: two hind legs, two wings, no forelegs, connected narrow diving head and torso, and one continuous tail ending in a hooked stinger and venom sac."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged anatomy, articulated load-bearing wing spars and plates, metallic marrow at the joints, and a distinct magnetic core visibly alter material, articulation, and exposed structure rather than adding ordinary armor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The bright discharged stinger sac and materially distinct controlling core and joints are exposed and readable."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending; known-target Venom Wyvern cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending; known-target Metal construction cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limb, foreleg, extra wing, crop, ordinary armor-only reading, duplicate creature, text, UI, frame, logo, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-venom-wyvern-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:47:49.013Z",
+  "completedAt": "2026-08-30T09:49:11.822Z",
+  "totalWallTimeMs": 82809,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/venom-wyvern-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

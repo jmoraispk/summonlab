@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hungry-mimic-normal",
+  "targetId": "affinity-expansion-v1-hungry-mimic-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-hungry-mimic-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hungry-mimic-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hungry-mimic-normal\".\n\nSubject and threat:\n- Species: hungry-mimic.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hungry-mimic-duty.\n- Construction mode: object-bodied.\n\nIdentity invariants:\n- Hungry Mimic remains immediately recognizable\n- Battlefield duty remains Object ambusher\n- broken chest silhouette opening into weight-bearing jaws and grasping tongue\n- false hinges flex and dust falls before the object unfolds\n- Counterplay remains visible: inner hinge after a bite\n\nAnatomy invariants:\n- one chest-like object body with connected lid, hinges, weight-bearing jaws, and tongue\n- one coherent ambush creature rather than an object beside a separate monster\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: inner hinge after a bite\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: separate chest and monster; humanoid limbs; weightless disconnected jaws; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 1 only: Hungry Mimic identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "98363cec0479c325c0f5f823246f8ef845856d4e8cdda61b06859269b764e14c",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:57:35.000Z",
+      "generationCompletedAt": "2026-08-30T09:58:32.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:58:40.000Z",
+      "generationDurationMs": 57000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 65000,
+      "sourceOutputId": "exec-9aaf81fc-ef0c-4a33-a581-ce82edfd6aa2",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Chest, lid, every tooth, full tongue, external appendages, floor contact and shadow fit inside the finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Hungry Mimic appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The chest, connected lid, weight-bearing jaws and tongue are coherent, but multiple external spider-like claws violate the one object-body anatomy."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark wood, worn iron, flesh and restrained dust remain explicitly unaffiliated with no elemental material or glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "False hinge structure is present but the post-bite inner hinge plate and pin are not exposed clearly."
+        }
+      ],
+      "retryReason": "Remove every external appendage, make the chest base itself weight-bearing, expose one connected inner hinge plate and pin, and retain the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hungry-mimic-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hungry-mimic-normal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Normal Hungry Mimic anatomy and counterplay correction. Preserve this exact single broken chest-bodied ambusher, connected wooden box and lid, weight-bearing upper and lower jaws, continuous grasping tongue, neutral iron-and-dark-wood materials, pose, cracked-stone setting, and premium painterly finish. Remove every external spider leg, arm, claw, foot, finger, side appendage, and humanoid-limb cue; the creature must consist of one coherent chest-like object body only, with the chest base itself bearing weight on the floor. Keep the lid physically connected through exactly two large false hinges at the back. Show the post-bite counterplay by exposing one bent inner hinge plate and pale worn hinge pin inside the open rear corner of the mouth, clearly connected to both lid and base. Retain restrained dust falling from that flexed hinge, with no glow or elemental material. Uniformly scale and recenter the complete chest body, lid, every tooth, both hinge assemblies, full tongue and tip, dust, floor contact and shadow so all hard/effect extents fit inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No external limbs, separate monster, floating jaw, disconnected tongue, eye stalk, elemental glow, text, frame, or affinity change.",
+      "promptHash": "3eb8020f96ec02695a45a4b2207b2f5ba7303ab09c8bbd902d6c758464c68576",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-9aaf81fc-ef0c-4a33-a581-ce82edfd6aa2.png",
+        "contentHash": "791a493c7a20e988e0c9aca7d8999fd4b703880dda3ed279d705acd3f3b1d8ba"
+      },
+      "requestStartedAt": "2026-08-30T09:58:47.000Z",
+      "generationCompletedAt": "2026-08-30T09:59:16.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:59:24.000Z",
+      "generationDurationMs": 29000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 37000,
+      "sourceOutputId": "exec-4a2c2a1f-adf3-4b12-b308-fb3ab748b188",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 26,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-4a2c2a1f-adf3-4b12-b308-fb3ab748b188.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2092061,
+          "contentHash": "d12fef024ba05bf42966412066c3559b2c1e0f3d9dd6b25d2675e229ca074f4f"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2092061,
+          "contentHash": "d12fef024ba05bf42966412066c3559b2c1e0f3d9dd6b25d2675e229ca074f4f"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2092061,
+        "contentHash": "d12fef024ba05bf42966412066c3559b2c1e0f3d9dd6b25d2675e229ca074f4f"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete chest and lid, every tooth, both hinge assemblies, full tongue and tip, dust, floor contact and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Hungry Mimic appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One coherent chest-like body has a connected lid, exactly two false hinges, weight-bearing jaws, continuous tongue, and no external limbs or separate monster."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark wood, worn iron, flesh and restrained dust remain explicitly unaffiliated without magical anatomy or glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One bent inner hinge plate and pale worn pin are exposed after the bite, visibly connecting lid and base as the interruptible weak point."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hungry-mimic-normal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:57:35.000Z",
+  "completedAt": "2026-08-30T09:59:26.000Z",
+  "totalWallTimeMs": 111000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hungry-mimic-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hungry-mimic-wood",
+  "targetId": "affinity-expansion-v1-hungry-mimic-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-hungry-mimic-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hungry-mimic-wood-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hungry-mimic-wood\".\n\nSubject and threat:\n- Species: hungry-mimic.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hungry-mimic-duty.\n- Construction mode: object-bodied.\n\nIdentity invariants:\n- Hungry Mimic remains immediately recognizable\n- Battlefield duty remains Object ambusher\n- broken chest silhouette opening into weight-bearing jaws and grasping tongue\n- false hinges flex and dust falls before the object unfolds\n- Counterplay remains visible: inner hinge after a bite\n\nAnatomy invariants:\n- one chest-like object body with connected lid, hinges, weight-bearing jaws, and tongue\n- one coherent ambush creature rather than an object beside a separate monster\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: inner hinge after a bite Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: separate chest and monster; humanoid limbs; weightless disconnected jaws; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 1 only: Hungry Mimic identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "87962339b85dde9ca39cbfc95e34247f8cff6b7375fbe429fb3f382b64bf7b8e",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:01:48.000Z",
+      "generationCompletedAt": "2026-08-30T10:02:25.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:02:33.000Z",
+      "generationDurationMs": 37000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 45000,
+      "sourceOutputId": "exec-c820852b-1dba-49b2-91cf-5bdb4e621913",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Chest, lid, teeth, tongue, external roots, floor contact and shadow fit inside the finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wood Hungry Mimic appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The chest and lid are connected, but many external root limbs and ornamental growth weaken the required single object-body anatomy."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Bark is present, but green slime, root legs, eye-like ornament and decorative growth replace purposeful load-bearing boards, joints and resin seams."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Hinge regions exist but no pale fresh-cut inner plate and resin wooden pin clearly expose the post-bite weak point."
+        }
+      ],
+      "retryReason": "Remove all external roots, green slime and ornament, rebuild structural bark boards and joints, expose a fresh-cut resin hinge, and retain the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hungry-mimic-wood-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hungry-mimic-wood-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Wood Hungry Mimic anatomy, affinity, and counterplay correction. Preserve this exact single chest-bodied ambusher, connected bark chest and lid, weight-bearing upper/lower jaws, full grasping tongue, open-mouth pose, cracked-stone setting, and premium painterly finish. Remove every external root leg, claw, arm, foot, dangling tendril, horn, crown spike, eye-like ornament, skull-like ornament, foliage patch, moss tuft, and green slime streak. The creature must be one coherent chest-like object body with the flat chest base itself bearing weight on the floor—no external limbs. Rebuild Wood as purposeful structure: laminated load-bearing bark boards, carved wooden corner joints, visible grain following jaw stress, and restrained amber resin seams only at connected joints. Keep exactly two false hinges connecting lid and base. Show the post-bite weak point as one pale fresh-cut inner hinge plate with a resin-bright wooden pin, exposed inside the rear mouth corner and connected to both lid and base. Keep the tongue flesh-like and continuous, not a root. Uniformly scale and recenter the complete body, lid, every tooth, two hinges, tongue and tip, resin, small wood dust, floor contact and shadow so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No external limbs, green glow/slime, decorative branches, foliage, eye ornament, separate monster, floating jaws, brown-only recolor, text, frame, or affinity change.",
+      "promptHash": "a3ef02f31de48cc743a7b810cc918a4bb500de7e4f37b52e717a2c54d7946548",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-c820852b-1dba-49b2-91cf-5bdb4e621913.png",
+        "contentHash": "d978be1f957c1c988df7fd9e8960bff7007a9c84d337670f655ca00d70ca6858"
+      },
+      "requestStartedAt": "2026-08-30T10:02:40.000Z",
+      "generationCompletedAt": "2026-08-30T10:03:03.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:03:11.000Z",
+      "generationDurationMs": 23000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 31000,
+      "sourceOutputId": "exec-5d659ee2-6397-421d-84ca-fea8ddc234b7",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-5d659ee2-6397-421d-84ca-fea8ddc234b7.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2357260,
+          "contentHash": "c9855940ba68f2a5007bff4ece7cf0a407a7e6bc939b3bae3ea44119308cb229"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2357260,
+          "contentHash": "c9855940ba68f2a5007bff4ece7cf0a407a7e6bc939b3bae3ea44119308cb229"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2357260,
+        "contentHash": "c9855940ba68f2a5007bff4ece7cf0a407a7e6bc939b3bae3ea44119308cb229"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete chest and lid, every tooth, two hinges, tongue and tip, resin, wood dust, floor contact and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Wood Hungry Mimic appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One coherent chest-like object body has a connected lid, two hinges, weight-bearing jaws, continuous tongue, and a flat weight-bearing base with no external limbs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Laminated bark boards, stress-following grain, carved corner articulation and restrained amber resin seams form purposeful load-bearing Wood construction."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A pale fresh-cut inner hinge plate and resin-bright wooden pin are exposed inside the rear mouth corner and connect lid to base."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hungry-mimic-wood-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:01:48.000Z",
+  "completedAt": "2026-08-30T10:03:13.000Z",
+  "totalWallTimeMs": 85000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hungry-mimic-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

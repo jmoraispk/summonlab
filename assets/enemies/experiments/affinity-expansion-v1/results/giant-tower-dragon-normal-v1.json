@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-giant-tower-dragon-normal",
+  "targetId": "affinity-expansion-v1-giant-tower-dragon-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-giant-tower-dragon-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-giant-tower-dragon-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-giant-tower-dragon-normal\".\n\nSubject and threat:\n- Species: giant-tower-dragon.\n- Threat presentation tier: apex; reference Grade 4; canonical Grade 4.\n- Battlefield duty: giant-tower-dragon-duty.\n- Construction mode: winged-draconic.\n\nIdentity invariants:\n- Giant Tower Dragon remains immediately recognizable\n- Battlefield duty remains Arena-scale apex boss\n- immense four-legged winged silhouette shaped around tower-scale movement\n- wings, throat, and tail each stage a distinct arena hazard\n- Counterplay remains visible: resonance scars exposed only after a committed attack\n\nAnatomy invariants:\n- the declared wyvern or dragon limb plan remains exact, complete, and countable\n- connected head, neck, torso, tail, wing joints, and every grounded foot remain visible\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: resonance scars exposed only after a committed attack\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: wrong declared limb plan; extra wings or limbs; cropped tail or wings; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 4 only: Giant Tower Dragon identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "1720e3f396073e46e93daae315e334a9e19bdc94efcea0d64b9ba9ef39443d0b",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:54:07.653Z",
+      "generationCompletedAt": "2026-08-30T09:54:51.352Z",
+      "inspectionCompletedAt": "2026-08-30T09:54:58.352Z",
+      "generationDurationMs": 43699,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 50699,
+      "sourceOutputId": "exec-0af569ec-1381-495e-bb2b-cbf2d941f1be.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, complete dragon, neutral dust, contact shadows, and wake were intentionally finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "Both outer wing tips and the tallest central wing tips entered the left, right, and top eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Giant Tower Dragon appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four countable grounded legs and feet, exactly two connected wings, and the complete connected head, neck, torso, throat, and tail preserve the declared dragon limb plan and apex silhouette."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Worn natural dark scales, restrained neutral dust, and ordinary contact wake remain free of elemental glow, affinity-coded material substitution, or unexplained magic."},
+        {"criterionId": "manifest-fidelity", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Subtle pale resonance scars remain visible along the chest and shoulder plates without becoming elemental emission."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete dragon, all wing tips and membranes, four feet, full tail, horns, throat, scars, dust, and contact extents inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-giant-tower-dragon-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-giant-tower-dragon-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Giant Tower Dragon identity, immense apex-scale silhouette, exactly four individually countable grounded legs and feet, exactly two complete connected wings, connected head, long neck, torso and full tail, wing joints, throat hazard, resonance scars, worn neutral dark scales, restrained dust wake, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete dragon together with every horn, both entire wing membranes and every wing tip, all four legs and grounded feet, the complete tail tip, throat, resonance scars, dust wake, contact shadows, and every hard extent so all fit inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve the exact four-leg plus two-wing anatomy and full arena-hazard readability. Do not crop, omit, add, duplicate, recolor, or redesign anatomy, wings, legs, tail, head, throat, scales, scars, or wake. Do not introduce elemental glow, affinity-coded material, banner, command standard, equipment, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "98861aa3fc5623584e36e756827cadbfb0029153f7a8215e7055ed343c7883ce",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-0af569ec-1381-495e-bb2b-cbf2d941f1be.png", "contentHash": "59fa0cb56bdf057ac18648a5162dfdefffd3799c8e91b27a5b8d12a5dfc2089f"},
+      "requestStartedAt": "2026-08-30T09:55:17.139Z",
+      "generationCompletedAt": "2026-08-30T09:55:50.140Z",
+      "inspectionCompletedAt": "2026-08-30T09:55:57.140Z",
+      "generationDurationMs": 33001,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 40001,
+      "sourceOutputId": "exec-6d41d510-c42b-419b-81d4-b6bf075c2eaf.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-6d41d510-c42b-419b-81d4-b6bf075c2eaf.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2094854, "contentHash": "65314d3e97028698f4d0b19b42e4cd8131042e989ea173337410ec57986f6953"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2094854, "contentHash": "65314d3e97028698f4d0b19b42e4cd8131042e989ea173337410ec57986f6953"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2094854, "contentHash": "65314d3e97028698f4d0b19b42e4cd8131042e989ea173337410ec57986f6953"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "Every horn, both complete wing membranes and all wing tips, all four legs and grounded feet, full tail tip, throat, scars, dust wake, and contact shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Giant Tower Dragon appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four individually countable grounded legs and feet, exactly two complete wings, and the connected head, long neck, torso, wing joints, throat, and full tail preserve the declared dragon plan and arena-scale apex silhouette."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Natural worn dark scales, restrained neutral dust, and ordinary ground contact remain explicitly unaffiliated without elemental material, glow, anatomy, or wake."},
+        {"criterionId": "manifest-fidelity", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Pale resonance scars remain exposed across chest and shoulder scales as a readable post-commitment weak point while wings, throat, and tail retain distinct hazard roles."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Giant Tower Dragon cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Normal recognition remains pending human review; known-target inspection finds neutral species material and wake cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent worn scales, restrained neutral lighting, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive with no command-standard transfer."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,094,854 bytes, and SHA-256 65314d3e97028698f4d0b19b42e4cd8131042e989ea173337410ec57986f6953 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-giant-tower-dragon-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:54:07.653Z",
+  "completedAt": "2026-08-30T09:56:10.603Z",
+  "totalWallTimeMs": 122950,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/giant-tower-dragon-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

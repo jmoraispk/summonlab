@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-burrowing-worm-normal",
+  "targetId": "affinity-expansion-v1-burrowing-worm-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-burrowing-worm-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-burrowing-worm-normal\".\n\nSubject and threat:\n- Species: burrowing-worm.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: burrowing-worm-duty.\n- Construction mode: limbless-segmented.\n\nIdentity invariants:\n- Burrowing Worm remains immediately recognizable\n- Battlefield duty remains Ground-eruption disruptor\n- segmented stone-boring body, circular mouth, and no defended rear\n- a moving ridge and concentric floor cracks reveal the eruption path\n- Counterplay remains visible: soft rear segments after surfacing\n\nAnatomy invariants:\n- one continuous limbless segmented body with a circular mouth and tapered rear\n- credible weight, compression, and ground contact along the visible body\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: soft rear segments after surfacing\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: legs or wings; separate duplicate worm; hidden circular mouth; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 4 only: Burrowing Worm identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "78e10595cc1ec6ca8c4a65cd96b5867ae7f2d8a30b7a7edf1073dd7eb16da947",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/dungeon-predators-v1.png", "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:09:01.917Z",
+      "generationCompletedAt": "2026-08-30T10:09:40.595Z",
+      "inspectionCompletedAt": "2026-08-30T10:09:47.595Z",
+      "generationDurationMs": 38678,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 45678,
+      "sourceOutputId": "exec-f98360c6-730b-402e-ac52-feeba3943dd1.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-f98360c6-730b-402e-ac52-feeba3943dd1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2554732, "contentHash": "f087d4d5fdb5186ff2e3a2d86ebda5e567e7e6fc4923a55591a60ab5af08cc67"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2554732, "contentHash": "f087d4d5fdb5186ff2e3a2d86ebda5e567e7e6fc4923a55591a60ab5af08cc67"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2554732, "contentHash": "f087d4d5fdb5186ff2e3a2d86ebda5e567e7e6fc4923a55591a60ab5af08cc67"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The circular mouth, complete continuous segmented body, tapered soft rear, ridge, concentric floor cracks, rubble wake, and contact shadow fit inside a clearly empty border of at least eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Burrowing Worm appears; every canvas region is intentionally finished."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The submitted prompt exactly matched the canonical renderer and the species and style references were supplied in manifest order."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One continuous limbless annulated body connects the visible circular toothed mouth to the complete tapered rear with credible compression and ground contact; no leg, wing, or duplicate body appears."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Natural worn stone-boring armor, ordinary flesh, dust, rubble, and floor cracks remain explicitly unaffiliated without elemental glow, affinity-coded substitution, or magical anatomy."},
+        {"criterionId": "manifest-fidelity", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The visibly softer, unarmored rear segments remain exposed after surfacing while the moving ridge and concentric cracks read as the eruption-path telegraph."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Burrowing Worm cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Normal recognition remains pending human review; known-target inspection finds neutral materials and effects."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent materials, neutral lighting, cracked-stone floor, charcoal backdrop, and restrained dust remain cohesive without transferring another species or equipment."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact generated PNG without normalization; source and retained dimensions, media type, 2,554,732 bytes, and SHA-256 f087d4d5fdb5186ff2e3a2d86ebda5e567e7e6fc4923a55591a60ab5af08cc67 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-burrowing-worm-normal-attempt-1",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:09:01.917Z",
+  "completedAt": "2026-08-30T10:09:59.077Z",
+  "totalWallTimeMs": 57160,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/burrowing-worm-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

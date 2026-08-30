@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hungry-mimic-fire",
+  "targetId": "affinity-expansion-v1-hungry-mimic-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-hungry-mimic-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hungry-mimic-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hungry-mimic-fire\".\n\nSubject and threat:\n- Species: hungry-mimic.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hungry-mimic-duty.\n- Construction mode: object-bodied.\n\nIdentity invariants:\n- Hungry Mimic remains immediately recognizable\n- Battlefield duty remains Object ambusher\n- broken chest silhouette opening into weight-bearing jaws and grasping tongue\n- false hinges flex and dust falls before the object unfolds\n- Counterplay remains visible: inner hinge after a bite\n\nAnatomy invariants:\n- one chest-like object body with connected lid, hinges, weight-bearing jaws, and tongue\n- one coherent ambush creature rather than an object beside a separate monster\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: inner hinge after a bite The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: separate chest and monster; humanoid limbs; weightless disconnected jaws; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 1 only: Hungry Mimic identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "50ac7868dece71aad301646b656c675120423775486964e9f10bb5872a954472",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:04:30.000Z",
+      "generationCompletedAt": "2026-08-30T10:05:07.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:05:15.000Z",
+      "generationDurationMs": 37000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 45000,
+      "sourceOutputId": "exec-564a8c4f-0165-4fd9-9579-4328cedb3969",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Chest, lid, teeth, tongue, appendages, smoke and floor shadow fit inside the finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Hungry Mimic appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The chest, connected lid and tongue are coherent, but multiple external claw limbs violate the required object-bodied anatomy."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Heat-blackened material is present, but broad interior combustion and orange tongue/body emission obscure anatomy and material detail."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Hinge regions are present but the between-cycle heat sink and cooling hinge pin are not readable."
+        }
+      ],
+      "retryReason": "Remove every external limb, extinguish broad interior fire, retain narrow ember seams, and expose a ribbed heat sink and cooling hinge pin."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hungry-mimic-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hungry-mimic-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire Hungry Mimic anatomy, counterplay, and effect correction. Preserve this exact single heat-blackened chest-bodied ambusher, connected lid and box, weight-bearing jaws, full continuous tongue, open-mouth pose, cracked-stone setting, and premium painterly finish. Remove every external leg, claw, arm, foot, finger, side appendage and humanoid-limb cue; the flat chest base itself must bear weight on the floor as one coherent object body. Keep exactly two connected false hinges at the back. Show the creature between combustion cycles: extinguish the broad interior fire and remove uniform orange illumination from the tongue and body; retain only narrow internal ember seams in heat-blackened wood and iron, small controlled smoke, and subtle heat distortion. Expose one dark ribbed heat sink and a pale cooling hinge pin inside the rear mouth corner, visibly connecting lid and base after the bite. Uniformly scale and recenter the complete chest, lid, every tooth, both hinges, full tongue and tip, contained smoke/sparks/distortion, floor contact and shadow so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No external limbs, separate monster, floating jaw, uniform orange glow, broad interior blaze, disconnected tongue, text, frame, or affinity change.",
+      "promptHash": "17e107e249536a0e090749f97bdfd35460051eb5d57989c67c43d3b4bfc4ccb0",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-564a8c4f-0165-4fd9-9579-4328cedb3969.png",
+        "contentHash": "8f524e0c4441fe3b0343d6ec6cfaee6285b85b1af44194f179f833d1d6833bbc"
+      },
+      "requestStartedAt": "2026-08-30T10:05:22.000Z",
+      "generationCompletedAt": "2026-08-30T10:05:40.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:05:48.000Z",
+      "generationDurationMs": 18000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 26000,
+      "sourceOutputId": "exec-20318fa5-1482-4e50-bb9a-fd2dd4661094",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-20318fa5-1482-4e50-bb9a-fd2dd4661094.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2305839,
+          "contentHash": "ed2600c5f95c6bcbcfb418326388f8e6b4e20a9683444bd37d6dce77d833af88"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2305839,
+          "contentHash": "ed2600c5f95c6bcbcfb418326388f8e6b4e20a9683444bd37d6dce77d833af88"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2305839,
+        "contentHash": "ed2600c5f95c6bcbcfb418326388f8e6b4e20a9683444bd37d6dce77d833af88"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete chest, lid, teeth, hinges, tongue and tip, contained smoke, sparks, distortion, floor contact and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Hungry Mimic appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One coherent chest-like object body has connected lid and base, two hinges, weight-bearing jaws, continuous tongue, and no external limbs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened wood and iron, narrow internal ember seams, restrained smoke and subtle distortion preserve readable anatomy and material detail."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A dark ribbed heat sink and pale cooling hinge pin are exposed between cycles at the rear inner hinge, visibly connecting lid and base."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hungry-mimic-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:04:30.000Z",
+  "completedAt": "2026-08-30T10:05:50.000Z",
+  "totalWallTimeMs": 80000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hungry-mimic-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

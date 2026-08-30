@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-slime-colony-fire",
+  "targetId": "affinity-expansion-v1-slime-colony-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-slime-colony-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-slime-colony-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-slime-colony-fire\".\n\nSubject and threat:\n- Species: slime-colony.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: slime-colony-duty.\n- Construction mode: amorphous-colony.\n\nIdentity invariants:\n- Slime Colony remains immediately recognizable\n- Battlefield duty remains Splitting floor hazard\n- low translucent colony with several dense cores and a wide wet footprint\n- cores separate and the outer membrane stretches before division\n- Counterplay remains visible: isolated dense cores\n\nAnatomy invariants:\n- one connected low colony body containing several distinct dense cores\n- continuous translucent membrane and one coherent wet ground footprint\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: isolated dense cores The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: humanoid face or limbs; single featureless blob; disconnected duplicate slimes; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 2 only: Slime Colony identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "61c4ab0657ac2aaf91817a675fb9e62c9bbf747fae5b9f851e770f076c06b1d7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:14:25.000Z",
+      "generationCompletedAt": "2026-08-30T10:15:22.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:15:30.000Z",
+      "generationDurationMs": 57000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 65000,
+      "sourceOutputId": "exec-01cdab3f-3d19-4f2a-ba77-d58fe9ac9189",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Smoke, sparks and the wide glowing footprint enter the upper and side safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one connected Fire Slime Colony appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One low connected colony has several cores enclosed under a continuous stretched membrane and shares one footprint."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Heat-blackened core shells are present, but uniform lava-like orange gel, separate flames and broad combustion destroy restrained material detail."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Isolated cores are visible, but between-cycle cooling heat sinks and split seams are obscured by broad glow."
+        }
+      ],
+      "retryReason": "Extinguish separate flames and broad lava glow, expose dark cooling cores with split seams, and scale all effects inside the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-slime-colony-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-slime-colony-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire Slime Colony material, counterplay, and safe-framing correction. Preserve this exact single connected low colony, several enclosed dense cores, one continuous stretched membrane, pre-division bridges, one coherent footprint, cracked-stone setting, and premium painterly finish. Show the colony between combustion cycles: extinguish every separate flame, remove broad lava-like orange illumination and uniform glowing gel, and replace it with a heat-blackened translucent membrane containing only narrow internal ember seams. Make each isolated core mostly dark and materially readable, with one exposed ribbed cooling heat sink and a thin bright split seam; connect every core through the same dark continuous membrane and one footprint. Retain only restrained contained smoke and subtle heat distortion above the center; no fire puddles, detached burning blobs, sparks or smoke may enter the outer safety band. Uniformly scale the complete membrane, every core and heat sink, all bridges, seams, smoke, distortion, footprint, reflections and shadow down by about 18 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one connected colony. No face, limbs, detached slime, separate flame blob, uniform orange full-body glow, broad lava surface, featureless single core, text, frame, or affinity change.",
+      "promptHash": "c6fdb2cf67a75394cd7126ce816d134b0857d7994e59d5858e4386d5b36946cd",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/dungeon-predators-v1.png",
+          "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-01cdab3f-3d19-4f2a-ba77-d58fe9ac9189.png",
+        "contentHash": "1f6d52d6ce655db0276b2efa9d82920215ae3c66329fcbfc427f3cfa0d566292"
+      },
+      "requestStartedAt": "2026-08-30T10:15:37.000Z",
+      "generationCompletedAt": "2026-08-30T10:15:55.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:16:03.000Z",
+      "generationDurationMs": 18000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 26000,
+      "sourceOutputId": "exec-54dae503-4645-49a3-b2e8-4ccb797bb435",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-54dae503-4645-49a3-b2e8-4ccb797bb435.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2015191,
+          "contentHash": "dab9ab74392fa6df25e7e8b440797fd93851ad304daf7ec7ba8e24889cbe967b"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2015191,
+          "contentHash": "dab9ab74392fa6df25e7e8b440797fd93851ad304daf7ec7ba8e24889cbe967b"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2015191,
+        "contentHash": "dab9ab74392fa6df25e7e8b440797fd93851ad304daf7ec7ba8e24889cbe967b"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete membrane, all cores and heat sinks, bridges, seams, smoke, distortion, footprint, reflection and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one connected Fire Slime Colony appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One low connected colony retains several enclosed dense cores, one continuous stretched membrane and one coherent wet footprint."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened translucent membrane, narrow internal ember seams, restrained contained smoke and subtle distortion preserve material detail without lava-like glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Each isolated dark core exposes a ribbed cooling surface and thin bright split seam between combustion cycles."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-slime-colony-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:14:25.000Z",
+  "completedAt": "2026-08-30T10:16:05.000Z",
+  "totalWallTimeMs": 100000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/slime-colony-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-burrowing-worm-fire",
+  "targetId": "affinity-expansion-v1-burrowing-worm-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-burrowing-worm-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-burrowing-worm-fire\".\n\nSubject and threat:\n- Species: burrowing-worm.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: burrowing-worm-duty.\n- Construction mode: limbless-segmented.\n\nIdentity invariants:\n- Burrowing Worm remains immediately recognizable\n- Battlefield duty remains Ground-eruption disruptor\n- segmented stone-boring body, circular mouth, and no defended rear\n- a moving ridge and concentric floor cracks reveal the eruption path\n- Counterplay remains visible: soft rear segments after surfacing\n\nAnatomy invariants:\n- one continuous limbless segmented body with a circular mouth and tapered rear\n- credible weight, compression, and ground contact along the visible body\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: soft rear segments after surfacing The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: legs or wings; separate duplicate worm; hidden circular mouth; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/dungeon-predators-v1.png — Subject 4 only: Burrowing Worm identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "3ccac77bbdbc27971ff70405eb4c7b25c74c64884c345daf675d02381507e78d",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/dungeon-predators-v1.png", "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:15:31.341Z",
+      "generationCompletedAt": "2026-08-30T10:16:09.147Z",
+      "inspectionCompletedAt": "2026-08-30T10:16:16.147Z",
+      "generationDurationMs": 37806,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 44806,
+      "sourceOutputId": "exec-f753652b-4d6c-4b7b-acc3-3c6057893b86.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, complete worm, molten crack wake, rubble, combustion, smoke, and heat distortion were intentionally finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "Molten cracks, rubble, smoke, sparks, combustion, and heat-distortion wake extended into the required eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Burrowing Worm appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One continuous limbless segmented body connects the visible circular mouth to the complete tapered soft rear with credible compression and ground contact; no limb or duplicate worm appears."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Heat-blackened front armor, internal ember seams, localized combustion, smoke, heat distortion, and molten crack wake alter material, motion, attack telegraph, and environment without uniform full-body orange glow."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The visibly softer unarmored rear and brighter internal mouth and armor heat-sink seams expose the interruptible structure between combustion cycles."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete worm plus all molten cracks, rubble, ridge, flame, ember, smoke, heat-distortion, dust, and contact extents inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-burrowing-worm-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-burrowing-worm-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Burrowing Worm identity, one continuous limbless segmented body, visible circular toothed mouth, complete connected tapered soft rear, credible compression and ground contact, heat-blackened armored front segments, internal ember seams, localized controlled combustion, exposed heat-sink seams, smoke, heat distortion, moving ridge, concentric molten floor cracks, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the entire connected worm together with its circular mouth, every armor spur, complete tapered rear tip, all rubble, moving ridge, concentric molten cracks, flames, sparks, embers, smoke plumes, heat-distortion wake, dust, and contact shadow so every hard and effect extent fits inside the central 84 percent of both canvas dimensions with a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve the mouth-to-tail continuity, limbless anatomy, visibly softer unarmored rear segments, exposed internal heat-sink counterplay between combustion cycles, and localized Fire construction without uniform full-body orange glow. Do not crop, omit, add, duplicate, recolor, or redesign the worm, mouth, body segments, rear, armor, ember seams, heat sink, combustion, smoke, ridge, cracks, or wake. No legs, wings, second worm, equipment, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "2025cf489e622e4e9d1b6d4364ed66de1e489ad3626cea798b44b6c34dcdcaef",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/dungeon-predators-v1.png", "contentHash": "f30b1130a71a00166acc4299b982c9fadf9b143c95741fea5c9e5cef4d3c9d7e"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-f753652b-4d6c-4b7b-acc3-3c6057893b86.png", "contentHash": "1b32a2b09984d9a5504382bbdb2d298c6f19bdc085d5f7d87c78e4cbd74b574d"},
+      "requestStartedAt": "2026-08-30T10:16:40.145Z",
+      "generationCompletedAt": "2026-08-30T10:17:10.070Z",
+      "inspectionCompletedAt": "2026-08-30T10:17:17.070Z",
+      "generationDurationMs": 29925,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 36925,
+      "sourceOutputId": "exec-23c32264-9e3f-410c-87e8-a83868c82319.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 15,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-23c32264-9e3f-410c-87e8-a83868c82319.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2142961, "contentHash": "bb6cf2fdfe8d4218d945525b92b077f7d9bae6a80e23cd9f58feffb68a9de23c"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/fire-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2142961, "contentHash": "bb6cf2fdfe8d4218d945525b92b077f7d9bae6a80e23cd9f58feffb68a9de23c"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/fire-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2142961, "contentHash": "bb6cf2fdfe8d4218d945525b92b077f7d9bae6a80e23cd9f58feffb68a9de23c"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The circular mouth, every armor spur, complete tapered rear, rubble, moving ridge, concentric molten cracks, flames, sparks, embers, smoke, heat-distortion wake, dust, and contact shadow fit inside a clearly empty border of at least eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Burrowing Worm appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "One continuous limbless annulated body connects the visible circular toothed mouth to the complete tapered rear, with credible compression and ground contact and no legs, wings, or duplicate worm."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Heat-blackened armored surfaces, internal ember seams, localized combustion, smoke, heat distortion, and molten concentric-crack wake visibly transform material, motion, attack telegraph, and environment while retaining dark material detail."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The softer unarmored rear segments and brighter exposed internal heat-sink seams remain readable as the interruptible structure between combustion cycles."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Burrowing Worm cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Fire recognition remains pending human review; known-target inspection finds integrated heat-black surface, ember-seam, combustion, smoke, molten-wake, and heat-distortion cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent heat-black armor and flesh, restrained localized emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,142,961 bytes, and SHA-256 bb6cf2fdfe8d4218d945525b92b077f7d9bae6a80e23cd9f58feffb68a9de23c match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-burrowing-worm-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:15:31.341Z",
+  "completedAt": "2026-08-30T10:17:33.793Z",
+  "totalWallTimeMs": 122452,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/burrowing-worm-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
