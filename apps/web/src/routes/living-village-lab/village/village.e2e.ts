@@ -11,13 +11,25 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	const response = await page.goto('/living-village-lab/village');
 	expect(response?.ok()).toBe(true);
-	await expect(page.getByRole('heading', { name: /The Village is the roster/ })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Hearth 01' })).toBeVisible();
 	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
 
 	const viewport = page.getByTestId('village-viewport');
 	await expect(viewport).toBeVisible();
+	expect((await viewport.boundingBox())!.y).toBeLessThan(160);
 	await expect(viewport.locator('.hero-marker')).toHaveCount(6);
 	await expect(viewport.locator('.facility-hotspot')).toHaveCount(3);
+	const gateHotspot = page.getByRole('button', { name: 'Inspect Summoning Gate' });
+	await expect
+		.poll(() => gateHotspot.evaluate((element) => getComputedStyle(element).borderTopColor))
+		.toBe('rgba(0, 0, 0, 0)');
+	const gateBounds = await gateHotspot.boundingBox();
+	const gateLabelBounds = await gateHotspot.locator('span').boundingBox();
+	expect(gateLabelBounds!.x + gateLabelBounds!.width).toBeLessThan(gateBounds!.x + 8);
+	await gateHotspot.hover();
+	await expect
+		.poll(() => gateHotspot.evaluate((element) => getComputedStyle(element).borderTopColor))
+		.not.toBe('rgba(0, 0, 0, 0)');
 	await expect
 		.poll(() =>
 			viewport
@@ -27,7 +39,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		.toBe('1536x1024');
 
 	for (const facility of [
-		['Training Court', '3 slots open'],
+		['Training Grounds', '3 slots open'],
 		['Tower Threshold', 'Floor 4 available'],
 		['Summoning Gate', '1 Normal token']
 	] as const) {
@@ -49,7 +61,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	await popover.getByRole('button', { name: 'Court training' }).click();
 	await expect(popover).toContainText('Training at the Court');
-	await expect(page.getByTestId('facility-panel')).toContainText('Training Court');
+	await expect(page.getByTestId('facility-panel')).toContainText('Training Grounds');
 
 	await page
 		.getByLabel('Find a resident')
@@ -138,7 +150,9 @@ test('keeps the unified Village deliberate and operable at 390 by 844', async ({
 
 	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
 	await expect(page.getByLabel('Find a resident').getByRole('button')).toHaveCount(6);
-	await expect(page.getByTestId('village-viewport').locator('.facility-hotspot')).toHaveCount(3);
+	const phoneViewport = page.getByTestId('village-viewport');
+	await expect(phoneViewport.locator('.facility-hotspot')).toHaveCount(3);
+	expect((await phoneViewport.boundingBox())!.y).toBeLessThan(240);
 
 	await page
 		.getByLabel('Find a resident')
@@ -163,7 +177,7 @@ test('keeps the unified Village deliberate and operable at 390 by 844', async ({
 	await page.getByRole('button', { name: 'Zoom in' }).click();
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await page.getByRole('button', { name: 'Reset View' }).click();
-	await expect(page.getByTestId('village-viewport')).toHaveAttribute('data-zoom-percent', '100');
+	await expect(phoneViewport).toHaveAttribute('data-zoom-percent', '100');
 
 	if (process.env.CAPTURE_LV_PHONE) {
 		await page.screenshot({

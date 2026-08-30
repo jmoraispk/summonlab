@@ -30,8 +30,8 @@ export const facilities = [
 	},
 	{
 		id: 'court',
-		name: 'Training Court',
-		shortName: 'Court',
+		name: 'Training Grounds',
+		shortName: 'Training grounds',
 		state: '3 slots open',
 		action: 'Assign a resident to local training',
 		detail: 'Training is available now and does not require a party.',

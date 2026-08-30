@@ -51,29 +51,14 @@
 </svelte:head>
 
 <main>
-	<header class="page-heading">
-		<div>
-			<p>Living Village · Hearth 01</p>
-			<h1>The Village is<br /><em>the roster.</em></h1>
-		</div>
-		<div class="heading-copy">
-			<span>Day 4 · 18:40 · Dusk watch</span>
-			<p>
-				Six lives share this courtyard. Find a resident where they stand, read what matters, and
-				give the next order without leaving the world.
-			</p>
-		</div>
-	</header>
-
-	<VillageSummary items={summaryItems} />
-
-	<section class="overlook" aria-labelledby="overlook-heading">
-		<header>
-			<div>
-				<p>World command surface</p>
-				<h2 id="overlook-heading">Hearth overlook</h2>
+	<section class="overlook" aria-labelledby="village-heading">
+		<header class="info-toolbar">
+			<div class="village-identity">
+				<span>Living Village</span>
+				<h1 id="village-heading">Hearth 01</h1>
+				<small>Day 4 · 18:40 · Dusk watch</small>
 			</div>
-			<span><i></i> Six residents visible · Local fixture</span>
+			<VillageSummary items={summaryItems} />
 		</header>
 		<VillageViewport
 			{heroes}
@@ -84,178 +69,81 @@
 			onOrder={assignOrder}
 		/>
 	</section>
-
-	<footer>
-		<p>
-			Orders on this prototype use a brief destination transition. Arrival timing and polished
-			walking remain owned by the activity system.
-		</p>
-		<span>living-village-v1 · six fixed identities · no provider access</span>
-	</footer>
 </main>
 
 <style>
 	main {
 		min-height: 100vh;
 		overflow: hidden;
-		background:
-			radial-gradient(circle at 72% 0%, rgba(47, 96, 111, 0.13), transparent 32rem),
-			linear-gradient(180deg, #0d1015, #080a0d 70%);
+		background: #080b0f;
 		color: #f4ecdf;
 	}
 
-	.page-heading,
-	.overlook,
-	:global(.summary-rail),
-	footer {
-		width: min(100% - 2rem, 92rem);
-		margin-inline: auto;
-	}
-
-	.page-heading {
+	.info-toolbar {
 		display: grid;
-		grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.75fr);
-		align-items: end;
-		gap: clamp(2rem, 8vw, 8rem);
-		padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(1.5rem, 3vw, 2.4rem);
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: stretch;
+		gap: 0.55rem;
+		padding: 0.45rem;
+		border-bottom: 1px solid rgba(221, 192, 142, 0.18);
+		background: #11151a;
 	}
 
-	.page-heading > div:first-child > p,
-	.overlook > header p {
-		margin: 0 0 0.65rem;
+	.village-identity {
+		display: grid;
+		grid-template-columns: auto auto;
+		align-content: center;
+		gap: 0.1rem 0.65rem;
+		min-width: 12.5rem;
+		padding: 0.2rem 0.85rem;
+		border-right: 1px solid rgba(221, 192, 142, 0.16);
+	}
+
+	.village-identity span {
+		grid-column: 1 / -1;
 		color: #d69a59;
-		font-size: 0.64rem;
+		font-size: 0.55rem;
 		font-weight: 850;
-		letter-spacing: 0.17em;
+		letter-spacing: 0.15em;
 		text-transform: uppercase;
 	}
 
 	h1 {
 		margin: 0;
 		font:
-			400 clamp(2.8rem, 6vw, 6rem) / 0.84 Georgia,
+			400 1.1rem/1 Georgia,
 			serif;
-		letter-spacing: -0.06em;
 	}
 
-	h1 em {
-		color: #76cbd0;
-		font-weight: 400;
-	}
-
-	.heading-copy {
-		padding: 0 0 0.4rem 1.2rem;
-		border-left: 1px solid rgba(226, 195, 143, 0.2);
-	}
-
-	.heading-copy span {
+	.village-identity small {
+		align-self: end;
 		color: #78c5ca;
-		font-size: 0.67rem;
+		font-size: 0.52rem;
 		font-weight: 800;
-		letter-spacing: 0.12em;
+		letter-spacing: 0.06em;
 		text-transform: uppercase;
 	}
 
-	.heading-copy p {
-		margin: 0.65rem 0 0;
-		color: rgba(244, 236, 223, 0.63);
-		font:
-			400 0.98rem/1.65 Georgia,
-			serif;
-	}
-
 	.overlook {
-		padding: 0.8rem 0 clamp(2rem, 5vw, 5rem);
-	}
-
-	.overlook > header {
-		display: flex;
-		align-items: end;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 1.25rem 0 0.8rem;
-	}
-
-	.overlook > header p {
-		margin-bottom: 0.25rem;
-	}
-
-	h2 {
-		margin: 0;
-		font:
-			400 1.75rem/1 Georgia,
-			serif;
-	}
-
-	.overlook > header > span {
-		display: flex;
-		align-items: center;
-		gap: 0.45rem;
-		color: rgba(244, 236, 223, 0.48);
-		font-size: 0.64rem;
-	}
-
-	.overlook > header i {
-		width: 0.45rem;
-		height: 0.45rem;
-		border-radius: 50%;
-		background: #6ed1d6;
-		box-shadow: 0 0 0.7rem #6ed1d6;
-	}
-
-	footer {
-		display: flex;
-		justify-content: space-between;
-		gap: 2rem;
-		padding: 1.2rem 0 2.5rem;
-		border-top: 1px solid rgba(227, 204, 166, 0.12);
-		color: rgba(244, 236, 223, 0.42);
-		font-size: 0.65rem;
-	}
-
-	footer p {
-		max-width: 42rem;
-		margin: 0;
-	}
-
-	footer span {
-		text-align: right;
+		width: 100%;
 	}
 
 	@media (max-width: 760px) {
-		.page-heading,
-		.overlook,
-		:global(.summary-rail),
-		footer {
-			width: min(100% - 1rem, 92rem);
-		}
-
-		.page-heading {
+		.info-toolbar {
 			grid-template-columns: 1fr;
-			gap: 1.2rem;
-			padding-top: 2rem;
+			gap: 0.35rem;
+			padding: 0.35rem;
 		}
 
-		h1 {
-			font-size: clamp(2.8rem, 15vw, 4.2rem);
+		.village-identity {
+			grid-template-columns: auto 1fr auto;
+			min-width: 0;
+			padding: 0.35rem 0.5rem;
+			border-right: 0;
 		}
 
-		.heading-copy {
-			padding-left: 0.8rem;
-		}
-
-		.overlook > header {
-			align-items: start;
-			flex-direction: column;
-		}
-
-		footer {
-			align-items: start;
-			flex-direction: column;
-		}
-
-		footer span {
-			text-align: left;
+		.village-identity span {
+			grid-column: auto;
 		}
 	}
 </style>

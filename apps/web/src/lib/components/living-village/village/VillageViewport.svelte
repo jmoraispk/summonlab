@@ -354,7 +354,7 @@
 				<img
 					class="environment"
 					src={environment.publicPath}
-					alt="Hearth Village with the Summoning Gate north, Training Court southeast, and Tower Threshold south"
+					alt="Hearth Village with the Summoning Gate north, Training Grounds southeast, and Tower Threshold south"
 					width={environment.width}
 					height={environment.height}
 					fetchpriority="high"
@@ -367,6 +367,7 @@
 						type="button"
 						class="facility-hotspot"
 						class:selected={selectedFacilityId === facility.id}
+						data-facility={facility.id}
 						style={hotspotStyle(facility)}
 						aria-pressed={selectedFacilityId === facility.id}
 						aria-label={`Inspect ${facility.name}`}
@@ -494,16 +495,18 @@
 	}
 
 	.command-column {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
 		min-width: 0;
 	}
 
 	.roster-ribbon {
 		display: flex;
+		grid-column: 1;
 		align-items: stretch;
 		gap: 0.6rem;
 		padding: 0.55rem;
 		border: 1px solid rgba(221, 192, 142, 0.16);
-		border-bottom: 0;
 		background: rgba(12, 15, 20, 0.96);
 	}
 
@@ -576,11 +579,13 @@
 
 	.viewport-toolbar {
 		display: flex;
+		grid-column: 2;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.75rem;
 		padding: 0.45rem 0.55rem;
 		border: 1px solid rgba(221, 192, 142, 0.16);
+		border-left: 0;
 		background: #181b20;
 	}
 
@@ -622,11 +627,11 @@
 
 	.village-viewport {
 		position: relative;
+		grid-column: 1 / -1;
 		isolation: isolate;
-		height: clamp(30rem, 63vw, 47rem);
+		height: max(32rem, calc(100svh - 7.8rem));
 		overflow: hidden;
 		border: 1px solid rgba(221, 192, 142, 0.2);
-		border-top: 0;
 		background: #05080d;
 		box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.42);
 		cursor: grab;
@@ -674,33 +679,56 @@
 		top: var(--top);
 		width: var(--width);
 		height: var(--height);
-		border: 2px solid rgba(232, 192, 117, 0.18);
+		border: 2px solid transparent;
 		border-radius: 12%;
-		background: radial-gradient(ellipse, rgba(224, 161, 78, 0.08), transparent 65%);
+		background: transparent;
 		color: white;
 		cursor: pointer;
+		transition:
+			border-color 140ms ease,
+			background 140ms ease,
+			box-shadow 140ms ease;
 	}
 
 	.facility-hotspot:hover,
-	.facility-hotspot.selected {
+	.facility-hotspot:focus-visible {
 		border-color: rgba(112, 220, 226, 0.74);
-		background: radial-gradient(ellipse, rgba(75, 188, 198, 0.17), transparent 67%);
-		box-shadow: inset 0 0 70px rgba(82, 202, 211, 0.12);
+		background: radial-gradient(ellipse, rgba(75, 188, 198, 0.13), transparent 70%);
+		box-shadow:
+			inset 0 0 70px rgba(82, 202, 211, 0.1),
+			0 0 22px rgba(82, 202, 211, 0.16);
 	}
 
 	.facility-hotspot > span {
 		position: absolute;
-		left: 50%;
-		top: 50%;
+		left: 0;
+		top: 0;
 		display: grid;
 		min-width: 7rem;
 		padding: 0.48rem 0.58rem;
 		border: 1px solid rgba(239, 221, 187, 0.28);
 		background: rgba(5, 9, 13, 0.82);
 		box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.34);
-		transform: translate(-50%, -50%) scale(calc(1 / var(--scene-scale)));
+		transform: translate(-100%, -50%) scale(calc(1 / var(--scene-scale)));
 		transform-origin: center;
 		backdrop-filter: blur(8px);
+		pointer-events: none;
+	}
+
+	.facility-hotspot[data-facility='gate'] > span {
+		left: -4%;
+		top: 72%;
+	}
+
+	.facility-hotspot[data-facility='court'] > span {
+		left: 97%;
+		top: 12%;
+		transform: translate(-100%, -100%) scale(calc(1 / var(--scene-scale)));
+	}
+
+	.facility-hotspot[data-facility='tower'] > span {
+		left: 4%;
+		top: 18%;
 	}
 
 	.facility-hotspot i {
@@ -998,6 +1026,7 @@
 	}
 
 	.camera-help {
+		grid-column: 1 / -1;
 		margin: 0;
 		padding: 0.55rem 0.7rem;
 		border: 1px solid rgba(221, 192, 142, 0.13);
@@ -1031,15 +1060,17 @@
 	}
 
 	@media (max-width: 760px) {
-		.roster-ribbon {
+		.command-column {
 			display: block;
 		}
 
+		.roster-ribbon {
+			display: block;
+			padding: 0.35rem;
+		}
+
 		.ribbon-label {
-			display: flex;
-			justify-content: space-between;
-			padding: 0.2rem 0.2rem 0.5rem;
-			border-right: 0;
+			display: none;
 		}
 
 		.ribbon-list {
@@ -1049,7 +1080,7 @@
 		.ribbon-list button {
 			display: grid;
 			justify-items: center;
-			min-height: 3.65rem;
+			min-height: 3.2rem;
 			padding: 0.25rem 0.1rem;
 		}
 
@@ -1066,8 +1097,13 @@
 		}
 
 		.viewport-toolbar {
-			align-items: start;
-			flex-direction: column;
+			display: block;
+			padding: 0.35rem;
+			border-left: 1px solid rgba(221, 192, 142, 0.16);
+		}
+
+		.viewport-toolbar > div:first-child {
+			display: none;
 		}
 
 		.camera-controls {

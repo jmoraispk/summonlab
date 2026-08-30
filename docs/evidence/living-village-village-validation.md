@@ -20,6 +20,11 @@ compact find/focus ribbon. No separate roster route was created.
 
 ## Completed interaction slice
 
+- Map-first composition: Hearth begins immediately beneath a single compact status bar; the prior
+  editorial title, explanatory copy, card wall, secondary heading, and footer were removed after
+  owner review.
+- Roster and camera controls share one compact row on desktop and collapse into two shallow rows on
+  phone.
 - Existing Hearth environment with named Gate, Court, and Tower hotspots.
 - Bounded 100–300% camera with pointer drag, wheel zoom, two-pointer pinch, keyboard zoom/pan,
   visible zoom controls, Fit, and Reset.
@@ -87,6 +92,15 @@ Result: **passed**. Vite reported only the repository's existing large-chunk adv
   two-column summaries, six-person ribbon, camera controls, and same Village surface.
 
 Both captures were visually inspected after the final focused test.
+
+## Accepted owner feedback
+
+The 2026-08-29 visual review rejected the original page-first hierarchy and persistent facility
+frames. The accepted revision keeps the Village at the top, compresses status into an information
+toolbar, makes facility geometry invisible at rest, illuminates the hit region only on hover or
+keyboard focus, renames the southeast destination to **Training Grounds**, and moves all three
+facility labels to quiet edges outside their focal artwork. The focused test now guards the
+map-first vertical position, transparent resting hitbox, hover illumination, and Gate label position.
 
 ## Useful review actions
 
