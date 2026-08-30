@@ -30,6 +30,30 @@ This revision supersedes the visible lab-comparison composition below:
    costs and balances, all reveal styles, skip/replay/reduced motion, sequential arrivals, batch
    bonus communication, and clickable dossiers with the canonical attribute vocabulary.
 
+## Owner-feedback revision — replay desire and mechanical readability
+
+The supplied screenshots document the current implementation; they do not introduce new product
+instructions. This pass keeps the accepted in-gate composition and raises its craft in four areas:
+
+1. Replace the evenly rotating portal with an authored beat curve: distant star intake, rune lock,
+   accelerating concentric compression, aperture rupture, silhouette traversal, chromatic identity
+   bloom, rarity strike, and a short settling afterglow. Gate, Constellation, and Identity-first keep
+   distinct choreography rather than sharing one visual with different labels.
+2. Give every browser receipt slot an arrival ID and unread state. New results carry a visible
+   `NEW` marker in both the result contact sheet and Recent arrivals; opening a dossier clears only
+   that receipt slot, including when several slots reference the same fixed identity.
+3. Present canonical attributes in two mechanical columns: Body on the left (`Might`, `Vitality`,
+   `Agility`, `Dexterity`) and Mind on the right (`Intellect`, `Spirit`). This grouping is a view
+   convention, not a change to the wiki vocabulary or progression contract.
+4. Add code-native elemental affinity icons and aptitude-class icons. Route-local aptitude entries
+   are tagged `martial`, `magic`, or `crafting`; no shared catalog or production skill contract is
+   changed.
+5. Establish a readable rarity palette across the reveal, result cards, Recent arrivals, and
+   dossier: 1★ ember-gold, 2★ arc-blue, and 3★ astral-violet. Rarity changes presentation only and
+   never portrait quality, body treatment, dignity, or personality.
+6. Extend the focused browser proof to verify unread clearing, duplicate-slot independence,
+   Body/Mind grouping, affinity and aptitude icons, and distinct 1★/2★ rarity treatments.
+
 Status: implementation-ready plan, written before prototype code
 
 Owner boundary:

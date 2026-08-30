@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import HeroDossier from './HeroDossier.svelte';
+	import MechanicIcon from './MechanicIcon.svelte';
 	import PortalCanvas from './PortalCanvas.svelte';
 	import ResultPresentation from './ResultPresentation.svelte';
 
@@ -20,6 +21,7 @@
 		name: string;
 		identityLine: string;
 		affinity: string;
+		affinityIcon: 'ember' | 'tide' | 'gale' | 'grove';
 		calling: string;
 		stars: number;
 		image: string;
@@ -32,7 +34,10 @@
 			stressResponse: string;
 			tendency: string;
 		};
-		aptitudes: readonly string[];
+		aptitudes: readonly { name: string; class: 'martial' | 'magic' | 'crafting' }[];
+		arrivalId?: string;
+		unread?: boolean;
+		isBonus?: boolean;
 	};
 
 	let {
@@ -51,7 +56,10 @@
 		oncomplete,
 		ontiming
 	}: {
-		hero: Pick<Hero, 'name' | 'identityLine' | 'affinity' | 'calling' | 'stars' | 'image'>;
+		hero: Pick<
+			Hero,
+			'name' | 'identityLine' | 'affinity' | 'affinityIcon' | 'calling' | 'stars' | 'image'
+		>;
 		direction: Direction;
 		runToken: number;
 		reducedMotion: boolean;
@@ -73,6 +81,7 @@
 	let startedAt = 0;
 	let recognized = false;
 	const safeMode = $derived(reducedMotion || systemReducedMotion);
+	const veilLines = Array.from({ length: 9 }, (_, index) => index);
 	const identityVisible = $derived(['idle', 'identity', 'mechanics', 'complete'].includes(phase));
 	const mechanicsVisible = $derived(['idle', 'mechanics', 'complete'].includes(phase));
 
@@ -91,9 +100,9 @@
 	const sequences: Record<Direction, Array<[Phase, number]>> = {
 		gate: [
 			['charge', 0],
-			['threshold', 340],
-			['silhouette', 770],
-			['identity', 1580],
+			['threshold', 650],
+			['silhouette', 950],
+			['identity', 1620],
 			['mechanics', 2050],
 			['complete', 2380]
 		],
@@ -171,13 +180,19 @@
 	data-direction={direction}
 	data-phase={phase}
 	data-testid="reveal-stage"
+	data-stars={hero.stars}
 	aria-label={`${hero.name} summon reveal`}
 >
 	<div class="world" aria-hidden="true">
-		<PortalCanvas {direction} {phase} {runToken} reducedMotion={safeMode} />
+		<PortalCanvas {direction} {phase} {runToken} reducedMotion={safeMode} stars={hero.stars} />
 		<div class="vault"><i></i><i></i><i></i><i></i><i></i></div>
 		<div class="floor"><i></i><i></i><i></i></div>
+		<div class="veil-lines">
+			{#each veilLines as index (index)}<i style={`--line:${index}`}></i>{/each}
+		</div>
 		<div class="light-pillar"></div>
+		<div class="rarity-strike"><i></i><i></i></div>
+		<div class="chromatic-bloom"></div>
 		<div class="impact"></div>
 	</div>
 
@@ -197,12 +212,14 @@
 			<div class="rim"></div>
 		</div>
 		<figcaption>
-			<div class="stars">{'✦'.repeat(hero.stars)}</div>
+			<div class="stars">{'✦'.repeat(hero.stars)} <i>{hero.stars}★</i></div>
 			<p>Hearthbound</p>
 			<h1>{hero.name}</h1>
 			<span>{hero.identityLine}</span>
 			<div class="traits">
-				<strong>{hero.calling}</strong><i></i><strong>{hero.affinity} affinity</strong>
+				<strong>{hero.calling}</strong><i></i><strong class="affinity"
+					><MechanicIcon kind={hero.affinityIcon} size={15} />{hero.affinity} affinity</strong
+				>
 			</div>
 		</figcaption>
 	</figure>
@@ -229,6 +246,8 @@
 
 <style>
 	.stage {
+		--rarity: #d9a956;
+		--rarity-soft: #d9a9562e;
 		position: relative;
 		min-height: 668px;
 		overflow: hidden;
@@ -243,6 +262,14 @@
 			inset 0 -80px 120px #0009,
 			0 35px 100px #0009;
 		color: #eee9df;
+	}
+	.stage[data-stars='2'] {
+		--rarity: #75c4f4;
+		--rarity-soft: #488fca3b;
+	}
+	.stage[data-stars='3'] {
+		--rarity: #bd8cf4;
+		--rarity-soft: #8857c447;
 	}
 	.stage::before {
 		position: absolute;
@@ -269,6 +296,54 @@
 		z-index: 1;
 		inset: 0;
 		overflow: hidden;
+		transform-origin: 47% 43%;
+	}
+	.stage[data-phase='charge'] .world,
+	.stage[data-phase='marks'] .world {
+		animation: world-inhale 760ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+	.stage[data-phase='threshold'] .world {
+		animation: world-compress 430ms cubic-bezier(0.55, 0, 0.8, 0.35) both;
+	}
+	.stage[data-phase='identity'] .world {
+		animation: world-impact 660ms cubic-bezier(0.12, 0.72, 0.2, 1) both;
+	}
+	@keyframes world-inhale {
+		from {
+			transform: scale(1.11);
+			filter: saturate(0.65) brightness(0.7);
+		}
+		to {
+			transform: scale(1);
+			filter: none;
+		}
+	}
+	@keyframes world-compress {
+		0% {
+			transform: scale(1);
+		}
+		76% {
+			transform: scale(0.92);
+			filter: brightness(1.22);
+		}
+		100% {
+			transform: scale(1.025);
+			filter: brightness(1.65);
+		}
+	}
+	@keyframes world-impact {
+		0% {
+			transform: scale(0.96);
+			filter: brightness(2.2) saturate(0.4);
+		}
+		22% {
+			transform: scale(1.065);
+			filter: brightness(1.5) saturate(1.35);
+		}
+		100% {
+			transform: scale(1);
+			filter: none;
+		}
 	}
 	.vault {
 		position: absolute;
@@ -329,6 +404,43 @@
 		background: #74d9c320;
 		box-shadow: 0 0 55px #56bea9;
 	}
+	.veil-lines {
+		position: absolute;
+		top: 10%;
+		left: 47%;
+		width: 33%;
+		height: 70%;
+		transform: translateX(-50%);
+		opacity: 0;
+	}
+	.veil-lines i {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: calc(8% + var(--line) * 10.5%);
+		width: 1px;
+		transform: skewX(calc((var(--line) - 4) * 1.8deg));
+		background: linear-gradient(
+			transparent,
+			color-mix(in srgb, var(--rarity) 72%, transparent) 26%,
+			#effff9c9 51%,
+			color-mix(in srgb, var(--rarity) 65%, transparent) 74%,
+			transparent
+		);
+		filter: blur(0.4px) drop-shadow(0 0 6px var(--rarity));
+	}
+	.stage[data-phase='threshold'] .veil-lines,
+	.stage[data-phase='form'] .veil-lines,
+	.stage[data-phase='silhouette'] .veil-lines {
+		opacity: 0.82;
+		animation: veil-shiver 170ms steps(2, jump-none) infinite alternate;
+	}
+	@keyframes veil-shiver {
+		to {
+			transform: translateX(-50%) scaleX(1.05);
+			filter: brightness(1.35);
+		}
+	}
 	.light-pillar {
 		position: absolute;
 		top: 12%;
@@ -351,6 +463,84 @@
 		background: #eafff6;
 		filter: blur(10px);
 		opacity: 0;
+	}
+	.rarity-strike,
+	.chromatic-bloom {
+		position: absolute;
+		pointer-events: none;
+	}
+	.rarity-strike {
+		top: 43%;
+		left: 47%;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
+	}
+	.rarity-strike i {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: linear-gradient(
+			90deg,
+			transparent,
+			var(--rarity),
+			#fff,
+			var(--rarity),
+			transparent
+		);
+		box-shadow: 0 0 28px var(--rarity);
+	}
+	.rarity-strike i:first-child {
+		width: 640px;
+		height: 2px;
+	}
+	.rarity-strike i:last-child {
+		width: 2px;
+		height: 640px;
+	}
+	.chromatic-bloom {
+		top: 43%;
+		left: 47%;
+		width: 110px;
+		height: 110px;
+		transform: translate(-50%, -50%);
+		border: 2px solid var(--rarity);
+		border-radius: 50%;
+		opacity: 0;
+		box-shadow:
+			0 0 55px var(--rarity),
+			inset 0 0 35px var(--rarity);
+	}
+	.stage[data-phase='identity'] .rarity-strike {
+		animation: rarity-strike 520ms ease-out both;
+	}
+	.stage[data-phase='identity'] .chromatic-bloom {
+		animation: chromatic-bloom 780ms cubic-bezier(0.1, 0.72, 0.15, 1) both;
+	}
+	@keyframes rarity-strike {
+		0% {
+			opacity: 0;
+			transform: scale(0.05);
+		}
+		14% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+			transform: scale(1.25);
+		}
+	}
+	@keyframes chromatic-bloom {
+		0% {
+			opacity: 0.95;
+			transform: translate(-50%, -50%) scale(0.1);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(-50%, -50%) scale(8);
+			border-width: 0.5px;
+		}
 	}
 	.stage[data-phase='threshold'] .light-pillar,
 	.stage[data-phase='silhouette'] .light-pillar,
@@ -437,6 +627,28 @@
 		transform: none;
 		filter: saturate(0.9) brightness(0.96) contrast(1.04) drop-shadow(0 24px 30px #000b);
 	}
+	.stage[data-phase='identity'] .portrait-shell img {
+		animation: identity-arrive 760ms cubic-bezier(0.1, 0.75, 0.15, 1) both;
+	}
+	@keyframes identity-arrive {
+		0% {
+			opacity: 0;
+			transform: translateY(26px) scale(0.9);
+			filter: saturate(0) brightness(4) contrast(1.7) drop-shadow(0 0 55px var(--rarity));
+		}
+		16% {
+			opacity: 1;
+		}
+		44% {
+			transform: translateY(-4px) scale(1.025);
+			filter: saturate(0.65) brightness(1.55) contrast(1.2) drop-shadow(0 0 32px var(--rarity));
+		}
+		100% {
+			opacity: 1;
+			transform: none;
+			filter: saturate(0.9) brightness(0.96) contrast(1.04) drop-shadow(0 24px 30px #000b);
+		}
+	}
 	.stage[data-phase='silhouette'] .portrait-shell img,
 	.stage[data-phase='form'] .portrait-shell img {
 		opacity: 0.62;
@@ -484,9 +696,15 @@
 	}
 	.stars {
 		margin-bottom: 12px;
-		color: #e7b15b;
+		color: var(--rarity);
 		font-size: 0.7rem;
 		letter-spacing: 0.18em;
+		text-shadow: 0 0 18px var(--rarity-soft);
+	}
+	.stars i {
+		font-size: 0.58rem;
+		font-style: normal;
+		opacity: 0.72;
 	}
 	figcaption p {
 		margin: 0;
@@ -503,6 +721,22 @@
 			serif;
 		letter-spacing: -0.07em;
 		text-shadow: 0 10px 40px #000d;
+	}
+	.stage[data-phase='identity'] figcaption h1 {
+		animation: name-resolve 620ms cubic-bezier(0.16, 0.8, 0.2, 1) 110ms both;
+	}
+	@keyframes name-resolve {
+		from {
+			opacity: 0;
+			transform: translateY(18px);
+			clip-path: inset(100% 0 0);
+			letter-spacing: -0.11em;
+		}
+		to {
+			opacity: 1;
+			transform: none;
+			clip-path: inset(0);
+		}
 	}
 	figcaption > span {
 		display: block;
@@ -530,7 +764,12 @@
 		width: 3px;
 		height: 3px;
 		border-radius: 50%;
-		background: #d5aa5f;
+		background: var(--rarity);
+	}
+	.traits .affinity {
+		display: inline-flex;
+		gap: 6px;
+		align-items: center;
 	}
 	.stage-footer {
 		position: absolute;

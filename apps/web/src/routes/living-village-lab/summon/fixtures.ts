@@ -8,6 +8,8 @@ import remyAnchor from '../../../../../../assets/heroes/visuals/hearth-02-anchor
 export type HeroId = 'dara' | 'mara' | 'jori' | 'kira' | 'iven' | 'remy';
 export type RevealDirection = 'gate' | 'constellation' | 'identity';
 export type OfferMode = 'single' | 'batch';
+export type AffinityIcon = 'ember' | 'tide' | 'gale' | 'grove';
+export type AptitudeClass = 'martial' | 'magic' | 'crafting';
 
 export type AttributeName = 'Might' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
 
@@ -30,12 +32,13 @@ export type HeroFixture = {
 	name: string;
 	identityLine: string;
 	affinity: string;
+	affinityIcon: AffinityIcon;
 	calling: string;
 	stars: number;
 	image: string;
 	attributes: readonly AttributeReadiness[];
 	personality: PersonalityProfile;
-	aptitudes: readonly string[];
+	aptitudes: readonly { name: string; class: AptitudeClass }[];
 };
 
 export type RevealDirectionFixture = {
@@ -68,6 +71,7 @@ export const heroes: readonly HeroFixture[] = [
 		name: 'Dara Zev',
 		identityLine: 'A watchful pathfinder who reads danger before it arrives.',
 		affinity: 'Tide',
+		affinityIcon: 'tide',
 		calling: 'Pathfinder',
 		stars: 1,
 		image: daraAnchor,
@@ -80,13 +84,18 @@ export const heroes: readonly HeroFixture[] = [
 			stressResponse: 'Narrows focus and checks every exit',
 			tendency: 'Measured risk · situational lead'
 		},
-		aptitudes: ['Wayfinding', 'Fieldcraft', 'Bow practice']
+		aptitudes: [
+			{ name: 'Wayfinding', class: 'martial' },
+			{ name: 'Fieldcraft', class: 'crafting' },
+			{ name: 'Bow practice', class: 'martial' }
+		]
 	},
 	{
 		id: 'mara',
 		name: 'Mara Vey',
 		identityLine: 'A guarded ember-bearer who holds the line when others falter.',
 		affinity: 'Ember',
+		affinityIcon: 'ember',
 		calling: 'Vanguard',
 		stars: 1,
 		image: maraAnchor,
@@ -99,13 +108,18 @@ export const heroes: readonly HeroFixture[] = [
 			stressResponse: 'Takes position and carries the pressure',
 			tendency: 'Low risk · decisive under threat'
 		},
-		aptitudes: ['Shieldwork', 'Ember control', 'Formation']
+		aptitudes: [
+			{ name: 'Shieldwork', class: 'martial' },
+			{ name: 'Ember control', class: 'magic' },
+			{ name: 'Formation', class: 'martial' }
+		]
 	},
 	{
 		id: 'jori',
 		name: 'Jori Daro',
 		identityLine: 'A formal wardkeeper with an instinct for quiet protection.',
 		affinity: 'Tide',
+		affinityIcon: 'tide',
 		calling: 'Wardkeeper',
 		stars: 1,
 		image: joriAnchor,
@@ -118,13 +132,18 @@ export const heroes: readonly HeroFixture[] = [
 			stressResponse: 'Builds order and absorbs uncertainty',
 			tendency: 'Low risk · consensus lead'
 		},
-		aptitudes: ['Warding', 'Logistics', 'Restoration']
+		aptitudes: [
+			{ name: 'Warding', class: 'magic' },
+			{ name: 'Logistics', class: 'crafting' },
+			{ name: 'Restoration', class: 'magic' }
+		]
 	},
 	{
 		id: 'kira',
 		name: 'Kira Toren',
 		identityLine: 'A grounded envoy who turns careful attention into leverage.',
 		affinity: 'Gale',
+		affinityIcon: 'gale',
 		calling: 'Envoy',
 		stars: 2,
 		image: kiraAnchor,
@@ -137,13 +156,18 @@ export const heroes: readonly HeroFixture[] = [
 			stressResponse: 'Slows the room and tests assumptions',
 			tendency: 'Balanced risk · diplomatic lead'
 		},
-		aptitudes: ['Negotiation', 'Appraisal', 'Court lore']
+		aptitudes: [
+			{ name: 'Negotiation', class: 'martial' },
+			{ name: 'Appraisal', class: 'crafting' },
+			{ name: 'Court lore', class: 'magic' }
+		]
 	},
 	{
 		id: 'iven',
 		name: 'Iven Orra',
 		identityLine: 'A precise ritual reader who notices the pattern beneath the noise.',
 		affinity: 'Grove',
+		affinityIcon: 'grove',
 		calling: 'Ritualist',
 		stars: 2,
 		image: ivenAnchor,
@@ -156,13 +180,18 @@ export const heroes: readonly HeroFixture[] = [
 			stressResponse: 'Returns to first principles and pattern',
 			tendency: 'Measured risk · technical lead'
 		},
-		aptitudes: ['Ritual reading', 'Focus craft', 'Grove magic']
+		aptitudes: [
+			{ name: 'Ritual reading', class: 'magic' },
+			{ name: 'Focus craft', class: 'crafting' },
+			{ name: 'Grove magic', class: 'magic' }
+		]
 	},
 	{
 		id: 'remy',
 		name: 'Remy Nahl',
 		identityLine: 'An open-hearted skirmisher with a patient eye for openings.',
 		affinity: 'Ember',
+		affinityIcon: 'ember',
 		calling: 'Skirmisher',
 		stars: 3,
 		image: remyAnchor,
@@ -175,7 +204,11 @@ export const heroes: readonly HeroFixture[] = [
 			stressResponse: 'Stays mobile and keeps others connected',
 			tendency: 'High risk · emergent lead'
 		},
-		aptitudes: ['Short blade', 'Evasion', 'Team timing']
+		aptitudes: [
+			{ name: 'Short blade', class: 'martial' },
+			{ name: 'Evasion', class: 'martial' },
+			{ name: 'Team timing', class: 'martial' }
+		]
 	}
 ] as const;
 

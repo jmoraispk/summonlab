@@ -1,10 +1,12 @@
 <script lang="ts">
 	import PortalGlyph from './PortalGlyph.svelte';
+	import MechanicIcon from './MechanicIcon.svelte';
 
 	type Hero = {
 		name: string;
 		identityLine: string;
 		affinity: string;
+		affinityIcon: 'ember' | 'tide' | 'gale' | 'grove';
 		calling: string;
 		stars: number;
 		image: string;
@@ -17,10 +19,17 @@
 			stressResponse: string;
 			tendency: string;
 		};
-		aptitudes: readonly string[];
+		aptitudes: readonly { name: string; class: 'martial' | 'magic' | 'crafting' }[];
 	};
 
 	let { hero, onclose }: { hero: Hero; onclose: () => void } = $props();
+	const bodyNames = new Set(['Might', 'Vitality', 'Agility', 'Dexterity']);
+	const bodyAttributes = $derived(
+		hero.attributes.filter((attribute) => bodyNames.has(attribute.name))
+	);
+	const mindAttributes = $derived(
+		hero.attributes.filter((attribute) => !bodyNames.has(attribute.name))
+	);
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape') onclose();
@@ -35,13 +44,14 @@
 	aria-modal="true"
 	aria-labelledby="dossier-name"
 	data-testid="hero-dossier"
+	data-stars={hero.stars}
 >
 	<button type="button" class="close" onclick={onclose} aria-label="Close hero details">×</button>
 	<div class="portrait">
 		<div class="halo"></div>
 		<img src={hero.image} alt={`${hero.name} full identity portrait`} width="1024" height="1536" />
 		<div class="portrait-label">
-			<span>{'✦'.repeat(hero.stars)}</span>
+			<span class="rarity-stars">{'✦'.repeat(hero.stars)} <i>{hero.stars}★</i></span>
 			<strong>{hero.calling}</strong>
 		</div>
 	</div>
@@ -51,8 +61,9 @@
 			<h2 id="dossier-name">{hero.name}</h2>
 			<span>{hero.identityLine}</span>
 			<div class="chips">
-				<i>{hero.affinity} affinity</i>{#each hero.personality.traits as trait (trait)}<i>{trait}</i
-					>{/each}
+				<i class="affinity"
+					><MechanicIcon kind={hero.affinityIcon} size={16} />{hero.affinity} affinity</i
+				>{#each hero.personality.traits as trait (trait)}<i>{trait}</i>{/each}
 			</div>
 		</header>
 
@@ -61,17 +72,43 @@
 				<h3 id="attribute-title">Attributes</h3>
 				<span>Current readiness</span>
 			</div>
-			<div class="attribute-grid">
-				{#each hero.attributes as attribute (attribute.name)}
-					<div data-testid="hero-attribute">
-						<span>{attribute.name}</span><strong>{attribute.value}</strong>
-						<i><b style:width={`${attribute.value}%`}></b></i>
+			<div class="attribute-domains">
+				<article data-testid="body-attributes">
+					<header>
+						<MechanicIcon kind="body" size={18} /><span
+							><strong>Body</strong><small>Physical capability</small></span
+						>
+					</header>
+					<div class="attribute-grid">
+						{#each bodyAttributes as attribute (attribute.name)}
+							<div data-testid="hero-attribute">
+								<span>{attribute.name}</span><strong>{attribute.value}</strong><i
+									><b style:width={`${attribute.value}%`}></b></i
+								>
+							</div>
+						{/each}
 					</div>
-				{/each}
+				</article>
+				<article data-testid="mind-attributes">
+					<header>
+						<MechanicIcon kind="mind" size={18} /><span
+							><strong>Mind</strong><small>Cognitive &amp; spiritual</small></span
+						>
+					</header>
+					<div class="attribute-grid">
+						{#each mindAttributes as attribute (attribute.name)}
+							<div data-testid="hero-attribute">
+								<span>{attribute.name}</span><strong>{attribute.value}</strong><i
+									><b style:width={`${attribute.value}%`}></b></i
+								>
+							</div>
+						{/each}
+					</div>
+				</article>
 			</div>
 		</section>
 
-		<section class="mind" aria-labelledby="personality-title">
+		<section class="personality" aria-labelledby="personality-title">
 			<div class="section-title">
 				<h3 id="personality-title">Personality</h3>
 				<span>Stable profile</span>
@@ -106,7 +143,11 @@
 				<span>Learning potential</span>
 			</div>
 			<div>
-				{#each hero.aptitudes as aptitude (aptitude)}<span>{aptitude}</span>{/each}
+				{#each hero.aptitudes as aptitude (aptitude.name)}<span data-class={aptitude.class}
+						><MechanicIcon kind={aptitude.class} size={17} /><b>{aptitude.name}</b><small
+							>{aptitude.class}</small
+						></span
+					>{/each}
 			</div>
 		</section>
 	</div>
@@ -114,6 +155,8 @@
 
 <style>
 	.dossier {
+		--rarity: #d9a956;
+		--rarity-soft: #d9a95624;
 		position: absolute;
 		z-index: 20;
 		inset: 12px;
@@ -127,6 +170,14 @@
 			0 32px 100px #000e,
 			inset 0 1px #fff1;
 		backdrop-filter: blur(20px);
+	}
+	.dossier[data-stars='2'] {
+		--rarity: #75c4f4;
+		--rarity-soft: #488fca33;
+	}
+	.dossier[data-stars='3'] {
+		--rarity: #bd8cf4;
+		--rarity-soft: #8857c43d;
 	}
 	.close {
 		position: absolute;
@@ -164,11 +215,11 @@
 		width: 74%;
 		aspect-ratio: 1;
 		transform: translateX(-50%);
-		border: 1px solid #91dccd4a;
+		border: 1px solid color-mix(in srgb, var(--rarity) 48%, transparent);
 		border-radius: 50%;
 		box-shadow:
-			0 0 55px #35aa9645,
-			inset 0 0 45px #70d3c027;
+			0 0 55px var(--rarity-soft),
+			inset 0 0 45px var(--rarity-soft);
 	}
 	.portrait img {
 		position: relative;
@@ -188,8 +239,13 @@
 		gap: 4px;
 	}
 	.portrait-label span {
-		color: #efb95f;
+		color: var(--rarity);
 		letter-spacing: 0.18em;
+	}
+	.rarity-stars i {
+		font-size: 0.58rem;
+		font-style: normal;
+		opacity: 0.72;
 	}
 	.portrait-label strong {
 		color: #dbe7e2;
@@ -234,6 +290,9 @@
 	}
 	.chips i,
 	.aptitudes span {
+		display: inline-flex;
+		gap: 6px;
+		align-items: center;
 		padding: 5px 8px;
 		border: 1px solid #7dc5b534;
 		border-radius: 99px;
@@ -243,6 +302,11 @@
 		font-weight: 720;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
+	}
+	.chips .affinity {
+		border-color: color-mix(in srgb, currentColor 45%, transparent);
+		background: #ffffff08;
+		color: #dcebe6;
 	}
 	section {
 		margin-top: 25px;
@@ -268,10 +332,43 @@
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
-	.attribute-grid {
+	.attribute-domains {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 12px 18px;
+		gap: 10px;
+	}
+	.attribute-domains article {
+		padding: 13px;
+		border: 1px solid #d9e7e119;
+		border-radius: 11px;
+		background: #ffffff05;
+	}
+	.attribute-domains article > header {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		margin-bottom: 12px;
+		color: #9fd4c8;
+	}
+	.attribute-domains article > header span {
+		display: grid;
+		gap: 1px;
+	}
+	.attribute-domains article > header strong {
+		color: #dfe8e4;
+		font:
+			500 0.8rem Georgia,
+			serif;
+	}
+	.attribute-domains article > header small {
+		color: #65766f;
+		font-size: 0.48rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.attribute-grid {
+		display: grid;
+		gap: 10px;
 	}
 	.attribute-grid > div {
 		display: grid;
@@ -330,6 +427,29 @@
 		flex-wrap: wrap;
 		gap: 7px;
 	}
+	.aptitudes span {
+		padding: 7px 9px;
+		text-transform: none;
+	}
+	.aptitudes span b {
+		color: #d7dfdb;
+		font-size: 0.62rem;
+	}
+	.aptitudes span small {
+		color: #6f817a;
+		font-size: 0.47rem;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	.aptitudes span[data-class='martial'] {
+		border-color: #d79b6638;
+	}
+	.aptitudes span[data-class='magic'] {
+		border-color: #a988e54a;
+	}
+	.aptitudes span[data-class='crafting'] {
+		border-color: #d2b66c40;
+	}
 	@media (max-width: 720px) {
 		.dossier {
 			position: fixed;
@@ -345,6 +465,9 @@
 		}
 		.details {
 			padding: 25px 20px 28px;
+		}
+		.attribute-domains {
+			grid-template-columns: 1fr;
 		}
 		dl {
 			grid-template-columns: 1fr;

@@ -6,6 +6,9 @@
 		affinity: string;
 		stars: number;
 		image: string;
+		arrivalId?: string;
+		unread?: boolean;
+		isBonus?: boolean;
 	};
 
 	let {
@@ -29,18 +32,27 @@
 	</header>
 
 	<div class:single={mode === 'single'} class="result-grid">
-		{#each results as hero, index (`${hero.id}-${index}`)}
+		{#each results as hero, index (hero.arrivalId ?? `${hero.name}-${index}`)}
 			<button
 				type="button"
-				class:bonus={mode === 'batch' && index === 10}
+				class:bonus={hero.isBonus}
+				class:unread={hero.unread}
+				data-stars={hero.stars}
+				style={`--slot:${index}`}
 				onclick={() => onselect(hero)}
 				data-testid="arrival-card"
-				aria-label={`Inspect ${hero.name}${mode === 'batch' && index === 10 ? ', bonus arrival' : ''}`}
+				aria-label={`Inspect ${hero.name}${hero.isBonus ? ', bonus arrival' : ''}${hero.unread ? ', new arrival' : ''}`}
 			>
-				{#if mode === 'batch' && index === 10}<i class="bonus-mark">Bonus</i>{/if}
+				{#if hero.unread}<i class="new-mark">New</i>{/if}
+				{#if hero.isBonus}<i class="bonus-mark">Bonus</i>{/if}
 				<div class="portrait"><img src={hero.image} alt="" width="1024" height="1536" /></div>
 				<div class="copy">
-					<small>{'✦'.repeat(hero.stars)} · {String(index + 1).padStart(2, '0')}</small>
+					<small class="stars"
+						>{'✦'.repeat(hero.stars)} <i>{hero.stars}★</i> · {String(index + 1).padStart(
+							2,
+							'0'
+						)}</small
+					>
 					<strong>{hero.name}</strong>
 					<span>{hero.calling} · {hero.affinity}</span>
 				</div>
@@ -119,6 +131,8 @@
 		overflow: visible;
 	}
 	.result-grid button {
+		--rarity: #d9a956;
+		--rarity-soft: #d9a95624;
 		position: relative;
 		min-width: 0;
 		overflow: hidden;
@@ -129,10 +143,42 @@
 		color: #e8e9e3;
 		text-align: left;
 		cursor: pointer;
+		animation: result-enter 540ms cubic-bezier(0.14, 0.78, 0.18, 1) calc(var(--slot) * 42ms) both;
 		transition:
 			transform 180ms ease,
 			border-color 180ms ease,
 			box-shadow 180ms ease;
+	}
+	@keyframes result-enter {
+		0% {
+			opacity: 0;
+			transform: translateY(22px) scale(0.86);
+			filter: brightness(2.4) saturate(0);
+		}
+		55% {
+			opacity: 1;
+			transform: translateY(-3px) scale(1.025);
+			filter: brightness(1.25) saturate(1.2);
+		}
+		100% {
+			opacity: 1;
+			transform: none;
+			filter: none;
+		}
+	}
+	.result-grid button[data-stars='2'] {
+		--rarity: #75c4f4;
+		--rarity-soft: #488fca2e;
+	}
+	.result-grid button[data-stars='3'] {
+		--rarity: #bd8cf4;
+		--rarity-soft: #8857c438;
+	}
+	.result-grid button.unread {
+		border-color: color-mix(in srgb, var(--rarity) 64%, transparent);
+		box-shadow:
+			inset 0 0 28px var(--rarity-soft),
+			0 0 20px var(--rarity-soft);
 	}
 	.result-grid button:hover,
 	.result-grid button:focus-visible {
@@ -174,10 +220,14 @@
 	}
 	.copy small {
 		overflow: hidden;
-		color: #d8a956;
+		color: var(--rarity);
 		font-size: 0.48rem;
 		letter-spacing: 0.08em;
 		white-space: nowrap;
+	}
+	.copy .stars i {
+		font-style: normal;
+		opacity: 0.72;
 	}
 	.copy strong {
 		overflow: hidden;
@@ -214,6 +264,31 @@
 		font-weight: 820;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
+	}
+	.new-mark {
+		position: absolute;
+		z-index: 3;
+		top: 7px;
+		left: 7px;
+		padding: 4px 7px;
+		border-radius: 99px;
+		background: var(--rarity);
+		box-shadow: 0 0 16px var(--rarity-soft);
+		color: #071014;
+		font-size: 0.47rem;
+		font-style: normal;
+		font-weight: 850;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+		animation: new-settle 650ms cubic-bezier(0.18, 0.82, 0.2, 1) calc(var(--slot) * 42ms + 280ms)
+			both;
+	}
+	@keyframes new-settle {
+		from {
+			opacity: 0;
+			transform: scale(1.7);
+			filter: brightness(2);
+		}
 	}
 	footer {
 		margin-top: auto;

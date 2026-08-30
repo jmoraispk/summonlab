@@ -10,8 +10,10 @@ Implementation branch: `codex/lv-summon-screen`
 
 - Release-facing portal composition without owner, fixture, annotation, recommendation, or
   presentation-receipt chrome.
-- Svelte route and interaction state with an isolated, dynamically loaded PixiJS/WebGL gate:
-  concentric geometry, rune fields, sparks, aperture light, rotating layers, and phase bursts.
+- Svelte route and interaction state with an isolated, dynamically loaded PixiJS/WebGL gate. The
+  default ritual now has an authored beat curve: star intake, sequential rune lock, accelerating
+  compression, aperture rupture, energy veil, silhouette traversal, rarity-colored shockwaves,
+  identity bloom, and settling afterglow rather than evenly rotating decoration.
 - Standard as the active banner, earned and premium balances, visible guarantee movement, rates,
   and costs on both `Summon ×1` and `Summon ×10 + 1 bonus`.
 - Gate ignition, constellation assembly, and immediate identity remain selectable under Rates &
@@ -19,10 +21,15 @@ Implementation branch: `codex/lv-summon-screen`
   reduced-motion path.
 - Results resolve inside the gate instead of opening a second presentation screen.
 - Five sequential singles and an eleven-result batch remain in a clickable recent-arrivals strip.
-  Every result opens an in-place identity dossier.
+  Every receipt slot starts with a rarity-colored `NEW` marker, opens an in-place identity dossier,
+  and clears independently even when two slots reference the same fixed person.
 - Dossiers use the wiki's accepted six attributes—Might, Vitality, Agility, Dexterity, Intellect,
-  and Spirit—and keep personality separate as traits, value, drive, social style, stress response,
-  and leadership/risk tendency. Aptitudes are presented separately again.
+  and Spirit—and split them visually into Body (Might, Vitality, Agility, Dexterity) on the left and
+  Mind (Intellect, Spirit) on the right. Personality remains separate as traits, value, drive,
+  social style, stress response, and leadership/risk tendency.
+- Elemental affinities now have explicit Ember, Tide, Gale, or Grove icons. Aptitudes have icon-led
+  route-local martial, magic, or crafting classes. Star presentation is visibly tiered: 1★
+  ember-gold, 2★ arc-blue, and 3★ astral-violet.
 - Only Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl appear. The browser
   receipt never writes durable hero instances.
 
@@ -37,6 +44,10 @@ Exact attribute numeric ranges, prices, rates, guarantee thresholds, and currenc
 open. The dossier bars are therefore route-local readiness estimates, and one quiet `Demo values`
 line remains in Rates and the purchase column. This is the minimum disclosure needed to avoid
 presenting prototype economics as canon.
+
+The Body/Mind grouping, named affinity icon mapping, and martial/magic/crafting aptitude classes are
+presentation proposals in this route. The wiki establishes the attribute vocabulary and affinity
+separation, but it does not yet establish those three aptitude classes as a production taxonomy.
 
 ## Recommended direction
 
@@ -65,11 +76,14 @@ is less immediately legible as an arrival.
 - `docs/evidence/living-village-summon-animation-identity.png`
 - `docs/evidence/living-village-summon-connected-spend.png`
 - `docs/evidence/living-village-summon-single-result.png`
+- `docs/evidence/living-village-summon-dossier.png`
 - `docs/evidence/living-village-summon-batch-result.png`
 
 The focused Playwright spec covers banner/rates interaction, visible costs, all three animations,
 skip/replay, reduced motion, five sequential arrivals, the `10 + 1` message, connected currency and
-guarantee movement, and a clickable dossier with all six canonical attribute names.
+guarantee movement, independent unread clearing for duplicate slots, distinct 1★/2★ presentation,
+Body/Mind positioning, all six canonical attribute names, elemental affinity icons, and all three
+aptitude-class icons.
 
 ## Validation record
 
@@ -123,9 +137,11 @@ type SummonPortalViewModel = {
 		receiptId: string;
 		offerId: string;
 		outcomes: Array<{
+			arrivalId: string;
 			heroId: string;
 			slot: number;
 			isBonus: boolean;
+			isUnread: boolean;
 			summary: SummonHeroSummary;
 		}>;
 	};
@@ -138,7 +154,7 @@ type SummonHeroSummary = {
 	portraitAssetKey: string;
 	stars: number;
 	calling: string;
-	affinity: string;
+	affinity: { label: string; icon: 'ember' | 'tide' | 'gale' | 'grove' };
 	attributes: Array<{
 		attribute: 'Might' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
 		value: number;
@@ -152,7 +168,10 @@ type SummonHeroSummary = {
 		stressResponse: string;
 		tendency: string;
 	};
-	aptitudes: string[];
+	aptitudes: Array<{
+		name: string;
+		class: 'martial' | 'magic' | 'crafting';
+	}>;
 };
 ```
 

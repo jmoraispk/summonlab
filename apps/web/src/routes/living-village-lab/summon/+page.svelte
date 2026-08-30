@@ -17,6 +17,12 @@
 		type RevealDirection
 	} from './fixtures';
 
+	type ArrivalResult = HeroFixture & {
+		arrivalId: string;
+		unread: boolean;
+		isBonus: boolean;
+	};
+
 	let direction = $state<RevealDirection>('gate');
 	let offerMode = $state<OfferMode>('single');
 	let runToken = $state(0);
@@ -30,10 +36,13 @@
 	let guaranteeProgress = $state<number>(guarantee.current);
 	let spendFlash = $state<{ currency: 'sigil' | 'gem'; label: string } | null>(null);
 	let currentHero = $state<HeroFixture>(featuredHero);
-	let pendingResults = $state<HeroFixture[]>([featuredHero]);
-	let sessionArrivals = $state<HeroFixture[]>([]);
+	let pendingResults = $state<ArrivalResult[]>([
+		{ ...featuredHero, arrivalId: 'featured-preview', unread: false, isBonus: false }
+	]);
+	let sessionArrivals = $state<ArrivalResult[]>([]);
 	let selectedHero = $state<HeroFixture | null>(null);
 	let singleCursor = $state(0);
+	let arrivalSerial = 0;
 	let shouldRecordArrival = false;
 	let ratesTrigger: HTMLButtonElement;
 	let spendTimer: number | undefined;
@@ -47,7 +56,12 @@
 		spendTimer = window.setTimeout(() => (spendFlash = null), 1200);
 	}
 
-	function beginReveal(mode: OfferMode, receipt: HeroFixture[]) {
+	function createArrival(hero: HeroFixture, isBonus = false): ArrivalResult {
+		arrivalSerial += 1;
+		return { ...hero, arrivalId: `arrival-${arrivalSerial}`, unread: true, isBonus };
+	}
+
+	function beginReveal(mode: OfferMode, receipt: ArrivalResult[]) {
 		offerMode = mode;
 		pendingResults = receipt;
 		currentHero = receipt[0] ?? featuredHero;
@@ -71,14 +85,17 @@
 			guaranteeProgress = Math.min(guarantee.threshold, guaranteeProgress + 1);
 			const hero = heroes[(singleCursor + 1) % heroes.length] ?? featuredHero;
 			singleCursor += 1;
-			beginReveal('single', [hero]);
+			beginReveal('single', [createArrival(hero)]);
 			return;
 		}
 		if (gems < 1600) return;
 		gems -= 1600;
 		guaranteeProgress = Math.min(guarantee.threshold, guaranteeProgress + 11);
 		flashSpend('gem', '−1,600');
-		beginReveal('batch', [...batchReceipt]);
+		beginReveal(
+			'batch',
+			batchReceipt.map((hero, index) => createArrival(hero, index === batchReceipt.length - 1))
+		);
 	}
 
 	function replay() {
@@ -102,6 +119,16 @@
 		direction = next;
 		ratesOpen = false;
 		replay();
+	}
+
+	function selectArrival(arrival: ArrivalResult) {
+		pendingResults = pendingResults.map((item) =>
+			item.arrivalId === arrival.arrivalId ? { ...item, unread: false } : item
+		);
+		sessionArrivals = sessionArrivals.map((item) =>
+			item.arrivalId === arrival.arrivalId ? { ...item, unread: false } : item
+		);
+		selectedHero = arrival;
 	}
 
 	function closeRates() {
@@ -184,7 +211,7 @@
 				resultMode={offerMode}
 				results={pendingResults}
 				{selectedHero}
-				onselect={(hero) => (selectedHero = hero as HeroFixture)}
+				onselect={(hero) => selectArrival(hero as ArrivalResult)}
 				onclosedossier={() => (selectedHero = null)}
 				onreplay={replay}
 				oncomplete={finishReveal}
@@ -200,12 +227,15 @@
 						<span>Choose a person</span>
 					</header>
 					<div>
-						{#each sessionArrivals as hero, index (`history-${hero.id}-${index}`)}
+						{#each sessionArrivals as hero (hero.arrivalId)}
 							<button
 								type="button"
-								onclick={() => (selectedHero = hero)}
-								aria-label={`View ${hero.name} stats`}
+								class:unread={hero.unread}
+								data-stars={hero.stars}
+								onclick={() => selectArrival(hero)}
+								aria-label={`View ${hero.name} stats${hero.unread ? ', new arrival' : ''}`}
 							>
+								{#if hero.unread}<i class="new-mark">New</i>{/if}
 								<img src={hero.image} alt="" width="1024" height="1536" /><span
 									><strong>{hero.name}</strong><small>{hero.calling}</small></span
 								>
@@ -873,6 +903,8 @@
 		padding: 1px;
 	}
 	.arrival-rail button {
+		--rarity: #d9a956;
+		position: relative;
 		display: grid;
 		grid-template-columns: 38px auto;
 		gap: 7px;
@@ -886,6 +918,31 @@
 		color: #dce2df;
 		text-align: left;
 		cursor: pointer;
+	}
+	.arrival-rail button[data-stars='2'] {
+		--rarity: #77bff1;
+	}
+	.arrival-rail button[data-stars='3'] {
+		--rarity: #bd8cf4;
+	}
+	.arrival-rail button.unread {
+		border-color: color-mix(in srgb, var(--rarity) 62%, transparent);
+		box-shadow: inset 0 0 20px color-mix(in srgb, var(--rarity) 9%, transparent);
+	}
+	.arrival-rail .new-mark {
+		position: absolute;
+		z-index: 2;
+		top: -1px;
+		right: -1px;
+		padding: 3px 6px;
+		border-radius: 0 8px 0 7px;
+		background: var(--rarity);
+		color: #071014;
+		font-size: 0.43rem;
+		font-style: normal;
+		font-weight: 850;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
 	}
 	.arrival-rail button:hover {
 		border-color: #75c8b55e;

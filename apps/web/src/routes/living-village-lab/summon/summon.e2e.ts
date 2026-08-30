@@ -71,8 +71,18 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(page.getByTestId('guarantee-progress')).toContainText('19 / 30');
 	const history = page.getByTestId('arrival-history');
 	await expect(history.getByRole('button')).toHaveCount(5);
+	await expect(history.getByText('New', { exact: true })).toHaveCount(5);
+	const oneStar = history.getByRole('button', { name: /View Mara Vey stats/ });
+	const twoStar = history.getByRole('button', { name: /View Kira Toren stats/ });
+	await expect(oneStar).toHaveAttribute('data-stars', '1');
+	await expect(twoStar).toHaveAttribute('data-stars', '2');
+	const [oneStarColor, twoStarColor] = await Promise.all([
+		oneStar.evaluate((element) => getComputedStyle(element).getPropertyValue('--rarity')),
+		twoStar.evaluate((element) => getComputedStyle(element).getPropertyValue('--rarity'))
+	]);
+	expect(oneStarColor).not.toBe(twoStarColor);
 
-	await history.getByRole('button', { name: /View Mara Vey stats/ }).click();
+	await oneStar.click();
 	const dossier = page.getByTestId('hero-dossier');
 	await expect(dossier).toBeVisible();
 	await expect(dossier).toContainText('Attributes');
@@ -84,6 +94,21 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier).toContainText('Intellect');
 	await expect(dossier).toContainText('Spirit');
 	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(6);
+	await expect(dossier.getByTestId('body-attributes').getByTestId('hero-attribute')).toHaveCount(4);
+	await expect(dossier.getByTestId('mind-attributes').getByTestId('hero-attribute')).toHaveCount(2);
+	const [bodyBox, mindBox] = await Promise.all([
+		dossier.getByTestId('body-attributes').boundingBox(),
+		dossier.getByTestId('mind-attributes').boundingBox()
+	]);
+	expect(bodyBox!.x).toBeLessThan(mindBox!.x);
+	await expect(dossier.locator('[data-icon="ember"]')).toBeVisible();
+	await expect(dossier.locator('[data-icon="martial"]').first()).toBeVisible();
+	await expect(dossier.locator('[data-icon="magic"]')).toBeVisible();
+	await page.getByRole('button', { name: 'Close hero details' }).click();
+	await expect(history.getByText('New', { exact: true })).toHaveCount(4);
+	await expect(oneStar).toHaveAttribute('aria-label', 'View Mara Vey stats');
+	await twoStar.click();
+	await expect(page.getByTestId('hero-dossier').locator('[data-icon="crafting"]')).toBeVisible();
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 
 	await page.getByTestId('summon-batch').click();
@@ -92,11 +117,17 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(page.getByTestId('arrival-card')).toHaveCount(11);
 	await expect(page.getByTestId('summon-results')).toContainText('10 summoned + 1 bonus');
 	await expect(page.getByTestId('summon-results')).toContainText('Bonus');
-	await page
-		.getByRole('button', { name: /Inspect Kira Toren/ })
-		.first()
-		.click();
-	await expect(page.getByTestId('hero-dossier')).toContainText('Kira Toren');
+	const batchResults = page.getByTestId('summon-results');
+	await expect(batchResults.getByText('New', { exact: true })).toHaveCount(11);
+	const unreadMaraCards = batchResults.getByRole('button', {
+		name: /Inspect Mara Vey.*new arrival/
+	});
+	await expect(unreadMaraCards).toHaveCount(2);
+	await unreadMaraCards.first().click();
+	await expect(page.getByTestId('hero-dossier')).toContainText('Mara Vey');
+	await page.getByRole('button', { name: 'Close hero details' }).click();
+	await expect(batchResults.getByText('New', { exact: true })).toHaveCount(10);
+	await expect(unreadMaraCards).toHaveCount(1);
 });
 
 test('captures the release portal and animation comparison', async ({ page }) => {
@@ -128,6 +159,11 @@ test('captures the release portal and animation comparison', async ({ page }) =>
 	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-single-result.png')
 	});
+	await page.getByTestId('arrival-card').click();
+	await page.getByTestId('hero-dossier').screenshot({
+		path: evidence('living-village-summon-dossier.png')
+	});
+	await page.getByRole('button', { name: 'Close hero details' }).click();
 	await page.getByTestId('summon-batch').click();
 	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-batch-result.png')
