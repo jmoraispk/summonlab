@@ -346,11 +346,18 @@ describe('affinity concurrency wave scheduler', () => {
 	});
 
 	it('blocks legacy plans without a hash-bound gate even when capacity is available', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-missing-gate-'));
+		roots.push(root);
+		const jobs = [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')];
+		for (const job of jobs) {
+			await copy(job.targetPath, root);
+			await copy(job.assignmentPath, root);
+		}
 		const legacyPlan = {
-			...plan('canary', [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')])
+			...plan('canary', jobs)
 		};
 		delete (legacyPlan as Partial<AffinityWavePlan>).dispatchGate;
-		const preflight = await preflightWave(process.cwd(), legacyPlan, 3, '2026-08-29T20:00:00.000Z');
+		const preflight = await preflightWave(root, legacyPlan, 3, '2026-08-29T20:00:00.000Z');
 		expect(preflight).toMatchObject({ status: 'blocked-gate', dispatchGateSatisfied: false });
 		expect(nextDispatchDecision(preflight, [])).toMatchObject({
 			stop: true,
@@ -724,9 +731,17 @@ describe('affinity concurrency wave scheduler', () => {
 		});
 	});
 	it('records requested versus admitted capacity and blocks a degraded concurrency run', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-degraded-capacity-'));
+		roots.push(root);
+		const jobs = [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')];
+		for (const job of jobs) {
+			await copy(job.targetPath, root);
+			await copy(job.assignmentPath, root);
+		}
+		await writeGate(root, 'canary');
 		const preflight = await preflightWave(
-			process.cwd(),
-			plan('canary', [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')]),
+			root,
+			plan('canary', jobs),
 			2,
 			'2026-08-29T20:00:00.000Z'
 		);

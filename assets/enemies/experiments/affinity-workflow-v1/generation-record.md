@@ -1,7 +1,7 @@
 # Affinity workflow v1 generation record
 
-Status: **controlled and final correction regressions complete; guarded rerun preparation and
-capacity scheduler complete; breadth gate closed; human blind review pending**
+Status: **controlled and final correction regressions complete; generation-first Breadth production
+active with 3/24 jobs complete; human blind acceptance review pending**
 
 Date: **2026-08-29**
 
@@ -25,11 +25,29 @@ in the per-target JSON files under `results/`. The machine-validated aggregate i
 | Controlled | 24 | 24 | 21 | 3 | 0 |
 | Elemental semantic regression | 6 | 6 | 5 | 1 | 0 |
 | Final correction regression | 6 | 6 | 4 | 2 | 0 |
-| Breadth | 24 | 0 | 0 | 0 | 24 |
-| Total | 60 | 36 | 30 | 6 | 24 |
+| Breadth | 24 | 3 | 1 | 2 | 21 |
+| Total | 60 | 39 | 31 | 8 | 21 |
 
 No candidate is approved or promoted. Producer status is a bounded authoring decision, not human
 acceptance.
+
+## Breadth production wave 1
+
+The product owner changed the operating order from review-first to generation-first. Human review
+still controls acceptance and promotion, but valid Breadth assignments can now generate
+experimental candidates without waiting for baseline decisions. The first three-worker wave
+completed one humanoid, one organic quadruped, and one draconic target:
+
+| Target | Status | Attempts | Outcome |
+| --- | --- | ---: | --- |
+| Goblin Normal | Revise | 2 | The corrected image passes visual gates, but the first request included one terminal LF prohibited by `safe-frame-v4`; strict prompt provenance failed truthfully. |
+| Tunnel Boar Fire | Revise | 2 | Strong integrated Fire line-breaker with safe framing; the far rear hoof remained fully occluded after the one correction. |
+| Cave Drake Normal | Candidate | 2 | Corrected the left-foreclaw framing while preserving the wingless four-legged drake, neutral construction, and throat counterplay cue. |
+
+All three result verifiers pass. The wave used six model calls and 453,787 ms of summed auditable
+job time, with zero output collisions, shared-file violations, or provider failures. Catalog sync
+now exposes 39 total experiment executions and leaves the 21 ungenerated Breadth targets explicit.
+This wave does not count as a completed `breadth-v1` review round and does not approve any image.
 
 ## Controlled outcomes
 

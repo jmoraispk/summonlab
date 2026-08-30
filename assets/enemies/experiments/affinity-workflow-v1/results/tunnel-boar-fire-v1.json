@@ -1,0 +1,303 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-tunnel-boar-fire",
+  "targetId": "affinity-workflow-v1-tunnel-boar-fire",
+  "assignmentId": "assignment-affinity-workflow-v1-tunnel-boar-fire",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-workflow-v1-tunnel-boar-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-tunnel-boar-fire\".\n\nSubject and threat:\n- Species: tunnel-boar.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: armored-line-breaker.\n- Construction mode: organic-quadruped.\n\nIdentity invariants:\n- low charging body\n- thick neck\n- tusks\n- head-down charge line\n\nAnatomy invariants:\n- porcine anatomy\n- exactly four legs\n- cloven feet\n- load-bearing shoulders\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: generic horned beast; upright humanoid posture; obscured head and tusks; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/beasts-v1.webp — Fourth subject only: established Tunnel Boar anatomy, tusks, shoulders, cloven feet, and charge line; do not transfer the wolves or Cave Bear.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.",
+      "promptHash": "1a650a8a7d31e830adb9f46a2a90d2a272829e42b227739b943e9caa9af5aefb",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T04:25:17.937Z",
+      "generationCompletedAt": "2026-08-30T04:25:34.237Z",
+      "inspectionCompletedAt": "2026-08-30T04:26:11.331Z",
+      "generationDurationMs": 16300,
+      "inspectionDurationMs": 37094,
+      "totalWallTimeMs": 53394,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a050e9-7678-7340-8a2f-533861151a7c/exec-a7908c8b-c37f-4f1b-9e5f-44e9e5e767b7.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The entire backdrop and cracked-stone floor are intentionally rendered with no blank band, unfinished region, or abrupt cutoff."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete hard silhouette, tusks, readable feet, dorsal spines, and restrained fire wake remain inside the central eighty-four percent with an empty border on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Tunnel Boar appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt matches the safe-frame-v4 canonical renderer byte-for-byte at SHA-256 1a650a8a7d31e830adb9f46a2a90d2a272829e42b227739b943e9caa9af5aefb, and both declared references were supplied in manifest order."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The porcine muzzle, prominent tusks, compact low body, thick neck, high load-bearing shoulders, and cloven hooves preserve a strong Tunnel Boar identity."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Three legs and their cloven feet are independently readable, but the far rear extremity is fully occluded by the frontal three-quarter stance."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lowered head, forward tusks, planted forequarters, thick neck, and massive shoulders clearly communicate an armored line-breaking charge."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes the heat-blackened surface material, internal ember seams, smoky motion, charge telegraph, and trailing environmental wake rather than applying a uniform orange recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright internal heat seams remain exposed between cooling black plates across the shoulder ridge, visibly distinguishing the interruptible hot state."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; this target-aware inspection records only the visible porcine and charge-line cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; this target-aware inspection records material, combustion, motion, and wake evidence without self-promotion."
+        }
+      ],
+      "retryReason": "The successful fire construction and line-breaker design required one targeted pose correction because the far rear leg was fully occluded."
+    },
+    {
+      "attemptId": "attempt-affinity-workflow-v1-tunnel-boar-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-workflow-v1-tunnel-boar-fire-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Corrective edit of the supplied first render; do not redesign the subject. Preserve the same single fire-affinity Tunnel Boar, its individual face, tusks, low head-down charging silhouette, thick neck, load-bearing shoulders, heat-blackened hide and armor-like surfaces, internal ember seams, controlled combustion, smoke, heat distortion, exposed internal heat/core cue, cracked-stone floor, charcoal-to-midnight backdrop, neutral key light, realistic painterly Pack 2 dark-fantasy finish, and restrained local emission. Change only the pose and limb visibility enough to show exactly four anatomically coherent porcine legs and all four cloven feet clearly, with no leg hidden behind another. Keep the entire boar, every extremity, all hard extents, and the local fire wake within the central 84 percent of a finished 1536 x 1024 canvas, leaving a clearly empty border on all four sides. Exactly one featured subject. No generic horned-beast anatomy, humanoid posture, uniform orange full-body glow, extra creature, duplicate limb, cropped extremity, blank band, unfinished region, abrupt cutoff, text, label, UI, frame, logo, watermark, or published-character resemblance.",
+      "promptHash": "1a5a98af6a20e2b32763469572a39752d0e2531cacaad2060a2cc0c312ae40da",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/beasts-v1.webp",
+          "contentHash": "d15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a050e9-7678-7340-8a2f-533861151a7c/exec-a7908c8b-c37f-4f1b-9e5f-44e9e5e767b7.png",
+        "contentHash": "86caa74545e70bfb80dd95203963b3ba9424d71529a97358d1a86f0fab4c37ee"
+      },
+      "requestStartedAt": "2026-08-30T04:26:11.331Z",
+      "generationCompletedAt": "2026-08-30T04:26:26.831Z",
+      "inspectionCompletedAt": "2026-08-30T04:27:51.353Z",
+      "generationDurationMs": 15500,
+      "inspectionDurationMs": 84522,
+      "totalWallTimeMs": 100022,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a050e9-7678-7340-8a2f-533861151a7c/exec-ea439d3a-f2c3-42b9-91cb-159ff0200503.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 15,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a050e9-7678-7340-8a2f-533861151a7c/exec-ea439d3a-f2c3-42b9-91cb-159ff0200503.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2096200,
+          "contentHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2096200,
+          "contentHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2096200,
+        "contentHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The corrected canvas remains intentionally finished across the continuous charcoal backdrop and cracked-stone floor without a blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full hard silhouette, tusks, readable feet, dorsal spines, smoke, sparks, and heat wake retain a clearly empty border on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Tunnel Boar appears, with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt and targeted correction prompt retain exact SHA-256 hashes; the manifest references remain recorded in order and the exact preceding output is bound as the correction reference."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The correction preserves the porcine muzzle, tusks, low charge line, thick neck, load-bearing shoulders, cloven hooves, and prohibited-trait exclusions, but the far rear extremity remains fully occluded."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The three visible legs have coherent porcine joints and grounded cloven feet, but a fourth rear leg and hoof are not independently visible."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The immense planted shoulders, lowered skull, forward tusks, compact center of gravity, and direct gaze clearly communicate an armored line-breaker."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire is unmistakable through heat-blackened structural surfaces, orange internal fissures, combustion above the shoulders, smoke, sparks, and local heat distortion rather than hue alone."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Material, motion, charge telegraph, and environmental wake are all transformed while the boar's surface and anatomy remain readable beneath restrained emission."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright internal heat seams remain materially distinct and exposed between the cooling black plates across the forward shoulder ridge."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly dark-fantasy finish, coherent blackened material, controlled neutral key, restrained local fire, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, label, UI, frame, logo, watermark, extra creature, duplicate limb, humanoid posture, uniform orange wash, blank region, or cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The repository helper exclusive-copied the exact second returned source without normalization; source and retained dimensions, media type, byte count, and SHA-256 match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written; no shared catalog, review, generation record, plan, application, manifest, Git, or promotion file was edited."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind species recognition remains pending human review; target-aware inspection finds strong boar and charge-line cues without asserting acceptance."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind affinity recognition remains pending human review; target-aware inspection finds structural and environmental fire cues without self-promotion."
+        }
+      ],
+      "retryReason": "The only permitted correction preserved the successful Fire Tunnel Boar and improved limb spacing, but the far rear hoof remains fully occluded; the retry ceiling is exhausted and this useful render is retained as revise."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "manifest-fidelity"
+  ],
+  "startedAt": "2026-08-30T04:25:17.937Z",
+  "completedAt": "2026-08-30T04:27:51.353Z",
+  "totalWallTimeMs": 153416,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/tunnel-boar-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

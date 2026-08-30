@@ -1,7 +1,7 @@
 # Image-production skill and affinity workload plan
 
-Status: **in execution; all Final/Breadth/Load/Scale workloads allocated and Breadth generation
-preflight-ready, while live final activation and image generation remain gated on human review**
+Status: **in active production; all Final/Breadth/Load/Scale workloads are allocated, Breadth
+generation is preflight-ready, and candidate generation now precedes human acceptance review**
 
 Date: **2026-08-29**
 
@@ -16,6 +16,15 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Changed the operating sequence from review-first to generation-first at the product
+  owner's direction. Valid, collision-free assignments may now produce experimental candidates
+  immediately; human review remains mandatory only for acceptance, promotion, and later-pack rule
+  decisions. The first three-worker wave completed Goblin Normal, Tunnel Boar Fire, and Cave Drake
+  Normal, deliberately covering humanoid, organic quadruped, and draconic anatomy. Cave Drake is a
+  verified producer candidate; Goblin is a visually passing `revise` with a strict first-prompt
+  newline provenance failure, and Tunnel Boar is a visually strong `revise` whose far rear hoof
+  remained occluded after correction. All three result verifiers pass, catalog integration reports
+  no collisions or integration errors, and no image was self-promoted.
 - 2026-08-29: Replaced the ambiguous stage-only schedule with a deterministic v2 allocation of nine
   named workloads: Final Canary, Final Pilot, Controlled A/B/C, Breadth Canary, Breadth-8, Load-12,
   and Scale-16. The first five partition all 24 final-controlled targets exactly; the two-job
@@ -245,8 +254,28 @@ The implemented workflow is intentionally resumable. These commands inspect or a
 evidence boundary at a time; substitute an explicit reviewer or actor identity and round where
 shown:
 
+Candidate production is no longer blocked on baseline review. Run ready assignments first in
+bounded parallel waves, verify and catalog the resulting candidates, and then use the human-review
+commands below to accept or revise them. The current task exposes three image-worker slots, so its
+production cadence is three jobs per wave. A future task exposing the configured 17-thread ceiling
+may run one orchestrator plus as many as 16 image workers, but only after the measured concurrency
+ladder confirms that provider capacity, persistence, and quality remain acceptable.
+
+Immediate production order:
+
+1. **Wave 1:** Goblin Normal, Tunnel Boar Fire, and Cave Drake Normal.
+2. **Wave 2+:** consume the remaining preflight-ready Breadth assignments in three-job batches,
+   preserving species and affinity coverage rather than finishing one family at a time.
+3. **After every wave:** verify each result independently, synchronize candidate catalog metadata,
+   record failures without silent replacement, and publish the image paths for visual feedback.
+4. **After enough measured evidence:** advance 3 → 4 → 8 → 12 → 16 workers only when the prior
+   stage passes collision, provider-failure, retry-rate, and visual-quality gates.
+5. **Review boundary:** blind review determines acceptance, revision, and promotion; it does not
+   prevent creation of an experimental candidate.
+
 ```bash
-# Human baseline review (requires an accessible PostgreSQL database with current migrations).
+# Human baseline review after candidate production (requires an accessible PostgreSQL database
+# with current migrations).
 pnpm doctor:affinity-review-db
 pnpm db:migrate
 pnpm doctor:affinity-review-db

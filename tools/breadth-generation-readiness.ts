@@ -56,7 +56,7 @@ const BlockerSchema = z.enum([
 	'breadth-manifest-pair-invalid',
 	'canary-coordinate-mismatch',
 	'owned-output-collision',
-	'owned-output-not-absent',
+	'owned-output-partial',
 	'repository-skill-invalid',
 	'installed-skill-invalid',
 	'installed-skill-stale',
@@ -110,6 +110,8 @@ export const BreadthGenerationReadinessReportSchema = z
 				ownedOutputCount: z.number().int().min(0).max(48),
 				uniqueOwnedOutputCount: z.number().int().min(0).max(48),
 				absentOwnedOutputCount: z.number().int().min(0).max(48),
+				completedPairCount: z.number().int().min(0).max(24),
+				remainingPairCount: z.number().int().min(0).max(24),
 				manifestSetCanonicalSha256: HashSchema.nullable(),
 				manifestPairs: z.array(ManifestPairEvidenceSchema).max(24),
 				canaryCoordinates: z
@@ -241,7 +243,13 @@ export function buildBreadthGenerationReadiness(
 	const absentOwnedOutputCount = outputPaths.filter((value) =>
 		input.absentOutputPaths.has(value)
 	).length;
-	if (absentOwnedOutputCount !== outputPaths.length) blockers.add('owned-output-not-absent');
+	let completedPairCount = 0;
+	for (const target of observedBreadthTargets) {
+		const candidateAbsent = input.absentOutputPaths.has(target.output.candidatePath);
+		const resultAbsent = input.absentOutputPaths.has(target.output.resultPath);
+		if (candidateAbsent !== resultAbsent) blockers.add('owned-output-partial');
+		else if (!candidateAbsent) completedPairCount += 1;
+	}
 	const manifestPairs: z.infer<typeof ManifestPairEvidenceSchema>[] = [];
 	const coordinates = new Set<string>();
 	for (const expectedPair of expected) {
@@ -387,6 +395,8 @@ export function buildBreadthGenerationReadiness(
 			ownedOutputCount: outputPaths.length,
 			uniqueOwnedOutputCount: uniqueOutputPaths.size,
 			absentOwnedOutputCount,
+			completedPairCount,
+			remainingPairCount: observedBreadthTargets.length - completedPairCount,
 			manifestSetCanonicalSha256: orderedPairs.length === 24 ? sha256Json(orderedPairs) : null,
 			manifestPairs: orderedPairs,
 			canaryCoordinates,

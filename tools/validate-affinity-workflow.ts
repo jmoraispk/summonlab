@@ -341,17 +341,36 @@ export async function validateAffinityWorkflowWorkspace(
 			hashFramedTree(installedSkillRoot),
 			hashFramedTree(repositorySkillRoot)
 		]);
-		const validator = await execFileAsync(
-			'python3',
-			[
-				path.resolve(workspaceRoot, evidence.preflight.validator),
-				path.resolve(workspaceRoot, evidence.target.path),
-				path.resolve(workspaceRoot, evidence.assignment.path),
-				workspaceRoot
-			],
-			{ encoding: 'utf8' }
+		const outputsAbsent = await Promise.all(
+			[evidence.ownedOutputs.candidatePath, evidence.ownedOutputs.resultPath].map((relative) =>
+				readFile(path.resolve(workspaceRoot, relative)).then(
+					() => false,
+					() => true
+				)
+			)
 		);
-		const validatorReport = JSON.parse(validator.stdout) as unknown;
+		if (outputsAbsent[0] !== outputsAbsent[1]) {
+			throw new Error('Dry-run-owned production outputs are only partially present.');
+		}
+		// The preflight validator is intentionally collision-sensitive. Re-run it while the job is
+		// unstarted; after production, preserve its hash-bound historical report and let the strict
+		// result/candidate validation below prove the completed execution.
+		const validatorReport = outputsAbsent.every(Boolean)
+			? (JSON.parse(
+					(
+						await execFileAsync(
+							'python3',
+							[
+								path.resolve(workspaceRoot, evidence.preflight.validator),
+								path.resolve(workspaceRoot, evidence.target.path),
+								path.resolve(workspaceRoot, evidence.assignment.path),
+								workspaceRoot
+							],
+							{ encoding: 'utf8' }
+						)
+					).stdout
+				) as unknown)
+			: evidence.preflight.report;
 		const prompt = await execFileAsync(
 			'python3',
 			[
@@ -372,14 +391,6 @@ export async function validateAffinityWorkflowWorkspace(
 				);
 			})
 		);
-		const outputsAbsent = await Promise.all(
-			[evidence.ownedOutputs.candidatePath, evidence.ownedOutputs.resultPath].map((relative) =>
-				readFile(path.resolve(workspaceRoot, relative)).then(
-					() => false,
-					() => true
-				)
-			)
-		);
 		if (
 			sha256(await readFile(path.resolve(workspaceRoot, evidence.target.path))) !==
 				evidence.target.contentHash ||
@@ -397,8 +408,7 @@ export async function validateAffinityWorkflowWorkspace(
 			sha256(promptBytes) !== evidence.canonicalPrompt.contentHash ||
 			(promptBytes.at(-1) === 10) !== evidence.canonicalPrompt.terminalLineFeed ||
 			referencesCurrent.some((current) => !current) ||
-			evidence.preflight.referenceCount !== evidence.references.length ||
-			outputsAbsent.some((absent) => !absent)
+			evidence.preflight.referenceCount !== evidence.references.length
 		) {
 			throw new Error('Fresh-agent dry-run evidence is stale or cannot be reproduced.');
 		}

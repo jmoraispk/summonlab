@@ -1,7 +1,7 @@
 {
 	"schemaVersion": "image-production-catalog-v1",
 	"experimentId": "affinity-workflow-v1",
-	"generatedAt": "2026-08-29T19:31:15.409Z",
+	"generatedAt": "2026-08-30T04:28:00.030Z",
 	"status": "experimental-unpromoted",
 	"entries": [
 		{
@@ -105,6 +105,19 @@
 			"status": "candidate",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
 			"candidateHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-cave-drake-normal",
+			"resultId": "result-affinity-workflow-v1-cave-drake-normal",
+			"assignmentId": "assignment-affinity-workflow-v1-cave-drake-normal",
+			"speciesId": "cave-drake",
+			"affinity": "normal",
+			"cohort": "breadth",
+			"status": "candidate",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/normal-v1.png",
+			"candidateHash": "14b00dfe91059042c66490dd1b35e97a89c1902f6b7dad62bdaa11b12ea90a46",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -382,6 +395,19 @@
 			"promoted": false
 		},
 		{
+			"targetId": "affinity-workflow-v1-goblin-normal",
+			"resultId": "result-affinity-workflow-v1-goblin-normal",
+			"assignmentId": "assignment-affinity-workflow-v1-goblin-normal",
+			"speciesId": "goblin",
+			"affinity": "normal",
+			"cohort": "breadth",
+			"status": "revise",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+			"candidateHash": "d3bea916206fd2a157c71911ff6ff8d5ee5759a3c4540d91591dd902012e6706",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
 			"targetId": "affinity-workflow-v1-grey-wolf-fire",
 			"resultId": "result-affinity-workflow-v1-grey-wolf-fire",
 			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-fire",
@@ -469,6 +495,19 @@
 			"status": "candidate",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
 			"candidateHash": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35",
+			"reviewState": "pending",
+			"promoted": false
+		},
+		{
+			"targetId": "affinity-workflow-v1-tunnel-boar-fire",
+			"resultId": "result-affinity-workflow-v1-tunnel-boar-fire",
+			"assignmentId": "assignment-affinity-workflow-v1-tunnel-boar-fire",
+			"speciesId": "tunnel-boar",
+			"affinity": "fire",
+			"cohort": "breadth",
+			"status": "revise",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
+			"candidateHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5",
 			"reviewState": "pending",
 			"promoted": false
 		}

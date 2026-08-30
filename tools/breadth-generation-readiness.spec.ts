@@ -37,9 +37,19 @@ function withAllocation(
 	};
 }
 
+function asUnstarted(input: BreadthGenerationReadinessInput): BreadthGenerationReadinessInput {
+	const absentOutputPaths = new Set<string>();
+	for (const artifact of input.targets) {
+		const target = ImageProductionTargetSchema.parse(artifact.value);
+		absentOutputPaths.add(target.output.candidatePath);
+		absentOutputPaths.add(target.output.resultPath);
+	}
+	return { ...input, absentOutputPaths };
+}
+
 describe('Breadth generation readiness', () => {
 	it('is strictly ready for all 24 current pairs with an exact injected v2 allocation', () => {
-		const report = buildBreadthGenerationReadiness(withAllocation(current));
+		const report = buildBreadthGenerationReadiness(withAllocation(asUnstarted(current)));
 		expect(BreadthGenerationReadinessReportSchema.parse(report)).toEqual(report);
 		expect(report.status).toBe('ready');
 		expect(report.blockers).toEqual([]);
@@ -52,6 +62,8 @@ describe('Breadth generation readiness', () => {
 			ownedOutputCount: 48,
 			uniqueOwnedOutputCount: 48,
 			absentOwnedOutputCount: 48,
+			completedPairCount: 0,
+			remainingPairCount: 24,
 			skillTreesMatch: true,
 			allocationStatus: 'verified',
 			allocationCoveredPairCount: 24,
@@ -99,16 +111,35 @@ describe('Breadth generation readiness', () => {
 		expect(report.evidence.uniqueOwnedOutputCount).toBe(46);
 	});
 
-	it('fails closed on an already occupied owned output', () => {
-		const absentOutputPaths = new Set(current.absentOutputPaths);
+	it('fails closed on a partially occupied owned output pair', () => {
+		const unstarted = asUnstarted(current);
+		const absentOutputPaths = new Set(unstarted.absentOutputPaths);
 		const target = ImageProductionTargetSchema.parse(current.targets[0]!.value);
 		absentOutputPaths.delete(target.output.candidatePath);
 		const report = buildBreadthGenerationReadiness(
-			withAllocation({ ...current, absentOutputPaths })
+			withAllocation({ ...unstarted, absentOutputPaths })
 		);
 		expect(report.status).toBe('blocked');
-		expect(report.blockers).toContain('owned-output-not-absent');
+		expect(report.blockers).toContain('owned-output-partial');
 		expect(report.evidence.absentOwnedOutputCount).toBe(47);
+	});
+
+	it('remains ready when a completed job owns both of its output paths', () => {
+		const unstarted = asUnstarted(current);
+		const absentOutputPaths = new Set(unstarted.absentOutputPaths);
+		const target = ImageProductionTargetSchema.parse(current.targets[0]!.value);
+		absentOutputPaths.delete(target.output.candidatePath);
+		absentOutputPaths.delete(target.output.resultPath);
+		const report = buildBreadthGenerationReadiness(
+			withAllocation({ ...unstarted, absentOutputPaths })
+		);
+		expect(report.status).toBe('ready');
+		expect(report.blockers).toEqual([]);
+		expect(report.evidence).toMatchObject({
+			absentOwnedOutputCount: 46,
+			completedPairCount: 1,
+			remainingPairCount: 23
+		});
 	});
 
 	it('fails closed when a manifest coordinate is missing', () => {

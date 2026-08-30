@@ -1,8 +1,8 @@
 {
 	"schemaVersion": "image-production-evaluation-v1",
 	"experimentId": "affinity-workflow-v1",
-	"generatedAt": "2026-08-29T19:31:15.409Z",
-	"catalogHash": "681f5931e4ea66c7ccfe80df25bd3eaf1263b4bf2fae65831c8c3c2796921706",
+	"generatedAt": "2026-08-30T04:28:00.030Z",
+	"catalogHash": "789be731726d56889550dce56f8d077e7639fe6fb265c4439850dc5eb02f8820",
 	"status": "incomplete",
 	"controlled": {
 		"targetCount": 24,
@@ -14,8 +14,8 @@
 		"acceptedCriticalVisualFailureCount": 0
 	},
 	"workflow": {
-		"completedTargetCount": 36,
-		"completeProvenanceCount": 36,
+		"completedTargetCount": 39,
+		"completeProvenanceCount": 39,
 		"pathConflictCount": 0,
 		"sharedFileEditCount": 0,
 		"retryCeilingViolationCount": 0

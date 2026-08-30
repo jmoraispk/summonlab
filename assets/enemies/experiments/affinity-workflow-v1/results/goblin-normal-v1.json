@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-workflow-v1-goblin-normal",
+  "targetId": "affinity-workflow-v1-goblin-normal",
+  "assignmentId": "assignment-affinity-workflow-v1-goblin-normal",
+  "skillVersion": "summonlab-image-production-v1",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-workflow-v1-goblin-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-workflow-v1-goblin-normal\".\n\nSubject and threat:\n- Species: goblin.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: guard.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- adult goblin identity\n- individual face\n- duty-readable equipment\n\nAnatomy invariants:\n- humanoid biped\n- two arms and two legs\n- goblin-range stature\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: Preserve the established species weak point without elemental substitution.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: childlike proportions; repeated default face; affinity-locked duty or build; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nGoblin compound variation:\n- seed: goblin-affinity-00.\n- battlefieldDuty: guard.\n- stature: short.\n- build: sturdy.\n- adultAgeBand: weathered.\n- face: shape=asymmetric-oblong; nose=broken-bridge; jaw=heavy; brow=heavy-ridged; ears=broad-drooping; scarsOrAsymmetry=cheek-seam; balanced.\n- skinPalette: cool-sage.\n- localizedMarkings: ritual-dots.\n- clothingSilhouette: sleeveless-mail-vest.\n- clothingLayers: sleeveless-mail-vest, ceremonial-underlayer.\n- materialCondition: ceremonial.\n- footwear: fur-lined-boots.\n- headwear: wrapped-headscarf.\n- armorCoverage: light.\n- handedness: right.\n- weaponOrFocus: pole-hook-and-lantern.\n- posture: upright-commanding.\n- equipmentAnchors: pole-hook-and-lantern, wrapped-headscarf, fur-lined-boots.\n- affinityExpression: established species materials, restrained neutral effects, and no unexplained elemental anatomy.\n- counterplayCue: Preserve the established species weak point without elemental substitution.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly medieval dark fantasy with coherent materials, controlled linework, grounded anatomy, and restrained local magical emission.\n- Medium: premium realistic painterly raster character concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/goblinoids-v1.webp — Established goblin species scale, adult proportions, material finish, and four canonical duty cues only; explicitly do not copy its repeated face or uniform ragged outfit distribution.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish and neutral presentation only; do not transfer Grade 7 or 10 scale, anatomy, weapons, glow, or the Tower Archmage.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n",
+      "promptHash": "9899dd654098ce7bbea64767adeb9e9b0478873207e8217ff8e943e9d9964797",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T04:25:18.791Z",
+      "generationCompletedAt": "2026-08-30T04:25:41.791Z",
+      "inspectionCompletedAt": "2026-08-30T04:26:10.701Z",
+      "generationDurationMs": 23000,
+      "inspectionDurationMs": 28910,
+      "totalWallTimeMs": 51910,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a050e9-5d21-7f42-bf49-a9040b9c6f83/exec-c8d70a76-dbd8-418c-8579-46eee615df9d.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete backdrop and cracked-stone floor were intentionally rendered with no blank or abrupt region."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The pole-hook tip and boot soles sat inside the canvas but did not maintain the strict eight-percent safe margin."
+        }
+      ],
+      "retryReason": "A targeted edit was required to preserve the successful Goblin design while uniformly scaling and recentering every hard extent inside the central eighty-four percent."
+    },
+    {
+      "attemptId": "affinity-workflow-v1-goblin-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-workflow-v1-goblin-normal-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Edit the supplied preceding output; this is a targeted framing correction, not a complete regeneration. Preserve the same single adult weathered short sturdy Goblin guard; preserve his individual asymmetric-oblong cool-sage face, broken-bridge nose, heavy jaw, heavy-ridged brow, broad-drooping ears, cheek-seam asymmetry, balanced facial composition, ritual-dot markings, upright commanding posture, right-handed grip, pole-hook with hanging lantern, wrapped patterned headscarf, sleeveless mail vest over a ceremonial underlayer, light armor coverage, fur-lined boots, ceremonial material condition, grounded anatomy, premium realistic painterly medieval dark-fantasy finish, neutral cracked-stone floor, charcoal-to-midnight background, controlled neutral lighting, fully finished canvas, and completely unaffiliated appearance without elemental glow, affinity-coded material, magical anatomy, or magical wake. Correct only composition scale and centering: uniformly scale the complete Goblin, full pole-hook, lantern and every hard extent down enough that the top weapon tip, bottom boots, lantern, hands, elbows, ears, and all extremities sit at least eight percent inside every canvas edge, entirely within the central 84 percent of both canvas dimensions, with a clearly empty finished border on all four sides. Keep exactly one subject. Preserve two arms, two legs, goblin-range stature, believable hand grip and anatomy, and the same duty-readable equipment. Do not add or remove equipment, do not redesign the face or clothing, and do not introduce a childlike body, repeated-default face, extra creature, extra limb, text, label, UI, frame, logo, watermark, blank band, unfinished region, abrupt cutoff, or resemblance to a published character.",
+      "promptHash": "1e3aa8e1b1831125df0fe3fe0cd8a6224c5cb46833ae21dba8ab46850c0b104f",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/goblinoids-v1.webp",
+          "contentHash": "7ba41d4405a752cbb19fb533a50c8b79b5ae60aa0b2aa8438afca7ce01781a32"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a050e9-5d21-7f42-bf49-a9040b9c6f83/exec-c8d70a76-dbd8-418c-8579-46eee615df9d.png",
+        "contentHash": "8dbfd4a43ce1e3ec28cd226b243b54262ca255cb34d4f27a09f862ea080268bc"
+      },
+      "requestStartedAt": "2026-08-30T04:26:10.701Z",
+      "generationCompletedAt": "2026-08-30T04:26:37.769Z",
+      "inspectionCompletedAt": "2026-08-30T04:27:03.298Z",
+      "generationDurationMs": 27068,
+      "inspectionDurationMs": 25529,
+      "totalWallTimeMs": 52597,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a050e9-5d21-7f42-bf49-a9040b9c6f83/exec-7452cec7-296b-4f65-a4a3-871fb4a7489e.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 25,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a050e9-5d21-7f42-bf49-a9040b9c6f83/exec-7452cec7-296b-4f65-a4a3-871fb4a7489e.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1877856,
+          "contentHash": "d3bea916206fd2a157c71911ff6ff8d5ee5759a3c4540d91591dd902012e6706"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1877856,
+          "contentHash": "d3bea916206fd2a157c71911ff6ff8d5ee5759a3c4540d91591dd902012e6706"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1877856,
+        "contentHash": "d3bea916206fd2a157c71911ff6ff8d5ee5759a3c4540d91591dd902012e6706"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The full 1536 by 1024 canvas has a continuous finished charcoal backdrop and cracked-stone floor."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pole-hook tip, lantern, ears, elbows, hands, boots, and complete silhouette remain comfortably within the central eighty-four percent with empty finished borders."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one featured Goblin guard appears without a duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "fail",
+          "observation": "The exact first submitted prompt is retained, but it contains one terminal line feed that the safe-frame-v4 canonical renderer omits; the recorded prompt hash exposes the byte mismatch."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending human review; known-target inspection finds a strongly readable adult Goblin face, broad ears, short sturdy stature, and grounded goblinoid proportions."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds neutral organic skin, ordinary metal and cloth equipment, and no unexplained elemental construction."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Normal remains explicitly unaffiliated: the warm light is visibly sourced by the mundane hanging lantern, while the body, clothing, equipment, and environmental wake show no elemental substitution or magical anatomy."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The image presents a coherent adult humanoid biped with two arms, two legs, believable grounded weight, goblin-range stature, and a credible right-handed pole grip."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The upright stance, watch lantern, long pole-hook, alert expression, and restrained light armor communicate an elite guard duty."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The weathered cool-sage Goblin has an individual asymmetrical oblong face, broken nose bridge, heavy jaw and brow, broad drooping ears, cheek seam, ritual dots, wrapped headscarf, sleeveless mail vest, ceremonial underlayer, light armor, fur-lined boots, and the declared pole-hook-and-lantern."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, readable worn metal, cloth, leather and fur materials, neutral floor, and controlled dark-fantasy lighting remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No text, UI, frame, logo, watermark, extra subject, extra limb, childlike proportion, sexualization, blank band, or abrupt cutoff is visible."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction source was exclusive-copied without normalization; source and retained dimensions, media type, byte count, and SHA-256 hash match."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned candidate and result paths were written, with no shared review mutation, manifest edit, application change, git operation, or self-promotion."
+        }
+      ],
+      "retryReason": "The corrected visual passes the required visual authoring gates, but the immutable first-request canonical-prompt byte mismatch prevents candidacy; no further call is permitted and the retained review image is therefore recorded as revise."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "protocol-provenance"
+  ],
+  "startedAt": "2026-08-30T04:25:18.791Z",
+  "completedAt": "2026-08-30T04:27:49.544Z",
+  "totalWallTimeMs": 150753,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
+    "assets/enemies/experiments/affinity-workflow-v1/results/goblin-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
