@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hex-adept-water",
+  "targetId": "affinity-expansion-v1-hex-adept-water",
+  "assignmentId": "assignment-affinity-expansion-v1-hex-adept-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-water-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hex-adept-water\".\n\nSubject and threat:\n- Species: hex-adept.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hex-adept-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Hex Adept remains immediately recognizable\n- Battlefield duty remains Debuff skirmisher\n- mobile one-handed caster with dangling curse tags and an open off-hand\n- three tags lift and point at the marked target\n- Counterplay remains visible: interruptible casting hand\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: interruptible casting hand Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 1 only: Hex Adept identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "443460e35e4009d331dee09cc80ca72b7ccc09b419efec556cd8bf669f31d275",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:39:58.000Z",
+      "generationCompletedAt": "2026-08-30T10:40:39.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:40:47.000Z",
+      "generationDurationMs": 41000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 49000,
+      "sourceOutputId": "exec-1c48ee75-64ad-4621-821d-7498d1dbd7c5",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The tall left crystal focus approaches the top safety band and the broad circular floor splash enters the bottom band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Water Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The adult two-arm/two-leg caster is credible, but four floating crystal prisms replace the required three lifted rectangular curse tags."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow, mist, wet reflections, coherent fluid transitions and an environmental wake visibly transform multiple dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The casting hand is visible, but a crystal-and-water focus obscures the coherent binding core and pressure-loss interval."
+        }
+      ],
+      "retryReason": "Replace all crystal prisms with exactly three airborne rectangular tags, open both hands, expose the right wrist binding core, compact the floor wake, and scale every extent into the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-water-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hex-adept-water-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Water Hex Adept identity, attack-telegraph, anatomy, and safe-framing correction. Preserve this exact single adult humanoid debuff skirmisher, exactly two arms and two grounded legs, mobile stance, dark layered equipment, pressurized-water construction, wet-reflective surfaces, mist, cracked-stone setting, and premium painterly finish. Remove all four floating crystal prisms and diamond cages—the focus above the left hand and the three large diamonds on the right—and remove the broad circular floor splash. Keep both hands open, empty and naturally articulated. Create exactly three airborne rectangular curse tags, each matching the inert rectangular belt/sleeve tags, connected by complete narrow pressurized water filaments to the open right casting hand and pointing toward one compact marked target. Other rectangular tags must hang inertly straight down from belt and sleeves. Expose one compact coherent dark binding core at the right wrist/palm; show a brief pressure-loss interval around it after the committed three-tag attack so it is clearly interruptible. Use coherent narrow fluid channels, mist and wet reflections rather than a blue glow or shapeless blob. Keep only a compact shallow wet floor wake beneath the feet. Uniformly scale the complete body, face, both open hands and fingers, garments, hanging tags, exactly three airborne rectangular tags with complete water filaments, contained mist/droplets, both feet, compact wet wake and shadow down by about 20 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No staff, weapon, crystal prism, diamond cage, fourth airborne tag, broad splash ring, extra limb, childlike proportion, glamour, sexualization, generic blue glow, text, frame, crop, or affinity change.",
+      "promptHash": "4d58059ef5702bba8002b7a3df483e589160ba9f5c2f780a6a11ebbe3fea7318",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-1c48ee75-64ad-4621-821d-7498d1dbd7c5.png",
+        "contentHash": "f6c51a7a147e14d02d02a93153d5b641add2af9a565c529e251f14be4f7285d4"
+      },
+      "requestStartedAt": "2026-08-30T10:40:55.000Z",
+      "generationCompletedAt": "2026-08-30T10:41:51.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:41:59.000Z",
+      "generationDurationMs": 56000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 64000,
+      "sourceOutputId": "exec-b81e2c00-d4d9-4810-9019-8542c00604f6",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-b81e2c00-d4d9-4810-9019-8542c00604f6.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2227036,
+          "contentHash": "80fb84a1569c5f9e43246d4b411197d29c390ed4ad9f69fb4d53389f0ebc6198"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2227036,
+          "contentHash": "80fb84a1569c5f9e43246d4b411197d29c390ed4ad9f69fb4d53389f0ebc6198"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2227036,
+        "contentHash": "80fb84a1569c5f9e43246d4b411197d29c390ed4ad9f69fb4d53389f0ebc6198"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete body, face, both hands, garments, hanging tags, exactly three airborne rectangular tags with complete water filaments, contained mist, feet, compact wet wake and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Water Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid skirmisher has exactly two arms and two grounded legs, two open empty natural hands, credible joints and feet, exactly three airborne rectangular curse tags, and no weapon or crystal prism."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Narrow pressurized channels, coherent tag filaments, mist, droplets, wet-reflective surfaces and the compact floor wake transform material, motion, telegraph and environment without generic glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A compact dark binding core and pressure-loss interval are clearly exposed at the open right casting wrist and palm."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hex-adept-water-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:39:58.000Z",
+  "completedAt": "2026-08-30T10:42:01.000Z",
+  "totalWallTimeMs": 123000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

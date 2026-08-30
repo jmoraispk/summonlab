@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-web-caster-wood",
+  "targetId": "affinity-expansion-v1-web-caster-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-web-caster-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-web-caster-wood\".\n\nSubject and threat:\n- Species: web-caster.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: web-caster-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Web Caster remains immediately recognizable\n- Battlefield duty remains Ranged restraint\n- raised abdomen, braced rear legs, and visible silk spinnerets\n- abdomen tilts and a pale silk line traces the target zone\n- Counterplay remains visible: spinnerets after a cast\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: spinnerets after a cast Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 2 only: Web Caster identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "0fb2e812120f7905fc1a789d4d568076a265c4efa955dffc5de0e55f7ab30d09",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:58:14.862Z",
+      "generationCompletedAt": "2026-08-30T10:58:35.607Z",
+      "inspectionCompletedAt": "2026-08-30T10:58:49.303Z",
+      "generationDurationMs": 20745,
+      "inspectionDurationMs": 13696,
+      "totalWallTimeMs": 34441,
+      "sourceOutputId": "exec-95085b26-e5f4-4154-a8b2-2c9b1e2a6ebb.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The far-right rear foot extended into the strict eight-percent safe border."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The connected Web Caster, raised abdomen, visible spinnerets, cast line, and eight connected locomotor legs were present."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark anatomy, root-formed load-bearing legs, resin seams, and wooden articulation transformed construction rather than decorating unchanged chitin."
+        }
+      ],
+      "retryReason": "Scale and recenter the complete design while preserving exact eight-legged Wood anatomy and target-line duty."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-web-caster-wood-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Wood Web Caster. Preserve the same single Pack 2 spider, raised silk-casting abdomen, braced rear stance, visible spinnerets, pale silk line to the rooted target marker, load-bearing bark anatomy, root-formed limbs, resin-bright seams, wooden articulation, sparse purposeful moss, cracked-stone floor, and charcoal backdrop. Preserve exactly eight connected locomotor legs—four per side—with eight separate roots and eight terminal feet individually visible; keep the short chelicerae and pedipalps distinct from the legs. Scale the spider, every terminal foot, abdomen, silk line, and rooted target marker to 78 percent of the current full composition and recenter them on the same native 1536×1024 landscape canvas. Leave at least eight percent clearly empty finished border on every side, especially beyond the far-right rear foot. Keep one connected cephalothorax and abdomen and grounded joints. Do not add foliage clumps, antlers, extra legs, duplicate spiders, detached anatomy, crop, text, frame, watermark, or unfinished region. Correction mode: targeted scale-and-containment edit only; preserve all passing Wood construction and duty traits.",
+      "promptHash": "817695246ee12ecb44cf4728beb0a94d2a8d857a20e4836cf30068b66c6ebd2d",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-95085b26-e5f4-4154-a8b2-2c9b1e2a6ebb.png",
+        "contentHash": "997255a245f17ace2db4f41782cba5c4ca5cd198e52b130f00057302db362cad"
+      },
+      "requestStartedAt": "2026-08-30T10:59:03.916Z",
+      "generationCompletedAt": "2026-08-30T10:59:25.456Z",
+      "inspectionCompletedAt": "2026-08-30T10:59:43.910Z",
+      "generationDurationMs": 21540,
+      "inspectionDurationMs": 18454,
+      "totalWallTimeMs": 39994,
+      "sourceOutputId": "exec-d9382b64-cf78-4739-97db-8c7f62536066.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 18,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-d9382b64-cf78-4739-97db-8c7f62536066.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2238540,
+          "contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2238540,
+          "contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2238540,
+        "contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All eight terminal feet, raised abdomen, silk line, and rooted target marker remain within the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered spider appears; the rooted marker is environmental telegraph rather than another creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected cephalothorax and raised abdomen carry exactly eight locomotor legs in four coherent pairs with separate roots and feet, braced rear stance, visible spinnerets, and pale target line."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Load-bearing bark plates, root-formed limbs, wooden joints, resin-bright seams, and fresh growth materially reshape anatomy and exposed bindings."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pale spinnerets and resin-bright binding seams remain exposed beneath the abdomen after the cast."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-web-caster-wood-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:58:14.529Z",
+  "completedAt": "2026-08-30T10:59:43.910Z",
+  "totalWallTimeMs": 89381,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

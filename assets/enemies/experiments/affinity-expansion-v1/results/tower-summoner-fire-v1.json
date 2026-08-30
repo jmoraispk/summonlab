@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-summoner-fire",
+  "targetId": "affinity-expansion-v1-tower-summoner-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-summoner-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-summoner-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-summoner-fire\".\n\nSubject and threat:\n- Species: tower-summoner.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-summoner-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Tower Summoner remains immediately recognizable\n- Battlefield duty remains Reinforcement controller\n- wide ritual frame, two grounded focus pylons, and both hands occupied\n- empty gate geometry assembles on the floor before an add arrives\n- Counterplay remains visible: paired focus pylons break the channel\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: paired focus pylons break the channel The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 3 only: Tower Summoner identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "bf6591f9b04a711b6391e1f7ed0a05cb61af6163d8f359918a14805780533ffc",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:56:05.000Z",
+      "generationCompletedAt": "2026-08-30T10:56:51.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:56:59.000Z",
+      "generationDurationMs": 46000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 54000,
+      "sourceOutputId": "exec-224008b9-10a1-4498-8cc9-1a2324396b25",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Tall flame/smoke plumes and the broad molten floor gate enter the top and bottom safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one adult Fire Tower Summoner appears and the floor gate remains empty."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult two-arm/two-leg controller has both hands occupied, exactly two grounded pylons, empty gate geometry and readable reinforcement duty."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Heat-blackened construction and ember seams are strong, but broad orange emission, plumes and orbit geometry overpower readable materials."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The two pylon bases are visible, but their cooling heat sinks are obscured by surrounding flame and molten emission."
+        }
+      ],
+      "retryReason": "Remove broad aura, head horns, tall plumes and far embers; keep narrow internal ember seams, expose cooling pylon bases, compact the empty gate, and scale all extents into the safe frame."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-summoner-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-summoner-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire Tower Summoner safe-framing, restrained-emission, and counterplay correction. Preserve this exact single adult humanoid reinforcement controller, exactly two arms and two grounded legs, wide ritual silhouette, left hand gripping one staff, right hand physically supporting one compact channel focus, exactly two grounded focus pylons, empty floor-gate geometry, cracked-stone setting, and premium painterly finish. Remove the two horn-like crown points and all broad orange aura, full-body orange illumination, tall flame plumes, far-ranging embers and oversized orbit ring. Show the summoner between combustion cycles: heat-blackened cloth and metal remain materially dark and readable, with narrow internal ember seams only at load-bearing armor joints, staff mechanism, compact hand focus, and the two pylon channels. Keep both hands visibly occupied and exactly two complete grounded pylons. Expose a dark ribbed cooling heat sink with one pale cooling seam at each grounded pylon base; these paired bases visibly break the channel. The empty floor gate uses restrained thin molten seams and a compact smoke/heat-distortion wake, with no summoned add or extra subject. Uniformly scale the complete summoner, compact head, staff tip and butt, both occupied hands, every garment edge, compact focus, exactly two pylons, contained smoke/sparks/distortion, empty floor-gate geometry, both feet and shadow down by about 20 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No crown horn, third pylon, summoned add, broad fire aura, full-body orange glow, tall flame plume, extra limb, childlike proportion, glamour, sexualization, text, frame, crop, or affinity change.",
+      "promptHash": "5aa20855d66fa912097a9b043d3566679e5b4419d3729cc047ad6a1bd351bdba",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-224008b9-10a1-4498-8cc9-1a2324396b25.png",
+        "contentHash": "26a47d9f1d93c7f93e5ff24b42173b8dd13a60dbf40d267219df1e4c6c9ac811"
+      },
+      "requestStartedAt": "2026-08-30T10:57:07.000Z",
+      "generationCompletedAt": "2026-08-30T10:57:48.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:57:56.000Z",
+      "generationDurationMs": 41000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 49000,
+      "sourceOutputId": "exec-a4e68cf2-cfa1-46f2-8ddd-c2fa313b5dd6",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+					"path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-a4e68cf2-cfa1-46f2-8ddd-c2fa313b5dd6.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2091267,
+          "contentHash": "53ec38b66f466eca25f9e9a756baa4a551f096fde641f9e32efaf9f27903b21e"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2091267,
+          "contentHash": "53ec38b66f466eca25f9e9a756baa4a551f096fde641f9e32efaf9f27903b21e"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2091267,
+        "contentHash": "53ec38b66f466eca25f9e9a756baa4a551f096fde641f9e32efaf9f27903b21e"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete summoner, compact head, staff, occupied hands, garments, hand focus, exactly two pylons, contained smoke and sparks, empty floor gate, feet and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one adult Fire Tower Summoner appears and the floor gate remains visibly empty."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid has exactly two arms and two grounded legs, left staff grip, right supported focus, exactly two grounded pylons, empty gate geometry and no crown horns."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened readable cloth and metal carry narrow internal ember seams at load-bearing joints, staff mechanism, hand focus and pylon channels without broad aura or full-body glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both grounded pylons expose dark ribbed cooling heat sinks with pale cooling seams at their bases as the channel-breaking counterplay."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-summoner-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:56:05.000Z",
+  "completedAt": "2026-08-30T10:57:58.000Z",
+  "totalWallTimeMs": 113000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-summoner-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

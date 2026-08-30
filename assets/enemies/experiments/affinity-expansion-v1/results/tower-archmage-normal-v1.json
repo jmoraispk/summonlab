@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-archmage-normal",
+  "targetId": "affinity-expansion-v1-tower-archmage-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-archmage-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-archmage-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-archmage-normal\".\n\nSubject and threat:\n- Species: tower-archmage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-archmage-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Tower Archmage remains immediately recognizable\n- Battlefield duty remains Multi-phase commander\n- tall asymmetric mantle, orbiting geometry, and three distinct casting anchors\n- one orbit locks into a recognizable attack geometry before each school\n- Counterplay remains visible: active focus changes with the current phase\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: active focus changes with the current phase\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 4 only: Tower Archmage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6104311b7b22c0b9671a49446e8ccd80b3abf527c61da73a99f3bc4dab37aa68",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png", "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:20:44.417Z",
+      "generationCompletedAt": "2026-08-30T10:21:35.447Z",
+      "inspectionCompletedAt": "2026-08-30T10:21:42.447Z",
+      "generationDurationMs": 51030,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 58030,
+      "sourceOutputId": "exec-a6a2e0a0-ae8d-4c24-b388-93dbfe6804ac.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, complete archmage, staff, three anchors, orbit geometry, restrained wake, and shadows were intentionally finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The staff crown, upper orbit geometry, and lower anchor and ritual-circle extents entered the required eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Tower Archmage appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "The adult connected humanoid has exactly two arms and two grounded legs, two credible hands, two feet, articulated joints, and one staff held in a secure grip."},
+        {"criterionId": "manifest-fidelity", "category": "spell-duty", "evaluator": "producer", "outcome": "pass", "observation": "Tall asymmetric mantle, exactly three distinct floor casting anchors, multiple orbiting geometries, one locked attack geometry, and a phase-changing active focus communicate the multi-phase commander duty."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Worn dark cloth and metal, restrained neutral arcane geometry, and ordinary floor contact remain free of elemental material, anatomy, or wake."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete archmage, staff crown, mantle tips, hands, feet, all three anchors, orbit geometry, focus, ritual circle, wake, and shadows inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-archmage-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-archmage-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the character. Preserve the exact Tower Archmage identity, adult humanoid anatomy with exactly two arms and two legs, both credible hands, both grounded feet, connected head and torso, staff held in one hand, open casting hand, tall asymmetric mantle, exactly three distinct floor casting anchors, orbiting geometry, one locked attack geometry, phase-changing active focus, worn neutral dark materials, restrained non-elemental arcane light, pose, equipment, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete archmage together with the entire staff and crown, every mantle tip, both hands, both feet, all three complete floor anchors, every orbit line and geometric focus, hanging ornament, restrained arcane wake, and contact shadow so every hard and effect extent fits inside the central 84 percent of both canvas dimensions with a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve exactly two arms and two legs, one staff, three distinct anchors, and the active-focus phase cue. Do not crop, omit, add, duplicate, recolor, or redesign anatomy, hands, feet, mantle, staff, anchors, geometry, focus, materials, or wake. Do not introduce elemental material, glow, anatomy, or wake. No extra limbs, extra creature, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "dfed8e5697a45b85756be6e585b3ff834643bbf53e86fc92f32860e064e4e2da",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png", "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-a6a2e0a0-ae8d-4c24-b388-93dbfe6804ac.png", "contentHash": "65bbe06a3e7420bc0ca1a9871903e71fd2ebfad46b3865d91b25de86d75aa5a7"},
+      "requestStartedAt": "2026-08-30T10:22:10.147Z",
+      "generationCompletedAt": "2026-08-30T10:23:05.526Z",
+      "inspectionCompletedAt": "2026-08-30T10:23:12.526Z",
+      "generationDurationMs": 55379,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 62379,
+      "sourceOutputId": "exec-f1cb1e60-29cc-40e0-a980-c2eaf252effb.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-f1cb1e60-29cc-40e0-a980-c2eaf252effb.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2151413, "contentHash": "dd739934269f532e9232c896f831821f7f7001cf0a94382fe6a2bb4e4bd983c8"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2151413, "contentHash": "dd739934269f532e9232c896f831821f7f7001cf0a94382fe6a2bb4e4bd983c8"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2151413, "contentHash": "dd739934269f532e9232c896f831821f7f7001cf0a94382fe6a2bb4e4bd983c8"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The entire staff and crown, mantle tips, both hands, both feet, all three complete anchors, every orbit and focus, hanging ornaments, ritual circle, wake, and shadow fit inside a clearly empty border of at least eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Tower Archmage appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "The connected adult humanoid has exactly two arms and two legs, two credible hands, two visible grounded feet, readable joints, one staff grip, and grounded weight without extra limbs."},
+        {"criterionId": "manifest-fidelity", "category": "spell-duty", "evaluator": "producer", "outcome": "pass", "observation": "The tall asymmetric mantle, exactly three floor casting anchors, orbiting geometry, locked attack geometry, and brighter current-phase focus clearly stage the multi-phase commander spell duty and counterplay."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Worn dark cloth and metal, restrained neutral arcane geometry, and ordinary ground contact remain explicitly unaffiliated without elemental material, anatomy, or wake."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Tower Archmage cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Normal recognition remains pending human review; known-target inspection finds neutral materials and restrained non-elemental arcane effects."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent worn cloth and metal, cracked floor, charcoal backdrop, and restrained arcane light remain cohesive without another-species transfer."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,151,413 bytes, and SHA-256 dd739934269f532e9232c896f831821f7f7001cf0a94382fe6a2bb4e4bd983c8 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-archmage-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:20:44.417Z",
+  "completedAt": "2026-08-30T10:23:34.051Z",
+  "totalWallTimeMs": 169634,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-archmage-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

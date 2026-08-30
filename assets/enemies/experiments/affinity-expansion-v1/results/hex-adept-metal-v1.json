@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hex-adept-metal",
+  "targetId": "affinity-expansion-v1-hex-adept-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-hex-adept-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-metal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hex-adept-metal\".\n\nSubject and threat:\n- Species: hex-adept.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hex-adept-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Hex Adept remains immediately recognizable\n- Battlefield duty remains Debuff skirmisher\n- mobile one-handed caster with dangling curse tags and an open off-hand\n- three tags lift and point at the marked target\n- Counterplay remains visible: interruptible casting hand\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: interruptible casting hand Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 1 only: Hex Adept identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "90b6644d0fb3c3bb7926ec6c2ab2807f940011e625e179c8b1c8fbce561ce40e",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:34:36.000Z",
+      "generationCompletedAt": "2026-08-30T10:35:24.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:35:32.000Z",
+      "generationDurationMs": 48000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 56000,
+      "sourceOutputId": "exec-3df1973c-7fbc-4160-b074-11486b1f1e73",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The spiked head halo enters the top safety band and the outer spell geometry enlarges the hard/effect extent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Metal Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The adult two-arm/two-leg caster and open hands are credible, but the lifted orange off-hand orb competes with the required three-tag attack read."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged articulated anatomy, load-bearing metal plates, metallic inner structure and controlled fragments transform multiple declared dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The open right casting hand and distinct magnetic wrist/palm control are readable."
+        }
+      ],
+      "retryReason": "Remove the halo and off-hand orb, reduce the distant focus to a compact target mark, retain exactly three airborne tags, and scale all extents into the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-metal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hex-adept-metal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Metal Hex Adept manifest-fidelity and safe-framing correction. Preserve this exact single adult humanoid debuff skirmisher, premium painterly dark-fantasy finish, forged articulated metal anatomy and load-bearing plates, dangling curse-tag language, two grounded legs, exactly two arms, two open empty hands, cracked-stone setting, and dark controlling magnetic core at the right casting wrist/palm. Preserve exactly three airborne rectangular curse tags connected by complete chains to the open right casting hand and pointing toward one marked target; all other rectangular tags must hang inertly straight down from the belt or sleeves. Remove the entire spiked halo ring behind the head, every head spike, the floating orange orb above the left hand, its orbit cage, and its lifted chain. Remove the large floating spiked polyhedron at far right; replace it with one compact dark magnetic target mark centered close behind the three airborne tags, smaller than the caster's head. Keep restrained controlled metal fragments only within that compact target mark. Make the right wrist/palm magnetic core and articulated joint materially distinct and clearly interruptible. Uniformly scale the complete subject, every garment strip, every hanging tag, exactly three airborne tags and their complete chains, compact target mark, all controlled fragments, both feet, floor wake and shadow down by about 20 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No staff, weapon, halo, crown, head spike, orange orb, large floating polyhedron, fourth airborne tag, extra limb, ordinary untransformed armor, childlike proportion, glamour, sexualization, text, frame, crop, or affinity change.",
+      "promptHash": "d958483feb0bbf42f6ba55bb67086aef399e40ede68dca8c9c630ca4e7d8c92f",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-3df1973c-7fbc-4160-b074-11486b1f1e73.png",
+        "contentHash": "1cdf11760bbb514d512639fe064809aa704126031755429964c8ff7eacebbe24"
+      },
+      "requestStartedAt": "2026-08-30T10:35:37.000Z",
+      "generationCompletedAt": "2026-08-30T10:36:18.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:36:26.000Z",
+      "generationDurationMs": 41000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 49000,
+      "sourceOutputId": "exec-c794fe1a-2c62-405d-a71c-f3b44b235a9a",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-c794fe1a-2c62-405d-a71c-f3b44b235a9a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2093492,
+          "contentHash": "0913d6aac655b9753a9004671cd3487b2b2d8a6c481214640a4b903070c3d5b6"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2093492,
+          "contentHash": "0913d6aac655b9753a9004671cd3487b2b2d8a6c481214640a4b903070c3d5b6"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2093492,
+        "contentHash": "0913d6aac655b9753a9004671cd3487b2b2d8a6c481214640a4b903070c3d5b6"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete body, both hands, all garment strips, exactly three airborne tags and complete chains, compact target mark, fragments, feet, floor wake and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Metal Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid skirmisher has exactly two arms and two grounded legs, two open empty hands, credible joints and feet, exactly three airborne curse tags, and no staff or competing off-hand focus."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged articulated anatomy, load-bearing interlocked plates, metallic inner structure, chain-linked tag equipment and controlled magnetic fragments transform multiple declared dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The right casting wrist and palm expose a materially distinct dark magnetic control core and articulated joint as the interruptible weak point."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hex-adept-metal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:34:36.000Z",
+  "completedAt": "2026-08-30T10:36:28.000Z",
+  "totalWallTimeMs": 112000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

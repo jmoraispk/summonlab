@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ward-mage-wind",
+  "targetId": "affinity-expansion-v1-ward-mage-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-ward-mage-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "provider-failure",
+      "failureKind": "malformed-output",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ward-mage-wind\".\n\nSubject and threat:\n- Species: ward-mage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ward-mage-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Ward Mage remains immediately recognizable\n- Battlefield duty remains Barrier support\n- square stance behind a broad forearm ward and layered defensive mantle\n- ward facets rotate toward the ally about to be protected\n- Counterplay remains visible: unshielded back while channeling\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: unshielded back while channeling The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 2 only: Ward Mage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "44d159644ec3c16ba0b7b27e52fab54240dde6fb753da6389c3fe92b95ea50e1",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:48:28.422Z",
+      "generationCompletedAt": "2026-08-30T10:49:28.753Z",
+      "inspectionCompletedAt": "2026-08-30T10:50:34.874Z",
+      "generationDurationMs": 60331,
+      "inspectionDurationMs": 66121,
+      "totalWallTimeMs": 126452,
+      "sourceOutputId": "exec-078112a9-4b4a-4365-9a98-44bf9e8406c4.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The initial render strongly satisfied the visual manifest but returned unsupported 1254×1254 rather than the required 1536×1024 canvas."
+        }
+      ],
+      "retryReason": "Regenerate the same successful design on a native 1536×1024 landscape canvas with strict safe-frame containment."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ward-mage-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Complete regeneration using the supplied Ward Mage Wind image strictly as the design reference. Render the same single adult human ward mage and the same grounded premium realistic painterly dark-fantasy materials, but rebuild the full composition on a native 1536 × 1024 landscape canvas.\n\nMandatory corrections:\n- Return a true 1536 × 1024 image/png; do not return a square canvas, crop, pad, letterbox, or blank band.\n- Scale the entire subject and every effect down to roughly 72% of canvas height. Keep every hard extent—the staff tip, both boots, mantle strips, ward facets, debris, and all wind trails—inside the central 84% of both dimensions, leaving an unmistakably empty dark border on all four sides.\n- Exactly one adult human biped, exactly two arms and exactly two legs, with grounded feet and credible hands. No extra limbs or duplicate anatomy.\n- Preserve the square defensive stance, broad forearm ward, layered mantle, staff, and rotating ward facets aimed toward an off-canvas ally.\n- Make Wind physical and directional: one coherent lateral pressure sweep drives cloth, vapor channels, and sparse debris in the same direction. Do not rely on pale color, transparency, or directionless particles.\n- Keep a clearly readable still center at the inner ward core between the directional streams, and preserve the counterplay: the mage's back remains visibly unshielded while channeling.\n- Neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral key, restrained local Wind emission.\n- No text, labels, UI, frame, logo, watermark, extra creature, cropped extremity, or unfinished region.",
+      "promptHash": "4ffff3e37e9fd68fe5d1a7ca67257f4fc220d3a6b06c9e05621b8c9c462f8a83",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-078112a9-4b4a-4365-9a98-44bf9e8406c4.png",
+        "contentHash": "5cffcea410cab98c40e5c13494cb9eca6ff64b8955aeef45320abb805b6df695"
+      },
+      "requestStartedAt": "2026-08-30T10:50:34.874Z",
+      "generationCompletedAt": "2026-08-30T10:50:56.586Z",
+      "inspectionCompletedAt": "2026-08-30T10:51:01.772Z",
+      "generationDurationMs": 21712,
+      "inspectionDurationMs": 5186,
+      "totalWallTimeMs": 26898,
+      "sourceOutputId": "exec-33406317-6eb2-45ea-a3cb-25465c315a49.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 18,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-33406317-6eb2-45ea-a3cb-25465c315a49.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2244156,
+          "contentHash": "f13abe9ab50f6484b221bfafef8cc57523fec6984646f7cc441ab2f37edad6ff"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2244156,
+          "contentHash": "f13abe9ab50f6484b221bfafef8cc57523fec6984646f7cc441ab2f37edad6ff"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2244156,
+        "contentHash": "f13abe9ab50f6484b221bfafef8cc57523fec6984646f7cc441ab2f37edad6ff"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Staff, boots, mantle strips, ward facets, debris, and directional pressure wake remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered Ward Mage appears on a deliberately finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Living adult human, exactly two arms and two legs, square stance, credible staff grip, broad forearm ward, rotating facets, layered mantle, and exposed rear flank are visible."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A coherent lateral pressure sweep drives cloth, vapor channels, sparse debris, attack telegraph, and environmental wake rather than acting as a pale overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The still inner ward center remains readable between moving streams, while the mantle and rear flank stay outside frontal ward coverage."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ward-mage-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:47:49.605Z",
+  "completedAt": "2026-08-30T10:51:01.772Z",
+  "totalWallTimeMs": 192167,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ward-mage-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

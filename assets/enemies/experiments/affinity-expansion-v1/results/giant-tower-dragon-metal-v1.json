@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-giant-tower-dragon-metal",
+  "targetId": "affinity-expansion-v1-giant-tower-dragon-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-giant-tower-dragon-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-giant-tower-dragon-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-giant-tower-dragon-metal\".\n\nSubject and threat:\n- Species: giant-tower-dragon.\n- Threat presentation tier: apex; reference Grade 4; canonical Grade 4.\n- Battlefield duty: giant-tower-dragon-duty.\n- Construction mode: winged-draconic.\n\nIdentity invariants:\n- Giant Tower Dragon remains immediately recognizable\n- Battlefield duty remains Arena-scale apex boss\n- immense four-legged winged silhouette shaped around tower-scale movement\n- wings, throat, and tail each stage a distinct arena hazard\n- Counterplay remains visible: resonance scars exposed only after a committed attack\n\nAnatomy invariants:\n- the declared wyvern or dragon limb plan remains exact, complete, and countable\n- connected head, neck, torso, tail, wing joints, and every grounded foot remain visible\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: resonance scars exposed only after a committed attack Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: wrong declared limb plan; extra wings or limbs; cropped tail or wings; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 4 only: Giant Tower Dragon identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a2c17f2f2bd666514cf144cff382642f1395491cab2333fca9c35f71121f5f81",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:37:19.985Z",
+      "generationCompletedAt": "2026-08-30T10:38:01.725Z",
+      "inspectionCompletedAt": "2026-08-30T10:38:08.725Z",
+      "generationDurationMs": 41740,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 48740,
+      "sourceOutputId": "exec-fb70aa8f-3d11-4ccb-a5b1-61dd666699d7.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "Outer wing tips, tallest horn, tail fragments, magnetic orbit, and wake entered the required eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Giant Tower Dragon appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four individually countable grounded legs and feet, exactly two complete wings, and the connected head, long neck, torso, throat, and full tail preserve the declared dragon limb plan."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forged anatomy, articulated load-bearing plates, metallic marrow seams, structural wing metal, and controlled magnetic tail fragments transform multiple construction dimensions beyond ordinary armor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The bright materially distinct chest magnetic core and exposed resonance scar identify the interruptible structure after a committed attack."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete dragon, wings, four feet, full tail, horns, controlled fragments, magnetic orbit, core, scars, wake, and shadows inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-giant-tower-dragon-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-giant-tower-dragon-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Giant Tower Dragon identity, immense apex silhouette, exactly four individually countable grounded legs and feet, exactly two complete connected wings, connected head, long neck, torso and full tail, wing joints, throat hazard, forged anatomy, articulated load-bearing plates, metallic marrow, controlled magnetic fragments, exposed resonance scar and distinct chest magnetic core, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete dragon together with every horn and metal spur, both entire wing membranes and every wing tip, all four legs and grounded feet, the complete curled tail tip, every controlled fragment and magnetic orbit, throat, resonance scar, core, wake, and contact shadow so every hard and effect extent fits inside the central 84 percent of both canvas dimensions with a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve the exact four-leg plus two-wing anatomy and forged Metal construction. Do not crop, omit, add, duplicate, recolor, or redesign anatomy, wings, legs, tail, head, throat, plates, marrow, fragments, scar, core, or wake. Do not reduce the affinity to ordinary armor. No banner, command standard, equipment, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "90a916c6e5cf71eded7e2a967ea17702644b66afec893ccafbaa31d6d9ee299d",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-fb70aa8f-3d11-4ccb-a5b1-61dd666699d7.png", "contentHash": "3fce4bc2fae22a178920b73e4e642d95292a5846d220c565fcc80049145956ee"},
+      "requestStartedAt": "2026-08-30T10:38:37.466Z",
+      "generationCompletedAt": "2026-08-30T10:39:14.969Z",
+      "inspectionCompletedAt": "2026-08-30T10:39:21.969Z",
+      "generationDurationMs": 37503,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 44503,
+      "sourceOutputId": "exec-a92b3b1a-5e69-43c4-8417-e093e4628e0d.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-a92b3b1a-5e69-43c4-8417-e093e4628e0d.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2158313, "contentHash": "a8024d831b721a6f48af5fe1d365a754009924a27f5026ef530a60b87a4f79d9"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/metal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2158313, "contentHash": "a8024d831b721a6f48af5fe1d365a754009924a27f5026ef530a60b87a4f79d9"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/metal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2158313, "contentHash": "a8024d831b721a6f48af5fe1d365a754009924a27f5026ef530a60b87a4f79d9"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "Every horn and metal spur, both complete wing membranes and all wing tips, all four grounded feet, full curled tail, every fragment and magnetic orbit, scars, core, wake, and shadow fit inside a clearly empty border of at least eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Giant Tower Dragon appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four individually countable grounded legs and feet, exactly two complete connected wings, and the connected head, long neck, torso, wing joints, throat, and full tail preserve the declared dragon plan and arena-scale apex silhouette."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forged anatomy, articulated load-bearing plates, metallic marrow seams, structural wing membranes, and magnetically controlled tail fragments visibly transform material, anatomy, articulation, and exposed counterplay beyond applied armor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The materially distinct bright chest magnetic core and resonance scar remain exposed as the interruptible weak point after commitment."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Giant Tower Dragon cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Metal recognition remains pending human review; known-target inspection finds integrated forged-plate, marrow, articulation, fragment, and magnetic-core cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent forged materials, restrained core emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive with no command-standard transfer."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,158,313 bytes, and SHA-256 a8024d831b721a6f48af5fe1d365a754009924a27f5026ef530a60b87a4f79d9 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-giant-tower-dragon-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:37:19.985Z",
+  "completedAt": "2026-08-30T10:39:50.387Z",
+  "totalWallTimeMs": 150402,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/giant-tower-dragon-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

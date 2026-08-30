@@ -1,0 +1,192 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ward-mage-fire",
+  "targetId": "affinity-expansion-v1-ward-mage-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-ward-mage-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "provider-failure",
+      "failureKind": "malformed-output",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ward-mage-fire\".\n\nSubject and threat:\n- Species: ward-mage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ward-mage-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Ward Mage remains immediately recognizable\n- Battlefield duty remains Barrier support\n- square stance behind a broad forearm ward and layered defensive mantle\n- ward facets rotate toward the ally about to be protected\n- Counterplay remains visible: unshielded back while channeling\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: unshielded back while channeling The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 2 only: Ward Mage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "74bafbf92391e81750796e9034cf7c3ef5af9f4dec49631a089454b89e39921c",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:32:57.979Z",
+      "generationCompletedAt": "2026-08-30T10:33:56.717Z",
+      "inspectionCompletedAt": "2026-08-30T10:34:09.346Z",
+      "generationDurationMs": 58738,
+      "inspectionDurationMs": 12629,
+      "totalWallTimeMs": 71367,
+      "sourceOutputId": "exec-64968504-09cf-4aad-a890-fa4c09f57565.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The canonical prompt produced a strong Fire Ward Mage design but returned a 1254×1254 PNG outside the manifest's supported 1536×1024 aspect, so it could not be persisted without distortion or cropping."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Visual inspection found one adult human with exactly two arms and two legs, square stance, staff, broad rotating-facet forearm ward, layered mantle, unshielded rear, and readable heat-sink counterplay."
+        }
+      ],
+      "retryReason": "Use the sole retry as a complete native 1536×1024 regeneration with the malformed output as a design reference, preserving its Ward Mage and Fire cues."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ward-mage-fire-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab enemy candidate complete regeneration\nPrimary request: Complete regeneration of the preceding Fire-affinity Ward Mage design as an exact 1536 by 1024 landscape composition. Preserve its weathered adult human woman identity, practical non-sexualized layered defensive clothing, square grounded stance, left-hand staff, broad geometric ward carried by the right forearm, heat-blackened material surfaces, internal ember seams, controlled combustion, smoke, and localized heat distortion. Recompose—not crop, stretch, pad, or merely resize—the whole design into a native 1536×1024 finished canvas.\nAnatomy invariants: Exactly one adult human biped with exactly two arms, two hands, two legs, and two feet; credible joints, staff grip, ward-bearing forearm, and grounded weight. No extra limb or duplicated hand.\nDuty invariants: Barrier support; square stance behind one broad forearm ward; layered defensive mantle; ward facets rotating toward the protected side. The ward remains forward/side-facing so the layered back is visibly unshielded while channeling.\nFire construction: Heat-blackened cloth, leather, and ward metal remain readable beneath localized internal ember seams. Controlled combustion and smoke stay concentrated around ward joints, with restrained heat distortion and an environmental ember wake. Do not use uniform orange full-body glow.\nCounterplay: Show one compact exposed dark-metal heat sink with a bright cooling seam at the inner ward-to-forearm linkage between combustion cycles; keep the unshielded rear mantle readable.\nComposition: Native 1536×1024 landscape image. Fit the entire head, hair, staff top and base, ward, orbiting facets, both feet, smoke, sparks, heat distortion, and every cloth tip inside the central 84 percent of both dimensions. Leave at least eight percent clearly empty fully rendered border on all four sides.\nScene: neutral cracked-stone floor against a charcoal-to-midnight backdrop; controlled neutral key light; premium realistic painterly Pack 2 dark-fantasy finish.\nAvoid: square canvas; portrait canvas; resize bars; padding; crop; effect crossing the safe margin; extra limb; childlike proportions; glamour; sexualization; uniform orange body glow; hidden heat sink; duplicate; text; labels; UI; frame; logo; watermark; blank band; unfinished region; abrupt cutoff; published-character resemblance.\nCorrection mode: complete regeneration using the preceding output only as a design reference; preserve all passing traits while correcting the malformed canvas dimensions.",
+      "promptHash": "38d9cbd82429e4a9a9f31beadf9ccfd17fdbef040ece5d0a5e0d88696a9bf0c7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-64968504-09cf-4aad-a890-fa4c09f57565.png",
+        "contentHash": "41584ed117b69f0582d4b36e14ca3aaeb400118d9dd38a745018dbdc376952cf"
+      },
+      "requestStartedAt": "2026-08-30T10:34:33.542Z",
+      "generationCompletedAt": "2026-08-30T10:34:54.554Z",
+      "inspectionCompletedAt": "2026-08-30T10:35:16.923Z",
+      "generationDurationMs": 21012,
+      "inspectionDurationMs": 22369,
+      "totalWallTimeMs": 43381,
+      "sourceOutputId": "exec-05eb06d8-40a3-4033-b6a4-8e9937f46b5d.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-05eb06d8-40a3-4033-b6a4-8e9937f46b5d.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2443241,
+          "contentHash": "6a6ba38a676e2840defef819506cd6ba6b029ce4d3dabb4e0a86426480319fd7"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2443241,
+          "contentHash": "6a6ba38a676e2840defef819506cd6ba6b029ce4d3dabb4e0a86426480319fd7"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2443241,
+        "contentHash": "6a6ba38a676e2840defef819506cd6ba6b029ce4d3dabb4e0a86426480319fd7"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete anatomy is uncropped, but the tall staff crown, upper ember specks, boots, and low cloth tips enter the declared eight-percent top and bottom safe margins."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one adult Ward Mage appears on a fully rendered cracked-stone floor and charcoal backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt, ordered references, correction linkage, and exact retained-source persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One weathered adult human woman has exactly two arms and two grounded legs, credible staff grip and ward-bearing forearm, square barrier stance, layered defensive mantle, rotating protective facets, and visibly unshielded rear coverage."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened cloth and metal, localized internal ember seams, controlled combustion at ward joints, smoke, heat distortion, and a directional ember wake change multiple declared dimensions without erasing material detail."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A compact dark circular heat sink with a bright cooling seam is exposed at the inner ward-to-forearm linkage, while the layered back remains outside forward ward coverage."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending; known-target Ward Mage barrier cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending; known-target Fire construction cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limbs, childlike proportions, glamour, sexualization, uniform orange full-body glow, duplicate, text, UI, frame, logo, watermark, crop, or unfinished region appears."
+        }
+      ],
+      "retryReason": "Retry ceiling exhausted; retain the exact native landscape render for review with its safe-margin defect recorded."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T10:32:46.333Z",
+  "completedAt": "2026-08-30T10:35:16.923Z",
+  "totalWallTimeMs": 150590,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ward-mage-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

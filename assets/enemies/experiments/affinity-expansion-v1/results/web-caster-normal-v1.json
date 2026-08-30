@@ -1,0 +1,175 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-web-caster-normal",
+  "targetId": "affinity-expansion-v1-web-caster-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-web-caster-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-web-caster-normal\".\n\nSubject and threat:\n- Species: web-caster.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: web-caster-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Web Caster remains immediately recognizable\n- Battlefield duty remains Ranged restraint\n- raised abdomen, braced rear legs, and visible silk spinnerets\n- abdomen tilts and a pale silk line traces the target zone\n- Counterplay remains visible: spinnerets after a cast\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: spinnerets after a cast\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 2 only: Web Caster identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "433dd892f55f499e1def1fc7009090b22216260293b56b4dc644c16e30d2f65b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:54:50.709Z",
+      "generationCompletedAt": "2026-08-30T10:55:13.858Z",
+      "inspectionCompletedAt": "2026-08-30T10:55:25.482Z",
+      "generationDurationMs": 23149,
+      "inspectionDurationMs": 11624,
+      "totalWallTimeMs": 34773,
+      "sourceOutputId": "exec-a54cc221-3edc-4901-bfa2-862a185b4a23.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The far-right terminal foot entered the strict eight-percent safe margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected Web Caster with raised abdomen, visible spinnerets, targeting silk, and exactly eight connected locomotor legs was present."
+        }
+      ],
+      "retryReason": "Scale and recenter the passing design so every terminal foot and silk extent clears the safe border."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-web-caster-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Normal Web Caster. Preserve the same single realistic Pack 2 spider, raised silk-casting abdomen, braced rear legs, visible spinnerets, pale silk targeting line, neutral dark chitin, cracked-stone floor, and charcoal backdrop. Preserve exactly eight connected locomotor legs—four on each side—with eight separate roots, joints, and terminal feet individually visible; chelicerae and pedipalps remain short mouthparts and must not become legs. Scale the complete spider, every foot, and the silk target point to 84 percent of the current composition and recenter on the same native 1536×1024 landscape canvas. Leave at least eight percent clearly empty finished border on all four sides. Keep exactly one spider, one connected cephalothorax and abdomen, grounded contact, no elemental glow, no added anatomy, no crop, no text, no frame, no watermark, and no unfinished region. Correction mode: targeted scale-and-containment edit only; preserve all passing design traits.",
+      "promptHash": "1d704fc98673633884aa1821924d428f060d9a935d77f09b4b701c117afea804",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-a54cc221-3edc-4901-bfa2-862a185b4a23.png",
+        "contentHash": "9db0ecc76f2dc44d90be2b41dccbd052e4ccb68df32fc33570742eea9a716379"
+      },
+      "requestStartedAt": "2026-08-30T10:55:41.717Z",
+      "generationCompletedAt": "2026-08-30T10:55:58.428Z",
+      "inspectionCompletedAt": "2026-08-30T10:56:11.016Z",
+      "generationDurationMs": 16711,
+      "inspectionDurationMs": 12588,
+      "totalWallTimeMs": 29299,
+      "sourceOutputId": "exec-329fb6c2-d7cd-4674-bf5d-7b2642be383c.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 26,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-329fb6c2-d7cd-4674-bf5d-7b2642be383c.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1988096,
+          "contentHash": "5c949c434f2bfc35d6843dbf0a7683f8698ece3a2bf981533e9e5fd7ab7c7b57"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1988096,
+          "contentHash": "5c949c434f2bfc35d6843dbf0a7683f8698ece3a2bf981533e9e5fd7ab7c7b57"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1988096,
+        "contentHash": "5c949c434f2bfc35d6843dbf0a7683f8698ece3a2bf981533e9e5fd7ab7c7b57"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All eight feet, raised abdomen, spinnerets, and silk target point remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered spider appears on a finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The connected cephalothorax and raised abdomen carry exactly eight locomotor legs in four coherent pairs, with separate roots, joints, feet, braced rear stance, visible spinnerets, and pale silk targeting line."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Normal uses established dark chitin and restrained neutral silk without elemental substitution or unexplained glow."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-web-caster-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:54:50.326Z",
+  "completedAt": "2026-08-30T10:56:11.016Z",
+  "totalWallTimeMs": 80690,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

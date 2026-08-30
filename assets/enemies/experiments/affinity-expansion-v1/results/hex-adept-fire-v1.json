@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hex-adept-fire",
+  "targetId": "affinity-expansion-v1-hex-adept-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-hex-adept-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hex-adept-fire\".\n\nSubject and threat:\n- Species: hex-adept.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hex-adept-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Hex Adept remains immediately recognizable\n- Battlefield duty remains Debuff skirmisher\n- mobile one-handed caster with dangling curse tags and an open off-hand\n- three tags lift and point at the marked target\n- Counterplay remains visible: interruptible casting hand\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: interruptible casting hand The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 1 only: Hex Adept identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "d85506cba4d70cfc700c686779df572f2d425418e6f920696fbbc7d3ca89e7c6",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:28:20.000Z",
+      "generationCompletedAt": "2026-08-30T10:29:14.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:29:22.000Z",
+      "generationDurationMs": 54000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 62000,
+      "sourceOutputId": "exec-f9b1189a-b9e0-4749-af82-acd8043195d8",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The staff tip, smoke wake and outer lifted tags enter the required safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The adult humanoid has exactly two arms and two grounded legs, but a large staff occupies the required open off-hand."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Heat-blackened equipment is present, but the broad flame aura and full-body orange emission weaken structural Fire construction."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The right casting hand is visible, but its cooling heat sink is obscured by flame emission."
+        }
+      ],
+      "retryReason": "Remove the staff and broad aura; open both hands, retain exactly three lifted tags, expose the cooling wrist heat sink, and scale every extent into the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hex-adept-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hex-adept-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire Hex Adept identity, anatomy, counterplay, and safe-framing correction. Preserve this exact single adult humanoid debuff skirmisher, exactly two arms and two grounded legs, mobile stance, heat-blackened layered equipment, curse-tag language, cracked-stone setting, and premium painterly finish. Remove the entire staff, staff cage, staff flames and staff-hanging tag so the left off-hand is completely open and empty. Keep exactly three airborne curse tags connected to the open right casting hand and pointing toward one marked target; other tags may hang inertly from belt and sleeves. Show the adept between combustion cycles: extinguish the broad fire aura, remove orange full-body illumination, and retain only narrow internal ember seams in blackened armor, restrained smoke and subtle heat distortion. Expose a dark ribbed cooling heat sink at the right wrist/palm and one pale cooling joint so the casting hand is clearly interruptible. Preserve an adult masked face and readable natural hands—no glamorized or sexualized design. Uniformly scale the complete body, mask, both open hands/fingers, all garments, hanging tags, exactly three lifted tags with complete chains, contained smoke/sparks/distortion, both feet, floor wake and shadow down by about 18 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No staff, weapon, fourth airborne tag, broad flame aura, uniform orange glow, extra limb, childlike proportion, glamour, sexualization, text, frame, crop, or affinity change.",
+      "promptHash": "7eb66df9abf66051fd6ee2c1b49821fbda0ac29ae8604688f95029c867860823",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-f9b1189a-b9e0-4749-af82-acd8043195d8.png",
+        "contentHash": "b9143704b36680a71846ad8857f56f28e615958646117c1ec5e513413fda71c3"
+      },
+      "requestStartedAt": "2026-08-30T10:29:29.000Z",
+      "generationCompletedAt": "2026-08-30T10:29:57.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:30:05.000Z",
+      "generationDurationMs": 28000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 36000,
+      "sourceOutputId": "exec-fbdec9de-6775-4f94-850d-1f8eaa0674a7",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-fbdec9de-6775-4f94-850d-1f8eaa0674a7.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2210049,
+          "contentHash": "142c4ddaa216e435e615c43de981777eeb4ce213bb870caadd9e34e838b82305"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2210049,
+          "contentHash": "142c4ddaa216e435e615c43de981777eeb4ce213bb870caadd9e34e838b82305"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2210049,
+        "contentHash": "142c4ddaa216e435e615c43de981777eeb4ce213bb870caadd9e34e838b82305"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete body, mask, both open hands, garments, hanging tags, exactly three lifted tags with complete chains, contained smoke and sparks, both feet, floor wake and shadow fit inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Hex Adept appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid skirmisher has exactly two arms and two grounded legs, two open empty hands, credible joints and feet, exactly three lifted curse tags, and no staff."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened layered equipment carries narrow internal ember seams, restrained smoke and subtle distortion without a broad aura or uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The open right casting hand exposes a dark ribbed cooling heat sink and pale cooling wrist joint as an interruptible weak point."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hex-adept-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:28:20.000Z",
+  "completedAt": "2026-08-30T10:30:07.000Z",
+  "totalWallTimeMs": 107000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

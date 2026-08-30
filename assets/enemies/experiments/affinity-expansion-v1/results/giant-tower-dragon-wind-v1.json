@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-giant-tower-dragon-wind",
+  "targetId": "affinity-expansion-v1-giant-tower-dragon-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-giant-tower-dragon-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-giant-tower-dragon-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-giant-tower-dragon-wind\".\n\nSubject and threat:\n- Species: giant-tower-dragon.\n- Threat presentation tier: apex; reference Grade 4; canonical Grade 4.\n- Battlefield duty: giant-tower-dragon-duty.\n- Construction mode: winged-draconic.\n\nIdentity invariants:\n- Giant Tower Dragon remains immediately recognizable\n- Battlefield duty remains Arena-scale apex boss\n- immense four-legged winged silhouette shaped around tower-scale movement\n- wings, throat, and tail each stage a distinct arena hazard\n- Counterplay remains visible: resonance scars exposed only after a committed attack\n\nAnatomy invariants:\n- the declared wyvern or dragon limb plan remains exact, complete, and countable\n- connected head, neck, torso, tail, wing joints, and every grounded foot remain visible\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: resonance scars exposed only after a committed attack The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: wrong declared limb plan; extra wings or limbs; cropped tail or wings; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 4 only: Giant Tower Dragon identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "25dc7186119c190d7b8c385b57212604eae70146d68109018cacad296b917180",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:47:17.429Z",
+      "generationCompletedAt": "2026-08-30T10:48:02.982Z",
+      "inspectionCompletedAt": "2026-08-30T10:48:09.982Z",
+      "generationDurationMs": 45553,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 52553,
+      "sourceOutputId": "exec-abeaaf8f-1f6b-4766-9707-bb188f759610.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "Outer wing tips, both vortex wakes, vapor ribbons, debris flow, pressure distortion, and breath stream entered the required eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Giant Tower Dragon appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four individually countable grounded legs and feet, exactly two complete wings, and the connected head, long neck, torso, throat, and full tail preserve the declared dragon plan."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Strong directional streaming across both wings, visible vapor channels, rotating debris flow, dual vortex wake, pressure distortion, and breath force alter silhouette, motion, telegraph, and environment beyond recolor or transparency."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The blue resonance scars converge on a visibly calmer chest-centered pressure core between the forceful directional attacks."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete dragon, wings, four feet, full tail, vortices, vapor, debris, pressure distortion, breath, scars, still center, wake, and shadows inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-giant-tower-dragon-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-giant-tower-dragon-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Giant Tower Dragon identity, immense apex silhouette, exactly four individually countable grounded legs and feet, exactly two complete connected wings, connected head, long neck, torso and full tail, wing joints, throat hazard, directional streaming across wing membranes, vapor channels, debris flow, pressure distortion, left and right vortex wake, exposed resonance scars and visibly still chest-centered pressure core, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete dragon together with every horn and scale spur, both entire wind-streamed wing membranes and every wing tip, all four legs and grounded feet, the complete connected tail and tail tip, both entire vortices, every vapor ribbon, debris fragment, pressure-distortion line, breath stream, throat, resonance scar, still center, environmental wake, and contact shadow so every hard and effect extent fits inside the central 84 percent of both canvas dimensions with a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve the exact four-leg plus two-wing anatomy and forceful directional Wind construction. Do not crop, omit, add, duplicate, recolor, or redesign anatomy, wings, legs, tail, head, throat, vapor, vortices, debris, scars, still center, or wake. Do not reduce Wind to pale recolor, transparency, or directionless effects. No banner, command standard, equipment, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "bcdcb7662d9fdcf511050c8edbd8528050de3530dfd338ed3316a90c0b4169ef",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/draconic-v1.png", "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-abeaaf8f-1f6b-4766-9707-bb188f759610.png", "contentHash": "648c665a360aa27eb44e85e252b1e709df53dbfebff6f6ab7322b914e2d9bf9b"},
+      "requestStartedAt": "2026-08-30T10:48:44.758Z",
+      "generationCompletedAt": "2026-08-30T10:49:30.989Z",
+      "inspectionCompletedAt": "2026-08-30T10:49:37.989Z",
+      "generationDurationMs": 46231,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 53231,
+      "sourceOutputId": "exec-f55c3a61-0bb3-4f1d-b2cf-e50a0fbb31a0.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-f55c3a61-0bb3-4f1d-b2cf-e50a0fbb31a0.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2404541, "contentHash": "acbd1781e44c656eef655b0e5fee1236aff96bacc40862f257b49f32262325df"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2404541, "contentHash": "acbd1781e44c656eef655b0e5fee1236aff96bacc40862f257b49f32262325df"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2404541, "contentHash": "acbd1781e44c656eef655b0e5fee1236aff96bacc40862f257b49f32262325df"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "Every horn and scale spur, both complete wind-streamed wing membranes and all wing tips, all four grounded feet, full connected tail and tip, both vortices, vapor ribbons, debris, pressure distortion, breath, scars, still center, wake, and shadow fit inside a clearly empty border of at least eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Giant Tower Dragon appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly four individually countable grounded legs and feet, exactly two complete connected wings, and the connected head, long neck, torso, wing joints, throat, and full tail preserve the declared dragon plan and arena-scale apex silhouette."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forceful directional streaming across both wings, coherent vapor channels, rotating debris, dual pressure vortices, distortion, and breath flow visibly transform silhouette, motion, attack telegraph, and environment beyond pale recolor or transparency."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The blue resonance scars converge on a visibly still chest-centered pressure core between the surrounding directional attacks."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Giant Tower Dragon cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds integrated directional-wing, vapor-channel, debris-flow, vortex, pressure-distortion, and breath-force cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent dark scales, directional local effects, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive with no command-standard transfer."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,404,541 bytes, and SHA-256 acbd1781e44c656eef655b0e5fee1236aff96bacc40862f257b49f32262325df match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-giant-tower-dragon-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:47:17.429Z",
+  "completedAt": "2026-08-30T10:50:09.117Z",
+  "totalWallTimeMs": 171688,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/giant-tower-dragon-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

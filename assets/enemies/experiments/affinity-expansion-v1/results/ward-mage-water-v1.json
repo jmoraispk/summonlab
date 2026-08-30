@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ward-mage-water",
+  "targetId": "affinity-expansion-v1-ward-mage-water",
+  "assignmentId": "assignment-affinity-expansion-v1-ward-mage-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ward-mage-water\".\n\nSubject and threat:\n- Species: ward-mage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ward-mage-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Ward Mage remains immediately recognizable\n- Battlefield duty remains Barrier support\n- square stance behind a broad forearm ward and layered defensive mantle\n- ward facets rotate toward the ally about to be protected\n- Counterplay remains visible: unshielded back while channeling\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: unshielded back while channeling Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 2 only: Ward Mage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a088c833262bc797f1ba88eaba6ee3758d12d3d84ccb53796f51186f20448022",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:42:59.901Z",
+      "generationCompletedAt": "2026-08-30T10:43:44.317Z",
+      "inspectionCompletedAt": "2026-08-30T10:44:02.445Z",
+      "generationDurationMs": 44416,
+      "inspectionDurationMs": 18128,
+      "totalWallTimeMs": 62544,
+      "sourceOutputId": "exec-bc64450e-3660-4a35-8b0e-c872be021aa6.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Outer droplets and floor pressure ring entered the strict safe border."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Adult human, exactly two arms/two legs, ward, staff, mantle, and counterplay were intact."
+        }
+      ],
+      "retryReason": "Contain effect envelope."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ward-mage-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Water Ward Mage. Preserve exactly one living adult human with exactly two arms and two legs, square stance, left staff grip, right broad forearm ward, layered unshielded rear mantle, rotating ward facets, coherent pressurized water structure, wet reflection, mist, and exposed binding core at the inner forearm linkage. Scale the entire subject and every effect to 82 percent of current size and recenter on the same native 1536×1024 landscape canvas. Pull all droplets, water arcs, floor pressure ring, staff ends, feet, and cloth tips inside the central 84 percent, leaving eight percent empty finished border on every side. Do not redesign, crop, pad, stretch, add limbs, or turn the structure into a blue blob. Preserve Pack 2 finish and all passing traits.",
+      "promptHash": "b4cff9c980c78499c6e05a4f975276e4901994463d4b50861d723061c0a8c6c8",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-bc64450e-3660-4a35-8b0e-c872be021aa6.png",
+        "contentHash": "8fe6cf330331ba6359630c2cccfd83b75b1057a4b248da31494a37577317537c"
+      },
+      "requestStartedAt": "2026-08-30T10:44:02.445Z",
+      "generationCompletedAt": "2026-08-30T10:44:41.037Z",
+      "inspectionCompletedAt": "2026-08-30T10:44:57.114Z",
+      "generationDurationMs": 38592,
+      "inspectionDurationMs": 16077,
+      "totalWallTimeMs": 54669,
+      "sourceOutputId": "exec-501df849-0cc5-4daf-a517-a40e712b5d2e.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 32,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-501df849-0cc5-4daf-a517-a40e712b5d2e.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2308412,
+          "contentHash": "759fa15dc84f485774fed71e3125c51dcc3894383ee1f6e4f427690291ebae4e"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2308412,
+          "contentHash": "759fa15dc84f485774fed71e3125c51dcc3894383ee1f6e4f427690291ebae4e"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2308412,
+        "contentHash": "759fa15dc84f485774fed71e3125c51dcc3894383ee1f6e4f427690291ebae4e"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All anatomy and effects remain inside the safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Ward Mage appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt and exact persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Adult human with exactly two arms and two legs, square stance, broad forearm ward, rotating facets, and unshielded rear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressure flow, mist, wet reflection, fluid transitions, and wake exceed a blue recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exposed binding core and unshielded rear remain readable."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ward-mage-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:42:45.822Z",
+  "completedAt": "2026-08-30T10:44:57.114Z",
+  "totalWallTimeMs": 131292,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ward-mage-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

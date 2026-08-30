@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-summoner-normal",
+  "targetId": "affinity-expansion-v1-tower-summoner-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-summoner-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-summoner-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-summoner-normal\".\n\nSubject and threat:\n- Species: tower-summoner.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-summoner-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Tower Summoner remains immediately recognizable\n- Battlefield duty remains Reinforcement controller\n- wide ritual frame, two grounded focus pylons, and both hands occupied\n- empty gate geometry assembles on the floor before an add arrives\n- Counterplay remains visible: paired focus pylons break the channel\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: paired focus pylons break the channel\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 3 only: Tower Summoner identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "81d3947e50114e464e8e559de6e2096380568b2cb8b4babbe7ff9bfa65b39c3c",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:47:36.000Z",
+      "generationCompletedAt": "2026-08-30T10:48:08.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:48:16.000Z",
+      "generationDurationMs": 32000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 40000,
+      "sourceOutputId": "exec-daea5542-c131-413f-aeb3-e317c54f7bb6",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The staff tip, head ritual frame and broad floor-gate geometry enter the declared top and bottom safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one adult Tower Summoner appears and the gate geometry is visibly empty."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult two-arm/two-leg reinforcement controller has a wide ritual frame, left staff grip, right-hand focus, exactly two grounded focus pylons, empty floor-gate geometry and grounded feet."
+        },
+        {
+				"criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established worn metal, leather and cloth retain neutral material reads with restrained silver-blue reflections and no elemental substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Two materially separate grounded focus pylons have readable breakable bases that visibly sustain the empty gate channel."
+        }
+      ],
+      "retryReason": "Scale and recenter every hard and effect extent into the safe frame while preserving both occupied hands, exactly two grounded pylons, neutral construction and an empty gate."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-summoner-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-summoner-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Normal Tower Summoner safe-framing and duty-readability correction. Preserve this exact single adult humanoid reinforcement controller, exactly two arms and two grounded legs, broad ritual silhouette, dark layered robes and metal ritual equipment, left hand gripping one neutral staff, right hand actively holding one compact neutral geometric channel focus, exactly two grounded focus pylons, empty gate geometry assembling on the cracked-stone floor, charcoal backdrop, and premium painterly finish. Keep both hands visibly occupied: the left grips the staff and the right physically supports the compact channel focus. Keep the two focus pylons materially separate from the summoner and expose their breakable bases as the channel counterplay. Reduce loose floating shards to a few restrained neutral fragments close to the two pylon heads. The floor gate must remain visibly empty—no add, silhouette, creature, portal occupant or extra subject. Use established worn metal, leather and cloth with restrained neutral silver-blue reflections only; no elemental glow or unexplained magical anatomy. Uniformly scale the complete summoner, staff tip and butt, head and circular ritual frame, both occupied hands, every garment edge, compact hand focus, exactly two complete grounded pylons, restrained fragments, empty floor-gate geometry, both feet, shadow and all marks down by about 20 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No extra creature, summoned add, third pylon, extra limb, childlike proportion, glamour, sexualization, elemental flame/water/roots/wind, generic colored aura, text, frame, crop, or affinity change.",
+      "promptHash": "c5f6ab433c92a88f074b4127ead5929e5fa34600930340a40abd782fd9f2ce1c",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-daea5542-c131-413f-aeb3-e317c54f7bb6.png",
+        "contentHash": "cc6c9c76cc029ff6e5608ea979d85900dc5c739656cd7cc699797fcf328604c7"
+      },
+      "requestStartedAt": "2026-08-30T10:48:25.000Z",
+      "generationCompletedAt": "2026-08-30T10:49:24.000Z",
+      "inspectionCompletedAt": "2026-08-30T10:49:32.000Z",
+      "generationDurationMs": 59000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 67000,
+      "sourceOutputId": "exec-d53b7671-313f-4a03-ad56-d39714673ae4",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-d53b7671-313f-4a03-ad56-d39714673ae4.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2253843,
+          "contentHash": "f4d2e212adf1344b5aa76f75e582438b1361083987050fc0b494170753a0ce65"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2253843,
+          "contentHash": "f4d2e212adf1344b5aa76f75e582438b1361083987050fc0b494170753a0ce65"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2253843,
+        "contentHash": "f4d2e212adf1344b5aa76f75e582438b1361083987050fc0b494170753a0ce65"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete summoner, staff, head ritual frame, occupied hands, garments, hand focus, two complete pylons, restrained fragments, empty floor gate, feet and shadow fit inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one adult Tower Summoner appears and the floor gate remains visibly empty with no add or extra subject."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid has exactly two arms and two grounded legs, a wide ritual silhouette, left hand gripping one staff, right hand physically supporting one compact focus, exactly two grounded pylons and empty gate geometry."
+        },
+        {
+				"criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Established worn metal, leather and cloth keep restrained neutral reflections without accidental elemental glow, affinity substitution or unexplained magical anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The two materially separate focus pylons expose breakable grounded bases that clearly sustain the channel."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-summoner-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:47:36.000Z",
+  "completedAt": "2026-08-30T10:49:34.000Z",
+  "totalWallTimeMs": 118000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-summoner-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

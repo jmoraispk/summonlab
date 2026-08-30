@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tunnel-spider-normal",
+  "targetId": "affinity-expansion-v1-tunnel-spider-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-tunnel-spider-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tunnel-spider-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tunnel-spider-normal\".\n\nSubject and threat:\n- Species: tunnel-spider.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tunnel-spider-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Tunnel Spider remains immediately recognizable\n- Battlefield duty remains Low flanker\n- flat body, long sprinting legs, and stone-dust camouflage\n- outer legs lower before a lateral rush\n- Counterplay remains visible: soft abdomen during a turn\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: soft abdomen during a turn\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 1 only: Tunnel Spider identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "13644667b3801727d6eaa1e18b8ee14bde6adab0bded51ac52547a83877e689e",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/arachnids-v1.png", "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T10:53:41.000Z",
+      "generationCompletedAt": "2026-08-30T10:54:00.800Z",
+      "inspectionCompletedAt": "2026-08-30T10:54:07.800Z",
+      "generationDurationMs": 19800,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 26800,
+      "sourceOutputId": "exec-a1243b42-83d0-46cb-b840-f75ca2bb6482.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The outer-right foot entered the required eight-percent safety border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Tunnel Spider appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "The connected flat cephalothorax and abdomen carry exactly eight coherent, countable sprinting legs with credible joints and ground contact."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Stone-dust camouflage, neutral chitin, and restrained dust remain explicitly unaffiliated without elemental glow, material substitution, anatomy, or wake."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to pull the complete eight-legged silhouette inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tunnel-spider-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tunnel-spider-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied exact preceding output, preserving the same single finished Tunnel Spider, premium realistic painterly dark-fantasy finish, neutral stone-dust materials, flat connected cephalothorax and abdomen, credible grounded joints, low-flanker silhouette, soft abdomen counterplay cue, and exactly eight connected sprinting legs in four coherent pairs. Preserve every passing trait and do not add, remove, merge, duplicate, or obscure any leg.\n\nTargeted correction only: scale and reposition the entire unchanged creature silhouette so every one of the eight feet and all extremities remain fully visible inside the central 84 percent of the 1536 x 1024 canvas, with a clearly empty border of at least 8 percent on all four sides. Keep exactly one subject on the neutral cracked-stone floor against the charcoal-to-midnight backdrop. Maintain all eight feet clearly separated and countable.\n\nThis is an edit of the supplied exact source, not a complete regeneration. No elemental glow or affinity-coded material substitution. No text, labels, UI, frame, logo, watermark, extra creature, duplicate body, cropped extremity, blank band, unfinished region, humanoid face or hands, detached legs, six legs, or ten legs.",
+      "promptHash": "02b31b7d98e95e17ef11b63c89d1f0d6587571622580d0e2bb0d8c86c0a5a01f",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/arachnids-v1.png", "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-a1243b42-83d0-46cb-b840-f75ca2bb6482.png", "contentHash": "e584a1d24426382b2d3333fd93bdc94de686f9bafa8b2f9deef4bbb3f6572534"},
+      "requestStartedAt": "2026-08-30T10:54:16.000Z",
+      "generationCompletedAt": "2026-08-30T10:54:35.500Z",
+      "inspectionCompletedAt": "2026-08-30T10:54:42.500Z",
+      "generationDurationMs": 19500,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 26500,
+      "sourceOutputId": "exec-97914899-7bbf-4e96-aee4-4324f27a1cdf.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-97914899-7bbf-4e96-aee4-4324f27a1cdf.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2154064, "contentHash": "f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2154064, "contentHash": "f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2154064, "contentHash": "f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "All eight feet, complete connected body, abdomen, chitin spurs, dust wake, and shadow fit inside a clearly empty border of at least eight percent on all sides."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Tunnel Spider appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly eight connected, clearly countable legs form four coherent pairs around one flat connected cephalothorax and soft abdomen; every foot is visible with credible joints and ground contact, stone-dust camouflage, and a low lateral-rush silhouette."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Neutral black-brown chitin, stone-dust camouflage, material wear, and restrained dust remain explicitly unaffiliated without elemental glow, substituted material, magical anatomy, or affinity wake."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Tunnel Spider cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds an explicitly neutral material and effect treatment."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, coherent chitin, neutral cracked floor, charcoal backdrop, and finished presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,154,064 bytes, and SHA-256 f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated repository path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tunnel-spider-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T10:53:41.000Z",
+  "completedAt": "2026-08-30T10:55:53.062Z",
+  "totalWallTimeMs": 132062,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tunnel-spider-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
