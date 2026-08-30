@@ -1,20 +1,18 @@
 <script lang="ts">
-	import { tick } from 'svelte';
 	import PortalGlyph from '$lib/components/living-village/summon/PortalGlyph.svelte';
 	import RatesPanel from '$lib/components/living-village/summon/RatesPanel.svelte';
-	import ResultPresentation from '$lib/components/living-village/summon/ResultPresentation.svelte';
 	import RevealStage from '$lib/components/living-village/summon/RevealStage.svelte';
-
 	import {
-		FIXTURE_VERSION,
 		banners,
 		batchReceipt,
 		featuredHero,
 		guarantee,
+		heroes,
 		offers,
 		rates,
 		revealDirections,
 		wallets,
+		type HeroFixture,
 		type OfferMode,
 		type RevealDirection
 	} from './fixtures';
@@ -27,88 +25,83 @@
 	let ratesOpen = $state(false);
 	let reducedMotion = $state(false);
 	let muted = $state(true);
-	let previewSigils = $state<number>(wallets[0].balance);
-	let previewGems = $state<number>(wallets[1].balance);
-	let previewGuarantee = $state<number>(guarantee.current);
+	let sigils = $state<number>(wallets[0].balance);
+	let gems = $state<number>(wallets[1].balance);
+	let guaranteeProgress = $state<number>(guarantee.current);
 	let spendFlash = $state<{ currency: 'sigil' | 'gem'; label: string } | null>(null);
-	let walletNotice = $state('Ready for a reversible spend preview');
+	let currentHero = $state<HeroFixture>(featuredHero);
+	let pendingResults = $state<HeroFixture[]>([featuredHero]);
+	let sessionArrivals = $state<HeroFixture[]>([]);
+	let selectedHero = $state<HeroFixture | null>(null);
+	let singleCursor = $state(0);
+	let shouldRecordArrival = false;
 	let ratesTrigger: HTMLButtonElement;
-	let stageAnchor = $state<HTMLElement>();
-	let resultAnchor = $state<HTMLElement>();
 	let spendTimer: number | undefined;
 
+	const progressPercent = $derived(`${(guaranteeProgress / guarantee.threshold) * 100}%`);
 	const selectedDirection = $derived(revealDirections.find((item) => item.id === direction)!);
-	const progressPercent = $derived(`${(previewGuarantee / guarantee.threshold) * 100}%`);
-
-	function runReveal(mode: OfferMode) {
-		offerMode = mode;
-		resultVisible = false;
-		recognitionMs = null;
-		runToken += 1;
-		requestAnimationFrame(() =>
-			stageAnchor?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' })
-		);
-	}
 
 	function flashSpend(currency: 'sigil' | 'gem', label: string) {
 		if (spendTimer) window.clearTimeout(spendTimer);
 		spendFlash = { currency, label };
-		spendTimer = window.setTimeout(() => (spendFlash = null), 1250);
+		spendTimer = window.setTimeout(() => (spendFlash = null), 1200);
+	}
+
+	function beginReveal(mode: OfferMode, receipt: HeroFixture[]) {
+		offerMode = mode;
+		pendingResults = receipt;
+		currentHero = receipt[0] ?? featuredHero;
+		selectedHero = null;
+		resultVisible = false;
+		recognitionMs = null;
+		runToken += 1;
+		shouldRecordArrival = true;
 	}
 
 	function summon(mode: OfferMode) {
 		if (mode === 'single') {
-			if (previewSigils > 0) {
-				previewSigils -= 1;
+			if (sigils > 0) {
+				sigils -= 1;
 				flashSpend('sigil', '−1');
-				walletNotice = 'Single-summon spend previewed from Gate sigils';
 			} else {
-				if (previewGems < 160) previewGems = wallets[1].balance;
-				previewGems -= 160;
+				if (gems < 160) return;
+				gems -= 160;
 				flashSpend('gem', '−160');
-				walletNotice = 'Single-summon spend previewed from Hearth gems';
 			}
-			previewGuarantee = Math.min(guarantee.threshold, previewGuarantee + 1);
-		} else {
-			if (previewGems < 1600) previewGems = wallets[1].balance;
-			previewGems -= 1600;
-			previewGuarantee = Math.min(guarantee.threshold, previewGuarantee + 11);
-			flashSpend('gem', '−1,600');
-			walletNotice = 'Batch spend and eleven guarantee steps previewed';
+			guaranteeProgress = Math.min(guarantee.threshold, guaranteeProgress + 1);
+			const hero = heroes[(singleCursor + 1) % heroes.length] ?? featuredHero;
+			singleCursor += 1;
+			beginReveal('single', [hero]);
+			return;
 		}
-		runReveal(mode);
+		if (gems < 1600) return;
+		gems -= 1600;
+		guaranteeProgress = Math.min(guarantee.threshold, guaranteeProgress + 11);
+		flashSpend('gem', '−1,600');
+		beginReveal('batch', [...batchReceipt]);
+	}
+
+	function replay() {
+		resultVisible = false;
+		selectedHero = null;
+		recognitionMs = null;
+		runToken += 1;
+		shouldRecordArrival = false;
+	}
+
+	function finishReveal() {
+		resultVisible = true;
+		if (!shouldRecordArrival) return;
+		const next = pendingResults.map((hero) => hero);
+		if (offerMode === 'single') sessionArrivals = [...sessionArrivals, ...next].slice(-11);
+		else sessionArrivals = next;
+		shouldRecordArrival = false;
 	}
 
 	function chooseDirection(next: RevealDirection) {
 		direction = next;
-		runReveal(offerMode);
-	}
-
-	function replay() {
-		runReveal(offerMode);
-	}
-
-	function resetFixture() {
-		previewSigils = wallets[0].balance;
-		previewGems = wallets[1].balance;
-		previewGuarantee = guarantee.current;
-		spendFlash = null;
-		walletNotice = 'Fixture balances and guarantee restored';
-	}
-
-	async function finishReveal() {
-		resultVisible = true;
-		await tick();
-		if (window.innerWidth <= 820) {
-			window.setTimeout(
-				() =>
-					resultAnchor?.scrollIntoView({
-						behavior: reducedMotion ? 'auto' : 'smooth',
-						block: 'start'
-					}),
-				180
-			);
-		}
+		ratesOpen = false;
+		replay();
 	}
 
 	function closeRates() {
@@ -118,17 +111,13 @@
 </script>
 
 <svelte:head>
-	<title>Summoning Portal · Living Village Lab</title>
-	<meta
-		name="description"
-		content="A fixture-only Living Village summoning portal prototype for comparing identity reveal directions."
-	/>
+	<title>Summoning Portal · Living Village</title>
+	<meta name="description" content="Open the Hearth Gate and meet the people who answer." />
 </svelte:head>
 
 <main>
-	<div class="ambient ambient-one"></div>
-	<div class="ambient ambient-two"></div>
-
+	<div class="ambient one"></div>
+	<div class="ambient two"></div>
 	<header class="portal-header">
 		<div class="brand">
 			<div class="brand-seal"><PortalGlyph kind="ember" size={24} /></div>
@@ -137,31 +126,28 @@
 				<strong>Summoning Portal</strong>
 			</div>
 		</div>
-		<div class="fixture-stamp">
-			<span>Presentation lab</span>
-			<small>{FIXTURE_VERSION}</small>
-		</div>
-		<section class="wallets" aria-label="Prototype currency balances">
-			{#each wallets as wallet (wallet.id)}
-				<div
-					class="wallet"
-					class:spending={spendFlash?.currency === wallet.id}
-					data-kind={wallet.kind}
-					data-testid={`wallet-${wallet.id}`}
+		<section class="wallets" aria-label="Currency balances">
+			<div
+				class="wallet"
+				class:spending={spendFlash?.currency === 'sigil'}
+				data-testid="wallet-sigil"
+			>
+				<PortalGlyph kind="sigil" size={20} /><span
+					><small>Gate sigils</small>{#key sigils}<strong>{sigils.toLocaleString()}</strong
+						>{/key}</span
 				>
-					<PortalGlyph kind={wallet.glyph} size={20} />
-					<span>
-						<small>{wallet.label}</small>
-						{#key wallet.id === 'sigil' ? previewSigils : previewGems}
-							<strong class="wallet-number"
-								>{(wallet.id === 'sigil' ? previewSigils : previewGems).toLocaleString()}</strong
-							>
-						{/key}
-					</span>
-					<i>Preview</i>
-					{#if spendFlash?.currency === wallet.id}<b class="spend-delta">{spendFlash.label}</b>{/if}
-				</div>
-			{/each}
+				{#if spendFlash?.currency === 'sigil'}<b>{spendFlash.label}</b>{/if}
+			</div>
+			<div
+				class="wallet premium"
+				class:spending={spendFlash?.currency === 'gem'}
+				data-testid="wallet-gem"
+			>
+				<PortalGlyph kind="gem" size={20} /><span
+					><small>Hearth gems</small>{#key gems}<strong>{gems.toLocaleString()}</strong>{/key}</span
+				>
+				{#if spendFlash?.currency === 'gem'}<b>{spendFlash.label}</b>{/if}
+			</div>
 		</section>
 	</header>
 
@@ -174,94 +160,85 @@
 				aria-current={banner.state === 'active' ? 'page' : undefined}
 			>
 				<span class="banner-glyph"
-					><PortalGlyph kind={banner.state === 'active' ? 'ember' : 'star'} size={17} /></span
+					><PortalGlyph kind={banner.state === 'active' ? 'ember' : 'star'} size={16} /></span
 				>
-				<span><small>{banner.kicker}</small><strong>{banner.label}</strong></span>
-				<i>{banner.state === 'active' ? 'Active fixture' : 'Preview · not available'}</i>
+				<span
+					><small>{banner.state === 'active' ? 'Now open' : 'Coming soon'}</small><strong
+						>{banner.label}</strong
+					></span
+				>
+				<i>{banner.state === 'active' ? 'Hearthbound' : banner.kicker}</i>
 			</button>
 		{/each}
 	</nav>
 
 	<section class="portal-grid">
 		<div class="hero-column">
-			<div class="stage-anchor" bind:this={stageAnchor}>
-				<RevealStage
-					hero={featuredHero}
-					{direction}
-					{runToken}
-					{reducedMotion}
-					{muted}
-					onreplay={replay}
-					oncomplete={finishReveal}
-					ontiming={(milliseconds) => (recognitionMs = milliseconds)}
-				/>
-			</div>
+			<RevealStage
+				hero={currentHero}
+				{direction}
+				{runToken}
+				{reducedMotion}
+				{muted}
+				{resultVisible}
+				resultMode={offerMode}
+				results={pendingResults}
+				{selectedHero}
+				onselect={(hero) => (selectedHero = hero as HeroFixture)}
+				onclosedossier={() => (selectedHero = null)}
+				onreplay={replay}
+				oncomplete={finishReveal}
+				ontiming={(milliseconds) => (recognitionMs = milliseconds)}
+			/>
 
-			<section class="experiment" aria-labelledby="experiment-title">
-				<header>
+			{#if sessionArrivals.length > 0}
+				<section class="arrival-rail" aria-label="Recent arrivals" data-testid="arrival-history">
+					<header>
+						<div>
+							<small>Recent arrivals</small><strong>{sessionArrivals.length} at the gate</strong>
+						</div>
+						<span>Choose a person</span>
+					</header>
 					<div>
-						<p>Owner animation experiment</p>
-						<h2 id="experiment-title">Choose a reveal direction</h2>
+						{#each sessionArrivals as hero, index (`history-${hero.id}-${index}`)}
+							<button
+								type="button"
+								onclick={() => (selectedHero = hero)}
+								aria-label={`View ${hero.name} stats`}
+							>
+								<img src={hero.image} alt="" width="1024" height="1536" /><span
+									><strong>{hero.name}</strong><small>{hero.calling}</small></span
+								>
+							</button>
+						{/each}
 					</div>
-					<div class="experiment-toggles">
-						<button
-							type="button"
-							class:enabled={reducedMotion}
-							aria-pressed={reducedMotion}
-							onclick={() => (reducedMotion = !reducedMotion)}
-							data-testid="reduced-motion-toggle"
-						>
-							<i></i>Reduced motion: {reducedMotion ? 'on' : 'off'}
-						</button>
-						<button type="button" aria-pressed={!muted} onclick={() => (muted = !muted)}>
-							<span aria-hidden="true">{muted ? '∕' : '♪'}</span>Sound: {muted ? 'muted' : 'armed'}
-						</button>
-					</div>
-				</header>
-				<div class="direction-list" data-testid="direction-selector">
-					{#each revealDirections as item, index (item.id)}
-						<button
-							type="button"
-							class:selected={direction === item.id}
-							aria-pressed={direction === item.id}
-							onclick={() => chooseDirection(item.id)}
-						>
-							<span class="direction-index">0{index + 1}</span>
-							<span><strong>{item.label}</strong><small>{item.description}</small></span>
-							<i>{item.recognitionTarget}</i>
-						</button>
-					{/each}
-				</div>
-				<div class="measurement" aria-live="polite" data-testid="recognition-timing">
-					<span><i></i>Same fixed receipt · Mara Vey</span>
-					<span>Selected: <strong>{selectedDirection.label}</strong></span>
-					<span
-						>Recognizable identity: <strong
-							>{recognitionMs === null ? 'ready to measure' : `${recognitionMs} ms`}</strong
-						></span
-					>
-				</div>
-			</section>
+				</section>
+			{/if}
 		</div>
 
 		<aside class="decision-column" aria-label="Guarantee and summon actions">
 			<section class="banner-copy">
 				<div class="banner-kicker"><span></span>Standard · Hearthbound</div>
 				<h2>A familiar soul,<br /><em>newly arrived.</em></h2>
-				<p>The Hearth Gate calls from six fixed identities. Every person remains unique.</p>
-				<div class="featured-mark"><span>Featured presentation</span><strong>Mara Vey</strong></div>
+				<p>
+					Call to the six people bound to the Hearth Gate. Meet the person before you decide what
+					comes next.
+				</p>
+				<div class="featured"><span>Featured</span><strong>Mara Vey</strong></div>
 			</section>
 
 			<section class="guarantee" data-testid="guarantee-progress">
 				<header>
 					<div><small>{guarantee.label}</small><strong>{guarantee.threshold} summons</strong></div>
-					<span>{previewGuarantee} / {guarantee.threshold}</span>
+					<span>{guaranteeProgress} / {guarantee.threshold}</span>
 				</header>
 				<div class="progress">
 					<i style:width={progressPercent}></i><b style:left={progressPercent}></b>
 				</div>
 				<footer>
-					<span>{guarantee.status}</span><span>Session preview · no durable progress</span>
+					<span>Next summon advances the bond</span><span
+						>{guarantee.threshold - guaranteeProgress} remaining</span
+					>
 				</footer>
 			</section>
 
@@ -273,26 +250,27 @@
 				aria-haspopup="dialog"
 			>
 				<span
-					><PortalGlyph kind="star" size={19} /><span
-						><small>Disclosure</small><strong>Rates &amp; details</strong></span
+					><PortalGlyph kind="star" size={18} /><span
+						><small>Standard banner</small><strong>Rates &amp; details</strong></span
 					></span
+				><i
+					>{recognitionMs === null
+						? `${selectedDirection.shortLabel} reveal →`
+						: `${recognitionMs} ms to identity →`}</i
 				>
-				<i>View once →</i>
 			</button>
 
-			<section class="offers" aria-label="Prototype summon offers">
-				<p><span>Choose a presentation</span><i>Fixture costs</i></p>
+			<section class="offers" aria-label="Summon offers">
+				<p><span>Open the gate</span><i>Costs shown before summon</i></p>
 				<button
 					type="button"
 					class="single-offer"
 					onclick={() => summon('single')}
 					data-testid="summon-single"
 				>
-					<span><small>Standard</small><strong>{offers.single.label}</strong></span>
+					<span><small>One arrival</small><strong>{offers.single.label}</strong></span>
 					<span class="cost"
-						><PortalGlyph kind="sigil" size={16} /><strong>{offers.single.cost}</strong><small
-							>Fixture · no charge</small
-						></span
+						><PortalGlyph kind="sigil" size={16} /><strong>{offers.single.cost}</strong></span
 					>
 				</button>
 				<button
@@ -300,135 +278,112 @@
 					class="batch-offer"
 					onclick={() => summon('batch')}
 					data-testid="summon-batch"
+					disabled={gems < 1600}
 				>
-					<span class="value-ribbon">+1 bonus</span>
-					<span
-						><small>Eleven presentation slots</small><strong>Summon ×10 <em>+ 1 bonus</em></strong
-						></span
-					>
+					<span class="ribbon">+1 bonus</span>
+					<span><small>Eleven arrivals</small><strong>Summon ×10 <em>+ 1 bonus</em></strong></span>
 					<span class="cost"
-						><PortalGlyph kind="gem" size={17} /><strong>{offers.batch.cost}</strong><small
-							>Fixture · no charge</small
-						></span
+						><PortalGlyph kind="gem" size={17} /><strong>{offers.batch.cost}</strong></span
 					>
 				</button>
-				<div class="offer-trust">
-					<span>{walletNotice}</span>
-					<button type="button" onclick={resetFixture}>Reset fixture</button>
-				</div>
 			</section>
 
-			<section class="recommendation">
-				<div><small>Current recommendation</small><strong>Gate ignition</strong></div>
-				<p>Make the portal unmistakable, then reveal the person without a second delay.</p>
-			</section>
+			<div class="trust">
+				<PortalGlyph kind="sigil" size={15} /><span
+					>Demo economy values · final balance and rates pending</span
+				>
+			</div>
 		</aside>
 	</section>
-
-	{#if resultVisible}
-		<section class="result-wrap" bind:this={resultAnchor}>
-			<ResultPresentation mode={offerMode} hero={featuredHero} batch={batchReceipt} />
-		</section>
-	{/if}
-
-	<footer class="lab-footer">
-		<div>
-			<PortalGlyph kind="sigil" size={18} /><span
-				><strong>Fixture boundary</strong> · Browser-only presentation; no database, provider, or production
-				economy writes.</span
-			>
-		</div>
-		<span>Six identities · one comparison receipt · zero persisted copies</span>
-	</footer>
 </main>
 
-<RatesPanel open={ratesOpen} {rates} {guarantee} onclose={closeRates} />
+<RatesPanel
+	open={ratesOpen}
+	{rates}
+	{guarantee}
+	directions={revealDirections}
+	{direction}
+	{reducedMotion}
+	{muted}
+	ondirection={chooseDirection}
+	onreduced={() => (reducedMotion = !reducedMotion)}
+	onmuted={() => (muted = !muted)}
+	onclose={closeRates}
+/>
 
 <style>
 	:global(*) {
 		box-sizing: border-box;
 	}
 	:global(html) {
-		background: #05090c;
+		background: #04080b;
 	}
 	:global(body) {
-		margin: 0;
 		min-width: 320px;
-		background: #05090c;
+		margin: 0;
+		background: #04080b;
 	}
 	:global(button) {
 		font: inherit;
 	}
 	:global(button:focus-visible) {
-		outline: 2px solid #9ad8c9;
+		outline: 2px solid #8fd7c7;
 		outline-offset: 3px;
 	}
-
 	main {
 		position: relative;
 		min-height: 100vh;
 		overflow: hidden;
-		padding: 22px clamp(18px, 3.4vw, 58px) 28px;
+		padding: 20px clamp(16px, 3vw, 48px) 30px;
 		background:
-			radial-gradient(ellipse at 48% 22%, #175d5430 0, transparent 38%),
-			radial-gradient(ellipse at 95% 70%, #6d411829 0, transparent 32%),
-			linear-gradient(155deg, #081116 0%, #050a0d 58%, #080c0e 100%);
+			radial-gradient(ellipse at 43% 22%, #145a5139, transparent 39%),
+			radial-gradient(ellipse at 100% 75%, #6e421b2b, transparent 34%),
+			linear-gradient(155deg, #081116, #04090c 60%, #080c0e);
 		color: #eee9df;
-		font-family:
-			Inter,
-			ui-sans-serif,
-			system-ui,
-			-apple-system,
-			sans-serif;
+		font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 	}
-
 	main::before {
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
 		background-image:
-			linear-gradient(#7fb7aa0a 1px, transparent 1px),
-			linear-gradient(90deg, #7fb7aa08 1px, transparent 1px);
-		background-size: 88px 88px;
-		mask-image: linear-gradient(to bottom, black, transparent 72%);
+			linear-gradient(#87c4b608 1px, transparent 1px),
+			linear-gradient(90deg, #87c4b608 1px, transparent 1px);
+		background-size: 92px 92px;
+		mask-image: linear-gradient(black, transparent 78%);
 		content: '';
 	}
-
 	.ambient {
 		position: absolute;
 		pointer-events: none;
-		border: 1px solid #5c9f9030;
+		border: 1px solid #68ae9f24;
 		border-radius: 50%;
 	}
-	.ambient-one {
-		top: 195px;
-		left: -350px;
-		width: 760px;
-		height: 760px;
+	.ambient.one {
+		top: 160px;
+		left: -340px;
+		width: 700px;
+		height: 700px;
 	}
-	.ambient-two {
-		right: -170px;
-		bottom: 12%;
-		width: 520px;
-		height: 520px;
-		border-color: #a8743230;
+	.ambient.two {
+		right: -240px;
+		bottom: -90px;
+		width: 580px;
+		height: 580px;
+		border-color: #b27c3325;
 	}
-
 	.portal-header,
 	.banner-rail,
-	.portal-grid,
-	.result-wrap,
-	.lab-footer {
+	.portal-grid {
 		position: relative;
 		z-index: 2;
-		width: min(1460px, 100%);
+		width: min(1480px, 100%);
 		margin-inline: auto;
 	}
-
 	.portal-header {
-		display: grid;
-		grid-template-columns: 1fr auto auto;
-		gap: 24px;
+		display: flex;
+		justify-content: space-between;
+		gap: 20px;
 		align-items: center;
 	}
 	.brand {
@@ -441,43 +396,24 @@
 		width: 45px;
 		height: 45px;
 		place-items: center;
-		border: 1px solid #c89c5847;
+		border: 1px solid #cca25d47;
 		border-radius: 50%;
-		background: radial-gradient(circle, #d69a3f20, transparent 70%);
-		box-shadow: inset 0 0 16px #d7953022;
+		background: radial-gradient(circle, #d99b3721, transparent 70%);
 	}
 	.brand p {
 		margin: 0 0 3px;
 		color: #71827c;
-		font-size: 0.59rem;
+		font-size: 0.58rem;
 		font-weight: 750;
 		letter-spacing: 0.17em;
 		text-transform: uppercase;
 	}
 	.brand strong {
-		font-family: Georgia, 'Times New Roman', serif;
-		font-size: 1.25rem;
-		font-weight: 500;
+		font:
+			500 1.26rem Georgia,
+			serif;
 		letter-spacing: -0.02em;
 	}
-	.fixture-stamp {
-		display: grid;
-		gap: 2px;
-		padding: 5px 18px;
-		border-left: 1px solid #abbfb626;
-	}
-	.fixture-stamp span {
-		color: #c2a16c;
-		font-size: 0.62rem;
-		font-weight: 750;
-		letter-spacing: 0.15em;
-		text-transform: uppercase;
-	}
-	.fixture-stamp small {
-		color: #65736e;
-		font-size: 0.61rem;
-	}
-
 	.wallets {
 		display: flex;
 		gap: 8px;
@@ -487,12 +423,15 @@
 		display: flex;
 		gap: 10px;
 		align-items: center;
-		min-width: 151px;
-		padding: 9px 38px 9px 12px;
-		border: 1px solid #bdccc522;
+		min-width: 150px;
+		padding: 9px 24px 9px 12px;
+		border: 1px solid #bdccc524;
 		border-radius: 12px;
-		background: linear-gradient(145deg, #152026b8, #0b1114e8);
-		box-shadow: inset 0 1px #ffffff0c;
+		background: linear-gradient(145deg, #152127cf, #0a1115ed);
+		box-shadow: inset 0 1px #fff1;
+	}
+	.wallet.premium {
+		border-color: #71bfb33b;
 	}
 	.wallet > span {
 		display: grid;
@@ -500,98 +439,58 @@
 	}
 	.wallet small {
 		color: #7e8c87;
-		font-size: 0.57rem;
-		font-weight: 680;
-		letter-spacing: 0.08em;
+		font-size: 0.55rem;
+		font-weight: 700;
+		letter-spacing: 0.09em;
 		text-transform: uppercase;
 	}
 	.wallet strong {
-		color: #e9e6dc;
+		color: #ebe7de;
 		font:
-			500 1rem/1.1 Georgia,
+			500 1rem Georgia,
 			serif;
+		animation: wallet-number 480ms ease;
 	}
-	.wallet i {
+	.wallet b {
 		position: absolute;
-		top: 7px;
-		right: 7px;
-		color: #90764c;
-		font-size: 0.47rem;
-		font-style: normal;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-	.wallet[data-kind='premium'] {
-		border-color: #6dbcb13d;
+		top: 3px;
+		right: 6px;
+		color: #efbd69;
+		font-size: 0.65rem;
+		animation: spend 1.15s ease-out both;
 	}
 	.wallet.spending {
-		animation: wallet-spend 760ms cubic-bezier(0.2, 0.8, 0.2, 1);
-	}
-	.wallet-number {
-		display: block;
-		animation: wallet-number 520ms cubic-bezier(0.18, 0.78, 0.24, 1);
-	}
-	.spend-delta {
-		position: absolute;
-		z-index: 3;
-		top: 50%;
-		right: 9px;
-		transform: translateY(-50%);
-		color: #f1c06f;
-		font:
-			740 0.75rem/1 Inter,
-			ui-sans-serif,
-			system-ui;
-		animation: spend-delta 1.2s ease-out both;
-	}
-	@keyframes wallet-spend {
-		0%,
-		100% {
-			border-color: #bdccc522;
-			box-shadow: inset 0 1px #ffffff0c;
-		}
-		32% {
-			border-color: #e2af5a;
-			box-shadow:
-				inset 0 0 24px #e5a64231,
-				0 0 24px #d99b3740;
-			transform: translateY(-2px) scale(1.025);
-		}
+		animation: wallet 720ms ease;
 	}
 	@keyframes wallet-number {
 		from {
 			opacity: 0;
-			transform: translateY(-9px);
-			color: #ffd994;
+			transform: translateY(-7px);
+			color: #ffcf7c;
 		}
+	}
+	@keyframes wallet {
+		38% {
+			border-color: #dca851;
+			transform: translateY(-2px) scale(1.02);
+			box-shadow: 0 0 25px #d99d3740;
+		}
+	}
+	@keyframes spend {
 		to {
-			opacity: 1;
-			transform: translateY(0);
+			opacity: 0;
+			transform: translate(20px, -23px);
 		}
 	}
-	@keyframes spend-delta {
-		0% {
-			opacity: 0;
-			transform: translate(0, -20%);
-		}
-		25% {
-			opacity: 1;
-		}
-		100% {
-			opacity: 0;
-			transform: translate(34px, -160%);
-		}
-	}
-
 	.banner-rail {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 8px;
-		margin-top: 18px;
+		gap: 7px;
+		margin-top: 16px;
 		padding: 5px;
-		border: 1px solid #baccc31a;
+		border: 1px solid #c3d3cb1a;
 		border-radius: 15px;
-		background: #080e12b8;
+		background: #080e12c4;
 	}
 	.banner-rail button {
 		display: grid;
@@ -599,106 +498,98 @@
 		gap: 10px;
 		align-items: center;
 		min-width: 0;
-		padding: 10px 13px;
+		padding: 9px 12px;
 		border: 1px solid transparent;
 		border-radius: 11px;
 		background: transparent;
-		color: #6f7a76;
+		color: #66736e;
 		text-align: left;
 	}
 	.banner-rail button.active {
-		border-color: #d1a66042;
-		background: linear-gradient(125deg, #bb7f2418, #16302945);
-		color: #e8e4da;
-		box-shadow: inset 0 1px #fff1;
+		border-color: #d0a45d3d;
+		background: linear-gradient(125deg, #ba7e2216, #17322b42);
+		color: #e8e3d9;
 	}
 	.banner-rail button:disabled {
-		cursor: not-allowed;
-		opacity: 0.7;
+		opacity: 0.56;
 	}
 	.banner-glyph {
 		display: grid;
-		width: 32px;
-		height: 32px;
+		width: 31px;
+		height: 31px;
 		place-items: center;
-		border: 1px solid #cddcd41d;
+		border: 1px solid #d0ddd723;
 		border-radius: 50%;
-		background: #ffffff08;
 	}
 	.banner-rail button > span:nth-child(2) {
 		display: grid;
 		gap: 1px;
 	}
 	.banner-rail small {
-		font-size: 0.51rem;
-		font-weight: 720;
+		font-size: 0.49rem;
+		font-weight: 730;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
 	.banner-rail strong {
 		font:
-			500 0.85rem Georgia,
+			500 0.84rem Georgia,
 			serif;
 	}
 	.banner-rail i {
 		overflow: hidden;
-		font-size: 0.53rem;
+		font-size: 0.52rem;
 		font-style: normal;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 	.banner-rail .active i {
-		color: #87bcae;
+		color: #84bbaa;
 	}
-
 	.portal-grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1.63fr) minmax(360px, 0.72fr);
-		gap: 18px;
+		grid-template-columns: minmax(0, 1.62fr) minmax(350px, 0.7fr);
+		gap: 17px;
 		margin-top: 12px;
 	}
 	.hero-column {
 		display: grid;
-		gap: 12px;
-		min-width: 0;
-	}
-	.stage-anchor {
+		gap: 10px;
 		min-width: 0;
 	}
 	.decision-column {
 		min-width: 0;
 		overflow: hidden;
 		border: 1px solid #bfcec727;
-		border-radius: 24px;
-		background: linear-gradient(160deg, #121d22e8, #080e12f5 55%, #0c1114f5);
+		border-radius: 25px;
+		background: linear-gradient(160deg, #121d22ed, #080e12f8 58%, #0c1114f8);
 		box-shadow:
-			inset 0 1px #ffffff0f,
-			0 24px 80px #0006;
+			inset 0 1px #fff1,
+			0 26px 85px #0007;
 	}
-
 	.banner-copy {
 		position: relative;
-		padding: 27px 26px 22px;
+		padding: 27px 25px 21px;
 		border-bottom: 1px solid #dbe8df16;
-		background: radial-gradient(circle at 95% 0, #c8862630, transparent 47%);
+		background: radial-gradient(circle at 100% 0, #c8872730, transparent 48%);
 	}
 	.banner-copy::after {
 		position: absolute;
 		top: -45px;
-		right: -24px;
-		width: 140px;
-		height: 140px;
-		border: 1px solid #d4a85c27;
+		right: -25px;
+		width: 145px;
+		height: 145px;
+		border: 1px solid #d2a65a25;
 		border-radius: 50%;
-		box-shadow: inset 0 0 30px #d09a4021;
 		content: '';
+		box-shadow: inset 0 0 30px #d09a4020;
 	}
 	.banner-kicker {
 		display: flex;
 		gap: 8px;
 		align-items: center;
-		color: #ae8f5d;
-		font-size: 0.58rem;
+		color: #b18f59;
+		font-size: 0.56rem;
 		font-weight: 760;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
@@ -711,45 +602,41 @@
 	.banner-copy h2 {
 		margin: 13px 0 10px;
 		font:
-			500 clamp(2rem, 3vw, 3.1rem)/0.95 Georgia,
-			'Times New Roman',
+			500 clamp(2rem, 3vw, 3rem)/0.94 Georgia,
 			serif;
 		letter-spacing: -0.05em;
 	}
 	.banner-copy h2 em {
-		color: #d6aa64;
+		color: #d4a861;
 		font-weight: 400;
 	}
 	.banner-copy > p {
 		max-width: 390px;
 		margin: 0;
-		color: #89948f;
-		font-size: 0.76rem;
+		color: #89958f;
+		font-size: 0.74rem;
 		line-height: 1.55;
 	}
-	.featured-mark {
+	.featured {
 		display: flex;
 		justify-content: space-between;
-		gap: 12px;
-		margin-top: 20px;
-		padding-top: 14px;
-		border-top: 1px solid #ffffff0d;
+		margin-top: 19px;
+		padding-top: 13px;
+		border-top: 1px solid #fff1;
 	}
-	.featured-mark span {
+	.featured span {
 		color: #65736e;
-		font-size: 0.58rem;
-		text-transform: uppercase;
+		font-size: 0.55rem;
 		letter-spacing: 0.1em;
+		text-transform: uppercase;
 	}
-	.featured-mark strong {
-		color: #dcd8ce;
+	.featured strong {
 		font:
 			500 0.78rem Georgia,
 			serif;
 	}
-
 	.guarantee {
-		padding: 19px 22px 17px;
+		padding: 18px 21px 16px;
 		border-bottom: 1px solid #dbe8df14;
 		background: #2e6f630c;
 	}
@@ -763,27 +650,26 @@
 		gap: 3px;
 	}
 	.guarantee small {
-		color: #7ba99e;
-		font-size: 0.55rem;
+		color: #79aa9e;
+		font-size: 0.53rem;
 		font-weight: 740;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
 	.guarantee header strong {
-		color: #e5e5dd;
 		font:
-			500 1.05rem Georgia,
+			500 1.02rem Georgia,
 			serif;
 	}
 	.guarantee header > span {
-		color: #a8d3c8;
-		font-size: 0.75rem;
+		color: #a8d4c8;
+		font-size: 0.72rem;
 		font-weight: 720;
 	}
 	.progress {
 		position: relative;
 		height: 4px;
-		margin-top: 13px;
+		margin-top: 12px;
 		border-radius: 99px;
 		background: #d7ebe31b;
 	}
@@ -793,7 +679,7 @@
 		border-radius: inherit;
 		background: linear-gradient(90deg, #287a6a, #80cdbb);
 		box-shadow: 0 0 13px #68bdab66;
-		transition: width 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+		transition: width 520ms ease;
 	}
 	.progress b {
 		position: absolute;
@@ -805,36 +691,32 @@
 		border-radius: 50%;
 		background: #0c191b;
 		box-shadow: 0 0 12px #74c9b8;
-		transition: left 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+		transition: left 520ms ease;
 	}
 	.guarantee footer {
 		display: flex;
 		justify-content: space-between;
-		gap: 10px;
-		margin-top: 9px;
-		color: #64746e;
-		font-size: 0.52rem;
+		margin-top: 8px;
+		color: #66766f;
+		font-size: 0.5rem;
 	}
-	.guarantee footer span:first-child {
-		color: #9b7e4f;
-	}
-
 	.rates-button {
 		display: flex;
-		width: calc(100% - 32px);
-		align-items: center;
 		justify-content: space-between;
-		margin: 14px 16px;
-		padding: 12px;
-		border: 1px solid #75b9aa3b;
-		border-radius: 11px;
-		background: linear-gradient(90deg, #214d4638, #11191d);
-		color: #cde1da;
+		align-items: center;
+		width: calc(100% - 32px);
+		margin: 14px 16px 0;
+		padding: 11px 12px;
+		border: 1px solid #8acaba36;
+		border-radius: 12px;
+		background: #245f5412;
+		color: #dce7e2;
 		cursor: pointer;
 	}
-	.rates-button > span {
+	.rates-button > span,
+	.rates-button > span > span {
 		display: flex;
-		gap: 10px;
+		gap: 9px;
 		align-items: center;
 	}
 	.rates-button > span > span {
@@ -843,521 +725,274 @@
 		text-align: left;
 	}
 	.rates-button small {
-		color: #6f9d92;
-		font-size: 0.51rem;
-		letter-spacing: 0.12em;
+		color: #6e837c;
+		font-size: 0.5rem;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
 	.rates-button strong {
-		font-size: 0.76rem;
+		font-size: 0.68rem;
 	}
 	.rates-button i {
-		color: #76aa9e;
-		font-size: 0.6rem;
+		color: #86b9ad;
+		font-size: 0.55rem;
 		font-style: normal;
 	}
-	.rates-button:hover {
-		border-color: #83cdbc;
-		background: #244e47;
-	}
-
 	.offers {
-		padding: 4px 16px 15px;
+		padding: 15px 16px 13px;
 	}
 	.offers > p {
 		display: flex;
 		justify-content: space-between;
-		margin: 0 1px 8px;
-		color: #6c7873;
-		font-size: 0.55rem;
-		font-weight: 720;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
+		margin: 0 3px 9px;
+		color: #7d8b85;
+		font-size: 0.53rem;
 	}
 	.offers > p i {
-		color: #a77c3f;
+		color: #a28656;
 		font-style: normal;
 	}
-	.offers > button {
+	.offers button {
 		position: relative;
 		display: flex;
-		width: 100%;
-		min-height: 74px;
-		align-items: center;
 		justify-content: space-between;
 		gap: 12px;
-		padding: 13px 14px;
-		border: 1px solid #d4c29938;
-		border-radius: 12px;
-		color: #eee8dc;
-		cursor: pointer;
-		text-align: left;
-		transition:
-			transform 170ms ease,
-			border-color 170ms ease,
-			filter 170ms ease;
-	}
-	.offers > button:hover {
-		transform: translateY(-2px);
-		filter: brightness(1.12);
-	}
-	.offers > button + button {
+		align-items: center;
+		width: 100%;
 		margin-top: 8px;
+		padding: 13px 14px;
+		border: 1px solid #d1dfd822;
+		border-radius: 13px;
+		background: linear-gradient(145deg, #18252a, #0d1519);
+		color: #ece9e1;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease;
 	}
-	.offers > button > span:not(.cost):not(.value-ribbon) {
+	.offers button:hover:not(:disabled) {
+		transform: translateY(-2px);
+		border-color: #7cc7b66e;
+	}
+	.offers button:disabled {
+		opacity: 0.48;
+		cursor: not-allowed;
+	}
+	.offers button > span:not(.ribbon) {
 		display: grid;
-		gap: 3px;
+		gap: 2px;
 	}
 	.offers button small {
-		color: #9b8a6f;
+		color: #71807a;
 		font-size: 0.5rem;
-		font-weight: 760;
-		letter-spacing: 0.1em;
+		letter-spacing: 0.09em;
 		text-transform: uppercase;
 	}
-	.offers button > span > strong {
+	.offers button strong {
 		font:
-			500 0.88rem Georgia,
+			500 0.91rem Georgia,
 			serif;
 	}
-	.single-offer {
-		background: linear-gradient(120deg, #272722, #171b1c 65%, #20251f);
+	.offers .cost {
+		justify-items: end;
 	}
-	.batch-offer {
+	.offers .cost strong {
+		color: #d6c8aa;
+		font:
+			650 0.6rem Inter,
+			sans-serif;
+	}
+	.offers .batch-offer {
 		overflow: hidden;
-		background: linear-gradient(125deg, #72491f, #3c2b20 50%, #18332e);
-		box-shadow:
-			inset 0 1px #fff2,
-			0 8px 24px #0004;
-	}
-	.batch-offer::after {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		background: linear-gradient(110deg, transparent 0 35%, #fff1 50%, transparent 65%);
-		content: '';
-		transform: translateX(-110%);
-		transition: transform 600ms ease;
-	}
-	.batch-offer:hover::after {
-		transform: translateX(110%);
+		border-color: #d0a2524e;
+		background: linear-gradient(145deg, #2a2115, #111719);
+		box-shadow: inset 0 0 28px #bb7e1815;
 	}
 	.batch-offer em {
-		color: #f2c879;
-		font-size: 0.76rem;
+		color: #edbd66;
 		font-style: normal;
 	}
-	.cost {
-		display: grid;
-		grid-template-columns: auto auto;
-		gap: 1px 6px;
-		align-items: center;
-		justify-items: end;
-		flex: 0 0 auto;
-	}
-	.cost strong {
-		color: #f0e1c9;
-		font-size: 0.68rem;
-		white-space: nowrap;
-	}
-	.cost small {
-		grid-column: 1 / -1;
-		color: #86745a !important;
-		font-size: 0.45rem !important;
-	}
-	.value-ribbon {
+	.ribbon {
 		position: absolute;
-		top: -1px;
-		right: -1px;
+		top: 0;
+		right: 0;
 		padding: 4px 8px;
-		border-radius: 0 11px 0 9px;
-		background: #e0ad5b;
-		color: #20170c;
+		border-radius: 0 12px 0 9px;
+		background: #d6a64f;
+		color: #18130c;
 		font-size: 0.47rem;
-		font-weight: 850;
+		font-weight: 800;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
-	.offer-trust {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 16px;
-		margin-top: 10px;
-		color: #71807a;
-		font-size: 0.51rem;
-	}
-	.offer-trust span::before {
-		margin-right: 5px;
-		color: #6eb5a5;
-		content: '✓';
-	}
-	.offer-trust button {
-		flex: 0 0 auto;
-		padding: 3px 0;
-		border: 0;
-		border-bottom: 1px solid #b8955c55;
-		background: transparent;
-		color: #a98b5a;
-		font-size: 0.5rem;
-		cursor: pointer;
-	}
-
-	.recommendation {
-		display: flex;
-		gap: 15px;
-		align-items: center;
-		padding: 15px 18px;
-		border-top: 1px solid #dae9e218;
-		background: #050a0d66;
-	}
-	.recommendation > div {
-		display: grid;
-		min-width: 112px;
-		gap: 2px;
-	}
-	.recommendation small {
-		color: #95794c;
-		font-size: 0.47rem;
-		font-weight: 750;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-	}
-	.recommendation strong {
-		color: #ddc79f;
-		font:
-			500 0.7rem Georgia,
-			serif;
-	}
-	.recommendation p {
-		margin: 0;
-		padding-left: 14px;
-		border-left: 1px solid #d7e7df1c;
-		color: #697670;
-		font-size: 0.58rem;
-		line-height: 1.4;
-	}
-
-	.experiment {
-		overflow: hidden;
-		border: 1px solid #b7ccc326;
-		border-radius: 18px;
-		background: #0a1115d9;
-	}
-	.experiment > header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 15px;
-		padding: 14px 16px;
-		border-bottom: 1px solid #cbded516;
-	}
-	.experiment header p {
-		margin: 0 0 2px;
-		color: #8a724d;
-		font-size: 0.5rem;
-		font-weight: 760;
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
-	}
-	.experiment h2 {
-		margin: 0;
-		font:
-			500 0.95rem Georgia,
-			serif;
-	}
-	.experiment-toggles {
-		display: flex;
-		gap: 6px;
-	}
-	.experiment-toggles button {
-		min-height: 31px;
-		padding: 0 9px;
-		border: 1px solid #b9cdc425;
-		border-radius: 8px;
-		background: #10191d;
-		color: #7e8a85;
-		font-size: 0.56rem;
-		cursor: pointer;
-	}
-	.experiment-toggles button.enabled {
-		border-color: #79c1b1;
-		color: #a8d8cd;
-	}
-	.experiment-toggles button i {
-		display: inline-block;
-		width: 5px;
-		height: 5px;
-		margin-right: 4px;
-		border-radius: 50%;
-		background: currentColor;
-	}
-
-	.direction-list {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-	.direction-list button {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 10px;
-		min-width: 0;
-		min-height: 79px;
-		padding: 12px 14px;
-		border: 0;
-		border-right: 1px solid #d6e6de14;
-		background: transparent;
-		color: #798681;
-		cursor: pointer;
-		text-align: left;
-	}
-	.direction-list button:last-child {
-		border-right: 0;
-	}
-	.direction-list button.selected {
-		background: linear-gradient(140deg, #305f5435, #b27a2310);
-		color: #e7e5dd;
-		box-shadow: inset 0 2px #70bead;
-	}
-	.direction-index {
-		color: #a88754;
-		font:
-			500 0.7rem Georgia,
-			serif;
-	}
-	.direction-list button > span:nth-child(2) {
-		display: grid;
-		align-content: start;
-		gap: 4px;
-		min-width: 0;
-	}
-	.direction-list strong {
-		font-size: 0.65rem;
-	}
-	.direction-list small {
-		display: -webkit-box;
-		overflow: hidden;
-		color: #707c77;
-		font-size: 0.53rem;
-		line-height: 1.35;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-	}
-	.direction-list i {
-		grid-column: 2;
-		color: #9e8051;
-		font-size: 0.5rem;
-		font-style: normal;
-	}
-	.measurement {
-		display: flex;
-		gap: 12px 20px;
-		flex-wrap: wrap;
-		padding: 9px 14px;
-		border-top: 1px solid #d6e6de12;
-		background: #050a0d7d;
-		color: #67756f;
-		font-size: 0.53rem;
-	}
-	.measurement span:first-child {
-		margin-right: auto;
-	}
-	.measurement span:first-child i {
-		display: inline-block;
-		width: 5px;
-		height: 5px;
-		margin-right: 6px;
-		border-radius: 50%;
-		background: #68bdab;
-		box-shadow: 0 0 8px #68bdab;
-	}
-	.measurement strong {
-		color: #a8b6b0;
-		font-weight: 650;
-	}
-
-	.result-wrap {
-		margin-top: 18px;
-	}
-	.lab-footer {
-		display: flex;
-		justify-content: space-between;
-		gap: 20px;
-		margin-top: 18px;
-		padding-top: 15px;
-		border-top: 1px solid #bed2c923;
-		color: #62716b;
-		font-size: 0.58rem;
-	}
-	.lab-footer > div {
+	.trust {
 		display: flex;
 		gap: 8px;
 		align-items: center;
+		padding: 11px 18px 16px;
+		color: #687770;
+		font-size: 0.54rem;
 	}
-	.lab-footer strong {
-		color: #a28658;
-		font-weight: 720;
+	.arrival-rail {
+		overflow: hidden;
+		padding: 11px 13px 13px;
+		border: 1px solid #bed8d027;
+		border-radius: 16px;
+		background: #0a1216d9;
 	}
-
-	@media (max-width: 1100px) {
-		.portal-header {
-			grid-template-columns: 1fr auto;
-		}
-		.fixture-stamp {
-			display: none;
-		}
+	.arrival-rail header {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		margin-bottom: 9px;
+	}
+	.arrival-rail header > div {
+		display: grid;
+		gap: 1px;
+	}
+	.arrival-rail header small {
+		color: #72ad9f;
+		font-size: 0.49rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.arrival-rail header strong {
+		font:
+			500 0.83rem Georgia,
+			serif;
+	}
+	.arrival-rail header > span {
+		color: #687770;
+		font-size: 0.51rem;
+	}
+	.arrival-rail > div {
+		display: flex;
+		gap: 7px;
+		overflow-x: auto;
+		padding: 1px;
+	}
+	.arrival-rail button {
+		display: grid;
+		grid-template-columns: 38px auto;
+		gap: 7px;
+		align-items: center;
+		flex: 0 0 auto;
+		min-width: 128px;
+		padding: 5px;
+		border: 1px solid #caddd625;
+		border-radius: 9px;
+		background: #0d171c;
+		color: #dce2df;
+		text-align: left;
+		cursor: pointer;
+	}
+	.arrival-rail button:hover {
+		border-color: #75c8b55e;
+	}
+	.arrival-rail img {
+		width: 38px;
+		height: 44px;
+		object-fit: cover;
+		object-position: center 15%;
+		border-radius: 6px;
+	}
+	.arrival-rail button span {
+		display: grid;
+		gap: 2px;
+	}
+	.arrival-rail button strong {
+		font:
+			500 0.66rem Georgia,
+			serif;
+	}
+	.arrival-rail button small {
+		color: #71817a;
+		font-size: 0.48rem;
+	}
+	@media (max-width: 980px) {
 		.portal-grid {
-			grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.8fr);
-		}
-		.banner-copy {
-			padding: 22px 20px 18px;
-		}
-		.guarantee {
-			padding-inline: 18px;
-		}
-	}
-
-	@media (max-width: 820px) {
-		main {
-			padding: 14px 12px 22px;
-		}
-		.portal-header {
 			grid-template-columns: 1fr;
-			gap: 12px;
 		}
-		.wallets {
+		.decision-column {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 		}
+		.banner-copy {
+			grid-row: span 3;
+		}
+		.offers {
+			grid-column: 2;
+		}
+		.trust {
+			grid-column: 2;
+		}
+	}
+	@media (max-width: 680px) {
+		main {
+			padding: 13px 10px 24px;
+		}
+		.portal-header {
+			align-items: flex-start;
+		}
+		.brand p {
+			display: none;
+		}
+		.brand strong {
+			font-size: 1rem;
+		}
+		.brand-seal {
+			width: 38px;
+			height: 38px;
+		}
+		.wallets {
+			gap: 5px;
+		}
 		.wallet {
 			min-width: 0;
+			padding: 7px 9px;
 		}
-		.banner-rail {
-			margin-top: 12px;
+		.wallet small {
+			font-size: 0.44rem;
+		}
+		.wallet strong {
+			font-size: 0.8rem;
 		}
 		.banner-rail button {
 			grid-template-columns: auto 1fr;
 			padding: 8px;
 		}
-		.banner-rail i {
-			grid-column: 2;
-		}
-		.portal-grid {
-			grid-template-columns: 1fr;
-		}
-		.hero-column {
-			display: contents;
-		}
-		.stage-anchor {
-			order: 1;
-		}
-		.decision-column {
-			order: 2;
-			border-radius: 19px;
-		}
-		.experiment {
-			order: 3;
-		}
-		.banner-copy {
-			padding: 18px;
-		}
-		.banner-copy h2 {
-			font-size: 2.35rem;
-		}
-		.recommendation {
+		.banner-rail button > i {
 			display: none;
 		}
-	}
-
-	@media (max-width: 560px) {
-		.brand-seal {
-			width: 40px;
-			height: 40px;
-		}
-		.wallets {
-			gap: 6px;
-		}
-		.wallet {
-			padding: 8px 25px 8px 9px;
-		}
-		.wallet i {
-			font-size: 0.41rem;
-		}
-		.banner-rail {
-			gap: 3px;
-			padding: 4px;
-		}
-		.banner-rail button {
-			display: flex;
-			min-height: 56px;
-			justify-content: center;
-			padding: 7px 5px;
-			text-align: center;
-		}
-		.banner-rail .banner-glyph,
-		.banner-rail i {
+		.banner-glyph {
 			display: none;
 		}
-		.banner-rail small {
-			font-size: 0.43rem;
-		}
-		.banner-rail strong {
-			font-size: 0.73rem;
-		}
 		.portal-grid {
-			gap: 10px;
 			margin-top: 8px;
 		}
-		.banner-copy > p {
-			font-size: 0.7rem;
+		.decision-column {
+			display: block;
+			border-radius: 20px;
 		}
-		.offers > button {
-			min-height: 72px;
-			padding: 11px;
+		.banner-copy {
+			padding: 23px 20px 19px;
 		}
-		.offers button > span > strong {
-			font-size: 0.77rem;
+		.banner-copy h2 {
+			font-size: 2.25rem;
 		}
-		.cost strong {
-			font-size: 0.58rem;
+		.guarantee {
+			padding: 16px 18px;
 		}
-		.guarantee footer {
-			font-size: 0.47rem;
+		.rates-button {
+			width: calc(100% - 24px);
+			margin-inline: 12px;
 		}
-		.experiment > header {
-			display: grid;
+		.offers {
+			padding-inline: 12px;
 		}
-		.experiment-toggles {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-		}
-		.direction-list {
-			grid-template-columns: 1fr;
-		}
-		.direction-list button {
-			grid-template-columns: 30px 1fr auto;
-			min-height: 66px;
-			border-right: 0;
-			border-bottom: 1px solid #d6e6de14;
-		}
-		.direction-list i {
-			grid-column: 3;
-			grid-row: 1;
-			align-self: center;
-		}
-		.direction-list small {
-			-webkit-line-clamp: 1;
-			line-clamp: 1;
-		}
-		.measurement span:first-child {
-			width: 100%;
-		}
-		.lab-footer {
-			display: grid;
-		}
-		.lab-footer > span {
-			display: none;
+		.trust {
+			padding-inline: 14px;
 		}
 	}
 </style>

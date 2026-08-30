@@ -1,18 +1,40 @@
 <script lang="ts">
 	import PortalGlyph from './PortalGlyph.svelte';
 
+	type Direction = 'gate' | 'constellation' | 'identity';
 	type RateRow = { band: string; value: string; note: string };
 	type Guarantee = { current: number; threshold: number; label: string };
+	type DirectionOption = {
+		id: Direction;
+		label: string;
+		shortLabel: string;
+		description: string;
+		recognitionTarget: string;
+	};
 
 	let {
 		open,
 		rates,
 		guarantee,
+		directions,
+		direction,
+		reducedMotion,
+		muted,
+		ondirection,
+		onreduced,
+		onmuted,
 		onclose
 	}: {
 		open: boolean;
 		rates: readonly RateRow[];
 		guarantee: Guarantee;
+		directions: readonly DirectionOption[];
+		direction: Direction;
+		reducedMotion: boolean;
+		muted: boolean;
+		ondirection: (direction: Direction) => void;
+		onreduced: () => void;
+		onmuted: () => void;
 		onclose: () => void;
 	} = $props();
 
@@ -24,7 +46,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if open}
-	<div class="backdrop" role="presentation" onclick={onclose} data-testid="rates-backdrop"></div>
+	<div class="backdrop" role="presentation" onclick={onclose}></div>
 	<div
 		class="panel"
 		role="dialog"
@@ -33,63 +55,76 @@
 		data-testid="rates-panel"
 	>
 		<header>
-			<div class="seal"><PortalGlyph kind="star" size={22} /></div>
+			<div class="seal"><PortalGlyph kind="star" size={21} /></div>
 			<div>
-				<p>Standard banner · fixture disclosure</p>
-				<h2 id="rates-title">Rates &amp; guarantee</h2>
+				<p>Standard banner</p>
+				<h2 id="rates-title">Rates &amp; details</h2>
 			</div>
 			<button type="button" class="close" aria-label="Close rates and details" onclick={onclose}
 				>×</button
 			>
 		</header>
 
-		<div class="fixture-note">
-			<strong>Review values only.</strong>
-			<span
-				>Prices, probabilities, balances, and guarantee rules are prototype fixtures—not canonical
-				economy.</span
-			>
-		</div>
-
-		<div class="rate-list" aria-label="Prototype summon rates">
+		<section class="rate-list" aria-label="Summon rates">
 			{#each rates as rate (rate.band)}
-				<div>
-					<span>{rate.band}<small>{rate.note}</small></span>
-					<strong>{rate.value}</strong>
-				</div>
+				<div><span>{rate.band}</span><strong>{rate.value}</strong></div>
 			{/each}
-		</div>
+		</section>
 
-		<section class="guarantee-copy" aria-label="Guarantee behavior">
-			<p>Guarantee behavior</p>
+		<section class="guarantee-copy">
+			<p>Guarantee</p>
 			<strong>{guarantee.label} {guarantee.threshold} summons</strong>
-			<span
-				>Fixture progress begins at {guarantee.current} / {guarantee.threshold}. Session previews
-				move it visibly; reset or reload restores it, and nothing carries.</span
-			>
+			<span>Current progress begins at {guarantee.current} / {guarantee.threshold}.</span>
 		</section>
 
-		<section class="pool" aria-label="Standard fixture identity pool">
-			<p>Identity pool · six unique people</p>
-			<div>Dara Zev · Mara Vey · Jori Daro · Kira Toren · Iven Orra · Remy Nahl</div>
-			<span
-				>Repeats in the batch contact sheet are presentation references, never durable duplicate
-				heroes.</span
-			>
-		</section>
-
-		<div class="offer-compare">
+		<section class="compare">
 			<div>
-				<small>Single presentation</small>
-				<strong>1 result</strong>
-				<span>1 Gate sigil or 160 gems · fixture</span>
+				<small>Single</small><strong>1 arrival</strong><span>1 Gate sigil or 160 gems</span>
 			</div>
 			<div class="bonus">
-				<small>Batch presentation</small>
-				<strong>10 paid + 1 bonus</strong>
-				<span>1,600 gems · 11 result slots · fixture</span>
+				<small>Batch</small><strong>10 + 1 bonus</strong><span>1,600 gems · 11 arrivals</span>
 			</div>
-		</div>
+		</section>
+
+		<section class="ritual" aria-labelledby="ritual-title">
+			<div class="section-heading">
+				<div>
+					<p>Reveal ritual</p>
+					<h3 id="ritual-title">Choose how the gate answers</h3>
+				</div>
+				<span data-testid="recognition-target"
+					>{directions.find((item) => item.id === direction)?.recognitionTarget}</span
+				>
+			</div>
+			<div class="directions" data-testid="direction-selector">
+				{#each directions as item (item.id)}
+					<button
+						type="button"
+						class:active={direction === item.id}
+						aria-pressed={direction === item.id}
+						onclick={() => ondirection(item.id)}
+					>
+						<strong>{item.shortLabel}</strong><span>{item.description}</span>
+					</button>
+				{/each}
+			</div>
+			<div class="switches">
+				<button
+					type="button"
+					class:active={reducedMotion}
+					aria-pressed={reducedMotion}
+					onclick={onreduced}
+					data-testid="reduced-motion-toggle"><i></i>Reduced motion</button
+				>
+				<button type="button" class:active={!muted} aria-pressed={!muted} onclick={onmuted}
+					><i></i>{muted ? 'Sound muted' : 'Sound on'}</button
+				>
+			</div>
+		</section>
+
+		<footer>
+			<strong>Demo values.</strong> Prices, probabilities, balances, and guarantee rules are not final.
+		</footer>
 	</div>
 {/if}
 
@@ -98,217 +133,245 @@
 		position: fixed;
 		z-index: 40;
 		inset: 0;
-		background: rgb(2 7 10 / 78%);
-		backdrop-filter: blur(8px);
+		background: #02070ac7;
+		backdrop-filter: blur(9px);
 	}
-
 	.panel {
 		position: fixed;
 		z-index: 41;
 		top: 50%;
 		left: 50%;
-		width: min(640px, calc(100vw - 32px));
-		max-height: min(780px, calc(100vh - 32px));
+		width: min(690px, calc(100vw - 26px));
+		max-height: calc(100vh - 26px);
 		overflow-y: auto;
 		transform: translate(-50%, -50%);
-		border: 1px solid #a3d8ce55;
+		border: 1px solid #a7dccf4c;
 		border-radius: 22px;
-		background:
-			linear-gradient(145deg, #132027f5, #090f14fa 62%),
-			radial-gradient(circle at 20% 0%, #1e756433, transparent 40%);
+		background: linear-gradient(145deg, #122027f8, #080e13fc 65%);
 		box-shadow:
-			0 28px 100px #000c,
-			inset 0 1px #d9fff31a;
-		color: #eee8dc;
-		font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+			0 32px 110px #000e,
+			inset 0 1px #fff1;
+		color: #eee9df;
+		font-family: Inter, ui-sans-serif, system-ui;
 	}
-
 	header {
 		display: grid;
 		grid-template-columns: auto 1fr auto;
-		gap: 14px;
+		gap: 13px;
 		align-items: center;
-		padding: 24px 26px 19px;
-		border-bottom: 1px solid #b7dcd21a;
+		padding: 21px 24px 18px;
+		border-bottom: 1px solid #d8e8e116;
 	}
-
-	header p,
-	.pool p,
-	.guarantee-copy p {
-		margin: 0 0 5px;
-		color: #78beb2;
-		font-size: 0.69rem;
-		font-weight: 760;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
-	}
-
-	h2 {
-		margin: 0;
-		font-family: Georgia, 'Times New Roman', serif;
-		font-size: clamp(1.5rem, 4vw, 2rem);
-		font-weight: 500;
-		letter-spacing: -0.025em;
-	}
-
 	.seal {
 		display: grid;
-		width: 42px;
-		height: 42px;
+		width: 40px;
+		height: 40px;
 		place-items: center;
-		border: 1px solid #d0a45c66;
+		border: 1px solid #d3aa644b;
 		border-radius: 50%;
-		background: #db9f4313;
+		background: #b97b2015;
 	}
-
+	header p,
+	.guarantee-copy p,
+	.section-heading p {
+		margin: 0 0 4px;
+		color: #7cc8b7;
+		font-size: 0.58rem;
+		font-weight: 760;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+	}
+	header h2 {
+		margin: 0;
+		font:
+			500 1.8rem Georgia,
+			serif;
+		letter-spacing: -0.035em;
+	}
 	.close {
 		width: 36px;
 		height: 36px;
-		border: 1px solid #dae9e323;
+		border: 1px solid #d8e8e122;
 		border-radius: 50%;
-		background: #fff0;
-		color: #c9cec9;
-		font:
-			300 1.6rem/1 ui-sans-serif,
-			system-ui;
+		background: transparent;
+		color: #c7cfca;
+		font-size: 1.5rem;
 		cursor: pointer;
 	}
-
-	.close:hover,
-	.close:focus-visible {
-		background: #fff1;
-		color: #fff;
-	}
-
-	.fixture-note {
-		display: grid;
-		gap: 3px;
-		margin: 20px 26px 10px;
-		padding: 13px 15px;
-		border: 1px solid #d2a34b4d;
-		border-radius: 10px;
-		background: #a8741f17;
-		font-size: 0.77rem;
-		line-height: 1.45;
-	}
-
-	.fixture-note strong {
-		color: #e4bf7a;
-	}
-	.fixture-note span {
-		color: #bdc2bd;
-	}
-
 	.rate-list {
-		padding: 10px 26px;
-	}
-	.rate-list > div {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 13px 0;
-		border-bottom: 1px solid #dfece313;
-	}
-
-	.rate-list span {
 		display: grid;
-		gap: 2px;
-		color: #d9dcd5;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 8px;
+		padding: 18px 24px 8px;
 	}
-	.rate-list small {
-		color: #78847f;
-		font-size: 0.64rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-	.rate-list strong {
-		color: #fff6e5;
-		font-family: Georgia, serif;
-		font-size: 1.2rem;
-		font-weight: 500;
-	}
-
-	.guarantee-copy,
-	.pool {
-		display: grid;
-		gap: 6px;
-		margin: 10px 26px;
-		padding: 16px;
-		border: 1px solid #85cabb30;
-		border-radius: 12px;
-		background: #3d93830c;
-	}
-
-	.guarantee-copy strong {
-		color: #dcefe9;
-	}
-	.guarantee-copy span,
-	.pool span {
-		color: #8e9a96;
-		font-size: 0.75rem;
-		line-height: 1.45;
-	}
-	.pool div {
-		color: #d7dbd6;
-		font-size: 0.86rem;
-		line-height: 1.5;
-	}
-
-	.offer-compare {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 10px;
-		padding: 10px 26px 26px;
-	}
-
-	.offer-compare > div {
+	.rate-list div {
 		display: grid;
 		gap: 5px;
-		padding: 15px;
-		border: 1px solid #d8e5df1f;
-		border-radius: 12px;
-		background: #ffffff08;
+		padding: 13px;
+		border: 1px solid #dbe9e21c;
+		border-radius: 11px;
+		background: #fff006;
 	}
-
-	.offer-compare .bonus {
-		border-color: #d7a75957;
-		background: #bb7f2613;
+	.rate-list span {
+		color: #83918c;
+		font-size: 0.64rem;
 	}
-	.offer-compare small {
-		color: #89958f;
-		text-transform: uppercase;
+	.rate-list strong {
+		color: #efe6d4;
+		font:
+			500 1.3rem Georgia,
+			serif;
+	}
+	.guarantee-copy {
+		display: grid;
+		gap: 4px;
+		margin: 8px 24px;
+		padding: 14px;
+		border: 1px solid #71bdac2d;
+		border-radius: 11px;
+		background: #388b7c0b;
+	}
+	.guarantee-copy strong {
+		color: #dcece7;
+		font-size: 0.82rem;
+	}
+	.guarantee-copy span {
+		color: #7f918b;
+		font-size: 0.68rem;
+	}
+	.compare {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 8px;
+		padding: 0 24px 16px;
+	}
+	.compare > div {
+		display: grid;
+		gap: 3px;
+		padding: 13px;
+		border: 1px solid #dce8e219;
+		border-radius: 11px;
+	}
+	.compare .bonus {
+		border-color: #d5a95c4c;
+		background: #bd7e1910;
+	}
+	.compare small {
+		color: #74857f;
+		font-size: 0.54rem;
 		letter-spacing: 0.1em;
+		text-transform: uppercase;
 	}
-	.offer-compare strong {
-		color: #f1e6d3;
+	.compare strong {
+		font:
+			500 0.95rem Georgia,
+			serif;
 	}
-	.offer-compare span {
-		color: #929b96;
+	.compare span {
+		color: #87948f;
+		font-size: 0.63rem;
+	}
+	.ritual {
+		padding: 17px 24px 20px;
+		border-top: 1px solid #dce8e216;
+	}
+	.section-heading {
+		display: flex;
+		justify-content: space-between;
+		gap: 15px;
+		align-items: end;
+	}
+	.section-heading h3 {
+		margin: 0;
+		font:
+			500 1.1rem Georgia,
+			serif;
+	}
+	.section-heading > span {
+		color: #a88b59;
+		font-size: 0.56rem;
+	}
+	.directions {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 7px;
+		margin-top: 13px;
+	}
+	.directions button {
+		display: grid;
+		gap: 5px;
+		min-width: 0;
+		padding: 12px;
+		border: 1px solid #cfddd720;
+		border-radius: 10px;
+		background: #fff004;
+		color: #9aa6a1;
+		text-align: left;
+		cursor: pointer;
+	}
+	.directions button.active {
+		border-color: #75cbb77d;
+		background: #2e897918;
+		color: #e6eee9;
+		box-shadow: inset 0 0 25px #4ab39e15;
+	}
+	.directions strong {
 		font-size: 0.7rem;
+	}
+	.directions span {
+		color: #71817b;
+		font-size: 0.56rem;
 		line-height: 1.35;
 	}
-
-	@media (max-width: 560px) {
-		.panel {
-			border-radius: 16px;
-		}
-		header {
-			padding: 18px;
-		}
-		.fixture-note,
+	.switches {
+		display: flex;
+		gap: 7px;
+		margin-top: 10px;
+	}
+	.switches button {
+		display: flex;
+		gap: 7px;
+		align-items: center;
+		padding: 8px 10px;
+		border: 1px solid #d4e0db1f;
+		border-radius: 99px;
+		background: transparent;
+		color: #87948f;
+		font-size: 0.6rem;
+		cursor: pointer;
+	}
+	.switches i {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #66736e;
+	}
+	.switches button.active {
+		color: #b9d8d0;
+	}
+	.switches button.active i {
+		background: #6ac6b2;
+		box-shadow: 0 0 8px #6ac6b2;
+	}
+	footer {
+		padding: 12px 24px 16px;
+		border-top: 1px solid #dce8e212;
+		color: #65736e;
+		font-size: 0.6rem;
+	}
+	footer strong {
+		color: #a1875b;
+	}
+	@media (max-width: 570px) {
 		.rate-list,
-		.guarantee-copy,
-		.pool {
-			margin-left: 18px;
-			margin-right: 18px;
-		}
-		.rate-list {
-			padding-left: 0;
-			padding-right: 0;
-		}
-		.offer-compare {
+		.directions {
 			grid-template-columns: 1fr;
-			padding: 10px 18px 20px;
+		}
+		.compare {
+			grid-template-columns: 1fr;
+		}
+		.directions span {
+			display: none;
 		}
 	}
 </style>

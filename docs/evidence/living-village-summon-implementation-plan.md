@@ -1,5 +1,35 @@
 # Living Village Summoning Portal implementation plan
 
+## Owner-feedback revision — release presentation pass
+
+The review screenshots are evidence of current problems, not a style target. The next slice keeps
+Svelte for routing and interaction state, and moves the portal itself to the repository's existing
+PixiJS/WebGL renderer. Replacing the application framework would add risk without improving the
+GPU animation primitive; the renderer is the useful boundary.
+
+This revision supersedes the visible lab-comparison composition below:
+
+1. Remove owner, fixture, annotation, presentation-receipt, and recommendation furniture from the
+   primary portal. Keep one quiet “demo values” disclosure inside Rates because prices, rates, and
+   pity remain intentionally non-canonical.
+2. Replace the separate result screen with an in-gate arrival state. A single summon and an eleven
+   result batch both remain inside the portal surface.
+3. Keep a session arrival strip so five sequential singles or an eleven-result batch remain
+   clickable. Selecting an arrival opens an in-place hero dossier rather than navigating away.
+4. Model dossiers with the accepted six attributes (`Might`, `Vitality`, `Agility`, `Dexterity`,
+   `Intellect`, `Spirit`) and the accepted personality dimensions (traits, value, drive, social
+   style, stress response, and risk/leadership tendency). Numeric readiness bars are explicitly
+   local presentation estimates because the wiki still leaves attribute numeric ranges open.
+5. Retain all three reveal directions, replay, skip, muted sound hooks, recognition timing, and the
+   reduced-motion-safe path, but place reveal-style controls in the Rates/settings surface instead
+   of a player-facing owner experiment panel.
+6. Render layered rings, runes, sparks, energy filaments, aperture light, and phase-driven bursts in
+   PixiJS. The approved hero anchor remains a DOM portrait above the canvas so identity stays sharp,
+   accessible, and constrained to the existing six people.
+7. Rework the focused Playwright proof around release-facing behavior: economy disclosure, connected
+   costs and balances, all reveal styles, skip/replay/reduced motion, sequential arrivals, batch
+   bonus communication, and clickable dossiers with the canonical attribute vocabulary.
+
 Status: implementation-ready plan, written before prototype code
 
 Owner boundary:
@@ -99,11 +129,11 @@ All three directions will replay against the same single-result receipt, Mara Ve
 pacing and hierarchy rather than outcome luck. Timings are presentation targets, not gameplay
 economy:
 
-| Direction | Stages | Face recognizable target | Full mechanics target |
-| --- | --- | ---: | ---: |
-| Gate ignition | charge → threshold → silhouette → identity → mechanics | 1.75 s | 2.55 s |
-| Constellation assembly | marks → form → identity → mechanics | 1.55 s | 2.35 s |
-| Immediate identity | identity → parallax settle → mechanics | 0.15 s | 1.15 s |
+| Direction              | Stages                                                 | Face recognizable target | Full mechanics target |
+| ---------------------- | ------------------------------------------------------ | -----------------------: | --------------------: |
+| Gate ignition          | charge → threshold → silhouette → identity → mechanics |                   1.75 s |                2.55 s |
+| Constellation assembly | marks → form → identity → mechanics                    |                   1.55 s |                2.35 s |
+| Immediate identity     | identity → parallax settle → mechanics                 |                   0.15 s |                1.15 s |
 
 Implementation notes:
 
@@ -218,42 +248,42 @@ These are proposals for later coordinator review, not shared contract edits:
 
 ```ts
 type SummonPortalViewModel = {
-  fixtureVersion?: string;
-  wallets: Array<{
-    currencyId: string;
-    label: string;
-    balance: number;
-    kind: 'earned' | 'premium';
-  }>;
-  banners: Array<{
-    bannerId: string;
-    label: string;
-    availability: 'active' | 'preview' | 'closed';
-    featuredHeroId?: string;
-    rateTableId?: string;
-    guaranteeRuleId?: string;
-  }>;
-  activeBannerId: string;
-  featuredHero: {
-    heroId: string;
-    displayName: string;
-    identityLine: string;
-    portraitAssetKey: string;
-  };
-  guarantee?: { current: number; threshold: number; unit: 'summons' };
-  rates: Array<{ outcomeBand: string; probabilityBasisPoints: number }>;
-  offers: Array<{
-    offerId: string;
-    paidCount: number;
-    bonusCount: number;
-    cost: { currencyId: string; amount: number };
-  }>;
-  presentation: {
-    receiptId: string;
-    revealDirection: 'gate' | 'constellation' | 'identity';
-    reducedMotion: boolean;
-    muted: boolean;
-  };
+	fixtureVersion?: string;
+	wallets: Array<{
+		currencyId: string;
+		label: string;
+		balance: number;
+		kind: 'earned' | 'premium';
+	}>;
+	banners: Array<{
+		bannerId: string;
+		label: string;
+		availability: 'active' | 'preview' | 'closed';
+		featuredHeroId?: string;
+		rateTableId?: string;
+		guaranteeRuleId?: string;
+	}>;
+	activeBannerId: string;
+	featuredHero: {
+		heroId: string;
+		displayName: string;
+		identityLine: string;
+		portraitAssetKey: string;
+	};
+	guarantee?: { current: number; threshold: number; unit: 'summons' };
+	rates: Array<{ outcomeBand: string; probabilityBasisPoints: number }>;
+	offers: Array<{
+		offerId: string;
+		paidCount: number;
+		bonusCount: number;
+		cost: { currencyId: string; amount: number };
+	}>;
+	presentation: {
+		receiptId: string;
+		revealDirection: 'gate' | 'constellation' | 'identity';
+		reducedMotion: boolean;
+		muted: boolean;
+	};
 };
 ```
 

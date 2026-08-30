@@ -6,16 +6,29 @@ const evidence = (filename: string) =>
 	fileURLToPath(new URL(`../../../../../../docs/evidence/${filename}`, import.meta.url));
 
 async function chooseDirection(page: Page, name: string, direction: string) {
-	await page.getByRole('button', { name: new RegExp(name, 'i') }).click();
+	await page.getByRole('button', { name: /Rates & details/ }).click();
+	const panel = page.getByTestId('rates-panel');
+	await panel.getByRole('button', { name: new RegExp(`^${name}`, 'i') }).click();
 	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-direction', direction);
 }
 
-test('portal discloses fixture economy and supports every reveal control', async ({ page }) => {
+async function enableReducedMotion(page: Page) {
+	await page.getByRole('button', { name: /Rates & details/ }).click();
+	const toggle = page.getByTestId('reduced-motion-toggle');
+	if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click();
+	await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+	await page.getByRole('button', { name: 'Close rates and details' }).click();
+}
+
+test('portal connects spending, reveal controls, arrival history, and hero dossiers', async ({
+	page
+}) => {
 	await page.goto(route);
 
 	await expect(page).toHaveTitle(/Summoning Portal/);
+	await expect(page.getByTestId('portal-canvas')).toHaveAttribute('data-ready', 'true');
 	await expect(page.getByTestId('wallet-sigil')).toContainText('7');
-	await expect(page.getByTestId('wallet-sigil')).toContainText('Preview');
+	await expect(page.getByTestId('wallet-sigil')).not.toContainText('Preview');
 	await expect(page.getByTestId('wallet-gem')).toContainText('2,480');
 	const bannerRail = page.getByRole('navigation', { name: 'Summon banners' });
 	await expect(bannerRail.getByRole('button', { name: /Standard/ })).toHaveAttribute(
@@ -23,112 +36,106 @@ test('portal discloses fixture economy and supports every reveal control', async
 		'page'
 	);
 	await expect(bannerRail.getByRole('button', { name: /Limited/ })).toBeDisabled();
-	await expect(bannerRail.getByRole('button', { name: /Limited/ })).toContainText('Preview');
-	await expect(bannerRail.getByRole('button', { name: /Equipment/ })).toBeDisabled();
+	await expect(bannerRail.getByRole('button', { name: /Limited/ })).toContainText('Coming soon');
 
 	await page.getByRole('button', { name: /Rates & details/ }).click();
 	const rates = page.getByTestId('rates-panel');
-	await expect(rates).toBeVisible();
-	await expect(rates).toContainText('Review values only');
 	await expect(rates).toContainText('79.0%');
-	await expect(rates).toContainText('Guarantee behavior');
-	await expect(rates).toContainText('six unique people');
-	await expect(rates).toContainText('10 paid + 1 bonus');
+	await expect(rates).toContainText('10 + 1 bonus');
+	await expect(rates).toContainText('Demo values');
+	await expect(rates).toContainText('Reveal ritual');
 	await page.getByRole('button', { name: 'Close rates and details' }).click();
 
 	await expect(page.getByTestId('summon-single')).toContainText('1 Gate sigil or 160 gems');
 	await expect(page.getByTestId('summon-batch')).toContainText('Summon ×10 + 1 bonus');
 	await expect(page.getByTestId('summon-batch')).toContainText('1,600 gems');
 
-	await chooseDirection(page, 'Gate ignition', 'gate');
-	await expect(page.getByTestId('reveal-stage')).not.toHaveAttribute('data-phase', 'idle');
-	await page.getByRole('button', { name: 'Skip reveal' }).click();
+	await chooseDirection(page, 'Gate', 'gate');
+	await page.getByRole('button', { name: 'Skip', exact: true }).click();
 	await expect(page.getByTestId('summon-results')).toBeVisible();
-
 	await page.getByRole('button', { name: 'Replay', exact: true }).click();
 	await expect(page.getByTestId('reveal-stage')).not.toHaveAttribute('data-phase', 'complete');
-	await page.getByRole('button', { name: 'Skip reveal' }).click();
+	await page.getByRole('button', { name: 'Skip', exact: true }).click();
 
-	await chooseDirection(page, 'Constellation assembly', 'constellation');
-	await expect(page.getByTestId('reveal-stage')).not.toHaveAttribute('data-phase', 'idle');
-	await page.getByRole('button', { name: 'Skip reveal' }).click();
+	await chooseDirection(page, 'Constellation', 'constellation');
+	await page.getByRole('button', { name: 'Skip', exact: true }).click();
+	await chooseDirection(page, 'Identity first', 'identity');
+	await page.getByRole('button', { name: 'Skip', exact: true }).click();
 
-	await chooseDirection(page, 'Immediate identity', 'identity');
-	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-direction', 'identity');
-	await page.getByRole('button', { name: 'Skip reveal' }).click();
+	await enableReducedMotion(page);
+	for (let pull = 0; pull < 5; pull += 1) {
+		await page.getByTestId('summon-single').click();
+		await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'complete');
+	}
+	await expect(page.getByTestId('wallet-sigil')).toContainText('2');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('19 / 30');
+	const history = page.getByTestId('arrival-history');
+	await expect(history.getByRole('button')).toHaveCount(5);
 
-	await page.getByTestId('reduced-motion-toggle').click();
-	await expect(page.getByTestId('reduced-motion-toggle')).toHaveAttribute('aria-pressed', 'true');
-	await page.getByTestId('summon-single').click();
-	await expect(page.getByTestId('wallet-sigil')).toContainText('6');
-	await expect(page.getByTestId('guarantee-progress')).toContainText('15 / 30');
-	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'complete');
-	await expect(page.getByTestId('recognition-timing')).toContainText(
-		/Recognizable identity: \d+ ms/
-	);
+	await history.getByRole('button', { name: /View Mara Vey stats/ }).click();
+	const dossier = page.getByTestId('hero-dossier');
+	await expect(dossier).toBeVisible();
+	await expect(dossier).toContainText('Attributes');
+	await expect(dossier).toContainText('Personality');
+	await expect(dossier).toContainText('Might');
+	await expect(dossier).toContainText('Vitality');
+	await expect(dossier).toContainText('Agility');
+	await expect(dossier).toContainText('Dexterity');
+	await expect(dossier).toContainText('Intellect');
+	await expect(dossier).toContainText('Spirit');
+	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(6);
+	await page.getByRole('button', { name: 'Close hero details' }).click();
 
 	await page.getByTestId('summon-batch').click();
 	await expect(page.getByTestId('wallet-gem')).toContainText('880');
-	await expect(page.getByTestId('guarantee-progress')).toContainText('26 / 30');
-	await expect(page.getByTestId('summon-results')).toBeVisible();
-	await expect(page.getByTestId('batch-result')).toHaveCount(11);
-	await expect(page.getByTestId('summon-results')).toContainText('No durable hero copies created');
-
-	const permittedNames = new Set([
-		'Dara Zev',
-		'Mara Vey',
-		'Jori Daro',
-		'Kira Toren',
-		'Iven Orra',
-		'Remy Nahl'
-	]);
-	for (const result of await page.getByTestId('batch-result').all()) {
-		const text = (await result.innerText()).split('\n');
-		expect(text.some((line) => permittedNames.has(line.trim()))).toBe(true);
-	}
-
-	await page.getByRole('button', { name: 'Reset fixture' }).click();
-	await expect(page.getByTestId('wallet-sigil')).toContainText('7');
-	await expect(page.getByTestId('wallet-gem')).toContainText('2,480');
-	await expect(page.getByTestId('guarantee-progress')).toContainText('14 / 30');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('30 / 30');
+	await expect(page.getByTestId('arrival-card')).toHaveCount(11);
+	await expect(page.getByTestId('summon-results')).toContainText('10 summoned + 1 bonus');
+	await expect(page.getByTestId('summon-results')).toContainText('Bonus');
+	await page
+		.getByRole('button', { name: /Inspect Kira Toren/ })
+		.first()
+		.click();
+	await expect(page.getByTestId('hero-dossier')).toContainText('Kira Toren');
 });
 
-test('captures the portal and reveal comparison evidence', async ({ page }) => {
+test('captures the release portal and animation comparison', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 1000 });
 	await page.goto(route);
+	await expect(page.getByTestId('portal-canvas')).toHaveAttribute('data-ready', 'true');
 	await page.screenshot({ path: evidence('living-village-summon-desktop.png') });
 
-	await chooseDirection(page, 'Gate ignition', 'gate');
+	await chooseDirection(page, 'Gate', 'gate');
 	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'silhouette');
 	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-animation-gate.png')
 	});
 
-	await chooseDirection(page, 'Constellation assembly', 'constellation');
+	await chooseDirection(page, 'Constellation', 'constellation');
 	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'form');
 	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-animation-constellation.png')
 	});
 
-	await chooseDirection(page, 'Immediate identity', 'identity');
+	await chooseDirection(page, 'Identity first', 'identity');
 	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'identity');
 	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-animation-identity.png')
 	});
-	await page.getByRole('button', { name: 'Skip reveal' }).click();
-	await page.getByTestId('summon-results').screenshot({
+
+	await enableReducedMotion(page);
+	await page.getByTestId('summon-single').click();
+	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-single-result.png')
 	});
 	await page.getByTestId('summon-batch').click();
-	await page.getByRole('button', { name: 'Skip reveal' }).click();
-	await page.evaluate(() => window.scrollTo(0, 0));
-	await page.screenshot({ path: evidence('living-village-summon-connected-spend.png') });
-	await page.getByTestId('summon-results').screenshot({
+	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-batch-result.png')
 	});
+	await page.screenshot({ path: evidence('living-village-summon-connected-spend.png') });
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(route);
-	await page.evaluate(() => window.scrollTo(0, 0));
+	await expect(page.getByTestId('portal-canvas')).toHaveAttribute('data-ready', 'true');
 	await page.screenshot({ path: evidence('living-village-summon-mobile.png') });
 });

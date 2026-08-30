@@ -1,412 +1,253 @@
 <script lang="ts">
-	import PortalGlyph from './PortalGlyph.svelte';
-
 	type Hero = {
 		id: string;
 		name: string;
-		identityLine: string;
-		affinity: string;
 		calling: string;
+		affinity: string;
 		stars: number;
 		image: string;
 	};
 
 	let {
 		mode,
-		hero,
-		batch
+		results,
+		onselect
 	}: {
 		mode: 'single' | 'batch';
-		hero: Omit<Hero, 'id'>;
-		batch: readonly Hero[];
+		results: readonly Hero[];
+		onselect: (hero: Hero) => void;
 	} = $props();
 </script>
 
-<section class="results" data-mode={mode} data-testid="summon-results" aria-live="polite">
+<section class="arrival" data-mode={mode} data-testid="summon-results" aria-live="polite">
 	<header>
 		<div>
-			<p>Presentation receipt · LV-R-001</p>
-			<h2>{mode === 'single' ? 'One presence answers.' : 'The Hearth receives eleven echoes.'}</h2>
+			<p>{mode === 'single' ? 'The gate knows this name' : 'Eleven arrivals answer'}</p>
+			<h2>{mode === 'single' ? results[0]?.name : 'The summoned company'}</h2>
 		</div>
-		<span class="ephemeral"><i></i>Presentation only</span>
+		<span>{mode === 'single' ? 'Select to inspect' : '10 summoned + 1 bonus'}</span>
 	</header>
 
-	{#if mode === 'single'}
-		<article class="single-result">
-			<div class="portrait">
-				<img
-					src={hero.image}
-					alt={`${hero.name} single summon presentation result`}
-					width="1024"
-					height="1536"
-				/>
-			</div>
-			<div class="single-copy">
-				<div class="stars" aria-label={`${hero.stars} star fixture`}>{'✦'.repeat(hero.stars)}</div>
-				<small>Identity recognized</small>
-				<h3>{hero.name}</h3>
-				<p>{hero.identityLine}</p>
-				<div class="tags"><span>{hero.calling}</span><span>{hero.affinity} affinity</span></div>
-				<div class="welcome">
-					<PortalGlyph kind="ember" size={18} /><span>Ready to return to the Living Village</span>
+	<div class:single={mode === 'single'} class="result-grid">
+		{#each results as hero, index (`${hero.id}-${index}`)}
+			<button
+				type="button"
+				class:bonus={mode === 'batch' && index === 10}
+				onclick={() => onselect(hero)}
+				data-testid="arrival-card"
+				aria-label={`Inspect ${hero.name}${mode === 'batch' && index === 10 ? ', bonus arrival' : ''}`}
+			>
+				{#if mode === 'batch' && index === 10}<i class="bonus-mark">Bonus</i>{/if}
+				<div class="portrait"><img src={hero.image} alt="" width="1024" height="1536" /></div>
+				<div class="copy">
+					<small>{'✦'.repeat(hero.stars)} · {String(index + 1).padStart(2, '0')}</small>
+					<strong>{hero.name}</strong>
+					<span>{hero.calling} · {hero.affinity}</span>
 				</div>
-			</div>
-		</article>
-	{:else}
-		<div class="batch-summary">
-			<div><strong>10</strong><span>paid presentation slots</span></div>
-			<i>+</i>
-			<div class="bonus"><strong>1</strong><span>clearly marked bonus</span></div>
-			<p>
-				All eleven reference the same fixed six identities. Session wallet and guarantee previews
-				moved; nothing durable was written.
-			</p>
-		</div>
-		<div class="batch-grid" aria-label="Eleven non-persistent presentation results">
-			{#each batch as result, index (`${result.id}-${index}`)}
-				<article class:bonus={index === 10} data-testid="batch-result">
-					{#if index === 10}<span class="bonus-ribbon">Bonus</span>{/if}
-					<div class="batch-portrait">
-						<img src={result.image} alt="" width="1024" height="1536" />
-					</div>
-					<div>
-						<small>{String(index + 1).padStart(2, '0')} · {'✦'.repeat(result.stars)}</small>
-						<strong>{result.name}</strong>
-						<span>{result.calling}</span>
-					</div>
-				</article>
-			{/each}
-		</div>
-	{/if}
+			</button>
+		{/each}
+	</div>
 
-	<footer>
-		<strong>No durable hero copies created.</strong>
-		<span>This receipt compares presentation only; unique hero ownership remains untouched.</span>
-	</footer>
+	<footer>Choose any arrival to see attributes, aptitudes, and personality.</footer>
 </section>
 
 <style>
-	.results {
-		display: grid;
-		gap: 18px;
-		padding: 24px;
-		border: 1px solid #d4b0723b;
-		border-radius: 22px;
-		background:
-			linear-gradient(140deg, #172127e8, #0b1115f5),
-			radial-gradient(circle at 20% 0%, #c9883526, transparent 38%);
+	.arrival {
+		position: absolute;
+		z-index: 10;
+		inset: 58px 18px 68px;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		padding: 22px;
+		border: 1px solid #b8e4d936;
+		border-radius: 20px;
+		background: linear-gradient(150deg, #101c22ed, #070c11f5 66%);
 		box-shadow:
-			inset 0 1px #fff1,
-			0 20px 60px #0006;
-		color: #eee9df;
-		font-family: Inter, ui-sans-serif, system-ui;
+			0 30px 90px #000d,
+			inset 0 1px #fff1;
+		backdrop-filter: blur(18px);
+		animation: arrive 520ms cubic-bezier(0.18, 0.82, 0.22, 1) both;
 	}
-
+	@keyframes arrive {
+		from {
+			opacity: 0;
+			transform: scale(0.975) translateY(12px);
+		}
+	}
 	header {
 		display: flex;
 		justify-content: space-between;
-		gap: 20px;
-		align-items: flex-start;
+		align-items: end;
+		gap: 16px;
+		margin-bottom: 16px;
 	}
 	header p {
-		margin: 0 0 6px;
-		color: #bc985f;
-		font-size: 0.62rem;
+		margin: 0 0 4px;
+		color: #82cdbc;
+		font-size: 0.58rem;
 		font-weight: 760;
-		letter-spacing: 0.15em;
+		letter-spacing: 0.16em;
 		text-transform: uppercase;
 	}
-	h2 {
+	header h2 {
 		margin: 0;
 		font:
-			500 clamp(1.5rem, 3vw, 2.25rem)/1.05 Georgia,
-			'Times New Roman',
+			500 clamp(1.7rem, 3.3vw, 2.7rem)/1 Georgia,
 			serif;
-		letter-spacing: -0.03em;
+		letter-spacing: -0.04em;
 	}
-	.ephemeral {
-		display: flex;
-		gap: 7px;
-		align-items: center;
-		flex: 0 0 auto;
-		padding: 7px 9px;
-		border: 1px solid #88caba38;
-		border-radius: 999px;
-		color: #9bc9be;
-		font-size: 0.62rem;
+	header > span {
+		color: #d6b779;
+		font-size: 0.61rem;
 		font-weight: 720;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
-	.ephemeral i {
-		width: 5px;
-		height: 5px;
-		border-radius: 50%;
-		background: #62c3ad;
-		box-shadow: 0 0 8px #62c3ad;
-	}
-
-	.single-result {
+	.result-grid {
 		display: grid;
-		grid-template-columns: minmax(180px, 0.72fr) 1.28fr;
-		min-height: 320px;
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+		gap: 8px;
+		min-height: 0;
+		overflow-y: auto;
+		padding: 2px;
+	}
+	.result-grid.single {
+		grid-template-columns: minmax(250px, 0.55fr);
+		justify-content: center;
+		margin: auto 0;
+		overflow: visible;
+	}
+	.result-grid button {
+		position: relative;
+		min-width: 0;
 		overflow: hidden;
-		border: 1px solid #d8e6df21;
-		border-radius: 16px;
-		background: #080e12aa;
+		padding: 0;
+		border: 1px solid #c9ddd529;
+		border-radius: 12px;
+		background: #080f14;
+		color: #e8e9e3;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			box-shadow 180ms ease;
+	}
+	.result-grid button:hover,
+	.result-grid button:focus-visible {
+		z-index: 2;
+		transform: translateY(-4px);
+		border-color: #7fd4c1a1;
+		box-shadow:
+			0 15px 35px #000b,
+			0 0 26px #3b9d8b2b;
+	}
+	.result-grid button.bonus {
+		grid-column: 3 / span 2;
+		border-color: #e0b35b85;
+		box-shadow: inset 0 0 24px #c98a271c;
 	}
 	.portrait {
-		position: relative;
-		min-height: 310px;
+		height: 137px;
 		overflow: hidden;
-		background: radial-gradient(circle at 50% 45%, #527d7138, transparent 52%);
+		background: radial-gradient(circle at 50% 40%, #256e6461, transparent 60%);
 	}
-	.portrait::after {
-		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(90deg, transparent 70%, #080e12),
-			linear-gradient(0deg, #080e12, transparent 35%);
-		content: '';
+	.single .portrait {
+		height: 260px;
 	}
 	.portrait img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		object-position: center 18%;
-		filter: saturate(0.86) contrast(1.02);
+		object-position: center 15%;
+		filter: saturate(0.86) contrast(1.03);
+		transition: transform 500ms ease;
 	}
-	.single-copy {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		justify-content: center;
-		padding: 28px;
+	button:hover .portrait img {
+		transform: scale(1.035);
 	}
-	.single-copy small {
-		color: #8cbcaf;
-		font-size: 0.62rem;
-		font-weight: 720;
-		letter-spacing: 0.15em;
-		text-transform: uppercase;
-	}
-	.single-copy h3 {
-		margin: 5px 0 10px;
-		font:
-			500 clamp(2.2rem, 5vw, 3.7rem)/0.95 Georgia,
-			'Times New Roman',
-			serif;
-		letter-spacing: -0.045em;
-	}
-	.single-copy p {
-		max-width: 440px;
-		margin: 0;
-		color: #abb3ae;
-		font-size: 0.87rem;
-		line-height: 1.55;
-	}
-	.stars {
-		margin-bottom: 12px;
-		color: #dea85c;
-		font-size: 0.73rem;
-		letter-spacing: 0.14em;
-	}
-	.tags {
-		display: flex;
-		gap: 7px;
-		margin-top: 17px;
-	}
-	.tags span {
-		padding: 6px 9px;
-		border: 1px solid #7dbbaa31;
-		border-radius: 99px;
-		color: #acd3c9;
-		font-size: 0.62rem;
-		font-weight: 680;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-	.welcome {
-		display: flex;
-		gap: 8px;
-		align-items: center;
-		margin-top: 22px;
-		color: #d2c7b3;
-		font-size: 0.72rem;
-	}
-
-	.batch-summary {
-		display: grid;
-		grid-template-columns: auto auto auto 1fr;
-		gap: 14px;
-		align-items: center;
-		padding: 14px 16px;
-		border: 1px solid #d8b26c30;
-		border-radius: 13px;
-		background: #9e681411;
-	}
-	.batch-summary > div {
-		display: flex;
-		gap: 7px;
-		align-items: baseline;
-	}
-	.batch-summary strong {
-		color: #f1d093;
-		font:
-			500 1.55rem Georgia,
-			serif;
-	}
-	.batch-summary span {
-		color: #a7aaa5;
-		font-size: 0.68rem;
-	}
-	.batch-summary i {
-		color: #6d7772;
-		font-style: normal;
-	}
-	.batch-summary p {
-		margin: 0 0 0 auto;
-		max-width: 480px;
-		color: #8f9893;
-		font-size: 0.7rem;
-		line-height: 1.45;
-		text-align: right;
-	}
-
-	.batch-grid {
-		display: grid;
-		grid-template-columns: repeat(6, minmax(0, 1fr));
-		gap: 8px;
-	}
-	.batch-grid article {
-		position: relative;
-		min-width: 0;
-		overflow: hidden;
-		border: 1px solid #ccded621;
-		border-radius: 11px;
-		background: #070d10;
-	}
-	.batch-grid article.bonus {
-		grid-column: 3 / span 2;
-		border-color: #e1b66478;
-		box-shadow: 0 0 25px #d6932430;
-	}
-	.batch-portrait {
-		height: 125px;
-		overflow: hidden;
-		background: #132126;
-	}
-	.batch-portrait img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center 14%;
-		filter: saturate(0.78);
-	}
-	.batch-grid article > div:last-child {
+	.copy {
 		display: grid;
 		gap: 2px;
-		padding: 8px;
+		padding: 9px;
 	}
-	.batch-grid small {
+	.copy small {
 		overflow: hidden;
-		color: #bf9552;
-		font-size: 0.52rem;
+		color: #d8a956;
+		font-size: 0.48rem;
+		letter-spacing: 0.08em;
 		white-space: nowrap;
 	}
-	.batch-grid strong {
+	.copy strong {
 		overflow: hidden;
-		color: #e5e5df;
-		font-size: 0.7rem;
+		font:
+			500 0.72rem Georgia,
+			serif;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	.batch-grid span {
+	.copy span {
 		overflow: hidden;
-		color: #71807a;
-		font-size: 0.56rem;
+		color: #789089;
+		font-size: 0.51rem;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	.bonus-ribbon {
+	.single .copy {
+		padding: 14px;
+	}
+	.single .copy strong {
+		font-size: 1.15rem;
+	}
+	.bonus-mark {
 		position: absolute;
 		z-index: 2;
 		top: 7px;
 		right: 7px;
-		padding: 4px 6px;
+		padding: 4px 7px;
 		border-radius: 99px;
-		background: #d39a43;
-		color: #111 !important;
-		font-size: 0.49rem !important;
-		font-weight: 850;
+		background: #d5a14b;
+		color: #13100b;
+		font-size: 0.47rem;
+		font-style: normal;
+		font-weight: 820;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
-
 	footer {
-		display: flex;
-		gap: 7px 15px;
-		flex-wrap: wrap;
-		padding-top: 2px;
-		font-size: 0.68rem;
+		margin-top: auto;
+		padding-top: 13px;
+		color: #71817b;
+		font-size: 0.6rem;
+		text-align: center;
 	}
-	footer strong {
-		color: #a8d0c6;
-	}
-	footer span {
-		color: #7e8984;
-	}
-
-	@media (max-width: 720px) {
-		.results {
-			padding: 16px;
-			border-radius: 17px;
-		}
-		header {
-			align-items: flex-start;
-		}
-		.ephemeral {
-			padding: 6px;
-			font-size: 0.5rem;
-		}
-		.single-result {
-			grid-template-columns: 0.75fr 1.25fr;
-			min-height: 260px;
-		}
-		.portrait {
-			min-height: 260px;
-		}
-		.single-copy {
+	@media (max-width: 760px) {
+		.arrival {
+			inset: 52px 10px 66px;
 			padding: 15px;
 		}
-		.single-copy p {
-			font-size: 0.72rem;
+		header {
+			align-items: start;
 		}
-		.welcome {
-			display: none;
+		header > span {
+			max-width: 120px;
+			text-align: right;
 		}
-		.batch-summary {
-			grid-template-columns: auto auto auto;
-			gap: 8px;
-		}
-		.batch-summary > div {
-			display: grid;
-			gap: 0;
-		}
-		.batch-summary p {
-			grid-column: 1 / -1;
-			margin: 0;
-			text-align: left;
-		}
-		.batch-grid {
+		.result-grid {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 6px;
 		}
-		.batch-grid article.bonus {
+		.result-grid button.bonus {
 			grid-column: 2 / span 2;
 		}
-		.batch-portrait {
-			height: 100px;
+		.portrait {
+			height: 105px;
+		}
+		.result-grid.single {
+			grid-template-columns: minmax(210px, 0.82fr);
+		}
+		.single .portrait {
+			height: 230px;
 		}
 	}
 </style>

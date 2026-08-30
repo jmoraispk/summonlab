@@ -9,6 +9,22 @@ export type HeroId = 'dara' | 'mara' | 'jori' | 'kira' | 'iven' | 'remy';
 export type RevealDirection = 'gate' | 'constellation' | 'identity';
 export type OfferMode = 'single' | 'batch';
 
+export type AttributeName = 'Might' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
+
+export type AttributeReadiness = {
+	name: AttributeName;
+	value: number;
+};
+
+export type PersonalityProfile = {
+	traits: readonly string[];
+	value: string;
+	drive: string;
+	socialStyle: string;
+	stressResponse: string;
+	tendency: string;
+};
+
 export type HeroFixture = {
 	id: HeroId;
 	name: string;
@@ -17,6 +33,9 @@ export type HeroFixture = {
 	calling: string;
 	stars: number;
 	image: string;
+	attributes: readonly AttributeReadiness[];
+	personality: PersonalityProfile;
+	aptitudes: readonly string[];
 };
 
 export type RevealDirectionFixture = {
@@ -27,7 +46,21 @@ export type RevealDirectionFixture = {
 	recognitionTarget: string;
 };
 
-export const FIXTURE_VERSION = 'Portal review fixture · LV-SP-01';
+const attributes = (
+	might: number,
+	vitality: number,
+	agility: number,
+	dexterity: number,
+	intellect: number,
+	spirit: number
+): readonly AttributeReadiness[] => [
+	{ name: 'Might', value: might },
+	{ name: 'Vitality', value: vitality },
+	{ name: 'Agility', value: agility },
+	{ name: 'Dexterity', value: dexterity },
+	{ name: 'Intellect', value: intellect },
+	{ name: 'Spirit', value: spirit }
+];
 
 export const heroes: readonly HeroFixture[] = [
 	{
@@ -37,7 +70,17 @@ export const heroes: readonly HeroFixture[] = [
 		affinity: 'Tide',
 		calling: 'Pathfinder',
 		stars: 1,
-		image: daraAnchor
+		image: daraAnchor,
+		attributes: attributes(46, 52, 78, 72, 66, 57),
+		personality: {
+			traits: ['Observant', 'Self-contained', 'Adaptable'],
+			value: 'Preparedness',
+			drive: 'Find the safe path before others must risk it',
+			socialStyle: 'Quiet, direct, attentive',
+			stressResponse: 'Narrows focus and checks every exit',
+			tendency: 'Measured risk · situational lead'
+		},
+		aptitudes: ['Wayfinding', 'Fieldcraft', 'Bow practice']
 	},
 	{
 		id: 'mara',
@@ -46,7 +89,17 @@ export const heroes: readonly HeroFixture[] = [
 		affinity: 'Ember',
 		calling: 'Vanguard',
 		stars: 1,
-		image: maraAnchor
+		image: maraAnchor,
+		attributes: attributes(72, 82, 58, 61, 54, 76),
+		personality: {
+			traits: ['Guarded', 'Steadfast', 'Exacting'],
+			value: 'Reliability',
+			drive: 'Be the person who does not yield',
+			socialStyle: 'Reserved, candid, protective',
+			stressResponse: 'Takes position and carries the pressure',
+			tendency: 'Low risk · decisive under threat'
+		},
+		aptitudes: ['Shieldwork', 'Ember control', 'Formation']
 	},
 	{
 		id: 'jori',
@@ -55,7 +108,17 @@ export const heroes: readonly HeroFixture[] = [
 		affinity: 'Tide',
 		calling: 'Wardkeeper',
 		stars: 1,
-		image: joriAnchor
+		image: joriAnchor,
+		attributes: attributes(68, 77, 49, 65, 70, 74),
+		personality: {
+			traits: ['Formal', 'Patient', 'Conscientious'],
+			value: 'Stewardship',
+			drive: 'Leave people safer than they were found',
+			socialStyle: 'Courteous, structured, reassuring',
+			stressResponse: 'Builds order and absorbs uncertainty',
+			tendency: 'Low risk · consensus lead'
+		},
+		aptitudes: ['Warding', 'Logistics', 'Restoration']
 	},
 	{
 		id: 'kira',
@@ -64,7 +127,17 @@ export const heroes: readonly HeroFixture[] = [
 		affinity: 'Gale',
 		calling: 'Envoy',
 		stars: 2,
-		image: kiraAnchor
+		image: kiraAnchor,
+		attributes: attributes(55, 70, 51, 64, 82, 73),
+		personality: {
+			traits: ['Grounded', 'Perceptive', 'Deliberate'],
+			value: 'Reciprocity',
+			drive: 'Turn attention into durable agreement',
+			socialStyle: 'Warm, economical, difficult to rush',
+			stressResponse: 'Slows the room and tests assumptions',
+			tendency: 'Balanced risk · diplomatic lead'
+		},
+		aptitudes: ['Negotiation', 'Appraisal', 'Court lore']
 	},
 	{
 		id: 'iven',
@@ -73,7 +146,17 @@ export const heroes: readonly HeroFixture[] = [
 		affinity: 'Grove',
 		calling: 'Ritualist',
 		stars: 2,
-		image: ivenAnchor
+		image: ivenAnchor,
+		attributes: attributes(38, 48, 57, 76, 88, 84),
+		personality: {
+			traits: ['Precise', 'Curious', 'Composed'],
+			value: 'Understanding',
+			drive: 'Make hidden systems legible',
+			socialStyle: 'Formal, thoughtful, gently corrective',
+			stressResponse: 'Returns to first principles and pattern',
+			tendency: 'Measured risk · technical lead'
+		},
+		aptitudes: ['Ritual reading', 'Focus craft', 'Grove magic']
 	},
 	{
 		id: 'remy',
@@ -82,7 +165,17 @@ export const heroes: readonly HeroFixture[] = [
 		affinity: 'Ember',
 		calling: 'Skirmisher',
 		stars: 3,
-		image: remyAnchor
+		image: remyAnchor,
+		attributes: attributes(62, 64, 86, 83, 67, 69),
+		personality: {
+			traits: ['Open-hearted', 'Patient', 'Playful'],
+			value: 'Mutual trust',
+			drive: 'Create the opening everyone can use',
+			socialStyle: 'Easy, attentive, quietly encouraging',
+			stressResponse: 'Stays mobile and keeps others connected',
+			tendency: 'High risk · emergent lead'
+		},
+		aptitudes: ['Short blade', 'Evasion', 'Team timing']
 	}
 ] as const;
 
