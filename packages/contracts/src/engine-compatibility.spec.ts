@@ -17,9 +17,21 @@ import {
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
+import {
+	EngineHeroStateV2Schema,
+	EngineItemStateSchema,
+	EngineMasterStateV2Schema,
+	EngineStoryStateSchema
+} from './engine/base-state.js';
+import {
+	EngineHeroStateV5Schema,
+	EngineSettlementStateSchema,
+	EngineSettlementStateV6Schema
+} from './engine/settlement-state.js';
 import { ENGINE_CONTRACT_RUNTIME_EXPORTS } from './engine-public-api.snapshot.js';
 import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from './engine-compatibility-states.snapshot.js';
 import * as engineContracts from './engine.js';
+import { SocietyStateV4Schema } from './social.js';
 
 describe('engine contracts compatibility', () => {
 	it('keeps the engine runtime exports available through the contracts entrypoint', async () => {
@@ -113,5 +125,66 @@ describe('engine contracts compatibility', () => {
 				schemaVersion: 24
 			}).success
 		).toBe(false);
+	});
+
+	it('parses base and settlement society state identically through leaf and composed schemas', () => {
+		const baseFixture = ENGINE_COMPATIBILITY_STATE_FIXTURES.find(
+			(fixture) => fixture.schemaVersion === 2
+		)!;
+		const composedBaseState = EngineGameStateSchema.parse(baseFixture);
+		if (composedBaseState.schemaVersion !== 2) {
+			throw new Error('Expected the base compatibility fixture to parse as schema version 2');
+		}
+		const leafBaseState = {
+			master: EngineMasterStateV2Schema.parse(baseFixture.master),
+			heroes: Object.fromEntries(
+				Object.entries(baseFixture.heroes).map(([heroId, hero]) => [
+					heroId,
+					EngineHeroStateV2Schema.parse(hero)
+				])
+			),
+			settlement: EngineSettlementStateSchema.parse(baseFixture.settlement),
+			items: Object.fromEntries(
+				Object.entries(baseFixture.items).map(([itemId, item]) => [
+					itemId,
+					EngineItemStateSchema.parse(item)
+				])
+			),
+			story: EngineStoryStateSchema.parse(baseFixture.story)
+		};
+		expect(leafBaseState).toStrictEqual({
+			master: composedBaseState.master,
+			heroes: composedBaseState.heroes,
+			settlement: composedBaseState.settlement,
+			items: composedBaseState.items,
+			story: composedBaseState.story
+		});
+
+		const settlementSocietyFixture = ENGINE_COMPATIBILITY_STATE_FIXTURES.find(
+			(fixture) => fixture.schemaVersion === 10
+		)!;
+		const composedSettlementSocietyState = EngineGameStateSchema.parse(
+			settlementSocietyFixture
+		);
+		if (composedSettlementSocietyState.schemaVersion !== 10) {
+			throw new Error(
+				'Expected the settlement society compatibility fixture to parse as schema version 10'
+			);
+		}
+		const leafSettlementSocietyState = {
+			heroes: Object.fromEntries(
+				Object.entries(settlementSocietyFixture.heroes).map(([heroId, hero]) => [
+					heroId,
+					EngineHeroStateV5Schema.parse(hero)
+				])
+			),
+			settlement: EngineSettlementStateV6Schema.parse(settlementSocietyFixture.settlement),
+			society: SocietyStateV4Schema.parse(settlementSocietyFixture.society)
+		};
+		expect(leafSettlementSocietyState).toStrictEqual({
+			heroes: composedSettlementSocietyState.heroes,
+			settlement: composedSettlementSocietyState.settlement,
+			society: composedSettlementSocietyState.society
+		});
 	});
 });
