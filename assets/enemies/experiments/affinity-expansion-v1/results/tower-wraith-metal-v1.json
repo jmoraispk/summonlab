@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-wraith-metal",
+  "targetId": "affinity-expansion-v1-tower-wraith-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-wraith-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-wraith-metal\".\n\nSubject and threat:\n- Species: tower-wraith.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-wraith-duty.\n- Construction mode: incorporeal-undead.\n\nIdentity invariants:\n- Tower Wraith remains immediately recognizable\n- Battlefield duty remains Phasing pursuer\n- forward-drifting shroud, absent feet, and long grasping arms\n- body thins to a black edge before passing through cover\n- Counterplay remains visible: solid mask during its grasp\n\nAnatomy invariants:\n- one continuous spectral torso, two arms, and a tapering footless shroud\n- solid mask and grasping hands remain connected to the phasing body\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: solid mask during its grasp Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: ordinary robed living human; separate duplicate ghost; solid booted legs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 2 only: Tower Wraith identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6e08535020f0477d6093df1ba361657acc5cf2f91f5b4bba5ec163c71c522f94",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:38:37.911Z",
+      "generationCompletedAt": "2026-08-30T09:39:39.648Z",
+      "inspectionCompletedAt": "2026-08-30T09:39:46.648Z",
+      "generationDurationMs": 61737,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 68737,
+      "sourceOutputId": "exec-21c57e28-dcd4-475e-81f0-c5872e8a8182.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, spectral taper, metal shroud, fragments, and shadow were continuously finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The spiked ring behind the head entered the declared top eight-percent safety border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Tower Wraith appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "reference-contamination", "evaluator": "producer", "outcome": "fail", "observation": "A spiked circular halo transferred a Bone Mage-like family cue rather than preserving only the Tower Wraith identity."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forged spectral anatomy, articulated plates, blue metallic marrow, controlled chains and fragments, and distinct solid mask changed material, anatomy, equipment, and counterplay beyond ordinary armor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The solid metallic mask, connected hands, joint articulation, and controlling marrow core remained materially distinct during the grasp."}
+      ],
+      "retryReason": "An exact-source correction was required to remove the transferred spiked halo and reframe the remaining wraith, hands, chains, fragments, shroud, taper, and wake inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-wraith-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate the creature. Preserve the exact Tower Wraith identity, forward-drifting shroud, completely absent feet, one continuous tapering spectral torso, exactly two long connected grasping arms and hands, solid mask, black phasing edge, forged anatomy, articulated metallic plates, blue metallic marrow, controlled chains and fragments, grasp pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Completely remove only the undeclared spiked circular halo, ring, radial spikes, and mounts behind the head because they transfer another undead family member's cue; rebuild that area with the same charcoal atmosphere and trailing black shroud. Then uniformly scale down and recenter the complete remaining wraith together with the mask, every fingertip, chain end, fragment, shroud streamer, tapering footless tail, phasing edge, wake, and shadow so every hard extent fits inside the central 84 percent of both 1536 x 1024 canvas dimensions with a clearly empty border of at least 8 percent on all four sides. Keep the same forward grasp and materially distinct solid mask/core. Do not add, duplicate, recolor, or redesign anatomy, arms, hands, mask, plates, marrow, chains, or shroud. No legs, boots, halo, ring, horns, weapon, banner, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "14766d79a8cc9584202806ee9497e1be2e3bb75f38e07eb5b05320baea64d3c6",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-21c57e28-dcd4-475e-81f0-c5872e8a8182.png", "contentHash": "51223a36dbe1e85a213b7e138fde9f7c51787878ef7a5da2c744a311a68dc845"},
+      "requestStartedAt": "2026-08-30T09:40:04.870Z",
+      "generationCompletedAt": "2026-08-30T09:40:39.252Z",
+      "inspectionCompletedAt": "2026-08-30T09:40:46.252Z",
+      "generationDurationMs": 34382,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 41382,
+      "sourceOutputId": "exec-e8d4ced2-47f3-4415-ba03-dc03206c91fc.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-e8d4ced2-47f3-4415-ba03-dc03206c91fc.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1975144, "contentHash": "f2949671627e2ab0b1f42c7a40aec91edf61744a6f77fc164dce74a209c5492a"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/metal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1975144, "contentHash": "f2949671627e2ab0b1f42c7a40aec91edf61744a6f77fc164dce74a209c5492a"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/metal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 1975144, "contentHash": "f2949671627e2ab0b1f42c7a40aec91edf61744a6f77fc164dce74a209c5492a"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete mask, fingertips, chains, fragments, shroud streamers, footless taper, phasing edge, wake, and shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Tower Wraith appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The forward-drifting footless shroud, one continuous tapering torso, exactly two long connected grasping arms, solid mask, and black phasing edge preserve every Tower Wraith invariant without solid legs or transferred family cues."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forged spectral anatomy, articulated load-bearing arm plates, blue metallic marrow, controlled chains and fragments, and materially distinct grasping hands and mask alter the four declared dimensions beyond ordinary armor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The solid mask, articulated wrists and fingers, and bright controlling marrow remain materially distinct while both hands commit to the grasp."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Tower Wraith cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Metal recognition remains pending human review; known-target inspection finds strong forged anatomy, articulated plates, metallic marrow, controlled-chain, and distinct-mask cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, corroded forged metal, blue marrow, black shroud, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 1,975,144 bytes, and SHA-256 f2949671627e2ab0b1f42c7a40aec91edf61744a6f77fc164dce74a209c5492a match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-wraith-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:38:37.911Z",
+  "completedAt": "2026-08-30T09:40:54.522Z",
+  "totalWallTimeMs": 136611,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-wraith-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-grave-sentinel-wood",
+  "targetId": "affinity-expansion-v1-grave-sentinel-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-grave-sentinel-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-grave-sentinel-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-grave-sentinel-wood\".\n\nSubject and threat:\n- Species: grave-sentinel.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: grave-sentinel-duty.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- Grave Sentinel remains immediately recognizable\n- Battlefield duty remains Attrition defender\n- shield-first corpse in collapsed burial armor with rooted feet\n- shield scrapes inward before a locking counter\n- Counterplay remains visible: exposed binding nails behind the shield\n\nAnatomy invariants:\n- humanoid corpse with exactly two arms and two legs\n- believable armor load paths, weapon grip, and grounded military stance\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: exposed binding nails behind the shield Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: living healthy face; random giant horns; implausibly oversized weapon; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 1 only: Grave Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "ac292b3806e74696e527a7c73d356fd3a4548732c47ab6149e7639fe922870fb",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:28:53.549Z",
+      "generationCompletedAt": "2026-08-30T09:29:43.236Z",
+      "inspectionCompletedAt": "2026-08-30T09:30:29.240Z",
+      "generationDurationMs": 49687,
+      "inspectionDurationMs": 46004,
+      "totalWallTimeMs": 95691,
+      "sourceOutputId": "exec-e33e76ad-0b33-416e-8dea-a0fce844bd7d.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The high wooden crown entered the top eight-percent safe margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Crown spikes, branch-antler protrusions, a wooden face mask, and an implausibly oversized sword violated the declared Grave Sentinel constraints."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Strong timber, root, and nail construction was weakened by decorative branches and green slime-like streaks."
+        }
+      ],
+      "retryReason": "Remove all protruding growth, reveal the dead skull, replace the oversized sword with a practical counter blade, localize resin, and widen the safe frame."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-grave-sentinel-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-grave-sentinel-wood-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab enemy production correction\nPrimary request: Targeted edit of the preceding Wood-affinity Grave Sentinel render. Preserve exactly one grounded humanoid corpse with exactly two arms and two legs, collapsed burial armor, shield-first attrition-defender stance, one believable weapon grip, rooted planted feet, shield scraping inward before a locking counter, premium realistic painterly Pack 2 finish, cracked-stone floor, charcoal-to-midnight backdrop, and complete finished canvas. Remove every crown spike, branch antler, twig, and decorative protruding growth from the helmet, shoulders, arms, shield silhouette, weapon hilt, and outer body silhouette. Reveal a clearly dead skull face beneath a low collapsed burial helmet; no wooden mask, living face, crown, or commander silhouette. Replace the oversized sword with one practical short straight burial sword, no longer than shoulder-to-knee distance, held close in a guarded locking-counter position. Keep Wood structural rather than decorative: thick laminated timber forms the shield's load-bearing body, compact root braids reinforce shield straps and corpse joints, bark inserts brace collapsed armor gaps, and roots visibly anchor both boots to the floor. Keep a compact set of exposed binding nails behind and through the shield. Localize pale resin brightness only to those binding joints and one fresh-cut shield-root weak point; remove green slime streaks and avoid foliage. Maintain believable armor load paths and a heavy rooted stance. Scale and recenter the entire corpse, helmet, shield, practical sword, nail fan, roots, ragged hems, hands, and feet inside the central 84 percent, leaving at least eight percent empty finished border on all sides.\nInput images: Image 1 is the edit target and preceding generated render; preserve all passing traits while changing only protruding-growth removal, skull visibility, weapon scale, resin localization, structural Wood clarity, and safe framing.\nScene/backdrop: neutral cracked-stone floor against a charcoal-to-midnight backdrop\nSubject: exactly one Wood-affinity Grave Sentinel, shield-first attrition defender\nStyle/medium: premium realistic painterly dark-fantasy raster creature concept\nComposition/framing: centered complete full-body corpse and all equipment; minimum eight-percent empty finished border on all four sides\nLighting/mood: controlled neutral key with restrained pale resin highlights and readable dead bone, burial iron, bark, timber, roots, and leather\nConstraints: exactly two arms and two legs; visibly dead skull; collapsed burial armor; shield-first rooted stance; practical short sword; shield inward before locking counter; exposed binding nails; Wood changes material, localized anatomy, shield equipment, and weak point\nAvoid: crown, antlers, branch or twig protrusions, wooden face mask, commander cues, foliage, green slime, brown recolor, decorative Wood coating, living healthy face, giant horns, oversized weapon, extra or missing limbs, crop, blank band, unfinished region, abrupt cutoff, extra creature, duplicate body, labels, text, UI, frame, logo, watermark, published-character resemblance, sexualized anatomy, costume, or pose\nCorrection mode: targeted edit, not complete regeneration.",
+      "promptHash": "cffb4a180f8ab85e8fd6df3f7db8392aefcef46990472907162c5c7381d791fe",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-e33e76ad-0b33-416e-8dea-a0fce844bd7d.png",
+        "contentHash": "423963649b3fd58738916e1dd2324debdc576001445a10236d228778bb450eda"
+      },
+      "requestStartedAt": "2026-08-30T09:30:29.240Z",
+      "generationCompletedAt": "2026-08-30T09:31:15.764Z",
+      "inspectionCompletedAt": "2026-08-30T09:32:37.593Z",
+      "generationDurationMs": 46524,
+      "inspectionDurationMs": 81829,
+      "totalWallTimeMs": 128353,
+      "sourceOutputId": "exec-aee6c5dc-841f-4000-b7e1-01502b98d346.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-aee6c5dc-841f-4000-b7e1-01502b98d346.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2432354,
+          "contentHash": "ccacd77093b00f3663ae3e1d98c3d661c0e3edcd2efa9a3fec322bc69d46725a"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2432354,
+          "contentHash": "ccacd77093b00f3663ae3e1d98c3d661c0e3edcd2efa9a3fec322bc69d46725a"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2432354,
+        "contentHash": "ccacd77093b00f3663ae3e1d98c3d661c0e3edcd2efa9a3fec322bc69d46725a"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "All hard anatomy and equipment are contained, but the lowest anchoring root fibers beneath the shield and right boot enter the bottom eight-percent safe margin."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete shield-first undead defender appears on a fully rendered cracked-stone floor and charcoal backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction linkage, and source-bound persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A dead skull-faced corpse with exactly two arms and two legs wears collapsed burial armor, braces a shield inward, grips a practical short sword for the locking counter, and anchors both feet with roots."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wood changes material, localized anatomy, equipment, and weak point through a laminated timber shield, root-reinforced straps and joints, bark braces at armor gaps, resin-sealed bindings, and floor-anchoring boot roots rather than a brown coating."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exposed binding nails behind and through the shield plus one pale fresh-cut resin root remain materially distinct as interruptible structure."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending; known-target Grave Sentinel cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending; known-target structural Wood cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No crown, antler, protruding twig, wooden face mask, commander cue, foliage, green slime, oversized weapon, living face, extra limb, duplicate, text, UI, frame, logo, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": "Retry ceiling exhausted; retain for review with only the lowest anchoring roots inside the bottom safe margin."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T09:28:53.549Z",
+  "completedAt": "2026-08-30T09:32:37.593Z",
+  "totalWallTimeMs": 224044,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/grave-sentinel-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

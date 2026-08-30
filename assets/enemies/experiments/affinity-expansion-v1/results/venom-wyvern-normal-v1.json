@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-venom-wyvern-normal",
+  "targetId": "affinity-expansion-v1-venom-wyvern-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-venom-wyvern-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-venom-wyvern-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-venom-wyvern-normal\".\n\nSubject and threat:\n- Species: venom-wyvern.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: venom-wyvern-duty.\n- Construction mode: winged-draconic.\n\nIdentity invariants:\n- Venom Wyvern remains immediately recognizable\n- Battlefield duty remains Aerial poison striker\n- two-legged wing silhouette, hooked tail stinger, and narrow diving head\n- tail sac brightens and wings fold before a toxic dive\n- Counterplay remains visible: stinger sac after discharge\n\nAnatomy invariants:\n- the declared wyvern or dragon limb plan remains exact, complete, and countable\n- connected head, neck, torso, tail, wing joints, and every grounded foot remain visible\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: stinger sac after discharge\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: wrong declared limb plan; extra wings or limbs; cropped tail or wings; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 2 only: Venom Wyvern identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f4ca9bce37141a934f91398056d78cef0ad9c22073e32d2bb5a5100f9b7e1041",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:37:45.000Z",
+      "generationCompletedAt": "2026-08-30T09:38:41.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:38:49.000Z",
+      "generationDurationMs": 56000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 64000,
+      "sourceOutputId": "exec-9c88fb13-d928-480d-898b-f40b60737bac",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both complete wings, hooked tail and sac, four feet, head, and every membrane edge sit within the finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Venom Wyvern appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The render uses a quadruped dragon plan with four grounded legs plus two separate wings instead of the required two-legged wyvern plan."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark natural scales and restrained venom residue remain unaffiliated, with no elemental material substitution or magical anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The hooked tail and venom sac are clear, but the sac appears full rather than partially collapsed after discharge."
+        }
+      ],
+      "retryReason": "Correct the anatomy to exactly two hind legs and two wings, partially collapse the discharged stinger sac, and retain the complete safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-venom-wyvern-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-venom-wyvern-normal-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Targeted anatomy and counterplay correction for this exact Normal Venom Wyvern. Preserve this exact single creature's narrow diving head, dark natural scales, two large wings, hooked tail stinger and venom sac, low predatory stance, neutral unaffiliated lighting, cracked-stone setting, and premium painterly finish. Correct the limb plan to a true wyvern: exactly two grounded hind legs and exactly two wings, with no separate forelegs, no extra arms, and no extra limbs; the wing limbs originate cleanly from the shoulders and the remaining two feet are complete and countable. Keep the head, neck, torso, both wing joints, both complete wings, connected tail, hooked stinger, and both feet fully visible. Show the stinger sac just after discharge: partially collapsed and wrinkled, with only restrained natural yellow-green venom residue at the outlet, not magical elemental glow. Uniformly scale the complete wyvern and tail down about 12 percent and recenter so both wing tips, every membrane edge, every horn, hooked tail and sac, venom droplet, and both feet fit inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No forelegs, quadruped dragon anatomy, extra wings, cropped extremity, elemental material substitution, unexplained magical anatomy, text, frame, or affinity change.",
+      "promptHash": "07d69844a7236e9663bbdaab743cb491ecd7bec265f5c4abaff625016c5aa1c1",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-9c88fb13-d928-480d-898b-f40b60737bac.png",
+        "contentHash": "013c43c00464c46509257cbefa4772d8eaa262e801e07c7b8daefcea3618e1b1"
+      },
+      "requestStartedAt": "2026-08-30T09:38:57.000Z",
+      "generationCompletedAt": "2026-08-30T09:39:14.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:39:22.000Z",
+      "generationDurationMs": 17000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 25000,
+      "sourceOutputId": "exec-dbda3e95-b836-4161-9b92-b1ffa0454c1a",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-dbda3e95-b836-4161-9b92-b1ffa0454c1a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2005950,
+          "contentHash": "f4f25f5edbda7241d1ad163f79c2fde4bad11c803a158a4747320cdcc149b18d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2005950,
+          "contentHash": "f4f25f5edbda7241d1ad163f79c2fde4bad11c803a158a4747320cdcc149b18d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2005950,
+        "contentHash": "f4f25f5edbda7241d1ad163f79c2fde4bad11c803a158a4747320cdcc149b18d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both complete wings, hooked tail and sac, all visible feet, head, and every membrane edge sit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Venom Wyvern appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The correction still shows more than two grounded legs in addition to two separate wings, so the exact wyvern limb plan remains unresolved."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark natural scales and restrained venom residue remain explicitly unaffiliated with no elemental substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The hooked tail ends in a visibly wrinkled, partially collapsed sac with restrained natural venom residue."
+        }
+      ],
+      "retryReason": "Retry ceiling exhausted; retain for review and rerender with a strict two-leg, two-wing silhouette."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "manifest-fidelity"
+  ],
+  "startedAt": "2026-08-30T09:37:45.000Z",
+  "completedAt": "2026-08-30T09:39:24.000Z",
+  "totalWallTimeMs": 99000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/venom-wyvern-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

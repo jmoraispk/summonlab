@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-bone-mage-normal",
+  "targetId": "affinity-expansion-v1-bone-mage-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-bone-mage-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-bone-mage-normal-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-bone-mage-normal\".\n\nSubject and threat:\n- Species: bone-mage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: bone-mage-duty.\n- Construction mode: skeletal-undead.\n\nIdentity invariants:\n- Bone Mage remains immediately recognizable\n- Battlefield duty remains Ranged artillery\n- arched skeletal frame carrying a rib-like launch focus\n- ribs spread and gather pale fragments into one visible trajectory\n- Counterplay remains visible: spinal binding while the ribs remain open\n\nAnatomy invariants:\n- humanoid skeleton with exactly two arms and two legs\n- coherent skull, spine, rib focus, hand articulation, and grounded stance\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: spinal binding while the ribs remain open\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: living human face; unconnected floating bones; oversized unreadable spell effects; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 3 only: Bone Mage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "802bf744a96c575bad55e4c0fc55fe3ca82724bfe2f06597c350581003bc02e7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:26:52.000Z",
+      "generationCompletedAt": "2026-08-30T09:27:28.431Z",
+      "inspectionCompletedAt": "2026-08-30T09:27:36.431Z",
+      "generationDurationMs": 36431,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 44431,
+      "sourceOutputId": "exec-d42c6a88-119b-44b8-9a62-435291f8e85c",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The circular spinal focus enters the top safety band and the lowest foot reaches the bottom band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Bone Mage appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Arched skeletal artillery identity, exact two-arm/two-leg anatomy, coherent skull and spine, open rib focus, grounded stance, and one visible trajectory remain clear."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Neutral bone, old iron, dark cloth, and restrained pale launch energy remain unaffiliated with no elemental material substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The spinal binding is visible while ribs remain open, but stray fragments read as disconnected floating bones outside one coherent trajectory."
+        }
+      ],
+      "retryReason": "Connect all trajectory fragments with pale binding threads, remove strays, and scale the full skeleton/effect into the safe frame."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-bone-mage-normal-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-bone-mage-normal-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Normal-fidelity and framing correction. Preserve this exact single Bone Mage identity, arched skeletal frame with exactly two arms and two legs, coherent skull and spine, open rib-like launch focus, articulated hands, grounded stance, one pale visible artillery trajectory, neutral bone/old iron materials, pose, lighting, and premium painterly finish. Keep Normal explicitly unaffiliated: pale launch energy may remain restrained and neutral, with no elemental color or material substitution. Connect every small bone fragment in the trajectory through clearly visible pale binding threads into one coherent projectile path; remove any stray disconnected floating bones. Uniformly scale the full skeleton, skull, circular spinal focus, every rib and finger, complete projectile and tip, all connected fragments and binding threads, cloth strips, both feet, and the restrained neutral wake down by about 18 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No living face, extra limbs, disconnected bones, elemental glow, oversized unreadable effect, text, crop, or affinity change.",
+      "promptHash": "d761a5bdd03538104a93552fdf38a90742245ff286fecb05af193d93d4fd9580",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-d42c6a88-119b-44b8-9a62-435291f8e85c.png",
+        "contentHash": "23ad5c4a5f392a40e81df9ad204dcfeb3e99facc757b03b88df86d203ad26d13"
+      },
+      "requestStartedAt": "2026-08-30T09:27:46.000Z",
+      "generationCompletedAt": "2026-08-30T09:28:06.285Z",
+      "inspectionCompletedAt": "2026-08-30T09:28:14.285Z",
+      "generationDurationMs": 20285,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 28285,
+      "sourceOutputId": "exec-57638ce8-2a7e-46a5-b7a3-d807a7ceb45a",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-57638ce8-2a7e-46a5-b7a3-d807a7ceb45a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1969820,
+          "contentHash": "f44b9836defdd61cfc5ca53e4b8cd13575ad82647693d0d9a15dd24f21eb8776"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1969820,
+          "contentHash": "f44b9836defdd61cfc5ca53e4b8cd13575ad82647693d0d9a15dd24f21eb8776"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1969820,
+        "contentHash": "f44b9836defdd61cfc5ca53e4b8cd13575ad82647693d0d9a15dd24f21eb8776"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Skull, circular spinal focus, every rib and finger, full projectile and tip, connected fragments and threads, cloth strips, and both feet remain inside a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Normal Bone Mage appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Arched skeletal artillery identity, exact two-arm/two-leg anatomy, coherent skull and spine, open rib focus, grounded stance, and one visible trajectory remain clear."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Neutral bone, old iron, dark cloth, and restrained pale launch energy remain unaffiliated with no elemental material substitution."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed spinal binding is readable while ribs remain open, and every small fragment is connected into one pale threaded trajectory."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-bone-mage-normal-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:26:52.000Z",
+  "completedAt": "2026-08-30T09:28:16.000Z",
+  "totalWallTimeMs": 84000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/bone-mage-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

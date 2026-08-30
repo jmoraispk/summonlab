@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-grave-sentinel-metal",
+  "targetId": "affinity-expansion-v1-grave-sentinel-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-grave-sentinel-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-grave-sentinel-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-grave-sentinel-metal\".\n\nSubject and threat:\n- Species: grave-sentinel.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: grave-sentinel-duty.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- Grave Sentinel remains immediately recognizable\n- Battlefield duty remains Attrition defender\n- shield-first corpse in collapsed burial armor with rooted feet\n- shield scrapes inward before a locking counter\n- Counterplay remains visible: exposed binding nails behind the shield\n\nAnatomy invariants:\n- humanoid corpse with exactly two arms and two legs\n- believable armor load paths, weapon grip, and grounded military stance\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: exposed binding nails behind the shield Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: living healthy face; random giant horns; implausibly oversized weapon; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 1 only: Grave Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f1530f6d73ce728ef46de4fa5c567e7db5f8ee35eafbda884198ecd50a5fddc8",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:24:55.156Z",
+      "generationCompletedAt": "2026-08-30T09:25:46.410Z",
+      "inspectionCompletedAt": "2026-08-30T09:25:53.410Z",
+      "generationDurationMs": 51254,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 58254,
+      "sourceOutputId": "exec-f7f8799e-c43e-4a5c-ac21-fd427b4fc3d8.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, forged fragments, burial cloth, and contact shadows were continuously finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The undeclared back-mounted banner pole breached the top safety border and the planted feet entered the bottom eight-percent border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Grave Sentinel appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "reference-contamination", "evaluator": "producer", "outcome": "fail", "observation": "A crown-like spiked helmet and command banner transferred unrelated command cues from other undead rather than preserving only the shield-first Grave Sentinel identity."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forged anatomy, articulated load-bearing plates, metallic marrow seams, transformed shield and sword, controlled fragments, and materially distinct core changed multiple declared dimensions beyond ordinary armor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Multiple exposed binding nails behind and through the shield plus the distinct blue controlling core remained readable."}
+      ],
+      "retryReason": "An exact-source correction was required to remove transferred command crown and banner cues, then scale and recenter the remaining Grave Sentinel and all equipment inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-grave-sentinel-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-grave-sentinel-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate the creature. Preserve the exact Grave Sentinel corpse, skeletal death face, shield-first locking stance, collapsed burial armor, rooted feet, exactly two arms and two legs, believable right-hand sword grip, forged anatomy, articulated load-bearing plates, metallic marrow, distinct blue controlling core, exposed binding nails behind and through the shield, controlled fragments, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Remove only the undeclared command cues transferred from other undead: completely remove the back-mounted banner, banner pole, streamers, and crown-like helmet spikes, replacing the helmet crown with a simple collapsed burial-armor dome matching the Grave Sentinel reference. Then uniformly scale down and recenter the complete remaining subject, shield, sword, every nail, chain, fragment, foot, and contact shadow so every hard extent fits inside the central 84 percent of both 1536 x 1024 canvas dimensions with a clearly empty border of at least 8 percent on all four sides. Keep the same pose and shield scrape/counter readiness. Do not add, duplicate, recolor, or redesign anatomy, shield, sword, core, nails, or effects. No horns, banner, command standard, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "b5289965f71cd774b0e85b8203e2b4452b26401f102ddfcbd540cde74d309e45",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-f7f8799e-c43e-4a5c-ac21-fd427b4fc3d8.png", "contentHash": "d992feeb2e52e0ecbe8691de89776ab54e300b4314df4987aa2dad7b91d3c9fd"},
+      "requestStartedAt": "2026-08-30T09:26:12.133Z",
+      "generationCompletedAt": "2026-08-30T09:26:49.124Z",
+      "inspectionCompletedAt": "2026-08-30T09:26:56.124Z",
+      "generationDurationMs": 36991,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 43991,
+      "sourceOutputId": "exec-61adcf05-cd19-4d8a-b866-5c4f4ed1e9ae.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-61adcf05-cd19-4d8a-b866-5c4f4ed1e9ae.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2000937, "contentHash": "868cac4a30f0d31b2e32c69b376289be89bf717bafcad3228bf46b9a4229613b"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/metal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2000937, "contentHash": "868cac4a30f0d31b2e32c69b376289be89bf717bafcad3228bf46b9a4229613b"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/metal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2000937, "contentHash": "868cac4a30f0d31b2e32c69b376289be89bf717bafcad3228bf46b9a4229613b"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete helmet, shield, sword, nails, chains, fragments, burial cloth, feet, and contact shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Grave Sentinel appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The skeletal corpse, simple burial helmet, collapsed armor, shield-first inward scrape, rooted feet, exactly two arms and two legs, plausible sword grip, and grounded locking-counter stance preserve every Grave Sentinel invariant without transferred command cues."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Forged corpse anatomy, articulated load-bearing plates, metallic inner seams, transformed shield and sword, controlled nail fragments, and exposed distinct core alter material, anatomy, equipment, and counterplay beyond ordinary armor."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The dense radial binding nails remain exposed behind and through the shield, while the materially distinct blue core and joint gaps provide a clear counterplay state."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Grave Sentinel cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Metal recognition remains pending human review; known-target inspection finds strong forged anatomy, articulated plate, metallic marrow, controlled nail, and distinct-core cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, corroded forged metal, collapsed burial layers, restrained blue emission, cracked floor, and charcoal backdrop remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,000,937 bytes, and SHA-256 868cac4a30f0d31b2e32c69b376289be89bf717bafcad3228bf46b9a4229613b match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-grave-sentinel-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:24:55.156Z",
+  "completedAt": "2026-08-30T09:27:04.632Z",
+  "totalWallTimeMs": 129476,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/grave-sentinel-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

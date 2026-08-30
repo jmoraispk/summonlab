@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-bone-mage-fire",
+  "targetId": "affinity-expansion-v1-bone-mage-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-bone-mage-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-bone-mage-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-bone-mage-fire\".\n\nSubject and threat:\n- Species: bone-mage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: bone-mage-duty.\n- Construction mode: skeletal-undead.\n\nIdentity invariants:\n- Bone Mage remains immediately recognizable\n- Battlefield duty remains Ranged artillery\n- arched skeletal frame carrying a rib-like launch focus\n- ribs spread and gather pale fragments into one visible trajectory\n- Counterplay remains visible: spinal binding while the ribs remain open\n\nAnatomy invariants:\n- humanoid skeleton with exactly two arms and two legs\n- coherent skull, spine, rib focus, hand articulation, and grounded stance\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: spinal binding while the ribs remain open The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living human face; unconnected floating bones; oversized unreadable spell effects; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 3 only: Bone Mage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "466607c4b9b7584ff9791ef26d8ab4cb0615fa6e03f3f06ffd1113485c385840",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:34:40.000Z",
+      "generationCompletedAt": "2026-08-30T09:35:57.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:36:05.000Z",
+      "generationDurationMs": 77000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 85000,
+      "sourceOutputId": "exec-271b7bc9-7870-4341-b83d-a19e1ab84ea4",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The smoke and spark wake enters the right and upper safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Bone Mage appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Arched skeletal artillery identity, exact two-arm/two-leg anatomy, coherent skull and spine, open rib focus, grounded stance, and one visible trajectory remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened bone, internal ember seams, smoke, and controlled combustion are clear without a uniform full-body glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The exposed spinal binding and internal heat sink read through open ribs, but several airborne shards are disconnected from the trajectory."
+        }
+      ],
+      "retryReason": "Contain the smoke and sparks, connect all fragments to one ember-thread trajectory, and expose the spinal binding and heat sink clearly."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-bone-mage-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-bone-mage-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire counterplay and safe-framing correction. Preserve this exact single Fire Bone Mage identity, arched skeletal frame with exactly two arms and two legs, coherent skull and spine, open rib-like launch focus, articulated hands, grounded stance, heat-blackened bone and old iron, internal ember seams, pose, lighting, and premium painterly finish. Keep one controlled ember projectile trajectory, but connect every small airborne shard into that one trajectory with thin visible ember-binding filaments and remove all stray disconnected fragments. Make the exposed spinal binding and the internal heat sink behind the open ribs clearly readable between combustion cycles without turning the whole body into a uniform orange glow. Uniformly scale the entire skeleton, circular spinal focus, every rib and finger, complete projectile and tip, all bound fragments, smoke, sparks, heat distortion, cloth strips, and both feet down by about 16 percent and recenter slightly left so every hard and effect extent fits inside the central 84 percent of the 1536 x 1024 canvas, leaving a clearly empty finished border of at least 8 percent on every side. Shorten and contain the smoke wake; no smoke or sparks may enter the outer safety band. Exactly one subject. No living face, extra limbs, disconnected bones, stray shards, uniform orange full-body glow, oversized unreadable fire, text, crop, or affinity change.",
+      "promptHash": "8efca1c3d9b9bbeb812a5c04f2c56a0d944acee49563d4de2cc18ebdd39b68dd",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-271b7bc9-7870-4341-b83d-a19e1ab84ea4.png",
+        "contentHash": "4d1f676d275cd3d5de936269b53483b25d5388f87378a09b03f8ea459aaa2906"
+      },
+      "requestStartedAt": "2026-08-30T09:36:12.000Z",
+      "generationCompletedAt": "2026-08-30T09:36:30.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:36:38.000Z",
+      "generationDurationMs": 18000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 26000,
+      "sourceOutputId": "exec-f8cb5018-863c-4b5a-98b8-a079b1c58041",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-f8cb5018-863c-4b5a-98b8-a079b1c58041.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1972529,
+          "contentHash": "1b9d7e7a13e61ce4ec525af2b8012e1d2410794f25137f5d5c9f7b16c784bf15"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1972529,
+          "contentHash": "1b9d7e7a13e61ce4ec525af2b8012e1d2410794f25137f5d5c9f7b16c784bf15"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1972529,
+        "contentHash": "1b9d7e7a13e61ce4ec525af2b8012e1d2410794f25137f5d5c9f7b16c784bf15"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete skeleton, spinal focus, projectile tip, connected fragments, restrained smoke and sparks, cloth, and both feet sit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Bone Mage appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Arched skeletal artillery identity, exact two-arm/two-leg anatomy, coherent skull and spine, open rib focus, grounded stance, and one visible trajectory remain clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened bone, internal ember seams, controlled combustion, restrained smoke, and heat distortion remain materially legible without uniform orange glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed spinal binding and internal heat sink are clear through the open ribs, with all airborne fragments connected into one ember-thread projectile path."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-bone-mage-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:34:40.000Z",
+  "completedAt": "2026-08-30T09:36:40.000Z",
+  "totalWallTimeMs": 120000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/bone-mage-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

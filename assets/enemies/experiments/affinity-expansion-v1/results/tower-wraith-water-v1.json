@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-wraith-water",
+  "targetId": "affinity-expansion-v1-tower-wraith-water",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-wraith-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-wraith-water\".\n\nSubject and threat:\n- Species: tower-wraith.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-wraith-duty.\n- Construction mode: incorporeal-undead.\n\nIdentity invariants:\n- Tower Wraith remains immediately recognizable\n- Battlefield duty remains Phasing pursuer\n- forward-drifting shroud, absent feet, and long grasping arms\n- body thins to a black edge before passing through cover\n- Counterplay remains visible: solid mask during its grasp\n\nAnatomy invariants:\n- one continuous spectral torso, two arms, and a tapering footless shroud\n- solid mask and grasping hands remain connected to the phasing body\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: solid mask during its grasp Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary robed living human; separate duplicate ghost; solid booted legs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 2 only: Tower Wraith identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "15249f183cb96498002b63d8a80818968c31c0039c1372049831493ff9d92e89",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:43:19.233Z",
+      "generationCompletedAt": "2026-08-30T09:44:52.135Z",
+      "inspectionCompletedAt": "2026-08-30T09:44:59.135Z",
+      "generationDurationMs": 92902,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 99902,
+      "sourceOutputId": "exec-5f726430-a82c-4943-8abe-23bc0c9eff8b.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, continuous water shroud, mist, droplets, wake, and reflections were intentionally finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The mask crest and lower water contact entered the declared top and bottom eight-percent safety borders."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Tower Wraith appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The forward-drifting footless shroud, one continuous tapering torso, exactly two long connected grasping arms, solid mask, and black phasing edge preserve every Tower Wraith identity and anatomy invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wet reflective shroud material, coherent pressure channels, mist, streaming hand runoff, grasp telegraph, and ground splash wake alter material, motion, attack telegraph, and environment beyond blue glow."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The solid pale mask and coherent bright binding core remain visible during the committed grasp, with a readable pressure-loss opening."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the complete wraith, mask, fingertips, shroud, water strands, droplets, mist, taper, splash, reflection, and wake inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-wraith-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Tower Wraith identity, forward-drifting shroud, completely absent feet, one continuous tapering spectral torso, exactly two long connected grasping arms and hands, solid pale mask, black phasing edge, coherent blue binding core, wet reflective shroud, pressurized flow, mist, fluid transitions, chains, grasp pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete wraith together with the mask crest, every fingertip, chain end, shroud streamer, water strand, droplet, mist trail, tapering footless tail, pressure wake, ground splash, reflection, and shadow so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Preserve the readable pressure-loss opening around the coherent core and the solid mask during the grasp. Do not crop, omit, add, duplicate, recolor, or redesign anatomy, arms, hands, mask, core, chains, shroud, or water effects. No legs, boots, halo, horns, weapon, banner, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "2c238e433e383a226ab7dcd0637fd75f523e03ee16292b2e55eb63744a181716",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-5f726430-a82c-4943-8abe-23bc0c9eff8b.png", "contentHash": "f4074385bcb68dedc01f69e338b001e97d3d345bc171ec7178d4ed6994905ff1"},
+      "requestStartedAt": "2026-08-30T09:45:15.781Z",
+      "generationCompletedAt": "2026-08-30T09:45:51.012Z",
+      "inspectionCompletedAt": "2026-08-30T09:45:58.012Z",
+      "generationDurationMs": 35231,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 42231,
+      "sourceOutputId": "exec-bdc594a4-3dc3-4c86-acec-d9cc28eed0be.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 27,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-bdc594a4-3dc3-4c86-acec-d9cc28eed0be.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2072339, "contentHash": "ce939be04359c20f25bf9a7eb4341a8f1e895c929c458a0ac0094541b8681b8a"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2072339, "contentHash": "ce939be04359c20f25bf9a7eb4341a8f1e895c929c458a0ac0094541b8681b8a"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2072339, "contentHash": "ce939be04359c20f25bf9a7eb4341a8f1e895c929c458a0ac0094541b8681b8a"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete mask, fingertips, chains, shroud streamers, water strands, droplets, mist, footless taper, splash, reflection, wake, and shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Tower Wraith appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The forward-drifting footless shroud, one continuous tapering torso, exactly two long connected grasping arms, solid mask, and black phasing edge preserve every Tower Wraith invariant without solid legs or unrelated equipment."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wet reflective cloth and spectral material, coherent pressure channels through the torso and arms, directional mist and runoff, grasp telegraph, tapering fluid transition, and splash wake alter all four declared dimensions beyond hue."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The solid pale mask and coherent bright blue binding core remain clearly exposed during the grasp, with pressure routes opening around the core after commitment."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Tower Wraith cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Water recognition remains pending human review; known-target inspection finds strong wet-material, pressure-channel, mist, runoff, fluid-taper, and splash cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, wet black shroud, restrained blue emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,072,339 bytes, and SHA-256 ce939be04359c20f25bf9a7eb4341a8f1e895c929c458a0ac0094541b8681b8a match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-wraith-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:43:19.233Z",
+  "completedAt": "2026-08-30T09:46:07.749Z",
+  "totalWallTimeMs": 168516,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-wraith-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

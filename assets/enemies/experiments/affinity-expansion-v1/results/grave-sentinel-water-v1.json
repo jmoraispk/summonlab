@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-grave-sentinel-water",
+  "targetId": "affinity-expansion-v1-grave-sentinel-water",
+  "assignmentId": "assignment-affinity-expansion-v1-grave-sentinel-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-grave-sentinel-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-grave-sentinel-water\".\n\nSubject and threat:\n- Species: grave-sentinel.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: grave-sentinel-duty.\n- Construction mode: armored-undead.\n\nIdentity invariants:\n- Grave Sentinel remains immediately recognizable\n- Battlefield duty remains Attrition defender\n- shield-first corpse in collapsed burial armor with rooted feet\n- shield scrapes inward before a locking counter\n- Counterplay remains visible: exposed binding nails behind the shield\n\nAnatomy invariants:\n- humanoid corpse with exactly two arms and two legs\n- believable armor load paths, weapon grip, and grounded military stance\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: exposed binding nails behind the shield Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living healthy face; random giant horns; implausibly oversized weapon; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 1 only: Grave Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "5c3a6edfdc1d39aa6298accf029eae3e64a6721270286cfd089d70efd047b788",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:29:06.935Z",
+      "generationCompletedAt": "2026-08-30T09:30:12.634Z",
+      "inspectionCompletedAt": "2026-08-30T09:30:19.634Z",
+      "generationDurationMs": 65699,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 72699,
+      "sourceOutputId": "exec-6770379c-9ea2-45cf-b1a2-ef6db174a04f.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The charcoal backdrop, cracked floor, pressurized water, mist, runoff, puddles, wake, and contact reflections were continuously finished."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "Upper spray entered the declared top eight-percent safety border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Grave Sentinel appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The skeletal corpse, collapsed burial armor, shield-first inward scrape, rooted feet, exactly two arms and two legs, plausible sword grip, and grounded locking-counter stance preserved every identity and duty invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wet reflective armor, pressurized shield channels, coherent jets, mist, sword runoff, splash telegraph, and puddle wake changed material, motion, attack telegraph, and environmental wake beyond blue glow."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Exposed binding nails behind and through the shield remain visible beside the coherent structural binding core and its readable pressure-loss opening."}
+      ],
+      "retryReason": "A framing-only exact-source edit was required to scale and recenter the Grave Sentinel, shield, sword, every nail, water jet, mist strand, droplet, runoff, splash, puddle, and contact extent inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-grave-sentinel-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-grave-sentinel-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied image; do not regenerate or redesign the creature. Preserve the exact Grave Sentinel corpse, skeletal death face, simple collapsed burial helmet and armor, shield-first inward-scrape locking stance, rooted feet, exactly two arms and two legs, believable right-hand sword grip, exposed binding nails behind and through the shield, coherent structural binding core, wet reflective metal, pressurized shield flow, mist, sword runoff, pose, materials, lighting, cracked-stone floor, charcoal backdrop, painterly finish, and all other passing traits. Correct only the safe framing: uniformly scale down and recenter the complete subject together with the helmet, every shield edge, nail and water jet, full sword tip, both feet, every mist strand, droplet, runoff, splash, puddle, environmental wake, and contact shadow so every hard extent fits inside the central 84 percent of both canvas dimensions, leaving a clearly empty border of at least 8 percent on all four sides. Keep the canvas exactly 1536 x 1024 PNG. Do not crop, omit, add, duplicate, recolor, or redesign any anatomy, armor, shield, sword, binding nail, water channel, or effect. No horns, banner, command standard, text, labels, UI, frame, logo, or watermark.",
+      "promptHash": "37adaa2d73afcd413ff2da53f4ef9d0c97edfa1b84602d94455edbc938ef79fd",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/pack-2/undead-v1.png", "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-6770379c-9ea2-45cf-b1a2-ef6db174a04f.png", "contentHash": "967d47650706e8040055c5e227d4fc74312d34eb5e55097a3aa6cf382a1e46b0"},
+      "requestStartedAt": "2026-08-30T09:30:34.373Z",
+      "generationCompletedAt": "2026-08-30T09:31:11.013Z",
+      "inspectionCompletedAt": "2026-08-30T09:31:18.013Z",
+      "generationDurationMs": 36640,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 43640,
+      "sourceOutputId": "exec-80c4cf6a-5428-4425-b327-1ea8b923ce19.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 25,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-80c4cf6a-5428-4425-b327-1ea8b923ce19.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2142974, "contentHash": "6366073f075e4f0041a0d4c8c44d5131c1e4b1a07d0af142d91388b0d73022a2"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2142974, "contentHash": "6366073f075e4f0041a0d4c8c44d5131c1e4b1a07d0af142d91388b0d73022a2"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/water-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2142974, "contentHash": "6366073f075e4f0041a0d4c8c44d5131c1e4b1a07d0af142d91388b0d73022a2"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete helmet, shield, sword, nails, feet, water channels, mist, droplets, runoff, splashes, puddles, wake, and contact shadow fit inside a clearly empty border exceeding eight percent on every side."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Grave Sentinel appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the single targeted correction used only the exact preceding source."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The skeletal corpse, simple burial helmet, collapsed armor, shield-first inward scrape, rooted feet, exactly two arms and two legs, plausible sword grip, and grounded locking-counter stance preserve every Grave Sentinel invariant."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wet reflective armor and cloth, coherent pressure channels around shield and binding points, directed jets and mist, sword runoff, splash telegraph, puddles, and wake alter all four declared dimensions beyond hue."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "Radial binding nails remain exposed behind and through the shield, while coherent water routing reveals the structural core and pressure-loss window after commitment."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Grave Sentinel cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Water recognition remains pending human review; known-target inspection finds strong wet-material, pressure-channel, mist, runoff, splash, and puddle cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, corroded burial metal, restrained blue water emission, cracked floor, charcoal backdrop, and constraint-safe presentation remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,142,974 bytes, and SHA-256 6366073f075e4f0041a0d4c8c44d5131c1e4b1a07d0af142d91388b0d73022a2 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-grave-sentinel-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:29:06.935Z",
+  "completedAt": "2026-08-30T09:31:27.597Z",
+  "totalWallTimeMs": 140662,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/grave-sentinel-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

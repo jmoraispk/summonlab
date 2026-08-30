@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-tower-wraith-normal",
+  "targetId": "affinity-expansion-v1-tower-wraith-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-tower-wraith-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-tower-wraith-normal\".\n\nSubject and threat:\n- Species: tower-wraith.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: tower-wraith-duty.\n- Construction mode: incorporeal-undead.\n\nIdentity invariants:\n- Tower Wraith remains immediately recognizable\n- Battlefield duty remains Phasing pursuer\n- forward-drifting shroud, absent feet, and long grasping arms\n- body thins to a black edge before passing through cover\n- Counterplay remains visible: solid mask during its grasp\n\nAnatomy invariants:\n- one continuous spectral torso, two arms, and a tapering footless shroud\n- solid mask and grasping hands remain connected to the phasing body\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: solid mask during its grasp\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: ordinary robed living human; separate duplicate ghost; solid booted legs; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/undead-v1.png — Subject 2 only: Tower Wraith identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "0478f2bdaf48dd9309f4fb956e5b78317feed5db612cfd9435b4ae8e66da1ec8",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:34:11.135Z",
+      "generationCompletedAt": "2026-08-30T09:34:35.580Z",
+      "inspectionCompletedAt": "2026-08-30T09:35:15.430Z",
+      "generationDurationMs": 24445,
+      "inspectionDurationMs": 39850,
+      "totalWallTimeMs": 64295,
+      "sourceOutputId": "exec-33744c73-4cd5-49c2-9c8f-86d550260b8c.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "An undeclared standard pole crossed the top safe margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "A command standard and radial back wheel transferred cues from another undead archetype and obscured the isolated phasing-pursuer identity."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Black shroud, dull metal, and grey phase haze remained neutral with no elemental material or colored emission."
+        }
+      ],
+      "retryReason": "Remove all back-mounted command equipment, isolate the continuous footless wraith, emphasize the solid mask during its grasp, and contain all extents."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-tower-wraith-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-tower-wraith-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Use case: stylized-concept\nAsset type: Summonlab enemy production correction\nPrimary request: Targeted edit of the preceding unaffiliated Normal Tower Wraith render. Preserve exactly one forward-drifting incorporeal undead with one continuous shrouded humanoid upper body, exactly two long connected arms, two connected grasping hands, one solid expressionless mask, no legs, no boots, no feet, and a single tapering footless black spectral shroud. Preserve the phasing-pursuer posture, body thinning to a black edge before passing through cover, premium realistic painterly Pack 2 finish, cracked-stone floor, charcoal-to-midnight backdrop, and complete finished canvas. Remove the entire command standard, pole, spear point, flag, chains attached to it, back-mounted wheel, radial nails, and every other back-mounted object; do not replace them. The wraith carries no weapon, shield, standard, or commander equipment. Keep the solid mask sharply material and fully opaque during the grasp, visibly distinct from the thinning shroud, as the readable counterplay cue. Keep the upper torso and both arms connected through the same shroud; do not create detached hands or a duplicate ghost. Maintain neutral unaffiliated materials: soot-black cloth-like spectral substance, dull iron mask and arm bindings, restrained grey phase haze, no colored glow, elemental material, affinity wake, or unexplained anatomy. Scale and recenter the mask, both complete arms/hands/fingers, every shroud ribbon, phase haze, and tapering tail inside the central 84 percent, leaving at least eight percent empty finished border on every side.\nInput images: Image 1 is the edit target and preceding generated render; preserve all passing traits while changing only back-equipment removal, mask solidity, silhouette isolation, and safe framing.\nScene/backdrop: neutral cracked-stone floor against a charcoal-to-midnight backdrop\nSubject: exactly one unaffiliated Normal Tower Wraith, phasing pursuer\nStyle/medium: premium realistic painterly dark-fantasy raster creature concept\nComposition/framing: centered complete footless wraith and every effect; minimum eight-percent empty finished border on all four sides\nLighting/mood: controlled neutral key with readable solid mask, black shroud, dull iron bindings, and restrained grey phase haze\nConstraints: one continuous spectral torso; exactly two connected arms and hands; long grasping reach; one solid mask; no feet; one tapering shroud; body thins to black edge; mask becomes solid during the grasp\nAvoid: banner, standard, pole, wheel, radial nails, command equipment, weapon, shield, separate ghost, detached hand, ordinary robed living human, solid booted legs, elemental glow, affinity-coded material, magical anatomy beyond the declared wraith body, crop, blank band, unfinished region, abrupt cutoff, extra creature, duplicate body, labels, text, UI, frame, logo, watermark, published-character resemblance, sexualized anatomy, costume, or pose\nCorrection mode: targeted edit, not complete regeneration.",
+      "promptHash": "b44dce919152ee9a96b7d93cf3f6df34941333a1f3a1bf4abaa09eee8fd6777e",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/undead-v1.png",
+          "contentHash": "42fce852b38fe644311b6ae3cd78e38d880ce2192b6db7b5d19ea08ac61fd0aa"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-33744c73-4cd5-49c2-9c8f-86d550260b8c.png",
+        "contentHash": "d607da57d0c09f2d67cf71969219b10542f73519b7eb6546b868e2bfd91696d9"
+      },
+      "requestStartedAt": "2026-08-30T09:35:15.430Z",
+      "generationCompletedAt": "2026-08-30T09:35:36.298Z",
+      "inspectionCompletedAt": "2026-08-30T09:37:03.349Z",
+      "generationDurationMs": 20868,
+      "inspectionDurationMs": 87051,
+      "totalWallTimeMs": 107919,
+      "sourceOutputId": "exec-6c69dad6-626a-4e54-9285-5c0f8eb125c4.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-6c69dad6-626a-4e54-9285-5c0f8eb125c4.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1965687,
+          "contentHash": "04e7f936e3362c0c281df76575cb569d0b1919a171d08d909d76e67020cb28c7"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/normal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1965687,
+          "contentHash": "04e7f936e3362c0c281df76575cb569d0b1919a171d08d909d76e67020cb28c7"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/normal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1965687,
+        "contentHash": "04e7f936e3362c0c281df76575cb569d0b1919a171d08d909d76e67020cb28c7"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Mask, both arms, all fingers, trailing shroud ribbons, phase haze, and tapering tail stay complete inside an empty finished border of at least eight percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one continuous footless wraith appears on a fully rendered cracked-stone floor and charcoal backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction linkage, and source-bound persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The forward-drifting phasing pursuer has one connected shrouded upper body, exactly two long connected arms and grasping hands, one solid mask, no feet or legs, and one tapering black-edged spectral tail."
+        },
+        {
+          "criterionId": "normal-unaffiliated-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Soot-black shroud substance, dull iron bindings, a solid neutral mask, and restrained grey phase haze remain explicitly unaffiliated without elemental material, glow, anatomy, or wake."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending; known-target Tower Wraith cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind unaffiliated reading remains pending; known-target Normal cues are strong."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The sharply opaque dull-metal mask remains materially solid and prominent during the committed grasp while the lower body visibly thins into black phase edges."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No standard, pole, wheel, weapon, shield, duplicate ghost, detached hand, living human, booted leg, elemental effect, crop, text, UI, frame, logo, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-tower-wraith-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:34:11.135Z",
+  "completedAt": "2026-08-30T09:37:03.349Z",
+  "totalWallTimeMs": 172214,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/tower-wraith-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-venom-wyvern-fire",
+  "targetId": "affinity-expansion-v1-venom-wyvern-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-venom-wyvern-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-venom-wyvern-fire-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-venom-wyvern-fire\".\n\nSubject and threat:\n- Species: venom-wyvern.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: venom-wyvern-duty.\n- Construction mode: winged-draconic.\n\nIdentity invariants:\n- Venom Wyvern remains immediately recognizable\n- Battlefield duty remains Aerial poison striker\n- two-legged wing silhouette, hooked tail stinger, and narrow diving head\n- tail sac brightens and wings fold before a toxic dive\n- Counterplay remains visible: stinger sac after discharge\n\nAnatomy invariants:\n- the declared wyvern or dragon limb plan remains exact, complete, and countable\n- connected head, neck, torso, tail, wing joints, and every grounded foot remain visible\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: stinger sac after discharge The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: wrong declared limb plan; extra wings or limbs; cropped tail or wings; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/draconic-v1.png — Subject 2 only: Venom Wyvern identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "d589aba4ced96105ef7bed231a6d5a8fec37175a8ffd57f28fd96679864c9260",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T09:43:32.000Z",
+      "generationCompletedAt": "2026-08-30T09:44:27.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:44:35.000Z",
+      "generationDurationMs": 55000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 63000,
+      "sourceOutputId": "exec-a33d022d-e36a-4733-bdc2-9bc4c58f4f06",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete wings and their smoke wake enter the outer left and right safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Venom Wyvern appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exact true-wyvern plan is clear: two grounded hind legs, two complete wings, narrow diving head, connected torso and tail, and hooked stinger sac."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened scales, internal ember seams, controlled wing combustion, smoke and distortion remain materially legible without uniform orange glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The stinger sac and heat sink are highly visible, but the sac remains full rather than collapsed after discharge."
+        }
+      ],
+      "retryReason": "Partially collapse the discharged sac, expose the cooling heat sink, and scale every hard/effect extent inside the safety border."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-venom-wyvern-fire-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-venom-wyvern-fire-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Fire counterplay and safe-framing correction for this exact single Fire Venom Wyvern. Preserve the correct true-wyvern limb plan—exactly two grounded hind legs and exactly two wings—plus the narrow diving head, heat-blackened scales, internal ember seams, connected torso and hooked tail, current pose, neutral cracked-stone setting, and premium painterly finish. Show the tail stinger sac immediately after discharge: make it partially collapsed and wrinkled rather than full, with its exposed internal heat sink clearly visible through one split cooling seam; retain only controlled residual amber heat there. Keep material and anatomy detail readable and avoid a uniform orange body glow. Uniformly scale the entire wyvern, both complete wings and every membrane/tip, head and horns, two feet, complete tail, hooked stinger, collapsed sac, all smoke, sparks, heat distortion, and restrained combustion down by about 18 percent and recenter so every hard and effect extent fits inside the central 84 percent of the 1536 x 1024 canvas, leaving a clearly empty finished border of at least 8 percent on all four sides. Contain all smoke, sparks and heat wake inside that border. Exactly one subject. No extra legs or wings, full swollen sac, uniform orange glow, cropped extremity, text, frame, or affinity change.",
+      "promptHash": "2f557fc257eee8485c02c3a492218af00ff939dcf2de1b9fd099803bbb3e1f6d",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/draconic-v1.png",
+          "contentHash": "b340bb2b59fd697d4de3c49a90724ca43b4e734402510e9a279410baf65b30f9"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-a33d022d-e36a-4733-bdc2-9bc4c58f4f06.png",
+        "contentHash": "6ce51ed9ef3dfd5047ec0ab4f8289d587c6144d6cf732275781099e8c20ab0c9"
+      },
+      "requestStartedAt": "2026-08-30T09:44:42.000Z",
+      "generationCompletedAt": "2026-08-30T09:45:05.000Z",
+      "inspectionCompletedAt": "2026-08-30T09:45:13.000Z",
+      "generationDurationMs": 23000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 31000,
+      "sourceOutputId": "exec-782f8a8e-df66-4154-a45a-763b08623900",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-782f8a8e-df66-4154-a45a-763b08623900.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2083870,
+          "contentHash": "2426cae8730c04f562218e093c60741055e316b774a89e04e52c8a30a9593eb2"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2083870,
+          "contentHash": "2426cae8730c04f562218e093c60741055e316b774a89e04e52c8a30a9593eb2"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2083870,
+        "contentHash": "2426cae8730c04f562218e093c60741055e316b774a89e04e52c8a30a9593eb2"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both complete wings, every membrane and tip, head, two feet, tail, hooked stinger, collapsed sac, smoke and sparks fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Fire Venom Wyvern appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The true-wyvern plan remains exact and countable with exactly two grounded hind legs and exactly two complete wings."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened scales, localized internal ember seams, controlled combustion, smoke and heat distortion remain readable without a uniform orange body glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The partially collapsed wrinkled post-discharge stinger sac exposes its internal heat sink through a split cooling seam."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-venom-wyvern-fire-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T09:43:32.000Z",
+  "completedAt": "2026-08-30T09:45:15.000Z",
+  "totalWallTimeMs": 103000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/venom-wyvern-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
