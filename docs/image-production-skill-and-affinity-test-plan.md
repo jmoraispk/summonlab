@@ -1,7 +1,7 @@
 # Image-production skill and affinity workload plan
 
-Status: **in execution; guarded final-rerun and concurrency tooling complete, final activation and
-breadth gated on human blind review**
+Status: **in execution; all Final/Breadth/Load/Scale workloads allocated and Breadth generation
+preflight-ready, while live final activation and image generation remain gated on human review**
 
 Date: **2026-08-29**
 
@@ -16,14 +16,24 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Replaced the ambiguous stage-only schedule with a deterministic v2 allocation of nine
+  named workloads: Final Canary, Final Pilot, Controlled A/B/C, Breadth Canary, Breadth-8, Load-12,
+  and Scale-16. The first five partition all 24 final-controlled targets exactly; the two-job
+  Breadth canary is exactly Goblin Normal plus Tunnel Boar Fire; the remaining workloads preserve
+  the reviewed 24 Breadth targets and 14 future sentinels without path collisions. A zero-write
+  Breadth readiness check now proves all 24 target/assignment pairs, both canaries, current skill
+  and reference hashes, and 48 absent owned outputs. The event-v3 state machine separately records
+  job claims and actual worker starts, so only admitted starts contribute to concurrency evidence.
+  No manifest, dispatch gate, event, result, review, or image was created by this preparation.
 - 2026-08-29: Made the reviewed exact-concurrency allocation executable only through a guarded v2
-  materializer. Each fresh plan now binds the allocation, stage, dispatch gate, optional sentinel
+  materializer. Each fresh plan now binds the allocation, named workload, dispatch gate, optional sentinel
   activation receipt, and every target and assignment hash. V2 preflight preserves those bindings;
-  dispatch, event recording, reporting, and completion revalidate the current snapshot. The
-  append-only v2 journal assigns a locked sequence and preflight hash to each event, so worker reuse
-  and peak concurrency remain deterministic even at identical timestamps. Report v3 binds all
-  manifests, and a final-controlled run cannot count without its valid controlled contact sheet.
-  No live wave, gate, sentinel, or image was activated by this tooling slice.
+  dispatch, reporting, and completion revalidate the current snapshot. The interim event-v2 journal
+  established recorder-owned sequence and preflight hashes, but it does not qualify new concurrency
+  measurements because a dispatch was not proof of an admitted worker start. Event v3 supersedes
+  it before live execution. Report v3 binds all manifests, and a final-controlled run cannot count
+  without its valid controlled contact sheet. No live wave, gate, sentinel, or image was activated
+  by this tooling slice.
 - 2026-08-29: Repaired the staged concurrency proof so Load-12 depends on the exact promoted
   Breadth-8 run and Scale-16 depends on the exact promoted Load-12 run, removing the prior circular
   requirement for a fully completed breadth round before its own targets could run. Every
@@ -206,7 +216,9 @@ stronger or replacement source. Activation remains false until the informative v
 recorded and every blocking risk is resolved.
 
 The active Codex task exposes four total agent slots. Reserving one slot for orchestration yields a
-measured ceiling of three concurrent image jobs, even though local configuration requests 16. This
+measured ceiling of three concurrent image jobs. Local configuration now requests 17 total task
+threads—one orchestrator plus 16 image workers—but that change applies only to a newly started task
+and remains merely a ceiling until observed. This
 is now preserved as an exact Pilot preflight: four workers requested, four total slots observed,
 three workers admitted, zero output collisions, and zero jobs dispatched. It is an
 environment-capacity finding, not proof that 4-, 8-, 12-, or 16-job execution works. Those ladder
@@ -264,6 +276,10 @@ pnpm export:accepted-later-pack-visual-rules -- --actor <actor>
 
 # Read-only derivation check for the 14 future Load/Scale sentinels.
 pnpm report:affinity-concurrency-sentinel-readiness -- --actor <actor>
+
+# Deterministic workload allocation plus a zero-write Breadth generation preflight.
+pnpm check:affinity-wave-allocation-v2
+pnpm check:affinity-breadth-generation-readiness
 
 # Only after the report is ready: publish the exact 28 manifests and receipt.
 pnpm activate:affinity-concurrency-sentinels -- \
@@ -664,6 +680,26 @@ compound variation or higher concurrency begins.
 
 Increase parallelism only after the preceding stage passes:
 
+The executable schedule uses named workloads rather than selecting by stage alone. This matters
+because Canary and Controlled each occur more than once:
+
+| Workload ID | Jobs | Target family | Required predecessor |
+| --- | ---: | --- | --- |
+| `final-canary` | 2 | Death Knight Normal and Fire | Human-approved final-manifest activation |
+| `final-pilot` | 4 | Remaining Death Knight affinities | Final Canary pass |
+| `final-controlled-a` | 6 | Balanced Elemental, Grey Wolf, Cave Bear wave A | Final Pilot pass |
+| `final-controlled-b` | 6 | Balanced Elemental, Grey Wolf, Cave Bear wave B | Controlled A pass |
+| `final-controlled-c` | 6 | Balanced Elemental, Grey Wolf, Cave Bear wave C | Controlled B pass |
+| `breadth-canary` | 2 | Goblin Normal and Tunnel Boar Fire | Passed final human review |
+| `breadth` | 8 | Goblin, Tunnel Boar, Cave Drake, Tower Basilisk | Breadth Canary pass |
+| `load` | 12 | Remaining Breadth jobs plus six activated sentinels | Breadth-8 pass |
+| `scale` | 16 | Mixed eight-species wave plus eight activated sentinels | Load-12 pass and capacity preflight |
+
+Together, Breadth Canary, Breadth-8, Load-12, and Scale-16 cover all 24 Breadth coordinates exactly
+once. Goblins vary manifest-owned duty, build, face, clothing, equipment, and affinity; the other
+families vary species grammar and elemental construction without requiring the same humanoid
+attribute matrix.
+
 | Stage | Parallel image jobs | Purpose | Promotion gate |
 | --- | ---: | --- | --- |
 | Canary | 2 | Verify tool invocation, ownership, saving, and result contract | Zero collisions and complete retained-output provenance |
@@ -682,7 +718,8 @@ Before the scale wave:
 
 - verify the effective Codex agent limit in the running task rather than trusting configuration
   alone;
-- configure a project ceiling of 16 agent threads if supported by the current environment;
+- configure a project ceiling of 17 total task threads—one orchestrator plus 16 image workers—if
+  supported by the current environment;
 - restart or begin a new task if configuration changes require it;
 - verify image-tool and backend concurrency separately from agent concurrency;
 - reserve the orchestrator for validation and integration rather than assigning it an image target;
@@ -694,12 +731,12 @@ A project configuration may request the intended ceiling:
 ```toml
 [agents]
 enabled = true
-max_concurrent_threads_per_session = 16
+max_concurrent_threads_per_session = 17
 ```
 
 That setting is only a ceiling. The active Codex task, account, image backend, or application build
-may expose a lower effective limit. A 16-agent configuration therefore does not by itself prove 16
-simultaneous image generations.
+may expose a lower effective limit. A 17-thread configuration therefore does not by itself prove
+16 simultaneous image generations; the orchestrator must remain outside the image-worker count.
 
 Required stop conditions for the 12- and 16-job stages:
 

@@ -11,6 +11,11 @@
 		"affinity-wave-scheduler-lib.ts",
 		"affinity-wave-scheduler.ts",
 		"affinity-wave-scheduler.spec.ts",
+		"affinity-wave-journal-v3.ts",
+		"affinity-wave-journal-v3.spec.ts",
+		"affinity-wave-journal-v3-recorder.ts",
+		"affinity-wave-journal-v3-recorder.spec.ts",
+		"affinity-wave-allocation-v2.ts",
 		"affinity-wave-plan-v2.ts",
 		"materialize-affinity-wave-plan.ts",
 		"materialize-affinity-wave-plan.spec.ts"

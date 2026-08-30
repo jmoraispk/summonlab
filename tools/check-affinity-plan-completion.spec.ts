@@ -693,6 +693,7 @@ describe('affinity image-production plan completion', () => {
 			runId: 'canary-eligible',
 			experimentId: 'affinity-workflow-v1',
 			stage: 'canary',
+			workloadId: 'final-canary',
 			createdAt: '2026-08-29T20:00:00.000Z',
 			status: 'ready',
 			requestedConcurrency: 2,
@@ -729,9 +730,9 @@ describe('affinity image-production plan completion', () => {
 					status: 'authorized',
 					authorizedStage: 'canary',
 					qualityGateSatisfied: true,
-					humanGateSatisfied: false,
+					humanGateSatisfied: true,
 					prerequisiteRunIds: [],
-					derivation: { profile: 'normal-canary' },
+					derivation: { profile: 'final-canary' },
 					evidenceBindings: [
 						{
 							path: 'assets/enemies/experiments/affinity-workflow-v1/review/evaluation.json',

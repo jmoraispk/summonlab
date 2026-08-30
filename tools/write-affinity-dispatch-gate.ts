@@ -69,6 +69,7 @@ const FINAL_PLAN_PATH =
 export const AffinityDispatchGateRequestSchema = z.discriminatedUnion('profile', [
 	z.object({ profile: z.literal('normal-canary') }).strict(),
 	z.object({ profile: z.literal('final-canary') }).strict(),
+	z.object({ profile: z.literal('breadth-canary') }).strict(),
 	z
 		.object({
 			profile: z.literal('breadth'),
@@ -160,7 +161,12 @@ export interface DerivedAffinityDispatchGateEvidence {
 }
 
 function requestStage(request: AffinityDispatchGateRequest) {
-	if (request.profile === 'normal-canary' || request.profile === 'final-canary') return 'canary';
+	if (
+		request.profile === 'normal-canary' ||
+		request.profile === 'final-canary' ||
+		request.profile === 'breadth-canary'
+	)
+		return 'canary';
 	if (request.profile === 'breadth') return 'breadth';
 	return {
 		4: 'pilot',
@@ -174,7 +180,12 @@ function expectedPredecessor(request: AffinityDispatchGateRequest): {
 	readonly stage: EligibleSchedulerRun['stage'];
 	readonly concurrency: number;
 } | null {
-	if (request.profile === 'normal-canary' || request.profile === 'final-canary') return null;
+	if (
+		request.profile === 'normal-canary' ||
+		request.profile === 'final-canary' ||
+		request.profile === 'breadth-canary'
+	)
+		return null;
 	if (request.profile === 'breadth') return { stage: 'controlled', concurrency: 6 };
 	return (
 		{
@@ -189,6 +200,7 @@ function expectedPredecessor(request: AffinityDispatchGateRequest): {
 function gateId(request: AffinityDispatchGateRequest): string {
 	if (request.profile === 'normal-canary') return 'normal-canary-dispatch-v2';
 	if (request.profile === 'final-canary') return 'final-controlled-canary-dispatch-v2';
+	if (request.profile === 'breadth-canary') return 'breadth-canary-dispatch-v2';
 	const suffix = createHash('sha256').update(request.prerequisiteRunId).digest('hex').slice(0, 12);
 	return request.profile === 'breadth'
 		? `breadth-after-${suffix}-dispatch-v2`
@@ -478,6 +490,8 @@ export async function resolveAffinityDispatchGate(
 			bindings = await verifyNormalDryRun(workspaceRoot);
 		} else if (request.profile === 'final-canary') {
 			bindings = await verifyFinalCanaryReadiness(workspaceRoot);
+		} else if (request.profile === 'breadth-canary') {
+			bindings = await verifyPassedRound(workspaceRoot, 'final-controlled-v1');
 		} else {
 			const schedulerEvidence = await inspectSchedulerEvidence(workspaceRoot);
 			prerequisiteRun = selectPrerequisiteRun(request, schedulerEvidence);
@@ -618,6 +632,7 @@ function parseCliRequest(args: readonly string[]): AffinityDispatchGateRequest {
 	const profile = option(args, '--profile');
 	if (profile === 'normal') return { profile: 'normal-canary' };
 	if (profile === 'final') return { profile: 'final-canary' };
+	if (profile === 'breadth-canary') return { profile: 'breadth-canary' };
 	if (profile === 'breadth')
 		return AffinityDispatchGateRequestSchema.parse({
 			profile: 'breadth',
@@ -629,7 +644,7 @@ function parseCliRequest(args: readonly string[]): AffinityDispatchGateRequest {
 			requestedConcurrency: Number(option(args, '--concurrency')),
 			prerequisiteRunId: option(args, '--prerequisite-run')
 		});
-	throw new Error('Expected --profile normal|final|breadth|load.');
+	throw new Error('Expected --profile normal|final|breadth-canary|breadth|load.');
 }
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {

@@ -3,6 +3,12 @@ import path from 'node:path';
 
 import { z } from 'zod';
 
+import {
+	AFFINITY_WAVE_ALLOCATION_V2_PATH,
+	AFFINITY_WAVE_WORKLOAD_REQUIREMENTS_V2,
+	AffinityWaveWorkloadIdV2Schema
+} from './affinity-wave-allocation-v2.js';
+
 export const AFFINITY_WAVE_EXPERIMENT_ROOT =
 	'assets/enemies/experiments/affinity-workflow-v1' as const;
 
@@ -62,6 +68,7 @@ export const AffinityWavePlanV2Schema = z
 		runId: SlugSchema,
 		experimentId: z.literal('affinity-workflow-v1'),
 		stage: AffinityWaveStageV2Schema,
+		workloadId: AffinityWaveWorkloadIdV2Schema,
 		requestedConcurrency: z.union([
 			z.literal(2),
 			z.literal(4),
@@ -80,25 +87,38 @@ export const AffinityWavePlanV2Schema = z
 				retryCapacityFailuresInWave: z.literal(false)
 			})
 			.strict(),
-		allocation: ArtifactPointerSchema.extend({ allocationId: SlugSchema }).strict(),
+		allocation: z
+			.object({
+				artifactPath: z.literal(AFFINITY_WAVE_ALLOCATION_V2_PATH),
+				canonicalSha256: HashSchema,
+				allocationId: z.literal('exact-concurrency-final-and-breadth-v2')
+			})
+			.strict(),
 		dispatchGate: ArtifactPointerSchema,
 		concurrencySentinelActivationReceipt: ArtifactPointerSchema.nullable(),
 		jobs: z.array(AffinityWavePlanV2JobSchema).min(1).max(16)
 	})
 	.strict()
 	.superRefine((plan, context) => {
-		const expectedConcurrency = AFFINITY_WAVE_STAGE_CONCURRENCY_V2[plan.stage];
+		const workload = AFFINITY_WAVE_WORKLOAD_REQUIREMENTS_V2[plan.workloadId];
+		if (plan.stage !== workload.stage)
+			context.addIssue({
+				code: 'custom',
+				path: ['stage'],
+				message: `${plan.workloadId} requires stage ${workload.stage}`
+			});
+		const expectedConcurrency = workload.concurrency;
 		if (plan.requestedConcurrency !== expectedConcurrency)
 			context.addIssue({
 				code: 'custom',
 				path: ['requestedConcurrency'],
-				message: `${plan.stage} requires requested concurrency ${expectedConcurrency}`
+				message: `${plan.workloadId} requires requested concurrency ${expectedConcurrency}`
 			});
 		if (plan.jobs.length !== expectedConcurrency)
 			context.addIssue({
 				code: 'custom',
 				path: ['jobs'],
-				message: `${plan.stage} requires exactly ${expectedConcurrency} allocation jobs`
+				message: `${plan.workloadId} requires exactly ${expectedConcurrency} allocation jobs`
 			});
 		const expectedDirectory = `${AFFINITY_WAVE_EXPERIMENT_ROOT}/wave-runs/${plan.runId}`;
 		if (plan.runDirectory !== expectedDirectory)

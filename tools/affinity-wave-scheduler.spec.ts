@@ -251,6 +251,7 @@ function v2PreflightFixture(preflight: ReturnType<typeof readyEventFixture>) {
 	return AffinityWavePreflightSchema.parse({
 		...preflight,
 		schemaVersion: 'affinity-wave-preflight-v2',
+		workloadId: 'final-pilot',
 		sourcePlan: {
 			path: `${preflight.runDirectory}/plan.json`,
 			canonicalSha256: 'a'.repeat(64)

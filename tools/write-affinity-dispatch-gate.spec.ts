@@ -153,6 +153,25 @@ describe('derived affinity dispatch gates', () => {
 		]);
 	});
 
+	it('derives the Breadth canary only as a human-gated canary without a wave predecessor', () => {
+		const gate = buildDerivedAffinityDispatchGate(
+			{ profile: 'breadth-canary' },
+			{
+				bindings,
+				prerequisiteRun: null,
+				promotionEvidence: null
+			}
+		);
+		expect(gate).toMatchObject({
+			gateId: 'breadth-canary-dispatch-v2',
+			authorizedStage: 'canary',
+			humanGateSatisfied: true,
+			prerequisiteRunIds: [],
+			derivation: { profile: 'breadth-canary' },
+			promotionEvidence: null
+		});
+	});
+
 	it('requires an exact eligible Controlled-6 predecessor for Breadth', () => {
 		const prerequisiteRun = schedulerRun('controlled', 6);
 		const request = {

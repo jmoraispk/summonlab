@@ -40,6 +40,11 @@ import {
 	buildFinalControlledRerunBundle
 } from './prepare-final-controlled-rerun.js';
 import {
+	AFFINITY_WAVE_WORKLOAD_REQUIREMENTS_V2,
+	AffinityWaveAllocationV2Schema,
+	type AffinityWaveAllocationV2
+} from './affinity-wave-allocation-v2.js';
+import {
 	AffinityWavePlanV2Schema,
 	type AffinityWavePlanV2,
 	type BoundAffinityWavePlanV2
@@ -229,6 +234,7 @@ export type AffinityWavePromotionEvidence = z.infer<typeof AffinityWavePromotion
 export const AffinityWaveDispatchGateDerivationSchema = z.discriminatedUnion('profile', [
 	z.object({ profile: z.literal('normal-canary') }).strict(),
 	z.object({ profile: z.literal('final-canary') }).strict(),
+	z.object({ profile: z.literal('breadth-canary') }).strict(),
 	z.object({ profile: z.literal('breadth'), prerequisiteRunId: SlugSchema }).strict(),
 	z
 		.object({
@@ -288,7 +294,7 @@ export const AffinityWaveDispatchGateSchema = z
 		const expected =
 			derivation.profile === 'normal-canary'
 				? { stage: 'canary', human: false, prerequisites: [] as string[] }
-				: derivation.profile === 'final-canary'
+				: derivation.profile === 'final-canary' || derivation.profile === 'breadth-canary'
 					? { stage: 'canary', human: true, prerequisites: [] as string[] }
 					: derivation.profile === 'breadth'
 						? {
@@ -313,7 +319,11 @@ export const AffinityWaveDispatchGateSchema = z
 				path: ['derivation'],
 				message: 'Derived profile does not match stage, human gate, and prerequisites'
 			});
-		if (derivation.profile === 'normal-canary' || derivation.profile === 'final-canary') {
+		if (
+			derivation.profile === 'normal-canary' ||
+			derivation.profile === 'final-canary' ||
+			derivation.profile === 'breadth-canary'
+		) {
 			if (gate.promotionEvidence !== null && gate.promotionEvidence !== undefined)
 				context.addIssue({
 					code: 'custom',
@@ -825,6 +835,7 @@ export const AffinityWavePreflightV2Schema = z
 		runId: SlugSchema,
 		experimentId: z.literal('affinity-workflow-v1'),
 		stage: StageSchema,
+		workloadId: AffinityWavePlanV2Schema.shape.workloadId,
 		createdAt: z.string().datetime({ offset: true }),
 		status: z.enum(['ready', 'blocked-capacity', 'blocked-output-collision', 'blocked-gate']),
 		requestedConcurrency: z.number().int().positive().max(16),
@@ -855,6 +866,13 @@ export const AffinityWavePreflightV2Schema = z
 	})
 	.strict()
 	.superRefine((preflight, context) => {
+		const workload = AFFINITY_WAVE_WORKLOAD_REQUIREMENTS_V2[preflight.workloadId];
+		if (preflight.stage !== workload.stage)
+			context.addIssue({
+				code: 'custom',
+				path: ['stage'],
+				message: 'Preflight stage must match its allocation workload'
+			});
 		if (
 			preflight.status === 'ready' &&
 			(preflight.dispatchGateSatisfied !== true ||
@@ -865,7 +883,7 @@ export const AffinityWavePreflightV2Schema = z
 				path: ['dispatchGateEvidence'],
 				message: 'A ready preflight requires a fully satisfied v2 dispatch gate'
 			});
-		if (preflight.requestedConcurrency !== STAGE_CONCURRENCY[preflight.stage])
+		if (preflight.requestedConcurrency !== workload.concurrency)
 			context.addIssue({
 				code: 'custom',
 				path: ['requestedConcurrency'],
@@ -1653,7 +1671,12 @@ function expectedPredecessorForGate(gate: AffinityWaveDispatchGate): {
 	readonly runId: string;
 } | null {
 	const derivation = gate.derivation;
-	if (derivation.profile === 'normal-canary' || derivation.profile === 'final-canary') return null;
+	if (
+		derivation.profile === 'normal-canary' ||
+		derivation.profile === 'final-canary' ||
+		derivation.profile === 'breadth-canary'
+	)
+		return null;
 	if (derivation.profile === 'breadth')
 		return { stage: 'controlled', concurrency: 6, runId: derivation.prerequisiteRunId };
 	return {
@@ -1774,12 +1797,14 @@ async function verifyDerivedGateSemantics(
 			? 'normal-canary-dispatch-v2'
 			: gate.derivation.profile === 'final-canary'
 				? 'final-controlled-canary-dispatch-v2'
-				: `${gate.derivation.profile === 'breadth' ? 'breadth' : `load-${gate.derivation.requestedConcurrency}`}-after-${createHash(
-						'sha256'
-					)
-						.update(gate.derivation.prerequisiteRunId)
-						.digest('hex')
-						.slice(0, 12)}-dispatch-v2`;
+				: gate.derivation.profile === 'breadth-canary'
+					? 'breadth-canary-dispatch-v2'
+					: `${gate.derivation.profile === 'breadth' ? 'breadth' : `load-${gate.derivation.requestedConcurrency}`}-after-${createHash(
+							'sha256'
+						)
+							.update(gate.derivation.prerequisiteRunId)
+							.digest('hex')
+							.slice(0, 12)}-dispatch-v2`;
 	if (gate.gateId !== expectedGateId)
 		throw new Error('Dispatch gate ID is not the canonical derivation output.');
 	const nextVisited = new Set(visitedGateIds).add(gate.gateId);
@@ -1788,6 +1813,8 @@ async function verifyDerivedGateSemantics(
 		expectedPaths = await verifyNormalSemanticEvidence(workspaceRoot, values);
 	} else if (gate.derivation.profile === 'final-canary') {
 		expectedPaths = await verifyFinalCanarySemanticEvidence(workspaceRoot, values);
+	} else if (gate.derivation.profile === 'breadth-canary') {
+		expectedPaths = await verifyRoundSemanticEvidence(workspaceRoot, values, 'final-controlled-v1');
 	} else {
 		expectedPaths = await verifyPredecessorSemanticEvidence(
 			workspaceRoot,
@@ -1988,7 +2015,7 @@ export async function preflightWave(
 		);
 		return { path: sourcePath, canonicalSha256, plan } satisfies BoundAffinityWavePlanV2;
 	})();
-	let v2Allocation: AffinityWaveAllocationSpec | null = null;
+	let v2Allocation: AffinityWaveAllocationV2 | null = null;
 	if (boundPlan) {
 		const expectedPlanPath = `${EXPERIMENT_ROOT}/review/wave-plans/materialized/${boundPlan.plan.runId}.json`;
 		if (boundPlan.path !== expectedPlanPath)
@@ -2004,19 +2031,19 @@ export async function preflightWave(
 		const allocationInput = await readJson(
 			workspacePath(workspaceRoot, boundPlan.plan.allocation.artifactPath)
 		);
-		v2Allocation = AffinityWaveAllocationSpecSchema.parse(allocationInput);
+		v2Allocation = AffinityWaveAllocationV2Schema.parse(allocationInput);
 		if (
 			canonicalJsonSha256(v2Allocation) !== boundPlan.plan.allocation.canonicalSha256 ||
 			v2Allocation.allocationId !== boundPlan.plan.allocation.allocationId
 		)
 			throw new Error('Reviewed allocation changed before preflight.');
-		const allocationStage = v2Allocation.stages.find(
-			(stage) => stage.stage === boundPlan.plan.stage
+		const allocationWorkload = v2Allocation.workloads.find(
+			(workload) => workload.workloadId === boundPlan.plan.workloadId
 		);
-		if (!allocationStage || allocationStage.jobs.length !== boundPlan.plan.jobs.length)
-			throw new Error('Materialized plan no longer matches its allocation stage.');
+		if (!allocationWorkload || allocationWorkload.jobs.length !== boundPlan.plan.jobs.length)
+			throw new Error('Materialized plan no longer matches its allocation workload.');
 		for (const [index, planJob] of boundPlan.plan.jobs.entries()) {
-			const allocationJob = allocationStage.jobs[index];
+			const allocationJob = allocationWorkload.jobs[index];
 			if (
 				!allocationJob ||
 				planJob.allocationJobKey !== allocationJob.key ||
@@ -2049,7 +2076,10 @@ export async function preflightWave(
 				})
 				.passthrough()
 				.parse(receiptInput);
-			if (receipt.bindings.allocationCanonicalSha256 !== boundPlan.plan.allocation.canonicalSha256)
+			if (
+				receipt.bindings.allocationCanonicalSha256 !==
+				v2Allocation.sourceAllocationV1.canonicalSha256
+			)
 				throw new Error('Concurrency-sentinel receipt is bound to another allocation.');
 			const artifactHashes = new Map(
 				receipt.artifacts.map((artifact) => [artifact.livePath, artifact.canonicalSha256])
@@ -2186,6 +2216,7 @@ export async function preflightWave(
 		runId: plan.runId,
 		experimentId: plan.experimentId,
 		stage: plan.stage,
+		...(boundPlan ? { workloadId: boundPlan.plan.workloadId } : {}),
 		createdAt,
 		status,
 		requestedConcurrency: plan.requestedConcurrency,
@@ -2232,6 +2263,7 @@ export async function verifyCurrentWaveManifestBindings(
 			canonicalJsonSha256(plan) !== preflight.sourcePlan.canonicalSha256 ||
 			plan.runId !== preflight.runId ||
 			plan.stage !== preflight.stage ||
+			plan.workloadId !== preflight.workloadId ||
 			plan.requestedConcurrency !== preflight.requestedConcurrency ||
 			plan.runDirectory !== preflight.runDirectory ||
 			plan.allocation.artifactPath !== preflight.sourceAllocation.path ||
@@ -2254,22 +2286,24 @@ export async function verifyCurrentWaveManifestBindings(
 		const allocationInput = await readJson(
 			workspacePath(workspaceRoot, preflight.sourceAllocation.path)
 		);
-		const allocation = AffinityWaveAllocationSpecSchema.parse(allocationInput);
+		const allocation = AffinityWaveAllocationV2Schema.parse(allocationInput);
 		if (
 			canonicalJsonSha256(allocation) !== preflight.sourceAllocation.canonicalSha256 ||
 			allocation.allocationId !== preflight.sourceAllocation.allocationId
 		)
 			throw new Error('V2 preflight source-allocation binding is stale or inconsistent.');
-		const stage = allocation.stages.find((entry) => entry.stage === preflight.stage);
+		const workload = allocation.workloads.find(
+			(entry) => entry.workloadId === preflight.workloadId
+		);
 		if (
-			!stage ||
-			stage.jobs.length !== preflight.jobs.length ||
-			plan.jobs.length !== stage.jobs.length
+			!workload ||
+			workload.jobs.length !== preflight.jobs.length ||
+			plan.jobs.length !== workload.jobs.length
 		)
 			throw new Error('V2 preflight job set differs from the reviewed allocation.');
 		for (const [index, job] of preflight.jobs.entries()) {
 			const planJob = plan.jobs[index];
-			const allocationJob = stage.jobs[index];
+			const allocationJob = workload.jobs[index];
 			if (
 				!planJob ||
 				!allocationJob ||

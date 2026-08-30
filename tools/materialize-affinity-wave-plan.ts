@@ -13,23 +13,21 @@ import {
 	CONCURRENCY_SENTINEL_ACTIVATION_RECEIPT_PATH,
 	verifyConcurrencySentinelActivationReceipt
 } from './activate-concurrency-sentinels.js';
+import { AffinityWaveDispatchGateSchema } from './affinity-wave-scheduler-lib.js';
 import {
-	AffinityWaveAllocationSpecSchema,
-	AffinityWaveDispatchGateSchema
-} from './affinity-wave-scheduler-lib.js';
+	AFFINITY_WAVE_ALLOCATION_V2_PATH,
+	EXPECTED_AFFINITY_WAVE_ALLOCATION_V2_SHA256,
+	AffinityWaveAllocationV2Schema,
+	AffinityWaveWorkloadIdV2Schema,
+	canonicalJsonSha256V2,
+	type AffinityWaveAllocationJobV2,
+	type AffinityWaveWorkloadIdV2
+} from './affinity-wave-allocation-v2.js';
 import {
 	AFFINITY_WAVE_EXPERIMENT_ROOT,
-	AFFINITY_WAVE_STAGE_CONCURRENCY_V2,
 	AffinityWavePlanV2Schema,
-	AffinityWaveStageV2Schema,
-	canonicalJsonSha256V2,
-	type AffinityWavePlanV2,
-	type AffinityWaveStageV2
+	type AffinityWavePlanV2
 } from './affinity-wave-plan-v2.js';
-import {
-	CONCURRENCY_SENTINEL_ALLOCATION_PATH,
-	EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256
-} from './concurrency-sentinel-readiness.js';
 
 const HashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
 const SlugSchema = z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u);
@@ -45,7 +43,7 @@ export interface MaterializeAffinityWavePlanOptions {
 	readonly workspaceRoot?: string;
 	readonly allocationPath: string;
 	readonly allocationCanonicalSha256: string;
-	readonly stage: string;
+	readonly workloadId: string;
 	readonly gatePath: string;
 	readonly gateCanonicalSha256: string;
 	readonly runId: string;
@@ -115,7 +113,7 @@ function assertExpectedHash(label: string, expected: string, observed: string) {
 
 function assertTargetMatchesAllocation(
 	target: z.infer<typeof ImageProductionTargetSchema>,
-	job: z.infer<typeof AffinityWaveAllocationSpecSchema>['stages'][number]['jobs'][number]
+	job: AffinityWaveAllocationJobV2
 ) {
 	for (const [label, actual, expected] of [
 		['species', target.speciesId, job.speciesId],
@@ -148,7 +146,8 @@ async function verifyCurrentGate(
 	workspaceRoot: string,
 	gatePath: string,
 	expectedHash: string,
-	stage: AffinityWaveStageV2,
+	workloadId: AffinityWaveWorkloadIdV2,
+	stage: AffinityWavePlanV2['stage'],
 	readJson: NonNullable<MaterializeAffinityWavePlanOptions['readJson']>
 ) {
 	if (!gatePath.startsWith(GATE_ROOT) || !gatePath.endsWith('.json'))
@@ -158,6 +157,28 @@ async function verifyCurrentGate(
 	const gate = AffinityWaveDispatchGateSchema.parse(loaded.value);
 	if (gate.authorizedStage !== stage)
 		throw new Error(`Dispatch gate authorizes ${gate.authorizedStage}, not ${stage}.`);
+	const derivation = gate.derivation;
+	const profileMatches =
+		workloadId === 'final-canary'
+			? derivation.profile === 'final-canary'
+			: workloadId === 'breadth-canary'
+				? derivation.profile === 'breadth-canary'
+				: workloadId === 'breadth'
+					? derivation.profile === 'breadth'
+					: derivation.profile === 'load' &&
+						derivation.requestedConcurrency ===
+							(
+								{
+									'final-pilot': 4,
+									'final-controlled-a': 6,
+									'final-controlled-b': 6,
+									'final-controlled-c': 6,
+									load: 12,
+									scale: 16
+								} as const
+							)[workloadId];
+	if (!profileMatches)
+		throw new Error(`Dispatch gate derivation does not authorize workload ${workloadId}.`);
 	for (const binding of gate.evidenceBindings) {
 		const evidence = await readJson(workspaceRoot, binding.path);
 		assertExpectedHash(
@@ -172,7 +193,7 @@ async function verifyCurrentGate(
 async function verifyCurrentSentinelReceipt(
 	workspaceRoot: string,
 	allocationHash: string,
-	jobs: z.infer<typeof AffinityWaveAllocationSpecSchema>['stages'][number]['jobs'],
+	jobs: readonly AffinityWaveAllocationJobV2[],
 	manifestHashes: ReadonlyMap<string, string>,
 	verifyReceipt: typeof verifyConcurrencySentinelActivationReceipt,
 	readJson: NonNullable<MaterializeAffinityWavePlanOptions['readJson']>
@@ -205,13 +226,11 @@ export async function buildCurrentAffinityWavePlan(
 	options: MaterializeAffinityWavePlanOptions
 ): Promise<AffinityWavePlanV2> {
 	const workspaceRoot = path.resolve(options.workspaceRoot ?? process.cwd());
-	if (options.allocationPath !== CONCURRENCY_SENTINEL_ALLOCATION_PATH)
-		throw new Error(
-			`Allocation must be the reviewed artifact ${CONCURRENCY_SENTINEL_ALLOCATION_PATH}`
-		);
-	if (options.allocationCanonicalSha256 !== EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256)
-		throw new Error('Allocation input hash must equal the reviewed allocation hash.');
-	const stage = AffinityWaveStageV2Schema.parse(options.stage);
+	if (options.allocationPath !== AFFINITY_WAVE_ALLOCATION_V2_PATH)
+		throw new Error(`Allocation must be the reviewed artifact ${AFFINITY_WAVE_ALLOCATION_V2_PATH}`);
+	if (options.allocationCanonicalSha256 !== EXPECTED_AFFINITY_WAVE_ALLOCATION_V2_SHA256)
+		throw new Error('Allocation input hash must equal the reviewed allocation v2 hash.');
+	const workloadId = AffinityWaveWorkloadIdV2Schema.parse(options.workloadId);
 	const runId = SlugSchema.parse(options.runId);
 	const readJson = options.readJson ?? defaultReadJson;
 	const loadedAllocation = await readJson(workspaceRoot, options.allocationPath);
@@ -220,25 +239,21 @@ export async function buildCurrentAffinityWavePlan(
 		options.allocationCanonicalSha256,
 		loadedAllocation.canonicalSha256
 	);
-	const allocation = AffinityWaveAllocationSpecSchema.parse(loadedAllocation.value);
-	const stageAllocation = allocation.stages.find((entry) => entry.stage === stage);
-	if (!stageAllocation) throw new Error(`Reviewed allocation has no ${stage} stage.`);
-	if (
-		stageAllocation.requestedConcurrency !== AFFINITY_WAVE_STAGE_CONCURRENCY_V2[stage] ||
-		stageAllocation.jobs.length !== AFFINITY_WAVE_STAGE_CONCURRENCY_V2[stage]
-	)
-		throw new Error(`Reviewed allocation does not contain the exact ${stage} job set.`);
+	const allocation = AffinityWaveAllocationV2Schema.parse(loadedAllocation.value);
+	const workload = allocation.workloads.find((entry) => entry.workloadId === workloadId);
+	if (!workload) throw new Error(`Reviewed allocation has no ${workloadId} workload.`);
 	await verifyCurrentGate(
 		workspaceRoot,
 		options.gatePath,
 		options.gateCanonicalSha256,
-		stage,
+		workloadId,
+		workload.stage,
 		readJson
 	);
 
 	const manifestHashes = new Map<string, string>();
 	const jobs = [];
-	for (const allocationJob of stageAllocation.jobs) {
+	for (const allocationJob of workload.jobs) {
 		const [targetLoad, assignmentLoad] = await Promise.all([
 			readJson(workspaceRoot, allocationJob.targetPath),
 			readJson(workspaceRoot, allocationJob.assignmentPath)
@@ -259,14 +274,12 @@ export async function buildCurrentAffinityWavePlan(
 		});
 	}
 
-	const hasFutureSentinels = stageAllocation.jobs.some(
-		(job) => job.manifestState === 'future-sentinel'
-	);
+	const hasFutureSentinels = workload.jobs.some((job) => job.manifestState === 'future-sentinel');
 	const concurrencySentinelActivationReceipt = hasFutureSentinels
 		? await verifyCurrentSentinelReceipt(
 				workspaceRoot,
-				loadedAllocation.canonicalSha256,
-				stageAllocation.jobs,
+				allocation.sourceAllocationV1.canonicalSha256,
+				workload.jobs,
 				manifestHashes,
 				options.verifySentinelReceipt ?? verifyConcurrencySentinelActivationReceipt,
 				readJson
@@ -277,8 +290,9 @@ export async function buildCurrentAffinityWavePlan(
 		schemaVersion: 'affinity-wave-plan-v2',
 		runId,
 		experimentId: 'affinity-workflow-v1',
-		stage,
-		requestedConcurrency: stageAllocation.requestedConcurrency,
+		workloadId,
+		stage: workload.stage,
+		requestedConcurrency: workload.requestedConcurrency,
 		reservedOrchestratorSlots: 1,
 		requireExactConcurrency: true,
 		runDirectory: `${AFFINITY_WAVE_EXPERIMENT_ROOT}/wave-runs/${runId}`,
@@ -340,7 +354,7 @@ export function parseMaterializeAffinityWavePlanArgs(args: readonly string[]) {
 	const names = new Set([
 		'--allocation',
 		'--allocation-sha256',
-		'--stage',
+		'--workload',
 		'--gate',
 		'--gate-sha256',
 		'--run-id'
@@ -364,7 +378,7 @@ export function parseMaterializeAffinityWavePlanArgs(args: readonly string[]) {
 	return {
 		allocationPath: values.get('--allocation')!,
 		allocationCanonicalSha256: values.get('--allocation-sha256')!,
-		stage: values.get('--stage')!,
+		workloadId: values.get('--workload')!,
 		gatePath: values.get('--gate')!,
 		gateCanonicalSha256: values.get('--gate-sha256')!,
 		runId: values.get('--run-id')!

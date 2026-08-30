@@ -21,8 +21,8 @@ Each run owns a new directory and may never replace an earlier run:
 ```text
 assets/enemies/experiments/affinity-workflow-v1/wave-runs/<run-id>/
 ├── preflight.json
-├── events/
-│   └── <event-id>.json
+├── events-v3/
+│   └── <sequence>-<event-id>.json
 └── report.json
 ```
 
@@ -30,16 +30,15 @@ Preflight, event, and report files use exclusive creation. Target candidate and 
 also checked for collisions before dispatch. Use a new run ID and versioned target outputs for
 every measurement; never reuse completed targets.
 
-The reserved exact-concurrency allocation is
-`assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json`.
+The current reserved exact-concurrency allocation is
+`assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v2.json`.
 It is a strictly validated planning artifact with `executable: false`; it cannot be passed to
 `preflight`. It reserves unique 2/4/6/8/12/16 coordinates, records every prerequisite gate, and
 includes the 14 additional v4/v5 sentinels needed after the two separate breadth canaries consume
 two base targets. Validate it without activating manifests or making image calls:
 
 ```bash
-pnpm exec tsx tools/affinity-wave-scheduler.ts validate-allocation \
-  --allocation assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json
+pnpm check:affinity-wave-allocation-v2
 ```
 
 The 14 future sentinel manifests are derived from passed final-controlled sources and accepted
@@ -60,20 +59,20 @@ promotion still gates Load-12 dispatch, and eligible Load-12 promotion still gat
 
 ## Wave plan
 
-Do not hand-author a production plan. Materialize the exact stage from the reviewed allocation,
+Do not hand-author a production plan. Materialize the exact named workload from the reviewed allocation,
 its current dispatch gate, and the current target and assignment manifests:
 
 ```bash
 pnpm materialize:affinity-wave-plan -- \
-  --allocation assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json \
-  --allocation-sha256 9ca2f78071ba39904e5d7194e9d52a8d6966c6dc6e3dc5f95d98b0dab05a4fa9 \
-  --stage <canary|pilot|controlled|breadth|load|scale> \
+  --allocation assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v2.json \
+  --allocation-sha256 88e2525fb10c1cc6f7c8749d461cf3730e0c5d904b2514d500b5c4d3638222f1 \
+  --workload <final-canary|final-pilot|final-controlled-a|final-controlled-b|final-controlled-c|breadth-canary|breadth|load|scale> \
   --gate assets/enemies/experiments/affinity-workflow-v1/review/gates/<gate>.json \
   --gate-sha256 <canonical-json-sha256> \
   --run-id <fresh-run-id>
 ```
 
-The guarded command verifies the reviewed allocation path and hash, exact stage job set, current
+The guarded command verifies the reviewed allocation path and hash, exact workload job set, current
 gate and every gate evidence binding, current target and assignment manifests, and a valid
 activation receipt for any future-sentinel jobs. It refuses an existing run directory and writes
 the v2 plan exclusively to
@@ -218,6 +217,14 @@ artifact was absent, invalid, stale, or authorized a different stage. Resolve th
 create a new gate, plan, and run ID; do not mutate the blocked evidence.
 
 ## Central dispatch loop
+
+Status: the legacy event-v2 loop below is retained only as historical behavior and must not be used
+for a new concurrency measurement. Its `job-dispatched` event conflates claiming a target with an
+admitted worker start. The event-v3 state machine and safe append recorder are implemented and use
+`job-claimed`, then `worker-started`, then one terminal outcome. Only `worker-started` contributes
+to peak or effective concurrency. Wiring v3 into `next`, the operator CLI, report v4, and completion
+eligibility is required before the first live workload; until then, materialization may prepare a
+plan but live dispatch remains closed.
 
 The orchestrator records one `wave-started` event, then asks for the next bounded launch set:
 

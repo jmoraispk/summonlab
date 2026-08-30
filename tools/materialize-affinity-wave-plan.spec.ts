@@ -6,21 +6,27 @@ import { ImageProductionTargetSchema } from '../packages/contracts/src/index.js'
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+	CONCURRENCY_SENTINEL_ACTIVATION_RECEIPT_PATH,
+	type ConcurrencySentinelActivationReceipt
+} from './activate-concurrency-sentinels.js';
+
+import {
 	canonicalJsonSha256,
 	preflightWave,
 	readWavePlan,
-	type AffinityWaveAllocationSpec,
 	type AffinityWaveDispatchGate
 } from './affinity-wave-scheduler-lib.js';
+import {
+	AFFINITY_WAVE_ALLOCATION_V2_PATH,
+	canonicalJsonSha256V2,
+	type AffinityWaveAllocationV2,
+	type AffinityWaveWorkloadIdV2
+} from './affinity-wave-allocation-v2.js';
 import {
 	buildCurrentAffinityWavePlan,
 	materializeAffinityWavePlan,
 	parseMaterializeAffinityWavePlanArgs
 } from './materialize-affinity-wave-plan.js';
-import {
-	CONCURRENCY_SENTINEL_ALLOCATION_PATH,
-	EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256
-} from './concurrency-sentinel-readiness.js';
 import { createAffinityWorkflowExportBundle } from './image-production-lib.js';
 
 const roots: string[] = [];
@@ -43,10 +49,10 @@ async function freshWorkspace() {
 	const root = await mkdtemp(path.join(tmpdir(), 'summonlab-wave-plan-materializer-'));
 	roots.push(root);
 	const allocation = JSON.parse(
-		await readFile(path.resolve(CONCURRENCY_SENTINEL_ALLOCATION_PATH), 'utf8')
-	) as AffinityWaveAllocationSpec;
-	await writeJson(root, CONCURRENCY_SENTINEL_ALLOCATION_PATH, allocation);
-	return { root, allocation };
+		await readFile(path.resolve(AFFINITY_WAVE_ALLOCATION_V2_PATH), 'utf8')
+	) as AffinityWaveAllocationV2;
+	await writeJson(root, AFFINITY_WAVE_ALLOCATION_V2_PATH, allocation);
+	return { root, allocation, allocationHash: canonicalJsonSha256V2(allocation) };
 }
 
 function sourceTarget(speciesId: string, affinity: string) {
@@ -57,13 +63,13 @@ function sourceTarget(speciesId: string, affinity: string) {
 	return target;
 }
 
-async function writeStageManifests(
+async function writeWorkloadManifests(
 	root: string,
-	allocation: AffinityWaveAllocationSpec,
-	stage: AffinityWaveAllocationSpec['stages'][number]['stage']
+	allocation: AffinityWaveAllocationV2,
+	workloadId: AffinityWaveWorkloadIdV2
 ) {
-	const stageAllocation = allocation.stages.find((entry) => entry.stage === stage)!;
-	for (const job of stageAllocation.jobs) {
+	const workload = allocation.workloads.find((entry) => entry.workloadId === workloadId)!;
+	for (const job of workload.jobs) {
 		const source = sourceTarget(job.speciesId, job.affinity);
 		const target = ImageProductionTargetSchema.parse({
 			...source,
@@ -98,7 +104,10 @@ async function writeStageManifests(
 	}
 }
 
-async function writeCanaryGate(root: string) {
+async function writeCanaryGate(
+	root: string,
+	profile: 'final-canary' | 'breadth-canary' = 'final-canary'
+) {
 	const evidence = { reviewed: true };
 	await writeJson(root, evidencePath, evidence);
 	const gate: AffinityWaveDispatchGate = {
@@ -110,7 +119,7 @@ async function writeCanaryGate(root: string) {
 		qualityGateSatisfied: true,
 		humanGateSatisfied: true,
 		prerequisiteRunIds: [],
-		derivation: { profile: 'final-canary' },
+		derivation: { profile },
 		promotionEvidence: null,
 		evidenceBindings: [{ path: evidencePath, canonicalSha256: canonicalJsonSha256(evidence) }]
 	};
@@ -118,12 +127,18 @@ async function writeCanaryGate(root: string) {
 	return gate;
 }
 
-function options(root: string, gate: AffinityWaveDispatchGate, runId = 'materialized-canary-01') {
+function options(
+	root: string,
+	allocationHash: string,
+	gate: AffinityWaveDispatchGate,
+	runId = 'materialized-canary-01',
+	workloadId: AffinityWaveWorkloadIdV2 = 'final-canary'
+) {
 	return {
 		workspaceRoot: root,
-		allocationPath: CONCURRENCY_SENTINEL_ALLOCATION_PATH,
-		allocationCanonicalSha256: EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256,
-		stage: 'canary',
+		allocationPath: AFFINITY_WAVE_ALLOCATION_V2_PATH,
+		allocationCanonicalSha256: allocationHash,
+		workloadId,
 		gatePath,
 		gateCanonicalSha256: canonicalJsonSha256(gate),
 		runId
@@ -135,11 +150,11 @@ describe('allocation-bound affinity wave-plan materialization', () => {
 		const parsed = parseMaterializeAffinityWavePlanArgs([
 			'--',
 			'--allocation',
-			CONCURRENCY_SENTINEL_ALLOCATION_PATH,
+			AFFINITY_WAVE_ALLOCATION_V2_PATH,
 			'--allocation-sha256',
-			EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256,
-			'--stage',
-			'canary',
+			'a'.repeat(64),
+			'--workload',
+			'final-canary',
 			'--gate',
 			gatePath,
 			'--gate-sha256',
@@ -147,44 +162,79 @@ describe('allocation-bound affinity wave-plan materialization', () => {
 			'--run-id',
 			'materialized-canary-01'
 		]);
-		expect(parsed.stage).toBe('canary');
+		expect(parsed.workloadId).toBe('final-canary');
+		expect(() => parseMaterializeAffinityWavePlanArgs(['--stage', 'canary'])).toThrow(
+			'Unknown argument'
+		);
 		expect(() => parseMaterializeAffinityWavePlanArgs(['--wat'])).toThrow('Unknown argument');
 		expect(() =>
 			parseMaterializeAffinityWavePlanArgs([
 				'--allocation',
-				CONCURRENCY_SENTINEL_ALLOCATION_PATH,
+				AFFINITY_WAVE_ALLOCATION_V2_PATH,
 				'--allocation',
-				CONCURRENCY_SENTINEL_ALLOCATION_PATH
+				AFFINITY_WAVE_ALLOCATION_V2_PATH
 			])
 		).toThrow('exactly once');
 	});
 
-	it('materializes the exact reviewed stage with immutable allocation, gate, and manifest hashes', async () => {
-		const { root, allocation } = await freshWorkspace();
-		await writeStageManifests(root, allocation, 'canary');
+	it('materializes the exact reviewed workload with immutable allocation, gate, and manifest hashes', async () => {
+		const { root, allocation, allocationHash } = await freshWorkspace();
+		await writeWorkloadManifests(root, allocation, 'final-canary');
 		const gate = await writeCanaryGate(root);
-		const result = await materializeAffinityWavePlan(options(root, gate));
+		const result = await materializeAffinityWavePlan(options(root, allocationHash, gate));
 		expect(result.outputPath).toBe(
 			'assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/materialized/materialized-canary-01.json'
 		);
 		expect(result.plan.jobs.map((job) => job.allocationJobKey)).toEqual(
-			allocation.stages.find(({ stage }) => stage === 'canary')!.jobs.map(({ key }) => key)
+			allocation.workloads
+				.find(({ workloadId }) => workloadId === 'final-canary')!
+				.jobs.map(({ key }) => key)
 		);
+		expect(result.plan.workloadId).toBe('final-canary');
 		expect(result.plan.jobs.every((job) => /^[a-f0-9]{64}$/u.test(job.targetCanonicalSha256))).toBe(
 			true
 		);
 		expect(result.plan.concurrencySentinelActivationReceipt).toBeNull();
-		await expect(materializeAffinityWavePlan(options(root, gate))).rejects.toThrow(
+		await expect(materializeAffinityWavePlan(options(root, allocationHash, gate))).rejects.toThrow(
 			'Wave plan already exists'
 		);
 	});
 
+	it('selects a workload identity rather than an ambiguous canary stage and preserves job order', async () => {
+		const { root, allocation, allocationHash } = await freshWorkspace();
+		await writeWorkloadManifests(root, allocation, 'breadth-canary');
+		const finalGate = await writeCanaryGate(root, 'final-canary');
+		await expect(
+			buildCurrentAffinityWavePlan(
+				options(
+					root,
+					allocationHash,
+					finalGate,
+					'materialized-breadth-canary-wrong-gate',
+					'breadth-canary'
+				)
+			)
+		).rejects.toThrow('does not authorize workload breadth-canary');
+
+		const breadthGate = await writeCanaryGate(root, 'breadth-canary');
+		const plan = await buildCurrentAffinityWavePlan(
+			options(root, allocationHash, breadthGate, 'materialized-breadth-canary-01', 'breadth-canary')
+		);
+		const workload = allocation.workloads.find(
+			(candidate) => candidate.workloadId === 'breadth-canary'
+		)!;
+		expect(plan).toMatchObject({ workloadId: 'breadth-canary', stage: 'canary' });
+		expect(plan.jobs.map((job) => job.allocationJobKey)).toEqual(
+			workload.jobs.map((job) => job.key)
+		);
+	});
+
 	it('feeds the scheduler a native allocation-bound v2 preflight and rejects plan drift', async () => {
-		const { root, allocation } = await freshWorkspace();
-		await writeStageManifests(root, allocation, 'canary');
+		const { root, allocation, allocationHash } = await freshWorkspace();
+		await writeWorkloadManifests(root, allocation, 'final-canary');
 		const gate = await writeCanaryGate(root);
 		const materialized = await materializeAffinityWavePlan(
-			options(root, gate, 'materialized-canary-native-v2')
+			options(root, allocationHash, gate, 'materialized-canary-native-v2')
 		);
 		const boundPlan = await readWavePlan(root, materialized.outputPath);
 		const preflight = await preflightWave(root, boundPlan, 3, '2026-08-29T20:05:00.000Z');
@@ -196,8 +246,8 @@ describe('allocation-bound affinity wave-plan materialization', () => {
 				canonicalSha256: materialized.canonicalSha256
 			},
 			sourceAllocation: {
-				path: CONCURRENCY_SENTINEL_ALLOCATION_PATH,
-				canonicalSha256: EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256
+				path: AFFINITY_WAVE_ALLOCATION_V2_PATH,
+				canonicalSha256: allocationHash
 			}
 		});
 		expect(preflight.jobs.map((job) => job.targetCanonicalSha256)).toEqual(
@@ -216,33 +266,34 @@ describe('allocation-bound affinity wave-plan materialization', () => {
 	});
 
 	it('fails closed on allocation, gate, evidence, manifest, and run-directory drift', async () => {
-		const { root, allocation } = await freshWorkspace();
-		await writeStageManifests(root, allocation, 'canary');
+		const { root, allocation, allocationHash } = await freshWorkspace();
+		await writeWorkloadManifests(root, allocation, 'final-canary');
 		const gate = await writeCanaryGate(root);
 		await expect(
 			buildCurrentAffinityWavePlan({
-				...options(root, gate),
+				...options(root, allocationHash, gate),
 				allocationCanonicalSha256: 'a'.repeat(64)
 			})
-		).rejects.toThrow('reviewed allocation hash');
+		).rejects.toThrow('reviewed allocation v2 hash');
 		await expect(
 			buildCurrentAffinityWavePlan({
-				...options(root, gate),
+				...options(root, allocationHash, gate),
 				gateCanonicalSha256: 'b'.repeat(64)
 			})
 		).rejects.toThrow('Dispatch gate canonical hash mismatch');
 		await writeJson(root, evidencePath, { reviewed: false });
-		await expect(buildCurrentAffinityWavePlan(options(root, gate))).rejects.toThrow(
+		await expect(buildCurrentAffinityWavePlan(options(root, allocationHash, gate))).rejects.toThrow(
 			'Dispatch gate evidence'
 		);
 		await writeJson(root, evidencePath, { reviewed: true });
-		const firstJob = allocation.stages.find(({ stage }) => stage === 'canary')!.jobs[0]!;
+		const firstJob = allocation.workloads.find(({ workloadId }) => workloadId === 'final-canary')!
+			.jobs[0]!;
 		const assignment = JSON.parse(
 			await readFile(path.resolve(root, firstJob.assignmentPath), 'utf8')
 		) as { dryRun: boolean };
 		assignment.dryRun = true;
 		await writeJson(root, firstJob.assignmentPath, assignment);
-		await expect(buildCurrentAffinityWavePlan(options(root, gate))).rejects.toThrow(
+		await expect(buildCurrentAffinityWavePlan(options(root, allocationHash, gate))).rejects.toThrow(
 			'not executable'
 		);
 		assignment.dryRun = false;
@@ -255,14 +306,14 @@ describe('allocation-bound affinity wave-plan materialization', () => {
 			),
 			{ recursive: true }
 		);
-		await expect(materializeAffinityWavePlan(options(root, gate, collisionRunId))).rejects.toThrow(
-			'Run ID is not fresh'
-		);
+		await expect(
+			materializeAffinityWavePlan(options(root, allocationHash, gate, collisionRunId))
+		).rejects.toThrow('Run ID is not fresh');
 	});
 
-	it('refuses a future-sentinel stage without a valid current activation receipt', async () => {
-		const { root, allocation } = await freshWorkspace();
-		await writeStageManifests(root, allocation, 'scale');
+	it('refuses a future-sentinel workload without a valid current activation receipt', async () => {
+		const { root, allocation, allocationHash } = await freshWorkspace();
+		await writeWorkloadManifests(root, allocation, 'scale');
 		const evidence = { reviewed: true };
 		await writeJson(root, evidencePath, evidence);
 		const gate: AffinityWaveDispatchGate = {
@@ -310,11 +361,75 @@ describe('allocation-bound affinity wave-plan materialization', () => {
 		await writeJson(root, gatePath, gate);
 		await expect(
 			buildCurrentAffinityWavePlan({
-				...options(root, gate, 'materialized-scale-01'),
-				stage: 'scale',
+				...options(root, allocationHash, gate, 'materialized-scale-01', 'scale'),
 				verifySentinelReceipt: async () => ({ valid: false, issues: ['missing receipt'] })
 			})
 		).rejects.toThrow('valid current activation receipt');
+
+		const sentinelJobs = allocation.workloads
+			.find((workload) => workload.workloadId === 'scale')!
+			.jobs.filter((job) => job.manifestState === 'future-sentinel');
+		const artifacts = await Promise.all(
+			sentinelJobs.flatMap((job) =>
+				([job.targetPath, job.assignmentPath] as const).map(async (repositoryPath, index) => ({
+					kind: index === 0 ? ('target' as const) : ('assignment' as const),
+					livePath: repositoryPath,
+					canonicalSha256: canonicalJsonSha256V2(
+						JSON.parse(await readFile(path.resolve(root, repositoryPath), 'utf8'))
+					),
+					byteSha256: 'd'.repeat(64)
+				}))
+			)
+		);
+		const receipt = {
+			schemaVersion: 'affinity-concurrency-sentinel-activation-receipt-v1',
+			experimentId: 'affinity-workflow-v1',
+			activationId: 'concurrency-sentinels-0123456789abcdef',
+			status: 'complete',
+			completedAt: '2026-08-29T20:00:00.000Z',
+			actor: 'materializer-test',
+			bindings: {
+				allocationCanonicalSha256: allocationHash,
+				finalControlledIntegrationReceiptCanonicalSha256: 'a'.repeat(64),
+				finalControlledEvaluationReceiptCanonicalSha256: 'b'.repeat(64),
+				acceptedRulesCanonicalSha256: 'c'.repeat(64),
+				repositorySkillTreeSha256: 'd'.repeat(64),
+				installedSkillTreeSha256: 'd'.repeat(64),
+				sourceSetCanonicalSha256: 'e'.repeat(64),
+				sentinelBundleCanonicalSha256: 'f'.repeat(64),
+				assignedAt: '2026-08-29T20:00:00.000Z'
+			},
+			targetCount: 14,
+			assignmentCount: 14,
+			artifactCount: 28,
+			artifactSetSha256: '0'.repeat(64),
+			artifacts
+		} satisfies ConcurrencySentinelActivationReceipt;
+		await expect(
+			buildCurrentAffinityWavePlan({
+				...options(root, allocationHash, gate, 'materialized-scale-stale-receipt', 'scale'),
+				verifySentinelReceipt: async () => ({ valid: true, receipt, issues: [] })
+			})
+		).rejects.toThrow('receipt is stale against the reviewed allocation');
+
+		const sourceV1Hash = allocation.sourceAllocationV1.canonicalSha256;
+		expect(sourceV1Hash).not.toBe(allocationHash);
+		const currentReceipt = {
+			...receipt,
+			bindings: { ...receipt.bindings, allocationCanonicalSha256: sourceV1Hash }
+		};
+		await writeJson(root, CONCURRENCY_SENTINEL_ACTIVATION_RECEIPT_PATH, currentReceipt);
+		const plan = await buildCurrentAffinityWavePlan({
+			...options(root, allocationHash, gate, 'materialized-scale-current-receipt', 'scale'),
+			verifySentinelReceipt: async () => ({ valid: true, receipt: currentReceipt, issues: [] })
+		});
+		expect(plan.allocation).toMatchObject({
+			artifactPath: AFFINITY_WAVE_ALLOCATION_V2_PATH,
+			canonicalSha256: allocationHash
+		});
+		expect(plan.concurrencySentinelActivationReceipt?.artifactPath).toBe(
+			CONCURRENCY_SENTINEL_ACTIVATION_RECEIPT_PATH
+		);
 		expect(
 			await stat(
 				path.resolve(
