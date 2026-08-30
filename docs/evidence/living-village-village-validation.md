@@ -25,14 +25,16 @@ compact find/focus ribbon. No separate roster route was created.
   owner review.
 - The optional Residents finder and camera controls share one compact command toolbar on desktop
   and collapse into two shallow rows on phone.
-- Existing Hearth environment with named Gate, Court, and Tower hotspots. Each label is centered
-  just inside the top of its clickable region.
+- Existing Hearth environment with named Gate, Court, and Tower hotspots. Training Grounds and
+  Tower labels straddle the middle of their top borders; the Gate label straddles the middle of its
+  bottom border to preserve the gate artwork.
 - Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
   two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
   remains available at fitted zoom so the camera never feels inert.
 - Six fixed in-world hero figures using alpha-background derivatives of their existing approved
   identity anchors, enlarged without card frames, backplates, blend tricks, or redundant
-  world-space name labels.
+  world-space name labels. Their screen presence grows progressively with camera zoom, capped at
+  1.75×, so the figures do not appear to shrink against the enlarged environment.
 - Available heroes carry a restrained light silhouette; assigning Court training or a Tower hunt
   removes that light immediately so the world itself communicates who is busy.
 - The Summoning Gate is a real link to the repository's existing `/forge` Summoning Forge rather
@@ -65,8 +67,9 @@ pnpm --filter @summonlab/web exec playwright test \
 ```
 
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
-1536×1024 Hearth asset, three top-centered hotspot labels, six true-alpha in-world figures, absence
-of the destination panel/resident-count/camera-help annotations, in-world hero selection, ribbon
+1536×1024 Hearth asset, top-border Court/Tower labels, bottom-border Gate label, six true-alpha
+in-world figures with bounded progressive zoom scaling, absence of the destination
+panel/resident-count/camera-help annotations, in-world hero selection, ribbon
 focus, anchored popover, details drawer, availability light removal after Court assignment, Court
 training and species hunt popover dismissal, pointer pan beginning inside a facility region at
 fitted zoom, repeated two-axis pan at maximum zoom, disabled native image/link dragging, click
@@ -141,6 +144,12 @@ has been completed. Both finalized assignment paths now dismiss the anchored pop
 the destination selection, activity state, movement placeholder, and busy silhouette continue to
 confirm the accepted order in the Village. Statistics and experience changes remain a future data
 integration rather than being simulated by this route-local fixture.
+
+The latest visual review placed the Training Grounds and Tower labels directly across the middle of
+their regions' top borders and moved the Gate label to the middle of its bottom border. It also
+rejected fixed-pixel hero sizing during camera zoom because the residents appeared to shrink
+against the enlarged map. Hero figures now grow progressively through the zoom range, with a 1.75×
+cap that preserves readable residents without allowing them to dominate the world.
 
 ## Useful review actions
 

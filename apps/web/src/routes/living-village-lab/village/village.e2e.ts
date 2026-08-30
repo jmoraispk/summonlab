@@ -65,7 +65,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
 	const towerHotspot = page.getByRole('button', { name: 'Inspect Tower Threshold' });
-	for (const hotspot of [gateHotspot, courtHotspot, towerHotspot]) {
+	for (const hotspot of [courtHotspot, towerHotspot]) {
 		const hotspotBounds = await hotspot.boundingBox();
 		const labelBounds = await hotspot.locator('span').boundingBox();
 		expect(
@@ -73,9 +73,20 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 				labelBounds!.x + labelBounds!.width / 2 - (hotspotBounds!.x + hotspotBounds!.width / 2)
 			)
 		).toBeLessThan(2);
-		expect(labelBounds!.y).toBeGreaterThanOrEqual(hotspotBounds!.y);
-		expect(labelBounds!.y - hotspotBounds!.y).toBeLessThan(18);
+		expect(Math.abs(labelBounds!.y + labelBounds!.height / 2 - hotspotBounds!.y)).toBeLessThan(2);
 	}
+	const gateBounds = await gateHotspot.boundingBox();
+	const gateLabelBounds = await gateHotspot.locator('span').boundingBox();
+	expect(
+		Math.abs(
+			gateLabelBounds!.x + gateLabelBounds!.width / 2 - (gateBounds!.x + gateBounds!.width / 2)
+		)
+	).toBeLessThan(2);
+	expect(
+		Math.abs(
+			gateLabelBounds!.y + gateLabelBounds!.height / 2 - (gateBounds!.y + gateBounds!.height)
+		)
+	).toBeLessThan(2);
 	const courtBounds = await courtHotspot.boundingBox();
 	await page.mouse.move(
 		courtBounds!.x + courtBounds!.width * 0.5,
@@ -138,6 +149,9 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		await page.getByRole('button', { name: 'Zoom in' }).click();
 	}
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '300');
+	const zoomedHeroBounds = await firstHeroMarker.boundingBox();
+	expect(zoomedHeroBounds!.height).toBeGreaterThan(firstHeroBounds!.height * 1.5);
+	expect(zoomedHeroBounds!.height).toBeLessThan(firstHeroBounds!.height * 2);
 
 	const beforeDragX = await viewport.getAttribute('data-offset-x');
 	const beforeDragY = await viewport.getAttribute('data-offset-y');

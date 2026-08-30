@@ -64,6 +64,7 @@
 		)
 	);
 	const sceneScale = $derived(fitScale * zoom);
+	const heroCounterScale = $derived(Math.min(1.75, Math.pow(zoom, 0.55)) / sceneScale);
 	const baseX = $derived((viewportWidth - WORLD_WIDTH * sceneScale) / 2);
 	const baseY = $derived((viewportHeight - WORLD_HEIGHT * sceneScale) / 2);
 	const selectedHero = $derived(
@@ -399,7 +400,7 @@
 		>
 			<div
 				class="village-world"
-				style={`transform:translate(${baseX + offsetX}px, ${baseY + offsetY}px) scale(${sceneScale});--scene-scale:${sceneScale}`}
+				style={`transform:translate(${baseX + offsetX}px, ${baseY + offsetY}px) scale(${sceneScale});--scene-scale:${sceneScale};--hero-counter-scale:${heroCounterScale}`}
 			>
 				<img
 					class="environment"
@@ -767,17 +768,23 @@
 		position: absolute;
 		z-index: 30;
 		left: 50%;
-		top: 0.75rem;
+		top: 0;
 		display: grid;
 		min-width: 7rem;
 		padding: 0.48rem 0.58rem;
 		border: 1px solid rgba(239, 221, 187, 0.28);
 		background: rgba(5, 9, 13, 0.82);
 		box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.34);
-		transform: translateX(-50%) scale(calc(1 / var(--scene-scale)));
-		transform-origin: center top;
+		transform: translate(-50%, -50%) scale(calc(1 / var(--scene-scale)));
+		transform-origin: center;
 		backdrop-filter: blur(8px);
 		pointer-events: none;
+	}
+
+	.facility-hotspot[data-facility='gate'] > span {
+		top: auto;
+		bottom: 0;
+		transform: translate(-50%, 50%) scale(calc(1 / var(--scene-scale)));
 	}
 
 	.facility-hotspot i {
@@ -827,7 +834,7 @@
 		padding: 0;
 		border: 0;
 		background: transparent;
-		transform: translate(-50%, -91%) scale(calc(1 / var(--scene-scale)));
+		transform: translate(-50%, -91%) scale(var(--hero-counter-scale));
 		transform-origin: center bottom;
 		cursor: pointer;
 	}
