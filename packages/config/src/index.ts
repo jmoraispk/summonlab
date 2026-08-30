@@ -1,6 +1,15 @@
 import { ClockSpeedSchema, PolicyModeSchema } from '@summonlab/contracts';
 import { z } from 'zod';
 
+const AffinityReviewActorSchema = z
+	.string()
+	.trim()
+	.min(1)
+	.max(80)
+	.refine((value) => !/\p{C}/u.test(value), {
+		message: 'Affinity review actor must contain only printable characters'
+	});
+
 const EnvironmentSchema = z
 	.object({
 		NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -30,6 +39,7 @@ const EnvironmentSchema = z
 		OPENAI_IMAGE_SIZE: z.enum(['1024x1024', '1024x1536', '1536x1024']).default('1024x1536'),
 		OPENAI_IMAGE_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(180_000).default(120_000),
 		ENABLE_DEV_ROUTES: z.enum(['true', 'false']).optional(),
+		AFFINITY_REVIEW_ACTOR: AffinityReviewActorSchema.optional(),
 		SUMMONLAB_COMMIT_SHA: z.string().min(1).default('local')
 	})
 	.transform((value) => ({
@@ -60,6 +70,7 @@ const EnvironmentSchema = z
 			value.ENABLE_DEV_ROUTES === undefined
 				? value.NODE_ENV !== 'production'
 				: value.ENABLE_DEV_ROUTES === 'true',
+		affinityReviewActor: value.AFFINITY_REVIEW_ACTOR ?? null,
 		commit: value.SUMMONLAB_COMMIT_SHA
 	}));
 

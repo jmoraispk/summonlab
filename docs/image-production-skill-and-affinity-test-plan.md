@@ -72,6 +72,19 @@ until a human records a review decision.
   PostgreSQL read-only transaction. After the separately invoked additive migrations, the live
   probe reports `ready` with all 17 migrations and no missing schema objects; the doctor itself
   neither applies migrations nor exposes connection credentials.
+- 2026-08-29: Added a DB-authentic, zero-write readiness boundary for the final-controlled design-
+  risk review. It requires the immutable 24-result baseline, exact `21 candidate / 3 revise`
+  inventory, current plan and catalog hashes, all 21 latest blind records for one explicit reviewer,
+  and a checked-in blind-review export that is canonically identical to that database projection.
+  Stale, wrong-reviewer, API-unverified, and revise substitutions fail closed; database errors are
+  redacted. The live report remains correctly blocked at zero reviews.
+- 2026-08-29: Added the strict v2 resolution-ledger contract for the later exporter and activation
+  verifier. It embeds the exact append-only database decision and its canonical hash, binds all 16
+  ordered resolutions to plan identities and source evidence, permits staging only for human-
+  selected replacements, and confines each stage to its coordinate-owned collision-safe path. No
+  ledger or staged target was created. An optional normalized `AFFINITY_REVIEW_ACTOR` configuration
+  value is prepared for the forthcoming server-owned Forge integration, but is not yet treated as
+  authentication or used to authorize a decision.
 
 The plan is now backed by a runnable implementation rather than being a design-only document:
 
@@ -165,6 +178,7 @@ pnpm dev:app
 
 # Baseline human review readiness and guarded final activation.
 pnpm report:baseline-blind-review -- --reviewer <reviewer>
+pnpm report:final-controlled-design-risk-readiness -- --reviewer <reviewer>
 pnpm report:affinity-final-controlled-activation
 pnpm activate:affinity-final-controlled-rerun -- --acknowledge-live-manifest-activation
 

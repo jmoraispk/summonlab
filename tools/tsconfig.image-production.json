@@ -28,6 +28,8 @@
 		"prepare-final-controlled-rerun.spec.ts",
 		"report-final-controlled-activation-readiness.ts",
 		"report-final-controlled-activation-readiness.spec.ts",
+		"final-controlled-design-risk-readiness.ts",
+		"final-controlled-design-risk-readiness.spec.ts",
 		"final-controlled-activation-evidence.ts",
 		"activate-final-controlled-rerun.ts",
 		"activate-final-controlled-rerun.spec.ts",

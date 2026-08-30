@@ -16,6 +16,7 @@ describe('configuration', () => {
 		expect(config.decisionJobMaxReplans).toBe(3);
 		expect(config.databaseUrl).toContain('54329/summonlab');
 		expect(config.devRoutesEnabled).toBe(true);
+		expect(config.affinityReviewActor).toBeNull();
 		expect(config.imageGenerationEnabled).toBe(false);
 		expect(config.openAiApiKey).toBeUndefined();
 		expect(config.imageModel).toBe('gpt-image-2-2026-04-21');
@@ -44,6 +45,19 @@ describe('configuration', () => {
 		expect(config.imageQuality).toBe('medium');
 		expect(config.imageSize).toBe('1536x1024');
 		expect(config.imageTimeoutMs).toBe(90_000);
+	});
+
+	it('normalizes an optional server-owned affinity review actor', () => {
+		expect(
+			parseConfig({ AFFINITY_REVIEW_ACTOR: '  visual-director \u00a0' }).affinityReviewActor
+		).toBe('visual-director');
+	});
+
+	it('rejects blank, oversized, and non-printable affinity review actors', () => {
+		expect(() => parseConfig({ AFFINITY_REVIEW_ACTOR: '   ' })).toThrow();
+		expect(() => parseConfig({ AFFINITY_REVIEW_ACTOR: 'a'.repeat(81) })).toThrow();
+		expect(() => parseConfig({ AFFINITY_REVIEW_ACTOR: 'visual\u0007director' })).toThrow();
+		expect(() => parseConfig({ AFFINITY_REVIEW_ACTOR: 'visual\u200bdirector' })).toThrow();
 	});
 
 	it('keeps development inspectors off in production unless explicitly enabled', () => {
