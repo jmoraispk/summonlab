@@ -14,24 +14,40 @@ import {
 	type ImageProductionOutput,
 	type ImageProductionTarget
 } from '../packages/contracts/src/index.js';
+import { getConfig } from '../packages/config/src/index.js';
 import { z } from 'zod';
 
 import { loadAffinityReviewData } from '../apps/web/src/routes/forge/enemies/affinity-workflow/affinity-review.js';
 import {
 	AFFINITY_EXPERIMENT_ROOT,
-	ImageProductionBlindReviewCollectionSchema,
 	createAffinityWorkflowExportBundle,
 	sha256Json
 } from './image-production-lib.js';
 import {
+	loadRoundBlindReviews,
+	loadVerifiedAffinityReviewRound
+} from './affinity-round-postgeneration-lib.js';
+import { affinityRoundRoot } from './affinity-review-round-lib.js';
+import { exportAffinityRoundContactSheet } from './export-affinity-round-contact-sheet.js';
+import {
+	deriveAffinityRoundFinalEvaluation,
+	AffinityRoundFinalEvaluationReceiptSchema,
+	AffinityRoundFinalEvaluationSchema,
+	type RoundFinalizationDerivation
+} from './finalize-affinity-round-evaluation.js';
+import {
 	FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
 	verifyFinalControlledActivationReceipt
-} from './activate-final-controlled-rerun.js';
+} from './final-controlled-activation-evidence.js';
+import { ACCEPTED_LATER_PACK_RULES_PATH } from './report-later-pack-visual-rules-readiness.js';
 import { buildAffinityGateReadiness } from './report-affinity-gate-readiness.js';
 import {
 	AffinityWavePreflightSchema,
 	AffinityWaveReportSchema,
+	buildWaveReport,
 	canonicalJsonSha256,
+	dispatchGateEvidenceAuthorizes,
+	readWaveEvents,
 	type AffinityWavePreflight,
 	type AffinityWaveReport
 } from './affinity-wave-scheduler-lib.js';
@@ -41,6 +57,7 @@ import {
 	type ValidatedImageProductionExecution
 } from './sync-affinity-review.js';
 import { validateAffinityWorkflowWorkspace } from './validate-affinity-workflow.js';
+import { verifyAcceptedLaterPackRulesForCompletion } from './verify-accepted-later-pack-rules-completion.js';
 import sharp from 'sharp';
 
 const REQUIRED_CONCURRENCY_LEVELS = [2, 4, 6, 8, 12] as const;
@@ -62,12 +79,12 @@ const REQUIRED_FORGE_FILES = [
 	'apps/web/src/routes/forge/enemies/affinity-workflow/affinity-review.ts',
 	'apps/web/src/routes/forge/enemies/affinity-workflow/affinity-review.spec.ts',
 	'apps/web/src/routes/forge/enemies/affinity-workflow.e2e.ts',
-	'apps/web/src/routes/api/dev/affinity-reviews/+server.ts'
+	'apps/web/src/routes/api/dev/affinity-reviews/+server.ts',
+	'apps/web/src/lib/server/later-pack-rule-review.ts',
+	'apps/web/src/lib/server/later-pack-rule-review.spec.ts',
+	'apps/web/src/routes/api/dev/later-pack-rule-decisions/+server.ts',
+	'apps/web/src/routes/api/dev/later-pack-rule-decisions/server.spec.ts'
 ] as const;
-const BREADTH_CONTACT_SHEET_PATH =
-	`${AFFINITY_EXPERIMENT_ROOT}/review/breadth-contact-sheet.png` as const;
-const ACCEPTED_RULES_PATH =
-	`${AFFINITY_EXPERIMENT_ROOT}/review/accepted-later-pack-visual-rules.json` as const;
 const SCALE_RECOMMENDATION_PATH =
 	`${AFFINITY_EXPERIMENT_ROOT}/review/scale-recommendation.json` as const;
 
@@ -97,87 +114,6 @@ const FinalControlledRerunPlanSchema = z
 			.strict()
 	})
 	.passthrough();
-
-const AcceptedLaterPackRulesSchema = z
-	.object({
-		schemaVersion: z.literal('affinity-accepted-later-pack-visual-rules-v1'),
-		experimentId: z.literal('affinity-workflow-v1'),
-		status: z.literal('accepted'),
-		acceptedBy: z.string().trim().min(1),
-		acceptedAt: z.iso.datetime(),
-		sourceEvaluationCatalogHash: z.string().regex(/^[a-f0-9]{64}$/u),
-		sourceBlindReviewCount: z.number().int().min(24),
-		rules: z.array(z.string().trim().min(1)).min(1)
-	})
-	.strict();
-
-export const ScaleRecommendationSchema = z
-	.object({
-		schemaVersion: z.literal('affinity-scale-recommendation-v2'),
-		experimentId: z.literal('affinity-workflow-v1'),
-		status: z.literal('final'),
-		recommendedSafeConcurrency: z.number().int().min(1).max(16),
-		sourceEffectiveConcurrencyLevels: z.array(z.number().int().min(1).max(16)),
-		sourceRuns: z
-			.array(
-				z
-					.object({
-						runId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
-						effectiveConcurrency: z.number().int().min(1).max(16),
-						preflightPath: z.string().min(1),
-						preflightCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u),
-						reportPath: z.string().min(1),
-						reportCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
-					})
-					.strict()
-			)
-			.min(1),
-		scaleEndpointSource: z.discriminatedUnion('kind', [
-			z
-				.object({
-					kind: z.literal('completed-scale'),
-					runId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
-					reportCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
-				})
-				.strict(),
-			z
-				.object({
-					kind: z.literal('blocked-capacity'),
-					runId: z.string().regex(/^[a-z][a-z0-9-]{1,79}$/u),
-					preflightPath: z.string().min(1),
-					preflightCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
-				})
-				.strict()
-		]),
-		productionStrategy: z.string().trim().min(1),
-		fallbackBehavior: z.string().trim().min(1)
-	})
-	.strict()
-	.superRefine((recommendation, context) => {
-		const declared = [...new Set(recommendation.sourceEffectiveConcurrencyLevels)].sort(
-			(left, right) => left - right
-		);
-		const bound = [
-			...new Set(recommendation.sourceRuns.map((run) => run.effectiveConcurrency))
-		].sort((left, right) => left - right);
-		if (
-			declared.length !== recommendation.sourceEffectiveConcurrencyLevels.length ||
-			JSON.stringify(declared) !== JSON.stringify(recommendation.sourceEffectiveConcurrencyLevels)
-		) {
-			context.addIssue({
-				code: 'custom',
-				path: ['sourceEffectiveConcurrencyLevels'],
-				message: 'Source concurrency levels must be unique and sorted'
-			});
-		}
-		if (JSON.stringify(declared) !== JSON.stringify(bound)) {
-			context.addIssue({
-				code: 'custom',
-				path: ['sourceRuns'],
-				message: 'Every declared concurrency level requires a hash-bound scheduler run'
-			});
-		}
-	});
 
 export interface EligibleSchedulerRun {
 	readonly runId: string;
@@ -517,7 +453,7 @@ export function buildAffinityPlanCompletionReport(
 			laterPackRulesComplete,
 			evidence.acceptedLaterPackRules,
 			[
-				`Provisional prose is insufficient; ${ACCEPTED_RULES_PATH} must contain an explicitly accepted, review-bound rules artifact.`
+				`Provisional prose is insufficient; ${ACCEPTED_LATER_PACK_RULES_PATH} must contain an explicitly accepted, review-bound rules artifact.`
 			],
 			['human', 'implementable']
 		),
@@ -868,14 +804,21 @@ export function validateSchedulerRunEligibility(
 	if (p.runId !== r.runId || p.stage !== r.stage || p.experimentId !== r.experimentId) {
 		reasons.push('run-binding-mismatch');
 	}
+	if (
+		r.sourceEvidence.preflight.path !== `${p.runDirectory}/preflight.json` ||
+		r.sourceEvidence.preflight.canonicalSha256 !== canonicalJsonSha256(p)
+	)
+		reasons.push('report-preflight-source-binding-mismatch');
+	if (r.sourceEvidence.results.length !== r.candidateCount + r.reviseCount)
+		reasons.push('report-result-source-count-mismatch');
 	if (p.status !== 'ready' || !p.exactConcurrencyReady) reasons.push('preflight-not-exact-ready');
 	if (
 		p.dispatchGateSatisfied !== true ||
-		p.dispatchGateEvidence?.status !== 'satisfied' ||
-		p.dispatchGateEvidence.gate?.qualityGateSatisfied !== true ||
-		p.dispatchGateEvidence.gate?.authorizedStage !== p.stage ||
-		p.dispatchGateEvidence.expectedCanonicalSha256 !==
-			p.dispatchGateEvidence.observedCanonicalSha256
+		!dispatchGateEvidenceAuthorizes(p.dispatchGateEvidence) ||
+		p.dispatchGateEvidence?.gate?.qualityGateSatisfied !== true ||
+		p.dispatchGateEvidence?.gate?.authorizedStage !== p.stage ||
+		p.dispatchGateEvidence?.expectedCanonicalSha256 !==
+			p.dispatchGateEvidence?.observedCanonicalSha256
 	) {
 		reasons.push('promotion-gate-not-evidenced');
 	}
@@ -957,7 +900,7 @@ function legacyConcurrencyStageEligible(
 	);
 }
 
-interface SchedulerEvidenceScan {
+export interface SchedulerEvidenceScan {
 	readonly eligibleRuns: readonly EligibleSchedulerRun[];
 	readonly blockedScalePreflights: readonly {
 		readonly runId: string;
@@ -967,7 +910,9 @@ interface SchedulerEvidenceScan {
 	}[];
 }
 
-async function inspectSchedulerEvidence(workspaceRoot: string): Promise<SchedulerEvidenceScan> {
+export async function inspectSchedulerEvidence(
+	workspaceRoot: string
+): Promise<SchedulerEvidenceScan> {
 	const runsRoot = path.resolve(workspaceRoot, AFFINITY_EXPERIMENT_ROOT, 'wave-runs');
 	const entries = await readdir(runsRoot, { withFileTypes: true }).catch(() => []);
 	const basicEligible = new Map<
@@ -990,18 +935,18 @@ async function inspectSchedulerEvidence(workspaceRoot: string): Promise<Schedule
 			preflight.data.exactConcurrencyReady === false &&
 			preflight.data.collisionPaths.length === 0 &&
 			preflight.data.dispatchGateSatisfied === true &&
-			preflight.data.dispatchGateEvidence?.status === 'satisfied' &&
-			preflight.data.dispatchGateEvidence.gate?.authorizedStage === 'scale' &&
-			preflight.data.dispatchGateEvidence.gate.qualityGateSatisfied === true &&
-			preflight.data.dispatchGateEvidence.gate.humanGateSatisfied === true &&
-			preflight.data.dispatchGateEvidence.expectedCanonicalSha256 ===
-				preflight.data.dispatchGateEvidence.observedCanonicalSha256
+			dispatchGateEvidenceAuthorizes(preflight.data.dispatchGateEvidence) &&
+			preflight.data.dispatchGateEvidence?.gate?.authorizedStage === 'scale' &&
+			preflight.data.dispatchGateEvidence?.gate?.qualityGateSatisfied === true &&
+			preflight.data.dispatchGateEvidence?.gate?.humanGateSatisfied === true &&
+			preflight.data.dispatchGateEvidence?.expectedCanonicalSha256 ===
+				preflight.data.dispatchGateEvidence?.observedCanonicalSha256
 		) {
 			blockedScalePreflights.push({
 				runId: preflight.data.runId,
 				preflightPath,
 				preflightCanonicalSha256,
-				prerequisiteRunIds: preflight.data.dispatchGateEvidence.gate.prerequisiteRunIds
+				prerequisiteRunIds: preflight.data.dispatchGateEvidence?.gate?.prerequisiteRunIds ?? []
 			});
 		}
 		const reportAbsolute = path.join(runsRoot, entry.name, 'report.json');
@@ -1009,6 +954,13 @@ async function inspectSchedulerEvidence(workspaceRoot: string): Promise<Schedule
 		const eligibility = validateSchedulerRunEligibility(preflight.data, reportInput);
 		const report = AffinityWaveReportSchema.safeParse(reportInput);
 		if (!eligibility.eligible || !report.success) continue;
+		const rebuiltReport = await readWaveEvents(workspaceRoot, preflight.data)
+			.then((events) =>
+				buildWaveReport(workspaceRoot, preflight.data, events, report.data.generatedAt)
+			)
+			.catch(() => null);
+		if (!rebuiltReport || canonicalJsonSha256(rebuiltReport) !== canonicalJsonSha256(report.data))
+			continue;
 		basicEligible.set(preflight.data.runId, {
 			preflight: preflight.data,
 			run: {
@@ -1066,17 +1018,92 @@ async function inspectSchedulerEvidence(workspaceRoot: string): Promise<Schedule
 	};
 }
 
-async function optionalAcceptedRules(workspaceRoot: string) {
-	const filePath = path.resolve(workspaceRoot, ACCEPTED_RULES_PATH);
-	const artifactPresent = await fileExists(filePath);
-	if (!artifactPresent)
-		return { artifactPresent, acceptedArtifactValid: false, sourceBlindReviewCount: 0 };
-	const parsed = AcceptedLaterPackRulesSchema.safeParse(await readJson(filePath).catch(() => null));
-	return {
-		artifactPresent,
-		acceptedArtifactValid: parsed.success,
-		sourceBlindReviewCount: parsed.success ? parsed.data.sourceBlindReviewCount : 0
+interface VerifiedRoundFinalEvidence {
+	readonly passed: boolean;
+	readonly reviewCount: number;
+	readonly representedSpeciesCount: number;
+	readonly acceptedUnusualAnatomyCount: number;
+	readonly contactSheetValid: boolean;
+}
+
+export function roundFinalEvaluationMatchesCanonicalDerivation(
+	evaluation: z.infer<typeof AffinityRoundFinalEvaluationSchema>,
+	derivation: RoundFinalizationDerivation
+): boolean {
+	return (
+		derivation.eligible &&
+		derivation.evaluation !== null &&
+		sha256Json(evaluation) === sha256Json(derivation.evaluation)
+	);
+}
+
+async function inspectRoundFinalEvidence(
+	workspaceRoot: string,
+	roundId: 'final-controlled-v1' | 'breadth-v1'
+): Promise<VerifiedRoundFinalEvidence> {
+	const empty = {
+		passed: false,
+		reviewCount: 0,
+		representedSpeciesCount: 0,
+		acceptedUnusualAnatomyCount: 0,
+		contactSheetValid: false
 	};
+	try {
+		const root = affinityRoundRoot(roundId);
+		const evaluationPath = `${root}/final-evaluation.json`;
+		const receiptPath = `${root}/final-evaluation-receipt.json`;
+		const [round, reviews, evaluationBytes, receiptInput, derivation] = await Promise.all([
+			loadVerifiedAffinityReviewRound(workspaceRoot, roundId),
+			loadRoundBlindReviews(workspaceRoot, roundId, true),
+			readFile(path.resolve(workspaceRoot, evaluationPath)),
+			readJson(path.resolve(workspaceRoot, receiptPath)),
+			deriveAffinityRoundFinalEvaluation(workspaceRoot, roundId)
+		]);
+		if (!reviews) return empty;
+		const evaluation = AffinityRoundFinalEvaluationSchema.parse(
+			JSON.parse(evaluationBytes.toString('utf8'))
+		);
+		const receipt = AffinityRoundFinalEvaluationReceiptSchema.parse(receiptInput);
+		const evaluationBound =
+			roundFinalEvaluationMatchesCanonicalDerivation(evaluation, derivation) &&
+			evaluation.roundId === roundId &&
+			receipt.roundId === roundId &&
+			receipt.evaluationPath === evaluationPath &&
+			receipt.integrationReceiptCanonicalSha256 === round.integrationReceiptCanonicalSha256 &&
+			evaluation.integrationReceiptCanonicalSha256 === round.integrationReceiptCanonicalSha256 &&
+			receipt.blindReviewCanonicalSha256 === sha256Json(reviews) &&
+			evaluation.blindReviewCanonicalSha256 === sha256Json(reviews) &&
+			receipt.evaluationCanonicalSha256 === sha256Json(evaluation) &&
+			receipt.evaluationByteSha256 === createHash('sha256').update(evaluationBytes).digest('hex');
+
+		let contactSheetValid = false;
+		try {
+			contactSheetValid = (
+				await exportAffinityRoundContactSheet({ workspaceRoot, roundId, mode: 'check' })
+			).inSync;
+		} catch {
+			contactSheetValid = false;
+		}
+		return {
+			passed: evaluationBound,
+			reviewCount: evaluationBound ? evaluation.criteria.reviewCount : 0,
+			representedSpeciesCount: evaluationBound ? evaluation.criteria.representedSpeciesCount : 0,
+			acceptedUnusualAnatomyCount: evaluationBound
+				? evaluation.criteria.acceptedUnusualAnatomyCount
+				: 0,
+			contactSheetValid
+		};
+	} catch {
+		return empty;
+	}
+}
+
+async function optionalAcceptedRules(workspaceRoot: string) {
+	return verifyAcceptedLaterPackRulesForCompletion({
+		workspaceRoot,
+		actor: process.env.SUMMONLAB_LATER_PACK_RULE_ACTOR ?? null,
+		loadDatabaseUrl: () => getConfig().databaseUrl
+	});
 }
 
 async function optionalScaleRecommendation(
@@ -1091,9 +1118,14 @@ async function optionalScaleRecommendation(
 			finalArtifactValid: false,
 			sourceEffectiveConcurrencyLevels: [] as number[],
 			sourceBindingsValid: false,
-			matchesEligibleSchedulerLevels: false
+			matchesEligibleSchedulerLevels: false,
+			recommendedSafeConcurrency: null
 		};
-	const parsed = ScaleRecommendationSchema.safeParse(await readJson(filePath).catch(() => null));
+	const { AffinityScaleRecommendationV3Schema } =
+		await import('./finalize-affinity-scale-recommendation.js');
+	const parsed = AffinityScaleRecommendationV3Schema.safeParse(
+		await readJson(filePath).catch(() => null)
+	);
 	const eligibleByRunId = new Map(
 		schedulerEvidence.eligibleRuns.map((run) => [run.runId, run] as const)
 	);
@@ -1103,6 +1135,7 @@ async function optionalScaleRecommendation(
 			const eligible = eligibleByRunId.get(source.runId);
 			return (
 				eligible !== undefined &&
+				eligible.stage === source.stage &&
 				eligible.effectiveConcurrency === source.effectiveConcurrency &&
 				eligible.preflightPath === source.preflightPath &&
 				eligible.preflightCanonicalSha256 === source.preflightCanonicalSha256 &&
@@ -1125,6 +1158,9 @@ async function optionalScaleRecommendation(
 						(run) =>
 							run.stage === 'scale' &&
 							run.runId === endpoint.runId &&
+							run.preflightPath === endpoint.preflightPath &&
+							run.preflightCanonicalSha256 === endpoint.preflightCanonicalSha256 &&
+							run.reportPath === endpoint.reportPath &&
 							run.reportCanonicalSha256 === endpoint.reportCanonicalSha256
 					)
 				: schedulerEvidence.blockedScalePreflights.some(
@@ -1141,7 +1177,11 @@ async function optionalScaleRecommendation(
 			? parsed.data.sourceEffectiveConcurrencyLevels
 			: [],
 		sourceBindingsValid,
-		matchesEligibleSchedulerLevels
+		matchesEligibleSchedulerLevels,
+		recommendedSafeConcurrency:
+			parsed.success && endpointBound && sourceBindingsValid && matchesEligibleSchedulerLevels
+				? parsed.data.recommendedSafeConcurrency
+				: null
 	};
 }
 
@@ -1167,21 +1207,25 @@ export async function inspectAffinityPlanCompletionEvidence(
 	const finalPlan = FinalControlledRerunPlanSchema.safeParse(
 		await readJson(finalPlanPath).catch(() => null)
 	);
-	const blindReviewCollection = ImageProductionBlindReviewCollectionSchema.safeParse(
-		await readJson(path.join(experimentRoot, 'review/blind-review.json')).catch(() => null)
-	);
+	const finalRoundReviews = await loadRoundBlindReviews(
+		workspaceRoot,
+		'final-controlled-v1',
+		false
+	).catch(() => null);
 	const baseTargetIds = exportBundle.targets.map((target) => target.targetId);
 	const baseTargetIdSet = new Set(baseTargetIds);
 	const finalControlled = await inspectFinalControlledExecutionEvidence({
 		workspaceRoot,
 		plan: finalPlan.success ? finalPlan.data : null,
-		blindReviews: blindReviewCollection.success ? blindReviewCollection.data.reviews : [],
+		blindReviews: finalRoundReviews?.reviews ?? [],
 		baseTargetIds,
 		baseAssignmentIds: exportBundle.assignments.map((assignment) => assignment.assignmentId),
 		baseResultIds: scan.executions
 			.filter(({ target }) => baseTargetIdSet.has(target.targetId))
 			.map(({ result }) => result.resultId)
 	});
+	const finalRoundEvidence = await inspectRoundFinalEvidence(workspaceRoot, 'final-controlled-v1');
+	const breadthRoundEvidence = await inspectRoundFinalEvidence(workspaceRoot, 'breadth-v1');
 	const validation = await validateBaseWorkspaceProjection(
 		workspaceRoot,
 		finalControlled.plannedPaths
@@ -1200,13 +1244,6 @@ export async function inspectAffinityPlanCompletionEvidence(
 		return value?.sampleSize === sampleSize && value.gates?.passed === true && validation !== null;
 	};
 
-	const breadthTargets = scan.executions.filter(({ target }) => target.cohort === 'breadth');
-	const breadthCatalogEntries = scan.catalog.entries.filter((entry) => entry.cohort === 'breadth');
-	const breadthSpecies = new Set(breadthTargets.map(({ target }) => target.speciesId));
-	const unusualCandidates = breadthTargets.filter(
-		({ target, result }) =>
-			['cave-drake', 'tower-basilisk'].includes(target.speciesId) && result.status === 'candidate'
-	);
 	const schedulerEvidence = await inspectSchedulerEvidence(workspaceRoot);
 	const legacyEffectiveLevels = [
 		...new Set(
@@ -1258,7 +1295,10 @@ export async function inspectAffinityPlanCompletionEvidence(
 			installedSkillMatchesRepository,
 			dryRunValidated: validation?.dryRunEvidence ?? false
 		},
-		controlledFinalRerun: finalControlled.gateEvidence.controlledFinalRerun,
+		controlledFinalRerun: {
+			...finalControlled.gateEvidence.controlledFinalRerun,
+			evaluationPassed: finalRoundEvidence.passed
+		},
 		humanBlindEvidence: finalControlled.gateEvidence.humanBlindEvidence,
 		goblinAudits: {
 			audit60Passed: await auditPassed(60),
@@ -1267,14 +1307,11 @@ export async function inspectAffinityPlanCompletionEvidence(
 		breadthAndUnusualAnatomy: {
 			targetManifestCount: exportBundle.targets.filter((target) => target.cohort === 'breadth')
 				.length,
-			resultCount: breadthTargets.length,
-			reviewedResultCount: breadthCatalogEntries.filter((entry) => entry.reviewState !== 'pending')
-				.length,
-			representedSpeciesCount: breadthSpecies.size,
-			unusualCandidateCount: unusualCandidates.length,
-			breadthContactSheetPresent: await fileExists(
-				path.resolve(workspaceRoot, BREADTH_CONTACT_SHEET_PATH)
-			)
+			resultCount: breadthRoundEvidence.passed ? 24 : 0,
+			reviewedResultCount: breadthRoundEvidence.reviewCount,
+			representedSpeciesCount: breadthRoundEvidence.representedSpeciesCount,
+			unusualCandidateCount: breadthRoundEvidence.acceptedUnusualAnatomyCount,
+			breadthContactSheetPresent: breadthRoundEvidence.contactSheetValid
 		},
 		concurrencyLadder: {
 			effectiveLevels,
@@ -1282,7 +1319,7 @@ export async function inspectAffinityPlanCompletionEvidence(
 			schedulerEffectiveLevels,
 			eligibleSchedulerRuns: schedulerEvidence.eligibleRuns,
 			requiredLevels: REQUIRED_CONCURRENCY_LEVELS,
-			recommendedSafeConcurrency: scan.evaluation.recommendedSafeConcurrency,
+			recommendedSafeConcurrency: scaleRecommendation.recommendedSafeConcurrency,
 			scaleEndpointEvidenced
 		},
 		forgeEvidence: {

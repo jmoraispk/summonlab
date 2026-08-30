@@ -16,6 +16,35 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Replaced mixed review aggregates with three exact 24-target evidence rounds:
+  `baseline-v1`, `final-controlled-v1`, and `breadth-v1`. Each round now validates every target,
+  assignment, result, retained image byte, ID, retry ceiling, and owned path before publishing its
+  catalog and incomplete evaluation, then publishes a hash-bound integration receipt last. The
+  baseline check coexists with regression manifests; the dedicated final namespace remains exact.
+  The existing baseline is now materialized in that structure with 24 results, 21 producer
+  candidates, and a verified `1920×1080` opaque contact sheet; it remains unapproved.
+- 2026-08-29: Added reviewer-scoped round evidence export, deterministic opaque 24-image contact
+  sheets with JSON sidecars, and receipt-last human-acknowledged final evaluation. Controlled rounds
+  enforce all recognition and quality thresholds. Breadth requires all 24 current-hash human
+  reviews, all four species, zero workflow violations, and at least one human-accepted Cave Drake
+  or Tower Basilisk. Incomplete final and Breadth checks are verified zero-write operations.
+- 2026-08-29: Turned the eight later-pack visual rules into a versioned proposal and append-only
+  human decision contract. Acceptance cannot be passed on a CLI: it is recorded per actor in the
+  database only after current final-round readiness, then exported as a strict v2 artifact bound to
+  the proposal, plan, activation, catalog, reviews, execution snapshot, gate evidence, and decision
+  record hash. Forge now presents eight blank accept/reject decisions, rationales, three human
+  attestations, and actor-specific append-only history; the server strips the entire proposal and
+  history during an incomplete blind session. No decision or accepted artifact currently exists.
+- 2026-08-29: Hardened dispatch gates to v2. Every authorization now contains canonical hash
+  bindings that preflight re-reads and verifies; legacy v1 gates can document blocked history but
+  cannot authorize new work. The derived gate writer accepts only a fixed profile and prerequisite
+  run ID, derives quality/human state from verified activation or passed-round evidence, and cannot
+  accept operator-supplied booleans or evidence paths. No live gate was created.
+- 2026-08-29: Added the final scale-recommendation v3 lifecycle. It requires eligible,
+  stage-correct scheduler runs at effective levels 2, 4, 6, 8, and 12, plus either a completed
+  Scale-16 run or an authorized capacity-blocked Scale preflight tied to Load-12. The chosen safe
+  concurrency must be measured; 16 can be chosen only after a completed Scale run. Current evidence
+  remains insufficient, so the check fails closed without writing.
 - 2026-08-29: Added a read-only final-controlled activation-readiness contract and reporter. It binds any future resolution ledger to the canonical plan, current catalog and execution snapshot, all 21 eligible original-v1 blind reviews, the three immutable revise-result hashes, and all 16 plan-owned risks. Blocking corrections must be full manifests under the review-owned staging namespace and must differ canonically from the risky derived target. No resolution ledger or staged/live artifact has been created; the current report is intentionally unauthorized until genuine human blind review and risk resolution exist.
 - 2026-08-29: Isolated Forge review rounds by exact target-ID registries. The baseline remains the default, while the final-controlled round is unavailable until all 24 plan-owned manifests exist and match their reserved coordinates. Review submissions, media access, counts, and gate projections are scoped to the selected round, preventing baseline and final candidates from being mixed.
 - 2026-08-29: Added a checked-in, non-executable allocation for exact 2-, 4-, 6-, 8-, 12-, and 16-worker stages. Every stage owns exactly its requested number of collision-free target, assignment, candidate, and result paths; the 16-worker stage contains two jobs for each of the eight species and evenly distributed affinities. Dispatch still requires hash-bound gate evidence and exact provisioned capacity. Current eligible measured levels remain 2 and 3, so no higher concurrency claim or scale endpoint is recorded.
@@ -97,6 +126,46 @@ Knight v3 are verified producer candidates. Metal Death Knight v2 remains immuta
 evidence superseded by v3. Wind Cave Bear v2 remains `revise` after both attempts again occluded the
 far hind paw; the repeated target-specific failure is recorded without weakening the four-paw gate
 or starting an unbounded retry loop.
+
+## Operator handoff sequence
+
+The implemented workflow is intentionally resumable. These commands inspect or advance one
+evidence boundary at a time; substitute an explicit reviewer or actor identity and round where
+shown:
+
+```bash
+# Baseline human review readiness and guarded final activation.
+pnpm report:baseline-blind-review -- --reviewer <reviewer>
+pnpm report:affinity-final-controlled-activation
+pnpm activate:affinity-final-controlled-rerun -- --acknowledge-live-manifest-activation
+
+# One exact post-generation round: final-controlled-v1 or breadth-v1.
+pnpm sync:affinity-review-round -- --round <round>
+pnpm export:affinity-round-review-evidence -- --round <round> --reviewer <reviewer>
+pnpm export:affinity-round-contact-sheet -- --round <round>
+pnpm finalize:affinity-round-evaluation -- --round <round> --acknowledge-human-review
+
+# Human rule acceptance after the final round passes.
+pnpm report:later-pack-visual-rules
+pnpm export:accepted-later-pack-visual-rules -- --actor <actor>
+
+# Derived promotion gate and measured concurrency recommendation.
+pnpm write:affinity-dispatch-gate -- --profile <normal|final|breadth|load> [...]
+pnpm check:affinity-scale-recommendation
+pnpm finalize:affinity-scale-recommendation -- \
+  --acknowledge-human-decision \
+  --recommended <2|4|6|8|12|16> \
+  --production-strategy "<measured production policy>" \
+  --fallback-behavior "<capacity or quality fallback>"
+SUMMONLAB_LATER_PACK_RULE_ACTOR=<same-actor> pnpm check:affinity-plan-completion
+```
+
+The sync, review-export, contact-sheet, finalization, rule, gate, scale, and completion tools all
+fail closed when their prerequisite is missing or stale. Their check modes do not manufacture
+results, reviews, approvals, gates, or performance evidence. Once a rule-acceptance artifact
+exists, the completion check also requires the accepting actor explicitly and verifies that
+actor's latest append-only database decision; an unavailable database or superseded decision is
+not accepted as historical proof.
 
 ## Objective
 

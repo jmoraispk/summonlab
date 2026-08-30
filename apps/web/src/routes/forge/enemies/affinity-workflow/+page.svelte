@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
 	let { data, form } = $props();
@@ -29,6 +30,22 @@
 	let selectedCellId = $state<string | null>(null);
 	let speciesGuess = $state('');
 	let affinityGuess = $state('');
+	type RuleVerdict = '' | 'accepted' | 'rejected';
+	let ruleVerdicts = $state<Record<string, RuleVerdict>>({});
+	let ruleRationales = $state<Record<string, string>>({});
+	let producerAttestation = $state(false);
+	let evidenceAttestation = $state(false);
+	let applicationAttestation = $state(false);
+	let ruleSubmissionBusy = $state(false);
+	let ruleSubmissionMessage = $state('');
+	let ruleSubmissionError = $state('');
+	let pendingRuleDecisionId = $state<string | null>(null);
+	$effect(() => {
+		for (const rule of data.laterPackRuleReview.proposal?.rules ?? []) {
+			if (ruleVerdicts[rule.ruleId] === undefined) ruleVerdicts[rule.ruleId] = '';
+			if (ruleRationales[rule.ruleId] === undefined) ruleRationales[rule.ruleId] = '';
+		}
+	});
 	$effect(() => {
 		if (form?.reviewSaved && data.blind && data.activeReviewer) {
 			selectedCellId = data.nextUnreviewedCellId;
@@ -43,6 +60,26 @@
 	);
 	const pendingCount = $derived(
 		data.rows.flatMap((row) => row.cells).filter((cell) => cell.status === 'pending').length
+	);
+	const latestRuleDecision = $derived(data.laterPackRuleReview.decisions?.latestByActor[0] ?? null);
+	const ruleFormComplete = $derived(
+		(data.laterPackRuleReview.proposal?.rules ?? []).length === 8 &&
+			(data.laterPackRuleReview.proposal?.rules ?? []).every(
+				(rule) => ruleVerdicts[rule.ruleId] !== '' && Boolean(ruleRationales[rule.ruleId]?.trim())
+			) &&
+			producerAttestation &&
+			evidenceAttestation &&
+			applicationAttestation
+	);
+	const ruleSubmissionEnabled = $derived(
+		Boolean(
+			data.laterPackRuleReview.actor &&
+			data.laterPackRuleReview.persistenceAvailable &&
+			data.laterPackRuleReview.readiness?.eligibleForHumanAcceptance &&
+			data.laterPackRuleReview.readiness.bindings &&
+			ruleFormComplete &&
+			!ruleSubmissionBusy
+		)
 	);
 
 	function inspect(cell: Cell) {
@@ -74,6 +111,74 @@
 			? `&reviewer=${encodeURIComponent(data.activeReviewer)}`
 			: '';
 		return `mode=blind&scope=${scope}&round=${round}${reviewer}`;
+	}
+
+	async function submitLaterPackRules(event: SubmitEvent) {
+		event.preventDefault();
+		const proposal = data.laterPackRuleReview.proposal;
+		const readiness = data.laterPackRuleReview.readiness;
+		const actor = data.laterPackRuleReview.actor;
+		if (!proposal || !readiness?.bindings || !actor || !ruleSubmissionEnabled) return;
+		ruleSubmissionBusy = true;
+		ruleSubmissionMessage = '';
+		ruleSubmissionError = '';
+		pendingRuleDecisionId ??= crypto.randomUUID();
+		try {
+			const response = await fetch(
+				`${resolve('/api/dev/later-pack-rule-decisions')}?actor=${encodeURIComponent(actor)}`,
+				{
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({
+						decisionId: pendingRuleDecisionId,
+						experimentId: 'affinity-workflow-v1',
+						roundId: 'final-controlled-v1',
+						mode: 'human-interactive',
+						actor,
+						proposalCanonicalSha256: readiness.bindings.proposalCanonicalSha256,
+						sourceReadinessCanonicalSha256: readiness.bindings.sourceReadinessCanonicalSha256,
+						supersedesDecisionId: latestRuleDecision?.decisionId ?? null,
+						decisions: proposal.rules.map((rule) => ({
+							ruleId: rule.ruleId,
+							domain: rule.domain,
+							textHash: rule.textHash,
+							decision: ruleVerdicts[rule.ruleId],
+							humanRationale: ruleRationales[rule.ruleId]?.trim()
+						})),
+						attestation: {
+							producerDidNotApprove: producerAttestation,
+							reviewedEligibleBlindEvidence: evidenceAttestation,
+							acceptsRulesForLaterPacks: applicationAttestation
+						}
+					})
+				}
+			);
+			const result = (await response.json().catch(() => null)) as {
+				created?: boolean;
+				message?: string;
+			} | null;
+			if (!response.ok) {
+				pendingRuleDecisionId = null;
+				throw new Error(result?.message ?? 'The rule decision could not be saved.');
+			}
+			ruleSubmissionMessage = result?.created
+				? 'The human decision was appended. No rule or asset was accepted automatically.'
+				: 'This exact decision was already present; the retry was safely idempotent.';
+			for (const rule of proposal.rules) {
+				ruleVerdicts[rule.ruleId] = '';
+				ruleRationales[rule.ruleId] = '';
+			}
+			producerAttestation = false;
+			evidenceAttestation = false;
+			applicationAttestation = false;
+			pendingRuleDecisionId = null;
+			await invalidateAll();
+		} catch (error) {
+			ruleSubmissionError =
+				error instanceof Error ? error.message : 'The decision could not be saved.';
+		} finally {
+			ruleSubmissionBusy = false;
+		}
 	}
 </script>
 
@@ -361,6 +466,192 @@
 			<ul class="notes">
 				{#each data.evaluation.completionNotes as note (note)}<li>{note}</li>{/each}
 			</ul>
+		{/if}
+	</section>
+
+	<section class="rule-review" aria-labelledby="rule-review-title">
+		<header class="section-heading">
+			<div>
+				<span>03</span>
+				<h2 id="rule-review-title">Later-pack visual rules</h2>
+			</div>
+			<p>Human-interactive · append-only</p>
+		</header>
+		{#if data.blind && data.remainingCandidateCount > 0}
+			<div class="rule-review-withheld">
+				<p class="eyebrow">Blind review protection</p>
+				<strong>Proposal withheld until this reviewer completes the current set</strong>
+				<p>
+					The rule language and decision history could reveal species or affinity labels. Complete
+					the blind review before opening this governance step.
+				</p>
+			</div>
+		{:else if data.laterPackRuleReview.proposal && data.laterPackRuleReview.readiness}
+			<div class="rule-review-summary">
+				<article>
+					<p class="eyebrow">Current readiness</p>
+					<strong class:ready={data.laterPackRuleReview.readiness.eligibleForHumanAcceptance}
+						>{data.laterPackRuleReview.readiness.eligibleForHumanAcceptance
+							? 'Eligible for a human decision'
+							: 'Evidence remains incomplete'}</strong
+					>
+					<p>
+						{data.laterPackRuleReview.readiness.counts.finalCandidates} / 24 current candidates ·
+						{data.laterPackRuleReview.readiness.counts.eligibleBlindReviews} / 24 eligible blind reviews
+					</p>
+					{#if data.laterPackRuleReview.readiness.blockers.length}
+						<ul>
+							{#each data.laterPackRuleReview.readiness.blockers as blocker (blocker.code)}
+								<li><code>{blocker.code}</code> · {blocker.detail}</li>
+							{/each}
+						</ul>
+					{/if}
+				</article>
+				<article>
+					<p class="eyebrow">Reviewer session</p>
+					{#if data.laterPackRuleReview.actor}
+						<strong>{data.laterPackRuleReview.actor}</strong>
+						<p>
+							{data.laterPackRuleReview.decisions?.records.length ?? 0} append-only decision{data
+								.laterPackRuleReview.decisions?.records.length === 1
+								? ''
+								: 's'} in this actor’s history.
+						</p>
+					{:else}
+						<strong>Choose an explicit actor</strong>
+						<form method="GET" action={resolve('/forge/enemies/affinity-workflow')}>
+							<input type="hidden" name="round" value={data.controlledRound.id} />
+							<label>
+								<span>Rule-review actor</span>
+								<input name="actor" required maxlength="80" />
+							</label>
+							<button type="submit">Open actor-bound review</button>
+						</form>
+					{/if}
+					{#if !data.laterPackRuleReview.persistenceAvailable}
+						<p class="rule-warning">{data.laterPackRuleReview.message}</p>
+					{/if}
+				</article>
+			</div>
+
+			<form
+				class="rule-decision-form"
+				aria-label="Later-pack visual-rule decision"
+				onsubmit={submitLaterPackRules}
+			>
+				<header>
+					<div>
+						<p class="eyebrow">Plan-owned proposal</p>
+						<h3>Decide each rule explicitly</h3>
+					</div>
+					<p>Nothing is preselected. Rejections are preserved and never converted to acceptance.</p>
+				</header>
+				<div class="rule-grid">
+					{#each data.laterPackRuleReview.proposal.rules as rule, index (rule.ruleId)}
+						<fieldset>
+							<legend>Rule {index + 1} · {rule.domain}</legend>
+							<p>{rule.text}</p>
+							<div class="rule-verdicts">
+								<label>
+									<input
+										type="radio"
+										name="decision-{rule.ruleId}"
+										value="accepted"
+										bind:group={ruleVerdicts[rule.ruleId]}
+										required
+									/>
+									Accept
+								</label>
+								<label>
+									<input
+										type="radio"
+										name="decision-{rule.ruleId}"
+										value="rejected"
+										bind:group={ruleVerdicts[rule.ruleId]}
+										required
+									/>
+									Reject
+								</label>
+							</div>
+							<label class="rule-rationale">
+								<span>Human rationale</span>
+								<textarea bind:value={ruleRationales[rule.ruleId]} required maxlength="2000"
+								></textarea>
+							</label>
+							<small>{rule.ruleId} · {rule.textHash}</small>
+						</fieldset>
+					{/each}
+				</div>
+				<fieldset class="rule-attestations">
+					<legend>Human attestations</legend>
+					<label
+						><input type="checkbox" bind:checked={producerAttestation} required /> I confirm this decision
+						is not producer self-approval.</label
+					>
+					<label
+						><input type="checkbox" bind:checked={evidenceAttestation} required /> I reviewed the eligible,
+						current-hash blind evidence.</label
+					>
+					<label
+						><input type="checkbox" bind:checked={applicationAttestation} required /> I understand accepted
+						rules govern later packs.</label
+					>
+				</fieldset>
+				<div class="rule-submit">
+					<div>
+						{#if ruleSubmissionMessage}<p class="success" role="status">
+								{ruleSubmissionMessage}
+							</p>{/if}
+						{#if ruleSubmissionError}<p class="error" role="alert">{ruleSubmissionError}</p>{/if}
+					</div>
+					<button type="submit" disabled={!ruleSubmissionEnabled}>
+						{ruleSubmissionBusy
+							? 'Appending decision…'
+							: data.laterPackRuleReview.readiness.eligibleForHumanAcceptance
+								? 'Append human decision'
+								: 'Waiting for eligible evidence'}
+					</button>
+				</div>
+			</form>
+
+			{#if data.laterPackRuleReview.decisions?.records.length}
+				<div class="rule-history">
+					<h3>Actor decision history</h3>
+					{#each [...data.laterPackRuleReview.decisions.records].reverse() as decision (decision.decisionId)}
+						<article>
+							<header>
+								<strong
+									>{decision.decisionId === latestRuleDecision?.decisionId
+										? 'Latest'
+										: 'Superseded'}</strong
+								>
+								<time datetime={decision.decidedAt}
+									>{new Date(decision.decidedAt).toLocaleString()}</time
+								>
+							</header>
+							<p>
+								{decision.decisions.filter((item) => item.decision === 'accepted').length} accepted ·
+								{decision.decisions.filter((item) => item.decision === 'rejected').length} rejected
+							</p>
+							<ul>
+								{#each decision.decisions as item (item.ruleId)}
+									<li class:rejected={item.decision === 'rejected'}>
+										<strong>{item.decision}</strong> · {item.ruleId}<span
+											>{item.humanRationale}</span
+										>
+									</li>
+								{/each}
+							</ul>
+						</article>
+					{/each}
+				</div>
+			{/if}
+		{:else}
+			<div class="rule-review-withheld">
+				<p class="eyebrow">Rule evidence unavailable</p>
+				<strong>The current proposal or readiness report could not be loaded</strong>
+				<p>{data.laterPackRuleReview.message}</p>
+			</div>
 		{/if}
 	</section>
 </main>
@@ -702,7 +993,8 @@
 	.round-controls,
 	.controls,
 	.matrix,
-	.governance {
+	.governance,
+	.rule-review {
 		max-width: 112rem;
 		margin: 0 auto;
 		padding-inline: clamp(1rem, 3vw, 3rem);
@@ -900,7 +1192,8 @@
 		font-size: 0.66rem;
 	}
 	.matrix,
-	.governance {
+	.governance,
+	.rule-review {
 		padding-block: clamp(2rem, 5vw, 5rem);
 	}
 	.section-heading {
@@ -1114,6 +1407,235 @@
 	}
 	.notes {
 		margin-top: 1rem;
+	}
+	.rule-review {
+		border-top: 1px solid #ffffff14;
+		padding-bottom: clamp(4rem, 8vw, 8rem);
+	}
+	.rule-review-withheld,
+	.rule-review-summary article,
+	.rule-decision-form,
+	.rule-history > article {
+		border: 1px solid #ffffff16;
+		padding: 1.25rem;
+		background: #090c12;
+	}
+	.rule-review-withheld > strong,
+	.rule-review-summary article > strong {
+		display: block;
+		margin-top: 0.55rem;
+		font:
+			400 1.45rem Georgia,
+			serif;
+	}
+	.rule-review-summary article > strong.ready {
+		color: #bfe7dd;
+	}
+	.rule-review-withheld p:last-child,
+	.rule-review-summary p,
+	.rule-review-summary li,
+	.rule-decision-form > header > p {
+		color: #f4efe578;
+		font-size: 0.68rem;
+		line-height: 1.6;
+	}
+	.rule-review-summary {
+		display: grid;
+		grid-template-columns: 1.5fr 1fr;
+		gap: 1rem;
+	}
+	.rule-review-summary ul {
+		max-height: 14rem;
+		overflow: auto;
+		margin: 1rem 0 0;
+		padding-left: 1.1rem;
+	}
+	.rule-review-summary code {
+		color: #e5a45b;
+	}
+	.rule-review-summary form {
+		display: flex;
+		align-items: end;
+		gap: 0.65rem;
+		margin-top: 1rem;
+	}
+	.rule-review-summary form label {
+		display: grid;
+		flex: 1;
+		gap: 0.35rem;
+		color: #70b7c4;
+		font-size: 0.55rem;
+		text-transform: uppercase;
+	}
+	.rule-review-summary input,
+	.rule-review-summary button,
+	.rule-decision-form textarea {
+		box-sizing: border-box;
+		border: 1px solid #ffffff20;
+		padding: 0.68rem;
+		color: #f4efe5;
+		background: #06080c;
+	}
+	.rule-review-summary button {
+		color: #071015;
+		background: #70b7c4;
+		font-size: 0.6rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.rule-warning {
+		color: #f2c98f !important;
+	}
+	.rule-decision-form {
+		margin-top: 1rem;
+	}
+	.rule-decision-form > header {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		gap: 2rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid #ffffff12;
+	}
+	.rule-decision-form h3,
+	.rule-history h3 {
+		margin: 0.35rem 0 0;
+		font:
+			400 1.6rem Georgia,
+			serif;
+	}
+	.rule-decision-form > header > p {
+		max-width: 34rem;
+		margin: 0;
+	}
+	.rule-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+	.rule-grid fieldset,
+	.rule-attestations {
+		margin: 0;
+		border: 1px solid #ffffff16;
+		padding: 1rem;
+		background: #070a0f;
+	}
+	.rule-grid legend,
+	.rule-attestations legend,
+	.rule-rationale > span {
+		padding: 0 0.3rem;
+		color: #70b7c4;
+		font-size: 0.55rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+	.rule-grid fieldset > p {
+		min-height: 4.7rem;
+		color: #f4efe5b0;
+		font-size: 0.75rem;
+		line-height: 1.55;
+	}
+	.rule-grid fieldset > small {
+		display: block;
+		overflow-wrap: anywhere;
+		margin-top: 0.7rem;
+		color: #f4efe53f;
+		font:
+			0.52rem ui-monospace,
+			monospace;
+	}
+	.rule-verdicts {
+		display: flex;
+		gap: 1.25rem;
+		margin: 0.8rem 0;
+	}
+	.rule-verdicts label,
+	.rule-attestations label {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		color: #f4efe5a0;
+		font-size: 0.7rem;
+	}
+	.rule-rationale {
+		display: grid;
+		gap: 0.35rem;
+	}
+	.rule-rationale textarea {
+		width: 100%;
+		min-height: 5rem;
+		resize: vertical;
+	}
+	.rule-attestations {
+		display: grid;
+		gap: 0.7rem;
+		margin-top: 1rem;
+	}
+	.rule-submit {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+	.rule-submit p {
+		margin: 0;
+		font-size: 0.7rem;
+	}
+	.rule-submit p.success {
+		color: #bfe7dd;
+	}
+	.rule-submit p.error {
+		color: #ffd2c8;
+	}
+	.rule-submit button {
+		border: 1px solid #70b7c466;
+		padding: 0.8rem 1rem;
+		color: #071015;
+		background: #70b7c4;
+		font-size: 0.64rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.rule-submit button:disabled {
+		border-color: #ffffff16;
+		color: #f4efe548;
+		background: #ffffff05;
+		cursor: not-allowed;
+	}
+	.rule-history {
+		margin-top: 2rem;
+	}
+	.rule-history > article {
+		margin-top: 0.75rem;
+	}
+	.rule-history article > header {
+		display: flex;
+		justify-content: space-between;
+		color: #f4efe568;
+		font-size: 0.62rem;
+	}
+	.rule-history article > header strong,
+	.rule-history li > strong {
+		color: #70b7c4;
+		text-transform: uppercase;
+	}
+	.rule-history article > p,
+	.rule-history li {
+		color: #f4efe582;
+		font-size: 0.68rem;
+		line-height: 1.5;
+	}
+	.rule-history li.rejected > strong {
+		color: #e88d76;
+	}
+	.rule-history li span {
+		display: block;
+		color: #f4efe55c;
 	}
 	.modal-backdrop {
 		position: fixed;
@@ -1405,7 +1927,9 @@
 	@media (max-width: 900px) {
 		.topbar,
 		.intro,
-		.governance-grid {
+		.governance-grid,
+		.rule-review-summary,
+		.rule-grid {
 			grid-template-columns: 1fr;
 		}
 		.topbar {

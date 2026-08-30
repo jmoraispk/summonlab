@@ -13,6 +13,12 @@ import {
 import { error, fail } from '@sveltejs/kit';
 
 import {
+	listLaterPackRuleReviewForActor,
+	loadLaterPackRuleReviewContext,
+	parseLaterPackRuleActor
+} from '$lib/server/later-pack-rule-review.js';
+
+import {
 	ControlledRoundUnavailableError,
 	findVerifiedMediaByOpaqueId,
 	loadAffinityReviewData,
@@ -39,12 +45,20 @@ export const load = (async ({ url }) => {
 	let scope: ReturnType<typeof parseAffinityReviewScope>;
 	let controlledRound: ReturnType<typeof parseControlledRoundId>;
 	let activeReviewer: ReturnType<typeof parseAffinityReviewer>;
+	let laterPackRuleActor: string | null;
 	try {
 		scope = blind ? parseAffinityReviewScope(url.searchParams.get('scope')) : 'all';
 		controlledRound = parseControlledRoundId(url.searchParams.get('round'));
 		activeReviewer = blind ? parseAffinityReviewer(url.searchParams.get('reviewer')) : null;
+		const requestedRuleActor = url.searchParams.has('actor')
+			? parseLaterPackRuleActor(url.searchParams.get('actor'))
+			: null;
+		if (activeReviewer && requestedRuleActor && activeReviewer !== requestedRuleActor) {
+			throw new Error('Reviewer session actor mismatch.');
+		}
+		laterPackRuleActor = activeReviewer ?? requestedRuleActor;
 	} catch {
-		error(400, 'Unknown reviewer, affinity review scope, or controlled round.');
+		error(400, 'Unknown reviewer, rule actor, affinity review scope, or controlled round.');
 	}
 	const config = getConfig();
 	let reviewPersistenceAvailable = config.devRoutesEnabled;
@@ -65,18 +79,83 @@ export const load = (async ({ url }) => {
 				'Affinity review history is unavailable. Start PostgreSQL with pnpm dev, then reload.';
 		}
 	}
+	let laterPackRuleReview: {
+		actor: string | null;
+		proposal: Awaited<ReturnType<typeof loadLaterPackRuleReviewContext>>['proposal'] | null;
+		readiness: Awaited<ReturnType<typeof loadLaterPackRuleReviewContext>>['readiness'] | null;
+		decisions: Awaited<ReturnType<typeof listLaterPackRuleReviewForActor>>['decisions'] | null;
+		persistenceAvailable: boolean;
+		message: string;
+	};
 	try {
+		if (laterPackRuleActor && config.devRoutesEnabled) {
+			const surface = await listLaterPackRuleReviewForActor({
+				databaseUrl: config.databaseUrl,
+				actor: laterPackRuleActor
+			});
+			laterPackRuleReview = {
+				actor: surface.actor,
+				proposal: surface.proposal,
+				readiness: surface.readiness,
+				decisions: surface.decisions,
+				persistenceAvailable: true,
+				message: ''
+			};
+		} else {
+			const context = await loadLaterPackRuleReviewContext({});
+			laterPackRuleReview = {
+				actor: laterPackRuleActor,
+				...context,
+				decisions: null,
+				persistenceAvailable: false,
+				message: config.devRoutesEnabled
+					? 'Set an explicit rule-review actor to load history and record a decision.'
+					: 'Rule-decision persistence is disabled because developer routes are not enabled.'
+			};
+		}
+	} catch {
+		let context: Awaited<ReturnType<typeof loadLaterPackRuleReviewContext>> | null = null;
+		try {
+			context = await loadLaterPackRuleReviewContext({});
+		} catch {
+			// The page remains useful for image inspection even if rule evidence cannot be loaded.
+		}
+		laterPackRuleReview = {
+			actor: laterPackRuleActor,
+			proposal: context?.proposal ?? null,
+			readiness: context?.readiness ?? null,
+			decisions: null,
+			persistenceAvailable: false,
+			message:
+				'Later-pack rule review is unavailable. Start PostgreSQL with pnpm dev and verify the current evidence.'
+		};
+	}
+	try {
+		const affinityReviewData = await loadAffinityReviewData(
+			blind,
+			reviews.reviews,
+			scope,
+			controlledRound,
+			activeReviewer
+		);
+		const safeLaterPackRuleReview =
+			blind && affinityReviewData.remainingCandidateCount > 0
+				? {
+						actor: laterPackRuleActor,
+						proposal: null,
+						readiness: null,
+						decisions: null,
+						persistenceAvailable: false,
+						message:
+							'Rule proposal and decision history are withheld until this reviewer completes the current blind set.'
+					}
+				: laterPackRuleReview;
 		return {
-			...(await loadAffinityReviewData(
-				blind,
-				reviews.reviews,
-				scope,
-				controlledRound,
-				activeReviewer
-			)),
+			...affinityReviewData,
 			reviewId: randomUUID(),
 			reviewPersistenceAvailable,
-			reviewPersistenceMessage
+			reviewPersistenceMessage,
+			laterPackRuleReview: safeLaterPackRuleReview
 		};
 	} catch (loadError) {
 		if (loadError instanceof ControlledRoundUnavailableError) {

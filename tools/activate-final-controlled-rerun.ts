@@ -28,59 +28,26 @@ import {
 	loadCurrentActivationReadinessInput,
 	type ActivationReadinessInput
 } from './report-final-controlled-activation-readiness.js';
+import {
+	FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
+	FinalControlledActivationArtifactSchema,
+	FinalControlledActivationReceiptSchema,
+	verifyFinalControlledActivationArtifacts,
+	verifyFinalControlledActivationReceipt,
+	type FinalControlledActivationReceipt
+} from './final-controlled-activation-evidence.js';
 
-const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
+export {
+	FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
+	FinalControlledActivationReceiptSchema,
+	verifyFinalControlledActivationReceipt,
+	type FinalControlledActivationReceipt
+} from './final-controlled-activation-evidence.js';
+
 const RepositoryPath = z.string().min(1);
 const PLAN_PATH = `${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json`;
-export const FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH =
-	`${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-activation-receipt.json` as const;
 const LOCK_PATH = `${AFFINITY_EXPERIMENT_ROOT}/review/.final-controlled-activation.lock`;
 const TRANSACTION_ROOT = `${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-activation-transaction`;
-
-const ActivationArtifactSchema = z
-	.object({
-		kind: z.enum(['target', 'assignment']),
-		livePath: RepositoryPath,
-		canonicalSha256: Hash,
-		byteSha256: Hash,
-		source: z.enum(['derived', 'staged'])
-	})
-	.strict();
-
-export const FinalControlledActivationReceiptSchema = z
-	.object({
-		schemaVersion: z.literal('affinity-final-controlled-activation-receipt-v1'),
-		experimentId: z.literal('affinity-workflow-v1'),
-		activationId: z.string().regex(/^final-controlled-[a-f0-9]{16}$/u),
-		status: z.literal('complete'),
-		completedAt: z.iso.datetime(),
-		bindings: z
-			.object({
-				planCanonicalSha256: Hash,
-				resolutionLedgerCanonicalSha256: Hash,
-				blindReviewCanonicalSha256: Hash,
-				catalogCanonicalSha256: Hash,
-				executionSnapshotSha256: Hash
-			})
-			.strict(),
-		targetCount: z.literal(24),
-		assignmentCount: z.literal(24),
-		artifactCount: z.literal(48),
-		artifactSetSha256: Hash,
-		artifacts: z.array(ActivationArtifactSchema).length(48)
-	})
-	.strict()
-	.superRefine((receipt, context) => {
-		if (new Set(receipt.artifacts.map((artifact) => artifact.livePath)).size !== 48)
-			context.addIssue({ code: 'custom', path: ['artifacts'], message: 'Paths must be unique' });
-		if (receipt.artifacts.filter((artifact) => artifact.kind === 'target').length !== 24)
-			context.addIssue({ code: 'custom', path: ['artifacts'], message: 'Expected 24 targets' });
-		if (receipt.artifacts.filter((artifact) => artifact.kind === 'assignment').length !== 24)
-			context.addIssue({ code: 'custom', path: ['artifacts'], message: 'Expected 24 assignments' });
-	});
-export type FinalControlledActivationReceipt = z.infer<
-	typeof FinalControlledActivationReceiptSchema
->;
 
 interface PreparedArtifact {
 	readonly kind: 'target' | 'assignment';
@@ -96,7 +63,9 @@ const IntentSchema = z
 	.object({
 		schemaVersion: z.literal('affinity-final-controlled-activation-intent-v1'),
 		activationId: z.string(),
-		artifacts: z.array(ActivationArtifactSchema.extend({ payloadPath: RepositoryPath }).strict()),
+		artifacts: z.array(
+			FinalControlledActivationArtifactSchema.extend({ payloadPath: RepositoryPath }).strict()
+		),
 		publishedPaths: z.array(RepositoryPath)
 	})
 	.strict();
@@ -249,69 +218,6 @@ async function pathExistsStrict(absolute: string): Promise<boolean> {
 		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
 		throw error;
 	}
-}
-
-export async function verifyFinalControlledActivationReceipt(
-	workspaceRoot = process.cwd(),
-	expectedPlanCanonicalSha256?: string
-): Promise<{ valid: boolean; receipt?: FinalControlledActivationReceipt; issues: string[] }> {
-	const issues: string[] = [];
-	let receipt: FinalControlledActivationReceipt;
-	try {
-		await assertNoSymlinkAncestor(workspaceRoot, FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH);
-		const receiptPath = resolveRepositoryPath(
-			workspaceRoot,
-			FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH
-		);
-		const metadata = await lstat(receiptPath);
-		if (!metadata.isFile() || metadata.isSymbolicLink())
-			throw new Error('Receipt is not a regular file');
-		receipt = FinalControlledActivationReceiptSchema.parse(
-			JSON.parse(await readFile(receiptPath, 'utf8'))
-		);
-	} catch (error) {
-		return {
-			valid: false,
-			issues: [
-				`Activation receipt unavailable or invalid: ${error instanceof Error ? error.message : String(error)}`
-			]
-		};
-	}
-	if (
-		expectedPlanCanonicalSha256 &&
-		receipt.bindings.planCanonicalSha256 !== expectedPlanCanonicalSha256
-	)
-		issues.push('Activation receipt is bound to a different final-controlled plan.');
-	if (sha256Json(receipt.artifacts) !== receipt.artifactSetSha256)
-		issues.push('Activation receipt artifact-set hash is invalid.');
-	issues.push(...(await verifyActivationArtifacts(workspaceRoot, receipt.artifacts)));
-	return { valid: issues.length === 0, receipt, issues };
-}
-
-async function verifyActivationArtifacts(
-	workspaceRoot: string,
-	artifacts: FinalControlledActivationReceipt['artifacts']
-): Promise<string[]> {
-	const issues: string[] = [];
-	for (const artifact of artifacts) {
-		try {
-			await assertNoSymlinkAncestor(workspaceRoot, artifact.livePath);
-			const absolute = resolveRepositoryPath(workspaceRoot, artifact.livePath);
-			const metadata = await lstat(absolute);
-			if (!metadata.isFile() || metadata.isSymbolicLink()) throw new Error('not a regular file');
-			const bytes = await readFile(absolute);
-			if (byteHash(bytes) !== artifact.byteSha256) throw new Error('byte hash differs');
-			const value: unknown = JSON.parse(bytes.toString('utf8'));
-			if (sha256Json(value) !== artifact.canonicalSha256) throw new Error('canonical hash differs');
-			if (artifact.kind === 'target') ImageProductionTargetSchema.parse(value);
-			else ImageProductionAssignmentSchema.parse(value);
-		} catch (error) {
-			issues.push(
-				`${artifact.livePath}: ${error instanceof Error ? error.message : String(error)}`
-			);
-		}
-	}
-	return issues;
 }
 
 async function acquireLock(workspaceRoot: string): Promise<() => Promise<void>> {
@@ -511,7 +417,10 @@ export async function activateFinalControlledRerun(
 				status: 'complete',
 				completedAt: options.now?.() ?? new Date().toISOString()
 			});
-			const artifactIssues = await verifyActivationArtifacts(workspaceRoot, receipt.artifacts);
+			const artifactIssues = await verifyFinalControlledActivationArtifacts(
+				workspaceRoot,
+				receipt.artifacts
+			);
 			if (artifactIssues.length > 0)
 				throw new Error(`Pre-commit artifact verification failed: ${artifactIssues.join('; ')}`);
 			for (const directory of new Set(

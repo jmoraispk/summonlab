@@ -1,12 +1,16 @@
+import { createHash } from 'node:crypto';
 import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
+import { ImageProductionResultSchema } from '../packages/contracts/src/index.js';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
-	AffinityWavePlanSchema,
 	AffinityWaveAllocationSpecSchema,
+	AffinityWaveDispatchGateSchema,
+	AffinityWavePlanSchema,
+	AffinityWavePreflightSchema,
 	buildWaveReport,
 	canonicalJsonSha256,
 	nextDispatchDecision,
@@ -29,6 +33,33 @@ const requestedByStage = {
 	load: 12,
 	scale: 16
 } as const;
+const gateEvidence = {
+	schemaVersion: 'affinity-wave-test-evidence-v1',
+	status: 'passed'
+} as const;
+const gateEvidencePath = `${experimentRoot}/review/evaluation.json`;
+const normalDryRunPath =
+	`${experimentRoot}/dry-runs/goblin-normal-envelope-preflight-v2.json` as const;
+const normalDryRun = JSON.parse(await readFile(path.resolve(normalDryRunPath), 'utf8')) as {
+	target: { path: string };
+	assignment: { path: string };
+};
+const normalTarget = JSON.parse(await readFile(path.resolve(normalDryRun.target.path), 'utf8')) as {
+	references: Array<{ path: string }>;
+};
+const normalEvidencePaths = [
+	normalDryRunPath,
+	normalDryRun.target.path,
+	normalDryRun.assignment.path
+];
+const normalEvidenceBindings = await Promise.all(
+	normalEvidencePaths.map(async (repositoryPath) => ({
+		path: repositoryPath,
+		canonicalSha256: canonicalJsonSha256(
+			JSON.parse(await readFile(path.resolve(repositoryPath), 'utf8')) as unknown
+		)
+	}))
+);
 
 afterEach(async () => {
 	await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
@@ -69,28 +100,75 @@ function plan(
 	});
 }
 
-function gate(stage: keyof typeof requestedByStage, humanGateSatisfied = true) {
+function gate(stage: keyof typeof requestedByStage, humanGateSatisfied = stage !== 'canary') {
+	const derivation =
+		stage === 'canary'
+			? { profile: humanGateSatisfied ? ('final-canary' as const) : ('normal-canary' as const) }
+			: stage === 'breadth'
+				? { profile: 'breadth' as const, prerequisiteRunId: 'eligible-preceding-run' }
+				: {
+						profile: 'load' as const,
+						requestedConcurrency: requestedByStage[stage],
+						prerequisiteRunId: 'eligible-preceding-run'
+					};
 	return {
-		schemaVersion: 'affinity-wave-dispatch-gate-v1' as const,
-		gateId: `${stage}-test-gate`,
+		schemaVersion: 'affinity-wave-dispatch-gate-v2' as const,
+		gateId:
+			stage === 'canary'
+				? humanGateSatisfied
+					? 'final-controlled-canary-dispatch-v2'
+					: 'normal-canary-dispatch-v2'
+				: `${stage}-test-gate`,
 		experimentId: 'affinity-workflow-v1' as const,
 		status: 'authorized' as const,
 		authorizedStage: stage,
 		qualityGateSatisfied: true as const,
 		humanGateSatisfied,
 		prerequisiteRunIds: stage === 'canary' ? [] : ['eligible-preceding-run'],
-		evidencePaths: [`${experimentRoot}/review/evaluation.json`]
+		derivation,
+		evidenceBindings:
+			stage === 'canary'
+				? [...normalEvidenceBindings].sort((left, right) => left.path.localeCompare(right.path))
+				: [
+						{
+							path: gateEvidencePath,
+							canonicalSha256: canonicalJsonSha256(gateEvidence)
+						}
+					]
 	};
 }
 
 async function writeGate(
 	root: string,
 	stage: keyof typeof requestedByStage,
-	humanGateSatisfied = true
+	humanGateSatisfied = stage !== 'canary'
 ): Promise<void> {
 	const gatePath = path.join(root, experimentRoot, 'review/test-gates', `${stage}.json`);
+	const evidencePath = path.join(root, gateEvidencePath);
 	await mkdir(path.dirname(gatePath), { recursive: true });
+	if (stage === 'canary') {
+		for (const repositoryPath of [
+			...normalEvidencePaths,
+			...normalTarget.references.map(({ path }) => path)
+		])
+			await copy(repositoryPath, root);
+	} else {
+		await mkdir(path.dirname(evidencePath), { recursive: true });
+		await writeFile(evidencePath, `${JSON.stringify(gateEvidence, null, '\t')}\n`);
+	}
 	await writeFile(gatePath, `${JSON.stringify(gate(stage, humanGateSatisfied), null, '\t')}\n`);
+}
+
+function readyEventFixture(preflight: Awaited<ReturnType<typeof preflightWave>>) {
+	const evidence = preflight.dispatchGateEvidence;
+	if (!evidence?.gate || evidence.gate.schemaVersion !== 'affinity-wave-dispatch-gate-v2')
+		throw new Error('Expected a structurally valid v2 test gate.');
+	return AffinityWavePreflightSchema.parse({
+		...preflight,
+		status: 'ready',
+		dispatchGateSatisfied: true,
+		dispatchGateEvidence: { ...evidence, status: 'satisfied' }
+	});
 }
 
 function event(
@@ -120,6 +198,18 @@ async function copyAs(sourcePath: string, destinationPath: string, root: string)
 	const destination = path.join(root, destinationPath);
 	await mkdir(path.dirname(destination), { recursive: true });
 	await copyFile(path.join(process.cwd(), sourcePath), destination);
+}
+
+async function copyResultAndRetainedImage(relativePath: string, root: string): Promise<void> {
+	await copy(relativePath, root);
+	const result = ImageProductionResultSchema.parse(
+		JSON.parse(await readFile(path.join(process.cwd(), relativePath), 'utf8'))
+	);
+	const retained =
+		result.status === 'candidate'
+			? result.attempts.find((attempt) => attempt.attemptId === result.selectedAttemptId)?.output
+			: [...result.attempts].reverse().find((attempt) => attempt.output)?.output;
+	if (retained) await copy(retained.path, root);
 }
 
 describe('affinity concurrency wave scheduler', () => {
@@ -168,6 +258,257 @@ describe('affinity concurrency wave scheduler', () => {
 				event(preflight.runId, 'wave-started', 'wave-started', '2026-08-29T20:00:01.000Z')
 			])
 		).toThrow(/require a ready preflight/u);
+	});
+
+	it('requires unique path-ordered v2 evidence bindings', () => {
+		const binding = gate('canary').evidenceBindings[0]!;
+		expect(
+			AffinityWaveDispatchGateSchema.safeParse({
+				...gate('canary'),
+				evidenceBindings: [binding, binding]
+			}).success
+		).toBe(false);
+		expect(
+			AffinityWaveDispatchGateSchema.safeParse({
+				...gate('canary'),
+				evidenceBindings: [
+					{ ...binding, path: `${experimentRoot}/review/z-last.json` },
+					{ ...binding, path: `${experimentRoot}/review/a-first.json` }
+				]
+			}).success
+		).toBe(false);
+	});
+
+	it('verifies every bound evidence hash before authorizing dispatch', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-evidence-gate-'));
+		roots.push(root);
+		const jobs = [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')];
+		for (const job of jobs) {
+			await copy(job.targetPath, root);
+			await copy(job.assignmentPath, root);
+		}
+		await writeGate(root, 'canary');
+		const preflight = await preflightWave(
+			root,
+			plan('canary', jobs, 'verified-evidence-canary'),
+			3,
+			'2026-08-29T20:00:00.000Z'
+		);
+		expect(preflight).toMatchObject({
+			status: 'ready',
+			dispatchGateSatisfied: true,
+			dispatchGateEvidence: {
+				status: 'satisfied'
+			}
+		});
+		expect(preflight.dispatchGateEvidence?.evidenceChecks).toHaveLength(3);
+		expect(
+			preflight.dispatchGateEvidence?.evidenceChecks?.every(({ status }) => status === 'verified')
+		).toBe(true);
+	});
+
+	it('reports missing and stale bound evidence explicitly', async () => {
+		const jobs = [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')];
+		for (const expectedStatus of ['missing-evidence', 'stale-evidence'] as const) {
+			const root = await mkdtemp(path.join(tmpdir(), `affinity-wave-${expectedStatus}-`));
+			roots.push(root);
+			for (const job of jobs) {
+				await copy(job.targetPath, root);
+				await copy(job.assignmentPath, root);
+			}
+			const gatePath = path.join(root, experimentRoot, 'review/test-gates/canary.json');
+			await mkdir(path.dirname(gatePath), { recursive: true });
+			await writeFile(gatePath, `${JSON.stringify(gate('canary'), null, '\t')}\n`);
+			if (expectedStatus === 'stale-evidence') {
+				for (const repositoryPath of normalEvidencePaths) await copy(repositoryPath, root);
+				const evidencePath = path.join(root, normalDryRunPath);
+				await mkdir(path.dirname(evidencePath), { recursive: true });
+				await writeFile(evidencePath, '{"status":"changed"}\n');
+			}
+			const preflight = await preflightWave(
+				root,
+				plan('canary', jobs, `${expectedStatus}-canary`),
+				3,
+				'2026-08-29T20:00:00.000Z'
+			);
+			expect(preflight).toMatchObject({
+				status: 'blocked-gate',
+				dispatchGateSatisfied: false,
+				dispatchGateEvidence: {
+					status: expectedStatus
+				}
+			});
+			expect(
+				preflight.dispatchGateEvidence?.evidenceChecks?.some(
+					({ status }) => status === (expectedStatus === 'missing-evidence' ? 'missing' : 'stale')
+				)
+			).toBe(true);
+		}
+	});
+
+	it.each([
+		['canary', { profile: 'normal-canary' }, false, []],
+		['canary', { profile: 'final-canary' }, true, []],
+		[
+			'breadth',
+			{ profile: 'breadth', prerequisiteRunId: 'eligible-preceding-run' },
+			true,
+			['eligible-preceding-run']
+		],
+		[
+			'pilot',
+			{ profile: 'load', requestedConcurrency: 4, prerequisiteRunId: 'eligible-preceding-run' },
+			true,
+			['eligible-preceding-run']
+		],
+		[
+			'load',
+			{ profile: 'load', requestedConcurrency: 12, prerequisiteRunId: 'eligible-preceding-run' },
+			true,
+			['eligible-preceding-run']
+		],
+		[
+			'scale',
+			{ profile: 'load', requestedConcurrency: 16, prerequisiteRunId: 'eligible-preceding-run' },
+			true,
+			['eligible-preceding-run']
+		]
+	] as const)(
+		'rejects arbitrary hash-valid JSON for the %s derived profile',
+		async (stage, derivation, humanGateSatisfied, prerequisiteRunIds) => {
+			const root = await mkdtemp(path.join(tmpdir(), `affinity-wave-adversarial-${stage}-`));
+			roots.push(root);
+			const jobs = [
+				manifestJob('death-knight', 'normal'),
+				manifestJob('death-knight', 'wood'),
+				manifestJob('elemental', 'fire'),
+				manifestJob('elemental', 'metal'),
+				manifestJob('grey-wolf', 'water'),
+				manifestJob('grey-wolf', 'wind'),
+				manifestJob('cave-bear', 'normal'),
+				manifestJob('cave-bear', 'fire'),
+				manifestJob('goblin', 'wood'),
+				manifestJob('goblin', 'metal'),
+				manifestJob('tunnel-boar', 'water'),
+				manifestJob('tunnel-boar', 'wind'),
+				manifestJob('cave-drake', 'normal'),
+				manifestJob('cave-drake', 'wood'),
+				manifestJob('tower-basilisk', 'fire'),
+				manifestJob('tower-basilisk', 'metal')
+			].slice(0, requestedByStage[stage]);
+			for (const job of jobs) {
+				await copy(job.targetPath, root);
+				await copy(job.assignmentPath, root);
+			}
+			await copy('package.json', root);
+			const packageValue = JSON.parse(
+				await readFile(path.resolve('package.json'), 'utf8')
+			) as unknown;
+			const canonicalGateId =
+				derivation.profile === 'normal-canary'
+					? 'normal-canary-dispatch-v2'
+					: derivation.profile === 'final-canary'
+						? 'final-controlled-canary-dispatch-v2'
+						: `${derivation.profile === 'breadth' ? 'breadth' : `load-${derivation.requestedConcurrency}`}-after-${createHash(
+								'sha256'
+							)
+								.update(derivation.prerequisiteRunId)
+								.digest('hex')
+								.slice(0, 12)}-dispatch-v2`;
+			const adversarialGate = AffinityWaveDispatchGateSchema.parse({
+				schemaVersion: 'affinity-wave-dispatch-gate-v2',
+				gateId: canonicalGateId,
+				experimentId: 'affinity-workflow-v1',
+				status: 'authorized',
+				authorizedStage: stage,
+				qualityGateSatisfied: true,
+				humanGateSatisfied,
+				prerequisiteRunIds,
+				derivation,
+				evidenceBindings: [
+					{ path: 'package.json', canonicalSha256: canonicalJsonSha256(packageValue) }
+				]
+			});
+			const artifactPath = `${experimentRoot}/review/test-gates/${stage}-adversarial.json`;
+			await mkdir(path.dirname(path.join(root, artifactPath)), { recursive: true });
+			await writeFile(
+				path.join(root, artifactPath),
+				`${JSON.stringify(adversarialGate, null, '\t')}\n`
+			);
+			const adversarialPlan = AffinityWavePlanSchema.parse({
+				...plan(stage, jobs, `${stage}-arbitrary-json`),
+				dispatchGate: {
+					artifactPath,
+					canonicalSha256: canonicalJsonSha256(adversarialGate)
+				}
+			});
+			const preflight = await preflightWave(
+				root,
+				adversarialPlan,
+				requestedByStage[stage] + 1,
+				'2026-08-29T20:00:00.000Z'
+			);
+			expect(preflight).toMatchObject({
+				status: 'blocked-gate',
+				dispatchGateSatisfied: false,
+				dispatchGateEvidence: { status: 'semantic-evidence-invalid' }
+			});
+		}
+	);
+
+	it('reads a legacy v1 gate as blocked evidence but never authorizes it', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-legacy-gate-'));
+		roots.push(root);
+		const jobs = [manifestJob('goblin', 'normal'), manifestJob('goblin', 'fire')];
+		for (const job of jobs) {
+			await copy(job.targetPath, root);
+			await copy(job.assignmentPath, root);
+		}
+		const legacyGate = {
+			schemaVersion: 'affinity-wave-dispatch-gate-v1',
+			gateId: 'legacy-canary-gate',
+			experimentId: 'affinity-workflow-v1',
+			status: 'authorized',
+			authorizedStage: 'canary',
+			qualityGateSatisfied: true,
+			humanGateSatisfied: true,
+			prerequisiteRunIds: [],
+			evidencePaths: [gateEvidencePath]
+		};
+		const artifactPath = `${experimentRoot}/review/test-gates/legacy-canary.json`;
+		const gatePath = path.join(root, artifactPath);
+		await mkdir(path.dirname(gatePath), { recursive: true });
+		await writeFile(gatePath, `${JSON.stringify(legacyGate, null, '\t')}\n`);
+		const legacyPlan = AffinityWavePlanSchema.parse({
+			...plan('canary', jobs, 'legacy-v1-canary'),
+			dispatchGate: {
+				artifactPath,
+				canonicalSha256: canonicalJsonSha256(legacyGate)
+			}
+		});
+		const preflight = await preflightWave(root, legacyPlan, 3, '2026-08-29T20:00:00.000Z');
+		expect(preflight).toMatchObject({
+			status: 'blocked-gate',
+			dispatchGateSatisfied: false,
+			dispatchGateEvidence: { status: 'legacy-gate-not-authorizing' }
+		});
+		expect(AffinityWavePreflightSchema.safeParse(preflight).success).toBe(true);
+		const historicalBlocked = {
+			...preflight,
+			status: 'blocked-capacity' as const,
+			dispatchGateSatisfied: true,
+			dispatchGateEvidence: {
+				status: 'satisfied' as const,
+				artifactPath,
+				expectedCanonicalSha256: canonicalJsonSha256(legacyGate),
+				observedCanonicalSha256: canonicalJsonSha256(legacyGate),
+				gate: legacyGate
+			}
+		};
+		expect(AffinityWavePreflightSchema.safeParse(historicalBlocked).success).toBe(true);
+		expect(
+			AffinityWavePreflightSchema.safeParse({ ...historicalBlocked, status: 'ready' }).success
+		).toBe(false);
 	});
 
 	it('requires a human gate for final-controlled targets while allowing generic pre-human canaries', async () => {
@@ -348,7 +689,9 @@ describe('affinity concurrency wave scheduler', () => {
 		for (const job of jobs) await copy(job.targetPath, root);
 		for (const job of jobs) await copy(job.assignmentPath, root);
 		await writeGate(root, 'pilot');
-		const preflight = await preflightWave(root, plan('pilot', jobs), 5, '2026-08-29T20:00:00.000Z');
+		const preflight = readyEventFixture(
+			await preflightWave(root, plan('pilot', jobs), 5, '2026-08-29T20:00:00.000Z')
+		);
 		const started = event(
 			preflight.runId,
 			'wave-started',
@@ -427,11 +770,13 @@ describe('affinity concurrency wave scheduler', () => {
 		for (const job of jobs) await copy(job.targetPath, root);
 		for (const job of jobs) await copy(job.assignmentPath, root);
 		await writeGate(root, 'pilot');
-		const preflight = await preflightWave(
-			root,
-			plan('pilot', jobs, 'pilot-mixed-pressure'),
-			5,
-			'2026-08-29T20:00:00.000Z'
+		const preflight = readyEventFixture(
+			await preflightWave(
+				root,
+				plan('pilot', jobs, 'pilot-mixed-pressure'),
+				5,
+				'2026-08-29T20:00:00.000Z'
+			)
 		);
 		const [throttled, capacityOne, capacityTwo] = preflight.jobs;
 		const events = [
@@ -503,7 +848,7 @@ describe('affinity concurrency wave scheduler', () => {
 			`${experimentRoot}/results/death-knight-normal-v1.json`,
 			`${experimentRoot}/results/death-knight-fire-v1.json`
 		]) {
-			await copy(resultPath, root);
+			await copyResultAndRetainedImage(resultPath, root);
 		}
 		const [normal, fire] = preflight.jobs;
 		const events = [
@@ -572,8 +917,8 @@ describe('affinity concurrency wave scheduler', () => {
 			3,
 			'2026-08-29T17:00:00.000Z'
 		);
-		await copy(`${experimentRoot}/results/death-knight-normal-v1.json`, root);
-		await copy(`${experimentRoot}/results/death-knight-fire-v1.json`, root);
+		await copyResultAndRetainedImage(`${experimentRoot}/results/death-knight-normal-v1.json`, root);
+		await copyResultAndRetainedImage(`${experimentRoot}/results/death-knight-fire-v1.json`, root);
 		const tiedAt = '2026-08-29T18:00:00.000Z';
 		const events: AffinityWaveEvent[] = [
 			event(preflight.runId, 'wave-started', 'wave-started', '2026-08-29T17:59:59.000Z')
@@ -610,7 +955,7 @@ describe('affinity concurrency wave scheduler', () => {
 			3,
 			'2026-08-29T17:05:00.000Z'
 		);
-		await copy(`${experimentRoot}/results/death-knight-normal-v1.json`, root);
+		await copyResultAndRetainedImage(`${experimentRoot}/results/death-knight-normal-v1.json`, root);
 		const [normal, fire] = preflight.jobs;
 		const events = [
 			event(preflight.runId, 'wave-started', 'wave-started', '2026-08-29T17:05:28.910Z'),
@@ -671,11 +1016,13 @@ describe('affinity concurrency wave scheduler', () => {
 			await copy(job.assignmentPath, root);
 		}
 		await writeGate(root, 'pilot');
-		const preflight = await preflightWave(
-			root,
-			plan('pilot', jobs, 'pilot-capacity-stop'),
-			5,
-			'2026-08-29T20:00:00.000Z'
+		const preflight = readyEventFixture(
+			await preflightWave(
+				root,
+				plan('pilot', jobs, 'pilot-capacity-stop'),
+				5,
+				'2026-08-29T20:00:00.000Z'
+			)
 		);
 		const events = [
 			event(preflight.runId, 'wave-started', 'wave-started', '2026-08-29T20:00:01.000Z'),

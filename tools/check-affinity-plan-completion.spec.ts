@@ -10,10 +10,13 @@ import {
 	buildFinalControlledGateEvidence,
 	finalControlledReceiptFailureInvalidatesWorkspace,
 	findFinalControlledCrossCohortIdConflicts,
-	ScaleRecommendationSchema,
+	roundFinalEvaluationMatchesCanonicalDerivation,
 	validateSchedulerRunEligibility,
 	type AffinityPlanCompletionEvidence
 } from './check-affinity-plan-completion.js';
+import { AffinityRoundFinalEvaluationSchema } from './finalize-affinity-round-evaluation.js';
+import { AffinityScaleRecommendationV3Schema as ScaleRecommendationSchema } from './finalize-affinity-scale-recommendation.js';
+import { canonicalJsonSha256 } from './affinity-wave-scheduler-lib.js';
 import type { ValidatedImageProductionExecution } from './sync-affinity-review.js';
 
 const FINAL_HASH = 'b'.repeat(64);
@@ -128,6 +131,45 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 }
 
 describe('affinity image-production plan completion', () => {
+	it('rejects stored round counters that differ from the canonical derivation', () => {
+		const canonical = AffinityRoundFinalEvaluationSchema.parse({
+			schemaVersion: 'affinity-review-round-final-evaluation-v1',
+			experimentId: 'affinity-workflow-v1',
+			roundId: 'breadth-v1',
+			status: 'passed',
+			finalizedAt: '2026-08-29T22:00:00.000Z',
+			integrationReceiptCanonicalSha256: 'a'.repeat(64),
+			blindReviewCanonicalSha256: 'b'.repeat(64),
+			criteria: {
+				reviewCount: 24,
+				firstAttemptCandidateCount: 20,
+				speciesCorrectCount: 23,
+				affinityCorrectCount: 20,
+				normalUnaffiliatedCount: 4,
+				acceptedMeaningfulAffinityCount: 20,
+				acceptedCriticalVisualFailureCount: 0,
+				representedSpeciesCount: 4,
+				acceptedUnusualAnatomyCount: 1,
+				workflowViolationCount: 0
+			}
+		});
+		const derivation = { eligible: true, blockers: [], evaluation: canonical } as const;
+		expect(roundFinalEvaluationMatchesCanonicalDerivation(canonical, derivation)).toBe(true);
+		const forgedUnusualCount = AffinityRoundFinalEvaluationSchema.parse({
+			...canonical,
+			criteria: { ...canonical.criteria, acceptedUnusualAnatomyCount: 2 }
+		});
+		expect(roundFinalEvaluationMatchesCanonicalDerivation(forgedUnusualCount, derivation)).toBe(
+			false
+		);
+		expect(
+			AffinityRoundFinalEvaluationSchema.safeParse({
+				...canonical,
+				criteria: { ...canonical.criteria, representedSpeciesCount: 5 }
+			}).success
+		).toBe(false);
+	});
+
 	it('marks complete only when every plan-level evidence section is complete', () => {
 		const report = buildAffinityPlanCompletionReport(completeEvidence());
 
@@ -304,16 +346,30 @@ describe('affinity image-production plan completion', () => {
 				expectedCanonicalSha256: 'a'.repeat(64),
 				observedCanonicalSha256: 'a'.repeat(64),
 				gate: {
-					schemaVersion: 'affinity-wave-dispatch-gate-v1',
+					schemaVersion: 'affinity-wave-dispatch-gate-v2',
 					gateId: 'canary-gate',
 					experimentId: 'affinity-workflow-v1',
 					status: 'authorized',
 					authorizedStage: 'canary',
 					qualityGateSatisfied: true,
-					humanGateSatisfied: true,
+					humanGateSatisfied: false,
 					prerequisiteRunIds: [],
-					evidencePaths: ['assets/enemies/experiments/affinity-workflow-v1/review/evaluation.json']
-				}
+					derivation: { profile: 'normal-canary' },
+					evidenceBindings: [
+						{
+							path: 'assets/enemies/experiments/affinity-workflow-v1/review/evaluation.json',
+							canonicalSha256: 'b'.repeat(64)
+						}
+					]
+				},
+				evidenceChecks: [
+					{
+						path: 'assets/enemies/experiments/affinity-workflow-v1/review/evaluation.json',
+						expectedCanonicalSha256: 'b'.repeat(64),
+						observedCanonicalSha256: 'b'.repeat(64),
+						status: 'verified'
+					}
+				]
 			},
 			collisionPaths: [],
 			jobs: [
@@ -368,7 +424,7 @@ describe('affinity image-production plan completion', () => {
 			integrationErrorCount: 0
 		};
 		const report = {
-			schemaVersion: 'affinity-wave-report-v1',
+			schemaVersion: 'affinity-wave-report-v2',
 			runId: 'canary-eligible',
 			experimentId: 'affinity-workflow-v1',
 			stage: 'canary',
@@ -404,12 +460,50 @@ describe('affinity image-production plan completion', () => {
 			parallelEfficiency: 0.75,
 			provenanceCompletenessRate: 1,
 			stopRule: { capacityFailureLimit: 3, triggered: false, triggeredAt: null },
+			sourceEvidence: {
+				preflight: {
+					path: `${preflight.runDirectory}/preflight.json`,
+					canonicalSha256: canonicalJsonSha256(preflight)
+				},
+				events: [],
+				results: preflight.jobs.map((job) => ({
+					targetId: job.targetId,
+					path: job.resultPath,
+					canonicalSha256: 'c'.repeat(64),
+					candidatePath: job.candidatePath,
+					candidateByteSha256: 'd'.repeat(64)
+				}))
+			},
 			stageMetrics
 		};
 
 		expect(validateSchedulerRunEligibility(preflight, report)).toEqual({
 			eligible: true,
 			reasons: []
+		});
+		const legacyGatePreflight = {
+			...preflight,
+			dispatchGateEvidence: {
+				...preflight.dispatchGateEvidence,
+				gate: {
+					schemaVersion: 'affinity-wave-dispatch-gate-v1',
+					gateId: preflight.dispatchGateEvidence.gate.gateId,
+					experimentId: preflight.dispatchGateEvidence.gate.experimentId,
+					status: preflight.dispatchGateEvidence.gate.status,
+					authorizedStage: preflight.dispatchGateEvidence.gate.authorizedStage,
+					qualityGateSatisfied: preflight.dispatchGateEvidence.gate.qualityGateSatisfied,
+					humanGateSatisfied: preflight.dispatchGateEvidence.gate.humanGateSatisfied,
+					prerequisiteRunIds: preflight.dispatchGateEvidence.gate.prerequisiteRunIds,
+					evidencePaths: preflight.dispatchGateEvidence.gate.evidenceBindings.map(
+						(binding) => binding.path
+					)
+				},
+				evidenceChecks: undefined
+			}
+		};
+		expect(validateSchedulerRunEligibility(legacyGatePreflight, report)).toMatchObject({
+			eligible: false,
+			reasons: expect.arrayContaining(['invalid-preflight'])
 		});
 		expect(
 			validateSchedulerRunEligibility(preflight, { ...report, effectiveConcurrency: 1 })

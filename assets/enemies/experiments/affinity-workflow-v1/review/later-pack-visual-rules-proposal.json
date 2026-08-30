@@ -1,0 +1,63 @@
+{
+	"schemaVersion": "affinity-later-pack-visual-rules-proposal-v1",
+	"experimentId": "affinity-workflow-v1",
+	"status": "proposed-not-accepted",
+	"rules": [
+		{
+			"ruleId": "affinity-changes-construction",
+			"domain": "affinity-construction",
+			"requiredDecision": true,
+			"text": "An elemental affinity must alter at least two declared construction dimensions such as material, silhouette, anatomy, motion, equipment, attack telegraph, environmental wake, or exposed counterplay; a palette or glow overlay alone is insufficient.",
+			"textHash": "d588cbd8def0fe61e3968d92d413689cac21c127607a450b81092b903f493f13"
+		},
+		{
+			"ruleId": "normal-remains-unaffiliated",
+			"domain": "normal-neutrality",
+			"requiredDecision": true,
+			"text": "Normal variants must read as explicitly unaffiliated and must not acquire elemental materials, glow, anatomy, or environmental effects merely to compete with affinity variants.",
+			"textHash": "a34e88b3b728618646000bb6e4926a95a5fc1b63a1be4a365179b44543645911"
+		},
+		{
+			"ruleId": "species-identity-survives-affinity",
+			"domain": "species-identity",
+			"requiredDecision": true,
+			"text": "Every affinity variant must preserve the species or chassis identity, battlefield duty, load-bearing anatomy, and readable counterplay anchors before adding affinity expression.",
+			"textHash": "1882a0b5a2120abdfcd6a23a462126582f275d1e80848be627dd376f8ca33768"
+		},
+		{
+			"ruleId": "grade-and-affinity-stay-separate",
+			"domain": "grade-separation",
+			"requiredDecision": true,
+			"text": "Monster grade, level, battlefield duty, affinity, and randomized physical attributes remain separate axes; grades seven through ten may escalate scale, musculature, weapons, construction complexity, or magical intensity but may not obscure species identity or affinity readability.",
+			"textHash": "192e576b71ed1299f99309286de67d9c4916735b817b726bfa6d74753c2411ba"
+		},
+		{
+			"ruleId": "packs-declare-coherent-style",
+			"domain": "pack-style",
+			"requiredDecision": true,
+			"text": "Each pack must declare one coherent style contract; Pack 2 remains medieval, while later packs may use other eras or genres without weakening shared rendering quality, full-body readability, or within-pack cohesion.",
+			"textHash": "3ca2e0ff2f54748908387bd4dede72803e8a4a055320cbcb35d4102aa025e148"
+		},
+		{
+			"ruleId": "power-uses-material-hierarchy",
+			"domain": "power-signaling",
+			"requiredDecision": true,
+			"text": "Higher power should be communicated through species-appropriate scale, construction, craftsmanship, material behavior, silhouette, weapons, and controlled resonance geometry; glow alone is not a sufficient rarity or power signal.",
+			"textHash": "b9c398cce4f4ef2b89b17de6b8d9e8c5a33afb4e557ae173c00379b7c8f4e724"
+		},
+		{
+			"ruleId": "humans-vary-with-compatibility",
+			"domain": "human-variation",
+			"requiredDecision": true,
+			"text": "Human packs must vary body proportions, height, build, face construction, hair, clothing layers, footwear, trousers, torso garments, arm treatments, and headwear through compatibility-aware combinations that preserve role, identity, and plausible equipment contact.",
+			"textHash": "626ba00dea94b377ceb3c48ab3c6e9516bd1ffc1912641aa6eab1abbf50c5ec8"
+		},
+		{
+			"ruleId": "quality-without-objectification",
+			"domain": "quality-ethics",
+			"requiredDecision": true,
+			"text": "Every rarity and presentation receives premium anatomy, lighting, texture, composition, and identity specificity; exposure, glamour posing, or anatomy exaggeration must not carry rarity, power, or human value.",
+			"textHash": "8927c7cfa92b997f0b70b4c94086061edea4f6415972326d58a09c7cebbb12d8"
+		}
+	]
+}

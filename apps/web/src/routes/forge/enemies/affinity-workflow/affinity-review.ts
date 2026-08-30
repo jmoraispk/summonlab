@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import type { AffinityWorkflowReviewRecord } from '@summonlab/contracts';
 
-import { verifyFinalControlledActivationReceipt } from '../../../../../../../tools/activate-final-controlled-rerun.js';
+import { verifyFinalControlledActivationReceipt } from '../../../../../../../tools/final-controlled-activation-evidence.js';
 import { sha256Json } from '../../../../../../../tools/image-production-lib.js';
 
 export const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;

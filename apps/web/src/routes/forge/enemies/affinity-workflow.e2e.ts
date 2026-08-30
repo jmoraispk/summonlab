@@ -13,6 +13,12 @@ test('renders partial affinity cohorts without implying approval', async ({ page
 	await expect(page.getByText('10 current · 10 max · 20 required')).toBeVisible();
 	await expect(page.getByText('0 current · 21 max · 23 required')).toBeVisible();
 	await expect(page.getByText('0 current · 17 max · 20 required')).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Later-pack visual rules' })).toBeVisible();
+	await expect(page.getByText('Evidence remains incomplete')).toBeVisible();
+	await expect(page.getByRole('form', { name: 'Later-pack visual-rule decision' })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Waiting for eligible evidence' })).toBeDisabled();
+	await expect(page.getByRole('radio', { name: 'Accept' }).first()).not.toBeChecked();
+	await expect(page.getByRole('radio', { name: 'Reject' }).first()).not.toBeChecked();
 
 	const reviseEvidence = page
 		.getByTestId('affinity-cell')
@@ -40,6 +46,8 @@ test('renders partial affinity cohorts without implying approval', async ({ page
 test('blind mode withholds semantic labels and uses opaque media sources', async ({ page }) => {
 	await page.goto('/forge/enemies/affinity-workflow?mode=blind');
 	await expect(page.getByText('Blind recognition', { exact: true })).toBeVisible();
+	await page.getByLabel('Reviewer identity').fill(`test:affinity-page-${Date.now()}`);
+	await page.getByRole('button', { name: 'Begin reviewer-bound session' }).click();
 	await expect(page.getByText('Specimen 01')).toBeVisible();
 	await expect(page.getByTestId('affinity-cell')).toHaveCount(24);
 	await expect(page.getByText(/0 \/ 21/)).toBeVisible();
@@ -53,7 +61,7 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	await expect(image).toHaveAttribute('alt', 'Unlabeled experiment candidate');
 	await expect(image).toHaveAttribute(
 		'src',
-		/^\/forge\/enemies\/affinity-workflow\/media\/[a-f0-9]{24}$/
+		/^\/forge\/enemies\/affinity-workflow\/media\/[a-f0-9]{24}\?round=baseline-v1&scope=controlled$/
 	);
 	await image.click();
 	await expect(page.getByRole('dialog', { name: 'Candidate inspector' })).toBeVisible();
@@ -63,7 +71,6 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	await expect(page.getByText('No target, source, prompt, filename, content hash')).toBeVisible();
 	const saveReview = page.getByRole('button', { name: 'Save review' });
 	if (await saveReview.isVisible()) {
-		await page.getByLabel('Reviewer').fill(`test:affinity-page-${Date.now()}`);
 		await page.getByLabel('Species guess').selectOption('death-knight');
 		await page.getByLabel('Affinity guess').selectOption('normal');
 		await page.getByRole('radio', { name: 'Candidate' }).check();
@@ -81,4 +88,5 @@ test('blind mode withholds semantic labels and uses opaque media sources', async
 	expect(html).not.toContain('normal-v1.png');
 	expect(html).not.toContain('exactPrompt');
 	expect(html).not.toContain('contentHash');
+	expect(html).not.toContain('affinity-changes-construction');
 });

@@ -83,10 +83,37 @@ and Scale 16. A plan must contain at least one collision-free target per request
 
 Every executable wave plan must bind a dispatch-gate artifact by canonical JSON hash. The gate
 authorizes exactly one stage, records whether its quality and human prerequisites passed, names
-preceding eligible scheduler runs, and cites evidence paths. Legacy plans without that pointer may
+preceding eligible scheduler runs, and binds every source JSON path to its verified canonical
+SHA-256. Legacy v1 gates remain readable only as blocked historical evidence: their unverified path
+lists can never authorize a fresh or ready preflight. Legacy plans without a gate pointer may
 still reproduce truthful `blocked-capacity` evidence, but they can never become `ready`; an
 otherwise runnable legacy plan becomes `blocked-gate`. The event journal also rejects every event
 for a non-ready preflight, so bypassing `next` cannot bypass the gate.
+
+Gate booleans and evidence paths are not operator inputs. Derive a v2 gate from the current source
+artifacts with the guarded writer:
+
+```bash
+# Check the initial Normal canary gate without writing.
+pnpm check:affinity-dispatch-gate -- --profile normal
+
+# After guarded final activation, publish the final-controlled Canary gate.
+pnpm write:affinity-dispatch-gate -- --profile final
+
+# After an eligible Controlled-6 run and passed final round, publish Breadth-8.
+pnpm write:affinity-dispatch-gate -- --profile breadth \
+  --prerequisite-run <controlled-6-run-id>
+
+# Exact later stages: 4, 6, 12, or 16.
+pnpm write:affinity-dispatch-gate -- --profile load --concurrency 16 \
+  --prerequisite-run <load-12-run-id>
+```
+
+The writer recomputes each profile's fixed evidence chain and publishes with exclusive,
+no-overwrite semantics. Final binds the verified activation receipt and all 48 activated
+manifests. Breadth binds a passed final-controlled round. Load-12 and Scale-16 bind a passed Breadth
+round, and Scale-16 additionally requires an eligible Load-12 predecessor. `--check` is zero-write
+and exits nonzero until the exact expected gate already exists.
 
 Generic early Canary, Pilot, or Controlled work may explicitly record that no human gate was yet
 required. A target under `targets/final-controlled/` is different: preflight recognizes that owned
@@ -212,6 +239,12 @@ and, with at least ten attempts, p90/p95; summed job time; observed speedup; par
 and result-provenance completeness. The embedded concurrency-stage `throttleCount` contains only
 provider throttles; agent-slot failures remain in the scheduler report's `capacityFailureCount`.
 
+Report v2 also binds the exact preflight, event journal, result manifests, and retained candidate
+image bytes by repository path and cryptographic hash. Completion does not trust those bindings as
+claims: it rereads the journal and manifests, verifies each execution and retained image, rebuilds
+the report at its recorded timestamp, and requires canonical equality with the stored report. A
+missing, changed, reordered, or hand-authored source therefore makes the run ineligible.
+
 The embedded `stageMetrics` object conforms to the existing image-production concurrency-stage
 contract only after every target has a terminal outcome and complete timing makes the calculation
 meaningful. A capacity-stopped wave retains its capacity evidence but leaves `stageMetrics`, image
@@ -228,12 +261,25 @@ complete with requested concurrency equal to measured effective concurrency, eve
 dispatched and reached a terminal outcome, provenance is complete, and capacity, provider,
 timeout, malformed-output, duplicate-ID, path-conflict, missing-result, and integration counts are
 zero. Gate prerequisite run IDs must themselves resolve to eligible earlier runs. Legacy v1
-measurements may preserve independently valid 2- and 3-worker evidence, but 4, 6, 8, and 12 count
-only from eligible scheduler reports.
+measurements may preserve independently valid 2- and 3-worker evidence, but 4, 6, 8, 12, and 16
+count only from eligible scheduler reports.
 
-A final scale recommendation uses schema `affinity-scale-recommendation-v2`. It binds every source
-run to both its preflight and report by run ID, repository path, and canonical SHA-256; its declared
-level set must exactly equal the eligible scheduler level set. Its Scale endpoint must likewise bind
-either an eligible completed 16-worker report or a gate-authorized, collision-free 16-worker
-capacity-blocked preflight. Prose or a resolved historical scheduler note cannot substitute for
-these artifacts.
+A final scale recommendation uses schema `affinity-scale-recommendation-v3`. It requires one
+stage-correct eligible scheduler run at each of 2, 4, 6, 8, and 12 effective workers. A completed
+Scale-16 run adds the sixth measured level; otherwise a gate-authorized, collision-free
+capacity-blocked Scale-16 preflight must cite an eligible Load-12 predecessor. The recommendation
+must select one of the measured levels, and 16 may be selected only from a completed Scale run.
+Writing the artifact requires an explicit human-decision acknowledgment plus concrete production
+and fallback strategies:
+
+```bash
+pnpm check:affinity-scale-recommendation
+pnpm finalize:affinity-scale-recommendation -- \
+  --acknowledge-human-decision \
+  --recommended <2|4|6|8|12|16> \
+  --production-strategy "<measured production policy>" \
+  --fallback-behavior "<capacity or quality fallback>"
+```
+
+Prose, a provisional recommendation, or a resolved historical scheduler note cannot substitute
+for the hash-bound artifact.

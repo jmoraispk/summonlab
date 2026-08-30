@@ -7,6 +7,7 @@ export * from './engine.js';
 export * from './event.js';
 export * from './health.js';
 export * from './image-production.js';
+export * from './later-pack-rules.js';
 export * from './mission.js';
 export * from './playtest.js';
 export * from './proof.js';

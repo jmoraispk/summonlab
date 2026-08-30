@@ -9,9 +9,37 @@ import {
 	ImageProductionResultSchema,
 	ImageProductionSpeciesSchema,
 	ImageProductionTargetSchema,
+	validateImageProductionExecution,
 	type ImageProductionResult
 } from '../packages/contracts/src/index.js';
 import { z } from 'zod';
+
+import {
+	FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
+	FinalControlledActivationReceiptSchema,
+	verifyFinalControlledActivationReceipt
+} from './final-controlled-activation-evidence.js';
+
+import {
+	AffinityRoundIntegrationReceiptSchema,
+	affinityRoundAggregatePaths,
+	affinityRoundRoot
+} from './affinity-review-round-lib.js';
+import {
+	AffinityRoundBlindReviewCollectionSchema,
+	loadVerifiedAffinityReviewRound,
+	roundBlindReviewPath
+} from './affinity-round-postgeneration-lib.js';
+import {
+	AffinityRoundFinalEvaluationReceiptSchema,
+	AffinityRoundFinalEvaluationSchema,
+	deriveAffinityRoundFinalEvaluation
+} from './finalize-affinity-round-evaluation.js';
+import {
+	FinalControlledRerunPlanSchema,
+	buildFinalControlledRerunBundle
+} from './prepare-final-controlled-rerun.js';
+import sharp from 'sharp';
 
 const EXPERIMENT_ROOT = 'assets/enemies/experiments/affinity-workflow-v1';
 const STAGE_CONCURRENCY = {
@@ -55,9 +83,29 @@ export function canonicalJsonSha256(value: unknown): string {
 		.digest('hex');
 }
 
+const EvidenceBindingSchema = z
+	.object({
+		path: RepositoryPathSchema,
+		canonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
+	})
+	.strict();
+
+export const AffinityWaveDispatchGateDerivationSchema = z.discriminatedUnion('profile', [
+	z.object({ profile: z.literal('normal-canary') }).strict(),
+	z.object({ profile: z.literal('final-canary') }).strict(),
+	z.object({ profile: z.literal('breadth'), prerequisiteRunId: SlugSchema }).strict(),
+	z
+		.object({
+			profile: z.literal('load'),
+			requestedConcurrency: z.union([z.literal(4), z.literal(6), z.literal(12), z.literal(16)]),
+			prerequisiteRunId: SlugSchema
+		})
+		.strict()
+]);
+
 export const AffinityWaveDispatchGateSchema = z
 	.object({
-		schemaVersion: z.literal('affinity-wave-dispatch-gate-v1'),
+		schemaVersion: z.literal('affinity-wave-dispatch-gate-v2'),
 		gateId: SlugSchema,
 		experimentId: z.literal('affinity-workflow-v1'),
 		status: z.literal('authorized'),
@@ -65,7 +113,8 @@ export const AffinityWaveDispatchGateSchema = z
 		qualityGateSatisfied: z.literal(true),
 		humanGateSatisfied: z.boolean(),
 		prerequisiteRunIds: z.array(SlugSchema),
-		evidencePaths: z.array(RepositoryPathSchema).min(1)
+		derivation: AffinityWaveDispatchGateDerivationSchema,
+		evidenceBindings: z.array(EvidenceBindingSchema).min(1)
 	})
 	.strict()
 	.superRefine((gate, context) => {
@@ -83,9 +132,72 @@ export const AffinityWaveDispatchGateSchema = z
 				message: 'Breadth, Load, and Scale require explicit human-gate satisfaction'
 			});
 		}
+		const evidencePaths = gate.evidenceBindings.map((binding) => binding.path);
+		if (new Set(evidencePaths).size !== evidencePaths.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['evidenceBindings'],
+				message: 'Evidence binding paths must be unique'
+			});
+		}
+		if (JSON.stringify(evidencePaths) !== JSON.stringify([...evidencePaths].sort())) {
+			context.addIssue({
+				code: 'custom',
+				path: ['evidenceBindings'],
+				message: 'Evidence bindings must be ordered by repository path'
+			});
+		}
+		const derivation = gate.derivation;
+		const expected =
+			derivation.profile === 'normal-canary'
+				? { stage: 'canary', human: false, prerequisites: [] as string[] }
+				: derivation.profile === 'final-canary'
+					? { stage: 'canary', human: true, prerequisites: [] as string[] }
+					: derivation.profile === 'breadth'
+						? {
+								stage: 'breadth',
+								human: true,
+								prerequisites: [derivation.prerequisiteRunId]
+							}
+						: {
+								stage: { 4: 'pilot', 6: 'controlled', 12: 'load', 16: 'scale' }[
+									derivation.requestedConcurrency
+								],
+								human: true,
+								prerequisites: [derivation.prerequisiteRunId]
+							};
+		if (
+			gate.authorizedStage !== expected.stage ||
+			gate.humanGateSatisfied !== expected.human ||
+			JSON.stringify(gate.prerequisiteRunIds) !== JSON.stringify(expected.prerequisites)
+		)
+			context.addIssue({
+				code: 'custom',
+				path: ['derivation'],
+				message: 'Derived profile does not match stage, human gate, and prerequisites'
+			});
 	});
 
 export type AffinityWaveDispatchGate = z.infer<typeof AffinityWaveDispatchGateSchema>;
+
+const LegacyAffinityWaveDispatchGateSchema = z
+	.object({
+		schemaVersion: z.literal('affinity-wave-dispatch-gate-v1'),
+		gateId: SlugSchema,
+		experimentId: z.literal('affinity-workflow-v1'),
+		status: z.literal('authorized'),
+		authorizedStage: StageSchema,
+		qualityGateSatisfied: z.literal(true),
+		humanGateSatisfied: z.boolean(),
+		prerequisiteRunIds: z.array(SlugSchema),
+		evidencePaths: z.array(RepositoryPathSchema).min(1)
+	})
+	.strict();
+
+const ReadableAffinityWaveDispatchGateSchema = z.union([
+	AffinityWaveDispatchGateSchema,
+	LegacyAffinityWaveDispatchGateSchema
+]);
 
 const DispatchGatePointerSchema = z
 	.object({
@@ -389,6 +501,94 @@ const ResolvedJobSchema = z
 	})
 	.strict();
 
+const DispatchGateEvidenceCheckSchema = z
+	.object({
+		path: RepositoryPathSchema,
+		expectedCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u),
+		observedCanonicalSha256: z
+			.string()
+			.regex(/^[a-f0-9]{64}$/u)
+			.nullable(),
+		status: z.enum(['verified', 'missing', 'invalid', 'stale'])
+	})
+	.strict();
+
+const DispatchGateEvidenceSchema = z
+	.object({
+		status: z.enum([
+			'satisfied',
+			'missing-plan-pointer',
+			'missing-artifact',
+			'hash-mismatch',
+			'invalid-artifact',
+			'legacy-gate-not-authorizing',
+			'missing-evidence',
+			'invalid-evidence',
+			'stale-evidence',
+			'semantic-evidence-invalid',
+			'stage-not-authorized',
+			'human-gate-required'
+		]),
+		artifactPath: RepositoryPathSchema.nullable(),
+		expectedCanonicalSha256: z
+			.string()
+			.regex(/^[a-f0-9]{64}$/u)
+			.nullable(),
+		observedCanonicalSha256: z
+			.string()
+			.regex(/^[a-f0-9]{64}$/u)
+			.nullable(),
+		gate: ReadableAffinityWaveDispatchGateSchema.nullable(),
+		evidenceChecks: z.array(DispatchGateEvidenceCheckSchema).optional()
+	})
+	.strict()
+	.superRefine((evidence, context) => {
+		if (evidence.status !== 'satisfied') return;
+		if (evidence.gate?.schemaVersion === 'affinity-wave-dispatch-gate-v1') return;
+		const gate = AffinityWaveDispatchGateSchema.safeParse(evidence.gate);
+		if (!gate.success) {
+			context.addIssue({
+				code: 'custom',
+				path: ['gate'],
+				message: 'Only a v2 dispatch gate can satisfy a preflight'
+			});
+			return;
+		}
+		if (
+			evidence.expectedCanonicalSha256 === null ||
+			evidence.expectedCanonicalSha256 !== evidence.observedCanonicalSha256
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['observedCanonicalSha256'],
+				message: 'A satisfied gate must match its pointer hash'
+			});
+		}
+		if (evidence.evidenceChecks?.length !== gate.data.evidenceBindings.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['evidenceChecks'],
+				message: 'A satisfied gate must verify every evidence binding'
+			});
+			return;
+		}
+		for (const [index, binding] of gate.data.evidenceBindings.entries()) {
+			const check = evidence.evidenceChecks[index];
+			if (
+				check?.path !== binding.path ||
+				check.expectedCanonicalSha256 !== binding.canonicalSha256 ||
+				check.observedCanonicalSha256 !== binding.canonicalSha256 ||
+				check.status !== 'verified'
+			) {
+				context.addIssue({
+					code: 'custom',
+					path: ['evidenceChecks', index],
+					message: 'Satisfied evidence checks must exactly verify their ordered bindings'
+				});
+			}
+		}
+	});
+
 export const AffinityWavePreflightSchema = z
 	.object({
 		schemaVersion: z.literal('affinity-wave-preflight-v1'),
@@ -405,36 +605,37 @@ export const AffinityWavePreflightSchema = z
 		runDirectory: RepositoryPathSchema,
 		stopRules: AffinityWavePlanSchema.shape.stopRules,
 		dispatchGateSatisfied: z.boolean().optional(),
-		dispatchGateEvidence: z
-			.object({
-				status: z.enum([
-					'satisfied',
-					'missing-plan-pointer',
-					'missing-artifact',
-					'hash-mismatch',
-					'invalid-artifact',
-					'stage-not-authorized',
-					'human-gate-required'
-				]),
-				artifactPath: RepositoryPathSchema.nullable(),
-				expectedCanonicalSha256: z
-					.string()
-					.regex(/^[a-f0-9]{64}$/u)
-					.nullable(),
-				observedCanonicalSha256: z
-					.string()
-					.regex(/^[a-f0-9]{64}$/u)
-					.nullable(),
-				gate: AffinityWaveDispatchGateSchema.nullable()
-			})
-			.strict()
-			.optional(),
+		dispatchGateEvidence: DispatchGateEvidenceSchema.optional(),
 		collisionPaths: z.array(RepositoryPathSchema),
 		jobs: z.array(ResolvedJobSchema).min(1).max(100)
 	})
-	.strict();
+	.strict()
+	.superRefine((preflight, context) => {
+		if (
+			preflight.status === 'ready' &&
+			(preflight.dispatchGateSatisfied !== true ||
+				!dispatchGateEvidenceAuthorizes(preflight.dispatchGateEvidence))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['dispatchGateEvidence'],
+				message: 'A ready preflight requires a fully satisfied v2 dispatch gate'
+			});
+		}
+	});
 
 export type AffinityWavePreflight = z.infer<typeof AffinityWavePreflightSchema>;
+
+export function dispatchGateEvidenceAuthorizes(
+	evidence: AffinityWavePreflight['dispatchGateEvidence']
+): boolean {
+	return (
+		evidence !== undefined &&
+		DispatchGateEvidenceSchema.safeParse(evidence).success &&
+		evidence.status === 'satisfied' &&
+		AffinityWaveDispatchGateSchema.safeParse(evidence.gate).success
+	);
+}
 
 const BaseEventSchema = z.object({
 	schemaVersion: z.literal('affinity-wave-event-v1'),
@@ -494,9 +695,31 @@ export const AffinityWaveDispatchDecisionSchema = z
 
 export type AffinityWaveDispatchDecision = z.infer<typeof AffinityWaveDispatchDecisionSchema>;
 
+const WaveReportSourceBindingSchema = z
+	.object({
+		path: RepositoryPathSchema,
+		canonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u)
+	})
+	.strict();
+
+const WaveReportResultBindingSchema = WaveReportSourceBindingSchema.safeExtend({
+	targetId: SlugSchema,
+	candidatePath: RepositoryPathSchema.nullable(),
+	candidateByteSha256: z
+		.string()
+		.regex(/^[a-f0-9]{64}$/u)
+		.nullable()
+}).superRefine((binding, context) => {
+	if ((binding.candidatePath === null) !== (binding.candidateByteSha256 === null))
+		context.addIssue({
+			code: 'custom',
+			message: 'Candidate path and byte hash must appear together'
+		});
+});
+
 export const AffinityWaveReportSchema = z
 	.object({
-		schemaVersion: z.literal('affinity-wave-report-v1'),
+		schemaVersion: z.literal('affinity-wave-report-v2'),
 		runId: SlugSchema,
 		experimentId: z.literal('affinity-workflow-v1'),
 		stage: StageSchema,
@@ -538,6 +761,25 @@ export const AffinityWaveReportSchema = z
 				triggeredAt: z.string().datetime({ offset: true }).nullable()
 			})
 			.strict(),
+		sourceEvidence: z
+			.object({
+				preflight: WaveReportSourceBindingSchema,
+				events: z.array(WaveReportSourceBindingSchema),
+				results: z.array(WaveReportResultBindingSchema)
+			})
+			.strict()
+			.superRefine((source, context) => {
+				for (const [field, values] of [
+					['event paths', source.events.map((item) => item.path)],
+					['result paths', source.results.map((item) => item.path)],
+					['result target IDs', source.results.map((item) => item.targetId)]
+				] as const)
+					if (new Set(values).size !== values.length)
+						context.addIssue({
+							code: 'custom',
+							message: `Source ${field} must be unique`
+						});
+			}),
 		stageMetrics: ImageProductionConcurrencyStageSchema.nullable()
 	})
 	.strict();
@@ -587,6 +829,430 @@ type DispatchGateEvidence = NonNullable<
 	z.infer<typeof AffinityWavePreflightSchema>['dispatchGateEvidence']
 >;
 
+type DispatchGateEvidenceCheck = z.infer<typeof DispatchGateEvidenceCheckSchema>;
+
+interface ResolvedDispatchGateBinding {
+	readonly check: DispatchGateEvidenceCheck;
+	readonly value: unknown | null;
+}
+
+const NORMAL_DRY_RUN_PATH =
+	`${EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v2.json` as const;
+const FINAL_CONTROLLED_PLAN_PATH =
+	`${EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json` as const;
+
+const NormalDryRunSemanticSchema = z
+	.object({
+		schemaVersion: z.literal('image-production-dry-run-evidence-v1'),
+		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v2'),
+		experimentId: z.literal('affinity-workflow-v1'),
+		workflow: z.literal('summonlab-image-production'),
+		target: z
+			.object({
+				path: RepositoryPathSchema,
+				targetId: z.literal('affinity-workflow-v1-goblin-normal'),
+				contentHash: z.string().regex(/^[a-f0-9]{64}$/u)
+			})
+			.passthrough(),
+		assignment: z
+			.object({
+				path: RepositoryPathSchema,
+				assignmentId: z.literal('dry-run-assignment-affinity-workflow-v1-goblin-normal'),
+				contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+				dryRun: z.literal(true),
+				retryCeiling: z.literal(0)
+			})
+			.passthrough(),
+		preflight: z
+			.object({
+				status: z.literal('pass'),
+				referencesPresentAndHashMatched: z.literal(true),
+				pathsContainedAndNormalized: z.literal(true),
+				targetAssignmentIdsMatch: z.literal(true),
+				outputsAbsent: z.literal(true)
+			})
+			.passthrough(),
+		completion: z
+			.object({
+				generationCallCount: z.literal(0),
+				persistenceCallCount: z.literal(0),
+				sharedFilesEdited: z.literal(false),
+				selfPromoted: z.literal(false),
+				status: z.literal('pass')
+			})
+			.passthrough()
+	})
+	.passthrough();
+
+function exactBindingPaths(
+	gate: AffinityWaveDispatchGate,
+	expectedPaths: readonly string[]
+): boolean {
+	const actual = gate.evidenceBindings.map((binding) => binding.path);
+	const expected = [...new Set(expectedPaths)].sort((left, right) => left.localeCompare(right));
+	return JSON.stringify(actual) === JSON.stringify(expected);
+}
+
+function evidenceValue(values: ReadonlyMap<string, unknown>, repositoryPath: string): unknown {
+	if (!values.has(repositoryPath)) throw new Error(`Missing semantic evidence: ${repositoryPath}`);
+	return values.get(repositoryPath);
+}
+
+async function verifyNormalSemanticEvidence(
+	workspaceRoot: string,
+	values: ReadonlyMap<string, unknown>
+): Promise<string[]> {
+	const dryRun = NormalDryRunSemanticSchema.parse(evidenceValue(values, NORMAL_DRY_RUN_PATH));
+	const target = ImageProductionTargetSchema.parse(evidenceValue(values, dryRun.target.path));
+	const assignment = ImageProductionAssignmentSchema.parse(
+		evidenceValue(values, dryRun.assignment.path)
+	);
+	const [targetBytes, assignmentBytes] = await Promise.all([
+		readFile(workspacePath(workspaceRoot, dryRun.target.path)),
+		readFile(workspacePath(workspaceRoot, dryRun.assignment.path))
+	]);
+	for (const reference of target.references) {
+		const bytes = await readFile(workspacePath(workspaceRoot, reference.path));
+		if (createHash('sha256').update(bytes).digest('hex') !== reference.contentHash)
+			throw new Error(`Normal canary reference is stale: ${reference.path}`);
+	}
+	if (
+		createHash('sha256').update(targetBytes).digest('hex') !== dryRun.target.contentHash ||
+		createHash('sha256').update(assignmentBytes).digest('hex') !== dryRun.assignment.contentHash ||
+		target.targetId !== dryRun.target.targetId ||
+		assignment.assignmentId !== dryRun.assignment.assignmentId ||
+		assignment.targetId !== target.targetId ||
+		assignment.dryRun !== true ||
+		assignment.retryCeiling !== 0
+	)
+		throw new Error('Normal canary dry-run semantics are inconsistent.');
+	return [NORMAL_DRY_RUN_PATH, dryRun.target.path, dryRun.assignment.path];
+}
+
+async function verifyFinalCanarySemanticEvidence(
+	workspaceRoot: string,
+	values: ReadonlyMap<string, unknown>
+): Promise<string[]> {
+	const plan = FinalControlledRerunPlanSchema.parse(
+		evidenceValue(values, FINAL_CONTROLLED_PLAN_PATH)
+	);
+	const receipt = FinalControlledActivationReceiptSchema.parse(
+		evidenceValue(values, FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH)
+	);
+	const bundle = buildFinalControlledRerunBundle(plan);
+	const activation = await verifyFinalControlledActivationReceipt(
+		workspaceRoot,
+		canonicalJsonSha256(plan)
+	);
+	if (!activation.valid || !activation.receipt)
+		throw new Error(
+			`Final-controlled activation receipt is invalid: ${activation.issues.join('; ')}`
+		);
+	const expectedArtifacts = new Map(
+		bundle.artifacts.map((artifact) => [artifact.livePath, artifact] as const)
+	);
+	if (
+		receipt.bindings.planCanonicalSha256 !== canonicalJsonSha256(plan) ||
+		canonicalJsonSha256(receipt.artifacts) !== receipt.artifactSetSha256 ||
+		receipt.artifacts.length !== expectedArtifacts.size
+	)
+		throw new Error('Final-controlled activation receipt is not bound to the current plan.');
+	for (const artifact of receipt.artifacts) {
+		const expected = expectedArtifacts.get(artifact.livePath);
+		if (!expected || expected.kind !== artifact.kind)
+			throw new Error(`Unexpected final-controlled activation artifact: ${artifact.livePath}`);
+		const value = evidenceValue(values, artifact.livePath);
+		const parsed =
+			artifact.kind === 'target'
+				? ImageProductionTargetSchema.parse(value)
+				: ImageProductionAssignmentSchema.parse(value);
+		if (
+			canonicalJsonSha256(parsed) !== artifact.canonicalSha256 ||
+			canonicalJsonSha256(expected.value) !== artifact.canonicalSha256
+		)
+			throw new Error(`Stale final-controlled activation artifact: ${artifact.livePath}`);
+	}
+	return [
+		FINAL_CONTROLLED_PLAN_PATH,
+		FINAL_CONTROLLED_ACTIVATION_RECEIPT_PATH,
+		...receipt.artifacts.map((artifact) => artifact.livePath)
+	];
+}
+
+async function verifyRoundSemanticEvidence(
+	workspaceRoot: string,
+	values: ReadonlyMap<string, unknown>,
+	roundId: 'final-controlled-v1' | 'breadth-v1'
+): Promise<string[]> {
+	const paths = affinityRoundAggregatePaths(roundId);
+	const root = affinityRoundRoot(roundId);
+	const blindPath = roundBlindReviewPath(roundId);
+	const evaluationPath = `${root}/final-evaluation.json`;
+	const finalReceiptPath = `${root}/final-evaluation-receipt.json`;
+	const integration = AffinityRoundIntegrationReceiptSchema.parse(
+		evidenceValue(values, paths.receipt)
+	);
+	const blind = AffinityRoundBlindReviewCollectionSchema.parse(evidenceValue(values, blindPath));
+	const evaluation = AffinityRoundFinalEvaluationSchema.parse(
+		evidenceValue(values, evaluationPath)
+	);
+	const finalReceipt = AffinityRoundFinalEvaluationReceiptSchema.parse(
+		evidenceValue(values, finalReceiptPath)
+	);
+	const verifiedRound = await loadVerifiedAffinityReviewRound(workspaceRoot, roundId);
+	const derived = await deriveAffinityRoundFinalEvaluation(workspaceRoot, roundId);
+	const evaluationBytes = await readFile(workspacePath(workspaceRoot, evaluationPath));
+	if (
+		verifiedRound.integrationReceiptCanonicalSha256 !== canonicalJsonSha256(integration) ||
+		!derived.eligible ||
+		derived.evaluation === null ||
+		canonicalJsonSha256(derived.evaluation) !== canonicalJsonSha256(evaluation) ||
+		integration.roundId !== roundId ||
+		blind.roundId !== roundId ||
+		blind.integrationReceiptCanonicalSha256 !== canonicalJsonSha256(integration) ||
+		evaluation.roundId !== roundId ||
+		evaluation.integrationReceiptCanonicalSha256 !== canonicalJsonSha256(integration) ||
+		evaluation.blindReviewCanonicalSha256 !== canonicalJsonSha256(blind) ||
+		finalReceipt.roundId !== roundId ||
+		finalReceipt.integrationReceiptCanonicalSha256 !== canonicalJsonSha256(integration) ||
+		finalReceipt.blindReviewCanonicalSha256 !== canonicalJsonSha256(blind) ||
+		finalReceipt.evaluationPath !== evaluationPath ||
+		finalReceipt.evaluationCanonicalSha256 !== canonicalJsonSha256(evaluation) ||
+		finalReceipt.evaluationByteSha256 !== createHash('sha256').update(evaluationBytes).digest('hex')
+	)
+		throw new Error(`${roundId} final evaluation bindings are inconsistent.`);
+	for (const artifact of integration.aggregates) {
+		if (canonicalJsonSha256(evidenceValue(values, artifact.path)) !== artifact.canonicalSha256)
+			throw new Error(`Stale ${roundId} aggregate: ${artifact.path}`);
+	}
+	for (const entry of integration.evidence) {
+		const target = ImageProductionTargetSchema.parse(evidenceValue(values, entry.targetPath));
+		const assignment = ImageProductionAssignmentSchema.parse(
+			evidenceValue(values, entry.assignmentPath)
+		);
+		const result = ImageProductionResultSchema.parse(evidenceValue(values, entry.resultPath));
+		if (
+			target.targetId !== entry.targetId ||
+			assignment.assignmentId !== entry.assignmentId ||
+			assignment.targetId !== target.targetId ||
+			result.resultId !== entry.resultId ||
+			result.targetId !== target.targetId ||
+			canonicalJsonSha256(target) !== entry.targetCanonicalSha256 ||
+			canonicalJsonSha256(assignment) !== entry.assignmentCanonicalSha256 ||
+			canonicalJsonSha256(result) !== entry.resultCanonicalSha256
+		)
+			throw new Error(`Stale or inconsistent ${roundId} execution: ${entry.targetId}`);
+	}
+	return [
+		paths.receipt,
+		blindPath,
+		evaluationPath,
+		finalReceiptPath,
+		...integration.aggregates.map((artifact) => artifact.path),
+		...integration.evidence.flatMap((entry) => [
+			entry.targetPath,
+			entry.assignmentPath,
+			entry.resultPath
+		])
+	];
+}
+
+async function resolveBoundEvidence(
+	workspaceRoot: string,
+	binding: z.infer<typeof EvidenceBindingSchema>
+): Promise<ResolvedDispatchGateBinding> {
+	let input: unknown;
+	try {
+		input = await readJson(workspacePath(workspaceRoot, binding.path));
+	} catch (error) {
+		return {
+			value: null,
+			check: {
+				path: binding.path,
+				expectedCanonicalSha256: binding.canonicalSha256,
+				observedCanonicalSha256: null,
+				status: (error as NodeJS.ErrnoException).code === 'ENOENT' ? 'missing' : 'invalid'
+			}
+		};
+	}
+	const observedCanonicalSha256 = canonicalJsonSha256(input);
+	return {
+		value: input,
+		check: {
+			path: binding.path,
+			expectedCanonicalSha256: binding.canonicalSha256,
+			observedCanonicalSha256,
+			status: observedCanonicalSha256 === binding.canonicalSha256 ? 'verified' : 'stale'
+		}
+	};
+}
+
+function expectedPredecessorForGate(gate: AffinityWaveDispatchGate): {
+	readonly stage: AffinityWavePreflight['stage'];
+	readonly concurrency: number;
+	readonly runId: string;
+} | null {
+	const derivation = gate.derivation;
+	if (derivation.profile === 'normal-canary' || derivation.profile === 'final-canary') return null;
+	if (derivation.profile === 'breadth')
+		return { stage: 'controlled', concurrency: 6, runId: derivation.prerequisiteRunId };
+	return {
+		stage: { 4: 'canary', 6: 'pilot', 12: 'breadth', 16: 'load' }[
+			derivation.requestedConcurrency
+		] as AffinityWavePreflight['stage'],
+		concurrency: { 4: 2, 6: 4, 12: 8, 16: 12 }[derivation.requestedConcurrency],
+		runId: derivation.prerequisiteRunId
+	};
+}
+
+function schedulerRunPaths(runId: string): [string, string] {
+	return [
+		`${EXPERIMENT_ROOT}/wave-runs/${runId}/preflight.json`,
+		`${EXPERIMENT_ROOT}/wave-runs/${runId}/report.json`
+	];
+}
+
+async function resolveGateBindingSet(
+	workspaceRoot: string,
+	gate: AffinityWaveDispatchGate
+): Promise<{
+	readonly resolved: readonly ResolvedDispatchGateBinding[];
+	readonly values: ReadonlyMap<string, unknown>;
+}> {
+	const resolved = await Promise.all(
+		gate.evidenceBindings.map((binding) => resolveBoundEvidence(workspaceRoot, binding))
+	);
+	const values = new Map<string, unknown>();
+	for (const item of resolved)
+		if (item.check.status === 'verified' && item.value !== null)
+			values.set(item.check.path, item.value);
+	return { resolved, values };
+}
+
+async function verifyStoredGateEvidence(
+	workspaceRoot: string,
+	evidence: DispatchGateEvidence,
+	visitedGateIds: ReadonlySet<string>
+): Promise<void> {
+	if (!dispatchGateEvidenceAuthorizes(evidence))
+		throw new Error('Prerequisite preflight gate evidence is not authorizing.');
+	const gate = AffinityWaveDispatchGateSchema.parse(evidence.gate);
+	if (
+		evidence.artifactPath === null ||
+		evidence.expectedCanonicalSha256 !== canonicalJsonSha256(gate) ||
+		evidence.observedCanonicalSha256 !== canonicalJsonSha256(gate)
+	)
+		throw new Error('Prerequisite gate artifact binding is inconsistent.');
+	const stored = await readJson(workspacePath(workspaceRoot, evidence.artifactPath));
+	if (canonicalJsonSha256(stored) !== canonicalJsonSha256(gate))
+		throw new Error('Prerequisite gate artifact changed after preflight.');
+	const { resolved, values } = await resolveGateBindingSet(workspaceRoot, gate);
+	if (resolved.some((item) => item.check.status !== 'verified'))
+		throw new Error('Prerequisite gate evidence is missing or stale.');
+	await verifyDerivedGateSemantics(workspaceRoot, gate, values, visitedGateIds);
+}
+
+async function verifyPredecessorSemanticEvidence(
+	workspaceRoot: string,
+	gate: AffinityWaveDispatchGate,
+	values: ReadonlyMap<string, unknown>,
+	visitedGateIds: ReadonlySet<string>
+): Promise<string[]> {
+	const expected = expectedPredecessorForGate(gate);
+	if (!expected) return [];
+	const [preflightPath, reportPath] = schedulerRunPaths(expected.runId);
+	const preflight = AffinityWavePreflightSchema.parse(evidenceValue(values, preflightPath));
+	const report = AffinityWaveReportSchema.parse(evidenceValue(values, reportPath));
+	if (
+		preflight.runId !== expected.runId ||
+		preflight.runDirectory !== `${EXPERIMENT_ROOT}/wave-runs/${expected.runId}` ||
+		preflight.stage !== expected.stage ||
+		preflight.requestedConcurrency !== expected.concurrency ||
+		preflight.status !== 'ready' ||
+		preflight.exactConcurrencyReady !== true ||
+		preflight.collisionPaths.length !== 0 ||
+		report.runId !== expected.runId ||
+		report.stage !== expected.stage ||
+		report.requestedConcurrency !== expected.concurrency ||
+		report.effectiveConcurrency !== expected.concurrency ||
+		report.status !== 'completed' ||
+		report.terminalCount !== report.targetCount ||
+		report.failedCount !== 0 ||
+		report.providerThrottleCount !== 0 ||
+		report.timeoutCount !== 0 ||
+		report.provenanceCompletenessRate !== 1 ||
+		report.stageMetrics === null ||
+		report.stageMetrics.missingResultCount !== 0 ||
+		report.stageMetrics.duplicateIdCount !== 0 ||
+		report.stageMetrics.pathConflictCount !== 0 ||
+		report.stageMetrics.integrationErrorCount !== 0
+	)
+		throw new Error(`Prerequisite scheduler run ${expected.runId} is not eligible.`);
+	if (
+		report.sourceEvidence.preflight.path !== preflightPath ||
+		report.sourceEvidence.preflight.canonicalSha256 !== canonicalJsonSha256(preflight)
+	)
+		throw new Error(`Prerequisite report ${expected.runId} is not bound to its preflight.`);
+	await verifyStoredGateEvidence(workspaceRoot, preflight.dispatchGateEvidence!, visitedGateIds);
+	const events = await readWaveEvents(workspaceRoot, preflight);
+	const rebuilt = await buildWaveReport(workspaceRoot, preflight, events, report.generatedAt);
+	if (canonicalJsonSha256(rebuilt) !== canonicalJsonSha256(report))
+		throw new Error(`Prerequisite scheduler report ${expected.runId} is not reproducible.`);
+	return [preflightPath, reportPath];
+}
+
+async function verifyDerivedGateSemantics(
+	workspaceRoot: string,
+	gate: AffinityWaveDispatchGate,
+	values: ReadonlyMap<string, unknown>,
+	visitedGateIds: ReadonlySet<string>
+): Promise<void> {
+	if (visitedGateIds.has(gate.gateId))
+		throw new Error('Dispatch gate prerequisite cycle detected.');
+	const expectedGateId =
+		gate.derivation.profile === 'normal-canary'
+			? 'normal-canary-dispatch-v2'
+			: gate.derivation.profile === 'final-canary'
+				? 'final-controlled-canary-dispatch-v2'
+				: `${gate.derivation.profile === 'breadth' ? 'breadth' : `load-${gate.derivation.requestedConcurrency}`}-after-${createHash(
+						'sha256'
+					)
+						.update(gate.derivation.prerequisiteRunId)
+						.digest('hex')
+						.slice(0, 12)}-dispatch-v2`;
+	if (gate.gateId !== expectedGateId)
+		throw new Error('Dispatch gate ID is not the canonical derivation output.');
+	const nextVisited = new Set(visitedGateIds).add(gate.gateId);
+	let expectedPaths: string[];
+	if (gate.derivation.profile === 'normal-canary') {
+		expectedPaths = await verifyNormalSemanticEvidence(workspaceRoot, values);
+	} else if (gate.derivation.profile === 'final-canary') {
+		expectedPaths = await verifyFinalCanarySemanticEvidence(workspaceRoot, values);
+	} else {
+		expectedPaths = await verifyPredecessorSemanticEvidence(
+			workspaceRoot,
+			gate,
+			values,
+			nextVisited
+		);
+		if (gate.derivation.profile === 'breadth') {
+			expectedPaths.push(
+				...(await verifyRoundSemanticEvidence(workspaceRoot, values, 'final-controlled-v1'))
+			);
+		} else if ([4, 6].includes(gate.derivation.requestedConcurrency)) {
+			expectedPaths.push(...(await verifyFinalCanarySemanticEvidence(workspaceRoot, values)));
+		} else {
+			expectedPaths.push(
+				...(await verifyRoundSemanticEvidence(workspaceRoot, values, 'breadth-v1'))
+			);
+		}
+	}
+	if (!exactBindingPaths(gate, expectedPaths))
+		throw new Error(
+			`${gate.derivation.profile} gate does not bind its exact semantic evidence graph.`
+		);
+}
+
 async function resolveDispatchGate(
 	workspaceRoot: string,
 	plan: AffinityWavePlan,
@@ -599,7 +1265,8 @@ async function resolveDispatchGate(
 			artifactPath: null,
 			expectedCanonicalSha256: null,
 			observedCanonicalSha256: null,
-			gate: null
+			gate: null,
+			evidenceChecks: []
 		};
 	}
 	const gatePath = workspacePath(workspaceRoot, pointer.artifactPath);
@@ -613,18 +1280,20 @@ async function resolveDispatchGate(
 			artifactPath: pointer.artifactPath,
 			expectedCanonicalSha256: pointer.canonicalSha256,
 			observedCanonicalSha256: null,
-			gate: null
+			gate: null,
+			evidenceChecks: []
 		};
 	}
 	const observedCanonicalSha256 = canonicalJsonSha256(input);
-	const parsed = AffinityWaveDispatchGateSchema.safeParse(input);
+	const parsed = ReadableAffinityWaveDispatchGateSchema.safeParse(input);
 	if (!parsed.success) {
 		return {
 			status: 'invalid-artifact',
 			artifactPath: pointer.artifactPath,
 			expectedCanonicalSha256: pointer.canonicalSha256,
 			observedCanonicalSha256,
-			gate: null
+			gate: null,
+			evidenceChecks: []
 		};
 	}
 	if (observedCanonicalSha256 !== pointer.canonicalSha256) {
@@ -633,7 +1302,38 @@ async function resolveDispatchGate(
 			artifactPath: pointer.artifactPath,
 			expectedCanonicalSha256: pointer.canonicalSha256,
 			observedCanonicalSha256,
-			gate: parsed.data
+			gate: parsed.data,
+			evidenceChecks: []
+		};
+	}
+	if (parsed.data.schemaVersion === 'affinity-wave-dispatch-gate-v1') {
+		return {
+			status: 'legacy-gate-not-authorizing',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: parsed.data,
+			evidenceChecks: []
+		};
+	}
+	const resolvedBindings = await Promise.all(
+		parsed.data.evidenceBindings.map((binding) => resolveBoundEvidence(workspaceRoot, binding))
+	);
+	const evidenceChecks = resolvedBindings.map((item) => item.check);
+	const firstEvidenceFailure = evidenceChecks.find((check) => check.status !== 'verified');
+	if (firstEvidenceFailure) {
+		const status = {
+			missing: 'missing-evidence',
+			invalid: 'invalid-evidence',
+			stale: 'stale-evidence'
+		} as const;
+		return {
+			status: status[firstEvidenceFailure.status as keyof typeof status],
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: parsed.data,
+			evidenceChecks
 		};
 	}
 	if (parsed.data.authorizedStage !== plan.stage) {
@@ -642,7 +1342,8 @@ async function resolveDispatchGate(
 			artifactPath: pointer.artifactPath,
 			expectedCanonicalSha256: pointer.canonicalSha256,
 			observedCanonicalSha256,
-			gate: parsed.data
+			gate: parsed.data,
+			evidenceChecks
 		};
 	}
 	if (requiresHumanGate && !parsed.data.humanGateSatisfied) {
@@ -651,7 +1352,31 @@ async function resolveDispatchGate(
 			artifactPath: pointer.artifactPath,
 			expectedCanonicalSha256: pointer.canonicalSha256,
 			observedCanonicalSha256,
-			gate: parsed.data
+			gate: parsed.data,
+			evidenceChecks
+		};
+	}
+	try {
+		await verifyDerivedGateSemantics(
+			workspaceRoot,
+			parsed.data,
+			new Map(
+				resolvedBindings.flatMap((item) =>
+					item.check.status === 'verified' && item.value !== null
+						? [[item.check.path, item.value] as const]
+						: []
+				)
+			),
+			new Set()
+		);
+	} catch {
+		return {
+			status: 'semantic-evidence-invalid',
+			artifactPath: pointer.artifactPath,
+			expectedCanonicalSha256: pointer.canonicalSha256,
+			observedCanonicalSha256,
+			gate: parsed.data,
+			evidenceChecks
 		};
 	}
 	return {
@@ -659,7 +1384,8 @@ async function resolveDispatchGate(
 		artifactPath: pointer.artifactPath,
 		expectedCanonicalSha256: pointer.canonicalSha256,
 		observedCanonicalSha256,
-		gate: parsed.data
+		gate: parsed.data,
+		evidenceChecks
 	};
 }
 
@@ -999,11 +1725,47 @@ async function readFinishedResults(
 	for (const [targetId, terminal] of state.terminal) {
 		if (terminal.kind !== 'job-finished') continue;
 		const job = preflight.jobs.find((candidate) => candidate.targetId === targetId)!;
+		const target = ImageProductionTargetSchema.parse(
+			await readJson(workspacePath(workspaceRoot, job.targetPath))
+		);
+		const assignment = ImageProductionAssignmentSchema.parse(
+			await readJson(workspacePath(workspaceRoot, job.assignmentPath))
+		);
 		const result = ImageProductionResultSchema.parse(
 			await readJson(workspacePath(workspaceRoot, job.resultPath))
 		);
 		if (result.targetId !== job.targetId || result.assignmentId !== job.assignmentId) {
 			throw new Error(`Result binding does not match scheduled job ${job.targetId}`);
+		}
+		if (
+			target.targetId !== job.targetId ||
+			assignment.assignmentId !== job.assignmentId ||
+			assignment.targetId !== target.targetId ||
+			target.output.resultPath !== job.resultPath ||
+			assignment.permittedOutputs.resultPath !== job.resultPath ||
+			assignment.permittedOutputs.candidatePath !== target.output.candidatePath
+		)
+			throw new Error(`Manifest ownership differs for scheduled job ${job.targetId}`);
+		validateImageProductionExecution({ target, assignment, result });
+		const retained =
+			result.status === 'candidate'
+				? result.attempts.find((attempt) => attempt.attemptId === result.selectedAttemptId)?.output
+				: [...result.attempts].reverse().find((attempt) => attempt.output)?.output;
+		if (retained) {
+			if (retained.path !== target.output.candidatePath)
+				throw new Error(`Retained output path differs for ${job.targetId}`);
+			const bytes = await readFile(workspacePath(workspaceRoot, retained.path));
+			const metadata = await sharp(bytes).metadata();
+			const mediaType =
+				metadata.format === 'png' ? 'image/png' : metadata.format === 'webp' ? 'image/webp' : null;
+			if (
+				bytes.byteLength !== retained.bytes ||
+				createHash('sha256').update(bytes).digest('hex') !== retained.contentHash ||
+				metadata.width !== retained.width ||
+				metadata.height !== retained.height ||
+				mediaType !== retained.mediaType
+			)
+				throw new Error(`Retained image provenance differs for ${job.targetId}`);
 		}
 		if (Date.parse(result.completedAt) > Date.parse(terminal.at)) {
 			throw new Error(`Job-finished predates result completion for ${job.targetId}`);
@@ -1020,7 +1782,8 @@ export async function buildWaveReport(
 	generatedAt: string
 ): Promise<AffinityWaveReport> {
 	const preflight = AffinityWavePreflightSchema.parse(preflightInput);
-	const state = validateEventJournal(preflight, eventInputs);
+	const events = eventInputs.map((event) => AffinityWaveEventSchema.parse(event));
+	const state = validateEventJournal(preflight, events);
 	const results = await readFinishedResults(workspaceRoot, preflight, state);
 	const capacityStopTriggered =
 		state.stopFailures.length >= preflight.stopRules.capacityFailureLimit;
@@ -1112,7 +1875,7 @@ export async function buildWaveReport(
 				})
 			: null;
 	const report = {
-		schemaVersion: 'affinity-wave-report-v1' as const,
+		schemaVersion: 'affinity-wave-report-v2' as const,
 		runId: preflight.runId,
 		experimentId: preflight.experimentId,
 		stage: preflight.stage,
@@ -1158,6 +1921,35 @@ export async function buildWaveReport(
 			capacityFailureLimit: preflight.stopRules.capacityFailureLimit,
 			triggered: capacityStopTriggered,
 			triggeredAt: state.stopFailures[preflight.stopRules.capacityFailureLimit - 1]?.at ?? null
+		},
+		sourceEvidence: {
+			preflight: {
+				path: `${preflight.runDirectory}/preflight.json`,
+				canonicalSha256: canonicalJsonSha256(preflight)
+			},
+			events: events
+				.map((event) => ({
+					path: `${preflight.runDirectory}/events/${event.eventId}.json`,
+					canonicalSha256: canonicalJsonSha256(event)
+				}))
+				.sort((left, right) => left.path.localeCompare(right.path)),
+			results: [...results.entries()]
+				.map(([targetId, result]) => {
+					const job = preflight.jobs.find((candidate) => candidate.targetId === targetId)!;
+					const retained =
+						result.status === 'candidate'
+							? result.attempts.find((attempt) => attempt.attemptId === result.selectedAttemptId)
+									?.output
+							: [...result.attempts].reverse().find((attempt) => attempt.output)?.output;
+					return {
+						targetId,
+						path: job.resultPath,
+						canonicalSha256: canonicalJsonSha256(result),
+						candidatePath: retained?.path ?? null,
+						candidateByteSha256: retained?.contentHash ?? null
+					};
+				})
+				.sort((left, right) => left.targetId.localeCompare(right.targetId))
 		},
 		stageMetrics
 	};
