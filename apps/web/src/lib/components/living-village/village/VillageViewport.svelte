@@ -231,6 +231,8 @@
 
 	function handlePointerDown(event: PointerEvent): void {
 		if ((event.target as HTMLElement).closest('[data-no-pan]')) return;
+		const interactiveTarget = (event.target as HTMLElement).closest('button, a');
+		if (!interactiveTarget) viewport.setPointerCapture(event.pointerId);
 		activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 		if (activePointers.size === 1) {
 			lastPointer = { x: event.clientX, y: event.clientY };
@@ -358,7 +360,7 @@
 							aria-pressed={selectedHeroId === hero.id}
 							onclick={() => selectHero(hero, true)}
 						>
-							<img src={hero.portrait} alt="" width="1024" height="1536" />
+							<img src={hero.portrait} alt="" width="1024" height="1536" draggable="false" />
 							<span>{hero.name}</span>
 						</button>
 					{/each}
@@ -403,6 +405,7 @@
 					alt="Hearth Village with the Summoning Gate north, Training Grounds southeast, and Tower Threshold south"
 					width={environment.width}
 					height={environment.height}
+					draggable="false"
 					fetchpriority="high"
 					decoding="async"
 				/>
@@ -417,6 +420,7 @@
 							style={hotspotStyle(facility)}
 							aria-label={`Enter ${facility.name}`}
 							href={resolve(facility.href)}
+							draggable="false"
 							onclick={() => selectFacility(facility)}
 						>
 							<span><i></i><strong>{facility.shortName}</strong></span>
@@ -450,12 +454,11 @@
 							class:selected={selectedHeroId === hero.id}
 							class:available={runtime[hero.id].order === null}
 							data-availability={runtime[hero.id].order === null ? 'available' : 'busy'}
-							style={`--hero-portrait:url(${hero.portrait})`}
 							aria-pressed={selectedHeroId === hero.id}
 							aria-label={`Inspect ${hero.name}, level ${hero.level}, ${runtime[hero.id].activity}`}
 							onclick={() => selectHero(hero)}
 						>
-							<img src={hero.portrait} alt="" width="1024" height="1536" />
+							<img src={hero.portrait} alt="" width="1024" height="1536" draggable="false" />
 						</button>
 					</div>
 				{/each}
@@ -478,6 +481,7 @@
 							alt={selectedHero.portraitAlt}
 							width="1024"
 							height="1536"
+							draggable="false"
 						/>
 						<div>
 							<span>Level {selectedHero.level}</span>
@@ -759,34 +763,19 @@
 
 	.facility-hotspot > span {
 		position: absolute;
-		left: 0;
-		top: 0;
+		z-index: 30;
+		left: 50%;
+		top: 0.75rem;
 		display: grid;
 		min-width: 7rem;
 		padding: 0.48rem 0.58rem;
 		border: 1px solid rgba(239, 221, 187, 0.28);
 		background: rgba(5, 9, 13, 0.82);
 		box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.34);
-		transform: translate(-100%, -50%) scale(calc(1 / var(--scene-scale)));
-		transform-origin: center;
+		transform: translateX(-50%) scale(calc(1 / var(--scene-scale)));
+		transform-origin: center top;
 		backdrop-filter: blur(8px);
 		pointer-events: none;
-	}
-
-	.facility-hotspot[data-facility='gate'] > span {
-		left: -4%;
-		top: 72%;
-	}
-
-	.facility-hotspot[data-facility='court'] > span {
-		left: 97%;
-		top: 12%;
-		transform: translate(-100%, -100%) scale(calc(1 / var(--scene-scale)));
-	}
-
-	.facility-hotspot[data-facility='tower'] > span {
-		left: 4%;
-		top: 18%;
 	}
 
 	.facility-hotspot i {
@@ -854,26 +843,6 @@
 		transform: translateX(-50%);
 	}
 
-	.hero-marker::before {
-		position: absolute;
-		z-index: 0;
-		inset: -0.16rem;
-		background: rgba(151, 255, 246, 0.96);
-		content: '';
-		filter: blur(0.16rem) drop-shadow(0 0 0.34rem rgba(94, 229, 222, 0.82));
-		mask-image: var(--hero-portrait);
-		mask-mode: luminance;
-		mask-position: 50% 20%;
-		mask-repeat: no-repeat;
-		mask-size: cover;
-		opacity: 0;
-		transition: opacity 140ms ease;
-	}
-
-	.hero-marker.available::before {
-		opacity: 0.76;
-	}
-
 	.hero-marker:hover,
 	.hero-marker.selected {
 		filter: drop-shadow(0 0 0.25rem rgba(210, 246, 244, 0.9))
@@ -885,12 +854,14 @@
 		z-index: 1;
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
-		object-position: 50% 20%;
-		clip-path: polygon(18% 0, 82% 0, 96% 92%, 72% 100%, 28% 100%, 4% 92%);
-		mask-image: radial-gradient(ellipse 58% 54% at 50% 48%, black 68%, transparent 100%);
-		mix-blend-mode: lighten;
+		object-fit: contain;
+		object-position: center bottom;
 		pointer-events: none;
+	}
+
+	.hero-marker.available img {
+		filter: drop-shadow(0 0 0.08rem rgba(222, 255, 251, 0.98))
+			drop-shadow(0 0 0.34rem rgba(94, 229, 222, 0.86));
 	}
 
 	.hero-anchor.moving .hero-marker {

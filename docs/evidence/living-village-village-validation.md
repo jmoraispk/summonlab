@@ -25,12 +25,14 @@ compact find/focus ribbon. No separate roster route was created.
   owner review.
 - The optional Residents finder and camera controls share one compact command toolbar on desktop
   and collapse into two shallow rows on phone.
-- Existing Hearth environment with named Gate, Court, and Tower hotspots.
+- Existing Hearth environment with named Gate, Court, and Tower hotspots. Each label is centered
+  just inside the top of its clickable region.
 - Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
   two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
   remains available at fitted zoom so the camera never feels inert.
-- Six fixed in-world hero figures using their existing identity anchors, enlarged without card
-  frames, dark UI backplates, or redundant world-space name labels.
+- Six fixed in-world hero figures using alpha-background derivatives of their existing approved
+  identity anchors, enlarged without card frames, backplates, blend tricks, or redundant
+  world-space name labels.
 - Available heroes carry a restrained light silhouette; assigning Court training or a Tower hunt
   removes that light immediately so the world itself communicates who is busy.
 - The Summoning Gate is a real link to the repository's existing `/forge` Summoning Forge rather
@@ -62,13 +64,14 @@ pnpm --filter @summonlab/web exec playwright test \
 ```
 
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
-1536×1024 Hearth asset, three quiet hotspot labels, six frameless in-world figures, absence of the
-destination panel/resident-count/camera-help annotations, in-world hero selection, ribbon focus,
-anchored popover, details drawer, availability light removal after Court assignment, Court training,
-species hunt, pointer pan beginning inside a facility region at fitted zoom, click suppression after
-a drag, wheel zoom, visible controls, 100–300% bounds, Fit/Reset semantics, keyboard operation,
-reduced motion, phone target sizes, the real Gate-to-Forge navigation, and no horizontal overflow at
-phone or 200%-equivalent reflow widths.
+1536×1024 Hearth asset, three top-centered hotspot labels, six true-alpha in-world figures, absence
+of the destination panel/resident-count/camera-help annotations, in-world hero selection, ribbon
+focus, anchored popover, details drawer, availability light removal after Court assignment, Court
+training, species hunt, pointer pan beginning inside a facility region at fitted zoom, repeated
+two-axis pan at maximum zoom, disabled native image/link dragging, click suppression after a drag,
+wheel zoom, visible controls, 100–300% bounds, Fit/Reset semantics, keyboard operation, reduced
+motion, phone target sizes, the real Gate-to-Forge navigation, and no horizontal overflow at phone
+or 200%-equivalent reflow widths.
 
 ## Required gates
 
@@ -107,26 +110,34 @@ Both captures were visually inspected after the final focused test.
 The 2026-08-29 visual review rejected the original page-first hierarchy and persistent facility
 frames. The accepted revision keeps the Village at the top, compresses status into an information
 toolbar, makes facility geometry invisible at rest, illuminates the hit region only on hover or
-keyboard focus, renames the southeast destination to **Training Grounds**, and moves all three
-facility labels to quiet edges outside their focal artwork. The focused test now guards the
-map-first vertical position, transparent resting hitbox, hover illumination, and Gate label position.
+keyboard focus, and renames the southeast destination to **Training Grounds**. A later review moved
+all three facility labels to the centered top-inside position of their regions. The focused test now
+guards the map-first vertical position, transparent resting hitbox, hover illumination, and all
+three label positions.
 
 The subsequent interaction review rejected card-shaped resident markers, unreliable panning over
 interactive regions, and explanatory overlays that repeated obvious information. The accepted
-revision presents larger blended hero figures with no marker frame or name plate, delays pointer
-capture until a real drag begins, preserves click behavior under the same targets, permits modest
-pan at fitted zoom, and removes facility detail panels, status subtitles, resident-count keys,
-visible camera instructions, and prototype footer notes.
+revision presents larger hero figures with no marker frame or name plate, delays pointer capture
+until a real drag begins, preserves click behavior under the same targets, permits modest pan at
+fitted zoom, and removes facility detail panels, status subtitles, resident-count keys, visible
+camera instructions, and prototype footer notes.
 
 The following owner review accepted Residents as an optional toolbar concern, requested visible
 availability on the in-world bodies, and required the Gate to lead somewhere useful. The revision
 formally groups Residents and camera actions as the Village toolbar, applies a light silhouette only
 while `order === null`, and binds the Gate region to the existing `/forge` Summoning Forge.
 
+The latest review rejected the remaining opaque portrait pixels, off-edge labels, and native-drag
+interference. Repository inspection confirmed every existing anchor, continuity sheet, and runtime
+derivative for these identities was opaque. The route now uses provenance-documented alpha
+derivatives of the exact approved anchors, removes the CSS blend/mask workaround, centers every
+label inside the region's top edge, disables browser image/link dragging, and captures bare-map
+pointer gestures immediately.
+
 ## Useful review actions
 
 1. Select Jori directly in the courtyard, then use the ribbon to find Remy. This decides whether
-   the blended figure treatment feels like residents standing in the world on desktop and phone.
+   the true-alpha figure treatment feels like residents standing in the world on desktop and phone.
 2. Send Dara to Court training, then send Mara to hunt a Stoneback boar. This decides whether the
    availability light disappearing, quick-action density, and simple destination transition
    communicate command intent without pretending polished activity animation exists.
@@ -139,9 +150,9 @@ while `order === null`, and binds the Gate region to the existing `/forge` Summo
 - Movement is intentionally a route-local transition placeholder. Polished walking, arrival, and
   training animation remain with the activity owner.
 - Orders are deterministic local fixture state and do not persist or call an API.
-- Kira, Iven, and Remy do not yet have shared optimized roster exports in the runtime visual
-  catalog, so this isolated route imports their existing full identity anchors. A shared integration
-  should export approved compact derivatives rather than keep this prototype binding.
+- No shared transparent exports exist for the fixed six. This route owns documented alpha
+  derivatives of their exact approved identity anchors; a shared integration should promote compact
+  approved cutouts rather than retain route-local copies.
 - The bottom-center egress is treated as the Tower Threshold pending final environment-owner
   confirmation.
 - `/forge` is an existing development Summoning Forge rather than a campaign-state summon route;

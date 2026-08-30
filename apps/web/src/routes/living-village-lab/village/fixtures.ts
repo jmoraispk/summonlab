@@ -1,9 +1,9 @@
-import daraPortrait from '../../../../../../assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png';
-import maraPortrait from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
-import joriPortrait from '../../../../../../assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png';
-import kiraPortrait from '../../../../../../assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png';
-import ivenPortrait from '../../../../../../assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png';
-import remyPortrait from '../../../../../../assets/heroes/visuals/hearth-02-anchor-v1.png';
+import daraPortrait from './cutouts/dara-zev.png';
+import ivenPortrait from './cutouts/iven-orra.png';
+import joriPortrait from './cutouts/jori-daro.png';
+import kiraPortrait from './cutouts/kira-toren.png';
+import maraPortrait from './cutouts/mara-vey.png';
+import remyPortrait from './cutouts/remy-nahl.png';
 
 import type {
 	VillageFacility,

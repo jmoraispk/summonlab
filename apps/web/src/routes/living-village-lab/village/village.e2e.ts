@@ -30,17 +30,26 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		.toBe('rgba(0, 0, 0, 0)');
 	await expect(viewport.locator('.hero-marker[data-availability="available"]')).toHaveCount(6);
 	await expect
-		.poll(() => firstHeroMarker.evaluate((marker) => getComputedStyle(marker, '::before').opacity))
-		.toBe('0.76');
+		.poll(() => firstHeroMarker.locator('img').evaluate((image) => getComputedStyle(image).filter))
+		.not.toBe('none');
+	await expect
+		.poll(() =>
+			firstHeroMarker.locator('img').evaluate((image: HTMLImageElement) => {
+				const canvas = document.createElement('canvas');
+				canvas.width = image.naturalWidth;
+				canvas.height = image.naturalHeight;
+				canvas.getContext('2d')!.drawImage(image, 0, 0);
+				return canvas.getContext('2d')!.getImageData(0, 0, 1, 1).data[3];
+			})
+		)
+		.toBe(0);
 	await expect(viewport.locator('.facility-hotspot')).toHaveCount(3);
 	const gateHotspot = page.getByRole('link', { name: 'Enter Summoning Gate' });
 	await expect(gateHotspot).toHaveAttribute('href', '/forge');
+	await expect(gateHotspot).toHaveAttribute('draggable', 'false');
 	await expect
 		.poll(() => gateHotspot.evaluate((element) => getComputedStyle(element).borderTopColor))
 		.toBe('rgba(0, 0, 0, 0)');
-	const gateBounds = await gateHotspot.boundingBox();
-	const gateLabelBounds = await gateHotspot.locator('span').boundingBox();
-	expect(gateLabelBounds!.x + gateLabelBounds!.width).toBeLessThan(gateBounds!.x + 8);
 	await gateHotspot.hover();
 	await expect
 		.poll(() => gateHotspot.evaluate((element) => getComputedStyle(element).borderTopColor))
@@ -52,8 +61,21 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 				.evaluate((image: HTMLImageElement) => `${image.naturalWidth}x${image.naturalHeight}`)
 		)
 		.toBe('1536x1024');
+	await expect(viewport.locator('img.environment')).toHaveAttribute('draggable', 'false');
 
 	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
+	const towerHotspot = page.getByRole('button', { name: 'Inspect Tower Threshold' });
+	for (const hotspot of [gateHotspot, courtHotspot, towerHotspot]) {
+		const hotspotBounds = await hotspot.boundingBox();
+		const labelBounds = await hotspot.locator('span').boundingBox();
+		expect(
+			Math.abs(
+				labelBounds!.x + labelBounds!.width / 2 - (hotspotBounds!.x + hotspotBounds!.width / 2)
+			)
+		).toBeLessThan(2);
+		expect(labelBounds!.y).toBeGreaterThanOrEqual(hotspotBounds!.y);
+		expect(labelBounds!.y - hotspotBounds!.y).toBeLessThan(18);
+	}
 	const courtBounds = await courtHotspot.boundingBox();
 	await page.mouse.move(
 		courtBounds!.x + courtBounds!.width * 0.5,
@@ -93,8 +115,8 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(courtHotspot).toHaveAttribute('aria-pressed', 'true');
 	await expect(firstHeroMarker).toHaveAttribute('data-availability', 'busy');
 	await expect
-		.poll(() => firstHeroMarker.evaluate((marker) => getComputedStyle(marker, '::before').opacity))
-		.toBe('0');
+		.poll(() => firstHeroMarker.locator('img').evaluate((image) => getComputedStyle(image).filter))
+		.toBe('none');
 
 	await page
 		.getByLabel('Find a resident')
@@ -117,14 +139,24 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	}
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '300');
 
-	const beforeDrag = await viewport.getAttribute('data-offset-x');
+	const beforeDragX = await viewport.getAttribute('data-offset-x');
+	const beforeDragY = await viewport.getAttribute('data-offset-y');
 	const box = await viewport.boundingBox();
 	expect(box).not.toBeNull();
 	await page.mouse.move(box!.x + box!.width * 0.45, box!.y + box!.height * 0.45);
 	await page.mouse.down();
-	await page.mouse.move(box!.x + box!.width * 0.58, box!.y + box!.height * 0.45, { steps: 4 });
+	await page.mouse.move(box!.x + box!.width * 0.58, box!.y + box!.height * 0.56, { steps: 6 });
 	await page.mouse.up();
-	await expect.poll(() => viewport.getAttribute('data-offset-x')).not.toBe(beforeDrag);
+	await expect.poll(() => viewport.getAttribute('data-offset-x')).not.toBe(beforeDragX);
+	await expect.poll(() => viewport.getAttribute('data-offset-y')).not.toBe(beforeDragY);
+	const afterFirstDragX = await viewport.getAttribute('data-offset-x');
+	const afterFirstDragY = await viewport.getAttribute('data-offset-y');
+	await page.mouse.move(box!.x + box!.width * 0.62, box!.y + box!.height * 0.58);
+	await page.mouse.down();
+	await page.mouse.move(box!.x + box!.width * 0.52, box!.y + box!.height * 0.49, { steps: 6 });
+	await page.mouse.up();
+	await expect.poll(() => viewport.getAttribute('data-offset-x')).not.toBe(afterFirstDragX);
+	await expect.poll(() => viewport.getAttribute('data-offset-y')).not.toBe(afterFirstDragY);
 
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
