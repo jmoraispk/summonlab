@@ -15,6 +15,7 @@ export type VillageFacility = {
 	state: string;
 	action: string;
 	detail: string;
+	href?: '/forge';
 	position: VillagePoint;
 	bounds: { x: number; y: number; width: number; height: number };
 };

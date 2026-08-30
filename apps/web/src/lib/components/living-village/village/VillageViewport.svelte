@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 
@@ -346,33 +347,36 @@
 
 <section class:drawer-open={drawerHero !== null} class="village-command-surface">
 	<div class="command-column">
-		<section class="roster-ribbon" aria-label="Find a resident">
-			<div class="ribbon-label"><span>Residents</span><strong>Find in Village</strong></div>
-			<div class="ribbon-list">
-				{#each heroes as hero (hero.id)}
-					<button
-						type="button"
-						class:active={selectedHeroId === hero.id}
-						aria-pressed={selectedHeroId === hero.id}
-						onclick={() => selectHero(hero, true)}
-					>
-						<img src={hero.portrait} alt="" width="1024" height="1536" />
-						<span>{hero.name}</span>
-					</button>
-				{/each}
-			</div>
-		</section>
+		<div class="command-toolbar" role="toolbar" aria-label="Village toolbar">
+			<section class="roster-ribbon" aria-label="Find a resident">
+				<div class="ribbon-label"><span>Residents</span><strong>Find in Village</strong></div>
+				<div class="ribbon-list">
+					{#each heroes as hero (hero.id)}
+						<button
+							type="button"
+							class:active={selectedHeroId === hero.id}
+							aria-pressed={selectedHeroId === hero.id}
+							onclick={() => selectHero(hero, true)}
+						>
+							<img src={hero.portrait} alt="" width="1024" height="1536" />
+							<span>{hero.name}</span>
+						</button>
+					{/each}
+				</div>
+			</section>
 
-		<div class="viewport-toolbar">
-			<div>
-				<span>Hearth overlook</span>
-				<strong>{Math.round(zoom * 100)}%</strong>
-			</div>
-			<div class="camera-controls" role="group" aria-label="Village camera controls">
-				<button type="button" aria-label="Zoom out" onclick={() => setZoom(zoom - 0.25)}>−</button>
-				<button type="button" aria-label="Zoom in" onclick={() => setZoom(zoom + 0.25)}>+</button>
-				<button type="button" onclick={() => fitVillage()}>Fit Village</button>
-				<button type="button" onclick={resetVillage}>Reset View</button>
+			<div class="viewport-toolbar">
+				<div>
+					<span>Hearth overlook</span>
+					<strong>{Math.round(zoom * 100)}%</strong>
+				</div>
+				<div class="camera-controls" role="group" aria-label="Village camera controls">
+					<button type="button" aria-label="Zoom out" onclick={() => setZoom(zoom - 0.25)}>−</button
+					>
+					<button type="button" aria-label="Zoom in" onclick={() => setZoom(zoom + 0.25)}>+</button>
+					<button type="button" onclick={() => fitVillage()}>Fit Village</button>
+					<button type="button" onclick={resetVillage}>Reset View</button>
+				</div>
 			</div>
 		</div>
 
@@ -405,18 +409,32 @@
 				<div class="scene-grade" aria-hidden="true"></div>
 
 				{#each facilities as facility (facility.id)}
-					<button
-						type="button"
-						class="facility-hotspot"
-						class:selected={selectedFacilityId === facility.id}
-						data-facility={facility.id}
-						style={hotspotStyle(facility)}
-						aria-pressed={selectedFacilityId === facility.id}
-						aria-label={`Inspect ${facility.name}`}
-						onclick={() => selectFacility(facility)}
-					>
-						<span><i></i><strong>{facility.shortName}</strong></span>
-					</button>
+					{#if facility.href}
+						<a
+							class="facility-hotspot"
+							class:selected={selectedFacilityId === facility.id}
+							data-facility={facility.id}
+							style={hotspotStyle(facility)}
+							aria-label={`Enter ${facility.name}`}
+							href={resolve(facility.href)}
+							onclick={() => selectFacility(facility)}
+						>
+							<span><i></i><strong>{facility.shortName}</strong></span>
+						</a>
+					{:else}
+						<button
+							type="button"
+							class="facility-hotspot"
+							class:selected={selectedFacilityId === facility.id}
+							data-facility={facility.id}
+							style={hotspotStyle(facility)}
+							aria-pressed={selectedFacilityId === facility.id}
+							aria-label={`Inspect ${facility.name}`}
+							onclick={() => selectFacility(facility)}
+						>
+							<span><i></i><strong>{facility.shortName}</strong></span>
+						</button>
+					{/if}
 				{/each}
 
 				{#each heroes as hero (hero.id)}
@@ -430,6 +448,9 @@
 							type="button"
 							class="hero-marker"
 							class:selected={selectedHeroId === hero.id}
+							class:available={runtime[hero.id].order === null}
+							data-availability={runtime[hero.id].order === null ? 'available' : 'busy'}
+							style={`--hero-portrait:url(${hero.portrait})`}
 							aria-pressed={selectedHeroId === hero.id}
 							aria-label={`Inspect ${hero.name}, level ${hero.level}, ${runtime[hero.id].activity}`}
 							onclick={() => selectHero(hero)}
@@ -525,6 +546,10 @@
 	}
 
 	.command-column {
+		min-width: 0;
+	}
+
+	.command-toolbar {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		min-width: 0;
@@ -707,6 +732,8 @@
 		position: absolute;
 		left: var(--left);
 		top: var(--top);
+		display: block;
+		box-sizing: border-box;
 		width: var(--width);
 		height: var(--height);
 		border: 2px solid transparent;
@@ -714,6 +741,7 @@
 		background: transparent;
 		color: white;
 		cursor: pointer;
+		text-decoration: none;
 		transition:
 			border-color 140ms ease,
 			background 140ms ease,
@@ -826,6 +854,26 @@
 		transform: translateX(-50%);
 	}
 
+	.hero-marker::before {
+		position: absolute;
+		z-index: 0;
+		inset: -0.16rem;
+		background: rgba(151, 255, 246, 0.96);
+		content: '';
+		filter: blur(0.16rem) drop-shadow(0 0 0.34rem rgba(94, 229, 222, 0.82));
+		mask-image: var(--hero-portrait);
+		mask-mode: luminance;
+		mask-position: 50% 20%;
+		mask-repeat: no-repeat;
+		mask-size: cover;
+		opacity: 0;
+		transition: opacity 140ms ease;
+	}
+
+	.hero-marker.available::before {
+		opacity: 0.76;
+	}
+
 	.hero-marker:hover,
 	.hero-marker.selected {
 		filter: drop-shadow(0 0 0.25rem rgba(210, 246, 244, 0.9))
@@ -833,6 +881,8 @@
 	}
 
 	.hero-marker img {
+		position: relative;
+		z-index: 1;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
@@ -1009,7 +1059,7 @@
 	}
 
 	@media (max-width: 760px) {
-		.command-column {
+		.command-toolbar {
 			display: block;
 		}
 

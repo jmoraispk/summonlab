@@ -25,6 +25,7 @@ export const facilities = [
 		state: 'Ready · 1 Normal token',
 		action: 'Reveal the next fixed hero',
 		detail: 'Kira Toren is bound to the Floor 3 token.',
+		href: '/forge',
 		position: { x: 0.5, y: 0.18 },
 		bounds: { x: 0.385, y: 0.055, width: 0.23, height: 0.25 }
 	},

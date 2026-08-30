@@ -23,14 +23,18 @@ compact find/focus ribbon. No separate roster route was created.
 - Map-first composition: Hearth begins immediately beneath a single compact status bar; the prior
   editorial title, explanatory copy, card wall, secondary heading, and footer were removed after
   owner review.
-- Roster and camera controls share one compact row on desktop and collapse into two shallow rows on
-  phone.
+- The optional Residents finder and camera controls share one compact command toolbar on desktop
+  and collapse into two shallow rows on phone.
 - Existing Hearth environment with named Gate, Court, and Tower hotspots.
 - Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
   two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
   remains available at fitted zoom so the camera never feels inert.
 - Six fixed in-world hero figures using their existing identity anchors, enlarged without card
   frames, dark UI backplates, or redundant world-space name labels.
+- Available heroes carry a restrained light silhouette; assigning Court training or a Tower hunt
+  removes that light immediately so the world itself communicates who is busy.
+- The Summoning Gate is a real link to the repository's existing `/forge` Summoning Forge rather
+  than a destination-shaped button with no outcome.
 - Anchored quick popover with portrait, name, level, Health, current activity, party state, Court
   training, Tower species hunt, and details actions.
 - Same-surface hero drawer for attributes, skills, and equipment.
@@ -60,10 +64,11 @@ pnpm --filter @summonlab/web exec playwright test \
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
 1536×1024 Hearth asset, three quiet hotspot labels, six frameless in-world figures, absence of the
 destination panel/resident-count/camera-help annotations, in-world hero selection, ribbon focus,
-anchored popover, details drawer, Court training, species hunt, pointer pan beginning inside a
-facility region at fitted zoom, click suppression after a drag, wheel zoom, visible controls,
-100–300% bounds, Fit/Reset semantics, keyboard operation, reduced motion, phone target sizes, and
-no horizontal overflow at phone or 200%-equivalent reflow widths.
+anchored popover, details drawer, availability light removal after Court assignment, Court training,
+species hunt, pointer pan beginning inside a facility region at fitted zoom, click suppression after
+a drag, wheel zoom, visible controls, 100–300% bounds, Fit/Reset semantics, keyboard operation,
+reduced motion, phone target sizes, the real Gate-to-Forge navigation, and no horizontal overflow at
+phone or 200%-equivalent reflow widths.
 
 ## Required gates
 
@@ -113,16 +118,21 @@ capture until a real drag begins, preserves click behavior under the same target
 pan at fitted zoom, and removes facility detail panels, status subtitles, resident-count keys,
 visible camera instructions, and prototype footer notes.
 
+The following owner review accepted Residents as an optional toolbar concern, requested visible
+availability on the in-world bodies, and required the Gate to lead somewhere useful. The revision
+formally groups Residents and camera actions as the Village toolbar, applies a light silhouette only
+while `order === null`, and binds the Gate region to the existing `/forge` Summoning Forge.
+
 ## Useful review actions
 
 1. Select Jori directly in the courtyard, then use the ribbon to find Remy. This decides whether
    the blended figure treatment feels like residents standing in the world on desktop and phone.
 2. Send Dara to Court training, then send Mara to hunt a Stoneback boar. This decides whether the
-   quick-action density and simple destination transition communicate command intent without
-   pretending polished activity animation exists.
-3. Drag from bare ground, directly over a resident, and through the Training Grounds region before
-   using `0`/Fit and Home/Reset. This decides whether gesture capture, click-versus-drag behavior,
-   camera bounds, and recovery semantics feel predictable.
+   availability light disappearing, quick-action density, and simple destination transition
+   communicate command intent without pretending polished activity animation exists.
+3. Drag from bare ground and through the Training Grounds region, reset, then hover and click the
+   Gate artwork. This decides whether camera recovery feels predictable and whether the existing
+   Summoning Forge is the right interim Gate destination.
 
 ## Deliberate limitations and follow-up
 
@@ -134,5 +144,7 @@ visible camera instructions, and prototype footer notes.
   should export approved compact derivatives rather than keep this prototype binding.
 - The bottom-center egress is treated as the Tower Threshold pending final environment-owner
   confirmation.
+- `/forge` is an existing development Summoning Forge rather than a campaign-state summon route;
+  it is the useful interim Gate destination requested for this isolated prototype.
 - A future shared shell should translate `training.assign` and `tower.hunt-species` intents into the
   owning systems; this task intentionally did not add or edit a shared contract.

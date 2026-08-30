@@ -28,8 +28,13 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect
 		.poll(() => firstHeroMarker.evaluate((element) => getComputedStyle(element).backgroundColor))
 		.toBe('rgba(0, 0, 0, 0)');
+	await expect(viewport.locator('.hero-marker[data-availability="available"]')).toHaveCount(6);
+	await expect
+		.poll(() => firstHeroMarker.evaluate((marker) => getComputedStyle(marker, '::before').opacity))
+		.toBe('0.76');
 	await expect(viewport.locator('.facility-hotspot')).toHaveCount(3);
-	const gateHotspot = page.getByRole('button', { name: 'Inspect Summoning Gate' });
+	const gateHotspot = page.getByRole('link', { name: 'Enter Summoning Gate' });
+	await expect(gateHotspot).toHaveAttribute('href', '/forge');
 	await expect
 		.poll(() => gateHotspot.evaluate((element) => getComputedStyle(element).borderTopColor))
 		.toBe('rgba(0, 0, 0, 0)');
@@ -66,7 +71,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-offset-x', '0');
 
-	for (const facility of ['Training Grounds', 'Tower Threshold', 'Summoning Gate'] as const) {
+	for (const facility of ['Training Grounds', 'Tower Threshold'] as const) {
 		const hotspot = page.getByRole('button', { name: `Inspect ${facility}` });
 		await hotspot.click();
 		await expect(hotspot).toHaveAttribute('aria-pressed', 'true');
@@ -86,6 +91,10 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await popover.getByRole('button', { name: 'Court training' }).click();
 	await expect(popover).toContainText('Training at the Court');
 	await expect(courtHotspot).toHaveAttribute('aria-pressed', 'true');
+	await expect(firstHeroMarker).toHaveAttribute('data-availability', 'busy');
+	await expect
+		.poll(() => firstHeroMarker.evaluate((marker) => getComputedStyle(marker, '::before').opacity))
+		.toBe('0');
 
 	await page
 		.getByLabel('Find a resident')
@@ -132,7 +141,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.keyboard.press('0');
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
 	await page.keyboard.press('Home');
-	await expect(gateHotspot).toHaveAttribute('aria-pressed', 'true');
+	await expect(gateHotspot).toHaveClass(/selected/);
 
 	await viewport.hover();
 	await page.mouse.wheel(0, -200);
@@ -172,6 +181,10 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	expect(
 		await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
 	).toBeLessThanOrEqual(0);
+
+	await page.goto('/living-village-lab/village');
+	await Promise.all([page.waitForURL('**/forge'), gateHotspot.click()]);
+	await expect(page.getByRole('heading', { name: 'Select a summon' })).toBeVisible();
 });
 
 test('keeps the unified Village deliberate and operable at 390 by 844', async ({ page }) => {
