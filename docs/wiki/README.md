@@ -26,8 +26,12 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Game systems](systems/README.md) — every vertical subsystem and horizontal capability.
 - [Playable milestones](milestones/README.md) — integration slices beginning with the reduced
   [Living Village](milestones/living-village.md) loop.
+- [Release roadmap](roadmap/README.md) — the explicit `on`, `off`, `placeholder`, and `decision`
+  matrix that selects from the complete wiki without deleting deferred design.
 - [Progression](mechanics/progression/README.md), [skills](mechanics/skills/README.md), and
   [equipment](mechanics/equipment/README.md) — complete supplied design drafts plus runtime scope.
+- [Rewards and engagement](mechanics/rewards-and-engagement.md) — benefits, daily return, mission
+  rewards, special access, and the ownership boundary for claims.
 - [Attributes](mechanics/attributes.md) — the shared mechanical vocabulary behind capability.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
@@ -60,6 +64,10 @@ A page never hides several kinds of readiness behind one “done” label:
 The checked [catalog](catalog.json) records these axes for every page. `pnpm validate:wiki` rejects
 unregistered pages, duplicate IDs, invalid status values, missing local links, and missing registered
 assets.
+
+Release availability is a separate axis owned by the [roadmap](roadmap/README.md). A complete,
+accepted mechanic may still be `off` in Living Village; that means it remains available for future
+planning and art production but must be unreachable in that release.
 
 ## Canon and discovery
 

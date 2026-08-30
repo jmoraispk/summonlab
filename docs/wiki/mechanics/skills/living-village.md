@@ -4,6 +4,8 @@ Wiki ID: `skills.living-village`
 
 Design status: **milestone proposal**. This page separates an initial twelve-skill runtime from a
 larger Common-tier expansion pool; neither replaces the complete [skill compendium](README.md).
+The [Living Village release matrix](../../roadmap/living-village-v1.md) is authoritative for which
+documented skill IDs are actually enabled.
 
 The first playable village needs enough skills to make summoning, party composition, combat, and
 training visibly different without implementing the entire 520-skill catalog.
@@ -86,7 +88,9 @@ Stance skills, higher rarity, alternate learning paths, teaching, merging, and s
 - final mana costs, cooldowns, ranges, scaling, and target counts.
 
 Deferred definitions remain canonical design inventory and can be assigned to visual workers, but
-their art should be labeled concept art rather than Living Village runtime content.
+their art should be labeled concept art rather than Living Village runtime content. `Off` skills
+must not be rolled during summoning, offered as rewards or training choices, selected by policy, or
+accepted by runtime commands.
 
 ## Milestone proof
 

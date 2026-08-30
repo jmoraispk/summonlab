@@ -26,6 +26,9 @@ an art book as visual instantiations are produced.
   candidates do not become approved/runtime canon without exact-byte provenance and human review.
 - One source corpus supports public rules, discoverable compendium entries, and internal spoilers.
   Wiki scope does not grant knowledge inside a run.
+- The wiki preserves the complete design inventory. A named release roadmap separately marks
+  documented capabilities `on`, `off`, `placeholder`, or `decision`; disabled-for-release content
+  remains documented and is not treated as rejected or deleted.
 - `pnpm validate:wiki` checks registry uniqueness, status vocabulary, page declarations, local
   links, and registered asset existence and runs in the repository quality gate.
 

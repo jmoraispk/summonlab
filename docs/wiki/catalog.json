@@ -43,6 +43,16 @@
       "spoilerScope": "public"
     },
     {
+      "wikiId": "mechanics.rewards-engagement",
+      "path": "docs/wiki/mechanics/rewards-and-engagement.md",
+      "pageType": "mechanic",
+      "owner": "reward-orchestration",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
       "wikiId": "mechanics.affinities",
       "path": "docs/wiki/mechanics/affinities/README.md",
       "pageType": "mechanic",
@@ -198,6 +208,26 @@
       "owner": "product",
       "designStatus": "draft",
       "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "roadmap.index",
+      "path": "docs/wiki/roadmap/README.md",
+      "pageType": "roadmap-index",
+      "owner": "product",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "roadmap.living-village-v1",
+      "path": "docs/wiki/roadmap/living-village-v1.md",
+      "pageType": "release-matrix",
+      "owner": "product",
+      "designStatus": "draft",
+      "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "public"
     },

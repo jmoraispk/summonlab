@@ -19,14 +19,16 @@ context as a separate subsystem.
 | [Visuals](visuals.md) | heroes, monsters, equipment, skills, Village, tower, UI and effects | realistic identity continuity and a bounded approved asset set |
 | [Tower, World, and Story](tower-world-story.md) | tower, encounters, expeditions, destinations, campaign and lore | static Floors 1–10 with no story, navigation, or world simulation |
 | [Settlement and Society](settlement-society.md) | facilities, expansion, agency, relationships, institutions and motivation | static Hearth; no society or autonomous behavior |
-| [Summoning, Progression, and Combat](summoning-progression-combat.md) | acquisition, heroes' numerical growth, skills, affinities, equipment, training, combat and synthesis | Normal summons, first growth band, small catalogs, deterministic combat |
+| [Summoning, Progression, and Combat](summoning-progression-combat.md) | acquisition, heroes' numerical growth, skills, affinities, equipment, training, combat, rewards and synthesis | Normal summons, first growth band, small catalogs, deterministic combat, bounded rewards |
 | [Town Master Operations](town-master-foundation.md) | objectives, assignments, parties, reports, knowledge and automation | only the direct actions required by the core loop |
 
 The same [Town Master and Foundation page](town-master-foundation.md) records the technical spine
 that connects the five domains without pretending it is another piece of player content.
 
-The [Living Village milestone](../milestones/living-village.md) is the current delivery authority.
-It intentionally activates only a narrow slice of every domain.
+The [Living Village milestone](../milestones/living-village.md) defines the playable proof, while
+the [Living Village release matrix](../roadmap/living-village-v1.md) is the feature-availability
+authority. It intentionally activates only a narrow slice of every domain without deleting the
+rest of the wiki.
 
 ## Horizontal capabilities
 
@@ -36,6 +38,7 @@ It intentionally activates only a narrow slice of every domain.
 | Motivation and purpose | goals, facilities, schedules, mentors, parties, culture | Behavior emerges from systems, not an obedience stat |
 | Knowledge and evidence | secrets, reports, dialogue, story, neighbor contact | Truth, Master awareness, and hero belief remain separate |
 | Economy and grants | summoning, building, promotion, rewards, ships | One idempotent ledger and receipt boundary |
+| Rewards and engagement | daily return, summons, missions, training, milestones | One typed reward vocabulary, eligibility boundary, and transparent cadence |
 | Time and scheduling | routines, training, recovery, travel, construction | Server-owned deterministic time and catch-up |
 | Identity and visuals | summon, roster, dialogue, base, mission, synthesis, memorial | One manifest and presentation state across every surface |
 | Story/content catalogs | tower, creatures, affinities, buildings, neighbors | Reviewed immutable definitions plus validated selection |

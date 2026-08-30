@@ -73,6 +73,12 @@ change.
 - The checked wiki is both a session input and output. Accepted prose becomes a bounded mechanics or
   art brief; generated assets, implementation links, and evidence return to the same page with
   honest status.
+- The wiki preserves the complete design inventory. A release roadmap selects capabilities as
+  `on`, `off`, `placeholder`, or `decision`; turning a feature off never deletes it from canon or
+  makes it reachable through an unguarded content path.
+- Rewards and engagement are a shared system across summoning, missions, training, progression,
+  and return cadence. Daily gems and occasional Special summons are promising Living Village
+  candidates, but their exact amount, cadence, and missed-day behavior remain reviewable tuning.
 - Every person has intrinsic dignity and potential contribution independent of starting talent or
   rarity. Systems may allocate scarce expertise and routine work, but roles remain revisable paths
   to mastery rather than measures of human worth.

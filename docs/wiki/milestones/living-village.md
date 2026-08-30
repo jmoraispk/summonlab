@@ -12,7 +12,9 @@ world exploration are introduced.
 This page defines runtime scope. The complete [progression](../mechanics/progression/README.md),
 [skill](../mechanics/skills/README.md), [equipment](../mechanics/equipment/README.md), and
 [monster](../creatures/monster-races/README.md) drafts remain in the wiki as the expansion source;
-they are not all Living Village implementation requirements.
+they are not all Living Village implementation requirements. The
+[Living Village release matrix](../roadmap/living-village-v1.md) is the authority for whether a
+documented capability is `on`, `off`, a `placeholder`, or still a `decision` in this release.
 
 ## Product question
 
@@ -103,6 +105,7 @@ These are reviewable content budgets, not permanent catalog limits.
 | Monsters | three distinct races in one approved low-tier visual form each; floor-scaled combat variants; one separately approved boss treatment | all 30 visual-progression race seeds available for art production |
 | Tower | Floors 1–10; about three encounter patterns with monotonically scaled definitions | story envelopes, randomized geography, secrets, and full 100-floor campaign deferred |
 | Combat | seeded deterministic resolution with an understandable action/result trace | final formula waits for the combat-system draft |
+| Rewards | visible mission, training, progression, and daily-return benefits; exact cadence remains a fixture decision | full engagement model, Advanced/Special access, milestone cadence, pity, and economy tuning documented separately |
 
 The recommended monster option is **three distinct low-tier races**, because it tests silhouette,
 damage-role, and encounter readability better than one family. Bestiary T1–T5 labels are visual
@@ -126,12 +129,17 @@ target the same game:
 | Inventory | shared owned-item drawer inside Roster/Hero with compare, equip, and unequip |
 | First-clear rewards | per-hero progression claims plus one authored item; listed before deployment |
 | Replay rewards | combat practice only; no first-clear item, unlock, or summon token |
+| Daily return | placeholder until the proposed gem amount, Special-summon cadence, and missed-day policy are accepted |
 | Return state | Health and Mana reset; no lasting injury, recovery timer, death, or equipment wear |
 | Save | one run snapshot plus deterministic command/event history |
 
 Exact XP amounts, training yield, floor enemy stats, and item stats remain tuning fixtures, but their
 fields, owners, and units must be locked in LV-1. If review changes any assumption, version the
 fixture rather than letting each worker choose independently.
+
+Disabled capabilities remain fully documented. An `off` skill—such as Alchemy or Beast
+Taming—cannot be assigned at summon, appear in a reward, enter the training selector, be proposed by
+a policy, or pass command validation in this release.
 
 ## Rules retained from the supplied drafts
 

@@ -38,6 +38,11 @@ Every non-template Markdown page must:
 6. Use asset status honestly and never label a candidate as approved/runtime.
 7. Record unresolved questions instead of filling gaps with generated certainty.
 
+Complete documentation and release availability are separate concerns. Do not delete or thin a
+mechanic merely because a small release turns it off. Update the
+[release roadmap](roadmap/README.md) instead, and ensure disabled content cannot leak into that
+release through generation, rewards, training, UI actions, policy choices, or runtime commands.
+
 Use the [general entry](templates/entry-template.md),
 [monster family](templates/monster-race-template.md), or
 [affinity](templates/affinity-template.md) template.
@@ -88,6 +93,8 @@ Neither silently overrides the other: a validator or review must resolve disagre
 - `implemented` means code exists; `verified` requires a reproducible check or replay.
 - `approved` visuals require a human verdict against exact bytes; `runtime` additionally requires a
   checked runtime binding.
+- `off` in a release matrix means deliberately unreachable in that release, not rejected,
+  superseded, or removed from the wiki.
 - Superseded prose remains reachable through history or an ADR rather than being rewritten as if it
   never existed.
 

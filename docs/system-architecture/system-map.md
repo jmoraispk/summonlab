@@ -37,7 +37,7 @@ contexts underneath them so state ownership stays unambiguous.
 | Visuals | Presentation plus character, creature, environment, equipment, skill-effect, UI and audio asset manifests |
 | Tower, World, and Story | Expedition, destinations, floor/encounter content, campaign story and party-attempt integration |
 | Settlement and Society | Settlement, affect/goals/motivation, society, hero initiative, institutions and later expansion |
-| Summoning, Progression, and Combat | Summoning, progression, skill catalog, equipment/inventory, combat, economy and synthesis |
+| Summoning, Progression, and Combat | Summoning, progression, skill catalog, equipment/inventory, combat, reward orchestration, economy and synthesis |
 | Town Master Operations | objectives, assignments, party preparation, reports, knowledge views, policies and later automation |
 
 The Foundationâ€”shared kernel, event/replay, time, identity references, content versions, ledgers,
@@ -45,8 +45,8 @@ reservations, wiki/asset pipeline, accessibility, performance and observabilityâ
 without becoming a sixth player-facing minigame.
 
 The current [Living Village](../wiki/milestones/living-village.md) activates only the smallest
-deterministic slice of these domains. Its exclusions override the broader target map for that
-milestone.
+deterministic slice of these domains. Its [release matrix](../wiki/roadmap/living-village-v1.md)
+controls availability without narrowing or deleting the broader target map.
 
 ## Current integration debt
 
@@ -80,6 +80,7 @@ baseline.
 | Campaign story | campaign plan, envelopes, eligible beats, cast bindings, patch history | validated story selections and fact refs | Geometry, rewards, hero knowledge |
 | Summoning | channels, odds, pity/anomaly, draw and creation receipt | new hero identity reference | Premium ledger, visual rendering |
 | Synthesis | irreversible transaction, source valuation, output choice and receipt | lifecycle and typed grant request | Memory/personality transfer |
+| Reward orchestration | reward definitions, eligibility, cadence, repeat rules, and claim request | typed reward claims and engagement projection | Balances, progression mutation, or narrative outcomes |
 | Economy | resources, gems, items, atomic reserve/debit/credit/grant receipts | ledger projection | Odds, narrative, hero valuation |
 | Destinations | known signals, persistent routes, neighbor relations, vehicle travel state | destination capabilities and itinerary | Neighbor's internal aggregate |
 | Presentation | audience-specific UI/art/audio projections | render state | Canonical mutation |
@@ -112,6 +113,7 @@ Each vertical lane depends on horizontal capabilities instead of recreating them
 | Policy/context jobs | habits, petitions, party choices, story selection, dialogue | Models remain independent, stale-safe proposal sources. |
 | Progression checks | training, missions, buildings, synthesis, teaching | Capability has one definition and many consumers. |
 | Ledger/grants | summoning, construction, mission rewards, promotion, ship, mounts | No feature keeps a private currency balance. |
+| Rewards/engagement | daily return, summon access, missions, training, progression, milestones | Eligibility and benefit cadence cross every core loop while each grant remains domain-owned. |
 | Party reservation | tower, portals, neighbors, vehicles | One hero cannot be in two active places. |
 | Content/version catalogs | skills, floors, buildings, cultures, enemies, mounts | Runtime state binds immutable reviewed definitions. |
 | Journal/observability | every player-facing loop | Cross-system causality must remain explainable. |

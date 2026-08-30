@@ -33,7 +33,9 @@ coverage. Row/section counts are a recorded manual audit, not a future automated
 - Absolute skill fantasy prose is not executable combat behavior until costs, targets, ranges,
   durations, stacking, immunity, and boss rules are defined.
 - The [Living Village](../milestones/living-village.md) selects a small runtime subset without
-  deleting the broader source catalogs.
+  deleting the broader source catalogs. Its [release matrix](../roadmap/living-village-v1.md) is the
+  authority for deliberate feature shutdowns; `off` is not a deletion or rejection of source
+  material.
 
 ## Known convergence decisions
 

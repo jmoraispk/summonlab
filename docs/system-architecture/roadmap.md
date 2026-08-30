@@ -6,7 +6,9 @@ that can proceed independently. It is a dependency plan, not a date estimate.
 ## Current delivery focus — Living Village
 
 The owner has requested a reduced first playable milestone before the broader autonomous-society
-roadmap below. [Living Village](../wiki/milestones/living-village.md) is the current scope authority:
+roadmap below. [Living Village](../wiki/milestones/living-village.md) defines the playable proof,
+and its [release matrix](../wiki/roadmap/living-village-v1.md) is the current feature-availability
+authority:
 
 ```text
 summon → inspect/equip → party/floor → deterministic combat
@@ -15,7 +17,8 @@ summon → inspect/equip → party/floor → deterministic combat
 
 It uses one static settlement, Floors 1–10, one party, three navigational surfaces, bounded hero,
 skill, equipment, and monster catalogs, and no agentic interaction, society, tower story, world
-exploration, construction, or broad Town Master operations.
+exploration, construction, or broad Town Master operations. The wiki still retains every supplied
+rule and catalog entry; the release matrix deliberately makes unsupported capabilities unreachable.
 
 Delivery checkpoints:
 
@@ -23,8 +26,8 @@ Delivery checkpoints:
    contracts, and runtime content selections.
 2. **LV-2 Static Village and prepared roster** — summon, inspect, equip, form one party, and assign
    direct training through a fixed Hearth.
-3. **LV-3 Deterministic tower loop** — Floors 1–10, combat adapter, claims, progression, unlocks,
-   return, save, and replay.
+3. **LV-3 Deterministic tower loop** — Floors 1–10, combat adapter, claims, progression, motivating
+   rewards, unlocks, return, save, and replay.
 4. **LV-4 Visual integration and playtest** — bind cross-surface art and ship the ten-minute,
    three-screen acceptance path on desktop and phone.
 

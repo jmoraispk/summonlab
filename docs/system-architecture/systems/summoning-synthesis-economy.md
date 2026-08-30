@@ -42,6 +42,23 @@ independent generation streams.
 Roster pressure uses reserve companies, housing, leadership, and attention tools. It does not make
 synthesis mandatory cleanup.
 
+## Rewards and return cadence
+
+Reward orchestration defines why a benefit is eligible, when it may repeat, and which typed claims
+compose its bundle. It does not keep balances or mutate progression. Economy commits gems, tickets,
+and items; progression commits experience and growth; summoning consumes access according to its
+channel rules.
+
+The owner wants almost every meaningful action to produce a legible benefit and wants a reason to
+return daily. The current Living Village candidates are a small daily gem claim and periodic access
+to a Special summon, alongside mission, training, and milestone benefits. `2` gems per daily claim
+is a proposed fixture—not an accepted price or cadence. Special access may count total claims, bind
+to major mission milestones, or combine both; it must not rely on a hidden or punishing missed-day
+streak.
+
+All claims are idempotent, disclose eligibility and repeat rules, and return committed receipts.
+The UI celebrates committed results rather than predicting a grant that another owner may reject.
+
 ## Synthesis output
 
 Preview names immediate output and permanent exclusions. Candidate outputs:
@@ -90,8 +107,9 @@ Publishes:
 
 ## Roadmap
 
-1. Define generic ledger reservations/grants and gem currency.
-2. Turn Forge channel fixtures into production-shaped quote/commit/pity receipts.
+1. Define generic ledger reservations/grants, gem currency, and typed reward claims.
+2. Turn Forge channel fixtures into production-shaped quote/commit/pity receipts and add the
+   versioned Living Village reward table.
 3. Define reserve-roster organization and housing/attention pressure.
 4. Extend synthesis preview to typed outputs, compatibility, and saturation.
 5. Add skill fragments and alternative promotion paths.
@@ -105,10 +123,17 @@ Publishes:
 | 2026-08-29 | accepted | Gems are premium currency needed for advanced summons. | Add a separate premium ledger and atomic summon receipts. |
 | 2026-08-29 | accepted | Synthesis is major, while not synthesizing is secretly best. | Make it a short-term accelerator with negative long-term value and no mandatory gate. |
 | 2026-08-29 | accepted | Synthesizer may transfer experience, potential skills, or skills. | Use bounded XP/essence/fragments/affinity; never full identity or memory. |
+| 2026-08-29 | accepted | The wiki must preserve all supplied systems while each release can turn unsupported features off. | Keep complete catalogs and enforce a fail-closed release allowlist. |
+| 2026-08-29 | accepted | Engagement needs visible benefits across play, including reasons to return. | Add shared reward orchestration while domain owners continue to commit their own grants. |
+| 2026-08-29 | experiment | A daily claim could grant a couple of gems and occasionally lead to a Special summon. | Model `2` gems as the first candidate and review cadence, economy, and missed-day behavior before acceptance. |
 
 ## Open decisions
 
 - Are Special summons bought with gems, earned milestones, or both?
+- Is the first daily claim exactly two gems, and is Advanced summoning active in Living Village or
+  merely visible as a future use?
+- Does Special progress use total daily claims, major mission milestones, or both, and what happens
+  after a missed day?
 - Does synthesis select one output or divide a fixed budget among several outputs?
 - How much of compatibility and social visibility should the preview disclose?
 

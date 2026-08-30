@@ -1,0 +1,88 @@
+# Living Village v1 release matrix
+
+Wiki ID: `roadmap.living-village-v1`
+
+Design status: **draft for owner review**
+
+This matrix scopes the first release while the [Living Village milestone](../milestones/living-village.md)
+defines its playable loop and acceptance test. Everything marked `off` remains fully documented in
+the wiki and may continue through independent design or concept-art work.
+
+## Product core
+
+| Capability | State | Living Village v1 behavior |
+| --- | --- | --- |
+| Static Village | `on` | Fixed Summoning Gate, Training Court, and Tower Threshold; no construction or upgrades |
+| Human summoning | `on` | One versioned starting channel and unique persistent identities |
+| Roster/Hero inspection | `on` | Attributes, affinity, skills, loadout, availability, and visual identity |
+| Direct hero training | `on` | Player selects one enabled attribute or owned enabled skill and advances a fixed block |
+| One three-hero party | `on` | One prepared party and one active attempt |
+| Tower missions | `on` | Sequential Floors 1–10 using scaled encounter definitions |
+| Combat | `placeholder` | Forthcoming combat design plugs into a deterministic request/receipt boundary; a transparent mathematical resolver may prove integration first |
+| Rewards and engagement | `placeholder` | First-clear, training, mission, and daily-return claims use a small versioned reward table |
+| Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
+| Core visuals | `on` | Six heroes, three runtime monster races, initial skill effects/icons, equipment icons, one Hearth, one tower backdrop |
+
+## Skill availability
+
+All 520 supplied definitions remain in the [skill wiki](../mechanics/skills/README.md).
+
+| Skill area | State | Release behavior |
+| --- | --- | --- |
+| Initial twelve combat/training skills | `on` | Only the reviewed allowlist may be summoned, trained, displayed as usable, or resolved |
+| Other Martial skills | `off` | Catalog and concept work allowed; runtime acquisition and actions rejected |
+| Other Magical skills | `off` | Catalog and concept work allowed; runtime acquisition and actions rejected |
+| Forging | `off` | No forge operation, recipes, crafting UI, or Forging reward |
+| Alchemy | `off` | No brewing, reagents, potions, poisons, Alchemy UI, or Alchemy reward |
+| Cooking | `off` | No food/upkeep loop, meals, buffs, or Cooking assignment |
+| Gathering | `off` | No mining, foraging, skinning, nodes, or cargo loop |
+| Beast | `off` | No taming, riding, breeding, mounts, companions, or Beast assignment |
+| Lore | `off` | No appraisal, research, cartography, language, or aptitude-reveal action |
+| Skill mastery beyond initial slice | `off` | No higher mastery promotions or practice-profile bonuses |
+| Teaching and mentorship | `off` | No teacher assignment or Guidance multiplier |
+| Skill merging | `off` | Recipes stay documented; no preview, catalyst, consumption, or result generation |
+
+An `off` family must also be absent from summon packages and reward pools. A disabled skill ID in a
+runtime command is a deterministic rejection, not a hidden no-op.
+
+## Other documented systems
+
+| Capability | State | Reason |
+| --- | --- | --- |
+| Agentic dialogue and petitions | `off` | First release excludes agentic interactions |
+| Personality, mood, relationships, and society | `off` | Direct mechanics loop comes first |
+| Settlement construction/expansion | `off` | Village stats and layout remain fixed |
+| Campaign story and world exploration | `off` | Floors are mechanical encounters only |
+| Expedition navigation and discoveries | `off` | Mission selection leads directly to resolution/presentation |
+| Multiple parties | `off` | One party proves reservation and return |
+| Equipment crafting, enchanting, sets, wear, and repair | `off` | Starter/drop loadouts only |
+| Advanced affinity, dual affinity, and derived affinity | `off` | Only the accepted combat subset may resolve |
+| Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |
+| Synthesis | `off` | Irreversible social/economic loop is not needed for v1 |
+| Portals, neighbors, airships, and mounts | `off` | Later world/base milestones |
+| Permanent death, injury, and recovery | `off` | Return resets Health and Mana in the placeholder loop |
+
+## Reward decisions
+
+The complete reward design belongs to [Rewards and Engagement](../mechanics/rewards-and-engagement.md).
+For v1, these remain `decision` until owner review and economy simulation:
+
+- exact daily gem grant—the current proposal is “a couple,” represented initially as 2;
+- whether the first release includes a spendable Advanced summon or only accumulates gems;
+- whether occasional Special summons come from a calendar, a mission milestone, or both;
+- cadence, pity, duplicate prevention, and missed-day behavior;
+- exact first-clear, repeat-combat, training, and milestone reward values.
+
+A daily currency with no visible future use is not sufficient motivation. If Advanced summoning is
+`off`, the UI must still explain what saved gems will unlock, or v1 should grant a directly usable
+summon ticket instead.
+
+## Release gates
+
+- The executable allowlist rejects every `off` skill and capability from all entry points.
+- A new player completes summon → inspect/equip → mission → reward → training → improved retry.
+- Every consequential action produces immediate feedback plus an honest durable benefit where one
+  is promised.
+- Reward sources cannot be claimed twice through retry, clock manipulation, or replay.
+- Missing a day never deletes already earned currency or permanently damages the run.
+- The complete Floor-1 loop passes before Floors 2–10 multiply content.

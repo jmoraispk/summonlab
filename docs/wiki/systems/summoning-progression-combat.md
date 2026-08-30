@@ -3,8 +3,8 @@
 Wiki ID: `system.summoning-progression-combat`
 
 This system owns the core capability loop: acquire heroes, develop attributes and skills, prepare
-equipment, resolve combat, and translate validated outcomes into growth. Its internal bounded
-contexts stay separate even though the player experiences them as one loop.
+equipment, resolve combat, and translate validated outcomes into growth and motivating rewards. Its
+internal bounded contexts stay separate even though the player experiences them as one loop.
 
 ## Living Village
 
@@ -16,9 +16,13 @@ contexts stay separate even though the player experiences them as one loop.
 - direct attribute or owned-skill training;
 - a versioned seeded combat request/receipt with explanatory trace;
 - reward claims committed by their owning progression, inventory, and floor systems.
+- a placeholder engagement table covering daily gems, mission benefits, and progress toward an
+  occasional Special summon, with exact values still under review.
 
-Advanced summoning, gems, pity, promotion, complete mastery ladders, merging, crafting, item sets,
-permanent injuries, death, and synthesis remain documented but inactive.
+The release matrix decides whether the initial gem claim and Special access are active or only
+represented by a placeholder. Advanced summoning, pity, promotion, complete mastery ladders,
+merging, crafting, item sets, permanent injuries, death, and synthesis remain documented but
+inactive.
 
 Detailed source material:
 
@@ -27,3 +31,5 @@ Detailed source material:
 - [Equipment](../mechanics/equipment/README.md)
 - [Attributes](../mechanics/attributes.md)
 - [Affinities](../mechanics/affinities/README.md)
+- [Rewards and engagement](../mechanics/rewards-and-engagement.md)
+- [Living Village release matrix](../roadmap/living-village-v1.md)
