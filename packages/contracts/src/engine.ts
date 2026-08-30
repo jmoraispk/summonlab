@@ -155,9 +155,12 @@ export {
 	MasterFallbackSelectionSchema,
 	MasterDecisionWindowV2Schema,
 	MasterDecisionResolutionV2Schema,
-	MasterControlStateV2Schema
+	MasterControlStateV2Schema,
+	MasterControlRequestSchema,
+	MasterDecisionWindowRequestSchema
 } from './engine/master-control.js';
 export type {
+	MasterControlRequest,
 	MasterControlState,
 	MasterControlStateV2,
 	MasterDecisionResolution,
@@ -2370,28 +2373,6 @@ export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
 	z.object({ action: z.literal('retreat') }).strict()
 ]);
 
-export const MasterControlRequestSchema = z.discriminatedUnion('action', [
-	z
-		.object({
-			action: z.literal('timing'),
-			timing: DecisionTimingSchema,
-			countdownSeconds: z.number().int().min(1).max(60).default(5)
-		})
-		.strict(),
-	z
-		.object({
-			action: z.literal('fallback'),
-			policy: FallbackPolicySchema,
-			directionText: z.string().min(1).max(600),
-			priorities: z.array(MasterFallbackPrioritySchema).max(5),
-			protectedHeroId: EntityIdSchema.nullable(),
-			safetyStops: MasterFallbackSafetyStopsSchema
-		})
-		.strict()
-]);
-
-export const MasterDecisionWindowRequestSchema = z.object({}).strict();
-
 export const EntropyDrawSchema = z
 	.object({
 		purpose: z.string().regex(/^[a-z][a-z0-9.-]{2,99}$/u),
@@ -2593,7 +2574,6 @@ export type EngineSnapshot = z.infer<typeof EngineSnapshotSchema>;
 export type EntropyDraw = z.infer<typeof EntropyDrawSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
-export type MasterControlRequest = z.infer<typeof MasterControlRequestSchema>;
 export type SynthesisReceipt = z.infer<typeof SynthesisReceiptSchema>;
 export type SynthesisRumorRecord = z.infer<typeof SynthesisRumorRecordSchema>;
 export type SynthesisState = z.infer<typeof SynthesisStateSchema>;

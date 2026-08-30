@@ -15,7 +15,9 @@ import {
 	LEGACY_DECISION_JOB_VERSION,
 	MasterControlStateSchema as PublicMasterControlStateSchema,
 	MasterControlStateV2Schema as PublicMasterControlStateV2Schema,
+	MasterControlRequestSchema as PublicMasterControlRequestSchema,
 	MasterDecisionWindowSchema as PublicMasterDecisionWindowSchema,
+	MasterDecisionWindowRequestSchema as PublicMasterDecisionWindowRequestSchema,
 	MasterFallbackConfigurationSchema as PublicMasterFallbackConfigurationSchema,
 	MissionRunStateSchema as PublicMissionRunStateSchema,
 	MissionRunStateV2Schema as PublicMissionRunStateV2Schema,
@@ -41,8 +43,10 @@ import {
 	EngineSettlementStateV6Schema
 } from './engine/settlement-state.js';
 import {
+	MasterControlRequestSchema,
 	MasterControlStateSchema,
 	MasterControlStateV2Schema,
+	MasterDecisionWindowRequestSchema,
 	MasterDecisionWindowSchema,
 	MasterFallbackConfigurationSchema
 } from './engine/master-control.js';
@@ -677,6 +681,52 @@ describe('engine contracts compatibility', () => {
 					'Fallback priorities must be unique'
 				);
 			}
+		}
+	});
+
+	it('parses every Master-control request branch and default identically through the leaf', () => {
+		for (const timing of ['wait', 'countdown', 'step', 'continuous'] as const) {
+			const request = { action: 'timing' as const, timing };
+			const leafRequest = MasterControlRequestSchema.parse(request);
+			expect(leafRequest).toStrictEqual(PublicMasterControlRequestSchema.parse(request));
+			expect(leafRequest).toStrictEqual({ action: 'timing', timing, countdownSeconds: 5 });
+		}
+
+		for (const policy of ['directed', 'random'] as const) {
+			const request = {
+				action: 'fallback' as const,
+				policy,
+				directionText: 'Protect the party while advancing the objective.',
+				priorities: ['protect-party', 'focus-objective'],
+				protectedHeroId: null,
+				safetyStops: {
+					beforeIrreversibleAction: true,
+					masterHealthThreshold: 35,
+					whenUnclassified: true,
+					maximumConsecutiveFallbacks: 8
+				}
+			};
+			const leafRequest = MasterControlRequestSchema.parse(request);
+			expect(leafRequest).toStrictEqual(PublicMasterControlRequestSchema.parse(request));
+			expect(leafRequest).toStrictEqual(request);
+		}
+	});
+
+	it('preserves the strict empty Master decision-window request through the leaf', () => {
+		expect(MasterDecisionWindowRequestSchema.parse({})).toStrictEqual(
+			PublicMasterDecisionWindowRequestSchema.parse({})
+		);
+		expect(MasterDecisionWindowRequestSchema.parse({})).toStrictEqual({});
+		for (const schema of [
+			MasterDecisionWindowRequestSchema,
+			PublicMasterDecisionWindowRequestSchema
+		]) {
+			const result = schema.safeParse({ unexpected: true });
+			expect(result.success).toBe(false);
+			if (result.success) {
+				throw new Error('Master decision-window request unexpectedly accepted an extra key');
+			}
+			expect(result.error.issues.map((issue) => issue.code)).toContain('unrecognized_keys');
 		}
 	});
 });

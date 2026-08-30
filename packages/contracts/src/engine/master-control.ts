@@ -301,6 +301,29 @@ export const MasterControlStateV2Schema = z
 		}
 	});
 
+export const MasterControlRequestSchema = z.discriminatedUnion('action', [
+	z
+		.object({
+			action: z.literal('timing'),
+			timing: DecisionTimingSchema,
+			countdownSeconds: z.number().int().min(1).max(60).default(5)
+		})
+		.strict(),
+	z
+		.object({
+			action: z.literal('fallback'),
+			policy: FallbackPolicySchema,
+			directionText: z.string().min(1).max(600),
+			priorities: z.array(MasterFallbackPrioritySchema).max(5),
+			protectedHeroId: EntityIdSchema.nullable(),
+			safetyStops: MasterFallbackSafetyStopsSchema
+		})
+		.strict()
+]);
+
+export const MasterDecisionWindowRequestSchema = z.object({}).strict();
+
+export type MasterControlRequest = z.infer<typeof MasterControlRequestSchema>;
 export type MasterControlState = z.infer<typeof MasterControlStateSchema>;
 export type MasterControlStateV2 = z.infer<typeof MasterControlStateV2Schema>;
 export type MasterDecisionResolution = z.infer<typeof MasterDecisionResolutionSchema>;
