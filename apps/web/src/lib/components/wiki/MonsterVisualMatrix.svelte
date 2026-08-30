@@ -170,6 +170,7 @@
 	figure img {
 		display: block;
 		width: 100%;
+		height: auto;
 		aspect-ratio: 3 / 2;
 		object-fit: cover;
 	}

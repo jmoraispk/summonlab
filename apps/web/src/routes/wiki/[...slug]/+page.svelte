@@ -76,23 +76,27 @@
 		</section>
 	{/if}
 
-	<article
-		class:with-packet={data.visualPacket || data.monsterDatabase || data.monsterVisual}
-		class="wiki-article"
-	>
-		<header class="article-meta">
-			<span>{data.wikiPage.section}</span>
-			<i>Design · {data.wikiPage.designStatus}</i>
-			<i>Implementation · {data.wikiPage.implementationStatus}</i>
-			<i>Visual · {data.wikiPage.visualStatus}</i>
-		</header>
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
-		<div class="article-body">{@html data.wikiPage.html}</div>
-		<footer>
+	{#if data.monsterDatabase}
+		<footer class="database-source">
 			<span>Canonical source</span>
 			<code>{data.wikiPage.sourcePath}</code>
 		</footer>
-	</article>
+	{:else}
+		<article class:with-packet={data.visualPacket || data.monsterVisual} class="wiki-article">
+			<header class="article-meta">
+				<span>{data.wikiPage.section}</span>
+				<i>Design · {data.wikiPage.designStatus}</i>
+				<i>Implementation · {data.wikiPage.implementationStatus}</i>
+				<i>Visual · {data.wikiPage.visualStatus}</i>
+			</header>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
+			<div class="article-body">{@html data.wikiPage.html}</div>
+			<footer>
+				<span>Canonical source</span>
+				<code>{data.wikiPage.sourcePath}</code>
+			</footer>
+		</article>
+	{/if}
 </main>
 
 <style>
@@ -391,7 +395,8 @@
 		margin: 2.5rem 0;
 		border: 1px solid rgba(231, 206, 164, 0.14);
 	}
-	.wiki-article > footer {
+	.wiki-article > footer,
+	.database-source {
 		display: flex;
 		gap: 1rem;
 		align-items: center;
@@ -406,7 +411,13 @@
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
-	.wiki-article > footer code {
+	.database-source {
+		width: min(76rem, calc(100% - 2rem));
+		margin-top: 0;
+		margin-bottom: 3rem;
+	}
+	.wiki-article > footer code,
+	.database-source code {
 		overflow: hidden;
 		color: #bba995;
 		text-overflow: ellipsis;
