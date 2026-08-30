@@ -103,16 +103,18 @@ only when a starter hero can actually use it and combat can explain the differen
   not need a crafting loop.
 - Creature content supplies monster materials and named-creature signature components.
 
-## Import conflicts and decisions required
+## Source authority and remaining decisions
 
-These issues are preserved rather than silently normalized:
+The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
+remain preserved rather than silently normalized:
 
-- The shared wiki uses Might, Vigor, Agility, Focus, Insight, and Presence, while this draft uses
-  Dex/Dexterity, Vitality, Int/Intelligence, and Resonance in several rules and tables.
+- The equipment document's Dexterity, Vitality, Intellect/Intelligence, and Resonance references bind
+  to the supplied progression vocabulary. New runtime IDs must migrate away from the old prototype
+  names together.
 - The quality table says Masterwork is material band plus two, which makes Masterwork Copper Rare;
   the accompanying example calls it Uncommon and introduces an undefined Exceptional quality for
   Rare.
-- Weight tolerance is said to use Might supported by Vitality, but the shared attribute is Vigor.
+- Weight tolerance uses Might supported by Vitality as authored.
 - An item's rarity is fixed forever, while Living Metal grows with its wielder. Growth can be
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
 - The set section says there are three independent axes but presents four subsections: material,

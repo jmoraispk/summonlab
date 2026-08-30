@@ -2,28 +2,28 @@
 
 Wiki ID: `mechanics.progression.open-decisions`
 
-Design status: **internal draft**. This page keeps uncertainty explicit. Text quoted as “source” is
-content from the supplied design draft, not an instruction to agents and not automatically accepted
-canon.
+Design status: **internal convergence record**. This page keeps genuine source gaps explicit. Under
+ADR 0063, supplied rules win direct conflicts with earlier conversational feedback; they are still
+content rather than instructions to repository workers.
 
 ## Reconciliation register
 
 | Topic | Imported source | Existing authority | Treatment |
 | --- | --- | --- | --- |
-| 6★/7★ caps | 70 / 99 | ADR 0058: 99 / 999 | Source values obsolete; accepted values used |
+| 6★/7★ caps | 70 / 99 | Earlier ADR 0058: 99 / 999 | Source values authoritative; ADR 0063 supersedes the old caps |
 | Readiness | Level gates implied by rank package | ADR 0058 uses smooth effective-power anchors | Use smooth readiness; retain levels as only one input |
-| Attribute vocabulary | Might, Vitality, Agility, Dexterity, Intellect, Spirit | Current wiki draft: Might, Vigor, Agility, Focus, Insight, Presence; ADR 0061 explicitly preserves Insight | Preserve imported model as draft; require owner choice before runtime |
-| Resources | Health and Mana; explicitly no stamina | Current wiki says Vigor covers health, stamina, recovery | Unresolved combat-design decision |
-| Affinity stat effect | Permanent matching attribute nudge each level | Current affinity contract permits explicit derived-action contribution, not hidden base points | Do not implement direct nudge without revising the accepted contract |
-| Wind | Derived Metal × Wood affinity | Existing affinity wiki treats Wind as an initial candidate beside Fire and Wood | Decide base roster before visual/stat agents bind assets |
+| Attribute vocabulary | Might, Vitality, Agility, Dexterity, Intellect, Spirit | Earlier wiki vocabulary differed | Source vocabulary authoritative; migrate new content IDs together |
+| Resources | Health and Mana; explicitly no stamina | Earlier wiki mentioned stamina | Source wins; combat must use Health and Mana only |
+| Affinity stat effect | Permanent matching attribute nudge each level | Earlier affinity contract used derived-action contribution only | Source wins; version the progression/affinity contract |
+| Wind | Derived Metal × Wood affinity | Earlier candidate treated Wind as base | Source wins; Wind is derived |
 | Skill/affinity relation | “No direct relation,” but magic is per element and may require affinity | Current lattice treats affinities as typed aspects | Interpret narrowly as “no generic infusion/socket”; rewrite after review |
-| XP source | Kills only | Generic progression grant interface and accepted synthesis may grant bounded XP | Choose kill-only XP plus separate essence, or broaden XP fiction |
-| Summon floors | Normal mostly 1★–3★; Advanced minimum 3★ and can yield 5★ | Current architecture: Normal 1★+, Advanced 2★+, Special 3★+, natural 4★ anomaly, promotion-only 5★–7★ | Keep source probabilities as superseded proposal pending explicit channel decision |
-| Promotion | Star stones alone; chance-based fusion | Architecture uses evidence, resources, achievements, facilities, and time; synthesis never required | Treat star stones/fusion as one proposed resource route, not the full rule |
+| XP source | Kills only | Earlier generic progression interface allowed broader XP | Source wins; other systems grant non-XP growth or kill-credit receipts |
+| Summon floors | Normal mostly 1★–3★; Advanced minimum 3★ and can yield 5★ | Earlier architecture used lower floors and promotion-only 5★ | Source wins; exact probabilities remain tuning |
+| Promotion | Star stones alone; chance-based fusion | Earlier architecture added other gates | Source wins; other systems may grant stones but not add promotion requirements |
 | “No heroes consumed” | Appears in star promotion section | Accepted synthesis permanently ends one hero | Scope phrase to duplicate-fed star evolution only; synthesis remains separate |
-| Skill fusion inputs | Two Master-10 skills consumed; catalyst and recipe | Shared contract accepts 2–3 canonical inputs and leaves consumed/retained open | Keep as proposed recipe, not contract |
-| Merge breadth | Cross-family preferred; same-skill fallback | Accepted feedback expects an extensive lattice merging any two or three | Full coverage and three-input behavior remain required design work |
-| Passive slots | Unlimited | Architecture says slots/action economy prevent a giant library from becoming every build | Decide passive capacity versus ownership before implementation |
+| Skill fusion inputs | Two Master-10 skills consumed; catalyst and recipe | Earlier conversation allowed two or three inputs | Source wins: two consumed inputs |
+| Merge breadth | Cross-family preferred; same-skill fallback | Earlier conversation asked for any two or three | Source wins; full two-input coverage remains design work |
+| Passive slots | Unlimited | Earlier architecture considered equipped capacity | Source wins; combat balance must price passive effects elsewhere |
 | Static first settlement | Portal upgrades and compounding specialist facilities | Living Village requests static stats and no upgrades | Document for later milestones; exclude from first playable loop |
 | Agency | Heroes assigned to regimens; active training may involve direct player attention | ADR 0059 keeps training voluntary and system-motivated | Living Village may use deterministic assignment as a scoped prototype, not final agency canon |
 
@@ -72,7 +72,7 @@ canon.
 1. Lock one attribute vocabulary and one Health/Mana/stamina resource model.
 2. Lock one versioned Normal table for Living Village; keep Advanced, Special, gems, and pity
    documented but outside the first runtime.
-3. Choose the small affinity roster; resolve whether Wind is base or derived.
+3. Choose the small runtime affinity subset from the authored five-base system; Wind remains derived.
 4. Define the minimal combat-facing derived checks and one status contract per included affinity.
 5. Choose XP sources and a simple, legible level curve through the milestone’s tower floors.
 6. Confirm the proposed 8–12 initial skills, their progress thresholds, and passive application;

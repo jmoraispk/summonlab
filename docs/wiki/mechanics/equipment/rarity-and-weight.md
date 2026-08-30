@@ -62,7 +62,7 @@ which is one of the main reasons a roster wants a good armoursmith.
 
 ## Open implementation questions
 
-- Normalize Dexterity, Vitality, and the abbreviated weapon attributes to the shared attribute
+- Bind Dexterity, Vitality, and the abbreviated weapon attributes to the supplied shared attribute
   vocabulary.
 - Define whether weight is per item, total loadout, carried inventory, or some combination.
 - Define exact tolerance, penalty curves, stacking, and how Weightless Craft affects reservations

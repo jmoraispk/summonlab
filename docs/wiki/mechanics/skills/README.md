@@ -82,24 +82,20 @@ thirteen sections rather than nine.
 requirements and effects. They require distinct stable skill IDs even if the shared display name is
 intentional.
 
-## Draft conflicts requiring owner decisions
+## Source authority and remaining decisions
 
-- The source uses Might, Vitality, Agility, Dexterity, Intellect, and Spirit. The current
-  [attribute wiki](../attributes.md) instead proposes Might, Vigor, Agility, Focus, Insight, and
-  Presence. Every threshold and scaling reference depends on resolving this vocabulary conflict.
-- The source treats Wood, Fire, Earth, Metal, and Water as the five base affinities and Wind as a
-  derived Metal–Wood affinity. The current [affinity wiki](../affinities/README.md) gives Wind its
-  own draft base page. Element roles, statuses, and rank semantics must converge before Evocation
-  becomes executable.
+- The source's Might, Vitality, Agility, Dexterity, Intellect, and Spirit vocabulary is
+  authoritative. New executable thresholds must migrate together rather than mix old and new IDs.
+- Wood, Fire, Earth, Metal, and Water are the five base affinities; Wind is derived from Metal ×
+  Wood. Element statuses and rank numerics still require combat integration.
 - The source says skills and affinities have no direct relation while also authoring magical skills
   per element. The architecture models affinity as a typed skill aspect and permits bounded fusion.
   “No slotting or arbitrary infusion” can remain true, but the content relation needs one canonical
   formulation.
-- The source merge rule accepts two Master-10 inputs, consumes both, requires a recipe and
-  catalyst, and begins the result at Novice 1. The architecture permits two or three inputs and has
-  not accepted whether inputs are consumed. Do not implement either behavior until this is decided.
-- The source allows unlimited passives and one active stance. The architecture currently models
-  learned, mastered, and equipped skills separately and leaves active/passive slot counts open.
+- The source merge rule is authoritative: two Master-10 inputs are consumed, a recipe and catalyst
+  are required, and the result begins at Novice 1. Exact recipe coverage and balance remain work.
+- The source allows unlimited passives and one active stance. Combat must balance passive effects
+  without inventing a conflicting equipped-passive cap.
 - The framework's approximate rarity counts (about 90/70/55/40/28/15/2 from F through S) differ
   sharply from this catalog's 126/112/109/79/55/25/14. Clarify whether the former was a target for
   the complete game or only an early estimate.

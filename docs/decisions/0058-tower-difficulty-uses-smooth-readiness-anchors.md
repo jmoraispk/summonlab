@@ -1,6 +1,6 @@
 # 0058 — Tower difficulty uses smooth readiness anchors
 
-**Status:** Accepted
+**Status:** Accepted in part; cap table superseded by ADR 0063
 
 **Date:** 2026-08-29
 
@@ -32,3 +32,7 @@ Progression-v2 needs an explicit cap table and diminishing direct-stat returns a
 Tower content needs a new smooth curve and simulations around the anchor floors. Readiness UI should
 explain preparation strengths and gaps rather than show a binary level requirement. Well-designed
 systems become a legitimate source of advantage without erasing the value of growth.
+
+ADR 0063 later restored the supplied progression document's `6★ = 70` and `7★ = 99` caps and
+removed levels above 99. The smooth-difficulty and effective-readiness decisions on this page remain
+in force; its `99/999` table and above-99 tuning direction do not.

@@ -92,7 +92,7 @@ Parallel lanes:
 
 - **Progression:** progression-v2 levels 1–20, XP sources, mastery, slots, promotion preview.
 - **Skills:** initial catalog across combat, crafting, construction, medicine, teaching, and
-  exploration; deterministic two-input fusion preview.
+  exploration; deterministic authored two-input fusion preview.
 - **Settlement:** generic construction project and one modular facility upgrade.
 - **Simulation scale:** hot/warm/cold scheduling proof at 100 heroes, then 1,000 with provider calls
   disabled.
@@ -148,7 +148,7 @@ Parallel lanes:
 - sealed district, vertical terrace, or underground sector expansion;
 - facility modules, staffing, damage, and repair;
 - councils/leader aggregation for high-population petitions;
-- three-input and template-based skill fusion.
+- broader authored two-input skill-fusion coverage.
 
 Integration slice: two parties operate while the settlement advances offline; construction changes
 routes and affordances; no hero is double-reserved; journal/replay explains both expeditions and the
@@ -177,9 +177,9 @@ Goal: expand proven generators and contracts, not bespoke exceptions.
 
 - grow toward twenty reviewed five-floor envelopes and validate each generated 100-floor plan;
 - extend enemy, skill, building, culture, mount, and destination catalogs;
-- balance 6★ levels 51–99 for late campaign;
-- calibrate level 40 around Floors 40–45, level 99 around Floors 85–90, and 100+ for the final
-  Floor-100 push plus diminishing-return postgame mastery;
+- balance 6★ levels 51–70 and 7★ levels 71–99 for the late campaign;
+- calibrate level 40 around Floors 40–45 and level 99 around Floors 85–90, then make horizontal
+  build quality carry the final Floor-100 push and postgame;
 - benchmark 1,000 heroes, at least ten concurrent parties, seven game days of catch-up, and sparse
   salient model work;
 - add operational tools for content/version rollout, replay compatibility, and live tuning.
@@ -189,7 +189,7 @@ Goal: expand proven generators and contracts, not bespoke exceptions.
 | Track | P1 | P2 | P3 | P4 |
 | --- | --- | --- | --- | --- |
 | Story/tower | Campaign plan contract | Alternate first band | Cross-band recurrence | 20-band breadth |
-| Progression | Cap/effective power | Mastery/promotion | 2- and 3-input fusion | 6★/7★ long tail |
+| Progression | Cap/effective power | Mastery/promotion | Authored two-input fusion | 6★/7★ long tail |
 | Heroes/agency | Affect/goals | Motivation/petitions | Leaders/councils | Sparse deep life at 1,000 |
 | Visuals | Shared presentation state | Realistic core surfaces | Culture packs/overlays | Mount/neighbor coverage |
 | Settlement | Construction lifecycle | Modules | New sector topology | Shipyard/air dock |
@@ -236,7 +236,7 @@ Do not expand content breadth while an earlier causal chain is still ambiguous t
 | Risk | Gate before expansion |
 | --- | --- |
 | Master pivot breaks current mission loop | Masterless Floor 1 strict replay under a new ruleset |
-| 999 levels flatten content | Effective-power simulations and late-band playtest |
+| Level 99 cannot carry Floor 100 alone | Effective-power simulations and horizontal-progression playtest |
 | Skill fusion becomes arbitrary | Recipe determinism, cycle rejection, budget properties |
 | 1,000 heroes overload storage/attention | Seven-day benchmark and petition clustering review |
 | Random story becomes incoherent | Full-plan causal/reward/asset validator |

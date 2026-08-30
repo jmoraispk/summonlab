@@ -131,16 +131,18 @@ Target star caps:
 | 3★ | 30 | specialist foundation |
 | 4★ | 40 | credible around Floors 40–45 with sound preparation |
 | 5★ | 50 | advanced finite-campaign build |
-| 6★ | 99 | credible around Floors 85–90 with sound preparation |
-| 7★ | 999 | final Floor-100 push and long-tail postgame mastery |
+| 6★ | 70 | late-campaign specialization and promotion preparation |
+| 7★ | 99 | credible around Floors 85–90 with sound preparation; final build ceiling |
 
 This is a capacity curve, not a promise of linear power or a set of entry locks. Floor pressure
 interpolates smoothly between playtested readiness anchors: approximately level 40 around Floors
-40–45, level 99 around Floors 85–90, and 100+ for the final approach to Floor 100 and postgame.
+40–45 and level 99 around Floors 85–90. Level 99 is the authored ceiling; the final approach to
+Floor 100 and postgame depends on skill mastery, affinities, equipment, party composition,
+knowledge, and preparation rather than additional levels.
 Content compares a versioned effective-power/readiness projection, not raw level. System quality,
 skill coverage, knowledge, equipment, cohesion, rest, and purpose determine whether a party performs
-above or below its level anchor. Levels above 99 should provide diminishing direct stats and more
-build expression, reliability, mastery, or specialization.
+above or below its level anchor. At the level-99 ceiling, further growth comes from build
+expression, reliability, mastery, specialization, knowledge, and coordinated preparation.
 
 Skills are a graph rather than a fully visible tree. Atomic skills can be learned, practiced,
 taught, equipped, and fused. Fusion results preserve recognizable mechanics from their inputs and

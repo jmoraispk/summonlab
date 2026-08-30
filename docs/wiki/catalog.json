@@ -232,6 +232,16 @@
       "spoilerScope": "public"
     },
     {
+      "wikiId": "roadmap.wiki-website",
+      "path": "docs/wiki/roadmap/wiki-website.md",
+      "pageType": "roadmap",
+      "owner": "product-web",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public"
+    },
+    {
       "wikiId": "system.visuals",
       "path": "docs/wiki/systems/visuals.md",
       "pageType": "system",
@@ -597,9 +607,51 @@
       "pageType": "visual-brief",
       "owner": "visuals",
       "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
-      "spoilerScope": "internal"
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public",
+      "assets": [
+        {
+          "assetKey": "hearth-01-environment-v1",
+          "file": "assets/settlements/hearth-01/hearth-01-environment-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "dara-zev-anchor-v1",
+          "file": "assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png",
+          "status": "approved"
+        },
+        {
+          "assetKey": "elian-ro-anchor-v1",
+          "file": "assets/heroes/visuals/owner-playtest-v1/elian-ro-anchor-v1.png",
+          "status": "approved"
+        },
+        {
+          "assetKey": "jori-daro-anchor-v1",
+          "file": "assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png",
+          "status": "approved"
+        },
+        {
+          "assetKey": "kira-toren-anchor-v1",
+          "file": "assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "iven-orra-anchor-v1",
+          "file": "assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "lio-dae-anchor-v1",
+          "file": "assets/heroes/visuals/forge-v2/pilot/lio-dae-anchor-v1.png",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "hearth-roster-pair-v1",
+          "file": "assets/heroes/visuals/hearth-roster-pair-v1.png",
+          "status": "candidate"
+        }
+      ]
     },
     {
       "wikiId": "principles.every-person-contributes",

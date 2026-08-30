@@ -2,9 +2,10 @@
 
 Wiki ID: `mechanics.progression.heroes-stars-summoning`
 
-Design status: **mixed**. Hero uniqueness, eventual access independent of starting rank, premium gems
-for Advanced summons, and the accepted cap table are product direction. Exact rolls, channels,
-aptitudes, star-stone fusion, and XP fiction on this page remain draft.
+Design status: **authoritative supplied design with explicit tuning gaps**. Hero uniqueness,
+eventual access independent of starting rank, premium gems for Advanced summons, cap table,
+summoning bands, aptitudes, star-stone promotion, and XP fiction follow the supplied progression
+document. Exact values it leaves approximate or unwritten remain tuning work.
 
 Every hero is unique. The source forbids progression from relying on duplicate copies of the same
 person.
@@ -20,10 +21,10 @@ person.
 
 Stars do not limit skill rarity: a 1★ hero may learn and master a Legendary skill.
 
-## Accepted caps and imported starting package
+## Authored caps and starting package
 
-The source’s 6★/70 and 7★/99 caps are obsolete and are not reproduced as rules. The accepted caps
-are 10, 20, 30, 40, 50, 99, and 999. Other columns remain imported proposals:
+The supplied caps are `10, 20, 30, 40, 50, 70, 99`. The source deliberately leaves native 6★ and
+7★ starting bands empty because those ranks cannot be summoned:
 
 | Stars | Accepted cap | Draft innate skills | Draft innate aptitudes | Draft base-point band | Draft points/level |
 | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -32,17 +33,17 @@ are 10, 20, 30, 40, 50, 99, and 999. Other columns remain imported proposals:
 | 3★ | 30 | 3 | 3 | 25–35 | 5 |
 | 4★ | 40 | 4 | 4 | 35–45 | 6 |
 | 5★ | 50 | 5 | 5 | 45–55 | 7 |
-| 6★ | 99 | Unresolved | Unresolved | No native band proposed | 8 |
-| 7★ | 999 | Unresolved | Unresolved | No native band proposed | 9 |
+| 6★ | 70 | — | — | No native band | 8 |
+| 7★ | 99 | — | — | No native band | 9 |
 
 The draft uses the level cap itself as the ascension wall. It separates:
 
 - current-star points per level, whose rate changes immediately after promotion; and
 - base attributes, rolled once from native stars and never retroactively improved.
 
-The source proposes no native 6★ or 7★ heroes and calls 5★ the maximum summon. Current shared
-architecture is stricter—natural 4★ anomaly, promotion-only 5★–7★—so native 5★ remains a conflict,
-not accepted canon.
+The source proposes no native 6★ or 7★ heroes and calls 5★ the maximum summon. This overrides the
+earlier promotion-only-5★ assumption: Advanced summoning may produce an extraordinarily rare native
+5★ hero.
 
 ## Base-attribute distribution proposal
 
@@ -76,9 +77,10 @@ Its hard rules prohibit summoning 6★–7★, make 5★ the Advanced ceiling, a
 expensive guaranteed 5★ tickets, and make 3★ reliably purchasable through gems. It also proposes
 portal upgrades that move Normal odds toward 2★–3★ without changing those bounds.
 
-This conflicts with the current Normal `1★+`, Advanced `2★+`, Special `3★+`, natural-4★,
-promotion-only-5★–7★ architecture. Living Village should use one explicitly versioned channel
-configuration and defer portal upgrades because its settlement is static.
+These authored bands replace the earlier Normal `1★+`, Advanced `2★+`, natural-4★,
+promotion-only-5★ model. A later Special entitlement may reuse an authored summon configuration,
+but it cannot weaken Advanced's minimum 3★ or make 6★–7★ summonable. Living Village should use one
+explicitly versioned Normal configuration and defer portal upgrades because its settlement is static.
 
 ## Level and experience proposal
 
@@ -90,9 +92,9 @@ It intentionally separates level from mastery: a level-1 hero may be a Master co
 fighter may be unable to cook. Non-combat heroes still advance through skill practice, attribute
 training, and Resonance, but combat is the proposed source of level-earned attribute points.
 
-This XP rule conflicts with accepted synthesis’s possible bounded XP output and with the generic
-progression-grant interface. Before implementation, choose either kill/mission-only XP with
-synthesis granting another resource, or broaden the fiction and source list.
+This kill-only XP rule is authoritative. Generic progression grants may still carry skill,
+attribute, affinity, or other growth, while synthesis must use essence or another non-XP resource
+unless the source design is deliberately revised later.
 
 ## Aptitudes
 
@@ -145,9 +147,9 @@ valuable than fused ones. Stones may come from content or premium purchase, maki
 rather than the only route.
 
 The source’s “no heroes are consumed” phrase applies to star promotion and duplicate-fed evolution;
-it cannot override the separately accepted, explicit terminal-hero synthesis mechanic. Exact
-promotion requirements also conflict with the architecture’s combination of tower evidence,
-resources, achievements, facilities, and time.
+it does not erase the separately described terminal-hero synthesis mechanic. Star stones are the
+authored promotion requirement; tower evidence, achievements, facilities, or time may affect stone
+acquisition but are not additional promotion gates unless the design is revised explicitly.
 
 ## Native versus nurtured 5★ thought experiment
 

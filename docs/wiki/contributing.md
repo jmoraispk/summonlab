@@ -38,6 +38,10 @@ Every non-template Markdown page must:
 6. Use asset status honestly and never label a candidate as approved/runtime.
 7. Record unresolved questions instead of filling gaps with generated certainty.
 
+When the four supplied progression, skill, equipment, and monster-race Markdown sources directly
+conflict with earlier conversational notes, follow ADR 0063 and use the supplied source. Preserve
+anything that source itself labels approximate, contradictory, parked, or unfinished.
+
 Complete documentation and release availability are separate concerns. Do not delete or thin a
 mechanic merely because a small release turns it off. Update the
 [release roadmap](roadmap/README.md) instead, and ensure disabled content cannot leak into that

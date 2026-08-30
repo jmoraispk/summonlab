@@ -153,13 +153,13 @@ range:
 - equipment weight connects gear choices to hero capability;
 - a skill has a definition while each hero owns separate mastery state;
 - heroes and mechanically comparable monsters share attribute and affinity meanings;
-- the accepted star caps remain `10, 20, 30, 40, 50, 99, 999` for `1★` through `7★`.
+- the supplied star caps remain `10, 20, 30, 40, 50, 70, 99` for `1★` through `7★`.
 
-The supplied progression draft's `6★ = 70` and `7★ = 99` table is retained in the source record as
-a superseded proposal; it does not override the owner's accepted `6★ = 99`, `7★ = 999` direction.
-Other source claims—including kill-only XP, the proposed six-attribute vocabulary, affinity
-formulas, unlimited passives, total-loss star-stone fusion, and exact rarity odds—remain draft until
-reviewed.
+ADR 0063 makes the supplied progression, skill, equipment, and monster documents authoritative over
+earlier conversational conflicts. Kill-only XP, the six-attribute vocabulary, affinity formulas,
+unlimited passives, consumed-input skill merging, star-stone promotion, and summoning bands
+therefore guide future implementation. Values the sources themselves mark approximate, unfinished,
+or contradictory remain visible tuning and convergence work.
 
 ## Training
 

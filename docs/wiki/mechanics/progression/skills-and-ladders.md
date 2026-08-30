@@ -261,8 +261,9 @@ The result inherits at least both parent effects, compatible practice bonuses, a
 property. The theoretical apex inherits from every family, is named in lore, and remains effectively
 unobtainable as an orientation point.
 
-This two-input/consumed-input proposal is not accepted canon. The architecture supports canonical
-sorted input sets of two or three and deliberately leaves consumed versus retained inputs open.
+Under ADR 0063, this two-input/consumed-input rule is authoritative over the earlier conversational
+two-or-three-input alternative. Runtime still needs deterministic sorted IDs, compatibility,
+recipes, catalysts, effect budgets, and rejection behavior.
 
 ## Skill types
 

@@ -50,12 +50,12 @@ change.
   society.
 - Player-facing portraits and conversations use realistic, identity-locked art. Code-native rigs
   remain useful for small settlement and tactical figures.
-- The requested star caps are `10, 20, 30, 40, 50, 99, 999` for `1★` through `7★`. The large
-  6★/7★ ranges require a new progression curve and cannot be dropped into the existing level-70
-  balance unchanged.
+- The supplied progression document is authoritative over earlier conversational conflicts. Star
+  caps are `10, 20, 30, 40, 50, 70, 99` for `1★` through `7★`; unfinished source material remains
+  visibly unfinished rather than filled by older assumptions.
 - Tower difficulty rises smoothly around readiness anchors rather than discrete level walls. A
-  4★ hero near level 40 should be credible around Floors 40–45, level 99 around Floors 85–90, and
-  levels above 99 are mainly for the final push to Floor 100 and postgame.
+  4★ hero near level 40 should be credible around Floors 40–45 and level 99 around Floors 85–90.
+  The final floors and postgame demand horizontal build quality because level 99 is the authored cap.
 - Skills form a discoverable graph and can be combined. Mechanical effects come from versioned,
   validated definitions; prose or a runtime model cannot invent an effect.
 - Synthesis is irreversible and socially legible. It provides short-term compression but is never
@@ -90,8 +90,9 @@ The latest owner direction resolves the two initial architecture questions:
 1. The Master is nonphysical and cannot be modeled through hero health, location, or ordinary
    mission eligibility. A future run-ending condition must describe loss of the town/campaign, not
    death of the player entity.
-2. Level 99 targets roughly Floor 85–90. Levels above 99 support the final approach to Floor 100 and
-   postgame; difficulty must interpolate smoothly rather than introduce a sudden promotion wall.
+2. Level 99 targets roughly Floor 85–90 and is the supplied design's ceiling. Horizontal build
+   quality supports the final approach to Floor 100 and postgame; difficulty must interpolate
+   smoothly rather than introduce a sudden promotion wall.
 
 Omniscient observation does not change a hero's belief, nor does the Master's awareness
 automatically become admissible evidence in a hero decision packet. Existing embodied and mortal
@@ -106,11 +107,13 @@ underperform it.
 
 Use this precedence when documents disagree:
 
-1. Latest explicit owner feedback recorded in the relevant system brief.
-2. Accepted ADRs for behavior already implemented and replayed.
-3. This folder's cross-system contracts and ownership rules.
-4. Older product prose in `game-design.md`, `architecture.md`, and `implementation-plan.md`.
-5. Workstream proposals and tuning hypotheses.
+1. The four supplied progression, skill, equipment, and monster-race Markdown sources when they
+   directly conflict with earlier conversational feedback.
+2. Latest explicit owner feedback recorded in the relevant system brief.
+3. Accepted ADRs for behavior already implemented and replayed.
+4. This folder's cross-system contracts and ownership rules.
+5. Older product prose in `game-design.md`, `architecture.md`, and `implementation-plan.md`.
+6. Workstream proposals and tuning hypotheses.
 
 New direction never edits the meaning of an old event stream. A conflict becomes a new ADR,
 ruleset version, schema version, or content version. Tuning values may be provisional; ownership and

@@ -168,3 +168,9 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin009-story-workshop.json` — the checked versioned brief, honestly labeled scripted
   generation fixture, two bounded proposal packets and hashes, catalog/reference validation,
   prototype warnings, pending review state, and zero candidates ready for compilation.
+- `wiki-living-village-visual-packet.png` — the first desktop online-wiki packet header, using the
+  Hearth environment and explicit uncast/not-approved language.
+- `wiki-living-village-visual-cohort.png` — the first desktop reference-cohort view, showing the
+  visual-packet route, searchable catalog navigation, and current identity language.
+- `wiki-home-mobile.png` — the 390×844 online-wiki landing view with the Hearth archive, visual
+  packet entry, and Living Village review path.

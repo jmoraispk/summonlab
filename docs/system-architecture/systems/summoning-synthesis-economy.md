@@ -30,9 +30,11 @@ These should be separate domain modules even if one workstream coordinates them.
 
 ## Summoning channels and gems
 
-Normal, Advanced, and Special preserve the established `1★+`, `2★+`, and `3★+` floors, natural 4★
-anomaly, and promotion-only 5★–7★. Advanced summons require gems in the target economy; Special
-access and exact prices/odds remain versioned tuning.
+The supplied progression design defines Normal as mostly 1★ with some 2★ and a small 3★ chance, and
+Advanced as gem-funded with a 3★ minimum, possible 4★, and extraordinarily rare 5★. No channel may
+summon 6★ or 7★. A later Special reward can grant an entitlement to an authored configuration, but
+it cannot silently change these rank ceilings. Exact prices, odds, pity, and Special behavior remain
+versioned tuning.
 
 Every committed summon atomically binds debit, channel/odds version, pity before/after, entropy,
 generation recipe, manifest hash, hero ID, and receipt hash. Retry is idempotent. The reveal follows

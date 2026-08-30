@@ -23,6 +23,8 @@ still be `off` in Living Village v1.
 
 - [Living Village v1](living-village-v1.md) — summon heroes, train them directly, and send one party
   through simplified missions.
+- [Website and online wiki](wiki-website.md) — publish the game and living art-book documentation as
+  one SvelteKit platform.
 
 ## Runtime rule
 

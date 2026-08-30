@@ -6,26 +6,26 @@ Attributes are broad capabilities used by heroes and mechanically comparable cre
 checks, learning, action outcomes, and derived projections; they do not determine intelligence,
 morality, obedience, social worth, personality, or the value of a life.
 
-## Current shared vocabulary — convergence required
+## Authoritative shared vocabulary
 
-The earlier architecture uses the vocabulary below. The newly supplied
-[progression draft](progression/attributes-and-training.md) proposes a different six-attribute model:
-`Might`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Both are preserved, but they
-must not coexist in executable content under synonymous meanings. The Living Village content-ID
-pass must choose one vocabulary and map or supersede the other explicitly.
+The supplied [progression design](progression/attributes-and-training.md) defines six attributes:
+`Might`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Under ADR 0063 this model
+supersedes the earlier `Might / Vigor / Agility / Focus / Insight / Presence` proposal. Historical
+engine content keeps its old IDs; new Living Village content must use or explicitly migrate to the
+authored vocabulary as one versioned change.
 
 | Attribute | Mechanical territory | Example use |
 | --- | --- | --- |
 | Might | force, leverage, carrying, melee power | lifting, mining, breaking guard |
-| Vigor | health, stamina, recovery, physical resistance | enduring fatigue, resisting harm |
-| Agility | speed, coordination, balance, precision | movement, aiming, tool control |
-| Focus | concentration, mana control, technical execution | channeling, crafting, maintaining effects |
-| Insight | perception, learning, evidence use, diagnosis | noticing tells, studying, medicine |
-| Presence | persuasion, leadership, performance, intimidation | rallying, negotiating, teaching attention |
+| Vitality | health, mitigation, poise, physical resistance | enduring harm and resisting bodily status |
+| Agility | speed, balance, reaction, evasion | moving first and escaping danger |
+| Dexterity | accuracy, control, weak-point execution, crafting precision | landing a shot or making a fine object |
+| Intellect | magical output, analysis, comprehension, learning | understanding a recipe or spell |
+| Spirit | mana, mental endurance, control stability, mental resistance | sustaining magic or resisting fear |
 
-This earlier six-attribute model is partially represented by the current prototype engine. The
-supplied alternative is a detailed draft, not yet an accepted replacement. Exact names, mappings,
-ranges, growth curves, and combat formulas remain progression-v2 work.
+The earlier vocabulary remains partially represented by the current prototype engine. Exact numeric
+ranges, growth curves, and combat formulas still require progression-v2 implementation, but the
+names and mechanical territories above are no longer an open choice.
 
 ## Attribute rules
 
@@ -34,25 +34,25 @@ ranges, growth curves, and combat formulas remain progression-v2 work.
   mastery; high Insight does not grant knowledge the actor never observed.
 - Context selects the relevant attribute or combination. The same task must not silently change its
   formula by UI surface.
-- Injuries, needs, equipment, environment, affect, and affinities modify derived checks through
-  explicit contributions rather than rewriting the base value.
+- Injuries, needs, equipment, environment, and affect modify derived checks through explicit
+  contributions. Affinity additionally supplies the authored permanent matching-attribute nudge at
+  level gain.
 - Every modifier names source, duration/scope, stacking rule, cap, and content version.
 - Player-facing readiness explains important contributions without pretending one total is the
   whole person.
 
 ## Affinity interaction
 
-An [affinity](affinities/README.md) can improve how an attribute is expressed in a matching action.
-For example, an affinity might contribute to derived force, speed, resistance, or control when the
-action carries its tag. It does not permanently add hidden points to Might or Agility merely because
-the character possesses the affinity.
+An [affinity](affinities/README.md) improves matching actions and, under the supplied progression
+design, contributes a modest permanent nudge to its matching attribute on level gain. The grant is
+explicit in the progression receipt; it is never a hidden projection-only bonus.
 
 This distinction makes balance and identity clearer:
 
 ```text
 base attribute
 + learned skill and mastery
-+ matching affinity expression
++ matching affinity expression and recorded level-grant nudge
 + equipment/environment/party support
 - injury/fatigue/resistance
 = derived action check
@@ -68,7 +68,7 @@ different actions or scale, and deterministic monster policies can use fewer cog
 
 - What numeric range should base attributes use?
 - Which checks combine two attributes, and how are ties explained?
-- How should size/physiology remain distinct from Might and Vigor?
+- How should size/physiology remain distinct from Might and Vitality?
 - Which modifiers should be visible exactly and which should use descriptive bands?
 
 ## References

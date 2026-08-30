@@ -70,7 +70,7 @@ baseline.
 | Shared kernel | IDs, time, entropy, command/event envelope, versions, hashes, idempotency | accepted/rejected command receipts | Feature rules |
 | Character | immutable manifest, stable mind traits, life state, durable body marks | identity/lifecycle facts | XP, relationships, summon price |
 | Affect, goals, and motivation | mutable mood, concern, durable goal lifecycle, purpose/challenge/feedback state | affect/goal events, motivation projection, and presentation input | Personality generation, legal actions |
-| Progression | XP, level, attributes, learned/mastered/equipped skills, promotion | capability and effective-power projections | Mission result, resource ledger |
+| Progression | XP, level, attributes, learned/mastered skills, active stance, promotion | capability and effective-power projections | Mission result, resource ledger |
 | Skill catalog | definitions, tags, tier budgets, fusion rules, recipe hashes | resolvable skill IDs and recipes | Runtime prose, hero ownership |
 | Society | observations, beliefs, provenance, relationships, promises, authority, speech | holder-owned context and evidence refs | World truth, full-state access |
 | Hero initiative | petitions, recommendations, warnings, reports, response lifecycle | ranked Master inbox and linked requests | Direct mission/construction mutation |

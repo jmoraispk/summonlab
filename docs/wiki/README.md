@@ -28,6 +28,8 @@ replay evidence make that claim verifiable rather than aspirational.
   [Living Village](milestones/living-village.md) loop.
 - [Release roadmap](roadmap/README.md) — the explicit `on`, `off`, `placeholder`, and `decision`
   matrix that selects from the complete wiki without deleting deferred design.
+- [Website and online wiki roadmap](roadmap/wiki-website.md) — one SvelteKit platform for the game,
+  public art-book wiki, in-game compendium, and Vercel deployment.
 - [Progression](mechanics/progression/README.md), [skills](mechanics/skills/README.md), and
   [equipment](mechanics/equipment/README.md) — complete supplied design drafts plus runtime scope.
 - [Rewards and engagement](mechanics/rewards-and-engagement.md) — benefits, daily return, mission
@@ -95,13 +97,15 @@ runtime status.
 The generator bestiary preserves thirty additional race seeds for parallel visual development.
 These remain draft briefs until taxonomy, representation, mechanics, and owner review are complete.
 
-## Presentation roadmap
+## Online presentation
 
-The repository-backed Markdown is the source, not the final ceiling for presentation:
+The repository-backed Markdown is the source, not the final ceiling for presentation. The first
+game-styled `/wiki` renderer is now implemented in the existing SvelteKit application:
 
 1. **Authoring wiki:** checked pages, catalogs, templates, assets, and evidence in the repository.
-2. **Art-book web view:** a generated responsive `/wiki` surface with search, taxonomy navigation,
-   full-bleed galleries, comparison views, status badges, backlinks, and spoiler controls.
+2. **Art-book web view:** a responsive `/wiki` surface; the shell, searchable catalog navigation,
+   first galleries, statuses, and all catalog routes exist, while richer templates, backlinks, and
+   spoiler controls continue through the [website roadmap](roadmap/wiki-website.md).
 3. **In-game compendium:** the same accepted public/discoverable content filtered by what the run has
    actually revealed.
 4. **Public export:** an optional spoiler-safe website built from the same IDs and asset bindings.

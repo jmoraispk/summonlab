@@ -2,10 +2,11 @@
 
 Wiki ID: `mechanics.progression`
 
-Design status: **draft import with accepted cap correction**. This section preserves the complete
-mechanical content of the supplied `progression_system.md`; its imperative language describes
-proposed game rules and is not an instruction to repository workers. Accepted ADRs and owner
-feedback remain authoritative where they disagree with the source draft.
+Design status: **authoritative supplied design with explicit parked areas**. This section preserves
+the complete mechanical content of the supplied `progression_system.md`; its imperative language
+describes game rules and is not an instruction to repository workers. Under ADR 0063, this later
+source wins direct conflicts with earlier conversational feedback. Its own placeholders,
+approximations, and unfinished sections remain visibly unresolved.
 
 The draft is a design reference for hero and monster progression. Numbers appear only where a ratio
 or structural shape matters, and its preferred player-facing language says “the hero,” never “you.”
@@ -23,7 +24,7 @@ summon heroes
 → inspect level, attribute, skill, affinity, and inventory changes
 ```
 
-For that milestone, implement a bounded subset: 1★ and levels 1–10 while preserving the accepted
+For that milestone, implement a bounded subset: 1★ and levels 1–10 while preserving the supplied
 future cap table; starting attributes, skills, aptitudes, and equipment; one versioned Normal
 summoning channel; one training route; a small set of combat skills and affinities; basic drops and
 inventory. Advanced summoning and gems, advanced affinity ranks and combinations,
@@ -77,20 +78,20 @@ These principles are expanded in:
 - [Equipment, materials, food, and inventory](equipment-materials-and-inventory.md)
 - [Conflicts and parked decisions](open-decisions.md)
 
-## Accepted cap correction
+## Authoritative level caps
 
-The source table’s `6★ = 70` and `7★ = 99` values are obsolete. ADR 0058 and the shared
-architecture accept the following table:
+ADR 0063 confirms the supplied source table over the earlier conversational `99/999` alternative:
 
-| Stars | Accepted level cap | Campaign role |
+| Stars | Level cap | Campaign role |
 | ---: | ---: | --- |
 | 1★ | 10 | Entry and first promotion |
 | 2★ | 20 | Early tower competency |
 | 3★ | 30 | Specialist foundation |
 | 4★ | 40 | Credible around Floors 40–45 with sound preparation |
 | 5★ | 50 | Advanced finite-campaign build |
-| 6★ | 99 | Credible around Floors 85–90 with sound preparation |
-| 7★ | 999 | Floor-100 push and postgame mastery |
+| 6★ | 70 | Late-campaign specialization and final promotion preparation |
+| 7★ | 99 | Credible around Floors 85–90; horizontal build quality carries the final push |
 
-Readiness is smooth and versioned, not a hard floor lock. Levels above 99 have diminishing direct
-stat growth and emphasize build expression, reliability, mastery, and specialization.
+Readiness is smooth and versioned, not a hard floor lock. Level 99 is the ceiling. Later strength
+comes from skills, affinities, equipment, party composition, knowledge, preparation, and other
+horizontal progression rather than levels above 99.

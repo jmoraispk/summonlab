@@ -23,9 +23,10 @@ coverage. Row/section counts are a recorded manual audit, not a future automated
 
 ## Import policy
 
-- Imported rules keep `draft` or `seed` status unless the owner already accepted the same decision.
-- Accepted owner decisions take precedence. In particular, `6★ = 99` and `7★ = 999` replace the
-  progression source's older `70/99` caps while the old proposal remains documented.
+- Under ADR 0063, the supplied source wins direct conflicts with earlier conversational feedback.
+  In particular, `6★ = 70` and `7★ = 99` are the canonical caps.
+- A source's explicitly parked, approximate, contradictory, or still-to-author material keeps its
+  honest `draft` or `seed` status; precedence does not invent missing rules.
 - Explicitly parked, placeholder, approximate, contradictory, or still-to-author material keeps
   that label.
 - Species-wide morality, hostility, cognition, or cultural claims in the visual bestiary are source
@@ -37,19 +38,19 @@ coverage. Row/section counts are a recorded manual audit, not a future automated
   authority for deliberate feature shutdowns; `off` is not a deletion or rejection of source
   material.
 
-## Known convergence decisions
+## Resolved collisions and remaining convergence
 
-Before initial runtime content IDs are frozen, the owner should resolve:
+The source-precedence decision resolves the first five earlier collisions:
 
-1. the supplied `Might / Vitality / Agility / Dexterity / Intellect / Spirit` attributes versus the
-   current wiki's `Might / Vigor / Agility / Focus / Insight / Presence` vocabulary;
-2. Wind as a derived Metal × Wood affinity versus the current base-affinity candidate;
-3. kill-only XP versus generic typed progression grants;
-4. two consumed Master-10 skill inputs versus the broader two-or-three-input merge target;
-5. unlimited passives versus equipped capacity/action-economy limits;
-6. Normal-only Living Village summoning versus including Advanced summons and gems;
-7. approval or revision of the proposed three-race runtime set, with visual tier kept separate from
-   floor-scaled combat stats.
+1. use `Might / Vitality / Agility / Dexterity / Intellect / Spirit`;
+2. Wind is derived from Metal × Wood rather than a sixth base affinity;
+3. XP comes from kills; other growth uses separately typed grants;
+4. merging consumes two Master-10 inputs and uses a catalyst and recipe;
+5. passives are unlimited and only one stance may be active.
+
+Living Village still needs a versioned Normal table chosen from the source's authored band, a
+decision on whether Advanced/Special access is enabled in v1, and approval or revision of the
+proposed three-race runtime set. Visual tier remains separate from floor-scaled combat stats.
 
 These are design decisions, not reasons to block independent text, art, UI-shell, or contract-fixture
 work.

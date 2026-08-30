@@ -1,6 +1,6 @@
 # Progression, skills, and promotion
 
-Status: **target curve accepted; mechanics require progression-v2**
+Status: **supplied target curve authoritative; mechanics require progression-v2**
 
 Primary owner: hero capability and skill catalog
 
@@ -13,7 +13,7 @@ actually accomplish.
 ## Owns
 
 - XP, level, star cap, attributes, growth choices, and promotion state;
-- skill discovery, learning, mastery, and equipped capacity;
+- skill discovery, learning, mastery, unlimited passive ownership, and one active stance;
 - effective-power/readiness inputs;
 - skill definitions, fusion recipes/templates, and balance budgets.
 
@@ -29,7 +29,7 @@ actually accomplish.
 Use a table, not `rank × 10`:
 
 ```text
-1★ 10 · 2★ 20 · 3★ 30 · 4★ 40 · 5★ 50 · 6★ 99 · 7★ 999
+1★ 10 · 2★ 20 · 3★ 30 · 4★ 40 · 5★ 50 · 6★ 70 · 7★ 99
 ```
 
 The tower and UI consume a versioned `EffectivePowerProjection`. Difficulty rises continuously
@@ -38,14 +38,15 @@ rather than at rank walls. Current calibration anchors are:
 | Hero progression | Expected tower reach with sound systems |
 | --- | --- |
 | 4★, near level 40 | approximately Floors 40–45 |
-| 6★, level 99 | approximately Floors 85–90 |
-| 7★, above level 99 | final push toward Floor 100 and postgame |
+| 6★, near level 70 | late-campaign specialization and final promotion preparation |
+| 7★, level 99 | approximately Floors 85–90; build quality carries the final push |
 
 These are balancing targets, not locks. Skill coverage, party roles, equipment, knowledge,
 cohesion, recovery, motivation, and player-designed training systems can move performance around the
 anchor. A badly designed company can underperform its levels; a coherent one can outperform them.
-Levels 100–999 use sharply diminishing direct-stat gains. Old receipts retain the cap table and
-balance version they used.
+Level 99 is the authored ceiling. Floor 100 and postgame growth come from mastery, skill breadth and
+merging, affinities, equipment, party systems, and other horizontal progression. Old receipts retain
+the cap table and balance version they used.
 
 Promotion uses tower evidence, portal/neighbor resources, achievements, facilities, and time.
 Synthesis essence may accelerate a path but must always have a non-synthesis alternative.
@@ -54,13 +55,13 @@ Synthesis essence may accelerate a path but must always have a non-synthesis alt
 
 Skills are typed combinations of domain, operation, delivery, aspects, effects, costs, and
 tradeoffs. A hero may know a recipe without having learned its inputs, learn a skill without high
-mastery, master more skills than can be equipped, and teach only bounded portions of demonstrated
-mastery.
+mastery, retain unlimited passive skills, maintain only one active stance, and teach only bounded
+portions of demonstrated mastery.
 
-Two Tier-1 skills may form a Tier-2 result and three Tier-1 inputs may form a Tier-3 result, but
-input count alone does not grant power. The fusion rule pays an explicit budget from input tier,
-catalyst, promotion capacity, costs, slots, or drawbacks. Every result preserves at least one
-recognizable mechanic from each input.
+Two Master-10 skills may merge into a Novice-1 result when the hero has the recipe and catalyst.
+Both inputs are consumed. The result's tier and effect budget come from authored compatibility and
+recipe rules rather than input count alone, and it preserves recognizable mechanics from both
+inputs.
 
 Authored recipes win. Bounded procedural templates can compose only approved effect operators. A
 development workshop may propose new recipes for review; runtime agent prose may name or describe
@@ -88,31 +89,34 @@ Publishes:
 - Teaching cannot create more transferable mastery than the teacher demonstrates.
 - Fusion is input-order invariant and rejects cycles, duplicate refunds, and self-reference.
 - Repeated fusion cannot grow total effect budget without a paid source.
-- Skill slots and action economy prevent a giant library from becoming every build at once.
+- One active stance and action opportunity constrain moment-to-moment choices; passive effects are
+  unlimited as authored and therefore require bounded individual effects and stacking rules.
 - Level and mastery remain complementary; neither replaces the other.
 
 ## Roadmap
 
 1. Add progression-v2 table, grant claim, effective-power projection, and compatibility fixtures.
 2. Expand the skill catalog beyond sword fighting across combat and civic roles.
-3. Add mastery, teaching, skill slots, and promotion choices.
+3. Add mastery, teaching, the one-stance rule, and star-stone promotion.
 4. Prove deterministic two-input fusion with cycle/budget property tests.
-5. Add three-input/template fusion and a development recipe workshop.
-6. Balance 6★ and 7★ only after late-band and postgame simulations.
+5. Expand authored two-input recipe coverage and add a development recipe workshop.
+6. Balance 6★ levels 51–70 and 7★ levels 71–99 only after late-band and postgame simulations.
 
 ## Feedback ledger
 
 | Date | Status | Feedback | Consequence |
 | --- | --- | --- | --- |
-| 2026-08-29 | accepted | Caps are 10/20/30/40/50/99/999. | Replace the formula in a new version; use effective power for content. |
-| 2026-08-29 | accepted | The internal skill tree should be extensive and merge any two or three skills. | Use a hidden typed lattice with deterministic authored/template composition. |
-| 2026-08-29 | accepted | Level 99 should clear roughly Floor 85–90; 4★/level 40 roughly Floor 40–45; 100+ is for Floor 100 and postgame. | Add smooth readiness anchors without hard floor locks or sudden rank walls. |
+| 2026-08-29 | superseded | Earlier conversational caps were 10/20/30/40/50/99/999. | ADR 0063 restores the later supplied source's 70/99 caps. |
+| 2026-08-29 | accepted | Supplied Markdown wins earlier conversational conflicts; caps are 10/20/30/40/50/70/99. | Use the authored table in progression-v2 and horizontal growth for Floor 100/postgame. |
+| 2026-08-29 | superseded | Earlier feedback asked for any two or three skill inputs. | The later supplied compendium makes merging a consumed two-input recipe. |
+| 2026-08-29 | accepted | Supplied skill rules win earlier conversational conflicts. | Use two consumed Master-10 inputs, a recipe, a catalyst, and a Novice-1 result. |
+| 2026-08-29 | accepted | Level 99 should clear roughly Floor 85–90 and 4★/level 40 roughly Floor 40–45. | Add smooth readiness anchors without hard floor locks; the source cap means final floors require horizontal build quality. |
 | 2026-08-29 | experiment | Heroes and monsters share affinities that can modify derived attributes and apply effects such as Fire/Burn, Wind/Cut, and Wood/Slow. | Define one typed affinity/status resolver in the wiki; keep exact roster and numbers draft pending combat simulation. |
 
 ## Open decisions
 
-- Does fusion consume the input skills, preserve them, or consume only fragments/catalysts?
-- How many equipped active/passive skill slots should each promotion expose?
+- What deterministic budget and compatibility rules cover every authored two-input pairing?
+- How do unlimited passives stack without making acquisition order the only meaningful build choice?
 
 ## Existing foundations
 
