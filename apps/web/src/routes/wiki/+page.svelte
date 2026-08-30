@@ -173,7 +173,7 @@
 		margin: 0 0 1.1rem;
 		color: #d47a43;
 		font:
-			0.61rem ui-monospace,
+			0.72rem ui-monospace,
 			monospace;
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
@@ -197,7 +197,7 @@
 		margin-top: 2rem;
 		color: rgba(243, 234, 217, 0.7);
 		font-family: Georgia, serif;
-		font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+		font-size: clamp(1.08rem, 1.5vw, 1.25rem);
 		line-height: 1.65;
 	}
 	.hero-actions {
@@ -211,7 +211,7 @@
 		border: 1px solid rgba(232, 199, 149, 0.28);
 		color: #f3ead9;
 		font:
-			0.62rem ui-monospace,
+			0.72rem ui-monospace,
 			monospace;
 		letter-spacing: 0.1em;
 		text-decoration: none;
@@ -243,7 +243,7 @@
 		grid-column: 1 / -1;
 		color: #9d917f;
 		font:
-			0.5rem ui-monospace,
+			0.62rem ui-monospace,
 			monospace;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
@@ -255,7 +255,7 @@
 	.edition i {
 		color: #d47a43;
 		font:
-			0.7rem ui-monospace,
+			0.8rem ui-monospace,
 			monospace;
 		font-style: normal;
 	}
@@ -283,7 +283,7 @@
 	.roadmap > a {
 		color: #d98652;
 		font:
-			0.62rem ui-monospace,
+			0.72rem ui-monospace,
 			monospace;
 		letter-spacing: 0.09em;
 		text-decoration: none;
@@ -345,7 +345,7 @@
 	.collection span {
 		color: #b96c40;
 		font:
-			0.56rem ui-monospace,
+			0.68rem ui-monospace,
 			monospace;
 		letter-spacing: 0.15em;
 		text-transform: uppercase;
@@ -361,6 +361,7 @@
 		margin: 0;
 		color: rgba(243, 234, 217, 0.58);
 		font-family: Georgia, serif;
+		font-size: 1.08rem;
 		line-height: 1.6;
 	}
 	.collection > b {
@@ -368,7 +369,7 @@
 		margin-top: 2rem;
 		color: #d98652;
 		font:
-			0.58rem ui-monospace,
+			0.7rem ui-monospace,
 			monospace;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
@@ -408,14 +409,14 @@
 	figcaption span {
 		color: #d98652;
 		font:
-			0.55rem ui-monospace,
+			0.67rem ui-monospace,
 			monospace;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
 	figcaption strong {
 		font-family: Georgia, serif;
-		font-size: 1.3rem;
+		font-size: 1.42rem;
 		font-weight: 400;
 	}
 	.roadmap {
@@ -430,7 +431,7 @@
 		margin: 0;
 		color: rgba(243, 234, 217, 0.58);
 		font-family: Georgia, serif;
-		font-size: 1.08rem;
+		font-size: 1.18rem;
 		line-height: 1.7;
 	}
 	.roadmap > a {

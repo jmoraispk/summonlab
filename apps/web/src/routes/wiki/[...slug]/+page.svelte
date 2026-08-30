@@ -120,7 +120,7 @@
 		margin: 0 0 1rem;
 		color: #d4773d;
 		font:
-			0.6rem ui-monospace,
+			0.7rem ui-monospace,
 			monospace;
 		letter-spacing: 0.17em;
 		text-transform: uppercase;
@@ -139,6 +139,7 @@
 		margin-top: 1.7rem;
 		color: rgba(243, 234, 217, 0.66);
 		font-family: Georgia, serif;
+		font-size: 1.16rem;
 		line-height: 1.65;
 	}
 	.reference-cohort {
@@ -162,7 +163,7 @@
 	.reference-cohort > header > span {
 		color: #8f8473;
 		font:
-			0.55rem ui-monospace,
+			0.67rem ui-monospace,
 			monospace;
 		letter-spacing: 0.11em;
 		text-transform: uppercase;
@@ -208,14 +209,14 @@
 	}
 	.hero-grid strong {
 		font-family: Georgia, serif;
-		font-size: 1.15rem;
+		font-size: 1.28rem;
 		font-weight: 400;
 	}
 	.hero-grid span,
 	.continuity figcaption span {
 		color: #d4773d;
 		font:
-			0.5rem ui-monospace,
+			0.62rem ui-monospace,
 			monospace;
 		letter-spacing: 0.09em;
 		text-transform: uppercase;
@@ -267,7 +268,7 @@
 	.article-meta i {
 		color: #a39887;
 		font:
-			0.53rem ui-monospace,
+			0.66rem ui-monospace,
 			monospace;
 		font-style: normal;
 		letter-spacing: 0.1em;
@@ -277,7 +278,7 @@
 		color: #d4773d;
 	}
 	.article-body {
-		width: min(50rem, 100%);
+		width: min(54rem, 100%);
 		margin: 3rem auto 0;
 	}
 	.article-body :global(h1) {
@@ -302,15 +303,15 @@
 		margin: 2.7rem 0 0.8rem;
 		color: #e5aa73;
 		font-family: Georgia, serif;
-		font-size: 1.55rem;
+		font-size: 1.72rem;
 		font-weight: 400;
 	}
 	.article-body :global(p),
 	.article-body :global(li) {
 		color: rgba(243, 234, 217, 0.72);
 		font-family: Georgia, serif;
-		font-size: 1.04rem;
-		line-height: 1.72;
+		font-size: 1.16rem;
+		line-height: 1.75;
 	}
 	.article-body :global(strong) {
 		color: #f3ead9;
@@ -349,7 +350,7 @@
 		margin: 2rem 0;
 		overflow-x: auto;
 		border-collapse: collapse;
-		font-size: 0.82rem;
+		font-size: 1rem;
 	}
 	.article-body :global(th),
 	.article-body :global(td) {
@@ -362,7 +363,7 @@
 	.article-body :global(th) {
 		color: #e5aa73;
 		font:
-			0.58rem ui-monospace,
+			0.7rem ui-monospace,
 			monospace;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
@@ -382,13 +383,13 @@
 		display: flex;
 		gap: 1rem;
 		align-items: center;
-		width: min(50rem, 100%);
+		width: min(54rem, 100%);
 		margin: 4rem auto 0;
 		padding-top: 1rem;
 		border-top: 1px solid rgba(231, 206, 164, 0.13);
 		color: #827767;
 		font:
-			0.52rem ui-monospace,
+			0.64rem ui-monospace,
 			monospace;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;

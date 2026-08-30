@@ -6,7 +6,7 @@ describe('online wiki registry', () => {
 	it('publishes every public catalog route from canonical Markdown', () => {
 		const navigation = getWikiNavigation();
 
-		expect(getWikiPageCount()).toBe(56);
+		expect(getWikiPageCount()).toBe(57);
 		expect(navigation.length).toBeGreaterThan(40);
 		for (const entry of navigation) {
 			expect(getWikiPage(entry.href.replace(/^\/wiki\//u, ''))?.title).toBe(entry.title);
@@ -45,5 +45,15 @@ describe('online wiki registry', () => {
 		]) {
 			expect(packet?.html).toContain(name);
 		}
+	});
+
+	it('publishes the collision-safe Living Village parallel plan', () => {
+		const plan = getWikiPage('roadmap/living-village-parallel-plan');
+		expect(plan?.html).toContain(
+			'Use <strong>one integration owner plus thirteen focused workers</strong>'
+		);
+		expect(plan?.html).toContain('Village surface');
+		expect(plan?.html).toContain('Summon experience');
+		expect(plan?.html).toContain('No lane may add');
 	});
 });

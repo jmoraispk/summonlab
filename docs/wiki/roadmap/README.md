@@ -23,6 +23,8 @@ still be `off` in Living Village v1.
 
 - [Living Village v1](living-village-v1.md) — summon heroes, train them directly, and send one party
   through simplified missions.
+- [Living Village parallel production plan](living-village-parallel-plan.md) — split the three
+  screens, summon experiments, mechanics, visual production, and QA into collision-safe agent lanes.
 - [Website and online wiki](wiki-website.md) — publish the game and living art-book documentation as
   one SvelteKit platform.
 

@@ -205,7 +205,7 @@
 		gap: 0;
 		color: var(--paper);
 		font-family: Georgia, serif;
-		font-size: 1rem;
+		font-size: 1.12rem;
 		letter-spacing: 0.16em;
 		text-decoration: none;
 	}
@@ -219,7 +219,7 @@
 		border-left: 1px solid var(--line);
 		color: var(--muted);
 		font-family: ui-monospace, monospace;
-		font-size: 0.55rem;
+		font-size: 0.68rem;
 		font-style: normal;
 		letter-spacing: 0.2em;
 	}
@@ -227,7 +227,7 @@
 		margin: 0 0 0 1.25rem;
 		color: rgba(243, 234, 217, 0.38);
 		font:
-			0.58rem ui-monospace,
+			0.68rem ui-monospace,
 			monospace;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
@@ -244,7 +244,7 @@
 		background: transparent;
 		color: var(--paper);
 		font:
-			0.62rem ui-monospace,
+			0.72rem ui-monospace,
 			monospace;
 		letter-spacing: 0.13em;
 		text-decoration: none;
@@ -260,7 +260,7 @@
 		bottom: 0;
 		left: 0;
 		z-index: 20;
-		width: 20rem;
+		width: 22rem;
 		padding: 1.25rem 0 2rem;
 		border-right: 1px solid var(--line);
 		background: #0c0b08;
@@ -274,7 +274,7 @@
 		margin-bottom: 0.55rem;
 		color: var(--muted);
 		font:
-			0.54rem ui-monospace,
+			0.66rem ui-monospace,
 			monospace;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
@@ -286,7 +286,7 @@
 		border-radius: 0.2rem;
 		background: rgba(255, 255, 255, 0.025);
 		color: var(--paper);
-		font-size: 0.75rem;
+		font-size: 0.9rem;
 	}
 	.nav-scroll {
 		height: calc(100% - 4.5rem);
@@ -311,7 +311,7 @@
 		border-left: 2px solid transparent;
 		color: rgba(243, 234, 217, 0.68);
 		font-family: Georgia, serif;
-		font-size: 0.76rem;
+		font-size: 0.9rem;
 		line-height: 1.25;
 		text-decoration: none;
 	}
@@ -339,7 +339,7 @@
 		flex: 0 0 auto;
 		color: rgba(243, 234, 217, 0.28);
 		font:
-			0.44rem ui-monospace,
+			0.56rem ui-monospace,
 			monospace;
 		font-style: normal;
 		letter-spacing: 0.05em;
@@ -350,7 +350,7 @@
 		padding: 0 0.45rem;
 		color: #72563f;
 		font:
-			0.48rem ui-monospace,
+			0.58rem ui-monospace,
 			monospace;
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
@@ -393,7 +393,7 @@
 	.nav-section > summary span {
 		color: #aa7a53;
 		font:
-			0.59rem ui-monospace,
+			0.7rem ui-monospace,
 			monospace;
 		font-weight: 700;
 		letter-spacing: 0.14em;
@@ -403,7 +403,7 @@
 		margin-left: auto;
 		color: rgba(243, 234, 217, 0.24);
 		font:
-			0.48rem ui-monospace,
+			0.58rem ui-monospace,
 			monospace;
 		font-style: normal;
 	}
@@ -421,7 +421,7 @@
 	.nav-subsection > summary span {
 		color: rgba(243, 234, 217, 0.52);
 		font:
-			0.54rem ui-monospace,
+			0.65rem ui-monospace,
 			monospace;
 		letter-spacing: 0.09em;
 		text-transform: uppercase;
@@ -430,19 +430,19 @@
 		padding: 0 0 0.4rem 0.25rem;
 	}
 	.nav-subsection a {
-		font-size: 0.72rem;
+		font-size: 0.84rem;
 	}
 	.nav-empty {
 		margin: 1.2rem 0.45rem;
 		color: var(--muted);
 		font-family: Georgia, serif;
-		font-size: 0.8rem;
+		font-size: 0.95rem;
 		font-style: italic;
 	}
 	.wiki-page {
 		min-height: 100svh;
 		padding-top: 4.5rem;
-		padding-left: 20rem;
+		padding-left: 22rem;
 	}
 	@media (max-width: 860px) {
 		.wiki-topbar {

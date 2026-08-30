@@ -232,6 +232,16 @@
       "spoilerScope": "public"
     },
     {
+      "wikiId": "roadmap.living-village-parallel-plan",
+      "path": "docs/wiki/roadmap/living-village-parallel-plan.md",
+      "pageType": "production-plan",
+      "owner": "product-integration",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
       "wikiId": "roadmap.wiki-website",
       "path": "docs/wiki/roadmap/wiki-website.md",
       "pageType": "roadmap",
