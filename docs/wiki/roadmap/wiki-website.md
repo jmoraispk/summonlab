@@ -41,7 +41,7 @@ Status: **implemented for review**
 - Game-styled `/wiki` landing page using the Hearth, hero, and monster visual language.
 - Online routes for every public/discoverable catalog page.
 - Responsive searchable index, source/status metadata, Markdown tables, code, links, and images.
-- Art-book treatment for the Living Village hero packet with honest candidate/uncast labels.
+- Art-book treatment for the fixed Living Village six with honest per-asset approval labels.
 - One application and one domain, using the supported Vercel adapter.
 
 Acceptance: open the wiki at desktop and phone widths, find Progression and the visual packet, and
@@ -91,7 +91,8 @@ explicitly for version stability: [SvelteKit on Vercel](https://vercel.com/docs/
 
 The online wiki lets several art lanes proceed without expanding Living Village runtime:
 
-1. six collision-safe Living Village hero packets;
+1. finish cross-surface packets for the fixed Dara, Mara, Jori, Kira, Iven, and Remy roster—no
+   additional prototype faces;
 2. three selected runtime monsters plus broader bestiary concept plates;
 3. initial skill effects/icons, followed by disabled-skill concept work;
 4. initial equipment icons and material language;
@@ -105,6 +106,5 @@ to approved/runtime status.
 - Which existing address and subdomain/path should become production?
 - Should `/` initially remain the current playable title screen, or become a broader marketing page
   with **Play** and **Wiki** entrances?
-- Which three monster races and which six hero identities should receive the first runtime-grade
-  visual packets?
+- Which three monster races should receive the first runtime-grade visual packets?
 - Should draft design pages be public with visible labels, or available only on preview deployments?

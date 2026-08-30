@@ -169,8 +169,8 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   generation fixture, two bounded proposal packets and hashes, catalog/reference validation,
   prototype warnings, pending review state, and zero candidates ready for compilation.
 - `wiki-living-village-visual-packet.png` — the desktop online-wiki packet header with the Hearth
-  environment, explicit uncast/not-approved language, and collapsible hierarchical navigation.
-- `wiki-living-village-visual-cohort.png` — the owner-reviewed reference cohort with Mara Vey and
-  Remy Nahl replacing Elian Ro and Lio Dae in the online presentation.
+  environment, the fixed six-person prototype decision, and collapsible hierarchical navigation.
+- `wiki-living-village-visual-cohort.png` — the fixed prototype roster with Mara Vey and Remy Nahl
+  replacing Elian Ro and Lio Dae; labels preserve each asset's actual approval status.
 - `wiki-home-mobile.png` — the 390×844 online-wiki landing view with the Hearth archive, visual
   packet entry, and Living Village review path.

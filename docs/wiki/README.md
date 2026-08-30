@@ -40,8 +40,8 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
-- [Living Village hero packet](art/living-village-heroes.md) — six collision-safe identity briefs
-  and their required cross-surface evidence.
+- [Living Village hero packet](art/living-village-heroes.md) — the fixed Dara, Mara, Jori, Kira,
+  Iven, and Remy roster, with bounded derivative work and no additional prototype faces.
 - [Every person can contribute](principles/every-person-contributes.md) — the dignity, opportunity,
   and social-system principle behind heroes.
 - [Contribution workflow](contributing.md) — how sessions consume and return wiki material.

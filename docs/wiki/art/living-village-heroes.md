@@ -2,27 +2,30 @@
 
 Wiki ID: `art.living-village-heroes`
 
-Design status: **brief**. No slot is approved or summon-eligible merely because it appears here.
+Design status: **fixed prototype roster; production packets incomplete**.
 
-The proposed `living-village-v1` fixture needs exactly six persistent adult human identities: three
-available at the start and one unlocked by each Normal token from Floors 3, 6, and 9. A mechanical
-role package never defines a person's face, body, culture, personality, morality, worth, or visual
-quality.
+The `living-village-v1` fixture uses exactly six persistent adult human identities: Dara Zev, Mara
+Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl. This is the complete prototype face pool.
+Three are available at the start and one is unlocked by each Normal token from Floors 3, 6, and 9.
+No summon path, reward, seed, or visual worker may introduce another hero identity during this
+milestone. A mechanical role package never defines a person's face, body, culture, personality,
+morality, worth, or visual quality.
 
-## Collision-safe slots
+## Fixed roster slots
 
-| Slot | Availability | Identity status | Required role binding |
+| Slot | Availability | Fixed identity | Current asset status |
 | --- | --- | --- | --- |
-| `lv-hero-01` | starting pull | uncast brief | one initial combat role after mechanics review |
-| `lv-hero-02` | starting pull | uncast brief | one initial combat role after mechanics review |
-| `lv-hero-03` | starting pull | uncast brief | one initial combat role after mechanics review |
-| `lv-hero-04` | Floor-3 token pool | uncast brief | one initial combat role after mechanics review |
-| `lv-hero-05` | Floor-6 token pool | uncast brief | one initial combat role after mechanics review |
-| `lv-hero-06` | Floor-9 token pool | uncast brief | one initial combat role after mechanics review |
+| `lv-hero-01` | starting pull | Dara Zev | approved identity anchor |
+| `lv-hero-02` | starting pull | Mara Vey | approved identity anchor |
+| `lv-hero-03` | starting pull | Jori Daro | approved identity anchor |
+| `lv-hero-04` | Floor-3 token | Kira Toren | candidate identity anchor |
+| `lv-hero-05` | Floor-6 token | Iven Orra | candidate identity anchor |
+| `lv-hero-06` | Floor-9 token | Remy Nahl | approval-candidate identity anchor |
 
-Each slot receives its own character ID, manifest hash, asset directory, and manifest fragment.
-Workers must not choose names, bodies, roles, or cultures for a different slot and must not edit the
-shared wiki catalog or runtime summon pool.
+Each slot keeps its existing character ID, manifest hash, asset directory, and catalog provenance.
+Workers may complete missing derivatives for their assigned identity, but must not redesign,
+replace, or add faces; choose a different body, role, or culture; or edit the shared wiki catalog or
+runtime summon pool.
 
 ## Stable visual direction
 
@@ -67,16 +70,17 @@ Every identity must remain recognizable in summon, Roster/Hero, Village, trainin
 the compact view cannot carry at least four non-facial cues, revise the source identity or the view;
 do not claim face recognition below useful resolution.
 
-## Current web reference cohort
+## Owner roster decision
 
-The online packet currently shows Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy
-Nahl as visual-language references. Owner review on 2026-08-29 explicitly replaced Elian Ro and Lio
-Dae with Mara and Remy in this presentation. This is accepted presentation feedback, not automatic
-casting into the six `living-village-v1` summon slots.
+Owner review on 2026-08-29 first replaced Elian Ro and Lio Dae with Mara Vey and Remy Nahl in the
+online presentation, then froze all six displayed identities as the complete Living Village
+prototype roster. Broader procedural human generation remains future work and is not a parallel
+production lane for this milestone.
 
 ## Handoff boundary
 
 A hero visual worker returns candidate bytes and a manifest fragment only. One integration owner
 checks IDs and hashes, records human review, exports runtime derivatives, registers assets, and
-changes summon eligibility. A generated image cannot define a new anatomy fact, role, skill,
-equipment property, personality, or backstory without returning that idea as a separate proposal.
+changes asset approval. Summon eligibility is limited to the fixed table above. A generated image
+cannot define a new anatomy fact, role, skill, equipment property, personality, or backstory without
+returning that idea as a separate proposal.

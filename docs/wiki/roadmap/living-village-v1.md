@@ -13,7 +13,7 @@ the wiki and may continue through independent design or concept-art work.
 | Capability | State | Living Village v1 behavior |
 | --- | --- | --- |
 | Static Village | `on` | Fixed Summoning Gate, Training Court, and Tower Threshold; no construction or upgrades |
-| Human summoning | `on` | One versioned starting channel and unique persistent identities |
+| Human summoning | `on` | One versioned Normal channel reveals the fixed six-person roster; no generated or replacement faces |
 | Roster/Hero inspection | `on` | Attributes, affinity, skills, loadout, availability, and visual identity |
 | Direct hero training | `on` | Player selects one enabled attribute or owned enabled skill and advances a fixed block |
 | One three-hero party | `on` | One prepared party and one active attempt |
@@ -21,7 +21,26 @@ the wiki and may continue through independent design or concept-art work.
 | Combat | `placeholder` | Forthcoming combat design plugs into a deterministic request/receipt boundary; a transparent mathematical resolver may prove integration first |
 | Rewards and engagement | `placeholder` | First-clear, training, mission, and daily-return claims use a small versioned reward table |
 | Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
-| Core visuals | `on` | Six heroes, three runtime monster races, initial skill effects/icons, equipment icons, one Hearth, one tower backdrop |
+| Core visuals | `on` | The fixed six heroes, three runtime monster races, initial skill effects/icons, equipment icons, one Hearth, one tower backdrop |
+
+## Fixed hero roster
+
+Living Village uses only these six hero identities. The summon system acquires a pre-authored
+person from this table; it does not create a new face or select from the broader human catalog.
+
+| Slot | Identity | Prototype availability | Visual status |
+| --- | --- | --- | --- |
+| `lv-hero-01` | Dara Zev | starting summon | approved identity |
+| `lv-hero-02` | Mara Vey | starting summon | approved identity |
+| `lv-hero-03` | Jori Daro | starting summon | approved identity |
+| `lv-hero-04` | Kira Toren | Floor-3 Normal token | candidate identity; finish existing packet only |
+| `lv-hero-05` | Iven Orra | Floor-6 Normal token | candidate identity; finish existing packet only |
+| `lv-hero-06` | Remy Nahl | Floor-9 Normal token | approval candidate; finish existing packet only |
+
+The starting reveal order may remain seeded, but the first three results are those three fixed
+starter IDs and each identity can be acquired only once. Floor tokens reveal their bound identity;
+they do not roll a larger pool. Face generation, rerolls, duplicates, replacement identities, and a
+seventh roster slot are outside this release.
 
 ## Skill availability
 
@@ -55,6 +74,7 @@ runtime command is a deterministic rejection, not a hidden no-op.
 | Campaign story and world exploration | `off` | Floors are mechanical encounters only |
 | Expedition navigation and discoveries | `off` | Mission selection leads directly to resolution/presentation |
 | Multiple parties | `off` | One party proves reservation and return |
+| Advanced and Special summon channels | `off` | The fixed six-person Normal sequence is the complete prototype roster |
 | Equipment crafting, enchanting, sets, wear, and repair | `off` | Starter/drop loadouts only |
 | Advanced affinity, dual affinity, and derived affinity | `off` | Only the accepted combat subset may resolve |
 | Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |
@@ -68,18 +88,19 @@ The complete reward design belongs to [Rewards and Engagement](../mechanics/rewa
 For v1, these remain `decision` until owner review and economy simulation:
 
 - exact daily gem grant—the current proposal is “a couple,” represented initially as 2;
-- whether the first release includes a spendable Advanced summon or only accumulates gems;
-- whether occasional Special summons come from a calendar, a mission milestone, or both;
-- cadence, pity, duplicate prevention, and missed-day behavior;
+- whether v1 omits gems in favor of a directly useful fixed-roster reward;
+- missed-day behavior;
 - exact first-clear, repeat-combat, training, and milestone reward values.
 
-A daily currency with no visible future use is not sufficient motivation. If Advanced summoning is
-`off`, the UI must still explain what saved gems will unlock, or v1 should grant a directly usable
-summon ticket instead.
+Advanced and Special summoning are now explicitly `off` for this prototype because they would imply
+additional identities or duplicates. A daily currency with no visible use is not sufficient
+motivation, so gems should either be clearly marked as future account currency or replaced in this
+slice by a directly useful progression, training, or equipment reward.
 
 ## Release gates
 
 - The executable allowlist rejects every `off` skill and capability from all entry points.
+- Summoning rejects every hero identity outside the fixed six and cannot grant one identity twice.
 - A new player completes summon → inspect/equip → mission → reward → training → improved retry.
 - Every consequential action produces immediate feedback plus an honest durable benefit where one
   is promised.

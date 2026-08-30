@@ -31,4 +31,19 @@ describe('online wiki registry', () => {
 		);
 		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
 	});
+
+	it('publishes the fixed six-person Living Village roster', () => {
+		const packet = getWikiPage('art/living-village-heroes');
+		expect(packet?.html).toContain('complete prototype face pool');
+		for (const name of [
+			'Dara Zev',
+			'Mara Vey',
+			'Jori Daro',
+			'Kira Toren',
+			'Iven Orra',
+			'Remy Nahl'
+		]) {
+			expect(packet?.html).toContain(name);
+		}
+	});
 });

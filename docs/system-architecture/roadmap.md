@@ -15,17 +15,18 @@ summon → inspect/equip → party/floor → deterministic combat
 → rewards/progression → direct training → improved retry
 ```
 
-It uses one static settlement, Floors 1–10, one party, three navigational surfaces, bounded hero,
-skill, equipment, and monster catalogs, and no agentic interaction, society, tower story, world
-exploration, construction, or broad Town Master operations. The wiki still retains every supplied
-rule and catalog entry; the release matrix deliberately makes unsupported capabilities unreachable.
+It uses one static settlement, Floors 1–10, one party, three navigational surfaces, exactly six
+fixed hero identities, bounded skill/equipment/monster catalogs, and no agentic interaction,
+society, tower story, world exploration, construction, or broad Town Master operations. No new
+hero face generation belongs to this milestone. The wiki still retains every supplied rule and
+catalog entry; the release matrix deliberately makes unsupported capabilities unreachable.
 
 Delivery checkpoints:
 
 1. **LV-1 Scope and content spine** — register all supplied drafts, visible conflicts, initial IDs,
    contracts, and runtime content selections.
-2. **LV-2 Static Village and prepared roster** — summon, inspect, equip, form one party, and assign
-   direct training through a fixed Hearth.
+2. **LV-2 Static Village and prepared roster** — reveal only the fixed Dara/Mara/Jori/Kira/Iven/Remy
+   roster, inspect, equip, form one party, and assign direct training through a fixed Hearth.
 3. **LV-3 Deterministic tower loop** — Floors 1–10, combat adapter, claims, progression, motivating
    rewards, unlocks, return, save, and replay.
 4. **LV-4 Visual integration and playtest** — bind cross-surface art and ship the ten-minute,

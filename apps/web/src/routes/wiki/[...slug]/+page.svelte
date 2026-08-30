@@ -21,8 +21,9 @@
 				<p>Visual production packet · Living Village v1</p>
 				<h1>Six lives.<br />One recognizable company.</h1>
 				<span>
-					The slots below are still uncast. These existing images show the current realism, anatomy,
-					and identity-continuity target—not approved Living Village summons.
+					This is the complete prototype roster. Summoning reveals only these six persistent
+					identities; production may finish their cross-surface assets, but it will not generate new
+					faces for Living Village.
 				</span>
 			</header>
 		</section>
@@ -30,10 +31,10 @@
 		<section class="reference-cohort" aria-labelledby="cohort-heading">
 			<header>
 				<div>
-					<p>Reference cohort</p>
-					<h2 id="cohort-heading">Current visual language</h2>
+					<p>Fixed prototype cohort</p>
+					<h2 id="cohort-heading">The Living Village six</h2>
 				</div>
-				<span>Candidate material · not runtime</span>
+				<span>Roster fixed · asset approval varies</span>
 			</header>
 			<div class="hero-grid">
 				{#each data.visualPacket.heroes as hero, index (hero.name)}

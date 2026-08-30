@@ -12,10 +12,10 @@
 	"measurements": {
 		"initialJavaScriptGzipBytes": 48847,
 		"runtimeInspectorLoadedJavaScriptGzipBytes": 303320,
-		"recognitionAuditLoadedJavaScriptGzipBytes": 53283,
-		"settlementRouteLabLoadedJavaScriptGzipBytes": 48818,
+		"recognitionAuditLoadedJavaScriptGzipBytes": 53284,
+		"settlementRouteLabLoadedJavaScriptGzipBytes": 48817,
 		"missionPackageLabLoadedJavaScriptGzipBytes": 48393,
-		"missionLifecycleLoadedJavaScriptGzipBytes": 62027,
+		"missionLifecycleLoadedJavaScriptGzipBytes": 62028,
 		"largestRuntimeLazyChunkGzipBytes": 174940,
 		"runtimeVisualPayloadBytes": 195104
 	},

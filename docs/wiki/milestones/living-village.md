@@ -96,7 +96,7 @@ These are reviewable content budgets, not permanent catalog limits.
 
 | Area | Runtime target | Full wiki material |
 | --- | --- | --- |
-| Heroes | exactly six visually finished adult human identities filling the proposed roster | broader procedural human visual catalog remains parallel work |
+| Heroes | exactly Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl | broader procedural human generation is deferred until after the prototype |
 | Summoning | one Normal channel; deterministic receipt; enough starting access to form a party | Advanced, gems, pity, portal upgrades, and 4★–5★ odds documented but deferred |
 | Progression | 1★ and levels 1–10; six attributes; XP and training deltas | all seven star caps and late progression documented |
 | Affinity | one base affinity or Unaligned per actor; only effects required by the combat slice | ranks III–V, dual, derived, advanced cycles, and off-cycle affinities deferred |
@@ -121,9 +121,9 @@ target the same game:
 | Rule | Proposed first fixture |
 | --- | --- |
 | Party | exactly three heroes; edited canonically on Roster/Hero, with a Tower shortcut |
-| Roster | six hero slots; every person/manifest is unique |
-| Starting summons | three free seeded Normal pulls, all 1★ for this ruleset |
-| Later summons | one Normal token on first clear of Floors 3, 6, and 9; no premium purchase |
+| Roster | six fixed unique hero IDs: Dara, Mara, Jori, Kira, Iven, and Remy; no other face may enter this ruleset |
+| Starting summons | three free seeded Normal reveals of Dara, Mara, and Jori, all 1★ for this ruleset; order may vary, identity set may not |
+| Later summons | Floor 3 reveals Kira, Floor 6 reveals Iven, and Floor 9 reveals Remy; no random pool or premium purchase |
 | Training | three fixed Court slots; one explicit training block; exact grant is a versioned tuning value |
 | Equipment slots | main hand, off hand, body, accessory |
 | Inventory | shared owned-item drawer inside Roster/Hero with compare, equip, and unequip |
@@ -215,7 +215,7 @@ then they remain explicit blockers rather than local worker choices.
 | `TrainingDefinition` / `TrainingAssignment` | fixed training rule / reserved hero and focus |
 | `PartySnapshot` | immutable participants and prepared state for one attempt |
 | `CombatRequest` / `CombatReceipt` | resolver input / seeded result and explanatory trace |
-| `SummonReceipt` | channel, entropy, result, and created hero reference |
+| `SummonReceipt` | channel, entropy, result, and activated pre-authored hero reference |
 | `RewardClaim` | proposed XP, mastery, item, currency, or unlock delta |
 | `RunSnapshot` | reloadable canonical milestone state and content versions |
 
@@ -235,7 +235,8 @@ progression.changed
 
 ## Ownership rules
 
-- Summoning creates a hero and a summon receipt; it does not render the hero.
+- Summoning activates one not-yet-owned identity from the fixed six and creates a receipt; it does
+  not generate or render a new person.
 - Tower creates an encounter request; it does not resolve combat.
 - Combat produces an outcome and claims; it does not mutate progression or inventory.
 - Progression validates XP, levels, attributes, affinity, and skill-practice claims.
@@ -256,6 +257,7 @@ progression.changed
 - skill merging, mentorship, complete ladders, advanced mastery, and practice-profile bonuses;
 - crafting, enchanting, item sets, durability, repairs, and per-hero cargo;
 - premium purchases, monetization, and a production economy;
+- generated faces, identity rerolls, duplicate heroes, replacement identities, or roster expansion;
 - permanent death or injury until combat stakes are deliberately accepted.
 
 ## Playable acceptance test
@@ -284,9 +286,9 @@ Quality gates:
 
 ### LV-1 — Scope and content spine
 
-Freeze this page, register the complete source drafts, resolve conflicts visibly, define initial IDs,
-and choose the runtime monster/skill/equipment subset. Exit when every implementation or art worker
-can receive a bounded wiki packet without verbal context.
+Freeze this page and the named six-hero roster, register the complete source drafts, resolve
+conflicts visibly, define initial IDs, and choose the runtime monster/skill/equipment subset. Exit
+when every implementation or art worker can receive a bounded wiki packet without verbal context.
 
 ### LV-2 — Static Village and prepared roster
 
@@ -317,7 +319,7 @@ fixtures before runtime math is final.
 | Lane | Collision-safe output | Depends on | LV-1 decision |
 | --- | --- | --- | --- |
 | Product/integration | this scope, contracts, fixtures, acceptance replay | owner feedback | approve exclusions and screens |
-| Hero visuals | one manifest-bound identity per owned asset folder | presentation schema | approve six starter identity briefs |
+| Hero visuals | derivatives and continuity for the fixed six existing identities; no new face generation | presentation schema and fixed roster table | finish candidate packets without redesigning identities |
 | Monster text/stats | definition candidates and stat variants, not shared race-page edits | taxonomy, combat fields | choose three races and separate visual form from combat scale |
 | Monster visuals | one selected-race asset manifest per owned folder | monster visual constants | choose one approved form per runtime race |
 | Skill mechanics | definitions and initial runtime subset | progression and combat contracts | choose 8–12 representative skills |
@@ -330,13 +332,13 @@ fixtures before runtime math is final.
 | Validation | catalog, link, fixture, replay, visual and accessibility gates | all manifests/contracts | declare pass/fail evidence |
 
 Three simultaneous visual agents—monster, skill-effect, and equipment—are a practical starting
-point. Keep hero identity and cross-surface integration with a fourth visual owner if capacity
-allows; otherwise that lane is more important than producing broad equipment art.
+point. A fourth visual owner may finish cross-surface derivatives for the fixed six, but must not
+create more hero faces. That integration lane is more important than producing broad equipment art.
 
 For the first asset packets, use this reduced presentation target:
 
-- heroes: one approved identity anchor **per hero**, with summon/roster portrait crops and one
-  compact combat figure derived from each;
+- heroes: use only the six named existing anchors; finish approval where needed, then derive
+  summon/roster portrait crops and one compact combat figure from each;
 - monsters: one transparent-background combat figure and one wiki plate for each selected race;
 - equipment: inventory icons only—no worn-on-body regeneration or modular armour overlays yet;
 - skills: icons for all twelve initial definitions and combat VFX only for the visible Active skills;
@@ -357,4 +359,5 @@ one integration owner controlling shared files.
 1. Approve or revise the three-surface navigation model.
 2. Choose the three low-tier monster races; visual tiers will remain separate from floor scaling.
 3. Approve no permanent death/injury until combat rules arrive.
-4. Decide whether Advanced summoning and gems are required for the first playtest or only documented.
+4. Decide whether the first playtest omits gems or labels them as future currency while Advanced and
+   Special summoning remain off.

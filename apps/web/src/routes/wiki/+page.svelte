@@ -60,7 +60,9 @@
 				<div>
 					<span>Art book · human identity</span>
 					<h3>Living Village visual packet</h3>
-					<p>Six production slots, continuity requirements, and the current reference cohort.</p>
+					<p>
+						The fixed six-person prototype roster and its cross-surface production requirements.
+					</p>
 				</div>
 			</a>
 			<a class="collection" href={resolve('/wiki/mechanics/progression')}>
