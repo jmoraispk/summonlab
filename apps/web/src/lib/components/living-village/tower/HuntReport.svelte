@@ -1,11 +1,10 @@
 <script lang="ts">
 	import type { HuntFixtureResult } from './tower-combat';
-	import type { FloorFixture, HeroFixture, SpeciesFixture } from './tower-fixtures';
+	import type { FloorFixture, HeroFixture } from './tower-fixtures';
 
 	let {
 		result,
 		floor,
-		species,
 		party,
 		handoff,
 		onVillage,
@@ -13,7 +12,6 @@
 	}: {
 		result: HuntFixtureResult;
 		floor: FloorFixture;
-		species: SpeciesFixture;
 		party: HeroFixture[];
 		handoff: 'none' | 'village' | 'training';
 		onVillage: () => void;
@@ -31,7 +29,7 @@
 			<p class="eyebrow">05 · Automatic return</p>
 			<h2 id="report-heading">Haul secured</h2>
 			<p>
-				Floor {floor.number} · {species.name} hunt · {result.encountersCompleted} encounters resolved
+				Floor {floor.number} explored · {result.encountersCompleted} encounters resolved
 			</p>
 		</div>
 		<div class="return-code">
@@ -51,7 +49,11 @@
 
 	<div class="summary-grid">
 		<article>
-			<span>Species kills</span><strong>{result.speciesKills}</strong><small>{species.name}</small>
+			<span>Monster kills</span><strong>{result.speciesKills}</strong><small
+				>{result.speciesKillCounts
+					.map((entry) => `${entry.name} ×${entry.quantity}`)
+					.join(' · ')}</small
+			>
 		</article>
 		<article>
 			<span>Inventory</span><strong>{result.inventoryUsed}/{result.inventoryCapacity}</strong><small
@@ -115,6 +117,12 @@
 						)}%</span
 					>
 					<span>Mana {resource.mana}/{resource.maxMana}</span>
+					<progress class="health" value={resource.health} max={resource.maxHealth}
+						>{Math.round((resource.health / resource.maxHealth) * 100)}%</progress
+					>
+					<progress class="mana" value={resource.mana} max={resource.maxMana}
+						>{Math.round((resource.mana / resource.maxMana) * 100)}%</progress
+					>
 				</article>
 			{/each}
 		</div>
@@ -341,6 +349,34 @@
 	.remaining article strong,
 	.remaining article span {
 		display: block;
+	}
+	.remaining progress {
+		appearance: none;
+		display: block;
+		width: 100%;
+		height: 0.38rem;
+		margin-top: 0.35rem;
+		border: 0;
+		accent-color: #5eb66d;
+		background: #34383a;
+	}
+	.remaining progress.mana {
+		accent-color: #5799d0;
+	}
+	.remaining progress::-webkit-progress-bar {
+		background: #34383a;
+	}
+	.remaining progress.health::-webkit-progress-value {
+		background: #5eb66d;
+	}
+	.remaining progress.mana::-webkit-progress-value {
+		background: #5799d0;
+	}
+	.remaining progress.health::-moz-progress-bar {
+		background: #5eb66d;
+	}
+	.remaining progress.mana::-moz-progress-bar {
+		background: #5799d0;
 	}
 	.remaining article span {
 		margin-top: 0.25rem;

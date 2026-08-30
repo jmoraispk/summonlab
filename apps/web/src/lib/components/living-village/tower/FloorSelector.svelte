@@ -15,11 +15,12 @@
 <section class="floor-section" aria-labelledby="floor-heading">
 	<header>
 		<div>
-			<p class="eyebrow">01 · Hunting ground</p>
-			<h2 id="floor-heading">Choose a known floor</h2>
+			<p class="eyebrow">01 · Tower floor</p>
+			<h2 id="floor-heading">Choose a floor</h2>
 		</div>
 		<p>
-			Cleared floors remain available for repeat hunts. The frontier carries its first-clear claim.
+			Cleared floors remain available for another expedition. The frontier carries its first-clear
+			claim.
 		</p>
 	</header>
 

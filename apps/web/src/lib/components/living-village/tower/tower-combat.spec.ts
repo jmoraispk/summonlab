@@ -6,9 +6,9 @@ describe('Living Village Tower hunt fixture', () => {
 	it('repeats the same derived encounter sequence and haul exactly', () => {
 		const spec = {
 			floor: FLOORS[2]!,
-			species: speciesById('ember-wisp'),
+			speciesPool: FLOORS[2]!.speciesIds.map(speciesById),
 			party: HEROES,
-			threshold: 50 as const
+			threshold: 25 as const
 		};
 		const first = simulateHunt(spec);
 		const replay = simulateHunt(spec);
@@ -17,13 +17,14 @@ describe('Living Village Tower hunt fixture', () => {
 		expect(first.combatReceipts.length).toBeGreaterThan(1);
 		expect(first.haulHash).toMatch(/^[a-f0-9]{8}$/u);
 		expect(first.materialHaul.length).toBeGreaterThan(0);
+		expect(first.speciesKillCounts.length).toBeGreaterThan(1);
 		expect(first.returnReason.code).toBe('inventory-capacity');
 	});
 
 	it('checks the threshold after a complete encounter and preserves a bounded haul', () => {
 		const result = simulateHunt({
 			floor: FLOORS[2]!,
-			species: speciesById('ember-wisp'),
+			speciesPool: FLOORS[2]!.speciesIds.map(speciesById),
 			party: HEROES,
 			threshold: 75
 		});
@@ -37,7 +38,7 @@ describe('Living Village Tower hunt fixture', () => {
 	it('stops before an unsafe next encounter without crossing into a new fight', () => {
 		const result = simulateHunt({
 			floor: FLOORS[0]!,
-			species: speciesById('ember-wisp'),
+			speciesPool: FLOORS[0]!.speciesIds.map(speciesById),
 			party: HEROES,
 			threshold: 25,
 			inventoryCapacity: 100,
@@ -52,7 +53,7 @@ describe('Living Village Tower hunt fixture', () => {
 	it('keeps encounter defeat and encounter cap as distinct bounded reasons', () => {
 		const capped = simulateHunt({
 			floor: FLOORS[0]!,
-			species: speciesById('goblin-skirmisher'),
+			speciesPool: [speciesById('goblin-skirmisher')],
 			party: HEROES,
 			threshold: 25,
 			inventoryCapacity: 100,
@@ -60,7 +61,7 @@ describe('Living Village Tower hunt fixture', () => {
 		});
 		const defeated = simulateHunt({
 			floor: FLOORS[9]!,
-			species: speciesById('ember-wisp'),
+			speciesPool: [speciesById('ember-wisp')],
 			party: HEROES,
 			threshold: 25,
 			inventoryCapacity: 100,

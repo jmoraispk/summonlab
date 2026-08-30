@@ -104,7 +104,7 @@ export type ReturnReasonCode =
 
 export type HuntFixtureSpec = {
 	floor: FloorFixture;
-	species: SpeciesFixture;
+	speciesPool: SpeciesFixture[];
 	party: HeroFixture[];
 	threshold: HealthThreshold;
 	seed?: string;
@@ -121,6 +121,7 @@ export type HuntFixtureResult = {
 	combatReceipts: CombatReceipt[];
 	encountersCompleted: number;
 	speciesKills: number;
+	speciesKillCounts: { speciesId: SpeciesFixture['id']; name: string; quantity: number }[];
 	levelXpClaims: { heroId: HeroFixture['id']; amount: number }[];
 	practicalSkillClaims: { heroId: HeroFixture['id']; skillName: string; uses: number }[];
 	materialHaul: { materialId: string; name: string; quantity: number }[];
@@ -160,13 +161,24 @@ export function fixtureRoll(
 	encounterIndex: number,
 	tick: number,
 	actorId: string,
-	purpose: 'INITIATIVE' | 'HIT' | 'CRIT' | 'STATUS' | 'DROP' | 'REWARD',
+	purpose: 'ENCOUNTER' | 'INITIATIVE' | 'HIT' | 'CRIT' | 'STATUS' | 'DROP' | 'REWARD',
 	sequence: number
 ): number {
 	return Number.parseInt(
 		stableHash(`${seed}|${encounterIndex}|${tick}|${actorId}|${purpose}|${sequence}`),
 		16
 	);
+}
+
+function speciesForEncounter(
+	speciesPool: SpeciesFixture[],
+	seed: string,
+	floor: FloorFixture,
+	encounterIndex: number
+): SpeciesFixture {
+	if (speciesPool.length === 0) throw new Error('A floor exploration requires known species.');
+	const index = fixtureRoll(seed, encounterIndex, 0, floor.id, 'ENCOUNTER', 0) % speciesPool.length;
+	return speciesPool[index]!;
 }
 
 const OVERCOMES: Record<Affinity, Affinity> = {
@@ -528,7 +540,8 @@ export function simulateHunt(spec: HuntFixtureSpec): HuntFixtureResult {
 	const seed = spec.seed ?? HUNT_SEED;
 	const inventoryCapacity = spec.inventoryCapacity ?? INVENTORY_CAPACITY;
 	const encounterCap = spec.encounterCap ?? ENCOUNTER_CAP;
-	const huntId = `hunt-${stableHash(`${seed}|${spec.floor.id}|${spec.species.id}|${spec.threshold}`)}`;
+	const speciesPoolKey = spec.speciesPool.map((species) => species.id).join(',');
+	const huntId = `hunt-${stableHash(`${seed}|${spec.floor.id}|${speciesPoolKey}|${spec.threshold}`)}`;
 	let resources = initialResources(spec.party);
 	const inputStateHash = stableHash(canonical({ spec, resources }));
 	const receipts: CombatReceipt[] = [];
@@ -538,9 +551,10 @@ export function simulateHunt(spec: HuntFixtureSpec): HuntFixtureResult {
 	let contributing: ReturnReasonCode[] = [];
 
 	for (let encounterIndex = 1; encounterIndex <= encounterCap; encounterIndex += 1) {
+		const species = speciesForEncounter(spec.speciesPool, seed, spec.floor, encounterIndex);
 		const receipt = simulateEncounter({
 			floor: spec.floor,
-			species: spec.species,
+			species,
 			party: spec.party,
 			resources,
 			seed,
@@ -576,7 +590,12 @@ export function simulateHunt(spec: HuntFixtureSpec): HuntFixtureResult {
 		if (encounterIndex >= encounterCap) conditions.push('encounter-cap');
 		if (
 			receipt.outcome === 'victory' &&
-			nextEncounterUnsafe(resources, spec.species, spec.floor, encounterIndex + 1)
+			nextEncounterUnsafe(
+				resources,
+				speciesForEncounter(spec.speciesPool, seed, spec.floor, encounterIndex + 1),
+				spec.floor,
+				encounterIndex + 1
+			)
 		) {
 			conditions.push('next-encounter-unsafe');
 		}
@@ -596,6 +615,15 @@ export function simulateHunt(spec: HuntFixtureSpec): HuntFixtureResult {
 		}))
 		.sort((left, right) => left.percent - right.percent)[0];
 	const speciesKills = receipts.filter((receipt) => receipt.outcome === 'victory').length;
+	const speciesKillCounts = spec.speciesPool
+		.map((species) => ({
+			speciesId: species.id,
+			name: species.name,
+			quantity: receipts.filter(
+				(receipt) => receipt.outcome === 'victory' && receipt.encounterRef.speciesId === species.id
+			).length
+		}))
+		.filter((entry) => entry.quantity > 0);
 	const levelXpClaims = spec.party.map((hero) => ({
 		heroId: hero.id,
 		amount: receipts.reduce(
@@ -625,6 +653,7 @@ export function simulateHunt(spec: HuntFixtureSpec): HuntFixtureResult {
 		combatReceipts: receipts,
 		encountersCompleted: receipts.length,
 		speciesKills,
+		speciesKillCounts,
 		levelXpClaims,
 		practicalSkillClaims,
 		materialHaul,

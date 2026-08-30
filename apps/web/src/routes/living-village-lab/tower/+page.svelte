@@ -15,8 +15,7 @@
 		type Availability,
 		type FloorFixture,
 		type HealthThreshold,
-		type HeroFixture,
-		type SpeciesFixture
+		type HeroFixture
 	} from '$lib/components/living-village/tower/tower-fixtures';
 	import {
 		simulateHunt,
@@ -24,12 +23,11 @@
 	} from '$lib/components/living-village/tower/tower-combat';
 	import { onMount, tick } from 'svelte';
 
-	type TowerScreen = 'ground' | 'party' | 'hunt' | 'haul';
+	type TowerScreen = 'prepare' | 'hunt' | 'haul';
 
 	let floors = $state(FLOORS.map((floor) => ({ ...floor })));
-	let screen = $state<TowerScreen>('ground');
+	let screen = $state<TowerScreen>('prepare');
 	let selectedFloorId = $state(FLOORS[2]!.id);
-	let selectedSpeciesId = $state<SpeciesFixture['id']>(FLOORS[2]!.speciesIds[0]!);
 	let threshold = $state<HealthThreshold>(50);
 	let activeHeroIds = $state<HeroFixture['id'][]>(HEROES.map((hero) => hero.id));
 	let availability = $state<Record<HeroFixture['id'], Availability>>({
@@ -48,7 +46,6 @@
 
 	let selectedFloor = $derived(floors.find((floor) => floor.id === selectedFloorId)!);
 	let availableSpecies = $derived(selectedFloor.speciesIds.map(speciesById));
-	let selectedSpecies = $derived(speciesById(selectedSpeciesId));
 	let selectedParty = $derived(
 		HEROES.filter((hero) => activeHeroIds.includes(hero.id)).map((hero) => ({
 			...hero,
@@ -59,6 +56,9 @@
 		huntResult?.combatReceipts.find(
 			(receipt) => receipt.encounterIndex === selectedEncounterIndex
 		) ?? huntResult?.combatReceipts[0]
+	);
+	let selectedReceiptSpecies = $derived(
+		speciesById(selectedReceipt?.encounterRef.speciesId ?? availableSpecies[0]!.id)
 	);
 	let partyReady = $derived(
 		selectedParty.length === 3 && selectedParty.every((hero) => hero.availability === 'idle')
@@ -103,12 +103,6 @@
 
 	function selectFloor(floor: FloorFixture): void {
 		selectedFloorId = floor.id;
-		selectedSpeciesId = floor.speciesIds[0]!;
-		resetResult();
-	}
-
-	function selectSpecies(id: SpeciesFixture['id']): void {
-		selectedSpeciesId = id;
 		resetResult();
 	}
 
@@ -162,7 +156,7 @@
 
 		huntResult = simulateHunt({
 			floor: selectedFloor,
-			species: selectedSpecies,
+			speciesPool: availableSpecies,
 			party: selectedParty,
 			threshold
 		});
@@ -193,42 +187,36 @@
 </script>
 
 <svelte:head>
-	<title>Tower species hunt · Living Village Lab</title>
-	<meta name="description" content="Configure and replay a deterministic Tower species hunt." />
+	<title>Tower floor exploration · Living Village Lab</title>
+	<meta name="description" content="Choose a Tower floor and safely explore its encounters." />
 </svelte:head>
 
 <main>
 	<header class="app-bar">
 		<div class="brand">
 			<span class="mark">S</span>
-			<div><strong>Tower Hunt</strong><small>Living Village Lab</small></div>
+			<div><strong>Tower Expedition</strong><small>Living Village Lab</small></div>
 		</div>
-		<div class="current-order" aria-label="Current hunt order">
+		<div class="current-order" aria-label="Current floor exploration">
 			<img src={towerArtwork} alt="" />
-			<div><small>Floor {selectedFloor.number}</small><strong>{selectedSpecies.name}</strong></div>
+			<div><small>Floor {selectedFloor.number}</small><strong>{selectedFloor.name}</strong></div>
 			<span>{threshold}% return</span>
 		</div>
 	</header>
 
-	<nav class="screen-tabs" aria-label="Tower hunt screens">
+	<nav class="screen-tabs" aria-label="Tower exploration screens">
 		<button
-			class:active={screen === 'ground'}
-			aria-current={screen === 'ground' ? 'step' : undefined}
-			onclick={() => changeScreen('ground')}
-			><span>1</span><strong>Ground</strong><small>{selectedFloor.name}</small></button
-		>
-		<button
-			class:active={screen === 'party'}
-			aria-current={screen === 'party' ? 'step' : undefined}
-			onclick={() => changeScreen('party')}
-			><span>2</span><strong>Party</strong><small>{activeHeroIds.length}/3 selected</small></button
+			class:active={screen === 'prepare'}
+			aria-current={screen === 'prepare' ? 'step' : undefined}
+			onclick={() => changeScreen('prepare')}
+			><span>1</span><strong>Prepare</strong><small>Floor · Health · Party</small></button
 		>
 		<button
 			class:active={screen === 'hunt'}
 			aria-current={screen === 'hunt' ? 'step' : undefined}
 			disabled={!huntResult}
 			onclick={() => changeScreen('hunt')}
-			><span>3</span><strong>Hunt</strong><small
+			><span>2</span><strong>Explore</strong><small
 				>{huntResult ? `${huntResult.encountersCompleted} encounters` : 'Deploy first'}</small
 			></button
 		>
@@ -237,18 +225,18 @@
 			aria-current={screen === 'haul' ? 'step' : undefined}
 			disabled={!huntResult}
 			onclick={() => changeScreen('haul')}
-			><span>4</span><strong>Haul</strong><small
+			><span>3</span><strong>Haul</strong><small
 				>{huntResult ? huntResult.returnReason.code : 'Awaiting return'}</small
 			></button
 		>
 	</nav>
 
-	{#if screen === 'ground'}
-		<section class="screen-shell" aria-labelledby="screen-ground-heading">
+	{#if screen === 'prepare'}
+		<section class="screen-shell" aria-labelledby="screen-prepare-heading">
 			<header class="screen-heading">
 				<div>
-					<p>01 · Set the hunt order</p>
-					<h1 id="screen-ground-heading" tabindex="-1">Where should they hunt?</h1>
+					<p>01 · Prepare the expedition</p>
+					<h1 id="screen-prepare-heading" tabindex="-1">Choose a floor and return point</h1>
 				</div>
 				<div class="fixture-chip" data-testid="fixture-version">
 					<strong>Presentation fixture</strong><span
@@ -260,46 +248,13 @@
 				<FloorSelector {floors} {selectedFloorId} onSelect={selectFloor} />
 				<HuntSetup
 					floor={selectedFloor}
-					species={selectedSpecies}
 					{availableSpecies}
 					{threshold}
-					onSpecies={selectSpecies}
 					onThreshold={(value) => {
 						threshold = value;
 						resetResult();
 					}}
 				/>
-			</div>
-			<footer class="command-bar">
-				<div>
-					<small>Hunt order</small><strong
-						>Floor {selectedFloor.number} · {selectedSpecies.name} · return at {threshold}%</strong
-					>
-				</div>
-				<button class="primary" type="button" onclick={() => changeScreen('party')}
-					>Confirm target <span aria-hidden="true">→</span></button
-				>
-			</footer>
-		</section>
-	{:else if screen === 'party'}
-		<section class="screen-shell" aria-labelledby="screen-party-heading">
-			<header class="screen-heading">
-				<div>
-					<p>02 · Confirm the party</p>
-					<h1 id="screen-party-heading" tabindex="-1">Who is going?</h1>
-				</div>
-				<div class:ready={partyReady} class="readiness-chip">
-					<span aria-hidden="true">{partyReady ? '✓' : '!'}</span><strong
-						>{partyReady ? 'Party ready' : 'Party blocked'}</strong
-					>
-				</div>
-			</header>
-			<div class="screen-scroll" data-screen-scroll>
-				<div class="order-ribbon">
-					<span>Floor {selectedFloor.number}</span><strong>{selectedSpecies.name}</strong><span
-						>{threshold}% return line</span
-					><button type="button" onclick={() => changeScreen('ground')}>Edit order</button>
-				</div>
 				<PartyReadiness
 					heroes={HEROES}
 					{activeHeroIds}
@@ -318,16 +273,17 @@
 					</div>{/if}
 			</div>
 			<footer class="command-bar">
-				<button class="secondary" type="button" onclick={() => changeScreen('ground')}
-					>← Back</button
-				>
 				<div class="deploy-summary">
-					<small>{activeHeroIds.length}/3 selected</small><strong
-						>{partyReady ? 'All heroes available' : 'Resolve party warning'}</strong
+					<small
+						>Floor {selectedFloor.number} · return at {threshold}% · {activeHeroIds.length}/3 heroes</small
+					><strong
+						>{partyReady
+							? `${availableSpecies.length} possible monsters · party ready`
+							: 'Resolve party warning'}</strong
 					>
 				</div>
 				<button class="primary" type="button" onclick={deploy}
-					>Deploy hunt <span aria-hidden="true">→</span></button
+					>Explore Floor {selectedFloor.number} <span aria-hidden="true">→</span></button
 				>
 			</footer>
 		</section>
@@ -335,7 +291,7 @@
 		<section class="screen-shell" aria-labelledby="screen-hunt-heading">
 			<header class="screen-heading hunt-heading">
 				<div>
-					<p>03 · Hunt playback</p>
+					<p>02 · Floor exploration</p>
 					<h1 id="screen-hunt-heading" tabindex="-1">
 						{huntResult.encountersCompleted} encounters resolved
 					</h1>
@@ -352,7 +308,7 @@
 					result={huntResult}
 					receipt={selectedReceipt}
 					party={selectedParty}
-					species={selectedSpecies}
+					species={selectedReceiptSpecies}
 					{visibleEventCount}
 					{playing}
 					{speed}
@@ -368,8 +324,8 @@
 					type="button"
 					onclick={() => {
 						resetResult();
-						changeScreen('ground');
-					}}>Edit hunt</button
+						changeScreen('prepare');
+					}}>Edit floor</button
 				>
 				<div>
 					<small>Exact stop reason</small><strong>{huntResult.returnReason.summary}</strong>
@@ -383,8 +339,8 @@
 		<section class="screen-shell haul-screen" aria-labelledby="screen-haul-heading">
 			<header class="screen-heading">
 				<div>
-					<p>04 · Returned safely</p>
-					<h1 id="screen-haul-heading" tabindex="-1">Hunt complete</h1>
+					<p>03 · Returned safely</p>
+					<h1 id="screen-haul-heading" tabindex="-1">Exploration complete</h1>
 				</div>
 				<div class="readiness-chip ready">
 					<span aria-hidden="true">✓</span><strong>Haul secured</strong>
@@ -394,7 +350,6 @@
 				<HuntReport
 					result={huntResult}
 					floor={selectedFloor}
-					species={selectedSpecies}
 					party={selectedParty}
 					{handoff}
 					onVillage={() => setHandoff('village')}
@@ -492,7 +447,7 @@
 	}
 	.screen-tabs {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 		border-bottom: 1px solid #332f29;
 		background: #0d0f12;
 	}
@@ -660,38 +615,20 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	.command-bar button,
-	.order-ribbon button {
+	.command-bar button {
 		min-height: 2.9rem;
 		padding: 0.65rem 1rem;
 		border: 1px solid #5a554e;
 		background: #1b1d21;
 		color: #eee5d8;
 		font-weight: 750;
+		white-space: nowrap;
 		cursor: pointer;
 	}
 	.command-bar button.primary {
 		border-color: #e8ad63;
 		background: #dda052;
 		color: #180f05;
-	}
-	.order-ribbon {
-		display: flex;
-		align-items: center;
-		gap: 0.8rem;
-		padding: 0.65rem 0.8rem;
-		border: 1px solid #474037;
-		background: #15171a;
-	}
-	.order-ribbon > span {
-		color: #d8a55e;
-		font-size: 0.7rem;
-		text-transform: uppercase;
-	}
-	.order-ribbon button {
-		min-height: 2.3rem;
-		margin-left: auto;
-		padding: 0.35rem 0.65rem;
 	}
 	.deploy-error {
 		display: flex;
@@ -813,23 +750,6 @@
 		}
 		.screen-scroll {
 			padding: 0.5rem;
-		}
-		.order-ribbon {
-			gap: 0.45rem;
-			overflow: hidden;
-		}
-		.order-ribbon span:first-child {
-			display: none;
-		}
-		.order-ribbon strong,
-		.order-ribbon span {
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.order-ribbon button {
-			flex: 0 0 auto;
-			font-size: 0.65rem;
 		}
 		.command-bar {
 			min-height: 4.3rem;

@@ -8,6 +8,16 @@ Base: `codex/shared-system-architecture` at `20137289d5b4f68a441dd1895703eb730c3
 
 Direct route: `/living-village-lab/tower`
 
+## Accepted simplification · 2026-08-30
+
+This revision supersedes the plan's explicit species-selection and separate party-confirmation
+steps. The player now chooses only a floor and a remaining-Health return threshold; the seeded
+fixture derives each encounter from that floor's known monster pool. **Prepare** contains the floor,
+illustrated possible encounters, Health threshold, current party, Health/Mana bars, and one deploy
+action. The remaining states are **Explore** and **Haul**. References below to selecting one species
+or moving through separate Ground and Party screens are retained as historical planning context,
+not current acceptance requirements.
+
 ## Authority and source handling
 
 The owner request is authoritative for scope, behavior, evidence, and delivery. The two supplied

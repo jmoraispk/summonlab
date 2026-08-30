@@ -97,16 +97,17 @@ permanent consequences. Living Village implements only the explanatory seams nee
 presentation fixture. Permanent injury, death, recovery time, free-roaming gathering, agentic
 intent, and model narration remain off.
 
-## Living Village species-hunt presentation
+## Living Village Tower exploration presentation
 
 Implementation status: **isolated presentation prototype**
 
 `living-village-species-hunt-presentation-v0` proves how repeated encounter receipts can be
-coordinated without making its constants canonical combat or economy math. A hunt freezes one
-unlocked floor, one known species, one three-hero party snapshot, one remaining-Health threshold,
-and one seed. Each encounter returns its own proposed `CombatReceipt`; an outer route-local hunt
-coordinator carries Health, Mana, and material claims forward and decides whether another encounter
-may begin.
+coordinated without making its constants canonical combat or economy math. An exploration freezes
+one unlocked floor and its known species pool, one three-hero party snapshot, one remaining-Health
+threshold, and one seed. The player does not order a species hunt. The seeded fixture derives one
+species from the floor pool for each encounter, then records that species in the encounter receipt.
+An outer route-local coordinator carries Health, Mana, and material claims forward and decides
+whether another encounter may begin.
 
 The threshold is checked after an encounter. It cannot prevent that encounter from crossing the
 selected `75%`, `50%`, or `25%` line. Before starting another encounter, the prototype separately
@@ -121,10 +122,10 @@ Automatic return uses one stable primary-reason precedence:
 5. next encounter projected unsafe.
 
 Additional simultaneously true reasons remain visible, but the report names one exact primary
-code. Its haul binds species kills, per-hero level XP claims, recorded practical skill uses, every
-material and quantity, remaining Health/Mana, encounter receipt IDs, and a stable haul hash. Combat
-and hunt presentation propose claims; Progression, Inventory, Floor, and Training remain responsible
-for validating and committing them.
+code. Its haul binds per-species kill counts, per-hero level XP claims, recorded practical skill
+uses, every material and quantity, remaining Health/Mana, encounter receipt IDs, and a stable haul
+hash. Combat and exploration presentation propose claims; Progression, Inventory, Floor, and
+Training remain responsible for validating and committing them.
 
 First-clear and repeat hunts remain distinct. A first clear may propose one authored item and the
 next-floor unlock. A repeat hunt may propose level XP, practical-use evidence, and collected

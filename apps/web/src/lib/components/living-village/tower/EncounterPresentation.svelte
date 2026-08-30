@@ -3,7 +3,7 @@
 	import goblinoids from '../../../../../../../assets/enemies/review/goblinoids-v1.webp';
 	import elementals from '../../../../../../../assets/enemies/review/pack-2/elementals-v1.png';
 	import type { CombatReceipt, HuntFixtureResult } from './tower-combat';
-	import type { HeroFixture, SpeciesFixture } from './tower-fixtures';
+	import { speciesById, type HeroFixture, type SpeciesFixture } from './tower-fixtures';
 
 	let {
 		result,
@@ -64,7 +64,7 @@
 			>
 				<span>{String(candidate.encounterIndex).padStart(2, '0')}</span>
 				<strong>{candidate.outcome}</strong>
-				<small>{candidate.receiptId}</small>
+				<small>{speciesById(candidate.encounterRef.speciesId).name}</small>
 			</button>
 		{/each}
 	</nav>
@@ -280,13 +280,30 @@
 		font-size: 0.65rem;
 	}
 	progress {
+		appearance: none;
 		width: 100%;
 		height: 0.4rem;
 		border: 0;
 		accent-color: #ad584d;
+		background: #34383a;
 	}
 	progress.mana {
 		accent-color: #557ea2;
+	}
+	progress::-webkit-progress-bar {
+		background: #34383a;
+	}
+	progress:not(.mana)::-webkit-progress-value {
+		background: #62b86f;
+	}
+	progress.mana::-webkit-progress-value {
+		background: #5799d0;
+	}
+	progress:not(.mana)::-moz-progress-bar {
+		background: #62b86f;
+	}
+	progress.mana::-moz-progress-bar {
+		background: #5799d0;
 	}
 	figure {
 		position: relative;

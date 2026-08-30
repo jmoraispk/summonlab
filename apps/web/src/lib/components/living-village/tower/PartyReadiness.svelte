@@ -74,10 +74,15 @@
 					</div>
 				</div>
 				<div class="resources">
-					<div><span>Health</span><strong>{hero.maxHealth}/{hero.maxHealth}</strong></div>
-					<div><span>Mana</span><strong>{hero.maxMana}/{hero.maxMana}</strong></div>
+					<div>
+						<span>Health</span><strong>{hero.maxHealth}/{hero.maxHealth}</strong>
+						<progress class="health" value={hero.maxHealth} max={hero.maxHealth}>100%</progress>
+					</div>
+					<div>
+						<span>Mana</span><strong>{hero.maxMana}/{hero.maxMana}</strong>
+						<progress class="mana" value={hero.maxMana} max={hero.maxMana}>100%</progress>
+					</div>
 				</div>
-				<p><strong>{hero.skill.name}</strong> · {hero.equipment}</p>
 				<div class="state-row">
 					<span class:ready={currentAvailability === 'idle'}>{currentAvailability}</span>
 					<span>{active ? 'Selected' : 'Available hero'}</span>
@@ -290,6 +295,34 @@
 	.resources strong {
 		display: block;
 	}
+	.resources progress {
+		appearance: none;
+		display: block;
+		width: 100%;
+		height: 0.36rem;
+		margin-top: 0.35rem;
+		border: 0;
+		accent-color: #62b86f;
+		background: #34383a;
+	}
+	.resources progress.mana {
+		accent-color: #5799d0;
+	}
+	.resources progress::-webkit-progress-bar {
+		background: #34383a;
+	}
+	.resources progress.health::-webkit-progress-value {
+		background: #62b86f;
+	}
+	.resources progress.mana::-webkit-progress-value {
+		background: #5799d0;
+	}
+	.resources progress.health::-moz-progress-bar {
+		background: #62b86f;
+	}
+	.resources progress.mana::-moz-progress-bar {
+		background: #5799d0;
+	}
 	.resources span {
 		color: #8f8b84;
 		font-size: 0.65rem;
@@ -301,17 +334,11 @@
 			0.78rem ui-monospace,
 			monospace;
 	}
-	article > p {
-		min-height: 2.7rem;
-		margin: 0.8rem 0;
-		color: #aaa49b;
-		font-size: 0.72rem;
-		line-height: 1.45;
-	}
 	.state-row {
 		display: flex;
 		justify-content: space-between;
 		gap: 0.5rem;
+		margin-top: 0.8rem;
 		color: #d49a67;
 		font-size: 0.68rem;
 		font-weight: 700;
@@ -381,9 +408,6 @@
 		}
 		article {
 			scroll-snap-align: center;
-		}
-		article > p {
-			min-height: 0;
 		}
 	}
 </style>
