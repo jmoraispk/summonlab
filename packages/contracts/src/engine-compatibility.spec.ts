@@ -13,6 +13,18 @@ import {
 	HERO_MODEL_PROMPT_VERSION,
 	HERO_POLICY_RESULT_VERSION,
 	LEGACY_DECISION_JOB_VERSION,
+	MasterControlStateSchema as PublicMasterControlStateSchema,
+	MasterControlStateV2Schema as PublicMasterControlStateV2Schema,
+	MasterDecisionWindowSchema as PublicMasterDecisionWindowSchema,
+	MasterFallbackConfigurationSchema as PublicMasterFallbackConfigurationSchema,
+	MissionRunStateSchema as PublicMissionRunStateSchema,
+	MissionRunStateV2Schema as PublicMissionRunStateV2Schema,
+	MissionRunStateV3Schema as PublicMissionRunStateV3Schema,
+	MissionRunStateV4Schema as PublicMissionRunStateV4Schema,
+	MissionRunStateV5Schema as PublicMissionRunStateV5Schema,
+	MissionRunStateV6Schema as PublicMissionRunStateV6Schema,
+	MissionRunStateV7Schema as PublicMissionRunStateV7Schema,
+	MissionRunStateV8Schema as PublicMissionRunStateV8Schema,
 	MODEL_POLICY_VERSION
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
@@ -28,6 +40,22 @@ import {
 	EngineSettlementStateSchema,
 	EngineSettlementStateV6Schema
 } from './engine/settlement-state.js';
+import {
+	MasterControlStateSchema,
+	MasterControlStateV2Schema,
+	MasterDecisionWindowSchema,
+	MasterFallbackConfigurationSchema
+} from './engine/master-control.js';
+import {
+	MissionRunStateSchema,
+	MissionRunStateV2Schema,
+	MissionRunStateV3Schema,
+	MissionRunStateV4Schema,
+	MissionRunStateV5Schema,
+	MissionRunStateV6Schema,
+	MissionRunStateV7Schema,
+	MissionRunStateV8Schema
+} from './engine/mission-state.js';
 import { ENGINE_CONTRACT_RUNTIME_EXPORTS } from './engine-public-api.snapshot.js';
 import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from './engine-compatibility-states.snapshot.js';
 import * as engineContracts from './engine.js';
@@ -488,5 +516,167 @@ describe('engine contracts compatibility', () => {
 			settlement: composedSettlementSocietyState.settlement,
 			society: composedSettlementSocietyState.society
 		});
+	});
+
+	it('parses every historical mission state identically and preserves its run refinement', () => {
+		const cases = [
+			{
+				label: 'v1', schemaVersion: 11, leaf: MissionRunStateSchema,
+				publicSchema: PublicMissionRunStateSchema,
+				expectedReason: 'Mission attempt count is inconsistent'
+			},
+			{
+				label: 'v2', schemaVersion: 12, leaf: MissionRunStateV2Schema,
+				publicSchema: PublicMissionRunStateV2Schema,
+				expectedReason: 'Mission attempt count is inconsistent'
+			},
+			{
+				label: 'v3', schemaVersion: 13, leaf: MissionRunStateV3Schema,
+				publicSchema: PublicMissionRunStateV3Schema,
+				expectedReason: 'Mission combat attempt count is inconsistent'
+			},
+			{
+				label: 'v4', schemaVersion: 14, leaf: MissionRunStateV4Schema,
+				publicSchema: PublicMissionRunStateV4Schema,
+				expectedReason: 'Mission evidence attempt count is inconsistent'
+			},
+			{
+				label: 'v5', schemaVersion: 15, leaf: MissionRunStateV5Schema,
+				publicSchema: PublicMissionRunStateV5Schema,
+				expectedReason: 'Portal mission attempt count is inconsistent'
+			},
+			{
+				label: 'v6', schemaVersion: 16, leaf: MissionRunStateV6Schema,
+				publicSchema: PublicMissionRunStateV6Schema,
+				expectedReason: 'Mission aftermath lifecycle is inconsistent'
+			},
+			{
+				label: 'v7', schemaVersion: 17, leaf: MissionRunStateV7Schema,
+				publicSchema: PublicMissionRunStateV7Schema,
+				expectedReason: 'Mission Master aftermath lifecycle is inconsistent'
+			},
+			{
+				label: 'v8', schemaVersion: 18, leaf: MissionRunStateV8Schema,
+				publicSchema: PublicMissionRunStateV8Schema,
+				expectedReason: 'Mission attempt aftermath lifecycle is inconsistent'
+			}
+		] as const;
+
+		for (const missionCase of cases) {
+			const state = ENGINE_COMPATIBILITY_STATE_FIXTURES.find(
+				(fixture) => fixture.schemaVersion === missionCase.schemaVersion
+			);
+			if (!state || !('mission' in state)) {
+				throw new Error(`Missing mission compatibility fixture for ${missionCase.label}`);
+			}
+
+			expect(missionCase.leaf.parse(state.mission)).toStrictEqual(
+				missionCase.publicSchema.parse(state.mission)
+			);
+
+			const invalidMission = { ...state.mission, attemptCount: 1 };
+			for (const schema of [missionCase.leaf, missionCase.publicSchema]) {
+				const result = schema.safeParse(invalidMission);
+				expect(result.success, `${missionCase.label} must reject an inconsistent count`).toBe(false);
+				if (result.success) {
+					throw new Error(`${missionCase.label} unexpectedly accepted an inconsistent count`);
+				}
+				expect(result.error.issues.map((issue) => issue.message)).toContain(
+					missionCase.expectedReason
+				);
+			}
+		}
+	});
+
+	it('parses every Master timing variant identically and preserves deadline refinements', () => {
+		const state = ENGINE_COMPATIBILITY_STATE_FIXTURES.find(
+			(fixture) => fixture.schemaVersion === 19
+		);
+		if (!state || !('masterControl' in state)) {
+			throw new Error('Missing Master-control v1 compatibility fixture');
+		}
+		const decisionId = '10000000-0000-4000-8000-000000000019';
+		const openedAt = '2000-01-01T00:00:00.000Z';
+		const timingCases = [
+			{ timing: 'wait', expiresAt: null, invalidExpiresAt: '2000-01-01T00:01:00.000Z' },
+			{
+				timing: 'countdown',
+				expiresAt: '2000-01-01T00:01:00.000Z',
+				invalidExpiresAt: null
+			},
+			{ timing: 'step', expiresAt: null, invalidExpiresAt: '2000-01-01T00:01:00.000Z' },
+			{
+				timing: 'continuous', expiresAt: null,
+				invalidExpiresAt: '2000-01-01T00:01:00.000Z'
+			}
+		] as const;
+
+		for (const timingCase of timingCases) {
+			const control = { ...state.masterControl, timing: timingCase.timing };
+			expect(MasterControlStateSchema.parse(control)).toStrictEqual(
+				PublicMasterControlStateSchema.parse(control)
+			);
+
+			const window = {
+				decisionId,
+				ordinal: 1,
+				timing: timingCase.timing,
+				openedAt,
+				expiresAt: timingCase.expiresAt
+			};
+			expect(MasterDecisionWindowSchema.parse(window)).toStrictEqual(
+				PublicMasterDecisionWindowSchema.parse(window)
+			);
+
+			const invalidWindow = { ...window, expiresAt: timingCase.invalidExpiresAt };
+			for (const schema of [MasterDecisionWindowSchema, PublicMasterDecisionWindowSchema]) {
+				const result = schema.safeParse(invalidWindow);
+				expect(result.success, `${timingCase.timing} must enforce deadline presence`).toBe(false);
+				if (result.success) {
+					throw new Error(`${timingCase.timing} unexpectedly accepted its invalid deadline`);
+				}
+				expect(result.error.issues.map((issue) => issue.message)).toContain(
+					'Only Countdown decisions have a deadline'
+				);
+			}
+		}
+	});
+
+	it('parses every Master fallback variant identically and preserves priority refinements', () => {
+		const state = ENGINE_COMPATIBILITY_STATE_FIXTURES.find(
+			(fixture) => fixture.schemaVersion === 20
+		);
+		if (!state || !('masterControl' in state)) {
+			throw new Error('Missing Master-control v2 compatibility fixture');
+		}
+
+		for (const policy of ['directed', 'random'] as const) {
+			const fallback = { ...state.masterControl.fallback, policy };
+			const control = { ...state.masterControl, fallback };
+			expect(MasterControlStateV2Schema.parse(control)).toStrictEqual(
+				PublicMasterControlStateV2Schema.parse(control)
+			);
+			expect(MasterFallbackConfigurationSchema.parse(fallback)).toStrictEqual(
+				PublicMasterFallbackConfigurationSchema.parse(fallback)
+			);
+
+			const invalidFallback = {
+				...fallback,
+				priorities: ['focus-objective', 'focus-objective']
+			};
+			for (const schema of [
+				MasterFallbackConfigurationSchema,
+				PublicMasterFallbackConfigurationSchema
+			]) {
+				const result = schema.safeParse(invalidFallback);
+				expect(result.success, `${policy} must reject duplicate priorities`).toBe(false);
+				if (result.success) {
+					throw new Error(`${policy} unexpectedly accepted duplicate priorities`);
+				}
+				expect(result.error.issues.map((issue) => issue.message)).toContain(
+					'Fallback priorities must be unique'
+				);
+			}
+		}
 	});
 });
