@@ -3,6 +3,34 @@
 This roadmap separates **convergence contracts**, which unblock other work, from vertical features
 that can proceed independently. It is a dependency plan, not a date estimate.
 
+## Current delivery focus — Living Village
+
+The owner has requested a reduced first playable milestone before the broader autonomous-society
+roadmap below. [Living Village](../wiki/milestones/living-village.md) is the current scope authority:
+
+```text
+summon → inspect/equip → party/floor → deterministic combat
+→ rewards/progression → direct training → improved retry
+```
+
+It uses one static settlement, Floors 1–10, one party, three navigational surfaces, bounded hero,
+skill, equipment, and monster catalogs, and no agentic interaction, society, tower story, world
+exploration, construction, or broad Town Master operations.
+
+Delivery checkpoints:
+
+1. **LV-1 Scope and content spine** — register all supplied drafts, visible conflicts, initial IDs,
+   contracts, and runtime content selections.
+2. **LV-2 Static Village and prepared roster** — summon, inspect, equip, form one party, and assign
+   direct training through a fixed Hearth.
+3. **LV-3 Deterministic tower loop** — Floors 1–10, combat adapter, claims, progression, unlocks,
+   return, save, and replay.
+4. **LV-4 Visual integration and playtest** — bind cross-surface art and ship the ten-minute,
+   three-screen acceptance path on desktop and phone.
+
+The remaining milestones describe the intended game after this reduced loop is proven. Their
+contracts should influence extensibility, but their features are not Living Village requirements.
+
 ## Milestone 0 — architecture convergence
 
 Goal: make the target product safe for parallel ownership without changing old replay histories.

@@ -27,6 +27,27 @@ content catalogs + canonical state + due schedule
 Only the engine commits consequences. Policies choose among legal options. Content declares truth.
 Projections make truth legible for a specific audience.
 
+## Product domains versus bounded contexts
+
+Workers and wiki reviewers use five broad player-facing domains. Engineering retains smaller bounded
+contexts underneath them so state ownership stays unambiguous.
+
+| Product domain | Internal contexts it coordinates |
+| --- | --- |
+| Visuals | Presentation plus character, creature, environment, equipment, skill-effect, UI and audio asset manifests |
+| Tower, World, and Story | Expedition, destinations, floor/encounter content, campaign story and party-attempt integration |
+| Settlement and Society | Settlement, affect/goals/motivation, society, hero initiative, institutions and later expansion |
+| Summoning, Progression, and Combat | Summoning, progression, skill catalog, equipment/inventory, combat, economy and synthesis |
+| Town Master Operations | objectives, assignments, party preparation, reports, knowledge views, policies and later automation |
+
+The Foundation—shared kernel, event/replay, time, identity references, content versions, ledgers,
+reservations, wiki/asset pipeline, accessibility, performance and observability—connects every domain
+without becoming a sixth player-facing minigame.
+
+The current [Living Village](../wiki/milestones/living-village.md) activates only the smallest
+deterministic slice of these domains. Its exclusions override the broader target map for that
+milestone.
+
 ## Current integration debt
 
 The repository proves many advanced components independently, but the ordinary player campaign is

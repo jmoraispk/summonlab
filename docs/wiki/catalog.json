@@ -182,6 +182,396 @@
       ]
     },
     {
+      "wikiId": "milestones.index",
+      "path": "docs/wiki/milestones/README.md",
+      "pageType": "milestone-index",
+      "owner": "product",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "milestone.living-village",
+      "path": "docs/wiki/milestones/living-village.md",
+      "pageType": "playable-milestone",
+      "owner": "product",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "system.visuals",
+      "path": "docs/wiki/systems/visuals.md",
+      "pageType": "system",
+      "owner": "visuals",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "system.tower-world-story",
+      "path": "docs/wiki/systems/tower-world-story.md",
+      "pageType": "system",
+      "owner": "tower-world-story",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "system.settlement-society",
+      "path": "docs/wiki/systems/settlement-society.md",
+      "pageType": "system",
+      "owner": "settlement-society",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "system.summoning-progression-combat",
+      "path": "docs/wiki/systems/summoning-progression-combat.md",
+      "pageType": "system",
+      "owner": "summoning-progression-combat",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "system.town-master-foundation",
+      "path": "docs/wiki/systems/town-master-foundation.md",
+      "pageType": "system",
+      "owner": "architecture",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression",
+      "path": "docs/wiki/mechanics/progression/README.md",
+      "pageType": "mechanic-index",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression.attributes-training",
+      "path": "docs/wiki/mechanics/progression/attributes-and-training.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression.affinities-resonance",
+      "path": "docs/wiki/mechanics/progression/affinities-and-resonance.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "mechanics.progression.skills-ladders",
+      "path": "docs/wiki/mechanics/progression/skills-and-ladders.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "mechanics.progression.heroes-stars-summoning",
+      "path": "docs/wiki/mechanics/progression/heroes-stars-and-summoning.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression.equipment-materials-inventory",
+      "path": "docs/wiki/mechanics/progression/equipment-materials-and-inventory.md",
+      "pageType": "mechanic",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression.open-decisions",
+      "path": "docs/wiki/mechanics/progression/open-decisions.md",
+      "pageType": "decision-ledger",
+      "owner": "product",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "skills.index",
+      "path": "docs/wiki/mechanics/skills/README.md",
+      "pageType": "skill-index",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "skills.framework",
+      "path": "docs/wiki/mechanics/skills/framework.md",
+      "pageType": "skill-framework",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "skills.living-village",
+      "path": "docs/wiki/mechanics/skills/living-village.md",
+      "pageType": "runtime-subset",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "skills.martial-universal",
+      "path": "docs/wiki/mechanics/skills/martial-universal.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.martial-blade",
+      "path": "docs/wiki/mechanics/skills/martial-blade.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.martial-haft-fist",
+      "path": "docs/wiki/mechanics/skills/martial-haft-and-fist.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.martial-hunt-guard-motion",
+      "path": "docs/wiki/mechanics/skills/martial-hunt-guard-motion.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.magical-evocation",
+      "path": "docs/wiki/mechanics/skills/magical-evocation.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.magical-disciplines",
+      "path": "docs/wiki/mechanics/skills/magical-disciplines.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.craft-and-life",
+      "path": "docs/wiki/mechanics/skills/craft-and-life.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "mechanics.equipment",
+      "path": "docs/wiki/mechanics/equipment/README.md",
+      "pageType": "equipment-index",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.equipment.rarity-weight",
+      "path": "docs/wiki/mechanics/equipment/rarity-and-weight.md",
+      "pageType": "equipment-rules",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.equipment.materials",
+      "path": "docs/wiki/mechanics/equipment/materials.md",
+      "pageType": "equipment-catalog",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "mechanics.equipment.weapons",
+      "path": "docs/wiki/mechanics/equipment/weapons.md",
+      "pageType": "equipment-catalog",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "mechanics.equipment.armour-shields",
+      "path": "docs/wiki/mechanics/equipment/armour-and-shields.md",
+      "pageType": "equipment-catalog",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "mechanics.equipment.focuses-tools-accessories",
+      "path": "docs/wiki/mechanics/equipment/focuses-tools-accessories.md",
+      "pageType": "equipment-catalog",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "mechanics.equipment.sets",
+      "path": "docs/wiki/mechanics/equipment/sets.md",
+      "pageType": "equipment-catalog",
+      "owner": "inventory",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster-seed.generator-guidance",
+      "path": "docs/wiki/creatures/monster-races/generator-bestiary-guide.md",
+      "pageType": "monster-generation-guide",
+      "owner": "creature-content",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "monster-seed.generator-bestiary-01",
+      "path": "docs/wiki/creatures/monster-races/generator-bestiary-01.md",
+      "pageType": "monster-seed-catalog",
+      "owner": "creature-content",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster-seed.generator-bestiary-02",
+      "path": "docs/wiki/creatures/monster-races/generator-bestiary-02.md",
+      "pageType": "monster-seed-catalog",
+      "owner": "creature-content",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster-seed.generator-bestiary-03",
+      "path": "docs/wiki/creatures/monster-races/generator-bestiary-03.md",
+      "pageType": "monster-seed-catalog",
+      "owner": "creature-content",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster-seed.generator-bestiary-04",
+      "path": "docs/wiki/creatures/monster-races/generator-bestiary-04.md",
+      "pageType": "monster-seed-catalog",
+      "owner": "creature-content",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster-seed.generator-bestiary-05",
+      "path": "docs/wiki/creatures/monster-races/generator-bestiary-05.md",
+      "pageType": "monster-seed-catalog",
+      "owner": "creature-content",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "sources.design-drafts-2026-08-29",
+      "path": "docs/wiki/sources/2026-08-29-design-drafts.md",
+      "pageType": "source-ingestion",
+      "owner": "architecture",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "art.living-village-heroes",
+      "path": "docs/wiki/art/living-village-heroes.md",
+      "pageType": "visual-brief",
+      "owner": "visuals",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "internal"
+    },
+    {
       "wikiId": "principles.every-person-contributes",
       "path": "docs/wiki/principles/every-person-contributes.md",
       "pageType": "principle",

@@ -24,15 +24,23 @@ replay evidence make that claim verifiable rather than aspirational.
 ## Browse
 
 - [Game systems](systems/README.md) — every vertical subsystem and horizontal capability.
+- [Playable milestones](milestones/README.md) — integration slices beginning with the reduced
+  [Living Village](milestones/living-village.md) loop.
+- [Progression](mechanics/progression/README.md), [skills](mechanics/skills/README.md), and
+  [equipment](mechanics/equipment/README.md) — complete supplied design drafts plus runtime scope.
 - [Attributes](mechanics/attributes.md) — the shared mechanical vocabulary behind capability.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
+- [Living Village hero packet](art/living-village-heroes.md) — six collision-safe identity briefs
+  and their required cross-surface evidence.
 - [Every person can contribute](principles/every-person-contributes.md) — the dignity, opportunity,
   and social-system principle behind heroes.
 - [Contribution workflow](contributing.md) — how sessions consume and return wiki material.
+- [Supplied-draft ingestion record](sources/2026-08-29-design-drafts.md) — hashes, destinations,
+  completeness evidence, and unresolved convergence decisions.
 
 For engineering ownership and dependency boundaries, use the
 [shared system architecture](../system-architecture/README.md). For the complete implemented
@@ -75,6 +83,9 @@ provenance, human review, and the relevant runtime validation.
 The gallery already contains the repository's current ten monster-family plates. They are shown as
 review candidates, which lets the wiki become an art book immediately without misrepresenting their
 runtime status.
+
+The generator bestiary preserves thirty additional race seeds for parallel visual development.
+These remain draft briefs until taxonomy, representation, mechanics, and owner review are complete.
 
 ## Presentation roadmap
 

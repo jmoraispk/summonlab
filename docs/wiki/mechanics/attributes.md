@@ -6,7 +6,13 @@ Attributes are broad capabilities used by heroes and mechanically comparable cre
 checks, learning, action outcomes, and derived projections; they do not determine intelligence,
 morality, obedience, social worth, personality, or the value of a life.
 
-## Current shared vocabulary
+## Current shared vocabulary — convergence required
+
+The earlier architecture uses the vocabulary below. The newly supplied
+[progression draft](progression/attributes-and-training.md) proposes a different six-attribute model:
+`Might`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Both are preserved, but they
+must not coexist in executable content under synonymous meanings. The Living Village content-ID
+pass must choose one vocabulary and map or supersede the other explicitly.
 
 | Attribute | Mechanical territory | Example use |
 | --- | --- | --- |
@@ -17,9 +23,9 @@ morality, obedience, social worth, personality, or the value of a life.
 | Insight | perception, learning, evidence use, diagnosis | noticing tells, studying, medicine |
 | Presence | persuasion, leadership, performance, intimidation | rallying, negotiating, teaching attention |
 
-This six-attribute model is an accepted design direction but only partially represented by the
-current prototype engine. Exact ranges, growth curves, and combat formulas remain progression-v2
-work.
+This earlier six-attribute model is partially represented by the current prototype engine. The
+supplied alternative is a detailed draft, not yet an accepted replacement. Exact names, mappings,
+ranges, growth curves, and combat formulas remain progression-v2 work.
 
 ## Attribute rules
 

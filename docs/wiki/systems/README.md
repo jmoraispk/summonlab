@@ -2,28 +2,31 @@
 
 Wiki ID: `systems.index`
 
-Summonlab is a game about designing interacting systems so autonomous people can find purpose,
-develop capability, form groups, and pursue difficult goals. No feature is allowed to become a
-private minigame with its own incompatible definitions of heroes, resources, knowledge, or time.
+Summonlab is a game about designing interacting systems so people can develop capability, find
+purpose, form groups, and pursue difficult goals. No feature is allowed to become a private
+minigame with incompatible definitions of heroes, resources, knowledge, or time.
 
 The [shared system map](../../system-architecture/system-map.md) is the engineering ownership
 authority. This page is its readable wiki doorway.
 
-## Player-facing systems
+## Five player-facing systems
 
-| System | Player promise | Primary truth owner | Current target |
-| --- | --- | --- | --- |
-| Summoning | Meet new people through Normal, Advanced, and Special channels | Summoning + Economy | Production quote/commit/pity loop |
-| Heroes | Persistent identity, personality, goals, mood, habits, and history | Character + Society | Shared presentation and motivation state |
-| Settlement | Build an environment that changes behavior and capacity | Settlement | Construction, modules, territory sectors |
-| Training and skills | Develop capability through practice, teaching, and fusion | Progression + Skill catalog | Progression-v2 and typed skill lattice |
-| Parties | Create stable teams with leaders, roles, doctrine, and cohesion | Company/Party | Persistent party revisions and readiness |
-| Tower | Climb a variable but coherent one-hundred-floor campaign | Expedition + Campaign story | Masterless party runtime and campaign plan |
-| Portal worlds | Run temporary, extraction-bound resource expeditions | Expedition | Reusable portal attempt contract |
-| Synthesis | Trade one permanent life for bounded short-term growth | Synthesis + Society | Honest preview, choice, saturation, aftermath |
-| Base expansion | Reclaim sectors and add behavioral infrastructure | Settlement | Facility instances and capability unlocks |
-| Neighbor exploration | Reach persistent settlements after building an airship | Destinations + Expedition | First ship, route, and neighbor relationship |
-| Mounts and vehicles | Extend movement, cargo, rescue, and identity | Assets + Expedition | Ride/carry/evacuate ground-mount slice |
+The broad product is grouped into five reviewable domains rather than exposing every engine bounded
+context as a separate subsystem.
+
+| System | Includes | Current Living Village boundary |
+| --- | --- | --- |
+| [Visuals](visuals.md) | heroes, monsters, equipment, skills, Village, tower, UI and effects | realistic identity continuity and a bounded approved asset set |
+| [Tower, World, and Story](tower-world-story.md) | tower, encounters, expeditions, destinations, campaign and lore | static Floors 1–10 with no story, navigation, or world simulation |
+| [Settlement and Society](settlement-society.md) | facilities, expansion, agency, relationships, institutions and motivation | static Hearth; no society or autonomous behavior |
+| [Summoning, Progression, and Combat](summoning-progression-combat.md) | acquisition, heroes' numerical growth, skills, affinities, equipment, training, combat and synthesis | Normal summons, first growth band, small catalogs, deterministic combat |
+| [Town Master Operations](town-master-foundation.md) | objectives, assignments, parties, reports, knowledge and automation | only the direct actions required by the core loop |
+
+The same [Town Master and Foundation page](town-master-foundation.md) records the technical spine
+that connects the five domains without pretending it is another piece of player content.
+
+The [Living Village milestone](../milestones/living-village.md) is the current delivery authority.
+It intentionally activates only a narrow slice of every domain.
 
 ## Horizontal capabilities
 
@@ -39,7 +42,7 @@ authority. This page is its readable wiki doorway.
 | Event/replay/journal | every consequential system | The engine alone commits; every consequence is attributable |
 | Wiki and asset pipeline | design, art, implementation, review | Text canon and generated artifacts return to one checked index |
 
-## How systems compose
+## How the full game composes
 
 One representative causal chain:
 
@@ -69,7 +72,8 @@ chain healthy, resilient, and legible.
 
 ## Open wiki work
 
-- Create dedicated wiki pages for each player-facing system from the shared system-brief template.
 - Bind every accepted page to contracts, content IDs, runtime evidence, and visual galleries.
 - Add cross-page dependency generation once the initial taxonomy stabilizes.
 - Decide which accepted rules ship publicly and which populate the discoverable compendium.
+- Revisit the five-system grouping after the Living Village loop is playable; split a domain only
+  when independent ownership cannot remain clear through internal bounded contexts.

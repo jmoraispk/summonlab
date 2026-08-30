@@ -5,6 +5,11 @@ Wiki ID: `mechanics.affinities`
 Design status: **draft**. The shared concept is accepted; the exact roster, values, interactions, and
 proc formulas remain open for simulation and review.
 
+The supplied [progression affinity draft](../progression/affinities-and-resonance.md) proposes five
+base Wu Xing affinities—Wood, Fire, Earth, Metal, and Water—with Wind derived from Metal × Wood.
+This earlier workspace currently treats Fire, Wind, and Wood as base candidates. The Living Village
+must not freeze affinity IDs until that conflict is resolved.
+
 Affinities describe how a hero, monster, skill, item, or environment resonates with a family of
 mechanical expressions. Heroes and monsters use the same affinity definitions. An affinity can
 influence derived attributes, unlock or strengthen skill behavior, interact with environments, and

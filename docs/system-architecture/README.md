@@ -11,6 +11,11 @@ not replace the replay evidence, accepted ADRs, or detailed implementation histo
 target product shape, assigns ownership, defines the seams between systems, and records where the
 new direction intentionally requires a versioned migration from the current prototype.
 
+For product planning, the many engineering contexts roll up into five domains: Visuals; Tower,
+World, and Story; Settlement and Society; Summoning, Progression, and Combat; and Town Master
+Operations. A shared Foundation connects them. See the [system map](system-map.md) for the exact
+mapping; do not confuse a bounded state owner with another top-level game subsystem.
+
 ## Start here
 
 1. The [Summonlab Wiki](../wiki/README.md) is the readable rulebook, world bible, bestiary, and

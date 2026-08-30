@@ -34,6 +34,21 @@ review images do not yet prove production combat rigs.
 See the [monster visual gallery](../../art/monster-gallery.md) for all current plates and honest
 candidate status.
 
+## Supplied thirty-race generator bestiary
+
+The complete visual seed draft is preserved as five six-race volumes:
+
+- [Volume 1 — Goblins through Skeletons](generator-bestiary-01.md)
+- [Volume 2 — Rotwalkers through Celestials](generator-bestiary-02.md)
+- [Volume 3 — Harpies through Arachnids](generator-bestiary-03.md)
+- [Volume 4 — Slimes through Deep Ones](generator-bestiary-04.md)
+- [Volume 5 — Werebeasts through Doppelgangers](generator-bestiary-05.md)
+- [Generator guidance, audit, and conflicts](generator-bestiary-guide.md)
+
+These are generator-ready **seed briefs**, not accepted species canon or runtime statistics. The
+source tiers mix age, office, caste, mutation, equipment, size, construction quality, and combat
+power; each race needs a taxonomy/mechanics pass before tier names become executable definitions.
+
 ## Required entry depth
 
 Before a family can drive broad image generation, its wiki work should answer:
