@@ -18,6 +18,7 @@ import {
 	recordEventExclusive,
 	readWaveAllocationSpec,
 	validateEventJournal,
+	verifyCurrentWavePreflight,
 	writePreflightExclusive,
 	type AffinityWaveEvent,
 	type AffinityWavePlan
@@ -246,6 +247,49 @@ function event(
 	} as AffinityWaveEvent;
 }
 
+function v2PreflightFixture(preflight: ReturnType<typeof readyEventFixture>) {
+	return AffinityWavePreflightSchema.parse({
+		...preflight,
+		schemaVersion: 'affinity-wave-preflight-v2',
+		sourcePlan: {
+			path: `${preflight.runDirectory}/plan.json`,
+			canonicalSha256: 'a'.repeat(64)
+		},
+		sourceAllocation: {
+			path: `${experimentRoot}/review/wave-plans/allocation.json`,
+			canonicalSha256: 'b'.repeat(64),
+			allocationId: 'test-allocation'
+		},
+		concurrencySentinelActivationReceipt: null,
+		jobs: preflight.jobs.map((job, index) => ({
+			...job,
+			allocationJobKey: `allocation-job-${index + 1}`,
+			manifestState: 'live-unexecuted-breadth'
+		}))
+	});
+}
+
+function v2Event(
+	preflight: ReturnType<typeof v2PreflightFixture>,
+	sequence: number,
+	eventId: string,
+	kind: AffinityWaveEvent['kind'],
+	at: string,
+	extra: Record<string, unknown> = {}
+): AffinityWaveEvent {
+	return {
+		schemaVersion: 'affinity-wave-event-v2',
+		sequence,
+		preflightCanonicalSha256: canonicalJsonSha256(preflight),
+		recordedAt: `2026-08-29T20:00:${String(sequence).padStart(2, '0')}.000Z`,
+		eventId,
+		runId: preflight.runId,
+		kind,
+		at,
+		...extra
+	} as AffinityWaveEvent;
+}
+
 async function copy(relativePath: string, root: string): Promise<void> {
 	const destination = path.join(root, relativePath);
 	await mkdir(path.dirname(destination), { recursive: true });
@@ -402,6 +446,52 @@ describe('affinity concurrency wave scheduler', () => {
 				)
 			).toBe(true);
 		}
+	});
+
+	it('binds every admitted manifest hash and rejects post-preflight manifest drift', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-manifest-binding-'));
+		roots.push(root);
+		const jobs = [manifestJob('death-knight', 'normal'), manifestJob('death-knight', 'fire')];
+		for (const job of jobs) {
+			await copy(job.targetPath, root);
+			await copy(job.assignmentPath, root);
+		}
+		await writeGate(root, 'canary');
+		const preflight = await preflightWave(
+			root,
+			plan('canary', jobs, 'canary-manifest-binding'),
+			3,
+			'2026-08-29T20:00:00.000Z'
+		);
+		expect(preflight.status).toBe('ready');
+		expect(
+			preflight.jobs.every(
+				(job) =>
+					job.targetCanonicalSha256?.length === 64 && job.assignmentCanonicalSha256?.length === 64
+			)
+		).toBe(true);
+		await expect(verifyCurrentWavePreflight(root, preflight)).resolves.toEqual(preflight);
+		const targetPath = path.join(root, jobs[0]!.targetPath);
+		const target = JSON.parse(await readFile(targetPath, 'utf8')) as {
+			presentation: { composition: string };
+		};
+		target.presentation.composition = `${target.presentation.composition} drift`;
+		await writeFile(targetPath, `${JSON.stringify(target, null, '\t')}\n`);
+		await expect(verifyCurrentWavePreflight(root, preflight)).rejects.toThrow(
+			/Scheduled manifest changed after preflight/u
+		);
+		await expect(
+			recordEventExclusive(
+				root,
+				preflight,
+				event(
+					preflight.runId,
+					'wave-started-after-drift',
+					'wave-started',
+					'2026-08-29T20:00:01.000Z'
+				)
+			)
+		).rejects.toThrow(/Scheduled manifest changed after preflight/u);
 	});
 
 	it.each([
@@ -815,6 +905,71 @@ describe('affinity concurrency wave scheduler', () => {
 		expect(() => validateEventJournal(preflight, [started, ...failures, illegalDispatch])).toThrow(
 			/after the capacity stop rule/u
 		);
+	});
+
+	it('uses recorder sequence to replay same-timestamp v2 worker reuse deterministically', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-v2-journal-order-'));
+		roots.push(root);
+		const jobs = [
+			manifestJob('goblin', 'normal'),
+			manifestJob('goblin', 'wood'),
+			manifestJob('goblin', 'fire'),
+			manifestJob('goblin', 'metal')
+		];
+		for (const job of jobs) await copy(job.targetPath, root);
+		for (const job of jobs) await copy(job.assignmentPath, root);
+		await writeGate(root, 'pilot');
+		const preflight = v2PreflightFixture(
+			readyEventFixture(
+				await preflightWave(
+					root,
+					plan('pilot', jobs, 'pilot-v2-sequenced-events'),
+					5,
+					'2026-08-29T20:00:00.000Z'
+				)
+			)
+		);
+		const at = '2026-08-29T20:00:10.000Z';
+		const [first, second] = preflight.jobs;
+		const events = [
+			v2Event(preflight, 0, 'wave-started', 'wave-started', at),
+			v2Event(preflight, 1, 'dispatch-first', 'job-dispatched', at, {
+				targetId: first!.targetId,
+				workerId: 'reused-worker'
+			}),
+			v2Event(preflight, 2, 'finish-first', 'job-finished', at, {
+				targetId: first!.targetId,
+				workerId: 'reused-worker'
+			}),
+			v2Event(preflight, 3, 'dispatch-second', 'job-dispatched', at, {
+				targetId: second!.targetId,
+				workerId: 'reused-worker'
+			})
+		];
+		const state = validateEventJournal(preflight, [...events].reverse());
+		expect(state.activeTargets).toEqual(new Set([second!.targetId]));
+		expect(state.maximumActiveWorkerCount).toBe(1);
+
+		expect(() =>
+			validateEventJournal(preflight, [
+				events[0],
+				events[1],
+				v2Event(preflight, 2, 'dispatch-second-before-finish', 'job-dispatched', at, {
+					targetId: second!.targetId,
+					workerId: 'reused-worker'
+				}),
+				v2Event(preflight, 3, 'finish-first-after-reuse', 'job-finished', at, {
+					targetId: first!.targetId,
+					workerId: 'reused-worker'
+				})
+			])
+		).toThrow(/already active/u);
+		expect(() =>
+			validateEventJournal(preflight, [{ ...events[0], preflightCanonicalSha256: 'c'.repeat(64) }])
+		).toThrow(/preflight binding/u);
+		expect(() =>
+			validateEventJournal(preflight, [event(preflight.runId, 'legacy-start', 'wave-started', at)])
+		).toThrow(/require a sequence-bound v2 event journal/u);
 	});
 
 	it('combines stop pressure while keeping agent capacity and provider throttles distinct', async () => {

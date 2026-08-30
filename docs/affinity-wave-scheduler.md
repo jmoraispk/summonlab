@@ -60,7 +60,29 @@ promotion still gates Load-12 dispatch, and eligible Load-12 promotion still gat
 
 ## Wave plan
 
-Store the plan outside its future run directory. A minimal two-worker canary plan is:
+Do not hand-author a production plan. Materialize the exact stage from the reviewed allocation,
+its current dispatch gate, and the current target and assignment manifests:
+
+```bash
+pnpm materialize:affinity-wave-plan -- \
+  --allocation assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json \
+  --allocation-sha256 9ca2f78071ba39904e5d7194e9d52a8d6966c6dc6e3dc5f95d98b0dab05a4fa9 \
+  --stage <canary|pilot|controlled|breadth|load|scale> \
+  --gate assets/enemies/experiments/affinity-workflow-v1/review/gates/<gate>.json \
+  --gate-sha256 <canonical-json-sha256> \
+  --run-id <fresh-run-id>
+```
+
+The guarded command verifies the reviewed allocation path and hash, exact stage job set, current
+gate and every gate evidence binding, current target and assignment manifests, and a valid
+activation receipt for any future-sentinel jobs. It refuses an existing run directory and writes
+the v2 plan exclusively to
+`assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/materialized/<run-id>.json`.
+It does not create the run directory, dispatch an agent, or call the image provider. The v2 plan
+binds the allocation, gate, optional sentinel receipt, and canonical hash of every manifest.
+
+The following v1 document is a schema illustration for historical plans; new production plans
+use the materialized v2 contract:
 
 ```json
 {
@@ -237,7 +259,10 @@ lower stage. Capacity and throttle failures are not retried simultaneously withi
 The journal is serialized with a short-lived lock, every event has an exclusive filename, and a
 run rejects duplicate events, unknown targets, changed worker identities, multiple outcomes,
 activity beyond admitted capacity, events outside the wave boundary, and a finish while workers
-remain active.
+remain active. The operator submits the stable v1 event-request shape, while the recorder persists
+v2 evidence with a lock-assigned contiguous sequence, recording timestamp, and canonical preflight
+hash. Replay follows that sequence rather than filesystem order or occurrence-time ties; a v2
+preflight rejects legacy, mixed-version, gapped, backdated, or differently bound journals.
 
 ## Report
 
@@ -255,7 +280,8 @@ and, with at least ten attempts, p90/p95; summed job time; observed speedup; par
 and result-provenance completeness. The embedded concurrency-stage `throttleCount` contains only
 provider throttles; agent-slot failures remain in the scheduler report's `capacityFailureCount`.
 
-Report v2 also binds the exact preflight, event journal, result manifests, and retained candidate
+Report v3 also binds the exact preflight, event journal, target and assignment manifests, result
+manifests, and retained candidate
 image bytes by repository path and cryptographic hash. Completion does not trust those bindings as
 claims: it rereads the journal and manifests, verifies each execution and retained image, rebuilds
 the report at its recorded timestamp, and requires canonical equality with the stored report. A

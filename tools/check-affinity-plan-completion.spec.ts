@@ -293,7 +293,8 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 			resultCount: 24,
 			candidateImageCount: 24,
 			gateSatisfied: true,
-			evaluationPassed: true
+			evaluationPassed: true,
+			contactSheetValid: true
 		},
 		humanBlindEvidence: {
 			eligibleBlindReviewCount: 24,
@@ -412,6 +413,23 @@ describe('affinity image-production plan completion', () => {
 		expect(report.blockerSummary.human).toContain('controlledFinalRerun');
 	});
 
+	it('requires the current deterministic final-controlled contact sheet', () => {
+		const evidence = completeEvidence();
+		const report = buildAffinityPlanCompletionReport({
+			...evidence,
+			controlledFinalRerun: {
+				...evidence.controlledFinalRerun,
+				contactSheetValid: false
+			}
+		});
+
+		expect(report.status).toBe('incomplete');
+		expect(report.sections.controlledFinalRerun.complete).toBe(false);
+		expect(report.sections.controlledFinalRerun.evidence).toMatchObject({
+			contactSheetValid: false
+		});
+	});
+
 	it('lets a completed final cohort pass independently of the failed immutable v1 cohort', () => {
 		const targets = Array.from({ length: 24 }, (_, index) => finalTarget(index));
 		const finalEvidence = buildFinalControlledGateEvidence({
@@ -435,13 +453,17 @@ describe('affinity image-production plan completion', () => {
 		const evidence = completeEvidence();
 		const report = buildAffinityPlanCompletionReport({
 			...evidence,
-			controlledFinalRerun: finalEvidence.controlledFinalRerun,
+			controlledFinalRerun: {
+				...finalEvidence.controlledFinalRerun,
+				contactSheetValid: true
+			},
 			humanBlindEvidence: finalEvidence.humanBlindEvidence
 		});
 
 		expect(finalEvidence.controlledFinalRerun).toMatchObject({
 			gateSatisfied: true,
-			evaluationPassed: true
+			evaluationPassed: true,
+			contactSheetValid: false
 		});
 		expect(finalEvidence.humanBlindEvidence).toMatchObject({
 			eligibleBlindReviewCount: 24,
@@ -667,7 +689,7 @@ describe('affinity image-production plan completion', () => {
 
 	it('accepts only exact, completed, gate-bound scheduler reports without workflow failures', () => {
 		const preflight = {
-			schemaVersion: 'affinity-wave-preflight-v1',
+			schemaVersion: 'affinity-wave-preflight-v2',
 			runId: 'canary-eligible',
 			experimentId: 'affinity-workflow-v1',
 			stage: 'canary',
@@ -684,6 +706,16 @@ describe('affinity image-production plan completion', () => {
 				stopOnOutputCollision: true,
 				retryCapacityFailuresInWave: false
 			},
+			sourcePlan: {
+				path: 'assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/materialized/canary-eligible.json',
+				canonicalSha256: '5'.repeat(64)
+			},
+			sourceAllocation: {
+				path: 'assets/enemies/experiments/affinity-workflow-v1/review/wave-plans/exact-concurrency-final-and-breadth-v1.json',
+				canonicalSha256: '6'.repeat(64),
+				allocationId: 'exact-concurrency-final-and-breadth-v1'
+			},
+			concurrencySentinelActivationReceipt: null,
 			dispatchGateSatisfied: true,
 			dispatchGateEvidence: {
 				status: 'satisfied',
@@ -725,6 +757,10 @@ describe('affinity image-production plan completion', () => {
 					affinity: 'normal',
 					targetPath: 'assets/enemies/experiments/affinity-workflow-v1/targets/test.json',
 					assignmentPath: 'assets/enemies/experiments/affinity-workflow-v1/assignments/test.json',
+					targetCanonicalSha256: '1'.repeat(64),
+					assignmentCanonicalSha256: '2'.repeat(64),
+					allocationJobKey: 'eligible-job-one',
+					manifestState: 'gated-final-controlled',
 					candidatePath: 'assets/enemies/experiments/affinity-workflow-v1/candidates/test.png',
 					resultPath: 'assets/enemies/experiments/affinity-workflow-v1/results/test.json'
 				},
@@ -736,6 +772,10 @@ describe('affinity image-production plan completion', () => {
 					targetPath: 'assets/enemies/experiments/affinity-workflow-v1/targets/test-two.json',
 					assignmentPath:
 						'assets/enemies/experiments/affinity-workflow-v1/assignments/test-two.json',
+					targetCanonicalSha256: '3'.repeat(64),
+					assignmentCanonicalSha256: '4'.repeat(64),
+					allocationJobKey: 'eligible-job-two',
+					manifestState: 'gated-final-controlled',
 					candidatePath: 'assets/enemies/experiments/affinity-workflow-v1/candidates/test-two.png',
 					resultPath: 'assets/enemies/experiments/affinity-workflow-v1/results/test-two.json'
 				}
@@ -769,7 +809,7 @@ describe('affinity image-production plan completion', () => {
 			integrationErrorCount: 0
 		};
 		const report = {
-			schemaVersion: 'affinity-wave-report-v2',
+			schemaVersion: 'affinity-wave-report-v3',
 			runId: 'canary-eligible',
 			experimentId: 'affinity-workflow-v1',
 			stage: 'canary',
@@ -810,6 +850,17 @@ describe('affinity image-production plan completion', () => {
 					path: `${preflight.runDirectory}/preflight.json`,
 					canonicalSha256: canonicalJsonSha256(preflight)
 				},
+				manifests: preflight.jobs.map((job) => ({
+					targetId: job.targetId,
+					target: {
+						path: job.targetPath,
+						canonicalSha256: job.targetCanonicalSha256
+					},
+					assignment: {
+						path: job.assignmentPath,
+						canonicalSha256: job.assignmentCanonicalSha256
+					}
+				})),
 				events: [],
 				results: preflight.jobs.map((job) => ({
 					targetId: job.targetId,

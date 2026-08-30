@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import {
 	AffinityWaveEventSchema,
+	AffinityWaveEventRequestSchema,
 	buildWaveReport,
 	nextDispatchDecision,
 	preflightWave,
@@ -11,6 +12,7 @@ import {
 	readWaveEvents,
 	readWavePlan,
 	recordEventExclusive,
+	verifyCurrentWavePreflight,
 	writePreflightExclusive,
 	writeReportExclusive
 } from './affinity-wave-scheduler-lib.js';
@@ -78,20 +80,25 @@ async function main(): Promise<void> {
 	const preflightPath = option(args, '--preflight');
 	const preflight = await readPreflight(workspaceRoot, preflightPath);
 	if (command === 'next') {
+		await verifyCurrentWavePreflight(workspaceRoot, preflight);
 		const events = await readWaveEvents(workspaceRoot, preflight);
 		process.stdout.write(`${JSON.stringify(nextDispatchDecision(preflight, events), null, 2)}\n`);
 		return;
 	}
 	if (command === 'record-event') {
 		const eventPath = option(args, '--event');
-		const event = AffinityWaveEventSchema.parse(
+		const event = AffinityWaveEventRequestSchema.parse(
 			JSON.parse(await readFile(path.resolve(workspaceRoot, eventPath), 'utf8')) as unknown
 		);
 		const outputPath = await recordEventExclusive(workspaceRoot, preflight, event);
-		process.stdout.write(`${JSON.stringify({ outputPath, event }, null, 2)}\n`);
+		const recordedEvent = AffinityWaveEventSchema.parse(
+			JSON.parse(await readFile(path.resolve(workspaceRoot, outputPath), 'utf8')) as unknown
+		);
+		process.stdout.write(`${JSON.stringify({ outputPath, event: recordedEvent }, null, 2)}\n`);
 		return;
 	}
 	if (command === 'report') {
+		await verifyCurrentWavePreflight(workspaceRoot, preflight);
 		const events = await readWaveEvents(workspaceRoot, preflight);
 		const report = await buildWaveReport(
 			workspaceRoot,

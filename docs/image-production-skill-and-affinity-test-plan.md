@@ -16,6 +16,14 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Made the reviewed exact-concurrency allocation executable only through a guarded v2
+  materializer. Each fresh plan now binds the allocation, stage, dispatch gate, optional sentinel
+  activation receipt, and every target and assignment hash. V2 preflight preserves those bindings;
+  dispatch, event recording, reporting, and completion revalidate the current snapshot. The
+  append-only v2 journal assigns a locked sequence and preflight hash to each event, so worker reuse
+  and peak concurrency remain deterministic even at identical timestamps. Report v3 binds all
+  manifests, and a final-controlled run cannot count without its valid controlled contact sheet.
+  No live wave, gate, sentinel, or image was activated by this tooling slice.
 - 2026-08-29: Repaired the staged concurrency proof so Load-12 depends on the exact promoted
   Breadth-8 run and Scale-16 depends on the exact promoted Load-12 run, removing the prior circular
   requirement for a fully completed breadth round before its own targets could run. Every

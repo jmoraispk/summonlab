@@ -62,6 +62,7 @@ import {
 	canonicalJsonSha256,
 	dispatchGateEvidenceAuthorizes,
 	readWaveEvents,
+	verifyCurrentWaveSnapshot,
 	type AffinityWavePreflight,
 	type AffinityWaveReport
 } from './affinity-wave-scheduler-lib.js';
@@ -190,6 +191,7 @@ export interface AffinityPlanCompletionEvidence {
 		readonly candidateImageCount: number;
 		readonly gateSatisfied: boolean;
 		readonly evaluationPassed: boolean;
+		readonly contactSheetValid: boolean;
 	};
 	readonly humanBlindEvidence: {
 		readonly eligibleBlindReviewCount: number;
@@ -507,7 +509,8 @@ export function buildFinalControlledGateEvidence(
 			resultCount: input.executions.length,
 			candidateImageCount: input.verifiedImageCount,
 			gateSatisfied: valid && readiness.gate.currentlySatisfied,
-			evaluationPassed: valid && readiness.gate.currentlySatisfied
+			evaluationPassed: valid && readiness.gate.currentlySatisfied,
+			contactSheetValid: false
 		},
 		humanBlindEvidence: {
 			eligibleBlindReviewCount: readiness.reviewEvidence.eligibleBlindRecordCount,
@@ -557,7 +560,8 @@ export function buildAffinityPlanCompletionReport(
 		evidence.controlledFinalRerun.resultCount === 24 &&
 		evidence.controlledFinalRerun.candidateImageCount === 24 &&
 		evidence.controlledFinalRerun.gateSatisfied &&
-		evidence.controlledFinalRerun.evaluationPassed;
+		evidence.controlledFinalRerun.evaluationPassed &&
+		evidence.controlledFinalRerun.contactSheetValid;
 	const humanComplete =
 		evidence.humanBlindEvidence.eligibleBlindReviewCount >= 24 &&
 		evidence.humanBlindEvidence.speciesThresholdSatisfied &&
@@ -610,7 +614,7 @@ export function buildAffinityPlanCompletionReport(
 			controlledComplete,
 			evidence.controlledFinalRerun,
 			[
-				'A planned rerun is not execution evidence: a genuine latest human DB decision, its strict v2 ledger, every staged correction, a ledger-bound activation receipt, all 24 final-protocol outputs, and a passing controlled evaluation must exist.'
+				'A planned rerun is not execution evidence: a genuine latest human DB decision, its strict v2 ledger, every staged correction, a ledger-bound activation receipt, all 24 final-protocol outputs, a current deterministic contact sheet, and a passing controlled evaluation must exist.'
 			],
 			['human', 'gated', 'implementable']
 		),
@@ -1089,6 +1093,8 @@ export function validateSchedulerRunEligibility(
 	if (!preflight.success || !report.success) return { eligible: false, reasons };
 	const p = preflight.data;
 	const r = report.data;
+	if (p.schemaVersion !== 'affinity-wave-preflight-v2')
+		reasons.push('legacy-preflight-not-measurement-evidence');
 	if (p.runId !== r.runId || p.stage !== r.stage || p.experimentId !== r.experimentId) {
 		reasons.push('run-binding-mismatch');
 	}
@@ -1097,6 +1103,28 @@ export function validateSchedulerRunEligibility(
 		r.sourceEvidence.preflight.canonicalSha256 !== canonicalJsonSha256(p)
 	)
 		reasons.push('report-preflight-source-binding-mismatch');
+	const expectedManifestBindings = p.jobs
+		.map((job) => ({
+			targetId: job.targetId,
+			target: {
+				path: job.targetPath,
+				canonicalSha256: job.targetCanonicalSha256 ?? null
+			},
+			assignment: {
+				path: job.assignmentPath,
+				canonicalSha256: job.assignmentCanonicalSha256 ?? null
+			}
+		}))
+		.sort((left, right) => left.targetId.localeCompare(right.targetId));
+	if (
+		expectedManifestBindings.some(
+			(binding) =>
+				binding.target.canonicalSha256 === null || binding.assignment.canonicalSha256 === null
+		) ||
+		canonicalJsonSha256(r.sourceEvidence.manifests) !==
+			canonicalJsonSha256(expectedManifestBindings)
+	)
+		reasons.push('report-manifest-source-binding-mismatch');
 	if (r.sourceEvidence.results.length !== r.candidateCount + r.reviseCount)
 		reasons.push('report-result-source-count-mismatch');
 	if (p.status !== 'ready' || !p.exactConcurrencyReady) reasons.push('preflight-not-exact-ready');
@@ -1216,7 +1244,14 @@ export async function inspectSchedulerEvidence(
 		if (!preflight.success) continue;
 		const preflightPath = path.relative(workspaceRoot, preflightAbsolute);
 		const preflightCanonicalSha256 = canonicalJsonSha256(preflight.data);
+		const currentSnapshot =
+			preflight.data.schemaVersion === 'affinity-wave-preflight-v2' &&
+			(await verifyCurrentWaveSnapshot(workspaceRoot, preflight.data).then(
+				() => true,
+				() => false
+			));
 		if (
+			currentSnapshot &&
 			preflight.data.stage === 'scale' &&
 			preflight.data.requestedConcurrency === 16 &&
 			preflight.data.status === 'blocked-capacity' &&
@@ -1241,7 +1276,7 @@ export async function inspectSchedulerEvidence(
 		const reportInput = await readJson(reportAbsolute).catch(() => null);
 		const eligibility = validateSchedulerRunEligibility(preflight.data, reportInput);
 		const report = AffinityWaveReportSchema.safeParse(reportInput);
-		if (!eligibility.eligible || !report.success) continue;
+		if (!currentSnapshot || !eligibility.eligible || !report.success) continue;
 		const rebuiltReport = await readWaveEvents(workspaceRoot, preflight.data)
 			.then((events) =>
 				buildWaveReport(workspaceRoot, preflight.data, events, report.data.generatedAt)
@@ -1588,7 +1623,8 @@ export async function inspectAffinityPlanCompletionEvidence(
 		},
 		controlledFinalRerun: {
 			...finalControlled.gateEvidence.controlledFinalRerun,
-			evaluationPassed: finalRoundEvidence.passed
+			evaluationPassed: finalRoundEvidence.passed,
+			contactSheetValid: finalRoundEvidence.contactSheetValid
 		},
 		humanBlindEvidence: finalControlled.gateEvidence.humanBlindEvidence,
 		goblinAudits: {

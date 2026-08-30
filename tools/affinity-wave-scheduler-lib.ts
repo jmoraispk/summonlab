@@ -39,6 +39,11 @@ import {
 	FinalControlledRerunPlanSchema,
 	buildFinalControlledRerunBundle
 } from './prepare-final-controlled-rerun.js';
+import {
+	AffinityWavePlanV2Schema,
+	type AffinityWavePlanV2,
+	type BoundAffinityWavePlanV2
+} from './affinity-wave-plan-v2.js';
 import sharp from 'sharp';
 
 const EXPERIMENT_ROOT = 'assets/enemies/experiments/affinity-workflow-v1';
@@ -660,10 +665,26 @@ const ResolvedJobSchema = z
 		affinity: ImageProductionAffinitySchema,
 		targetPath: RepositoryPathSchema,
 		assignmentPath: RepositoryPathSchema,
+		targetCanonicalSha256: z
+			.string()
+			.regex(/^[a-f0-9]{64}$/u)
+			.optional(),
+		assignmentCanonicalSha256: z
+			.string()
+			.regex(/^[a-f0-9]{64}$/u)
+			.optional(),
 		candidatePath: RepositoryPathSchema,
 		resultPath: RepositoryPathSchema
 	})
 	.strict();
+
+const ResolvedJobV2Schema = ResolvedJobSchema.required({
+	targetCanonicalSha256: true,
+	assignmentCanonicalSha256: true
+}).safeExtend({
+	allocationJobKey: SlugSchema,
+	manifestState: z.enum(['gated-final-controlled', 'live-unexecuted-breadth', 'future-sentinel'])
+});
 
 const DispatchGateEvidenceCheckSchema = z
 	.object({
@@ -753,7 +774,7 @@ const DispatchGateEvidenceSchema = z
 		}
 	});
 
-export const AffinityWavePreflightSchema = z
+const LegacyAffinityWavePreflightSchema = z
 	.object({
 		schemaVersion: z.literal('affinity-wave-preflight-v1'),
 		runId: SlugSchema,
@@ -786,7 +807,82 @@ export const AffinityWavePreflightSchema = z
 				message: 'A ready preflight requires a fully satisfied v2 dispatch gate'
 			});
 		}
+		if (
+			preflight.status === 'ready' &&
+			preflight.jobs.some((job) => !job.targetCanonicalSha256 || !job.assignmentCanonicalSha256)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['jobs'],
+				message: 'A ready preflight requires canonical target and assignment hashes'
+			});
+		}
 	});
+
+export const AffinityWavePreflightV2Schema = z
+	.object({
+		schemaVersion: z.literal('affinity-wave-preflight-v2'),
+		runId: SlugSchema,
+		experimentId: z.literal('affinity-workflow-v1'),
+		stage: StageSchema,
+		createdAt: z.string().datetime({ offset: true }),
+		status: z.enum(['ready', 'blocked-capacity', 'blocked-output-collision', 'blocked-gate']),
+		requestedConcurrency: z.number().int().positive().max(16),
+		availableAgentSlots: z.number().int().nonnegative(),
+		reservedOrchestratorSlots: z.literal(1),
+		admittedWorkerCapacity: z.number().int().nonnegative().max(16),
+		exactConcurrencyReady: z.boolean(),
+		runDirectory: RepositoryPathSchema,
+		stopRules: AffinityWavePlanSchema.shape.stopRules,
+		sourcePlan: z
+			.object({
+				path: RepositoryPathSchema,
+				canonicalSha256: EvidenceBindingSchema.shape.canonicalSha256
+			})
+			.strict(),
+		sourceAllocation: z
+			.object({
+				path: RepositoryPathSchema,
+				canonicalSha256: EvidenceBindingSchema.shape.canonicalSha256,
+				allocationId: SlugSchema
+			})
+			.strict(),
+		concurrencySentinelActivationReceipt: EvidenceBindingSchema.nullable(),
+		dispatchGateSatisfied: z.boolean(),
+		dispatchGateEvidence: DispatchGateEvidenceSchema,
+		collisionPaths: z.array(RepositoryPathSchema),
+		jobs: z.array(ResolvedJobV2Schema).min(1).max(16)
+	})
+	.strict()
+	.superRefine((preflight, context) => {
+		if (
+			preflight.status === 'ready' &&
+			(preflight.dispatchGateSatisfied !== true ||
+				!dispatchGateEvidenceAuthorizes(preflight.dispatchGateEvidence))
+		)
+			context.addIssue({
+				code: 'custom',
+				path: ['dispatchGateEvidence'],
+				message: 'A ready preflight requires a fully satisfied v2 dispatch gate'
+			});
+		if (preflight.requestedConcurrency !== STAGE_CONCURRENCY[preflight.stage])
+			context.addIssue({
+				code: 'custom',
+				path: ['requestedConcurrency'],
+				message: 'Preflight concurrency must match its stage'
+			});
+		if (preflight.jobs.length !== preflight.requestedConcurrency)
+			context.addIssue({
+				code: 'custom',
+				path: ['jobs'],
+				message: 'V2 preflight requires the exact allocation stage job count'
+			});
+	});
+
+export const AffinityWavePreflightSchema = z.union([
+	AffinityWavePreflightV2Schema,
+	LegacyAffinityWavePreflightSchema
+]);
 
 export type AffinityWavePreflight = z.infer<typeof AffinityWavePreflightSchema>;
 
@@ -801,33 +897,86 @@ export function dispatchGateEvidenceAuthorizes(
 	);
 }
 
-const BaseEventSchema = z.object({
-	schemaVersion: z.literal('affinity-wave-event-v1'),
+const BaseEventFields = {
 	eventId: SlugSchema,
 	runId: SlugSchema,
 	at: z.string().datetime({ offset: true })
+} as const;
+
+const LegacyBaseEventSchema = z.object({
+	schemaVersion: z.literal('affinity-wave-event-v1'),
+	...BaseEventFields
 });
 
-export const AffinityWaveEventSchema = z.discriminatedUnion('kind', [
-	BaseEventSchema.extend({ kind: z.literal('wave-started') }).strict(),
-	BaseEventSchema.extend({
+export const AffinityWaveEventRequestSchema = z.discriminatedUnion('kind', [
+	LegacyBaseEventSchema.extend({ kind: z.literal('wave-started') }).strict(),
+	LegacyBaseEventSchema.extend({
 		kind: z.literal('job-dispatched'),
 		targetId: SlugSchema,
 		workerId: SlugSchema
 	}).strict(),
-	BaseEventSchema.extend({
+	LegacyBaseEventSchema.extend({
 		kind: z.literal('job-finished'),
 		targetId: SlugSchema,
 		workerId: SlugSchema
 	}).strict(),
-	BaseEventSchema.extend({
+	LegacyBaseEventSchema.extend({
 		kind: z.literal('worker-failure'),
 		targetId: SlugSchema,
 		workerId: SlugSchema.nullable(),
 		failureKind: z.enum(['capacity', 'provider-throttle', 'timeout', 'malformed-output', 'other']),
 		detail: z.string().trim().min(1).max(1_000)
 	}).strict(),
-	BaseEventSchema.extend({ kind: z.literal('wave-finished') }).strict()
+	LegacyBaseEventSchema.extend({ kind: z.literal('wave-finished') }).strict()
+]);
+
+const V2EventBindingFields = {
+	schemaVersion: z.literal('affinity-wave-event-v2'),
+	sequence: z.number().int().nonnegative(),
+	preflightCanonicalSha256: EvidenceBindingSchema.shape.canonicalSha256,
+	recordedAt: z.string().datetime({ offset: true })
+} as const;
+
+const AffinityWaveEventV2Schema = z.discriminatedUnion('kind', [
+	LegacyBaseEventSchema.extend({ kind: z.literal('wave-started') })
+		.omit({ schemaVersion: true })
+		.extend(V2EventBindingFields)
+		.strict(),
+	LegacyBaseEventSchema.extend({
+		kind: z.literal('job-dispatched'),
+		targetId: SlugSchema,
+		workerId: SlugSchema
+	})
+		.omit({ schemaVersion: true })
+		.extend(V2EventBindingFields)
+		.strict(),
+	LegacyBaseEventSchema.extend({
+		kind: z.literal('job-finished'),
+		targetId: SlugSchema,
+		workerId: SlugSchema
+	})
+		.omit({ schemaVersion: true })
+		.extend(V2EventBindingFields)
+		.strict(),
+	LegacyBaseEventSchema.extend({
+		kind: z.literal('worker-failure'),
+		targetId: SlugSchema,
+		workerId: SlugSchema.nullable(),
+		failureKind: z.enum(['capacity', 'provider-throttle', 'timeout', 'malformed-output', 'other']),
+		detail: z.string().trim().min(1).max(1_000)
+	})
+		.omit({ schemaVersion: true })
+		.extend(V2EventBindingFields)
+		.strict(),
+	LegacyBaseEventSchema.extend({ kind: z.literal('wave-finished') })
+		.omit({ schemaVersion: true })
+		.extend(V2EventBindingFields)
+		.strict()
+]);
+
+export const AffinityWaveEventSchema = z.union([
+	AffinityWaveEventV2Schema,
+	AffinityWaveEventRequestSchema
 ]);
 
 export type AffinityWaveEvent = z.infer<typeof AffinityWaveEventSchema>;
@@ -853,9 +1002,34 @@ export const AffinityWaveDispatchDecisionSchema = z
 		capacityFailureCount: z.number().int().nonnegative(),
 		providerThrottleCount: z.number().int().nonnegative(),
 		stopFailureCount: z.number().int().nonnegative(),
-		launchTargetIds: z.array(SlugSchema)
+		launchTargetIds: z.array(SlugSchema),
+		launchJobs: z.array(
+			z
+				.object({
+					targetId: SlugSchema,
+					targetPath: RepositoryPathSchema,
+					targetCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u),
+					assignmentId: SlugSchema,
+					assignmentPath: RepositoryPathSchema,
+					assignmentCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u),
+					candidatePath: RepositoryPathSchema,
+					resultPath: RepositoryPathSchema
+				})
+				.strict()
+		)
 	})
-	.strict();
+	.strict()
+	.superRefine((decision, context) => {
+		if (
+			decision.launchTargetIds.length !== decision.launchJobs.length ||
+			decision.launchJobs.some((job, index) => job.targetId !== decision.launchTargetIds[index])
+		)
+			context.addIssue({
+				code: 'custom',
+				path: ['launchJobs'],
+				message: 'Launch jobs must exactly bind the ordered launch target IDs'
+			});
+	});
 
 export type AffinityWaveDispatchDecision = z.infer<typeof AffinityWaveDispatchDecisionSchema>;
 
@@ -881,9 +1055,17 @@ const WaveReportResultBindingSchema = WaveReportSourceBindingSchema.safeExtend({
 		});
 });
 
+const WaveReportManifestBindingSchema = z
+	.object({
+		targetId: SlugSchema,
+		target: WaveReportSourceBindingSchema,
+		assignment: WaveReportSourceBindingSchema
+	})
+	.strict();
+
 export const AffinityWaveReportSchema = z
 	.object({
-		schemaVersion: z.literal('affinity-wave-report-v2'),
+		schemaVersion: z.literal('affinity-wave-report-v3'),
 		runId: SlugSchema,
 		experimentId: z.literal('affinity-workflow-v1'),
 		stage: StageSchema,
@@ -928,12 +1110,16 @@ export const AffinityWaveReportSchema = z
 		sourceEvidence: z
 			.object({
 				preflight: WaveReportSourceBindingSchema,
+				manifests: z.array(WaveReportManifestBindingSchema),
 				events: z.array(WaveReportSourceBindingSchema),
 				results: z.array(WaveReportResultBindingSchema)
 			})
 			.strict()
 			.superRefine((source, context) => {
 				for (const [field, values] of [
+					['manifest target IDs', source.manifests.map((item) => item.targetId)],
+					['manifest target paths', source.manifests.map((item) => item.target.path)],
+					['manifest assignment paths', source.manifests.map((item) => item.assignment.path)],
 					['event paths', source.events.map((item) => item.path)],
 					['result paths', source.results.map((item) => item.path)],
 					['result target IDs', source.results.map((item) => item.targetId)]
@@ -1180,8 +1366,14 @@ export async function deriveBreadthCanaryPromotionEvidence(workspaceRoot: string
 export async function readWavePlan(
 	workspaceRoot: string,
 	planPath: string
-): Promise<AffinityWavePlan> {
-	return AffinityWavePlanSchema.parse(await readJson(workspacePath(workspaceRoot, planPath)));
+): Promise<BoundAffinityWavePlanV2> {
+	const repositoryPath = RepositoryPathSchema.parse(planPath);
+	const input = await readJson(workspacePath(workspaceRoot, repositoryPath));
+	const plan = AffinityWavePlanV2Schema.parse(input);
+	const expectedPath = `${EXPERIMENT_ROOT}/review/wave-plans/materialized/${plan.runId}.json`;
+	if (repositoryPath !== expectedPath)
+		throw new Error(`Executable wave plan must be read from ${expectedPath}`);
+	return { path: repositoryPath, canonicalSha256: canonicalJsonSha256(plan), plan };
 }
 
 export async function readWaveAllocationSpec(
@@ -1786,12 +1978,116 @@ export async function preflightWave(
 	availableAgentSlots: number,
 	createdAt: string
 ): Promise<AffinityWavePreflight> {
-	const plan = AffinityWavePlanSchema.parse(planInput);
+	const boundPlan = (() => {
+		if (!planInput || typeof planInput !== 'object' || !('plan' in planInput)) return null;
+		const input = planInput as Partial<BoundAffinityWavePlanV2>;
+		const plan = AffinityWavePlanV2Schema.parse(input.plan);
+		const sourcePath = RepositoryPathSchema.parse(input.path);
+		const canonicalSha256 = EvidenceBindingSchema.shape.canonicalSha256.parse(
+			input.canonicalSha256
+		);
+		return { path: sourcePath, canonicalSha256, plan } satisfies BoundAffinityWavePlanV2;
+	})();
+	let v2Allocation: AffinityWaveAllocationSpec | null = null;
+	if (boundPlan) {
+		const expectedPlanPath = `${EXPERIMENT_ROOT}/review/wave-plans/materialized/${boundPlan.plan.runId}.json`;
+		if (boundPlan.path !== expectedPlanPath)
+			throw new Error(`Materialized plan path must be ${expectedPlanPath}`);
+		const currentPlan = AffinityWavePlanV2Schema.parse(
+			await readJson(workspacePath(workspaceRoot, boundPlan.path))
+		);
+		if (
+			canonicalJsonSha256(currentPlan) !== boundPlan.canonicalSha256 ||
+			canonicalJsonSha256(currentPlan) !== canonicalJsonSha256(boundPlan.plan)
+		)
+			throw new Error('Materialized wave plan changed before preflight.');
+		const allocationInput = await readJson(
+			workspacePath(workspaceRoot, boundPlan.plan.allocation.artifactPath)
+		);
+		v2Allocation = AffinityWaveAllocationSpecSchema.parse(allocationInput);
+		if (
+			canonicalJsonSha256(v2Allocation) !== boundPlan.plan.allocation.canonicalSha256 ||
+			v2Allocation.allocationId !== boundPlan.plan.allocation.allocationId
+		)
+			throw new Error('Reviewed allocation changed before preflight.');
+		const allocationStage = v2Allocation.stages.find(
+			(stage) => stage.stage === boundPlan.plan.stage
+		);
+		if (!allocationStage || allocationStage.jobs.length !== boundPlan.plan.jobs.length)
+			throw new Error('Materialized plan no longer matches its allocation stage.');
+		for (const [index, planJob] of boundPlan.plan.jobs.entries()) {
+			const allocationJob = allocationStage.jobs[index];
+			if (
+				!allocationJob ||
+				planJob.allocationJobKey !== allocationJob.key ||
+				planJob.manifestState !== allocationJob.manifestState ||
+				planJob.targetPath !== allocationJob.targetPath ||
+				planJob.assignmentPath !== allocationJob.assignmentPath
+			)
+				throw new Error(`Materialized allocation job differs at index ${index}.`);
+		}
+		if (boundPlan.plan.concurrencySentinelActivationReceipt) {
+			const pointer = boundPlan.plan.concurrencySentinelActivationReceipt;
+			const receiptInput = await readJson(workspacePath(workspaceRoot, pointer.artifactPath));
+			if (canonicalJsonSha256(receiptInput) !== pointer.canonicalSha256)
+				throw new Error('Concurrency-sentinel activation receipt changed before preflight.');
+			const receipt = z
+				.object({
+					schemaVersion: z.literal('affinity-concurrency-sentinel-activation-receipt-v1'),
+					status: z.literal('complete'),
+					bindings: z
+						.object({ allocationCanonicalSha256: EvidenceBindingSchema.shape.canonicalSha256 })
+						.passthrough(),
+					artifacts: z.array(
+						z
+							.object({
+								livePath: RepositoryPathSchema,
+								canonicalSha256: EvidenceBindingSchema.shape.canonicalSha256
+							})
+							.passthrough()
+					)
+				})
+				.passthrough()
+				.parse(receiptInput);
+			if (receipt.bindings.allocationCanonicalSha256 !== boundPlan.plan.allocation.canonicalSha256)
+				throw new Error('Concurrency-sentinel receipt is bound to another allocation.');
+			const artifactHashes = new Map(
+				receipt.artifacts.map((artifact) => [artifact.livePath, artifact.canonicalSha256])
+			);
+			for (const job of boundPlan.plan.jobs.filter(
+				(job) => job.manifestState === 'future-sentinel'
+			)) {
+				if (
+					artifactHashes.get(job.targetPath) !== job.targetCanonicalSha256 ||
+					artifactHashes.get(job.assignmentPath) !== job.assignmentCanonicalSha256
+				)
+					throw new Error(`Concurrency-sentinel receipt does not bind ${job.allocationJobKey}.`);
+			}
+		}
+	}
+	const plan = boundPlan
+		? AffinityWavePlanSchema.parse({
+				schemaVersion: 'affinity-wave-plan-v1',
+				runId: boundPlan.plan.runId,
+				experimentId: boundPlan.plan.experimentId,
+				stage: boundPlan.plan.stage,
+				requestedConcurrency: boundPlan.plan.requestedConcurrency,
+				reservedOrchestratorSlots: boundPlan.plan.reservedOrchestratorSlots,
+				requireExactConcurrency: boundPlan.plan.requireExactConcurrency,
+				runDirectory: boundPlan.plan.runDirectory,
+				stopRules: boundPlan.plan.stopRules,
+				dispatchGate: boundPlan.plan.dispatchGate,
+				jobs: boundPlan.plan.jobs.map((job) => ({
+					targetPath: job.targetPath,
+					assignmentPath: job.assignmentPath
+				}))
+			})
+		: AffinityWavePlanSchema.parse(planInput);
 	if (!Number.isInteger(availableAgentSlots) || availableAgentSlots < 0) {
 		throw new Error('availableAgentSlots must be a nonnegative integer including the orchestrator');
 	}
 	const resolvedJobs: z.infer<typeof ResolvedJobSchema>[] = [];
-	for (const job of plan.jobs) {
+	for (const [jobIndex, job] of plan.jobs.entries()) {
 		const target = ImageProductionTargetSchema.parse(
 			await readJson(workspacePath(workspaceRoot, job.targetPath))
 		);
@@ -1807,14 +2103,29 @@ export async function preflightWave(
 		) {
 			throw new Error(`Assignment outputs do not match target ${target.targetId}`);
 		}
+		const planV2Job = boundPlan?.plan.jobs[jobIndex];
+		if (
+			planV2Job &&
+			(canonicalJsonSha256(target) !== planV2Job.targetCanonicalSha256 ||
+				canonicalJsonSha256(assignment) !== planV2Job.assignmentCanonicalSha256)
+		)
+			throw new Error(`Manifest changed after materialization: ${target.targetId}`);
 		resolvedJobs.push(
-			ResolvedJobSchema.parse({
+			(boundPlan ? ResolvedJobV2Schema : ResolvedJobSchema).parse({
 				targetId: target.targetId,
 				assignmentId: assignment.assignmentId,
 				speciesId: target.speciesId,
 				affinity: target.affinity,
 				targetPath: job.targetPath,
 				assignmentPath: job.assignmentPath,
+				targetCanonicalSha256: canonicalJsonSha256(target),
+				assignmentCanonicalSha256: canonicalJsonSha256(assignment),
+				...(planV2Job
+					? {
+							allocationJobKey: planV2Job.allocationJobKey,
+							manifestState: planV2Job.manifestState
+						}
+					: {}),
 				candidatePath: target.output.candidatePath,
 				resultPath: target.output.resultPath
 			})
@@ -1871,7 +2182,7 @@ export async function preflightWave(
 					? 'ready'
 					: 'blocked-gate';
 	return AffinityWavePreflightSchema.parse({
-		schemaVersion: 'affinity-wave-preflight-v1',
+		schemaVersion: boundPlan ? 'affinity-wave-preflight-v2' : 'affinity-wave-preflight-v1',
 		runId: plan.runId,
 		experimentId: plan.experimentId,
 		stage: plan.stage,
@@ -1884,6 +2195,24 @@ export async function preflightWave(
 		exactConcurrencyReady,
 		runDirectory: plan.runDirectory,
 		stopRules: plan.stopRules,
+		...(boundPlan && v2Allocation
+			? {
+					sourcePlan: { path: boundPlan.path, canonicalSha256: boundPlan.canonicalSha256 },
+					sourceAllocation: {
+						path: boundPlan.plan.allocation.artifactPath,
+						canonicalSha256: boundPlan.plan.allocation.canonicalSha256,
+						allocationId: v2Allocation.allocationId
+					},
+					concurrencySentinelActivationReceipt:
+						boundPlan.plan.concurrencySentinelActivationReceipt === null
+							? null
+							: {
+									path: boundPlan.plan.concurrencySentinelActivationReceipt.artifactPath,
+									canonicalSha256:
+										boundPlan.plan.concurrencySentinelActivationReceipt.canonicalSha256
+								}
+				}
+			: {}),
 		dispatchGateSatisfied,
 		dispatchGateEvidence,
 		collisionPaths,
@@ -1891,7 +2220,155 @@ export async function preflightWave(
 	});
 }
 
+export async function verifyCurrentWaveManifestBindings(
+	workspaceRoot: string,
+	preflightInput: unknown
+): Promise<AffinityWavePreflight> {
+	const preflight = AffinityWavePreflightSchema.parse(preflightInput);
+	if (preflight.schemaVersion === 'affinity-wave-preflight-v2') {
+		const planInput = await readJson(workspacePath(workspaceRoot, preflight.sourcePlan.path));
+		const plan = AffinityWavePlanV2Schema.parse(planInput);
+		if (
+			canonicalJsonSha256(plan) !== preflight.sourcePlan.canonicalSha256 ||
+			plan.runId !== preflight.runId ||
+			plan.stage !== preflight.stage ||
+			plan.requestedConcurrency !== preflight.requestedConcurrency ||
+			plan.runDirectory !== preflight.runDirectory ||
+			plan.allocation.artifactPath !== preflight.sourceAllocation.path ||
+			plan.allocation.canonicalSha256 !== preflight.sourceAllocation.canonicalSha256 ||
+			plan.allocation.allocationId !== preflight.sourceAllocation.allocationId ||
+			plan.dispatchGate.artifactPath !== preflight.dispatchGateEvidence.artifactPath ||
+			plan.dispatchGate.canonicalSha256 !==
+				preflight.dispatchGateEvidence.expectedCanonicalSha256 ||
+			canonicalJsonSha256(plan.concurrencySentinelActivationReceipt) !==
+				canonicalJsonSha256(
+					preflight.concurrencySentinelActivationReceipt
+						? {
+								artifactPath: preflight.concurrencySentinelActivationReceipt.path,
+								canonicalSha256: preflight.concurrencySentinelActivationReceipt.canonicalSha256
+							}
+						: null
+				)
+		)
+			throw new Error('V2 preflight source-plan binding is stale or inconsistent.');
+		const allocationInput = await readJson(
+			workspacePath(workspaceRoot, preflight.sourceAllocation.path)
+		);
+		const allocation = AffinityWaveAllocationSpecSchema.parse(allocationInput);
+		if (
+			canonicalJsonSha256(allocation) !== preflight.sourceAllocation.canonicalSha256 ||
+			allocation.allocationId !== preflight.sourceAllocation.allocationId
+		)
+			throw new Error('V2 preflight source-allocation binding is stale or inconsistent.');
+		const stage = allocation.stages.find((entry) => entry.stage === preflight.stage);
+		if (
+			!stage ||
+			stage.jobs.length !== preflight.jobs.length ||
+			plan.jobs.length !== stage.jobs.length
+		)
+			throw new Error('V2 preflight job set differs from the reviewed allocation.');
+		for (const [index, job] of preflight.jobs.entries()) {
+			const planJob = plan.jobs[index];
+			const allocationJob = stage.jobs[index];
+			if (
+				!planJob ||
+				!allocationJob ||
+				job.allocationJobKey !== planJob.allocationJobKey ||
+				job.allocationJobKey !== allocationJob.key ||
+				job.manifestState !== planJob.manifestState ||
+				job.manifestState !== allocationJob.manifestState ||
+				job.targetPath !== planJob.targetPath ||
+				job.targetPath !== allocationJob.targetPath ||
+				job.assignmentPath !== planJob.assignmentPath ||
+				job.assignmentPath !== allocationJob.assignmentPath ||
+				job.targetCanonicalSha256 !== planJob.targetCanonicalSha256 ||
+				job.assignmentCanonicalSha256 !== planJob.assignmentCanonicalSha256
+			)
+				throw new Error(`V2 preflight allocation binding differs at job ${index}.`);
+		}
+		if (preflight.concurrencySentinelActivationReceipt) {
+			const receipt = await readJson(
+				workspacePath(workspaceRoot, preflight.concurrencySentinelActivationReceipt.path)
+			);
+			if (
+				canonicalJsonSha256(receipt) !==
+				preflight.concurrencySentinelActivationReceipt.canonicalSha256
+			)
+				throw new Error('V2 preflight sentinel-activation receipt changed.');
+		}
+	}
+	for (const job of preflight.jobs) {
+		if (!job.targetCanonicalSha256 || !job.assignmentCanonicalSha256)
+			throw new Error(`Preflight lacks manifest hashes for ${job.targetId}`);
+		const [targetInput, assignmentInput] = await Promise.all([
+			readJson(workspacePath(workspaceRoot, job.targetPath)),
+			readJson(workspacePath(workspaceRoot, job.assignmentPath))
+		]);
+		const target = ImageProductionTargetSchema.parse(targetInput);
+		const assignment = ImageProductionAssignmentSchema.parse(assignmentInput);
+		if (
+			canonicalJsonSha256(target) !== job.targetCanonicalSha256 ||
+			canonicalJsonSha256(assignment) !== job.assignmentCanonicalSha256
+		)
+			throw new Error(`Scheduled manifest changed after preflight: ${job.targetId}`);
+		if (
+			target.targetId !== job.targetId ||
+			assignment.assignmentId !== job.assignmentId ||
+			assignment.targetId !== job.targetId ||
+			target.speciesId !== job.speciesId ||
+			target.affinity !== job.affinity ||
+			target.output.candidatePath !== job.candidatePath ||
+			target.output.resultPath !== job.resultPath ||
+			assignment.permittedOutputs.candidatePath !== job.candidatePath ||
+			assignment.permittedOutputs.resultPath !== job.resultPath
+		)
+			throw new Error(`Scheduled manifest ownership changed after preflight: ${job.targetId}`);
+	}
+	return preflight;
+}
+
+export async function verifyCurrentWaveSnapshot(
+	workspaceRoot: string,
+	preflightInput: unknown
+): Promise<AffinityWavePreflight> {
+	const preflight = await verifyCurrentWaveManifestBindings(workspaceRoot, preflightInput);
+	if (!preflight.dispatchGateEvidence)
+		throw new Error('Ready preflight is missing dispatch-gate evidence.');
+	const gate = AffinityWaveDispatchGateSchema.safeParse(preflight.dispatchGateEvidence.gate);
+	const requiresHumanGate =
+		['breadth', 'load', 'scale'].includes(preflight.stage) ||
+		preflight.jobs.some((job) =>
+			job.targetPath.startsWith(`${EXPERIMENT_ROOT}/targets/final-controlled/`)
+		);
+	if (
+		!gate.success ||
+		gate.data.authorizedStage !== preflight.stage ||
+		gate.data.qualityGateSatisfied !== true ||
+		(requiresHumanGate && gate.data.humanGateSatisfied !== true)
+	)
+		throw new Error('Stored dispatch gate does not authorize the current preflight stage.');
+	await verifyStoredGateEvidence(workspaceRoot, preflight.dispatchGateEvidence, new Set());
+	return preflight;
+}
+
+/** Revalidates the exact manifest and gate snapshot before any live scheduler action. */
+export async function verifyCurrentWavePreflight(
+	workspaceRoot: string,
+	preflightInput: unknown
+): Promise<AffinityWavePreflight> {
+	const preflight = AffinityWavePreflightSchema.parse(preflightInput);
+	if (preflight.status !== 'ready')
+		throw new Error(`Live scheduler actions require a ready preflight; found ${preflight.status}`);
+	return verifyCurrentWaveSnapshot(workspaceRoot, preflight);
+}
+
 function orderEvents(events: readonly AffinityWaveEvent[]): AffinityWaveEvent[] {
+	const v2Events = events.filter((event) => event.schemaVersion === 'affinity-wave-event-v2');
+	if (v2Events.length > 0) {
+		if (v2Events.length !== events.length)
+			throw new Error('Wave event journals may not mix v1 and v2 events');
+		return [...v2Events].sort((left, right) => left.sequence - right.sequence);
+	}
 	const eventPriority: Record<AffinityWaveEvent['kind'], number> = {
 		'wave-started': 0,
 		'job-dispatched': 1,
@@ -1920,6 +2397,7 @@ interface JournalState {
 	readonly capacityFailures: readonly Extract<AffinityWaveEvent, { kind: 'worker-failure' }>[];
 	readonly providerThrottles: readonly Extract<AffinityWaveEvent, { kind: 'worker-failure' }>[];
 	readonly stopFailures: readonly Extract<AffinityWaveEvent, { kind: 'worker-failure' }>[];
+	readonly maximumActiveWorkerCount: number;
 }
 
 export function validateEventJournal(
@@ -1936,8 +2414,38 @@ export function validateEventJournal(
 	if (parsed.some((event) => event.runId !== preflight.runId)) {
 		throw new Error('Every event must belong to the preflight run');
 	}
+	const v2Events = parsed.filter((event) => event.schemaVersion === 'affinity-wave-event-v2');
+	if (
+		preflight.schemaVersion === 'affinity-wave-preflight-v2' &&
+		v2Events.length !== parsed.length
+	) {
+		throw new Error('V2 preflights require a sequence-bound v2 event journal');
+	}
+	if (v2Events.length > 0) {
+		const expectedPreflightHash = canonicalJsonSha256(preflight);
+		for (const event of v2Events) {
+			if (event.preflightCanonicalSha256 !== expectedPreflightHash)
+				throw new Error('Wave event preflight binding does not match the current preflight');
+		}
+	}
 	const jobIds = new Set(preflight.jobs.map((job) => job.targetId));
 	const ordered = orderEvents(parsed);
+	if (ordered[0]?.schemaVersion === 'affinity-wave-event-v2') {
+		for (const [index, event] of ordered.entries()) {
+			if (event.schemaVersion !== 'affinity-wave-event-v2' || event.sequence !== index)
+				throw new Error('V2 wave event sequences must be contiguous and start at zero');
+			if (index > 0) {
+				const previous = ordered[index - 1];
+				if (
+					previous?.schemaVersion !== 'affinity-wave-event-v2' ||
+					Date.parse(event.recordedAt) < Date.parse(previous.recordedAt)
+				)
+					throw new Error('V2 wave event recording times must be nondecreasing');
+				if (Date.parse(event.at) < Date.parse(previous.at))
+					throw new Error('V2 wave event occurrence times must be nondecreasing');
+			}
+		}
+	}
 	const startedEvents = ordered.filter((event) => event.kind === 'wave-started');
 	const finishedEvents = ordered.filter((event) => event.kind === 'wave-finished');
 	if (startedEvents.length > 1 || finishedEvents.length > 1) {
@@ -1955,20 +2463,22 @@ export function validateEventJournal(
 	const capacityFailures: Extract<AffinityWaveEvent, { kind: 'worker-failure' }>[] = [];
 	const providerThrottles: Extract<AffinityWaveEvent, { kind: 'worker-failure' }>[] = [];
 	const stopFailures: Extract<AffinityWaveEvent, { kind: 'worker-failure' }>[] = [];
-	let capacityStopAt: number | null = null;
+	let capacityStopTriggered = false;
+	let waveStarted = false;
+	let waveFinished = false;
+	let maximumActiveWorkerCount = 0;
 	for (const event of ordered) {
-		const at = Date.parse(event.at);
-		if (event.kind !== 'wave-started' && (!started || at < Date.parse(started.at))) {
+		if (waveFinished) throw new Error('No event may occur after wave-finished');
+		if (event.kind !== 'wave-started' && !waveStarted) {
 			throw new Error('Wave events require a preceding wave-started event');
 		}
-		if (finished && event.kind !== 'wave-finished' && at > Date.parse(finished.at)) {
-			throw new Error('No event may occur after wave-finished');
-		}
+		if (event.kind === 'wave-started') waveStarted = true;
+		if (event.kind === 'wave-finished') waveFinished = true;
 		if ('targetId' in event && !jobIds.has(event.targetId)) {
 			throw new Error(`Event target is not in the wave: ${event.targetId}`);
 		}
 		if (event.kind === 'job-dispatched') {
-			if (capacityStopAt !== null && at >= capacityStopAt) {
+			if (capacityStopTriggered) {
 				throw new Error('Dispatch recorded after the capacity stop rule triggered');
 			}
 			if (dispatched.has(event.targetId) || terminal.has(event.targetId)) {
@@ -1984,6 +2494,7 @@ export function validateEventJournal(
 			if (activeTargets.size > preflight.admittedWorkerCapacity) {
 				throw new Error('Recorded active workers exceed admitted worker capacity');
 			}
+			maximumActiveWorkerCount = Math.max(maximumActiveWorkerCount, activeTargets.size);
 		}
 		if (event.kind === 'job-finished') {
 			const launch = dispatched.get(event.targetId);
@@ -2016,7 +2527,8 @@ export function validateEventJournal(
 				['capacity', 'provider-throttle', 'timeout', 'malformed-output'].includes(event.failureKind)
 			) {
 				stopFailures.push(event);
-				if (stopFailures.length === preflight.stopRules.capacityFailureLimit) capacityStopAt = at;
+				if (stopFailures.length === preflight.stopRules.capacityFailureLimit)
+					capacityStopTriggered = true;
 			}
 		}
 	}
@@ -2031,7 +2543,8 @@ export function validateEventJournal(
 		activeTargets,
 		capacityFailures,
 		providerThrottles,
-		stopFailures
+		stopFailures,
+		maximumActiveWorkerCount
 	};
 }
 
@@ -2054,8 +2567,30 @@ export function nextDispatchDecision(
 		stop: boolean,
 		reason: AffinityWaveDispatchDecision['reason'],
 		launchTargetIds: readonly string[] = []
-	): AffinityWaveDispatchDecision =>
-		AffinityWaveDispatchDecisionSchema.parse({ ...common, stop, reason, launchTargetIds });
+	): AffinityWaveDispatchDecision => {
+		const launchJobs = launchTargetIds.map((targetId) => {
+			const job = preflight.jobs.find((candidate) => candidate.targetId === targetId);
+			if (!job?.targetCanonicalSha256 || !job.assignmentCanonicalSha256)
+				throw new Error(`Dispatch target lacks manifest bindings: ${targetId}`);
+			return {
+				targetId: job.targetId,
+				targetPath: job.targetPath,
+				targetCanonicalSha256: job.targetCanonicalSha256,
+				assignmentId: job.assignmentId,
+				assignmentPath: job.assignmentPath,
+				assignmentCanonicalSha256: job.assignmentCanonicalSha256,
+				candidatePath: job.candidatePath,
+				resultPath: job.resultPath
+			};
+		});
+		return AffinityWaveDispatchDecisionSchema.parse({
+			...common,
+			stop,
+			reason,
+			launchTargetIds,
+			launchJobs
+		});
+	};
 	if (preflight.status === 'blocked-output-collision') return decision(true, 'output-collision');
 	if (preflight.status === 'blocked-capacity') return decision(true, 'capacity-preflight-blocked');
 	if (preflight.status === 'blocked-gate') return decision(true, 'dispatch-gate-blocked');
@@ -2090,23 +2625,6 @@ function median(values: readonly number[]): number | null {
 	return sorted.length % 2 === 0
 		? ((sorted[midpoint - 1] ?? 0) + (sorted[midpoint] ?? 0)) / 2
 		: (sorted[midpoint] ?? null);
-}
-
-function maximumConcurrentWorkers(state: JournalState, generatedAt: string): number {
-	const points: Array<{ at: number; delta: number; priority: number }> = [];
-	for (const [targetId, dispatch] of state.dispatched) {
-		points.push({ at: Date.parse(dispatch.at), delta: 1, priority: 0 });
-		const terminal = state.terminal.get(targetId);
-		points.push({ at: Date.parse(terminal?.at ?? generatedAt), delta: -1, priority: 1 });
-	}
-	points.sort((left, right) => left.at - right.at || left.priority - right.priority);
-	let active = 0;
-	let maximum = 0;
-	for (const point of points) {
-		active += point.delta;
-		maximum = Math.max(maximum, active);
-	}
-	return maximum;
 }
 
 async function readFinishedResults(
@@ -2174,7 +2692,11 @@ export async function buildWaveReport(
 	eventInputs: readonly unknown[],
 	generatedAt: string
 ): Promise<AffinityWaveReport> {
-	const preflight = AffinityWavePreflightSchema.parse(preflightInput);
+	const parsedPreflight = AffinityWavePreflightSchema.parse(preflightInput);
+	const preflight =
+		parsedPreflight.status === 'ready'
+			? await verifyCurrentWaveManifestBindings(workspaceRoot, parsedPreflight)
+			: parsedPreflight;
 	const events = eventInputs.map((event) => AffinityWaveEventSchema.parse(event));
 	const state = validateEventJournal(preflight, events);
 	const results = await readFinishedResults(workspaceRoot, preflight, state);
@@ -2217,7 +2739,7 @@ export async function buildWaveReport(
 			: null;
 	const summedJobTimeMs =
 		jobTimes.length > 0 ? jobTimes.reduce((sum, value) => sum + value, 0) : null;
-	const effectiveConcurrency = maximumConcurrentWorkers(state, generatedAt);
+	const effectiveConcurrency = state.maximumActiveWorkerCount;
 	const effectiveSpeedup =
 		waveWallTimeMs && summedJobTimeMs ? summedJobTimeMs / waveWallTimeMs : null;
 	const parallelEfficiency =
@@ -2268,7 +2790,7 @@ export async function buildWaveReport(
 				})
 			: null;
 	const report = {
-		schemaVersion: 'affinity-wave-report-v2' as const,
+		schemaVersion: 'affinity-wave-report-v3' as const,
 		runId: preflight.runId,
 		experimentId: preflight.experimentId,
 		stage: preflight.stage,
@@ -2320,6 +2842,23 @@ export async function buildWaveReport(
 				path: `${preflight.runDirectory}/preflight.json`,
 				canonicalSha256: canonicalJsonSha256(preflight)
 			},
+			manifests: preflight.jobs
+				.map((job) => {
+					if (!job.targetCanonicalSha256 || !job.assignmentCanonicalSha256)
+						throw new Error(`Report manifest binding is absent for ${job.targetId}`);
+					return {
+						targetId: job.targetId,
+						target: {
+							path: job.targetPath,
+							canonicalSha256: job.targetCanonicalSha256
+						},
+						assignment: {
+							path: job.assignmentPath,
+							canonicalSha256: job.assignmentCanonicalSha256
+						}
+					};
+				})
+				.sort((left, right) => left.targetId.localeCompare(right.targetId)),
 			events: events
 				.map((event) => ({
 					path: `${preflight.runDirectory}/events/${event.eventId}.json`,
@@ -2353,9 +2892,14 @@ export async function readPreflight(
 	workspaceRoot: string,
 	preflightPath: string
 ): Promise<AffinityWavePreflight> {
-	return AffinityWavePreflightSchema.parse(
-		await readJson(workspacePath(workspaceRoot, preflightPath))
+	const repositoryPath = RepositoryPathSchema.parse(preflightPath);
+	const preflight = AffinityWavePreflightSchema.parse(
+		await readJson(workspacePath(workspaceRoot, repositoryPath))
 	);
+	const expectedPath = `${preflight.runDirectory}/preflight.json`;
+	if (repositoryPath !== expectedPath)
+		throw new Error(`Preflight must be read from its canonical path ${expectedPath}`);
+	return preflight;
 }
 
 export async function readWaveEvents(
@@ -2384,6 +2928,7 @@ export async function writePreflightExclusive(
 	workspaceRoot: string,
 	preflight: AffinityWavePreflight
 ): Promise<string> {
+	if (preflight.status === 'ready') await verifyCurrentWavePreflight(workspaceRoot, preflight);
 	const relativePath = `${preflight.runDirectory}/preflight.json`;
 	const runDirectory = workspacePath(workspaceRoot, preflight.runDirectory);
 	await mkdir(path.dirname(runDirectory), { recursive: true });
@@ -2397,15 +2942,26 @@ export async function recordEventExclusive(
 	preflightInput: unknown,
 	eventInput: unknown
 ): Promise<string> {
-	const preflight = AffinityWavePreflightSchema.parse(preflightInput);
-	const event = AffinityWaveEventSchema.parse(eventInput);
-	const eventsDirectory = workspacePath(workspaceRoot, `${preflight.runDirectory}/events`);
+	const parsedPreflight = AffinityWavePreflightSchema.parse(preflightInput);
+	const eventRequest = AffinityWaveEventRequestSchema.parse(eventInput);
+	const eventsDirectory = workspacePath(workspaceRoot, `${parsedPreflight.runDirectory}/events`);
 	await mkdir(eventsDirectory, { recursive: true });
 	const lockPath = path.join(eventsDirectory, '.journal.lock');
 	let lock: Awaited<ReturnType<typeof open>> | undefined;
 	try {
 		lock = await open(lockPath, 'wx');
+		const preflight = await verifyCurrentWavePreflight(workspaceRoot, parsedPreflight);
 		const current = await readWaveEvents(workspaceRoot, preflight);
+		const event: AffinityWaveEvent =
+			preflight.schemaVersion === 'affinity-wave-preflight-v2'
+				? AffinityWaveEventSchema.parse({
+						...eventRequest,
+						schemaVersion: 'affinity-wave-event-v2',
+						sequence: current.length,
+						preflightCanonicalSha256: canonicalJsonSha256(preflight),
+						recordedAt: new Date().toISOString()
+					})
+				: eventRequest;
 		const nextState = validateEventJournal(preflight, [...current, event]);
 		if (event.kind === 'job-finished') {
 			await readFinishedResults(workspaceRoot, preflight, nextState);
@@ -2424,6 +2980,7 @@ export async function writeReportExclusive(
 	preflight: AffinityWavePreflight,
 	report: AffinityWaveReport
 ): Promise<string> {
+	if (preflight.status === 'ready') await verifyCurrentWavePreflight(workspaceRoot, preflight);
 	if (
 		report.runId !== preflight.runId ||
 		report.experimentId !== preflight.experimentId ||
@@ -2431,6 +2988,10 @@ export async function writeReportExclusive(
 	) {
 		throw new Error('Wave report does not match its preflight');
 	}
+	const events = await readWaveEvents(workspaceRoot, preflight);
+	const rebuilt = await buildWaveReport(workspaceRoot, preflight, events, report.generatedAt);
+	if (canonicalJsonSha256(rebuilt) !== canonicalJsonSha256(report))
+		throw new Error('Wave report is not the canonical reproduction of current evidence.');
 	const relativePath = `${preflight.runDirectory}/report.json`;
 	await writeJsonExclusive(workspacePath(workspaceRoot, relativePath), report);
 	return relativePath;
