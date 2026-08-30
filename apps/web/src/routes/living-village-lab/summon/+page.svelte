@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import PortalGlyph from '$lib/components/living-village/summon/PortalGlyph.svelte';
 	import RatesPanel from '$lib/components/living-village/summon/RatesPanel.svelte';
 	import ResultPresentation from '$lib/components/living-village/summon/ResultPresentation.svelte';
@@ -18,7 +19,7 @@
 		type RevealDirection
 	} from './fixtures';
 
-	let direction = $state<RevealDirection>('identity');
+	let direction = $state<RevealDirection>('gate');
 	let offerMode = $state<OfferMode>('single');
 	let runToken = $state(0);
 	let resultVisible = $state(false);
@@ -26,25 +27,88 @@
 	let ratesOpen = $state(false);
 	let reducedMotion = $state(false);
 	let muted = $state(true);
+	let previewSigils = $state<number>(wallets[0].balance);
+	let previewGems = $state<number>(wallets[1].balance);
+	let previewGuarantee = $state<number>(guarantee.current);
+	let spendFlash = $state<{ currency: 'sigil' | 'gem'; label: string } | null>(null);
+	let walletNotice = $state('Ready for a reversible spend preview');
 	let ratesTrigger: HTMLButtonElement;
+	let stageAnchor = $state<HTMLElement>();
+	let resultAnchor = $state<HTMLElement>();
+	let spendTimer: number | undefined;
 
 	const selectedDirection = $derived(revealDirections.find((item) => item.id === direction)!);
-	const progressPercent = `${(guarantee.current / guarantee.threshold) * 100}%`;
+	const progressPercent = $derived(`${(previewGuarantee / guarantee.threshold) * 100}%`);
 
-	function begin(mode: OfferMode) {
+	function runReveal(mode: OfferMode) {
 		offerMode = mode;
 		resultVisible = false;
 		recognitionMs = null;
 		runToken += 1;
+		requestAnimationFrame(() =>
+			stageAnchor?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' })
+		);
+	}
+
+	function flashSpend(currency: 'sigil' | 'gem', label: string) {
+		if (spendTimer) window.clearTimeout(spendTimer);
+		spendFlash = { currency, label };
+		spendTimer = window.setTimeout(() => (spendFlash = null), 1250);
+	}
+
+	function summon(mode: OfferMode) {
+		if (mode === 'single') {
+			if (previewSigils > 0) {
+				previewSigils -= 1;
+				flashSpend('sigil', '−1');
+				walletNotice = 'Single-summon spend previewed from Gate sigils';
+			} else {
+				if (previewGems < 160) previewGems = wallets[1].balance;
+				previewGems -= 160;
+				flashSpend('gem', '−160');
+				walletNotice = 'Single-summon spend previewed from Hearth gems';
+			}
+			previewGuarantee = Math.min(guarantee.threshold, previewGuarantee + 1);
+		} else {
+			if (previewGems < 1600) previewGems = wallets[1].balance;
+			previewGems -= 1600;
+			previewGuarantee = Math.min(guarantee.threshold, previewGuarantee + 11);
+			flashSpend('gem', '−1,600');
+			walletNotice = 'Batch spend and eleven guarantee steps previewed';
+		}
+		runReveal(mode);
 	}
 
 	function chooseDirection(next: RevealDirection) {
 		direction = next;
-		begin(offerMode);
+		runReveal(offerMode);
 	}
 
 	function replay() {
-		begin(offerMode);
+		runReveal(offerMode);
+	}
+
+	function resetFixture() {
+		previewSigils = wallets[0].balance;
+		previewGems = wallets[1].balance;
+		previewGuarantee = guarantee.current;
+		spendFlash = null;
+		walletNotice = 'Fixture balances and guarantee restored';
+	}
+
+	async function finishReveal() {
+		resultVisible = true;
+		await tick();
+		if (window.innerWidth <= 820) {
+			window.setTimeout(
+				() =>
+					resultAnchor?.scrollIntoView({
+						behavior: reducedMotion ? 'auto' : 'smooth',
+						block: 'start'
+					}),
+				180
+			);
+		}
 	}
 
 	function closeRates() {
@@ -78,20 +142,31 @@
 			<small>{FIXTURE_VERSION}</small>
 		</div>
 		<section class="wallets" aria-label="Prototype currency balances">
-			{#each wallets as wallet}
-				<div class="wallet" data-kind={wallet.kind} data-testid={`wallet-${wallet.id}`}>
+			{#each wallets as wallet (wallet.id)}
+				<div
+					class="wallet"
+					class:spending={spendFlash?.currency === wallet.id}
+					data-kind={wallet.kind}
+					data-testid={`wallet-${wallet.id}`}
+				>
 					<PortalGlyph kind={wallet.glyph} size={20} />
-					<span
-						><small>{wallet.label}</small><strong>{wallet.balance.toLocaleString()}</strong></span
-					>
-					<i>Fixture</i>
+					<span>
+						<small>{wallet.label}</small>
+						{#key wallet.id === 'sigil' ? previewSigils : previewGems}
+							<strong class="wallet-number"
+								>{(wallet.id === 'sigil' ? previewSigils : previewGems).toLocaleString()}</strong
+							>
+						{/key}
+					</span>
+					<i>Preview</i>
+					{#if spendFlash?.currency === wallet.id}<b class="spend-delta">{spendFlash.label}</b>{/if}
 				</div>
 			{/each}
 		</section>
 	</header>
 
 	<nav class="banner-rail" aria-label="Summon banners">
-		{#each banners as banner}
+		{#each banners as banner (banner.id)}
 			<button
 				type="button"
 				class:active={banner.state === 'active'}
@@ -109,16 +184,18 @@
 
 	<section class="portal-grid">
 		<div class="hero-column">
-			<RevealStage
-				hero={featuredHero}
-				{direction}
-				{runToken}
-				{reducedMotion}
-				{muted}
-				onreplay={replay}
-				oncomplete={() => (resultVisible = true)}
-				ontiming={(milliseconds) => (recognitionMs = milliseconds)}
-			/>
+			<div class="stage-anchor" bind:this={stageAnchor}>
+				<RevealStage
+					hero={featuredHero}
+					{direction}
+					{runToken}
+					{reducedMotion}
+					{muted}
+					onreplay={replay}
+					oncomplete={finishReveal}
+					ontiming={(milliseconds) => (recognitionMs = milliseconds)}
+				/>
+			</div>
 
 			<section class="experiment" aria-labelledby="experiment-title">
 				<header>
@@ -142,7 +219,7 @@
 					</div>
 				</header>
 				<div class="direction-list" data-testid="direction-selector">
-					{#each revealDirections as item, index}
+					{#each revealDirections as item, index (item.id)}
 						<button
 							type="button"
 							class:selected={direction === item.id}
@@ -178,13 +255,13 @@
 			<section class="guarantee" data-testid="guarantee-progress">
 				<header>
 					<div><small>{guarantee.label}</small><strong>{guarantee.threshold} summons</strong></div>
-					<span>{guarantee.current} / {guarantee.threshold}</span>
+					<span>{previewGuarantee} / {guarantee.threshold}</span>
 				</header>
 				<div class="progress">
 					<i style:width={progressPercent}></i><b style:left={progressPercent}></b>
 				</div>
 				<footer>
-					<span>{guarantee.status}</span><span>This lab does not advance progress</span>
+					<span>{guarantee.status}</span><span>Session preview · no durable progress</span>
 				</footer>
 			</section>
 
@@ -208,7 +285,7 @@
 				<button
 					type="button"
 					class="single-offer"
-					onclick={() => begin('single')}
+					onclick={() => summon('single')}
 					data-testid="summon-single"
 				>
 					<span><small>Standard</small><strong>{offers.single.label}</strong></span>
@@ -221,7 +298,7 @@
 				<button
 					type="button"
 					class="batch-offer"
-					onclick={() => begin('batch')}
+					onclick={() => summon('batch')}
 					data-testid="summon-batch"
 				>
 					<span class="value-ribbon">+1 bonus</span>
@@ -236,19 +313,20 @@
 					>
 				</button>
 				<div class="offer-trust">
-					<span>Balances stay unchanged</span><span>No durable duplicates</span>
+					<span>{walletNotice}</span>
+					<button type="button" onclick={resetFixture}>Reset fixture</button>
 				</div>
 			</section>
 
 			<section class="recommendation">
-				<div><small>Current recommendation</small><strong>Immediate identity</strong></div>
-				<p>Recognize the person first; let the spectacle deepen around them.</p>
+				<div><small>Current recommendation</small><strong>Gate ignition</strong></div>
+				<p>Make the portal unmistakable, then reveal the person without a second delay.</p>
 			</section>
 		</aside>
 	</section>
 
 	{#if resultVisible}
-		<section class="result-wrap">
+		<section class="result-wrap" bind:this={resultAnchor}>
 			<ResultPresentation mode={offerMode} hero={featuredHero} batch={batchReceipt} />
 		</section>
 	{/if}
@@ -446,6 +524,64 @@
 	.wallet[data-kind='premium'] {
 		border-color: #6dbcb13d;
 	}
+	.wallet.spending {
+		animation: wallet-spend 760ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	.wallet-number {
+		display: block;
+		animation: wallet-number 520ms cubic-bezier(0.18, 0.78, 0.24, 1);
+	}
+	.spend-delta {
+		position: absolute;
+		z-index: 3;
+		top: 50%;
+		right: 9px;
+		transform: translateY(-50%);
+		color: #f1c06f;
+		font:
+			740 0.75rem/1 Inter,
+			ui-sans-serif,
+			system-ui;
+		animation: spend-delta 1.2s ease-out both;
+	}
+	@keyframes wallet-spend {
+		0%,
+		100% {
+			border-color: #bdccc522;
+			box-shadow: inset 0 1px #ffffff0c;
+		}
+		32% {
+			border-color: #e2af5a;
+			box-shadow:
+				inset 0 0 24px #e5a64231,
+				0 0 24px #d99b3740;
+			transform: translateY(-2px) scale(1.025);
+		}
+	}
+	@keyframes wallet-number {
+		from {
+			opacity: 0;
+			transform: translateY(-9px);
+			color: #ffd994;
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	@keyframes spend-delta {
+		0% {
+			opacity: 0;
+			transform: translate(0, -20%);
+		}
+		25% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+			transform: translate(34px, -160%);
+		}
+	}
 
 	.banner-rail {
 		display: grid;
@@ -524,6 +660,9 @@
 	.hero-column {
 		display: grid;
 		gap: 12px;
+		min-width: 0;
+	}
+	.stage-anchor {
 		min-width: 0;
 	}
 	.decision-column {
@@ -654,6 +793,7 @@
 		border-radius: inherit;
 		background: linear-gradient(90deg, #287a6a, #80cdbb);
 		box-shadow: 0 0 13px #68bdab66;
+		transition: width 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
 	}
 	.progress b {
 		position: absolute;
@@ -665,6 +805,7 @@
 		border-radius: 50%;
 		background: #0c191b;
 		box-shadow: 0 0 12px #74c9b8;
+		transition: left 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
 	}
 	.guarantee footer {
 		display: flex;
@@ -839,7 +980,8 @@
 	}
 	.offer-trust {
 		display: flex;
-		justify-content: center;
+		align-items: center;
+		justify-content: space-between;
 		gap: 16px;
 		margin-top: 10px;
 		color: #71807a;
@@ -849,6 +991,16 @@
 		margin-right: 5px;
 		color: #6eb5a5;
 		content: '✓';
+	}
+	.offer-trust button {
+		flex: 0 0 auto;
+		padding: 3px 0;
+		border: 0;
+		border-bottom: 1px solid #b8955c55;
+		background: transparent;
+		color: #a98b5a;
+		font-size: 0.5rem;
+		cursor: pointer;
 	}
 
 	.recommendation {
@@ -1097,7 +1249,7 @@
 		.hero-column {
 			display: contents;
 		}
-		.hero-column :global(.stage) {
+		.stage-anchor {
 			order: 1;
 		}
 		.decision-column {

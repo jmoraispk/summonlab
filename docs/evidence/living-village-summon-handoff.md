@@ -24,15 +24,28 @@ Implementation branch: `codex/lv-summon-screen`
 
 ## Recommended direction
 
-Use **Immediate identity** as the default. It makes Mara recognizable almost instantly, then lets
-calling and affinity arrive as restrained secondary information. This best protects the product's
-people-first identity and removes suspense that would otherwise continue after the player already
-knows the face.
+Use **Gate ignition** as the default. The revised direction now opens an unmistakable layered portal,
+brings a crossing silhouette forward, and reveals Mara as soon as the crossing resolves. It earns
+its roughly 1.75-second recognition target by making the summon itself visible rather than leaving
+the stage feeling like a static featured card.
 
-Keep **Gate ignition** as the ceremonial alternative if owner testing values anticipation enough to
-accept a roughly 1.75-second recognition target. Constellation assembly communicates mechanics
+Keep **Immediate identity** as the fast alternative. Constellation assembly communicates mechanics
 well, but its pre-portrait abstraction currently feels more like a specialist affinity reveal than
 the default arrival ritual.
+
+## Accepted owner feedback
+
+Owner review rejected the first pass as visually disconnected: the fixture wallets did not react,
+the guarantee did not react, and the default identity-first transition was too subtle to read as an
+animation. The accepted revision:
+
+- makes Gate ignition the initial selected direction;
+- adds a large rune-ring portal, luminous aperture, floor seal, crossing silhouette, and reveal
+  flare using existing anchor art only;
+- animates session-only sigil/gem debits and guarantee progress, with a visible fixture reset;
+- scrolls the portal into view when a mobile spend action starts and scrolls the completed receipt
+  into view when the sequence ends;
+- preserves the non-durable boundary: these connected changes exist only in the browser session.
 
 ## Useful review actions and the decisions they inform
 
@@ -53,6 +66,7 @@ the default arrival ritual.
 - `docs/evidence/living-village-summon-animation-gate.png`
 - `docs/evidence/living-village-summon-animation-constellation.png`
 - `docs/evidence/living-village-summon-animation-identity.png`
+- `docs/evidence/living-village-summon-connected-spend.png`
 - `docs/evidence/living-village-summon-single-result.png`
 - `docs/evidence/living-village-summon-batch-result.png`
 

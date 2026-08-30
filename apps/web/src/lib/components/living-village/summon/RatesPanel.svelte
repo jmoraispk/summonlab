@@ -2,7 +2,7 @@
 	import PortalGlyph from './PortalGlyph.svelte';
 
 	type RateRow = { band: string; value: string; note: string };
-	type Guarantee = { current: number; threshold: number; label: string; status: string };
+	type Guarantee = { current: number; threshold: number; label: string };
 
 	let {
 		open,
@@ -52,7 +52,7 @@
 		</div>
 
 		<div class="rate-list" aria-label="Prototype summon rates">
-			{#each rates as rate}
+			{#each rates as rate (rate.band)}
 				<div>
 					<span>{rate.band}<small>{rate.note}</small></span>
 					<strong>{rate.value}</strong>
@@ -64,8 +64,8 @@
 			<p>Guarantee behavior</p>
 			<strong>{guarantee.label} {guarantee.threshold} summons</strong>
 			<span
-				>Fixture progress is {guarantee.current} / {guarantee.threshold}. This lab never advances or
-				carries it.</span
+				>Fixture progress begins at {guarantee.current} / {guarantee.threshold}. Session previews
+				move it visibly; reset or reload restores it, and nothing carries.</span
 			>
 		</section>
 

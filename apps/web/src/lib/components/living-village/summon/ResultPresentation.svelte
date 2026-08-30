@@ -17,7 +17,7 @@
 		batch
 	}: {
 		mode: 'single' | 'batch';
-		hero: Hero;
+		hero: Omit<Hero, 'id'>;
 		batch: readonly Hero[];
 	} = $props();
 </script>
@@ -58,8 +58,8 @@
 			<i>+</i>
 			<div class="bonus"><strong>1</strong><span>clearly marked bonus</span></div>
 			<p>
-				All eleven reference the same fixed six identities. No wallet, guarantee, or roster was
-				changed.
+				All eleven reference the same fixed six identities. Session wallet and guarantee previews
+				moved; nothing durable was written.
 			</p>
 		</div>
 		<div class="batch-grid" aria-label="Eleven non-persistent presentation results">

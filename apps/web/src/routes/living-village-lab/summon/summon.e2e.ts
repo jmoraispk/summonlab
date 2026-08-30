@@ -15,7 +15,7 @@ test('portal discloses fixture economy and supports every reveal control', async
 
 	await expect(page).toHaveTitle(/Summoning Portal/);
 	await expect(page.getByTestId('wallet-sigil')).toContainText('7');
-	await expect(page.getByTestId('wallet-sigil')).toContainText('Fixture');
+	await expect(page.getByTestId('wallet-sigil')).toContainText('Preview');
 	await expect(page.getByTestId('wallet-gem')).toContainText('2,480');
 	const bannerRail = page.getByRole('navigation', { name: 'Summon banners' });
 	await expect(bannerRail.getByRole('button', { name: /Standard/ })).toHaveAttribute(
@@ -60,12 +60,16 @@ test('portal discloses fixture economy and supports every reveal control', async
 	await page.getByTestId('reduced-motion-toggle').click();
 	await expect(page.getByTestId('reduced-motion-toggle')).toHaveAttribute('aria-pressed', 'true');
 	await page.getByTestId('summon-single').click();
+	await expect(page.getByTestId('wallet-sigil')).toContainText('6');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('15 / 30');
 	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'complete');
 	await expect(page.getByTestId('recognition-timing')).toContainText(
 		/Recognizable identity: \d+ ms/
 	);
 
 	await page.getByTestId('summon-batch').click();
+	await expect(page.getByTestId('wallet-gem')).toContainText('880');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('26 / 30');
 	await expect(page.getByTestId('summon-results')).toBeVisible();
 	await expect(page.getByTestId('batch-result')).toHaveCount(11);
 	await expect(page.getByTestId('summon-results')).toContainText('No durable hero copies created');
@@ -82,6 +86,11 @@ test('portal discloses fixture economy and supports every reveal control', async
 		const text = (await result.innerText()).split('\n');
 		expect(text.some((line) => permittedNames.has(line.trim()))).toBe(true);
 	}
+
+	await page.getByRole('button', { name: 'Reset fixture' }).click();
+	await expect(page.getByTestId('wallet-sigil')).toContainText('7');
+	await expect(page.getByTestId('wallet-gem')).toContainText('2,480');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('14 / 30');
 });
 
 test('captures the portal and reveal comparison evidence', async ({ page }) => {
@@ -90,7 +99,7 @@ test('captures the portal and reveal comparison evidence', async ({ page }) => {
 	await page.screenshot({ path: evidence('living-village-summon-desktop.png') });
 
 	await chooseDirection(page, 'Gate ignition', 'gate');
-	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'threshold');
+	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'silhouette');
 	await page.getByTestId('reveal-stage').screenshot({
 		path: evidence('living-village-summon-animation-gate.png')
 	});
@@ -112,6 +121,8 @@ test('captures the portal and reveal comparison evidence', async ({ page }) => {
 	});
 	await page.getByTestId('summon-batch').click();
 	await page.getByRole('button', { name: 'Skip reveal' }).click();
+	await page.evaluate(() => window.scrollTo(0, 0));
+	await page.screenshot({ path: evidence('living-village-summon-connected-spend.png') });
 	await page.getByTestId('summon-results').screenshot({
 		path: evidence('living-village-summon-batch-result.png')
 	});

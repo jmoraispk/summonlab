@@ -44,8 +44,9 @@ The screen will contain these regions, in this order:
 4. A trust rail showing guarantee progress, the fixture disclaimer, and a one-action rates/details
    disclosure.
 5. Two spend actions with costs printed inside the controls: `Summon ×1` and
-   `Summon ×10 + 1 bonus`. Both initiate a presentation-only receipt and never mutate balances,
-   guarantee, ownership, or a backend.
+   `Summon ×10 + 1 bonus`. Both initiate a presentation-only receipt. After owner review, their
+   route-local session previews visibly move balances and guarantee progress, while never mutating
+   ownership, a backend, or durable economy state.
 6. An owner-comparison strip for the three reveal directions, replay/skip/mute controls, reduced
    motion status, measured time to recognizable identity, and the current phase.
 7. An in-composition result treatment: one premium hero receipt for the single action and an
@@ -132,8 +133,9 @@ anticipation.
 - Rates/details opens in one action, traps no user behind a second disclosure, closes by button,
   backdrop, or Escape, and returns focus to the trigger.
 - The single summon starts the selected animation and ends on the fixed one-result receipt.
-- The batch summon starts the same direction and ends on a visually dense `10 + 1` receipt. It does
-  not decrement fixture balances or increment guarantee progress.
+- The batch summon starts the same direction and ends on a visually dense `10 + 1` receipt. Its
+  reversible session preview decrements fixture gems and advances fixture guarantee progress so
+  the presentation feels connected; reset or reload restores the fixture.
 - Replay preserves offer and direction. Skip preserves receipt and jumps to its result.
 - Changing direction replays the fixed test receipt for direct comparison.
 - Controls use native buttons, visible focus states, live-region phase/status messaging, and labels
@@ -189,6 +191,7 @@ capture:
 - `docs/evidence/living-village-summon-animation-gate.png`
 - `docs/evidence/living-village-summon-animation-constellation.png`
 - `docs/evidence/living-village-summon-animation-identity.png`
+- `docs/evidence/living-village-summon-connected-spend.png`
 
 The three-frame sequence will use the same receipt and capture each direction at its most
 characteristic pre-complete phase, making the comparison reviewable without relying on video

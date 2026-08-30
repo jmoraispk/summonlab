@@ -46,6 +46,7 @@
 	let timers: number[] = [];
 	let startedAt = 0;
 	let recognized = false;
+	const constellationPoints = Array.from({ length: 9 }, (_, index) => index);
 	const safeMode = $derived(reducedMotion || systemReducedMotion);
 	const identityVisible = $derived(['idle', 'identity', 'mechanics', 'complete'].includes(phase));
 	const mechanicsVisible = $derived(['idle', 'mechanics', 'complete'].includes(phase));
@@ -65,8 +66,8 @@
 	const sequences: Record<Direction, Array<[Phase, number]>> = {
 		gate: [
 			['charge', 0],
-			['threshold', 450],
-			['silhouette', 980],
+			['threshold', 280],
+			['silhouette', 600],
 			['identity', 1750],
 			['mechanics', 2550],
 			['complete', 2900]
@@ -151,17 +152,32 @@
 	aria-label={`${hero.name} summon reveal`}
 >
 	<div class="atmosphere" aria-hidden="true">
+		<div class="portal-machine">
+			<div class="portal-halo"></div>
+			<div class="portal-ring portal-outer">
+				{#each ['◇', '✦', '△', '◈', '⌁', '✧', '○', '⟡'] as rune, index (rune)}
+					<i style={`--r:${index}`}>{rune}</i>
+				{/each}
+			</div>
+			<div class="portal-ring portal-middle"></div>
+			<div class="portal-ring portal-inner"></div>
+			<div class="portal-aperture"></div>
+			<div class="portal-flare"></div>
+			<div class="portal-crosshair"><i></i><i></i></div>
+		</div>
 		<div class="gate-ring ring-one"></div>
 		<div class="gate-ring ring-two"></div>
 		<div class="gate-ring ring-three"></div>
 		<div class="horizon"></div>
 		<div class="constellation">
-			{#each Array(9) as _, index}
+			{#each constellationPoints as index (index)}
 				<i style={`--i:${index};--x:${13 + ((index * 29) % 76)}%;--y:${12 + ((index * 47) % 70)}%`}
 				></i>
 			{/each}
 		</div>
 		<div class="threshold-light"></div>
+		<div class="floor-seal"><i></i><i></i><i></i></div>
+		<div class="summon-burst"></div>
 	</div>
 
 	<div class="stage-topline">
@@ -171,6 +187,7 @@
 
 	<figure>
 		<div class="portrait-shell">
+			<div class="crossing-silhouette" style={`--hero-mask: url("${hero.image}")`}></div>
 			<img
 				src={hero.image}
 				alt={`${hero.name}, featured Standard banner identity`}
@@ -241,13 +258,158 @@
 	.gate-ring,
 	.horizon,
 	.constellation,
-	.threshold-light {
+	.threshold-light,
+	.portal-machine,
+	.portal-machine > div,
+	.floor-seal,
+	.summon-burst {
 		position: absolute;
 		pointer-events: none;
 	}
 	.atmosphere {
 		z-index: -1;
 		inset: 0;
+	}
+	.portal-machine {
+		top: 6%;
+		right: 4%;
+		width: min(70%, 640px);
+		aspect-ratio: 1;
+		border-radius: 50%;
+		opacity: 0.58;
+		filter: drop-shadow(0 0 34px #61c8b62c);
+		transition:
+			opacity 280ms ease,
+			filter 380ms ease,
+			transform 450ms ease;
+	}
+	.portal-halo {
+		inset: -10%;
+		border-radius: 50%;
+		background: radial-gradient(circle, transparent 42%, #2e8f7c1f 57%, transparent 71%);
+		box-shadow:
+			inset 0 0 80px #49b89f21,
+			0 0 80px #143e3938;
+	}
+	.portal-ring {
+		inset: 3%;
+		border: 2px solid #c99a4d68;
+		border-radius: 50%;
+		background:
+			repeating-conic-gradient(from 5deg, #dfad5e 0 1deg, transparent 1deg 10deg),
+			radial-gradient(circle, transparent 62%, #7ed9c51a 63% 66%, transparent 67%);
+		box-shadow:
+			inset 0 0 34px #dfaa4d24,
+			0 0 18px #dba34e28;
+	}
+	.portal-outer i {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 28px;
+		height: 28px;
+		transform: translate(-50%, -50%) rotate(calc(var(--r) * 45deg)) translateY(-255px)
+			rotate(calc(var(--r) * -45deg));
+		color: #e2b76f;
+		font:
+			500 1rem/28px Georgia,
+			serif;
+		text-align: center;
+		text-shadow: 0 0 10px #e9ae52;
+	}
+	.portal-middle {
+		inset: 11%;
+		border: 1px dashed #79cdbb8f;
+		background: repeating-conic-gradient(from 24deg, #8dd8c8 0 0.5deg, transparent 0.5deg 15deg);
+		box-shadow:
+			inset 0 0 26px #55bca62b,
+			0 0 20px #5bc0aa27;
+	}
+	.portal-inner {
+		inset: 18%;
+		border: 1px solid #e1b76c70;
+		background: repeating-conic-gradient(from 0deg, #e4b96e 0 1deg, transparent 1deg 30deg);
+		box-shadow: inset 0 0 40px #80d4c23b;
+	}
+	.portal-aperture {
+		inset: 22%;
+		border: 1px solid #a9ebdd52;
+		border-radius: 50%;
+		background:
+			radial-gradient(circle at 56% 43%, #f7d99a22 0 4%, transparent 26%),
+			repeating-radial-gradient(circle, #7ad0be14 0 2px, transparent 3px 19px),
+			radial-gradient(circle, #24594f76, #081518dd 68%);
+		box-shadow:
+			inset 0 0 70px #74d4c164,
+			0 0 45px #69cab64a;
+	}
+	.portal-flare {
+		inset: 23%;
+		border-radius: 50%;
+		background: radial-gradient(circle, #fffde7 0, #ffd38d 8%, #83e4d0 27%, transparent 70%);
+		opacity: 0;
+		filter: blur(10px);
+		mix-blend-mode: screen;
+	}
+	.portal-crosshair {
+		inset: 27%;
+		border: 1px solid #d4b16d2e;
+		border-radius: 50%;
+	}
+	.portal-crosshair i:first-child {
+		position: absolute;
+		top: 50%;
+		left: -12%;
+		width: 124%;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, #a2e1d280, transparent);
+	}
+	.portal-crosshair i:last-child {
+		position: absolute;
+		top: -12%;
+		left: 50%;
+		width: 1px;
+		height: 124%;
+		background: linear-gradient(transparent, #dcb16765, transparent);
+	}
+	.floor-seal {
+		right: 8%;
+		bottom: 10%;
+		width: 65%;
+		height: 15%;
+		transform: perspective(300px) rotateX(68deg);
+		border: 1px solid #d9ab5a68;
+		border-radius: 50%;
+		box-shadow:
+			inset 0 0 32px #6bc7b042,
+			0 0 26px #d99f4540;
+	}
+	.floor-seal i {
+		position: absolute;
+		inset: 18%;
+		border: 1px dashed #82d2c073;
+		border-radius: 50%;
+	}
+	.floor-seal i:nth-child(2) {
+		inset: 35%;
+		border-style: solid;
+		border-color: #e2b76975;
+	}
+	.floor-seal i:nth-child(3) {
+		inset: -35% 49%;
+		border: 0;
+		border-left: 1px solid #87d2c0;
+		border-radius: 0;
+	}
+	.summon-burst {
+		top: 12%;
+		right: 13%;
+		width: 52%;
+		height: 80%;
+		background: linear-gradient(90deg, transparent 49%, #fff 50%, transparent 51%);
+		opacity: 0;
+		filter: blur(3px);
+		mix-blend-mode: screen;
 	}
 	.gate-ring {
 		inset: 13% 18% 5%;
@@ -347,13 +509,35 @@
 	.portrait-shell {
 		position: absolute;
 		inset: 2% 2% 0 20%;
-		opacity: 0.26;
+		opacity: 0;
 		filter: saturate(0.58) brightness(0.52);
-		transform: translate3d(4%, 2%, 0) scale(0.95);
+		transform: translate3d(4%, -1%, 0) scale(0.82);
+		mask-image: radial-gradient(ellipse 44% 64% at 57% 49%, #000 55%, transparent 94%);
 		transition:
 			opacity 550ms ease,
 			filter 650ms ease,
 			transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	.crossing-silhouette {
+		position: absolute;
+		z-index: 4;
+		inset: 2% 0 0;
+		background: #020607;
+		opacity: 0;
+		filter: drop-shadow(0 0 18px #dffdf6) drop-shadow(0 0 42px #75d4c0);
+		-webkit-mask-image: var(--hero-mask);
+		mask-image: var(--hero-mask);
+		-webkit-mask-position: center bottom;
+		mask-position: center bottom;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		-webkit-mask-size: contain;
+		mask-size: contain;
+		mask-mode: luminance;
+		transform: translateY(8%) scale(0.84);
+		transition:
+			opacity 220ms ease,
+			transform 620ms cubic-bezier(0.18, 0.78, 0.24, 1);
 	}
 	.portrait-shell img {
 		width: 100%;
@@ -361,6 +545,7 @@
 		object-fit: contain;
 		object-position: center bottom;
 		filter: drop-shadow(0 22px 30px #000a);
+		mix-blend-mode: screen;
 	}
 	.portrait-light {
 		position: absolute;
@@ -383,9 +568,16 @@
 	}
 	[data-direction='gate'][data-phase='silhouette'] .portrait-shell,
 	[data-direction='constellation'][data-phase='silhouette'] .portrait-shell {
-		opacity: 0.45;
-		filter: saturate(0) brightness(0.12) contrast(2.5);
-		transform: translate3d(0, 2%, 0) scale(1.02);
+		opacity: 1;
+		filter: none;
+		transform: translate3d(0, 2%, 0) scale(0.94);
+	}
+	[data-phase='silhouette'] .portrait-shell img {
+		opacity: 0;
+	}
+	[data-phase='silhouette'] .crossing-silhouette {
+		opacity: 0.92;
+		transform: translateY(0) scale(0.98);
 	}
 
 	.identity {
@@ -533,6 +725,48 @@
 		color: #e5c184;
 	}
 
+	.portal-outer {
+		animation: portal-drift 22s linear infinite;
+	}
+	.portal-middle {
+		animation: portal-drift-reverse 17s linear infinite;
+	}
+	[data-direction='gate'][data-phase='charge'] .portal-machine {
+		opacity: 1;
+		filter: drop-shadow(0 0 48px #66d7be80);
+		animation: portal-awaken 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	}
+	[data-direction='gate'][data-phase='charge'] .portal-aperture {
+		animation: aperture-charge 520ms ease-in-out infinite alternate;
+	}
+	[data-direction='gate'][data-phase='threshold'] .portal-machine,
+	[data-direction='gate'][data-phase='silhouette'] .portal-machine {
+		opacity: 1;
+		filter: drop-shadow(0 0 70px #f0bd656e);
+	}
+	[data-direction='gate'][data-phase='threshold'] .portal-flare {
+		opacity: 1;
+		animation: portal-open 620ms ease-out both;
+	}
+	[data-direction='gate'][data-phase='threshold'] .summon-burst {
+		animation: vertical-burst 620ms ease-out both;
+	}
+	[data-direction='gate'][data-phase='silhouette'] .portal-aperture {
+		background: radial-gradient(circle, #fff8db 0, #d4a75e 22%, #4ec4ad 55%, #071417 75%);
+		box-shadow:
+			inset 0 0 80px #fff7d1,
+			0 0 70px #e5b35a9c;
+	}
+	[data-direction='gate'][data-phase='identity'] .portal-flare,
+	[data-direction='identity'][data-phase='identity'] .portal-flare {
+		animation: identity-flash 780ms ease-out both;
+	}
+	[data-direction='constellation'][data-phase='form'] .portal-machine,
+	[data-direction='constellation'][data-phase='silhouette'] .portal-machine {
+		opacity: 0.9;
+		filter: drop-shadow(0 0 55px #70dbc493);
+	}
+
 	[data-direction='gate'][data-phase='charge'] .ring-one,
 	[data-direction='gate'][data-phase='threshold'] .gate-ring {
 		animation: ring-charge 900ms ease-in-out infinite alternate;
@@ -558,6 +792,83 @@
 	}
 	[data-direction='identity'][data-phase='identity'] .portrait-shell {
 		animation: premium-settle 1.15s cubic-bezier(0.18, 0.7, 0.23, 1) both;
+	}
+
+	@keyframes portal-drift {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	@keyframes portal-drift-reverse {
+		to {
+			transform: rotate(-360deg);
+		}
+	}
+	@keyframes portal-awaken {
+		from {
+			opacity: 0.25;
+			transform: scale(0.78);
+			filter: blur(5px);
+		}
+		70% {
+			transform: scale(1.035);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+			filter: blur(0);
+		}
+	}
+	@keyframes aperture-charge {
+		to {
+			background-color: #4eae9a55;
+			box-shadow:
+				inset 0 0 95px #9df2df91,
+				0 0 65px #5cd0b687;
+			transform: scale(1.035);
+		}
+	}
+	@keyframes portal-open {
+		0% {
+			opacity: 0;
+			transform: scale(0.2);
+		}
+		45% {
+			opacity: 1;
+			transform: scale(1.18);
+		}
+		100% {
+			opacity: 0.76;
+			transform: scale(1);
+		}
+	}
+	@keyframes vertical-burst {
+		0% {
+			opacity: 0;
+			transform: scaleX(0.2);
+		}
+		35% {
+			opacity: 0.9;
+			transform: scaleX(1);
+		}
+		100% {
+			opacity: 0;
+			transform: scaleX(1.8);
+		}
+	}
+	@keyframes identity-flash {
+		0% {
+			opacity: 0.9;
+			transform: scale(0.72);
+		}
+		40% {
+			opacity: 0.72;
+			transform: scale(1.25);
+		}
+		100% {
+			opacity: 0;
+			transform: scale(1.65);
+		}
 	}
 
 	@keyframes ring-charge {
@@ -626,6 +937,20 @@
 		.stage {
 			min-height: 476px;
 			border-radius: 19px;
+		}
+		.portal-machine {
+			top: 7%;
+			right: -8%;
+			width: 82%;
+		}
+		.portal-outer i {
+			transform: translate(-50%, -50%) rotate(calc(var(--r) * 45deg)) translateY(-145px)
+				rotate(calc(var(--r) * -45deg));
+			font-size: 0.7rem;
+		}
+		.floor-seal {
+			right: -3%;
+			width: 82%;
 		}
 		.stage-topline {
 			padding: 13px 14px;
