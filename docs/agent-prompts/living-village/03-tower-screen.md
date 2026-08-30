@@ -1,27 +1,37 @@
-# Prompt: Tower and combat screen owner
+# Prompt: Tower species-hunt screen owner
 
-You own one isolated, testable Tower screen. Build a polished browser prototype at
-`/living-village-lab/tower` that combines floor selection, party confirmation, deterministic combat
-presentation, results, rewards, and the return-to-training handoff.
+You own one isolated, testable Tower species-hunt screen. Build a polished browser prototype at
+`/living-village-lab/tower` that combines hunt setup, party confirmation, remaining-Health safety
+rules, deterministic repeated combat, material collection, and automatic return.
 
 ## Product objective
 
-The player should understand what floor is available, whether the party is ready, why combat was
-won or lost, what changed, and what useful action comes next. This release has mechanical Floors
-1–10 only—no tower story, expedition navigation, world discovery, or permanent injury.
+The player sends a party to an unlocked Tower hunting ground to kill a chosen species until the
+party reaches a selected safety threshold. The screen must make risk, expected rewards, current
+Health, and the return reason understandable. This release has mechanical Floors 1–10 only—no tower
+story, free-roaming expedition navigation, world discovery, or permanent injury.
 
 ## Required interaction
 
-- Show Floors 1–10 with sequential unlocks, cleared state, current selection, encounter preview,
-  and first-clear versus replay rewards.
+- Show Floors 1–10 as unlocked hunting grounds with available species, difficulty, known material
+  drops, and first-clear versus repeat-hunt rewards.
+- Let the player choose one known species, a three-hero party, and a remaining-Health return
+  threshold such as 75%, 50%, or 25%. Explain that a threshold is checked after an encounter and
+  cannot prevent one encounter from crossing it.
 - Show the current three-hero party and block deployment when it is incomplete or unavailable.
 - Use a transparent, seeded, route-local mathematical fixture; label it as a presentation fixture,
   not accepted final combat math.
+- Resolve a bounded sequence of encounters and automatically stop when any hero is at or below the
+  selected threshold, the next encounter is unsafe, inventory capacity is reached, or the fixture's
+  encounter cap is reached.
 - Present initiative/action order, important Health or Mana changes, skill/equipment/affinity
   contributions used by the fixture, statuses, and the decisive cause of victory or defeat.
-- Provide replay/pause/speed controls for the combat presentation and respect reduced motion.
-- Make **Train returning heroes** the primary result action, with the eligible heroes already
-  identified. Also provide return to Village.
+- Provide replay/pause/speed controls for representative encounter presentation and respect reduced
+  motion.
+- The haul report must show species kills, level XP, practical skill progress, every material and
+  quantity, remaining Health, and the exact return reason.
+- Make **Return to Village** the primary completed-hunt action, with a clear secondary action for
+  reviewing or assigning safe Court training.
 - Use existing monster and tower visual assets as screen fixtures. Do not generate or canonize a
   new race.
 - Make desktop and 390×844 layouts deliberately composed, keyboard accessible, and usable at 200%
@@ -48,8 +58,8 @@ Suggested branch: `codex/lv-tower-screen` in its own worktree, based on the late
 ## Acceptance evidence
 
 - Direct route loads without database or model-provider access.
-- A focused Playwright test proves floor selection, deployment rejection, deterministic result
-  playback, result explanation, and the training-return action.
+- A focused Playwright test proves species/floor selection, deployment rejection, threshold choice,
+  deterministic multi-encounter resolution, material haul, exact return reason, and Village return.
 - Capture desktop and 390×844 screenshots.
 - Run web typecheck, lint, focused test, and production build.
 - Report the direct URL, three useful test actions, decisions those actions inform, commit hash,

@@ -14,12 +14,13 @@ the wiki and may continue through independent design or concept-art work.
 | --- | --- | --- |
 | Static Village | `on` | Fixed Summoning Gate, Training Court, and Tower Threshold; no construction or upgrades |
 | Human summoning | `on` | One versioned Normal channel reveals the fixed six-person roster; no generated or replacement faces |
-| Roster/Hero inspection | `on` | Attributes, affinity, skills, loadout, availability, and visual identity |
-| Direct hero training | `on` | Player selects one enabled attribute or owned enabled skill and advances a fixed block |
+| Village/Hero inspection | `on` | Six visible heroes, anchored popovers, expandable details, attributes, affinity, skills, loadout, availability, and visual identity on one surface |
+| Visible local training | `on` | Player selects one enabled attribute or owned skill, confirms a block, and sees the hero walk to the Court and train |
 | One three-hero party | `on` | One prepared party and one active attempt |
-| Tower missions | `on` | Sequential Floors 1–10 using scaled encounter definitions |
+| Tower species hunts | `on` | Sequential Floors 1–10 expose known species hunts with a remaining-Health return threshold and material haul |
+| Material inventory | `on` | Species drops persist in the shared Village inventory; crafting remains off, and at least one selected material needs a visible fixed use before release |
 | Combat | `placeholder` | Forthcoming combat design plugs into a deterministic request/receipt boundary; a transparent mathematical resolver may prove integration first |
-| Rewards and engagement | `placeholder` | First-clear, training, mission, and daily-return claims use a small versioned reward table |
+| Rewards and engagement | `placeholder` | First-clear, training, repeat-hunt, material, and daily-return claims use a small versioned reward table |
 | Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
 | Core visuals | `on` | The fixed six heroes, three runtime monster races, initial skill effects/icons, equipment icons, one Hearth, one tower backdrop |
 
@@ -90,7 +91,7 @@ For v1, these remain `decision` until owner review and economy simulation:
 - exact daily gem grant—the current proposal is “a couple,” represented initially as 2;
 - whether v1 omits gems in favor of a directly useful fixed-roster reward;
 - missed-day behavior;
-- exact first-clear, repeat-combat, training, and milestone reward values.
+- exact first-clear, repeat-hunt, material, training, and milestone reward values.
 
 Advanced and Special summoning are now explicitly `off` for this prototype because they would imply
 additional identities or duplicates. A daily currency with no visible use is not sufficient
@@ -101,7 +102,8 @@ slice by a directly useful progression, training, or equipment reward.
 
 - The executable allowlist rejects every `off` skill and capability from all entry points.
 - Summoning rejects every hero identity outside the fixed six and cannot grant one identity twice.
-- A new player completes summon → inspect/equip → mission → reward → training → improved retry.
+- A new player completes summon → inspect/equip in Village → Court training or species hunt →
+  visible return → improved retry.
 - Every consequential action produces immediate feedback plus an honest durable benefit where one
   is promised.
 - Reward sources cannot be claimed twice through retry, clock manipulation, or replay.

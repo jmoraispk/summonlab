@@ -17,14 +17,15 @@ generate another face.
 | Thread | Testable route | Screen responsibility | Subsystem responsibility |
 | --- | --- | --- | --- |
 | Coordinator | all reviewed routes | shared shell, final navigation, integration | contracts, fixtures, capability flags, conflict resolution |
-| Village agent | `/living-village-lab/village` | Hearth view, zoom/pan, hotspots, summaries | static settlement navigation and camera behavior |
-| Roster agent | `/living-village-lab/roster` | roster, hero sheet, equipment, party, training | hero projection and direct progression flow |
-| Tower agent | `/living-village-lab/tower` | floors, party confirmation, combat report, return | tower progression and deterministic combat presentation |
+| Village + Roster agent | `/living-village-lab/village` | Hearth, heroes, popovers, zoom/pan, orders | primary world surface and hero inspection |
+| Hero Activity agent | `/living-village-lab/hero-activity` | walking, local training, departure and return animation lab | visible hero activity state and motion |
+| Tower Hunt agent | `/living-village-lab/tower` | species hunts, party, safety threshold, haul report | repeat combat, XP, material rewards, automatic return |
 | Summon agent | `/living-village-lab/summon` | portal, banners, currencies, rates, reveal animations | summon offer and presentation proposal |
 
-This is deliberately the entire first wave. Monster art, skill art, equipment art, broad mechanics,
-and extra QA agents wait until these four screen prototypes reveal what the game actually needs.
-Each screen owner must provide desktop and phone evidence plus a small interaction test.
+This is deliberately the entire first wave. Village and Roster are one surface, not two navigation
+destinations. Monster art, skill art, equipment art, broad mechanics, and extra QA agents wait until
+these four prototypes reveal what the game actually needs. Each owner must provide desktop and
+phone evidence plus a small interaction test.
 
 ## Worktrees and branches
 
@@ -35,7 +36,7 @@ dependencies shared by Git while giving every worker an independent index and br
 Recommended branches:
 
 - `codex/lv-village-screen`
-- `codex/lv-roster-screen`
+- `codex/lv-hero-activity`
 - `codex/lv-tower-screen`
 - `codex/lv-summon-screen`
 
@@ -86,11 +87,35 @@ The summon agent compares three presentations against the same test receipt:
 
 The review should decide one production direction, not ship three permanent animation systems.
 
+## Training and hunting direction
+
+The Village is the persistent home surface. The player selects a visible hero—or finds them through
+a compact roster ribbon—and opens a small anchored popover. The popover expands only when equipment
+or detailed progression needs more room. Orders should become visible behavior: the selected hero
+walks to the Court, Gate, or another named destination and performs an authored activity loop.
+
+Local Court training and Tower hunts have different purposes:
+
+- **Court training** safely targets one attribute or owned skill and is visible in the Village;
+- **species hunts** grant level XP, practical skill use, and species materials, but expose the party
+  to combat risk.
+
+A hunt order chooses an unlocked species, a party, and a remaining-Health return threshold. After
+each resolved encounter, the party returns automatically when any member is at or below that
+threshold, the next encounter is unsafe, or another explicit cap is reached. The threshold is not
+an invulnerability guarantee: one encounter can cross it. The result must report kills, XP, skill
+practice, materials, remaining Health, and the exact return reason.
+
+Materials may be collected and persisted in the prototype before crafting is enabled, but the
+player must see their species source and future or current use. The first playable economy should
+eventually give at least one selected material an immediate fixed exchange or equipment use rather
+than accumulating meaningless inventory.
+
 ## Merge order
 
-1. Review Village zoom and destination clarity.
-2. Review Roster/Hero decision density and the three-step training flow.
-3. Review Tower result comprehension and the direct return-to-training action.
+1. Review the unified Village/Roster, zoom, hero selection, and popover density.
+2. Review hero walking, destination arrival, and local training readability.
+3. Review species-hunt setup, safety-threshold clarity, and the material haul report.
 4. Review portal hierarchy, `10 + 1` communication, and animation preference.
 5. The coordinator creates the shared shell only after the four isolated routes are accepted.
 
@@ -101,8 +126,8 @@ of forcing premature interfaces onto every branch.
 ## Ready-to-paste prompts
 
 - [Village screen agent](../../agent-prompts/living-village/01-village-screen.md)
-- [Roster and Hero screen agent](../../agent-prompts/living-village/02-roster-screen.md)
-- [Tower and combat screen agent](../../agent-prompts/living-village/03-tower-screen.md)
+- [Hero activity and animation agent](../../agent-prompts/living-village/02-hero-activity.md)
+- [Tower species-hunt agent](../../agent-prompts/living-village/03-tower-screen.md)
 - [Summoning Portal screen agent](../../agent-prompts/living-village/04-summon-screen.md)
 
 The [prompt index](../../agent-prompts/living-village/README.md) contains the worktree workflow and

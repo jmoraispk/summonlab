@@ -22,8 +22,8 @@ The worktree rule is simple:
 The four tasks can start together because they use route-local fixtures. Review them in this order:
 
 1. [Village screen](01-village-screen.md)
-2. [Roster and Hero screen](02-roster-screen.md)
-3. [Tower and combat screen](03-tower-screen.md)
+2. [Hero activity and animation lab](02-hero-activity.md)
+3. [Tower species-hunt screen](03-tower-screen.md)
 4. [Summoning Portal screen](04-summon-screen.md)
 
 ## What each agent must return

@@ -51,7 +51,16 @@ describe('online wiki registry', () => {
 		const plan = getWikiPage('roadmap/living-village-parallel-plan');
 		expect(plan?.html).toContain('one coordinator plus four screen-owning agents');
 		expect(plan?.html).toContain('/living-village-lab/village');
+		expect(plan?.html).toContain('/living-village-lab/hero-activity');
 		expect(plan?.html).toContain('/living-village-lab/summon');
 		expect(plan?.html).toContain('Summon ×10 + 1 bonus');
+		expect(plan?.html).toContain('remaining-Health return threshold');
+	});
+
+	it('keeps hero inspection in the Village and publishes bounded species hunts', () => {
+		const milestone = getWikiPage('milestones/living-village');
+		expect(milestone?.html).toContain('Village and Roster are one persistent world surface');
+		expect(milestone?.html).toContain('Species hunts and automatic return');
+		expect(milestone?.html).toContain('species materials');
 	});
 });

@@ -22,12 +22,12 @@ Can this loop sustain repeated play through meaningful, visible changes to heroe
 
 ```text
 summon
-→ inspect and equip
-→ choose a party and floor
-→ resolve combat
-→ receive rewards and progression
-→ assign training
-→ observe improvement
+→ inspect and equip in the Village
+→ assign targeted Court training or a species hunt
+→ watch heroes travel to their activity
+→ resolve training or bounded repeat combat
+→ receive progression and a material haul
+→ watch heroes return
 → repeat
 ```
 
@@ -42,52 +42,64 @@ One authored, static Hearth scene contains three functional destinations:
 | --- | --- | --- |
 | Summoning Gate | Acquire heroes and present their persistent identities | construction, portal upgrades, dialogue |
 | Training Court | Assign one attribute or owned skill as a training focus | mentors, schedules, motivation, autonomous choices |
-| Tower Threshold | Select a floor, prepare one party, and begin combat | travel, navigation, story choices, expedition decisions |
+| Tower Threshold | Select a hunting ground and species, prepare one party and threshold, and depart | travel, navigation, story choices, expedition decisions |
 
 A dormitory, kitchen, or workshop may be visible to make the settlement believable, but they are
 not interactive systems in this milestone. The settlement has fixed stats, capacity, layout, and
 lighting states. It cannot be constructed, expanded, staffed, damaged, or upgraded.
 
 Heroes have only three operational availability states: `idle`, `training`, and `deployed`. A hero
-cannot occupy two states at once.
+cannot occupy two states at once. Walking, arriving, departing, and returning are presentation
+phases for a transition between those canonical states rather than new simulation systems.
 
-## Three navigational surfaces
+## Three focused surfaces
 
-Summoning reveals, combat playback, and reports are states or overlays within the primary surfaces,
-not permanent top-level destinations.
+Village and Roster are one persistent world surface. Detailed sheets, summoning reveals, combat
+playback, and reports are focused states or overlays rather than a collection of administrative
+destinations.
 
-### 1. Village
+### 1. Village and heroes
 
-- Presents the static Hearth and the three active destinations.
-- Shows the active party, current training assignments, summon availability, and highest floor.
+- Presents the static Hearth, the three active destinations, and the six visible heroes.
+- Selecting a hero in the world opens a compact anchored popover; a roster ribbon finds or focuses
+  the same hero when overlap, zoom, or accessibility makes direct selection difficult.
+- Shows identity, Health, activity, party state, and primary orders in the popover. Attributes,
+  skills, equipment, and comparisons expand into a drawer without navigating to a separate screen.
+- Shows the active party, current training and hunt assignments, summon availability, highest floor,
+  and material summary.
 - Opens the Summoning Gate and Training Court without taking the player through an administrative
   maze.
-- Returns from combat with **Train returning heroes** as the primary next action.
+- Turns an accepted order into visible motion toward the Court or Tower Threshold, followed by a
+  readable training, departure, or return animation.
 
-### 2. Roster / Hero
+### 2. Tower hunts
 
-- Combines a roster list and the selected hero sheet.
-- Shows persistent visual identity, stars, level and XP, six attributes, affinity, skills,
-  equipment, and availability.
-- Supports equip/unequip, training assignment, and add/remove from party.
-- Assigning training takes at most: select hero, select focus, confirm.
+- Combines unlocked floor/hunting-ground selection, target species, party confirmation, a
+  remaining-Health return threshold, representative combat playback, and a material haul report.
+- Runs bounded deterministic encounters until any hero reaches the threshold after an encounter,
+  the next encounter is unsafe, inventory capacity is reached, or another explicit cap fires.
+- Explains that the threshold is a retreat rule, not invulnerability; one encounter can cross it.
+- Reports kills, level XP, practical skill progress, materials, remaining Health, and the exact
+  return reason.
+- Returns the party visibly to the same Village surface.
 
-### 3. Tower
+### 3. Summoning Portal
 
-- Combines floor selection, party confirmation, combat presentation, and the result state.
-- Shows sequential unlocks and permits replay of cleared floors.
-- Explains the decisive combat inputs instead of showing only a win/loss power total.
-- Returns directly to the Village or the preselected training flow.
+- Presents currencies, banner selection, featured hero, guarantee progress, rates, and printed
+  costs in one focused composition.
+- Presents **Summon ×1** and the intended broader **Summon ×10 + 1 bonus** offer.
+- Uses the fixed six identities for the Living Village presentation lab. Batch results do not create
+  durable duplicates until the duplicate/synthesis rule is accepted.
+- Returns the summoned identity to the Village as a persistent visible person.
 
-Shortest post-combat path:
+Shortest local-training path:
 
 ```text
-Tower result
-→ Train returning heroes
-→ eligible heroes already selected
+Village hero popover
+→ Train at Court
 → choose attribute or skill focus
 → confirm
-→ Village
+→ watch hero walk and begin
 ```
 
 ## Minimum runtime breadth
@@ -102,10 +114,11 @@ These are reviewable content budgets, not permanent catalog limits.
 | Affinity | one base affinity or Unaligned per actor; only effects required by the combat slice | ranks III–V, dual, derived, advanced cycles, and off-cycle affinities deferred |
 | Skills | 8–12 definitions across representative martial, magical, and support disciplines | complete draft compendium remains available and addressable by ID |
 | Equipment | 12–20 definitions; weapon, armour, accessory; equip/unequip, rarity, weight, modifiers | complete materials/items/sets/crafting catalog documented |
+| Materials | typed drops from the three runtime species; shared Village inventory; at least one visible use or fixed exchange before shipping | full gathering, recipes, crafting quality, and economy remain deferred |
 | Monsters | three distinct races in one approved low-tier visual form each; floor-scaled combat variants; one separately approved boss treatment | all 30 visual-progression race seeds available for art production |
-| Tower | Floors 1–10; about three encounter patterns with monotonically scaled definitions | story envelopes, randomized geography, secrets, and full 100-floor campaign deferred |
+| Tower | Floors 1–10; known species hunts; about three encounter patterns with monotonically scaled definitions | story envelopes, randomized geography, secrets, and full 100-floor campaign deferred |
 | Combat | seeded deterministic resolution with an understandable action/result trace | final formula waits for the combat-system draft |
-| Rewards | visible mission, training, progression, and daily-return benefits; exact cadence remains a fixture decision | full engagement model, Advanced/Special access, milestone cadence, pity, and economy tuning documented separately |
+| Rewards | visible hunt, material, training, progression, and daily-return benefits; exact cadence remains a fixture decision | full engagement model, Advanced/Special access, milestone cadence, pity, and economy tuning documented separately |
 
 The recommended monster option is **three distinct low-tier races**, because it tests silhouette,
 damage-role, and encounter readability better than one family. Bestiary T1–T5 labels are visual
@@ -120,15 +133,16 @@ target the same game:
 
 | Rule | Proposed first fixture |
 | --- | --- |
-| Party | exactly three heroes; edited canonically on Roster/Hero, with a Tower shortcut |
+| Party | exactly three heroes; edited in the Village hero drawer, with a Tower shortcut |
 | Roster | six fixed unique hero IDs: Dara, Mara, Jori, Kira, Iven, and Remy; no other face may enter this ruleset |
 | Starting summons | three free seeded Normal reveals of Dara, Mara, and Jori, all 1★ for this ruleset; order may vary, identity set may not |
 | Later summons | Floor 3 reveals Kira, Floor 6 reveals Iven, and Floor 9 reveals Remy; no random pool or premium purchase |
 | Training | three fixed Court slots; one explicit training block; exact grant is a versioned tuning value |
+| Species hunt | one party chooses an unlocked species and remaining-Health return threshold; threshold is checked after each encounter |
 | Equipment slots | main hand, off hand, body, accessory |
-| Inventory | shared owned-item drawer inside Roster/Hero with compare, equip, and unequip |
+| Inventory | shared owned-item and material drawer inside the Village hero surface with compare, equip, and unequip |
 | First-clear rewards | per-hero progression claims plus one authored item; listed before deployment |
-| Replay rewards | combat practice only; no first-clear item, unlock, or summon token |
+| Repeat-hunt rewards | level XP, practical skill progress, and species materials; no first-clear item, unlock, or summon token |
 | Daily return | placeholder until the proposed gem amount, Special-summon cadence, and missed-day policy are accepted |
 | Return state | Health and Mana reset; no lasting injury, recovery timer, death, or equipment wear |
 | Save | one run snapshot plus deterministic command/event history |
@@ -173,12 +187,32 @@ or contradictory remain visible tuning and convergence work.
 - Mentoring, active versus passive regimens, novelty, pressure, practice-profile bonuses, food,
   fatigue, and settlement upgrades remain documented future depth.
 
+Court training is safe and targeted. Tower hunting is a separate progression activity: kills may
+grant level XP and practical skill progress under the supplied progression rules, while the target
+species produces a typed material haul. Materials can be stored before crafting is enabled, but a
+shipping reward loop must give at least one selected material a visible immediate use or fixed
+exchange rather than asking the player to accumulate unusable stock.
+
+## Species hunts and automatic return
+
+- Select one unlocked floor/hunting ground, one known species, one available three-hero party, and
+  a remaining-Health threshold.
+- Resolve seeded encounters individually. After each encounter, stop if any hero is at or below the
+  threshold, the next encounter is predicted unsafe, capacity is full, or the encounter cap fires.
+- The return threshold does not interrupt an enemy action and does not guarantee that Health cannot
+  cross below it. The setup screen must communicate this risk.
+- A hunt receipt records each encounter, kills by species, XP/practice claims, materials, remaining
+  Health, and an enumerated return reason.
+- During Living Village, returning to the Hearth resets Health and Mana and creates no permanent
+  injury or death. The threshold controls trip length, risk, and haul—not a recovery simulation.
+
 ## Tower and combat boundary
 
 Floors 1–10 are immutable content definitions. Clearing a floor unlocks the next; cleared floors
-may be replayed for combat practice but not first-clear items, unlocks, or summon tokens. A floor
-selects an encounter definition and submits a frozen party snapshot to a versioned
-`CombatResolver`.
+become repeatable hunting grounds. Repeat hunts may grant kill XP, practical skill progress, and
+species materials, but not first-clear items, floor unlocks, or summon tokens. A hunt selects a
+known species and bounded encounter sequence, then submits frozen party snapshots to a versioned
+`CombatResolver` one encounter at a time.
 
 The initial resolver may be mathematical, but it must return a seeded trace containing enough
 detail to visualize and explain:
@@ -196,10 +230,11 @@ accepted, defeat returns the party without permanent death or lasting injury and
 first-clear reward. Return resets Health and Mana so the milestone does not accidentally acquire a
 recovery subsystem.
 
-Before combat implementation begins, LV-1 must resolve five blocking rules: the attribute
-vocabulary, XP attribution, whether affinity participates in the first resolver, exact defeat
-behavior, and the typed first-clear/replay reward fields. The combat draft may answer these; until
-then they remain explicit blockers rather than local worker choices.
+Before combat implementation begins, LV-1 must resolve the attribute vocabulary, XP attribution,
+whether affinity participates in the first resolver, exact defeat behavior, typed first-clear and
+repeat-hunt rewards, material drop fields, and the safety estimator used before another encounter.
+The combat draft may answer these; until then they remain explicit blockers rather than local
+worker choices.
 
 ## Minimum contracts
 
@@ -213,6 +248,7 @@ then they remain explicit blockers rather than local worker choices.
 | `MonsterDefinition` | combat traits plus a binding to its wiki and visual manifest |
 | `FloorDefinition` / `EncounterDefinition` | unlock/reward data / selected enemies and conditions |
 | `TrainingDefinition` / `TrainingAssignment` | fixed training rule / reserved hero and focus |
+| `HuntOrder` / `HuntReceipt` | species, party, threshold and caps / encounters, haul and exact return reason |
 | `PartySnapshot` | immutable participants and prepared state for one attempt |
 | `CombatRequest` / `CombatReceipt` | resolver input / seeded result and explanatory trace |
 | `SummonReceipt` | channel, entropy, result, and activated pre-authored hero reference |
@@ -226,6 +262,9 @@ hero.summoned
 hero.equipment.changed
 training.assigned
 training.completed
+hero.activity.phase.changed
+hunt.started
+hunt.returned
 party.deployed
 combat.resolved
 reward.claimed
@@ -237,7 +276,7 @@ progression.changed
 
 - Summoning activates one not-yet-owned identity from the fixed six and creates a receipt; it does
   not generate or render a new person.
-- Tower creates an encounter request; it does not resolve combat.
+- Tower validates a hunt order and creates each encounter request; it does not resolve combat.
 - Combat produces an outcome and claims; it does not mutate progression or inventory.
 - Progression validates XP, levels, attributes, affinity, and skill-practice claims.
 - Inventory validates item grants and loadouts.
@@ -265,17 +304,19 @@ progression.changed
 A fresh player can:
 
 1. Start a run and summon enough visually distinct heroes to form one party.
-2. Inspect each hero, understand their mechanical differences, and equip them.
-3. Deploy to Floor 1 and watch an understandable deterministic result.
-4. Return to the same Hearth with rewards and progression persisted.
-5. Assign returning heroes to training through the short post-combat path.
-6. Observe that training or an equipment change materially changes a replayed combat result.
-7. Clear and sequentially unlock Floors 1–10.
-8. Reload at any point and recover the same canonical state.
+2. Select each hero in the Village, understand their mechanical differences, and equip them without
+   navigating to a separate roster screen.
+3. Assign one hero to targeted Court training and watch them walk there and begin.
+4. Send one party to hunt a known Floor-1 species with a chosen remaining-Health threshold.
+5. Watch an understandable deterministic result and automatic return.
+6. Return to the same Hearth with XP, skill practice, materials, and the return reason persisted.
+7. Observe that training, equipment, species, or threshold changes a later hunt outcome or haul.
+8. Clear and sequentially unlock Floors 1–10.
+9. Reload at any point and recover the same canonical state.
 
 Quality gates:
 
-- the same hero is recognizable in summon, roster, Village, training, and combat;
+- the same hero is recognizable in summon, Village popover/drawer, movement, training, and combat;
 - the same monster, skill, and equipment IDs bind wiki text, visual assets, UI, and resolution;
 - identical initial seed plus commands produce identical receipts and state hashes;
 - no hero can train and deploy simultaneously;
@@ -292,18 +333,18 @@ when every implementation or art worker can receive a bounded wiki packet withou
 
 ### LV-2 — Static Village and prepared roster
 
-Deliver the static Hearth, starter hero manifests, summon receipt, Roster/Hero surface, loadouts,
-Training Court assignment, initial content fixtures, and the three primary navigation routes. Exit
-when a player can summon, inspect, equip, and assign training with no combat placeholder hidden as
-production behavior.
+Deliver the static Hearth, starter hero manifests, summon receipt, unified Village/hero surface,
+loadouts, Training Court assignment, hero movement/activity presentation, and the three focused
+surfaces. Exit when a player can summon, inspect, equip, issue training, and watch a hero reach the
+Court with no combat placeholder hidden as production behavior.
 
 ### LV-3 — Deterministic tower loop
 
-First deliver **one complete Floor-1 loop**: three heroes, one encounter, the initial skill and
-equipment subset, combat, reward, training, persistence, and final presentation bindings. Only
-after that fixture passes should content scale to Floors 2–10. Exit LV-3 when all ten floors use the
-proven adapter, the complete loop replays from seed, and one player decision visibly changes a later
-outcome.
+First deliver **one complete Floor-1 hunt loop**: three heroes, one target species, one return
+threshold, bounded encounters, the initial skill/equipment subset, material haul, return movement,
+Court training, persistence, and final presentation bindings. Only after that fixture passes should
+content scale to Floors 2–10. Exit LV-3 when all ten floors use the proven adapter, the complete
+loop replays from seed, and one player decision visibly changes a later outcome.
 
 ### LV-4 — Visual integration and playtest candidate
 
