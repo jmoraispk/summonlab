@@ -97,6 +97,7 @@
 		<div class="system-state" class:offline={data.health.database.status !== 'available'}>
 			<i></i>{data.health.database.status === 'available' ? 'Hearth online' : 'Hearth offline'}
 		</div>
+		<a class="wiki-button" href={resolve('/wiki')} data-testid="open-wiki">Wiki</a>
 		<button bind:this={settingsTrigger} type="button" onclick={openSettings} data-sound-cue="menu"
 			>Settings</button
 		>
@@ -249,6 +250,28 @@
 	}
 	.wordmark span {
 		color: #bd5a2b;
+	}
+	.wiki-button {
+		padding: 0.55rem 0.75rem;
+		border: 1px solid rgba(224, 166, 110, 0.42);
+		color: #e7cba7;
+		font:
+			0.62rem ui-monospace,
+			monospace;
+		letter-spacing: 0.12em;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition:
+			border-color 160ms ease,
+			background 160ms ease,
+			color 160ms ease;
+	}
+	.wiki-button:hover,
+	.wiki-button:focus-visible {
+		border-color: #d0733b;
+		background: rgba(164, 61, 32, 0.2);
+		color: #fff1dc;
+		outline: none;
 	}
 	main > header button {
 		border: 0;

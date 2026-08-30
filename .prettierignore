@@ -2,6 +2,7 @@ node_modules
 dist
 build
 .svelte-kit
+apps/web/.vercel
 coverage
 playwright-report
 test-results

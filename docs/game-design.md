@@ -1,5 +1,10 @@
 # Game design
 
+> This document describes the implemented prototype direction through the current engine proofs.
+> The latest multi-system target, including the town-bound Master and revised rank caps, is in the
+> [shared system architecture](system-architecture/README.md). Conflicts require new versioned rules;
+> existing replay behavior remains unchanged.
+
 ## Product thesis
 
 Summonlab is a tower-climbing leadership RPG about people who happen to be summoned.

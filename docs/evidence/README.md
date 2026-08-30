@@ -168,3 +168,11 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin009-story-workshop.json` — the checked versioned brief, honestly labeled scripted
   generation fixture, two bounded proposal packets and hashes, catalog/reference validation,
   prototype warnings, pending review state, and zero candidates ready for compilation.
+- `wiki-living-village-visual-packet.png` — the desktop online-wiki packet header with the Hearth
+  environment, the fixed six-person prototype decision, and collapsible hierarchical navigation.
+- `wiki-living-village-visual-cohort.png` — the fixed prototype roster with Mara Vey and Remy Nahl
+  replacing Elian Ro and Lio Dae; labels preserve each asset's actual approval status.
+- `wiki-readable-parallel-plan.png` — the enlarged desktop wiki type scale applied to article copy,
+  metadata, tables, and the wider collapsible index on the new parallel production plan.
+- `wiki-home-mobile.png` — the 390×844 online-wiki landing view with the Hearth archive, visual
+  packet entry, and Living Village review path.

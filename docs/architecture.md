@@ -1,5 +1,10 @@
 # Architecture and platform
 
+> This document records the prototype architecture and its implemented evidence. The ownership,
+> scale, integration, and parallel-work target is now maintained in the
+> [shared system architecture](system-architecture/README.md). Existing engine histories remain
+> immutable while that target is introduced through new ruleset and contract versions.
+
 ## Goals
 
 1. Keep the server authoritative while the phone is open or closed.
