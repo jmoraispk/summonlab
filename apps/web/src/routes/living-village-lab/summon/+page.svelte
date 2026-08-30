@@ -34,6 +34,7 @@
 	let sigils = $state<number>(wallets[0].balance);
 	let gems = $state<number>(wallets[1].balance);
 	let guaranteeProgress = $state<number>(guarantee.current);
+	let guaranteeRenewed = $state(false);
 	let spendFlash = $state<{ currency: 'sigil' | 'gem'; label: string } | null>(null);
 	let currentHero = $state<HeroFixture>(featuredHero);
 	let pendingResults = $state<ArrivalResult[]>([
@@ -49,6 +50,7 @@
 
 	const progressPercent = $derived(`${(guaranteeProgress / guarantee.threshold) * 100}%`);
 	const selectedDirection = $derived(revealDirections.find((item) => item.id === direction)!);
+	const guaranteedHero = heroes.find((hero) => hero.stars === 3) ?? featuredHero;
 
 	function flashSpend(currency: 'sigil' | 'gem', label: string) {
 		if (spendTimer) window.clearTimeout(spendTimer);
@@ -59,6 +61,19 @@
 	function createArrival(hero: HeroFixture, isBonus = false): ArrivalResult {
 		arrivalSerial += 1;
 		return { ...hero, arrivalId: `arrival-${arrivalSerial}`, unread: true, isBonus };
+	}
+
+	function resolveArrivals(receipt: readonly HeroFixture[]): ArrivalResult[] {
+		let renewed = false;
+		const arrivals = receipt.map((plannedHero, index) => {
+			const nextProgress = guaranteeProgress + 1;
+			const hero = nextProgress >= guarantee.threshold ? guaranteedHero : plannedHero;
+			if (hero.stars >= 3) renewed = true;
+			guaranteeProgress = hero.stars >= 3 ? 0 : nextProgress;
+			return createArrival(hero, index === receipt.length - 1 && receipt.length > 1);
+		});
+		guaranteeRenewed = renewed;
+		return arrivals;
 	}
 
 	function beginReveal(mode: OfferMode, receipt: ArrivalResult[]) {
@@ -82,20 +97,15 @@
 				gems -= 160;
 				flashSpend('gem', '−160');
 			}
-			guaranteeProgress = Math.min(guarantee.threshold, guaranteeProgress + 1);
 			const hero = heroes[(singleCursor + 1) % heroes.length] ?? featuredHero;
 			singleCursor += 1;
-			beginReveal('single', [createArrival(hero)]);
+			beginReveal('single', resolveArrivals([hero]));
 			return;
 		}
 		if (gems < 1600) return;
 		gems -= 1600;
-		guaranteeProgress = Math.min(guarantee.threshold, guaranteeProgress + 11);
 		flashSpend('gem', '−1,600');
-		beginReveal(
-			'batch',
-			batchReceipt.map((hero, index) => createArrival(hero, index === batchReceipt.length - 1))
-		);
+		beginReveal('batch', resolveArrivals(batchReceipt));
 	}
 
 	function replay() {
@@ -236,6 +246,7 @@
 								aria-label={`View ${hero.name} stats${hero.unread ? ', new arrival' : ''}`}
 							>
 								{#if hero.unread}<i class="new-mark">New</i>{/if}
+								<i class="star-mark">{hero.stars}★</i>
 								<img src={hero.image} alt="" width="1024" height="1536" /><span
 									><strong>{hero.name}</strong><small>{hero.calling}</small></span
 								>
@@ -266,9 +277,11 @@
 					<i style:width={progressPercent}></i><b style:left={progressPercent}></b>
 				</div>
 				<footer>
-					<span>Next summon advances the bond</span><span
-						>{guarantee.threshold - guaranteeProgress} remaining</span
-					>
+					<span
+						>{guaranteeRenewed
+							? '3★ arrived · guarantee renewed'
+							: 'Next summon advances the bond'}</span
+					><span>{guarantee.threshold - guaranteeProgress} remaining</span>
 				</footer>
 			</section>
 
@@ -331,6 +344,7 @@
 	open={ratesOpen}
 	{rates}
 	{guarantee}
+	progress={guaranteeProgress}
 	directions={revealDirections}
 	{direction}
 	{reducedMotion}
@@ -943,6 +957,21 @@
 		font-weight: 850;
 		letter-spacing: 0.09em;
 		text-transform: uppercase;
+	}
+	.arrival-rail .star-mark {
+		position: absolute;
+		z-index: 2;
+		right: 5px;
+		bottom: 4px;
+		padding: 2px 5px;
+		border: 1px solid color-mix(in srgb, var(--rarity) 55%, transparent);
+		border-radius: 99px;
+		background: #071014e8;
+		color: var(--rarity);
+		font-size: 0.43rem;
+		font-style: normal;
+		font-weight: 800;
+		letter-spacing: 0.05em;
 	}
 	.arrival-rail button:hover {
 		border-color: #75c8b55e;

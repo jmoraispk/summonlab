@@ -14,12 +14,21 @@ Implementation branch: `codex/lv-summon-screen`
   default ritual now has an authored beat curve: star intake, sequential rune lock, accelerating
   compression, aperture rupture, energy veil, silhouette traversal, rarity-colored shockwaves,
   identity bloom, and settling afterglow rather than evenly rotating decoration.
+- The reveal now obeys a vessel-first compositing contract: the arched identity frame draws before
+  portrait pixels are allowed to resolve, silhouettes remain clipped inside it, and contained art
+  prevents the source matte, head, hands, or feet from escaping the presentation frame.
 - Standard as the active banner, earned and premium balances, visible guarantee movement, rates,
   and costs on both `Summon ×1` and `Summon ×10 + 1 bonus`.
+- Guarantee state is evaluated in receipt order. A natural or threshold-forced 3★ resets progress
+  to zero immediately, subsequent slots advance the renewed bond, and Rates reads the same live
+  value. The portal explicitly acknowledges when a 3★ renewed the guarantee.
 - Gate ignition, constellation assembly, and immediate identity remain selectable under Rates &
   details, with replay, skip, muted-by-default sound hooks, measured identity timing, and a
   reduced-motion path.
 - Results resolve inside the gate instead of opening a second presentation screen.
+- Result frames now arrive before their portrait layer. Single art is contained rather than
+  head-cropped; batch slots are an exact five-by-two company with the same-size bonus centered on a
+  third row. All result and Recent-arrival slots carry an always-visible numeric star badge.
 - Five sequential singles and an eleven-result batch remain in a clickable recent-arrivals strip.
   Every receipt slot starts with a rarity-colored `NEW` marker, opens an in-place identity dossier,
   and clears independently even when two slots reference the same fixed person.
@@ -30,6 +39,8 @@ Implementation branch: `codex/lv-summon-screen`
 - Elemental affinities now have explicit Ember, Tide, Gale, or Grove icons. Aptitudes have icon-led
   route-local martial, magic, or crafting classes. Star presentation is visibly tiered: 1★
   ember-gold, 2★ arc-blue, and 3★ astral-violet.
+- The accidental opaque-yellow rate and reveal-option fills were removed. The dialog now uses dark
+  opaque surfaces, warm primary type, and brighter secondary copy.
 - Only Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl appear. The browser
   receipt never writes durable hero instances.
 
@@ -79,10 +90,12 @@ is less immediately legible as an arrival.
 - `docs/evidence/living-village-summon-dossier.png`
 - `docs/evidence/living-village-summon-batch-result.png`
 
-The focused Playwright spec covers banner/rates interaction, visible costs, all three animations,
-skip/replay, reduced motion, five sequential arrivals, the `10 + 1` message, connected currency and
-guarantee movement, independent unread clearing for duplicate slots, distinct 1★/2★ presentation,
-Body/Mind positioning, all six canonical attribute names, elemental affinity icons, and all three
+The focused Playwright spec covers banner/rates interaction and readable rate surfaces, visible
+costs, all three animations, frame-before-portrait ordering, skip/replay, reduced motion including
+the result child, five sequential arrivals, natural-3★ reset, the `10 + 1` message, exact `5 / 5 /
+1` desktop geometry, eleven visible star badges, connected currency and live guarantee movement,
+independent unread clearing for duplicate slots, distinct 1★/2★ presentation, Body/Mind
+positioning, all six canonical attribute names, elemental affinity icons, and all three
 aptitude-class icons.
 
 ## Validation record
@@ -119,7 +132,12 @@ type SummonPortalViewModel = {
 	}>;
 	activeBannerId: string;
 	featuredHero: SummonHeroSummary;
-	guarantee?: { current: number; threshold: number; unit: 'summons' };
+	guarantee?: {
+		current: number;
+		threshold: number;
+		unit: 'summons';
+		lastResetReason?: 'natural-three-star' | 'guaranteed-three-star';
+	};
 	rates: Array<{ outcomeBand: string; probabilityBasisPoints: number }>;
 	offers: Array<{
 		offerId: string;

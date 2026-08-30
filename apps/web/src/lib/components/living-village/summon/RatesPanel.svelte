@@ -16,6 +16,7 @@
 		open,
 		rates,
 		guarantee,
+		progress,
 		directions,
 		direction,
 		reducedMotion,
@@ -28,6 +29,7 @@
 		open: boolean;
 		rates: readonly RateRow[];
 		guarantee: Guarantee;
+		progress: number;
 		directions: readonly DirectionOption[];
 		direction: Direction;
 		reducedMotion: boolean;
@@ -74,7 +76,9 @@
 		<section class="guarantee-copy">
 			<p>Guarantee</p>
 			<strong>{guarantee.label} {guarantee.threshold} summons</strong>
-			<span>Current progress begins at {guarantee.current} / {guarantee.threshold}.</span>
+			<span data-testid="rates-guarantee-progress"
+				>Current progress: {progress} / {guarantee.threshold}.</span
+			>
 		</section>
 
 		<section class="compare">
@@ -210,10 +214,11 @@
 		padding: 13px;
 		border: 1px solid #dbe9e21c;
 		border-radius: 11px;
-		background: #fff006;
+		background: linear-gradient(145deg, #132127, #0c151a);
+		box-shadow: inset 0 1px #ffffff0b;
 	}
 	.rate-list span {
-		color: #83918c;
+		color: #9eb0a9;
 		font-size: 0.64rem;
 	}
 	.rate-list strong {
@@ -304,8 +309,8 @@
 		padding: 12px;
 		border: 1px solid #cfddd720;
 		border-radius: 10px;
-		background: #fff004;
-		color: #9aa6a1;
+		background: #101a1f;
+		color: #b8c5c0;
 		text-align: left;
 		cursor: pointer;
 	}
@@ -319,7 +324,7 @@
 		font-size: 0.7rem;
 	}
 	.directions span {
-		color: #71817b;
+		color: #91a19b;
 		font-size: 0.56rem;
 		line-height: 1.35;
 	}

@@ -84,6 +84,9 @@
 	const veilLines = Array.from({ length: 9 }, (_, index) => index);
 	const identityVisible = $derived(['idle', 'identity', 'mechanics', 'complete'].includes(phase));
 	const mechanicsVisible = $derived(['idle', 'mechanics', 'complete'].includes(phase));
+	const vesselVisible = $derived(
+		['idle', 'threshold', 'form', 'silhouette', 'identity', 'mechanics', 'complete'].includes(phase)
+	);
 
 	const phaseLabels: Record<Phase, string> = {
 		idle: 'The gate is listening',
@@ -100,19 +103,19 @@
 	const sequences: Record<Direction, Array<[Phase, number]>> = {
 		gate: [
 			['charge', 0],
-			['threshold', 650],
-			['silhouette', 950],
-			['identity', 1620],
-			['mechanics', 2050],
-			['complete', 2380]
+			['threshold', 620],
+			['silhouette', 1080],
+			['identity', 1430],
+			['mechanics', 1780],
+			['complete', 2130]
 		],
 		constellation: [
 			['marks', 0],
-			['form', 430],
-			['silhouette', 1200],
-			['identity', 1720],
-			['mechanics', 2180],
-			['complete', 2500]
+			['form', 500],
+			['silhouette', 1050],
+			['identity', 1550],
+			['mechanics', 1940],
+			['complete', 2250]
 		],
 		identity: [
 			['identity', 0],
@@ -176,11 +179,13 @@
 	class="stage"
 	class:identity-visible={identityVisible}
 	class:mechanics-visible={mechanicsVisible}
+	class:vessel-visible={vesselVisible}
 	class:safe={safeMode}
 	data-direction={direction}
 	data-phase={phase}
 	data-testid="reveal-stage"
 	data-stars={hero.stars}
+	data-vessel-visible={vesselVisible}
 	aria-label={`${hero.name} summon reveal`}
 >
 	<div class="world" aria-hidden="true">
@@ -204,6 +209,7 @@
 	<figure>
 		<div class="portrait-shell">
 			<img
+				data-testid="reveal-portrait"
 				src={hero.image}
 				alt={`${hero.name}, featured Standard banner identity`}
 				width="1024"
@@ -237,7 +243,12 @@
 	</div>
 
 	{#if resultVisible && results.length > 0}
-		<ResultPresentation mode={resultMode} {results} onselect={(next) => onselect(next as Hero)} />
+		<ResultPresentation
+			mode={resultMode}
+			{results}
+			reducedMotion={safeMode}
+			onselect={(next) => onselect(next as Hero)}
+		/>
 	{/if}
 	{#if selectedHero}
 		<HeroDossier hero={selectedHero} onclose={onclosedossier} />
@@ -603,7 +614,60 @@
 	}
 	.portrait-shell {
 		position: absolute;
-		inset: 1% 31% 0 4%;
+		inset: 8% 53% 4% 9%;
+		overflow: hidden;
+		opacity: 0;
+		transform: translateY(10px) scale(0.97);
+		border: 1px solid color-mix(in srgb, var(--rarity) 44%, #80d5c2 22%);
+		border-radius: 48% 48% 16% 16% / 25% 25% 10% 10%;
+		background:
+			radial-gradient(
+				ellipse at 50% 34%,
+				color-mix(in srgb, var(--rarity) 16%, transparent),
+				transparent 48%
+			),
+			linear-gradient(180deg, #071116, #03070b 78%);
+		box-shadow:
+			inset 0 0 55px #49ad9822,
+			0 0 42px #06100f;
+		transition:
+			opacity 160ms ease,
+			transform 320ms cubic-bezier(0.18, 0.82, 0.22, 1);
+	}
+	.portrait-shell::before {
+		position: absolute;
+		z-index: 1;
+		inset: 10px;
+		pointer-events: none;
+		border: 1px solid #91decf24;
+		border-radius: inherit;
+		box-shadow:
+			inset 0 0 38px #000a,
+			0 0 20px var(--rarity-soft);
+		content: '';
+	}
+	.vessel-visible .portrait-shell {
+		opacity: 1;
+		transform: none;
+	}
+	.stage[data-phase='threshold'] .portrait-shell,
+	.stage[data-phase='form'] .portrait-shell {
+		animation: vessel-lock 480ms cubic-bezier(0.16, 0.78, 0.2, 1) both;
+	}
+	@keyframes vessel-lock {
+		0% {
+			opacity: 0;
+			transform: translateY(18px) scaleX(0.72) scaleY(1.05);
+			filter: brightness(2);
+		}
+		58% {
+			opacity: 1;
+			transform: translateY(-2px) scaleX(1.015);
+		}
+		100% {
+			transform: none;
+			filter: none;
+		}
 	}
 	.portrait-shell img {
 		position: absolute;
@@ -611,24 +675,20 @@
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
-		object-position: 47% 100%;
-		filter: saturate(0.72) brightness(0.78) contrast(1.09) drop-shadow(0 24px 30px #000b);
-		mix-blend-mode: screen;
-		mask-image: radial-gradient(ellipse 54% 59% at 50% 51%, #000 58%, #000c 72%, transparent 100%);
+		object-position: center;
+		filter: saturate(0.78) brightness(0.9) contrast(1.06) drop-shadow(0 24px 30px #000b);
 		opacity: 0;
 		transform: translateY(12px) scale(0.98);
-		transition:
-			opacity 500ms ease,
-			transform 700ms cubic-bezier(0.18, 0.82, 0.22, 1),
-			filter 650ms ease;
 	}
-	.identity-visible .portrait-shell img {
+	.stage[data-phase='idle'] .portrait-shell img,
+	.stage[data-phase='mechanics'] .portrait-shell img,
+	.stage[data-phase='complete'] .portrait-shell img {
 		opacity: 1;
 		transform: none;
-		filter: saturate(0.9) brightness(0.96) contrast(1.04) drop-shadow(0 24px 30px #000b);
+		filter: saturate(0.9) brightness(0.98) contrast(1.04) drop-shadow(0 24px 30px #000b);
 	}
 	.stage[data-phase='identity'] .portrait-shell img {
-		animation: identity-arrive 760ms cubic-bezier(0.1, 0.75, 0.15, 1) both;
+		animation: identity-arrive 620ms cubic-bezier(0.1, 0.75, 0.15, 1) 90ms both;
 	}
 	@keyframes identity-arrive {
 		0% {
@@ -636,7 +696,7 @@
 			transform: translateY(26px) scale(0.9);
 			filter: saturate(0) brightness(4) contrast(1.7) drop-shadow(0 0 55px var(--rarity));
 		}
-		16% {
+		24% {
 			opacity: 1;
 		}
 		44% {
@@ -649,8 +709,7 @@
 			filter: saturate(0.9) brightness(0.96) contrast(1.04) drop-shadow(0 24px 30px #000b);
 		}
 	}
-	.stage[data-phase='silhouette'] .portrait-shell img,
-	.stage[data-phase='form'] .portrait-shell img {
+	.stage[data-phase='silhouette'] .portrait-shell img {
 		opacity: 0.62;
 		transform: translateY(18px) scale(0.95);
 		filter: saturate(0) brightness(1.65) contrast(1.8) drop-shadow(0 0 34px #9cf3e2);
@@ -814,6 +873,7 @@
 	.safe *::before,
 	.safe *::after {
 		animation-duration: 1ms !important;
+		animation-delay: 0ms !important;
 		transition-duration: 1ms !important;
 	}
 	@media (max-width: 760px) {
@@ -836,7 +896,7 @@
 			inset: 30px 0 54px;
 		}
 		.portrait-shell {
-			inset: 2% -3% 27% -8%;
+			inset: 7% 15% 32%;
 		}
 		figcaption {
 			right: 20px;

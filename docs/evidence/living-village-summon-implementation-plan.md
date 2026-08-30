@@ -1,5 +1,93 @@
 # Living Village Summoning Portal implementation plan
 
+## Owner-feedback revision — cinematic continuity and guarantee correctness
+
+The supplied screenshots are a visual audit of the current build, not a style reference. This pass
+must fix the observed defects before adding more ornament: low-contrast rate surfaces, an exposed
+rectangular portrait matte, portrait pixels arriving before their containing card, unsafe head and
+body crops, a `6 / 4 / 1` batch composition, star counts hidden below the fold, and guarantee
+progress that advances but never resolves.
+
+### Reveal choreography contract
+
+Gate ignition becomes the quality bar and follows one unambiguous visibility contract. The portal
+may suggest a person before recognition, but no source portrait pixels or rectangular source matte
+may appear until the identity vessel is visibly established.
+
+| Beat | Gate target | Visual event | Identity visibility |
+| --- | ---: | --- | --- |
+| Breath | 0–180 ms | Near-still room tone, dim outer orbit, controls remain available | None |
+| Intake | 180–620 ms | Sparks and filaments travel inward; rings accelerate with unequal inertia | None |
+| Lock | 620–880 ms | Runes align, cardinal marks strike, and an arched identity vessel draws | None |
+| Rupture | 880–1,080 ms | Aperture compresses to a bright seam and releases one restrained shockwave | None |
+| Crossing | 1,080–1,430 ms | A monochrome silhouette crosses inside the already-complete vessel | Silhouette only |
+| Recognition | 1,430–1,650 ms | Rarity color lands, portrait resolves from the face outward, name follows | Recognizable face |
+| Settle | 1,650–2,250 ms | Depth separates, particles decay, mechanics enter, replay/skip stay live | Full identity |
+
+Constellation assembly uses the same vessel-first rule: affinity and aptitude marks create the
+outline, the frame closes, then the portrait resolves. Immediate identity draws the frame in the
+first 80 ms and resolves the face within 150 ms; it never flashes an unframed image. Reduced motion
+shows a complete static vessel and portrait in one dissolve, with no flashes, spin, parallax, or
+staggered wait.
+
+Animation implementation invariants:
+
+- Keep Svelte for orchestration and PixiJS/WebGL for the portal. A framework replacement is not an
+  animation-quality strategy; timing, compositing, masking, and art direction are the relevant
+  boundaries.
+- The portrait source is always clipped by the authored vessel, and `object-fit: contain` keeps the
+  face, head, hands, and feet inside its safe area. Source-image edges must never define the stage.
+- The vessel's opaque backing and border render before portrait opacity rises. Result cards follow
+  the same frame-before-image sequence.
+- Use asymmetric angular velocity, inward particle travel, brief compression, and fast-decaying
+  rarity light. Avoid perpetual equal-speed rotation and long full-screen glow.
+- Once the face is recognizable, no input-blocking delay is permitted. Skip resolves the current
+  receipt immediately; replay resets every animated layer to the breath beat.
+- Muted-by-default sound remains an honest hook. The visual timing cannot depend on audio.
+
+### Readability and result-composition contract
+
+- Replace malformed opaque yellow alpha tokens with dark translucent surfaces, ivory primary copy,
+  and teal/gold accents that meet readable contrast in the actual dialog.
+- Single-result art uses a contained full-body crop inside a visible card; the card exists before
+  its portrait is revealed.
+- The first ten batch arrivals form exactly two equal rows of five at desktop widths. The bonus is
+  the same card size, centered on a third row. Responsive layouts may reflow but must remain
+  balanced and preserve source order.
+- Every result card and Recent arrival exposes an always-visible `1★`, `2★`, or `3★` badge. Rarity
+  color is supplementary: ember-gold for 1★, arc-blue for 2★, astral-violet for 3★.
+- `NEW` is keyed to receipt slot, not identity. Opening one duplicate clears only that slot.
+
+### Guarantee state machine
+
+Guarantee progress is evaluated for each arrival in receipt order:
+
+1. Increment progress for the pending slot.
+2. If the increment reaches the threshold, resolve that slot as an existing 3★ fixture identity.
+3. If the resolved arrival is 3★—natural or guaranteed—reset progress to `0` immediately.
+4. Otherwise retain the incremented progress for the next slot.
+
+The batch resolver applies this rule eleven times, including the bonus, and the guarantee display
+and Rates panel consume the same live value. This remains browser-session presentation state and
+does not establish production odds, prices, thresholds, or grants.
+
+### Acceptance checks for this revision
+
+1. Capture the crossing beat and verify there is no exposed rectangular portrait matte and no hero
+   image outside the already-visible vessel.
+2. Inspect single-result bounds at desktop and mobile to verify the head and body remain inside the
+   card.
+3. Measure the first ten batch card rectangles and prove two rows of five; prove the bonus card is
+   centered and all eleven star badges are visible.
+4. Summon through a natural 3★ and prove live guarantee progress resets to `0 / 30`; then prove the
+   next non-3★ advances to `1 / 30`.
+5. Open Rates and verify its live guarantee value matches the portal and no rate/direction surface
+   uses a high-luminance yellow fill.
+6. Re-run gate, constellation, identity-first, skip, replay, and reduced-motion checks after the
+   compositing changes.
+
+Status: approved implementation sequence for the current pass; authored before code changes
+
 ## Owner-feedback revision — release presentation pass
 
 The review screenshots are evidence of current problems, not a style target. The next slice keeps

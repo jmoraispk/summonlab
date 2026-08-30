@@ -44,6 +44,11 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(rates).toContainText('10 + 1 bonus');
 	await expect(rates).toContainText('Demo values');
 	await expect(rates).toContainText('Reveal ritual');
+	const rateSurface = rates.locator('.rate-list > div').first();
+	await expect(rateSurface).toHaveCSS('color', 'rgb(238, 233, 223)');
+	expect(
+		await rateSurface.evaluate((element) => getComputedStyle(element).backgroundImage)
+	).toContain('linear-gradient');
 	await page.getByRole('button', { name: 'Close rates and details' }).click();
 
 	await expect(page.getByTestId('summon-single')).toContainText('1 Gate sigil or 160 gems');
@@ -51,6 +56,12 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(page.getByTestId('summon-batch')).toContainText('1,600 gems');
 
 	await chooseDirection(page, 'Gate', 'gate');
+	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'threshold');
+	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-vessel-visible', 'true');
+	await expect(page.getByTestId('reveal-portrait')).toHaveCSS('opacity', '0');
+	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'silhouette');
+	await expect(page.getByTestId('reveal-portrait')).not.toHaveCSS('opacity', '0');
+	await expect(page.getByTestId('reveal-portrait')).toHaveCSS('object-fit', 'contain');
 	await page.getByRole('button', { name: 'Skip', exact: true }).click();
 	await expect(page.getByTestId('summon-results')).toBeVisible();
 	await page.getByRole('button', { name: 'Replay', exact: true }).click();
@@ -68,7 +79,13 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 		await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'complete');
 	}
 	await expect(page.getByTestId('wallet-sigil')).toContainText('2');
-	await expect(page.getByTestId('guarantee-progress')).toContainText('19 / 30');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('0 / 30');
+	await expect(page.getByTestId('guarantee-progress')).toContainText(
+		'3★ arrived · guarantee renewed'
+	);
+	await page.getByRole('button', { name: /Rates & details/ }).click();
+	await expect(page.getByTestId('rates-guarantee-progress')).toContainText('0 / 30');
+	await page.getByRole('button', { name: 'Close rates and details' }).click();
 	const history = page.getByTestId('arrival-history');
 	await expect(history.getByRole('button')).toHaveCount(5);
 	await expect(history.getByText('New', { exact: true })).toHaveCount(5);
@@ -113,11 +130,27 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 
 	await page.getByTestId('summon-batch').click();
 	await expect(page.getByTestId('wallet-gem')).toContainText('880');
-	await expect(page.getByTestId('guarantee-progress')).toContainText('30 / 30');
+	await expect(page.getByTestId('guarantee-progress')).toContainText('1 / 30');
 	await expect(page.getByTestId('arrival-card')).toHaveCount(11);
 	await expect(page.getByTestId('summon-results')).toContainText('10 summoned + 1 bonus');
 	await expect(page.getByTestId('summon-results')).toContainText('Bonus');
 	const batchResults = page.getByTestId('summon-results');
+	await expect(batchResults.locator('.star-mark')).toHaveCount(11);
+	await expect(batchResults.locator('.star-mark').filter({ hasText: '3★' })).toHaveCount(2);
+	const cards = page.getByTestId('arrival-card');
+	const cardBoxes = await Promise.all(
+		Array.from({ length: 11 }, (_, index) => cards.nth(index).boundingBox())
+	);
+	const gridBox = await batchResults.locator('.result-grid').boundingBox();
+	for (let index = 1; index < 5; index += 1)
+		expect(Math.abs(cardBoxes[index]!.y - cardBoxes[0]!.y)).toBeLessThan(2);
+	for (let index = 6; index < 10; index += 1)
+		expect(Math.abs(cardBoxes[index]!.y - cardBoxes[5]!.y)).toBeLessThan(2);
+	expect(cardBoxes[5]!.y).toBeGreaterThan(cardBoxes[0]!.y);
+	expect(cardBoxes[10]!.y).toBeGreaterThan(cardBoxes[5]!.y);
+	expect(
+		Math.abs(cardBoxes[10]!.x + cardBoxes[10]!.width / 2 - (gridBox!.x + gridBox!.width / 2))
+	).toBeLessThan(2);
 	await expect(batchResults.getByText('New', { exact: true })).toHaveCount(11);
 	const unreadMaraCards = batchResults.getByRole('button', {
 		name: /Inspect Mara Vey.*new arrival/

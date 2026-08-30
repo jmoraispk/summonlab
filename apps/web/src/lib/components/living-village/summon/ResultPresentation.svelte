@@ -14,15 +14,23 @@
 	let {
 		mode,
 		results,
+		reducedMotion,
 		onselect
 	}: {
 		mode: 'single' | 'batch';
 		results: readonly Hero[];
+		reducedMotion: boolean;
 		onselect: (hero: Hero) => void;
 	} = $props();
 </script>
 
-<section class="arrival" data-mode={mode} data-testid="summon-results" aria-live="polite">
+<section
+	class="arrival"
+	class:safe={reducedMotion}
+	data-mode={mode}
+	data-testid="summon-results"
+	aria-live="polite"
+>
 	<header>
 		<div>
 			<p>{mode === 'single' ? 'The gate knows this name' : 'Eleven arrivals answer'}</p>
@@ -45,14 +53,10 @@
 			>
 				{#if hero.unread}<i class="new-mark">New</i>{/if}
 				{#if hero.isBonus}<i class="bonus-mark">Bonus</i>{/if}
+				<i class="star-mark" aria-label={`${hero.stars} star arrival`}>{hero.stars}★</i>
 				<div class="portrait"><img src={hero.image} alt="" width="1024" height="1536" /></div>
 				<div class="copy">
-					<small class="stars"
-						>{'✦'.repeat(hero.stars)} <i>{hero.stars}★</i> · {String(index + 1).padStart(
-							2,
-							'0'
-						)}</small
-					>
+					<small>Arrival {String(index + 1).padStart(2, '0')}</small>
 					<strong>{hero.name}</strong>
 					<span>{hero.calling} · {hero.affinity}</span>
 				</div>
@@ -74,7 +78,7 @@
 		padding: 22px;
 		border: 1px solid #b8e4d936;
 		border-radius: 20px;
-		background: linear-gradient(150deg, #101c22ed, #070c11f5 66%);
+		background: linear-gradient(150deg, #101c22, #070c11 66%);
 		box-shadow:
 			0 30px 90px #000d,
 			inset 0 1px #fff1;
@@ -83,7 +87,6 @@
 	}
 	@keyframes arrive {
 		from {
-			opacity: 0;
 			transform: scale(0.975) translateY(12px);
 		}
 	}
@@ -118,32 +121,37 @@
 	}
 	.result-grid {
 		display: grid;
-		grid-template-columns: repeat(6, minmax(0, 1fr));
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		grid-template-rows: repeat(3, minmax(0, 1fr));
 		gap: 8px;
+		flex: 1;
 		min-height: 0;
-		overflow-y: auto;
+		overflow: hidden;
 		padding: 2px;
 	}
 	.result-grid.single {
-		grid-template-columns: minmax(250px, 0.55fr);
+		grid-template-columns: minmax(280px, 420px);
+		grid-template-rows: minmax(0, 1fr);
 		justify-content: center;
-		margin: auto 0;
+		margin: 0;
 		overflow: visible;
 	}
 	.result-grid button {
 		--rarity: #d9a956;
 		--rarity-soft: #d9a95624;
 		position: relative;
+		isolation: isolate;
 		min-width: 0;
+		min-height: 0;
 		overflow: hidden;
 		padding: 0;
 		border: 1px solid #c9ddd529;
 		border-radius: 12px;
-		background: #080f14;
+		background: radial-gradient(circle at 50% 25%, var(--rarity-soft), transparent 55%), #060c11;
 		color: #e8e9e3;
 		text-align: left;
 		cursor: pointer;
-		animation: result-enter 540ms cubic-bezier(0.14, 0.78, 0.18, 1) calc(var(--slot) * 42ms) both;
+		animation: result-enter 460ms cubic-bezier(0.14, 0.78, 0.18, 1) calc(var(--slot) * 42ms) both;
 		transition:
 			transform 180ms ease,
 			border-color 180ms ease,
@@ -153,7 +161,7 @@
 		0% {
 			opacity: 0;
 			transform: translateY(22px) scale(0.86);
-			filter: brightness(2.4) saturate(0);
+			filter: brightness(1.7) saturate(0.3);
 		}
 		55% {
 			opacity: 1;
@@ -190,49 +198,66 @@
 			0 0 26px #3b9d8b2b;
 	}
 	.result-grid button.bonus {
-		grid-column: 3 / span 2;
+		grid-column: 3;
 		border-color: #e0b35b85;
 		box-shadow: inset 0 0 24px #c98a271c;
 	}
 	.portrait {
-		height: 137px;
+		position: absolute;
+		z-index: 0;
+		inset: 5px;
 		overflow: hidden;
+		border-radius: 9px;
 		background: radial-gradient(circle at 50% 40%, #256e6461, transparent 60%);
-	}
-	.single .portrait {
-		height: 260px;
 	}
 	.portrait img {
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
-		object-position: center 15%;
+		object-fit: contain;
+		object-position: center;
 		filter: saturate(0.86) contrast(1.03);
+		opacity: 0;
+		animation: portrait-resolve 520ms cubic-bezier(0.18, 0.78, 0.2, 1)
+			calc(var(--slot) * 42ms + 150ms) both;
 		transition: transform 500ms ease;
+	}
+	@keyframes portrait-resolve {
+		from {
+			opacity: 0;
+			transform: translateY(10px) scale(0.96);
+			filter: saturate(0) brightness(1.8) blur(4px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
 	}
 	button:hover .portrait img {
 		transform: scale(1.035);
 	}
 	.copy {
+		position: absolute;
+		z-index: 2;
+		right: 0;
+		bottom: 0;
+		left: 0;
 		display: grid;
 		gap: 2px;
-		padding: 9px;
+		padding: 25px 9px 9px;
+		background: linear-gradient(transparent, #050b10e8 36%, #050b10 74%);
 	}
 	.copy small {
 		overflow: hidden;
 		color: var(--rarity);
-		font-size: 0.48rem;
+		font-size: 0.56rem;
+		font-weight: 720;
 		letter-spacing: 0.08em;
 		white-space: nowrap;
-	}
-	.copy .stars i {
-		font-style: normal;
-		opacity: 0.72;
 	}
 	.copy strong {
 		overflow: hidden;
 		font:
-			500 0.72rem Georgia,
+			500 0.82rem Georgia,
 			serif;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -240,21 +265,22 @@
 	.copy span {
 		overflow: hidden;
 		color: #789089;
-		font-size: 0.51rem;
+		font-size: 0.58rem;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 	.single .copy {
-		padding: 14px;
+		padding: 45px 16px 16px;
 	}
 	.single .copy strong {
 		font-size: 1.15rem;
 	}
 	.bonus-mark {
 		position: absolute;
-		z-index: 2;
-		top: 7px;
+		z-index: 4;
+		top: auto;
 		right: 7px;
+		bottom: 8px;
 		padding: 4px 7px;
 		border-radius: 99px;
 		background: #d5a14b;
@@ -264,6 +290,24 @@
 		font-weight: 820;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
+	}
+	.star-mark {
+		position: absolute;
+		z-index: 4;
+		top: 7px;
+		right: 7px;
+		min-width: 30px;
+		padding: 4px 7px;
+		border: 1px solid color-mix(in srgb, var(--rarity) 65%, transparent);
+		border-radius: 99px;
+		background: #061015e8;
+		box-shadow: 0 0 16px var(--rarity-soft);
+		color: var(--rarity);
+		font-size: 0.5rem;
+		font-style: normal;
+		font-weight: 850;
+		letter-spacing: 0.04em;
+		text-align: center;
 	}
 	.new-mark {
 		position: absolute;
@@ -294,8 +338,16 @@
 		margin-top: auto;
 		padding-top: 13px;
 		color: #71817b;
-		font-size: 0.6rem;
+		font-size: 0.66rem;
 		text-align: center;
+	}
+	.arrival.safe,
+	.safe *,
+	.safe *::before,
+	.safe *::after {
+		animation-duration: 1ms !important;
+		animation-delay: 0ms !important;
+		transition-duration: 1ms !important;
 	}
 	@media (max-width: 760px) {
 		.arrival {
@@ -311,18 +363,17 @@
 		}
 		.result-grid {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-rows: repeat(4, minmax(0, 1fr));
 		}
 		.result-grid button.bonus {
-			grid-column: 2 / span 2;
-		}
-		.portrait {
-			height: 105px;
+			grid-column: 2;
 		}
 		.result-grid.single {
-			grid-template-columns: minmax(210px, 0.82fr);
+			grid-template-columns: minmax(210px, 0.9fr);
+			grid-template-rows: minmax(0, 1fr);
 		}
-		.single .portrait {
-			height: 230px;
+		.copy span {
+			display: none;
 		}
 	}
 </style>
