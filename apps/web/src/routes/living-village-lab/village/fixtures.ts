@@ -26,6 +26,7 @@ export const facilities = [
 		action: 'Reveal the next fixed hero',
 		detail: 'Kira Toren is bound to the Floor 3 token.',
 		href: '/forge',
+		labelEdge: 'bottom',
 		position: { x: 0.5, y: 0.18 },
 		bounds: { x: 0.385, y: 0.03, width: 0.23, height: 0.305 }
 	},
@@ -36,6 +37,7 @@ export const facilities = [
 		state: '3 slots open',
 		action: 'Assign a resident to local training',
 		detail: 'Training is available now and does not require a party.',
+		labelEdge: 'top',
 		position: { x: 0.76, y: 0.67 },
 		bounds: { x: 0.65, y: 0.51, width: 0.27, height: 0.31 }
 	},
@@ -46,8 +48,42 @@ export const facilities = [
 		state: 'Floor 4 available',
 		action: 'Send a resident on a species hunt',
 		detail: 'Known Floor 4 signs: moss goblins, stoneback boars, and ash wisps.',
+		labelEdge: 'top',
 		position: { x: 0.5, y: 0.9 },
 		bounds: { x: 0.385, y: 0.775, width: 0.23, height: 0.235 }
+	},
+	{
+		id: 'kitchen',
+		name: 'Village Kitchen',
+		shortName: 'Kitchen',
+		state: 'Supper underway',
+		action: 'Prepare provisions',
+		detail: 'The evening meal is being prepared for Hearth residents.',
+		labelEdge: 'bottom',
+		position: { x: 0.225, y: 0.32 },
+		bounds: { x: 0.055, y: 0.14, width: 0.34, height: 0.34 }
+	},
+	{
+		id: 'forge',
+		name: 'Village Forge',
+		shortName: 'Forge',
+		state: 'Fires banked',
+		action: 'Work equipment',
+		detail: 'The forge is ready for the next equipment order.',
+		labelEdge: 'top',
+		position: { x: 0.78, y: 0.32 },
+		bounds: { x: 0.62, y: 0.13, width: 0.32, height: 0.36 }
+	},
+	{
+		id: 'dormitory',
+		name: 'Village Dormitory',
+		shortName: 'Dormitory',
+		state: 'Beds ready',
+		action: 'Rest and recover',
+		detail: 'Residents can recover here between assignments.',
+		labelEdge: 'bottom',
+		position: { x: 0.25, y: 0.68 },
+		bounds: { x: 0.035, y: 0.49, width: 0.38, height: 0.34 }
 	}
 ] as const satisfies readonly VillageFacility[];
 

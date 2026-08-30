@@ -210,6 +210,14 @@
 		selectedHeroId = null;
 	}
 
+	function issueRest(hero: VillageHero): void {
+		selectedFacilityId = 'dormitory';
+		huntMenuOpen = false;
+		onOrder({ kind: 'rest', heroId: hero.id });
+		announcement = `${hero.name} assigned to rest in the Dormitory.`;
+		selectedHeroId = null;
+	}
+
 	function moveCamera(deltaX: number, deltaY: number): void {
 		offsetX += deltaX;
 		offsetY += deltaY;
@@ -405,7 +413,7 @@
 				<img
 					class="environment"
 					src={environment.publicPath}
-					alt="Hearth Village with the Summoning Gate north, Training Grounds southeast, and Tower Threshold south"
+					alt="Hearth Village with the Summoning Gate north, Kitchen northwest, Forge northeast, Dormitory southwest, Training Grounds southeast, and Tower Threshold south"
 					width={environment.width}
 					height={environment.height}
 					draggable="false"
@@ -420,6 +428,7 @@
 							class="facility-hotspot"
 							class:selected={selectedFacilityId === facility.id}
 							data-facility={facility.id}
+							data-label-edge={facility.labelEdge}
 							style={hotspotStyle(facility)}
 							aria-label={`Enter ${facility.name}`}
 							href={resolve(facility.href)}
@@ -434,6 +443,7 @@
 							class="facility-hotspot"
 							class:selected={selectedFacilityId === facility.id}
 							data-facility={facility.id}
+							data-label-edge={facility.labelEdge}
 							style={hotspotStyle(facility)}
 							aria-pressed={selectedFacilityId === facility.id}
 							aria-label={`Inspect ${facility.name}`}
@@ -513,6 +523,7 @@
 						<button type="button" onclick={() => issueTraining(selectedHero)}>Court training</button
 						>
 						<button type="button" onclick={() => (huntMenuOpen = !huntMenuOpen)}>Tower hunt</button>
+						<button type="button" onclick={() => issueRest(selectedHero)}>Rest</button>
 						<button type="button" onclick={() => (drawerHeroId = selectedHero.id)}>Details</button>
 					</div>
 					{#if huntMenuOpen}
@@ -783,7 +794,7 @@
 		pointer-events: none;
 	}
 
-	.facility-hotspot[data-facility='gate'] > span {
+	.facility-hotspot[data-label-edge='bottom'] > span {
 		top: auto;
 		bottom: 0;
 		transform: translate(-50%, 50%) scale(calc(1 / var(--scene-scale)));
@@ -980,7 +991,7 @@
 
 	.hero-actions {
 		display: grid;
-		grid-template-columns: 1fr 1fr auto;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.35rem;
 		margin-top: 0.65rem;
 	}
@@ -1001,6 +1012,11 @@
 		border-color: #c97848;
 		background: #c97848;
 		color: #160b05;
+	}
+
+	.hero-actions button:last-child {
+		grid-column: 1 / -1;
+		min-height: 2.25rem;
 	}
 
 	.hunt-menu {
@@ -1103,10 +1119,6 @@
 
 		.hero-popover {
 			padding: 0.6rem;
-		}
-
-		.hero-actions {
-			grid-template-columns: 1fr 1fr;
 		}
 
 		.hero-actions button:last-child {

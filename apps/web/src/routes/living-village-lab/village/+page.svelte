@@ -24,16 +24,26 @@
 		if (order.kind === 'court') {
 			return { x: 0.72 + (index % 3) * 0.045, y: 0.68 + Math.floor(index / 3) * 0.045 };
 		}
+		if (order.kind === 'rest') {
+			return { x: 0.2 + (index % 3) * 0.07, y: 0.76 + Math.floor(index / 3) * 0.05 };
+		}
 		return { x: 0.47 + (index % 3) * 0.03, y: 0.86 + Math.floor(index / 3) * 0.025 };
 	}
 
 	function assignOrder(order: VillageOrder): void {
 		const hero = heroes.find((candidate) => candidate.id === order.heroId)!;
-		const activity = order.kind === 'court' ? 'Training at the Court' : `Hunting ${order.species}`;
+		const activity =
+			order.kind === 'court'
+				? 'Training at the Court'
+				: order.kind === 'rest'
+					? 'Resting in the Dormitory'
+					: `Hunting ${order.species}`;
 		const orderLabel =
 			order.kind === 'court'
 				? 'Assigned locally · Training Court'
-				: `Assigned to Tower · ${order.species}`;
+				: order.kind === 'rest'
+					? 'Assigned locally · Dormitory'
+					: `Assigned to Tower · ${order.species}`;
 		runtime[order.heroId] = {
 			activity,
 			position: destinationFor(order),
@@ -46,7 +56,7 @@
 	<title>Living Village · Hearth command surface</title>
 	<meta
 		name="description"
-		content="Find Hearth's six residents, inspect their readiness, and assign Court training or Tower hunts without leaving the Village."
+		content="Find Hearth's six residents, inspect their readiness, and assign training, hunts, or Dormitory rest without leaving the Village."
 	/>
 </svelte:head>
 

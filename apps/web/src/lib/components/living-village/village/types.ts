@@ -1,4 +1,4 @@
-export type VillageFacilityId = 'gate' | 'court' | 'tower';
+export type VillageFacilityId = 'gate' | 'court' | 'tower' | 'forge' | 'kitchen' | 'dormitory';
 
 export type VillageHeroId =
 	'dara-zev' | 'mara-vey' | 'jori-daro' | 'kira-toren' | 'iven-orra' | 'remy-nahl';
@@ -16,6 +16,7 @@ export type VillageFacility = {
 	action: string;
 	detail: string;
 	href?: '/forge';
+	labelEdge: 'top' | 'bottom';
 	position: VillagePoint;
 	bounds: { x: number; y: number; width: number; height: number };
 };
@@ -50,4 +51,5 @@ export type VillageSummaryItem = {
 
 export type VillageOrder =
 	| { kind: 'court'; heroId: VillageHeroId }
-	| { kind: 'hunt'; heroId: VillageHeroId; species: string };
+	| { kind: 'hunt'; heroId: VillageHeroId; species: string }
+	| { kind: 'rest'; heroId: VillageHeroId };

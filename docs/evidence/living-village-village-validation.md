@@ -25,10 +25,10 @@ compact find/focus ribbon. No separate roster route was created.
   owner review.
 - The optional Residents finder and camera controls share one compact command toolbar on desktop
   and collapse into two shallow rows on phone.
-- Existing Hearth environment with named Gate, Court, and Tower hotspots. Training Grounds and
-  Tower labels straddle the middle of their top borders; the Gate label straddles the middle of its
-  bottom border to preserve the gate artwork. Gate and Tower use taller interaction regions that
-  push those label-bearing edges away from their focal architecture.
+- Existing Hearth environment with six named facility regions: Gate, Kitchen, Forge, Dormitory,
+  Training Grounds, and Tower. Forge, Training Grounds, and Tower labels straddle non-colliding top
+  borders; Gate, Kitchen, and Dormitory use lower borders. Gate and Tower use taller interaction
+  regions that push those label-bearing edges away from their focal architecture.
 - Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
   two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
   remains available at fitted zoom so the camera never feels inert.
@@ -36,18 +36,19 @@ compact find/focus ribbon. No separate roster route was created.
   identity anchors, enlarged without card frames, backplates, blend tricks, or redundant
   world-space name labels. Their screen presence grows progressively with camera zoom, capped at
   1.75×, so the figures do not appear to shrink against the enlarged environment.
-- Available heroes carry a restrained light silhouette; assigning Court training or a Tower hunt
-  removes that light immediately so the world itself communicates who is busy.
+- Available heroes carry a restrained light silhouette; assigning Court training, a Tower hunt, or
+  Dormitory rest removes that light immediately so the world itself communicates who is busy.
 - The Summoning Gate is a real link to the repository's existing `/forge` Summoning Forge rather
   than a destination-shaped button with no outcome.
 - Anchored quick popover with portrait, name, level, Health, current activity, party state, Court
-  training, Tower species hunt, and details actions. Completing either assignment dismisses the
-  popover while the resulting destination, activity, and busy silhouette remain visible in-world.
+  training, Tower species hunt, Dormitory rest, and details actions. Completing any assignment
+  dismisses the popover while the resulting destination, activity, and busy silhouette remain
+  visible in-world.
 - Same-surface hero drawer for attributes, skills, and equipment.
 - Compact six-person roster ribbon that selects, centers, and moves keyboard focus to the same
   in-world hero.
-- Local Court assignment and three Floor 4 species hunts with a deliberately simple authored
-  destination transition.
+- Local Court assignment, three Floor 4 species hunts, and Dormitory rest with deliberately simple
+  authored destination transitions.
 - Compact party, training, Tower, summon, and material summaries.
 - Reduced-motion behavior, 390×844 composition, minimum 44px controls, and a 720px CSS viewport
   check representing 200% desktop browser-zoom reflow.
@@ -68,12 +69,13 @@ pnpm --filter @summonlab/web exec playwright test \
 ```
 
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
-1536×1024 Hearth asset, enlarged Gate/Tower regions, top-border Court/Tower labels, bottom-border
-Gate label, vertically centered facility status dots, six true-alpha in-world figures with bounded
+1536×1024 Hearth asset, six labeled facility regions, enlarged Gate/Tower bounds, intentional label
+edges, vertically centered facility status dots, six true-alpha in-world figures with bounded
 progressive zoom scaling, absence of the destination
 panel/resident-count/camera-help annotations, in-world hero selection, ribbon
 focus, anchored popover, details drawer, availability light removal after Court assignment, Court
-training and species hunt popover dismissal, pointer pan beginning inside a facility region at
+training, species hunt, and Dormitory rest popover dismissal and destination state, pointer pan
+beginning inside a facility region at
 fitted zoom, repeated two-axis pan at maximum zoom, disabled native image/link dragging, click
 suppression after a drag,
 wheel zoom, visible controls, 100–300% bounds, Fit/Reset semantics, keyboard operation, reduced
@@ -158,14 +160,21 @@ labels sit farther from the gate face and tower threshold art. All three facilit
 shared flex row whose status dot and text are geometrically center-aligned instead of relying on
 hand-tuned absolute offsets.
 
+The latest world-surface review identified the northwest building as the Kitchen, the northeast
+workshop as the Forge, and the southwest residence as the Dormitory. All three now have the same
+route-local label, hover, selection, and camera-drag behavior as the existing regions. Rest joins
+Court training and Tower hunting as a primary hero order; it dismisses the command popover, sends
+the hero to an authored Dormitory position, and exposes `Resting in the Dormitory` as their current
+activity without inventing persistence or recovery statistics.
+
 ## Useful review actions
 
 1. Select Jori directly in the courtyard, then use the ribbon to find Remy. This decides whether
    the true-alpha figure treatment feels like residents standing in the world on desktop and phone.
-2. Send Dara to Court training, then send Mara to hunt a Stoneback boar. This decides whether the
-   immediate menu dismissal, availability light disappearing, and simple destination transition
-   communicate command completion without pretending statistics or polished activity animation
-   exists.
+2. Send Dara to Court training, Mara to hunt a Stoneback boar, and Jori to rest. This decides
+   whether the three primary orders, immediate menu dismissal, availability change, and simple
+   destination transitions communicate command completion without pretending statistics or
+   polished activity animation exists.
 3. Drag from bare ground and through the Training Grounds region, reset, then hover and click the
    Gate artwork. This decides whether camera recovery feels predictable and whether the existing
    Summoning Forge is the right interim Gate destination.
@@ -182,5 +191,5 @@ hand-tuned absolute offsets.
   confirmation.
 - `/forge` is an existing development Summoning Forge rather than a campaign-state summon route;
   it is the useful interim Gate destination requested for this isolated prototype.
-- A future shared shell should translate `training.assign` and `tower.hunt-species` intents into the
-  owning systems; this task intentionally did not add or edit a shared contract.
+- A future shared shell should translate `training.assign`, `tower.hunt-species`, and `rest.assign`
+  intents into the owning systems; this task intentionally did not add or edit a shared contract.

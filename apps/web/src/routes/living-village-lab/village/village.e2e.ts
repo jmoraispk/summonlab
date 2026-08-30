@@ -43,7 +43,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 			})
 		)
 		.toBe(0);
-	await expect(viewport.locator('.facility-hotspot')).toHaveCount(3);
+	await expect(viewport.locator('.facility-hotspot')).toHaveCount(6);
 	const gateHotspot = page.getByRole('link', { name: 'Enter Summoning Gate' });
 	await expect(gateHotspot).toHaveAttribute('href', '/forge');
 	await expect(gateHotspot).toHaveAttribute('draggable', 'false');
@@ -65,14 +65,24 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
 	const towerHotspot = page.getByRole('button', { name: 'Inspect Tower Threshold' });
-	for (const hotspot of [gateHotspot, courtHotspot, towerHotspot]) {
+	const kitchenHotspot = page.getByRole('button', { name: 'Inspect Village Kitchen' });
+	const forgeHotspot = page.getByRole('button', { name: 'Inspect Village Forge' });
+	const dormitoryHotspot = page.getByRole('button', { name: 'Inspect Village Dormitory' });
+	for (const hotspot of [
+		gateHotspot,
+		courtHotspot,
+		towerHotspot,
+		kitchenHotspot,
+		forgeHotspot,
+		dormitoryHotspot
+	]) {
 		const dotBounds = await hotspot.locator('i').boundingBox();
 		const textBounds = await hotspot.locator('strong').boundingBox();
 		expect(
 			Math.abs(dotBounds!.y + dotBounds!.height / 2 - (textBounds!.y + textBounds!.height / 2))
 		).toBeLessThan(1);
 	}
-	for (const hotspot of [courtHotspot, towerHotspot]) {
+	for (const hotspot of [courtHotspot, towerHotspot, forgeHotspot]) {
 		const hotspotBounds = await hotspot.boundingBox();
 		const labelBounds = await hotspot.locator('span').boundingBox();
 		expect(
@@ -82,21 +92,24 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		).toBeLessThan(2);
 		expect(Math.abs(labelBounds!.y + labelBounds!.height / 2 - hotspotBounds!.y)).toBeLessThan(2);
 	}
+	for (const hotspot of [gateHotspot, kitchenHotspot, dormitoryHotspot]) {
+		const hotspotBounds = await hotspot.boundingBox();
+		const labelBounds = await hotspot.locator('span').boundingBox();
+		expect(
+			Math.abs(
+				labelBounds!.x + labelBounds!.width / 2 - (hotspotBounds!.x + hotspotBounds!.width / 2)
+			)
+		).toBeLessThan(2);
+		expect(
+			Math.abs(
+				labelBounds!.y + labelBounds!.height / 2 - (hotspotBounds!.y + hotspotBounds!.height)
+			)
+		).toBeLessThan(2);
+	}
 	const gateBounds = await gateHotspot.boundingBox();
 	const towerBounds = await towerHotspot.boundingBox();
 	expect(gateBounds!.height).toBeGreaterThan(towerBounds!.height);
 	expect(towerBounds!.height).toBeGreaterThan(180);
-	const gateLabelBounds = await gateHotspot.locator('span').boundingBox();
-	expect(
-		Math.abs(
-			gateLabelBounds!.x + gateLabelBounds!.width / 2 - (gateBounds!.x + gateBounds!.width / 2)
-		)
-	).toBeLessThan(2);
-	expect(
-		Math.abs(
-			gateLabelBounds!.y + gateLabelBounds!.height / 2 - (gateBounds!.y + gateBounds!.height)
-		)
-	).toBeLessThan(2);
 	const courtBounds = await courtHotspot.boundingBox();
 	await page.mouse.move(
 		courtBounds!.x + courtBounds!.width * 0.5,
@@ -114,7 +127,13 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-offset-x', '0');
 
-	for (const facility of ['Training Grounds', 'Tower Threshold'] as const) {
+	for (const facility of [
+		'Training Grounds',
+		'Tower Threshold',
+		'Village Kitchen',
+		'Village Forge',
+		'Village Dormitory'
+	] as const) {
 		const hotspot = page.getByRole('button', { name: `Inspect ${facility}` });
 		await hotspot.click();
 		await expect(hotspot).toHaveAttribute('aria-pressed', 'true');
@@ -153,6 +172,19 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		'true'
 	);
 
+	await page
+		.getByLabel('Find a resident')
+		.getByRole('button', { name: /Jori Daro/ })
+		.click();
+	const joriMarker = page.locator('#village-hero-jori-daro');
+	await expect(popover).toContainText('Jori Daro');
+	await popover.getByRole('button', { name: 'Rest' }).click();
+	await expect(popover).toHaveCount(0);
+	await expect(dormitoryHotspot).toHaveAttribute('aria-pressed', 'true');
+	await expect(joriMarker).toHaveAttribute('aria-label', /Resting in the Dormitory/);
+	await expect(joriMarker).toHaveAttribute('data-availability', 'busy');
+	await expect(joriMarker.locator('xpath=..')).toHaveAttribute('style', /--x:\s*34%;\s*--y:\s*76%/);
+
 	await page.getByRole('button', { name: 'Zoom in' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '190');
 	for (let index = 0; index < 8; index += 1) {
@@ -185,7 +217,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
 	await expect(viewport).toHaveAttribute('data-offset-x', '0');
-	await expect(page.getByRole('button', { name: 'Inspect Tower Threshold' })).toHaveAttribute(
+	await expect(page.getByRole('button', { name: 'Inspect Village Dormitory' })).toHaveAttribute(
 		'aria-pressed',
 		'true'
 	);
@@ -250,7 +282,7 @@ test('keeps the unified Village deliberate and operable at 390 by 844', async ({
 	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
 	await expect(page.getByLabel('Find a resident').getByRole('button')).toHaveCount(6);
 	const phoneViewport = page.getByTestId('village-viewport');
-	await expect(phoneViewport.locator('.facility-hotspot')).toHaveCount(3);
+	await expect(phoneViewport.locator('.facility-hotspot')).toHaveCount(6);
 	expect((await phoneViewport.boundingBox())!.y).toBeLessThan(240);
 
 	await page
@@ -258,6 +290,9 @@ test('keeps the unified Village deliberate and operable at 390 by 844', async ({
 		.getByRole('button', { name: /Remy Nahl/ })
 		.click();
 	await expect(page.getByTestId('hero-popover')).toContainText('Remy Nahl');
+	await expect(
+		page.getByTestId('hero-popover').getByRole('button', { name: 'Rest' })
+	).toBeVisible();
 	await page.getByTestId('hero-popover').getByRole('button', { name: 'Details' }).click();
 	await expect(page.getByTestId('hero-drawer')).toContainText('Field notes');
 
