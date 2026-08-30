@@ -90,6 +90,137 @@ const EvidenceBindingSchema = z
 	})
 	.strict();
 
+export const AFFINITY_WAVE_PROMOTION_THRESHOLDS = {
+	minimumCandidateRate: 0.8,
+	maximumRetryRate: 0.2,
+	minimumQualityPassRate: 0.8,
+	maximumCriticalVisualFailureCount: 0
+} as const;
+
+const PromotionObservationSchema = z
+	.object({
+		targetCount: z.number().int().positive(),
+		candidateCount: z.number().int().nonnegative(),
+		candidateRate: z.number().min(0).max(1),
+		retryCount: z.number().int().nonnegative(),
+		retryRate: z.number().min(0).max(1),
+		qualityPassCount: z.number().int().nonnegative(),
+		qualityPassRate: z.number().min(0).max(1),
+		criticalVisualFailureCount: z.number().int().nonnegative()
+	})
+	.strict()
+	.superRefine((observation, context) => {
+		if (observation.candidateCount > observation.targetCount)
+			context.addIssue({ code: 'custom', message: 'Candidate count cannot exceed target count' });
+		if (observation.qualityPassCount > observation.targetCount)
+			context.addIssue({
+				code: 'custom',
+				message: 'Quality-pass count cannot exceed target count'
+			});
+		if (observation.candidateRate !== observation.candidateCount / observation.targetCount)
+			context.addIssue({ code: 'custom', message: 'Candidate rate must be derived from counts' });
+		if (observation.qualityPassRate !== observation.qualityPassCount / observation.targetCount)
+			context.addIssue({
+				code: 'custom',
+				message: 'Quality-pass rate must be derived from counts'
+			});
+		if (observation.retryRate !== observation.retryCount / observation.targetCount)
+			context.addIssue({ code: 'custom', message: 'Retry rate must be derived from counts' });
+	});
+
+const PromotionThresholdSchema = z
+	.object({
+		minimumCandidateRate: z.literal(AFFINITY_WAVE_PROMOTION_THRESHOLDS.minimumCandidateRate),
+		maximumRetryRate: z.literal(AFFINITY_WAVE_PROMOTION_THRESHOLDS.maximumRetryRate),
+		minimumQualityPassRate: z.literal(AFFINITY_WAVE_PROMOTION_THRESHOLDS.minimumQualityPassRate),
+		maximumCriticalVisualFailureCount: z.literal(
+			AFFINITY_WAVE_PROMOTION_THRESHOLDS.maximumCriticalVisualFailureCount
+		)
+	})
+	.strict();
+
+const BreadthCanaryPromotionSchema = z
+	.object({
+		targetIds: z.tuple([
+			z.literal('affinity-workflow-v1-goblin-normal'),
+			z.literal('affinity-workflow-v1-tunnel-boar-fire')
+		]),
+		observation: PromotionObservationSchema
+	})
+	.strict();
+
+export const AffinityWavePromotionEvidenceSchema = z
+	.object({
+		schemaVersion: z.literal('affinity-wave-promotion-evidence-v1'),
+		sourceRunId: SlugSchema,
+		sourceStage: StageSchema,
+		sourceEffectiveConcurrency: z.union([
+			z.literal(2),
+			z.literal(4),
+			z.literal(6),
+			z.literal(8),
+			z.literal(12)
+		]),
+		sourceReportPath: RepositoryPathSchema,
+		sourceReportCanonicalSha256: z.string().regex(/^[a-f0-9]{64}$/u),
+		thresholds: PromotionThresholdSchema,
+		observation: PromotionObservationSchema,
+		breadthCanaries: BreadthCanaryPromotionSchema.nullable()
+	})
+	.strict()
+	.superRefine((evidence, context) => {
+		const expected = STAGE_CONCURRENCY[evidence.sourceStage];
+		if (evidence.sourceStage === 'scale' || evidence.sourceEffectiveConcurrency !== expected)
+			context.addIssue({
+				code: 'custom',
+				path: ['sourceEffectiveConcurrency'],
+				message: 'Promotion source stage must match its exact effective concurrency'
+			});
+		for (const [field, passes] of [
+			[
+				'candidateRate',
+				evidence.observation.candidateRate >= evidence.thresholds.minimumCandidateRate
+			],
+			['retryRate', evidence.observation.retryRate <= evidence.thresholds.maximumRetryRate],
+			[
+				'qualityPassRate',
+				evidence.observation.qualityPassRate >= evidence.thresholds.minimumQualityPassRate
+			],
+			[
+				'criticalVisualFailureCount',
+				evidence.observation.criticalVisualFailureCount <=
+					evidence.thresholds.maximumCriticalVisualFailureCount
+			]
+		] as const)
+			if (!passes)
+				context.addIssue({
+					code: 'custom',
+					path: ['observation', field],
+					message: `Promotion threshold failed: ${field}`
+				});
+		if (evidence.breadthCanaries)
+			for (const [field, passes] of [
+				['candidateRate', evidence.breadthCanaries.observation.candidateRate === 1],
+				[
+					'retryRate',
+					evidence.breadthCanaries.observation.retryRate <= evidence.thresholds.maximumRetryRate
+				],
+				['qualityPassRate', evidence.breadthCanaries.observation.qualityPassRate === 1],
+				[
+					'criticalVisualFailureCount',
+					evidence.breadthCanaries.observation.criticalVisualFailureCount === 0
+				]
+			] as const)
+				if (!passes)
+					context.addIssue({
+						code: 'custom',
+						path: ['breadthCanaries', 'observation', field],
+						message: `Breadth canary threshold failed: ${field}`
+					});
+	});
+
+export type AffinityWavePromotionEvidence = z.infer<typeof AffinityWavePromotionEvidenceSchema>;
+
 export const AffinityWaveDispatchGateDerivationSchema = z.discriminatedUnion('profile', [
 	z.object({ profile: z.literal('normal-canary') }).strict(),
 	z.object({ profile: z.literal('final-canary') }).strict(),
@@ -114,6 +245,7 @@ export const AffinityWaveDispatchGateSchema = z
 		humanGateSatisfied: z.boolean(),
 		prerequisiteRunIds: z.array(SlugSchema),
 		derivation: AffinityWaveDispatchGateDerivationSchema,
+		promotionEvidence: AffinityWavePromotionEvidenceSchema.nullable().optional(),
 		evidenceBindings: z.array(EvidenceBindingSchema).min(1)
 	})
 	.strict()
@@ -176,6 +308,38 @@ export const AffinityWaveDispatchGateSchema = z
 				path: ['derivation'],
 				message: 'Derived profile does not match stage, human gate, and prerequisites'
 			});
+		if (derivation.profile === 'normal-canary' || derivation.profile === 'final-canary') {
+			if (gate.promotionEvidence !== null && gate.promotionEvidence !== undefined)
+				context.addIssue({
+					code: 'custom',
+					path: ['promotionEvidence'],
+					message: 'Initial canary authorization cannot claim prior-wave promotion evidence'
+				});
+		} else {
+			const promotion = gate.promotionEvidence;
+			const expectedPromotionSource =
+				derivation.profile === 'breadth'
+					? { stage: 'controlled', concurrency: 6 }
+					: {
+							stage: { 4: 'canary', 6: 'pilot', 12: 'breadth', 16: 'load' }[
+								derivation.requestedConcurrency
+							],
+							concurrency: { 4: 2, 6: 4, 12: 8, 16: 12 }[derivation.requestedConcurrency]
+						};
+			if (
+				!promotion ||
+				promotion.sourceRunId !== derivation.prerequisiteRunId ||
+				promotion.sourceStage !== expectedPromotionSource.stage ||
+				promotion.sourceEffectiveConcurrency !== expectedPromotionSource.concurrency ||
+				(derivation.profile === 'breadth' && promotion.breadthCanaries === null) ||
+				(derivation.profile === 'load' && promotion.breadthCanaries !== null)
+			)
+				context.addIssue({
+					code: 'custom',
+					path: ['promotionEvidence'],
+					message: 'Non-canary gates require exact predecessor promotion evidence'
+				});
+		}
 	});
 
 export type AffinityWaveDispatchGate = z.infer<typeof AffinityWaveDispatchGateSchema>;
@@ -809,6 +973,210 @@ async function exists(filePath: string): Promise<boolean> {
 	}
 }
 
+export interface SchedulerPromotionSource {
+	readonly runId: string;
+	readonly stage: 'canary' | 'pilot' | 'controlled' | 'breadth' | 'load';
+	readonly effectiveConcurrency: 2 | 4 | 6 | 8 | 12;
+	readonly reportPath: string;
+	readonly reportCanonicalSha256: string;
+}
+
+export interface DerivedWavePromotionEvidence {
+	readonly evidence: AffinityWavePromotionEvidence;
+	readonly bindings: readonly z.infer<typeof EvidenceBindingSchema>[];
+}
+
+const CRITICAL_VISUAL_CATEGORIES = new Set([
+	'anatomy',
+	'canvas-completion',
+	'framing',
+	'silhouette'
+]);
+
+function promotionObservation(
+	results: readonly ImageProductionResult[]
+): z.infer<typeof PromotionObservationSchema> {
+	const targetCount = results.length;
+	if (targetCount === 0) throw new Error('Promotion evidence requires at least one result.');
+	const candidateResults = results.filter((result) => result.status === 'candidate');
+	const retryCount = results.reduce(
+		(total, result) => total + Math.max(0, result.attempts.length - 1),
+		0
+	);
+	const selectedAttempts = candidateResults.flatMap((result) => {
+		const selected = result.attempts.find(
+			(attempt) => attempt.attemptId === result.selectedAttemptId
+		);
+		return selected ? [{ result, attempt: selected }] : [];
+	});
+	const qualityPassCount = selectedAttempts.filter(
+		({ result, attempt }) =>
+			result.failedCriteria.length === 0 &&
+			!attempt.findings.some((finding) => finding.outcome === 'fail')
+	).length;
+	const criticalVisualFailureCount = selectedAttempts.filter(({ attempt }) =>
+		attempt.findings.some(
+			(finding) => finding.outcome === 'fail' && CRITICAL_VISUAL_CATEGORIES.has(finding.category)
+		)
+	).length;
+	return PromotionObservationSchema.parse({
+		targetCount,
+		candidateCount: candidateResults.length,
+		candidateRate: candidateResults.length / targetCount,
+		retryCount,
+		retryRate: retryCount / targetCount,
+		qualityPassCount,
+		qualityPassRate: qualityPassCount / targetCount,
+		criticalVisualFailureCount
+	});
+}
+
+async function verifiedPromotionResult(
+	workspaceRoot: string,
+	repositoryPath: string,
+	expectedCanonicalSha256?: string
+): Promise<ImageProductionResult> {
+	const value = ImageProductionResultSchema.parse(
+		await readJson(workspacePath(workspaceRoot, repositoryPath))
+	);
+	if (
+		expectedCanonicalSha256 !== undefined &&
+		canonicalJsonSha256(value) !== expectedCanonicalSha256
+	)
+		throw new Error(`Promotion result is stale: ${repositoryPath}`);
+	return value;
+}
+
+export async function deriveSchedulerWavePromotionEvidence(
+	workspaceRoot: string,
+	source: SchedulerPromotionSource
+): Promise<DerivedWavePromotionEvidence> {
+	const report = AffinityWaveReportSchema.parse(
+		await readJson(workspacePath(workspaceRoot, source.reportPath))
+	);
+	if (
+		report.runId !== source.runId ||
+		report.stage !== source.stage ||
+		report.effectiveConcurrency !== source.effectiveConcurrency ||
+		report.status !== 'completed' ||
+		canonicalJsonSha256(report) !== source.reportCanonicalSha256
+	)
+		throw new Error(`Promotion source report is stale or ineligible: ${source.runId}`);
+	const results = await Promise.all(
+		report.sourceEvidence.results.map((binding) =>
+			verifiedPromotionResult(workspaceRoot, binding.path, binding.canonicalSha256)
+		)
+	);
+	if (results.length !== report.targetCount)
+		throw new Error(`Promotion source run is missing results: ${source.runId}`);
+	const observation = promotionObservation(results);
+	if (
+		observation.candidateCount !== report.candidateCount ||
+		observation.retryCount !== report.retryCount ||
+		observation.retryRate !== report.retryRate
+	)
+		throw new Error(`Promotion source report counters are inconsistent: ${source.runId}`);
+	const evidence = AffinityWavePromotionEvidenceSchema.parse({
+		schemaVersion: 'affinity-wave-promotion-evidence-v1',
+		sourceRunId: source.runId,
+		sourceStage: source.stage,
+		sourceEffectiveConcurrency: source.effectiveConcurrency,
+		sourceReportPath: source.reportPath,
+		sourceReportCanonicalSha256: source.reportCanonicalSha256,
+		thresholds: AFFINITY_WAVE_PROMOTION_THRESHOLDS,
+		observation,
+		breadthCanaries: null
+	});
+	return {
+		evidence,
+		bindings: report.sourceEvidence.results.map((binding) => ({
+			path: binding.path,
+			canonicalSha256: binding.canonicalSha256
+		}))
+	};
+}
+
+const BREADTH_CANARY_COORDINATES = [
+	{ speciesId: 'goblin', affinity: 'normal' },
+	{ speciesId: 'tunnel-boar', affinity: 'fire' }
+] as const;
+
+async function verifyRetainedCandidateBytes(
+	workspaceRoot: string,
+	result: ImageProductionResult
+): Promise<void> {
+	if (result.status !== 'candidate') return;
+	const retained = result.attempts.find(
+		(attempt) => attempt.attemptId === result.selectedAttemptId
+	)?.output;
+	if (!retained) throw new Error(`Candidate result has no retained output: ${result.resultId}`);
+	const bytes = await readFile(workspacePath(workspaceRoot, retained.path));
+	const metadata = await sharp(bytes).metadata();
+	const mediaType =
+		metadata.format === 'png' ? 'image/png' : metadata.format === 'webp' ? 'image/webp' : null;
+	if (
+		bytes.byteLength !== retained.bytes ||
+		createHash('sha256').update(bytes).digest('hex') !== retained.contentHash ||
+		metadata.width !== retained.width ||
+		metadata.height !== retained.height ||
+		mediaType !== retained.mediaType
+	)
+		throw new Error(`Breadth canary retained bytes are stale: ${retained.path}`);
+}
+
+export async function deriveBreadthCanaryPromotionEvidence(workspaceRoot: string): Promise<{
+	readonly evidence: NonNullable<AffinityWavePromotionEvidence['breadthCanaries']>;
+	readonly bindings: readonly z.infer<typeof EvidenceBindingSchema>[];
+}> {
+	const results: ImageProductionResult[] = [];
+	const bindings: z.infer<typeof EvidenceBindingSchema>[] = [];
+	for (const coordinate of BREADTH_CANARY_COORDINATES) {
+		const prefix = `${EXPERIMENT_ROOT}`;
+		const targetPath = `${prefix}/targets/${coordinate.speciesId}/${coordinate.affinity}.json`;
+		const assignmentPath = `${prefix}/assignments/${coordinate.speciesId}/${coordinate.affinity}.json`;
+		const resultPath = `${prefix}/results/${coordinate.speciesId}-${coordinate.affinity}-v1.json`;
+		const [targetInput, assignmentInput, resultInput] = await Promise.all([
+			readJson(workspacePath(workspaceRoot, targetPath)),
+			readJson(workspacePath(workspaceRoot, assignmentPath)),
+			readJson(workspacePath(workspaceRoot, resultPath))
+		]);
+		const target = ImageProductionTargetSchema.parse(targetInput);
+		const assignment = ImageProductionAssignmentSchema.parse(assignmentInput);
+		const result = ImageProductionResultSchema.parse(resultInput);
+		if (
+			target.targetId !==
+				`${EXPERIMENT_ROOT.split('/').at(-1)}-${coordinate.speciesId}-${coordinate.affinity}` ||
+			target.cohort !== 'breadth' ||
+			target.speciesId !== coordinate.speciesId ||
+			target.affinity !== coordinate.affinity ||
+			target.output.resultPath !== resultPath
+		)
+			throw new Error(`Breadth canary target is not the reserved coordinate: ${targetPath}`);
+		validateImageProductionExecution({ target, assignment, result });
+		await verifyRetainedCandidateBytes(workspaceRoot, result);
+		results.push(result);
+		bindings.push(
+			{ path: targetPath, canonicalSha256: canonicalJsonSha256(target) },
+			{ path: assignmentPath, canonicalSha256: canonicalJsonSha256(assignment) },
+			{ path: resultPath, canonicalSha256: canonicalJsonSha256(result) }
+		);
+	}
+	const observation = promotionObservation(results);
+	const evidence = BreadthCanaryPromotionSchema.parse({
+		targetIds: ['affinity-workflow-v1-goblin-normal', 'affinity-workflow-v1-tunnel-boar-fire'],
+		observation
+	});
+	// Breadth canaries are stricter than a general wave: both must be first-attempt quality candidates.
+	if (
+		observation.candidateRate !== 1 ||
+		observation.retryRate > AFFINITY_WAVE_PROMOTION_THRESHOLDS.maximumRetryRate ||
+		observation.qualityPassRate !== 1 ||
+		observation.criticalVisualFailureCount !== 0
+	)
+		throw new Error('The two exact breadth canaries did not pass promotion thresholds.');
+	return { evidence, bindings };
+}
+
 export async function readWavePlan(
 	workspaceRoot: string,
 	planPath: string
@@ -1235,16 +1603,39 @@ async function verifyDerivedGateSemantics(
 			values,
 			nextVisited
 		);
+		const predecessor = expectedPredecessorForGate(gate);
+		if (!predecessor || !gate.promotionEvidence)
+			throw new Error('Non-canary gate is missing predecessor promotion evidence.');
+		if (predecessor.stage === 'scale')
+			throw new Error('Scale cannot be used as a predecessor promotion source.');
+		const [, reportPath] = schedulerRunPaths(predecessor.runId);
+		const promotion = await deriveSchedulerWavePromotionEvidence(workspaceRoot, {
+			runId: predecessor.runId,
+			stage: predecessor.stage,
+			effectiveConcurrency: predecessor.concurrency as 2 | 4 | 6 | 8 | 12,
+			reportPath,
+			reportCanonicalSha256: canonicalJsonSha256(evidenceValue(values, reportPath))
+		});
+		let derivedPromotionEvidence = promotion.evidence;
+		if (gate.derivation.profile === 'breadth') {
+			const canaries = await deriveBreadthCanaryPromotionEvidence(workspaceRoot);
+			derivedPromotionEvidence = {
+				...derivedPromotionEvidence,
+				breadthCanaries: canaries.evidence
+			};
+			expectedPaths.push(...canaries.bindings.map((binding) => binding.path));
+		}
+		if (
+			canonicalJsonSha256(derivedPromotionEvidence) !== canonicalJsonSha256(gate.promotionEvidence)
+		)
+			throw new Error('Gate promotion evidence is stale or not derived from its predecessor.');
+		expectedPaths.push(...promotion.bindings.map((binding) => binding.path));
 		if (gate.derivation.profile === 'breadth') {
 			expectedPaths.push(
 				...(await verifyRoundSemanticEvidence(workspaceRoot, values, 'final-controlled-v1'))
 			);
 		} else if ([4, 6].includes(gate.derivation.requestedConcurrency)) {
 			expectedPaths.push(...(await verifyFinalCanarySemanticEvidence(workspaceRoot, values)));
-		} else {
-			expectedPaths.push(
-				...(await verifyRoundSemanticEvidence(workspaceRoot, values, 'breadth-v1'))
-			);
 		}
 	}
 	if (!exactBindingPaths(gate, expectedPaths))
@@ -1621,7 +2012,9 @@ export function validateEventJournal(
 				capacityFailures.push(event);
 			}
 			if (event.failureKind === 'provider-throttle') providerThrottles.push(event);
-			if (event.failureKind === 'capacity' || event.failureKind === 'provider-throttle') {
+			if (
+				['capacity', 'provider-throttle', 'timeout', 'malformed-output'].includes(event.failureKind)
+			) {
 				stopFailures.push(event);
 				if (stopFailures.length === preflight.stopRules.capacityFailureLimit) capacityStopAt = at;
 			}

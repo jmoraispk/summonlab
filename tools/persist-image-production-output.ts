@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import { mkdir, open, readFile, unlink } from 'node:fs/promises';
-import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import { lstat, mkdir, open, readFile, unlink } from 'node:fs/promises';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { performance } from 'node:perf_hooks';
 
@@ -55,6 +55,43 @@ function ensureDestination(workspaceRoot: string, destinationPath: string): stri
 		throw new Error('Destination escaped the image-production experiment root');
 	}
 	return absolute;
+}
+
+async function ensureSafeDestinationParents(
+	workspaceRoot: string,
+	destinationPath: string
+): Promise<void> {
+	const parentPath = dirname(destinationPath);
+	const relativeParentPath = relative(workspaceRoot, parentPath);
+	const components = relativeParentPath === '' ? [] : relativeParentPath.split(sep);
+	let cursor = workspaceRoot;
+
+	const workspaceMetadata = await lstat(cursor);
+	if (workspaceMetadata.isSymbolicLink() || !workspaceMetadata.isDirectory()) {
+		throw new Error('Workspace root must be a real directory, not a symbolic link');
+	}
+
+	for (const component of components) {
+		cursor = resolve(cursor, component);
+		let metadata;
+		try {
+			metadata = await lstat(cursor);
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+			try {
+				await mkdir(cursor);
+			} catch (mkdirError) {
+				if ((mkdirError as NodeJS.ErrnoException).code !== 'EEXIST') throw mkdirError;
+			}
+			metadata = await lstat(cursor);
+		}
+		if (metadata.isSymbolicLink()) {
+			throw new Error(`Destination parent cannot be a symbolic link: ${cursor}`);
+		}
+		if (!metadata.isDirectory()) {
+			throw new Error(`Destination parent is not a directory: ${cursor}`);
+		}
+	}
 }
 
 function mediaTypeForFormat(format: string | undefined): string {
@@ -124,17 +161,22 @@ export async function persistImageProductionOutput(
 		throw new Error('Normalized image does not satisfy the declared output contract');
 	}
 
-	await mkdir(dirname(destinationPath), { recursive: true });
+	await ensureSafeDestinationParents(workspaceRoot, destinationPath);
+	// Recheck immediately before the exclusive open so a symlink introduced while preparing
+	// parents fails closed instead of being followed by the write.
+	await ensureSafeDestinationParents(workspaceRoot, destinationPath);
 	let handle;
+	let ownsDestination = false;
 	try {
 		handle = await open(destinationPath, 'wx');
+		ownsDestination = true;
 		await handle.writeFile(retainedBytes);
 		await handle.sync();
 		await handle.close();
 		handle = undefined;
 	} catch (error) {
 		await handle?.close().catch(() => undefined);
-		await unlink(destinationPath).catch(() => undefined);
+		if (ownsDestination) await unlink(destinationPath).catch(() => undefined);
 		throw error;
 	}
 

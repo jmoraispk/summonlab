@@ -34,6 +34,10 @@ import {
 	buildFinalControlledRerunBundle,
 	type FinalControlledRerunPlan
 } from './prepare-final-controlled-rerun.js';
+import {
+	FinalControlledActivationReceiptSchema,
+	type FinalControlledActivationReceipt
+} from './final-controlled-activation-evidence.js';
 import { validateAffinityWorkflowWorkspace } from './validate-affinity-workflow.js';
 
 const execFileAsync = promisify(execFile);
@@ -69,6 +73,12 @@ export interface ActivationReadinessReport {
 		risks: number;
 		resolvedRisks: number;
 	};
+	readonly blockers: readonly { code: string; detail: string }[];
+}
+
+export interface ActivatedFinalControlledDecisionChainReport {
+	readonly valid: boolean;
+	readonly readiness: ActivationReadinessReport;
 	readonly blockers: readonly { code: string; detail: string }[];
 }
 
@@ -415,6 +425,52 @@ export function buildFinalControlledActivationReadiness(
 			risks: plan.designRiskReview.risks.length,
 			resolvedRisks: ledger.resolutions.length
 		},
+		blockers
+	};
+}
+
+/**
+ * Revalidates the immutable evidence and current DB decision behind an existing activation.
+ * Expected live final-controlled paths and the base-only workspace validator are intentionally
+ * excluded here: the receipt verifier owns the activated artifact bytes, while this verifier owns
+ * the v2 ledger, original evidence, staged corrections, and latest append-only human decision.
+ */
+export function buildActivatedFinalControlledDecisionChainReadiness(
+	input: ActivationReadinessInput,
+	receiptInput: unknown
+): ActivatedFinalControlledDecisionChainReport {
+	const readiness = buildFinalControlledActivationReadiness({
+		...input,
+		currentWorkspaceValid: true,
+		plannedPathsAbsent: true
+	});
+	const blockers = [...readiness.blockers];
+	const receipt = FinalControlledActivationReceiptSchema.safeParse(receiptInput);
+	const ledger = FinalControlledDesignRiskResolutionLedgerV2Schema.safeParse(input.resolutions);
+	if (!receipt.success) {
+		blockers.push({
+			code: 'missing-or-invalid-activation-receipt',
+			detail: 'The existing activation receipt is missing or invalid.'
+		});
+	} else if (ledger.success) {
+		const expectedBindings: FinalControlledActivationReceipt['bindings'] = {
+			planCanonicalSha256: ledger.data.evidenceBindings.planCanonicalSha256,
+			resolutionLedgerCanonicalSha256: sha256Json(ledger.data),
+			blindReviewCanonicalSha256: ledger.data.evidenceBindings.blindReviewCollectionCanonicalSha256,
+			catalogCanonicalSha256: ledger.data.evidenceBindings.catalogCanonicalSha256,
+			executionSnapshotSha256: ledger.data.evidenceBindings.executionSnapshotCanonicalSha256
+		};
+		if (canonicalJson(receipt.data.bindings) !== canonicalJson(expectedBindings)) {
+			blockers.push({
+				code: 'activation-receipt-ledger-binding-mismatch',
+				detail:
+					'The existing activation receipt is not bound to the current DB-authentic v2 ledger and evidence.'
+			});
+		}
+	}
+	return {
+		valid: readiness.authorized && blockers.length === 0,
+		readiness,
 		blockers
 	};
 }

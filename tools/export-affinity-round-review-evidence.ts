@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, open, readFile, rename, unlink, writeFile } from 'node:fs/promises';
+import { link, mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -13,6 +13,7 @@ import { listAffinityWorkflowReviews } from '../packages/database/src/index.js';
 
 import {
 	AffinityRoundBlindReviewCollectionSchema,
+	acquireAffinityRoundReviewEvidenceLock,
 	loadVerifiedAffinityReviewRound,
 	roundBlindReviewPath,
 	targetsById,
@@ -20,8 +21,10 @@ import {
 } from './affinity-round-postgeneration-lib.js';
 import {
 	AffinityReviewRoundIdSchema,
+	affinityRoundRoot,
 	type AffinityReviewRoundId
 } from './affinity-review-round-lib.js';
+import { canonicalJson, sha256Json } from './image-production-lib.js';
 
 export type RoundReviewListLoader = (
 	databaseUrl: string,
@@ -101,7 +104,7 @@ function jsonText(value: unknown): string {
 	return `${JSON.stringify(value, null, '\t')}\n`;
 }
 
-function assertMonotonicReplacement(
+function assertReplacementContext(
 	prior: AffinityRoundBlindReviewCollection,
 	next: AffinityRoundBlindReviewCollection
 ): void {
@@ -113,34 +116,64 @@ function assertMonotonicReplacement(
 		throw new Error('Existing round review evidence belongs to a different immutable context.');
 	const nextByTarget = new Map(next.reviews.map((review) => [review.targetId, review]));
 	for (const review of prior.reviews)
-		if (JSON.stringify(nextByTarget.get(review.targetId)) !== JSON.stringify(review))
-			throw new Error(`Round review evidence cannot delete or mutate ${review.targetId}.`);
+		if (!nextByTarget.has(review.targetId))
+			throw new Error(`Current DB projection cannot delete exported target ${review.targetId}.`);
 }
 
-async function acquireReviewLock(destination: string): Promise<() => Promise<void>> {
-	const lockPath = `${destination}.lock`;
-	let handle;
+export function affinityRoundBlindReviewHistoryPath(
+	roundId: AffinityReviewRoundId,
+	canonicalSha256: string
+): string {
+	if (!/^[a-f0-9]{64}$/u.test(canonicalSha256))
+		throw new Error('Blind-review history requires a canonical SHA-256.');
+	return `${affinityRoundRoot(roundId)}/blind-review-history/${canonicalSha256}.json`;
+}
+
+async function archivePriorEvidence(input: {
+	readonly workspaceRoot: string;
+	readonly roundId: AffinityReviewRoundId;
+	readonly prior: AffinityRoundBlindReviewCollection;
+	readonly priorText: string;
+}): Promise<string> {
+	const archivePath = affinityRoundBlindReviewHistoryPath(input.roundId, sha256Json(input.prior));
+	const destination = path.resolve(input.workspaceRoot, archivePath);
+	await mkdir(path.dirname(destination), { recursive: true });
+	const temporary = `${destination}.archive-${process.pid}-${randomUUID()}.tmp`;
 	try {
-		handle = await open(lockPath, 'wx');
+		await writeFile(temporary, input.priorText, { flag: 'wx' });
+		await link(temporary, destination);
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-		const ownerPid = Number((await readFile(lockPath, 'utf8')).trim());
-		let alive = Number.isSafeInteger(ownerPid) && ownerPid > 0;
-		if (alive)
-			try {
-				process.kill(ownerPid, 0);
-			} catch (probeError) {
-				if ((probeError as NodeJS.ErrnoException).code === 'ESRCH') alive = false;
-				else throw probeError;
-			}
-		if (alive) throw new Error('Another round review export owns the lock.', { cause: error });
-		await unlink(lockPath);
-		handle = await open(lockPath, 'wx');
+		const existing = await readFile(destination, 'utf8');
+		if (existing !== input.priorText)
+			throw new Error(`Conflicting archived review evidence: ${archivePath}`, { cause: error });
+	} finally {
+		await unlink(temporary).catch(() => undefined);
 	}
-	await handle.writeFile(`${process.pid}\n`);
-	await handle.sync();
-	await handle.close();
-	return async () => unlink(lockPath);
+	return archivePath;
+}
+
+export function verifyAffinityRoundReviewDatabaseAuthenticity(input: {
+	readonly roundId: AffinityReviewRoundId;
+	readonly exported: AffinityRoundBlindReviewCollection;
+	readonly reviewList: unknown;
+	readonly verifiedRound: Awaited<ReturnType<typeof loadVerifiedAffinityReviewRound>>;
+}): { readonly valid: boolean; readonly expected: AffinityRoundBlindReviewCollection | null } {
+	let expected: AffinityRoundBlindReviewCollection;
+	try {
+		expected = buildAffinityRoundBlindReviewEvidence({
+			roundId: input.roundId,
+			reviewer: input.exported.reviewer,
+			reviewList: input.reviewList,
+			verifiedRound: input.verifiedRound
+		});
+	} catch {
+		return { valid: false, expected: null };
+	}
+	return {
+		valid: canonicalJson(expected) === canonicalJson(input.exported),
+		expected
+	};
 }
 
 export interface AffinityRoundReviewEvidenceReport {
@@ -151,6 +184,8 @@ export interface AffinityRoundReviewEvidenceReport {
 	readonly outputPath: string;
 	readonly inSync: boolean;
 	readonly written: boolean;
+	readonly archivedPriorPath: string | null;
+	readonly frozen: boolean;
 }
 
 export async function exportAffinityRoundReviewEvidence(input: {
@@ -180,23 +215,51 @@ export async function exportAffinityRoundReviewEvidence(input: {
 		throw error;
 	});
 	const inSync = current === expected;
+	const finalReceiptPath = path.resolve(
+		workspaceRoot,
+		`${affinityRoundRoot(roundId)}/final-evaluation-receipt.json`
+	);
+	const frozen = await readFile(finalReceiptPath).then(
+		() => true,
+		(error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return false;
+			throw error;
+		}
+	);
 	let written = false;
 	let becameInSync = false;
+	let archivedPriorPath: string | null = null;
 	if (input.mode === 'write' && !inSync) {
 		await mkdir(path.dirname(destination), { recursive: true });
-		const release = await acquireReviewLock(destination);
+		const release = await acquireAffinityRoundReviewEvidenceLock(workspaceRoot, roundId);
 		try {
+			const frozenUnderLock = await readFile(finalReceiptPath).then(
+				() => true,
+				(error: NodeJS.ErrnoException) => {
+					if (error.code === 'ENOENT') return false;
+					throw error;
+				}
+			);
+			if (frozenUnderLock)
+				throw new Error(
+					`Round ${roundId} review evidence is frozen by its final evaluation receipt.`
+				);
 			const underLock = await readFile(destination, 'utf8').catch((error) => {
 				if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null;
 				throw error;
 			});
 			becameInSync = underLock === expected;
 			if (underLock !== expected) {
-				if (underLock !== null)
-					assertMonotonicReplacement(
-						AffinityRoundBlindReviewCollectionSchema.parse(JSON.parse(underLock)),
-						evidence
-					);
+				if (underLock !== null) {
+					const prior = AffinityRoundBlindReviewCollectionSchema.parse(JSON.parse(underLock));
+					assertReplacementContext(prior, evidence);
+					archivedPriorPath = await archivePriorEvidence({
+						workspaceRoot,
+						roundId,
+						prior,
+						priorText: underLock
+					});
+				}
 				const temporary = `${destination}.review-${process.pid}-${randomUUID()}.tmp`;
 				try {
 					await writeFile(temporary, expected, { flag: 'wx' });
@@ -217,7 +280,9 @@ export async function exportAffinityRoundReviewEvidence(input: {
 		reviewCount: evidence.reviews.length,
 		outputPath,
 		inSync: inSync || becameInSync || written,
-		written
+		written,
+		archivedPriorPath,
+		frozen
 	};
 }
 

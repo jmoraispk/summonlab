@@ -9,6 +9,10 @@ import {
 	FinalControlledEligibleOriginalCandidateTargetIds,
 	FinalControlledOriginalReviseResults
 } from '../packages/contracts/src/index.js';
+import {
+	GOBLIN_AFFINITY_AUDIT_60,
+	GOBLIN_AFFINITY_AUDIT_600
+} from '../packages/content/src/index.js';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -27,8 +31,28 @@ import { AffinityScaleRecommendationV3Schema as ScaleRecommendationSchema } from
 import { sha256Json } from './image-production-lib.js';
 import { canonicalJsonSha256 } from './affinity-wave-scheduler-lib.js';
 import type { ValidatedImageProductionExecution } from './sync-affinity-review.js';
+import { canonicalGoblinAuditMatches } from './validate-affinity-workflow.js';
 
 const FINAL_HASH = 'b'.repeat(64);
+
+describe('canonical Goblin audit evidence', () => {
+	it('accepts only the exact deterministic 60- and 600-manifest audits', () => {
+		expect(canonicalGoblinAuditMatches(GOBLIN_AFFINITY_AUDIT_60, 60)).toBe(true);
+		expect(canonicalGoblinAuditMatches(GOBLIN_AFFINITY_AUDIT_600, 600)).toBe(true);
+		expect(
+			canonicalGoblinAuditMatches(
+				{
+					...GOBLIN_AFFINITY_AUDIT_60,
+					correlations: GOBLIN_AFFINITY_AUDIT_60.correlations.map((entry, index) =>
+						index === 0 ? { ...entry, biasCorrectedCramersV: 0 } : entry
+					)
+				},
+				60
+			)
+		).toBe(false);
+		expect(canonicalGoblinAuditMatches(GOBLIN_AFFINITY_AUDIT_60, 600)).toBe(false);
+	});
+});
 
 function finalControlledDesignRiskLifecycleFixture() {
 	const affinities = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
@@ -301,7 +325,8 @@ function completeEvidence(): AffinityPlanCompletionEvidence {
 			requiredFileCount: 6,
 			presentFileCount: 6,
 			labeledProjectionValid: true,
-			blindProjectionStripped: true
+			blindProjectionStripped: true,
+			clientBundlePrivacyValid: true
 		},
 		acceptedLaterPackRules: {
 			artifactPresent: true,

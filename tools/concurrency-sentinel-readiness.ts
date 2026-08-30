@@ -550,15 +550,28 @@ export async function reportConcurrencySentinelReadiness(
 	};
 }
 
-if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
-	const args = process.argv.slice(2);
+export function parseConcurrencySentinelArgs(args: readonly string[]): { actor: string | null } {
 	const actorAt = args.indexOf('--actor');
-	const known = new Set(['--actor']);
+	const known = new Set(['--', '--actor']);
+	let separatorSeen = false;
 	for (let index = 0; index < args.length; index += 1) {
+		if (args[index] === '--') {
+			if (separatorSeen) throw new Error('Specify at most one -- argument separator.');
+			separatorSeen = true;
+			continue;
+		}
 		if (!known.has(args[index]!)) throw new Error(`Unknown argument: ${args[index]}`);
+		if (args[index] !== '--actor') continue;
+		if (actorAt !== index) throw new Error('Specify --actor exactly once.');
+		const actor = args[index + 1]?.trim();
+		if (!actor || actor.startsWith('--')) throw new Error('Specify --actor <name>.');
 		index += 1;
 	}
-	const actor = actorAt >= 0 ? (args[actorAt + 1] ?? null) : null;
+	return { actor: actorAt >= 0 ? args[actorAt + 1]!.trim() : null };
+}
+
+if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
+	const { actor } = parseConcurrencySentinelArgs(process.argv.slice(2));
 	const report = await reportConcurrencySentinelReadiness({ actor });
 	process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 	if (report.status !== 'ready') process.exitCode = 1;

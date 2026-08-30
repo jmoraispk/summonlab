@@ -58,6 +58,8 @@
 		"check-affinity-plan-completion.ts",
 		"check-affinity-plan-completion.spec.ts",
 		"export-affinity-workflow.ts",
-		"validate-affinity-workflow.ts"
+		"validate-affinity-workflow.ts",
+		"validate-affinity-client-bundle-privacy.ts",
+		"validate-affinity-client-bundle-privacy.spec.ts"
 	]
 }

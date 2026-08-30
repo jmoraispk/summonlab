@@ -11,6 +11,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	AffinityRoundBlindReviewCollectionSchema,
+	acquireAffinityRoundReviewEvidenceLock,
 	loadVerifiedAffinityReviewRound,
 	roundBlindReviewPath
 } from './affinity-round-postgeneration-lib.js';
@@ -19,8 +20,10 @@ import {
 	exportAffinityRoundContactSheet
 } from './export-affinity-round-contact-sheet.js';
 import {
+	affinityRoundBlindReviewHistoryPath,
 	buildAffinityRoundBlindReviewEvidence,
-	exportAffinityRoundReviewEvidence
+	exportAffinityRoundReviewEvidence,
+	verifyAffinityRoundReviewDatabaseAuthenticity
 } from './export-affinity-round-review-evidence.js';
 import {
 	deriveAffinityRoundFinalEvaluation,
@@ -33,6 +36,7 @@ import {
 	affinityRoundRoot,
 	loadAffinityReviewRoundRegistry
 } from './affinity-review-round-lib.js';
+import { sha256Json } from './image-production-lib.js';
 import { syncAffinityReviewRound } from './sync-affinity-review-round.js';
 
 const REPOSITORY_ROOT = path.resolve('.');
@@ -163,6 +167,54 @@ describe('round post-generation evidence', () => {
 				index === 0 ? replaced : review
 			)
 		});
+		const replacement = await exportAffinityRoundReviewEvidence({
+			workspaceRoot: root,
+			databaseUrl: 'unused',
+			roundId: 'baseline-v1',
+			reviewer: REVIEWER,
+			mode: 'write',
+			loadReviews: async () => replacementList
+		});
+		expect(replacement.written).toBe(true);
+		expect(replacement.archivedPriorPath).toBeTruthy();
+		const archived = AffinityRoundBlindReviewCollectionSchema.parse(
+			JSON.parse(await readFile(path.resolve(root, replacement.archivedPriorPath!), 'utf8'))
+		);
+		expect(archived.reviews[0]?.reviewId).toBe(
+			reviewList.latestByTargetReviewer.toSorted((left, right) =>
+				left.targetId.localeCompare(right.targetId)
+			)[0]?.reviewId
+		);
+		const current = AffinityRoundBlindReviewCollectionSchema.parse(
+			JSON.parse(await readFile(path.resolve(root, roundBlindReviewPath('baseline-v1')), 'utf8'))
+		);
+		expect(current.reviews.some((review) => review.reviewId === replaced.reviewId)).toBe(true);
+		expect(
+			verifyAffinityRoundReviewDatabaseAuthenticity({
+				roundId: 'baseline-v1',
+				exported: current,
+				reviewList: replacementList,
+				verifiedRound: round
+			}).valid
+		).toBe(true);
+
+		await writeFile(
+			path.resolve(root, affinityRoundRoot('baseline-v1'), 'final-evaluation-receipt.json'),
+			'{}\n'
+		);
+		const latest = {
+			...replaced,
+			reviewId: '88888888-8888-4888-8888-888888888888',
+			note: 'A post-finalization review that must not replace frozen evidence.',
+			reviewedAt: '2026-08-30T00:01:00.000Z'
+		};
+		const postFinalList = AffinityWorkflowReviewListSchema.parse({
+			experimentId: 'affinity-workflow-v1',
+			reviews: [...replacementList.reviews, latest],
+			latestByTargetReviewer: replacementList.latestByTargetReviewer.map((review) =>
+				review.targetId === latest.targetId ? latest : review
+			)
+		});
 		await expect(
 			exportAffinityRoundReviewEvidence({
 				workspaceRoot: root,
@@ -170,9 +222,15 @@ describe('round post-generation evidence', () => {
 				roundId: 'baseline-v1',
 				reviewer: REVIEWER,
 				mode: 'write',
-				loadReviews: async () => replacementList
+				loadReviews: async () => postFinalList
 			})
-		).rejects.toThrow('cannot delete or mutate');
+		).rejects.toThrow('frozen');
+		expect(
+			JSON.parse(await readFile(path.resolve(root, roundBlindReviewPath('baseline-v1')), 'utf8'))
+		).toEqual(current);
+		expect(replacement.archivedPriorPath).toBe(
+			affinityRoundBlindReviewHistoryPath('baseline-v1', sha256Json(archived))
+		);
 	});
 
 	it('renders a deterministic opaque 24-image sheet with a receipt-bound sidecar', async () => {
@@ -242,14 +300,16 @@ describe('round post-generation evidence', () => {
 			mode: 'write',
 			loadReviews: async () => reviewList
 		});
-		const derived = await deriveAffinityRoundFinalEvaluation(root, 'baseline-v1');
+		const dependencies = { databaseUrl: 'unused', loadReviews: async () => reviewList };
+		const derived = await deriveAffinityRoundFinalEvaluation(root, 'baseline-v1', dependencies);
 		expect(derived.eligible).toBe(false);
 		expect(derived.blockers).toContain('requires-24-exact-current-blind-reviews');
 		const finalized = await finalizeAffinityRoundEvaluation({
 			workspaceRoot: root,
 			roundId: 'baseline-v1',
 			mode: 'write',
-			acknowledgeHumanReview: true
+			acknowledgeHumanReview: true,
+			...dependencies
 		});
 		expect(finalized.written).toBe(false);
 		const finalPath = path.resolve(root, affinityRoundRoot('baseline-v1'), 'final-evaluation.json');
@@ -279,6 +339,72 @@ describe('round post-generation evidence', () => {
 		).toEqual([]);
 	});
 
+	it('fails finalization closed when DB review evidence is unavailable, stale, or superseded', async () => {
+		const root = await completeBaselineRound();
+		const reviewList = await currentCandidateReviews(root);
+		await exportAffinityRoundReviewEvidence({
+			workspaceRoot: root,
+			databaseUrl: 'unused',
+			roundId: 'baseline-v1',
+			reviewer: REVIEWER,
+			mode: 'write',
+			loadReviews: async () => reviewList
+		});
+		const finalPath = path.resolve(root, affinityRoundRoot('baseline-v1'), 'final-evaluation.json');
+		const receiptPath = path.resolve(
+			root,
+			affinityRoundRoot('baseline-v1'),
+			'final-evaluation-receipt.json'
+		);
+
+		const unavailable = await finalizeAffinityRoundEvaluation({
+			workspaceRoot: root,
+			roundId: 'baseline-v1',
+			mode: 'write',
+			acknowledgeHumanReview: true,
+			databaseUrl: 'unused',
+			loadReviews: async () => {
+				throw new Error('database unavailable');
+			}
+		});
+		expect(unavailable.blockers).toContain('authoritative-review-database-unavailable');
+
+		const superseded = structuredClone(reviewList);
+		const latest = {
+			...superseded.latestByTargetReviewer[0]!,
+			reviewId: '77777777-7777-4777-8777-777777777777',
+			note: 'Latest DB decision supersedes the exported snapshot.',
+			reviewedAt: '2026-08-30T01:00:00.000Z'
+		};
+		superseded.reviews.push(latest);
+		superseded.latestByTargetReviewer[0] = latest;
+		const supersededReport = await finalizeAffinityRoundEvaluation({
+			workspaceRoot: root,
+			roundId: 'baseline-v1',
+			mode: 'write',
+			acknowledgeHumanReview: true,
+			databaseUrl: 'unused',
+			loadReviews: async () => superseded
+		});
+		expect(supersededReport.blockers).toContain('authoritative-review-projection-mismatch');
+
+		const stale = structuredClone(reviewList);
+		stale.latestByTargetReviewer[0]!.candidateContentHash = 'f'.repeat(64);
+		stale.reviews[0]!.candidateContentHash = 'f'.repeat(64);
+		const staleReport = await finalizeAffinityRoundEvaluation({
+			workspaceRoot: root,
+			roundId: 'baseline-v1',
+			mode: 'write',
+			acknowledgeHumanReview: true,
+			databaseUrl: 'unused',
+			loadReviews: async () => stale
+		});
+		expect(staleReport.blockers).toContain('authoritative-review-database-invalid');
+
+		await expect(readFile(finalPath)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(readFile(receiptPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
 	it('current final and Breadth post-generation checks fail without creating artifacts', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-round-empty-'));
 		temporaryRoots.push(root);
@@ -304,5 +430,23 @@ describe('round post-generation evidence', () => {
 		await expect(readFile(path.resolve(root, breadthPaths.catalog))).rejects.toMatchObject({
 			code: 'ENOENT'
 		});
+	});
+
+	it('serializes round evidence writers and safely recovers an abandoned lock', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-round-lock-'));
+		temporaryRoots.push(root);
+		const lockPath = path.resolve(root, `${roundBlindReviewPath('baseline-v1')}.lock`);
+		await mkdir(path.dirname(lockPath), { recursive: true });
+
+		const release = await acquireAffinityRoundReviewEvidenceLock(root, 'baseline-v1');
+		await expect(acquireAffinityRoundReviewEvidenceLock(root, 'baseline-v1')).rejects.toThrow(
+			'owns the lock'
+		);
+		await release();
+
+		await writeFile(lockPath, '99999999:abandoned\n', 'utf8');
+		const releaseRecovered = await acquireAffinityRoundReviewEvidenceLock(root, 'baseline-v1');
+		await releaseRecovered();
+		await expect(readFile(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 });

@@ -151,15 +151,17 @@ requests 16, but configuration alone does not prove provisioned capacity. The 4-
 
 ## Review and continuation
 
-Run the application with:
+Run the application with the same explicit actor that will own the append-only review and
+design-risk decisions:
 
 ```bash
-pnpm dev
+AFFINITY_REVIEW_ACTOR=<reviewer-name> pnpm dev
 ```
 
 Then open `/forge/enemies/affinity-workflow` for labeled inspection or
-`/forge/enemies/affinity-workflow?mode=blind` for server-stripped blind review. Reviews are
-append-only, bound to the exact candidate hash, and never promote assets.
+`/forge/enemies/affinity-workflow?mode=blind&scope=controlled&round=baseline-v1&reviewer=<reviewer-name>`
+for the exact server-stripped baseline review. Reviews are append-only, bound to the exact candidate
+hash, and never promote assets.
 
 After one reviewer completes the blind set, export their latest hash-bound decisions with:
 
@@ -167,15 +169,15 @@ After one reviewer completes the blind set, export their latest hash-bound decis
 pnpm report:baseline-blind-review --reviewer <reviewer-name>
 pnpm export:affinity-review-evidence --reviewer <reviewer-name>
 pnpm sync:affinity-review
-pnpm report:affinity-gate
-pnpm finalize:affinity-evaluation
+pnpm report:final-controlled-design-risk-readiness --reviewer <reviewer-name>
 ```
 
-The finalization command refuses to pass an incomplete or unattainable gate. Re-evaluate the
-controlled thresholds before dispatching any breadth image generation. The 60- and 600-manifest
-Goblin independence audits are already deterministic and require no image calls. A coherent
-versioned final-protocol controlled rerun and subsequent human blind review remain required;
-producer self-inspection cannot supply recognition or acceptance decisions.
+Once readiness passes, reload the label-visible Forge page, complete its 16 blank-by-default
+design-risk decisions, stage only the human-selected replacement manifests, export the strict v2
+resolution ledger, and run the guarded activation reporter. The 60- and 600-manifest Goblin
+independence audits are already deterministic and require no image calls. A coherent versioned
+final-protocol controlled rerun and subsequent human blind review remain required; producer
+self-inspection cannot supply recognition or acceptance decisions.
 
 Preparatory and completion checks are available without image calls:
 

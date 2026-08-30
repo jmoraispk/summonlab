@@ -122,6 +122,7 @@ async function fixture() {
 		plan,
 		activationReceipt,
 		activationReceiptValid: true,
+		activationDecisionChainValid: true,
 		catalog,
 		blindReviews: reviews,
 		finalTargets: targets,
@@ -162,6 +163,24 @@ describe('later-pack visual-rules readiness', () => {
 			eligibleBlindReviews: 24,
 			proposalRules: 8
 		});
+	});
+
+	it('rejects an activation whose v2 ledger or latest DB decision is no longer authentic', async () => {
+		const input = await fixture();
+		for (const condition of [
+			'superseded-decision',
+			'database-unavailable',
+			'stale-ledger'
+		] as const) {
+			const report = buildLaterPackRulesReadiness({
+				...input,
+				activationDecisionChainValid: false
+			});
+			expect(report.eligibleForHumanAcceptance, condition).toBe(false);
+			expect(report.blockers.map((item) => item.code)).toContain(
+				'activation-decision-chain-invalid'
+			);
+		}
 	});
 
 	it('rejects missing, API-like, stale, and failed-gate review evidence', async () => {

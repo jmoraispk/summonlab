@@ -222,12 +222,19 @@ export async function exportAcceptedLaterPackVisualRules(input: {
 	};
 }
 
-function parseArgs(args: readonly string[]): { mode: AcceptedRulesExportMode; actor: string } {
+export function parseAcceptedRulesExportArgs(args: readonly string[]): {
+	mode: AcceptedRulesExportMode;
+	actor: string;
+} {
 	let mode: AcceptedRulesExportMode | undefined;
 	let actor: string | undefined;
+	let separatorSeen = false;
 	for (let index = 0; index < args.length; index += 1) {
 		const argument = args[index];
-		if (argument === '--check' || argument === '--write') {
+		if (argument === '--') {
+			if (separatorSeen) throw new Error('Specify at most one -- argument separator.');
+			separatorSeen = true;
+		} else if (argument === '--check' || argument === '--write') {
 			if (mode) throw new Error('Specify exactly one of --check or --write.');
 			mode = argument.slice(2) as AcceptedRulesExportMode;
 		} else if (argument === '--actor') {
@@ -242,7 +249,7 @@ function parseArgs(args: readonly string[]): { mode: AcceptedRulesExportMode; ac
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
 	try {
-		const options = parseArgs(process.argv.slice(2));
+		const options = parseAcceptedRulesExportArgs(process.argv.slice(2));
 		const report = await exportAcceptedLaterPackVisualRules({
 			databaseUrl: getConfig().databaseUrl,
 			...options

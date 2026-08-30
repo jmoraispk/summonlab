@@ -126,6 +126,64 @@ function gate(stage: keyof typeof requestedByStage, humanGateSatisfied = stage !
 		humanGateSatisfied,
 		prerequisiteRunIds: stage === 'canary' ? [] : ['eligible-preceding-run'],
 		derivation,
+		promotionEvidence:
+			stage === 'canary'
+				? null
+				: {
+						schemaVersion: 'affinity-wave-promotion-evidence-v1' as const,
+						sourceRunId: 'eligible-preceding-run',
+						sourceStage: {
+							pilot: 'canary',
+							controlled: 'pilot',
+							breadth: 'controlled',
+							load: 'breadth',
+							scale: 'load'
+						}[stage]!,
+						sourceEffectiveConcurrency: {
+							pilot: 2,
+							controlled: 4,
+							breadth: 6,
+							load: 8,
+							scale: 12
+						}[stage]!,
+						sourceReportPath: `${experimentRoot}/wave-runs/eligible-preceding-run/report.json`,
+						sourceReportCanonicalSha256: 'f'.repeat(64),
+						thresholds: {
+							minimumCandidateRate: 0.8,
+							maximumRetryRate: 0.2,
+							minimumQualityPassRate: 0.8,
+							maximumCriticalVisualFailureCount: 0
+						},
+						observation: {
+							targetCount: 5,
+							candidateCount: 4,
+							candidateRate: 0.8,
+							retryCount: 1,
+							retryRate: 0.2,
+							qualityPassCount: 4,
+							qualityPassRate: 0.8,
+							criticalVisualFailureCount: 0
+						},
+						breadthCanaries:
+							stage === 'breadth'
+								? {
+										targetIds: [
+											'affinity-workflow-v1-goblin-normal',
+											'affinity-workflow-v1-tunnel-boar-fire'
+										],
+										observation: {
+											targetCount: 2,
+											candidateCount: 2,
+											candidateRate: 1,
+											retryCount: 0,
+											retryRate: 0,
+											qualityPassCount: 2,
+											qualityPassRate: 1,
+											criticalVisualFailureCount: 0
+										}
+									}
+								: null
+					},
 		evidenceBindings:
 			stage === 'canary'
 				? [...normalEvidenceBindings].sort((left, right) => left.path.localeCompare(right.path))
@@ -425,6 +483,7 @@ describe('affinity concurrency wave scheduler', () => {
 				humanGateSatisfied,
 				prerequisiteRunIds,
 				derivation,
+				promotionEvidence: gate(stage).promotionEvidence,
 				evidenceBindings: [
 					{ path: 'package.json', canonicalSha256: canonicalJsonSha256(packageValue) }
 				]
@@ -826,6 +885,78 @@ describe('affinity concurrency wave scheduler', () => {
 			providerThrottleCount: 1,
 			stageMetrics: null
 		});
+	});
+
+	it('stops new launches after three timeout or malformed-output failures', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'affinity-wave-quality-stop-rule-'));
+		roots.push(root);
+		const jobs = [
+			manifestJob('goblin', 'normal'),
+			manifestJob('goblin', 'wood'),
+			manifestJob('goblin', 'fire'),
+			manifestJob('goblin', 'metal')
+		];
+		for (const job of jobs) {
+			await copy(job.targetPath, root);
+			await copy(job.assignmentPath, root);
+		}
+		await writeGate(root, 'pilot');
+		const preflight = readyEventFixture(
+			await preflightWave(
+				root,
+				plan('pilot', jobs, 'pilot-timeout-malformed-stop'),
+				5,
+				'2026-08-29T20:00:00.000Z'
+			)
+		);
+		const events: AffinityWaveEvent[] = [
+			event(preflight.runId, 'wave-started', 'wave-started', '2026-08-29T20:00:01.000Z')
+		];
+		for (const [index, failureKind] of ['timeout', 'malformed-output', 'timeout'].entries()) {
+			const job = preflight.jobs[index]!;
+			const workerId = `worker-${index}`;
+			events.push(
+				event(
+					preflight.runId,
+					`dispatch-${index}`,
+					'job-dispatched',
+					`2026-08-29T20:00:0${index * 2 + 2}.000Z`,
+					{ targetId: job.targetId, workerId }
+				),
+				event(
+					preflight.runId,
+					`failure-${index}`,
+					'worker-failure',
+					`2026-08-29T20:00:0${index * 2 + 3}.000Z`,
+					{
+						targetId: job.targetId,
+						workerId,
+						failureKind,
+						detail: `Worker ended with ${failureKind}.`
+					}
+				)
+			);
+		}
+		expect(nextDispatchDecision(preflight, events)).toMatchObject({
+			stop: true,
+			reason: 'capacity-stop-rule',
+			capacityFailureCount: 0,
+			providerThrottleCount: 0,
+			stopFailureCount: 3,
+			launchTargetIds: []
+		});
+		expect(() =>
+			validateEventJournal(preflight, [
+				...events,
+				event(
+					preflight.runId,
+					'illegal-after-quality-stop',
+					'job-dispatched',
+					'2026-08-29T20:00:09.000Z',
+					{ targetId: preflight.jobs[3]!.targetId, workerId: 'worker-3' }
+				)
+			])
+		).toThrow(/after the capacity stop rule/u);
 	});
 
 	it('derives candidate, retry, timing, speedup, efficiency, and worker metrics from results', async () => {

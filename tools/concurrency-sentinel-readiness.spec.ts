@@ -9,6 +9,7 @@ import {
 	CONCURRENCY_SENTINEL_ALLOCATION_PATH,
 	EXPECTED_CONCURRENCY_SENTINEL_ALLOCATION_SHA256,
 	buildConcurrencySentinelBundle,
+	parseConcurrencySentinelArgs,
 	reportConcurrencySentinelReadiness,
 	type ConcurrencySentinelReadinessDependencies,
 	type ConcurrencySentinelSource,
@@ -94,6 +95,16 @@ function readyDependencies(input: unknown): ConcurrencySentinelReadinessDependen
 }
 
 describe('concurrency sentinel readiness', () => {
+	it('accepts one package-runner separator while keeping actor parsing strict', () => {
+		expect(parseConcurrencySentinelArgs(['--', '--actor', 'human-reviewer'])).toEqual({
+			actor: 'human-reviewer'
+		});
+		expect(() => parseConcurrencySentinelArgs(['--', '--'])).toThrow('at most one');
+		expect(() => parseConcurrencySentinelArgs(['--actor', 'a', '--actor', 'b'])).toThrow(
+			'exactly once'
+		);
+	});
+
 	it('derives exactly 14 source-bound manifests and 56 collision-free owned paths in memory', async () => {
 		const input = await allocation();
 		const bundle = buildConcurrencySentinelBundle({

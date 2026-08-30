@@ -17,7 +17,8 @@ import {
 } from './report-later-pack-visual-rules-readiness.js';
 import {
 	buildAcceptedLaterPackVisualRulesArtifact,
-	exportAcceptedLaterPackVisualRules
+	exportAcceptedLaterPackVisualRules,
+	parseAcceptedRulesExportArgs
 } from './export-accepted-later-pack-visual-rules.js';
 
 const roots: string[] = [];
@@ -94,6 +95,19 @@ async function workspace(): Promise<string> {
 }
 
 describe('accepted later-pack visual-rules export', () => {
+	it('accepts the package-runner argument separator without weakening argument validation', () => {
+		expect(parseAcceptedRulesExportArgs(['--write', '--', '--actor', 'product-owner'])).toEqual({
+			mode: 'write',
+			actor: 'product-owner'
+		});
+		expect(() =>
+			parseAcceptedRulesExportArgs(['--write', '--', '--', '--actor', 'product-owner'])
+		).toThrow('at most one');
+		expect(() => parseAcceptedRulesExportArgs(['--write', '--actor', '--bad'])).toThrow(
+			'Specify --actor'
+		);
+	});
+
 	it('derives strict v2 evidence only from the actor’s latest accepted DB decision', () => {
 		const record = decision();
 		const artifact = buildAcceptedLaterPackVisualRulesArtifact({

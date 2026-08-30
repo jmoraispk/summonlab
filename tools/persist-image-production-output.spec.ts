@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, symlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import sharp from 'sharp';
@@ -30,7 +30,8 @@ describe('persistImageProductionOutput', () => {
 
 		expect(report.operation).toBe('exclusive-copy');
 		expect(report.source.contentHash).toBe(report.retained.contentHash);
-		expect((await readFile(join(workspace, destination))).byteLength).toBe(report.retained.bytes);
+		const originalBytes = await readFile(join(workspace, destination));
+		expect(originalBytes.byteLength).toBe(report.retained.bytes);
 		await expect(
 			persistImageProductionOutput({
 				workspaceRoot: workspace,
@@ -41,6 +42,36 @@ describe('persistImageProductionOutput', () => {
 				mediaType: 'image/png'
 			})
 		).rejects.toThrow(/EEXIST/u);
+		expect(await readFile(join(workspace, destination))).toEqual(originalBytes);
+	});
+
+	it('rejects a symlinked destination parent without writing through it', async () => {
+		const workspace = join(process.cwd(), 'test-results', `persist-symlink-${crypto.randomUUID()}`);
+		const source = join(workspace, 'returned-source.png');
+		const experimentRoot = join(workspace, 'assets/enemies/experiments');
+		const symlinkTarget = join(workspace, 'symlink-target');
+		await mkdir(experimentRoot, { recursive: true });
+		await mkdir(symlinkTarget);
+		await writeFile(
+			source,
+			await sharp({ create: { width: 1536, height: 1024, channels: 3, background: '#222833' } })
+				.png()
+				.toBuffer()
+		);
+		await symlink(symlinkTarget, join(experimentRoot, 'linked-output'));
+
+		await expect(
+			persistImageProductionOutput({
+				workspaceRoot: workspace,
+				sourcePath: source,
+				destinationPath:
+					'assets/enemies/experiments/linked-output/candidates/subject/normal-v1.png',
+				width: 1536,
+				height: 1024,
+				mediaType: 'image/png'
+			})
+		).rejects.toThrow(/symbolic link/u);
+		expect(await readdir(symlinkTarget)).toEqual([]);
 	});
 
 	it('normalizes only a near-match and rejects a different aspect ratio', async () => {

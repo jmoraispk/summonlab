@@ -1,4 +1,5 @@
-import { lstat, readFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { lstat, open, readFile, rename, unlink } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
@@ -155,4 +156,58 @@ export function targetsById(
 
 export function roundBlindReviewPath(roundId: AffinityReviewRoundId): string {
 	return `${affinityRoundAggregatePaths(roundId).catalog.replace(/catalog\.json$/u, '')}blind-review.json`;
+}
+
+/** Serialize review snapshot replacement and final-evaluation publication for one round. */
+export async function acquireAffinityRoundReviewEvidenceLock(
+	workspaceRoot: string,
+	roundId: AffinityReviewRoundId
+): Promise<() => Promise<void>> {
+	const lockPath = path.resolve(workspaceRoot, `${roundBlindReviewPath(roundId)}.lock`);
+	const owner = `${process.pid}:${randomUUID()}`;
+	const createOwnedLock = async () => {
+		const handle = await open(lockPath, 'wx');
+		try {
+			await handle.writeFile(`${owner}\n`);
+			await handle.sync();
+		} finally {
+			await handle.close();
+		}
+	};
+	try {
+		await createOwnedLock();
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+		const ownerPid = Number((await readFile(lockPath, 'utf8')).trim().split(':', 1)[0]);
+		let alive = Number.isSafeInteger(ownerPid) && ownerPid > 0;
+		if (alive)
+			try {
+				process.kill(ownerPid, 0);
+			} catch (probeError) {
+				if ((probeError as NodeJS.ErrnoException).code === 'ESRCH') alive = false;
+				else throw probeError;
+			}
+		if (alive) throw new Error('Another round review operation owns the lock.', { cause: error });
+		const stalePath = `${lockPath}.stale-${randomUUID()}`;
+		try {
+			await rename(lockPath, stalePath);
+		} catch (renameError) {
+			if ((renameError as NodeJS.ErrnoException).code === 'ENOENT')
+				throw new Error('Round review lock ownership changed during stale-lock recovery.', {
+					cause: renameError
+				});
+			throw renameError;
+		}
+		try {
+			await createOwnedLock();
+		} finally {
+			await unlink(stalePath).catch(() => undefined);
+		}
+	}
+	return async () => {
+		const currentOwner = (await readFile(lockPath, 'utf8')).trim();
+		if (currentOwner !== owner)
+			throw new Error('Round review lock ownership changed before release.');
+		await unlink(lockPath);
+	};
 }

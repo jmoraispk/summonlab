@@ -6,6 +6,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { ImageProductionTargetSchema } from '../packages/contracts/src/index.js';
 import type { EligibleSchedulerRun } from './check-affinity-plan-completion.js';
+import {
+	AffinityWavePromotionEvidenceSchema,
+	type AffinityWavePromotionEvidence
+} from './affinity-wave-scheduler-lib.js';
 import { AFFINITY_EXPERIMENT_ROOT } from './image-production-lib.js';
 import {
 	buildDerivedAffinityDispatchGate,
@@ -43,6 +47,54 @@ function schedulerRun(
 	};
 }
 
+function promotionEvidence(
+	run: EligibleSchedulerRun,
+	breadthCanaries = false
+): AffinityWavePromotionEvidence {
+	return AffinityWavePromotionEvidenceSchema.parse({
+		schemaVersion: 'affinity-wave-promotion-evidence-v1' as const,
+		sourceRunId: run.runId,
+		sourceStage: run.stage as 'canary' | 'pilot' | 'controlled' | 'breadth' | 'load',
+		sourceEffectiveConcurrency: run.effectiveConcurrency as 2 | 4 | 6 | 8 | 12,
+		sourceReportPath: run.reportPath,
+		sourceReportCanonicalSha256: run.reportCanonicalSha256,
+		thresholds: {
+			minimumCandidateRate: 0.8 as const,
+			maximumRetryRate: 0.2 as const,
+			minimumQualityPassRate: 0.8 as const,
+			maximumCriticalVisualFailureCount: 0 as const
+		},
+		observation: {
+			targetCount: 5,
+			candidateCount: 4,
+			candidateRate: 0.8,
+			retryCount: 1,
+			retryRate: 0.2,
+			qualityPassCount: 4,
+			qualityPassRate: 0.8,
+			criticalVisualFailureCount: 0
+		},
+		breadthCanaries: breadthCanaries
+			? {
+					targetIds: [
+						'affinity-workflow-v1-goblin-normal',
+						'affinity-workflow-v1-tunnel-boar-fire'
+					],
+					observation: {
+						targetCount: 2,
+						candidateCount: 2,
+						candidateRate: 1,
+						retryCount: 0,
+						retryRate: 0,
+						qualityPassCount: 2,
+						qualityPassRate: 1,
+						criticalVisualFailureCount: 0
+					}
+				}
+			: null
+	});
+}
+
 async function copyArtifact(workspaceRoot: string, repositoryPath: string): Promise<void> {
 	const destination = path.resolve(workspaceRoot, repositoryPath);
 	await mkdir(path.dirname(destination), { recursive: true });
@@ -74,11 +126,13 @@ describe('derived affinity dispatch gates', () => {
 	it('derives Normal and Final canary semantics without caller-supplied booleans', () => {
 		const normal = buildDerivedAffinityDispatchGate(normalRequest, {
 			bindings,
-			prerequisiteRun: null
+			prerequisiteRun: null,
+			promotionEvidence: null
 		});
 		const final = buildDerivedAffinityDispatchGate(finalRequest, {
 			bindings,
-			prerequisiteRun: null
+			prerequisiteRun: null,
+			promotionEvidence: null
 		});
 
 		expect(normal).toMatchObject({
@@ -105,7 +159,11 @@ describe('derived affinity dispatch gates', () => {
 			profile: 'breadth',
 			prerequisiteRunId: prerequisiteRun.runId
 		} as const;
-		const gate = buildDerivedAffinityDispatchGate(request, { bindings, prerequisiteRun });
+		const gate = buildDerivedAffinityDispatchGate(request, {
+			bindings,
+			prerequisiteRun,
+			promotionEvidence: promotionEvidence(prerequisiteRun, true)
+		});
 		expect(gate).toMatchObject({
 			authorizedStage: 'breadth',
 			humanGateSatisfied: true,
@@ -114,7 +172,8 @@ describe('derived affinity dispatch gates', () => {
 		expect(() =>
 			buildDerivedAffinityDispatchGate(request, {
 				bindings,
-				prerequisiteRun: schedulerRun('pilot', 4, prerequisiteRun.runId)
+				prerequisiteRun: schedulerRun('pilot', 4, prerequisiteRun.runId),
+				promotionEvidence: promotionEvidence(prerequisiteRun, true)
 			})
 		).toThrow(/eligible controlled-6 predecessor/u);
 	});
@@ -133,7 +192,11 @@ describe('derived affinity dispatch gates', () => {
 				requestedConcurrency: concurrency,
 				prerequisiteRunId: prerequisiteRun.runId
 			};
-			const gate = buildDerivedAffinityDispatchGate(request, { bindings, prerequisiteRun });
+			const gate = buildDerivedAffinityDispatchGate(request, {
+				bindings,
+				prerequisiteRun,
+				promotionEvidence: promotionEvidence(prerequisiteRun)
+			});
 			expect(gate.authorizedStage).toBe(authorizedStage);
 			expect(gate.prerequisiteRunIds).toEqual([prerequisiteRun.runId]);
 		}
@@ -148,9 +211,72 @@ describe('derived affinity dispatch gates', () => {
 		expect(() =>
 			buildDerivedAffinityDispatchGate(request, {
 				bindings,
-				prerequisiteRun: schedulerRun('breadth', 8, request.prerequisiteRunId)
+				prerequisiteRun: schedulerRun('breadth', 8, request.prerequisiteRunId),
+				promotionEvidence: promotionEvidence(schedulerRun('breadth', 8, request.prerequisiteRunId))
 			})
 		).toThrow(/eligible load-12 predecessor/u);
+	});
+
+	it('rejects forged promotion counters and missing breadth canaries', () => {
+		const canary = schedulerRun('canary', 2);
+		const pilotRequest = {
+			profile: 'load',
+			requestedConcurrency: 4,
+			prerequisiteRunId: canary.runId
+		} as const;
+		const weak = promotionEvidence(canary);
+		expect(() =>
+			buildDerivedAffinityDispatchGate(pilotRequest, {
+				bindings,
+				prerequisiteRun: canary,
+				promotionEvidence: {
+					...weak,
+					observation: {
+						...weak.observation,
+						candidateCount: 3,
+						candidateRate: 0.6,
+						qualityPassCount: 3,
+						qualityPassRate: 0.6
+					}
+				}
+			})
+		).toThrow(/Promotion threshold failed/u);
+
+		const controlled = schedulerRun('controlled', 6);
+		expect(() =>
+			buildDerivedAffinityDispatchGate(
+				{ profile: 'breadth', prerequisiteRunId: controlled.runId },
+				{
+					bindings,
+					prerequisiteRun: controlled,
+					promotionEvidence: promotionEvidence(controlled)
+				}
+			)
+		).toThrow(/two exact breadth canaries/u);
+	});
+
+	it('derives Load-12 and Scale-16 from promoted predecessor runs without a breadth-round input', () => {
+		for (const [requestedConcurrency, predecessor] of [
+			[12, schedulerRun('breadth', 8)],
+			[16, schedulerRun('load', 12)]
+		] as const) {
+			const gate = buildDerivedAffinityDispatchGate(
+				{
+					profile: 'load',
+					requestedConcurrency,
+					prerequisiteRunId: predecessor.runId
+				},
+				{
+					bindings,
+					prerequisiteRun: predecessor,
+					promotionEvidence: promotionEvidence(predecessor)
+				}
+			);
+			expect(gate.promotionEvidence?.sourceRunId).toBe(predecessor.runId);
+			expect(gate.evidenceBindings.map((binding) => binding.path)).not.toContain(
+				`${AFFINITY_EXPERIMENT_ROOT}/review/rounds/breadth-v1/final-evaluation.json`
+			);
+		}
 	});
 
 	it('check mode verifies current Normal evidence without writing', async () => {

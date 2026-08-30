@@ -24,6 +24,10 @@ import {
 	FinalControlledActivationReceiptSchema,
 	verifyFinalControlledActivationReceipt
 } from './final-controlled-activation-evidence.js';
+import {
+	buildActivatedFinalControlledDecisionChainReadiness,
+	loadCurrentActivationReadinessInput
+} from './report-final-controlled-activation-readiness.js';
 import { FinalControlledRerunPlanSchema } from './prepare-final-controlled-rerun.js';
 
 const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
@@ -159,6 +163,7 @@ export interface LaterPackRulesReadinessInput {
 	readonly plan: unknown;
 	readonly activationReceipt: unknown;
 	readonly activationReceiptValid: boolean;
+	readonly activationDecisionChainValid?: boolean;
 	readonly catalog: unknown;
 	readonly blindReviews: unknown;
 	readonly finalTargets: readonly unknown[];
@@ -228,6 +233,12 @@ export function buildLaterPackRulesReadiness(input: LaterPackRulesReadinessInput
 		blockers.push({
 			code: 'activation-plan-binding-mismatch',
 			detail: 'Activation receipt does not bind the current plan.'
+		});
+	if (input.activationDecisionChainValid !== true)
+		blockers.push({
+			code: 'activation-decision-chain-invalid',
+			detail:
+				'The activation does not retain a current DB-authentic v2 ledger and latest human decision.'
 		});
 	const plannedIds = plan.targets.map((item) => `affinity-workflow-v1-${item.key}`).toSorted();
 	const finalTargets = targets
@@ -404,6 +415,7 @@ export function buildLaterPackRulesReadiness(input: LaterPackRulesReadinessInput
 					'invalid-final-results',
 					'activation-not-verified',
 					'activation-plan-binding-mismatch',
+					'activation-decision-chain-invalid',
 					'final-cohort-incomplete',
 					'final-candidates-incomplete',
 					'eligible-blind-reviews-incomplete',
@@ -472,11 +484,20 @@ export async function reportCurrentLaterPackRulesReadiness(
 		(result) => result.valid,
 		() => false
 	);
+	const activationDecisionChainValid =
+		activationReceiptValid && activationReceipt !== undefined
+			? await loadCurrentActivationReadinessInput(workspaceRoot).then(
+					(input) =>
+						buildActivatedFinalControlledDecisionChainReadiness(input, activationReceipt).valid,
+					() => false
+				)
+			: false;
 	const report = buildLaterPackRulesReadiness({
 		proposal,
 		plan,
 		activationReceipt,
 		activationReceiptValid,
+		activationDecisionChainValid,
 		catalog: finalRound.catalog,
 		blindReviews,
 		finalTargets,

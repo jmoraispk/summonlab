@@ -296,6 +296,72 @@ describe('guarded final-controlled activation', () => {
 		await expect(lstat(path.join(root, 'assets'))).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
+	it('revalidates the latest DB-authentic v2 chain before returning already activated', async () => {
+		for (const tamper of ['superseded-decision', 'database-unavailable', 'stale-ledger'] as const) {
+			const root = await workspace();
+			const original = await authorizedInput();
+			let current = original;
+			await activateFinalControlledRerun({
+				workspaceRoot: root,
+				acknowledgeLiveManifestActivation: true,
+				loadInput: async () => current,
+				now: () => '2026-08-29T21:00:00.000Z'
+			});
+
+			if (tamper === 'database-unavailable') {
+				current = {
+					...original,
+					decisionDatabaseAvailable: false,
+					decisionList: undefined,
+					plannedPathsAbsent: false,
+					currentWorkspaceValid: false
+				};
+			} else if (tamper === 'superseded-decision') {
+				const decisionList = structuredClone(original.decisionList as any);
+				const prior = decisionList.records[0];
+				const latest = {
+					...structuredClone(prior),
+					decisionId: '00000000-0000-4000-8000-000000000101',
+					supersedesDecisionId: prior.decisionId,
+					decidedAt: '2026-08-29T21:30:00.000Z'
+				};
+				current = {
+					...original,
+					decisionList: { ...decisionList, records: [prior, latest], latestByActor: [latest] },
+					plannedPathsAbsent: false,
+					currentWorkspaceValid: false
+				};
+			} else {
+				const resolutions = structuredClone(original.resolutions as any);
+				resolutions.evidenceBindings.catalogCanonicalSha256 = '0'.repeat(64);
+				resolutions.humanDecisionRecord.record.evidenceBindings.catalogCanonicalSha256 = '0'.repeat(
+					64
+				);
+				resolutions.humanDecisionRecord.recordCanonicalSha256 = sha256Json(
+					resolutions.humanDecisionRecord.record
+				);
+				const decisionList = structuredClone(original.decisionList as any);
+				decisionList.records[0] = resolutions.humanDecisionRecord.record;
+				decisionList.latestByActor = [resolutions.humanDecisionRecord.record];
+				current = {
+					...original,
+					resolutions,
+					decisionList,
+					plannedPathsAbsent: false,
+					currentWorkspaceValid: false
+				};
+			}
+
+			await expect(
+				activateFinalControlledRerun({
+					workspaceRoot: root,
+					acknowledgeLiveManifestActivation: true,
+					loadInput: async () => current
+				})
+			).rejects.toThrow('Existing activation evidence is not current');
+		}
+	});
+
 	it('rejects stale or unverifiable DB-bound v2 ledgers before writing activation artifacts', async () => {
 		for (const tamper of [
 			'v1',

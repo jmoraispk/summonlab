@@ -1,5 +1,15 @@
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, symlink } from 'node:fs/promises';
+import {
+	copyFile,
+	mkdir,
+	mkdtemp,
+	readFile,
+	readdir,
+	realpath,
+	rm,
+	stat,
+	symlink
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -60,7 +70,11 @@ import {
 	type AffinityReviewSyncIssue,
 	type ValidatedImageProductionExecution
 } from './sync-affinity-review.js';
-import { validateAffinityWorkflowWorkspace } from './validate-affinity-workflow.js';
+import {
+	canonicalGoblinAuditMatches,
+	validateAffinityWorkflowWorkspace
+} from './validate-affinity-workflow.js';
+import { validateAffinityClientBundlePrivacy } from './validate-affinity-client-bundle-privacy.js';
 import { verifyAcceptedLaterPackRulesForCompletion } from './verify-accepted-later-pack-rules-completion.js';
 import sharp from 'sharp';
 
@@ -78,6 +92,11 @@ const REQUIRED_SKILL_FILES = [
 	'scripts/verify_result.py'
 ] as const;
 const REQUIRED_FORGE_FILES = [
+	'apps/web/src/lib/components/FinalControlledDesignRiskReview.svelte',
+	'apps/web/src/lib/components/final-controlled-design-risk-review.ts',
+	'apps/web/src/lib/components/final-controlled-design-risk-review.spec.ts',
+	'apps/web/src/lib/server/final-controlled-design-risk-review.ts',
+	'apps/web/src/lib/server/final-controlled-design-risk-review.spec.ts',
 	'apps/web/src/routes/forge/enemies/affinity-workflow/+page.server.ts',
 	'apps/web/src/routes/forge/enemies/affinity-workflow/+page.svelte',
 	'apps/web/src/routes/forge/enemies/affinity-workflow/affinity-review.ts',
@@ -87,7 +106,11 @@ const REQUIRED_FORGE_FILES = [
 	'apps/web/src/lib/server/later-pack-rule-review.ts',
 	'apps/web/src/lib/server/later-pack-rule-review.spec.ts',
 	'apps/web/src/routes/api/dev/later-pack-rule-decisions/+server.ts',
-	'apps/web/src/routes/api/dev/later-pack-rule-decisions/server.spec.ts'
+	'apps/web/src/routes/api/dev/later-pack-rule-decisions/server.spec.ts',
+	'apps/web/src/routes/api/dev/final-controlled-design-risk-decisions/+server.ts',
+	'apps/web/src/routes/api/dev/final-controlled-design-risk-decisions/server.spec.ts',
+	'tools/validate-affinity-client-bundle-privacy.ts',
+	'tools/validate-affinity-client-bundle-privacy.spec.ts'
 ] as const;
 const SCALE_RECOMMENDATION_PATH =
 	`${AFFINITY_EXPERIMENT_ROOT}/review/scale-recommendation.json` as const;
@@ -202,6 +225,7 @@ export interface AffinityPlanCompletionEvidence {
 		readonly presentFileCount: number;
 		readonly labeledProjectionValid: boolean;
 		readonly blindProjectionStripped: boolean;
+		readonly clientBundlePrivacyValid: boolean;
 	};
 	readonly acceptedLaterPackRules: {
 		readonly artifactPresent: boolean;
@@ -558,7 +582,8 @@ export function buildAffinityPlanCompletionReport(
 	const forgeComplete =
 		evidence.forgeEvidence.presentFileCount === evidence.forgeEvidence.requiredFileCount &&
 		evidence.forgeEvidence.labeledProjectionValid &&
-		evidence.forgeEvidence.blindProjectionStripped;
+		evidence.forgeEvidence.blindProjectionStripped &&
+		evidence.forgeEvidence.clientBundlePrivacyValid;
 	const laterPackRulesComplete =
 		evidence.acceptedLaterPackRules.artifactPresent &&
 		evidence.acceptedLaterPackRules.acceptedArtifactValid &&
@@ -703,6 +728,18 @@ async function linkProjectedFile(
 	if (!(await fileExists(destination))) await symlink(source, destination, 'file');
 }
 
+async function copyContainedProjectedFile(
+	workspaceRoot: string,
+	projectionRoot: string,
+	repositoryPath: string
+): Promise<void> {
+	const source = path.resolve(workspaceRoot, repositoryPath);
+	const destination = path.resolve(projectionRoot, repositoryPath);
+	await mkdir(path.dirname(destination), { recursive: true });
+	await rm(destination, { force: true });
+	await copyFile(source, destination);
+}
+
 async function validateBaseWorkspaceProjection(
 	workspaceRoot: string,
 	excludedRepositoryPaths: ReadonlySet<string>
@@ -721,6 +758,26 @@ async function validateBaseWorkspaceProjection(
 			bundle.targets.flatMap((target) => target.references.map((reference) => reference.path))
 		)) {
 			await linkProjectedFile(workspaceRoot, projectionRoot, referencePath);
+		}
+		const dryRunTarget = bundle.targets.find(
+			(target) => target.targetId === 'affinity-workflow-v1-goblin-normal'
+		);
+		if (!dryRunTarget) throw new Error('Goblin Normal dry-run target is missing.');
+		for (const repositoryPath of [
+			`${AFFINITY_EXPERIMENT_ROOT}/targets/goblin/normal.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-assignment-v1.json`,
+			...dryRunTarget.references.map((reference) => reference.path)
+		]) {
+			await copyContainedProjectedFile(workspaceRoot, projectionRoot, repositoryPath);
+		}
+		for (const absolutePath of await listFiles(
+			path.resolve(workspaceRoot, 'skills/summonlab-image-production')
+		)) {
+			await linkProjectedFile(
+				workspaceRoot,
+				projectionRoot,
+				path.relative(workspaceRoot, absolutePath).split(path.sep).join('/')
+			);
 		}
 		return await validateAffinityWorkflowWorkspace(projectionRoot);
 	} catch {
@@ -1469,10 +1526,10 @@ export async function inspectAffinityPlanCompletionEvidence(
 	});
 
 	const auditPassed = async (sampleSize: 60 | 600): Promise<boolean> => {
-		const value = (await readJson(
+		const value = await readJson(
 			path.join(experimentRoot, `review/goblin-audit-${sampleSize}.json`)
-		).catch(() => null)) as { sampleSize?: unknown; gates?: { passed?: unknown } } | null;
-		return value?.sampleSize === sampleSize && value.gates?.passed === true && validation !== null;
+		).catch(() => null);
+		return canonicalGoblinAuditMatches(value, sampleSize) && validation !== null;
 	};
 
 	const schedulerEvidence = await inspectSchedulerEvidence(workspaceRoot);
@@ -1514,6 +1571,9 @@ export async function inspectAffinityPlanCompletionEvidence(
 		blindCells.length === 24 &&
 		blindCells.every((cell) => cell.labels === null && cell.metadata === null) &&
 		blindCells.filter((cell) => cell.status === 'candidate').length === 21;
+	const clientBundlePrivacyValid = await validateAffinityClientBundlePrivacy(workspaceRoot)
+		.then(() => true)
+		.catch(() => false);
 
 	const acceptedLaterPackRules = await optionalAcceptedRules(workspaceRoot);
 	const scaleRecommendation = await optionalScaleRecommendation(workspaceRoot, schedulerEvidence);
@@ -1557,7 +1617,8 @@ export async function inspectAffinityPlanCompletionEvidence(
 			requiredFileCount: REQUIRED_FORGE_FILES.length,
 			presentFileCount: presentForgeFiles,
 			labeledProjectionValid,
-			blindProjectionStripped
+			blindProjectionStripped,
+			clientBundlePrivacyValid
 		},
 		acceptedLaterPackRules,
 		scaleRecommendation

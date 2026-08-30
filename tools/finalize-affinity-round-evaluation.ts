@@ -3,15 +3,20 @@ import { link, mkdir, open, readFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { getConfig } from '../packages/config/src/index.js';
 import {
+	AffinityWorkflowReviewListSchema,
 	ImageProductionResultSchema,
+	type AffinityWorkflowReviewList,
 	type ImageProductionResult
 } from '../packages/contracts/src/index.js';
+import { listAffinityWorkflowReviews } from '../packages/database/src/index.js';
 import { format } from 'prettier';
 import { z } from 'zod';
 
 import {
 	AffinityRoundBlindReviewCollectionSchema,
+	acquireAffinityRoundReviewEvidenceLock,
 	loadRoundBlindReviews,
 	loadVerifiedAffinityReviewRound,
 	verifiedRegularBytes
@@ -22,6 +27,10 @@ import {
 	sha256Bytes,
 	type AffinityReviewRoundId
 } from './affinity-review-round-lib.js';
+import {
+	verifyAffinityRoundReviewDatabaseAuthenticity,
+	type RoundReviewListLoader
+} from './export-affinity-round-review-evidence.js';
 import { sha256Json } from './image-production-lib.js';
 
 const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
@@ -108,6 +117,11 @@ export type AffinityRoundFinalCriteria = z.infer<
 	typeof AffinityRoundFinalEvaluationSchema
 >['criteria'];
 
+export interface AffinityRoundFinalizationDependencies {
+	readonly databaseUrl?: string;
+	readonly loadReviews?: RoundReviewListLoader;
+}
+
 export function roundFinalizationBlockers(
 	roundId: AffinityReviewRoundId,
 	criteria: AffinityRoundFinalCriteria
@@ -133,7 +147,8 @@ export function roundFinalizationBlockers(
 
 export async function deriveAffinityRoundFinalEvaluation(
 	workspaceRoot: string,
-	roundId: AffinityReviewRoundId
+	roundId: AffinityReviewRoundId,
+	dependencies: AffinityRoundFinalizationDependencies = {}
 ): Promise<RoundFinalizationDerivation> {
 	const round = await loadVerifiedAffinityReviewRound(workspaceRoot, roundId);
 	const reviews = await loadRoundBlindReviews(workspaceRoot, roundId, true);
@@ -142,6 +157,31 @@ export async function deriveAffinityRoundFinalEvaluation(
 	const blockers: string[] = [];
 	if (reviews.integrationReceiptCanonicalSha256 !== round.integrationReceiptCanonicalSha256)
 		blockers.push('blind-review-integration-binding-mismatch');
+	let databaseReviews: AffinityWorkflowReviewList | null = null;
+	try {
+		databaseReviews = AffinityWorkflowReviewListSchema.parse(
+			await (dependencies.loadReviews ?? listAffinityWorkflowReviews)(
+				dependencies.databaseUrl ?? getConfig().databaseUrl,
+				'affinity-workflow-v1'
+			)
+		);
+	} catch {
+		blockers.push('authoritative-review-database-unavailable');
+	}
+	if (databaseReviews) {
+		const authenticity = verifyAffinityRoundReviewDatabaseAuthenticity({
+			roundId,
+			exported: reviews,
+			reviewList: databaseReviews,
+			verifiedRound: round
+		});
+		if (!authenticity.valid)
+			blockers.push(
+				authenticity.expected
+					? 'authoritative-review-projection-mismatch'
+					: 'authoritative-review-database-invalid'
+			);
+	}
 	const targets = new Map(
 		round.registry.entries.map((entry) => [entry.target.targetId, entry.target])
 	);
@@ -273,13 +313,19 @@ export async function finalizeAffinityRoundEvaluation(options: {
 	readonly roundId: AffinityReviewRoundId;
 	readonly mode: 'check' | 'write';
 	readonly acknowledgeHumanReview?: boolean;
+	readonly databaseUrl?: string;
+	readonly loadReviews?: RoundReviewListLoader;
 }): Promise<AffinityRoundFinalizationReport> {
 	const workspaceRoot = path.resolve(options.workspaceRoot ?? process.cwd());
 	const roundId = AffinityReviewRoundIdSchema.parse(options.roundId);
 	const root = affinityRoundRoot(roundId);
 	const evaluationPath = `${root}/final-evaluation.json`;
 	const receiptPath = `${root}/final-evaluation-receipt.json`;
-	const derived = await deriveAffinityRoundFinalEvaluation(workspaceRoot, roundId);
+	const dependencies = {
+		...(options.databaseUrl ? { databaseUrl: options.databaseUrl } : {}),
+		...(options.loadReviews ? { loadReviews: options.loadReviews } : {})
+	};
+	const derived = await deriveAffinityRoundFinalEvaluation(workspaceRoot, roundId, dependencies);
 	if (!derived.eligible || !derived.evaluation)
 		return {
 			mode: options.mode,
@@ -291,8 +337,8 @@ export async function finalizeAffinityRoundEvaluation(options: {
 			inSync: false,
 			written: false
 		};
-	const evaluationText = await formattedJson(evaluationPath, derived.evaluation);
-	const receipt = AffinityRoundFinalEvaluationReceiptSchema.parse({
+	let evaluationText = await formattedJson(evaluationPath, derived.evaluation);
+	let receipt = AffinityRoundFinalEvaluationReceiptSchema.parse({
 		schemaVersion: 'affinity-review-round-final-evaluation-receipt-v1',
 		experimentId: 'affinity-workflow-v1',
 		roundId,
@@ -304,7 +350,7 @@ export async function finalizeAffinityRoundEvaluation(options: {
 		evaluationCanonicalSha256: sha256Json(derived.evaluation),
 		evaluationByteSha256: sha256Bytes(evaluationText)
 	});
-	const receiptText = await formattedJson(receiptPath, receipt);
+	let receiptText = await formattedJson(receiptPath, receipt);
 	const evaluationDestination = path.resolve(workspaceRoot, evaluationPath);
 	const receiptDestination = path.resolve(workspaceRoot, receiptPath);
 	const currentEvaluation = await readFile(evaluationDestination, 'utf8').catch(() => null);
@@ -314,27 +360,61 @@ export async function finalizeAffinityRoundEvaluation(options: {
 	if (options.mode === 'write' && !inSync) {
 		if (!options.acknowledgeHumanReview)
 			throw new Error('Explicit --acknowledge-human-review is required to finalize a round.');
-		await mkdir(path.dirname(evaluationDestination), { recursive: true });
-		const evaluationTemporary = await durableTemp(evaluationDestination, evaluationText);
-		const receiptTemporary = await durableTemp(receiptDestination, receiptText);
-		let evaluationOwned = false;
+		const release = await acquireAffinityRoundReviewEvidenceLock(workspaceRoot, roundId);
 		try {
-			evaluationOwned = await publishExclusiveOrExact(
-				evaluationTemporary,
-				evaluationDestination,
-				evaluationText
+			const underLock = await deriveAffinityRoundFinalEvaluation(
+				workspaceRoot,
+				roundId,
+				dependencies
 			);
-			await publishExclusiveOrExact(receiptTemporary, receiptDestination, receiptText);
-			written = true;
-		} catch (error) {
-			const committedReceipt = await readFile(receiptDestination, 'utf8').catch(() => null);
-			if (evaluationOwned && committedReceipt !== receiptText) await unlink(evaluationDestination);
-			throw error;
+			if (!underLock.eligible || !underLock.evaluation)
+				return {
+					mode: options.mode,
+					roundId,
+					eligible: false,
+					blockers: underLock.blockers,
+					evaluationPath,
+					receiptPath,
+					inSync: false,
+					written: false
+				};
+			const lockedEvaluation = underLock.evaluation;
+			if (sha256Json(lockedEvaluation) !== sha256Json(derived.evaluation))
+				throw new Error('Authoritative round review evidence changed during finalization.');
+			evaluationText = await formattedJson(evaluationPath, lockedEvaluation);
+			receipt = AffinityRoundFinalEvaluationReceiptSchema.parse({
+				...receipt,
+				completedAt: lockedEvaluation.finalizedAt,
+				blindReviewCanonicalSha256: lockedEvaluation.blindReviewCanonicalSha256,
+				evaluationCanonicalSha256: sha256Json(lockedEvaluation),
+				evaluationByteSha256: sha256Bytes(evaluationText)
+			});
+			receiptText = await formattedJson(receiptPath, receipt);
+			await mkdir(path.dirname(evaluationDestination), { recursive: true });
+			const evaluationTemporary = await durableTemp(evaluationDestination, evaluationText);
+			const receiptTemporary = await durableTemp(receiptDestination, receiptText);
+			let evaluationOwned = false;
+			try {
+				evaluationOwned = await publishExclusiveOrExact(
+					evaluationTemporary,
+					evaluationDestination,
+					evaluationText
+				);
+				await publishExclusiveOrExact(receiptTemporary, receiptDestination, receiptText);
+				written = true;
+			} catch (error) {
+				const committedReceipt = await readFile(receiptDestination, 'utf8').catch(() => null);
+				if (evaluationOwned && committedReceipt !== receiptText)
+					await unlink(evaluationDestination);
+				throw error;
+			} finally {
+				await Promise.all([
+					unlink(evaluationTemporary).catch(() => undefined),
+					unlink(receiptTemporary).catch(() => undefined)
+				]);
+			}
 		} finally {
-			await Promise.all([
-				unlink(evaluationTemporary).catch(() => undefined),
-				unlink(receiptTemporary).catch(() => undefined)
-			]);
+			await release();
 		}
 	}
 	return {

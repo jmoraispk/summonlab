@@ -16,6 +16,25 @@ until a human records a review decision.
 
 ## Execution record
 
+- 2026-08-29: Repaired the staged concurrency proof so Load-12 depends on the exact promoted
+  Breadth-8 run and Scale-16 depends on the exact promoted Load-12 run, removing the prior circular
+  requirement for a fully completed breadth round before its own targets could run. Every
+  post-canary gate now carries re-derived hashes for the precise report, results, retained images,
+  quality rate, retry rate, and critical failures. Breadth also requires the exact Goblin Normal
+  and Tunnel Boar Fire canaries to pass on their first attempts. Capacity, throttle, timeout, and
+  malformed-output failures all participate in the three-failure launch stop.
+- 2026-08-29: Hardened the reusable workflow boundary for high parallelism. Exclusive persistence
+  now cleans up only paths created by the current worker, preserves another worker's collision
+  bytes, and rejects symlinks in every output-parent component. A new fresh-agent, no-image Goblin
+  preflight is reproducible rather than self-attested: validation re-runs the installed skill's
+  target validator and prompt renderer, verifies the framed ten-file skill digest against the
+  repository, checks both routed reference hashes and dimensions, and proves both owned outputs
+  remain absent.
+- 2026-08-29: Made review-round correction evidence safe and current. Before finalization, the
+  explicit reviewer's latest DB projection can replace a stale export while prior canonical
+  snapshots are preserved in append-only history. After a receipt exists, the export is frozen.
+  Finalization re-reads DB-authentic, current-candidate evidence before and again under the shared
+  publication lock; unavailable, stale, or superseded evidence is zero-write.
 - 2026-08-29: Replaced mixed review aggregates with three exact 24-target evidence rounds:
   `baseline-v1`, `final-controlled-v1`, and `breadth-v1`. Each round now validates every target,
   assignment, result, retained image byte, ID, retry ceiling, and owned path before publishing its
@@ -110,15 +129,16 @@ until a human records a review decision.
   attestations, while the blind route withholds risk identifiers, coordinates, scope, and history
   from rendered HTML. The contracts package is explicitly side-effect-free so unused server-only
   risk schemas are tree-shaken; a production bundle audit confirms that the protected risk IDs,
-  coordinates, and scope identifier are absent from all client chunks.
+  coordinates, and scope identifier are absent from all client chunks. Public base target IDs
+  remain ordinary catalog data and are intentionally not misclassified as secret decision metadata.
 
 The plan is now backed by a runnable implementation rather than being a design-only document:
 
 - the reusable, locally installed `summonlab-image-production` skill is versioned under
   `skills/summonlab-image-production/` and passes the skill-package validator;
 - a fresh bounded subagent completed a no-image Goblin preflight from only the installed skill,
-  immutable target, and dedicated `dryRun: true` envelope; its prompt, reference, ownership, and
-  zero-output evidence is hash-bound under `dry-runs/`;
+  immutable target, and dedicated `dryRun: true` envelope; its prompt, reference, ownership,
+  installed-skill-tree, and zero-output evidence is hash-bound and reproducible under `dry-runs/`;
 - strict target, assignment, attempt, result, catalog, blind-review, evaluation, and dedicated
   affinity-review contracts are implemented and covered by tests;
 - 48 base manifests plus six Elemental semantic-regression and six final correction-regression
@@ -199,13 +219,16 @@ shown:
 pnpm doctor:affinity-review-db
 pnpm db:migrate
 pnpm doctor:affinity-review-db
-pnpm dev:app
+AFFINITY_REVIEW_ACTOR=<reviewer> pnpm dev:app
 # Open /forge/enemies/affinity-workflow?mode=blind&scope=controlled&round=baseline-v1&reviewer=<reviewer>
 
 # Baseline human review readiness and guarded final activation.
 pnpm report:baseline-blind-review -- --reviewer <reviewer>
+pnpm export:affinity-review-evidence --reviewer <reviewer>
+pnpm sync:affinity-review
 pnpm report:final-controlled-design-risk-readiness -- --reviewer <reviewer>
-# Complete all 16 Forge decisions, then stage only human-selected replacements.
+# Reload the label-visible Forge page, complete all 16 decisions, then stage only
+# human-selected replacements.
 pnpm export:final-controlled-design-risk-resolutions -- --actor <same-reviewer>
 pnpm report:affinity-final-controlled-activation
 pnpm activate:affinity-final-controlled-rerun -- --acknowledge-live-manifest-activation
@@ -654,9 +677,10 @@ That setting is only a ceiling. The active Codex task, account, image backend, o
 may expose a lower effective limit. A 16-agent configuration therefore does not by itself prove 16
 simultaneous image generations.
 
-Suggested stop conditions for the 12- and 16-job stages:
+Required stop conditions for the 12- and 16-job stages:
 
-- stop launching new work if three jobs in the same wave receive a throttle or capacity failure;
+- stop launching new work if three jobs in the same wave receive any combination of throttle,
+  capacity, timeout, or malformed-output failures;
 - allow already-running jobs to finish and retain their evidence;
 - do not retry capacity failures inside every child agent simultaneously;
 - reduce concurrency one step and repeat only the affected targets;

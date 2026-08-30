@@ -29,7 +29,10 @@ import {
 } from './affinity-round-postgeneration-lib.js';
 import {
 	AffinityWaveDispatchGateSchema,
-	canonicalJsonSha256
+	canonicalJsonSha256,
+	deriveBreadthCanaryPromotionEvidence,
+	deriveSchedulerWavePromotionEvidence,
+	type AffinityWavePromotionEvidence
 } from './affinity-wave-scheduler-lib.js';
 import {
 	inspectSchedulerEvidence,
@@ -153,6 +156,7 @@ export interface VerifiedDispatchEvidenceBinding {
 export interface DerivedAffinityDispatchGateEvidence {
 	readonly bindings: readonly VerifiedDispatchEvidenceBinding[];
 	readonly prerequisiteRun: EligibleSchedulerRun | null;
+	readonly promotionEvidence: AffinityWavePromotionEvidence | null;
 }
 
 function requestStage(request: AffinityDispatchGateRequest) {
@@ -200,6 +204,8 @@ export function buildDerivedAffinityDispatchGate(
 	const predecessor = expectedPredecessor(request);
 	if (predecessor === null && evidence.prerequisiteRun !== null)
 		throw new Error(`${request.profile} must not bind a scheduler prerequisite.`);
+	if (predecessor === null && evidence.promotionEvidence !== null)
+		throw new Error(`${request.profile} must not claim predecessor promotion evidence.`);
 	if (predecessor !== null) {
 		if (!('prerequisiteRunId' in request))
 			throw new Error(`${request.profile} cannot name a scheduler prerequisite.`);
@@ -213,6 +219,19 @@ export function buildDerivedAffinityDispatchGate(
 			throw new Error(
 				`${request.profile} requires an eligible ${predecessor.stage}-${predecessor.concurrency} predecessor.`
 			);
+		if (
+			!evidence.promotionEvidence ||
+			evidence.promotionEvidence.sourceRunId !== run.runId ||
+			evidence.promotionEvidence.sourceStage !== run.stage ||
+			evidence.promotionEvidence.sourceEffectiveConcurrency !== run.effectiveConcurrency ||
+			evidence.promotionEvidence.sourceReportPath !== run.reportPath ||
+			evidence.promotionEvidence.sourceReportCanonicalSha256 !== run.reportCanonicalSha256
+		)
+			throw new Error(
+				`${request.profile} requires exact hash-bound predecessor promotion evidence.`
+			);
+		if ((request.profile === 'breadth') !== (evidence.promotionEvidence.breadthCanaries !== null))
+			throw new Error('Only Breadth promotion requires the two exact breadth canaries.');
 	}
 	const bindings = [...evidence.bindings].sort((left, right) =>
 		left.path.localeCompare(right.path)
@@ -230,6 +249,7 @@ export function buildDerivedAffinityDispatchGate(
 		humanGateSatisfied: request.profile !== 'normal-canary',
 		prerequisiteRunIds: evidence.prerequisiteRun ? [evidence.prerequisiteRun.runId] : [],
 		derivation: request,
+		promotionEvidence: evidence.promotionEvidence,
 		evidenceBindings: bindings
 	});
 }
@@ -453,6 +473,7 @@ export async function resolveAffinityDispatchGate(
 	try {
 		let bindings: VerifiedDispatchEvidenceBinding[];
 		let prerequisiteRun: EligibleSchedulerRun | null = null;
+		let promotionEvidence: AffinityWavePromotionEvidence | null = null;
 		if (request.profile === 'normal-canary') {
 			bindings = await verifyNormalDryRun(workspaceRoot);
 		} else if (request.profile === 'final-canary') {
@@ -462,15 +483,32 @@ export async function resolveAffinityDispatchGate(
 			prerequisiteRun = selectPrerequisiteRun(request, schedulerEvidence);
 			if (!prerequisiteRun) throw new Error('A non-canary gate requires a prerequisite run.');
 			bindings = schedulerBindings(prerequisiteRun);
+			const promotion = await deriveSchedulerWavePromotionEvidence(workspaceRoot, {
+				runId: prerequisiteRun.runId,
+				stage: prerequisiteRun.stage as 'canary' | 'pilot' | 'controlled' | 'breadth' | 'load',
+				effectiveConcurrency: prerequisiteRun.effectiveConcurrency as 2 | 4 | 6 | 8 | 12,
+				reportPath: prerequisiteRun.reportPath,
+				reportCanonicalSha256: prerequisiteRun.reportCanonicalSha256
+			});
+			promotionEvidence = promotion.evidence;
+			bindings.push(...promotion.bindings);
 			if (request.profile === 'breadth') {
 				bindings.push(...(await verifyPassedRound(workspaceRoot, 'final-controlled-v1')));
+				const canaries = await deriveBreadthCanaryPromotionEvidence(workspaceRoot);
+				bindings.push(...canaries.bindings);
+				promotionEvidence = {
+					...promotionEvidence,
+					breadthCanaries: canaries.evidence
+				};
 			} else if ([4, 6].includes(request.requestedConcurrency)) {
 				bindings.push(...(await verifyFinalCanaryReadiness(workspaceRoot)));
-			} else {
-				bindings.push(...(await verifyPassedRound(workspaceRoot, 'breadth-v1')));
 			}
 		}
-		const gate = buildDerivedAffinityDispatchGate(request, { bindings, prerequisiteRun });
+		const gate = buildDerivedAffinityDispatchGate(request, {
+			bindings,
+			prerequisiteRun,
+			promotionEvidence
+		});
 		return {
 			request,
 			eligible: true,

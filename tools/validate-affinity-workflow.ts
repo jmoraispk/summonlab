@@ -1,7 +1,9 @@
+import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { promisify } from 'node:util';
 
 import {
 	ImageProductionAssignmentSchema,
@@ -14,6 +16,10 @@ import {
 	type ImageProductionResult,
 	type ImageProductionTarget
 } from '../packages/contracts/src/index.js';
+import {
+	GOBLIN_AFFINITY_AUDIT_60,
+	GOBLIN_AFFINITY_AUDIT_600
+} from '../packages/content/src/index.js';
 import {
 	AFFINITY_EXPERIMENT_ROOT,
 	ImageProductionBlindReviewCollectionSchema,
@@ -79,12 +85,29 @@ const GoblinAuditSchema = z
 	})
 	.strict();
 
+export function canonicalGoblinAuditMatches(input: unknown, sampleSize: 60 | 600): boolean {
+	const parsed = GoblinAuditSchema.safeParse(input);
+	if (!parsed.success || parsed.data.sampleSize !== sampleSize) return false;
+	const expected = sampleSize === 60 ? GOBLIN_AFFINITY_AUDIT_60 : GOBLIN_AFFINITY_AUDIT_600;
+	return canonicalJson(parsed.data) === canonicalJson(expected);
+}
+
 const DryRunEvidenceSchema = z
 	.object({
-		schemaVersion: z.literal('image-production-dry-run-evidence-v1'),
-		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v2'),
+		schemaVersion: z.literal('image-production-dry-run-evidence-v2'),
+		dryRunId: z.literal('affinity-workflow-v1-goblin-normal-envelope-preflight-v3'),
 		experimentId: z.literal('affinity-workflow-v1'),
 		workflow: z.literal('summonlab-image-production'),
+		executor: z.literal('fresh-bounded-subagent'),
+		skill: z
+			.object({
+				installedPath: z.literal('/home/joao/.codex/skills/summonlab-image-production'),
+				resolvedRepositoryPath: z.literal('skills/summonlab-image-production'),
+				digestAlgorithm: z.literal('sha256-framed-tree-v1'),
+				fileCount: z.number().int().positive(),
+				contentHash: z.string().regex(/^[a-f0-9]{64}$/u)
+			})
+			.strict(),
 		target: z
 			.object({
 				path: z.string().min(1),
@@ -103,8 +126,9 @@ const DryRunEvidenceSchema = z
 			.strict(),
 		preflight: z
 			.object({
-				validator: z.string().min(1),
+				validator: z.literal('skills/summonlab-image-production/scripts/validate_target.py'),
 				status: z.literal('pass'),
+				report: z.record(z.string(), z.unknown()),
 				referenceCount: z.number().int().positive(),
 				referencesPresentAndHashMatched: z.literal(true),
 				pathsContainedAndNormalized: z.literal(true),
@@ -114,13 +138,25 @@ const DryRunEvidenceSchema = z
 			.strict(),
 		canonicalPrompt: z
 			.object({
-				renderer: z.string().min(1),
+				renderer: z.literal('skills/summonlab-image-production/scripts/render_prompt.py'),
 				protocol: z.literal('safe-frame-v4'),
 				byteLength: z.number().int().positive(),
 				contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+				terminalLineFeed: z.boolean(),
 				submittedToGenerator: z.literal(false)
 			})
 			.strict(),
+		references: z.array(
+			z
+				.object({
+					path: z.string().min(1),
+					contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+					width: z.number().int().positive(),
+					height: z.number().int().positive(),
+					inspectedAtOriginalDetail: z.literal(true)
+				})
+				.strict()
+		),
 		ownedOutputs: z
 			.object({
 				candidatePath: z.string().min(1),
@@ -133,6 +169,7 @@ const DryRunEvidenceSchema = z
 			.object({
 				generationCallCount: z.literal(0),
 				persistenceCallCount: z.literal(0),
+				filesEditedByExecutor: z.literal(0),
 				sharedFilesEdited: z.literal(false),
 				selfPromoted: z.literal(false),
 				status: z.literal('pass')
@@ -141,6 +178,24 @@ const DryRunEvidenceSchema = z
 		recordedAt: z.iso.datetime()
 	})
 	.strict();
+
+const execFileAsync = promisify(execFile);
+
+async function hashFramedTree(root: string): Promise<{ fileCount: number; contentHash: string }> {
+	const files = await listFiles(root);
+	const hash = createHash('sha256');
+	for (const file of files) {
+		const relative = path.relative(root, file).split(path.sep).join('/');
+		const bytes = await readFile(file);
+		const byteLength = Buffer.alloc(8);
+		byteLength.writeBigUInt64BE(BigInt(bytes.byteLength));
+		hash.update(relative);
+		hash.update('\0');
+		hash.update(byteLength);
+		hash.update(bytes);
+	}
+	return { fileCount: files.length, contentHash: hash.digest('hex') };
+}
 
 async function listFiles(root: string): Promise<string[]> {
 	const files: string[] = [];
@@ -273,10 +328,55 @@ export async function validateAffinityWorkflowWorkspace(
 	let dryRunEvidence = false;
 	if (targets.length === 60) {
 		const evidence = DryRunEvidenceSchema.parse(
-			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v2.json'))
+			await readJson(path.join(experimentRoot, 'dry-runs/goblin-normal-envelope-preflight-v3.json'))
 		);
+		const installedSkillRoot = path.resolve(evidence.skill.installedPath);
+		const repositorySkillRoot = path.resolve(workspaceRoot, evidence.skill.resolvedRepositoryPath);
 		const dryAssignment = ImageProductionAssignmentSchema.parse(
 			await readJson(path.resolve(workspaceRoot, evidence.assignment.path))
+		);
+		const [installedSkillDigest, repositorySkillDigest] = await Promise.all([
+			hashFramedTree(installedSkillRoot),
+			hashFramedTree(repositorySkillRoot)
+		]);
+		const validator = await execFileAsync(
+			'python3',
+			[
+				path.resolve(workspaceRoot, evidence.preflight.validator),
+				path.resolve(workspaceRoot, evidence.target.path),
+				path.resolve(workspaceRoot, evidence.assignment.path),
+				workspaceRoot
+			],
+			{ encoding: 'utf8' }
+		);
+		const validatorReport = JSON.parse(validator.stdout) as unknown;
+		const prompt = await execFileAsync(
+			'python3',
+			[
+				path.resolve(workspaceRoot, evidence.canonicalPrompt.renderer),
+				path.resolve(workspaceRoot, evidence.target.path)
+			],
+			{ encoding: 'buffer' }
+		);
+		const promptBytes = Buffer.from(prompt.stdout);
+		const referencesCurrent = await Promise.all(
+			evidence.references.map(async (reference) => {
+				const bytes = await readFile(path.resolve(workspaceRoot, reference.path));
+				const metadata = await sharp(bytes).metadata();
+				return (
+					sha256(bytes) === reference.contentHash &&
+					metadata.width === reference.width &&
+					metadata.height === reference.height
+				);
+			})
+		);
+		const outputsAbsent = await Promise.all(
+			[evidence.ownedOutputs.candidatePath, evidence.ownedOutputs.resultPath].map((relative) =>
+				readFile(path.resolve(workspaceRoot, relative)).then(
+					() => false,
+					() => true
+				)
+			)
 		);
 		if (
 			sha256(await readFile(path.resolve(workspaceRoot, evidence.target.path))) !==
@@ -286,9 +386,19 @@ export async function validateAffinityWorkflowWorkspace(
 			dryAssignment.dryRun !== true ||
 			dryAssignment.targetId !== evidence.target.targetId ||
 			dryAssignment.permittedOutputs.candidatePath !== evidence.ownedOutputs.candidatePath ||
-			dryAssignment.permittedOutputs.resultPath !== evidence.ownedOutputs.resultPath
+			dryAssignment.permittedOutputs.resultPath !== evidence.ownedOutputs.resultPath ||
+			installedSkillDigest.fileCount !== evidence.skill.fileCount ||
+			installedSkillDigest.contentHash !== evidence.skill.contentHash ||
+			canonicalJson(installedSkillDigest) !== canonicalJson(repositorySkillDigest) ||
+			canonicalJson(validatorReport) !== canonicalJson(evidence.preflight.report) ||
+			promptBytes.byteLength !== evidence.canonicalPrompt.byteLength ||
+			sha256(promptBytes) !== evidence.canonicalPrompt.contentHash ||
+			(promptBytes.at(-1) === 10) !== evidence.canonicalPrompt.terminalLineFeed ||
+			referencesCurrent.some((current) => !current) ||
+			evidence.preflight.referenceCount !== evidence.references.length ||
+			outputsAbsent.some((absent) => !absent)
 		) {
-			throw new Error('Fresh-agent dry-run evidence no longer matches its immutable inputs.');
+			throw new Error('Fresh-agent dry-run evidence is stale or cannot be reproduced.');
 		}
 		dryRunEvidence = true;
 	}
@@ -600,11 +710,8 @@ export async function validateAffinityWorkflowWorkspace(
 		const audit = GoblinAuditSchema.parse(
 			await readJson(path.join(experimentRoot, 'review', filename))
 		);
-		if (audit.sampleSize !== sampleSize) throw new Error(`Wrong sample size in ${filename}`);
-		if (!audit.coverage.every((entry) => entry.passed))
-			throw new Error(`Coverage failed in ${filename}`);
-		if (!audit.correlations.every((entry) => entry.passed)) {
-			throw new Error(`Correlation gate failed in ${filename}`);
+		if (!canonicalGoblinAuditMatches(audit, sampleSize)) {
+			throw new Error(`Goblin audit ${filename} is not the exact deterministic audit`);
 		}
 	}
 

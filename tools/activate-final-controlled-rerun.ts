@@ -24,6 +24,7 @@ import {
 } from './prepare-final-controlled-rerun.js';
 import {
 	RESOLUTION_PATH,
+	buildActivatedFinalControlledDecisionChainReadiness,
 	buildFinalControlledActivationReadiness,
 	loadCurrentActivationReadinessInput,
 	type ActivationReadinessInput
@@ -349,8 +350,18 @@ export async function activateFinalControlledRerun(
 			workspaceRoot,
 			sha256Json(currentPlan)
 		);
-		if (existing.valid && existing.receipt)
+		if (existing.valid && existing.receipt) {
+			const currentChain = buildActivatedFinalControlledDecisionChainReadiness(
+				current,
+				existing.receipt
+			);
+			if (!currentChain.valid) {
+				throw new Error(
+					`Existing activation evidence is not current: ${currentChain.blockers.map((blocker) => blocker.code).join(', ')}`
+				);
+			}
 			return { status: 'already-activated', receipt: existing.receipt };
+		}
 		throw new Error(`Existing activation receipt is invalid: ${existing.issues.join('; ')}`);
 	}
 	const preliminary = await loadInput(workspaceRoot);

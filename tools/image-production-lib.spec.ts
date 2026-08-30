@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -162,7 +162,7 @@ describe('affinity workflow export tooling', () => {
 		for (const relativePath of [
 			`${AFFINITY_EXPERIMENT_ROOT}/targets/goblin/normal.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-assignment-v1.json`,
-			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v2.json`,
+			`${AFFINITY_EXPERIMENT_ROOT}/dry-runs/goblin-normal-envelope-preflight-v3.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/wave-plans/pilot-current-task-capacity-v1.json`,
 			`${AFFINITY_EXPERIMENT_ROOT}/review/wave-plans/exact-concurrency-final-and-breadth-v1.json`,
@@ -172,6 +172,11 @@ describe('affinity workflow export tooling', () => {
 			await mkdir(path.dirname(destination), { recursive: true });
 			await copyFile(path.join(process.cwd(), relativePath), destination);
 		}
+		await cp(
+			path.join(process.cwd(), 'skills/summonlab-image-production'),
+			path.join(root, 'skills/summonlab-image-production'),
+			{ recursive: true }
+		);
 		const references = new Set(
 			bundle.targets.flatMap((target) => target.references.map((entry) => entry.path))
 		);
