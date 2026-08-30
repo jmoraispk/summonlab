@@ -1,23 +1,82 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { SvelteMap } from 'svelte/reactivity';
 
 	let { data, children } = $props();
 	let navigationOpen = $state(false);
 	let query = $state('');
 
-	const groups = $derived(
-		Object.entries(
-			data.navigation.reduce(
-				(sections, entry) => {
-					if (!entry.title.toLowerCase().includes(query.trim().toLowerCase())) return sections;
-					(sections[entry.section] ??= []).push(entry);
-					return sections;
-				},
-				{} as Record<string, typeof data.navigation>
-			)
-		)
-	);
+	type NavigationEntry = (typeof data.navigation)[number];
+	type NavigationSection = {
+		name: string;
+		direct: NavigationEntry[];
+		groups: { name: string; entries: NavigationEntry[] }[];
+		allEntries: NavigationEntry[];
+	};
+
+	const sectionOrder = [
+		'Systems',
+		'Mechanics',
+		'Creatures',
+		'Art book',
+		'Milestones',
+		'Roadmap',
+		'Principles'
+	];
+
+	const sections = $derived.by(() => {
+		const term = query.trim().toLowerCase();
+		const buckets = new SvelteMap<
+			string,
+			{ direct: NavigationEntry[]; groups: SvelteMap<string, NavigationEntry[]> }
+		>();
+
+		for (const entry of data.navigation) {
+			const searchable = `${entry.section} ${entry.group ?? ''} ${entry.title}`.toLowerCase();
+			if (term && !searchable.includes(term)) continue;
+
+			const bucket = buckets.get(entry.section) ?? {
+				direct: [] as NavigationEntry[],
+				groups: new SvelteMap<string, NavigationEntry[]>()
+			};
+			if (entry.group) {
+				const group = bucket.groups.get(entry.group) ?? [];
+				group.push(entry);
+				bucket.groups.set(entry.group, group);
+			} else {
+				bucket.direct.push(entry);
+			}
+			buckets.set(entry.section, bucket);
+		}
+
+		return [...buckets.entries()]
+			.map(([name, bucket]): NavigationSection => ({
+				name,
+				direct: bucket.direct.sort(compareEntries),
+				groups: [...bucket.groups.entries()]
+					.map(([groupName, entries]) => ({
+						name: groupName,
+						entries: entries.sort(compareEntries)
+					}))
+					.sort((left, right) => left.name.localeCompare(right.name)),
+				allEntries: [...bucket.direct, ...bucket.groups.values()].flat()
+			}))
+			.sort((left, right) => {
+				const leftIndex = sectionOrder.indexOf(left.name);
+				const rightIndex = sectionOrder.indexOf(right.name);
+				return (leftIndex < 0 ? 99 : leftIndex) - (rightIndex < 0 ? 99 : rightIndex);
+			});
+	});
+
+	function containsCurrent(entries: NavigationEntry[]): boolean {
+		return entries.some((entry) => page.url.pathname === entry.href);
+	}
+
+	function compareEntries(left: NavigationEntry, right: NavigationEntry): number {
+		const depthDifference = left.href.split('/').length - right.href.split('/').length;
+		return depthDifference || left.title.localeCompare(right.title);
+	}
 </script>
 
 <svelte:head>
@@ -51,20 +110,61 @@
 			<input bind:value={query} type="search" placeholder="Heroes, skills, monsters…" />
 		</label>
 		<div class="nav-scroll">
-			{#each groups as [section, entries] (section)}
-				<section>
-					<h2>{section}</h2>
-					{#each entries as entry (entry.href)}
-						<a
-							href={entry.href}
-							aria-current={page.url.pathname === entry.href ? 'page' : undefined}
-							onclick={() => (navigationOpen = false)}
-						>
-							<span>{entry.title}</span><i>{entry.designStatus}</i>
-						</a>
-					{/each}
-				</section>
+			<nav class="nav-shortcuts" aria-label="Wiki shortcuts">
+				<a
+					href={resolve('/wiki')}
+					aria-current={page.url.pathname === '/wiki' ? 'page' : undefined}
+				>
+					<span>Archive home</span><i>Start</i>
+				</a>
+				<a href={resolve('/wiki/art/living-village-heroes')}>
+					<span>Living Village</span><i>Visual packet</i>
+				</a>
+			</nav>
+			<p class="nav-label">Library</p>
+			{#each sections as section (section.name)}
+				<details
+					class="nav-section"
+					open={query.trim().length > 0 ||
+						containsCurrent(section.allEntries) ||
+						(section.name === 'Systems' && page.url.pathname === '/wiki')}
+				>
+					<summary>
+						<span>{section.name}</span><i>{section.allEntries.length}</i>
+					</summary>
+					<div class="section-entries">
+						{#each section.direct as entry (entry.href)}
+							<a
+								href={entry.href}
+								aria-current={page.url.pathname === entry.href ? 'page' : undefined}
+								onclick={() => (navigationOpen = false)}
+							>
+								<span>{entry.title}</span><i>{entry.designStatus}</i>
+							</a>
+						{/each}
+						{#each section.groups as group (group.name)}
+							<details
+								class="nav-subsection"
+								open={query.trim().length > 0 || containsCurrent(group.entries)}
+							>
+								<summary><span>{group.name}</span><i>{group.entries.length}</i></summary>
+								<div>
+									{#each group.entries as entry (entry.href)}
+										<a
+											href={entry.href}
+											aria-current={page.url.pathname === entry.href ? 'page' : undefined}
+											onclick={() => (navigationOpen = false)}
+										>
+											<span>{entry.title}</span><i>{entry.designStatus}</i>
+										</a>
+									{/each}
+								</div>
+							</details>
+						{/each}
+					</div>
+				</details>
 			{/each}
+			{#if sections.length === 0}<p class="nav-empty">No pages match “{query}”.</p>{/if}
 		</div>
 	</aside>
 
@@ -160,7 +260,7 @@
 		bottom: 0;
 		left: 0;
 		z-index: 20;
-		width: 18rem;
+		width: 20rem;
 		padding: 1.25rem 0 2rem;
 		border-right: 1px solid var(--line);
 		background: #0c0b08;
@@ -193,20 +293,16 @@
 		overflow: auto;
 		padding: 0 0.7rem 3rem;
 	}
-	aside section + section {
-		margin-top: 1.25rem;
+	.nav-shortcuts {
+		display: grid;
+		gap: 0.2rem;
+		margin-bottom: 1.35rem;
+		padding-bottom: 1.1rem;
+		border-bottom: 1px solid var(--line);
 	}
-	aside h2 {
-		margin: 0 0 0.35rem;
-		padding: 0 0.45rem;
-		color: #8a694c;
-		font:
-			0.54rem ui-monospace,
-			monospace;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
-	}
-	aside section a {
+	.nav-shortcuts a,
+	.section-entries > a,
+	.nav-subsection a {
 		display: flex;
 		align-items: baseline;
 		gap: 0.75rem;
@@ -219,13 +315,27 @@
 		line-height: 1.25;
 		text-decoration: none;
 	}
-	aside section a:hover,
-	aside section a[aria-current='page'] {
+	.nav-shortcuts a {
+		padding: 0.65rem;
+		border: 1px solid transparent;
+		background: rgba(255, 255, 255, 0.018);
+	}
+	.nav-shortcuts a:first-child {
+		border-color: rgba(212, 119, 61, 0.18);
+	}
+	.nav-shortcuts a:hover,
+	.nav-shortcuts a[aria-current='page'],
+	.section-entries > a:hover,
+	.section-entries > a[aria-current='page'],
+	.nav-subsection a:hover,
+	.nav-subsection a[aria-current='page'] {
 		border-left-color: var(--ember);
 		color: var(--paper);
 		background: linear-gradient(90deg, rgba(212, 119, 61, 0.09), transparent);
 	}
-	aside section a i {
+	.nav-shortcuts a i,
+	.section-entries > a i,
+	.nav-subsection a i {
 		flex: 0 0 auto;
 		color: rgba(243, 234, 217, 0.28);
 		font:
@@ -235,10 +345,104 @@
 		letter-spacing: 0.05em;
 		text-transform: uppercase;
 	}
+	.nav-label {
+		margin: 0 0 0.6rem;
+		padding: 0 0.45rem;
+		color: #72563f;
+		font:
+			0.48rem ui-monospace,
+			monospace;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+	}
+	.nav-section {
+		border-top: 1px solid rgba(231, 206, 164, 0.08);
+	}
+	.nav-section:last-of-type {
+		border-bottom: 1px solid rgba(231, 206, 164, 0.08);
+	}
+	.nav-section summary,
+	.nav-subsection summary {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		padding: 0.75rem 1.5rem 0.75rem 0.45rem;
+		list-style: none;
+		cursor: pointer;
+		user-select: none;
+	}
+	.nav-section summary::-webkit-details-marker,
+	.nav-subsection summary::-webkit-details-marker {
+		display: none;
+	}
+	.nav-section > summary::after,
+	.nav-subsection > summary::after {
+		position: absolute;
+		right: 0.45rem;
+		content: '›';
+		color: #8a694c;
+		font-size: 1rem;
+		transform: rotate(0deg);
+		transition: transform 140ms ease;
+	}
+	.nav-section[open] > summary::after,
+	.nav-subsection[open] > summary::after {
+		transform: rotate(90deg);
+	}
+	.nav-section > summary span {
+		color: #aa7a53;
+		font:
+			0.59rem ui-monospace,
+			monospace;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.nav-section summary i {
+		margin-left: auto;
+		color: rgba(243, 234, 217, 0.24);
+		font:
+			0.48rem ui-monospace,
+			monospace;
+		font-style: normal;
+	}
+	.section-entries {
+		padding: 0 0 0.55rem;
+	}
+	.nav-subsection {
+		margin: 0.15rem 0 0.15rem 0.4rem;
+		border-left: 1px solid rgba(231, 206, 164, 0.1);
+	}
+	.nav-subsection > summary {
+		padding-top: 0.55rem;
+		padding-bottom: 0.55rem;
+	}
+	.nav-subsection > summary span {
+		color: rgba(243, 234, 217, 0.52);
+		font:
+			0.54rem ui-monospace,
+			monospace;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+	.nav-subsection > div {
+		padding: 0 0 0.4rem 0.25rem;
+	}
+	.nav-subsection a {
+		font-size: 0.72rem;
+	}
+	.nav-empty {
+		margin: 1.2rem 0.45rem;
+		color: var(--muted);
+		font-family: Georgia, serif;
+		font-size: 0.8rem;
+		font-style: italic;
+	}
 	.wiki-page {
 		min-height: 100svh;
 		padding-top: 4.5rem;
-		padding-left: 18rem;
+		padding-left: 20rem;
 	}
 	@media (max-width: 860px) {
 		.wiki-topbar {

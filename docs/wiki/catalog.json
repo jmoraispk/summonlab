@@ -622,8 +622,8 @@
           "status": "approved"
         },
         {
-          "assetKey": "elian-ro-anchor-v1",
-          "file": "assets/heroes/visuals/owner-playtest-v1/elian-ro-anchor-v1.png",
+          "assetKey": "ember-01-anchor-v1",
+          "file": "assets/heroes/ember-01-anchor-v1.png",
           "status": "approved"
         },
         {
@@ -642,8 +642,8 @@
           "status": "candidate"
         },
         {
-          "assetKey": "lio-dae-anchor-v1",
-          "file": "assets/heroes/visuals/forge-v2/pilot/lio-dae-anchor-v1.png",
+          "assetKey": "hearth-02-anchor-v1",
+          "file": "assets/heroes/visuals/hearth-02-anchor-v1.png",
           "status": "candidate"
         },
         {

@@ -21,6 +21,7 @@ export interface WikiNavigationEntry {
 	title: string;
 	href: string;
 	section: string;
+	group: string | null;
 	designStatus: string;
 	pageType: string;
 }
@@ -80,6 +81,12 @@ function sectionFromPath(sourcePath: string): string {
 		templates: 'Templates'
 	};
 	return labels[first] ?? 'Wiki';
+}
+
+function navigationGroupFromPath(sourcePath: string): string | null {
+	const segments = sourcePath.split('/');
+	if (segments.length < 3) return null;
+	return segments[1].replaceAll('-', ' ').replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
 function entryPath(entry: CatalogEntry): string {
@@ -188,10 +195,11 @@ const pagesByHref = new Map(pages.map((page) => [page.href, page]));
 export function getWikiNavigation(): WikiNavigationEntry[] {
 	return pages
 		.filter((page) => page.spoilerScope !== 'internal' && page.href !== '/wiki')
-		.map(({ title, href, section, designStatus, pageType }) => ({
+		.map(({ title, href, sourcePath, section, designStatus, pageType }) => ({
 			title,
 			href,
 			section,
+			group: navigationGroupFromPath(sourcePath),
 			designStatus,
 			pageType
 		}))

@@ -24,4 +24,11 @@ describe('online wiki registry', () => {
 		expect(progression?.html).toContain('<td align="right">7★</td>');
 		expect(progression?.html).toContain('<td align="right">99</td>');
 	});
+
+	it('provides folder hierarchy for collapsible navigation', () => {
+		const progression = getWikiNavigation().find(
+			(entry) => entry.href === '/wiki/mechanics/progression'
+		);
+		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
+	});
 });

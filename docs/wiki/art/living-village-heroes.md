@@ -67,6 +67,13 @@ Every identity must remain recognizable in summon, Roster/Hero, Village, trainin
 the compact view cannot carry at least four non-facial cues, revise the source identity or the view;
 do not claim face recognition below useful resolution.
 
+## Current web reference cohort
+
+The online packet currently shows Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy
+Nahl as visual-language references. Owner review on 2026-08-29 explicitly replaced Elian Ro and Lio
+Dae with Mara and Remy in this presentation. This is accepted presentation feedback, not automatic
+casting into the six `living-village-v1` summon slots.
+
 ## Handoff boundary
 
 A hero visual worker returns candidate bytes and a manifest fragment only. One integration owner

@@ -10,11 +10,7 @@ const visualPacketHeroes = [
 		'assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png',
 		'Approved identity · uncast for LV'
 	],
-	[
-		'Elian Ro',
-		'assets/heroes/visuals/owner-playtest-v1/elian-ro-anchor-v1.png',
-		'Approved identity · uncast for LV'
-	],
+	['Mara Vey', 'assets/heroes/ember-01-anchor-v1.png', 'Approved identity · uncast for LV'],
 	[
 		'Jori Daro',
 		'assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png',
@@ -31,9 +27,9 @@ const visualPacketHeroes = [
 		'Reference candidate · uncast'
 	],
 	[
-		'Lio Dae',
-		'assets/heroes/visuals/forge-v2/pilot/lio-dae-anchor-v1.png',
-		'Reference candidate · uncast'
+		'Remy Nahl',
+		'assets/heroes/visuals/hearth-02-anchor-v1.png',
+		'Approval candidate · uncast for LV'
 	]
 ] as const;
 

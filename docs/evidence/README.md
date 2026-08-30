@@ -168,9 +168,9 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-7-fin009-story-workshop.json` — the checked versioned brief, honestly labeled scripted
   generation fixture, two bounded proposal packets and hashes, catalog/reference validation,
   prototype warnings, pending review state, and zero candidates ready for compilation.
-- `wiki-living-village-visual-packet.png` — the first desktop online-wiki packet header, using the
-  Hearth environment and explicit uncast/not-approved language.
-- `wiki-living-village-visual-cohort.png` — the first desktop reference-cohort view, showing the
-  visual-packet route, searchable catalog navigation, and current identity language.
+- `wiki-living-village-visual-packet.png` — the desktop online-wiki packet header with the Hearth
+  environment, explicit uncast/not-approved language, and collapsible hierarchical navigation.
+- `wiki-living-village-visual-cohort.png` — the owner-reviewed reference cohort with Mara Vey and
+  Remy Nahl replacing Elian Ro and Lio Dae in the online presentation.
 - `wiki-home-mobile.png` — the 390×844 online-wiki landing view with the Hearth archive, visual
   packet entry, and Living Village review path.
