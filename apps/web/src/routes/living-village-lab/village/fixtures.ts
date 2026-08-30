@@ -25,7 +25,7 @@ export const facilities = [
 		state: 'Ready · 1 Normal token',
 		action: 'Reveal the next fixed hero',
 		detail: 'Kira Toren is bound to the Floor 3 token.',
-		href: '/forge',
+		href: '/living-village-lab/summon',
 		labelEdge: 'bottom',
 		position: { x: 0.5, y: 0.18 },
 		bounds: { x: 0.385, y: 0.03, width: 0.23, height: 0.305 }
@@ -48,6 +48,7 @@ export const facilities = [
 		state: 'Floor 4 available',
 		action: 'Send a resident on a species hunt',
 		detail: 'Known Floor 4 signs: moss goblins, stoneback boars, and ash wisps.',
+		href: '/living-village-lab/tower',
 		labelEdge: 'top',
 		position: { x: 0.5, y: 0.9 },
 		bounds: { x: 0.385, y: 0.775, width: 0.23, height: 0.235 }

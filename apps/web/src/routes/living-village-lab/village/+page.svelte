@@ -1,4 +1,5 @@
 <script lang="ts">
+	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
 	import VillageSummary from '$lib/components/living-village/village/VillageSummary.svelte';
 	import VillageViewport from '$lib/components/living-village/village/VillageViewport.svelte';
 	import type {
@@ -61,6 +62,7 @@
 </svelte:head>
 
 <main>
+	<LabBackLink />
 	<section class="overlook" aria-labelledby="village-heading">
 		<header class="info-toolbar">
 			<div class="village-identity">

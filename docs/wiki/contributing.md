@@ -66,8 +66,16 @@ textual canon
 ```
 
 The wiki links domain-owned files such as `assets/enemies/...`; it does not move or clone them into
-the documentation tree. The visual agent owns only its collision-safe output path and cannot promote
-a shared catalog without the normal review boundary.
+the documentation tree. Compact derivatives may be generated into `apps/web/static/wiki-media/`
+for the online art-book view; these never replace the hash-bound production source. The visual agent
+owns only its collision-safe output path and cannot promote a shared catalog without the normal
+review boundary.
+
+For monster-affinity work, the visual worker updates only its assigned target, candidate, and result
+paths. After branches are integrated, the coordinator runs `pnpm export:wiki-monsters`. That checked
+export selects the strongest recorded version for each affinity, preserves candidate/revision
+status, refreshes web derivatives and `visual-index.json`, registers new individual pages, and never
+overwrites an existing monster page's authored notes.
 
 For a creature image, the page supplies anatomy, scale, material, movement, habitat, affinity cues,
 combat duty, comparison references, prohibited shortcuts, and required camera views. The image may

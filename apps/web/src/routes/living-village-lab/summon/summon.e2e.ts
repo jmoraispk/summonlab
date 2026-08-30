@@ -34,6 +34,10 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await page.goto(route);
 
 	await expect(page).toHaveTitle(/Summoning Portal/);
+	await expect(page.getByRole('link', { name: 'All prototype screens' })).toHaveAttribute(
+		'href',
+		'/living-village-lab'
+	);
 	await expect(page.getByTestId('portal-canvas')).toHaveAttribute('data-ready', 'true');
 	await expect(page.getByTestId('wallet-sigil')).toContainText('7');
 	await expect(page.getByTestId('wallet-sigil')).not.toContainText('Preview');

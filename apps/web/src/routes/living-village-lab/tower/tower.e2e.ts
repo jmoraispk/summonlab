@@ -23,6 +23,10 @@ test('configures and deterministically resolves a bounded floor exploration', as
 
 	await page.goto(towerUrl);
 	await waitForHydration(page);
+	await expect(page.getByRole('link', { name: 'All prototype screens' })).toHaveAttribute(
+		'href',
+		'/living-village-lab'
+	);
 
 	await expect(
 		page.getByRole('heading', { name: 'Choose a floor and return point' })

@@ -1,10 +1,10 @@
-# Living Village four-agent plan
+# Living Village three-agent plan
 
 Wiki ID: `roadmap.living-village-parallel-plan`
 
-Design status: **draft for owner review**
+Design status: **integrated prototype wave**
 
-The workable team is **one coordinator plus four screen-owning agents**. Each worker delivers a
+The workable team is **one coordinator plus three screen-owning agents**. Each worker delivers a
 separate browser route that can be reviewed without waiting for the complete game, while also
 carrying the smallest subsystem needed to make that screen meaningful.
 
@@ -12,35 +12,37 @@ The prototype roster remains **Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven O
 Nahl**. Screen experiments must use these six identities and existing visual anchors; they may not
 generate another face.
 
-## The five active threads
+The consolidated comparison surface is `/living-village-lab`. It connects the three independently
+testable routes without pretending their fixtures are already one shared save-state implementation.
+
+## The four active threads
 
 | Thread | Testable route | Screen responsibility | Subsystem responsibility |
 | --- | --- | --- | --- |
 | Coordinator | all reviewed routes | shared shell, final navigation, integration | contracts, fixtures, capability flags, conflict resolution |
 | Village + Roster agent | `/living-village-lab/village` | Hearth, heroes, popovers, zoom/pan, orders | primary world surface and hero inspection |
-| Hero Activity agent | `/living-village-lab/hero-activity` | walking, local training, departure and return animation lab | visible hero activity state and motion |
 | Tower Hunt agent | `/living-village-lab/tower` | species hunts, party, safety threshold, haul report | repeat combat, XP, material rewards, automatic return |
 | Summon agent | `/living-village-lab/summon` | portal, banners, currencies, rates, reveal animations | summon offer and presentation proposal |
 
 This is deliberately the entire first wave. Village and Roster are one surface, not two navigation
-destinations. Monster art, skill art, equipment art, broad mechanics, and extra QA agents wait until
-these four prototypes reveal what the game actually needs. Each owner must provide desktop and
-phone evidence plus a small interaction test.
+destinations. Hero walking and local activity were folded into the Village owner after the separate
+activity experiment proved to be an unnecessary boundary. Monster art, skill art, equipment art,
+broad mechanics, and extra QA agents wait until these three prototypes reveal what the game
+actually needs. Each owner must provide desktop and phone evidence plus a small interaction test.
 
 ## Worktrees and branches
 
-Use **one worktree and one branch per coding agent**. Four workers changing Svelte routes, tests, and
+Use **one worktree and one branch per coding agent**. Three workers changing Svelte routes, tests, and
 styles in one checkout will eventually overwrite or entangle each other's work. Worktrees keep
 dependencies shared by Git while giving every worker an independent index and branch.
 
 Recommended branches:
 
 - `codex/lv-village-screen`
-- `codex/lv-hero-activity`
 - `codex/lv-tower-screen`
 - `codex/lv-summon-screen`
 
-All four should begin from the same accepted integration commit. The coordinator remains on the
+All three should begin from the same accepted integration commit. The coordinator remains on the
 integration branch, reviews one route at a time, and merges or cherry-picks only accepted commits.
 Agents must not merge their own work into the integration branch.
 
@@ -113,23 +115,24 @@ than accumulating meaningless inventory.
 
 ## Merge order
 
-1. Review the unified Village/Roster, zoom, hero selection, and popover density.
-2. Review hero walking, destination arrival, and local training readability.
-3. Review species-hunt setup, safety-threshold clarity, and the material haul report.
-4. Review portal hierarchy, `10 + 1` communication, and animation preference.
-5. The coordinator creates the shared shell only after the four isolated routes are accepted.
+1. Review the unified Village/Roster, zoom, hero selection, walking, and local activity readability.
+2. Review species-hunt setup, safety-threshold clarity, and the material haul report.
+3. Review portal hierarchy, `10 + 1` communication, and animation preference.
+4. Review all three from `/living-village-lab`, then move only accepted fixture fields into shared
+   contracts.
 
-No worker needs another worker's code to start. Static, clearly labeled screen fixtures are correct
-for this wave. The coordinator reconciles them into shared contracts after product review instead
-of forcing premature interfaces onto every branch.
+No screen owner needed another owner's code to start. Static, clearly labeled screen fixtures were
+correct for this wave. The coordinator has now reconciled navigation while intentionally leaving
+shared persistence as a later acceptance step instead of forcing premature interfaces onto every
+branch.
 
 ## Ready-to-paste prompts
 
 - [Village screen agent](../../agent-prompts/living-village/01-village-screen.md)
-- [Hero activity and animation agent](../../agent-prompts/living-village/02-hero-activity.md)
 - [Tower species-hunt agent](../../agent-prompts/living-village/03-tower-screen.md)
 - [Summoning Portal screen agent](../../agent-prompts/living-village/04-summon-screen.md)
 
 The [prompt index](../../agent-prompts/living-village/README.md) contains the worktree workflow and
-review order. Accepted screen decisions must return to the owning wiki system or milestone page;
-these prompts are assignments, not a second rules authority.
+review order. The older hero-activity prompt is retained there as historical input, but its route is
+not part of the integrated prototype. Accepted screen decisions must return to the owning wiki
+system or milestone page; these prompts are assignments, not a second rules authority.

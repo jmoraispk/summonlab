@@ -38,6 +38,8 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
+- [Monster database](creatures/monsters/README.md) — forty individual archetypes, each shown first
+  without affinity and then across Wood, Fire, Metal, Water, and Wind.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
 - [Living Village hero packet](art/living-village-heroes.md) — the fixed Dara, Mara, Jori, Kira,
@@ -90,9 +92,10 @@ must declare whether it is a brief, candidate, approved source, or runtime asset
 is not canon merely because it was generated. Promotion still requires identity/content binding,
 provenance, human review, and the relevant runtime validation.
 
-The gallery already contains the repository's current ten monster-family plates. They are shown as
-review candidates, which lets the wiki become an art book immediately without misrepresenting their
-runtime status.
+The gallery contains the repository's ten monster-family plates, while the
+[monster database](creatures/monsters/README.md) separates forty authored archetypes into individual
+pages and binds 240 current affinity studies. They remain visibly marked as candidates or revisions,
+which lets the wiki become an art book without misrepresenting runtime approval.
 
 The generator bestiary preserves thirty additional race seeds for parallel visual development.
 These remain draft briefs until taxonomy, representation, mechanics, and owner review are complete.

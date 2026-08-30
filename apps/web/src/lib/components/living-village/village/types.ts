@@ -15,7 +15,7 @@ export type VillageFacility = {
 	state: string;
 	action: string;
 	detail: string;
-	href?: '/forge';
+	href?: '/living-village-lab/summon' | '/living-village-lab/tower';
 	labelEdge: 'top' | 'bottom';
 	position: VillagePoint;
 	bounds: { x: number; y: number; width: number; height: number };

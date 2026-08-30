@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-08-29",
+  "lastReviewed": "2026-08-30",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -672,6 +672,416 @@
       "implementationStatus": "partial",
       "visualStatus": "none",
       "spoilerScope": "public"
+    },
+    {
+      "wikiId": "creatures.monster-database",
+      "path": "docs/wiki/creatures/monsters/README.md",
+      "pageType": "monster-database",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.hex-adept",
+      "path": "docs/wiki/creatures/monsters/hex-adept.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tower-archmage",
+      "path": "docs/wiki/creatures/monsters/tower-archmage.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tower-summoner",
+      "path": "docs/wiki/creatures/monsters/tower-summoner.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.ward-mage",
+      "path": "docs/wiki/creatures/monsters/ward-mage.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.bone-mage",
+      "path": "docs/wiki/creatures/monsters/bone-mage.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.death-knight",
+      "path": "docs/wiki/creatures/monsters/death-knight.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.grave-sentinel",
+      "path": "docs/wiki/creatures/monsters/grave-sentinel.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tower-wraith",
+      "path": "docs/wiki/creatures/monsters/tower-wraith.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.clay-golem",
+      "path": "docs/wiki/creatures/monsters/clay-golem.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.crystal-guardian",
+      "path": "docs/wiki/creatures/monsters/crystal-guardian.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.iron-sentinel",
+      "path": "docs/wiki/creatures/monsters/iron-sentinel.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.stone-golem",
+      "path": "docs/wiki/creatures/monsters/stone-golem.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.armored-elder-drake",
+      "path": "docs/wiki/creatures/monsters/armored-elder-drake.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.cave-drake",
+      "path": "docs/wiki/creatures/monsters/cave-drake.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.giant-tower-dragon",
+      "path": "docs/wiki/creatures/monsters/giant-tower-dragon.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.venom-wyvern",
+      "path": "docs/wiki/creatures/monsters/venom-wyvern.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.burrowing-worm",
+      "path": "docs/wiki/creatures/monsters/burrowing-worm.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.hungry-mimic",
+      "path": "docs/wiki/creatures/monsters/hungry-mimic.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.slime-colony",
+      "path": "docs/wiki/creatures/monsters/slime-colony.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tower-basilisk",
+      "path": "docs/wiki/creatures/monsters/tower-basilisk.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.ember-wisp",
+      "path": "docs/wiki/creatures/monsters/ember-wisp.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.frost-colossus",
+      "path": "docs/wiki/creatures/monsters/frost-colossus.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.stone-breaker",
+      "path": "docs/wiki/creatures/monsters/stone-breaker.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.storm-stalker",
+      "path": "docs/wiki/creatures/monsters/storm-stalker.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.goblin-archer",
+      "path": "docs/wiki/creatures/monsters/goblin-archer.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.goblin-chieftain",
+      "path": "docs/wiki/creatures/monsters/goblin-chieftain.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.goblin-hexweaver",
+      "path": "docs/wiki/creatures/monsters/goblin-hexweaver.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.goblin-skirmisher",
+      "path": "docs/wiki/creatures/monsters/goblin-skirmisher.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.cave-troll",
+      "path": "docs/wiki/creatures/monsters/cave-troll.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.frost-giant",
+      "path": "docs/wiki/creatures/monsters/frost-giant.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.hill-giant",
+      "path": "docs/wiki/creatures/monsters/hill-giant.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.ogoblin-brute",
+      "path": "docs/wiki/creatures/monsters/ogoblin-brute.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.armored-brood-guard",
+      "path": "docs/wiki/creatures/monsters/armored-brood-guard.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.giant-broodmother",
+      "path": "docs/wiki/creatures/monsters/giant-broodmother.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tunnel-spider",
+      "path": "docs/wiki/creatures/monsters/tunnel-spider.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.web-caster",
+      "path": "docs/wiki/creatures/monsters/web-caster.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.cave-bear",
+      "path": "docs/wiki/creatures/monsters/cave-bear.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.dire-wolf",
+      "path": "docs/wiki/creatures/monsters/dire-wolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.grey-wolf",
+      "path": "docs/wiki/creatures/monsters/grey-wolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.tunnel-boar",
+      "path": "docs/wiki/creatures/monsters/tunnel-boar.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "draft",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
     }
   ]
 }

@@ -431,6 +431,7 @@
 							data-label-edge={facility.labelEdge}
 							style={hotspotStyle(facility)}
 							aria-label={`Enter ${facility.name}`}
+							aria-current={selectedFacilityId === facility.id ? 'location' : undefined}
 							href={resolve(facility.href)}
 							draggable="false"
 							onclick={() => selectFacility(facility)}

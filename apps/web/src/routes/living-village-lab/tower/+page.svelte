@@ -1,4 +1,5 @@
 <script lang="ts">
+	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
 	import towerArtwork from '../../../../../../assets/tower-prototype.png';
 	import EncounterPresentation from '$lib/components/living-village/tower/EncounterPresentation.svelte';
 	import FloorSelector from '$lib/components/living-village/tower/FloorSelector.svelte';
@@ -192,6 +193,7 @@
 </svelte:head>
 
 <main>
+	<LabBackLink />
 	<header class="app-bar">
 		<div class="brand">
 			<span class="mark">S</span>

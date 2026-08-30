@@ -120,6 +120,9 @@
 				<a href={resolve('/wiki/art/living-village-heroes')}>
 					<span>Living Village</span><i>Visual packet</i>
 				</a>
+				<a href={resolve('/wiki/creatures/monsters')}>
+					<span>Monster database</span><i>40 identities</i>
+				</a>
 			</nav>
 			<p class="nav-label">Library</p>
 			{#each sections as section (section.name)}

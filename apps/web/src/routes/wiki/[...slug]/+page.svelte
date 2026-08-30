@@ -1,4 +1,7 @@
 <script lang="ts">
+	import MonsterDatabase from '$lib/components/wiki/MonsterDatabase.svelte';
+	import MonsterVisualMatrix from '$lib/components/wiki/MonsterVisualMatrix.svelte';
+
 	let { data } = $props();
 </script>
 
@@ -7,6 +10,12 @@
 </svelte:head>
 
 <main>
+	{#if data.monsterDatabase}
+		<MonsterDatabase monsters={data.monsterDatabase} />
+	{:else if data.monsterVisual}
+		<MonsterVisualMatrix monster={data.monsterVisual} />
+	{/if}
+
 	{#if data.visualPacket}
 		<section class="packet-hero">
 			<img
@@ -67,7 +76,10 @@
 		</section>
 	{/if}
 
-	<article class:with-packet={data.visualPacket} class="wiki-article">
+	<article
+		class:with-packet={data.visualPacket || data.monsterDatabase || data.monsterVisual}
+		class="wiki-article"
+	>
 		<header class="article-meta">
 			<span>{data.wikiPage.section}</span>
 			<i>Design · {data.wikiPage.designStatus}</i>

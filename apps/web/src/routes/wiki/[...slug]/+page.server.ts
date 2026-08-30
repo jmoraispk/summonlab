@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 
+import { getMonsterVisualDatabase, getMonsterVisualEntry } from '$lib/server/monster-database';
 import { getWikiAsset, getWikiPage } from '$lib/server/wiki';
 
 import type { PageServerLoad } from './$types';
@@ -39,6 +40,9 @@ export const load: PageServerLoad = ({ params }) => {
 
 	return {
 		wikiPage,
+		monsterDatabase:
+			wikiPage.wikiId === 'creatures.monster-database' ? getMonsterVisualDatabase() : null,
+		monsterVisual: getMonsterVisualEntry(wikiPage.wikiId),
 		visualPacket:
 			wikiPage.wikiId === 'art.living-village-heroes'
 				? {

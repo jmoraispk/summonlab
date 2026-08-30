@@ -12,6 +12,10 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	const response = await page.goto('/living-village-lab/village');
 	expect(response?.ok()).toBe(true);
 	await expect(page.getByRole('heading', { name: 'Hearth 01' })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'All prototype screens' })).toHaveAttribute(
+		'href',
+		'/living-village-lab'
+	);
 	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
 
 	const viewport = page.getByTestId('village-viewport');
@@ -45,7 +49,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		.toBe(0);
 	await expect(viewport.locator('.facility-hotspot')).toHaveCount(6);
 	const gateHotspot = page.getByRole('link', { name: 'Enter Summoning Gate' });
-	await expect(gateHotspot).toHaveAttribute('href', '/forge');
+	await expect(gateHotspot).toHaveAttribute('href', '/living-village-lab/summon');
 	await expect(gateHotspot).toHaveAttribute('draggable', 'false');
 	await expect
 		.poll(() => gateHotspot.evaluate((element) => getComputedStyle(element).borderTopColor))
@@ -64,7 +68,8 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(viewport.locator('img.environment')).toHaveAttribute('draggable', 'false');
 
 	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
-	const towerHotspot = page.getByRole('button', { name: 'Inspect Tower Threshold' });
+	const towerHotspot = page.getByRole('link', { name: 'Enter Tower Threshold' });
+	await expect(towerHotspot).toHaveAttribute('href', '/living-village-lab/tower');
 	const kitchenHotspot = page.getByRole('button', { name: 'Inspect Village Kitchen' });
 	const forgeHotspot = page.getByRole('button', { name: 'Inspect Village Forge' });
 	const dormitoryHotspot = page.getByRole('button', { name: 'Inspect Village Dormitory' });
@@ -141,7 +146,6 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	for (const facility of [
 		'Training Grounds',
-		'Tower Threshold',
 		'Village Kitchen',
 		'Village Forge',
 		'Village Dormitory'
@@ -179,9 +183,9 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await popover.getByRole('button', { name: 'Tower hunt' }).click();
 	await popover.getByRole('button', { name: 'Stoneback boar' }).click();
 	await expect(popover).toHaveCount(0);
-	await expect(page.getByRole('button', { name: 'Inspect Tower Threshold' })).toHaveAttribute(
-		'aria-pressed',
-		'true'
+	await expect(page.getByRole('link', { name: 'Enter Tower Threshold' })).toHaveAttribute(
+		'aria-current',
+		'location'
 	);
 
 	await page
@@ -283,8 +287,8 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	).toBeLessThanOrEqual(0);
 
 	await page.goto('/living-village-lab/village');
-	await Promise.all([page.waitForURL('**/forge'), gateHotspot.click()]);
-	await expect(page.getByRole('heading', { name: 'Select a summon' })).toBeVisible();
+	await Promise.all([page.waitForURL('**/living-village-lab/summon'), gateHotspot.click()]);
+	await expect(page).toHaveTitle(/Summoning Portal/);
 });
 
 test('keeps the unified Village deliberate and operable at 390 by 844', async ({ page }) => {

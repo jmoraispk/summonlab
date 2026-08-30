@@ -21,6 +21,11 @@ required views. The
 [monster gallery](../art/monster-gallery.md) contains current candidates; candidate images are not
 automatically approved runtime assets.
 
+The [monster database](../creatures/monsters/README.md) is the individual production/review surface:
+one page per authored monster, with the unaffiliated identity anchor first and five affinity
+variants beneath it. The checked export converts production PNGs into compact web derivatives while
+retaining source paths, hashes, versions, and review status.
+
 ## Deferred breadth
 
 Culture/era packs, procedural anatomy breadth, settlement growth states, tower story environments,

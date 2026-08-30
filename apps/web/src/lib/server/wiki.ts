@@ -9,11 +9,33 @@ const wikiSources = import.meta.glob('../../../../../docs/wiki/**/*.md', {
 	import: 'default'
 }) as Record<string, string>;
 
-const assetSources = import.meta.glob('../../../../../assets/**/*.{jpg,jpeg,png,svg,webp}', {
-	eager: true,
-	query: '?url',
-	import: 'default'
-}) as Record<string, string>;
+const assetSources = import.meta.glob(
+	[
+		'../../../../../assets/enemies/review/beasts-v1.webp',
+		'../../../../../assets/enemies/review/constructs-v1.webp',
+		'../../../../../assets/enemies/review/goblinoids-v1.webp',
+		'../../../../../assets/enemies/review/large-threats-v1.webp',
+		'../../../../../assets/enemies/review/pack-2/arachnids-v1.png',
+		'../../../../../assets/enemies/review/pack-2/arcane-hostiles-v1.png',
+		'../../../../../assets/enemies/review/pack-2/draconic-v1.png',
+		'../../../../../assets/enemies/review/pack-2/dungeon-predators-v1.png',
+		'../../../../../assets/enemies/review/pack-2/elementals-v1.png',
+		'../../../../../assets/enemies/review/pack-2/undead-v1.png',
+		'../../../../../assets/heroes/ember-01-anchor-v1.png',
+		'../../../../../assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png',
+		'../../../../../assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png',
+		'../../../../../assets/heroes/visuals/hearth-02-anchor-v1.png',
+		'../../../../../assets/heroes/visuals/hearth-roster-pair-v1.png',
+		'../../../../../assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png',
+		'../../../../../assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png',
+		'../../../../../assets/settlements/hearth-01/hearth-01-environment-v1.png'
+	],
+	{
+		eager: true,
+		query: '?url',
+		import: 'default'
+	}
+) as Record<string, string>;
 
 type CatalogEntry = (typeof catalog.entries)[number];
 

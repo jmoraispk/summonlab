@@ -32,7 +32,8 @@ review images do not yet prove production combat rigs.
 | Dungeon predators | mimic, slime colony, basilisk, burrowing worm | visual family only; likely unrelated species/origins |
 
 See the [monster visual gallery](../../art/monster-gallery.md) for all current plates and honest
-candidate status.
+candidate status. The [monster database](../monsters/README.md) separates the forty authored
+archetypes one by one and presents each unaffiliated reference above its five affinity variants.
 
 ## Supplied thirty-race generator bestiary
 

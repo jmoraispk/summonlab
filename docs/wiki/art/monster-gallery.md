@@ -6,6 +6,10 @@ This page is the first art-book surface of the wiki. Every image below is a **re
 None is presented as an approved runtime rig or proof of individual continuity. Exact file status,
 hashes, generation provenance, and prompts remain in the linked domain catalogs/records.
 
+For individual identities rather than family plates, open the
+[monster database](../creatures/monsters/README.md). It currently binds forty archetypes to 240
+Normal, Wood, Fire, Metal, Water, and Wind candidates or revision studies.
+
 ## First progression families
 
 ### Goblinoid warband
