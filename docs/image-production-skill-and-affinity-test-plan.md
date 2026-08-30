@@ -50,6 +50,17 @@ until a human records a review decision.
 - 2026-08-29: Added a checked-in, non-executable allocation for exact 2-, 4-, 6-, 8-, 12-, and 16-worker stages. Every stage owns exactly its requested number of collision-free target, assignment, candidate, and result paths; the 16-worker stage contains two jobs for each of the eight species and evenly distributed affinities. Dispatch still requires hash-bound gate evidence and exact provisioned capacity. Current eligible measured levels remain 2 and 3, so no higher concurrency claim or scale endpoint is recorded.
 - 2026-08-29: Closed the final-controlled manifest activation lifecycle without activating it. The guarded writer recomputes authorization before and under an exclusive lock, overlays the human-approved staged corrections, regenerates all 24 assignments, rejects any of the 96 reserved-path collisions, and publishes a hash-bound 48-manifest receipt last. Failure injection proves transaction-owned rollback and receipt-bound idempotence. Completion and Forge now reject receipt-less or drifted final-controlled manifests; the live workspace remains intentionally unactivated.
 - 2026-08-29: Made baseline blind review reviewer-scoped and resumable. A reviewer identity is normalized once and bound server-side, progress counts only that reviewer's current-hash records, reviewed cells are marked, and the next unreviewed candidate opens after a save. A zero-write readiness command verifies the exact 21-candidate/3-revise baseline inventory and prints the reviewer-specific export, sync, and activation handoff commands.
+- 2026-08-29: Added a zero-write concurrency-sentinel readiness path for the future Load-6 and
+  Scale-8 jobs. It verifies the immutable allocation hash, passed final-controlled and Breadth
+  receipts, DB-authenticated accepted rules, the installed production-skill tree, 14 exact
+  final-protocol sources, reference hashes, and all 56 collision-free owned paths. It derives the
+  14 targets and assignments only in memory, reports reproducible source-set and bundle hashes,
+  and never authorizes or publishes live manifests. The current live report is correctly blocked
+  before human review and leaves the sentinel namespace empty.
+- 2026-08-29: Repaired the later-pack rule-history query for Zod 4 by validating its read scope
+  with a dedicated unrefined contract. A focused query-entry regression now prevents the prior
+  runtime `.pick()` failure. The available local database still needs migration `0015` before it
+  can persist or list these human rule decisions.
 
 The plan is now backed by a runnable implementation rather than being a design-only document:
 
@@ -134,6 +145,11 @@ evidence boundary at a time; substitute an explicit reviewer or actor identity a
 shown:
 
 ```bash
+# Human baseline review (requires an accessible PostgreSQL database with current migrations).
+pnpm db:migrate
+pnpm dev:app
+# Open /forge/enemies/affinity-workflow?mode=blind&scope=controlled&round=baseline-v1&reviewer=<reviewer>
+
 # Baseline human review readiness and guarded final activation.
 pnpm report:baseline-blind-review -- --reviewer <reviewer>
 pnpm report:affinity-final-controlled-activation
@@ -148,6 +164,9 @@ pnpm finalize:affinity-round-evaluation -- --round <round> --acknowledge-human-r
 # Human rule acceptance after the final round passes.
 pnpm report:later-pack-visual-rules
 pnpm export:accepted-later-pack-visual-rules -- --actor <actor>
+
+# Read-only derivation check for the 14 future Load/Scale sentinels.
+pnpm report:affinity-concurrency-sentinel-readiness -- --actor <actor>
 
 # Derived promotion gate and measured concurrency recommendation.
 pnpm write:affinity-dispatch-gate -- --profile <normal|final|breadth|load> [...]

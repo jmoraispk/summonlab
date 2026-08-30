@@ -2,6 +2,7 @@ import {
 	LaterPackRulesHumanDecisionCreateRequestSchema,
 	LaterPackRulesHumanDecisionListSchema,
 	LaterPackRulesHumanDecisionRecordSchema,
+	LaterPackRulesHumanDecisionScopeSchema,
 	type LaterPackRulesHumanDecisionCreateRequest,
 	type LaterPackRulesHumanDecisionList,
 	type LaterPackRulesHumanDecisionRecord
@@ -146,10 +147,7 @@ export async function listLaterPackRuleDecisions(
 	roundId: 'final-controlled-v1' = 'final-controlled-v1',
 	options: { includeAutomated?: boolean } = {}
 ): Promise<LaterPackRulesHumanDecisionList> {
-	const scope = LaterPackRulesHumanDecisionCreateRequestSchema.pick({
-		experimentId: true,
-		roundId: true
-	}).parse({ experimentId, roundId });
+	const scope = LaterPackRulesHumanDecisionScopeSchema.parse({ experimentId, roundId });
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		const rows = options.includeAutomated

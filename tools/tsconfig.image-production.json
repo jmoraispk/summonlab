@@ -45,6 +45,8 @@
 		"export-accepted-later-pack-visual-rules.spec.ts",
 		"verify-accepted-later-pack-rules-completion.ts",
 		"verify-accepted-later-pack-rules-completion.spec.ts",
+		"concurrency-sentinel-readiness.ts",
+		"concurrency-sentinel-readiness.spec.ts",
 		"finalize-affinity-scale-recommendation.ts",
 		"finalize-affinity-scale-recommendation.spec.ts",
 		"write-affinity-dispatch-gate.ts",

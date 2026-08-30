@@ -52,25 +52,29 @@ function exactOrderedRules(
 	}
 }
 
-const HumanDecisionBaseSchema = z
+export const LaterPackRulesHumanDecisionScopeSchema = z
 	.object({
-		decisionId: EntityIdSchema,
 		experimentId: z.literal('affinity-workflow-v1'),
-		roundId: z.literal('final-controlled-v1'),
-		mode: z.literal('human-interactive'),
-		actor: z.string().trim().min(1).max(80),
-		proposalCanonicalSha256: StateHashSchema,
-		sourceReadinessCanonicalSha256: StateHashSchema,
-		supersedesDecisionId: EntityIdSchema.nullable(),
-		decisions: z.array(LaterPackRuleHumanDecisionSchema).length(8),
-		attestation: z
-			.object({
-				producerDidNotApprove: z.literal(true),
-				reviewedEligibleBlindEvidence: z.literal(true),
-				acceptsRulesForLaterPacks: z.literal(true)
-			})
-			.strict()
+		roundId: z.literal('final-controlled-v1')
 	})
+	.strict();
+
+const HumanDecisionBaseSchema = LaterPackRulesHumanDecisionScopeSchema.extend({
+	decisionId: EntityIdSchema,
+	mode: z.literal('human-interactive'),
+	actor: z.string().trim().min(1).max(80),
+	proposalCanonicalSha256: StateHashSchema,
+	sourceReadinessCanonicalSha256: StateHashSchema,
+	supersedesDecisionId: EntityIdSchema.nullable(),
+	decisions: z.array(LaterPackRuleHumanDecisionSchema).length(8),
+	attestation: z
+		.object({
+			producerDidNotApprove: z.literal(true),
+			reviewedEligibleBlindEvidence: z.literal(true),
+			acceptsRulesForLaterPacks: z.literal(true)
+		})
+		.strict()
+})
 	.strict()
 	.superRefine((value, context) => {
 		exactOrderedRules(value.decisions, context);
