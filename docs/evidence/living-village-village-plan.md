@@ -1,6 +1,13 @@
 # Living Village Village screen execution plan
 
-Status: ready for execution
+Status: completed under the revised unified Village and roster assignment
+
+> Crash-recovery note (2026-08-29): this planning commit survived, but no uncommitted implementation
+> did. The updated owner prompt superseded the original three-owned-hero projection below: execution
+> renders all six fixed residents on one Village surface, adds anchored hero inspection, a detail
+> drawer, the find-and-focus roster ribbon, and route-local Court/Tower orders. The original plan is
+> retained as historical context; the shipped scope and results are recorded in
+> `living-village-village-validation.md`.
 
 Target route: `/living-village-lab/village`
 

@@ -1,0 +1,175 @@
+import { expect, test } from '@playwright/test';
+
+test('unifies Village hotspots, resident inspection, orders, and camera controls', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	const apiRequests: string[] = [];
+	page.on('request', (request) => {
+		if (new URL(request.url()).pathname.startsWith('/api/')) apiRequests.push(request.url());
+	});
+
+	const response = await page.goto('/living-village-lab/village');
+	expect(response?.ok()).toBe(true);
+	await expect(page.getByRole('heading', { name: /The Village is the roster/ })).toBeVisible();
+	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
+
+	const viewport = page.getByTestId('village-viewport');
+	await expect(viewport).toBeVisible();
+	await expect(viewport.locator('.hero-marker')).toHaveCount(6);
+	await expect(viewport.locator('.facility-hotspot')).toHaveCount(3);
+	await expect
+		.poll(() =>
+			viewport
+				.locator('img.environment')
+				.evaluate((image: HTMLImageElement) => `${image.naturalWidth}x${image.naturalHeight}`)
+		)
+		.toBe('1536x1024');
+
+	for (const facility of [
+		['Training Court', '3 slots open'],
+		['Tower Threshold', 'Floor 4 available'],
+		['Summoning Gate', '1 Normal token']
+	] as const) {
+		await page.getByRole('button', { name: `Inspect ${facility[0]}` }).click();
+		await expect(page.getByTestId('facility-panel')).toContainText(facility[0]);
+		await expect(page.getByTestId('facility-panel')).toContainText(facility[1]);
+	}
+
+	await page.getByRole('button', { name: /Inspect Dara Zev/ }).click();
+	const popover = page.getByTestId('hero-popover');
+	await expect(popover).toContainText('Dara Zev');
+	await expect(popover).toContainText('Level 8');
+	await expect(popover).toContainText('146 / 160');
+	await expect(popover).toContainText('Party I · Vanguard');
+	await popover.getByRole('button', { name: 'Details' }).click();
+	await expect(page.getByTestId('hero-drawer')).toContainText('Shield line');
+	await expect(page.getByTestId('hero-drawer')).toContainText('Ashwood shield');
+	await page.getByRole('button', { name: 'Close hero details' }).click();
+
+	await popover.getByRole('button', { name: 'Court training' }).click();
+	await expect(popover).toContainText('Training at the Court');
+	await expect(page.getByTestId('facility-panel')).toContainText('Training Court');
+
+	await page
+		.getByLabel('Find a resident')
+		.getByRole('button', { name: /Mara Vey/ })
+		.click();
+	await expect(page.locator('#village-hero-mara-vey')).toBeFocused();
+	await expect(popover).toContainText('Mara Vey');
+	await popover.getByRole('button', { name: 'Tower hunt' }).click();
+	await popover.getByRole('button', { name: 'Stoneback boar' }).click();
+	await expect(popover).toContainText('Hunting Stoneback boar');
+	await expect(page.getByTestId('facility-panel')).toContainText('Tower Threshold');
+
+	await page.getByRole('button', { name: 'Zoom in' }).click();
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '190');
+	for (let index = 0; index < 8; index += 1) {
+		await page.getByRole('button', { name: 'Zoom in' }).click();
+	}
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '300');
+
+	const beforeDrag = await viewport.getAttribute('data-offset-x');
+	const box = await viewport.boundingBox();
+	expect(box).not.toBeNull();
+	await page.mouse.move(box!.x + box!.width * 0.45, box!.y + box!.height * 0.45);
+	await page.mouse.down();
+	await page.mouse.move(box!.x + box!.width * 0.58, box!.y + box!.height * 0.45, { steps: 4 });
+	await page.mouse.up();
+	await expect.poll(() => viewport.getAttribute('data-offset-x')).not.toBe(beforeDrag);
+
+	await page.getByRole('button', { name: 'Fit Village' }).click();
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
+	await expect(viewport).toHaveAttribute('data-offset-x', '0');
+	await expect(page.getByTestId('facility-panel')).toContainText('Tower Threshold');
+
+	await viewport.focus();
+	await page.keyboard.press('+');
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '120');
+	await page.keyboard.press('ArrowRight');
+	await page.keyboard.press('0');
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
+	await page.keyboard.press('Home');
+	await expect(page.getByTestId('facility-panel')).toContainText('Summoning Gate');
+
+	await viewport.hover();
+	await page.mouse.wheel(0, -200);
+	await expect
+		.poll(async () => Number(await viewport.getAttribute('data-zoom-percent')))
+		.toBeGreaterThan(100);
+
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await expect
+		.poll(() =>
+			viewport
+				.locator('.hero-anchor')
+				.first()
+				.evaluate((element) => getComputedStyle(element).transitionDuration)
+		)
+		.toBe('0s');
+
+	expect(apiRequests).toEqual([]);
+	await page.getByRole('button', { name: /Inspect Jori Daro/ }).click();
+	await expect(page.getByTestId('hero-popover')).toContainText('Jori Daro');
+	if (process.env.CAPTURE_LV_DESKTOP) {
+		await page.screenshot({
+			path: process.env.CAPTURE_LV_DESKTOP,
+			fullPage: true,
+			style: '.skip-link { display: none !important; }'
+		});
+	}
+
+	// A half-width CSS viewport exercises the reflow produced by 200% desktop browser zoom.
+	await page.setViewportSize({ width: 720, height: 500 });
+	await page.goto('/living-village-lab/village');
+	await page
+		.getByLabel('Find a resident')
+		.getByRole('button', { name: /Kira Toren/ })
+		.click();
+	await expect(page.getByTestId('hero-popover')).toContainText('Kira Toren');
+	expect(
+		await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+	).toBeLessThanOrEqual(0);
+});
+
+test('keeps the unified Village deliberate and operable at 390 by 844', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/living-village-lab/village');
+
+	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
+	await expect(page.getByLabel('Find a resident').getByRole('button')).toHaveCount(6);
+	await expect(page.getByTestId('village-viewport').locator('.facility-hotspot')).toHaveCount(3);
+
+	await page
+		.getByLabel('Find a resident')
+		.getByRole('button', { name: /Remy Nahl/ })
+		.click();
+	await expect(page.getByTestId('hero-popover')).toContainText('Remy Nahl');
+	await page.getByTestId('hero-popover').getByRole('button', { name: 'Details' }).click();
+	await expect(page.getByTestId('hero-drawer')).toContainText('Field notes');
+
+	for (const label of ['Zoom out', 'Zoom in', 'Fit Village', 'Reset View']) {
+		const control = page.getByRole('button', { name: label });
+		const bounds = await control.boundingBox();
+		expect(bounds?.height).toBeGreaterThanOrEqual(44);
+	}
+
+	const horizontalOverflow = await page.evaluate(
+		() => document.documentElement.scrollWidth - window.innerWidth
+	);
+	expect(horizontalOverflow).toBeLessThanOrEqual(0);
+
+	await page.getByRole('button', { name: 'Close hero details' }).click();
+	await page.getByRole('button', { name: 'Zoom in' }).click();
+	await page.getByRole('button', { name: 'Fit Village' }).click();
+	await page.getByRole('button', { name: 'Reset View' }).click();
+	await expect(page.getByTestId('village-viewport')).toHaveAttribute('data-zoom-percent', '100');
+
+	if (process.env.CAPTURE_LV_PHONE) {
+		await page.screenshot({
+			path: process.env.CAPTURE_LV_PHONE,
+			fullPage: true,
+			style: '.skip-link { display: none !important; }'
+		});
+	}
+});
