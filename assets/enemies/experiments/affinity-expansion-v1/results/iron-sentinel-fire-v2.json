@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-iron-sentinel-fire-v2",
+  "targetId": "affinity-expansion-v1-iron-sentinel-fire-v2",
+  "assignmentId": "assignment-affinity-expansion-v1-iron-sentinel-fire-v2",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-iron-sentinel-fire-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-iron-sentinel-fire-v2\".\n\nSubject and threat:\n- Species: iron-sentinel.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: iron-sentinel-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Iron Sentinel remains immediately recognizable\n- Battlefield duty remains Disciplined counter-attacker\n- disciplined forged guardian with shielded stance and counter-attacking weapon guard\n- Signature skills remain visually supportable: Parry, Counter, Lock formation.\n- Counterplay remains visible: The still image preserves readable counterplay for Feinting, Magic penetration, Action economy.\n- V2 correction: preserve every passing v1 trait while correcting these failed authoring gates literally: complete-safe-frame\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Feinting, Magic penetration, Action economy. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject, deliberately small and centered; every hard and effect extent must fit inside the central 76 percent of the canvas with finished empty space on all four sides.\n- Canvas: 1536 x 1024 image/png with at least 12 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 3 only: Iron Sentinel identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v1.png — V1 review source only: preserve passing identity, duty, material, and affinity traits while correcting complete-safe-frame; do not preserve the failed framing, anatomy, identity, or counterplay defect.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.\n- No hard silhouette, extremity, equipment, smoke, particle, wake, shadow, or other effect may enter the outer twelve percent of the canvas.",
+      "promptHash": "d78fbdb255306f0006713950aeb6290eb6d138ef7ddea88cab52a56e7d0c2082",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v1.png",
+          "contentHash": "2f72924a0a29f89a5cc26138494fd7e1b1b5926fbc53ba17a842ca2ebb8c5976"
+        }
+      ],
+      "requestStartedAt": "2026-08-30T11:49:42.501Z",
+      "generationCompletedAt": "2026-08-30T11:50:34.758Z",
+      "inspectionCompletedAt": "2026-08-30T11:51:05.977Z",
+      "generationDurationMs": 52257,
+      "inspectionDurationMs": 31219,
+      "totalWallTimeMs": 83476,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-7a0a849a-edb3-4f11-893c-dcd0944518e9.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Sword sparks and the floor shadow entered the lower outer twelve-percent safety zone."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Iron Sentinel appeared."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Exact canonical prompt and all three ordered references were submitted."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exact two-arm/two-leg construct anatomy, shielded guard, sword grip, credible joints and exposed core were visible."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened plating, ember seams, controlled combustion, smoke and heat wake altered multiple declared dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exposed chest core/heat sink and articulated guard rhythm remained readable."
+        }
+      ],
+      "retryReason": "A framing-only source edit was required to bring sparks, smoke, shadow and every hard extent within the v2 central seventy-six-percent lock."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-iron-sentinel-fire-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-iron-sentinel-fire-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the exact supplied source image only; do not redesign or regenerate a different construct. Preserve exactly one Fire Iron Sentinel and every successful trait: disciplined forged guardian, exactly two articulated arms and two load-bearing legs, one coherent controlling chest core, credible manufactured joints and grounded stance, complete left hand and articulated arm gripping the shield, complete right hand and articulated arm gripping the counter-attacking sword, shielded parry/counter/formation-lock guard, heat-blackened forged surfaces with readable plate detail, internal ember seams, restrained controlled combustion, smoke, localized heat distortion, visible exposed core/heat sink between combustion cycles, Pack 2 premium realistic painterly finish, neutral cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, pose, anatomy, material, duty and counterplay. Change only framing: uniformly scale down and recenter the entire existing sentinel plus complete shield, complete sword and tip, both complete hands, both complete feet, every plate, flame, ember, spark, smoke plume, heat-distortion wake, shadow and emission so every hard/effect extent fits inside the central 76 percent of a fully finished 1536 x 1024 canvas with at least 12 percent clearly empty finished floor/backdrop on all four sides. Reconstruct newly exposed floor and backdrop seamlessly. Do not add, remove, duplicate, hide, merge or reinterpret any limb, grip, weapon, shield, plate, joint, core, heat sink or effect. No living human anatomy, decorative fire coating, extra or missing limb, uniform orange full-body glow, extra subject, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance.",
+      "promptHash": "9c14b0ba9ae8f8b1c5c7cdd2d15ca71166760efcc7dc17f2134d4ce1b064a98f",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v1.png",
+          "contentHash": "2f72924a0a29f89a5cc26138494fd7e1b1b5926fbc53ba17a842ca2ebb8c5976"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-7a0a849a-edb3-4f11-893c-dcd0944518e9.png",
+        "contentHash": "07f998702ba8e144e158de10503463bce20eabf5edfad96a5aa221b058beba4b"
+      },
+      "requestStartedAt": "2026-08-30T11:51:27.800Z",
+      "generationCompletedAt": "2026-08-30T11:51:49.321Z",
+      "inspectionCompletedAt": "2026-08-30T11:52:23.419Z",
+      "generationDurationMs": 21521,
+      "inspectionDurationMs": 34098,
+      "totalWallTimeMs": 55619,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-50dcd2d4-0322-401a-9b79-f10feff212a9.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-50dcd2d4-0322-401a-9b79-f10feff212a9.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1942069,
+          "contentHash": "a923f633e09792e9207eb2d843bb1f16a1e5a346b1d895362f7fba70ce44128c"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1942069,
+          "contentHash": "a923f633e09792e9207eb2d843bb1f16a1e5a346b1d895362f7fba70ce44128c"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1942069,
+        "contentHash": "a923f633e09792e9207eb2d843bb1f16a1e5a346b1d895362f7fba70ce44128c"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The sentinel, shield, sword tip, feet, flames, sparks, smoke, heat wake and shadow fit entirely inside the central seventy-six percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished manufactured guardian occupies a complete cracked-stone scene."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt exactly matches canonical output; all three ordered references and exact correction source are recorded."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The disciplined sentinel has exactly two articulated arms and two load-bearing legs, shielded stance, counter-attacking sword guard, credible joints and one exposed controlling core."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened plates, internal ember seams, localized combustion, smoke and heat wake alter material, motion, attack telegraph and environment without obscuring anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed chest core/heat sink, shield rhythm and articulated joints remain readable feint, penetration and action-economy counterplay."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Iron Sentinel recognition remains pending human review."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending human review."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pack 2 painterly forged surfaces, restrained local combustion and neutral presentation remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No living anatomy, decorative coating, extra/missing limb, uniform full-body glow, extra subject, crop, text, UI or watermark appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact corrected source was exclusively copied with matching dimensions, bytes and SHA-256."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only assignment-owned v2 candidate and result paths were written."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-iron-sentinel-fire-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:49:42.501Z",
+  "completedAt": "2026-08-30T11:52:23.419Z",
+  "totalWallTimeMs": 160918,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v2.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/iron-sentinel-fire-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

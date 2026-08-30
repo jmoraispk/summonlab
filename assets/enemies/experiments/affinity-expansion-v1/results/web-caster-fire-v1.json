@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-web-caster-fire",
+  "targetId": "affinity-expansion-v1-web-caster-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-web-caster-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-web-caster-fire\".\n\nSubject and threat:\n- Species: web-caster.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: web-caster-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Web Caster remains immediately recognizable\n- Battlefield duty remains Ranged restraint\n- raised abdomen, braced rear legs, and visible silk spinnerets\n- abdomen tilts and a pale silk line traces the target zone\n- Counterplay remains visible: spinnerets after a cast\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: spinnerets after a cast The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 2 only: Web Caster identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "9aa0c360181f7d25349f07f9780aed664692a618ac0fe672cccb899c77a542e3",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:04:00.002Z",
+      "generationCompletedAt": "2026-08-30T11:04:18.488Z",
+      "inspectionCompletedAt": "2026-08-30T11:04:33.365Z",
+      "generationDurationMs": 18486,
+      "inspectionDurationMs": 14877,
+      "totalWallTimeMs": 33363,
+      "sourceOutputId": "exec-bd5745b4-b2c4-46b8-bcf9-14b7c1f9f114.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Fine smoke and ember wake entered the strict top safe margin."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly eight connected locomotor legs, raised abdomen, braced stance, visible spinnerets, and cast line were present."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened chitin, ember seams, localized combustion, smoke, and distortion produced a constructed Fire variant without erasing surface detail."
+        }
+      ],
+      "retryReason": "Contain the complete Fire effect envelope while preserving exact eight-legged anatomy and all passing duty cues."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-web-caster-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Fire Web Caster. Preserve the same single premium Pack 2 spider, raised heat-blackened abdomen, braced rear stance, visible silk spinnerets, bright cast line and circular target telegraph, dark chitin detail, localized ember seams, controlled combustion, smoke, heat distortion, cracked-stone floor, and charcoal backdrop. Preserve exactly eight connected locomotor legs—four per side—with eight separate roots and eight terminal feet individually countable; keep chelicerae and pedipalps short and distinct from legs. Scale the complete spider and the entire fiery effect envelope to 82 percent of the current composition and recenter on the same native 1536×1024 landscape canvas. Keep every foot, abdomen tip, flame, smoke edge, ember, cast line, and target ring inside the central 84 percent, with clearly empty finished border on all four sides. Keep the exposed spinnerets and a materially distinct heat-sink seam visible between combustion cycles. Do not create a uniform orange body, extra legs, duplicate spider, detached anatomy, crop, text, frame, watermark, or unfinished region. Correction mode: targeted scale-and-containment edit only; preserve all passing anatomy, Fire construction, and restraint-duty traits.",
+      "promptHash": "8f168816a9c799c42a19ed42cbbd9dc8b9c3628bdcf6f671fbf13436844ff791",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-bd5745b4-b2c4-46b8-bcf9-14b7c1f9f114.png",
+        "contentHash": "5b16a7fe42c179ef79c896b054ac87e3f3692ff04e7cd66874ebd8cebffed150"
+      },
+      "requestStartedAt": "2026-08-30T11:04:48.401Z",
+      "generationCompletedAt": "2026-08-30T11:05:06.169Z",
+      "inspectionCompletedAt": "2026-08-30T11:05:18.736Z",
+      "generationDurationMs": 17768,
+      "inspectionDurationMs": 12567,
+      "totalWallTimeMs": 30335,
+      "sourceOutputId": "exec-6a037957-36cc-4d4c-b7f7-87a5946bae66.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-6a037957-36cc-4d4c-b7f7-87a5946bae66.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1982818,
+          "contentHash": "27f2534d949c7731e5f8af54e5a6e6c7802c96598b211aab05771744a66a0b5d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1982818,
+          "contentHash": "27f2534d949c7731e5f8af54e5a6e6c7802c96598b211aab05771744a66a0b5d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1982818,
+        "contentHash": "27f2534d949c7731e5f8af54e5a6e6c7802c96598b211aab05771744a66a0b5d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All eight feet, abdomen, cast line, target ring, flame, smoke, embers, and heat wake remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered Web Caster appears on a finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected spider carries exactly eight locomotor legs in four coherent pairs with separate roots and feet, raised abdomen, braced rear legs, visible spinnerets, and a clear cast line."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened surfaces, internal ember seams, localized combustion, smoke, heat distortion, telegraph, and wake visibly alter multiple construction dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pale-hot spinneret cluster and distinct cooling seam remain exposed between combustion cycles."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-web-caster-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:03:59.651Z",
+  "completedAt": "2026-08-30T11:05:18.736Z",
+  "totalWallTimeMs": 79085,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

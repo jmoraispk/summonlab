@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-web-caster-wind",
+  "targetId": "affinity-expansion-v1-web-caster-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-web-caster-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-web-caster-wind\".\n\nSubject and threat:\n- Species: web-caster.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: web-caster-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Web Caster remains immediately recognizable\n- Battlefield duty remains Ranged restraint\n- raised abdomen, braced rear legs, and visible silk spinnerets\n- abdomen tilts and a pale silk line traces the target zone\n- Counterplay remains visible: spinnerets after a cast\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: spinnerets after a cast The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 2 only: Web Caster identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f406c58c702d754b1a8751a7ec111382c3534eb1774c7cf5c0d03109d5ff9e94",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:14:32.381Z",
+      "generationCompletedAt": "2026-08-30T11:15:13.509Z",
+      "inspectionCompletedAt": "2026-08-30T11:15:31.597Z",
+      "generationDurationMs": 41128,
+      "inspectionDurationMs": 18088,
+      "totalWallTimeMs": 59216,
+      "sourceOutputId": "exec-0493c7b5-4de5-4172-bfb6-d1d973bb28c7.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Outer vapor loops and entrained debris entered the strict left, top, and right safe borders."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly eight connected legs, raised abdomen, braced stance, exposed spinnerets, silk line, and pressure-eye telegraph were present."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Aligned vapor, silk deflection, debris flow, pressure distortion, and wake established coherent directional Wind beyond hue."
+        }
+      ],
+      "retryReason": "Contain the complete Wind wake while preserving exact eight-legged anatomy, spinnerets, direction, and still-center counterplay."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-web-caster-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Wind Web Caster. Preserve the same single premium Pack 2 spider, raised abdomen, braced rear stance, pale exposed spinneret cluster beneath the abdomen, taut silk line to the left target zone, coherent directional pressure stream, entrained debris, vapor channels, cracked-stone floor, and charcoal backdrop. Preserve exactly eight connected locomotor legs—four per side—with eight separately countable roots, joints, and terminal feet; chelicerae and pedipalps remain short mouthparts and do not count as legs. Scale the complete spider and the entire Wind wake to 70 percent and recenter on the same native 1536×1024 landscape canvas. Pull every foot, abdomen tip, pressure loop, vapor strand, debris fragment, silk line, and target knot inside the central 84 percent, leaving clearly empty finished border on every side. Keep one coherent leftward force direction across silk deflection, vapor, and debris, plus a clearly readable still center at the target pressure eye. Keep the exposed spinnerets readable after the cast. Do not use pale recolor alone, directionless particles, extra legs, duplicate spiders, detached anatomy, crop, text, frame, watermark, or unfinished region. Correction mode: targeted scale-and-containment edit only; preserve all passing Wind construction and restraint-duty traits.",
+      "promptHash": "36d1d7f08d824772bcb310b31ff44c098c113e364584a4149c5a32f146eea96a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-0493c7b5-4de5-4172-bfb6-d1d973bb28c7.png",
+        "contentHash": "018892fab683b4101e664fb69e17dfcedf190d2760c8072f7af3733fdc085173"
+      },
+      "requestStartedAt": "2026-08-30T11:15:49.428Z",
+      "generationCompletedAt": "2026-08-30T11:16:09.043Z",
+      "inspectionCompletedAt": "2026-08-30T11:16:25.851Z",
+      "generationDurationMs": 19615,
+      "inspectionDurationMs": 16808,
+      "totalWallTimeMs": 36423,
+      "sourceOutputId": "exec-ded27c1d-e896-4626-9666-be2455a87064.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-ded27c1d-e896-4626-9666-be2455a87064.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2145266,
+          "contentHash": "73eb7b9fbfe261ce55b54f5c2f757119b9e6a527ee6392b2b12208849857f411"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2145266,
+          "contentHash": "73eb7b9fbfe261ce55b54f5c2f757119b9e6a527ee6392b2b12208849857f411"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2145266,
+        "contentHash": "73eb7b9fbfe261ce55b54f5c2f757119b9e6a527ee6392b2b12208849857f411"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All eight feet, abdomen, target knot, vapor loops, debris, silk line, and pressure wake remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered Web Caster appears on a finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected spider carries exactly eight locomotor legs in four coherent pairs with separate roots and feet, raised abdomen, braced rear stance, pale exposed spinnerets, and a taut target-zone silk line."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One coherent leftward force field aligns vapor channels, silk deflection, debris flow, pressure distortion, attack telegraph, and environmental wake."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The pale spinneret cluster remains exposed after the cast and the still center at the left pressure eye is clearly visible between directional streams."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-web-caster-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:14:32.026Z",
+  "completedAt": "2026-08-30T11:16:25.851Z",
+  "totalWallTimeMs": 113825,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,197 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-storm-stalker-water-v2",
+  "targetId": "affinity-expansion-v1-storm-stalker-water-v2",
+  "assignmentId": "assignment-affinity-expansion-v1-storm-stalker-water-v2",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-water-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-storm-stalker-water-v2\".\n\nSubject and threat:\n- Species: storm-stalker.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: storm-stalker-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Storm Stalker remains immediately recognizable\n- Battlefield duty remains Lane assassin\n- lean quadrupedal thunderhead with forward prongs and trailing vapor\n- prongs align and a straight ionized lane appears before the charge\n- Counterplay remains visible: grounded rear condensate node\n- V2 correction: preserve every passing v1 trait while correcting these failed authoring gates literally: complete-safe-frame\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: grounded rear condensate node Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject, deliberately small and centered; every hard and effect extent must fit inside the central 76 percent of the canvas with finished empty space on all four sides.\n- Canvas: 1536 x 1024 image/png with at least 12 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 3 only: Storm Stalker identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v1.png — V1 review source only: preserve passing identity, duty, material, and affinity traits while correcting complete-safe-frame; do not preserve the failed framing, anatomy, identity, or counterplay defect.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.\n- No hard silhouette, extremity, equipment, smoke, particle, wake, shadow, or other effect may enter the outer twelve percent of the canvas.",
+      "promptHash": "b96925d3d7fb324637b9e7a71a010d1225591cb6b5701bca1e1c8ca2a97033fa",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v1.png",
+          "contentHash": "bfe883e4e3a0c304fe329a53398d687d30de87b3a8ac93c4f027e17899629fab"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:43:56.249Z",
+      "generationCompletedAt": "2026-08-30T11:44:16.196Z",
+      "inspectionCompletedAt": "2026-08-30T11:44:43.866Z",
+      "generationDurationMs": 19947,
+      "inspectionDurationMs": 27670,
+      "totalWallTimeMs": 47617,
+      "sourceOutputId": "exec-f055170b-6853-4e6b-8340-2f69054fa707.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The two ionized lane lines repeated the v1 defect by crossing the lower-left canvas edge."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lean elemental body retained exactly four connected legs, aligned forward prongs, straight lane telegraph, trailing flow, coherent core, and rear condensate node."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized fluid forms every load-bearing mass and joint, with wet reflection, coherent transitions, mist, lane telegraph, and wake."
+        }
+      ],
+      "retryReason": "Shorten and contain the lane telegraph while preserving exact four-legged chassis, aligned prongs, Water construction, and rear node."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-storm-stalker-water-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-storm-stalker-water-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted correction of the preceding Storm Stalker Water v2. Preserve the same single lean quadrupedal elemental lane assassin, exactly four connected load-bearing legs with four separate grounded feet, low thunderhead posture, two aligned forward prongs, straight ionized charge lane, trailing vapor, pressurized fluid anatomy, coherent dark structural core, and grounded rear condensate node connected by the trailing flow. Correct the v1 safe-frame defect literally: scale the complete creature, node, wake, droplets, and lane telegraph to 66 percent and recenter them on the same native 1536×1024 landscape canvas. Shorten the straight ionized lane so both parallel lines end visibly inside the lower-left central 84 percent rather than crossing any edge. Keep every prong, foot, tail-flow, node, splash, mist strand, and lane endpoint inside at least eight percent empty finished border on all four sides. Preserve wet reflection, fluid transitions, and pressure-loss exposure of the binding core without becoming a shapeless blue blob or a natural wolf. No extra limb, duplicate creature, crop, text, frame, logo, watermark, or unfinished region. Correction mode: targeted safe-frame edit only; preserve every passing v2 identity, anatomy, Water, duty, and counterplay trait.",
+      "promptHash": "acdd53fd8bd7265bd630867cf483c79921225802bc5ebc49e7b308a21af66446",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/elementals-v1.png",
+          "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v1.png",
+          "contentHash": "bfe883e4e3a0c304fe329a53398d687d30de87b3a8ac93c4f027e17899629fab"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-f055170b-6853-4e6b-8340-2f69054fa707.png",
+        "contentHash": "372add18b503249b1703e800df7eae729ec237648b21f02aed114b7476810056"
+      },
+      "requestStartedAt": "2026-08-30T11:45:11.915Z",
+      "generationCompletedAt": "2026-08-30T11:45:28.618Z",
+      "inspectionCompletedAt": "2026-08-30T11:45:51.362Z",
+      "generationDurationMs": 16703,
+      "inspectionDurationMs": 22744,
+      "totalWallTimeMs": 39447,
+      "sourceOutputId": "exec-e98a766a-1d19-441d-9476-cf12695df374.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-e98a766a-1d19-441d-9476-cf12695df374.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1865691,
+          "contentHash": "768638d8b6c5dbfe6f4ddc2cb3ae1c6e8f4d3bcb5328607497ae025fe4a53dc2"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1865691,
+          "contentHash": "768638d8b6c5dbfe6f4ddc2cb3ae1c6e8f4d3bcb5328607497ae025fe4a53dc2"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1865691,
+        "contentHash": "768638d8b6c5dbfe6f4ddc2cb3ae1c6e8f4d3bcb5328607497ae025fe4a53dc2"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Both lane endpoints, prongs, four feet, tail-flow, rear node, droplets, and mist remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one coherent elemental creature appears on a finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, all three references in order, exact correction source, and exact v2 persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The lean low thunderhead has exactly four connected load-bearing legs and grounded feet, two aligned forward prongs, a straight ionized lane, trailing vapor, one coherent core, and connected rear condensate node."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow forms the complete load-bearing anatomy with wet reflection, stable fluid transitions, mist, charge telegraph, and environmental wake."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The grounded rear condensate node and pressure-loss path to the exposed dark binding core remain plainly readable after a committed charge."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-storm-stalker-water-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:43:55.888Z",
+  "completedAt": "2026-08-30T11:45:51.362Z",
+  "totalWallTimeMs": 115474,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v2.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/storm-stalker-water-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

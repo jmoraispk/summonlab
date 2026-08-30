@@ -2,7 +2,7 @@
 	"schemaVersion": "enemy-affinity-expansion-manifest-v1",
 	"experimentId": "affinity-expansion-v1",
 	"generatedAt": "2026-08-30T20:00:00.000Z",
-	"status": "production-in-progress",
+	"status": "producer-complete",
 	"affinities": ["normal", "wood", "fire", "metal", "water", "wind"],
 	"species": [
 		{

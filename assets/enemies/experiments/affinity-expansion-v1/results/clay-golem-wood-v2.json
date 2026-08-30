@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-wood-v2",
+  "targetId": "affinity-expansion-v1-clay-golem-wood-v2",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-wood-v2",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-wood-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-wood-v2\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n- V2 correction: preserve every passing v1 trait while correcting these failed authoring gates literally: complete-safe-frame\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject, deliberately small and centered; every hard and effect extent must fit inside the central 76 percent of the canvas with finished empty space on all four sides.\n- Canvas: 1536 x 1024 image/png with at least 12 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v1.png — V1 review source only: preserve passing identity, duty, material, and affinity traits while correcting complete-safe-frame; do not preserve the failed framing, anatomy, identity, or counterplay defect.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.\n- No hard silhouette, extremity, equipment, smoke, particle, wake, shadow, or other effect may enter the outer twelve percent of the canvas.",
+      "promptHash": "8984f4712d45b4ea238f986dd16b11d70a7e7e3ed0c63cb8683b94d63168394a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v1.png",
+          "contentHash": "dcb35b67311132f5ba63513f1cf77f50c15be224fcaa96309cbc62a3d7360407"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:26:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:26:19.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:26:26.000Z",
+      "generationDurationMs": 19000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 26000,
+      "sourceOutputId": "exec-14ef7d4b-418a-471a-a14c-f9e3dc27ec87.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The complete feet, toes, and contact shadow entered the stricter bottom twelve-percent border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully finished Wood Clay Golem appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact canonical prompt and all three ordered references were submitted."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two articulated arms and two load-bearing legs form a broad hand-shaped clay guardian around one coherent reforming core, with credible manufactured joints and ground contact."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain, load-bearing root braces, resin seams, wooden articulation, and purposeful growth visibly alter material, localized anatomy, and exposed structure beyond recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The reforming core and resin-bright binding joints remain legible for blunt damage, weak-point study, and resource pacing."
+        }
+      ],
+      "retryReason": "Lift the feet, toes, and shadow clear of the twelve-percent border while preserving all passing v1 traits."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-wood-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-wood-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied exact preceding output. Preserve the same single finished Wood Clay Golem, exactly two articulated arms and two load-bearing legs, one coherent reforming core, broad hand-shaped clay guardian silhouette, compression seams, crushing hands, manufactured ground contact, bark grain, load-bearing roots, resin-bright seams and binding joints, wooden articulation, purposeful living growth, body-block and crushing-grip readability, premium realistic painterly finish, pose, lighting, cracked-stone floor, charcoal backdrop, and all other passing v1 and current-render traits.\n\nCorrect only complete-safe-frame: uniformly scale down and recenter the entire unchanged golem together with every head point, shoulder root, finger, thumb, hand, foot, toe, bark spur, growth tip, resin emission, particle, wake, contact shadow, and reflection so every hard and effect extent fits inside the central 76 percent of the 1536 x 1024 canvas, leaving deliberately finished empty space of at least 12 percent on all four sides. In particular, lift the complete feet, toes, and shadow clear of the bottom twelve-percent border. Keep the subject deliberately small and centered.\n\nThis is an edit of the supplied exact source, not a complete regeneration. Do not redesign or alter the exact two-arm/two-leg anatomy, clay identity, root construction, compression seams, reforming core, or exposed resin-joint counterplay. No living human anatomy, extra or missing limb, decorative coating, brown recolor alone, decorative antlers, pasted foliage, text, labels, UI, frame, logo, watermark, cropped extent, blank band, unfinished region, or abrupt cutoff.",
+      "promptHash": "e7695a5442576fefaae52b163c2ce4037e857d3035075ca83804f5b4617ee879",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v1.png",
+          "contentHash": "dcb35b67311132f5ba63513f1cf77f50c15be224fcaa96309cbc62a3d7360407"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-14ef7d4b-418a-471a-a14c-f9e3dc27ec87.png",
+        "contentHash": "731cc534c1efb8194b8aa424632dba92cd97e03d19437fe6c69153451c735d21"
+      },
+      "requestStartedAt": "2026-08-30T11:27:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:27:17.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:27:24.000Z",
+      "generationDurationMs": 17000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 24000,
+      "sourceOutputId": "exec-d3235714-857a-42c4-8ead-7e97a3e984cd.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 26,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-d3235714-857a-42c4-8ead-7e97a3e984cd.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2033091,
+          "contentHash": "f2883b1cf31f3ddcd0c8dad84bfd09a9cb46cf2637e569717baedf1e01726736"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2033091,
+          "contentHash": "f2883b1cf31f3ddcd0c8dad84bfd09a9cb46cf2637e569717baedf1e01726736"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2033091,
+        "contentHash": "f2883b1cf31f3ddcd0c8dad84bfd09a9cb46cf2637e569717baedf1e01726736"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every head, limb, finger, toe, bark spur, resin effect, and shadow extent remains within deliberately finished empty space exceeding twelve percent on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully finished Wood Clay Golem appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt matched the canonical renderer and the edit used only the exact preceding source."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly two articulated arms and two load-bearing legs form a broad hand-shaped clay guardian around one coherent reforming core, with credible manufactured joints and ground contact."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark grain, load-bearing root braces, resin seams, wooden articulation, and purposeful growth visibly alter material, localized anatomy, and exposed structure beyond recolor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The reforming core and resin-bright binding joints remain legible for blunt damage, weak-point study, and resource pacing."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Clay Golem cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending human review; known-target inspection finds integrated bark, root, resin, articulation, and living-growth cues."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium painterly Pack 2 finish and v1 clay-root identity remain cohesive at the deliberately small v2 scale."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Exclusive-copy retained the exact 1536 x 1024 PNG, 2,033,091 bytes, SHA-256 f2883b1cf31f3ddcd0c8dad84bfd09a9cb46cf2637e569717baedf1e01726736."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only v2 assignment-owned paths were written; v1 and shared/Git paths were untouched."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-clay-golem-wood-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:26:00.000Z",
+  "completedAt": "2026-08-30T11:28:00.000Z",
+  "totalWallTimeMs": 120000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v2.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-wood-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

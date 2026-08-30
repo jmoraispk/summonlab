@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-giant-broodmother-wind",
+  "targetId": "affinity-expansion-v1-giant-broodmother-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-giant-broodmother-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-giant-broodmother-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-giant-broodmother-wind\".\n\nSubject and threat:\n- Species: giant-broodmother.\n- Threat presentation tier: apex; reference Grade 4; canonical Grade 4.\n- Battlefield duty: giant-broodmother-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Giant Broodmother remains immediately recognizable\n- Battlefield duty remains Spawner boss\n- enormous suspended abdomen, egg clusters, and a guarded central nest\n- one egg cluster pulses before hatching or bursting\n- Counterplay remains visible: abdomen underside while deploying brood\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: abdomen underside while deploying brood The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 4 only: Giant Broodmother identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "9ff45e4fc8464a0f6998bf7e856e174688deef9a96bf9ced80067b710e80ebae",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:24:23.000Z",
+      "generationCompletedAt": "2026-08-30T11:24:44.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:24:52.000Z",
+      "generationDurationMs": 21000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 29000,
+      "sourceOutputId": "exec-ad417f9d-0305-4e12-bbff-9c920489fef1",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The broad circular cyclone, wing-like vapor arcs and far debris fill the side and upper safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The broodmother is dominant, but multiple tiny spiderlings appear across the floor as extra creatures."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Eight locomotor legs and the suspended abdomen are readable, but hatched juveniles contradict the pre-hatch pulse and single-subject contract."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Directional vapor, debris and pressure distortion carry force, but the broad blue cyclone dominates as a generic effect shell."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "A bright front egg is prominent, but the still pressure center in the abdomen underside is not distinctly isolated."
+        }
+      ],
+      "retryReason": "Remove every spiderling and broad cyclone, retain one closed pulsing egg, expose a still underside pressure center, separate exactly eight legs, and contain all directional effects inside the safe frame."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-giant-broodmother-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-giant-broodmother-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Wind Giant Broodmother subject-count, arachnid-countability, directional-force, counterplay, and safe-framing correction. Preserve this exact single enormous non-humanoid broodmother, one connected cephalothorax and enormous suspended abdomen, dark chitin, intact egg cluster, directional pressure construction, cracked-stone setting, and premium painterly finish. Remove every tiny spiderling, hatchling, juvenile, loose leg, detached spider body and extra creature from the floor, nest and webbing. Preserve exactly eight connected locomotor legs in four coherent bilateral pairs emerging from the one cephalothorax; separate their silhouettes enough that every full leg, joint and foot is individually visible and countable. Keep two short facial pedipalps compact so they cannot read as locomotor legs. Remove the broad circular cyclone, giant wing-like vapor arcs, far-edge debris and generic blue glow. Express Wind through coherent directional force: taut wind-swept abdomen webbing, narrow lateral pressure channels along dark chitin, restrained trailing vapor, a compact one-direction floor-skimming dust wake, and a few controlled debris fragments following that flow. Keep one compact cluster of intact closed eggs beneath the lifted abdomen; exactly one egg pulses through a narrow pressure seam before hatching, with no visible creature. Tilt the connected abdomen upward during deployment and expose one compact perfectly still dark center inside a pale directional pressure ring in the soft underside membrane as the vulnerable counterplay. Uniformly scale the complete broodmother, abdomen, cephalothorax, compact mouthparts, exactly eight complete legs and feet, intact eggs, contained vapor/debris/pressure wake, nest and shadow down by about 24 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No spiderling, hatchling, duplicate body, detached leg, six or ten locomotor legs, broad cyclone, wing-like vapor arc, generic blue glow, directionless effect, humanoid face or hands, open egg with baby, text, frame, crop, or affinity change.",
+      "promptHash": "e404069a9d22e744c668b295b47b85fc1c3c323d0af0feba6a518ae55b81721b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-ad417f9d-0305-4e12-bbff-9c920489fef1.png",
+        "contentHash": "242f5b71a67cf68a3e7f81efdd39eadff937a26983164836cf7ce90281cee775"
+      },
+      "requestStartedAt": "2026-08-30T11:25:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:25:51.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:25:59.000Z",
+      "generationDurationMs": 51000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 59000,
+      "sourceOutputId": "exec-dcf67ee0-7b52-4d8f-aedd-0fd8d6eb5985",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-dcf67ee0-7b52-4d8f-aedd-0fd8d6eb5985.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2079563,
+          "contentHash": "e410dd6831eb5ef4e04434eaa94162bde8bc973919d0414523ab8d3689130d28"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2079563,
+          "contentHash": "e410dd6831eb5ef4e04434eaa94162bde8bc973919d0414523ab8d3689130d28"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2079563,
+        "contentHash": "e410dd6831eb5ef4e04434eaa94162bde8bc973919d0414523ab8d3689130d28"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete abdomen, cephalothorax, compact mouthparts, exactly eight legs and feet, intact eggs, contained vapor/debris/wake, nest and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Wind Giant Broodmother appears; the guarded nest contains only intact eggs and no spiderling, hatchling or extra creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected cephalothorax and enormous suspended abdomen carry exactly eight individually countable locomotor legs in four pairs, compact pedipalps and a closed pulsing egg cluster."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Taut wind-swept webbing, narrow lateral pressure channels, restrained trailing vapor, controlled debris and a compact one-direction dust wake express coherent force without a broad cyclone or generic glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A compact perfectly still dark center inside a pale directional pressure ring is exposed in the soft upward-tilted abdomen underside."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-giant-broodmother-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:24:23.000Z",
+  "completedAt": "2026-08-30T11:26:01.000Z",
+  "totalWallTimeMs": 98000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/giant-broodmother-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

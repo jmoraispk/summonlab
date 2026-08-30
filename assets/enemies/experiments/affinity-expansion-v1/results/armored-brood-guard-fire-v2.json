@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-armored-brood-guard-fire-v2",
+  "targetId": "affinity-expansion-v1-armored-brood-guard-fire-v2",
+  "assignmentId": "assignment-affinity-expansion-v1-armored-brood-guard-fire-v2",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-armored-brood-guard-fire-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-armored-brood-guard-fire-v2\".\n\nSubject and threat:\n- Species: armored-brood-guard.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: armored-brood-guard-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Armored Brood Guard remains immediately recognizable\n- Battlefield duty remains Chokepoint tank\n- broad plated cephalothorax and short shield-like front legs\n- front plates close before a straight shove\n- Counterplay remains visible: leg joints exposed from the side\n- V2 correction: preserve every passing v1 trait while correcting these failed authoring gates literally: complete-safe-frame\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: leg joints exposed from the side The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject, deliberately small and centered; every hard and effect extent must fit inside the central 76 percent of the canvas with finished empty space on all four sides.\n- Canvas: 1536 x 1024 image/png with at least 12 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 3 only: Armored Brood Guard identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v1.png — V1 review source only: preserve passing identity, duty, material, and affinity traits while correcting complete-safe-frame; do not preserve the failed framing, anatomy, identity, or counterplay defect.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.\n- No hard silhouette, extremity, equipment, smoke, particle, wake, shadow, or other effect may enter the outer twelve percent of the canvas.",
+      "promptHash": "c2f4c6eb2bce70813834e676cd38380e9ed4e66b5aa59b0cca3e7e457ce36e6f",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v1.png",
+          "contentHash": "9abd64a82da697458bdef61b31b40f433038f727479b332d90a1a5a92a99c6bd"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:20:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:20:20.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:20:27.000Z",
+      "generationDurationMs": 20000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 27000,
+      "sourceOutputId": "exec-36fb8f03-db29-4073-9fe6-f32eb80587b3.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The upper smoke plume entered the stricter outer twelve-percent border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully finished Fire Armored Brood Guard appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact canonical prompt and all three ordered manifest references were submitted."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly eight connected and countable legs form four coherent pairs around one broad plated cephalothorax and connected abdomen; all feet show ground contact, the front pair reads shield-like, and side joints remain exposed."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened plates, internal ember seams, controlled combustion, smoke, and heat distortion visibly alter material, motion, telegraph, and wake without uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exposed side joints and the visible internal heat sink remain readable between combustion cycles."
+        }
+      ],
+      "retryReason": "Contain the upper smoke and every hard/effect extent inside the v2 twelve-percent border while preserving all passing v1 traits."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-armored-brood-guard-fire-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-armored-brood-guard-fire-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Edit the supplied exact preceding output. Preserve the same single finished Fire Armored Brood Guard, exactly eight connected and countable legs in four coherent pairs, all eight feet visible, one connected broad plated cephalothorax and armored abdomen, short shield-like front pair closed before a straight shove, exposed side leg joints, visible internal heat sink, heat-blackened plates, internal ember seams, controlled combustion, restrained smoke, heat distortion, chokepoint-tank mass, pose, lighting, cracked-stone floor, charcoal backdrop, and all other passing v1 and current-render traits.\n\nCorrect only complete-safe-frame: uniformly scale down and recenter the entire unchanged guard together with every foot, plate point, ember, flame, smoke plume, heat-distortion extent, dust particle, wake, contact shadow, and reflection so every hard and effect extent fits inside the central 76 percent of the 1536 x 1024 canvas, leaving deliberately finished empty space of at least 12 percent on all four sides. Shorten and contain the upper smoke plume without removing the controlled-combustion read. Keep the subject deliberately small and centered.\n\nThis is an edit of the supplied exact source, not a complete regeneration. Do not redesign or alter the exact eight-leg anatomy, shield-front duty, exposed side joints, heat sink, or Fire construction. No six or ten legs, humanoid anatomy, detached leg, duplicate spider, uniform orange full-body glow, text, labels, UI, frame, logo, watermark, cropped extent, blank band, unfinished region, or abrupt cutoff.",
+      "promptHash": "22f7df46114f4dcdf3abcdcb5390afd76bd27ab9a9d207aca833e2a3fdee5df8",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v1.png",
+          "contentHash": "9abd64a82da697458bdef61b31b40f433038f727479b332d90a1a5a92a99c6bd"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-36fb8f03-db29-4073-9fe6-f32eb80587b3.png",
+        "contentHash": "23b8468a29b426ccedf322a89a28ef64fa0696430ec3dda94a5daf6fe5033034"
+      },
+      "requestStartedAt": "2026-08-30T11:21:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:21:17.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:21:24.000Z",
+      "generationDurationMs": 17000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 24000,
+      "sourceOutputId": "exec-df94fe6f-7aa0-418d-aa5e-16c68608d4ee.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 11,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-df94fe6f-7aa0-418d-aa5e-16c68608d4ee.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1948353,
+          "contentHash": "47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 1948353,
+          "contentHash": "47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 1948353,
+        "contentHash": "47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every hard and Fire-effect extent fits inside deliberately finished empty space exceeding twelve percent on all four sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully finished Fire Armored Brood Guard appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt exactly matched the canonical renderer and the single edit used only the exact preceding source."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly eight connected and countable legs form four coherent pairs around one broad plated cephalothorax and connected abdomen; all feet show ground contact, the front pair reads shield-like, and side joints remain exposed."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Heat-blackened plates, internal ember seams, controlled combustion, smoke, and heat distortion visibly alter material, motion, telegraph, and wake without uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exposed side joints and the visible internal heat sink remain readable between combustion cycles."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Armored Brood Guard cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending human review; known-target inspection finds integrated blackening, ember, combustion, smoke, and heat-distortion cues."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium painterly Pack 2 finish and v1 identity remain cohesive at the deliberately small v2 scale."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Exclusive-copy persistence retained the exact PNG at 1536 x 1024, 1,948,353 bytes, SHA-256 47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the v2 assignment-owned candidate and result were written; v1 and shared/Git paths were untouched."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-armored-brood-guard-fire-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:20:00.000Z",
+  "completedAt": "2026-08-30T11:22:00.000Z",
+  "totalWallTimeMs": 120000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v2.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/armored-brood-guard-fire-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,197 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hex-adept-wind-v2",
+  "targetId": "affinity-expansion-v1-hex-adept-wind-v2",
+  "assignmentId": "assignment-affinity-expansion-v1-hex-adept-wind-v2",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-hex-adept-wind-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hex-adept-wind-v2\".\n\nSubject and threat:\n- Species: hex-adept.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: hex-adept-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Hex Adept remains immediately recognizable\n- Battlefield duty remains Debuff skirmisher\n- mobile one-handed caster with dangling curse tags and an open off-hand\n- three tags lift and point at the marked target\n- Counterplay remains visible: interruptible casting hand\n- V2 correction: preserve every passing v1 trait while correcting these failed authoring gates literally: manifest-fidelity\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n- the v2 render must satisfy every declared anatomy count and connection literally; do not preserve the v1 anatomy or identity defect\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: interruptible casting hand The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 1 only: Hex Adept identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v1.png — V1 review source only: preserve passing identity, duty, material, and affinity traits while correcting manifest-fidelity; do not preserve the failed framing, anatomy, identity, or counterplay defect.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "6cf1b90c4fa0ca5578f72e82c28e3e14a8e9ad6bb3b532a971fa96a9f21e0c01",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v1.png",
+          "contentHash": "9e7ae7a6ea7f4a26f01a90e0c972fc9325af66c95f3d5e7858d1a46e98ebe5c0"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:36:12.655Z",
+      "generationCompletedAt": "2026-08-30T11:36:38.368Z",
+      "inspectionCompletedAt": "2026-08-30T11:36:55.127Z",
+      "generationDurationMs": 25713,
+      "inspectionDurationMs": 16759,
+      "totalWallTimeMs": 42472,
+      "sourceOutputId": "exec-b0b01cac-e2b5-4c48-9196-572f92406df7.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Outer Wind vapor and cloth wake reached the strict top and side safe borders."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Two arms, two legs, open off-hand, interruptible casting hand, and three lifted tags were strong, but the pointed ears preserved the v1 non-human identity defect."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Aligned cloth, tags, vapor channels, debris, and pressure distortion established coherent directional Wind."
+        }
+      ],
+      "retryReason": "Restore unmistakable living adult human identity and contain all effects while preserving the exact duty, limb count, tags, and Wind construction."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-hex-adept-wind-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-hex-adept-wind-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted correction of the preceding Hex Adept Wind v2. Preserve the same single mobile one-handed caster, exactly two arms and two legs, grounded feet, open left off-hand, extended interruptible right casting hand, practical layered dark-fantasy clothing, dangling curse tags, exactly three lifted target-pointing tags, coherent rightward pressure channels, cloth motion, debris flow, and visible still center at the casting palm. Correct the identity defect literally: make the subject an unmistakably living adult human with ordinary rounded human ears, natural human facial proportions, natural eyes and skin, and no pointed ears, elf traits, corpse traits, mask, glamour, or age-incoherent fantasy hair. Scale the entire subject, all clothing strips, all tags, and the complete Wind wake to 72 percent and recenter on the same native 1536×1024 landscape canvas. Keep every hard extent and vapor strand inside the central 84 percent with empty finished border on all four sides. Keep exactly three lifted tags clearly separate from the remaining dangling tags. Preserve directional force beyond pale color or particles. No extra limb, duplicate subject, crop, text, frame, logo, watermark, or unfinished region. Correction mode: targeted human-identity and safe-frame edit; preserve every other passing v2 trait.",
+      "promptHash": "3d203f696b7ecbbc70afebfef4a808126f8b6fcde63604cd31bc32c7aa5031ef",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v1.png",
+          "contentHash": "9e7ae7a6ea7f4a26f01a90e0c972fc9325af66c95f3d5e7858d1a46e98ebe5c0"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-b0b01cac-e2b5-4c48-9196-572f92406df7.png",
+        "contentHash": "4de47bf0fb9ddbe859000f0bbba9be8e7a7b14d0e2f062e3b539f008eca3d23f"
+      },
+      "requestStartedAt": "2026-08-30T11:37:13.276Z",
+      "generationCompletedAt": "2026-08-30T11:37:55.243Z",
+      "inspectionCompletedAt": "2026-08-30T11:38:14.905Z",
+      "generationDurationMs": 41967,
+      "inspectionDurationMs": 19662,
+      "totalWallTimeMs": 61629,
+      "sourceOutputId": "exec-356e8d4f-c692-40d0-a4c7-6027c508f973.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 15,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-356e8d4f-c692-40d0-a4c7-6027c508f973.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2233906,
+          "contentHash": "6905f6a2010676d386344305e0eef043412ed92f2c9e2eb3e2a6633e8ad047eb"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2233906,
+          "contentHash": "6905f6a2010676d386344305e0eef043412ed92f2c9e2eb3e2a6633e8ad047eb"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2233906,
+        "contentHash": "6905f6a2010676d386344305e0eef043412ed92f2c9e2eb3e2a6633e8ad047eb"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Body, feet, clothing strips, dangling tags, three lifted tags, and complete Wind wake remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered adult human appears on a finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, all three references in order, exact correction source, and exact v2 persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The result is an unmistakable living adult human with rounded ears, exactly two arms and two legs, grounded feet, open off-hand, interruptible casting hand, dangling curse tags, and exactly three lifted target-pointing tags."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Directional cloth and tag motion, vapor channels, pressure distortion, attack telegraph, and wake integrate Wind beyond hue or particles."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The exposed extended casting hand and still center at its palm remain clearly interruptible between directional streams."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-hex-adept-wind-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:36:12.313Z",
+  "completedAt": "2026-08-30T11:38:14.905Z",
+  "totalWallTimeMs": 122592,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v2.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-wind-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

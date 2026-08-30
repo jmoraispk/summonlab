@@ -19,6 +19,9 @@ const AFFINITIES = AFFINITY_DEFINITIONS.map((affinity) => affinity.id);
 
 type AffinityId = (typeof AFFINITIES)[number];
 type ResultStatus = 'candidate' | 'revise';
+type ResultVersion = 'v3' | 'v2' | 'v1';
+
+const RESULT_VERSIONS: readonly ResultVersion[] = ['v3', 'v2', 'v1'];
 
 interface ResultRecord {
 	targetId: string;
@@ -96,20 +99,53 @@ function targetFor(speciesId: string, affinity: string) {
 	);
 }
 
-async function loadResult(target: (typeof ENEMY_AFFINITY_EXPANSION_TARGETS)[number]) {
+function versionedOutputPath(outputPath: string, version: ResultVersion): string {
+	return outputPath.replace(/-v1(?=\.[^.]+$)/u, `-${version}`);
+}
+
+function versionedTargetId(targetId: string, version: ResultVersion): string {
+	return version === 'v1' ? targetId : `${targetId}-${version}`;
+}
+
+function persistedReviseAttempt(result: ResultRecord, expectedOutputPath: string) {
+	for (let index = result.attempts.length - 1; index >= 0; index -= 1) {
+		const attempt = result.attempts[index];
+		if (attempt?.output?.path === expectedOutputPath) return attempt;
+	}
+	return null;
+}
+
+async function loadResultVersion(
+	target: (typeof ENEMY_AFFINITY_EXPANSION_TARGETS)[number],
+	version: ResultVersion
+) {
+	const resultPath = versionedOutputPath(target.output.resultPath, version);
+	const candidatePath = versionedOutputPath(target.output.candidatePath, version);
 	try {
-		const raw = await readFile(path.join(REPOSITORY_ROOT, target.output.resultPath), 'utf8');
+		const raw = await readFile(path.join(REPOSITORY_ROOT, resultPath), 'utf8');
 		const result = JSON.parse(raw) as ResultRecord;
-		if (result.targetId !== target.targetId) return null;
+		if (result.targetId !== versionedTargetId(target.targetId, version)) return null;
 		if (result.status !== 'candidate' && result.status !== 'revise') return null;
-		const attempt = result.attempts.find(
-			(candidate) => candidate.attemptId === result.selectedAttemptId
-		);
-		if (!attempt?.output || attempt.output.path !== target.output.candidatePath) return null;
-		return { result, attempt, status: result.status as ResultStatus };
+		const attempt =
+			result.status === 'candidate'
+				? result.attempts.find((candidate) => candidate.attemptId === result.selectedAttemptId)
+				: persistedReviseAttempt(result, candidatePath);
+		if (!attempt?.output || attempt.output.path !== candidatePath) return null;
+		return { result, attempt, status: result.status as ResultStatus, version };
 	} catch {
 		return null;
 	}
+}
+
+async function loadResult(target: (typeof ENEMY_AFFINITY_EXPANSION_TARGETS)[number]) {
+	const results = await Promise.all(
+		RESULT_VERSIONS.map((version) => loadResultVersion(target, version))
+	);
+	return (
+		results.find((loaded) => loaded?.status === 'candidate') ??
+		results.find((loaded) => loaded?.status === 'revise') ??
+		null
+	);
 }
 
 export async function loadAffinityExpansionGallery() {

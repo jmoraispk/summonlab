@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-giant-broodmother-water",
+  "targetId": "affinity-expansion-v1-giant-broodmother-water",
+  "assignmentId": "assignment-affinity-expansion-v1-giant-broodmother-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-giant-broodmother-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-giant-broodmother-water\".\n\nSubject and threat:\n- Species: giant-broodmother.\n- Threat presentation tier: apex; reference Grade 4; canonical Grade 4.\n- Battlefield duty: giant-broodmother-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Giant Broodmother remains immediately recognizable\n- Battlefield duty remains Spawner boss\n- enormous suspended abdomen, egg clusters, and a guarded central nest\n- one egg cluster pulses before hatching or bursting\n- Counterplay remains visible: abdomen underside while deploying brood\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: abdomen underside while deploying brood Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 4 only: Giant Broodmother identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "94a19163740983cba2cb3bae622ed4b92dc5887ba81749d1c9a3f6ddc5b8a597",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:20:05.000Z",
+      "generationCompletedAt": "2026-08-30T11:20:30.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:20:38.000Z",
+      "generationDurationMs": 25000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 33000,
+      "sourceOutputId": "exec-239974ff-afb2-4e25-b68f-558d89974b5b",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The tall fluid abdomen shell and outer droplets enter the top safety band, while a front foot approaches the bottom band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Water Giant Broodmother appears with intact eggs and no hatchling."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Eight connected legs and intact brood read well, but the fluid abdomen appears partially detached from the cephalothorax rather than joined by one solid pedicel."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "Pressurized flow, mist, wet reflection and coherent channels are present, but the broad blue fluid shell approaches shapeless blob treatment."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The bright egg pulse is visible, but the abdomen binding core and pressure-loss ring are not clearly isolated."
+        }
+      ],
+      "retryReason": "Connect abdomen with a solid pressure-channel pedicel, contain the fluid shell and blue emission, expose a dark underside binding core, separate exactly eight legs, and scale all extents into the safe frame."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-giant-broodmother-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-giant-broodmother-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Water Giant Broodmother connected-anatomy, arachnid-countability, restrained-fluid, counterplay, and safe-framing correction. Preserve this exact single enormous non-humanoid broodmother, dark wet-reflective chitin, one cephalothorax, enormous egg-bearing abdomen, intact egg clusters, coherent pressurized-water construction, cracked-stone setting, and premium painterly finish. Make the cephalothorax and enormous abdomen visibly joined by one solid short organic pedicel containing coherent pressure channels; the abdomen must not float, detach, or read as a separate water bubble. Preserve exactly eight connected locomotor legs in four coherent bilateral pairs emerging from the one cephalothorax; separate their silhouettes enough that every full leg, joint and foot is individually visible and countable. Keep two short facial pedipalps compact so they cannot read as locomotor legs. Contain all flow: remove the broad blue full-body glow, tall splash crown, far droplets and shapeless water shell. Retain narrow pressurized channels through dark chitin, wet reflections, restrained mist, and a compact floor wake. Keep one compact cluster of intact closed eggs beneath and inside the lifted abdomen; exactly one egg has a narrow internal pressure pulse and hairline tension seam before hatching, with no visible creature. Tilt the connected abdomen upward during deployment and expose one compact dark coherent binding core in a pale pressure-loss ring within the soft underside membrane as the vulnerable counterplay. Uniformly scale the complete broodmother, connected abdomen and pedicel, cephalothorax, compact mouthparts, exactly eight complete legs and feet, intact eggs, contained mist/droplets/flow, nest, compact wet wake and shadow down by about 22 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No spiderling, hatchling, duplicate or detached abdomen, detached leg, six or ten locomotor legs, shapeless blue blob, generic blue glow, broad splash crown, humanoid face or hands, open egg with baby, text, frame, crop, or affinity change.",
+      "promptHash": "b18e1753728e2faa4600d7d90e029ea3bb981095b2fe1d5c0b4d2d7de13248c7",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-239974ff-afb2-4e25-b68f-558d89974b5b.png",
+        "contentHash": "38cb1aad5d3dbcfceb4972ed965d5103baca28f6f24ea343f63b859eae05c620"
+      },
+      "requestStartedAt": "2026-08-30T11:20:46.000Z",
+      "generationCompletedAt": "2026-08-30T11:21:44.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:21:52.000Z",
+      "generationDurationMs": 58000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 66000,
+      "sourceOutputId": "exec-8e2f6906-59e6-4648-b35d-1008b0c2ed14",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 21,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-8e2f6906-59e6-4648-b35d-1008b0c2ed14.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2164908,
+          "contentHash": "26e7d658388aa57a8196a757f6cbb916185bb3f4923b007b768d18a40638f0dd"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2164908,
+          "contentHash": "26e7d658388aa57a8196a757f6cbb916185bb3f4923b007b768d18a40638f0dd"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2164908,
+        "contentHash": "26e7d658388aa57a8196a757f6cbb916185bb3f4923b007b768d18a40638f0dd"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete connected abdomen, cephalothorax, compact mouthparts, exactly eight legs and feet, intact eggs, contained mist and flow, nest, wet wake and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Water Giant Broodmother appears; the guarded nest contains only intact eggs and no spiderling or hatchling."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One cephalothorax and enormous egg-bearing abdomen are visibly joined by a short solid pressure-channel pedicel and carry exactly eight individually countable locomotor legs in four pairs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Dark wet-reflective chitin contains narrow coherent pressure channels, restrained mist and a compact wet wake without a shapeless water body or generic blue glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A compact dark coherent binding core in a pale pressure-loss ring is exposed at the upward-tilted abdomen underside while one closed egg pulses below."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-giant-broodmother-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:20:05.000Z",
+  "completedAt": "2026-08-30T11:21:54.000Z",
+  "totalWallTimeMs": 109000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/giant-broodmother-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

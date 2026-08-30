@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-giant-broodmother-metal",
+  "targetId": "affinity-expansion-v1-giant-broodmother-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-giant-broodmother-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-giant-broodmother-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-giant-broodmother-metal\".\n\nSubject and threat:\n- Species: giant-broodmother.\n- Threat presentation tier: apex; reference Grade 4; canonical Grade 4.\n- Battlefield duty: giant-broodmother-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Giant Broodmother remains immediately recognizable\n- Battlefield duty remains Spawner boss\n- enormous suspended abdomen, egg clusters, and a guarded central nest\n- one egg cluster pulses before hatching or bursting\n- Counterplay remains visible: abdomen underside while deploying brood\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: abdomen underside while deploying brood Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 4 only: Giant Broodmother identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a13a2e10bd66ebb122ee1719ebfce20e2265d68de82e82b02e4dd90f79baea0b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:15:46.000Z",
+      "generationCompletedAt": "2026-08-30T11:16:05.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:16:13.000Z",
+      "generationDurationMs": 19000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 27000,
+      "sourceOutputId": "exec-fc57d4f0-9cf7-4b2c-b6f8-a5f565e65202",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The abdomen cage peak, leftmost leg and lower feet enter the declared safety bands."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Metal Giant Broodmother appears with intact eggs and no hatchling."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The connected anatomy and eight likely locomotor legs are strong, but overlaps around rear joints reduce immediate individual countability."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged load-bearing anatomy, articulated interlocking plates, metallic marrow and the structural abdomen cage transform multiple dimensions beyond ordinary armor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "A bright magnetic core is visible through the abdomen cage, but broad red illumination weakens the distinct underside deployment cue."
+        }
+      ],
+      "retryReason": "Separate exactly eight legs, compact pedipalps, expose a dark magnetic underside core with pale resonance seam, remove broad red illumination, and scale all extents into the safe frame."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-giant-broodmother-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-giant-broodmother-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Metal Giant Broodmother arachnid-countability, deployment-counterplay, and safe-framing correction. Preserve this exact single enormous non-humanoid broodmother, one connected cephalothorax and enormous suspended abdomen, forged load-bearing anatomy, articulated interlocking plates, metallic marrow, cage-like abdomen structure, intact egg cluster, cracked-stone setting, and premium painterly finish. Preserve exactly eight connected locomotor legs in four coherent bilateral pairs emerging from the one cephalothorax; separate their silhouettes enough that every full leg, articulated joint and foot is individually visible and countable. Keep the two short facial pedipalps compact so they cannot read as locomotor legs. Keep Metal transformative rather than ordinary armor: plates carry structural loads, joints are forged articulations, metallic inner marrow is visible through restrained seams, and only a few controlled fragments remain close to the abdomen core. Retain one compact cluster of intact closed eggs beneath and within the lifted abdomen; exactly one egg has a restrained warm metallic pulse and hairline tension seam before hatching, with no visible creature. Tilt the connected cage abdomen upward during deployment and expose one compact dark magnetic control core with a pale resonance seam in the soft underside assembly as the vulnerable counterplay; remove broad red illumination. Uniformly scale the complete broodmother, abdomen cage, cephalothorax, compact mouthparts, exactly eight complete legs and feet, intact eggs, contained fragments/core effect, nest, floor wake and shadow down by about 22 percent and recenter so every hard/effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No spiderling, hatchling, duplicate body, detached leg, six or ten locomotor legs, ordinary worn armor over organic anatomy, humanoid face or hands, broad red glow, open egg with baby, text, frame, crop, or affinity change.",
+      "promptHash": "413681158b2c91342b7e0541a6ebd02ac4b94da21bdb736006941b5ea32eba3b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-fc57d4f0-9cf7-4b2c-b6f8-a5f565e65202.png",
+        "contentHash": "be31d346d477e70887a49e8ef3309e6ba46178d6ddac3feba2622da195e1ad1a"
+      },
+      "requestStartedAt": "2026-08-30T11:16:21.000Z",
+      "generationCompletedAt": "2026-08-30T11:17:19.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:17:27.000Z",
+      "generationDurationMs": 58000,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 66000,
+      "sourceOutputId": "exec-57be46c7-3d00-4df0-980d-77826861dcb7",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-57be46c7-3d00-4df0-980d-77826861dcb7.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2152799,
+          "contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2152799,
+          "contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2152799,
+        "contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete abdomen cage, cephalothorax, compact mouthparts, exactly eight legs and feet, intact eggs, contained core effect, nest, wake and shadow fit within a clearly empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Metal Giant Broodmother appears; the deployment cluster contains only intact eggs and no spiderling or hatchling."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected cephalothorax and enormous suspended abdomen carry exactly eight individually countable articulated locomotor legs in four pairs, compact pedipalps and intact eggs."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged structural plates bear body loads, articulated metal joints drive the legs, metallic inner marrow remains visible, and the cage abdomen contains the brood without reading as ordinary worn armor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A compact dark magnetic control core with a pale resonance seam is exposed in the upward-tilted underside assembly without broad red illumination."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-giant-broodmother-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:15:46.000Z",
+  "completedAt": "2026-08-30T11:17:29.000Z",
+  "totalWallTimeMs": 103000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/giant-broodmother-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

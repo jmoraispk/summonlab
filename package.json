@@ -24,6 +24,8 @@
 		"validate:pack-two-generation-benchmark": "tsx tools/validate-pack-two-generation-benchmark.ts",
 		"export:affinity-workflow": "tsx tools/export-affinity-workflow.ts",
 		"export:enemy-affinity-expansion": "tsx tools/export-enemy-affinity-expansion.ts",
+		"export:enemy-affinity-expansion-review": "tsx tools/export-enemy-affinity-expansion-review.ts --write",
+		"check:enemy-affinity-expansion-review": "tsx tools/export-enemy-affinity-expansion-review.ts --check",
 		"validate:affinity-workflow": "tsx tools/validate-affinity-workflow.ts",
 		"validate:affinity-client-privacy": "tsx tools/validate-affinity-client-bundle-privacy.ts",
 		"sync:affinity-review": "tsx tools/sync-affinity-review.ts --write",

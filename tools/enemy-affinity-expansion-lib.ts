@@ -113,7 +113,7 @@ export function createEnemyAffinityExpansionBundle(): {
 		schemaVersion: 'enemy-affinity-expansion-manifest-v1',
 		experimentId: ENEMY_AFFINITY_EXPANSION_VERSION,
 		generatedAt: ENEMY_AFFINITY_EXPANSION_EXPORT_TIMESTAMP,
-		status: 'production-in-progress',
+		status: 'producer-complete',
 		affinities: AFFINITY_IDS,
 		species: ENEMY_AFFINITY_EXPANSION_SPECIES_IDS.map((speciesId, index) => ({
 			speciesId,

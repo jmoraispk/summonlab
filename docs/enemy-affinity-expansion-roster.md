@@ -1,7 +1,7 @@
 # Enemy affinity expansion roster
 
-Status: **34 canonical enemy archetypes remain after six exact wiki integrations; eight of the 34
-already have a reusable family-level pilot**
+Status: **complete — all 34 canonical enemy archetypes have Normal, Wood, Fire, Metal, Water, and
+Wind producer candidates**
 
 Date: **2026-08-29**
 
@@ -23,9 +23,11 @@ matches:
 - Goblin, linked from the Goblinoid warband family
 - Bound Vanguard Elemental, linked from the Elemental manifestations family
 
-This leaves 34 exact archetype sets to produce. “Family pilot” means the species grammar and
-affinity treatment can be reused, but it does not mean the individual archetype already has six
-images.
+The 34 exact archetype sets below are now produced: **204/204 resolved images**, with all 204 at
+`candidate` status after one bounded defect-correction pass and one targeted v3 framing correction.
+The hash-bound review catalog and contact sheet live under
+`assets/enemies/experiments/affinity-expansion-v1/review/`; human approval remains intentionally
+pending. The interactive review page is `/forge/enemies/affinity-expansion`.
 
 ## Priority 1 — reuse a proven species or affinity grammar
 
@@ -78,8 +80,8 @@ images.
 
 ## Production rule
 
-Each row becomes six collision-free targets—Normal plus Wood, Fire, Metal, Water, and Wind—only
-after its identity, anatomy, duty, counterplay, and prohibited-trait grammar is defined. At the
-current 34-row queue, complete expansion represents **204 new target images**, before bounded
-retries. Generate in mixed-species waves so a shared prompt defect is detected before it propagates
-through an entire family.
+Each row was produced as six collision-free targets—Normal plus Wood, Fire, Metal, Water, and
+Wind—after its identity, anatomy, duty, counterplay, and prohibited-trait grammar was defined. The
+completed 34-row queue contains **204 new canonical target images**, plus collision-safe v2/v3
+correction evidence. Future additions should continue using mixed-species waves so a shared prompt
+defect is detected before it propagates through an entire family.

@@ -1,0 +1,23 @@
+{
+	"schemaVersion": "enemy-affinity-expansion-evaluation-v1",
+	"experimentId": "affinity-expansion-v1",
+	"generatedAt": "2026-08-30T23:30:00.000Z",
+	"decision": "producer-complete",
+	"producerChecks": {
+		"allTargetsRetained": true,
+		"allTargetsCandidates": true,
+		"remainingReviseCount": 0,
+		"contentHashesVerified": true,
+		"contactSheetTargetCount": 204
+	},
+	"humanReview": {
+		"status": "pending",
+		"scope": [
+			"blind species recognition",
+			"blind affinity recognition",
+			"style cohesion",
+			"gameplay readability"
+		],
+		"note": "Producer candidate status does not promote or approve runtime art."
+	}
+}

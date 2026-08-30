@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-web-caster-water",
+  "targetId": "affinity-expansion-v1-web-caster-water",
+  "assignmentId": "assignment-affinity-expansion-v1-web-caster-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-web-caster-water\".\n\nSubject and threat:\n- Species: web-caster.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: web-caster-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Web Caster remains immediately recognizable\n- Battlefield duty remains Ranged restraint\n- raised abdomen, braced rear legs, and visible silk spinnerets\n- abdomen tilts and a pale silk line traces the target zone\n- Counterplay remains visible: spinnerets after a cast\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: spinnerets after a cast Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 2 only: Web Caster identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "18e33be73157cc1699a70b91183b97341a2cfa0f9a2a954e90808ed50af6a2ad",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:10:55.086Z",
+      "generationCompletedAt": "2026-08-30T11:11:14.089Z",
+      "inspectionCompletedAt": "2026-08-30T11:11:28.059Z",
+      "generationDurationMs": 19003,
+      "inspectionDurationMs": 13970,
+      "totalWallTimeMs": 32973,
+      "sourceOutputId": "exec-6dcfead7-ac0f-4cfc-a23a-aea08b07a441.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The sweeping left pressure arc and spray entered the strict eight-percent safe border."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly eight connected legs, raised abdomen, braced stance, paired pale spinnerets, coherent core, and fluid restraint telegraph were present."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow, wet reflections, coherent fluid transitions, mist, and a stable dark structure transformed multiple Water dimensions."
+        }
+      ],
+      "retryReason": "Contain the full pressure arc and all feet while preserving exact anatomy, spinnerets, stable structure, and Water telegraph."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-web-caster-water-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Water Web Caster. Preserve the same single premium Pack 2 spider, coherent dark structural core, raised pressurized-water abdomen, wet reflective chitin, braced rear stance, visible paired pale spinnerets beneath the abdomen, fluid silk line, sweeping target-zone pressure arc, mist, cracked-stone floor, and charcoal backdrop. Preserve exactly eight connected locomotor legs—four per side—with eight separately countable roots, joints, and terminal feet; chelicerae and pedipalps remain short mouthparts and do not count as legs. Scale the complete spider and entire water-effect envelope to 74 percent and recenter on the same native 1536×1024 landscape canvas. Pull the full left pressure arc, spray, mist, silk line, abdomen tip, and all eight feet inside the central 84 percent, leaving clearly empty finished border on every side. Preserve the coherent binding core and make pressure loss around the paired spinnerets readable after the cast. Keep stable anatomy and fluid transitions; do not make a blue blob, add legs, duplicate spiders, detach anatomy, crop, add text, frame, watermark, or unfinished region. Correction mode: targeted scale-and-containment edit only; preserve all passing Water construction and duty traits.",
+      "promptHash": "e36e3aea4f6a0b7e6705ef06de23cb15760f77287c3b8033c8fe7c194516279b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-6dcfead7-ac0f-4cfc-a23a-aea08b07a441.png",
+        "contentHash": "ce8207cb16c0684a6aa4cbd56f53891fe81e76721d722a10aaad4bd7dfd0c1ed"
+      },
+      "requestStartedAt": "2026-08-30T11:11:45.494Z",
+      "generationCompletedAt": "2026-08-30T11:12:11.456Z",
+      "inspectionCompletedAt": "2026-08-30T11:12:25.832Z",
+      "generationDurationMs": 25962,
+      "inspectionDurationMs": 14376,
+      "totalWallTimeMs": 40338,
+      "sourceOutputId": "exec-dfc6410e-8b84-4371-b0f6-3d1dc352e081.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-dfc6410e-8b84-4371-b0f6-3d1dc352e081.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2194593,
+          "contentHash": "2b1f6e9d5a66b82838597807bb96dc78dd11ca666458cf3f07234be77c59bac5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2194593,
+          "contentHash": "2b1f6e9d5a66b82838597807bb96dc78dd11ca666458cf3f07234be77c59bac5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2194593,
+        "contentHash": "2b1f6e9d5a66b82838597807bb96dc78dd11ca666458cf3f07234be77c59bac5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All eight feet, raised abdomen, fluid silk, mist, spray, and sweeping pressure arc remain inside the central safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered Web Caster appears on a finished landscape canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One connected spider carries exactly eight locomotor legs in four coherent pairs with separate roots and feet, raised abdomen, braced rear stance, paired pale spinnerets, and fluid target-zone cast line."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressurized flow, wet reflection, stable dark structure, fluid abdomen transition, mist, cast telegraph, and pressure wake materially integrate Water."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The paired pale spinnerets and pressure-loss seam expose the coherent binding core after the cast."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-web-caster-water-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:10:54.686Z",
+  "completedAt": "2026-08-30T11:12:25.832Z",
+  "totalWallTimeMs": 91146,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

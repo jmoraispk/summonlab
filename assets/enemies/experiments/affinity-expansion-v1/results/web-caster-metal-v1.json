@@ -1,0 +1,192 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-web-caster-metal",
+  "targetId": "affinity-expansion-v1-web-caster-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-web-caster-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-web-caster-metal\".\n\nSubject and threat:\n- Species: web-caster.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: web-caster-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Web Caster remains immediately recognizable\n- Battlefield duty remains Ranged restraint\n- raised abdomen, braced rear legs, and visible silk spinnerets\n- abdomen tilts and a pale silk line traces the target zone\n- Counterplay remains visible: spinnerets after a cast\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: spinnerets after a cast Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 2 only: Web Caster identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a2324379cfed76810605213512abc50e9352bb5d2d4d662912bddb8f64d5c593",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:07:18.341Z",
+      "generationCompletedAt": "2026-08-30T11:07:42.548Z",
+      "inspectionCompletedAt": "2026-08-30T11:07:58.981Z",
+      "generationDurationMs": 24207,
+      "inspectionDurationMs": 16433,
+      "totalWallTimeMs": 40640,
+      "sourceOutputId": "exec-8010cbfa-79d2-48b7-a081-e211288ffbfc.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The silk restraint lines crossed the left canvas edge instead of terminating inside the safe area."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Exactly eight forged locomotor legs and the raised abdomen were strong, but paired abdomen spinnerets were not clearly readable and the silk appeared front-originated."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged anatomy, articulated joint rings, metallic marrow seams, and a magnetic control structure exceeded ordinary armor."
+        }
+      ],
+      "retryReason": "Contain the silk telegraph and expose paired spinneret nozzles beneath the raised abdomen while preserving the exact limb plan."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-web-caster-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-web-caster-metal-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Targeted edit of the preceding Metal Web Caster. Preserve the same single Pack 2 forged spider, raised plated abdomen, braced rear stance, connected cephalothorax, articulated load-bearing metal legs, ringed joints, metallic marrow seams, restrained violet magnetic core, cracked-stone floor, and charcoal backdrop. Preserve exactly eight connected locomotor legs—four per side—with eight separately countable roots and terminal feet; chelicerae and pedipalps stay short mouthparts and do not count as legs. Scale the spider and full restraint telegraph to 78 percent and recenter on the same native 1536×1024 landscape canvas. Move the silk target knot inward so the complete pale line and web knot terminate well inside the central 84 percent; no line or fragment may touch the canvas edge. Make a visible paired set of short metal spinneret nozzles beneath the raised abdomen, with the silk line clearly originating there after the cast. Keep the articulated magnetic core materially distinct at the abdomen joint. Keep every foot and effect extent inside eight percent empty finished borders. Do not reduce Metal to ordinary armor, add legs, duplicate spiders, detach anatomy, crop, add text, frame, watermark, or unfinished region. Correction mode: targeted anatomy-clarity and containment edit; preserve all other passing construction and duty traits.",
+      "promptHash": "e31a261f61cfc081ec47f07b28c8d071c10df44333ae3d619c563b66770239e4",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-8010cbfa-79d2-48b7-a081-e211288ffbfc.png",
+        "contentHash": "2c1783ee87dd1bfb736b81f117b36db1b05237098cfe2eea6195b1e4dd889bf6"
+      },
+      "requestStartedAt": "2026-08-30T11:08:15.457Z",
+      "generationCompletedAt": "2026-08-30T11:08:36.409Z",
+      "inspectionCompletedAt": "2026-08-30T11:08:47.888Z",
+      "generationDurationMs": 20952,
+      "inspectionDurationMs": 11479,
+      "totalWallTimeMs": 32431,
+      "sourceOutputId": "exec-fa304b88-f707-409e-ac8c-b04603514705.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 15,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-fa304b88-f707-409e-ac8c-b04603514705.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2198569,
+          "contentHash": "fbd15faba876dded0a19609cd1a224064940afbecb10a8783af8e01f98255e62"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2198569,
+          "contentHash": "fbd15faba876dded0a19609cd1a224064940afbecb10a8783af8e01f98255e62"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2198569,
+        "contentHash": "fbd15faba876dded0a19609cd1a224064940afbecb10a8783af8e01f98255e62"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "All eight feet, raised abdomen, silk line, target knot, and magnetic effects remain inside the safe area."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered forged spider appears on a finished canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Canonical first prompt, ordered references, exact correction source, and exact retained persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Exactly eight connected locomotor legs, raised abdomen, braced stance, and cast telegraph are present, but paired abdomen spinnerets remain insufficiently distinct and the line still reads as front-originated."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forged load-bearing plates, articulated ring joints, metallic marrow, magnetic core, and controlled violet force materially transform the body rather than merely armoring it."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The magnetic abdomen joint is distinct, but the declared vulnerable spinnerets after a cast are not clearly visible enough for reliable counterplay."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind review pending."
+        }
+      ],
+      "retryReason": "Retry ceiling exhausted; retain this otherwise strong exact-eight-legged Metal render for revision."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "manifest-fidelity",
+    "visible-counterplay-cue"
+  ],
+  "startedAt": "2026-08-30T11:07:17.961Z",
+  "completedAt": "2026-08-30T11:08:47.888Z",
+  "totalWallTimeMs": 89927,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

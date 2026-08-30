@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-armored-brood-guard-wind",
+  "targetId": "affinity-expansion-v1-armored-brood-guard-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-armored-brood-guard-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-armored-brood-guard-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-armored-brood-guard-wind\".\n\nSubject and threat:\n- Species: armored-brood-guard.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: armored-brood-guard-duty.\n- Construction mode: eight-legged-arachnid.\n\nIdentity invariants:\n- Armored Brood Guard remains immediately recognizable\n- Battlefield duty remains Chokepoint tank\n- broad plated cephalothorax and short shield-like front legs\n- front plates close before a straight shove\n- Counterplay remains visible: leg joints exposed from the side\n\nAnatomy invariants:\n- exactly eight connected legs in four coherent pairs, all feet visible\n- one connected cephalothorax and abdomen with credible joints and ground contact\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: leg joints exposed from the side The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: six or ten legs; humanoid face or hands; detached legs or duplicate spider; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arachnids-v1.png — Subject 3 only: Armored Brood Guard identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "d61820fc62b6cf6a04a6cc431880b7cea0fef3fc37e70db3bcd75aff2ddbfc37",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:15:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:15:19.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:15:26.000Z",
+      "generationDurationMs": 19000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 26000,
+      "sourceOutputId": "exec-5c3f7641-af9a-47e6-bba6-af000b3a35d4.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Command-standard tips and the widest pressure wake entered the required safety border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully rendered Armored Brood Guard appeared."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact canonical prompt and both ordered references were submitted."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The broad shield-front arachnid showed only six reliably countable locomotor legs and added two undeclared command standards."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Forceful directional vapor, debris flow, pressure distortion, and shove wake visibly altered silhouette, motion, attack telegraph, and environment."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Side-facing articulated joints and the still blue-gray pressure center remained visible between attacks."
+        }
+      ],
+      "retryReason": "Remove the undeclared command standards, restore exactly eight connected countable locomotor legs, expose side joints, and inset all hard and Wind-effect extents."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-armored-brood-guard-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-armored-brood-guard-wind-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Edit the supplied exact preceding output. Preserve the same single finished Armored Brood Guard identity, broad plated cephalothorax, connected armored abdomen, premium realistic painterly dark-fantasy finish, chokepoint-tank mass, closed shield-front shove silhouette, forceful directional vapor channels, coherent debris flow, pressure distortion, visibly still blue-gray center, stone floor, charcoal backdrop, lighting, and all other passing traits.\n\nTargeted manifest-fidelity correction: completely remove both command-standard poles, spear tips, cloth banners, cords, and all banner fragments; do not replace them with any equipment. Restore exactly eight connected locomotor legs in four unmistakable coherent pairs—four on the visible left side and four on the visible right side—with eight clearly separated, individually countable feet. Keep the front pair short, broad, and shield-like before a straight shove; keep all four side-facing joint sets materially exposed and readable as counterplay, with credible connection and ground contact. Do not count mouthparts, fangs, or pedipalps as legs. Uniformly scale down and recenter the complete guard, all eight legs and feet, plate points, every vapor loop, pressure arc, debris fragment, directional wake, dust, and shadow so every hard and effect extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty border of at least 8 percent on all four sides.\n\nThis is an edit of the supplied exact source, not a complete regeneration. Preserve visible directional Wind force and the still center; do not reduce Wind to pale recolor, transparency, or directionless effects. No command standard, banner, weapon, equipment, six or ten legs, humanoid face or hands, detached leg, duplicate spider, extra creature, text, labels, UI, frame, logo, watermark, cropped extremity, blank band, unfinished region, or abrupt cutoff.",
+      "promptHash": "91a3d40c2cd8eb00e776ddbb6812c975f89a4d8d39131685ce7ca5315b5f57f9",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arachnids-v1.png",
+          "contentHash": "45c2db02819964019a3d6b0640afc0e5d2d76b9d70e558d03ac24be3e909e604"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-5c3f7641-af9a-47e6-bba6-af000b3a35d4.png",
+        "contentHash": "18a74a65e8c69a4002c7b78700ef124c0a922539bf49e7bb591d8e4e13c297af"
+      },
+      "requestStartedAt": "2026-08-30T11:16:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:16:21.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:16:28.000Z",
+      "generationDurationMs": 21000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 28000,
+      "sourceOutputId": "exec-90048e57-b80e-4f91-b30f-1641596239ad.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 29,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-90048e57-b80e-4f91-b30f-1641596239ad.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2268688,
+          "contentHash": "4435919c2a712d74b1fb4c08ee4d90cf5de987a97c8158efe2a976248ee14aa5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wind-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2268688,
+          "contentHash": "4435919c2a712d74b1fb4c08ee4d90cf5de987a97c8158efe2a976248ee14aa5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wind-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2268688,
+        "contentHash": "4435919c2a712d74b1fb4c08ee4d90cf5de987a97c8158efe2a976248ee14aa5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Complete guard, all visible feet, plate tips, vapor loops, pressure arcs, debris, directional wake, dust, and shadow fit inside a clearly empty border of at least eight percent on all sides."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one fully finished Armored Brood Guard appears with no command standard, equipment, duplicate, or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first prompt exactly matched the canonical renderer; the single correction used only the exact preceding source."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "anatomy",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The connected broad plated cephalothorax, armored abdomen, shield-front shove silhouette, and exposed side joints are strong, but only six locomotor legs and feet remain reliably countable rather than the required eight."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Directional vapor channels, coherent debris flow, pressure distortion, altered shield-front motion, shove telegraph, and environmental wake visibly express Wind through four declared dimensions."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The side-facing leg joints remain materially exposed while a visibly still blue-gray center separates the opposing pressure patterns."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Armored Brood Guard cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wind recognition remains pending human review; known-target inspection finds integrated directional vapor, debris, pressure, wake, and still-center cues."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, armored materials, directional restrained effects, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The helper exclusive-copied the exact correction PNG; source and retained dimensions, media type, 2,268,688 bytes, and SHA-256 4435919c2a712d74b1fb4c08ee4d90cf5de987a97c8158efe2a976248ee14aa5 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only assignment-owned candidate and result paths were written; no shared file, wiki, application code, review artifact, Git state, or unrelated repository path was edited."
+        }
+      ],
+      "retryReason": "Retry ceiling exhausted; retain this otherwise strong Wind Armored Brood Guard for revision to restore the missing locomotor pair."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "manifest-fidelity"
+  ],
+  "startedAt": "2026-08-30T11:15:00.000Z",
+  "completedAt": "2026-08-30T11:17:00.000Z",
+  "totalWallTimeMs": 120000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/armored-brood-guard-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

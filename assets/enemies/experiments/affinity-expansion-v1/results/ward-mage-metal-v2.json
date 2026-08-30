@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ward-mage-metal-v2",
+  "targetId": "affinity-expansion-v1-ward-mage-metal-v2",
+  "assignmentId": "assignment-affinity-expansion-v1-ward-mage-metal-v2",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-metal-v2-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "provider-failure",
+      "failureKind": "malformed-output",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ward-mage-metal-v2\".\n\nSubject and threat:\n- Species: ward-mage.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: ward-mage-duty.\n- Construction mode: humanoid-enemy.\n\nIdentity invariants:\n- Ward Mage remains immediately recognizable\n- Battlefield duty remains Barrier support\n- square stance behind a broad forearm ward and layered defensive mantle\n- ward facets rotate toward the ally about to be protected\n- Counterplay remains visible: unshielded back while channeling\n- V2 correction: preserve every passing v1 trait while correcting these failed authoring gates literally: complete-safe-frame, manifest-fidelity\n\nAnatomy invariants:\n- adult humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, equipment grip, and grounded weight\n- the v2 render must satisfy every declared anatomy count and connection literally; do not preserve the v1 anatomy or identity defect\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: unshielded back while channeling Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: childlike proportions; human glamour or sexualization; extra limbs; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject, deliberately small and centered; every hard and effect extent must fit inside the central 76 percent of the canvas with finished empty space on all four sides.\n- Canvas: 1536 x 1024 image/png with at least 12 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/arcane-hostiles-v1.png — Subject 2 only: Ward Mage identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n3. assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v1.png — V1 review source only: preserve passing identity, duty, material, and affinity traits while correcting complete-safe-frame, manifest-fidelity; do not preserve the failed framing, anatomy, identity, or counterplay defect.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.\n- No hard silhouette, extremity, equipment, smoke, particle, wake, shadow, or other effect may enter the outer twelve percent of the canvas.",
+      "promptHash": "7e44e55404e90c890eb849dede50cd8cbf1058069b0c5f0f7cdb4e75c1b3d153",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v1.png",
+          "contentHash": "2d6510c5653e93aaf25939b858362b3f168cd9288dec8aeabc6d73aa3b481cba"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T11:44:00.000Z",
+      "generationCompletedAt": "2026-08-30T11:44:22.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:44:25.000Z",
+      "generationDurationMs": 22000,
+      "inspectionDurationMs": 3000,
+      "totalWallTimeMs": 25000,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-a142bb34-fb96-49de-977a-e3e01dbf16d9.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The canonical v2 prompt produced a strong Metal Ward Mage but returned a 1254 x 1254 PNG, outside the assignment's required native 1536 x 1024 landscape canvas."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One adult humanoid Ward Mage has exactly two arms and two legs, a staff, broad articulated forearm ward, layered mantle, controlled facets, Metal construction and an unshielded rear."
+        }
+      ],
+      "retryReason": "Use the sole retry as a source-bound native landscape correction that preserves all passing design traits."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ward-mage-metal-v2-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ward-mage-metal-v2-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Revise the supplied image only to satisfy the declared production frame and literal Ward Mage anatomy while preserving its successful identity, materials, pose, shield, staff, metal affinity, lighting, and premium realistic painterly finish. Output one native 1536×1024 landscape PNG, not a square image and not a padded or extended square. Keep exactly one adult humanoid Ward Mage with exactly two arms, two hands, two legs, and two feet. Show the entire staff, shield, garment, both grounded feet, orbiting metal facets, particles, shadows, and every effect fully inside the central 76 percent of the 1536×1024 canvas, leaving at least twelve percent intentionally finished empty background on all four sides. The broad articulated forearm ward must remain on one forearm, not become an extra limb. Preserve the unshielded back as readable counterplay while channeling. Remove no successful design details. No labels, text, UI, frame, logo, watermark, second creature, duplicate body, extra limb, cropped extent, blank band, or abrupt cutoff.",
+      "promptHash": "9df9db1644995a85acbe79f2fac1844297d4ff22cc1ae64b547172668600850a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/pack-2/arcane-hostiles-v1.png",
+          "contentHash": "18ece7c8c6b2d8a9a8a302e8afb66a2b1a3a01f0620e7786641de1b7a24e3c54"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        },
+        {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v1.png",
+          "contentHash": "2d6510c5653e93aaf25939b858362b3f168cd9288dec8aeabc6d73aa3b481cba"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-a142bb34-fb96-49de-977a-e3e01dbf16d9.png",
+        "contentHash": "f1b8846d42345cd684955f18d2c3027834819adcbe3b3c76628e816886147486"
+      },
+      "requestStartedAt": "2026-08-30T11:44:40.000Z",
+      "generationCompletedAt": "2026-08-30T11:45:03.000Z",
+      "inspectionCompletedAt": "2026-08-30T11:45:10.000Z",
+      "generationDurationMs": 23000,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 30000,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-d83ba616-c7ce-4779-b88b-8aeb70291715.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 19,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-d83ba616-c7ce-4779-b88b-8aeb70291715.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2198615,
+          "contentHash": "ef5ef73417e3117c9cb0e23e2d611403e794be767ed0d614c00b208a82291d81"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v2.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2198615,
+          "contentHash": "ef5ef73417e3117c9cb0e23e2d611403e794be767ed0d614c00b208a82291d81"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v2.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2198615,
+        "contentHash": "ef5ef73417e3117c9cb0e23e2d611403e794be767ed0d614c00b208a82291d81"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete head, staff, forearm ward, garments, two grounded feet, orbiting facets, shadows and effects fit within the central seventy-six percent with finished space on every side."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished Ward Mage occupies a fully rendered cracked-stone scene."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt, three references in manifest order, exact correction source and exclusive-copy persistence are recorded."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The adult humanoid has exactly two arms and two legs, credible staff grip, grounded feet, broad forearm ward, layered mantle and an unshielded channeling back."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Articulated forged plates, metallic marrow, controlled fragments and the ward geometry alter material, anatomy and equipment rather than applying a color overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The ward protects the forward arc while the mage's back remains visibly unshielded during channeling."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Ward Mage recognition remains pending human review."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Metal recognition remains pending human review."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pack 2 realistic painterly rendering, controlled neutral lighting and coherent dark metal materials remain consistent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No second subject, extra limb, crop, text, UI, frame, watermark, blank band or sexualized treatment appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact corrected provider source was exclusively copied with matching dimensions, byte count and SHA-256."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only the assignment-owned v2 candidate and result paths were written."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ward-mage-metal-v2-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T11:44:00.000Z",
+  "completedAt": "2026-08-30T11:45:10.000Z",
+  "totalWallTimeMs": 70000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v2.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ward-mage-metal-v2.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

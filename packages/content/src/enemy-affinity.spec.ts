@@ -42,8 +42,10 @@ describe('enemy affinity wiki links', () => {
 			...ENEMY_ARCHETYPES.map((enemy) => enemy.id),
 			...PACK_TWO_MONSTER_ARCHETYPES.map((enemy) => enemy.id)
 		]);
-		const baselineIds = new Set(ENEMY_AFFINITY_ARCHETYPE_LINKS.map((link) => link.archetypeId));
-		const expansionIds = new Set(
+		const baselineIds = new Set<string>(
+			ENEMY_AFFINITY_ARCHETYPE_LINKS.map((link) => link.archetypeId)
+		);
+		const expansionIds = new Set<string>(
 			ENEMY_AFFINITY_EXPANSION_ARCHETYPE_LINKS.map((link) => link.archetypeId)
 		);
 
