@@ -23,7 +23,12 @@
 	};
 
 	let { hero, onclose }: { hero: Hero; onclose: () => void } = $props();
-	const bodyNames = new Set(['Might', 'Vitality', 'Agility', 'Dexterity']);
+	const bodyNames = new Set(['Might', 'Vitality', 'Agility']);
+	const aptitudeClassLabels = {
+		martial: 'Martial',
+		magic: 'Magical',
+		crafting: 'Craft & life'
+	} as const;
 	const bodyAttributes = $derived(
 		hero.attributes.filter((attribute) => bodyNames.has(attribute.name))
 	);
@@ -76,7 +81,7 @@
 				<article data-testid="body-attributes">
 					<header>
 						<MechanicIcon kind="body" size={18} /><span
-							><strong>Body</strong><small>Physical capability</small></span
+							><strong>Body</strong><small>Force, endurance &amp; motion</small></span
 						>
 					</header>
 					<div class="attribute-grid">
@@ -92,7 +97,7 @@
 				<article data-testid="mind-attributes">
 					<header>
 						<MechanicIcon kind="mind" size={18} /><span
-							><strong>Mind</strong><small>Cognitive &amp; spiritual</small></span
+							><strong>Mind</strong><small>Control, thought &amp; spirit</small></span
 						>
 					</header>
 					<div class="attribute-grid">
@@ -145,7 +150,7 @@
 			<div>
 				{#each hero.aptitudes as aptitude (aptitude.name)}<span data-class={aptitude.class}
 						><MechanicIcon kind={aptitude.class} size={17} /><b>{aptitude.name}</b><small
-							>{aptitude.class}</small
+							>{aptitudeClassLabels[aptitude.class]}</small
 						></span
 					>{/each}
 			</div>

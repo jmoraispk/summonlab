@@ -3,7 +3,6 @@
 	import RatesPanel from '$lib/components/living-village/summon/RatesPanel.svelte';
 	import RevealStage from '$lib/components/living-village/summon/RevealStage.svelte';
 	import {
-		banners,
 		batchReceipt,
 		featuredHero,
 		guarantee,
@@ -49,7 +48,6 @@
 	let spendTimer: number | undefined;
 
 	const progressPercent = $derived(`${(guaranteeProgress / guarantee.threshold) * 100}%`);
-	const selectedDirection = $derived(revealDirections.find((item) => item.id === direction)!);
 	const guaranteedHero = heroes.find((hero) => hero.stars === 3) ?? featuredHero;
 
 	function flashSpend(currency: 'sigil' | 'gem', label: string) {
@@ -188,27 +186,6 @@
 		</section>
 	</header>
 
-	<nav class="banner-rail" aria-label="Summon banners">
-		{#each banners as banner (banner.id)}
-			<button
-				type="button"
-				class:active={banner.state === 'active'}
-				disabled={banner.state === 'preview'}
-				aria-current={banner.state === 'active' ? 'page' : undefined}
-			>
-				<span class="banner-glyph"
-					><PortalGlyph kind={banner.state === 'active' ? 'ember' : 'star'} size={16} /></span
-				>
-				<span
-					><small>{banner.state === 'active' ? 'Now open' : 'Coming soon'}</small><strong
-						>{banner.label}</strong
-					></span
-				>
-				<i>{banner.state === 'active' ? 'Hearthbound' : banner.kicker}</i>
-			</button>
-		{/each}
-	</nav>
-
 	<section class="portal-grid">
 		<div class="hero-column">
 			<RevealStage
@@ -291,16 +268,13 @@
 				class="rates-button"
 				onclick={() => (ratesOpen = true)}
 				aria-haspopup="dialog"
+				data-recognition-ms={recognitionMs ?? undefined}
 			>
 				<span
 					><PortalGlyph kind="star" size={18} /><span
 						><small>Standard banner</small><strong>Rates &amp; details</strong></span
 					></span
-				><i
-					>{recognitionMs === null
-						? `${selectedDirection.shortLabel} reveal →`
-						: `${recognitionMs} ms to identity →`}</i
-				>
+				><i>Open →</i>
 			</button>
 
 			<section class="offers" aria-label="Summon offers">
@@ -311,7 +285,7 @@
 					onclick={() => summon('single')}
 					data-testid="summon-single"
 				>
-					<span><small>One arrival</small><strong>{offers.single.label}</strong></span>
+					<span><strong>Summon ×1</strong></span>
 					<span class="cost"
 						><PortalGlyph kind="sigil" size={16} /><strong>{offers.single.cost}</strong></span
 					>
@@ -324,7 +298,7 @@
 					disabled={gems < 1600}
 				>
 					<span class="ribbon">+1 bonus</span>
-					<span><small>Eleven arrivals</small><strong>Summon ×10 <em>+ 1 bonus</em></strong></span>
+					<span><strong>Summon ×10</strong></span>
 					<span class="cost"
 						><PortalGlyph kind="gem" size={17} /><strong>{offers.batch.cost}</strong></span
 					>
@@ -417,7 +391,6 @@
 		border-color: #b27c3325;
 	}
 	.portal-header,
-	.banner-rail,
 	.portal-grid {
 		position: relative;
 		z-index: 2;
@@ -526,75 +499,11 @@
 			transform: translate(20px, -23px);
 		}
 	}
-	.banner-rail {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 7px;
-		margin-top: 16px;
-		padding: 5px;
-		border: 1px solid #c3d3cb1a;
-		border-radius: 15px;
-		background: #080e12c4;
-	}
-	.banner-rail button {
-		display: grid;
-		grid-template-columns: auto 1fr auto;
-		gap: 10px;
-		align-items: center;
-		min-width: 0;
-		padding: 9px 12px;
-		border: 1px solid transparent;
-		border-radius: 11px;
-		background: transparent;
-		color: #66736e;
-		text-align: left;
-	}
-	.banner-rail button.active {
-		border-color: #d0a45d3d;
-		background: linear-gradient(125deg, #ba7e2216, #17322b42);
-		color: #e8e3d9;
-	}
-	.banner-rail button:disabled {
-		opacity: 0.56;
-	}
-	.banner-glyph {
-		display: grid;
-		width: 31px;
-		height: 31px;
-		place-items: center;
-		border: 1px solid #d0ddd723;
-		border-radius: 50%;
-	}
-	.banner-rail button > span:nth-child(2) {
-		display: grid;
-		gap: 1px;
-	}
-	.banner-rail small {
-		font-size: 0.49rem;
-		font-weight: 730;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-	.banner-rail strong {
-		font:
-			500 0.84rem Georgia,
-			serif;
-	}
-	.banner-rail i {
-		overflow: hidden;
-		font-size: 0.52rem;
-		font-style: normal;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-	.banner-rail .active i {
-		color: #84bbaa;
-	}
 	.portal-grid {
 		display: grid;
 		grid-template-columns: minmax(0, 1.62fr) minmax(350px, 0.7fr);
 		gap: 17px;
-		margin-top: 12px;
+		margin-top: 16px;
 	}
 	.hero-column {
 		display: grid;
@@ -783,12 +692,16 @@
 		font-style: normal;
 	}
 	.offers {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 8px;
 		padding: 15px 16px 13px;
 	}
 	.offers > p {
+		grid-column: 1 / -1;
 		display: flex;
 		justify-content: space-between;
-		margin: 0 3px 9px;
+		margin: 0 3px 1px;
 		color: #7d8b85;
 		font-size: 0.53rem;
 	}
@@ -798,12 +711,11 @@
 	}
 	.offers button {
 		position: relative;
-		display: flex;
-		justify-content: space-between;
+		display: grid;
+		align-content: space-between;
 		gap: 12px;
-		align-items: center;
+		min-height: 82px;
 		width: 100%;
-		margin-top: 8px;
 		padding: 13px 14px;
 		border: 1px solid #d1dfd822;
 		border-radius: 13px;
@@ -824,14 +736,8 @@
 		cursor: not-allowed;
 	}
 	.offers button > span:not(.ribbon) {
-		display: grid;
-		gap: 2px;
-	}
-	.offers button small {
-		color: #71807a;
-		font-size: 0.5rem;
-		letter-spacing: 0.09em;
-		text-transform: uppercase;
+		display: flex;
+		align-items: center;
 	}
 	.offers button strong {
 		font:
@@ -839,7 +745,8 @@
 			serif;
 	}
 	.offers .cost {
-		justify-items: end;
+		justify-content: flex-start;
+		gap: 6px;
 	}
 	.offers .cost strong {
 		color: #d6c8aa;
@@ -852,10 +759,6 @@
 		border-color: #d0a2524e;
 		background: linear-gradient(145deg, #2a2115, #111719);
 		box-shadow: inset 0 0 28px #bb7e1815;
-	}
-	.batch-offer em {
-		color: #edbd66;
-		font-style: normal;
 	}
 	.ribbon {
 		position: absolute;
@@ -1043,16 +946,6 @@
 		}
 		.wallet strong {
 			font-size: 0.8rem;
-		}
-		.banner-rail button {
-			grid-template-columns: auto 1fr;
-			padding: 8px;
-		}
-		.banner-rail button > i {
-			display: none;
-		}
-		.banner-glyph {
-			display: none;
 		}
 		.portal-grid {
 			margin-top: 8px;

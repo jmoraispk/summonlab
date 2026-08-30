@@ -3,13 +3,12 @@
 
 	type Direction = 'gate' | 'constellation' | 'identity';
 	type RateRow = { band: string; value: string; note: string };
-	type Guarantee = { current: number; threshold: number; label: string };
+	type Guarantee = { threshold: number; label: string };
 	type DirectionOption = {
 		id: Direction;
 		label: string;
 		shortLabel: string;
 		description: string;
-		recognitionTarget: string;
 	};
 
 	let {
@@ -83,10 +82,10 @@
 
 		<section class="compare">
 			<div>
-				<small>Single</small><strong>1 arrival</strong><span>1 Gate sigil or 160 gems</span>
+				<small>Single</small><strong>Summon ×1</strong><span>1 Gate sigil or 160 gems</span>
 			</div>
 			<div class="bonus">
-				<small>Batch</small><strong>10 + 1 bonus</strong><span>1,600 gems · 11 arrivals</span>
+				<small>Batch</small><strong>Summon ×10</strong><span>1,600 gems · +1 bonus</span>
 			</div>
 		</section>
 
@@ -96,9 +95,6 @@
 					<p>Reveal ritual</p>
 					<h3 id="ritual-title">Choose how the gate answers</h3>
 				</div>
-				<span data-testid="recognition-target"
-					>{directions.find((item) => item.id === direction)?.recognitionTarget}</span
-				>
 			</div>
 			<div class="directions" data-testid="direction-selector">
 				{#each directions as item (item.id)}
@@ -291,10 +287,6 @@
 		font:
 			500 1.1rem Georgia,
 			serif;
-	}
-	.section-heading > span {
-		color: #a88b59;
-		font-size: 0.56rem;
 	}
 	.directions {
 		display: grid;

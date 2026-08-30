@@ -207,7 +207,7 @@
 	</div>
 
 	<figure>
-		<div class="portrait-shell">
+		<div class="portrait-shell" data-testid="identity-vessel">
 			<img
 				data-testid="reveal-portrait"
 				src={hero.image}
@@ -217,7 +217,7 @@
 			/>
 			<div class="rim"></div>
 		</div>
-		<figcaption>
+		<figcaption data-testid="identity-copy">
 			<div class="stars">{'✦'.repeat(hero.stars)} <i>{hero.stars}★</i></div>
 			<p>Hearthbound</p>
 			<h1>{hero.name}</h1>
@@ -677,6 +677,7 @@
 		object-fit: contain;
 		object-position: center;
 		filter: saturate(0.78) brightness(0.9) contrast(1.06) drop-shadow(0 24px 30px #000b);
+		mask-image: linear-gradient(90deg, transparent 4%, #000 24%, #000 76%, transparent 96%);
 		opacity: 0;
 		transform: translateY(12px) scale(0.98);
 	}
@@ -713,6 +714,7 @@
 		opacity: 0.62;
 		transform: translateY(18px) scale(0.95);
 		filter: saturate(0) brightness(1.65) contrast(1.8) drop-shadow(0 0 34px #9cf3e2);
+		mix-blend-mode: screen;
 		animation: cross 900ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
 	}
 	.stage[data-direction='identity'] .portrait-shell img {
@@ -878,7 +880,7 @@
 	}
 	@media (max-width: 760px) {
 		.stage {
-			min-height: 660px;
+			min-height: 600px;
 			border-radius: 20px;
 		}
 		.topline {
@@ -896,24 +898,56 @@
 			inset: 30px 0 54px;
 		}
 		.portrait-shell {
-			inset: 7% 15% 32%;
+			top: 38px;
+			right: auto;
+			bottom: auto;
+			left: 50%;
+			width: min(70%, 260px);
+			height: min(54%, 310px);
+			transform: translateX(-50%) translateY(10px) scale(0.97);
+			border-radius: 46% 46% 15% 15% / 22% 22% 9% 9%;
+		}
+		.vessel-visible .portrait-shell {
+			transform: translateX(-50%);
+		}
+		.stage[data-phase='threshold'] .portrait-shell,
+		.stage[data-phase='form'] .portrait-shell {
+			animation-name: vessel-lock-mobile;
+		}
+		@keyframes vessel-lock-mobile {
+			0% {
+				opacity: 0;
+				transform: translateX(-50%) translateY(14px) scaleX(0.72) scaleY(1.05);
+				filter: brightness(2);
+			}
+			58% {
+				opacity: 1;
+				transform: translateX(-50%) translateY(-2px) scaleX(1.015);
+			}
+			100% {
+				transform: translateX(-50%);
+				filter: none;
+			}
 		}
 		figcaption {
 			right: 20px;
-			bottom: 11%;
+			bottom: 8%;
 			left: 20px;
 			width: auto;
 			text-align: center;
 		}
 		figcaption h1 {
-			font-size: clamp(3.1rem, 16vw, 4.4rem);
+			margin-block: 5px 7px;
+			font-size: clamp(2.65rem, 13vw, 3.4rem);
 		}
 		figcaption > span {
 			margin-inline: auto;
-			font-size: 0.69rem;
+			font-size: 0.65rem;
+			line-height: 1.4;
 		}
 		.traits {
 			justify-content: center;
+			margin-top: 10px;
 		}
 		.stage-footer {
 			right: 13px;

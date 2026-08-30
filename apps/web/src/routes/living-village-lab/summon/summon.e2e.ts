@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
 const route = '/living-village-lab/summon';
@@ -20,6 +20,14 @@ async function enableReducedMotion(page: Page) {
 	await page.getByRole('button', { name: 'Close rates and details' }).click();
 }
 
+async function expectContained(inner: Locator, outer: Locator) {
+	const [innerBox, outerBox] = await Promise.all([inner.boundingBox(), outer.boundingBox()]);
+	expect(innerBox!.x).toBeGreaterThanOrEqual(outerBox!.x - 1);
+	expect(innerBox!.y).toBeGreaterThanOrEqual(outerBox!.y - 1);
+	expect(innerBox!.x + innerBox!.width).toBeLessThanOrEqual(outerBox!.x + outerBox!.width + 1);
+	expect(innerBox!.y + innerBox!.height).toBeLessThanOrEqual(outerBox!.y + outerBox!.height + 1);
+}
+
 test('portal connects spending, reveal controls, arrival history, and hero dossiers', async ({
 	page
 }) => {
@@ -30,20 +38,19 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(page.getByTestId('wallet-sigil')).toContainText('7');
 	await expect(page.getByTestId('wallet-sigil')).not.toContainText('Preview');
 	await expect(page.getByTestId('wallet-gem')).toContainText('2,480');
-	const bannerRail = page.getByRole('navigation', { name: 'Summon banners' });
-	await expect(bannerRail.getByRole('button', { name: /Standard/ })).toHaveAttribute(
-		'aria-current',
-		'page'
-	);
-	await expect(bannerRail.getByRole('button', { name: /Limited/ })).toBeDisabled();
-	await expect(bannerRail.getByRole('button', { name: /Limited/ })).toContainText('Coming soon');
+	await expect(page.getByRole('navigation', { name: 'Summon banners' })).toHaveCount(0);
+	await expect(page.getByText('Limited', { exact: true })).toHaveCount(0);
+	await expect(page.getByText('Equipment', { exact: true })).toHaveCount(0);
 
 	await page.getByRole('button', { name: /Rates & details/ }).click();
 	const rates = page.getByTestId('rates-panel');
 	await expect(rates).toContainText('79.0%');
-	await expect(rates).toContainText('10 + 1 bonus');
+	await expect(rates).toContainText('Summon ×10');
+	await expect(rates).toContainText('+1 bonus');
 	await expect(rates).toContainText('Demo values');
 	await expect(rates).toContainText('Reveal ritual');
+	await expect(rates.getByTestId('recognition-target')).toHaveCount(0);
+	await expect(rates).not.toContainText(/\d+\.\d+ s target/);
 	const rateSurface = rates.locator('.rate-list > div').first();
 	await expect(rateSurface).toHaveCSS('color', 'rgb(238, 233, 223)');
 	expect(
@@ -52,8 +59,18 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await page.getByRole('button', { name: 'Close rates and details' }).click();
 
 	await expect(page.getByTestId('summon-single')).toContainText('1 Gate sigil or 160 gems');
-	await expect(page.getByTestId('summon-batch')).toContainText('Summon ×10 + 1 bonus');
+	await expect(page.getByTestId('summon-single')).toContainText('Summon ×1');
+	await expect(page.getByTestId('summon-single')).not.toContainText('One arrival');
+	await expect(page.getByTestId('summon-batch')).toContainText('Summon ×10');
+	await expect(page.getByTestId('summon-batch')).toContainText('+1 bonus');
+	await expect(page.getByTestId('summon-batch')).not.toContainText('Eleven arrivals');
 	await expect(page.getByTestId('summon-batch')).toContainText('1,600 gems');
+	const [singleOfferBox, batchOfferBox] = await Promise.all([
+		page.getByTestId('summon-single').boundingBox(),
+		page.getByTestId('summon-batch').boundingBox()
+	]);
+	expect(Math.abs(singleOfferBox!.y - batchOfferBox!.y)).toBeLessThan(2);
+	expect(singleOfferBox!.x).toBeLessThan(batchOfferBox!.x);
 
 	await chooseDirection(page, 'Gate', 'gate');
 	await expect(page.getByTestId('reveal-stage')).toHaveAttribute('data-phase', 'threshold');
@@ -111,8 +128,12 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier).toContainText('Intellect');
 	await expect(dossier).toContainText('Spirit');
 	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(6);
-	await expect(dossier.getByTestId('body-attributes').getByTestId('hero-attribute')).toHaveCount(4);
-	await expect(dossier.getByTestId('mind-attributes').getByTestId('hero-attribute')).toHaveCount(2);
+	await expect(dossier.getByTestId('body-attributes').getByTestId('hero-attribute')).toHaveCount(3);
+	await expect(dossier.getByTestId('mind-attributes').getByTestId('hero-attribute')).toHaveCount(3);
+	await expect(dossier.getByTestId('mind-attributes')).toContainText('Dexterity');
+	await expect(dossier.getByTestId('body-attributes')).not.toContainText('Dexterity');
+	await expect(dossier.locator('[data-icon="body"]')).toBeVisible();
+	await expect(dossier.locator('[data-icon="mind"]')).toBeVisible();
 	const [bodyBox, mindBox] = await Promise.all([
 		dossier.getByTestId('body-attributes').boundingBox(),
 		dossier.getByTestId('mind-attributes').boundingBox()
@@ -121,11 +142,15 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier.locator('[data-icon="ember"]')).toBeVisible();
 	await expect(dossier.locator('[data-icon="martial"]').first()).toBeVisible();
 	await expect(dossier.locator('[data-icon="magic"]')).toBeVisible();
+	await expect(dossier).toContainText('Guard');
+	await expect(dossier).toContainText('Fire Evocation');
+	await expect(dossier).toContainText('Universal Martial');
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 	await expect(history.getByText('New', { exact: true })).toHaveCount(4);
 	await expect(oneStar).toHaveAttribute('aria-label', 'View Mara Vey stats');
 	await twoStar.click();
 	await expect(page.getByTestId('hero-dossier').locator('[data-icon="crafting"]')).toBeVisible();
+	await expect(page.getByTestId('hero-dossier')).toContainText('Craft & life');
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 
 	await page.getByTestId('summon-batch').click();
@@ -207,4 +232,35 @@ test('captures the release portal and animation comparison', async ({ page }) =>
 	await page.goto(route);
 	await expect(page.getByTestId('portal-canvas')).toHaveAttribute('data-ready', 'true');
 	await page.screenshot({ path: evidence('living-village-summon-mobile.png') });
+	const mobileStage = page.getByTestId('reveal-stage');
+	const mobileVessel = page.getByTestId('identity-vessel');
+	await expectContained(mobileVessel, mobileStage);
+	expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+
+	await page.clock.install();
+	await page.clock.pauseAt(new Date());
+	await chooseDirection(page, 'Gate', 'gate');
+	await page.clock.runFor(700);
+	await expect(mobileStage).toHaveAttribute('data-phase', 'threshold');
+	await expectContained(mobileVessel, mobileStage);
+	await mobileStage.screenshot({ path: evidence('living-village-summon-mobile-lock.png') });
+
+	await page.clock.runFor(450);
+	await expect(mobileStage).toHaveAttribute('data-phase', 'silhouette');
+	await expect(page.getByTestId('reveal-portrait')).not.toHaveCSS('opacity', '0');
+	await expectContained(mobileVessel, mobileStage);
+	await mobileStage.screenshot({ path: evidence('living-village-summon-mobile-silhouette.png') });
+
+	await page.clock.runFor(400);
+	await expect(mobileStage).toHaveAttribute('data-phase', 'identity');
+	await expect(page.getByTestId('identity-copy')).toBeVisible();
+	await expectContained(page.getByTestId('identity-copy'), mobileStage);
+	await mobileStage.screenshot({ path: evidence('living-village-summon-mobile-identity.png') });
+
+	await enableReducedMotion(page);
+	await page.getByTestId('summon-single').click();
+	await page.clock.runFor(50);
+	await expect(mobileStage).toHaveAttribute('data-phase', 'complete');
+	await expect(page.getByTestId('summon-results')).toBeVisible();
+	await mobileStage.screenshot({ path: evidence('living-village-summon-mobile-result.png') });
 });

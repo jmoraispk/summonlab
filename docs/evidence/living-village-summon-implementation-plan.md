@@ -1,5 +1,77 @@
 # Living Village Summoning Portal implementation plan
 
+## Owner-feedback revision — focused portal and phone-safe reveal
+
+The supplied screenshots are evidence of the current build. This revision removes speculative
+navigation and measurement chrome, corrects the mechanics vocabulary against the local wiki, and
+treats 390 × 844 reveal frames—not only the resting page—as acceptance targets.
+
+### Product-surface cleanup
+
+1. Remove the full Standard/Limited/Equipment banner rail. This isolated route has one Standard
+   Hearth Gate; it does not advertise future economies that are unlikely to share this surface.
+2. Keep recognizable-identity timing available to the focused test, but remove milliseconds and
+   timing targets from player-facing UI. Rates opens with a plain `Rates & details` affordance.
+3. Replace the offer-button legends with direct actions: `Summon ×1` and `Summon ×10`. Keep costs
+   inside each action and retain the compact `+1 bonus` marker on the batch offer.
+4. Present both offers side by side at desktop/tablet widths. Stack only when the phone width can no
+   longer preserve readable action and cost labels.
+5. A batch uses the selected single-person reveal once, then resolves to the eleven-result company
+   view. It does not repeat the ceremony eleven times.
+
+### Mobile animation and compositing contract
+
+Capture the 390 × 844 route at five deterministic checkpoints: rest, frame lock, silhouette,
+identity, and result. At every checkpoint:
+
+- the stage fits within the viewport width with no horizontal crop;
+- the portrait vessel uses a bounded aspect ratio rather than desktop percentage insets;
+- the hero's head and body remain inside the vessel;
+- source-image edges remain behind the vessel backing;
+- identity copy has its own lower safe area and never overlaps the face;
+- Skip and Replay remain visible and reachable;
+- reduced motion resolves the same contained composition without stagger.
+
+Mobile Gate keeps the same narrative beats as desktop, but scales the vessel from the stage width,
+caps its height, and reduces the portal radius. It does not reuse the desktop `inset` geometry.
+
+### Wiki-aligned attributes, aptitudes, and icons
+
+The local wiki now contains the complete 520-row draft skill catalog and the proposed twelve-skill
+Living Village runtime subset. It also explicitly distinguishes learned skills from aptitudes:
+aptitudes are innate talent for an attribute, skill family, or learning mode. Therefore this route
+must not label invented phrases such as `Shieldwork` or `Ember control` as if they were accepted
+skills.
+
+- Body contains exactly `Might`, `Vitality`, and `Agility` and uses a muscle/arm icon.
+- Mind contains exactly `Dexterity`, `Intellect`, and `Spirit` and uses a brain icon. Dexterity's
+  wiki territory includes accuracy, control, weak-point execution, and crafting precision, so this
+  is a presentation grouping rather than a change to its canonical definition.
+- Aptitude names use accepted wiki family/focus vocabulary under the three supplied sectors:
+  Martial, Magical, and Craft & Life. They remain route-local person-to-family assignments until a
+  hero ownership contract establishes them.
+- Martial uses a single sword icon, Craft & Life uses a hammer icon, and Magical retains the
+  existing arcane-star mark.
+- Do not display the twelve runtime skills as owned by a specific hero without an accepted roster
+  assignment. The handoff records that the catalog exists and keeps learned skills out of this
+  prototype dossier for now.
+
+### Acceptance checks for this revision
+
+1. Standard loads directly with no banner selector and no Limited or Equipment controls.
+2. No player-facing milliseconds or recognition target appears in the portal or Rates.
+3. Desktop offer controls are side by side and read `Summon ×1` and `Summon ×10`, with costs and
+   the `+1 bonus` marker visible.
+4. A batch performs one reveal and then shows the `5 / 5 / 1` result layout.
+5. Body and Mind contain three attributes each with Dexterity on Mind; their headings expose muscle
+   and brain icons.
+6. Martial, Magical, and Craft & Life aptitude classes expose sword, arcane, and hammer icons and
+   use wiki family vocabulary.
+7. Save the five phone checkpoints and verify vessel, portrait, copy, and controls remain within
+   stage bounds.
+
+Status: implementation sequence for the focused-cleanup pass; authored before code changes
+
 ## Owner-feedback revision — cinematic continuity and guarantee correctness
 
 The supplied screenshots are a visual audit of the current build, not a style reference. This pass
@@ -14,15 +86,15 @@ Gate ignition becomes the quality bar and follows one unambiguous visibility con
 may suggest a person before recognition, but no source portrait pixels or rectangular source matte
 may appear until the identity vessel is visibly established.
 
-| Beat | Gate target | Visual event | Identity visibility |
-| --- | ---: | --- | --- |
-| Breath | 0–180 ms | Near-still room tone, dim outer orbit, controls remain available | None |
-| Intake | 180–620 ms | Sparks and filaments travel inward; rings accelerate with unequal inertia | None |
-| Lock | 620–880 ms | Runes align, cardinal marks strike, and an arched identity vessel draws | None |
-| Rupture | 880–1,080 ms | Aperture compresses to a bright seam and releases one restrained shockwave | None |
-| Crossing | 1,080–1,430 ms | A monochrome silhouette crosses inside the already-complete vessel | Silhouette only |
-| Recognition | 1,430–1,650 ms | Rarity color lands, portrait resolves from the face outward, name follows | Recognizable face |
-| Settle | 1,650–2,250 ms | Depth separates, particles decay, mechanics enter, replay/skip stay live | Full identity |
+| Beat        |    Gate target | Visual event                                                               | Identity visibility |
+| ----------- | -------------: | -------------------------------------------------------------------------- | ------------------- |
+| Breath      |       0–180 ms | Near-still room tone, dim outer orbit, controls remain available           | None                |
+| Intake      |     180–620 ms | Sparks and filaments travel inward; rings accelerate with unequal inertia  | None                |
+| Lock        |     620–880 ms | Runes align, cardinal marks strike, and an arched identity vessel draws    | None                |
+| Rupture     |   880–1,080 ms | Aperture compresses to a bright seam and releases one restrained shockwave | None                |
+| Crossing    | 1,080–1,430 ms | A monochrome silhouette crosses inside the already-complete vessel         | Silhouette only     |
+| Recognition | 1,430–1,650 ms | Rarity color lands, portrait resolves from the face outward, name follows  | Recognizable face   |
+| Settle      | 1,650–2,250 ms | Depth separates, particles decay, mechanics enter, replay/skip stay live   | Full identity       |
 
 Constellation assembly uses the same vessel-first rule: affinity and aptitude marks create the
 outline, the frame closes, then the portrait resolves. Immediate identity draws the frame in the

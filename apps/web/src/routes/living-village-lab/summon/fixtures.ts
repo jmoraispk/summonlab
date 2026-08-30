@@ -46,7 +46,6 @@ export type RevealDirectionFixture = {
 	label: string;
 	shortLabel: string;
 	description: string;
-	recognitionTarget: string;
 };
 
 const attributes = (
@@ -85,9 +84,9 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Measured risk · situational lead'
 		},
 		aptitudes: [
-			{ name: 'Wayfinding', class: 'martial' },
-			{ name: 'Fieldcraft', class: 'crafting' },
-			{ name: 'Bow practice', class: 'martial' }
+			{ name: 'Hunt', class: 'martial' },
+			{ name: 'Motion', class: 'martial' },
+			{ name: 'Lore', class: 'crafting' }
 		]
 	},
 	{
@@ -109,9 +108,9 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Low risk · decisive under threat'
 		},
 		aptitudes: [
-			{ name: 'Shieldwork', class: 'martial' },
-			{ name: 'Ember control', class: 'magic' },
-			{ name: 'Formation', class: 'martial' }
+			{ name: 'Guard', class: 'martial' },
+			{ name: 'Fire Evocation', class: 'magic' },
+			{ name: 'Universal Martial', class: 'martial' }
 		]
 	},
 	{
@@ -133,8 +132,8 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Low risk · consensus lead'
 		},
 		aptitudes: [
-			{ name: 'Warding', class: 'magic' },
-			{ name: 'Logistics', class: 'crafting' },
+			{ name: 'Ward', class: 'magic' },
+			{ name: 'Lore', class: 'crafting' },
 			{ name: 'Restoration', class: 'magic' }
 		]
 	},
@@ -157,9 +156,9 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Balanced risk · diplomatic lead'
 		},
 		aptitudes: [
-			{ name: 'Negotiation', class: 'martial' },
-			{ name: 'Appraisal', class: 'crafting' },
-			{ name: 'Court lore', class: 'magic' }
+			{ name: 'Mind', class: 'magic' },
+			{ name: 'Lore', class: 'crafting' },
+			{ name: 'Enchantment', class: 'magic' }
 		]
 	},
 	{
@@ -181,9 +180,9 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Measured risk · technical lead'
 		},
 		aptitudes: [
-			{ name: 'Ritual reading', class: 'magic' },
-			{ name: 'Focus craft', class: 'crafting' },
-			{ name: 'Grove magic', class: 'magic' }
+			{ name: 'Ward', class: 'magic' },
+			{ name: 'Enchantment', class: 'magic' },
+			{ name: 'Lore', class: 'crafting' }
 		]
 	},
 	{
@@ -205,9 +204,9 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'High risk · emergent lead'
 		},
 		aptitudes: [
-			{ name: 'Short blade', class: 'martial' },
-			{ name: 'Evasion', class: 'martial' },
-			{ name: 'Team timing', class: 'martial' }
+			{ name: 'Blade', class: 'martial' },
+			{ name: 'Motion', class: 'martial' },
+			{ name: 'Universal Martial', class: 'martial' }
 		]
 	}
 ] as const;
@@ -233,22 +232,19 @@ export const revealDirections: readonly RevealDirectionFixture[] = [
 		id: 'gate',
 		label: 'Gate ignition',
 		shortLabel: 'Gate',
-		description: 'Portal charge, crossing silhouette, then identity and mechanics.',
-		recognitionTarget: '1.75 s target'
+		description: 'Portal charge, crossing silhouette, then identity and mechanics.'
 	},
 	{
 		id: 'constellation',
 		label: 'Constellation assembly',
 		shortLabel: 'Constellation',
-		description: 'Affinity and skill marks gather into a person before the portrait.',
-		recognitionTarget: '1.55 s target'
+		description: 'Affinity and aptitude marks gather into a person before the portrait.'
 	},
 	{
 		id: 'identity',
 		label: 'Immediate identity',
 		shortLabel: 'Identity first',
-		description: 'Portrait first, restrained parallax, then staged details.',
-		recognitionTarget: '0.15 s target'
+		description: 'Portrait first, restrained parallax, then staged details.'
 	}
 ] as const;
 
@@ -266,30 +262,6 @@ export const wallets = [
 		balance: 2480,
 		kind: 'premium' as const,
 		glyph: 'gem' as const
-	}
-] as const;
-
-export const banners = [
-	{
-		id: 'standard',
-		label: 'Standard',
-		kicker: 'Hearthbound',
-		state: 'active' as const,
-		description: 'Fixed six-identity presentation pool'
-	},
-	{
-		id: 'limited',
-		label: 'Limited',
-		kicker: 'Future preview',
-		state: 'preview' as const,
-		description: 'No working economy in this lab'
-	},
-	{
-		id: 'equipment',
-		label: 'Equipment',
-		kicker: 'Future preview',
-		state: 'preview' as const,
-		description: 'Acquisition surface still under review'
 	}
 ] as const;
 
