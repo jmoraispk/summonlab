@@ -69,6 +69,26 @@
 		{/each}
 	</nav>
 
+	<div class="controls" aria-label="Encounter playback controls">
+		<button type="button" aria-pressed={playing} onclick={onPlayPause}
+			>{playing ? 'Pause' : 'Play'}</button
+		>
+		<button type="button" onclick={onReplay}>Replay encounter</button>
+		<div role="group" aria-label="Playback speed">
+			{#each [0.5, 1, 2] as candidate (candidate)}
+				<button
+					type="button"
+					class:active={speed === candidate}
+					aria-pressed={speed === candidate}
+					onclick={() => onSpeed(candidate)}>{candidate}x</button
+				>
+			{/each}
+		</div>
+		<span aria-live="polite"
+			>{Math.min(visibleEventCount, receipt.events.length)} of {receipt.events.length} events</span
+		>
+	</div>
+
 	<div class="stage">
 		<div class="party-side" aria-label="Party final resources for this encounter">
 			<p>Party formation</p>
@@ -108,26 +128,6 @@
 				<li><i>t{event.tick}</i><strong>{event.actorName}</strong><small>{event.title}</small></li>
 			{/each}
 		</ol>
-	</div>
-
-	<div class="controls" aria-label="Encounter playback controls">
-		<button type="button" aria-pressed={playing} onclick={onPlayPause}
-			>{playing ? 'Pause' : 'Play'}</button
-		>
-		<button type="button" onclick={onReplay}>Replay encounter</button>
-		<div role="group" aria-label="Playback speed">
-			{#each [0.5, 1, 2] as candidate (candidate)}
-				<button
-					type="button"
-					class:active={speed === candidate}
-					aria-pressed={speed === candidate}
-					onclick={() => onSpeed(candidate)}>{candidate}x</button
-				>
-			{/each}
-		</div>
-		<span aria-live="polite"
-			>{Math.min(visibleEventCount, receipt.events.length)} of {receipt.events.length} events</span
-		>
 	</div>
 
 	<div class="chronicle" data-testid="combat-chronicle" aria-label="Encounter event chronicle">
@@ -246,7 +246,7 @@
 		display: grid;
 		grid-template-columns: minmax(15rem, 0.8fr) minmax(18rem, 1.2fr);
 		gap: 1rem;
-		min-height: 24rem;
+		min-height: 17rem;
 	}
 	.party-side {
 		padding: 1rem;
@@ -367,11 +367,18 @@
 		color: #89867f;
 	}
 	.controls {
+		position: sticky;
+		top: -0.1rem;
+		z-index: 5;
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
 		flex-wrap: wrap;
-		margin-top: 1rem;
+		margin: 0 0 0.75rem;
+		padding: 0.55rem;
+		border: 1px solid #4b3b2b;
+		background: rgba(16, 18, 22, 0.98);
+		box-shadow: 0 0.65rem 1.2rem rgba(0, 0, 0, 0.35);
 	}
 	.controls button {
 		min-height: 2.8rem;
@@ -400,7 +407,12 @@
 	.chronicle {
 		display: grid;
 		gap: 0.5rem;
+		max-height: clamp(16rem, 38vh, 28rem);
 		margin-top: 1rem;
+		overflow-y: auto;
+		padding-right: 0.35rem;
+		scrollbar-gutter: stable;
+		scrollbar-color: #9b6a39 #15171a;
 	}
 	.chronicle > article {
 		display: grid;
@@ -499,6 +511,9 @@
 			monospace;
 	}
 	@media (max-width: 760px) {
+		.presentation {
+			padding: 0.65rem;
+		}
 		header {
 			display: block;
 		}
@@ -508,16 +523,28 @@
 		}
 		.stage {
 			grid-template-columns: 1fr;
+			min-height: 0;
 		}
 		figure {
-			min-height: 18rem;
+			min-height: 12rem;
 		}
 		.chronicle > article {
 			grid-template-columns: 4.8rem 1fr;
 		}
 		.controls > span {
-			width: 100%;
+			width: auto;
 			margin-left: 0;
+		}
+		.controls {
+			gap: 0.3rem;
+		}
+		.controls button {
+			min-height: 2.55rem;
+			padding: 0.45rem 0.55rem;
+			font-size: 0.68rem;
+		}
+		.controls > span {
+			width: 100%;
 		}
 	}
 </style>

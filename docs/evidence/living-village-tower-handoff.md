@@ -24,7 +24,17 @@ The isolated route combines:
 - a complete haul containing species kills, per-hero level XP, practical skill-use evidence, every
   material and quantity, remaining resources, exact return code, receipt IDs, and haul hash;
 - primary **Return to Village** and secondary **Review safe Court training** route-local handoffs;
-- reduced-motion behavior and deliberate desktop, 390x844, and narrow/zoom-safe composition.
+- reduced-motion behavior and deliberate desktop, 390x844, and narrow/zoom-safe composition;
+- four bounded game screens—Ground, Party, Hunt, and Haul—with persistent step navigation and
+  command bars instead of one continuously expanding page.
+
+## Accepted review decision
+
+The initial long-form dashboard composition was rejected in playtest review. The revised route
+keeps only one task state on screen at a time. Party membership is represented by three explicit
+filled slots and high-contrast selected-card banners. The Health thresholds stay inside one
+three-part control at phone width. Encounter selection and Play/Pause/Replay/Speed controls remain
+at the top of a bounded combat viewport, while **View haul** remains in the persistent command bar.
 
 The route has no page server, API request, database access, model-provider access, persistence, or
 production mutation. Existing tower and monster review images are imported as clearly labeled
@@ -89,6 +99,9 @@ hashes, and haul hash. It is not a request to add a shared contract.
 
 - [Desktop species-hunt receipt chain](living-village-tower-desktop.png)
 - [390x844 remaining-Health and return composition](living-village-tower-mobile.png)
+- [390x844 Ground screen](living-village-tower-mobile-ground.png)
+- [390x844 explicit Party slots](living-village-tower-mobile-party.png)
+- [390x844 bounded Hunt playback](living-village-tower-mobile-hunt.png)
 
 The desktop capture is `1440x1000`; the phone capture is exactly `390x844`.
 
@@ -115,12 +128,12 @@ The route-local Playwright journey proves:
 | Web typecheck | `pnpm --filter @summonlab/web typecheck` | passed; 0 errors and 0 warnings |
 | Web lint | `pnpm --filter @summonlab/web lint` | passed |
 | Fixture unit test | `pnpm --filter @summonlab/web exec vitest run src/lib/components/living-village/tower/tower-combat.spec.ts` | passed; 4 tests |
-| Focused Playwright | `LV_TOWER_BASE_URL=http://127.0.0.1:4174 pnpm --filter @summonlab/web exec playwright test src/routes/living-village-lab/tower/tower.e2e.ts` | passed; 2 tests including 390x844 reduced motion |
+| Focused Playwright | `LV_TOWER_BASE_URL=http://127.0.0.1:4187 pnpm --filter @summonlab/web exec playwright test src/routes/living-village-lab/tower/tower.e2e.ts` | passed; 2 tests including 390x844 reduced motion |
 | Production build | `pnpm --filter @summonlab/web build` | passed |
 | Diff | `git diff --check` | passed |
 
 The repository's default Playwright port (`4173`) was already owned by another worktree's preview
-server during this run, so the focused journey used this worktree's isolated server on `4174`.
+server during this run, so the focused journey used this worktree's isolated server on `4187`.
 The shared Playwright configuration was not changed.
 
 ## Three useful review actions

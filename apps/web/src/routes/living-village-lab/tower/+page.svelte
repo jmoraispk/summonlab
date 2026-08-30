@@ -24,7 +24,10 @@
 	} from '$lib/components/living-village/tower/tower-combat';
 	import { onMount, tick } from 'svelte';
 
+	type TowerScreen = 'ground' | 'party' | 'hunt' | 'haul';
+
 	let floors = $state(FLOORS.map((floor) => ({ ...floor })));
+	let screen = $state<TowerScreen>('ground');
 	let selectedFloorId = $state(FLOORS[2]!.id);
 	let selectedSpeciesId = $state<SpeciesFixture['id']>(FLOORS[2]!.speciesIds[0]!);
 	let threshold = $state<HealthThreshold>(50);
@@ -57,12 +60,8 @@
 			(receipt) => receipt.encounterIndex === selectedEncounterIndex
 		) ?? huntResult?.combatReceipts[0]
 	);
-	let lowestOpeningMargin = $derived(
-		Math.min(
-			...selectedParty.map(
-				(hero) => hero.maxHealth - (selectedSpecies.baseDamage + selectedFloor.number + 6)
-			)
-		)
+	let partyReady = $derived(
+		selectedParty.length === 3 && selectedParty.every((hero) => hero.availability === 'idle')
 	);
 
 	onMount(() => {
@@ -93,6 +92,14 @@
 			playing = false;
 		}
 	});
+
+	async function changeScreen(next: TowerScreen): Promise<void> {
+		screen = next;
+		deployError = '';
+		await tick();
+		document.querySelector<HTMLElement>('[data-screen-scroll]')?.scrollTo({ top: 0 });
+		document.getElementById(`screen-${next}-heading`)?.focus();
+	}
 
 	function selectFloor(floor: FloorFixture): void {
 		selectedFloorId = floor.id;
@@ -153,7 +160,6 @@
 			return;
 		}
 
-		deployError = '';
 		huntResult = simulateHunt({
 			floor: selectedFloor,
 			species: selectedSpecies,
@@ -164,11 +170,7 @@
 		visibleEventCount = 1;
 		playing = !reducedMotion;
 		handoff = 'none';
-		await tick();
-		document.getElementById('hunt-progress')?.scrollIntoView({
-			behavior: reducedMotion ? 'auto' : 'smooth',
-			block: 'start'
-		});
+		await changeScreen('hunt');
 	}
 
 	function selectEncounter(encounterIndex: number): void {
@@ -192,481 +194,667 @@
 
 <svelte:head>
 	<title>Tower species hunt · Living Village Lab</title>
-	<meta
-		name="description"
-		content="Configure a deterministic Tower species hunt, inspect repeated combat, collect materials, and understand the exact automatic-return reason."
-	/>
+	<meta name="description" content="Configure and replay a deterministic Tower species hunt." />
 </svelte:head>
 
 <main>
-	<header class="hero">
-		<img
-			src={towerArtwork}
-			alt="Existing Summonlab tower prototype used as a screen fixture"
-			width="1536"
-			height="768"
-		/>
-		<div class="hero-veil"></div>
-		<div class="hero-copy">
-			<div class="wordmark"><span>SUMMONLAB</span><strong>Living Village · Tower Lab</strong></div>
-			<p class="eyebrow">Mechanical Floors 01–10 · bounded species hunt</p>
-			<h1>Hunt until<br /><em>the margin closes.</em></h1>
-			<p class="lede">
-				Choose one known species, set the Health line, and inspect exactly why the party returns. No
-				story, navigation, discovery, permanent injury, database, or model provider.
-			</p>
-			<div class="hero-facts">
-				<span><strong>{FIXTURE_VERSION}</strong>presentation fixture</span>
-				<span><strong>{INVENTORY_CAPACITY}</strong>material capacity</span>
-				<span><strong>{ENCOUNTER_CAP}</strong>encounter cap</span>
-			</div>
+	<header class="app-bar">
+		<div class="brand">
+			<span class="mark">S</span>
+			<div><strong>Tower Hunt</strong><small>Living Village Lab</small></div>
 		</div>
-		<div class="floor-stamp">
-			<span>Selected ground</span><strong>{String(selectedFloor.number).padStart(2, '0')}</strong
-			><small>{selectedFloor.name}</small>
+		<div class="current-order" aria-label="Current hunt order">
+			<img src={towerArtwork} alt="" />
+			<div><small>Floor {selectedFloor.number}</small><strong>{selectedSpecies.name}</strong></div>
+			<span>{threshold}% return</span>
 		</div>
 	</header>
 
-	<div class="content">
-		<div class="fixture-notice" data-testid="fixture-version">
-			<strong>Transparent presentation fixture</strong>
-			<span
-				>Seeded, route-local, reproducible. Constants are visible and are not accepted final combat
-				or economy math.</span
-			>
-		</div>
+	<nav class="screen-tabs" aria-label="Tower hunt screens">
+		<button
+			class:active={screen === 'ground'}
+			aria-current={screen === 'ground' ? 'step' : undefined}
+			onclick={() => changeScreen('ground')}
+			><span>1</span><strong>Ground</strong><small>{selectedFloor.name}</small></button
+		>
+		<button
+			class:active={screen === 'party'}
+			aria-current={screen === 'party' ? 'step' : undefined}
+			onclick={() => changeScreen('party')}
+			><span>2</span><strong>Party</strong><small>{activeHeroIds.length}/3 selected</small></button
+		>
+		<button
+			class:active={screen === 'hunt'}
+			aria-current={screen === 'hunt' ? 'step' : undefined}
+			disabled={!huntResult}
+			onclick={() => changeScreen('hunt')}
+			><span>3</span><strong>Hunt</strong><small
+				>{huntResult ? `${huntResult.encountersCompleted} encounters` : 'Deploy first'}</small
+			></button
+		>
+		<button
+			class:active={screen === 'haul'}
+			aria-current={screen === 'haul' ? 'step' : undefined}
+			disabled={!huntResult}
+			onclick={() => changeScreen('haul')}
+			><span>4</span><strong>Haul</strong><small
+				>{huntResult ? huntResult.returnReason.code : 'Awaiting return'}</small
+			></button
+		>
+	</nav>
 
-		<FloorSelector {floors} {selectedFloorId} onSelect={selectFloor} />
-
-		<div class="planning-grid">
-			<HuntSetup
-				floor={selectedFloor}
-				species={selectedSpecies}
-				{availableSpecies}
-				{threshold}
-				onSpecies={selectSpecies}
-				onThreshold={(value) => {
-					threshold = value;
-					resetResult();
-				}}
-			/>
-			<PartyReadiness
-				heroes={HEROES}
-				{activeHeroIds}
-				{availability}
-				onToggleMember={toggleMember}
-				onToggleAvailability={toggleAvailability}
-			/>
-		</div>
-
-		<section class="readiness" aria-labelledby="readiness-heading">
-			<div>
-				<p class="eyebrow">04 · Readiness gate</p>
-				<h2 id="readiness-heading">Authorize the bounded hunt</h2>
-				<p>
-					The {threshold}% rule is checked after an encounter. Before another begins, the fixture
-					also stops if upper-bound damage could reduce any hero to 0 Health.
-				</p>
-			</div>
-			<div class="readiness-facts">
-				<span
-					><small>Lowest opening margin</small><strong
-						>{Number.isFinite(lowestOpeningMargin)
-							? `${lowestOpeningMargin} Health`
-							: 'Party incomplete'}</strong
-					></span
-				>
-				<span><small>Target</small><strong>{selectedSpecies.name}</strong></span>
-				<span><small>Return line</small><strong>{threshold}% post-encounter</strong></span>
-			</div>
-			<button type="button" onclick={deploy}>Deploy species hunt</button>
-		</section>
-
-		{#if deployError}
-			<div
-				id="deploy-error"
-				class="deploy-error"
-				role="alert"
-				tabindex="-1"
-				data-testid="deploy-error"
-			>
-				<strong>Party not ready</strong>
-				<span>{deployError}</span>
-			</div>
-		{/if}
-
-		{#if huntResult && selectedReceipt}
-			<section id="hunt-progress" class="hunt-progress" aria-labelledby="progress-title">
+	{#if screen === 'ground'}
+		<section class="screen-shell" aria-labelledby="screen-ground-heading">
+			<header class="screen-heading">
 				<div>
-					<p class="eyebrow">Hunt resolved · deterministic receipt chain</p>
-					<h2 id="progress-title">
-						{huntResult.encountersCompleted} encounters · {huntResult.speciesKills}
-						{selectedSpecies.name} kills
-					</h2>
+					<p>01 · Set the hunt order</p>
+					<h1 id="screen-ground-heading" tabindex="-1">Where should they hunt?</h1>
 				</div>
-				<div>
-					<span
-						><small>Inventory</small><strong
-							>{huntResult.inventoryUsed}/{huntResult.inventoryCapacity}</strong
-						></span
+				<div class="fixture-chip" data-testid="fixture-version">
+					<strong>Presentation fixture</strong><span
+						>{FIXTURE_VERSION} · not accepted final combat math</span
 					>
-					<span><small>Return code</small><strong>{huntResult.returnReason.code}</strong></span>
-					<span><small>Hunt ID</small><strong>{huntResult.huntId}</strong></span>
 				</div>
-			</section>
+			</header>
+			<div class="screen-scroll" data-screen-scroll>
+				<FloorSelector {floors} {selectedFloorId} onSelect={selectFloor} />
+				<HuntSetup
+					floor={selectedFloor}
+					species={selectedSpecies}
+					{availableSpecies}
+					{threshold}
+					onSpecies={selectSpecies}
+					onThreshold={(value) => {
+						threshold = value;
+						resetResult();
+					}}
+				/>
+			</div>
+			<footer class="command-bar">
+				<div>
+					<small>Hunt order</small><strong
+						>Floor {selectedFloor.number} · {selectedSpecies.name} · return at {threshold}%</strong
+					>
+				</div>
+				<button class="primary" type="button" onclick={() => changeScreen('party')}
+					>Confirm target <span aria-hidden="true">→</span></button
+				>
+			</footer>
+		</section>
+	{:else if screen === 'party'}
+		<section class="screen-shell" aria-labelledby="screen-party-heading">
+			<header class="screen-heading">
+				<div>
+					<p>02 · Confirm the party</p>
+					<h1 id="screen-party-heading" tabindex="-1">Who is going?</h1>
+				</div>
+				<div class:ready={partyReady} class="readiness-chip">
+					<span aria-hidden="true">{partyReady ? '✓' : '!'}</span><strong
+						>{partyReady ? 'Party ready' : 'Party blocked'}</strong
+					>
+				</div>
+			</header>
+			<div class="screen-scroll" data-screen-scroll>
+				<div class="order-ribbon">
+					<span>Floor {selectedFloor.number}</span><strong>{selectedSpecies.name}</strong><span
+						>{threshold}% return line</span
+					><button type="button" onclick={() => changeScreen('ground')}>Edit order</button>
+				</div>
+				<PartyReadiness
+					heroes={HEROES}
+					{activeHeroIds}
+					{availability}
+					onToggleMember={toggleMember}
+					onToggleAvailability={toggleAvailability}
+				/>
+				{#if deployError}<div
+						id="deploy-error"
+						class="deploy-error"
+						role="alert"
+						tabindex="-1"
+						data-testid="deploy-error"
+					>
+						<strong>Cannot deploy</strong><span>{deployError}</span>
+					</div>{/if}
+			</div>
+			<footer class="command-bar">
+				<button class="secondary" type="button" onclick={() => changeScreen('ground')}
+					>← Back</button
+				>
+				<div class="deploy-summary">
+					<small>{activeHeroIds.length}/3 selected</small><strong
+						>{partyReady ? 'All heroes available' : 'Resolve party warning'}</strong
+					>
+				</div>
+				<button class="primary" type="button" onclick={deploy}
+					>Deploy hunt <span aria-hidden="true">→</span></button
+				>
+			</footer>
+		</section>
+	{:else if screen === 'hunt' && huntResult && selectedReceipt}
+		<section class="screen-shell" aria-labelledby="screen-hunt-heading">
+			<header class="screen-heading hunt-heading">
+				<div>
+					<p>03 · Hunt playback</p>
+					<h1 id="screen-hunt-heading" tabindex="-1">
+						{huntResult.encountersCompleted} encounters resolved
+					</h1>
+				</div>
+				<div class="hunt-stats">
+					<span><small>Kills</small><strong>{huntResult.speciesKills}</strong></span><span
+						><small>Bag</small><strong>{huntResult.inventoryUsed}/{INVENTORY_CAPACITY}</strong
+						></span
+					><span><small>Return</small><strong>{huntResult.returnReason.code}</strong></span>
+				</div>
+			</header>
+			<div class="screen-scroll" data-screen-scroll>
+				<EncounterPresentation
+					result={huntResult}
+					receipt={selectedReceipt}
+					party={selectedParty}
+					species={selectedSpecies}
+					{visibleEventCount}
+					{playing}
+					{speed}
+					onEncounter={selectEncounter}
+					onPlayPause={() => (playing = !playing)}
+					onReplay={replayEncounter}
+					onSpeed={(value) => (speed = value)}
+				/>
+			</div>
+			<footer class="command-bar">
+				<button
+					class="secondary"
+					type="button"
+					onclick={() => {
+						resetResult();
+						changeScreen('ground');
+					}}>Edit hunt</button
+				>
+				<div>
+					<small>Exact stop reason</small><strong>{huntResult.returnReason.summary}</strong>
+				</div>
+				<button class="primary" type="button" onclick={() => changeScreen('haul')}
+					>View haul <span aria-hidden="true">→</span></button
+				>
+			</footer>
+		</section>
+	{:else if screen === 'haul' && huntResult}
+		<section class="screen-shell haul-screen" aria-labelledby="screen-haul-heading">
+			<header class="screen-heading">
+				<div>
+					<p>04 · Returned safely</p>
+					<h1 id="screen-haul-heading" tabindex="-1">Hunt complete</h1>
+				</div>
+				<div class="readiness-chip ready">
+					<span aria-hidden="true">✓</span><strong>Haul secured</strong>
+				</div>
+			</header>
+			<div class="screen-scroll" data-screen-scroll>
+				<HuntReport
+					result={huntResult}
+					floor={selectedFloor}
+					species={selectedSpecies}
+					party={selectedParty}
+					{handoff}
+					onVillage={() => setHandoff('village')}
+					onTraining={() => setHandoff('training')}
+				/>
+			</div>
+		</section>
+	{/if}
 
-			<EncounterPresentation
-				result={huntResult}
-				receipt={selectedReceipt}
-				party={selectedParty}
-				species={selectedSpecies}
-				{visibleEventCount}
-				{playing}
-				{speed}
-				onEncounter={selectEncounter}
-				onPlayPause={() => (playing = !playing)}
-				onReplay={replayEncounter}
-				onSpeed={(value) => (speed = value)}
-			/>
-
-			<HuntReport
-				result={huntResult}
-				floor={selectedFloor}
-				species={selectedSpecies}
-				party={selectedParty}
-				{handoff}
-				onVillage={() => setHandoff('village')}
-				onTraining={() => setHandoff('training')}
-			/>
-		{/if}
+	<div class="fixture-footer">
+		<span>Seeded route-local fixture</span><span>{ENCOUNTER_CAP} encounter cap</span><span
+			>{INVENTORY_CAPACITY} material capacity</span
+		>
 	</div>
 </main>
 
 <style>
+	:global(html),
 	:global(body) {
-		background: #080a0e;
+		overflow: hidden;
+		background: #07090c;
+	}
+	:global(button:focus-visible),
+	:global(input:focus-visible),
+	:global([tabindex='-1']:focus-visible) {
+		outline: 3px solid #ffd28c;
+		outline-offset: 3px;
 	}
 	main {
-		min-height: 100vh;
-		background:
-			radial-gradient(circle at 14% 40%, rgba(118, 70, 31, 0.09), transparent 28rem), #080a0e;
+		display: grid;
+		grid-template-rows: auto auto minmax(0, 1fr) auto;
+		height: 100dvh;
+		overflow: hidden;
+		background: radial-gradient(circle at 76% 20%, #19212b 0, #090b0f 40%, #07090c 75%);
 		color: #ece5d8;
 	}
-	.hero {
-		position: relative;
-		display: grid;
-		min-height: min(43rem, 82svh);
-		isolation: isolate;
-		overflow: hidden;
-	}
-	.hero > img,
-	.hero-veil {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-	}
-	.hero > img {
-		z-index: -3;
-		object-fit: cover;
-		object-position: center 38%;
-		filter: saturate(0.65) contrast(1.08) brightness(0.68);
-	}
-	.hero-veil {
-		z-index: -2;
-		background:
-			linear-gradient(90deg, #08090c 2%, rgba(8, 9, 12, 0.94) 34%, rgba(8, 9, 12, 0.18) 72%),
-			linear-gradient(0deg, #080a0e 0%, transparent 42%);
-	}
-	.hero-copy {
-		align-self: center;
-		width: min(46rem, calc(100% - 2rem));
-		padding: 3rem 0 5rem clamp(1rem, 8vw, 8rem);
-	}
-	.wordmark {
-		display: flex;
-		gap: 0.8rem;
-		align-items: center;
-		margin-bottom: clamp(3rem, 8vh, 6rem);
-	}
-	.wordmark span {
-		padding: 0.35rem 0.45rem;
-		border: 1px solid #b27a3e;
-		color: #e8b46e;
-		font:
-			0.65rem ui-monospace,
-			monospace;
-		letter-spacing: 0.16em;
-	}
-	.wordmark strong {
-		color: #aaa69e;
-		font-size: 0.73rem;
-		font-weight: 600;
-	}
-	.eyebrow {
-		margin: 0 0 0.6rem;
-		color: #d99b54;
-		font:
-			0.7rem ui-monospace,
-			monospace;
-		letter-spacing: 0.15em;
-		text-transform: uppercase;
-	}
-	h1 {
-		margin: 0;
-		font-family: Georgia, serif;
-		font-size: clamp(3.4rem, 7vw, 7rem);
-		font-weight: 400;
-		line-height: 0.9;
-		letter-spacing: -0.055em;
-	}
-	h1 em {
-		color: #e6b671;
-		font-weight: 400;
-	}
-	.lede {
-		max-width: 38rem;
-		margin: 1.6rem 0 0;
-		color: #b4afa6;
-		font-family: Georgia, serif;
-		font-size: clamp(1rem, 1.5vw, 1.18rem);
-		line-height: 1.65;
-	}
-	.hero-facts {
-		display: flex;
-		gap: 1.5rem;
-		flex-wrap: wrap;
-		margin-top: 2rem;
-	}
-	.hero-facts span {
-		color: #8e8a83;
-		font-size: 0.68rem;
-		text-transform: uppercase;
-	}
-	.hero-facts strong {
-		display: block;
-		max-width: 18rem;
-		margin-bottom: 0.25rem;
-		color: #e0d7ca;
-		font:
-			0.7rem ui-monospace,
-			monospace;
-		text-transform: none;
-	}
-	.floor-stamp {
-		position: absolute;
-		right: clamp(1rem, 6vw, 6rem);
-		bottom: 4rem;
-		padding: 1rem 1.2rem;
-		border: 1px solid rgba(222, 176, 109, 0.4);
-		background: rgba(8, 9, 12, 0.82);
-		text-align: center;
-	}
-	.floor-stamp span,
-	.floor-stamp strong,
-	.floor-stamp small {
-		display: block;
-	}
-	.floor-stamp span {
-		color: #b49b79;
-		font-size: 0.62rem;
-		text-transform: uppercase;
-	}
-	.floor-stamp strong {
-		font-family: Georgia, serif;
-		font-size: 3rem;
-		font-weight: 400;
-		line-height: 1;
-	}
-	.floor-stamp small {
-		color: #a9a49b;
-	}
-	.content {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		gap: 1rem;
-		width: min(94rem, calc(100% - 2rem));
-		margin: -1rem auto 0;
-		padding-bottom: 5rem;
-	}
-	.content > * {
-		min-width: 0;
-	}
-	.fixture-notice {
+	.app-bar {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: 0.85rem 1rem;
-		border: 1px solid #6e4e2e;
-		background: #241a12;
+		min-height: 4.25rem;
+		padding: 0.65rem clamp(0.75rem, 3vw, 2rem);
+		border-bottom: 1px solid #332b22;
+		background: rgba(7, 9, 12, 0.97);
 	}
-	.fixture-notice strong {
-		color: #e6b671;
-	}
-	.fixture-notice span {
-		color: #aaa298;
-		font-size: 0.76rem;
-		text-align: right;
-	}
-	.planning-grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-		gap: 1rem;
-		align-items: start;
-	}
-	.readiness {
-		display: grid;
-		grid-template-columns: minmax(15rem, 1fr) minmax(20rem, 1.2fr) auto;
+	.brand,
+	.current-order,
+	.current-order > div {
+		display: flex;
 		align-items: center;
-		gap: 1.5rem;
-		padding: clamp(1.25rem, 3vw, 2rem);
-		border: 1px solid #745331;
-		background: linear-gradient(90deg, #20170f, #111317);
+		gap: 0.7rem;
 	}
-	.readiness h2,
-	.hunt-progress h2 {
-		margin: 0;
-		font-family: Georgia, serif;
-		font-size: clamp(1.4rem, 2.4vw, 2rem);
-		font-weight: 400;
-	}
-	.readiness div > p:last-child {
-		margin: 0.5rem 0 0;
-		color: #9d978f;
-		font-size: 0.75rem;
-		line-height: 1.5;
-	}
-	.readiness-facts {
+	.mark {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 0.5rem;
+		width: 2.4rem;
+		height: 2.4rem;
+		place-items: center;
+		border: 1px solid #c48847;
+		color: #efb767;
+		font:
+			700 1rem Georgia,
+			serif;
 	}
-	.readiness-facts span {
-		padding: 0.65rem;
-		background: #0d0f12;
-	}
-	.readiness-facts small,
-	.readiness-facts strong {
+	.brand strong,
+	.brand small,
+	.current-order strong,
+	.current-order small {
 		display: block;
 	}
-	.readiness-facts small {
-		color: #8e8982;
+	.brand strong {
+		font:
+			400 1.15rem Georgia,
+			serif;
+	}
+	.brand small,
+	.current-order small {
+		color: #89857e;
+		font-size: 0.65rem;
+		text-transform: uppercase;
+	}
+	.current-order img {
+		width: 2.7rem;
+		height: 2.7rem;
+		object-fit: cover;
+		border-radius: 50%;
+		filter: saturate(0.6);
+	}
+	.current-order > span {
+		padding: 0.45rem 0.65rem;
+		border: 1px solid #65492f;
+		color: #e4b370;
+		font-size: 0.68rem;
+		text-transform: uppercase;
+	}
+	.screen-tabs {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		border-bottom: 1px solid #332f29;
+		background: #0d0f12;
+	}
+	.screen-tabs button {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0 0.55rem;
+		align-items: center;
+		min-width: 0;
+		min-height: 3.6rem;
+		padding: 0.55rem clamp(0.55rem, 2vw, 1rem);
+		border: 0;
+		border-right: 1px solid #2c2c2d;
+		background: #101216;
+		color: #9c9890;
+		text-align: left;
+		cursor: pointer;
+	}
+	.screen-tabs button.active {
+		background: #2c2116;
+		color: #f2e6d4;
+		box-shadow: inset 0 -3px #e8a652;
+	}
+	.screen-tabs button:disabled {
+		color: #575755;
+		cursor: not-allowed;
+	}
+	.screen-tabs button > span {
+		grid-row: 1 / 3;
+		display: grid;
+		width: 1.7rem;
+		height: 1.7rem;
+		place-items: center;
+		border: 1px solid currentColor;
+		border-radius: 50%;
+		font-size: 0.7rem;
+	}
+	.screen-tabs strong,
+	.screen-tabs small {
+		display: block;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.screen-tabs strong {
+		font-size: 0.76rem;
+	}
+	.screen-tabs small {
+		color: #74716c;
+		font-size: 0.6rem;
+	}
+	.screen-shell {
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr) auto;
+		min-width: 0;
+		min-height: 0;
+		width: min(88rem, 100%);
+		margin: 0 auto;
+		background: rgba(8, 10, 13, 0.96);
+	}
+	.screen-heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.75rem clamp(0.75rem, 2.5vw, 1.5rem);
+		border-bottom: 1px solid #2c2b28;
+	}
+	.screen-heading p {
+		margin: 0 0 0.2rem;
+		color: #d99b54;
+		font:
+			0.62rem ui-monospace,
+			monospace;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.screen-heading h1 {
+		margin: 0;
+		font:
+			400 clamp(1.45rem, 3vw, 2.2rem) Georgia,
+			serif;
+	}
+	.fixture-chip,
+	.readiness-chip {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.55rem 0.7rem;
+		border: 1px solid #62472d;
+		background: #21180f;
+	}
+	.fixture-chip strong,
+	.fixture-chip span {
+		display: block;
+	}
+	.fixture-chip strong {
+		color: #e0a85d;
+		font-size: 0.7rem;
+		text-transform: uppercase;
+	}
+	.fixture-chip span {
+		color: #8f8980;
+		font-size: 0.63rem;
+	}
+	.readiness-chip > span {
+		display: grid;
+		width: 1.8rem;
+		height: 1.8rem;
+		place-items: center;
+		border-radius: 50%;
+		background: #7a392f;
+		font-weight: 900;
+	}
+	.readiness-chip.ready {
+		border-color: #477451;
+		background: #112217;
+	}
+	.readiness-chip.ready > span {
+		background: #4b9b5f;
+	}
+	.screen-scroll {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		align-content: start;
+		gap: 0.75rem;
+		min-width: 0;
+		min-height: 0;
+		overflow: auto;
+		padding: 0.75rem;
+		scrollbar-color: #9b6a39 #15171a;
+	}
+	.screen-scroll > * {
+		min-width: 0;
+	}
+	.command-bar {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.75rem;
+		min-height: 4.7rem;
+		padding: 0.65rem clamp(0.75rem, 2.5vw, 1.5rem);
+		border-top: 1px solid #45382a;
+		background: #111317;
+		box-shadow: 0 -0.75rem 2rem rgba(0, 0, 0, 0.35);
+	}
+	.command-bar > div {
+		min-width: 0;
+		margin-right: auto;
+	}
+	.command-bar small,
+	.command-bar strong {
+		display: block;
+	}
+	.command-bar small {
+		color: #938d84;
 		font-size: 0.62rem;
 		text-transform: uppercase;
 	}
-	.readiness-facts strong {
-		margin-top: 0.25rem;
-		font-size: 0.73rem;
+	.command-bar strong {
+		max-width: 44rem;
+		overflow: hidden;
+		font-size: 0.76rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
-	.readiness > button {
-		min-height: 3.5rem;
-		padding: 0.8rem 1.2rem;
-		border: 1px solid #e6b671;
-		background: #d99b54;
-		color: #1a1006;
-		font-weight: 800;
+	.command-bar button,
+	.order-ribbon button {
+		min-height: 2.9rem;
+		padding: 0.65rem 1rem;
+		border: 1px solid #5a554e;
+		background: #1b1d21;
+		color: #eee5d8;
+		font-weight: 750;
 		cursor: pointer;
+	}
+	.command-bar button.primary {
+		border-color: #e8ad63;
+		background: #dda052;
+		color: #180f05;
+	}
+	.order-ribbon {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		padding: 0.65rem 0.8rem;
+		border: 1px solid #474037;
+		background: #15171a;
+	}
+	.order-ribbon > span {
+		color: #d8a55e;
+		font-size: 0.7rem;
+		text-transform: uppercase;
+	}
+	.order-ribbon button {
+		min-height: 2.3rem;
+		margin-left: auto;
+		padding: 0.35rem 0.65rem;
 	}
 	.deploy-error {
 		display: flex;
-		gap: 0.75rem;
-		padding: 1rem;
+		gap: 0.7rem;
+		padding: 0.8rem;
 		border: 1px solid #d57d68;
 		background: #311915;
 	}
 	.deploy-error strong {
 		color: #ffb2a0;
 	}
-	.deploy-error span {
-		color: #dbc1bb;
+	.deploy-summary {
+		text-align: right;
 	}
-	.hunt-progress {
+	.hunt-stats {
 		display: flex;
-		align-items: end;
-		justify-content: space-between;
-		gap: 2rem;
-		padding: 1.2rem;
-		border: 1px solid #3e4c4b;
-		background: #11191a;
-		scroll-margin-top: 1rem;
+		gap: 0.45rem;
 	}
-	.hunt-progress > div:last-child {
-		display: flex;
-		gap: 0.6rem;
+	.hunt-stats span {
+		min-width: 5rem;
+		padding: 0.4rem 0.55rem;
+		background: #11161a;
 	}
-	.hunt-progress span {
-		min-width: 8rem;
-		padding: 0.6rem;
-		background: #0a0e10;
-	}
-	.hunt-progress small,
-	.hunt-progress strong {
+	.hunt-stats small,
+	.hunt-stats strong {
 		display: block;
 	}
-	.hunt-progress small {
-		color: #779391;
-		font-size: 0.6rem;
+	.hunt-stats small {
+		color: #7f8e8c;
+		font-size: 0.57rem;
 		text-transform: uppercase;
 	}
-	.hunt-progress strong {
-		margin-top: 0.2rem;
+	.hunt-stats strong {
+		margin-top: 0.15rem;
 		font:
-			0.7rem ui-monospace,
+			0.65rem ui-monospace,
 			monospace;
 	}
-	@media (max-width: 1080px) {
-		.planning-grid,
-		.readiness {
-			grid-template-columns: 1fr;
-		}
-		.readiness > button {
-			width: 100%;
-		}
+	.haul-screen {
+		grid-template-rows: auto minmax(0, 1fr);
 	}
-	@media (max-width: 760px) {
-		.hero {
-			min-height: 44rem;
+	.fixture-footer {
+		display: flex;
+		justify-content: center;
+		gap: 1.2rem;
+		padding: 0.28rem 0.75rem;
+		border-top: 1px solid #2d2924;
+		background: #090b0d;
+		color: #625f5a;
+		font:
+			0.55rem ui-monospace,
+			monospace;
+		text-transform: uppercase;
+	}
+	@media (max-width: 700px) {
+		.app-bar {
+			min-height: 3.5rem;
 		}
-		.hero-copy {
-			align-self: end;
-			padding: 3rem 0 8rem;
+		.current-order img,
+		.current-order > div,
+		.current-order > span {
+			display: none;
 		}
-		.wordmark {
-			margin-bottom: 2.5rem;
+		.screen-tabs button {
+			display: flex;
+			justify-content: center;
+			min-height: 3rem;
+			padding: 0.4rem;
+			text-align: center;
 		}
-		h1 {
-			font-size: clamp(3.1rem, 15vw, 4.7rem);
+		.screen-tabs button > span,
+		.screen-tabs small {
+			display: none;
 		}
-		.floor-stamp {
-			right: 1rem;
-			bottom: 1rem;
+		.screen-tabs strong {
+			font-size: 0.68rem;
 		}
-		.content {
-			width: min(100% - 1rem, 94rem);
+		.screen-heading {
+			min-height: 3.8rem;
+			padding: 0.55rem 0.75rem;
 		}
-		.fixture-notice,
-		.hunt-progress {
+		.screen-heading p {
+			font-size: 0.54rem;
+		}
+		.screen-heading h1 {
+			font-size: 1.35rem;
+		}
+		.hunt-heading {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 0.45rem;
+		}
+		.hunt-heading > div:first-child {
+			display: flex;
+			align-items: baseline;
+			gap: 0.6rem;
+		}
+		.hunt-heading > div:first-child p {
+			display: none;
+		}
+		.hunt-heading > div:first-child h1 {
+			font-size: 1.15rem;
+		}
+		.hunt-stats {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+		}
+		.fixture-chip span,
+		.readiness-chip strong {
+			display: none;
+		}
+		.fixture-chip {
+			padding: 0.4rem 0.5rem;
+		}
+		.readiness-chip {
+			padding: 0;
+			border: 0;
+			background: transparent;
+		}
+		.screen-scroll {
+			padding: 0.5rem;
+		}
+		.order-ribbon {
+			gap: 0.45rem;
+			overflow: hidden;
+		}
+		.order-ribbon span:first-child {
+			display: none;
+		}
+		.order-ribbon strong,
+		.order-ribbon span {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.order-ribbon button {
+			flex: 0 0 auto;
+			font-size: 0.65rem;
+		}
+		.command-bar {
+			min-height: 4.3rem;
+			padding: 0.5rem;
+		}
+		.command-bar > div:not(.deploy-summary) {
+			display: none;
+		}
+		.command-bar .deploy-summary {
 			display: block;
-		}
-		.fixture-notice span {
-			display: block;
-			margin-top: 0.35rem;
+			margin-right: auto;
 			text-align: left;
 		}
-		.readiness-facts {
-			grid-template-columns: 1fr;
+		.command-bar button {
+			min-height: 3.15rem;
+			padding: 0.6rem 0.75rem;
 		}
-		.hunt-progress > div:last-child {
-			display: grid;
-			margin-top: 0.8rem;
+		.command-bar button.primary {
+			flex: 1;
 		}
-		.deploy-error {
-			display: block;
+		.fixture-footer {
+			display: none;
 		}
-		.deploy-error span {
-			display: block;
-			margin-top: 0.3rem;
+		main {
+			grid-template-rows: auto auto minmax(0, 1fr);
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {

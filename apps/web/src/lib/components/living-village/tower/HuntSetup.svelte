@@ -170,12 +170,16 @@
 	}
 	.threshold-choice > div {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.45rem;
 	}
 	.threshold-choice label {
 		justify-content: center;
+		min-width: 0;
 		padding: 0.7rem 0.35rem;
+	}
+	.threshold-choice label strong {
+		font-size: clamp(0.9rem, 2vw, 1.2rem);
 	}
 	.threshold-choice p {
 		margin: 1rem 0 0;
@@ -231,9 +235,31 @@
 		font-size: 0.7rem;
 	}
 	@media (max-width: 760px) {
+		.setup {
+			padding: 0.8rem;
+		}
+		h2 {
+			margin-bottom: 0.8rem;
+			font-size: 1.35rem;
+		}
 		.setup-grid,
 		.brief {
 			grid-template-columns: 1fr;
+		}
+		fieldset {
+			padding: 0.75rem;
+		}
+		.threshold-choice label {
+			gap: 0.4rem;
+			padding: 0.65rem 0.2rem;
+		}
+		.threshold-choice label input {
+			width: 1rem;
+			height: 1rem;
+		}
+		.threshold-choice p {
+			margin-top: 0.6rem;
+			padding: 0.65rem;
 		}
 	}
 </style>

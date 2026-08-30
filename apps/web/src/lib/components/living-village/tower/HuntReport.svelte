@@ -353,10 +353,17 @@
 		font-size: 0.7rem;
 	}
 	.actions {
+		position: sticky;
+		bottom: -0.05rem;
+		z-index: 5;
 		display: flex;
 		gap: 0.7rem;
 		flex-wrap: wrap;
 		margin-top: 1rem;
+		padding: 0.65rem;
+		border: 1px solid #4b3b2b;
+		background: rgba(13, 15, 19, 0.98);
+		box-shadow: 0 -0.75rem 1.5rem rgba(0, 0, 0, 0.35);
 	}
 	.actions button {
 		min-height: 3.4rem;
@@ -394,6 +401,9 @@
 		color: #8e897f;
 	}
 	@media (max-width: 760px) {
+		.report {
+			padding: 0.75rem;
+		}
 		header {
 			display: block;
 		}
@@ -408,6 +418,10 @@
 		}
 		.actions {
 			display: grid;
+			grid-template-columns: 1fr;
+		}
+		.actions button.primary {
+			min-width: 0;
 		}
 	}
 </style>

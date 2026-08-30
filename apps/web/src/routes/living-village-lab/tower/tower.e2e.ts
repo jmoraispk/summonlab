@@ -7,8 +7,9 @@ const towerUrl = process.env.LV_TOWER_BASE_URL
 	: '/living-village-lab/tower';
 
 async function deployDefaultHunt(page: import('@playwright/test').Page): Promise<void> {
-	await page.getByRole('button', { name: 'Deploy species hunt' }).click();
-	await expect(page.getByTestId('hunt-report')).toBeVisible();
+	await page.getByRole('button', { name: /Confirm target/ }).click();
+	await page.getByRole('button', { name: /Deploy hunt/ }).click();
+	await expect(page.getByRole('button', { name: 'Replay encounter' })).toBeVisible();
 }
 
 async function waitForHydration(page: import('@playwright/test').Page): Promise<void> {
@@ -24,7 +25,7 @@ test('configures and deterministically resolves a bounded species hunt', async (
 	await page.goto(towerUrl);
 	await waitForHydration(page);
 
-	await expect(page.getByRole('heading', { name: /Hunt until/ })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Where should they hunt?' })).toBeVisible();
 	await expect(page.getByTestId('fixture-version')).toContainText('not accepted final combat');
 	await expect(page.getByRole('button', { name: /Floor 10/ })).toBeDisabled();
 
@@ -42,21 +43,24 @@ test('configures and deterministically resolves a bounded species hunt', async (
 	await expect(page.getByTestId('threshold-warning')).toContainText(
 		'One fight can cross below 50% before the party returns'
 	);
+	await page.getByRole('button', { name: /Confirm target/ }).click();
+	await expect(page.getByText('Party ready')).toBeVisible();
+	await expect(page.getByText('In party · slot 1')).toBeVisible();
 
 	const jori = page.locator('article').filter({ hasText: 'Jori Daro' }).first();
 	await jori.getByRole('button', { name: 'Mark training' }).click();
-	await page.getByRole('button', { name: 'Deploy species hunt' }).click();
+	await page.getByRole('button', { name: /Deploy hunt/ }).click();
 	await expect(page.getByTestId('deploy-error')).toContainText('Jori Daro is training');
 	await expect(page.getByTestId('deploy-error')).toBeFocused();
 
 	await jori.getByRole('button', { name: 'Recall to idle' }).click();
 	await jori.getByRole('button', { name: 'Remove Jori Daro' }).click();
-	await page.getByRole('button', { name: 'Deploy species hunt' }).click();
+	await page.getByRole('button', { name: /Deploy hunt/ }).click();
 	await expect(page.getByTestId('deploy-error')).toContainText('2/3 party slots are filled');
 	await expect(page.getByTestId('deploy-error')).toBeFocused();
 	await jori.getByRole('button', { name: 'Add Jori Daro' }).click();
 
-	await deployDefaultHunt(page);
+	await page.getByRole('button', { name: /Deploy hunt/ }).click();
 	await expect(page.getByTestId('initiative-order')).toContainText('Initiative / action order');
 	await expect(page.getByTestId('decisive-cause')).toContainText('party-action-cycle');
 	await expect(page.getByTestId('combat-chronicle')).toContainText(/Health|Mana/);
@@ -66,8 +70,10 @@ test('configures and deterministically resolves a bounded species hunt', async (
 	await page.getByRole('button', { name: '2x' }).click();
 	await page.getByRole('button', { name: 'Replay encounter' }).click();
 	await expect(page.getByRole('button', { name: '2x' })).toHaveAttribute('aria-pressed', 'true');
-	await expect(page.getByTestId('fixture-version')).toContainText('presentation fixture');
+	await expect(page.getByText('Presentation fixture', { exact: true })).toBeVisible();
 
+	const firstReceipt = await page.getByTestId('decisive-cause').textContent();
+	await page.getByRole('button', { name: /View haul/ }).click();
 	const report = page.getByTestId('hunt-report');
 	await expect(report).toContainText('Species kills');
 	await expect(report).toContainText('level XP');
@@ -78,9 +84,6 @@ test('configures and deterministically resolves a bounded species hunt', async (
 	await expect(page.getByTestId('return-reason')).toContainText('inventory-capacity');
 	await expect(report).toContainText('Floor 3 training seal');
 
-	const firstHuntId = (await page.locator('#hunt-progress').textContent())?.match(
-		/hunt-[a-f0-9]+/u
-	)?.[0];
 	const firstHaulHash = (await report.textContent())?.match(/Haul hash\s*([a-f0-9]{8})/u)?.[1];
 	const firstMaterials = await report.locator('.materials').textContent();
 
@@ -88,7 +91,8 @@ test('configures and deterministically resolves a bounded species hunt', async (
 	await waitForHydration(page);
 	await deployDefaultHunt(page);
 	await page.getByRole('button', { name: 'Pause', exact: true }).click();
-	await expect(page.locator('#hunt-progress')).toContainText(firstHuntId!);
+	await expect(page.getByTestId('decisive-cause')).toHaveText(firstReceipt!);
+	await page.getByRole('button', { name: /View haul/ }).click();
 	await expect(page.getByTestId('hunt-report')).toContainText(firstHaulHash!);
 	await expect(page.getByTestId('hunt-report').locator('.materials')).toHaveText(firstMaterials!);
 
@@ -100,7 +104,6 @@ test('configures and deterministically resolves a bounded species hunt', async (
 	expect(apiRequests).toEqual([]);
 
 	if (process.env.CAPTURE_LV_TOWER_DESKTOP) {
-		await page.locator('#hunt-progress').scrollIntoViewIfNeeded();
 		await page.screenshot({ path: process.env.CAPTURE_LV_TOWER_DESKTOP });
 	}
 });
@@ -111,9 +114,18 @@ test('composes the 390x844 reduced-motion hunt and Village return', async ({ pag
 	await page.goto(towerUrl);
 	await waitForHydration(page);
 
-	await expect(page.getByRole('heading', { name: /Hunt until/ })).toBeVisible();
-	await deployDefaultHunt(page);
+	await expect(page.getByRole('heading', { name: 'Where should they hunt?' })).toBeVisible();
+	await expect(page.getByLabel('75%')).toBeVisible();
+	await expect(page.getByLabel('50%')).toBeVisible();
+	await expect(page.getByLabel('25%')).toBeVisible();
+	await page.getByRole('button', { name: /Confirm target/ }).click();
+	await expect(page.getByLabel('Selected party slots')).toContainText('Dara Zev');
+	await expect(page.getByLabel('Selected party slots')).toContainText('Mara Vey');
+	await expect(page.getByLabel('Selected party slots')).toContainText('Jori Daro');
+	await page.getByRole('button', { name: /Deploy hunt/ }).click();
+	await expect(page.getByRole('button', { name: 'Replay encounter' })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: /View haul/ })).toBeVisible();
 
 	const transitionDuration = await page
 		.getByRole('button', { name: 'Replay encounter' })
@@ -125,6 +137,7 @@ test('composes the 390x844 reduced-motion hunt and Village return', async ({ pag
 	);
 	expect(horizontalOverflow).toBeLessThanOrEqual(0);
 
+	await page.getByRole('button', { name: /View haul/ }).click();
 	await page.getByRole('button', { name: 'Review safe Court training' }).click();
 	await expect(page.getByTestId('return-handoff')).toContainText(
 		'Eligible heroes already selected'

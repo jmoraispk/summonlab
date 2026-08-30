@@ -45,7 +45,7 @@
 
 <style>
 	.floor-section {
-		padding: clamp(1.25rem, 3vw, 2.25rem);
+		padding: clamp(0.8rem, 2vw, 1.25rem);
 		border: 1px solid rgba(225, 188, 121, 0.22);
 		background: rgba(11, 13, 17, 0.88);
 	}
@@ -54,7 +54,7 @@
 		align-items: end;
 		justify-content: space-between;
 		gap: 2rem;
-		margin-bottom: 1.35rem;
+		margin-bottom: 0.75rem;
 	}
 	header > p {
 		max-width: 34rem;
@@ -76,7 +76,7 @@
 	h2 {
 		margin: 0;
 		font-family: Georgia, serif;
-		font-size: clamp(1.7rem, 3vw, 2.45rem);
+		font-size: clamp(1.35rem, 2.5vw, 1.85rem);
 		font-weight: 400;
 	}
 	.floor-list {
@@ -88,8 +88,8 @@
 		scrollbar-color: #a66c32 #171719;
 	}
 	button {
-		min-height: 8.2rem;
-		padding: 0.85rem;
+		min-height: 5.8rem;
+		padding: 0.65rem;
 		border: 1px solid rgba(219, 194, 151, 0.2);
 		border-radius: 0.2rem;
 		background: #15171b;
@@ -129,15 +129,15 @@
 		letter-spacing: 0.12em;
 	}
 	button strong {
-		min-height: 2.2rem;
-		margin-top: 0.55rem;
+		min-height: 0;
+		margin-top: 0.3rem;
 		font-family: Georgia, serif;
 		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1.05;
 	}
 	button small {
-		margin-top: 0.75rem;
+		margin-top: 0.4rem;
 		color: #c9b391;
 		font-size: 0.68rem;
 		text-transform: uppercase;
@@ -149,15 +149,18 @@
 		font-style: normal;
 	}
 	@media (max-width: 680px) {
+		.floor-section {
+			padding: 0.75rem;
+		}
 		header {
 			display: block;
 		}
 		header > p {
-			margin-top: 0.75rem;
+			display: none;
 			text-align: left;
 		}
 		.floor-list {
-			grid-template-columns: repeat(10, 7.1rem);
+			grid-template-columns: repeat(10, 6.7rem);
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
