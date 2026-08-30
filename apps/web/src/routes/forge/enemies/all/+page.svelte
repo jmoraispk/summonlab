@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import {
+		ENEMY_AFFINITY_ARCHETYPE_LINKS,
+		ENEMY_AFFINITY_FAMILY_PILOTS,
 		ENEMY_ARCHETYPES,
 		ENEMY_REVIEW_FAMILIES,
 		PACK_TWO_MONSTER_ARCHETYPES,
@@ -30,6 +32,7 @@
 		packLabel: string;
 		image: string;
 		assetKey: string;
+		affinityPilot: (typeof ENEMY_AFFINITY_FAMILY_PILOTS)[number] | null;
 	}
 
 	interface GalleryEnemy {
@@ -49,7 +52,16 @@
 		tactics: string;
 		counterLabel: string;
 		counter: string;
+		affinitySpeciesId: string | null;
 	}
+
+	const affinityPilotByFamily: ReadonlyMap<string, (typeof ENEMY_AFFINITY_FAMILY_PILOTS)[number]> =
+		new Map(ENEMY_AFFINITY_FAMILY_PILOTS.map((pilot) => [pilot.familyId, pilot] as const));
+	const affinitySpeciesByArchetype: ReadonlyMap<string, string> = new Map(
+		ENEMY_AFFINITY_ARCHETYPE_LINKS.map(
+			(link) => [link.archetypeId, link.affinitySpeciesId] as const
+		)
+	);
 
 	const plateImages: Record<string, string> = {
 		'goblinoids-v1': goblinoids,
@@ -85,7 +97,8 @@
 			pack: 'pack-1' as const,
 			packLabel: 'Pack 1',
 			image: plateImages[family.plate]!,
-			assetKey: family.plate
+			assetKey: family.plate,
+			affinityPilot: affinityPilotByFamily.get(family.id) ?? null
 		})),
 		...PACK_TWO_MONSTER_FAMILIES.map((family) => ({
 			id: family.id,
@@ -94,7 +107,8 @@
 			pack: 'pack-2' as const,
 			packLabel: 'Pack 2',
 			image: plateImages[family.plate]!,
-			assetKey: family.plate
+			assetKey: family.plate,
+			affinityPilot: affinityPilotByFamily.get(family.id) ?? null
 		}))
 	];
 
@@ -123,7 +137,8 @@
 				tacticsLabel: 'Skills',
 				tactics: entry.skills.join(' · '),
 				counterLabel: 'Teaches',
-				counter: entry.teaches.join(' · ')
+				counter: entry.teaches.join(' · '),
+				affinitySpeciesId: affinitySpeciesByArchetype.get(entry.id) ?? null
 			};
 		}),
 		...PACK_TWO_MONSTER_ARCHETYPES.map((entry) => {
@@ -146,7 +161,8 @@
 				tacticsLabel: 'Telegraph',
 				tactics: entry.telegraph,
 				counterLabel: 'Weak point',
-				counter: entry.weakPoint
+				counter: entry.weakPoint,
+				affinitySpeciesId: affinitySpeciesByArchetype.get(entry.id) ?? null
 			};
 		})
 	];
@@ -278,6 +294,14 @@
 						<div>
 							<span>{family.packLabel} · {family.category}</span>
 							<h3>{family.name}</h3>
+							{#if family.affinityPilot}
+								<a
+									class="affinity-link"
+									data-testid="family-affinity-pilot"
+									href="{resolve('/forge/enemies/affinity-workflow')}#affinity-{family.affinityPilot
+										.affinitySpeciesId}">{family.affinityPilot.label} · six variants →</a
+								>
+							{/if}
 						</div>
 						<code>{family.assetKey}</code>
 					</div>
@@ -326,6 +350,16 @@
 								<dd>{enemy.counter}</dd>
 							</div>
 						</dl>
+						{#if enemy.affinitySpeciesId}
+							<a
+								class="affinity-link enemy-affinity-link"
+								data-testid="enemy-affinity-link"
+								href="{resolve(
+									'/forge/enemies/affinity-workflow'
+								)}#affinity-{enemy.affinitySpeciesId}"
+								>Explore Normal + five elemental affinities →</a
+							>
+						{/if}
 					</article>
 				{/each}
 			</div>
@@ -651,6 +685,22 @@
 		color: rgba(244, 239, 229, 0.34);
 		font-size: 0.54rem;
 	}
+	.affinity-link {
+		display: inline-flex;
+		margin-top: 0.7rem;
+		color: #76d2e3;
+		font-size: 0.54rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		line-height: 1.45;
+		text-transform: uppercase;
+	}
+	.affinity-link:hover,
+	.affinity-link:focus-visible {
+		color: #b7f2fc;
+		text-decoration: underline;
+		text-underline-offset: 0.25rem;
+	}
 	.enemy-grid {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -721,6 +771,11 @@
 		font-size: 0.62rem;
 		line-height: 1.5;
 		text-transform: capitalize;
+	}
+	.enemy-affinity-link {
+		margin: 0 1rem 1rem;
+		padding-top: 0.8rem;
+		border-top: 1px solid rgba(118, 210, 227, 0.22);
 	}
 	.proof-grid {
 		display: grid;

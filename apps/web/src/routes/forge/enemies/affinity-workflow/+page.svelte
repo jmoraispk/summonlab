@@ -346,7 +346,7 @@
 					<div class="column-heading">{heading}</div>
 				{/each}
 				{#each filteredRows as row (row.id)}
-					<div class="row-heading">
+					<div class="row-heading" id={data.blind ? undefined : `affinity-${row.id}`}>
 						{#if row.cohort}<span>{row.cohort}</span>{/if}
 						<strong>{row.rowLabel}</strong>
 					</div>
@@ -1274,6 +1274,7 @@
 	.corner,
 	.column-heading,
 	.row-heading {
+		scroll-margin-top: 1rem;
 		border-right: 1px solid #ffffff12;
 		border-bottom: 1px solid #ffffff12;
 		padding: 0.85rem;
