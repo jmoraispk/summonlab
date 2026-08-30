@@ -18,6 +18,16 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(viewport).toBeVisible();
 	expect((await viewport.boundingBox())!.y).toBeLessThan(160);
 	await expect(viewport.locator('.hero-marker')).toHaveCount(6);
+	await expect(viewport.locator('.hero-marker span')).toHaveCount(0);
+	await expect(viewport.locator('.facility-panel')).toHaveCount(0);
+	await expect(viewport.locator('.map-key')).toHaveCount(0);
+	await expect(page.getByText('Drag to pan', { exact: false })).toHaveCount(0);
+	const firstHeroMarker = viewport.locator('.hero-marker').first();
+	const firstHeroBounds = await firstHeroMarker.boundingBox();
+	expect(firstHeroBounds!.height).toBeGreaterThanOrEqual(100);
+	await expect
+		.poll(() => firstHeroMarker.evaluate((element) => getComputedStyle(element).backgroundColor))
+		.toBe('rgba(0, 0, 0, 0)');
 	await expect(viewport.locator('.facility-hotspot')).toHaveCount(3);
 	const gateHotspot = page.getByRole('button', { name: 'Inspect Summoning Gate' });
 	await expect
@@ -38,14 +48,28 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		)
 		.toBe('1536x1024');
 
-	for (const facility of [
-		['Training Grounds', '3 slots open'],
-		['Tower Threshold', 'Floor 4 available'],
-		['Summoning Gate', '1 Normal token']
-	] as const) {
-		await page.getByRole('button', { name: `Inspect ${facility[0]}` }).click();
-		await expect(page.getByTestId('facility-panel')).toContainText(facility[0]);
-		await expect(page.getByTestId('facility-panel')).toContainText(facility[1]);
+	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
+	const courtBounds = await courtHotspot.boundingBox();
+	await page.mouse.move(
+		courtBounds!.x + courtBounds!.width * 0.5,
+		courtBounds!.y + courtBounds!.height * 0.5
+	);
+	await page.mouse.down();
+	await page.mouse.move(
+		courtBounds!.x + courtBounds!.width * 0.32,
+		courtBounds!.y + courtBounds!.height * 0.5,
+		{ steps: 4 }
+	);
+	await page.mouse.up();
+	await expect.poll(() => viewport.getAttribute('data-offset-x')).not.toBe('0');
+	await expect(courtHotspot).toHaveAttribute('aria-pressed', 'false');
+	await page.getByRole('button', { name: 'Fit Village' }).click();
+	await expect(viewport).toHaveAttribute('data-offset-x', '0');
+
+	for (const facility of ['Training Grounds', 'Tower Threshold', 'Summoning Gate'] as const) {
+		const hotspot = page.getByRole('button', { name: `Inspect ${facility}` });
+		await hotspot.click();
+		await expect(hotspot).toHaveAttribute('aria-pressed', 'true');
 	}
 
 	await page.getByRole('button', { name: /Inspect Dara Zev/ }).click();
@@ -61,7 +85,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 
 	await popover.getByRole('button', { name: 'Court training' }).click();
 	await expect(popover).toContainText('Training at the Court');
-	await expect(page.getByTestId('facility-panel')).toContainText('Training Grounds');
+	await expect(courtHotspot).toHaveAttribute('aria-pressed', 'true');
 
 	await page
 		.getByLabel('Find a resident')
@@ -72,7 +96,10 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await popover.getByRole('button', { name: 'Tower hunt' }).click();
 	await popover.getByRole('button', { name: 'Stoneback boar' }).click();
 	await expect(popover).toContainText('Hunting Stoneback boar');
-	await expect(page.getByTestId('facility-panel')).toContainText('Tower Threshold');
+	await expect(page.getByRole('button', { name: 'Inspect Tower Threshold' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 
 	await page.getByRole('button', { name: 'Zoom in' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '190');
@@ -93,7 +120,10 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
 	await expect(viewport).toHaveAttribute('data-offset-x', '0');
-	await expect(page.getByTestId('facility-panel')).toContainText('Tower Threshold');
+	await expect(page.getByRole('button', { name: 'Inspect Tower Threshold' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 
 	await viewport.focus();
 	await page.keyboard.press('+');
@@ -102,7 +132,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.keyboard.press('0');
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
 	await page.keyboard.press('Home');
-	await expect(page.getByTestId('facility-panel')).toContainText('Summoning Gate');
+	await expect(gateHotspot).toHaveAttribute('aria-pressed', 'true');
 
 	await viewport.hover();
 	await page.mouse.wheel(0, -200);

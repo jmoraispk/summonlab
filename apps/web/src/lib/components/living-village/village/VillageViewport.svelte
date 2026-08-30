@@ -47,6 +47,10 @@
 	let huntMenuOpen = $state(false);
 	let announcement = $state('Summoning Gate selected.');
 	let isDragging = $state(false);
+	let pointerTravel = 0;
+	let gestureDragged = false;
+	let suppressClick = false;
+	let dragClickTarget: Element | null = null;
 
 	const activePointers = new SvelteMap<number, { x: number; y: number }>();
 	let lastPointer: { x: number; y: number } | null = null;
@@ -61,9 +65,6 @@
 	const sceneScale = $derived(fitScale * zoom);
 	const baseX = $derived((viewportWidth - WORLD_WIDTH * sceneScale) / 2);
 	const baseY = $derived((viewportHeight - WORLD_HEIGHT * sceneScale) / 2);
-	const selectedFacility = $derived(
-		facilities.find((facility) => facility.id === selectedFacilityId) ?? facilities[0]!
-	);
 	const selectedHero = $derived(
 		selectedHeroId ? (heroes.find((hero) => hero.id === selectedHeroId) ?? null) : null
 	);
@@ -95,6 +96,7 @@
 		viewport.addEventListener('pointerup', finishPointer);
 		viewport.addEventListener('pointercancel', finishPointer);
 		viewport.addEventListener('lostpointercapture', finishPointer);
+		viewport.addEventListener('click', handleClickCapture, true);
 		viewport.addEventListener('keydown', handleViewportKeydown);
 		return () => {
 			observer.disconnect();
@@ -104,6 +106,7 @@
 			viewport.removeEventListener('pointerup', finishPointer);
 			viewport.removeEventListener('pointercancel', finishPointer);
 			viewport.removeEventListener('lostpointercapture', finishPointer);
+			viewport.removeEventListener('click', handleClickCapture, true);
 			viewport.removeEventListener('keydown', handleViewportKeydown);
 		};
 	});
@@ -113,8 +116,14 @@
 	}
 
 	function clampOffsets(): void {
-		const maxX = Math.max(0, (WORLD_WIDTH * sceneScale - viewportWidth) / 2 + FIT_PADDING);
-		const maxY = Math.max(0, (WORLD_HEIGHT * sceneScale - viewportHeight) / 2 + FIT_PADDING);
+		const maxX = Math.max(
+			Math.min(56, viewportWidth * 0.06),
+			(WORLD_WIDTH * sceneScale - viewportWidth) / 2 + FIT_PADDING
+		);
+		const maxY = Math.max(
+			Math.min(56, viewportHeight * 0.06),
+			(WORLD_HEIGHT * sceneScale - viewportHeight) / 2 + FIT_PADDING
+		);
 		offsetX = clamp(offsetX, -maxX, maxX);
 		offsetY = clamp(offsetY, -maxY, maxY);
 	}
@@ -220,13 +229,18 @@
 	}
 
 	function handlePointerDown(event: PointerEvent): void {
-		if ((event.target as HTMLElement).closest('button, [data-no-pan]')) return;
-		viewport.setPointerCapture(event.pointerId);
+		if ((event.target as HTMLElement).closest('[data-no-pan]')) return;
 		activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 		if (activePointers.size === 1) {
 			lastPointer = { x: event.clientX, y: event.clientY };
-			isDragging = true;
+			pointerTravel = 0;
+			gestureDragged = false;
+			dragClickTarget = (event.target as Element).closest('button') ?? (event.target as Element);
+			isDragging = false;
 		} else if (activePointers.size === 2) {
+			viewport.setPointerCapture(event.pointerId);
+			gestureDragged = true;
+			isDragging = true;
 			const centroid = pointerCentroid();
 			const rect = viewport.getBoundingClientRect();
 			pinchStart = {
@@ -254,17 +268,46 @@
 			return;
 		}
 		if (activePointers.size === 1 && lastPointer) {
-			moveCamera(event.clientX - lastPointer.x, event.clientY - lastPointer.y);
+			const deltaX = event.clientX - lastPointer.x;
+			const deltaY = event.clientY - lastPointer.y;
+			pointerTravel += Math.hypot(deltaX, deltaY);
+			if (pointerTravel >= 5) {
+				if (!viewport.hasPointerCapture(event.pointerId)) {
+					viewport.setPointerCapture(event.pointerId);
+				}
+				gestureDragged = true;
+				isDragging = true;
+				moveCamera(deltaX, deltaY);
+			}
 			lastPointer = { x: event.clientX, y: event.clientY };
 		}
 	}
 
 	function finishPointer(event: PointerEvent): void {
+		if (gestureDragged) {
+			suppressClick = true;
+			setTimeout(() => {
+				suppressClick = false;
+				dragClickTarget = null;
+			}, 0);
+			gestureDragged = false;
+		}
 		activePointers.delete(event.pointerId);
 		pinchStart = undefined;
 		const [remaining] = [...activePointers.values()];
 		lastPointer = remaining ?? null;
 		isDragging = activePointers.size > 0;
+		if (activePointers.size === 0) pointerTravel = 0;
+	}
+
+	function handleClickCapture(event: MouseEvent): void {
+		if (!suppressClick) return;
+		const clicked = event.target as Element;
+		if (dragClickTarget && clicked !== dragClickTarget && !dragClickTarget.contains(clicked))
+			return;
+		event.preventDefault();
+		event.stopPropagation();
+		suppressClick = false;
 	}
 
 	function handleViewportKeydown(event: KeyboardEvent): void {
@@ -341,7 +384,6 @@
 			role="application"
 			tabindex="0"
 			aria-label="Interactive Hearth Village map"
-			aria-describedby="village-camera-help"
 			data-testid="village-viewport"
 			data-zoom-percent={Math.round(zoom * 100)}
 			data-offset-x={Math.round(offsetX)}
@@ -373,7 +415,7 @@
 						aria-label={`Inspect ${facility.name}`}
 						onclick={() => selectFacility(facility)}
 					>
-						<span><i></i><strong>{facility.shortName}</strong><small>{facility.state}</small></span>
+						<span><i></i><strong>{facility.shortName}</strong></span>
 					</button>
 				{/each}
 
@@ -393,16 +435,9 @@
 							onclick={() => selectHero(hero)}
 						>
 							<img src={hero.portrait} alt="" width="1024" height="1536" />
-							<span>{hero.name.split(' ')[0]}</span>
 						</button>
 					</div>
 				{/each}
-			</div>
-
-			<div class="facility-panel" data-no-pan data-testid="facility-panel">
-				<span>{selectedFacility.shortName} · destination</span>
-				<strong>{selectedFacility.name}</strong>
-				<p>{selectedFacility.state} · {selectedFacility.action}</p>
 			</div>
 
 			{#if selectedHero}
@@ -464,13 +499,8 @@
 					{/if}
 				</div>
 			{/if}
-
-			<div class="map-key" aria-hidden="true"><i></i><span>Six residents present</span></div>
 		</div>
 
-		<p id="village-camera-help" class="camera-help">
-			Drag to pan · wheel or +/− to zoom · arrows move the view · 0 fits · Home resets
-		</p>
 		<p class="sr-only" aria-live="polite">{announcement}</p>
 	</div>
 
@@ -746,8 +776,7 @@
 		box-shadow: 0 0 0.7rem #73d7dd;
 	}
 
-	.facility-hotspot strong,
-	.facility-hotspot small {
+	.facility-hotspot strong {
 		padding-left: 0.75rem;
 		text-align: left;
 	}
@@ -756,12 +785,6 @@
 		font:
 			400 0.82rem/1 Georgia,
 			serif;
-	}
-
-	.facility-hotspot small {
-		margin-top: 0.22rem;
-		color: rgba(244, 234, 217, 0.56);
-		font-size: 0.52rem;
 	}
 
 	.hero-anchor {
@@ -779,15 +802,13 @@
 		position: absolute;
 		left: 0;
 		top: 0;
-		display: grid;
-		width: 3.35rem;
-		height: 4.25rem;
-		padding: 0.2rem;
-		border: 2px solid rgba(243, 213, 157, 0.64);
-		border-radius: 1.1rem 1.1rem 0.35rem 0.35rem;
-		background: #11161c;
-		box-shadow: 0 0.5rem 1.1rem rgba(0, 0, 0, 0.48);
-		transform: translate(-50%, -88%) scale(calc(1 / var(--scene-scale)));
+		display: block;
+		width: 4.5rem;
+		height: 6.5rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		transform: translate(-50%, -91%) scale(calc(1 / var(--scene-scale)));
 		transform-origin: center bottom;
 		cursor: pointer;
 	}
@@ -795,61 +816,37 @@
 	.hero-marker::after {
 		position: absolute;
 		left: 50%;
-		bottom: -0.55rem;
-		width: 1.1rem;
-		height: 0.45rem;
+		bottom: -0.15rem;
+		width: 2.2rem;
+		height: 0.55rem;
 		border-radius: 50%;
-		background: rgba(0, 0, 0, 0.52);
+		background: rgba(0, 0, 0, 0.42);
+		filter: blur(0.22rem);
 		content: '';
 		transform: translateX(-50%);
 	}
 
 	.hero-marker:hover,
 	.hero-marker.selected {
-		border-color: #74dce1;
-		box-shadow:
-			0 0 0 3px rgba(17, 25, 30, 0.8),
-			0 0 1.2rem rgba(98, 217, 224, 0.78);
+		filter: drop-shadow(0 0 0.25rem rgba(210, 246, 244, 0.9))
+			drop-shadow(0 0 0.8rem rgba(98, 217, 224, 0.8));
 	}
 
 	.hero-marker img {
 		width: 100%;
-		height: 3.1rem;
-		border-radius: 0.75rem 0.75rem 0.1rem 0.1rem;
+		height: 100%;
 		object-fit: cover;
-		object-position: 50% 16%;
+		object-position: 50% 20%;
+		clip-path: polygon(18% 0, 82% 0, 96% 92%, 72% 100%, 28% 100%, 4% 92%);
+		mask-image: radial-gradient(ellipse 58% 54% at 50% 48%, black 68%, transparent 100%);
+		mix-blend-mode: lighten;
 		pointer-events: none;
-	}
-
-	.hero-marker span {
-		align-self: center;
-		overflow: hidden;
-		color: #fff6e7;
-		font-size: 0.56rem;
-		font-weight: 800;
-		line-height: 1;
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 
 	.hero-anchor.moving .hero-marker {
 		animation: order-pulse 1s ease-in-out 2;
 	}
 
-	.facility-panel {
-		position: absolute;
-		left: 0.75rem;
-		bottom: 0.75rem;
-		z-index: 20;
-		max-width: min(27rem, calc(100% - 1.5rem));
-		padding: 0.65rem 0.8rem;
-		border: 1px solid rgba(229, 205, 165, 0.23);
-		background: rgba(7, 11, 16, 0.88);
-		box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.38);
-		backdrop-filter: blur(12px);
-	}
-
-	.facility-panel span,
 	.hero-popover header span,
 	.hero-status span,
 	.hunt-menu > span {
@@ -859,20 +856,6 @@
 		font-weight: 800;
 		letter-spacing: 0.11em;
 		text-transform: uppercase;
-	}
-
-	.facility-panel strong {
-		display: block;
-		margin-top: 0.18rem;
-		font:
-			400 1rem Georgia,
-			serif;
-	}
-
-	.facility-panel p {
-		margin: 0.25rem 0 0;
-		color: rgba(244, 234, 217, 0.62);
-		font-size: 0.65rem;
 	}
 
 	.hero-popover {
@@ -1002,40 +985,6 @@
 		grid-column: 1 / -1;
 	}
 
-	.map-key {
-		position: absolute;
-		right: 0.75rem;
-		bottom: 0.75rem;
-		z-index: 20;
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.45rem 0.55rem;
-		background: rgba(7, 11, 16, 0.76);
-		color: rgba(244, 234, 217, 0.58);
-		font-size: 0.58rem;
-		backdrop-filter: blur(10px);
-	}
-
-	.map-key i {
-		width: 0.45rem;
-		height: 0.45rem;
-		border-radius: 50%;
-		background: #72d5da;
-		box-shadow: 0 0 0.6rem #72d5da;
-	}
-
-	.camera-help {
-		grid-column: 1 / -1;
-		margin: 0;
-		padding: 0.55rem 0.7rem;
-		border: 1px solid rgba(221, 192, 142, 0.13);
-		border-top: 0;
-		color: rgba(238, 228, 210, 0.48);
-		font-size: 0.62rem;
-		text-align: center;
-	}
-
 	.sr-only {
 		position: absolute;
 		width: 1px;
@@ -1116,14 +1065,9 @@
 			height: clamp(20rem, 88vw, 23rem);
 		}
 
-		.facility-panel {
-			left: 0.5rem;
-			bottom: 0.5rem;
-			max-width: calc(100% - 1rem);
-		}
-
-		.map-key {
-			display: none;
+		.hero-marker {
+			width: 3.35rem;
+			height: 4.85rem;
 		}
 
 		.hero-popover {

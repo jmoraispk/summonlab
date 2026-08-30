@@ -26,9 +26,11 @@ compact find/focus ribbon. No separate roster route was created.
 - Roster and camera controls share one compact row on desktop and collapse into two shallow rows on
   phone.
 - Existing Hearth environment with named Gate, Court, and Tower hotspots.
-- Bounded 100–300% camera with pointer drag, wheel zoom, two-pointer pinch, keyboard zoom/pan,
-  visible zoom controls, Fit, and Reset.
-- Six fixed in-world hero markers using their existing identity anchors.
+- Bounded 100–300% camera with pointer drag from the map, heroes, or facility regions; wheel zoom;
+  two-pointer pinch; keyboard zoom/pan; visible zoom controls; Fit; and Reset. A small drag allowance
+  remains available at fitted zoom so the camera never feels inert.
+- Six fixed in-world hero figures using their existing identity anchors, enlarged without card
+  frames, dark UI backplates, or redundant world-space name labels.
 - Anchored quick popover with portrait, name, level, Health, current activity, party state, Court
   training, Tower species hunt, and details actions.
 - Same-surface hero drawer for attributes, skills, and equipment.
@@ -56,8 +58,10 @@ pnpm --filter @summonlab/web exec playwright test \
 ```
 
 Result: **2 passed**. The test proves direct static loading, no `/api/` requests, the natural
-1536×1024 Hearth asset, three hotspot panels, in-world hero selection, ribbon focus, anchored
-popover, details drawer, Court training, species hunt, pointer pan, wheel zoom, visible controls,
+1536×1024 Hearth asset, three quiet hotspot labels, six frameless in-world figures, absence of the
+destination panel/resident-count/camera-help annotations, in-world hero selection, ribbon focus,
+anchored popover, details drawer, Court training, species hunt, pointer pan beginning inside a
+facility region at fitted zoom, click suppression after a drag, wheel zoom, visible controls,
 100–300% bounds, Fit/Reset semantics, keyboard operation, reduced motion, phone target sizes, and
 no horizontal overflow at phone or 200%-equivalent reflow widths.
 
@@ -102,17 +106,23 @@ keyboard focus, renames the southeast destination to **Training Grounds**, and m
 facility labels to quiet edges outside their focal artwork. The focused test now guards the
 map-first vertical position, transparent resting hitbox, hover illumination, and Gate label position.
 
+The subsequent interaction review rejected card-shaped resident markers, unreliable panning over
+interactive regions, and explanatory overlays that repeated obvious information. The accepted
+revision presents larger blended hero figures with no marker frame or name plate, delays pointer
+capture until a real drag begins, preserves click behavior under the same targets, permits modest
+pan at fitted zoom, and removes facility detail panels, status subtitles, resident-count keys,
+visible camera instructions, and prototype footer notes.
+
 ## Useful review actions
 
 1. Select Jori directly in the courtyard, then use the ribbon to find Remy. This decides whether
-   portrait markers plus the overlap fallback preserve a convincing sense of place on desktop and
-   phone.
+   the blended figure treatment feels like residents standing in the world on desktop and phone.
 2. Send Dara to Court training, then send Mara to hunt a Stoneback boar. This decides whether the
    quick-action density and simple destination transition communicate command intent without
    pretending polished activity animation exists.
-3. Zoom and pan until the map is displaced, use `0`/Fit, then use Home/Reset at 200% browser zoom.
-   This decides whether recovery semantics, camera bounds, and responsive control order feel
-   predictable.
+3. Drag from bare ground, directly over a resident, and through the Training Grounds region before
+   using `0`/Fit and Home/Reset. This decides whether gesture capture, click-versus-drag behavior,
+   camera bounds, and recovery semantics feel predictable.
 
 ## Deliberate limitations and follow-up
 
