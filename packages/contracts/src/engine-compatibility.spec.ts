@@ -5,6 +5,7 @@ import {
 	DECISION_PROVIDER_REQUEST_VERSION,
 	EngineCommandSchema,
 	EngineGameStateSchema,
+	FirstBandArchiveStateSchema as PublicFirstBandArchiveStateSchema,
 	HERO_CONTEXT_POLICY_VERSION,
 	HERO_DECISION_PACKET_VERSION,
 	HERO_DECISION_PREVIEW_VERSION,
@@ -27,7 +28,10 @@ import {
 	MissionRunStateV6Schema as PublicMissionRunStateV6Schema,
 	MissionRunStateV7Schema as PublicMissionRunStateV7Schema,
 	MissionRunStateV8Schema as PublicMissionRunStateV8Schema,
-	MODEL_POLICY_VERSION
+	MODEL_POLICY_VERSION,
+	StoryPatchCandidateSchema as PublicStoryPatchCandidateSchema,
+	SynthesisReceiptSchema as PublicSynthesisReceiptSchema,
+	SynthesisRumorRecordSchema as PublicSynthesisRumorRecordSchema
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
@@ -60,6 +64,12 @@ import {
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema
 } from './engine/mission-state.js';
+import {
+	FirstBandArchiveStateSchema,
+	StoryPatchCandidateSchema,
+	SynthesisReceiptSchema,
+	SynthesisRumorRecordSchema
+} from './engine/story-synthesis-state.js';
 import { ENGINE_CONTRACT_RUNTIME_EXPORTS } from './engine-public-api.snapshot.js';
 import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from './engine-compatibility-states.snapshot.js';
 import * as engineContracts from './engine.js';
@@ -728,5 +738,194 @@ describe('engine contracts compatibility', () => {
 			}
 			expect(result.error.issues.map((issue) => issue.code)).toContain('unrecognized_keys');
 		}
+	});
+
+	it('parses a story patch identically and preserves its selection refinement through the leaf', () => {
+		const candidate = {
+			patchVersion: 'story-patch-v1',
+			patchId: '41000000-0000-4000-8000-000000000001',
+			envelopeId: 'first-band-unclaimed-authority',
+			envelopeContentHash: '1'.repeat(64),
+			baseHistoryHash: '2'.repeat(64),
+			slotId: 'floor-four-company-choice',
+			selectedProposalIds: ['floor-four-route-holder'],
+			roleBindings: [
+				{
+					proposalId: 'floor-four-route-holder',
+					heroId: '41000000-0000-4000-8000-000000000002'
+				}
+			],
+			publicIntent: 'Let the route holder carry the optional discovery into the confrontation.'
+		};
+		expect(StoryPatchCandidateSchema).toBe(PublicStoryPatchCandidateSchema);
+		expect(StoryPatchCandidateSchema.parse(candidate)).toStrictEqual(
+			PublicStoryPatchCandidateSchema.parse(candidate)
+		);
+
+		const invalidCandidate = {
+			...candidate,
+			selectedProposalIds: ['floor-four-route-holder', 'floor-four-route-holder']
+		};
+		const leafResult = StoryPatchCandidateSchema.safeParse(invalidCandidate);
+		const publicResult = PublicStoryPatchCandidateSchema.safeParse(invalidCandidate);
+		expect(leafResult).toStrictEqual(publicResult);
+		expect(leafResult.success).toBe(false);
+		if (leafResult.success) {
+			throw new Error('Story patch unexpectedly accepted duplicate selections');
+		}
+		expect(
+			leafResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'custom',
+				path: [],
+				message: 'Story patch selections must be unique'
+			}
+		]);
+	});
+
+	it('parses first-band archive state identically and preserves lifecycle validation through the leaf', () => {
+		const state = ENGINE_COMPATIBILITY_STATE_FIXTURES.find(
+			(fixture) => fixture.schemaVersion === 23
+		);
+		if (!state || !('firstBandArchive' in state)) {
+			throw new Error('Missing first-band archive compatibility fixture');
+		}
+		expect(FirstBandArchiveStateSchema).toBe(PublicFirstBandArchiveStateSchema);
+		expect(FirstBandArchiveStateSchema.parse(state.firstBandArchive)).toStrictEqual(
+			PublicFirstBandArchiveStateSchema.parse(state.firstBandArchive)
+		);
+
+		const invalidArchive = { ...state.firstBandArchive, status: 'recovered' };
+		const leafResult = FirstBandArchiveStateSchema.safeParse(invalidArchive);
+		const publicResult = PublicFirstBandArchiveStateSchema.safeParse(invalidArchive);
+		expect(leafResult).toStrictEqual(publicResult);
+		expect(leafResult.success).toBe(false);
+		if (leafResult.success) {
+			throw new Error('First-band archive unexpectedly accepted an inconsistent lifecycle');
+		}
+		expect(
+			leafResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'custom',
+				path: [],
+				message: 'First-band archive lifecycle is inconsistent'
+			}
+		]);
+	});
+
+	it('parses a synthesis receipt identically and preserves participant validation through the leaf', () => {
+		const progression = {
+			stars: 1,
+			level: 1,
+			experience: 0,
+			skills: { swordFighting: { rank: 0, experience: 0 } }
+		};
+		const receipt = {
+			receiptVersion: 'synthesis-receipt-v1',
+			receiptId: '42000000-0000-4000-8000-000000000001',
+			sourceEventId: '42000000-0000-4000-8000-000000000002',
+			masterId: '42000000-0000-4000-8000-000000000003',
+			sourceHeroId: '42000000-0000-4000-8000-000000000004',
+			recipientHeroId: '42000000-0000-4000-8000-000000000005',
+			visibility: 'private',
+			warningVersion: 'synthesis-warning-v1',
+			confirmedIrreversible: true,
+			rationale: 'Convert one summon into bounded essence before the next tower attempt.',
+			committedAt: '2000-01-01T00:00:00.000Z',
+			essenceExperience: 40,
+			sourceProgression: progression,
+			recipientProgressionBefore: progression,
+			recipientProgressionAfter: progression,
+			socialConsequences: [
+				{
+					heroId: '42000000-0000-4000-8000-000000000005',
+					knowledge: 'participant',
+					observationId: '42000000-0000-4000-8000-000000000006',
+					beliefId: '42000000-0000-4000-8000-000000000007',
+					relationshipId: '42000000-0000-4000-8000-000000000008',
+					confidence: 100,
+					relationshipDeltas: {
+						trust: -1,
+						respect: 0,
+						fear: 1,
+						affection: 0,
+						resentment: 1,
+						debt: 0
+					}
+				}
+			]
+		};
+		expect(SynthesisReceiptSchema).toBe(PublicSynthesisReceiptSchema);
+		expect(SynthesisReceiptSchema.parse(receipt)).toStrictEqual(
+			PublicSynthesisReceiptSchema.parse(receipt)
+		);
+
+		const invalidReceipt = { ...receipt, recipientHeroId: receipt.sourceHeroId };
+		const leafResult = SynthesisReceiptSchema.safeParse(invalidReceipt);
+		const publicResult = PublicSynthesisReceiptSchema.safeParse(invalidReceipt);
+		expect(leafResult).toStrictEqual(publicResult);
+		expect(leafResult.success).toBe(false);
+		if (leafResult.success) {
+			throw new Error('Synthesis receipt unexpectedly accepted identical participants');
+		}
+		expect(
+			leafResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'custom',
+				path: [],
+				message: 'Synthesis source and recipient must differ'
+			}
+		]);
+	});
+
+	it('parses a synthesis rumor identically and preserves confidence bounds through the leaf', () => {
+		const rumor = {
+			rumorVersion: 'synthesis-rumor-v1',
+			rumorId: '43000000-0000-4000-8000-000000000001',
+			receiptId: '43000000-0000-4000-8000-000000000002',
+			sourceEventId: '43000000-0000-4000-8000-000000000003',
+			originObservationId: '43000000-0000-4000-8000-000000000004',
+			speakerHeroId: '43000000-0000-4000-8000-000000000005',
+			listenerHeroId: '43000000-0000-4000-8000-000000000006',
+			observationId: '43000000-0000-4000-8000-000000000007',
+			beliefId: '43000000-0000-4000-8000-000000000008',
+			relationshipId: '43000000-0000-4000-8000-000000000009',
+			confidence: 85,
+			chainDepth: 1,
+			relationshipDeltas: {
+				trust: -1,
+				respect: 0,
+				fear: 1,
+				affection: 0,
+				resentment: 1,
+				debt: 0
+			},
+			sharedAt: '2000-01-01T00:01:00.000Z'
+		};
+		expect(SynthesisRumorRecordSchema).toBe(PublicSynthesisRumorRecordSchema);
+		expect(SynthesisRumorRecordSchema.parse(rumor)).toStrictEqual(
+			PublicSynthesisRumorRecordSchema.parse(rumor)
+		);
+
+		const invalidRumor = { ...rumor, confidence: 0 };
+		const leafResult = SynthesisRumorRecordSchema.safeParse(invalidRumor);
+		const publicResult = PublicSynthesisRumorRecordSchema.safeParse(invalidRumor);
+		expect(leafResult).toStrictEqual(publicResult);
+		expect(leafResult.success).toBe(false);
+		if (leafResult.success) {
+			throw new Error('Synthesis rumor unexpectedly accepted zero confidence');
+		}
+		expect(
+			leafResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'too_small',
+				path: ['confidence'],
+				message: 'Too small: expected number to be >=1'
+			}
+		]);
 	});
 });

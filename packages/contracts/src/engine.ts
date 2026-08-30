@@ -9,7 +9,6 @@ import {
 	EngineMasterStateV1Schema,
 	EngineMasterStateV2Schema,
 	EngineStoryStateSchema,
-	HeroProgressionSchema,
 	ResourceKeySchema
 } from './engine/base-state.js';
 import {
@@ -19,7 +18,6 @@ import {
 	MasterFallbackSafetyStopsSchema
 } from './engine/master-control.js';
 import {
-	MissionContentBindingSchema,
 	MissionRunStateSchema,
 	MissionRunStateV2Schema,
 	MissionRunStateV3Schema,
@@ -54,12 +52,7 @@ import {
 	RewardDeltaSchema
 } from './event.js';
 import { RunStatusSchema } from './run.js';
-import {
-	MissionSlugSchema,
-	RuntimeBandStoryStateSchema,
-	StoryExpressionResolutionSchema,
-	StoryPatchCandidateSchema
-} from './mission.js';
+import { MissionSlugSchema } from './mission.js';
 import { SettlementSlugSchema } from './settlement.js';
 import {
 	ConversationActKindSchema,
@@ -72,8 +65,7 @@ import {
 	SocietyStateV2Schema,
 	SocietyStateV3Schema,
 	SocietyStateV4Schema,
-	SocietyStateV5Schema,
-	RelationshipDimensionsSchema
+	SocietyStateV5Schema
 } from './social.js';
 import {
 	ContentVersionSchema,
@@ -81,6 +73,13 @@ import {
 	IsoDateTimeSchema,
 	StateHashSchema
 } from './shared.js';
+import {
+	FirstBandArchiveStateSchema,
+	RuntimeBandStoryStateSchema,
+	StoryPatchCandidateSchema,
+	SynthesisStateSchema,
+	SynthesisVisibilitySchema
+} from './engine/story-synthesis-state.js';
 
 export {
 	ActivityKindSchema,
@@ -256,6 +255,27 @@ export type {
 	PortalMissionState,
 	PortalOreLedgerEntry
 } from './engine/mission-state.js';
+export {
+	FirstBandArchiveKnowledgeSchema,
+	FirstBandArchiveRevealSchema,
+	FirstBandArchiveStateSchema,
+	FirstBandExtractionReceiptSchema,
+	SynthesisKnowledgeSchema,
+	SynthesisReceiptSchema,
+	SynthesisRumorRecordSchema,
+	SynthesisSocialConsequenceSchema,
+	SynthesisStateSchema,
+	SynthesisVisibilitySchema
+} from './engine/story-synthesis-state.js';
+export type {
+	FirstBandArchiveReveal,
+	FirstBandArchiveState,
+	FirstBandExtractionReceipt,
+	SynthesisReceipt,
+	SynthesisRumorRecord,
+	SynthesisState,
+	SynthesisVisibility
+} from './engine/story-synthesis-state.js';
 
 
 export const EngineGameStateV1Schema = z
@@ -1020,182 +1040,6 @@ const EngineGameStateV21BaseSchema = z
 		bandStory: RuntimeBandStoryStateSchema
 	})
 	.strict();
-
-export const SynthesisVisibilitySchema = z.enum(['private', 'open']);
-export const SynthesisKnowledgeSchema = z.enum(['participant', 'witness', 'absence']);
-
-export const SynthesisSocialConsequenceSchema = z
-	.object({
-		heroId: EntityIdSchema,
-		knowledge: SynthesisKnowledgeSchema,
-		observationId: EntityIdSchema,
-		beliefId: EntityIdSchema,
-		relationshipId: EntityIdSchema,
-		confidence: z.number().int().min(0).max(100),
-		relationshipDeltas: RelationshipDimensionsSchema
-	})
-	.strict();
-
-export const SynthesisReceiptSchema = z
-	.object({
-		receiptVersion: z.literal('synthesis-receipt-v1'),
-		receiptId: EntityIdSchema,
-		sourceEventId: EntityIdSchema,
-		masterId: EntityIdSchema,
-		sourceHeroId: EntityIdSchema,
-		recipientHeroId: EntityIdSchema,
-		visibility: SynthesisVisibilitySchema,
-		warningVersion: z.literal('synthesis-warning-v1'),
-		confirmedIrreversible: z.literal(true),
-		rationale: z.string().min(1).max(240),
-		committedAt: IsoDateTimeSchema,
-		essenceExperience: z.number().int().positive().max(10_000),
-		sourceProgression: HeroProgressionSchema,
-		recipientProgressionBefore: HeroProgressionSchema,
-		recipientProgressionAfter: HeroProgressionSchema,
-		socialConsequences: z.array(SynthesisSocialConsequenceSchema).max(31)
-	})
-	.strict()
-	.superRefine((receipt, context) => {
-		if (receipt.sourceHeroId === receipt.recipientHeroId) {
-			context.addIssue({ code: 'custom', message: 'Synthesis source and recipient must differ' });
-		}
-		if (
-			new Set(receipt.socialConsequences.map((consequence) => consequence.heroId)).size !==
-			receipt.socialConsequences.length
-		) {
-			context.addIssue({ code: 'custom', message: 'Synthesis social consequences must be unique' });
-		}
-	});
-
-export const SynthesisRumorRecordSchema = z
-	.object({
-		rumorVersion: z.literal('synthesis-rumor-v1'),
-		rumorId: EntityIdSchema,
-		receiptId: EntityIdSchema,
-		sourceEventId: EntityIdSchema,
-		originObservationId: EntityIdSchema,
-		speakerHeroId: EntityIdSchema,
-		listenerHeroId: EntityIdSchema,
-		observationId: EntityIdSchema,
-		beliefId: EntityIdSchema,
-		relationshipId: EntityIdSchema,
-		confidence: z.number().int().min(1).max(100),
-		chainDepth: z.number().int().min(1).max(8),
-		relationshipDeltas: RelationshipDimensionsSchema,
-		sharedAt: IsoDateTimeSchema
-	})
-	.strict();
-
-export const SynthesisStateSchema = z
-	.object({
-		contentVersion: z.literal('synthesis-v1'),
-		receipts: z.record(EntityIdSchema, SynthesisReceiptSchema),
-		rumors: z.record(EntityIdSchema, SynthesisRumorRecordSchema)
-	})
-	.strict()
-	.superRefine((synthesis, context) => {
-		for (const [receiptId, receipt] of Object.entries(synthesis.receipts)) {
-			if (receipt.receiptId !== receiptId) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Synthesis receipt key does not match its id'
-				});
-			}
-		}
-		for (const [rumorId, rumor] of Object.entries(synthesis.rumors)) {
-			if (rumor.rumorId !== rumorId || !synthesis.receipts[rumor.receiptId]) {
-				context.addIssue({ code: 'custom', message: 'Synthesis rumor reference is inconsistent' });
-			}
-		}
-		if (
-			Object.keys(synthesis.receipts).length > 512 ||
-			Object.keys(synthesis.rumors).length > 4_096
-		) {
-			context.addIssue({ code: 'custom', message: 'Synthesis history limit exceeded' });
-		}
-	});
-
-export const FirstBandArchiveKnowledgeSchema = z
-	.object({
-		heroId: EntityIdSchema,
-		role: z.enum(['reader', 'witness']),
-		learnedAt: IsoDateTimeSchema,
-		sourceEventId: EntityIdSchema
-	})
-	.strict();
-
-export const FirstBandExtractionReceiptSchema = z
-	.object({
-		receiptVersion: z.literal('first-band-extraction-receipt-v1'),
-		receiptId: EntityIdSchema,
-		sourceEventId: EntityIdSchema,
-		missionAttemptId: EntityIdSchema,
-		missionBinding: MissionContentBindingSchema,
-		recoveredAt: IsoDateTimeSchema,
-		survivingHeroIds: z.array(EntityIdSchema).max(7),
-		rewardGrantIds: z
-			.tuple([z.literal('hearth-relight-core'), z.literal('first-hearth-archive-fragment')])
-			.readonly(),
-		completedStoryHistoryHash: StateHashSchema
-	})
-	.strict()
-	.superRefine((receipt, context) => {
-		if (
-			receipt.missionBinding.missionId !== 'tower-floor-05' ||
-			new Set(receipt.survivingHeroIds).size !== receipt.survivingHeroIds.length
-		) {
-			context.addIssue({
-				code: 'custom',
-				message: 'First-band extraction receipt is inconsistent'
-			});
-		}
-	});
-
-export const FirstBandArchiveRevealSchema = z
-	.object({
-		revealVersion: z.literal('first-band-archive-reveal-v1'),
-		revealId: EntityIdSchema,
-		sourceEventId: EntityIdSchema,
-		readerHeroId: EntityIdSchema,
-		revealedAt: IsoDateTimeSchema,
-		canonicalMessage: z.literal('Hearth 01 was not the first.'),
-		expression: StoryExpressionResolutionSchema,
-		knowledge: z.array(FirstBandArchiveKnowledgeSchema).min(1).max(31)
-	})
-	.strict()
-	.superRefine((reveal, context) => {
-		const readers = reveal.knowledge.filter((record) => record.role === 'reader');
-		if (
-			readers.length !== 1 ||
-			readers[0]?.heroId !== reveal.readerHeroId ||
-			reveal.expression.speakerId !== reveal.readerHeroId ||
-			new Set(reveal.knowledge.map((record) => record.heroId)).size !== reveal.knowledge.length
-		) {
-			context.addIssue({ code: 'custom', message: 'Archive reveal knowledge is inconsistent' });
-		}
-	});
-
-export const FirstBandArchiveStateSchema = z
-	.object({
-		archiveVersion: z.literal('first-band-archive-v1'),
-		status: z.enum(['sealed', 'recovered', 'revealed']),
-		envelopeId: MissionSlugSchema,
-		envelopeContentHash: StateHashSchema,
-		canonicalMessageHash: StateHashSchema,
-		recovery: FirstBandExtractionReceiptSchema.nullable(),
-		reveal: FirstBandArchiveRevealSchema.nullable()
-	})
-	.strict()
-	.superRefine((archive, context) => {
-		if (
-			(archive.status === 'sealed' && (archive.recovery !== null || archive.reveal !== null)) ||
-			(archive.status === 'recovered' && (archive.recovery === null || archive.reveal !== null)) ||
-			(archive.status === 'revealed' && (archive.recovery === null || archive.reveal === null))
-		) {
-			context.addIssue({ code: 'custom', message: 'First-band archive lifecycle is inconsistent' });
-		}
-	});
 
 const EngineGameStateV22BaseSchema = z
 	.object({
@@ -2574,13 +2418,6 @@ export type EngineSnapshot = z.infer<typeof EngineSnapshotSchema>;
 export type EntropyDraw = z.infer<typeof EntropyDrawSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
-export type SynthesisReceipt = z.infer<typeof SynthesisReceiptSchema>;
-export type SynthesisRumorRecord = z.infer<typeof SynthesisRumorRecordSchema>;
-export type SynthesisState = z.infer<typeof SynthesisStateSchema>;
-export type FirstBandArchiveState = z.infer<typeof FirstBandArchiveStateSchema>;
-export type FirstBandExtractionReceipt = z.infer<typeof FirstBandExtractionReceiptSchema>;
-export type FirstBandArchiveReveal = z.infer<typeof FirstBandArchiveRevealSchema>;
-export type SynthesisVisibility = z.infer<typeof SynthesisVisibilitySchema>;
 export type SynthesisRequest = z.infer<typeof SynthesisRequestSchema>;
 export type CommunicationRequest = z.infer<typeof CommunicationRequestSchema>;
 export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
