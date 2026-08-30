@@ -1,4 +1,5 @@
 import type { AffinitySpeciesId } from './affinity-workflow.js';
+import type { EnemyAffinityExpansionSpeciesId } from './enemy-affinity-expansion.js';
 import type { EnemyArchetypeId } from './enemy-roster.js';
 import type { PackTwoMonsterId } from './pack-two-monsters.js';
 
@@ -31,4 +32,49 @@ export const ENEMY_AFFINITY_FAMILY_PILOTS = [
 	readonly familyId: string;
 	readonly affinitySpeciesId: AffinitySpeciesId;
 	readonly label: string;
+}[];
+
+export const ENEMY_AFFINITY_EXPANSION_ARCHETYPE_LINKS = (
+	[
+		'goblin-skirmisher',
+		'goblin-archer',
+		'goblin-hexweaver',
+		'goblin-chieftain',
+		'dire-wolf',
+		'ember-wisp',
+		'stone-breaker',
+		'storm-stalker',
+		'frost-colossus',
+		'clay-golem',
+		'stone-golem',
+		'iron-sentinel',
+		'crystal-guardian',
+		'grave-sentinel',
+		'tower-wraith',
+		'bone-mage',
+		'venom-wyvern',
+		'armored-elder-drake',
+		'giant-tower-dragon',
+		'hungry-mimic',
+		'slime-colony',
+		'burrowing-worm',
+		'ogoblin-brute',
+		'cave-troll',
+		'hill-giant',
+		'frost-giant',
+		'hex-adept',
+		'ward-mage',
+		'tower-summoner',
+		'tower-archmage',
+		'tunnel-spider',
+		'web-caster',
+		'armored-brood-guard',
+		'giant-broodmother'
+	] as const
+).map((archetypeId) => ({
+	archetypeId,
+	affinitySpeciesId: archetypeId
+})) satisfies readonly {
+	readonly archetypeId: CanonicalEnemyId;
+	readonly affinitySpeciesId: EnemyAffinityExpansionSpeciesId;
 }[];

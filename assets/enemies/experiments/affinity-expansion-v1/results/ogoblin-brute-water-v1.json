@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ogoblin-brute-water",
+  "targetId": "affinity-expansion-v1-ogoblin-brute-water",
+  "assignmentId": "assignment-affinity-expansion-v1-ogoblin-brute-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ogoblin-brute-water-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ogoblin-brute-water\".\n\nSubject and threat:\n- Species: ogoblin-brute.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: ogoblin-brute-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Ogoblin Brute remains immediately recognizable\n- Battlefield duty remains Boss-scale bruiser\n- towering goblinoid bruiser with sweeping weapon, massive grip, and restraint-breaking mass\n- Signature skills remain visually supportable: Sweeping strike, Grab, Berserk.\n- Counterplay remains visible: The still image preserves readable counterplay for Team rotation, Restraint escape, Damage windows.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: The still image preserves readable counterplay for Team rotation, Restraint escape, Damage windows. Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 2 only: Ogoblin Brute identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "8805a0283ee955b8436ca23f694813d9cf0602192ba4a8b478af01e2400390d9",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:46:55.926Z",
+      "generationCompletedAt": "2026-08-30T08:47:17.491Z",
+      "inspectionCompletedAt": "2026-08-30T08:47:55.745Z",
+      "generationDurationMs": 21565,
+      "inspectionDurationMs": 38254,
+      "totalWallTimeMs": 59819,
+      "sourceOutputId": "exec-cbae7d66-a3c4-427d-8d27-02e0fb205f65.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Upper splash and lower pool crossed the safe margins."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The bright aura was insufficiently organized into structural pressure channels."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "No exposed binding core was visible."
+        }
+      ],
+      "retryReason": "Contain all water extents, organize flow into stable pressure channels and a directional sweep, and expose the pressure-loss core."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ogoblin-brute-water-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ogoblin-brute-water-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "EDIT the supplied Water Ogoblin Brute image; do not create a different creature.\n\nPreserve one adult boss-scale squat grey-green goblinoid bruiser with exactly two arms and two legs, massive credible grip, restraint-breaking grounded mass, complete heavy sweeping maul, goblin ears/face, Sweep/Grab/Berserk duty, premium realistic painterly finish, cracked-stone floor, charcoal backdrop.\n\nTargeted corrections:\n1. Pull camera back and scale/recenter the complete brute, maul, hands, feet, every splash, droplet, mist ribbon, reflection, and pool/wake extent inside the central 84 percent of both canvas dimensions, leaving at least 8 percent empty finished border on every side.\n2. Replace the generic bright blue aura with coherent pressurized Water construction: translucent load-bearing flow channels must wrap and reinforce shoulder, gripping forearm, wrist, hand, hips, knees, and ankles; high-pressure water must travel visibly along the maul shaft into one directional ground-sweep wake. Use wet reflective hide, controlled mist, pressure ripples, and stable fluid transitions. Keep the solid massive body and anatomy fully readable; no shapeless blob or generic blue glow.\n3. Show pressure loss after the committed sweep by opening a dry, low-pressure gap at sternum/upper abdomen that exposes ONE dark stone binding core, sharply distinct from surrounding water. This is the Team-rotation, Restraint-escape, Damage-window counterplay.\n\nExactly one subject; two arms/legs; full hands, feet, and maul; no extra limb, duplicate, crop, human scale, blob, generic glow, text, UI, frame, watermark, sexualization, or published-character resemblance. Complete 1536 x 1024 image/png. This is a targeted edit, not regeneration.",
+      "promptHash": "cebfc8f3a532877a59ac6b5fd990a978275e0186d801243b8de4c4d02d9d6594",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-cbae7d66-a3c4-427d-8d27-02e0fb205f65.png",
+        "contentHash": "35c901ab78c2d79bc096b16a497c8e9205f3b46c7f278fa8ad90de4ea2e232a5"
+      },
+      "requestStartedAt": "2026-08-30T08:47:55.745Z",
+      "generationCompletedAt": "2026-08-30T08:48:41.432Z",
+      "inspectionCompletedAt": "2026-08-30T08:49:31.837Z",
+      "generationDurationMs": 45687,
+      "inspectionDurationMs": 50405,
+      "totalWallTimeMs": 96092,
+      "sourceOutputId": "exec-f200684c-d089-489c-b2d1-a5943f5299b1.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 33,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-f200684c-d089-489c-b2d1-a5943f5299b1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2640120,
+          "contentHash": "430543929d59ac9aace53cd0fca7acbecba5b7fa85c4c9ed2c5ebbe6c426027d"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2640120,
+          "contentHash": "430543929d59ac9aace53cd0fca7acbecba5b7fa85c4c9ed2c5ebbe6c426027d"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2640120,
+        "contentHash": "430543929d59ac9aace53cd0fca7acbecba5b7fa85c4c9ed2c5ebbe6c426027d"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The improved lower-left committed sweep wake still enters the left and bottom eight-percent margins."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Ogoblin Brute appears on a fully finished floor and backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical prompt, references, correction linkage, and retained-source provenance are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The squat boss-scale goblinoid has two arms/legs, massive grip, sweeping maul, grounded restraint-breaking mass, and readable Sweep, Grab, Berserk duty."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Water forms load-bearing pressure bands around shoulders, arms, wrist, hips, knees, and ankles; travels along the maul; and creates a directional committed sweep with wet reflections, mist, and pressure wake."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A dry low-pressure opening exposes one dark stone binding core at the upper abdomen."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending; known-target cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Water recognition remains pending; known-target cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limb, duplicate, shapeless blob, generic glow, crop, text, UI, watermark, or sexualization appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only owned outputs were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": "A further framing correction is required, but the assignment retry ceiling is exhausted; retain for review as revise."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T08:46:55.926Z",
+  "completedAt": "2026-08-30T08:49:31.837Z",
+  "totalWallTimeMs": 155911,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ogoblin-brute-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

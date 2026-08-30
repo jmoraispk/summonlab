@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-cave-troll-fire",
+  "targetId": "affinity-expansion-v1-cave-troll-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-cave-troll-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-cave-troll-fire\".\n\nSubject and threat:\n- Species: cave-troll.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: cave-troll-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Cave Troll remains immediately recognizable\n- Battlefield duty remains Regenerating reach threat\n- long-reach regenerating cave giant with raw hide, hunched shoulders, and powerful hands\n- Signature skills remain visually supportable: Long reach, Regeneration, Corner pressure.\n- Counterplay remains visible: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 1 only: Cave Troll identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f9f7b53f90c8e507f4b2998c862c13d9401abe05a923f453bb07f237ec713431",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:30:21.277Z",
+      "generationCompletedAt": "2026-08-30T08:30:39.497Z",
+      "inspectionCompletedAt": "2026-08-30T08:31:06.976Z",
+      "generationDurationMs": 18220,
+      "inspectionDurationMs": 27479,
+      "totalWallTimeMs": 45699,
+      "sourceOutputId": "exec-de23877c-e134-44de-94cf-7ac1252a6baa.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial combustion and smoke plume crossed the top eight-percent safety boundary."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial body had ember seams but no distinct exposed internal core or heat sink between combustion cycles."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Heat-blackening, ember seams, smoke, and distortion were strong, but active combustion was distributed too uniformly and the motion/attack telegraph was weak."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The stooped giant-scale grey Cave Troll retained exactly two long arms, two legs, credible hands and feet, hunched shoulders, grounded weight, and a regenerating reach-threat posture."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Cave Troll appeared on a finished floor and backdrop."
+        }
+      ],
+      "retryReason": "Use the single edit to contain all combustion extents, localize active Fire construction to long-arm load paths with directional reach telegraph, and expose one dark cool heat sink."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-cave-troll-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Fire Cave Troll image; do not create a different creature.\n\nPreserve all passing traits exactly: one immediately recognizable stooped grey Cave Troll at giant scale; exactly two disproportionately long powerful arms and exactly two legs; hunched shoulders; raw heat-blackened cavern hide with readable anatomy; credible hands, broad grounded feet, joints, and weight; stern nonhuman face; Regenerating reach-threat posture supporting Long reach, Regeneration, and Corner pressure; premium realistic painterly Pack 2 dark-fantasy finish; cracked-stone floor; charcoal-to-midnight backdrop.\n\nMake only these targeted corrections:\n1. Pull the camera back and scale/recenter the complete troll plus every flame, ember, smoke, spark, and heat-distortion extent so all hard extents fit inside the central 84 percent of both canvas dimensions. Leave at least 8 percent clearly empty finished border on all four sides.\n2. Localize active combustion and brighter ember seams primarily along the long reaching arms and shoulder load paths, with a directional forward heat-distortion wake that supports reach/corner pressure. Keep most torso and leg surfaces dark, heat-blackened, and materially readable; avoid uniform orange full-body glow.\n3. Expose one clearly readable DARK, COOL, NON-EMISSIVE INTERNAL HEAT SINK through an opened fissure at the sternum/upper abdomen between combustion cycles. The heat sink must look like a vulnerable charcoal-black cooling core or vent, distinct from the surrounding ember seams and obvious as the finishing/kiting counterplay point.\n\nKeep exactly one subject, exactly two arms and two legs, full hands and feet, no weapon, no extra limb, no duplicate, no ordinary human scale, no crop, no text, UI, frame, logo, watermark, sexualization, or published-character resemblance. Keep the complete 1536 x 1024 image/png canvas fully finished. This is a targeted edit, not a complete regeneration.",
+      "promptHash": "bf0902f3f7c2feb2f54163032cacba8dfb44ee5b18d2250f6ca8f70489b8277b",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-de23877c-e134-44de-94cf-7ac1252a6baa.png",
+        "contentHash": "e7c5db5327ae51a70746ab24f1e5f7bd405c58bbf3f055c5c8d65dd32c6daf47"
+      },
+      "requestStartedAt": "2026-08-30T08:31:06.976Z",
+      "generationCompletedAt": "2026-08-30T08:31:29.226Z",
+      "inspectionCompletedAt": "2026-08-30T08:32:05.109Z",
+      "generationDurationMs": 22250,
+      "inspectionDurationMs": 35883,
+      "totalWallTimeMs": 58133,
+      "sourceOutputId": "exec-db18f823-1a7b-4e25-9f4f-096cf49f9cac.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 16,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-db18f823-1a7b-4e25-9f4f-096cf49f9cac.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2100705,
+          "contentHash": "48b3a2c619dce8a83479d5503137ffeede7a87c9195a790f096e0e9d4fcc6cc5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2100705,
+          "contentHash": "48b3a2c619dce8a83479d5503137ffeede7a87c9195a790f096e0e9d4fcc6cc5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2100705,
+        "contentHash": "48b3a2c619dce8a83479d5503137ffeede7a87c9195a790f096e0e9d4fcc6cc5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The head, shoulders, long arms, hands, feet, skirt, embers, sparks, smoke, and heat distortion remain inside the central 84 percent with a clearly empty finished border."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The cracked-stone floor and charcoal backdrop are fully finished without blank bands or cutoffs."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Fire Cave Troll appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matches the canonical renderer; ordered references and correction linkage are retained."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One stooped grey giant remains immediately recognizable with exactly two disproportionately long arms, exactly two legs, credible hands and broad feet, hunched shoulders, raw hide, and grounded weight."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The forward hunch, hanging long hands, localized arm heat, and recovery-state torso opening support Long reach, Regeneration, Corner pressure, kiting, and finishing discipline."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes heat-blackened material, concentrated arm/shoulder ember anatomy, directional combustion and heat-distortion telegraph, smoke, and environmental wake rather than applying a flat orange wash."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A large dark cool non-emissive internal heat sink is plainly exposed through the sternum and upper abdomen between combustion cycles."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong troll face, hunch, long-arm, hand, foot, and giant-mass cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending human review; known-target inspection finds strong heat-blackened hide, localized ember seams, smoke, sparks, heat distortion, and cool-core contrast."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, controlled neutral key, readable blackened hide, restrained localized emission, floor, and backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limb, weapon, ordinary human scale, uniform full-body glow, crop, text, UI, frame, watermark, sexualization, or published-character resemblance appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction PNG was exclusive-copied; source and retained metadata and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-cave-troll-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:30:21.277Z",
+  "completedAt": "2026-08-30T08:32:05.109Z",
+  "totalWallTimeMs": 103832,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/cave-troll-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

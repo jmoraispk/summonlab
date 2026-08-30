@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hill-giant-wind",
+  "targetId": "affinity-expansion-v1-hill-giant-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-hill-giant-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-hill-giant-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hill-giant-wind\".\n\nSubject and threat:\n- Species: hill-giant.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: hill-giant-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Hill Giant remains immediately recognizable\n- Battlefield duty remains Arena-scale displacement\n- arena-scale giant with stone maul, debris-ready off-hand, and displacement posture\n- Signature skills remain visually supportable: Stone maul, Debris throw, Shock step.\n- Counterplay remains visible: The still image preserves readable counterplay for Arena awareness, Ranged support, Fall recovery.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Arena awareness, Ranged support, Fall recovery. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 3 only: Hill Giant identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "78d05ebf290e5963bda4136e4b9e83bc798991e4fef876e8426029067d84793d",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T08:37:45.258Z",
+      "generationCompletedAt": "2026-08-30T08:38:06.258Z",
+      "inspectionCompletedAt": "2026-08-30T08:38:40.000Z",
+      "generationDurationMs": 21000,
+      "inspectionDurationMs": 33742,
+      "totalWallTimeMs": 54742,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-4b630396-899c-419a-9ec9-1f9c80ef310b.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The complete giant and equipment were rendered, but the highest windblown hair entered the declared eight-percent top border." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Hill Giant appeared." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt was submitted without terminal newline at SHA-256 78d05ebf290e5963bda4136e4b9e83bc798991e4fef876e8426029067d84793d with references in order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "One upright arena-scale giant had exactly two arms and two legs, a practical stone maul, debris-ready open hand, grounded feet, credible grip, and displacement posture." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Wind visibly changed hair, cloth silhouette, motion, debris trajectory, pressure channels, attack telegraph, and environmental wake beyond hue." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The open arena stance, still center around the torso, readable debris arc, planted recovery footing, and long attack preparation preserve awareness, ranged-support, and fall-recovery counterplay." }
+      ],
+      "retryReason": "A framing-only edit was required to preserve the successful Hill Giant while moving all windblown hair and wake inside the central safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-hill-giant-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-hill-giant-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Hill Giant Wind render; do not redesign or regenerate a different creature.\n\nPreserve exactly: one standard arena-scale Hill Giant displacement threat; one upright giant humanoid with exactly two arms and two legs, two complete credible hands, two complete grounded feet, the same weathered giant face, long windblown hair and beard, broad muscular build, practical stone maul held in one hand, debris-ready open off-hand, displacement stance, leather straps, bracers, belt, layered hide skirt, boots, controlled circular vapor channels, strongly directional hair and cloth, debris flow, pressure distortion, visible still center, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, restrained Wind emission, premium realistic painterly Pack 2 finish, and every successful detail. Preserve the same stone-maul, debris-throw, shock-step, arena-awareness, ranged-support, and fall-recovery readability.\n\nChange only framing: uniformly scale the complete existing giant, both complete hands and feet, every finger and toe, the entire maul and handle, every windblown hair and cloth tip, all debris, vapor and pressure-wake extents, and the contact shadow down slightly and recenter them so every hard extent fits inside the central 84 percent of a fully finished 1536 x 1024 canvas, leaving at least 8 percent clearly empty border on all four sides. The highest hair and vapor tip must remain clearly below the top safety line, and both feet and all debris must remain inside the other three safety lines. Do not crop, hide, reshape, add, remove, duplicate, mirror, or alter any anatomy, equipment, pose, affinity cue, counterplay cue, material, lighting, or surface detail.\n\nNo extra subject, extra limb, ordinary human scale, pale recolor-only Wind, transparency-only Wind, directionless particles, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance. Finish every canvas region.",
+      "promptHash": "16eca5ac1bd61b726390ddcc9050b23be398d0dbd672a32af3d3a79bfa2a21db",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-4b630396-899c-419a-9ec9-1f9c80ef310b.png", "contentHash": "8725c60513420d40453a67a92a83a0e195d64d1dbdc2be2d1235103bd6a08148" },
+      "requestStartedAt": "2026-08-30T08:38:51.304Z",
+      "generationCompletedAt": "2026-08-30T08:39:15.204Z",
+      "inspectionCompletedAt": "2026-08-30T08:39:59.218Z",
+      "generationDurationMs": 23900,
+      "inspectionDurationMs": 44014,
+      "totalWallTimeMs": 67914,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-7dfb2323-7c36-4aa8-a2c2-dbad676e10f4.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 32,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-7dfb2323-7c36-4aa8-a2c2-dbad676e10f4.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2110189, "contentHash": "a59835be84227cb1999f91560b6f2da19f209f7ebea7eb9f8441f069da60de1a" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2110189, "contentHash": "a59835be84227cb1999f91560b6f2da19f209f7ebea7eb9f8441f069da60de1a" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2110189, "contentHash": "a59835be84227cb1999f91560b6f2da19f209f7ebea7eb9f8441f069da60de1a" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete giant, both hands and feet, maul, hair, beard, cloth, debris, vapor channels, wake, and shadow fit well inside the central eighty-four percent on a fully finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Hill Giant appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "Canonical and framing-correction prompts retain exact hashes, ordered target-reference provenance, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The upright arena-scale giant has exactly two arms and two legs, credible hands and feet, practical stone maul, debris-ready off-hand, scale-bearing stance, and a clear displacement posture supporting stone maul, debris throw, and shock step." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional hair, beard, fur and cloth, circular vapor channels, curved debris flow, pressure distortion, swept silhouette, telegraph, and environmental wake make Wind legible beyond color." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The calm torso center, readable circular attack direction, open arena spacing, planted recovery feet, and suspended debris preserve awareness, ranged-support, and fall-recovery counterplay." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware Hill Giant cues are strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; target-aware directional cloth, vapor, debris, pressure, and wake cues are strong." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly skin, hair, fur, leather, stone, vapor, cracked floor, charcoal backdrop, and neutral lighting are cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No extra limb, ordinary-human scale, cropped extent, pale recolor-only effect, transparency-only effect, directionless particles, text, UI, watermark, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 2,110,189 bytes, and SHA-256 a59835be84227cb1999f91560b6f2da19f209f7ebea7eb9f8441f069da60de1a match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Hill Giant Wind candidate and result paths were written; no shared file, unrelated path, or git history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-hill-giant-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:37:45.258Z",
+  "completedAt": "2026-08-30T08:39:59.218Z",
+  "totalWallTimeMs": 133960,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hill-giant-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

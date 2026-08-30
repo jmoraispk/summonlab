@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ogoblin-brute-fire",
+  "targetId": "affinity-expansion-v1-ogoblin-brute-fire",
+  "assignmentId": "assignment-affinity-expansion-v1-ogoblin-brute-fire",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ogoblin-brute-fire-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ogoblin-brute-fire\".\n\nSubject and threat:\n- Species: ogoblin-brute.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: ogoblin-brute-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Ogoblin Brute remains immediately recognizable\n- Battlefield duty remains Boss-scale bruiser\n- towering goblinoid bruiser with sweeping weapon, massive grip, and restraint-breaking mass\n- Signature skills remain visually supportable: Sweeping strike, Grab, Berserk.\n- Counterplay remains visible: The still image preserves readable counterplay for Team rotation, Restraint escape, Damage windows.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: fire.\nAffinity expression: heat-blackened surfaces, internal ember seams, controlled combustion, smoke, and heat distortion\nCounterplay cue: The still image preserves readable counterplay for Team rotation, Restraint escape, Damage windows. The internal core or heat sink becomes exposed between combustion cycles.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a uniform orange full-body glow that destroys material and anatomy detail.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 2 only: Ogoblin Brute identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b96aa9d6ed48ac39506325f8e69efb3ac5c2278796c6d3bc45bb88ea29c81513",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:38:27.965Z",
+      "generationCompletedAt": "2026-08-30T08:38:52.159Z",
+      "inspectionCompletedAt": "2026-08-30T08:39:21.483Z",
+      "generationDurationMs": 24194,
+      "inspectionDurationMs": 29324,
+      "totalWallTimeMs": 53518,
+      "sourceOutputId": "exec-9ba8d699-be3f-4f87-993b-a5f475e09863.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Top smoke and left weapon wake breached the safe margin."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "No distinct exposed cool heat sink was visible."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Species, anatomy, massive grip, sweeping weapon, boss-bruiser duty, and Fire material cues passed."
+        }
+      ],
+      "retryReason": "Contain all extents and expose the cool heat sink while preserving the successful brute and Fire treatment."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ogoblin-brute-fire-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ogoblin-brute-fire-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Fire Ogoblin Brute image; do not create a different creature.\n\nPreserve all passing traits exactly: one adult boss-scale squat green goblinoid bruiser; exactly two arms and two legs; broad restraint-breaking mass; massive credible grip; complete heavy sweeping poleaxe; grounded large feet; readable goblin ears and face; Sweeping strike, Grab, and Berserk duty; heat-blackened surfaces, localized ember seams, controlled combustion, smoke, and heat distortion; premium realistic painterly Pack 2 dark-fantasy finish; cracked-stone floor and charcoal-to-midnight backdrop.\n\nMake only these targeted corrections:\n1. Pull the camera back and scale/recenter the complete brute, poleaxe blade/shaft, fingers, toes, flame, smoke, sparks, and heat-distortion wake so every hard extent fits inside the central 84 percent of both canvas dimensions. Leave at least 8 percent clearly empty finished border on all four sides.\n2. Expose one clearly readable DARK, COOL, NON-EMISSIVE INTERNAL HEAT SINK through a cracked opening at the sternum or upper abdomen between combustion cycles. It must look like a vulnerable charcoal-black cooling core, distinct from the surrounding ember seams, and obvious as the Team-rotation, Restraint-escape, and Damage-window counterplay point.\n3. Keep active combustion directional and localized along the sweeping weapon, gripping forearm, shoulder load path, and ground sweep wake; keep most green hide and equipment surfaces dark and materially readable. Avoid a uniform orange full-body glow.\n\nKeep exactly one subject, exactly two arms and two legs, full hands/feet/weapon, no extra limb, no duplicate, no ordinary human scale, no crop, no text, UI, frame, logo, watermark, sexualization, or published-character resemblance. Keep the complete 1536 x 1024 image/png canvas fully finished. This is a targeted edit, not a complete regeneration.",
+      "promptHash": "80a2dd373232b873cd3118abb840be10bcfd863ff4720ee084f7832683c61fc6",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-9ba8d699-be3f-4f87-993b-a5f475e09863.png",
+        "contentHash": "390802921b182aca69954f6213d581c369ef909c79e65220df7dbf087e80356e"
+      },
+      "requestStartedAt": "2026-08-30T08:39:21.483Z",
+      "generationCompletedAt": "2026-08-30T08:39:45.841Z",
+      "inspectionCompletedAt": "2026-08-30T08:40:26.636Z",
+      "generationDurationMs": 24358,
+      "inspectionDurationMs": 40795,
+      "totalWallTimeMs": 65153,
+      "sourceOutputId": "exec-4b1da438-07ae-40f5-bb97-969d63abc32a.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 28,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-4b1da438-07ae-40f5-bb97-969d63abc32a.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2036656,
+          "contentHash": "490c27cc509160e925af7533832ea2bd1c5fdad4db193ea69dbae1836b2ed067"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/fire-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2036656,
+          "contentHash": "490c27cc509160e925af7533832ea2bd1c5fdad4db193ea69dbae1836b2ed067"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/fire-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2036656,
+        "contentHash": "490c27cc509160e925af7533832ea2bd1c5fdad4db193ea69dbae1836b2ed067"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every weapon, body, flame, smoke, spark, and wake extent stays inside the central 84 percent with empty finished border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Ogoblin Brute appears on a fully finished floor and backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The canonical first prompt, ordered references, correction linkage, and exact source persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The squat boss-scale adult goblinoid has exactly two arms and legs, massive grip, sweeping poleaxe, restraint-breaking mass, grounded weight, and readable Sweep, Grab, and Berserk duty."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Fire changes blackened material, localized weapon/arm ember anatomy, combustion motion, sweep telegraph, smoke, heat distortion, and ground wake rather than applying a uniform glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A large cool charcoal-black non-emissive heat sink is exposed through the upper abdomen between combustion cycles."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition remains pending; known-target cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Fire recognition remains pending; known-target construction cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limb, duplicate, crop, uniform body glow, text, UI, watermark, sexualization, or published-character resemblance appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only owned candidate and result paths were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ogoblin-brute-fire-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:38:27.965Z",
+  "completedAt": "2026-08-30T08:40:26.636Z",
+  "totalWallTimeMs": 118671,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/fire-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ogoblin-brute-fire-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

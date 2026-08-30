@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-ogoblin-brute-metal",
+  "targetId": "affinity-expansion-v1-ogoblin-brute-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-ogoblin-brute-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-ogoblin-brute-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-ogoblin-brute-metal\".\n\nSubject and threat:\n- Species: ogoblin-brute.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: ogoblin-brute-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Ogoblin Brute remains immediately recognizable\n- Battlefield duty remains Boss-scale bruiser\n- towering goblinoid bruiser with sweeping weapon, massive grip, and restraint-breaking mass\n- Signature skills remain visually supportable: Sweeping strike, Grab, Berserk.\n- Counterplay remains visible: The still image preserves readable counterplay for Team rotation, Restraint escape, Damage windows.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: The still image preserves readable counterplay for Team rotation, Restraint escape, Damage windows. Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 2 only: Ogoblin Brute identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "e389f1d5d9f6b72ed971f26bf9cfee83be27085ec27736a737ceecdcb5e67dce",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:42:31.683Z",
+      "generationCompletedAt": "2026-08-30T08:42:59.913Z",
+      "inspectionCompletedAt": "2026-08-30T08:43:31.093Z",
+      "generationDurationMs": 28230,
+      "inspectionDurationMs": 31180,
+      "totalWallTimeMs": 59410,
+      "sourceOutputId": "exec-d008aeb3-65ef-4df5-ac04-34f4da244447.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Fragments, crown, and feet breached the safe margins."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial design read primarily as ordinary armor, used multiple orange discs, and included a second weapon."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Multiple glowing discs diluted the controlling core."
+        }
+      ],
+      "retryReason": "Contain all extents, internalize forged anatomy, consolidate one cool magnetic core, and remove the second weapon."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-ogoblin-brute-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-ogoblin-brute-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Metal Ogoblin Brute image; do not create a different creature.\n\nPreserve one adult boss-scale squat green goblinoid bruiser with exactly two arms and two legs, massive grip, restraint-breaking grounded mass, complete heavy sweeping poleaxe, readable goblin ears/face, Sweeping strike, Grab, Berserk duty, controlled metal fragments, Pack 2 realistic painterly finish, cracked-stone floor, and charcoal backdrop.\n\nTargeted corrections:\n1. Pull camera back and scale/recenter the entire brute, poleaxe, chain, fingers, toes, every plate tip, and every controlled fragment inside the central 84 percent of both canvas dimensions, leaving at least 8 percent empty finished border on all sides.\n2. Turn armor-like overlay into intrinsic forged anatomy: interlocking load-bearing dermal plates must grow from shoulders, spine, arms, hands, hips, shins, and feet; expose metallic marrow in selected arm and shoulder fissures; use articulated plate collars at shoulders, elbows, wrists, knees, and ankles. Preserve raw green goblinoid hide between structures. It must not read as ordinary worn armor.\n3. Remove all orange furnace/Fire glow and multiple glowing discs. Keep ONE cool charcoal-black non-emissive lodestone magnetic core exposed at sternum/upper abdomen, with a restrained radial alignment of fragments and chain links. This core and joint collars are the material counterplay for Team rotation, Restraint escape, and Damage windows.\n4. Keep one sweeping poleaxe as the only weapon. Convert any second mace/ball into small controlled iron fragments and a loose restraint chain, not another weapon.\n\nExactly one subject, two arms, two legs, full hands/feet/poleaxe, no extra limb, duplicate, crop, human scale, simple armor upgrade, Fire treatment, text, UI, watermark, frame, sexualization, or published-character resemblance. Complete 1536 x 1024 image/png. This is a targeted edit, not regeneration.",
+      "promptHash": "59df3ed1fdf389502d65298ecf4ea676552f6d96a4a2b6b0c8ec62c2fe2e0224",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-d008aeb3-65ef-4df5-ac04-34f4da244447.png",
+        "contentHash": "5abb2555d6edf075dffa4d4093b30874a0aa4072c1e3c1e1337af32af551edc5"
+      },
+      "requestStartedAt": "2026-08-30T08:43:31.093Z",
+      "generationCompletedAt": "2026-08-30T08:44:13.619Z",
+      "inspectionCompletedAt": "2026-08-30T08:44:51.939Z",
+      "generationDurationMs": 42526,
+      "inspectionDurationMs": 38320,
+      "totalWallTimeMs": 80846,
+      "sourceOutputId": "exec-9051f0c2-04df-4cdc-8db4-9c0d97be4f15.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 30,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-9051f0c2-04df-4cdc-8db4-9c0d97be4f15.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2327839,
+          "contentHash": "88dd2c938a5dd5d7586ce91888692f0c64070070d3519c61ff0e4bbc73ef6cc5"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2327839,
+          "contentHash": "88dd2c938a5dd5d7586ce91888692f0c64070070d3519c61ff0e4bbc73ef6cc5"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2327839,
+        "contentHash": "88dd2c938a5dd5d7586ce91888692f0c64070070d3519c61ff0e4bbc73ef6cc5"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Every body, weapon, chain, plate, fragment, hand, and foot extent stays inside the central 84 percent."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete subject appears on a finished floor and backdrop."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical prompt, ordered references, correction linkage, and exact persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The squat boss-scale adult goblinoid has two arms/legs, massive grip, one sweeping poleaxe, restraint chain, grounded mass, and Sweep, Grab, Berserk duty."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Intrinsic dermal forged plates, articulated joint collars, metallic load paths, poleaxe, chain, and controlled fragments transform anatomy and equipment rather than adding ordinary armor."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "One cool dark lodestone core and exposed joint collars provide clear damage-window counterplay."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition is pending; known-target species cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Metal recognition is pending; known-target construction cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra weapon/limb, Fire glow, crop, human scale, text, UI, watermark, or sexualization appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only owned output paths were written."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-ogoblin-brute-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:42:31.683Z",
+  "completedAt": "2026-08-30T08:44:51.939Z",
+  "totalWallTimeMs": 140256,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/ogoblin-brute-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

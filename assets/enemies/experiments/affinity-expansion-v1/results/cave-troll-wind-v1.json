@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-cave-troll-wind",
+  "targetId": "affinity-expansion-v1-cave-troll-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-cave-troll-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-cave-troll-wind\".\n\nSubject and threat:\n- Species: cave-troll.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: cave-troll-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Cave Troll remains immediately recognizable\n- Battlefield duty remains Regenerating reach threat\n- long-reach regenerating cave giant with raw hide, hunched shoulders, and powerful hands\n- Signature skills remain visually supportable: Long reach, Regeneration, Corner pressure.\n- Counterplay remains visible: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline. The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 1 only: Cave Troll identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a5206a84d388342aa128967135e6888c672bb8c279007930d105a327d9cd16d1",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:29:50.710Z",
+      "generationCompletedAt": "2026-08-30T08:30:12.310Z",
+      "inspectionCompletedAt": "2026-08-30T08:30:20.310Z",
+      "generationDurationMs": 21600,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 29600,
+      "sourceOutputId": "exec-74958edd-442d-4613-8a43-3c59e7e7f997.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was continuously finished across the charcoal backdrop and cracked-stone floor."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The rightmost vapor and debris entered the declared outer eight-percent border despite complete body visibility."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Cave Troll appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical safe-frame-v4 prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The stooped grey Cave Troll, long arms, raw hide, hunched shoulders, powerful hands, and exactly two-arm/two-leg grounded giant anatomy preserved the identity and duty invariants."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional cloth and hair, coherent vapor channels, pressure distortion, and stone-debris flow changed silhouette, motion, telegraph, and wake with visible force."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The dense still torso center remained readable between directional pressure flows."}
+      ],
+      "retryReason": "A framing-only edit was required to scale and recenter the Cave Troll and every directional vapor and debris extent inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-cave-troll-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the supplied preceding Cave Troll Wind render. Preserve the passing design: exactly one immediately recognizable stooped grey Cave Troll; giant-humanoid biped with exactly two arms and two legs; disproportionately long arms, raw hide, hunched shoulders, powerful complete hands, credible complete feet and grounded weight; regenerating reach-threat and corner-pressure posture; directional torn cloth and hair, coherent vapor channels, visible left-to-right pressure force, airborne stone debris, and the still readable torso center as the counterplay cue. Preserve the premium realistic painterly Pack 2 dark-fantasy finish, controlled neutral lighting, cracked-stone floor, charcoal-to-midnight backdrop, restrained local wind effects, and fully finished canvas. Make only this correction: scale and recompose the existing subject plus every vapor strand, pressure wake, cloth tip, and debris fragment inward so every hard extent fits inside the central 84 percent of both 1536×1024 canvas dimensions, leaving a clearly empty border of at least eight percent on all four sides. Keep exactly one subject and no extra or missing limbs. Do not crop either hand, either foot, any cloth tip, debris, or effect wake. Do not introduce a weapon, another creature, text, labels, UI, frame, logo, watermark, sexualization, published-character resemblance, pale recolor, transparency-only treatment, directionless particles, or any new story element. This is an edit, not a complete regeneration.",
+      "promptHash": "3fb1b38db82b43d8aa4072e7c2ee28a8ac26ce6809e528fcad970e2b7f31af7b",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-74958edd-442d-4613-8a43-3c59e7e7f997.png", "contentHash": "67b314ed140040b1d80bf17d012bd7c01137d3ab0952ae59cf673b437aa2c131"},
+      "requestStartedAt": "2026-08-30T08:31:16.365Z",
+      "generationCompletedAt": "2026-08-30T08:31:33.465Z",
+      "inspectionCompletedAt": "2026-08-30T08:31:40.465Z",
+      "generationDurationMs": 17100,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 24100,
+      "sourceOutputId": "exec-86f2e65f-fe4a-4ffb-bc68-7c1764a39fc3.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 12,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-86f2e65f-fe4a-4ffb-bc68-7c1764a39fc3.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2124153, "contentHash": "3d40ed23b0ec8c6ffb3c07e22842a2666a8cb7b5444d090d4ee9cc0eed4e2da0"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2124153, "contentHash": "3d40ed23b0ec8c6ffb3c07e22842a2666a8cb7b5444d090d4ee9cc0eed4e2da0"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2124153, "contentHash": "3d40ed23b0ec8c6ffb3c07e22842a2666a8cb7b5444d090d4ee9cc0eed4e2da0"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete head and hair, both long hands, both feet, every cloth tip, directional vapor loop, debris fragment, and contact shadow now fit inside a generous finished border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Cave Troll appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the targeted edit used the exact preceding source and retained the explicit correction source byte-for-byte."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The stooped grey cavern giant preserves raw hide, hunched shoulders, disproportionately long reach, powerful complete hands, regeneration language, and grounded corner-pressure posture."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two arms and two legs have credible joints, fingers, toes, planted feet, and scale-bearing weight; no ordinary-human scale or extra limbs appear."},
+        {"criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Rearward hair and cloth, coherent asymmetric vapor channels, pressure distortion around the leading forearm, and airborne stone flow alter silhouette, motion, attack telegraph, and environmental wake with one readable force direction."},
+        {"criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "The dense unstreamed chest and abdominal form remain visibly still between the directional pressure loops, exposing the declared quiet center after commitment."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Cave Troll cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; known-target inspection finds strong directional cloth, vapor, debris, pressure, and still-center cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, dark natural hide, restrained pale wind effects, cracked floor, charcoal backdrop, coherent materials, and all constraint-safety requirements remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,124,153 bytes, and SHA-256 3d40ed23b0ec8c6ffb3c07e22842a2666a8cb7b5444d090d4ee9cc0eed4e2da0 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-cave-troll-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:29:50.710Z",
+  "completedAt": "2026-08-30T08:32:18.107Z",
+  "totalWallTimeMs": 147397,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/cave-troll-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

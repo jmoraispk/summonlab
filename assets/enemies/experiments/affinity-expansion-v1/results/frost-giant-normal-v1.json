@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-giant-normal",
+  "targetId": "affinity-expansion-v1-frost-giant-normal",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-giant-normal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-frost-giant-normal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-giant-normal\".\n\nSubject and threat:\n- Species: frost-giant.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: frost-giant-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Frost Giant remains immediately recognizable\n- Battlefield duty remains Environmental threshold boss\n- ancient commanding giant with cold-weather layers, old iron, and whiteout authority\n- Signature skills remain visually supportable: Cold field, Ancient iron, Whiteout command.\n- Counterplay remains visible: The still image preserves readable counterplay for Cold survival, Formation command, Sustained focus.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: normal.\nAffinity expression: established species materials, restrained neutral effects, and no unexplained elemental anatomy\nCounterplay cue: The still image preserves readable counterplay for Cold survival, Formation command, Sustained focus.\nAltered dimensions: none.\nPermitted transformations: material wear; duty-readable equipment; restrained neutral wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; accidental elemental glow, affinity-coded material substitution, or unexplained magical anatomy.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 4 only: Frost Giant identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "c9e449942cabc21d8cd3ae1967c0af60d7e943440bfbcd25f0708a75431a9b5e",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:44:34.157Z",
+      "generationCompletedAt": "2026-08-30T08:44:52.957Z",
+      "inspectionCompletedAt": "2026-08-30T08:44:59.957Z",
+      "generationDurationMs": 18800,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 25800,
+      "sourceOutputId": "exec-3ab5ed63-1726-4e51-9e4b-fa44b3b8ae9e.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "canvas-completion", "evaluator": "producer", "outcome": "pass", "observation": "The initial canvas was continuously finished across the charcoal backdrop and cracked-stone floor."},
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "fail", "observation": "The command-standard spearhead entered the top border and the lowest feet and standard point entered the bottom eight-percent border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one finished Frost Giant appeared."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical safe-frame-v4 prompt and both ordered references were submitted."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The organic cold-adapted giant, fur and hide layers, old iron hammer and armor, whiteout command standard, exactly two arms and two legs, and authoritative grounded posture preserved the species and duty invariants."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Natural weathered blue-grey skin, fur, hide, cloth, old iron, and ordinary frost wear remained unaffiliated with no magical glow, elemental anatomy, or affinity-coded wake."}
+      ],
+      "retryReason": "A framing-only edit was required to scale and recenter the complete Frost Giant, hammer, standard, cloth, fur, and contact extents inside the central eighty-four-percent safety region."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-frost-giant-normal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-frost-giant-normal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted edit of the supplied preceding Frost Giant Normal render. Preserve the passing design: exactly one immediately recognizable organic cold-adapted Frost Giant; ancient commanding giant-humanoid biped with exactly two arms and two legs; credible complete hands and feet, grounded joints and scale-bearing weight; the same cold-weather fur and hide layers, weathered natural blue-grey skin, old iron armor and hammer, complete whiteout command standard, authoritative stance, and readable cold-survival, formation-command, and sustained-focus counterplay. Preserve the explicitly unaffiliated Normal treatment: natural organic anatomy, worn fur, hide, cloth, old iron, ordinary frost weathering, and restrained neutral cold atmosphere only, with no magical glow, elemental body material, magical anatomy, or affinity-coded wake. Preserve the premium realistic painterly Pack 2 dark-fantasy finish, neutral lighting, cracked-stone floor, charcoal-to-midnight backdrop, and fully finished canvas. Make only this correction: uniformly scale and recompose the existing complete giant, hammer, command standard, every cloth/fur tip, and contact shadow inward so every hard extent—including the highest spearhead, complete banner crossbar and cloth, hammer head and icicles, both hands, both feet, and lowest standard point—fits inside the central 84 percent of both 1536×1024 canvas dimensions, leaving a clearly empty border of at least eight percent on all four sides. Keep the same identity, anatomy, pose, equipment, materials, whiteout authority, and Normal cues. Do not crop, redesign, mirror, recolor, add, or remove any body part or equipment. Do not introduce elemental emission, another creature, text, labels, UI, frame, logo, watermark, sexualization, published-character resemblance, or any new story element. This is an edit, not a complete regeneration.",
+      "promptHash": "324b7fd4cb816c2a69b54cb668737bd7a646331159255382401d9427eccbb59e",
+      "referenceInputs": [
+        {"path": "assets/enemies/review/large-threats-v1.webp", "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"},
+        {"path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"}
+      ],
+      "correctionReferenceInput": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-3ab5ed63-1726-4e51-9e4b-fa44b3b8ae9e.png", "contentHash": "24c635d1e4644981f3d93e2f60c92f3e62eaa970c7e6444e3d3b286211240505"},
+      "requestStartedAt": "2026-08-30T08:45:27.753Z",
+      "generationCompletedAt": "2026-08-30T08:45:48.053Z",
+      "inspectionCompletedAt": "2026-08-30T08:45:55.053Z",
+      "generationDurationMs": 20300,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 27300,
+      "sourceOutputId": "exec-3bd28a6c-9181-4a79-81f1-554ca72898c1.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 26,
+        "source": {"path": "/home/joao/.codex/generated_images/01a051c0-92a5-7963-9f62-4c8559f05181/exec-3bd28a6c-9181-4a79-81f1-554ca72898c1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2046476, "contentHash": "83079b524a41ab2db875b6a67117e7d794da2c6920ca266ad0ac4a860e972e68"},
+        "retained": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2046476, "contentHash": "83079b524a41ab2db875b6a67117e7d794da2c6920ca266ad0ac4a860e972e68"}
+      },
+      "output": {"path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/normal-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2046476, "contentHash": "83079b524a41ab2db875b6a67117e7d794da2c6920ca266ad0ac4a860e972e68"},
+      "findings": [
+        {"criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete hair and fur silhouette, hammer and icicles, both hands and feet, full standard spearhead, crossbar, cloth and lower point, and contact shadow fit inside a generous finished border."},
+        {"criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one fully rendered Frost Giant appears with no duplicate or incidental creature."},
+        {"criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The first prompt exactly matched the canonical renderer; the targeted edit used the exact preceding source and retained the explicit correction source byte-for-byte."},
+        {"criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The ancient organic giant, commanding face, cold-weather layers, old iron hammer and armor, whiteout standard, grounded authority, and counterplay stance preserve every identity, duty, equipment, and counterplay invariant."},
+        {"criterionId": "manifest-fidelity", "category": "anatomy", "evaluator": "producer", "outcome": "pass", "observation": "Exactly two arms and two legs have credible joints, complete hands and feet, planted contact, and scale-bearing weight; the giant remains organic rather than elemental or golem-like."},
+        {"criterionId": "normal-unaffiliated-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Natural weathered skin, fur, hide, cloth, old iron, stone floor, and ordinary frost wear remain explicitly unaffiliated with no magical glow, elemental body material, magical anatomy, or affinity-coded wake."},
+        {"criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Frost Giant cues."},
+        {"criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind unaffiliated recognition remains pending human review; known-target inspection finds consistent organic materials and restrained neutral cold-weather cues."},
+        {"criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium realistic painterly Pack 2 finish, organic blue-grey skin, natural fur, worn ancient iron, neutral cold atmosphere, cracked floor, charcoal backdrop, and all constraint-safety requirements remain cohesive."},
+        {"criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The persistence helper exclusive-copied the exact correction PNG without normalization; source and retained dimensions, media type, 2,046,476 bytes, and SHA-256 83079b524a41ab2db875b6a67117e7d794da2c6920ca266ad0ac4a860e972e68 match."},
+        {"criterionId": "protocol-provenance", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned candidate and result paths were written; no shared file, application code, review artifact, plan, Git state, or unrelated path was edited."}
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-frost-giant-normal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:44:34.157Z",
+  "completedAt": "2026-08-30T08:46:28.517Z",
+  "totalWallTimeMs": 114360,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/normal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-giant-normal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

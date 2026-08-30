@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-hill-giant-water",
+  "targetId": "affinity-expansion-v1-hill-giant-water",
+  "assignmentId": "assignment-affinity-expansion-v1-hill-giant-water",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hill-giant-water-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-hill-giant-water\".\n\nSubject and threat:\n- Species: hill-giant.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: hill-giant-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Hill Giant remains immediately recognizable\n- Battlefield duty remains Arena-scale displacement\n- arena-scale giant with stone maul, debris-ready off-hand, and displacement posture\n- Signature skills remain visually supportable: Stone maul, Debris throw, Shock step.\n- Counterplay remains visible: The still image preserves readable counterplay for Arena awareness, Ranged support, Fall recovery.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: water.\nAffinity expression: pressurized flow, mist, wet reflection, coherent fluid transitions, and a readable structural core\nCounterplay cue: The still image preserves readable counterplay for Arena awareness, Ranged support, Fall recovery. Pressure loss exposes the coherent binding core after a committed attack.\nAltered dimensions: material; motion; attack-telegraph; environmental-wake.\nPermitted transformations: material; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a shapeless blue blob or generic blue glow with no readable structure.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 3 only: Hill Giant identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b51e6a4b100a73f11fe6f37d38526275aad9482f3951cd38e345b029a95e692a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:35:58.000Z",
+      "generationCompletedAt": "2026-08-30T08:36:17.993Z",
+      "inspectionCompletedAt": "2026-08-30T08:36:25.993Z",
+      "generationDurationMs": 19993,
+      "inspectionDurationMs": 8000,
+      "totalWallTimeMs": 27993,
+      "sourceOutputId": "exec-99bb203b-13f3-4baa-849c-607731b60dc0",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The highest hair and effect droplets enter the required top 8 percent safety band."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Water Hill Giant appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Arena-scale giant with exactly two arms and legs, huge feet, stone maul, debris-ready off-hand, and shock-step displacement posture remains clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Coherent pressurized flow and localized translucent fluid transitions replace forearm, shoulder, rib, knee, and maul-load paths around one pressure chamber, supported by mist, droplets, wake, and wet reflection rather than generic blue glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressure-loss seams around the binding chamber, occupied maul/debris hands, and grounded feet preserve arena and fall-recovery counterplay."
+        }
+      ],
+      "retryReason": "Scale down and recenter every hard/liquid extent while replacing wet-skin overlay and generic core glow with coherent pressurized Water construction."
+    },
+    {
+      "attemptId": "attempt-affinity-expansion-v1-hill-giant-water-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "attempt-affinity-expansion-v1-hill-giant-water-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Targeted Water-construction and framing correction. Preserve this exact single arena-scale Hill Giant identity, face, huge bipedal anatomy with exactly two arms and two legs, stone maul, debris-ready off-hand, displacement pose, wet dark materials, circular wake, lighting, and painterly finish. Strengthen Water affinity beyond wet-skin overlay: coherent pressurized flow and translucent fluid transitions visibly replace localized forearm, shoulder, rib, knee, and maul-load paths around one readable non-blob binding core; mist, droplets, directional wake, and wet reflection remain restrained and structurally connected. Reduce the waist core from generic blue glow into a materially coherent pressure chamber with visible pressure-loss seams. Uniformly scale the full giant, hair, maul, both hands, all debris, droplets, circular wake, clothing, and both feet down by about 18 percent and recenter so every hard/liquid extent fits inside the central 84 percent of the 1536 x 1024 canvas with a clearly empty finished border of at least 8 percent on all four sides. Exactly one subject. No extra limbs, shapeless water blob, text, crop, or affinity change.",
+      "promptHash": "1cc4889c3317d7ece69cbf5ece981cf9682a16308a7a969e9ec46342adfbdf15",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-99bb203b-13f3-4baa-849c-607731b60dc0.png",
+        "contentHash": "d6683f02200ceeee90057197d42f722a8d016f15864861487b1109b065ad71ce"
+      },
+      "requestStartedAt": "2026-08-30T08:37:05.000Z",
+      "generationCompletedAt": "2026-08-30T08:37:27.328Z",
+      "inspectionCompletedAt": "2026-08-30T08:37:34.328Z",
+      "generationDurationMs": 22328,
+      "inspectionDurationMs": 7000,
+      "totalWallTimeMs": 29328,
+      "sourceOutputId": "exec-b0529d9f-2a45-4c7d-9787-b787c8d4efa1",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 17,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a04a99-b1aa-7aa2-bfa7-f1ba7a297720/exec-b0529d9f-2a45-4c7d-9787-b787c8d4efa1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2274921,
+          "contentHash": "964df980abbbcd4ae1625f94b586a28f6d83ccbe29ab2c489517151405241b9a"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/water-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2274921,
+          "contentHash": "964df980abbbcd4ae1625f94b586a28f6d83ccbe29ab2c489517151405241b9a"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/water-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2274921,
+        "contentHash": "964df980abbbcd4ae1625f94b586a28f6d83ccbe29ab2c489517151405241b9a"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Full hair, maul, hands, debris, droplets, circular wake, clothing, and both feet remain inside a clearly empty safe border."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished adult Water Hill Giant appears on a complete cracked-stone canvas."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The initial prompt matches the canonical renderer and the correction references the exact preceding output."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Arena-scale giant with exactly two arms and legs, huge feet, stone maul, debris-ready off-hand, and shock-step displacement posture remains clear."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Coherent pressurized flow and localized translucent fluid transitions replace forearm, shoulder, rib, knee, and maul-load paths around one pressure chamber, supported by mist, droplets, wake, and wet reflection rather than generic blue glow."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Pressure-loss seams around the binding chamber, occupied maul/debris hands, and grounded feet preserve arena and fall-recovery counterplay."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "attempt-affinity-expansion-v1-hill-giant-water-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:35:58.000Z",
+  "completedAt": "2026-08-30T08:37:41.000Z",
+  "totalWallTimeMs": 103000,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/water-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/hill-giant-water-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-cave-troll-wood",
+  "targetId": "affinity-expansion-v1-cave-troll-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-cave-troll-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-cave-troll-wood\".\n\nSubject and threat:\n- Species: cave-troll.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: cave-troll-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Cave Troll remains immediately recognizable\n- Battlefield duty remains Regenerating reach threat\n- long-reach regenerating cave giant with raw hide, hunched shoulders, and powerful hands\n- Signature skills remain visually supportable: Long reach, Regeneration, Corner pressure.\n- Counterplay remains visible: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline. Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 1 only: Cave Troll identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "b89adebc9fa900e533f82ecb75ef6ec4c5055bbdb8a00462f1b65bdbdc72dc30",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:26:12.105Z",
+      "generationCompletedAt": "2026-08-30T08:26:32.401Z",
+      "inspectionCompletedAt": "2026-08-30T08:27:06.623Z",
+      "generationDurationMs": 20296,
+      "inspectionDurationMs": 34222,
+      "totalWallTimeMs": 54518,
+      "sourceOutputId": "exec-8c9af579-a1df-4f3e-beec-e33eb006972c.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial crown foliage crossed the top eight-percent safety boundary and the club head sat at the left boundary."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Amber resin existed across the shoulder but did not isolate a clearly interruptible binding joint or fresh-cut growth point."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The giant-scale stooped grey Cave Troll, exactly two long arms and two legs, powerful hands, broad feet, raw hide, club, and regenerating reach-threat posture remained readable."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bark-grained hide, root articulation, wooden club, resin seams, and living growth changed material, localized anatomy, and equipment rather than only hue."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Cave Troll appeared on a fully finished cracked-stone floor and charcoal backdrop."
+        }
+      ],
+      "retryReason": "Use the single targeted edit to pull all extents inside the safe frame and concentrate a readable resin-bright, fresh-cut counterplay joint while preserving the accepted troll and Wood construction."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-cave-troll-wood-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Cave Troll image; do not create a different creature.\n\nPreserve all passing traits exactly: one immediately recognizable stooped grey Cave Troll at giant scale; exactly two arms and two legs; disproportionately long powerful arms and hands; hunched shoulders; raw cavern hide; grounded broad feet; regenerating reach-threat posture; one complete wooden club held credibly in one hand; premium realistic painterly Pack 2 dark-fantasy finish; cracked-stone floor; charcoal-to-midnight backdrop; Wood affinity integrated through bark-grained load-bearing hide, root-like articulation, resin seams, wooden equipment, and purposeful living growth. Preserve the stern face and avoid human, ogre, or elemental-golem redesign.\n\nMake only these targeted corrections:\n1. Pull the camera back and scale/recenter the complete troll, club, fingers, toes, foliage, roots, resin, and every silhouette/effect extent so all hard extents fit inside the central 84 percent of both canvas dimensions. Leave at least 8 percent clearly empty finished border on all four sides.\n2. Concentrate the Wood counterplay into clearly readable resin-bright binding joints and fresh-cut pale wood at the long arm's shoulder and elbow. These exposed interruptible joints must be obvious but localized, anatomical, load-bearing, and non-emissive—not pasted foliage, decorative antlers, a brown recolor, or a uniform glow.\n\nKeep exactly one subject, exactly two arms and two legs, credible hands/feet/joints, complete canvas, restrained neutral lighting, and the same 1536 x 1024 image/png format. No extra limb, duplicate, cropped hand/foot/club, ordinary human scale, text, UI, frame, logo, watermark, sexualization, or published-character resemblance. This is a targeted edit, not a complete regeneration.",
+      "promptHash": "a9b2faeae69b677ec370469aed4d9cfbefe49067d8da40c5865de6f93f188e13",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-8c9af579-a1df-4f3e-beec-e33eb006972c.png",
+        "contentHash": "4cc2507b9fc33bb07e738763408bb60fc44e926aca9ad3cd2485c516d0ce7a2b"
+      },
+      "requestStartedAt": "2026-08-30T08:27:06.623Z",
+      "generationCompletedAt": "2026-08-30T08:27:28.832Z",
+      "inspectionCompletedAt": "2026-08-30T08:27:54.079Z",
+      "generationDurationMs": 22209,
+      "inspectionDurationMs": 25247,
+      "totalWallTimeMs": 47456,
+      "sourceOutputId": "exec-4b948d27-3216-4961-9c17-d6a94f0e320f.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 20,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-4b948d27-3216-4961-9c17-d6a94f0e320f.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2013001,
+          "contentHash": "6e53ddfe7ad5284b98e4ee390df8a80e328168743673364069f3bddd46116b41"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2013001,
+          "contentHash": "6e53ddfe7ad5284b98e4ee390df8a80e328168743673364069f3bddd46116b41"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2013001,
+        "contentHash": "6e53ddfe7ad5284b98e4ee390df8a80e328168743673364069f3bddd46116b41"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete crown, both hands, both feet, club, growth, resin, and every silhouette extent sit inside the central 84 percent with an empty finished border."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The cracked-stone floor and charcoal-to-midnight backdrop are finished throughout with no blank band or cutoff."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Cave Troll appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matches the canonical renderer; ordered references and correction linkage are retained."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The result preserves one giant-scale stooped grey cavern humanoid with exactly two disproportionately long arms, two legs, credible large hands and feet, hunched shoulders, grounded weight, and raw hide."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The hanging long arm, heavy wooden club, powerful grip, and forward hunch clearly communicate regeneration, long reach, corner pressure, and kiting vulnerability."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Wood visibly alters load-bearing hide, shoulder and elbow anatomy, articulation, club material, resin seams, and localized living growth rather than forming a brown overlay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Bright amber resin seams and exposed pale fresh-cut wood concentrate at the long arm's shoulder and elbow as readable interruptible binding joints."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong Cave Troll proportion, face, reach, hunch, hands, and stance cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition remains pending human review; known-target inspection finds strong bark, root articulation, wood club, resin, and fresh-cut joint cues."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, restrained neutral light, grounded bark/hide materials, cracked floor, and charcoal backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limb, decorative antler, pasted foliage silhouette, ordinary human scale, crop, text, UI, frame, watermark, sexualization, or published-character resemblance appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction PNG was exclusive-copied; source and retained metadata and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-cave-troll-wood-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:26:12.105Z",
+  "completedAt": "2026-08-30T08:27:54.079Z",
+  "totalWallTimeMs": 101974,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/cave-troll-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

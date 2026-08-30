@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-frost-colossus-wind",
+  "targetId": "affinity-expansion-v1-frost-colossus-wind",
+  "assignmentId": "assignment-affinity-expansion-v1-frost-colossus-wind",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-frost-colossus-wind-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-frost-colossus-wind\".\n\nSubject and threat:\n- Species: frost-colossus.\n- Threat presentation tier: elite; reference Grade 4; canonical Grade 4.\n- Battlefield duty: frost-colossus-duty.\n- Construction mode: substance-bodied.\n\nIdentity invariants:\n- Frost Colossus remains immediately recognizable\n- Battlefield duty remains Zone-denial boss\n- towering glacier torso, broad planted feet, and one sweeping ice arm\n- frost rings crawl across the floor before a freezing sweep\n- Counterplay remains visible: dark stone heart visible through cracked chest ice\n\nAnatomy invariants:\n- one coherent declared elemental body plan around one readable core\n- affinity material forms every load-bearing mass, joint, or directional wake\n\nAffinity: wind.\nAffinity expression: directional fur or cloth, vapor channels, debris flow, and pressure distortion with visible force\nCounterplay cue: dark stone heart visible through cracked chest ice The still center of the pressure pattern remains visible between directional attacks.\nAltered dimensions: silhouette; motion; attack-telegraph; environmental-wake.\nPermitted transformations: silhouette; motion; attack telegraph; environmental wake.\nProhibited traits: ordinary armored humanoid; decorative affinity overlay; extra limbs; a pale recolor, transparency alone, or effects with no directional force.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/pack-2/elementals-v1.png — Subject 4 only: Frost Colossus identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "a979afafb527104324796fb88ccb883231cede58e86f60f5ca24a0ee67d2d3ea",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "requestStartedAt": "2026-08-30T08:26:35.216Z",
+      "generationCompletedAt": "2026-08-30T08:27:20.616Z",
+      "inspectionCompletedAt": "2026-08-30T08:27:50.000Z",
+      "generationDurationMs": 45400,
+      "inspectionDurationMs": 29384,
+      "totalWallTimeMs": 74784,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-a6c38780-0a63-4358-a7c0-530956a5dd49.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The full silhouette, broad feet, sweeping arm, ring, vapor loops, debris, and shadow fit within a finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Wind Frost Colossus appeared." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The exact canonical prompt was submitted without terminal newline at SHA-256 a979afafb527104324796fb88ccb883231cede58e86f60f5ca24a0ee67d2d3ea with references in order." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "fail", "observation": "The species, duty, glacier torso, feet, sweeping arm, and frost ring passed, but the chest cue read as a bright blue crystal rather than a materially distinct dark stone heart." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Directional vapor channels, circular debris flow, pressure distortion, swept silhouette, and a coherent force wake strongly integrated Wind." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "fail", "observation": "The central chest object was visible but blue crystalline, not the declared dark stone heart." }
+      ],
+      "retryReason": "A counterplay-only edit was required to replace the blue crystalline chest center with an exposed dark stone heart while preserving every successful Wind trait."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-frost-colossus-wind-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-frost-colossus-wind-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "Corrective edit of the supplied preceding Frost Colossus Wind render; do not redesign or regenerate a different creature.\n\nPreserve exactly: one elite towering Frost Colossus zone-denial boss; one coherent glacier biped around one readable chest core; exactly two arms and two broad planted legs with complete grounded feet; the same towering glacier torso, same dominant sweeping ice arm, same smaller clawed arm, same head, pose, proportions, ice anatomy, load-bearing joints, frost ring, directional vapor channels, debris flow, pressure distortion, circular force direction, still pressure center, cracked-stone floor, charcoal-to-midnight backdrop, controlled neutral lighting, restrained blue-white emission, premium realistic painterly Pack 2 finish, safe framing, and every successful detail. Preserve the visible Wind affinity through the same directional wake and anatomy without transparency or a pale recolor.\n\nChange only the exposed chest counterplay cue: replace the bright blue crystalline chest center with one clearly visible, materially distinct dark stone heart behind cracked translucent chest ice. The heart must read as dense charcoal-black natural stone, not blue crystal, metal, armor, or generic glow; retain only restrained blue-white light in the cracks around it so the dark stone mass remains unmistakable and exposed. Keep the heart at the exact same chest position and scale. Do not alter any other anatomy, affinity cue, silhouette, effect, pose, framing, material, lighting, or canvas region.\n\nNo extra subject, extra limb, humanoid armor, decorative overlay, shapeless effect, text, label, UI, frame, logo, watermark, crop, blank band, unfinished region, sexualization, or published-character resemblance. Finish every canvas region.",
+      "promptHash": "17e4998f500d81f892e8465e2e94e5fc7f75488155d641bb21f667b48bf973eb",
+      "referenceInputs": [
+        { "path": "assets/enemies/review/pack-2/elementals-v1.png", "contentHash": "54e0d1eaa6fe6af23fe8ef2e33b1d4f6893f964561502cf47fc43e7013d63786" },
+        { "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png", "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e" }
+      ],
+      "correctionReferenceInput": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-a6c38780-0a63-4358-a7c0-530956a5dd49.png", "contentHash": "e9d35bb08ce51c11ac8bc1dbdb93a8cb987d9f1891dbfa7af34919032d51f11c" },
+      "requestStartedAt": "2026-08-30T08:27:59.545Z",
+      "generationCompletedAt": "2026-08-30T08:28:24.445Z",
+      "inspectionCompletedAt": "2026-08-30T08:29:00.495Z",
+      "generationDurationMs": 24900,
+      "inspectionDurationMs": 36050,
+      "totalWallTimeMs": 60950,
+      "sourceOutputId": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-0ec0a525-6312-4ac1-8596-fb14b17da3fc.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 33,
+        "source": { "path": "/home/joao/.codex/generated_images/01a05104-52a3-7213-8703-b1b14fa6af8e/exec-0ec0a525-6312-4ac1-8596-fb14b17da3fc.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2709297, "contentHash": "a24171987bd7d4ed52714008b64c8bbdcd7d25197190fe2448dff9eaaf0ba804" },
+        "retained": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2709297, "contentHash": "a24171987bd7d4ed52714008b64c8bbdcd7d25197190fe2448dff9eaaf0ba804" }
+      },
+      "output": { "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wind-v1.png", "width": 1536, "height": 1024, "mediaType": "image/png", "bytes": 2709297, "contentHash": "a24171987bd7d4ed52714008b64c8bbdcd7d25197190fe2448dff9eaaf0ba804" },
+      "findings": [
+        { "criterionId": "complete-safe-frame", "category": "framing", "evaluator": "producer", "outcome": "pass", "observation": "The complete colossus, feet, sweeping arm, head peaks, vapor loops, debris, frost ring, and shadow remain safely inside the finished canvas." },
+        { "criterionId": "single-finished-subject", "category": "subject-count", "evaluator": "producer", "outcome": "pass", "observation": "Exactly one complete Frost Colossus appears with no duplicate or incidental creature." },
+        { "criterionId": "protocol-provenance", "category": "prompt-provenance", "evaluator": "automated", "outcome": "pass", "observation": "The canonical and targeted counterplay prompts retain exact hashes, ordered target-reference provenance, and the exact preceding render as correction input." },
+        { "criterionId": "manifest-fidelity", "category": "manifest-fidelity", "evaluator": "producer", "outcome": "pass", "observation": "The towering glacier torso, broad planted feet, one dominant sweeping ice arm, smaller clawed arm, floor ring, one coherent core plan, and declared dark chest heart are all visible." },
+        { "criterionId": "affinity-construction-fidelity", "category": "affinity-integration", "evaluator": "producer", "outcome": "pass", "observation": "Strong directional vapor channels, swept ice silhouette, circular debris flow, pressure distortion, motion, telegraph, environmental wake, and still center express Wind beyond hue." },
+        { "criterionId": "visible-counterplay-cue", "category": "counterplay", "evaluator": "producer", "outcome": "pass", "observation": "A dense charcoal-dark stone heart is materially distinct and exposed behind cracked translucent chest ice at the still center of the pressure pattern." },
+        { "criterionId": "blind-species-identity", "category": "species-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind archetype recognition remains pending human review; target-aware Frost Colossus cues are strong." },
+        { "criterionId": "blind-affinity-integration", "category": "affinity-cue-strength", "evaluator": "producer", "outcome": "not-applicable", "observation": "Blind Wind recognition remains pending human review; target-aware directional anatomy, vapor, debris, pressure, and wake cues are strong." },
+        { "criterionId": "single-finished-subject", "category": "style-cohesion", "evaluator": "producer", "outcome": "pass", "observation": "Premium Pack 2 realistic painterly ice, dark stone, vapor, floor, backdrop, neutral light, and restrained emission remain cohesive." },
+        { "criterionId": "single-finished-subject", "category": "constraint-safety", "evaluator": "producer", "outcome": "pass", "observation": "No armor, overlay, extra limb, pale recolor-only treatment, transparency-only treatment, directionless particles, text, UI, watermark, crop, extra subject, sexualization, or published-character resemblance is visible." },
+        { "criterionId": "protocol-provenance", "category": "exact-source-persistence", "evaluator": "automated", "outcome": "pass", "observation": "The helper exclusive-copied the exact corrected source; dimensions, media type, 2,709,297 bytes, and SHA-256 a24171987bd7d4ed52714008b64c8bbdcd7d25197190fe2448dff9eaaf0ba804 match." },
+        { "criterionId": "single-finished-subject", "category": "output-ownership", "evaluator": "producer", "outcome": "pass", "observation": "Only the assignment-owned Frost Colossus Wind candidate and result paths were written; no shared file, unrelated path, or git history was edited." }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-frost-colossus-wind-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:26:35.216Z",
+  "completedAt": "2026-08-30T08:29:00.495Z",
+  "totalWallTimeMs": 145279,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wind-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-wind-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

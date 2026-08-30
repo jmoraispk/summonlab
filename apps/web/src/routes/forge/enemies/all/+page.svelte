@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import {
 		ENEMY_AFFINITY_ARCHETYPE_LINKS,
+		ENEMY_AFFINITY_EXPANSION_ARCHETYPE_LINKS,
 		ENEMY_AFFINITY_FAMILY_PILOTS,
 		ENEMY_ARCHETYPES,
 		ENEMY_REVIEW_FAMILIES,
@@ -53,15 +54,30 @@
 		counterLabel: string;
 		counter: string;
 		affinitySpeciesId: string | null;
+		affinityRoute: 'workflow' | 'expansion' | null;
 	}
 
 	const affinityPilotByFamily: ReadonlyMap<string, (typeof ENEMY_AFFINITY_FAMILY_PILOTS)[number]> =
 		new Map(ENEMY_AFFINITY_FAMILY_PILOTS.map((pilot) => [pilot.familyId, pilot] as const));
-	const affinitySpeciesByArchetype: ReadonlyMap<string, string> = new Map(
-		ENEMY_AFFINITY_ARCHETYPE_LINKS.map(
-			(link) => [link.archetypeId, link.affinitySpeciesId] as const
+	const affinityLinkByArchetype: ReadonlyMap<
+		string,
+		{ speciesId: string; route: 'workflow' | 'expansion' }
+	> = new Map<string, { speciesId: string; route: 'workflow' | 'expansion' }>([
+		...ENEMY_AFFINITY_ARCHETYPE_LINKS.map(
+			(link) =>
+				[
+					link.archetypeId,
+					{ speciesId: link.affinitySpeciesId, route: 'workflow' as const }
+				] as const
+		),
+		...ENEMY_AFFINITY_EXPANSION_ARCHETYPE_LINKS.map(
+			(link) =>
+				[
+					link.archetypeId,
+					{ speciesId: link.affinitySpeciesId, route: 'expansion' as const }
+				] as const
 		)
-	);
+	]);
 
 	const plateImages: Record<string, string> = {
 		'goblinoids-v1': goblinoids,
@@ -121,6 +137,7 @@
 			const family = familyById.get(entry.family)!;
 			const sourceFamily = packOneFamilyById.get(entry.family)!;
 			const familyEnemyIds: readonly string[] = sourceFamily.enemyIds;
+			const affinityLink = affinityLinkByArchetype.get(entry.id) ?? null;
 			return {
 				id: entry.id,
 				name: entry.name,
@@ -138,13 +155,15 @@
 				tactics: entry.skills.join(' · '),
 				counterLabel: 'Teaches',
 				counter: entry.teaches.join(' · '),
-				affinitySpeciesId: affinitySpeciesByArchetype.get(entry.id) ?? null
+				affinitySpeciesId: affinityLink?.speciesId ?? null,
+				affinityRoute: affinityLink?.route ?? null
 			};
 		}),
 		...PACK_TWO_MONSTER_ARCHETYPES.map((entry) => {
 			const family = familyById.get(entry.family)!;
 			const sourceFamily = packTwoFamilyById.get(entry.family)!;
 			const familyMonsterIds: readonly string[] = sourceFamily.monsterIds;
+			const affinityLink = affinityLinkByArchetype.get(entry.id) ?? null;
 			return {
 				id: entry.id,
 				name: entry.name,
@@ -162,7 +181,8 @@
 				tactics: entry.telegraph,
 				counterLabel: 'Weak point',
 				counter: entry.weakPoint,
-				affinitySpeciesId: affinitySpeciesByArchetype.get(entry.id) ?? null
+				affinitySpeciesId: affinityLink?.speciesId ?? null,
+				affinityRoute: affinityLink?.route ?? null
 			};
 		})
 	];
@@ -350,12 +370,14 @@
 								<dd>{enemy.counter}</dd>
 							</div>
 						</dl>
-						{#if enemy.affinitySpeciesId}
+						{#if enemy.affinitySpeciesId && enemy.affinityRoute}
 							<a
 								class="affinity-link enemy-affinity-link"
 								data-testid="enemy-affinity-link"
 								href="{resolve(
-									'/forge/enemies/affinity-workflow'
+									enemy.affinityRoute === 'workflow'
+										? '/forge/enemies/affinity-workflow'
+										: '/forge/enemies/affinity-expansion'
 								)}#affinity-{enemy.affinitySpeciesId}"
 								>Explore Normal + five elemental affinities →</a
 							>

@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-clay-golem-wood",
+  "targetId": "affinity-expansion-v1-clay-golem-wood",
+  "assignmentId": "assignment-affinity-expansion-v1-clay-golem-wood",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "revise",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-wood-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-clay-golem-wood\".\n\nSubject and threat:\n- Species: clay-golem.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: clay-golem-duty.\n- Construction mode: constructed-humanoid.\n\nIdentity invariants:\n- Clay Golem remains immediately recognizable\n- Battlefield duty remains Slow attrition wall\n- broad hand-shaped clay guardian with compression seams and a reforming core\n- Signature skills remain visually supportable: Body block, Crushing grip, Re-form.\n- Counterplay remains visible: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing.\n\nAnatomy invariants:\n- exactly two articulated arms and two load-bearing legs\n- one coherent controlling core with credible manufactured joints and ground contact\n\nAffinity: wood.\nAffinity expression: bark grain, load-bearing roots, resin seams, wooden articulation, and purposeful living growth\nCounterplay cue: The still image preserves readable counterplay for Blunt weapons, Weak-point study, Resource pacing. Resin-bright binding joints or fresh-cut growth expose the interruptible structure.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; localized anatomy; equipment; counterplay cue.\nProhibited traits: living human anatomy; decorative affinity coating; extra or missing limbs; a brown recolor, decorative antlers, or foliage pasted over the silhouette.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/constructs-v1.webp — Subject 1 only: Clay Golem identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "42398246f43ec264281760f252e172e62582b99226f411ae67d65ce80f1479d2",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:52:15.676Z",
+      "generationCompletedAt": "2026-08-30T08:52:57.533Z",
+      "inspectionCompletedAt": "2026-08-30T08:53:33.362Z",
+      "generationDurationMs": 41857,
+      "inspectionDurationMs": 35829,
+      "totalWallTimeMs": 77686,
+      "sourceOutputId": "exec-e7e75220-e505-457e-a175-23673765328b.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Head and feet breached the safe margins."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "material",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "Broad plates drifted toward stone rather than compressed clay."
+        }
+      ],
+      "retryReason": "Contain all extents and restore hand-compressed clay while preserving roots, resin, core, and manufactured anatomy."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-clay-golem-wood-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-clay-golem-wood-attempt-1",
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "EDIT the supplied Wood Clay Golem image; do not redesign it.\n\nPreserve exactly one broad manufactured guardian with exactly two articulated arms, two load-bearing legs, one coherent chest core, large crushing hands, slow body-block stance, rooted wooden articulation, Pack 2 realistic painterly finish, floor and backdrop.\n\nCorrections:\n1. Scale and recenter every head, shoulder, root, finger, toe, growth, resin, and silhouette extent inside the central 84 percent of both canvas dimensions, with at least 8 percent empty finished border on all sides.\n2. Make all tan body masses unmistakably HAND-SHAPED DAMP CLAY, not stone: soft compressed slabs, thumb/finger impressions, smeared edges, stacked coil seams, and reformable clay joints. Preserve bark-grained load-bearing roots through shoulders, elbows, wrists, hips, knees, and ankles.\n3. Localize bright amber resin seams and pale fresh-cut wood specifically at elbow, wrist, knee, and ankle binding joints as interruptible counterplay. Keep the single reforming chest core readable but restrained. No pasted foliage, antlers, brown recolor, living anatomy, or decorative coating.\n\nExactly two arms/two legs, one core, no extra/missing limb, no crop, text, UI, watermark, frame, sexualization, or resemblance. Complete 1536x1024 PNG. Targeted edit, not regeneration.",
+      "promptHash": "c8e3b0b29e129990acd2d6c0e98636fe7326a12241a3551c5d5ed02ddba78a3a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/constructs-v1.webp",
+          "contentHash": "01effbc663d3524aae462c32e472d119694f5c5f3242b82065cff6c267de2510"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-e7e75220-e505-457e-a175-23673765328b.png",
+        "contentHash": "05c5f8a35aa99cf860c934e8032a531bd8680c42ef81145fc4b82357af63c95f"
+      },
+      "requestStartedAt": "2026-08-30T08:53:33.362Z",
+      "generationCompletedAt": "2026-08-30T08:53:51.940Z",
+      "inspectionCompletedAt": "2026-08-30T08:54:40.916Z",
+      "generationDurationMs": 18578,
+      "inspectionDurationMs": 48976,
+      "totalWallTimeMs": 67554,
+      "sourceOutputId": "exec-43cb9327-ee9e-4e4c-859b-a140b30dc5ec.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 17,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-43cb9327-ee9e-4e4c-859b-a140b30dc5ec.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2253515,
+          "contentHash": "dcb35b67311132f5ba63513f1cf77f50c15be224fcaa96309cbc62a3d7360407"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2253515,
+          "contentHash": "dcb35b67311132f5ba63513f1cf77f50c15be224fcaa96309cbc62a3d7360407"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2253515,
+        "contentHash": "dcb35b67311132f5ba63513f1cf77f50c15be224fcaa96309cbc62a3d7360407"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The lowest toe extents remain inside the bottom eight-percent margin after correction."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one finished construct appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "Canonical prompt, references, correction linkage, and persistence are complete."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "manifest-fidelity",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The broad hand-shaped clay guardian has exactly two arms/legs, compression marks, credible manufactured joints, crushing hands, slow body-block stance, and one reforming core."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Load-bearing bark roots, wooden joint articulation, localized growth, resin seams, and fresh-cut joint material transform anatomy and counterplay rather than coat the clay."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Amber resin and fresh-cut material at elbow, wrist, knee, and ankle joints expose interruptible structure."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind recognition pending; known-target cues are strong."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Wood recognition pending; known-target cues are strong."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No living human anatomy, extra limb, pasted foliage, antler, text, UI, watermark, or sexualization appears."
+        }
+      ],
+      "retryReason": "A further framing correction is required, but the retry ceiling is exhausted; retain as revise."
+    }
+  ],
+  "selectedAttemptId": null,
+  "failedCriteria": [
+    "complete-safe-frame"
+  ],
+  "startedAt": "2026-08-30T08:52:15.676Z",
+  "completedAt": "2026-08-30T08:54:40.916Z",
+  "totalWallTimeMs": 145240,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-wood-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}

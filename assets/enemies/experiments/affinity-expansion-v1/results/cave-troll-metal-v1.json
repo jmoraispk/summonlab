@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "image-production-result-v1",
+  "resultId": "result-affinity-expansion-v1-cave-troll-metal",
+  "targetId": "affinity-expansion-v1-cave-troll-metal",
+  "assignmentId": "assignment-affinity-expansion-v1-cave-troll-metal",
+  "skillVersion": "summonlab-image-production-v2",
+  "status": "candidate",
+  "attempts": [
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-metal-attempt-1",
+      "attemptNumber": 1,
+      "precedingAttemptId": null,
+      "conclusion": "rejected-by-producer",
+      "exactPrompt": "Use case: stylized-concept.\n\nCreate one premium realistic painterly raster character concept for the manifest-bound target \"affinity-expansion-v1-cave-troll-metal\".\n\nSubject and threat:\n- Species: cave-troll.\n- Threat presentation tier: standard; reference Grade 4; canonical Grade not assigned.\n- Battlefield duty: cave-troll-duty.\n- Construction mode: giant-humanoid.\n\nIdentity invariants:\n- Cave Troll remains immediately recognizable\n- Battlefield duty remains Regenerating reach threat\n- long-reach regenerating cave giant with raw hide, hunched shoulders, and powerful hands\n- Signature skills remain visually supportable: Long reach, Regeneration, Corner pressure.\n- Counterplay remains visible: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline.\n\nAnatomy invariants:\n- giant humanoid biped with exactly two arms and two legs\n- credible hands, feet, joints, scale-bearing posture, and grounded weight\n\nAffinity: metal.\nAffinity expression: forged anatomy, articulated load-bearing plates, metallic marrow, and controlled fragments\nCounterplay cue: The still image preserves readable counterplay for Fire use, Kiting, Finishing discipline. Articulated joints or the controlling magnetic core remain materially distinct.\nAltered dimensions: material; anatomy; equipment; exposed-counterplay.\nPermitted transformations: material; articulation; equipment; exposed weak point.\nProhibited traits: ordinary human scale; extra limbs; cropped hands, feet, or weapon; ordinary armor presented as an affinity without transformed construction.\n\nPresentation:\n- Style: Pack 2 premium realistic painterly dark fantasy with coherent materials, controlled linework, grounded anatomy, distinct species identity, and restrained local magical emission.\n- Medium: premium realistic painterly raster creature concept.\n- Background: neutral cracked-stone floor against a charcoal-to-midnight backdrop.\n- Lighting: controlled neutral key with restrained local affinity emission and readable materials.\n- Composition: Exactly one subject; entire creature, equipment, wings, tail, and every extremity visible, centered with finished detail across the canvas.\n- Canvas: 1536 x 1024 image/png with at least 8 percent safe margin around the entire silhouette and all extremities.\n- Framing lock: fit every hard extent—including weapon tip, standard, horns, tail, and effect wake—inside the central 84 percent of both canvas dimensions; leave a clearly empty border on all four sides.\n\nReference routing, in supplied order:\n1. assets/enemies/review/large-threats-v1.webp — Subject 1 only: Cave Troll identity, anatomy, duty silhouette, and material language; do not transfer another family member.\n2. assets/enemies/review/pack-2/monster-grade-escalation-v1.png — Pack 2 realistic dark-fantasy finish, neutral presentation, material fidelity, and restrained emission only; do not transfer another species, anatomy, weapon, or scale.\n\nConstraints:\n- No labels, text, UI, frame, logo, or watermark.\n- No extra creature, duplicate body, cropped extremity, blank band, unfinished region, or abrupt canvas cutoff.\n- No resemblance to a published character or reference person.\n- No sexualized anatomy, costume, or pose.",
+      "promptHash": "f55fa8cdd570db8eaab88c513338c454f04e54931fce16b7ade560801e6d1f4a",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": null,
+      "requestStartedAt": "2026-08-30T08:33:51.770Z",
+      "generationCompletedAt": "2026-08-30T08:34:14.529Z",
+      "inspectionCompletedAt": "2026-08-30T08:34:46.907Z",
+      "generationDurationMs": 22759,
+      "inspectionDurationMs": 32378,
+      "totalWallTimeMs": 55137,
+      "sourceOutputId": "exec-563c5c5e-b089-450f-bd99-f7704020b0f6.png",
+      "persistence": null,
+      "output": null,
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial crown exceeded the top safe boundary and the grounded feet entered the bottom eight-percent margin."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The initial plating could be read as ordinary armor over hide, and orange fissures suggested Fire rather than intrinsic forged Metal anatomy."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "fail",
+          "observation": "The orange abdominal core did not read as a materially distinct controlling magnetic core or articulated-joint weakness."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The Cave Troll remained a stooped giant with exactly two long arms, two legs, credible hands and feet, hunched shoulders, grounded weight, and reach-threat posture."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one complete Cave Troll appeared on a finished floor and backdrop."
+        }
+      ],
+      "retryReason": "Use the single edit to contain all extents, turn equipment-like plating into intrinsic forged anatomy and articulation, remove Fire-like orange seams, and expose a cool lodestone magnetic core."
+    },
+    {
+      "attemptId": "affinity-expansion-v1-cave-troll-metal-attempt-2",
+      "attemptNumber": 2,
+      "precedingAttemptId": "affinity-expansion-v1-cave-troll-metal-attempt-1",
+      "conclusion": "accepted-by-producer",
+      "exactPrompt": "EDIT the supplied Metal Cave Troll image; do not create a different creature.\n\nPreserve all passing traits exactly: one immediately recognizable stooped grey Cave Troll at giant scale; exactly two disproportionately long powerful arms and exactly two legs; hunched shoulders; stern nonhuman troll face; raw cavern hide visible between transformed structures; credible huge hands, broad grounded feet, joints, and weight; Regenerating reach-threat posture supporting Long reach, Regeneration, Corner pressure, Fire use, Kiting, and Finishing discipline; premium realistic painterly Pack 2 dark-fantasy finish; cracked-stone floor; charcoal-to-midnight backdrop.\n\nMake only these targeted corrections:\n1. Pull the camera back and scale/recenter the complete troll, fingers, toes, chains, controlled metal fragments, and every silhouette/effect extent so all hard extents fit inside the central 84 percent of both canvas dimensions. Leave at least 8 percent clearly empty finished border on all four sides.\n2. Transform the current armor-like overlay into intrinsic FORGED ANATOMY: load-bearing dermal iron plates must grow from and interlock with the troll's shoulders, long arm bones, spine, hands, shins, and feet; expose metallic marrow inside selected arm fissures; use clearly mechanical articulated plate collars at shoulders, elbows, wrists, knees, and ankles. Preserve visible raw grey troll hide between structures. It must read as transformed construction, not a troll wearing ordinary armor.\n3. Remove every orange ember, fire seam, furnace glow, and combustion cue. Replace the orange abdominal core with one materially distinct COOL CHARCOAL-BLACK LODESTONE MAGNETIC CORE exposed at the sternum/upper abdomen. Arrange a few controlled iron fragments and chain links in taut radial magnetic alignment around it with very restrained cold neutral highlights. The core and articulated joints must read as the vulnerable interruptible counterplay.\n\nKeep exactly one subject, exactly two arms and two legs, complete hands and feet, no weapon, no extra limb, no duplicate, no crop, no ordinary human scale, no simple armor upgrade, no Fire treatment, no text, UI, frame, logo, watermark, sexualization, or published-character resemblance. Keep the complete 1536 x 1024 image/png canvas fully finished. This is a targeted edit, not a complete regeneration.",
+      "promptHash": "05a0b12c91356fbcc1cc97a8ba48acd73e0bbb5e2fbd983837e9ce1b1d5c2879",
+      "referenceInputs": [
+        {
+          "path": "assets/enemies/review/large-threats-v1.webp",
+          "contentHash": "d3349cd6590f769176c43144710fe35f4c9066853e236f37ef6ea84d531b416a"
+        },
+        {
+          "path": "assets/enemies/review/pack-2/monster-grade-escalation-v1.png",
+          "contentHash": "622a63ea55ab833f0451d29f0967f26f2335c912296ad45537e2a0889c8ecd2e"
+        }
+      ],
+      "correctionReferenceInput": {
+        "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-563c5c5e-b089-450f-bd99-f7704020b0f6.png",
+        "contentHash": "e7cdb6e1bd23009bf61f7a2294fa0422be9f3639879297419d469743bdccdbf3"
+      },
+      "requestStartedAt": "2026-08-30T08:34:46.907Z",
+      "generationCompletedAt": "2026-08-30T08:35:09.323Z",
+      "inspectionCompletedAt": "2026-08-30T08:35:47.489Z",
+      "generationDurationMs": 22416,
+      "inspectionDurationMs": 38166,
+      "totalWallTimeMs": 60582,
+      "sourceOutputId": "exec-c453fed8-feae-4d5f-aeb1-9f0ec2916bd1.png",
+      "persistence": {
+        "operation": "exclusive-copy",
+        "elapsedMs": 31,
+        "source": {
+          "path": "/home/joao/.codex/generated_images/01a05104-3147-7660-a479-44300e124420/exec-c453fed8-feae-4d5f-aeb1-9f0ec2916bd1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2118590,
+          "contentHash": "f54e321cb64a162bb930d4e9361451d23a1a4707701b08620bc909f934bd37b9"
+        },
+        "retained": {
+          "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/metal-v1.png",
+          "width": 1536,
+          "height": 1024,
+          "mediaType": "image/png",
+          "bytes": 2118590,
+          "contentHash": "f54e321cb64a162bb930d4e9361451d23a1a4707701b08620bc909f934bd37b9"
+        }
+      },
+      "output": {
+        "path": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/metal-v1.png",
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png",
+        "bytes": 2118590,
+        "contentHash": "f54e321cb64a162bb930d4e9361451d23a1a4707701b08620bc909f934bd37b9"
+      },
+      "findings": [
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "framing",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The complete head, shoulders, two long arms, hands, chains, pendant fragments, legs, and feet remain inside the central 84 percent with a clearly empty finished border."
+        },
+        {
+          "criterionId": "complete-safe-frame",
+          "category": "canvas-completion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The cracked-stone floor and charcoal-to-midnight backdrop are fully finished without blank bands or cutoffs."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "subject-count",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Exactly one Metal Cave Troll appears with no duplicate or incidental creature."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "prompt-provenance",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The first submitted prompt exactly matches the canonical renderer; ordered references and correction linkage are retained."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "species-anatomy",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "The nonhuman grey troll face, stooped giant scale, hunched shoulders, exactly two disproportionately long arms, exactly two legs, huge credible hands, broad feet, and grounded reach posture remain immediately recognizable."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "battlefield-duty",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Long hanging hands, forward hunch, articulated arm load paths, exposed core, and heavy regeneration-ready stance support Long reach, Regeneration, Corner pressure, kiting, and finishing discipline."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-integration",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Interlocking dermal forged plates cover load-bearing shoulders, spine, arms, hands, shins, and feet; layered articulation collars restructure wrists and ankles; radial metal webbing, chains, and controlled fragments integrate the equipment and weak point instead of forming an ordinary armor suit."
+        },
+        {
+          "criterionId": "visible-counterplay-cue",
+          "category": "counterplay",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "A cool charcoal-black non-emissive lodestone core is materially distinct at the upper abdomen, with taut radial metal alignment and exposed articulated joint collars marking interruptible structure."
+        },
+        {
+          "criterionId": "blind-species-identity",
+          "category": "species-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind exact-archetype recognition remains pending human review; known-target inspection finds strong troll face, hunch, giant mass, long-arm, hand, and grounded-foot cues."
+        },
+        {
+          "criterionId": "blind-affinity-integration",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "not-applicable",
+          "observation": "Blind Metal recognition remains pending human review; known-target inspection finds strong intrinsic plate anatomy, articulation collars, radial magnetic webbing, chains, fragments, and lodestone cues."
+        },
+        {
+          "criterionId": "affinity-construction-fidelity",
+          "category": "affinity-cue-strength",
+          "evaluator": "producer",
+          "outcome": "concern",
+          "observation": "The controlled fragments remain tethered rather than visibly levitating, so blind magnetic-force recognition may depend more heavily on the radial lodestone alignment and fully forged body construction."
+        },
+        {
+          "criterionId": "manifest-fidelity",
+          "category": "style-cohesion",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Premium realistic painterly Pack 2 finish, controlled neutral key, readable iron and hide materials, restrained non-emissive treatment, floor, and backdrop remain cohesive."
+        },
+        {
+          "criterionId": "single-finished-subject",
+          "category": "constraint-safety",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "No extra limb, Fire glow, combustion, ordinary human scale, crop, text, UI, frame, watermark, sexualization, or published-character resemblance appears."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "exact-source-persistence",
+          "evaluator": "automated",
+          "outcome": "pass",
+          "observation": "The exact returned correction PNG was exclusive-copied; source and retained metadata and SHA-256 match."
+        },
+        {
+          "criterionId": "protocol-provenance",
+          "category": "output-ownership",
+          "evaluator": "producer",
+          "outcome": "pass",
+          "observation": "Only this assignment's candidate and result paths were written; no shared file or git state was edited."
+        }
+      ],
+      "retryReason": null
+    }
+  ],
+  "selectedAttemptId": "affinity-expansion-v1-cave-troll-metal-attempt-2",
+  "failedCriteria": [],
+  "startedAt": "2026-08-30T08:33:51.770Z",
+  "completedAt": "2026-08-30T08:35:47.489Z",
+  "totalWallTimeMs": 115719,
+  "writtenOutputPaths": [
+    "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/metal-v1.png",
+    "assets/enemies/experiments/affinity-expansion-v1/results/cave-troll-metal-v1.json"
+  ],
+  "noSharedFilesEdited": true,
+  "selfPromoted": false
+}
