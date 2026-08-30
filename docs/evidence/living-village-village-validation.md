@@ -38,7 +38,8 @@ compact find/focus ribbon. No separate roster route was created.
 - The Summoning Gate is a real link to the repository's existing `/forge` Summoning Forge rather
   than a destination-shaped button with no outcome.
 - Anchored quick popover with portrait, name, level, Health, current activity, party state, Court
-  training, Tower species hunt, and details actions.
+  training, Tower species hunt, and details actions. Completing either assignment dismisses the
+  popover while the resulting destination, activity, and busy silhouette remain visible in-world.
 - Same-surface hero drawer for attributes, skills, and equipment.
 - Compact six-person roster ribbon that selects, centers, and moves keyboard focus to the same
   in-world hero.
@@ -67,8 +68,9 @@ Result: **2 passed**. The test proves direct static loading, no `/api/` requests
 1536×1024 Hearth asset, three top-centered hotspot labels, six true-alpha in-world figures, absence
 of the destination panel/resident-count/camera-help annotations, in-world hero selection, ribbon
 focus, anchored popover, details drawer, availability light removal after Court assignment, Court
-training, species hunt, pointer pan beginning inside a facility region at fitted zoom, repeated
-two-axis pan at maximum zoom, disabled native image/link dragging, click suppression after a drag,
+training and species hunt popover dismissal, pointer pan beginning inside a facility region at
+fitted zoom, repeated two-axis pan at maximum zoom, disabled native image/link dragging, click
+suppression after a drag,
 wheel zoom, visible controls, 100–300% bounds, Fit/Reset semantics, keyboard operation, reduced
 motion, phone target sizes, the real Gate-to-Forge navigation, and no horizontal overflow at phone
 or 200%-equivalent reflow widths.
@@ -134,13 +136,20 @@ derivatives of the exact approved anchors, removes the CSS blend/mask workaround
 label inside the region's top edge, disables browser image/link dragging, and captures bare-map
 pointer gestures immediately.
 
+The latest command-flow review requested that a resident's menu close once a Court or Tower order
+has been completed. Both finalized assignment paths now dismiss the anchored popover immediately;
+the destination selection, activity state, movement placeholder, and busy silhouette continue to
+confirm the accepted order in the Village. Statistics and experience changes remain a future data
+integration rather than being simulated by this route-local fixture.
+
 ## Useful review actions
 
 1. Select Jori directly in the courtyard, then use the ribbon to find Remy. This decides whether
    the true-alpha figure treatment feels like residents standing in the world on desktop and phone.
 2. Send Dara to Court training, then send Mara to hunt a Stoneback boar. This decides whether the
-   availability light disappearing, quick-action density, and simple destination transition
-   communicate command intent without pretending polished activity animation exists.
+   immediate menu dismissal, availability light disappearing, and simple destination transition
+   communicate command completion without pretending statistics or polished activity animation
+   exists.
 3. Drag from bare ground and through the Training Grounds region, reset, then hover and click the
    Gate artwork. This decides whether camera recovery feels predictable and whether the existing
    Summoning Forge is the right interim Gate destination.

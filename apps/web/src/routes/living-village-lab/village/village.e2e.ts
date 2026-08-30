@@ -111,7 +111,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 
 	await popover.getByRole('button', { name: 'Court training' }).click();
-	await expect(popover).toContainText('Training at the Court');
+	await expect(popover).toHaveCount(0);
 	await expect(courtHotspot).toHaveAttribute('aria-pressed', 'true');
 	await expect(firstHeroMarker).toHaveAttribute('data-availability', 'busy');
 	await expect
@@ -126,7 +126,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(popover).toContainText('Mara Vey');
 	await popover.getByRole('button', { name: 'Tower hunt' }).click();
 	await popover.getByRole('button', { name: 'Stoneback boar' }).click();
-	await expect(popover).toContainText('Hunting Stoneback boar');
+	await expect(popover).toHaveCount(0);
 	await expect(page.getByRole('button', { name: 'Inspect Tower Threshold' })).toHaveAttribute(
 		'aria-pressed',
 		'true'

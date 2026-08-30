@@ -198,6 +198,7 @@
 		selectedFacilityId = 'court';
 		onOrder({ kind: 'court', heroId: hero.id });
 		announcement = `${hero.name} assigned to Court training.`;
+		selectedHeroId = null;
 	}
 
 	function issueHunt(hero: VillageHero, species: string): void {
@@ -205,6 +206,7 @@
 		huntMenuOpen = false;
 		onOrder({ kind: 'hunt', heroId: hero.id, species });
 		announcement = `${hero.name} assigned to hunt ${species} at the Tower.`;
+		selectedHeroId = null;
 	}
 
 	function moveCamera(deltaX: number, deltaY: number): void {
