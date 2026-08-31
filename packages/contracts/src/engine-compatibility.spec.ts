@@ -70,6 +70,9 @@ import {
 	SynthesisReceiptSchema,
 	SynthesisRumorRecordSchema
 } from './engine/story-synthesis-state.js';
+import * as commandContracts from './engine/commands.js';
+import * as gameStateContracts from './engine/game-state.js';
+import * as runtimeContracts from './engine/runtime.js';
 import { ENGINE_CONTRACT_RUNTIME_EXPORTS } from './engine-public-api.snapshot.js';
 import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from './engine-compatibility-states.snapshot.js';
 import * as engineContracts from './engine.js';
@@ -131,12 +134,20 @@ describe('engine contracts compatibility', () => {
 		]
 	`);
 		expect({
-			DECISION_INSPECTOR_VERSION, DECISION_JOB_CLIENT_VIEW_VERSION, DECISION_JOB_VERSION,
-			DECISION_PROVIDER_REQUEST_VERSION, HERO_CONTEXT_POLICY_VERSION, HERO_DECISION_PACKET_VERSION,
-			HERO_DECISION_PREVIEW_VERSION, HERO_DECISION_RESPONSE_VERSION, HERO_MEMORY_RETRIEVAL_VERSION,
-			HERO_MODEL_PROMPT_VERSION, HERO_POLICY_RESULT_VERSION, LEGACY_DECISION_JOB_VERSION,
+			DECISION_INSPECTOR_VERSION,
+			DECISION_JOB_CLIENT_VIEW_VERSION,
+			DECISION_JOB_VERSION,
+			DECISION_PROVIDER_REQUEST_VERSION,
+			HERO_CONTEXT_POLICY_VERSION,
+			HERO_DECISION_PACKET_VERSION,
+			HERO_DECISION_PREVIEW_VERSION,
+			HERO_DECISION_RESPONSE_VERSION,
+			HERO_MEMORY_RETRIEVAL_VERSION,
+			HERO_MODEL_PROMPT_VERSION,
+			HERO_POLICY_RESULT_VERSION,
+			LEGACY_DECISION_JOB_VERSION,
 			MODEL_POLICY_VERSION
-	}).toEqual({
+		}).toEqual({
 			DECISION_INSPECTOR_VERSION: 'decision-inspector-v1',
 			DECISION_JOB_CLIENT_VIEW_VERSION: 'decision-job-client-v1',
 			DECISION_JOB_VERSION: 'decision-job-v2',
@@ -155,8 +166,7 @@ describe('engine contracts compatibility', () => {
 
 	it('parses the checked-in replay and development-bootstrap states', () => {
 		expect(ENGINE_COMPATIBILITY_STATE_FIXTURES.map((fixture) => fixture.schemaVersion)).toEqual([
-			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-			22, 23
+			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
 		]);
 		for (const fixture of ENGINE_COMPATIBILITY_STATE_FIXTURES) {
 			expect(EngineGameStateSchema.parse(fixture).schemaVersion).toBe(fixture.schemaVersion);
@@ -167,6 +177,805 @@ describe('engine contracts compatibility', () => {
 				schemaVersion: 24
 			}).success
 		).toBe(false);
+	});
+
+	it('parses every state version identically through the direct composition module', () => {
+		const cases = [
+			{
+				schemaVersion: 1,
+				direct: gameStateContracts.EngineGameStateV1Schema,
+				publicSchema: engineContracts.EngineGameStateV1Schema
+			},
+			{
+				schemaVersion: 2,
+				direct: gameStateContracts.EngineGameStateV2Schema,
+				publicSchema: engineContracts.EngineGameStateV2Schema
+			},
+			{
+				schemaVersion: 3,
+				direct: gameStateContracts.EngineGameStateV3Schema,
+				publicSchema: engineContracts.EngineGameStateV3Schema
+			},
+			{
+				schemaVersion: 4,
+				direct: gameStateContracts.EngineGameStateV4Schema,
+				publicSchema: engineContracts.EngineGameStateV4Schema
+			},
+			{
+				schemaVersion: 5,
+				direct: gameStateContracts.EngineGameStateV5Schema,
+				publicSchema: engineContracts.EngineGameStateV5Schema
+			},
+			{
+				schemaVersion: 6,
+				direct: gameStateContracts.EngineGameStateV6Schema,
+				publicSchema: engineContracts.EngineGameStateV6Schema
+			},
+			{
+				schemaVersion: 7,
+				direct: gameStateContracts.EngineGameStateV7Schema,
+				publicSchema: engineContracts.EngineGameStateV7Schema
+			},
+			{
+				schemaVersion: 8,
+				direct: gameStateContracts.EngineGameStateV8Schema,
+				publicSchema: engineContracts.EngineGameStateV8Schema
+			},
+			{
+				schemaVersion: 9,
+				direct: gameStateContracts.EngineGameStateV9Schema,
+				publicSchema: engineContracts.EngineGameStateV9Schema
+			},
+			{
+				schemaVersion: 10,
+				direct: gameStateContracts.EngineGameStateV10Schema,
+				publicSchema: engineContracts.EngineGameStateV10Schema
+			},
+			{
+				schemaVersion: 11,
+				direct: gameStateContracts.EngineGameStateV11Schema,
+				publicSchema: engineContracts.EngineGameStateV11Schema
+			},
+			{
+				schemaVersion: 12,
+				direct: gameStateContracts.EngineGameStateV12Schema,
+				publicSchema: engineContracts.EngineGameStateV12Schema
+			},
+			{
+				schemaVersion: 13,
+				direct: gameStateContracts.EngineGameStateV13Schema,
+				publicSchema: engineContracts.EngineGameStateV13Schema
+			},
+			{
+				schemaVersion: 14,
+				direct: gameStateContracts.EngineGameStateV14Schema,
+				publicSchema: engineContracts.EngineGameStateV14Schema
+			},
+			{
+				schemaVersion: 15,
+				direct: gameStateContracts.EngineGameStateV15Schema,
+				publicSchema: engineContracts.EngineGameStateV15Schema
+			},
+			{
+				schemaVersion: 16,
+				direct: gameStateContracts.EngineGameStateV16Schema,
+				publicSchema: engineContracts.EngineGameStateV16Schema
+			},
+			{
+				schemaVersion: 17,
+				direct: gameStateContracts.EngineGameStateV17Schema,
+				publicSchema: engineContracts.EngineGameStateV17Schema
+			},
+			{
+				schemaVersion: 18,
+				direct: gameStateContracts.EngineGameStateV18Schema,
+				publicSchema: engineContracts.EngineGameStateV18Schema
+			},
+			{
+				schemaVersion: 19,
+				direct: gameStateContracts.EngineGameStateV19Schema,
+				publicSchema: engineContracts.EngineGameStateV19Schema
+			},
+			{
+				schemaVersion: 20,
+				direct: gameStateContracts.EngineGameStateV20Schema,
+				publicSchema: engineContracts.EngineGameStateV20Schema
+			},
+			{
+				schemaVersion: 21,
+				direct: gameStateContracts.EngineGameStateV21Schema,
+				publicSchema: engineContracts.EngineGameStateV21Schema
+			},
+			{
+				schemaVersion: 22,
+				direct: gameStateContracts.EngineGameStateV22Schema,
+				publicSchema: engineContracts.EngineGameStateV22Schema
+			},
+			{
+				schemaVersion: 23,
+				direct: gameStateContracts.EngineGameStateV23Schema,
+				publicSchema: engineContracts.EngineGameStateV23Schema
+			}
+		] as const;
+
+		expect(cases.map(({ schemaVersion }) => schemaVersion)).toStrictEqual([
+			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+		]);
+		for (const stateCase of cases) {
+			const fixture = ENGINE_COMPATIBILITY_STATE_FIXTURES[stateCase.schemaVersion - 1];
+			expect(stateCase.direct.parse(fixture)).toStrictEqual(stateCase.publicSchema.parse(fixture));
+			const invalid = { ...fixture, schemaVersion: 24 };
+			expect(stateCase.direct.safeParse(invalid)).toStrictEqual(
+				stateCase.publicSchema.safeParse(invalid)
+			);
+		}
+
+		const unsupported = {
+			...ENGINE_COMPATIBILITY_STATE_FIXTURES[22],
+			schemaVersion: 24
+		};
+		expect(gameStateContracts.EngineGameStateSchema.safeParse(unsupported)).toStrictEqual(
+			engineContracts.EngineGameStateSchema.safeParse(unsupported)
+		);
+	});
+
+	it('parses every command discriminator in its exact union order through the direct module', () => {
+		const commandBase = {
+			commandId: '50000000-0000-4000-8000-000000000001',
+			runId: '50000000-0000-4000-8000-000000000002',
+			actorId: '50000000-0000-4000-8000-000000000003',
+			expectedVersion: 0,
+			correlationId: '50000000-0000-4000-8000-000000000004',
+			source: {
+				source: 'manual',
+				timing: null,
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			}
+		} as const;
+		const heroId = '50000000-0000-4000-8000-000000000005';
+		const secondHeroId = '50000000-0000-4000-8000-000000000006';
+		const directiveId = '50000000-0000-4000-8000-000000000007';
+		const storyCandidate = {
+			patchVersion: 'story-patch-v1',
+			patchId: '50000000-0000-4000-8000-000000000008',
+			envelopeId: 'first-band-unclaimed-authority',
+			envelopeContentHash: '1'.repeat(64),
+			baseHistoryHash: '2'.repeat(64),
+			slotId: 'floor-four-company-choice',
+			selectedProposalIds: ['floor-four-route-holder'],
+			roleBindings: [{ proposalId: 'floor-four-route-holder', heroId }],
+			publicIntent: 'Let the route holder carry the discovery into the confrontation.'
+		};
+		const directive = {
+			text: 'Protect the party while advancing the objective.',
+			scope: 'mission',
+			recipientIds: [heroId],
+			priorities: ['protect-party'],
+			tone: 'firm',
+			delivery: 'open'
+		} as const;
+		const commands = [
+			{
+				...commandBase,
+				commandType: 'hero.choose.destination',
+				destination: 'kitchen',
+				firstLine: 'We begin at the hearth.',
+				storyBranch: 'kitchen-first'
+			},
+			{ ...commandBase, commandType: 'hero.arrive' },
+			{ ...commandBase, commandType: 'hero.start.travel', targetNodeId: 'kitchen-hearth' },
+			{
+				...commandBase,
+				commandType: 'settlement.assign.hero',
+				heroId,
+				buildingId: 'kitchen',
+				role: 'cook'
+			},
+			{ ...commandBase, commandType: 'settlement.unassign.hero', heroId },
+			{ ...commandBase, commandType: 'settlement.allocate.power', buildingId: 'kitchen' },
+			{ ...commandBase, commandType: 'story.recover.first.ember' },
+			{
+				...commandBase,
+				commandType: 'settlement.commit.first.ember',
+				buildingId: 'kitchen',
+				rationale: 'feed-everyone'
+			},
+			{
+				...commandBase,
+				commandType: 'master.communicate',
+				targetHeroId: heroId,
+				kind: 'tell',
+				topic: 'daily-order',
+				exactText: 'Keep the hearth supplied.',
+				tone: 'firm',
+				delivery: 'open'
+			},
+			{
+				...commandBase,
+				commandType: 'master.converse',
+				targetHeroId: heroId,
+				kind: 'order',
+				exactText: 'Prepare for the tower.',
+				tone: 'firm',
+				delivery: 'private',
+				orderIntent: 'prepare-tower'
+			},
+			{ ...commandBase, commandType: 'master.issue.directive', ...directive },
+			{ ...commandBase, commandType: 'master.replace.directive', directiveId, ...directive },
+			{ ...commandBase, commandType: 'master.revoke.directive', directiveId },
+			{
+				...commandBase,
+				commandType: 'master.configure.timing',
+				timing: 'countdown',
+				countdownSeconds: 5,
+				observedAt: '2000-01-01T00:00:00.000Z'
+			},
+			{
+				...commandBase,
+				commandType: 'master.open.decision',
+				observedAt: '2000-01-01T00:00:00.000Z'
+			},
+			{
+				...commandBase,
+				commandType: 'master.configure.fallback',
+				policy: 'directed',
+				directionText: 'Protect the party.',
+				priorities: ['protect-party'],
+				protectedHeroId: heroId,
+				safetyStops: {
+					beforeIrreversibleAction: true,
+					masterHealthThreshold: 35,
+					whenUnclassified: true,
+					maximumConsecutiveFallbacks: 8
+				},
+				observedAt: '2000-01-01T00:00:00.000Z'
+			},
+			{
+				...commandBase,
+				commandType: 'master.apply.safety-stop',
+				decisionId: '50000000-0000-4000-8000-000000000009',
+				observedAt: '2000-01-01T00:00:00.000Z'
+			},
+			{ ...commandBase, commandType: 'hero.plan.day' },
+			{ ...commandBase, commandType: 'hero.start.routine' },
+			{ ...commandBase, commandType: 'master.inspect.gate' },
+			{ ...commandBase, commandType: 'hero.start.activity', activity: 'train' },
+			{
+				...commandBase,
+				commandType: 'hero.equip.item',
+				itemId: '50000000-0000-4000-8000-000000000010'
+			},
+			{
+				...commandBase,
+				commandType: 'simulation.advance',
+				targetGameTime: '2000-01-01T00:01:00.000Z'
+			},
+			{
+				...commandBase,
+				commandType: 'simulation.sync.clock',
+				targetGameTime: '2000-01-01T00:01:00.000Z'
+			},
+			{
+				...commandBase,
+				commandType: 'simulation.apply.damage',
+				targetId: heroId,
+				amount: 1,
+				damageKind: 'training'
+			},
+			{
+				...commandBase,
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'tower-floor-01'
+			},
+			{ ...commandBase, commandType: 'mission.revise.party', heroIds: [heroId, secondHeroId] },
+			{ ...commandBase, commandType: 'mission.cancel' },
+			{ ...commandBase, commandType: 'mission.deploy' },
+			{
+				...commandBase,
+				commandType: 'mission.resolve.turn',
+				choices: [
+					{
+						actorId: heroId,
+						actionId: 'hero.wait',
+						source: 'manual',
+						policyId: null,
+						packetHash: null,
+						legalActionHash: null,
+						policyResultHash: null,
+						publicIntent: 'Hold position.'
+					}
+				],
+				decisionId: '50000000-0000-4000-8000-000000000011',
+				resolvedAt: '2000-01-01T00:01:00.000Z'
+			},
+			{
+				...commandBase,
+				commandType: 'mission.open.extraction',
+				completedObjectiveIds: ['first-ember']
+			},
+			{ ...commandBase, commandType: 'mission.extract' },
+			{ ...commandBase, commandType: 'mission.retreat' },
+			{ ...commandBase, commandType: 'story.apply.patch', candidate: storyCandidate },
+			{ ...commandBase, commandType: 'story.reveal.first.archive', readerHeroId: heroId },
+			{
+				...commandBase,
+				commandType: 'settlement.synthesize.hero',
+				sourceHeroId: heroId,
+				recipientHeroId: secondHeroId,
+				visibility: 'private',
+				warningVersion: 'synthesis-warning-v1',
+				confirmedIrreversible: true,
+				rationale: 'Transfer bounded essence.'
+			},
+			{
+				...commandBase,
+				commandType: 'hero.share.synthesis.rumor',
+				receiptId: '50000000-0000-4000-8000-000000000012',
+				targetHeroId: secondHeroId
+			}
+		] as const;
+		const expectedCommandTypes = [
+			'hero.choose.destination',
+			'hero.arrive',
+			'hero.start.travel',
+			'settlement.assign.hero',
+			'settlement.unassign.hero',
+			'settlement.allocate.power',
+			'story.recover.first.ember',
+			'settlement.commit.first.ember',
+			'master.communicate',
+			'master.converse',
+			'master.issue.directive',
+			'master.replace.directive',
+			'master.revoke.directive',
+			'master.configure.timing',
+			'master.open.decision',
+			'master.configure.fallback',
+			'master.apply.safety-stop',
+			'hero.plan.day',
+			'hero.start.routine',
+			'master.inspect.gate',
+			'hero.start.activity',
+			'hero.equip.item',
+			'simulation.advance',
+			'simulation.sync.clock',
+			'simulation.apply.damage',
+			'mission.prepare',
+			'mission.revise.party',
+			'mission.cancel',
+			'mission.deploy',
+			'mission.resolve.turn',
+			'mission.open.extraction',
+			'mission.extract',
+			'mission.retreat',
+			'story.apply.patch',
+			'story.reveal.first.archive',
+			'settlement.synthesize.hero',
+			'hero.share.synthesis.rumor'
+		] as const;
+
+		expect(commands.map(({ commandType }) => commandType)).toStrictEqual(expectedCommandTypes);
+		expect(
+			commandContracts.EngineCommandSchema.options.map((option) => option.shape.commandType.value)
+		).toStrictEqual(expectedCommandTypes);
+		expect(
+			engineContracts.EngineCommandSchema.options.map((option) => option.shape.commandType.value)
+		).toStrictEqual(expectedCommandTypes);
+		for (const command of commands) {
+			expect(commandContracts.EngineCommandSchema.parse(command)).toStrictEqual(
+				engineContracts.EngineCommandSchema.parse(command)
+			);
+		}
+		const invalid = { ...commandBase, commandType: 'engine.unknown' };
+		expect(commandContracts.EngineCommandSchema.safeParse(invalid)).toStrictEqual(
+			engineContracts.EngineCommandSchema.safeParse(invalid)
+		);
+	});
+
+	it('parses every remaining request branch identically through the direct command module', () => {
+		const heroId = '51000000-0000-4000-8000-000000000001';
+		const secondHeroId = '51000000-0000-4000-8000-000000000002';
+		const directiveId = '51000000-0000-4000-8000-000000000003';
+		const directive = {
+			text: 'Keep the hearth supplied.',
+			scope: 'day',
+			recipientIds: [heroId],
+			priorities: ['supply-hearth'],
+			tone: 'firm',
+			delivery: 'open'
+		} as const;
+		const cases = [
+			{
+				schema: commandContracts.CommunicationRequestSchema,
+				publicSchema: engineContracts.CommunicationRequestSchema,
+				value: {
+					targetHeroId: heroId,
+					kind: 'tell',
+					topic: 'daily-order',
+					exactText: 'Keep the hearth supplied.',
+					tone: 'firm',
+					delivery: 'open'
+				}
+			},
+			{
+				schema: commandContracts.ConversationRequestSchema,
+				publicSchema: engineContracts.ConversationRequestSchema,
+				value: {
+					targetHeroId: heroId,
+					kind: 'say',
+					exactText: 'The hearth is ready.',
+					tone: 'neutral',
+					delivery: 'private',
+					orderIntent: null
+				}
+			},
+			{
+				schema: commandContracts.ConversationRequestSchema,
+				publicSchema: engineContracts.ConversationRequestSchema,
+				value: {
+					targetHeroId: heroId,
+					kind: 'ask',
+					exactText: 'Is the hearth ready?',
+					tone: 'neutral',
+					delivery: 'open',
+					orderIntent: null
+				}
+			},
+			{
+				schema: commandContracts.ConversationRequestSchema,
+				publicSchema: engineContracts.ConversationRequestSchema,
+				value: {
+					targetHeroId: heroId,
+					kind: 'order',
+					exactText: 'Prepare for the tower.',
+					tone: 'firm',
+					delivery: 'private',
+					orderIntent: 'prepare-tower'
+				}
+			},
+			{
+				schema: commandContracts.DirectiveRequestSchema,
+				publicSchema: engineContracts.DirectiveRequestSchema,
+				value: { action: 'issue', ...directive }
+			},
+			{
+				schema: commandContracts.DirectiveRequestSchema,
+				publicSchema: engineContracts.DirectiveRequestSchema,
+				value: { action: 'replace', directiveId, ...directive }
+			},
+			{
+				schema: commandContracts.DirectiveRequestSchema,
+				publicSchema: engineContracts.DirectiveRequestSchema,
+				value: { action: 'revoke', directiveId }
+			},
+			{
+				schema: commandContracts.FirstEmberRequestSchema,
+				publicSchema: engineContracts.FirstEmberRequestSchema,
+				value: { action: 'recover' }
+			},
+			{
+				schema: commandContracts.FirstEmberRequestSchema,
+				publicSchema: engineContracts.FirstEmberRequestSchema,
+				value: { action: 'commit', buildingId: 'kitchen', rationale: 'feed-everyone' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'prepare', heroIds: [heroId], missionId: 'tower-floor-01' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'revise-party', heroIds: [heroId, secondHeroId] }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'cancel' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'deploy' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'resolve-turn', masterActionId: 'master.wait' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'resolve-fallback' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'extract' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'retreat' }
+			},
+			{
+				schema: commandContracts.SynthesisRequestSchema,
+				publicSchema: engineContracts.SynthesisRequestSchema,
+				value: {
+					action: 'synthesize',
+					sourceHeroId: heroId,
+					recipientHeroId: secondHeroId,
+					visibility: 'private',
+					warningVersion: 'synthesis-warning-v1',
+					confirmedIrreversible: true,
+					rationale: 'Transfer bounded essence.'
+				}
+			},
+			{
+				schema: commandContracts.SynthesisRequestSchema,
+				publicSchema: engineContracts.SynthesisRequestSchema,
+				value: {
+					action: 'share-rumor',
+					receiptId: '51000000-0000-4000-8000-000000000004',
+					speakerHeroId: heroId,
+					targetHeroId: secondHeroId
+				}
+			},
+			{
+				schema: commandContracts.FirstBandArchiveRequestSchema,
+				publicSchema: engineContracts.FirstBandArchiveRequestSchema,
+				value: { action: 'reveal', readerHeroId: heroId }
+			},
+			{
+				schema: commandContracts.CatchUpRequestSchema,
+				publicSchema: engineContracts.CatchUpRequestSchema,
+				value: { wallTime: '2000-01-01T00:00:00.000Z' }
+			}
+		] as const;
+		const expectedBranches = [
+			'tell',
+			'say',
+			'ask',
+			'order',
+			'issue',
+			'replace',
+			'revoke',
+			'recover',
+			'commit',
+			'prepare',
+			'revise-party',
+			'cancel',
+			'deploy',
+			'resolve-turn',
+			'resolve-fallback',
+			'extract',
+			'retreat',
+			'synthesize',
+			'share-rumor',
+			'reveal',
+			'catch-up'
+		];
+		expect(
+			cases.map(({ value }) =>
+				'action' in value ? value.action : 'kind' in value ? value.kind : 'catch-up'
+			)
+		).toStrictEqual(expectedBranches);
+		for (const requestCase of cases) {
+			expect(requestCase.schema.parse(requestCase.value)).toStrictEqual(
+				requestCase.publicSchema.parse(requestCase.value)
+			);
+		}
+
+		const invalidCases = [
+			{
+				schema: commandContracts.CommunicationRequestSchema,
+				publicSchema: engineContracts.CommunicationRequestSchema,
+				value: { ...cases[0].value, unexpected: true }
+			},
+			{
+				schema: commandContracts.ConversationRequestSchema,
+				publicSchema: engineContracts.ConversationRequestSchema,
+				value: { ...cases[1].value, orderIntent: 'train' }
+			},
+			{
+				schema: commandContracts.DirectiveRequestSchema,
+				publicSchema: engineContracts.DirectiveRequestSchema,
+				value: { action: 'unknown' }
+			},
+			{
+				schema: commandContracts.FirstEmberRequestSchema,
+				publicSchema: engineContracts.FirstEmberRequestSchema,
+				value: { action: 'unknown' }
+			},
+			{
+				schema: commandContracts.MissionLifecycleRequestSchema,
+				publicSchema: engineContracts.MissionLifecycleRequestSchema,
+				value: { action: 'unknown' }
+			},
+			{
+				schema: commandContracts.SynthesisRequestSchema,
+				publicSchema: engineContracts.SynthesisRequestSchema,
+				value: { action: 'unknown' }
+			},
+			{
+				schema: commandContracts.FirstBandArchiveRequestSchema,
+				publicSchema: engineContracts.FirstBandArchiveRequestSchema,
+				value: { action: 'reveal', readerHeroId: heroId, unexpected: true }
+			},
+			{
+				schema: commandContracts.CatchUpRequestSchema,
+				publicSchema: engineContracts.CatchUpRequestSchema,
+				value: { unexpected: true }
+			}
+		] as const;
+		for (const invalidCase of invalidCases) {
+			expect(invalidCase.schema.safeParse(invalidCase.value)).toStrictEqual(
+				invalidCase.publicSchema.safeParse(invalidCase.value)
+			);
+		}
+	});
+
+	it('parses one strict replay report identically through the direct runtime module', () => {
+		const runId = '52000000-0000-4000-8000-000000000001';
+		const actorId = '52000000-0000-4000-8000-000000000002';
+		const eventId = '52000000-0000-4000-8000-000000000003';
+		const hash = 'a'.repeat(64);
+		const source = {
+			source: 'system',
+			timing: null,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		} as const;
+		const journalEntry = {
+			journalEntryId: '52000000-0000-4000-8000-000000000004',
+			runId,
+			eventIds: [eventId],
+			sequenceStart: 1,
+			sequenceEnd: 1,
+			gameTime: '2000-01-01T00:00:00.000Z',
+			category: 'story',
+			title: 'Run initialized',
+			summary: 'The deterministic run began.',
+			participantIds: [actorId],
+			deltas: [],
+			source,
+			directionOutcome: null,
+			replayCursor: 1
+		} as const;
+		const legalAction = {
+			actionId: 'master.wait',
+			actorId,
+			kind: 'wait',
+			label: 'Wait',
+			description: 'Hold the current decision.',
+			targetIds: [],
+			resourceCosts: {},
+			tags: []
+		} as const;
+		const clock = {
+			runId,
+			speed: 1,
+			anchorGameTime: '2000-01-01T00:00:00.000Z',
+			anchorRealTime: '2000-01-01T00:00:00.000Z',
+			currentGameTime: '2000-01-01T00:00:00.000Z',
+			projectedGameTime: '2000-01-01T00:00:00.000Z',
+			lastCatchUpAt: null,
+			nextDueGameTime: null,
+			nextDueRealTime: null,
+			backlogGameMinutes: 0,
+			leaseStatus: 'idle'
+		} as const;
+		const report = {
+			runId,
+			verified: true,
+			eventCount: 1,
+			checks: [
+				{
+					sequence: 1,
+					gameTime: '2000-01-01T00:00:00.000Z',
+					eventType: 'run.initialized',
+					actorId,
+					source,
+					summary: 'The deterministic run began.',
+					beforeStateHash: hash,
+					afterStateHash: hash,
+					computedStateHash: hash,
+					verified: true,
+					entropyDraws: [{ purpose: 'run.bootstrap', cursor: 0, minimum: 0, maximum: 0, value: 0 }],
+					deltas: []
+				}
+			],
+			journalEntries: [journalEntry],
+			playerJournal: {
+				reportVersion: 'player-journal-v1',
+				runId,
+				fromCursor: 1,
+				toCursor: 1,
+				entryCount: 1,
+				eventStreamHash: hash,
+				reportHash: hash,
+				entries: [
+					{
+						...journalEntry,
+						entryVersion: 'player-journal-entry-v1',
+						eventType: 'run.initialized',
+						stateHash: hash,
+						dayNumber: 1,
+						facets: ['story'],
+						mission: null,
+						actions: [],
+						partyProgressDeltas: [],
+						directions: [],
+						storyChanges: []
+					}
+				],
+				deltaTotals: [],
+				partyTotals: {
+					attemptsStarted: 0,
+					deployments: 0,
+					roundsResolved: 0,
+					objectivesCompleted: 0,
+					discoveries: 0,
+					threatsDefeated: 0,
+					successfulExtractions: 0,
+					retreats: 0,
+					casualties: 0
+				},
+				filterOptions: {
+					days: [1],
+					missionIds: [],
+					floors: [],
+					heroIds: [actorId],
+					eventTypes: ['run.initialized'],
+					facets: ['story'],
+					sources: ['system']
+				}
+			},
+			scheduledEvents: [
+				{
+					scheduledEventId: '52000000-0000-4000-8000-000000000005',
+					runId,
+					actorId,
+					dueGameTime: '2000-01-01T00:01:00.000Z',
+					eventKind: 'routine.complete',
+					payload: {},
+					status: 'pending',
+					createdEventId: eventId,
+					terminalEventId: null
+				}
+			],
+			clock,
+			snapshot: { state: ENGINE_COMPATIBILITY_STATE_FIXTURES[0], stateHash: hash },
+			persistedStateHash: hash,
+			hashMatchesPersistedSnapshot: true,
+			legalActions: [legalAction],
+			legalActionsByActor: { [actorId]: [legalAction] }
+		};
+
+		expect(runtimeContracts.EngineReplayReportSchema.parse(report)).toStrictEqual(
+			engineContracts.EngineReplayReportSchema.parse(report)
+		);
+		const invalid = { ...report, unexpected: true };
+		const directResult = runtimeContracts.EngineReplayReportSchema.safeParse(invalid);
+		const publicResult = engineContracts.EngineReplayReportSchema.safeParse(invalid);
+		expect(directResult).toStrictEqual(publicResult);
+		expect(directResult.success).toBe(false);
+		if (directResult.success) {
+			throw new Error('Strict replay report unexpectedly accepted an extra key');
+		}
+		expect(
+			directResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'unrecognized_keys',
+				path: [],
+				message: 'Unrecognized key: "unexpected"'
+			}
+		]);
 	});
 
 	it('parses base and settlement society state identically through leaf and composed schemas', () => {
@@ -260,8 +1069,7 @@ describe('engine contracts compatibility', () => {
 						},
 						settlementContentVersion:
 							baseSettlementSocietyFixture.settlement.navigation.contentVersion,
-						settlementContentHash:
-							baseSettlementSocietyFixture.settlement.navigation.contentHash,
+						settlementContentHash: baseSettlementSocietyFixture.settlement.navigation.contentHash,
 						startedAt: '2000-01-01T00:00:00.000Z',
 						arrivesAt: '2000-01-01T00:01:00.000Z'
 					}
@@ -390,10 +1198,7 @@ describe('engine contracts compatibility', () => {
 						kind: 'communication',
 						communicationActId,
 						summary: 'The Master assigns the first daily priority.',
-						subjectIds: [
-							baseSettlementSocietyFixture.master.masterId,
-							baseSettlementHero.heroId
-						]
+						subjectIds: [baseSettlementSocietyFixture.master.masterId, baseSettlementHero.heroId]
 					}
 				},
 				communicativeActs: {
@@ -487,10 +1292,8 @@ describe('engine contracts compatibility', () => {
 			currentRoutine: settlementHeroes.some((hero) => hero.currentRoutine !== null),
 			firstEmberModifiers: settlementSocietyFixture.settlement.firstEmber.modifiers.length > 0,
 			firstEmberReactions: settlementSocietyFixture.settlement.firstEmber.reactions.length > 0,
-			communicativeActs:
-				Object.keys(settlementSocietyFixture.society.communicativeActs).length > 0,
-			conversationTurns:
-				Object.keys(settlementSocietyFixture.society.conversationTurns).length > 0,
+			communicativeActs: Object.keys(settlementSocietyFixture.society.communicativeActs).length > 0,
+			conversationTurns: Object.keys(settlementSocietyFixture.society.conversationTurns).length > 0,
 			directives: Object.keys(settlementSocietyFixture.society.directives).length > 0,
 			directiveInfluences:
 				Object.keys(settlementSocietyFixture.society.directiveInfluences).length > 0
@@ -507,9 +1310,7 @@ describe('engine contracts compatibility', () => {
 			directives: true,
 			directiveInfluences: true
 		});
-		const composedSettlementSocietyState = EngineGameStateSchema.parse(
-			settlementSocietyFixture
-		);
+		const composedSettlementSocietyState = EngineGameStateSchema.parse(settlementSocietyFixture);
 		if (composedSettlementSocietyState.schemaVersion !== 10) {
 			throw new Error(
 				'Expected the settlement society compatibility fixture to parse as schema version 10'
@@ -535,42 +1336,58 @@ describe('engine contracts compatibility', () => {
 	it('parses every historical mission state identically and preserves its run refinement', () => {
 		const cases = [
 			{
-				label: 'v1', schemaVersion: 11, leaf: MissionRunStateSchema,
+				label: 'v1',
+				schemaVersion: 11,
+				leaf: MissionRunStateSchema,
 				publicSchema: PublicMissionRunStateSchema,
 				expectedReason: 'Mission attempt count is inconsistent'
 			},
 			{
-				label: 'v2', schemaVersion: 12, leaf: MissionRunStateV2Schema,
+				label: 'v2',
+				schemaVersion: 12,
+				leaf: MissionRunStateV2Schema,
 				publicSchema: PublicMissionRunStateV2Schema,
 				expectedReason: 'Mission attempt count is inconsistent'
 			},
 			{
-				label: 'v3', schemaVersion: 13, leaf: MissionRunStateV3Schema,
+				label: 'v3',
+				schemaVersion: 13,
+				leaf: MissionRunStateV3Schema,
 				publicSchema: PublicMissionRunStateV3Schema,
 				expectedReason: 'Mission combat attempt count is inconsistent'
 			},
 			{
-				label: 'v4', schemaVersion: 14, leaf: MissionRunStateV4Schema,
+				label: 'v4',
+				schemaVersion: 14,
+				leaf: MissionRunStateV4Schema,
 				publicSchema: PublicMissionRunStateV4Schema,
 				expectedReason: 'Mission evidence attempt count is inconsistent'
 			},
 			{
-				label: 'v5', schemaVersion: 15, leaf: MissionRunStateV5Schema,
+				label: 'v5',
+				schemaVersion: 15,
+				leaf: MissionRunStateV5Schema,
 				publicSchema: PublicMissionRunStateV5Schema,
 				expectedReason: 'Portal mission attempt count is inconsistent'
 			},
 			{
-				label: 'v6', schemaVersion: 16, leaf: MissionRunStateV6Schema,
+				label: 'v6',
+				schemaVersion: 16,
+				leaf: MissionRunStateV6Schema,
 				publicSchema: PublicMissionRunStateV6Schema,
 				expectedReason: 'Mission aftermath lifecycle is inconsistent'
 			},
 			{
-				label: 'v7', schemaVersion: 17, leaf: MissionRunStateV7Schema,
+				label: 'v7',
+				schemaVersion: 17,
+				leaf: MissionRunStateV7Schema,
 				publicSchema: PublicMissionRunStateV7Schema,
 				expectedReason: 'Mission Master aftermath lifecycle is inconsistent'
 			},
 			{
-				label: 'v8', schemaVersion: 18, leaf: MissionRunStateV8Schema,
+				label: 'v8',
+				schemaVersion: 18,
+				leaf: MissionRunStateV8Schema,
 				publicSchema: PublicMissionRunStateV8Schema,
 				expectedReason: 'Mission attempt aftermath lifecycle is inconsistent'
 			}
@@ -591,7 +1408,9 @@ describe('engine contracts compatibility', () => {
 			const invalidMission = { ...state.mission, attemptCount: 1 };
 			for (const schema of [missionCase.leaf, missionCase.publicSchema]) {
 				const result = schema.safeParse(invalidMission);
-				expect(result.success, `${missionCase.label} must reject an inconsistent count`).toBe(false);
+				expect(result.success, `${missionCase.label} must reject an inconsistent count`).toBe(
+					false
+				);
 				if (result.success) {
 					throw new Error(`${missionCase.label} unexpectedly accepted an inconsistent count`);
 				}
@@ -620,7 +1439,8 @@ describe('engine contracts compatibility', () => {
 			},
 			{ timing: 'step', expiresAt: null, invalidExpiresAt: '2000-01-01T00:01:00.000Z' },
 			{
-				timing: 'continuous', expiresAt: null,
+				timing: 'continuous',
+				expiresAt: null,
 				invalidExpiresAt: '2000-01-01T00:01:00.000Z'
 			}
 		] as const;
