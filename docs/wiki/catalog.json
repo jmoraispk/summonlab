@@ -384,17 +384,23 @@
         {
           "assetKey": "martial-domain-v1",
           "file": "apps/web/static/wiki-media/skills/martial-domain.webp",
-          "status": "candidate"
+          "status": "candidate",
+          "generationMode": "built-in-imagegen",
+          "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
         },
         {
           "assetKey": "magical-domain-v1",
           "file": "apps/web/static/wiki-media/skills/magical-domain.webp",
-          "status": "candidate"
+          "status": "candidate",
+          "generationMode": "built-in-imagegen",
+          "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
         },
         {
           "assetKey": "craft-domain-v1",
           "file": "apps/web/static/wiki-media/skills/craft-domain.webp",
-          "status": "candidate"
+          "status": "candidate",
+          "generationMode": "built-in-imagegen",
+          "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
         }
       ]
     },

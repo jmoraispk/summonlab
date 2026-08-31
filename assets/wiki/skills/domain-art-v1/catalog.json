@@ -1,0 +1,177 @@
+{
+	"schemaVersion": "summonlab-wiki-generated-art-v1",
+	"status": "approval-candidate",
+	"assets": [
+		{
+			"assetKey": "martial-domain-v1",
+			"status": "approval-candidate",
+			"generationMode": "built-in-imagegen",
+			"createdAt": "2026-08-31T17:41:44.630Z",
+			"prompt": "Use case: precise-object-edit\nAsset type: dark fantasy game wiki domain plate\nPrimary request: Replace only the white-and-light-gray checkerboard background with a deep solid charcoal-black field (#0b0a08) and a very restrained warm ember vignette immediately behind the central shield.\nConstraints: preserve the martial weapons, shield, wrapped fist guard, torn cloth, exact composition, textures, lighting, scale, and colors; no checkerboard, no transparency, no frame, no text, no watermark, no new objects; square image; background should merge naturally into a near-black website.",
+			"referenceInputs": [
+				{
+					"assetKey": "martial-domain-initial-v1",
+					"file": "assets/wiki/skills/domain-art-v1/sources/martial-initial-v1.png",
+					"width": 1254,
+					"height": 1254,
+					"bytes": 1857315,
+					"sha256": "a84522e1e2270a4b85593f8754d7aace33b126f5cd1c86bd4eb56a6e0c489d6f",
+					"prompt": "Use case: stylized-concept\nAsset type: game wiki skill-tree domain emblem, square transparent-background raster asset\nPrimary request: Create a single heraldic Martial-domain plate for a dark fantasy skill tree. Arrange a weathered longsword, spear head, compact round shield, and wrapped fist guard into one disciplined radial composition, suggesting blade, haft, guard, hunt, motion, and fist without showing a character.\nStyle/medium: high-end game UI concept art; etched steel, blackened iron, worn leather; crisp silhouette with restrained painterly detail; artifact photography meets engraved bestiary plate\nComposition/framing: centered square emblem, readable at thumbnail size, generous transparent negative space, no enclosing badge or circular border\nLighting/mood: low-key museum lighting, warm ember rim light from lower left, cool steel highlights, solemn and practical\nColor palette: near-black, iron gray, muted bone, restrained burnt amber\nConstraints: genuinely transparent background; no text, letters, numbers, logos, watermark, character, hands, scenery, UI mockup, ornamental frame; one isolated cohesive emblem; sharp clean alpha edges"
+				}
+			],
+			"sourceOriginal": {
+				"file": "assets/wiki/skills/domain-art-v1/sources/martial-final-v1.png",
+				"width": 1254,
+				"height": 1254,
+				"bytes": 2119063,
+				"sha256": "db2ae117ae42fba596804c4caeb23eab3e68c8585fabc3727e9317e2889ca54c"
+			},
+			"derived": {
+				"file": "apps/web/static/wiki-media/skills/martial-domain.webp",
+				"width": 900,
+				"height": 900,
+				"bytes": 86632,
+				"sha256": "f98592db411e83aea5bd046786a9a1d8e706a2dd56fbc6ce526265fc50c4b6b4",
+				"recipe": "sharp resize 900x900 fit cover; webp quality 84 effort 5"
+			},
+			"history": {
+				"session": "rollout-2026-08-31T10-22-05-01a058d5-4568-76e1-bae0-81d6988ab046_01a058d7-aeee-7911-b762-f1640cc5c824.jsonl",
+				"initialGenerationOrdinal": 221,
+				"finalEditOrdinal": 259,
+				"conversionOrdinal": 310
+			},
+			"recognitionChecks": [
+				{
+					"name": "domain objects preserved",
+					"passed": true,
+					"note": "Visual inspection finds a longsword, spear head, round shield, and wrapped fist guard in the final plate."
+				},
+				{
+					"name": "thumbnail legibility",
+					"passed": true,
+					"note": "The central shield and radial tool silhouette remain distinct in the 900px derived asset."
+				},
+				{
+					"name": "no text or watermark",
+					"passed": true,
+					"note": "Visual inspection finds no text, lettering, logo, frame, or watermark."
+				}
+			],
+			"productionNote": "Recovered from the original generation session and verified against persisted source/output hashes. Approval candidate only; this record does not claim human approval."
+		},
+		{
+			"assetKey": "magical-domain-v1",
+			"status": "approval-candidate",
+			"generationMode": "built-in-imagegen",
+			"createdAt": "2026-08-31T17:42:22.591Z",
+			"prompt": "Use case: precise-object-edit\nAsset type: dark fantasy game wiki domain plate\nPrimary request: Replace only the white-and-light-gray checkerboard background with a deep solid charcoal-black field (#0b0a08) and a very restrained arcane blue-and-ember vignette immediately behind the ritual astrolabe.\nConstraints: preserve the five-affinity astrolabe, flame, water, wood, stone, metal needle, center light, exact composition, textures, lighting, scale, and colors; no checkerboard, no transparency, no frame, no written runes, no text, no watermark, no new objects; square image; background should merge naturally into a near-black website.",
+			"referenceInputs": [
+				{
+					"assetKey": "magical-domain-initial-v1",
+					"file": "assets/wiki/skills/domain-art-v1/sources/magical-initial-v1.png",
+					"width": 1254,
+					"height": 1254,
+					"bytes": 2060204,
+					"sha256": "16c50142d47e9d0ede07b33a9aed17d1b9b227e2716e8832fef3298984dc5b86",
+					"prompt": "Use case: stylized-concept\nAsset type: game wiki skill-tree domain emblem, square transparent-background raster asset\nPrimary request: Create a single heraldic Magical-domain instrument for a dark fantasy skill tree. Build one elegant ritual astrolabe from five physical affinity motifs: a small living flame, curling water, a sprouting wood tendril, faceted earth stone, and a polished metal needle. Add subtle ward geometry and a restorative light at the center, but no written runes.\nStyle/medium: high-end game UI concept art; crafted brass, dark iron, mineral, water and luminous energy; crisp silhouette with restrained painterly detail; artifact photography meets engraved occult plate\nComposition/framing: centered square emblem, readable at thumbnail size, generous transparent negative space, no enclosing badge or decorative outer frame\nLighting/mood: quiet arcane luminosity, warm ember and cool teal highlights, scholarly rather than explosive\nColor palette: blackened brass, dim gold, mineral green, deep water blue, ember orange, pale restorative glow\nConstraints: genuinely transparent background; no text, letters, numbers, logos, watermark, character, hands, scenery, UI mockup; one isolated cohesive emblem; sharp clean alpha edges"
+				}
+			],
+			"sourceOriginal": {
+				"file": "assets/wiki/skills/domain-art-v1/sources/magical-final-v1.png",
+				"width": 1254,
+				"height": 1254,
+				"bytes": 2266319,
+				"sha256": "f994ce81698697aefa5086ff71f700d0ae1d228fb6d92e9767f12108c29984e9"
+			},
+			"derived": {
+				"file": "apps/web/static/wiki-media/skills/magical-domain.webp",
+				"width": 900,
+				"height": 900,
+				"bytes": 127534,
+				"sha256": "8a9ca85a3f8c43ccaaebefe5bb17fae87228cfadb5077200bf558c58cd61aa68",
+				"recipe": "sharp resize 900x900 fit cover; webp quality 84 effort 5"
+			},
+			"history": {
+				"session": "rollout-2026-08-31T10-22-05-01a058d5-4568-76e1-bae0-81d6988ab046_01a058d7-aeee-7911-b762-f1640cc5c824.jsonl",
+				"initialGenerationOrdinal": 227,
+				"finalEditOrdinal": 265,
+				"conversionOrdinal": 310
+			},
+			"recognitionChecks": [
+				{
+					"name": "domain motifs preserved",
+					"passed": true,
+					"note": "Visual inspection finds flame, water, wood, earth stone, metal needle, and central restorative light."
+				},
+				{
+					"name": "thumbnail legibility",
+					"passed": true,
+					"note": "The five affinity stations remain distinct around the centered astrolabe in the 900px derived asset."
+				},
+				{
+					"name": "no text or watermark",
+					"passed": true,
+					"note": "Visual inspection finds no written runes, text, logo, frame, or watermark."
+				}
+			],
+			"productionNote": "Recovered from the original generation session and verified against persisted source/output hashes. Approval candidate only; this record does not claim human approval."
+		},
+		{
+			"assetKey": "craft-domain-v1",
+			"status": "approval-candidate",
+			"generationMode": "built-in-imagegen",
+			"createdAt": "2026-08-31T17:43:08.524Z",
+			"prompt": "Use case: precise-object-edit\nAsset type: dark fantasy game wiki domain plate\nPrimary request: Replace only the white-and-light-gray checkerboard background with a deep solid charcoal-black field (#0b0a08) and a very restrained furnace-amber vignette behind the tools.\nConstraints: preserve the hammer, anvil, alchemy flask, knife, herbs, sickle, whistle, lore folio, exact composition, textures, lighting, scale, and colors; no checkerboard, no transparency, no frame, no text, no watermark, no new objects; square image; background should merge naturally into a near-black website.",
+			"referenceInputs": [
+				{
+					"assetKey": "craft-domain-initial-v1",
+					"file": "assets/wiki/skills/domain-art-v1/sources/craft-initial-v1.png",
+					"width": 1254,
+					"height": 1254,
+					"bytes": 1892650,
+					"sha256": "86e89dc173df01902f5c85c9a2c2ba4deac0a839dabc62f2e3565a8ca9050363",
+					"prompt": "Use case: stylized-concept\nAsset type: game wiki skill-tree domain emblem, square transparent-background raster asset\nPrimary request: Create a single heraldic Craft-domain still life for a dark fantasy skill tree. Join a compact blacksmith hammer and anvil, a glass alchemy flask, a small cooking knife and herb bundle, a gathering sickle, a beast-tamer whistle, and a closed lore folio into one practical artisan composition. No character.\nStyle/medium: high-end game UI concept art; forged iron, aged wood, amber glass, linen, herbs, worn leather; crisp silhouette with restrained painterly detail; artifact photography meets illustrated workshop inventory plate\nComposition/framing: centered square emblem, readable at thumbnail size, generous transparent negative space, no enclosing badge or ornamental outer frame\nLighting/mood: warm workshop firelight, quiet competence, lived-in and useful rather than luxurious\nColor palette: soot black, forged iron, walnut brown, muted moss, amber glass, restrained furnace orange\nConstraints: genuinely transparent background; no text, letters, numbers, logos, watermark, character, hands, room, scenery, UI mockup; one isolated cohesive emblem; sharp clean alpha edges"
+				}
+			],
+			"sourceOriginal": {
+				"file": "assets/wiki/skills/domain-art-v1/sources/craft-final-v1.png",
+				"width": 1254,
+				"height": 1254,
+				"bytes": 2183983,
+				"sha256": "f105f63d94a1f72d3596085b5a9dfb83a550015589c356737bd09e1d4ab6c73f"
+			},
+			"derived": {
+				"file": "apps/web/static/wiki-media/skills/craft-domain.webp",
+				"width": 900,
+				"height": 900,
+				"bytes": 90328,
+				"sha256": "4961d8b15ddf45a5afbf8f1fb5ef60e9ec948a0a452115d819e60717e595298a",
+				"recipe": "sharp resize 900x900 fit cover; webp quality 84 effort 5"
+			},
+			"history": {
+				"session": "rollout-2026-08-31T10-22-05-01a058d5-4568-76e1-bae0-81d6988ab046_01a058d7-aeee-7911-b762-f1640cc5c824.jsonl",
+				"initialGenerationOrdinal": 233,
+				"finalEditOrdinal": 269,
+				"conversionOrdinal": 310
+			},
+			"recognitionChecks": [
+				{
+					"name": "domain objects preserved",
+					"passed": true,
+					"note": "Visual inspection finds hammer, anvil, flask, knife, herbs, sickle, whistle, and folio."
+				},
+				{
+					"name": "thumbnail legibility",
+					"passed": true,
+					"note": "The major workshop tools and amber flask remain distinct in the 900px derived asset."
+				},
+				{
+					"name": "no text or watermark",
+					"passed": true,
+					"note": "Visual inspection finds no text, lettering, logo, frame, or watermark."
+				}
+			],
+			"productionNote": "Recovered from the original generation session and verified against persisted source/output hashes. Approval candidate only; this record does not claim human approval."
+		}
+	]
+}

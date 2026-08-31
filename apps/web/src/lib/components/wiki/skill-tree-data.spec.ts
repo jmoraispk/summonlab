@@ -88,6 +88,38 @@ describe('skill tree navigation data', () => {
 		expect(domain('magical').families[2]?.labels.map((label) => label.value)).toEqual(['Attuned']);
 	});
 
+	it('exposes every retained Polearm and Ranged equipment path in discovery', () => {
+		const polearm = domain('martial').families.find((family) => family.name === 'Polearm');
+		const ranged = domain('martial').families.find((family) => family.name === 'Ranged');
+
+		expect(polearm?.labels.map((label) => label.value)).toEqual([
+			'Spear',
+			'Glaive',
+			'Halberd',
+			'Polehammer'
+		]);
+		expect(polearm?.skills).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					name: 'Dragon Tail',
+					labels: [
+						{ namespace: 'Equipment', value: 'Spear' },
+						{ namespace: 'Equipment', value: 'Glaive' },
+						{ namespace: 'Equipment', value: 'Halberd' }
+					]
+				}),
+				expect.objectContaining({ name: 'Halberd Handling' }),
+				expect.objectContaining({ name: 'Polehammer Handling' })
+			])
+		);
+		expect(ranged?.labels.map((label) => label.value)).toEqual(['Bow', 'Crossbow', 'Sling']);
+		expect(ranged?.skills).toContainEqual({
+			name: 'Sling',
+			href: '/wiki/mechanics/skills/martial-ranged',
+			labels: [{ namespace: 'Equipment', value: 'Sling' }]
+		});
+	});
+
 	it('contains no Universal branch or obsolete structural identity', () => {
 		const serialized = JSON.stringify(SKILL_DOMAINS);
 

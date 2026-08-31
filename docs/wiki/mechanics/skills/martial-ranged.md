@@ -7,7 +7,7 @@ Family: **Ranged**
 
 Design status: **draft source import**. These definitions preserve the supplied compendium; exact combat values and Living Village availability require validation.
 
-Ranged owns projectile techniques. Equipment labels narrow compatibility; `—` means any compatible Ranged-family equipment.
+Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels narrow compatibility; `—` means any compatible Ranged-family equipment.
 
 | # | Skill | Equipment | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |

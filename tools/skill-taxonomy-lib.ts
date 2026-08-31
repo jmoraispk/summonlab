@@ -25,7 +25,11 @@ export type SkillMigrationRecord = LegacySkillRow & {
 		skill: string;
 		labels?: SkillLabel[];
 	};
-	mergeTarget?: string;
+	mergeTarget?: {
+		domain: SkillDomain;
+		family: string;
+		skill: string;
+	};
 	rationale?: string;
 	replacementRequires?: string;
 	replacementEffect?: string;
@@ -33,9 +37,13 @@ export type SkillMigrationRecord = LegacySkillRow & {
 
 export type SkillMigrationLedger = {
 	schemaVersion: 'summonlab-skill-taxonomy-migration-v2';
+	sourceInventorySha256: string;
 	sourceRowCount: 520;
 	records: SkillMigrationRecord[];
 };
+
+export const LEGACY_SKILL_INVENTORY_V1_SHA256 =
+	'c4b0d6efe79987686fd3cfb6d3400d21c081936c23d7254f63b6b342d2c70df4';
 
 export type TargetSkillRow = {
 	targetId: string;
@@ -91,11 +99,17 @@ const FORBIDDEN_SKILL_REFERENCES = [
 ] as const;
 
 export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]): string[] {
-	return files.flatMap(({ sourcePath, source }) =>
-		FORBIDDEN_SKILL_REFERENCES.filter((reference) => source.includes(reference)).map(
+	return files.flatMap(({ sourcePath, source }) => [
+		...FORBIDDEN_SKILL_REFERENCES.filter((reference) => source.includes(reference)).map(
 			(reference) => `${sourcePath}: ${reference}`
-		)
-	);
+		),
+		...(/\bEach focus therefore has a \*\*ladder\*\*/iu.test(source)
+			? [`${sourcePath}: structural focus ladder`]
+			: []),
+		...(/^\|\s*Family\s*\|\s*Foci\s*\|/imu.test(source)
+			? [`${sourcePath}: structural Family/Foci table`]
+			: [])
+	]);
 }
 
 export function findForbiddenSkillReferencesInAuthoredSources(
@@ -298,9 +312,18 @@ export function validateTargetTaxonomy(
 		if (record.disposition === 'delete') continue;
 		if (record.disposition === 'merge') {
 			if (!record.mergeTarget) continue;
-			mergeTargets.add(record.mergeTarget);
-			if (!rows.some((row) => row.name === record.mergeTarget))
-				errors.push(`${record.sourceId} merges into missing ${record.mergeTarget}`);
+			if (typeof record.mergeTarget === 'string') {
+				errors.push(`${record.sourceId} has invalid unqualified mergeTarget ${record.mergeTarget}`);
+				continue;
+			}
+			const mergeKey = targetKey(
+				record.mergeTarget.domain,
+				record.mergeTarget.family,
+				record.mergeTarget.skill
+			);
+			mergeTargets.add(mergeKey);
+			if (!rowsByKey.has(mergeKey))
+				errors.push(`${record.sourceId} merges into missing ${mergeKey}`);
 			continue;
 		}
 		if (!record.target) {
@@ -334,7 +357,7 @@ export function validateTargetTaxonomy(
 
 	for (const row of rows) {
 		const key = targetKey(row.domain, row.family, row.name);
-		if (!lineageKeys.has(key) && !mergeTargets.has(row.name))
+		if (!lineageKeys.has(key) && !mergeTargets.has(key))
 			errors.push(`${key} has no legacy lineage`);
 	}
 
@@ -359,6 +382,10 @@ export function validateMigrationLedger(
 ): string[] {
 	const errors: string[] = [];
 	const sourceIds = new Set<string>();
+	if (ledger.sourceInventorySha256 !== LEGACY_SKILL_INVENTORY_V1_SHA256)
+		errors.push(
+			`ledger sourceInventorySha256 mismatch: expected ${LEGACY_SKILL_INVENTORY_V1_SHA256}, found ${ledger.sourceInventorySha256 ?? 'missing'}`
+		);
 
 	if (ledger.sourceRowCount !== 520)
 		errors.push(`expected source row count 520, found ${ledger.sourceRowCount}`);
@@ -376,8 +403,11 @@ export function validateMigrationLedger(
 		if (record.disposition === 'unmapped') errors.push(`${record.sourceId} is unmapped`);
 		if (['retain', 'rename', 'rehome'].includes(record.disposition) && record.target === undefined)
 			errors.push(`${record.disposition} record ${record.sourceId} requires target`);
-		if (record.disposition === 'merge' && !record.mergeTarget)
-			errors.push(`merge record ${record.sourceId} requires mergeTarget`);
+		if (record.disposition === 'merge') {
+			if (!record.mergeTarget) errors.push(`merge record ${record.sourceId} requires mergeTarget`);
+			else if (typeof record.mergeTarget === 'string')
+				errors.push(`${record.sourceId} has invalid unqualified mergeTarget ${record.mergeTarget}`);
+		}
 		if (record.disposition === 'delete' && !record.rationale)
 			errors.push(`delete record ${record.sourceId} requires rationale`);
 	}
@@ -387,11 +417,31 @@ export function validateMigrationLedger(
 			errors.push(`expected 520 legacy inventory records, found ${legacyInventory.length}`);
 		errors.push(...validateLegacyInventory(legacyInventory));
 		const inventorySourceIds = new Set(legacyInventory.map((row) => row.sourceId));
+		const inventoryBySourceId = new Map(legacyInventory.map((row) => [row.sourceId, row]));
 		for (const sourceId of inventorySourceIds) {
 			if (!sourceIds.has(sourceId)) errors.push(`missing source id ${sourceId}`);
 		}
 		for (const sourceId of sourceIds) {
 			if (!inventorySourceIds.has(sourceId)) errors.push(`unknown source id ${sourceId}`);
+		}
+		for (const record of ledger.records) {
+			const inventoryRow = inventoryBySourceId.get(record.sourceId);
+			if (!inventoryRow) continue;
+			for (const field of [
+				'sourcePath',
+				'section',
+				'row',
+				'name',
+				'rarity',
+				'type',
+				'requires',
+				'effect'
+			] as const) {
+				if (record[field] !== inventoryRow[field])
+					errors.push(
+						`${record.sourceId} source ${field} mismatch: expected ${inventoryRow[field]}, found ${record[field]}`
+					);
+			}
 		}
 	}
 

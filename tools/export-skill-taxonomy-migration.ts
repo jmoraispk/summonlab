@@ -1,9 +1,11 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
 	parseLegacySkillRows,
+	LEGACY_SKILL_INVENTORY_V1_SHA256,
 	validateLegacyInventory,
 	type LegacySkillRow,
 	type SkillMarkdownFile,
@@ -50,7 +52,13 @@ async function readLegacyCatalog(workspaceRoot: string): Promise<SkillMarkdownFi
 
 async function readInventory(workspaceRoot: string): Promise<LegacySkillRow[]> {
 	const inventoryPath = path.resolve(workspaceRoot, LEGACY_SKILL_INVENTORY_V1_PATH);
-	const parsed = JSON.parse(await readFile(inventoryPath, 'utf8')) as unknown;
+	const source = await readFile(inventoryPath, 'utf8');
+	const digest = createHash('sha256').update(source).digest('hex');
+	if (digest !== LEGACY_SKILL_INVENTORY_V1_SHA256)
+		throw new Error(
+			`legacy inventory SHA-256 mismatch: expected ${LEGACY_SKILL_INVENTORY_V1_SHA256}, found ${digest}`
+		);
+	const parsed = JSON.parse(source) as unknown;
 	if (!Array.isArray(parsed)) throw new Error('Legacy skill inventory must be a JSON array');
 	return parsed as LegacySkillRow[];
 }
@@ -149,11 +157,23 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 		if (['Armour Training', 'Heavy Bearing', 'Fortress', 'Second Skin'].includes(row.name))
 			return { ...row, disposition: 'delete', rationale: EQUIPMENT_PROGRESSION_DELETE_RATIONALE };
 		if (row.name === 'Punishment')
-			return { ...row, disposition: 'merge', mergeTarget: 'Retaliation Ward' };
+			return {
+				...row,
+				disposition: 'merge',
+				mergeTarget: { domain: 'Martial', family: 'Shield', skill: 'Retaliation Ward' }
+			};
 		if (row.name === 'Bulwark of the Line')
-			return { ...row, disposition: 'merge', mergeTarget: 'Phalanx' };
+			return {
+				...row,
+				disposition: 'merge',
+				mergeTarget: { domain: 'Martial', family: 'Shield', skill: 'Phalanx' }
+			};
 		if (row.name === 'They Shall Not Pass')
-			return { ...row, disposition: 'merge', mergeTarget: 'The Last Wall' };
+			return {
+				...row,
+				disposition: 'merge',
+				mergeTarget: { domain: 'Martial', family: 'Shield', skill: 'The Last Wall' }
+			};
 		if (['Taunt', 'Draw Attention', 'Endure'].includes(row.name))
 			return {
 				...row,
@@ -170,6 +190,115 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 				target: { domain: 'Martial', family: 'Body', skill: row.name }
 			};
 	}
+
+	if (source === 'Spear:Polearm Handling')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Martial', family: 'Polearm', skill: row.name },
+			replacementRequires: 'Hold compatible Polearm equipment',
+			replacementEffect: 'Damage and reach bonus with long-shafted melee weapons. **Foundation.**'
+		};
+
+	if (['Spear:Butt Strike', 'Spear:Keep Away'].includes(source))
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Martial', family: 'Polearm', skill: row.name }
+		};
+
+	const spearEquipment: Record<string, string[]> = {
+		'Spear:Sweep Low': ['Spear', 'Glaive', 'Halberd'],
+		'Spear:Piercing Line': ['Spear', 'Halberd'],
+		'Spear:Hook and Pull': ['Glaive', 'Halberd'],
+		'Spear:Dragon Tail': ['Spear', 'Glaive', 'Halberd']
+	};
+	if (source in spearEquipment)
+		return {
+			...row,
+			disposition: 'rehome',
+			target: {
+				domain: 'Martial',
+				family: 'Polearm',
+				skill: row.name,
+				labels: spearEquipment[source].map((value) => ({
+					namespace: 'Equipment' as const,
+					value
+				}))
+			}
+		};
+
+	if (source === 'Axe:Axework')
+		return {
+			...row,
+			disposition: 'rename',
+			target: {
+				domain: 'Martial',
+				family: 'Polearm',
+				skill: 'Halberd Handling',
+				labels: [{ namespace: 'Equipment', value: 'Halberd' }]
+			},
+			replacementRequires: 'Hold a halberd',
+			replacementEffect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
+		};
+
+	const halberdPrerequisites: Record<string, string> = {
+		'Axe:Chop': 'Halberd Handling Novice',
+		'Axe:Hook Shield': 'Halberd Handling Novice',
+		'Axe:Split Grip': 'Halberd Handling Intermediate'
+	};
+	if (source in halberdPrerequisites)
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: halberdPrerequisites[source]
+		};
+
+	if (source === 'Axe:Bloodletting')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: '10,000 halberd hits',
+			replacementEffect: 'Halberd damage causes bleeding without any affinity'
+		};
+
+	if (source === 'Hammer:Hammerwork')
+		return {
+			...row,
+			disposition: 'rename',
+			target: {
+				domain: 'Martial',
+				family: 'Polearm',
+				skill: 'Polehammer Handling',
+				labels: [{ namespace: 'Equipment', value: 'Polehammer' }]
+			},
+			replacementRequires: 'Might threshold, hold a polehammer',
+			replacementEffect: 'Damage and poise-damage bonus with polehammers. **Foundation.**'
+		};
+
+	const polehammerPrerequisites: Record<string, string> = {
+		'Hammer:Crush': 'Polehammer Handling Novice',
+		'Hammer:Knee Breaker': 'Polehammer Handling Novice',
+		'Hammer:Heavy Footing': 'Polehammer Handling Intermediate'
+	};
+	if (source in polehammerPrerequisites)
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: polehammerPrerequisites[source]
+		};
+
+	if (source === 'Hammer:Bell Ringer')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: 'Concussive Blow Master, 10,000 polehammer hits',
+			replacementEffect: 'Every fourth polehammer hit dazes automatically'
+		};
 
 	if (source === 'Paired Blades:Two-Hand Fighting')
 		return {
@@ -330,6 +459,7 @@ function buildLedger(rows: readonly LegacySkillRow[]): SkillMigrationLedger {
 	if (rows.length !== 520) throw new Error(`Expected 520 legacy skill rows, found ${rows.length}`);
 	return {
 		schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+		sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 		sourceRowCount: 520,
 		records: rows.map(mapRow)
 	};

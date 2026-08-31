@@ -37,6 +37,13 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	await tree.getByRole('button', { name: /show all blade skills/i }).click();
 	await expect(tree.getByRole('link', { name: 'Blade Throw' })).toBeVisible();
 
+	await tree.getByRole('button', { name: 'Glaive', exact: true }).click();
+	await expect(tree.getByRole('link', { name: 'Dragon Tail' })).toBeVisible();
+	await tree.getByRole('button', { name: 'Sling', exact: true }).click();
+	const rangedSkills = tree.getByRole('navigation', { name: 'Ranged representative skills' });
+	await expect(rangedSkills.getByRole('link', { name: /^Sling/u })).toBeVisible();
+	await expect(rangedSkills.getByRole('link', { name: 'Archery' })).toHaveCount(0);
+
 	await expect(tree.getByRole('button', { name: /magical/i })).toContainText('5 families');
 	await tree.getByRole('button', { name: /magical/i }).focus();
 	await page.keyboard.press('Enter');

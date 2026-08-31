@@ -1,5 +1,6 @@
 {
 	"schemaVersion": "summonlab-skill-taxonomy-migration-v2",
+	"sourceInventorySha256": "c4b0d6efe79987686fd3cfb6d3400d21c081936c23d7254f63b6b342d2c70df4",
 	"sourceRowCount": 520,
 	"records": [
 		{
@@ -6566,18 +6567,20 @@
 			"type": "P",
 			"requires": "Hold an axe",
 			"effect": "Damage bonus with axes; small armour-shred chance. **Foundation.**",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Martial",
 				"family": "Polearm",
-				"skill": "Axework",
+				"skill": "Halberd Handling",
 				"labels": [
 					{
 						"namespace": "Equipment",
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Hold a halberd",
+			"replacementEffect": "Damage bonus with halberds; small armour-shred chance. **Foundation.**"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#axe:2",
@@ -6600,7 +6603,8 @@
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Halberd Handling Novice"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#axe:3",
@@ -6623,7 +6627,8 @@
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Halberd Handling Novice"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#axe:4",
@@ -6646,7 +6651,8 @@
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Halberd Handling Intermediate"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#axe:5",
@@ -6751,7 +6757,9 @@
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "10,000 halberd hits",
+			"replacementEffect": "Halberd damage causes bleeding without any affinity"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#axe:10",
@@ -7082,18 +7090,20 @@
 			"type": "P",
 			"requires": "Might threshold, hold a hammer or mace",
 			"effect": "Damage and poise-damage bonus with blunt weapons. **Foundation.**",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Martial",
 				"family": "Polearm",
-				"skill": "Hammerwork",
+				"skill": "Polehammer Handling",
 				"labels": [
 					{
 						"namespace": "Equipment",
 						"value": "Polehammer"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Might threshold, hold a polehammer",
+			"replacementEffect": "Damage and poise-damage bonus with polehammers. **Foundation.**"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#hammer:2",
@@ -7116,7 +7126,8 @@
 						"value": "Polehammer"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Polehammer Handling Novice"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#hammer:3",
@@ -7139,7 +7150,8 @@
 						"value": "Polehammer"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Polehammer Handling Novice"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#hammer:4",
@@ -7162,7 +7174,8 @@
 						"value": "Polehammer"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Polehammer Handling Intermediate"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#hammer:5",
@@ -7277,7 +7290,9 @@
 						"value": "Polehammer"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Concussive Blow Master, 10,000 polehammer hits",
+			"replacementEffect": "Every fourth polehammer hit dazes automatically"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#hammer:10",
@@ -7408,14 +7423,10 @@
 			"target": {
 				"domain": "Martial",
 				"family": "Polearm",
-				"skill": "Polearm Handling",
-				"labels": [
-					{
-						"namespace": "Equipment",
-						"value": "Spear"
-					}
-				]
-			}
+				"skill": "Polearm Handling"
+			},
+			"replacementRequires": "Hold compatible Polearm equipment",
+			"replacementEffect": "Damage and reach bonus with long-shafted melee weapons. **Foundation.**"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#spear:2",
@@ -7454,13 +7465,7 @@
 			"target": {
 				"domain": "Martial",
 				"family": "Polearm",
-				"skill": "Butt Strike",
-				"labels": [
-					{
-						"namespace": "Equipment",
-						"value": "Spear"
-					}
-				]
+				"skill": "Butt Strike"
 			}
 		},
 		{
@@ -7505,6 +7510,14 @@
 					{
 						"namespace": "Equipment",
 						"value": "Spear"
+					},
+					{
+						"namespace": "Equipment",
+						"value": "Glaive"
+					},
+					{
+						"namespace": "Equipment",
+						"value": "Halberd"
 					}
 				]
 			}
@@ -7523,13 +7536,7 @@
 			"target": {
 				"domain": "Martial",
 				"family": "Polearm",
-				"skill": "Keep Away",
-				"labels": [
-					{
-						"namespace": "Equipment",
-						"value": "Spear"
-					}
-				]
+				"skill": "Keep Away"
 			}
 		},
 		{
@@ -7551,6 +7558,10 @@
 					{
 						"namespace": "Equipment",
 						"value": "Spear"
+					},
+					{
+						"namespace": "Equipment",
+						"value": "Halberd"
 					}
 				]
 			}
@@ -7573,7 +7584,11 @@
 				"labels": [
 					{
 						"namespace": "Equipment",
-						"value": "Spear"
+						"value": "Glaive"
+					},
+					{
+						"namespace": "Equipment",
+						"value": "Halberd"
 					}
 				]
 			}
@@ -7643,6 +7658,14 @@
 					{
 						"namespace": "Equipment",
 						"value": "Spear"
+					},
+					{
+						"namespace": "Equipment",
+						"value": "Glaive"
+					},
+					{
+						"namespace": "Equipment",
+						"value": "Halberd"
 					}
 				]
 			}
@@ -9293,7 +9316,11 @@
 			"requires": "Draw Attention Master",
 			"effect": "Enemies attacking the hero take reflected damage",
 			"disposition": "merge",
-			"mergeTarget": "Retaliation Ward"
+			"mergeTarget": {
+				"domain": "Martial",
+				"family": "Shield",
+				"skill": "Retaliation Ward"
+			}
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#protection:9",
@@ -9336,7 +9363,11 @@
 			"requires": "Fortress Master, Punishment Expert",
 			"effect": "Allies behind the hero cannot be targeted",
 			"disposition": "merge",
-			"mergeTarget": "Phalanx"
+			"mergeTarget": {
+				"domain": "Martial",
+				"family": "Shield",
+				"skill": "Phalanx"
+			}
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#protection:12",
@@ -9349,7 +9380,11 @@
 			"requires": "Bulwark of the Line Master, composite condition",
 			"effect": "Enemies cannot move past the hero by any means",
 			"disposition": "merge",
-			"mergeTarget": "The Last Wall"
+			"mergeTarget": {
+				"domain": "Martial",
+				"family": "Shield",
+				"skill": "The Last Wall"
+			}
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#shield:1",

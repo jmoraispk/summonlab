@@ -216,7 +216,7 @@ This is the single most useful authoring tool in the system. It lets one skill b
 
 Rarity never increases — but a higher-rarity skill can name a lower one as a learn condition. Mastering Fireball does not turn Fireball into Fire Meteor. It grants the *right to learn* Fire Meteor, which was always a Mythic skill and always will be.
 
-Each focus therefore has a **ladder**: a chain of skills climbing in rarity, each gated on the mastery of what came before, plus attributes, plus repetitions, plus whatever deed or source the tier demands. Part 5 works several of these out in full.
+Each family may therefore contain one or more **skill graphs**: prerequisite chains climbing in rarity, each gated on the mastery of what came before, plus attributes, plus repetitions, plus whatever deed or source the tier demands. Part 5 works several of these out in full.
 
 Progression up a ladder comes from:
 
@@ -233,17 +233,17 @@ Skills are not confined to combat.
 
 #### Martial
 
-| Family | Foci |
+| Family | Scope and optional labels |
 |---|---|
 | **Blade** | Cutting, thrusting, and coordinated blade techniques; optional Sword, Dagger, or Greatsword labels |
 | **Polearm** | Long-shafted melee technique; optional Spear, Halberd, Glaive, or Polehammer labels |
-| **Ranged** | Bow and crossbow technique, narrowed by equipment labels |
+| **Ranged** | Bow, crossbow, and sling technique, narrowed by equipment labels |
 | **Shield** | Blocking, interception, formation defense, and ally cover |
 | **Body** | Unarmed combat, grappling, movement, endurance, awareness, and general combat technique |
 
 #### Magical
 
-| Family | Foci |
+| Family | Scope and optional labels |
 |---|---|
 | **Elemental** | Fire, Water, Wood, Earth, and Metal magic, identified by Element labels |
 | **Ward** | Barriers, dispelling, and defensive magic |
@@ -253,7 +253,7 @@ Skills are not confined to combat.
 
 #### Craft and life
 
-| Family | Foci |
+| Family | Scope and optional labels |
 |---|---|
 | **Forging** | Weapons, armour, tools |
 | **Alchemy** | Potions, poisons, reagents |

@@ -77,10 +77,10 @@ compatible loadouts rather than a separate equipment taxonomy.
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
-| **War Hammer** | E+ | Medium | Might | Spike on the reverse for penetration |
-| **Morningstar** | D+ | Medium | Might | Spiked polehammer; adds bleed to blunt damage |
-| **Maul** | D+ | Heavy | Might | Two-handed polehammer; the highest poise damage available |
-| **Great Maul** | C+ | Very Heavy | Might | Slow enough to be a commitment. Ends what it hits. |
+| **Lucerne Hammer** | E+ | Medium | Might | Long-shafted hammer and spike for armour penetration |
+| **Bec de Corbin** | D+ | Medium | Might | Polehammer with a hooked beak for plate and control |
+| **Pole Maul** | D+ | Heavy | Might | Two-handed polehammer; the highest poise damage available |
+| **Great Pole Maul** | C+ | Very Heavy | Might | Slow enough to be a commitment. Ends what it hits. |
 | **Anvil Hammer** | B+ | Very Heavy | Might | Forged by and for a smith. Doubles as a forging tool. |
 
 ## Bow — Ranged
@@ -103,6 +103,11 @@ compatible loadouts rather than a separate equipment taxonomy.
 | **Repeating Crossbow** | D+ | Medium | Dex | Magazine-fed; enables Bolt Storm |
 | **Siege Crossbow** | C+ | Heavy | Might/Dex | Requires bracing; destroys structures |
 | **Clockwork Arbalest** | B+ | Medium | Dex | Self-reloading; supports The Machine |
+
+## Sling — Ranged
+
+A sling is compatible with the retained **Sling** skill and uses ordinary stones or reviewed sling
+ammunition. It is a concrete Ranged equipment label, not a surviving generic Thrown ladder.
 
 ## Unarmed — Body
 

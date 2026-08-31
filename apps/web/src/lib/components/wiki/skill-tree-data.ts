@@ -58,22 +58,33 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 				name: 'Polearm',
 				href: polearmHref,
 				description: 'Reach, hooking, reaping, and crushing with long-shafted weapons.',
-				labels: [equipment('Spear'), equipment('Halberd'), equipment('Polehammer')],
+				labels: [
+					equipment('Spear'),
+					equipment('Glaive'),
+					equipment('Halberd'),
+					equipment('Polehammer')
+				],
 				skills: [
-					skill('Polearm Handling', polearmHref, [equipment('Spear')]),
-					skill('Reaping Arc', polearmHref, [equipment('Halberd')]),
-					skill('Hammerwork', polearmHref, [equipment('Polehammer')])
+					skill('Polearm Handling', polearmHref),
+					skill('Dragon Tail', polearmHref, [
+						equipment('Spear'),
+						equipment('Glaive'),
+						equipment('Halberd')
+					]),
+					skill('Halberd Handling', polearmHref, [equipment('Halberd')]),
+					skill('Polehammer Handling', polearmHref, [equipment('Polehammer')])
 				]
 			},
 			{
 				name: 'Ranged',
 				href: rangedHref,
-				description: 'Bow and crossbow practice across aimed, rapid, and siege fire.',
-				labels: [equipment('Bow'), equipment('Crossbow')],
+				description: 'Bow, crossbow, and sling practice across aimed, rapid, and siege fire.',
+				labels: [equipment('Bow'), equipment('Crossbow'), equipment('Sling')],
 				skills: [
 					skill('Archery', rangedHref, [equipment('Bow')]),
 					skill("Hunter's Mark", rangedHref, [equipment('Bow')]),
-					skill('Crossbow Handling', rangedHref, [equipment('Crossbow')])
+					skill('Crossbow Handling', rangedHref, [equipment('Crossbow')]),
+					skill('Sling', rangedHref, [equipment('Sling')])
 				]
 			},
 			{

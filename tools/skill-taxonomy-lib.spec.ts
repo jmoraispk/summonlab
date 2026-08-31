@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	parseTargetSkillRows,
 	parseSkillMarkdown,
+	LEGACY_SKILL_INVENTORY_V1_SHA256,
 	findForbiddenSkillReferencesInAuthoredSources,
 	findForbiddenSkillReferences,
 	validateLegacyInventory,
@@ -105,6 +106,26 @@ describe('skill taxonomy migration inventory', () => {
 		]);
 	});
 
+	it('rejects structural focus hierarchy while allowing ordinary focus prose', () => {
+		expect(
+			findForbiddenSkillReferences([
+				{
+					sourcePath: 'docs/wiki/framework.md',
+					source:
+						'Each focus therefore has a **ladder**.\n\n| Family | Foci |\n| --- | --- |\n| Blade | Sword |'
+				},
+				{
+					sourcePath: 'docs/wiki/equipment.md',
+					source:
+						'A casting focus is equipment. Training focus is a player choice. Labels never create a separate focus or progression layer.'
+				}
+			])
+		).toEqual([
+			'docs/wiki/framework.md: structural focus ladder',
+			'docs/wiki/framework.md: structural Family/Foci table'
+		]);
+	});
+
 	it('ignores test-only stale identities while scanning authored runtime sources', () => {
 		expect(
 			findForbiddenSkillReferencesInAuthoredSources([
@@ -185,6 +206,7 @@ describe('skill taxonomy migration inventory', () => {
 		} as const;
 		const ledgerWithUnmappedRecord = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 520,
 			records: [{ ...record, disposition: 'unmapped' }]
 		} satisfies SkillMigrationLedger;
@@ -260,6 +282,7 @@ describe('skill taxonomy migration inventory', () => {
 		} as const;
 		const truncatedLedger = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 1,
 			records: [retainedRecord]
 		} as unknown as SkillMigrationLedger;
@@ -283,6 +306,111 @@ describe('skill taxonomy migration inventory', () => {
 		expect(validateMigrationLedger(ledgerWithUnknownSource, [source])).toContain(
 			'unknown source id martial-blade.md#sword:999'
 		);
+	});
+
+	it.each([
+		['sourcePath', 'rewritten.md'],
+		['section', 'Rewritten'],
+		['row', 99],
+		['name', 'Rewritten Skill'],
+		['rarity', 'A'],
+		['type', 'St'],
+		['requires', 'Rewritten prerequisite'],
+		['effect', 'Rewritten effect']
+	] as const)('rejects migration source-field drift in %s', (field, value) => {
+		const source = {
+			sourceId: 'martial-blade.md#sword:1',
+			sourcePath: 'martial-blade.md',
+			section: 'Sword',
+			row: 1,
+			name: 'Swordsmanship',
+			rarity: 'F',
+			type: 'P',
+			requires: 'Hold a sword',
+			effect: 'Foundation'
+		} as const satisfies LegacySkillRow;
+		const ledger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+			sourceRowCount: 520,
+			records: [
+				{
+					...source,
+					[field]: value,
+					disposition: 'retain',
+					target: { domain: 'Martial', family: 'Blade', skill: 'Swordsmanship' }
+				}
+			]
+		} as SkillMigrationLedger;
+
+		expect(validateMigrationLedger(ledger, [source])).toContain(
+			`${source.sourceId} source ${field} mismatch: expected ${source[field]}, found ${value}`
+		);
+	});
+
+	it('records reviewed Polearm replacements instead of short-tool semantics', async () => {
+		const ledger = JSON.parse(
+			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
+		) as SkillMigrationLedger;
+		const bySource = new Map(ledger.records.map((record) => [record.sourceId, record]));
+
+		expect(bySource.get('martial-haft-and-fist.md#axe:1')).toMatchObject({
+			target: {
+				domain: 'Martial',
+				family: 'Polearm',
+				skill: 'Halberd Handling',
+				labels: [{ namespace: 'Equipment', value: 'Halberd' }]
+			},
+			replacementRequires: 'Hold a halberd',
+			replacementEffect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
+		});
+		expect(bySource.get('martial-haft-and-fist.md#axe:9')).toMatchObject({
+			replacementRequires: '10,000 halberd hits',
+			replacementEffect: 'Halberd damage causes bleeding without any affinity'
+		});
+		expect(
+			[2, 3, 4].map(
+				(row) => bySource.get(`martial-haft-and-fist.md#axe:${row}`)?.replacementRequires
+			)
+		).toEqual([
+			'Halberd Handling Novice',
+			'Halberd Handling Novice',
+			'Halberd Handling Intermediate'
+		]);
+		expect(bySource.get('martial-haft-and-fist.md#hammer:1')).toMatchObject({
+			target: {
+				domain: 'Martial',
+				family: 'Polearm',
+				skill: 'Polehammer Handling',
+				labels: [{ namespace: 'Equipment', value: 'Polehammer' }]
+			},
+			replacementRequires: 'Might threshold, hold a polehammer',
+			replacementEffect: 'Damage and poise-damage bonus with polehammers. **Foundation.**'
+		});
+		expect(bySource.get('martial-haft-and-fist.md#hammer:9')).toMatchObject({
+			replacementRequires: 'Concussive Blow Master, 10,000 polehammer hits',
+			replacementEffect: 'Every fourth polehammer hit dazes automatically'
+		});
+		expect(
+			[2, 3, 4].map(
+				(row) => bySource.get(`martial-haft-and-fist.md#hammer:${row}`)?.replacementRequires
+			)
+		).toEqual([
+			'Polehammer Handling Novice',
+			'Polehammer Handling Novice',
+			'Polehammer Handling Intermediate'
+		]);
+		const retainedPolearmRows = ledger.records.filter(
+			(record) => ['Axe', 'Hammer'].includes(record.section) && record.disposition !== 'delete'
+		);
+		expect(retainedPolearmRows).toHaveLength(27);
+		expect(
+			retainedPolearmRows.filter((record) =>
+				/\b(?:axe|axes|hammer or mace|blunt hit)\b/iu.test(
+					`${record.replacementRequires ?? record.requires} ${record.replacementEffect ?? record.effect}`
+				)
+			)
+		).toEqual([]);
 	});
 
 	it('records prerequisite replacements for retired taxonomy nodes', async () => {
@@ -366,9 +494,32 @@ describe('target skill taxonomy', () => {
 		]);
 	});
 
+	it('keeps Polearm foundations and techniques compatible with their reviewed equipment', async () => {
+		const sourcePath = 'docs/wiki/mechanics/skills/martial-polearm.md';
+		const rows = parseTargetSkillRows([{ sourcePath, source: await readFile(sourcePath, 'utf8') }]);
+		const labelsFor = (name: string) =>
+			rows.find((row) => row.name === name)?.labels.map((label) => label.value);
+
+		expect(labelsFor('Polearm Handling')).toEqual([]);
+		expect(labelsFor('Butt Strike')).toEqual([]);
+		expect(labelsFor('Keep Away')).toEqual([]);
+		expect(labelsFor('Sweep Low')).toEqual(['Spear', 'Glaive', 'Halberd']);
+		expect(labelsFor('Hook and Pull')).toEqual(['Glaive', 'Halberd']);
+		expect(labelsFor('Dragon Tail')).toEqual(['Spear', 'Glaive', 'Halberd']);
+		expect(rows.find((row) => row.name === 'Halberd Handling')).toMatchObject({
+			requires: 'Hold a halberd',
+			effect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
+		});
+		expect(rows.find((row) => row.name === 'Polehammer Handling')).toMatchObject({
+			requires: 'Might threshold, hold a polehammer',
+			effect: 'Damage and poise-damage bonus with polehammers. **Foundation.**'
+		});
+	});
+
 	it('rejects invalid Element labels and subfamily declarations', () => {
 		const ledger = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 520,
 			records: []
 		} as SkillMigrationLedger;
@@ -436,6 +587,7 @@ describe('target skill taxonomy', () => {
 		const rows = parseTargetSkillRows(files);
 		const ledger = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 520,
 			records: [
 				{
@@ -475,11 +627,13 @@ describe('target skill taxonomy', () => {
 		]);
 		const unmaterializedLedger = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 520,
 			records: [migrationRecord('Blade', 'Missing Skill', 1)]
 		} as SkillMigrationLedger;
 		const retainedWithoutTarget = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 520,
 			records: [
 				{
@@ -505,6 +659,49 @@ describe('target skill taxonomy', () => {
 		);
 	});
 
+	it('requires fully qualified merge destinations and resolves exact lineage keys', () => {
+		const rows = parseTargetSkillRows([
+			{
+				sourcePath: 'elemental.md',
+				source: magicalTargetPage('Elemental', 'Great Renewal', 'Fire')
+			},
+			{
+				sourcePath: 'restoration.md',
+				source: magicalTargetPage('Restoration', 'Great Renewal')
+			}
+		]);
+		const mergeSource = {
+			...migrationRecord('Body', 'Legacy Renewal', 7),
+			disposition: 'merge',
+			target: undefined
+		};
+		const legacyLedger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+			sourceRowCount: 520,
+			records: [{ ...mergeSource, mergeTarget: 'Great Renewal' }]
+		} as unknown as SkillMigrationLedger;
+		const qualifiedLedger = {
+			...legacyLedger,
+			records: [
+				{
+					...mergeSource,
+					mergeTarget: { domain: 'Magical', family: 'Restoration', skill: 'Great Renewal' }
+				}
+			]
+		} as unknown as SkillMigrationLedger;
+
+		expect(validateTargetTaxonomy(rows, legacyLedger)).toContain(
+			'legacy.md#body:7 has invalid unqualified mergeTarget Great Renewal'
+		);
+		expect(validateTargetTaxonomy(rows, qualifiedLedger)).toContain(
+			'Magical/Elemental/Great Renewal has no legacy lineage'
+		);
+		expect(validateTargetTaxonomy(rows, qualifiedLedger)).not.toContain(
+			'Magical/Restoration/Great Renewal has no legacy lineage'
+		);
+	});
+
 	it.each([
 		['rarity', 'E', 'rarity mismatch for Martial/Blade/Measured Cut: expected F, found E'],
 		['type', 'A', 'type mismatch for Martial/Blade/Measured Cut: expected P, found A'],
@@ -524,6 +721,7 @@ describe('target skill taxonomy', () => {
 		]);
 		const ledger = {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 			sourceRowCount: 520,
 			records: [migrationRecord('Blade', 'Measured Cut', 3)]
 		} as SkillMigrationLedger;

@@ -1,6 +1,8 @@
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
+import { exportSkillTaxonomyMigration } from './export-skill-taxonomy-migration.js';
+
 import {
 	parseTargetSkillRows,
 	findForbiddenSkillReferencesInAuthoredSources,
@@ -17,6 +19,9 @@ async function authoredSourcePaths(root: string, extensions: readonly string[]):
 		.filter((entry) => extensions.some((extension) => entry.endsWith(extension)))
 		.map((entry) => path.join(root, entry));
 }
+
+const exportReport = await exportSkillTaxonomyMigration({ mode: 'check' });
+if (!exportReport.inSync) throw new Error('Skill taxonomy migration ledger is not in sync');
 
 const ledgerPath = path.resolve('docs/wiki/mechanics/skills/migration-v2.json');
 const inventoryPath = path.resolve('docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json');
