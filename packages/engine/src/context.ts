@@ -29,7 +29,8 @@ import {
 	type RetrievedMemory
 } from '@summonlab/contracts';
 
-import { decisionLegalActions, hashGameState } from './engine.js';
+import { hashGameState } from './core/state.js';
+import { decisionLegalActions } from './engine.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;

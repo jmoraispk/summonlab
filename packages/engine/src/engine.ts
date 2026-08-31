@@ -9,8 +9,6 @@ import {
 	EngineGameStateSchema,
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
-	EngineGameStateV3Schema,
-	EngineGameStateV4Schema,
 	EngineGameStateV5Schema,
 	EngineGameStateV6Schema,
 	EngineGameStateV7Schema,
@@ -69,7 +67,6 @@ import {
 	MasterFallbackConfigurationSchema,
 	MasterFallbackSelectionSchema,
 	ResourceKeySchema,
-	RewardDeltaSchema,
 	RuntimeBandStoryStateSchema,
 	RoutineResolutionSchema,
 	ScheduledEventSchema,
@@ -91,11 +88,9 @@ import {
 	type ActionSource,
 	type AuthoritativeEvent,
 	type BuildingAssignmentRole,
-	type CharacterMind,
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV1,
-	type EngineGameStateV2,
 	type EngineGameStateV3,
 	type EngineGameStateV4,
 	type EngineGameStateV5,
@@ -117,7 +112,6 @@ import {
 	type EngineGameStateV21,
 	type EngineGameStateV22,
 	type EngineGameStateV23,
-	type EngineSnapshot,
 	type EntropyDraw,
 	type FirstEmberFacility,
 	type FirstEmberRationale,
@@ -166,12 +160,9 @@ import {
 	type StoryPatchCastMember
 } from '@summonlab/contracts';
 import {
-	HEARTH_01_DEFINITION,
 	IRON_MOON_PACKAGE,
 	MONSTER_POLICY_CATALOG,
 	TOWER_FLOOR_01_PACKAGE,
-	TOWER_BAND_01_RUNTIME_PACKAGES,
-	TOWER_BAND_01_STORY_ENVELOPE,
 	resolveStoryExpression,
 	applyMissionDiscoveryAffordance,
 	listLegalMissionDiscoveryAffordances,
@@ -189,97 +180,91 @@ import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
 import { applyValidatedStoryPatch, validateStoryPatch } from './story.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
+import {
+	missionContentForState,
+	settlementForState,
+	verifiedMissionBinding,
+	verifiedMissionContent,
+	verifiedSettlementContent,
+	verifiedStoryEnvelope
+} from './core/content-bindings.js';
+import {
+	EmptyMetadataSchema,
+	RewardDeltasSchema,
+	emptyMetadata,
+	entropyDrawsFromEvent,
+	eventBase,
+	metadataIds,
+	systemSource
+} from './core/event-metadata.js';
+import { hashParsedGameState, parseModernState } from './core/state.js';
+import type {
+	BootstrapEngineInput,
+	BootstrapEngineResult,
+	EngineApplyResult,
+	EngineGameStateModern,
+	EngineRoutineState,
+	ReplayCheck,
+	ReplayResult
+} from './core/types.js';
+import {
+	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
+	DEFAULT_ACTIVE_SYSTEM_IDS,
+	ENGINE_CONTENT_VERSION,
+	ENGINE_EPOCH,
+	FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION,
+	MASTER_FALLBACK_ENGINE_CONTENT_VERSION,
+	MASTER_PERMADEATH_ENGINE_CONTENT_VERSION,
+	MASTER_TIMING_ENGINE_CONTENT_VERSION,
+	MISSION_AFTERMATH_ENGINE_CONTENT_VERSION,
+	MISSION_EVIDENCE_ENGINE_CONTENT_VERSION,
+	PORTAL_ENGINE_CONTENT_VERSION,
+	STORY_PATCH_ENGINE_CONTENT_VERSION,
+	SYNTHESIS_ENGINE_CONTENT_VERSION,
+	hasFacilityState,
+	hasFirstEmberState,
+	hasNavigationState,
+	hasRoutineState,
+	isModernState
+} from './core/versions.js';
 
-export const ENGINE_CONTENT_VERSION = 'engine-v13';
-export const MISSION_EVIDENCE_ENGINE_CONTENT_VERSION = 'engine-v14';
-export const PORTAL_ENGINE_CONTENT_VERSION = 'engine-v15';
-export const MISSION_AFTERMATH_ENGINE_CONTENT_VERSION = 'engine-v16';
-export const MASTER_PERMADEATH_ENGINE_CONTENT_VERSION = 'engine-v17';
-export const ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION = 'engine-v18';
-export const MASTER_TIMING_ENGINE_CONTENT_VERSION = 'engine-v19';
-export const MASTER_FALLBACK_ENGINE_CONTENT_VERSION = 'engine-v20';
-export const STORY_PATCH_ENGINE_CONTENT_VERSION = 'engine-v21';
-export const SYNTHESIS_ENGINE_CONTENT_VERSION = 'engine-v22';
-export const FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION = 'engine-v23';
-export const MISSION_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v13';
-export const MISSION_TURN_ENGINE_CONTENT_VERSION = 'engine-v12';
-export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
-export const DIRECTIVE_ENGINE_CONTENT_VERSION = 'engine-v10';
-export const CONVERSATION_ENGINE_CONTENT_VERSION = 'engine-v9';
-export const COMMUNICATION_ENGINE_CONTENT_VERSION = 'engine-v8';
-export const SOCIAL_ENGINE_CONTENT_VERSION = 'engine-v7';
-export const FIRST_EMBER_ENGINE_CONTENT_VERSION = 'engine-v6';
-export const ROUTINE_ENGINE_CONTENT_VERSION = 'engine-v5';
-export const FACILITY_ENGINE_CONTENT_VERSION = 'engine-v4';
-export const TRAVEL_ENGINE_CONTENT_VERSION = 'engine-v3';
-export const PREVIOUS_ENGINE_CONTENT_VERSION = 'engine-v2';
-export const LEGACY_ENGINE_CONTENT_VERSION = 'engine-v1';
-export const ENGINE_EPOCH = '2000-01-01T00:00:00.000Z';
-export const ENGINE_INVARIANTS = Object.freeze([
-	'pure-transition',
-	'engine-owned-legality',
-	'seeded-entropy',
-	'append-only-events',
-	'nonnegative-resource-ledger',
-	'terminal-actors-cannot-act',
-	'atomic-master-game-over',
-	'fake-clock-only',
-	'no-network',
-	'no-database',
-	'no-wall-clock',
-	'no-model-sdk'
-] as const);
-
-const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
-	'dormitory-system',
-	'gate-system',
-	'hearth-system',
-	'training-system'
-] as const);
-
-type EngineGameStateModern =
-	| EngineGameStateV2
-	| EngineGameStateV3
-	| EngineGameStateV4
-	| EngineGameStateV5
-	| EngineGameStateV6
-	| EngineGameStateV7
-	| EngineGameStateV8
-	| EngineGameStateV9
-	| EngineGameStateV10
-	| EngineGameStateV11
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV22
-	| EngineGameStateV23;
-type EngineRoutineState =
-	| EngineGameStateV5
-	| EngineGameStateV6
-	| EngineGameStateV7
-	| EngineGameStateV8
-	| EngineGameStateV9
-	| EngineGameStateV10
-	| EngineGameStateV11
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV22
-	| EngineGameStateV23;
+export {
+	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
+	COMMUNICATION_ENGINE_CONTENT_VERSION,
+	CONVERSATION_ENGINE_CONTENT_VERSION,
+	DIRECTIVE_ENGINE_CONTENT_VERSION,
+	ENGINE_CONTENT_VERSION,
+	ENGINE_EPOCH,
+	ENGINE_INVARIANTS,
+	FACILITY_ENGINE_CONTENT_VERSION,
+	FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION,
+	FIRST_EMBER_ENGINE_CONTENT_VERSION,
+	LEGACY_ENGINE_CONTENT_VERSION,
+	MASTER_FALLBACK_ENGINE_CONTENT_VERSION,
+	MASTER_PERMADEATH_ENGINE_CONTENT_VERSION,
+	MASTER_TIMING_ENGINE_CONTENT_VERSION,
+	MISSION_AFTERMATH_ENGINE_CONTENT_VERSION,
+	MISSION_COMBAT_ENGINE_CONTENT_VERSION,
+	MISSION_ENGINE_CONTENT_VERSION,
+	MISSION_EVIDENCE_ENGINE_CONTENT_VERSION,
+	MISSION_TURN_ENGINE_CONTENT_VERSION,
+	PORTAL_ENGINE_CONTENT_VERSION,
+	PREVIOUS_ENGINE_CONTENT_VERSION,
+	ROUTINE_ENGINE_CONTENT_VERSION,
+	SOCIAL_ENGINE_CONTENT_VERSION,
+	STORY_PATCH_ENGINE_CONTENT_VERSION,
+	SYNTHESIS_ENGINE_CONTENT_VERSION,
+	TRAVEL_ENGINE_CONTENT_VERSION
+} from './core/versions.js';
+export { hashGameState } from './core/state.js';
+export type {
+	BootstrapAdditionalHeroInput,
+	BootstrapEngineInput,
+	BootstrapEngineResult,
+	EngineApplyResult,
+	ReplayCheck,
+	ReplayResult
+} from './core/types.js';
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -319,65 +304,6 @@ const BUILDING_OPERATIONS = Object.freeze({
 		readonly baselinePowerState: 'reserve' | 'unpowered';
 	}
 >);
-
-export interface BootstrapEngineInput {
-	readonly runId: string;
-	readonly seed: string;
-	readonly heroId: string;
-	readonly manifestHash: string;
-	readonly rarityStars?: number;
-	readonly simulatedAt?: string;
-	readonly mind?: CharacterMind;
-	readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
-	readonly developmentMissionScenario?: {
-		readonly initialMissionId: string;
-		readonly availableMissionIds: readonly string[];
-		readonly enableMissionAftermath?: boolean;
-		readonly enableMasterPermadeath?: boolean;
-		readonly enableAttemptAftermath?: boolean;
-		readonly enableMasterTiming?: boolean;
-		readonly enableMasterFallback?: boolean;
-		readonly enableStoryPatch?: boolean;
-		readonly enableSynthesis?: boolean;
-		readonly enableFirstBandArchive?: boolean;
-		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
-		readonly foundryRouteMemoryHeroId?: string;
-	};
-}
-
-export interface BootstrapAdditionalHeroInput {
-	readonly heroId: string;
-	readonly manifestHash: string;
-	readonly rarityStars?: number;
-	readonly mind?: CharacterMind;
-}
-
-export interface BootstrapEngineResult {
-	readonly snapshot: EngineSnapshot;
-	readonly event: AuthoritativeEvent;
-}
-
-export interface EngineApplyResult {
-	readonly state: EngineGameState;
-	readonly stateHash: string;
-	readonly events: readonly AuthoritativeEvent[];
-	readonly scheduled: readonly ScheduledEvent[];
-	readonly resolvedScheduledEventIds: readonly string[];
-	readonly canceledScheduledEventIds: readonly string[];
-	readonly decisionRequests: readonly never[];
-	readonly legalActions: readonly LegalAction[];
-}
-
-const RewardDeltasSchema = z.array(RewardDeltaSchema);
-const EmptyMetadataSchema = z.object({
-	summary: z.string().min(1).max(1_000),
-	rewardDeltas: RewardDeltasSchema,
-	resolvedScheduledEventIds: z.array(z.string().uuid()),
-	canceledScheduledEventIds: z.array(z.string().uuid()),
-	entropyDraws: z.array(EntropyDrawSchema),
-	directiveInfluences: z.array(DirectiveInfluenceRecordSchema).max(16).optional(),
-	expiredDirectiveIds: z.array(z.string().uuid()).max(256).optional()
-});
 
 const InitializedPayloadSchema = z
 	.object({
@@ -891,26 +817,6 @@ const FirstBandArchiveRevealedPayloadSchema = EmptyMetadataSchema.extend({
 	firstBandArchive: FirstBandArchiveStateSchema,
 	nextVersion: z.number().int().positive()
 }).strict();
-
-function systemSource() {
-	return {
-		source: 'system' as const,
-		timing: null,
-		fallbackPolicy: null,
-		directiveIds: [],
-		decisionJobId: null
-	};
-}
-
-function emptyMetadata(summary: string, rewardDeltas: readonly RewardDelta[] = []) {
-	return {
-		summary,
-		rewardDeltas,
-		resolvedScheduledEventIds: [] as string[],
-		canceledScheduledEventIds: [] as string[],
-		entropyDraws: [] as EntropyDraw[]
-	};
-}
 
 function masterDecisionWindow(
 	control: MasterControlState,
@@ -1676,14 +1582,6 @@ function createBootstrapCompanySocietyV5(
 	return SocietyStateV5Schema.parse({ ...society, contentVersion: 'society-v5' });
 }
 
-export function hashGameState(state: EngineGameState): string {
-	return hashParsedGameState(EngineGameStateSchema.parse(state));
-}
-
-function hashParsedGameState(state: EngineGameState): string {
-	return hashCanonical(state);
-}
-
 export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEngineResult {
 	const masterId = deterministicUuid(`${input.runId}:master`);
 	const commandId = deterministicUuid(`${input.runId}:bootstrap`);
@@ -2091,23 +1989,6 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	return { snapshot: EngineSnapshotSchema.parse({ state, stateHash }), event };
 }
 
-let verifiedSettlement: SettlementDefinition | undefined;
-const verifiedMissions = new Map<string, MissionPackage>();
-let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
-
-function verifiedStoryEnvelope(): typeof TOWER_BAND_01_STORY_ENVELOPE {
-	if (verifiedBandStory) return verifiedBandStory;
-	const { contentHash, ...payload } = TOWER_BAND_01_STORY_ENVELOPE;
-	const calculatedHash = hashCanonical(payload);
-	if (calculatedHash !== contentHash) {
-		throw new Error(
-			`First-band story hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
-		);
-	}
-	verifiedBandStory = TOWER_BAND_01_STORY_ENVELOPE;
-	return verifiedBandStory;
-}
-
 function createStoryPatchCheckpoint() {
 	const envelope = verifiedStoryEnvelope();
 	const pressure = envelope.beats.find(
@@ -2354,59 +2235,6 @@ export function validateStoryPatchForState(
 		storyPatchCastForState(state),
 		candidate
 	);
-}
-
-function verifiedSettlementContent(): SettlementDefinition {
-	if (verifiedSettlement) return verifiedSettlement;
-	const { contentHash, ...payload } = HEARTH_01_DEFINITION;
-	const calculatedHash = hashCanonical(payload);
-	if (calculatedHash !== contentHash) {
-		throw new Error(
-			`Hearth 01 content hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
-		);
-	}
-	verifiedSettlement = HEARTH_01_DEFINITION;
-	return verifiedSettlement;
-}
-
-function verifiedMissionContent(missionId = TOWER_FLOOR_01_PACKAGE.missionId): MissionPackage {
-	const cached = verifiedMissions.get(missionId);
-	if (cached) return cached;
-	const mission =
-		missionId === IRON_MOON_PACKAGE.missionId
-			? IRON_MOON_PACKAGE.mission
-			: TOWER_BAND_01_RUNTIME_PACKAGES.find((candidate) => candidate.missionId === missionId);
-	if (!mission) throw new Error(`Mission content is unavailable: ${missionId}`);
-	const { contentHash, ...payload } = mission;
-	const calculatedHash = hashCanonical(payload);
-	if (calculatedHash !== contentHash) {
-		throw new Error(
-			`${missionId} content hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
-		);
-	}
-	if (missionId === IRON_MOON_PACKAGE.missionId) {
-		const { contentHash: portalHash, ...portalPayload } = IRON_MOON_PACKAGE;
-		const calculatedPortalHash = hashCanonical(portalPayload);
-		if (calculatedPortalHash !== portalHash) {
-			throw new Error(
-				`${missionId} portal content hash drifted: expected ${portalHash}, calculated ${calculatedPortalHash}`
-			);
-		}
-	}
-	verifiedMissions.set(missionId, mission);
-	return mission;
-}
-
-function verifiedMissionBinding(missionId: string) {
-	const mission = verifiedMissionContent(missionId);
-	return {
-		missionId,
-		contentVersion: mission.contentVersion,
-		contentHash:
-			missionId === IRON_MOON_PACKAGE.missionId
-				? IRON_MOON_PACKAGE.contentHash
-				: mission.contentHash
-	};
 }
 
 function createBuildingStates(definition: SettlementDefinition) {
@@ -3488,42 +3316,6 @@ function firstEmberModifier(
 	);
 }
 
-function settlementForState(
-	state:
-		| EngineGameStateV3
-		| EngineGameStateV4
-		| EngineGameStateV5
-		| EngineGameStateV6
-		| EngineGameStateV7
-		| EngineGameStateV8
-		| EngineGameStateV9
-		| EngineGameStateV10
-		| EngineGameStateV11
-		| EngineGameStateV12
-		| EngineGameStateV13
-		| EngineGameStateV14
-		| EngineGameStateV15
-		| EngineGameStateV16
-		| EngineGameStateV17
-		| EngineGameStateV18
-		| EngineGameStateV19
-		| EngineGameStateV20
-		| EngineGameStateV21
-		| EngineGameStateV22
-		| EngineGameStateV23
-): SettlementDefinition {
-	const definition = verifiedSettlementContent();
-	const binding = state.settlement.navigation;
-	if (
-		binding.settlementId !== definition.settlementId ||
-		binding.contentVersion !== definition.contentVersion ||
-		binding.contentHash !== definition.contentHash
-	) {
-		throw new ReplayIntegrityError('Settlement content binding is unavailable', state.eventCursor);
-	}
-	return definition;
-}
-
 function zoneForNode(definition: SettlementDefinition, nodeId: string) {
 	const node = definition.nodes.find((candidate) => candidate.nodeId === nodeId);
 	if (!node) return null;
@@ -3712,117 +3504,6 @@ function currentRoutineFor(state: EngineGameState, heroId: string) {
 		: null;
 }
 
-function hasNavigationState(
-	state: EngineGameState
-): state is
-	| EngineGameStateV3
-	| EngineGameStateV4
-	| EngineGameStateV5
-	| EngineGameStateV6
-	| EngineGameStateV7
-	| EngineGameStateV8
-	| EngineGameStateV9
-	| EngineGameStateV10
-	| EngineGameStateV11
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV22
-	| EngineGameStateV23 {
-	return [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(
-		state.schemaVersion
-	);
-}
-
-function hasFacilityState(
-	state: EngineGameState
-): state is
-	| EngineGameStateV4
-	| EngineGameStateV5
-	| EngineGameStateV6
-	| EngineGameStateV7
-	| EngineGameStateV8
-	| EngineGameStateV9
-	| EngineGameStateV10
-	| EngineGameStateV11
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV22
-	| EngineGameStateV23 {
-	return [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(
-		state.schemaVersion
-	);
-}
-
-function hasRoutineState(state: EngineGameState): state is EngineRoutineState {
-	return (
-		state.schemaVersion === 5 ||
-		state.schemaVersion === 6 ||
-		state.schemaVersion === 7 ||
-		state.schemaVersion === 8 ||
-		state.schemaVersion === 9 ||
-		state.schemaVersion === 10 ||
-		state.schemaVersion === 11 ||
-		state.schemaVersion === 12 ||
-		state.schemaVersion === 13 ||
-		state.schemaVersion === 14 ||
-		state.schemaVersion === 15 ||
-		state.schemaVersion === 16 ||
-		state.schemaVersion === 17 ||
-		state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 21 ||
-		state.schemaVersion === 22 ||
-		state.schemaVersion === 23
-	);
-}
-
-function hasFirstEmberState(
-	state: EngineGameState
-): state is
-	| EngineGameStateV6
-	| EngineGameStateV7
-	| EngineGameStateV8
-	| EngineGameStateV9
-	| EngineGameStateV10
-	| EngineGameStateV11
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV22
-	| EngineGameStateV23 {
-	return [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(
-		state.schemaVersion
-	);
-}
-
-function isModernState(state: EngineGameState): state is EngineGameStateModern {
-	return state.schemaVersion !== 1;
-}
-
 const ACTIVE_MISSION_STATUSES = new Set(['preparing', 'deployed', 'resolving', 'extraction']);
 
 type MissionEngineState =
@@ -3870,19 +3551,6 @@ function parseMissionRunState(state: MissionEngineState, value: unknown): Missio
 							: state.schemaVersion === 12
 								? MissionRunStateV2Schema.parse(value)
 								: MissionRunStateSchema.parse(value);
-}
-
-function missionContentForState(state: MissionEngineState): MissionPackage {
-	const mission = verifiedMissionContent(state.mission.binding.missionId);
-	const binding = verifiedMissionBinding(state.mission.binding.missionId);
-	if (
-		state.mission.binding.missionId !== binding.missionId ||
-		state.mission.binding.contentVersion !== binding.contentVersion ||
-		state.mission.binding.contentHash !== binding.contentHash
-	) {
-		throw new ReplayIntegrityError('Mission content binding is unavailable', state.eventCursor);
-	}
-	return mission;
 }
 
 function missionPartyIsReserved(state: MissionEngineState, actorId: string): boolean {
@@ -8484,26 +8152,6 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 	}
 }
 
-function eventBase(state: EngineGameState, command: EngineCommand, eventType: string) {
-	const sequence = state.eventCursor + 1;
-	return {
-		eventId: deterministicUuid(`${command.commandId}:${sequence}:${eventType}`),
-		runId: state.runId,
-		sequence,
-		schemaVersion: state.schemaVersion,
-		gameTime: state.simulatedAt,
-		eventType,
-		actorId: command.actorId,
-		commandId: command.commandId,
-		causationId: null,
-		correlationId: command.correlationId,
-		source: command.source,
-		beforeStateHash: hashParsedGameState(state),
-		afterStateHash: EMPTY_STATE_HASH,
-		contentVersion: state.contentVersion
-	};
-}
-
 function buildLegacyEvent(state: EngineGameStateV1, command: EngineCommand): AuthoritativeEvent {
 	if (command.commandType === 'hero.choose.destination') {
 		const base = eventBase(state, command, 'hero.destination.selected');
@@ -10758,31 +10406,6 @@ function clearBuildingAssignment(
 			}
 		}
 	};
-}
-
-function parseModernState(state: EngineGameStateModern, value: unknown): EngineGameStateModern {
-	if (state.schemaVersion === 2) return EngineGameStateV2Schema.parse(value);
-	if (state.schemaVersion === 3) return EngineGameStateV3Schema.parse(value);
-	if (state.schemaVersion === 4) return EngineGameStateV4Schema.parse(value);
-	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(value);
-	if (state.schemaVersion === 6) return EngineGameStateV6Schema.parse(value);
-	if (state.schemaVersion === 7) return EngineGameStateV7Schema.parse(value);
-	if (state.schemaVersion === 8) return EngineGameStateV8Schema.parse(value);
-	if (state.schemaVersion === 9) return EngineGameStateV9Schema.parse(value);
-	if (state.schemaVersion === 10) return EngineGameStateV10Schema.parse(value);
-	if (state.schemaVersion === 11) return EngineGameStateV11Schema.parse(value);
-	if (state.schemaVersion === 12) return EngineGameStateV12Schema.parse(value);
-	if (state.schemaVersion === 13) return EngineGameStateV13Schema.parse(value);
-	if (state.schemaVersion === 14) return EngineGameStateV14Schema.parse(value);
-	if (state.schemaVersion === 15) return EngineGameStateV15Schema.parse(value);
-	if (state.schemaVersion === 16) return EngineGameStateV16Schema.parse(value);
-	if (state.schemaVersion === 17) return EngineGameStateV17Schema.parse(value);
-	if (state.schemaVersion === 18) return EngineGameStateV18Schema.parse(value);
-	if (state.schemaVersion === 19) return EngineGameStateV19Schema.parse(value);
-	if (state.schemaVersion === 20) return EngineGameStateV20Schema.parse(value);
-	if (state.schemaVersion === 21) return EngineGameStateV21Schema.parse(value);
-	if (state.schemaVersion === 22) return EngineGameStateV22Schema.parse(value);
-	return EngineGameStateV23Schema.parse(value);
 }
 
 function reduceV2Event(
@@ -13205,14 +12828,6 @@ export function reduceEvent(
 	);
 }
 
-function metadataIds(
-	event: AuthoritativeEvent,
-	key: 'resolvedScheduledEventIds' | 'canceledScheduledEventIds'
-): string[] {
-	const payload = event.payload as Record<string, unknown>;
-	return z.array(z.string().uuid()).parse(payload[key] ?? []);
-}
-
 export function scheduledEventsFromEvent(event: AuthoritativeEvent): readonly ScheduledEvent[] {
 	if (event.eventType === 'hero.activity.started')
 		return [ActivityStartedPayloadSchema.parse(event.payload).scheduledEvent];
@@ -13356,32 +12971,6 @@ export function applyCommand(
 		decisionRequests: [],
 		legalActions: legalActionsForParsedState(nextState, command.actorId)
 	};
-}
-
-export interface ReplayCheck {
-	readonly sequence: number;
-	readonly gameTime: string;
-	readonly eventType: string;
-	readonly actorId: string | null;
-	readonly source: AuthoritativeEvent['source'];
-	readonly summary: string;
-	readonly beforeStateHash: string;
-	readonly afterStateHash: string;
-	readonly computedStateHash: string;
-	readonly verified: boolean;
-	readonly entropyDraws: readonly EntropyDraw[];
-	readonly deltas: readonly RewardDelta[];
-}
-
-export interface ReplayResult {
-	readonly snapshot: EngineSnapshot;
-	readonly checks: readonly ReplayCheck[];
-	readonly verified: boolean;
-}
-
-function entropyDrawsFromEvent(event: AuthoritativeEvent): readonly EntropyDraw[] {
-	const payload = event.payload as Record<string, unknown>;
-	return z.array(EntropyDrawSchema).parse(payload.entropyDraws ?? []);
 }
 
 function replayCheck(

@@ -22,6 +22,7 @@ import {
 } from '@summonlab/contracts';
 
 import { applyCommand, legalActions } from './engine.js';
+import { systemSource } from './core/event-metadata.js';
 import { deterministicUuid } from './hash.js';
 import { compareGameTime } from './time.js';
 
@@ -29,16 +30,6 @@ function habitSource() {
 	return {
 		source: 'habit' as const,
 		timing: 'continuous' as const,
-		fallbackPolicy: null,
-		directiveIds: [],
-		decisionJobId: null
-	};
-}
-
-function systemSource() {
-	return {
-		source: 'system' as const,
-		timing: null,
 		fallbackPolicy: null,
 		directiveIds: [],
 		decisionJobId: null
