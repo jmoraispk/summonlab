@@ -21,8 +21,6 @@ import {
 	type EngineGameStateV22,
 	type EngineGameStateV23,
 	type EntropyDraw,
-	type MissionMonsterIntent,
-	type MissionMonsterState,
 	type MissionRunState,
 	type MissionRunStateV2,
 	type MissionRunStateV3,
@@ -42,30 +40,7 @@ import {
 	verifiedMissionBinding,
 	verifiedMissionContent
 } from '../../core/content-bindings.js';
-
-type MissionCombatAttempt = NonNullable<EngineGameStateV14['mission']['attempt']>;
-type EntropyCursor = ReturnType<typeof createEntropyCursor>;
-
-export type SpawnMissionCombatants = (
-	state:
-		| EngineGameStateV13
-		| EngineGameStateV14
-		| EngineGameStateV16
-		| EngineGameStateV17
-		| EngineGameStateV18
-		| EngineGameStateV19
-		| EngineGameStateV20
-		| EngineGameStateV21
-		| EngineGameStateV23,
-	attempt: MissionCombatAttempt,
-	positions: Readonly<Record<string, string>>,
-	entropyInput: EntropyCursor,
-	entropyDraws: EntropyDraw[]
-) => {
-	readonly monsters: Record<string, MissionMonsterState>;
-	readonly threatIntents: MissionMonsterIntent[];
-	readonly entropy: EntropyCursor;
-};
+import { spawnMissionCombatants } from './monster-policy.js';
 
 type PortalAttempt = NonNullable<EngineGameStateV15['mission']['attempt']>;
 type PortalRuntime = PortalAttempt['turnState']['portal'];
@@ -501,10 +476,7 @@ export type MissionDeploymentResolution = {
 	readonly entropyDraws: EntropyDraw[];
 };
 
-export function deployMissionAttempt(
-	state: MissionEngineState,
-	spawnCombatants: SpawnMissionCombatants
-): MissionDeploymentResolution {
+export function deployMissionAttempt(state: MissionEngineState): MissionDeploymentResolution {
 	const attempt = state.mission.attempt;
 	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.deploy');
 	assertMissionPartyReady(state, attempt.party.heroIds);
@@ -522,7 +494,7 @@ export function deployMissionAttempt(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23
-			? spawnCombatants(state, state.mission.attempt!, positions, entropy, entropyDraws)
+			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy, entropyDraws)
 			: null;
 	if (combat) entropy = combat.entropy;
 	const mission = parseMissionRunState(state, {

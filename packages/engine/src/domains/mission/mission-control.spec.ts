@@ -521,14 +521,7 @@ describe('mission control ownership', () => {
 			[heroId]
 		);
 		const prepared = EngineGameStateV11Schema.parse({ ...initial, mission: preparedMission });
-		const deployedMission = deployMissionAttempt(
-			prepared,
-			(_state, _attempt, _positions, entropy) => ({
-				monsters: {},
-				threatIntents: [],
-				entropy
-			})
-		).mission;
+		const deployedMission = deployMissionAttempt(prepared).mission;
 		const deployed = EngineGameStateV11Schema.parse({ ...prepared, mission: deployedMission });
 		const openedMission = openMissionExtraction(deepFreeze(deployed), ['recover-first-ember']);
 		const extraction = EngineGameStateV11Schema.parse({ ...deployed, mission: openedMission });
@@ -696,14 +689,9 @@ describe('mission control ownership', () => {
 			endedAt: '2000-01-01T00:00:00.000Z'
 		});
 
-		const deployment = deployMissionAttempt(prepared, (_state, _attempt, _positions, entropy) => ({
-			monsters: {},
-			threatIntents: [],
-			entropy
-		}));
+		const deployment = deployMissionAttempt(prepared);
 		expect(deployment).toMatchObject({
-			entropyCursor: 0,
-			entropyDraws: [],
+			entropyCursor: 2,
 			mission: {
 				attempt: {
 					status: 'deployed',
