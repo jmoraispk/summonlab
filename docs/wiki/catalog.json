@@ -469,8 +469,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "skills.magical-evocation",
-      "path": "docs/wiki/mechanics/skills/magical-evocation.md",
+      "wikiId": "skills.magical-elemental",
+      "path": "docs/wiki/mechanics/skills/magical-elemental.md",
       "pageType": "skill-catalog",
       "owner": "skill-catalog",
       "designStatus": "draft",

@@ -14,36 +14,36 @@ const ledgerPath = path.resolve('docs/wiki/mechanics/skills/migration-v2.json');
 const inventoryPath = path.resolve('docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json');
 const ledger = JSON.parse(await readFile(ledgerPath, 'utf8')) as SkillMigrationLedger;
 const inventory = JSON.parse(await readFile(inventoryPath, 'utf8')) as LegacySkillRow[];
-const martialPaths = [
+const targetPaths = [
 	'docs/wiki/mechanics/skills/martial-blade.md',
 	'docs/wiki/mechanics/skills/martial-polearm.md',
 	'docs/wiki/mechanics/skills/martial-ranged.md',
 	'docs/wiki/mechanics/skills/martial-shield.md',
-	'docs/wiki/mechanics/skills/martial-body.md'
+	'docs/wiki/mechanics/skills/martial-body.md',
+	'docs/wiki/mechanics/skills/magical-elemental.md',
+	'docs/wiki/mechanics/skills/magical-disciplines.md',
+	'docs/wiki/mechanics/skills/craft-and-life.md'
 ];
-const martialFiles: SkillMarkdownFile[] = await Promise.all(
-	martialPaths.map(async (sourcePath) => ({
+const targetFiles: SkillMarkdownFile[] = await Promise.all(
+	targetPaths.map(async (sourcePath) => ({
 		sourcePath,
 		source: await readFile(path.resolve(sourcePath), 'utf8')
 	}))
 );
-const martialRows = parseTargetSkillRows(martialFiles);
-const martialLedger = {
-	...ledger,
-	records: ledger.records.filter(
-		(record) => record.target?.domain === 'Martial' || record.disposition === 'merge'
-	)
-};
+const targetRows = parseTargetSkillRows(targetFiles);
 const errors = [
 	...validateMigrationLedger(ledger, inventory),
-	...validateTargetTaxonomy(martialRows, martialLedger)
+	...validateTargetTaxonomy(targetRows, ledger)
 ];
 
 if (errors.length > 0) {
 	process.stderr.write(`${errors.join('\n')}\n`);
 	process.exitCode = 1;
 } else {
+	const domainCounts = ['Martial', 'Magical', 'Craft'].map(
+		(domain) => `${targetRows.filter((row) => row.domain === domain).length} ${domain}`
+	);
 	process.stdout.write(
-		`${ledger.records.length} mapped legacy skill rows\n${martialRows.length} Martial target skill rows reconciled\n`
+		`${ledger.records.length} mapped legacy skill rows\n${targetRows.length} target skill rows reconciled (${domainCounts.join(', ')})\n`
 	);
 }

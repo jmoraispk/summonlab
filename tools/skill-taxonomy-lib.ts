@@ -128,10 +128,14 @@ export function parseLegacySkillRows(files: readonly SkillMarkdownFile[]): Legac
 
 export function parseTargetSkillRows(files: readonly SkillMarkdownFile[]): TargetSkillRow[] {
 	return files.flatMap(({ sourcePath, source }) => {
+		if (/^Subfamily:/imu.test(source) || /^#{2,}\s+Subfamily\b/imu.test(source))
+			throw new Error(`${sourcePath} declares a forbidden subfamily`);
 		const domainMatch = /^Domain:\s+\*\*(Martial|Magical|Craft)\*\*\s*$/mu.exec(source);
 		if (!domainMatch) throw new Error(`${sourcePath} requires Domain metadata`);
 		const domain = domainMatch[1] as SkillDomain;
 		const pageFamily = /^Family:\s+\*\*(.+?)\*\*\s*$/mu.exec(source)?.[1];
+		if (/^#{3,}\s+/mu.test(source) || (pageFamily !== undefined && /^##\s+/mu.test(source)))
+			throw new Error(`${sourcePath} declares a forbidden subfamily`);
 		const rows: TargetSkillRow[] = [];
 		let section: string | undefined;
 		let columns: string[] | undefined;
@@ -217,6 +221,19 @@ export function validateTargetTaxonomy(
 			errors.push(`unknown ${row.domain} family ${row.family}`);
 		if (row.name === 'Two Blades' && row.family !== 'Blade')
 			errors.push('Two Blades must belong to Martial/Blade');
+		const elementLabels = row.labels.filter((label) => label.namespace === 'Element');
+		if (elementLabels.length > 1)
+			errors.push(
+				`${targetKey(row.domain, row.family, row.name)} accepts at most one Element label`
+			);
+		if (
+			row.domain === 'Magical' &&
+			row.family === 'Elemental' &&
+			(elementLabels.length !== 1 || elementLabels[0]?.value === 'Attuned')
+		)
+			errors.push(
+				`${targetKey(row.domain, row.family, row.name)} requires exactly one concrete Element label`
+			);
 
 		for (const label of row.labels) {
 			if (label.namespace === 'Equipment') {

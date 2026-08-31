@@ -51,6 +51,36 @@ function migrationRecord(family: string, skill: string, row: number, equipment: 
 	};
 }
 
+function magicalTargetPage(family: string, skill: string, element = '—'): string {
+	return `# Magical Skills — ${family}
+
+Domain: **Magical**
+Family: **${family}**
+
+| # | Skill | Element | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **${skill}** | ${element} | F | P | None | Foundation |`;
+}
+
+function familiesFor(rows: ReturnType<typeof parseTargetSkillRows>, domain: string): string[] {
+	return [...new Set(rows.filter((row) => row.domain === domain).map((row) => row.family))].sort();
+}
+
+function elementLabelsForFamily(
+	rows: ReturnType<typeof parseTargetSkillRows>,
+	family: string
+): string[] {
+	return [
+		...new Set(
+			rows
+				.filter((row) => row.family === family)
+				.flatMap((row) => row.labels)
+				.filter((label) => label.namespace === 'Element')
+				.map((label) => label.value)
+		)
+	].sort();
+}
+
 describe('skill taxonomy migration inventory', () => {
 	it('parses a catalog row with its page and section identity', () => {
 		const rows = parseSkillMarkdown(
@@ -244,6 +274,108 @@ describe('skill taxonomy migration inventory', () => {
 });
 
 describe('target skill taxonomy', () => {
+	it('parses the final five/five/six family hierarchy and optional Element labels', async () => {
+		const paths = [
+			'docs/wiki/mechanics/skills/martial-blade.md',
+			'docs/wiki/mechanics/skills/martial-body.md',
+			'docs/wiki/mechanics/skills/martial-polearm.md',
+			'docs/wiki/mechanics/skills/martial-ranged.md',
+			'docs/wiki/mechanics/skills/martial-shield.md',
+			'docs/wiki/mechanics/skills/magical-elemental.md',
+			'docs/wiki/mechanics/skills/magical-disciplines.md',
+			'docs/wiki/mechanics/skills/craft-and-life.md'
+		];
+		const rows = parseTargetSkillRows(
+			await Promise.all(
+				paths.map(async (sourcePath) => ({
+					sourcePath,
+					source: await readFile(sourcePath, 'utf8')
+				}))
+			)
+		);
+		const ledger = JSON.parse(
+			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
+		) as SkillMigrationLedger;
+
+		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
+		expect(familiesFor(rows, 'Magical')).toEqual([
+			'Elemental',
+			'Enchantment',
+			'Mind',
+			'Restoration',
+			'Ward'
+		]);
+		expect(familiesFor(rows, 'Craft')).toEqual([
+			'Alchemy',
+			'Beast',
+			'Cooking',
+			'Forging',
+			'Gathering',
+			'Lore'
+		]);
+		expect(elementLabelsForFamily(rows, 'Elemental')).toEqual([
+			'Earth',
+			'Fire',
+			'Metal',
+			'Water',
+			'Wood'
+		]);
+		expect(rows.find((row) => row.name === 'Shield Sigil')?.labels).toEqual([]);
+		expect(rows.find((row) => row.name === 'Elemental Guard')?.labels).toEqual([
+			{ namespace: 'Element', value: 'Attuned' }
+		]);
+	});
+
+	it('rejects invalid Element labels and subfamily declarations', () => {
+		const ledger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceRowCount: 520,
+			records: []
+		} as SkillMigrationLedger;
+		const neutral = parseTargetSkillRows([
+			{ sourcePath: 'elemental.md', source: magicalTargetPage('Elemental', 'Ember', 'Neutral') }
+		]);
+		const unlabeled = parseTargetSkillRows([
+			{ sourcePath: 'elemental.md', source: magicalTargetPage('Elemental', 'Ember') }
+		]);
+		const attuned = parseTargetSkillRows([
+			{ sourcePath: 'elemental.md', source: magicalTargetPage('Elemental', 'Ember', 'Attuned') }
+		]);
+		const multiple = parseTargetSkillRows([
+			{
+				sourcePath: 'ward.md',
+				source: magicalTargetPage('Ward', 'Elemental Guard', 'Fire, Water')
+			}
+		]);
+
+		expect(validateTargetTaxonomy(neutral, ledger)).toContain('unknown Element label Neutral');
+		expect(validateTargetTaxonomy(unlabeled, ledger)).toContain(
+			'Magical/Elemental/Ember requires exactly one concrete Element label'
+		);
+		expect(validateTargetTaxonomy(attuned, ledger)).toContain(
+			'Magical/Elemental/Ember requires exactly one concrete Element label'
+		);
+		expect(validateTargetTaxonomy(multiple, ledger)).toContain(
+			'Magical/Ward/Elemental Guard accepts at most one Element label'
+		);
+		expect(() =>
+			parseTargetSkillRows([
+				{
+					sourcePath: 'subfamily-metadata.md',
+					source: `${magicalTargetPage('Elemental', 'Ember', 'Fire')}\n\nSubfamily: **Fire**`
+				}
+			])
+		).toThrow('subfamily-metadata.md declares a forbidden subfamily');
+		expect(() =>
+			parseTargetSkillRows([
+				{
+					sourcePath: 'subfamily-heading.md',
+					source: `${magicalTargetPage('Elemental', 'Ember', 'Fire')}\n\n### Fire`
+				}
+			])
+		).toThrow('subfamily-heading.md declares a forbidden subfamily');
+	});
+
 	it('parses the five Martial families and keeps Two Blades as an unlabeled Blade skill', () => {
 		const twoBladesRequires = 'Equip two compatible Blade-family weapons';
 		const twoBladesEffect =
