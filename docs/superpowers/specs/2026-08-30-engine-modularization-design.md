@@ -1,6 +1,6 @@
 # Engine Modularization Design
 
-Status: **approved for implementation planning**
+Status: **implemented**
 
 Date: 2026-08-30
 
@@ -13,6 +13,13 @@ domain owners can work without converging on `packages/engine/src/engine.ts` and
 The refactor is behavior-preserving. It changes ownership and dependency structure, not game rules.
 Every existing command, event, state, hash, replay result, legal-action order, projection, error,
 and public import must retain its current meaning.
+
+## Implementation outcome
+
+The modularization is implemented. The final measured compatibility facades are
+`packages/engine/src/engine.ts` at 71 lines and `packages/contracts/src/engine.ts` at 1 line
+(measured 2026-08-31). The operational ownership, import directions, focused tests, and consumer
+seams are recorded in [Engine module ownership](../../system-architecture/engine-module-ownership.md).
 
 ## Current problem
 

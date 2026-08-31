@@ -48,7 +48,7 @@ The current [Living Village](../wiki/milestones/living-village.md) activates onl
 deterministic slice of these domains. Its [release matrix](../wiki/roadmap/living-village-v1.md)
 controls availability without narrowing or deleting the broader target map.
 
-## Current integration debt
+## Engine runtime ownership
 
 The repository proves many advanced components independently, but the ordinary player campaign is
 still hard-bound to an earlier engine generation while synthesis and later story/finale proofs use
@@ -56,12 +56,31 @@ newer opt-in engines. “Complete” currently means a replayable subsystem chec
 checkpoint composes in one run. The first architecture milestone therefore needs one integrated
 version manifest and an end-to-end campaign baseline.
 
-Parallel implementation also converges on two monoliths: `packages/engine/src/engine.ts` is over
-13,000 lines, and `packages/contracts/src/engine.ts` is over 4,500 lines with whole-state schema
-versions. Before several agents change state, extract additive domain command/event/schema/reducer
-modules and compose them through generated or declarative registries. Preserve every historical
-reducer and hash; extraction is first behavior-preserving, then new domains target the integrated
-baseline.
+The engine modularization is implemented. Its compatibility facades are deliberately small:
+`packages/engine/src/engine.ts` is 71 lines and `packages/contracts/src/engine.ts` is 1 line
+(measured 2026-08-31). Runtime ownership now flows in one direction:
+
+```text
+contracts/engine
+      │ schemas, discriminated state and command/runtime contracts
+      ▼
+engine/core
+      │ deterministic state/hash helpers, content bindings, capability predicates, ports
+      ▼
+engine/domains
+      │ settlement · mission · story · synthesis
+      ▼
+engine/orchestration
+      │ registries, composition seams, action policy, bootstrap, apply, reduction, replay
+      ▼
+public facade and consumers
+      │ @summonlab/engine → database, worker, web, policies, evaluation, observability
+```
+
+The [engine module ownership guide](engine-module-ownership.md) is the assignment and handoff
+reference for this boundary. It names the source owners, import directions, focused tests, and
+consumer seams; the registries remain the executable authority for exact command and event
+discriminators.
 
 ## Bounded contexts
 
