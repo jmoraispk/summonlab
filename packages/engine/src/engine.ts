@@ -36,9 +36,6 @@ import {
 	HeroProgressionSchema,
 	HabitStateSchema,
 	FirstEmberStateSchema,
-	FirstBandArchiveStateSchema,
-	FirstBandExtractionReceiptSchema,
-	FirstBandArchiveRevealSchema,
 	InjurySchema,
 	LegalActionSchema,
 	NeedStateSchema,
@@ -67,12 +64,8 @@ import {
 	MasterFallbackConfigurationSchema,
 	MasterFallbackSelectionSchema,
 	ResourceKeySchema,
-	RuntimeBandStoryStateSchema,
 	RoutineResolutionSchema,
 	ScheduledEventSchema,
-	StoryPatchCandidateSchema,
-	StoryPatchValidationReportSchema,
-	AppliedStoryPatchSchema,
 	SettlementRoutePlanSchema,
 	SocietyStateSchema,
 	SocietyStateV2Schema,
@@ -156,14 +149,12 @@ import {
 	type SynthesisReceipt,
 	type SynthesisRumorRecord,
 	type DirectiveRecord,
-	type ScheduledEvent,
-	type StoryPatchCastMember
+	type ScheduledEvent
 } from '@summonlab/contracts';
 import {
 	IRON_MOON_PACKAGE,
 	MONSTER_POLICY_CATALOG,
 	TOWER_FLOOR_01_PACKAGE,
-	resolveStoryExpression,
 	applyMissionDiscoveryAffordance,
 	listLegalMissionDiscoveryAffordances,
 	planMissionRoute,
@@ -178,15 +169,13 @@ import { createEntropyCursor, drawInteger } from './entropy.js';
 import { IllegalActionError, ReplayIntegrityError, StaleStateVersionError } from './errors.js';
 import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
-import { applyValidatedStoryPatch, validateStoryPatch } from './story.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from './time.js';
 import {
 	missionContentForState,
 	settlementForState,
 	verifiedMissionBinding,
 	verifiedMissionContent,
-	verifiedSettlementContent,
-	verifiedStoryEnvelope
+	verifiedSettlementContent
 } from './core/content-bindings.js';
 import {
 	EmptyMetadataSchema,
@@ -227,6 +216,21 @@ import {
 	hasRoutineState,
 	isModernState
 } from './core/versions.js';
+import {
+	completeFirstBandStory,
+	createFirstBandArchiveStoryCheckpoint,
+	createSealedFirstBandArchive,
+	recoverFirstBandArchive
+} from './domains/story/archive.js';
+import { storyCommandHandler } from './domains/story/commands.js';
+import {
+	FirstBandMissionTransitionPayloadSchema,
+	reduceFirstBandMissionConsequences,
+	storyEventReducer
+} from './domains/story/reducer.js';
+import { createStoryPatchCheckpoint } from './domains/story/runtime.js';
+
+export { storyPatchCastForState, validateStoryPatchForState } from './domains/story/runtime.js';
 
 export {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
@@ -789,19 +793,6 @@ const MissionTransitionPayloadV10Schema = MissionTransitionPayloadV8Schema.safeE
 	decisionResolution: MasterDecisionResolutionV2Schema.nullable()
 }).strict();
 
-const MissionTransitionPayloadV11Schema = MissionTransitionPayloadV8Schema.safeExtend({
-	bandStory: RuntimeBandStoryStateSchema,
-	firstBandArchive: FirstBandArchiveStateSchema
-}).strict();
-
-const StoryPatchAppliedPayloadSchema = EmptyMetadataSchema.extend({
-	candidate: StoryPatchCandidateSchema,
-	validation: StoryPatchValidationReportSchema,
-	patch: AppliedStoryPatchSchema,
-	bandStory: RuntimeBandStoryStateSchema,
-	nextVersion: z.number().int().positive()
-}).strict();
-
 const SynthesisCommittedPayloadSchema = EmptyMetadataSchema.extend({
 	receipt: SynthesisReceiptSchema,
 	nextVersion: z.number().int().positive()
@@ -809,12 +800,6 @@ const SynthesisCommittedPayloadSchema = EmptyMetadataSchema.extend({
 
 const SynthesisRumorSharedPayloadSchema = EmptyMetadataSchema.extend({
 	rumor: SynthesisRumorRecordSchema,
-	nextVersion: z.number().int().positive()
-}).strict();
-
-const FirstBandArchiveRevealedPayloadSchema = EmptyMetadataSchema.extend({
-	reveal: FirstBandArchiveRevealSchema,
-	firstBandArchive: FirstBandArchiveStateSchema,
 	nextVersion: z.number().int().positive()
 }).strict();
 
@@ -1987,254 +1972,6 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		}
 	});
 	return { snapshot: EngineSnapshotSchema.parse({ state, stateHash }), event };
-}
-
-function createStoryPatchCheckpoint() {
-	const envelope = verifiedStoryEnvelope();
-	const pressure = envelope.beats.find(
-		(beat) => beat.floor === 4 && beat.kind === 'pressure' && beat.required
-	);
-	if (!pressure) throw new Error('Floor 04 story pressure checkpoint is unavailable');
-	const pressureIndex = envelope.defaultBeatOrder.indexOf(pressure.beatId);
-	if (pressureIndex < 0) throw new Error('Floor 04 story checkpoint left the default route');
-	return RuntimeBandStoryStateSchema.parse({
-		storyVersion: 'runtime-band-story-v1',
-		envelopeId: envelope.envelopeId,
-		envelopeContentVersion: envelope.contentVersion,
-		envelopeContentHash: envelope.contentHash,
-		history: {
-			historyVersion: 'story-beat-history-v1',
-			unlockedFloor: 4,
-			completedBeatIds: envelope.defaultBeatOrder.slice(0, pressureIndex + 1),
-			activatedProposalIds: []
-		},
-		appliedPatches: []
-	});
-}
-
-const FIRST_BAND_ARCHIVE_MESSAGE = 'Hearth 01 was not the first.' as const;
-
-function createFirstBandArchiveStoryCheckpoint() {
-	const envelope = verifiedStoryEnvelope();
-	const floorFourExtraction = envelope.beats.find(
-		(beat) => beat.floor === 4 && beat.kind === 'extraction' && beat.required
-	);
-	if (!floorFourExtraction) throw new Error('Floor 04 extraction story checkpoint is unavailable');
-	const extractionIndex = envelope.defaultBeatOrder.indexOf(floorFourExtraction.beatId);
-	if (extractionIndex < 0) throw new Error('Floor 04 extraction left the default story route');
-	return RuntimeBandStoryStateSchema.parse({
-		storyVersion: 'runtime-band-story-v1',
-		envelopeId: envelope.envelopeId,
-		envelopeContentVersion: envelope.contentVersion,
-		envelopeContentHash: envelope.contentHash,
-		history: {
-			historyVersion: 'story-beat-history-v1',
-			unlockedFloor: 5,
-			completedBeatIds: envelope.defaultBeatOrder.slice(0, extractionIndex + 1),
-			activatedProposalIds: []
-		},
-		appliedPatches: []
-	});
-}
-
-function createSealedFirstBandArchive() {
-	const envelope = verifiedStoryEnvelope();
-	return FirstBandArchiveStateSchema.parse({
-		archiveVersion: 'first-band-archive-v1',
-		status: 'sealed',
-		envelopeId: envelope.envelopeId,
-		envelopeContentHash: envelope.contentHash,
-		canonicalMessageHash: hashCanonical(FIRST_BAND_ARCHIVE_MESSAGE),
-		recovery: null,
-		reveal: null
-	});
-}
-
-function completeFirstBandStory(state: EngineGameStateV23) {
-	const envelope = verifiedStoryEnvelope();
-	if (
-		state.bandStory.envelopeId !== envelope.envelopeId ||
-		state.bandStory.envelopeContentHash !== envelope.contentHash
-	) {
-		throw new IllegalActionError('mission.extract');
-	}
-	return RuntimeBandStoryStateSchema.parse({
-		...state.bandStory,
-		history: {
-			...state.bandStory.history,
-			unlockedFloor: 5,
-			completedBeatIds: [...envelope.defaultBeatOrder]
-		}
-	});
-}
-
-function recoverFirstBandArchive(
-	state: EngineGameStateV23,
-	sourceEventId: string,
-	mission: MissionRunStateV8,
-	bandStory: EngineGameStateV23['bandStory']
-) {
-	const attempt = mission.attempt;
-	if (
-		state.firstBandArchive.status !== 'sealed' ||
-		mission.binding.missionId !== 'tower-floor-05' ||
-		attempt?.status !== 'success' ||
-		attempt.outcome !== 'success'
-	) {
-		return state.firstBandArchive;
-	}
-	const survivingHeroIds = attempt.party.heroIds
-		.filter((heroId) => state.heroes[heroId]?.lifeState === 'active')
-		.sort((left, right) => left.localeCompare(right));
-	const receipt = FirstBandExtractionReceiptSchema.parse({
-		receiptVersion: 'first-band-extraction-receipt-v1',
-		receiptId: deterministicUuid(`${sourceEventId}:first-band-extraction-receipt`),
-		sourceEventId,
-		missionAttemptId: attempt.attemptId,
-		missionBinding: mission.binding,
-		recoveredAt: state.simulatedAt,
-		survivingHeroIds,
-		rewardGrantIds: ['hearth-relight-core', 'first-hearth-archive-fragment'],
-		completedStoryHistoryHash: hashCanonical(bandStory.history)
-	});
-	return FirstBandArchiveStateSchema.parse({
-		...state.firstBandArchive,
-		status: 'recovered',
-		recovery: receipt
-	});
-}
-
-function revealFirstBandArchive(
-	state: EngineGameStateV23,
-	readerHeroId: string,
-	sourceEventId: string
-) {
-	const reader = state.heroes[readerHeroId];
-	const recovery = state.firstBandArchive.recovery;
-	if (
-		state.firstBandArchive.status !== 'recovered' ||
-		!recovery ||
-		!reader ||
-		reader.lifeState !== 'active' ||
-		!recovery.survivingHeroIds.includes(readerHeroId)
-	) {
-		throw new IllegalActionError('story.reveal.first.archive');
-	}
-	const expression = resolveStoryExpression(
-		verifiedStoryEnvelope(),
-		'floor-five-outcome-anchor-expression',
-		[
-			{
-				characterId: readerHeroId,
-				displayName: `Summon ${readerHeroId.slice(0, 6).toUpperCase()}`,
-				lifeState: 'active',
-				mind: reader.mind,
-				knownAnchorIds: ['floor-five-outcome-anchor']
-			}
-		]
-	);
-	if (!expression) throw new IllegalActionError('story.reveal.first.archive');
-	const witnessHeroIds = Object.values(state.heroes)
-		.filter(
-			(hero) =>
-				hero.lifeState === 'active' &&
-				hero.location === state.master.location &&
-				hero.heroId !== readerHeroId
-		)
-		.map((hero) => hero.heroId)
-		.sort((left, right) => left.localeCompare(right));
-	const reveal = FirstBandArchiveRevealSchema.parse({
-		revealVersion: 'first-band-archive-reveal-v1',
-		revealId: deterministicUuid(`${sourceEventId}:first-band-archive-reveal`),
-		sourceEventId,
-		readerHeroId,
-		revealedAt: state.simulatedAt,
-		canonicalMessage: FIRST_BAND_ARCHIVE_MESSAGE,
-		expression,
-		knowledge: [readerHeroId, ...witnessHeroIds].map((heroId) => ({
-			heroId,
-			role: heroId === readerHeroId ? ('reader' as const) : ('witness' as const),
-			learnedAt: state.simulatedAt,
-			sourceEventId
-		}))
-	});
-	return {
-		reveal,
-		archive: FirstBandArchiveStateSchema.parse({
-			...state.firstBandArchive,
-			status: 'revealed',
-			reveal
-		})
-	};
-}
-
-export function storyPatchCastForState(
-	stateInput: EngineGameStateV21
-): readonly StoryPatchCastMember[] {
-	const state = EngineGameStateV21Schema.parse(stateInput);
-	const envelope = verifiedStoryEnvelope();
-	const completed = new Set(state.bandStory.history.completedBeatIds);
-	const anchors = new Map(envelope.anchors.map((anchor) => [anchor.anchorId, anchor]));
-	const openProposalIds = new Set(
-		envelope.patchSlots
-			.filter((slot) => {
-				const after = anchors.get(slot.afterAnchorId);
-				const before = anchors.get(slot.beforeAnchorId);
-				return Boolean(
-					slot.floor <= state.bandStory.history.unlockedFloor &&
-					after &&
-					completed.has(after.beatId) &&
-					before &&
-					!completed.has(before.beatId)
-				);
-			})
-			.flatMap((slot) => slot.allowedProposalIds)
-	);
-	return Object.values(state.heroes)
-		.sort((left, right) => left.heroId.localeCompare(right.heroId))
-		.map((hero) => {
-			const heldEvidenceKeys = new Set(
-				Object.values(state.mission.evidence)
-					.filter((evidence) => evidence.holderActorId === hero.heroId)
-					.map((evidence) => evidence.evidenceKey)
-			);
-			const availableProposalIds = envelope.proposals
-				.filter(
-					(proposal) =>
-						openProposalIds.has(proposal.proposalId) &&
-						proposal.kind === 'role-expression' &&
-						(proposal.floor !== 4 || heldEvidenceKeys.has('foundry-maintenance-route'))
-				)
-				.map((proposal) => proposal.proposalId);
-			return {
-				heroId: hero.heroId,
-				lifeState: hero.lifeState,
-				availableProposalIds
-			};
-		});
-}
-
-export function validateStoryPatchForState(
-	stateInput: EngineGameStateV21,
-	candidateInput: z.input<typeof StoryPatchCandidateSchema>
-) {
-	const state = EngineGameStateV21Schema.parse(stateInput);
-	const candidate = StoryPatchCandidateSchema.parse(candidateInput);
-	if (
-		state.bandStory.envelopeId !== verifiedStoryEnvelope().envelopeId ||
-		state.bandStory.envelopeContentHash !== verifiedStoryEnvelope().contentHash
-	) {
-		throw new ReplayIntegrityError(
-			'Runtime story envelope binding is unavailable',
-			state.eventCursor
-		);
-	}
-	return validateStoryPatch(
-		verifiedStoryEnvelope(),
-		state.bandStory.history,
-		storyPatchCastForState(state),
-		candidate
-	);
 }
 
 function createBuildingStates(definition: SettlementDefinition) {
@@ -7633,16 +7370,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		return;
 	}
 	if (command.commandType === 'story.reveal.first.archive') {
+		storyCommandHandler.assertLegal(state, command);
 		if (
-			state.schemaVersion !== 23 ||
-			state.status !== 'active' ||
-			state.master.lifeState !== 'alive' ||
-			command.actorId !== state.master.masterId ||
-			command.source.source !== 'manual' ||
-			command.source.timing !== 'step' ||
-			state.firstBandArchive.status !== 'recovered' ||
-			!state.firstBandArchive.recovery?.survivingHeroIds.includes(command.readerHeroId) ||
-			state.heroes[command.readerHeroId]?.lifeState !== 'active' ||
 			!legalActionsForParsedState(state, command.actorId).some(
 				(candidate) => candidate.actionId === requiredAction(command)
 			)
@@ -7967,19 +7696,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		}
 	}
 	if (command.commandType === 'story.apply.patch') {
-		if (
-			state.schemaVersion !== 21 ||
-			state.status !== 'active' ||
-			state.master.lifeState !== 'alive' ||
-			command.actorId !== state.master.masterId ||
-			!['manual', 'scripted', 'model'].includes(command.source.source) ||
-			command.source.fallbackPolicy !== null ||
-			command.source.decisionJobId !== null ||
-			state.bandStory.appliedPatches.length !== 0 ||
-			!validateStoryPatchForState(state, command.candidate).accepted
-		) {
-			throw new IllegalActionError(command.commandType, []);
-		}
+		storyCommandHandler.assertLegal(state, command);
 	}
 	const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
 	const required = requiredAction(command);
@@ -8994,54 +8711,11 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 			}
 		});
 	}
-	if (command.commandType === 'story.apply.patch') {
-		if (state.schemaVersion !== 21) throw new IllegalActionError(command.commandType);
-		const base = eventBase(state, command, 'story.patch.applied');
-		const applied = applyValidatedStoryPatch(
-			verifiedStoryEnvelope(),
-			state.bandStory.history,
-			storyPatchCastForState(state),
-			command.candidate,
-			base.eventId,
-			state.simulatedAt
-		);
-		const bandStory = RuntimeBandStoryStateSchema.parse({
-			...state.bandStory,
-			history: applied.history,
-			appliedPatches: [...state.bandStory.appliedPatches, applied.patch]
-		});
-		const selected = command.candidate.selectedProposalIds.join(', ');
-		return AuthoritativeEventSchema.parse({
-			...base,
-			seedCursor: state.entropyCursor,
-			payload: {
-				candidate: command.candidate,
-				validation: applied.patch.validation,
-				patch: applied.patch,
-				bandStory,
-				nextVersion: state.version + 1,
-				...emptyMetadata(
-					`The runtime director committed ${selected} at ${command.candidate.slotId}; every fixed story boundary remained intact.`
-				)
-			}
-		});
-	}
-	if (command.commandType === 'story.reveal.first.archive') {
-		if (state.schemaVersion !== 23) throw new IllegalActionError(command.commandType);
-		const base = eventBase(state, command, 'story.first.archive.revealed');
-		const resolved = revealFirstBandArchive(state, command.readerHeroId, base.eventId);
-		return AuthoritativeEventSchema.parse({
-			...base,
-			seedCursor: state.entropyCursor,
-			payload: {
-				reveal: resolved.reveal,
-				firstBandArchive: resolved.archive,
-				nextVersion: state.version + 1,
-				...emptyMetadata(
-					`${resolved.reveal.expression.speakerName} opened the recovered fragment: ${FIRST_BAND_ARCHIVE_MESSAGE}`
-				)
-			}
-		});
+	if (
+		command.commandType === 'story.apply.patch' ||
+		command.commandType === 'story.reveal.first.archive'
+	) {
+		return storyCommandHandler.buildEvent(state, command);
 	}
 	if (command.commandType === 'master.configure.timing') {
 		if (state.schemaVersion !== 19 && state.schemaVersion !== 20)
@@ -10412,44 +10086,8 @@ function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
-	if (event.eventType === 'story.first.archive.revealed') {
-		if (
-			state.schemaVersion !== 23 ||
-			event.actorId !== state.master.masterId ||
-			event.gameTime !== state.simulatedAt ||
-			event.seedCursor !== state.entropyCursor ||
-			event.source.source !== 'manual'
-		) {
-			throw new ReplayIntegrityError(
-				'First-band archive reveal precondition failed',
-				event.sequence
-			);
-		}
-		const payload = FirstBandArchiveRevealedPayloadSchema.parse(event.payload);
-		if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
-			throw new ReplayIntegrityError('First-band archive reveal version diverged', event.sequence);
-		}
-		let expected;
-		try {
-			expected = revealFirstBandArchive(state, payload.reveal.readerHeroId, event.eventId);
-		} catch {
-			throw new ReplayIntegrityError(
-				'First-band archive reveal could not be reproduced',
-				event.sequence
-			);
-		}
-		if (
-			hashCanonical(expected.reveal) !== hashCanonical(payload.reveal) ||
-			hashCanonical(expected.archive) !== hashCanonical(payload.firstBandArchive)
-		) {
-			throw new ReplayIntegrityError('First-band archive reveal payload diverged', event.sequence);
-		}
-		return EngineGameStateV23Schema.parse({
-			...state,
-			version: payload.nextVersion,
-			eventCursor: event.sequence,
-			firstBandArchive: payload.firstBandArchive
-		});
+	if (storyEventReducer.eventTypes.some((eventType) => eventType === event.eventType)) {
+		return storyEventReducer.reduce(state, event) as EngineGameStateModern;
 	}
 	if (event.eventType === 'hero.synthesized') {
 		if (
@@ -10534,53 +10172,6 @@ function reduceV2Event(
 			throw new ReplayIntegrityError('Synthesis rumor payload diverged', event.sequence);
 		}
 		return resolved.state;
-	}
-	if (event.eventType === 'story.patch.applied') {
-		if (
-			state.schemaVersion !== 21 ||
-			event.actorId !== state.master.masterId ||
-			event.gameTime !== state.simulatedAt ||
-			event.seedCursor !== state.entropyCursor ||
-			!['manual', 'scripted', 'model'].includes(event.source.source) ||
-			state.bandStory.appliedPatches.length !== 0
-		) {
-			throw new ReplayIntegrityError('Story patch precondition failed', event.sequence);
-		}
-		const payload = StoryPatchAppliedPayloadSchema.parse(event.payload);
-		if (payload.nextVersion !== state.version + 1 || payload.entropyDraws.length !== 0) {
-			throw new ReplayIntegrityError('Story patch version diverged', event.sequence);
-		}
-		let expected;
-		try {
-			expected = applyValidatedStoryPatch(
-				verifiedStoryEnvelope(),
-				state.bandStory.history,
-				storyPatchCastForState(state),
-				payload.candidate,
-				event.eventId,
-				event.gameTime
-			);
-		} catch {
-			throw new ReplayIntegrityError('Story patch could not be revalidated', event.sequence);
-		}
-		const expectedBandStory = RuntimeBandStoryStateSchema.parse({
-			...state.bandStory,
-			history: expected.history,
-			appliedPatches: [...state.bandStory.appliedPatches, expected.patch]
-		});
-		if (
-			hashCanonical(expected.patch.validation) !== hashCanonical(payload.validation) ||
-			hashCanonical(expected.patch) !== hashCanonical(payload.patch) ||
-			hashCanonical(expectedBandStory) !== hashCanonical(payload.bandStory)
-		) {
-			throw new ReplayIntegrityError('Story patch payload diverged', event.sequence);
-		}
-		return EngineGameStateV21Schema.parse({
-			...state,
-			version: payload.nextVersion,
-			eventCursor: event.sequence,
-			bandStory: payload.bandStory
-		});
 	}
 	if (event.eventType === 'master.timing.changed') {
 		if (state.schemaVersion === 20) {
@@ -11146,7 +10737,7 @@ function reduceV2Event(
 					event.sequence
 				);
 			}
-			const payload = MissionTransitionPayloadV11Schema.parse(event.payload);
+			const payload = FirstBandMissionTransitionPayloadSchema.parse(event.payload);
 			if (payload.nextVersion !== state.version + 1) {
 				throw new ReplayIntegrityError(
 					'First-band mission transition version diverged',
@@ -11181,19 +10772,8 @@ function reduceV2Event(
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
 									: retreatMissionAttempt(state);
-			const expectedBandStory =
-				payload.transition === 'extract' ? completeFirstBandStory(state) : state.bandStory;
-			const expectedArchive = recoverFirstBandArchive(
-				state,
-				event.eventId,
-				MissionRunStateV8Schema.parse(expectedMission),
-				expectedBandStory
-			);
-			if (
-				hashCanonical(expectedMission) !== hashCanonical(payload.mission) ||
-				hashCanonical(expectedBandStory) !== hashCanonical(payload.bandStory) ||
-				hashCanonical(expectedArchive) !== hashCanonical(payload.firstBandArchive)
-			) {
+			const storyState = reduceFirstBandMissionConsequences(state, event);
+			if (hashCanonical(expectedMission) !== hashCanonical(payload.mission)) {
 				throw new ReplayIntegrityError(
 					'First-band mission transition payload diverged',
 					event.sequence
@@ -11211,7 +10791,7 @@ function reduceV2Event(
 				throw new ReplayIntegrityError('First-band transition entropy diverged', event.sequence);
 			}
 			return EngineGameStateV23Schema.parse({
-				...state,
+				...storyState,
 				version: payload.nextVersion,
 				eventCursor: event.sequence,
 				entropyCursor: event.seedCursor,
