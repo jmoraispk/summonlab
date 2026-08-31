@@ -1503,6 +1503,62 @@ describe('mission runtime ownership', () => {
 			extract: '199438099897b2c0802fec5eb29f35ee07ee789c2d2b6ff12f130c07d6c9fcb5'
 		});
 
+		const storyMissionPrecedence: Array<{
+			readonly transition: string;
+			readonly consequenceValidatorFirst: boolean;
+		}> = [];
+		for (const [transition, record] of Object.entries(records)) {
+			const payload = record.event.payload as Record<string, unknown> & {
+				mission: EngineGameStateV23['mission'];
+				firstBandArchive: EngineGameStateV23['firstBandArchive'];
+			};
+			const storyAndMissionEvent = {
+				...record.event,
+				payload: {
+					...payload,
+					mission: {
+						...payload.mission,
+						attempt: {
+							...payload.mission.attempt!,
+							preparedAt: '2000-01-01T00:00:01.000Z'
+						}
+					},
+					firstBandArchive: {
+						...payload.firstBandArchive,
+						canonicalMessageHash: '0'.repeat(64)
+					}
+				}
+			};
+			let concreteConsequenceError: unknown;
+			try {
+				firstBandMissionEventReducer.reduce(record.before, storyAndMissionEvent);
+			} catch (error) {
+				concreteConsequenceError = error;
+			}
+			expect(concreteConsequenceError).toBeInstanceOf(ReplayIntegrityError);
+			expect(concreteConsequenceError).toMatchObject({
+				name: 'ReplayIntegrityError',
+				message: 'First-band mission transition payload diverged',
+				sequence: record.event.sequence
+			});
+			// Both validators preserve the same public message, so the first concrete throw site proves order.
+			storyMissionPrecedence.push({
+				transition,
+				consequenceValidatorFirst:
+					(concreteConsequenceError as Error).stack
+						?.split('\n')[1]
+						?.includes('reduceFirstBandMissionConsequences') === true
+			});
+		}
+		expect(storyMissionPrecedence).toStrictEqual([
+			{ transition: 'prepare', consequenceValidatorFirst: true },
+			{ transition: 'revise', consequenceValidatorFirst: true },
+			{ transition: 'cancel', consequenceValidatorFirst: true },
+			{ transition: 'deploy', consequenceValidatorFirst: true },
+			{ transition: 'retreat', consequenceValidatorFirst: true },
+			{ transition: 'extract', consequenceValidatorFirst: true }
+		]);
+
 		for (const [transition, record] of Object.entries(records)) {
 			const beforeHash = hashCanonical(record.before);
 			const eventHash = hashCanonical(record.event);
