@@ -230,12 +230,14 @@ function boundaryViolations(importer: string, reference: ModuleReference): strin
 }
 
 describe('engine module boundaries', () => {
-	it('rejects self-package aliases, nested dynamic imports, and import-equals references', () => {
+	it('rejects self-package aliases, static re-exports, dynamic imports, and import-equals references', () => {
 		const importer = path.join(SOURCE_ROOT, 'core', 'synthetic.ts');
 		const references = moduleReferences(
 			importer,
 			`// import('@summonlab/engine') is only a comment.
 			import type * as publicEngine from '@summonlab/engine';
+			export * from '@summonlab/engine';
+			export { applyCommand } from '../engine.js';
 			import engineFacade = require('../engine.js');
 			export async function loadEngine() {
 				return import('../engine.js');
@@ -244,11 +246,15 @@ describe('engine module boundaries', () => {
 
 		expect(references).toEqual([
 			{ kind: 'import', specifier: '@summonlab/engine' },
+			{ kind: 'export', specifier: '@summonlab/engine' },
+			{ kind: 'export', specifier: '../engine.js' },
 			{ kind: 'import-equals', specifier: '../engine.js' },
 			{ kind: 'dynamic-import', specifier: '../engine.js' }
 		]);
 		expect(resolvedInternalPath(importer, '@summonlab/engine')).toBe('index.ts');
 		expect(references.flatMap((reference) => boundaryViolations(importer, reference))).toEqual([
+			'internal source imports the public engine facade',
+			'internal source imports the public engine facade',
 			'internal source imports the public engine facade',
 			'internal source imports the public engine facade',
 			'internal source imports the public engine facade'
@@ -261,6 +267,12 @@ describe('engine module boundaries', () => {
 		expect(
 			fixtureReferences.flatMap((reference) => boundaryViolations(fixture, reference))
 		).toEqual([]);
+		expect(
+			boundaryViolations(fixture, {
+				kind: 'export',
+				specifier: '@summonlab/engine'
+			})
+		).toEqual(['internal source imports the public engine facade']);
 
 		const neighboringFile = path.join(SOURCE_ROOT, 'compatibility', 'synthetic.ts');
 		expect(
@@ -277,6 +289,12 @@ describe('engine module boundaries', () => {
 		expect(
 			fixtureReferences.flatMap((reference) => boundaryViolations(fixture, reference))
 		).toEqual([]);
+		expect(
+			boundaryViolations(fixture, {
+				kind: 'export',
+				specifier: '../index.js'
+			})
+		).toEqual(['internal source imports the public engine facade']);
 
 		const neighboringFile = path.join(SOURCE_ROOT, 'compatibility', 'synthetic.ts');
 		expect(
