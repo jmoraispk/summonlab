@@ -20,7 +20,6 @@ const FORBIDDEN_RESOLVED_PATH_PATTERN =
 	/(?:^|\/)(?:database|worker|web|policies|evaluation)(?:\/|$)/u;
 const TEMPORARY_ENGINE_FACADE_IMPORTS: ReadonlyMap<string, string> = new Map([
 	['catch-up.ts', 'Task 12'],
-	['context.ts', 'Task 11'],
 	['simulation.ts', 'Task 12']
 ] as const);
 
@@ -328,7 +327,6 @@ describe('engine module boundaries', () => {
 		expect(violations).toEqual([]);
 		expect([...temporaryFacadeImports]).toEqual([
 			['catch-up.ts', 'Task 12'],
-			['context.ts', 'Task 11'],
 			['simulation.ts', 'Task 12']
 		]);
 	});

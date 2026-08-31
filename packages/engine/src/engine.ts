@@ -17,8 +17,6 @@ import {
 	EngineGameStateV23Schema,
 	EngineSnapshotSchema,
 	EntropyDrawSchema,
-	HeroDecisionPacketSchema,
-	HeroPolicyResultSchema,
 	ResourceKeySchema,
 	DirectiveRecordSchema,
 	DirectiveInfluenceRecordSchema,
@@ -26,8 +24,6 @@ import {
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV1,
-	type HeroDecisionPacket,
-	type HeroPolicyResult,
 	type LegalAction,
 	type RewardDelta,
 	type DirectiveRecord,
@@ -36,14 +32,10 @@ import {
 import { IRON_MOON_PACKAGE, TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
 import { z } from 'zod';
 
-import { IllegalActionError, ReplayIntegrityError, StaleStateVersionError } from './errors.js';
-import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
+import { ReplayIntegrityError } from './errors.js';
+import { deterministicUuid, EMPTY_STATE_HASH } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
-import {
-	settlementForState,
-	verifiedMissionBinding,
-	verifiedSettlementContent
-} from './core/content-bindings.js';
+import { verifiedMissionBinding, verifiedSettlementContent } from './core/content-bindings.js';
 import {
 	RewardDeltasSchema,
 	emptyMetadata,
@@ -73,9 +65,7 @@ import {
 	MISSION_EVIDENCE_ENGINE_CONTENT_VERSION,
 	PORTAL_ENGINE_CONTENT_VERSION,
 	STORY_PATCH_ENGINE_CONTENT_VERSION,
-	SYNTHESIS_ENGINE_CONTENT_VERSION,
-	hasNavigationState,
-	isModernState
+	SYNTHESIS_ENGINE_CONTENT_VERSION
 } from './core/versions.js';
 import {
 	createFirstBandArchiveStoryCheckpoint,
@@ -86,24 +76,12 @@ import { storyEventReducer } from './domains/story/reducer.js';
 import { createStoryPatchCheckpoint } from './domains/story/runtime.js';
 import { synthesisCommandHandler } from './domains/synthesis/commands.js';
 import { synthesisEventReducer } from './domains/synthesis/reducer.js';
-import {
-	SETTLEMENT_COMMAND_TYPES,
-	assertSettlementCommandLegalWithActionIds,
-	requiredSettlementAction,
-	settlementCommandHandler,
-	type SettlementCommand
-} from './domains/settlement/commands.js';
-import {
-	action,
-	settlementLegalActions,
-	settlementTravelActions
-} from './domains/settlement/actions.js';
-import { createBuildingStates, destinationNodeId } from './domains/settlement/navigation.js';
+import { settlementCommandHandler, type SettlementCommand } from './domains/settlement/commands.js';
+import { createBuildingStates } from './domains/settlement/navigation.js';
 import { clamp } from './domains/settlement/routines.js';
 import {
 	createBootstrapCompanySociety,
-	createBootstrapCompanySocietyV5,
-	heroCanHearCommunication
+	createBootstrapCompanySocietyV5
 } from './domains/settlement/society.js';
 import {
 	ActivityStartedPayloadSchema,
@@ -112,14 +90,8 @@ import {
 	TravelStartedPayloadSchema,
 	settlementEventReducer
 } from './domains/settlement/reducer.js';
-import {
-	missionLegalActions,
-	missionTurnLegalActions,
-	supportsMissionActions
-} from './domains/mission/actions.js';
-import { MISSION_COMMAND_TYPES, type MissionCommand } from './domains/mission/commands.js';
+import { missionTurnLegalActions } from './domains/mission/actions.js';
 import { missionEventReducer } from './domains/mission/reducer.js';
-import { missionPartyIsReserved } from './domains/mission/lifecycle.js';
 import {
 	isIrreversibleMasterAction,
 	masterFallbackActionSource,
@@ -138,6 +110,13 @@ import {
 } from './orchestration/first-band-mission-reducer.js';
 import { createCommandRegistry } from './orchestration/command-registry.js';
 import { createEventRegistry } from './orchestration/event-registry.js';
+import { assertCommandIsLegal, requiredAction } from './orchestration/command-authorization.js';
+import {
+	decisionLegalActions,
+	legalActions,
+	legalActionsForParsedState
+} from './orchestration/legal-actions.js';
+import { commandFromHeroPolicyResult } from './orchestration/policy-commands.js';
 
 const commandRegistry = createCommandRegistry([
 	settlementCommandHandler,
@@ -196,6 +175,7 @@ export {
 	TRAVEL_ENGINE_CONTENT_VERSION
 } from './core/versions.js';
 export { hashGameState } from './core/state.js';
+export { commandFromHeroPolicyResult, decisionLegalActions, legalActions };
 export type {
 	BootstrapAdditionalHeroInput,
 	BootstrapEngineInput,
@@ -667,466 +647,6 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	return { snapshot: EngineSnapshotSchema.parse({ state, stateHash }), event };
 }
 
-function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
-	const actorId = state.master.masterId;
-	const controlActions: LegalAction[] =
-		state.schemaVersion === 19 || state.schemaVersion === 20
-			? [
-					action({
-						actionId: 'master.control.configure',
-						actorId,
-						kind: 'interact',
-						label: 'Change Master decision timing',
-						description:
-							'Persist Wait, Countdown, Step, or Continuous independently from action selection.',
-						targetIds: [],
-						resourceCosts: {},
-						tags: ['master', 'control', 'timing', 'replay']
-					}),
-					...(state.schemaVersion === 20
-						? [
-								action({
-									actionId: 'master.fallback.configure',
-									actorId,
-									kind: 'interact',
-									label: 'Configure unattended selection',
-									description:
-										'Persist directed or seeded-random fallback intent and safety stops.',
-									targetIds: [],
-									resourceCosts: {},
-									tags: ['master', 'control', 'fallback', 'safety', 'replay']
-								}),
-								...(state.masterControl.activeDecision !== null &&
-								state.masterControl.activeDecision.timing !== 'wait' &&
-								selectMasterFallback(state).safetyStopReason
-									? [
-											action({
-												actionId: 'master.safety-stop.apply',
-												actorId,
-												kind: 'wait',
-												label: 'Apply fallback safety stop',
-												description:
-													'Force Wait at this legal boundary and retain the blocked selection evidence.',
-												targetIds: [],
-												resourceCosts: {},
-												tags: ['master', 'control', 'fallback', 'safety-stop', 'replay']
-											})
-										]
-									: [])
-							]
-						: []),
-					...(state.masterControl.activeDecision === null &&
-					state.mission.attempt !== null &&
-					['deployed', 'resolving'].includes(state.mission.attempt.status)
-						? [
-								action({
-									actionId: 'master.decision.open',
-									actorId,
-									kind: 'interact',
-									label: 'Open the next Master decision',
-									description:
-										'Bind one authoritative decision window to the current mission state.',
-									targetIds: [],
-									resourceCosts: {},
-									tags: ['master', 'control', 'decision-window', 'replay']
-								})
-							]
-						: [])
-				]
-			: [];
-	const missionActions = missionLegalActions(state, actorId);
-	if (
-		supportsMissionActions(state) &&
-		state.mission.attempt &&
-		['preparing', 'deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status)
-	) {
-		return [...controlActions, ...missionActions];
-	}
-	const [inspectGate, ...settlementTail] = settlementLegalActions(state, actorId);
-	const actions: LegalAction[] = [...controlActions, ...(inspectGate ? [inspectGate] : [])];
-	if (state.schemaVersion === 22 || state.schemaVersion === 23) {
-		const eligible = Object.values(state.heroes).filter(
-			(hero) =>
-				hero.lifeState === 'active' &&
-				hero.location === 'summoning-gate' &&
-				!hero.currentActivity &&
-				!hero.currentTravel &&
-				!hero.currentRoutine &&
-				!hero.assignment
-		);
-		if (eligible.length >= 2 && !state.mission.attempt) {
-			actions.push(
-				action({
-					actionId: 'settlement.synthesis.commit',
-					actorId,
-					kind: 'interact',
-					label: 'Confirm a synthesis pair',
-					description:
-						'Permanently consume one ready summon, grant bounded essence to another, and record witness-bounded fallout.',
-					targetIds: eligible.map((hero) => hero.heroId),
-					resourceCosts: {},
-					tags: ['settlement', 'synthesis', 'irreversible', 'social', 'replay']
-				})
-			);
-		}
-	}
-	if (state.schemaVersion === 23 && state.firstBandArchive.status === 'recovered') {
-		actions.push(
-			action({
-				actionId: 'story.first.archive.reveal',
-				actorId,
-				kind: 'interact',
-				label: 'Open the recovered archive fragment',
-				description:
-					'Choose one surviving reader; their personality shapes the delivery while the authored fact remains fixed.',
-				targetIds: state.firstBandArchive.recovery?.survivingHeroIds ?? [],
-				resourceCosts: {},
-				tags: ['story', 'archive', 'knowledge', 'replay']
-			})
-		);
-	}
-	if (state.schemaVersion === 21 && state.bandStory.appliedPatches.length === 0) {
-		actions.push(
-			action({
-				actionId: 'story.patch.apply',
-				actorId,
-				kind: 'interact',
-				label: 'Commit an engine-validated story patch',
-				description:
-					'Activate one catalogued optional beat at the open Floor 04 checkpoint without changing fixed story authority.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['story', 'patch', 'catalog-bound', 'replay']
-			})
-		);
-	}
-	actions.push(...missionActions);
-	actions.push(...settlementTail);
-	return actions;
-}
-
-function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalAction[] {
-	if (state.schemaVersion === 22) {
-		const speaker = state.heroes[actorId];
-		if (speaker?.lifeState === 'active' && heroCanHearCommunication(speaker)) {
-			const rumorActions = Object.values(state.synthesis.receipts).flatMap((receipt) => {
-				const directlyKnows = receipt.socialConsequences.some(
-					(consequence) => consequence.heroId === actorId && consequence.knowledge !== 'absence'
-				);
-				const learnedRumor = Object.values(state.synthesis.rumors).some(
-					(rumor) => rumor.receiptId === receipt.receiptId && rumor.listenerHeroId === actorId
-				);
-				if (!directlyKnows && !learnedRumor) return [];
-				return Object.values(state.heroes)
-					.filter((target) => {
-						if (
-							target.heroId === actorId ||
-							target.lifeState !== 'active' ||
-							target.location !== speaker.location ||
-							target.locationNodeId !== speaker.locationNodeId ||
-							!heroCanHearCommunication(target)
-						)
-							return false;
-						return !Object.values(state.society.observations).some(
-							(observation) =>
-								'synthesisReceiptId' in observation &&
-								observation.synthesisReceiptId === receipt.receiptId &&
-								observation.observerHeroId === target.heroId &&
-								observation.kind !== 'synthesis-absence'
-						);
-					})
-					.sort((left, right) => left.heroId.localeCompare(right.heroId))
-					.map((target) =>
-						action({
-							actionId: `synthesis.rumor.share.${receipt.receiptId.slice(-8)}.${target.heroId.slice(-8)}`,
-							actorId,
-							kind: 'interact',
-							label: `Tell ${target.heroId.slice(0, 8)} what happened`,
-							description:
-								'Share a sourced synthesis claim; confidence falls as the explicit rumor chain grows.',
-							targetIds: [target.heroId],
-							resourceCosts: {},
-							tags: ['social', 'synthesis', 'rumor', 'provenance']
-						})
-					);
-			});
-			if (rumorActions.length > 0) return rumorActions;
-		}
-	}
-	const missionActions = missionLegalActions(state, actorId);
-	if (
-		missionActions.length > 0 ||
-		(supportsMissionActions(state) && missionPartyIsReserved(state, actorId))
-	) {
-		return [...missionActions];
-	}
-	return settlementLegalActions(state, actorId);
-}
-
-function legalActionsForParsedState(
-	state: EngineGameState,
-	actorId: string
-): readonly LegalAction[] {
-	if (state.status !== 'active') return [];
-	if (actorId === state.master.masterId && state.master.lifeState === 'alive') {
-		if (isModernState(state)) return masterActionsV2(state);
-		return [
-			action({
-				actionId: 'master.inspect.gate',
-				actorId,
-				kind: 'interact',
-				label: 'Inspect the gate resonance',
-				description: 'Draw one named deterministic resonance value without advancing time.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['deterministic', 'development-proof']
-			})
-		];
-	}
-	return isModernState(state)
-		? heroActionsV2(state, actorId)
-		: settlementLegalActions(state, actorId);
-}
-
-export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
-	return legalActionsForParsedState(EngineGameStateSchema.parse(stateInput), actorId);
-}
-
-export function decisionLegalActions(
-	stateInput: EngineGameState,
-	actorId: string
-): readonly LegalAction[] {
-	const state = EngineGameStateSchema.parse(stateInput);
-	const actions = legalActionsForParsedState(state, actorId);
-	if (
-		!actions.some((candidate) => candidate.actionId === 'hero.travel') ||
-		!hasNavigationState(state)
-	) {
-		return actions;
-	}
-	const hero = state.heroes[actorId];
-	const targets =
-		hero && !hero.firstArrivalCompleted && hero.destination
-			? [destinationNodeId(settlementForState(state), hero.destination)]
-			: undefined;
-	const expandedTravel = settlementTravelActions(state, actorId, targets);
-	return actions.flatMap((candidate) =>
-		candidate.actionId === 'hero.travel' ? expandedTravel : [candidate]
-	);
-}
-
-function boundedDecisionText(result: HeroPolicyResult): string {
-	const text = result.decision.spokenText ?? result.decision.publicIntent;
-	return text.length <= 500 ? text : text.slice(0, 500).trimEnd();
-}
-
-export function commandFromHeroPolicyResult(input: {
-	readonly state: EngineGameState;
-	readonly packet: HeroDecisionPacket;
-	readonly result: HeroPolicyResult;
-	readonly decisionJobId: string;
-}): EngineCommand {
-	const state = EngineGameStateSchema.parse(input.state);
-	const packet = HeroDecisionPacketSchema.parse(input.packet);
-	const result = HeroPolicyResultSchema.parse(input.result);
-	const unsignedPacket = { ...packet } as Partial<HeroDecisionPacket>;
-	delete unsignedPacket.packetHash;
-	const unsignedResult = { ...result } as Partial<HeroPolicyResult>;
-	delete unsignedResult.resultHash;
-	if (
-		hashCanonical(unsignedPacket) !== packet.packetHash ||
-		hashCanonical(unsignedResult) !== result.resultHash ||
-		packet.runId !== state.runId ||
-		packet.heroId !== packet.identity.profile.characterId ||
-		packet.world.stateVersion !== state.version ||
-		packet.world.eventCursor !== state.eventCursor ||
-		packet.world.stateHash !== hashParsedGameState(state) ||
-		result.packetId !== packet.packetId ||
-		result.packetHash !== packet.packetHash ||
-		result.legalActionHash !== packet.legalActionHash ||
-		result.world.stateVersion !== packet.world.stateVersion ||
-		result.world.eventCursor !== packet.world.eventCursor ||
-		result.world.stateHash !== packet.world.stateHash
-	) {
-		throw new Error('Decision result is not bound to the current engine state');
-	}
-	const currentActions = [...decisionLegalActions(state, packet.heroId)].sort((left, right) =>
-		left.actionId.localeCompare(right.actionId)
-	);
-	if (hashCanonical(currentActions) !== packet.legalActionHash) {
-		throw new Error('Decision legal actions are stale');
-	}
-	const selectedAction = currentActions.find(
-		(candidate) => candidate.actionId === result.decision.actionId
-	);
-	if (
-		!selectedAction ||
-		result.decision.targetIds.some((targetId) => !selectedAction.targetIds.includes(targetId))
-	) {
-		throw new IllegalActionError(
-			result.decision.actionId,
-			currentActions.map((action) => action.actionId)
-		);
-	}
-	const commandId = deterministicUuid(
-		`${input.decisionJobId}:apply:${packet.packetHash}:${result.resultHash}`
-	);
-	const base = {
-		commandId,
-		runId: state.runId,
-		actorId: packet.heroId,
-		expectedVersion: state.version,
-		correlationId: deterministicUuid(`${input.decisionJobId}:correlation`),
-		source: {
-			source: result.trace.kind,
-			timing: null,
-			fallbackPolicy: null,
-			directiveIds: packet.activeDirectives.map((directive) => directive.directiveId),
-			decisionJobId: input.decisionJobId
-		}
-	};
-	const actionId = result.decision.actionId;
-	if (actionId === 'hero.choose.kitchen' || actionId === 'hero.choose.training-ground') {
-		const destination = actionId === 'hero.choose.kitchen' ? 'kitchen' : 'training-ground';
-		return EngineCommandSchema.parse({
-			...base,
-			commandType: 'hero.choose.destination',
-			destination,
-			firstLine: boundedDecisionText(result),
-			storyBranch: destination === 'kitchen' ? 'names-before-orders' : 'steel-before-trust'
-		});
-	}
-	if (actionId === 'hero.arrive.destination') {
-		return EngineCommandSchema.parse({ ...base, commandType: 'hero.arrive' });
-	}
-	if (actionId.startsWith('hero.travel.')) {
-		return EngineCommandSchema.parse({
-			...base,
-			commandType: 'hero.start.travel',
-			targetNodeId: actionId.slice('hero.travel.'.length)
-		});
-	}
-	if (actionId === 'hero.plan.day') {
-		return EngineCommandSchema.parse({ ...base, commandType: 'hero.plan.day' });
-	}
-	if (actionId === 'hero.follow.plan') {
-		return EngineCommandSchema.parse({ ...base, commandType: 'hero.start.routine' });
-	}
-	if (
-		actionId === 'hero.activity.train' ||
-		actionId === 'hero.activity.eat' ||
-		actionId === 'hero.activity.rest' ||
-		actionId === 'hero.activity.repair'
-	) {
-		return EngineCommandSchema.parse({
-			...base,
-			commandType: 'hero.start.activity',
-			activity: actionId.slice('hero.activity.'.length)
-		});
-	}
-	if (actionId.startsWith('hero.equip.')) {
-		return EngineCommandSchema.parse({
-			...base,
-			commandType: 'hero.equip.item',
-			itemId: actionId.slice('hero.equip.'.length)
-		});
-	}
-	throw new IllegalActionError(
-		actionId,
-		currentActions.map((action) => action.actionId)
-	);
-}
-
-function requiredAction(command: EngineCommand): string {
-	if (SETTLEMENT_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		return requiredSettlementAction(command as SettlementCommand);
-	}
-	if (command.commandType === 'master.configure.timing') return 'master.control.configure';
-	if (command.commandType === 'master.configure.fallback') return 'master.fallback.configure';
-	if (command.commandType === 'master.apply.safety-stop') return 'master.safety-stop.apply';
-	if (command.commandType === 'master.open.decision') return 'master.decision.open';
-	if (command.commandType === 'mission.prepare') return 'mission.prepare';
-	if (command.commandType === 'mission.revise.party') return 'mission.revise.party';
-	if (command.commandType === 'mission.cancel') return 'mission.cancel';
-	if (command.commandType === 'mission.deploy') return 'mission.deploy';
-	if (command.commandType === 'mission.resolve.turn') return 'mission.resolve.turn';
-	if (command.commandType === 'mission.open.extraction') return 'mission.open.extraction';
-	if (command.commandType === 'mission.extract') return 'mission.extract';
-	if (command.commandType === 'mission.retreat') return 'mission.retreat';
-	if (command.commandType === 'story.apply.patch') return 'story.patch.apply';
-	if (command.commandType === 'story.reveal.first.archive') return 'story.first.archive.reveal';
-	if (command.commandType === 'settlement.synthesize.hero') return 'settlement.synthesis.commit';
-	if (command.commandType === 'hero.share.synthesis.rumor')
-		return `synthesis.rumor.share.${command.receiptId.slice(-8)}.${command.targetHeroId.slice(-8)}`;
-	throw new Error('Unreachable engine command discriminator');
-}
-
-function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): void {
-	if (command.runId !== state.runId) throw new IllegalActionError(command.commandType, []);
-	if (command.expectedVersion !== state.version) {
-		throw new StaleStateVersionError(command.expectedVersion, state.version);
-	}
-	if (
-		command.commandType === 'settlement.synthesize.hero' ||
-		command.commandType === 'hero.share.synthesis.rumor'
-	) {
-		synthesisCommandHandler.assertLegal(state, command);
-		return;
-	}
-	if (command.commandType === 'story.reveal.first.archive') {
-		storyCommandHandler.assertLegal(state, command);
-		if (
-			!legalActionsForParsedState(state, command.actorId).some(
-				(candidate) => candidate.actionId === requiredAction(command)
-			)
-		) {
-			throw new IllegalActionError(command.commandType, []);
-		}
-		return;
-	}
-	if (MISSION_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		firstBandMissionCommandHandler.assertLegal(state, command as MissionCommand);
-		if (
-			command.commandType === 'master.configure.timing' ||
-			command.commandType === 'master.open.decision' ||
-			command.commandType === 'master.configure.fallback' ||
-			command.commandType === 'master.apply.safety-stop'
-		) {
-			if (
-				!legalActions(state, command.actorId).some(
-					(candidate) => candidate.actionId === requiredAction(command)
-				)
-			) {
-				throw new IllegalActionError(command.commandType, []);
-			}
-			return;
-		}
-		if (
-			command.commandType === 'mission.open.extraction' ||
-			command.commandType === 'mission.resolve.turn'
-		) {
-			return;
-		}
-		const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
-		const required = requiredAction(command);
-		if (!actionIds.includes(required)) throw new IllegalActionError(required, actionIds);
-		return;
-	}
-	if (SETTLEMENT_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		assertSettlementCommandLegalWithActionIds(
-			state,
-			command as SettlementCommand,
-			legalActions(state, command.actorId).map((candidate) => candidate.actionId)
-		);
-		return;
-	}
-	if (command.commandType === 'story.apply.patch') {
-		storyCommandHandler.assertLegal(state, command);
-	}
-	const actionIds = legalActions(state, command.actorId).map((candidate) => candidate.actionId);
-	const required = requiredAction(command);
-	if (!actionIds.includes(required)) throw new IllegalActionError(required, actionIds);
-}
 function buildLegacyEvent(state: EngineGameStateV1, command: EngineCommand): AuthoritativeEvent {
 	return settlementCommandHandler.buildEvent(state, command as SettlementCommand);
 }

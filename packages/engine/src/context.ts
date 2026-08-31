@@ -30,8 +30,8 @@ import {
 } from '@summonlab/contracts';
 
 import { hashGameState } from './core/state.js';
-import { decisionLegalActions } from './engine.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
+import { decisionLegalActions } from './orchestration/legal-actions.js';
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
 export const DEFAULT_MEMORY_CHARACTER_LIMIT = 1_800;
