@@ -53,7 +53,7 @@ integration debt in `docs/system-architecture/system-map.md`.
 - No database migration.
 - No change to policy packet, projection, journal, recap, or error shapes.
 - No broad rewrite into classes, dependency injection, ECS, actors, plugins, or microservices.
-- No asset, Git LFS, or worktree tooling change in the same implementation branch.
+- No checkout-topology, storage-tooling, or asset change in this implementation.
 
 ## Frozen compatibility surface
 
@@ -278,7 +278,8 @@ independently.
 
 Settlement/society, mission/combat, story/archive, and synthesis own their actions, commands, and
 reducers. During extraction, only one task at a time removes code from the old monolith. After a
-domain lands, its future feature work can use a separate agent/worktree.
+domain lands, future feature work can proceed under a separate domain owner without editing the
+orchestration kernel.
 
 ### Checkpoint D — orchestration and facade
 

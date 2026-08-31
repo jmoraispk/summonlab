@@ -26,11 +26,15 @@ integration tests.
   schedules, event metadata, legal actions, projections, errors, and replay reports.
 - Preserve all exports from `@summonlab/engine` and `@summonlab/contracts`. Capability predicates are
   the only additive public exports in this plan.
+- Checkout topology, sparse checkout, worktree lifecycle, asset storage, and Git LFS are outside this
+  implementation. Do not add, remove, or reconfigure them while executing engine tasks.
 - Never edit an old reducer branch to resemble a newer schema. Move each historical branch intact and
   keep its original payload parser.
-- Keep `engine.ts` import-free from internal production code: no non-test module under
-  `packages/engine/src/**` may import `./engine.js`, `../engine.js`, or `../../engine.js` after Task 5.
-  Dedicated facade compatibility tests may import it as their subject.
+- Keep `engine.ts` import-free from internal production code: after Task 12, no non-test module under
+  `packages/engine/src/**` may import `./engine.js`, `../engine.js`, or `../../engine.js`.
+  `catch-up.ts`, `context.ts`, and `simulation.ts` are recorded temporary exceptions until their
+  direct orchestration imports land. Dedicated facade compatibility tests may import it as their
+  subject.
 - Move code and its focused tests in the same commit. Avoid formatting unrelated lines while moving
   code so diffs remain reviewable.
 - One agent owns the monolith-removal step at a time. Parallel agents may prepare tests or review an
@@ -59,82 +63,12 @@ extraction against the untouched baseline; do not copy code from a newer histori
 
 ---
 
-## Task 0: Create the engine execution worktree
+## Task 0: Establish the execution baseline — completed
 
-**Files:**
-
-- No repository files change.
-- Worktree: `../summonlab-worktrees/engine`
-- Branch: `codex/engine-modularization`
-
-- [ ] Confirm the integration worktree is clean and current:
-
-  ```bash
-  git status --short
-  git fetch origin main
-  git rev-list --left-right --count main...origin/main
-  ```
-
-  Expected: no status output and `0 0` from `rev-list`.
-
-- [ ] Create one sparse engine worktree from the reviewed baseline:
-
-  ```bash
-  mkdir -p ../summonlab-worktrees
-  git worktree add --no-checkout -b codex/engine-modularization \
-    ../summonlab-worktrees/engine origin/main
-  git -C ../summonlab-worktrees/engine sparse-checkout set \
-    --cone --sparse-index \
-    apps/worker apps/web packages tools docs/system-architecture \
-    docs/decisions docs/superpowers docs/evidence docs/wiki docs/benchmarks
-  git -C ../summonlab-worktrees/engine checkout
-  ```
-
-  Cone mode also materializes repository-root files such as `package.json`, `pnpm-lock.yaml`, and
-  workspace configuration. It excludes the large asset trees while retaining every engine consumer
-  and integration test.
-
-- [ ] Verify the worktree and sparse rules:
-
-  ```bash
-  git worktree list
-  git -C ../summonlab-worktrees/engine status --short --branch
-  git -C ../summonlab-worktrees/engine sparse-checkout list
-  du -sh ../summonlab-worktrees/engine
-  ```
-
-  Expected: the new branch is clean, the listed paths match the command above, and the checkout does
-  not contain `assets/`.
-
-- [ ] Prepare the pinned toolchain and install this worktree's dependencies:
-
-  ```bash
-  node --version
-  corepack enable
-  corepack prepare pnpm@10.33.0 --activate
-  pnpm --version
-  pnpm install --frozen-lockfile
-  ```
-
-  Expected: Node reports `v24.14.1`, pnpm reports `10.33.0`, and the lockfile remains unchanged. A
-  linked worktree shares Git objects, not `node_modules`; do not rely on the primary worktree's install.
-
-- [ ] Start the repository PostgreSQL service before the first integration gate and export the same
-  URLs used by the local compose file:
-
-  ```bash
-  pnpm db:start
-  export DATABASE_URL=postgresql://summonlab:summonlab@127.0.0.1:54329/summonlab
-  export TEST_DATABASE_URL=postgresql://summonlab:summonlab@127.0.0.1:54329/summonlab
-  pnpm db:migrate
-  ```
-
-  Expected: Docker reports the database healthy and migrations complete. Keep these variables in the
-  execution shell for Tasks 1–15; run `pnpm db:stop` after final validation.
-
-- [ ] Use the sparse worktree for Tasks 1–15. Keep the original full worktree clean for checkpoint
-  integration and final repository validation. Do not start Git LFS migration on either branch until
-  this refactor merges.
+The implementation branch and pinned Node/pnpm dependencies were prepared before Task 1. This
+historical task has no remaining action. Checkout topology, storage optimization, assets, and Git
+LFS are intentionally excluded from the engine plan; later workers begin with the current branch and
+verify only `git status --short --branch`, Node `v24.14.1`, and pnpm `10.33.0` before code work.
 
 ---
 
@@ -860,468 +794,900 @@ patches and never mutate inputs.
 
 ---
 
+## Remaining execution baseline
+
+Tasks 0–9A are complete. Commit cda462e68e57587ef47aa6390d952415a9bc0f75 is the frozen behavioral
+code baseline; the plan-only scope revision follows it in history. Remaining tasks are code-only: do
+not spend task time on checkout topology, sparse checkout, worktree management, assets, or Git LFS.
+
+The dependency chain is strict:
+
+1. Task 9B establishes mission command/event ownership.
+2. Task 10 composes all domain owners in registries.
+3. Task 11 extracts ordered action and policy orchestration.
+4. Task 12 extracts bootstrap/apply/replay and finishes the facade.
+5. Task 13 publishes already-tested capability predicates to consumers.
+6. Task 14 records the resulting source ownership.
+7. Task 15 verifies and integrates the code branch.
+
+Tasks 9B–12 all edit packages/engine/src/engine.ts and must execute serially. Tasks 13 and 14 may be
+implemented independently only after Task 12, but merge and review them one at a time so the public
+API snapshot and architecture documentation remain attributable.
+
+---
+
 ## Task 9B: Extract mission command and reducer dispatch
+
+**Outcome:** Mission and Master-control commands/events have one domain owner. The first-band
+mission/story seam is coordinated by orchestration without a mission-to-story import.
 
 **Files:**
 
-- Create: `packages/engine/src/domains/mission/commands.ts`
-- Create: `packages/engine/src/domains/mission/reducer.ts`
-- Create: `packages/engine/src/orchestration/first-band-mission-reducer.ts`
-- Modify: `packages/engine/src/engine.ts`
-- Modify: `packages/engine/src/engine.spec.ts`
+- Create: packages/engine/src/domains/mission/commands.ts
+- Create: packages/engine/src/domains/mission/reducer.ts
+- Create: packages/engine/src/orchestration/first-band-mission-reducer.ts
+- Modify: packages/engine/src/engine.ts
+- Modify: packages/engine/src/domains/mission/mission-runtime.spec.ts
+- Read only: packages/engine/src/domains/story/reducer.ts
+- Test: packages/engine/src/engine.spec.ts
+- Test: packages/engine/src/compatibility/replay-vectors.spec.ts
+- Test: packages/engine/src/module-boundaries.spec.ts
 
-**Interfaces:** Export typed `missionCommandHandler` and `missionEventReducer`, each with stable
-`ownerId` and exact discriminator arrays. Export one orchestration-owned v23 composite reducer for
-the mission/story extraction discriminator.
+**Interfaces:**
 
-- [ ] Move all mission command legality/event construction to `commands.ts` and export
-  `missionCommandHandler`. Preserve entropy-purpose strings and the order in which entropy values are
-  requested.
+- commands.ts exports MISSION_COMMAND_TYPES and missionCommandHandler.
+- MISSION_COMMAND_TYPES contains exactly these twelve discriminators in source order:
+  master.configure.timing, master.configure.fallback, master.apply.safety-stop,
+  master.open.decision, mission.prepare, mission.revise.party, mission.cancel, mission.deploy,
+  mission.resolve.turn, mission.open.extraction, mission.extract, mission.retreat.
+- reducer.ts exports reduceMissionEvent(state, event), reduceFirstBandMissionTransition(state, event,
+  reduceConsequences), MISSION_EVENT_TYPES, and missionEventReducer.
+- MISSION_EVENT_TYPES contains only master.timing.changed, master.fallback.changed,
+  master.safety.stopped, master.decision.opened, mission.round.resolved, and
+  mission.extraction.opened.
+- first-band-mission-reducer.ts exports FIRST_BAND_MISSION_EVENT_TYPES and
+  firstBandMissionEventReducer. Its six owned transition discriminators are
+  mission.preparation.started, mission.party.revised, mission.preparation.canceled,
+  mission.deployed, mission.extracted, and mission.retreated.
+- reduceConsequences has this local callback shape and introduces no story import in the mission
+  domain:
 
-- [ ] Move mission event reduction to `reducer.ts` and export `missionEventReducer`. Keep v11–v23
-  branches visibly separated and parsed with their original payload schemas. Do not consolidate old
-  branch bodies merely because their outputs currently agree.
+~~~ts
+type ReduceFirstBandMissionConsequences = (
+  state: EngineGameStateV23,
+  consequence: {
+    readonly eventId: string;
+    readonly sequence: number;
+    readonly transition: 'prepare' | 'revise-party' | 'cancel' | 'deploy' | 'extract' | 'retreat';
+    readonly mission: MissionRunStateV8;
+    readonly bandStory: EngineGameStateV23['bandStory'];
+    readonly firstBandArchive: EngineGameStateV23['firstBandArchive'];
+  }
+) => EngineGameStateV23;
+~~~
 
-- [ ] Preserve the v23 cross-domain extraction seam without a domain-to-domain import. Export the
-  mission-state portion of the v23 extraction transition from `mission/reducer.ts` and the first-band
-  story/archive consequence from `story/reducer.ts`. In `first-band-mission-reducer.ts`, apply those
-  functions in their current order and expose one `EngineEventReducer`; it is the sole registry owner
-  of the shared v23 event discriminator.
+- Global run-ID mismatch and stale-version checks remain outside missionCommandHandler so the existing
+  IllegalActionError-before-StaleStateVersionError precedence remains unchanged.
+- For v23 transition events, reduceFirstBandMissionTransition calls the consequence callback at the
+  same point as the baseline: after parsing/precondition/version/type checks and expected mission
+  derivation, but before mission-payload and entropy divergence checks.
 
-- [ ] Extend `mission-runtime.spec.ts` to assert command event equality, v11–v23 reduction equality,
-  final hashes/action order, composite v23 extraction, and tamper rejection.
+- [ ] **Step 1: Add structural ownership tests that fail before extraction**
 
-- [ ] Run the high-risk mission gates:
+In mission-runtime.spec.ts, import the three new modules and assert the exact command/event arrays,
+owner IDs mission and first-band-mission, and the absence of all six first-band transition types from
+missionEventReducer.eventTypes. Add a duplicate-ownership union assertion:
 
-  ```bash
-  pnpm --filter @summonlab/engine test -- \
-    src/domains/mission/mission-control.spec.ts \
-    src/domains/mission/mission-runtime.spec.ts \
-    src/engine.spec.ts src/objectives.spec.ts src/property.spec.ts \
-    src/compatibility/replay-vectors.spec.ts src/module-boundaries.spec.ts
-  pnpm --filter @summonlab/evaluation test -- \
-    src/evaluation.spec.ts src/moderated-playtest.spec.ts
-  pnpm validate:attempt-aftermath
-  pnpm validate:foundry-strategies
-  ```
+~~~ts
+expect([
+  ...missionEventReducer.eventTypes,
+  ...firstBandMissionEventReducer.eventTypes
+]).toEqual([
+  'master.timing.changed',
+  'master.fallback.changed',
+  'master.safety.stopped',
+  'master.decision.opened',
+  'mission.round.resolved',
+  'mission.extraction.opened',
+  'mission.preparation.started',
+  'mission.party.revised',
+  'mission.preparation.canceled',
+  'mission.deployed',
+  'mission.extracted',
+  'mission.retreated'
+]);
+~~~
 
-  Expected: v11–v23 vectors and all mission proof artifacts remain byte-identical. This completes
-  Checkpoint C.
+Run:
 
-- [ ] Commit mission combat and reducers:
+~~~bash
+corepack pnpm --filter @summonlab/engine test --   src/domains/mission/mission-runtime.spec.ts
+~~~
 
-  ```bash
-  git add packages/engine/src/domains/mission \
-    packages/engine/src/orchestration/first-band-mission-reducer.ts \
-    packages/engine/src/engine.ts packages/engine/src/engine.spec.ts
-  git commit -m "refactor(engine): extract mission dispatch"
-  ```
+Expected: FAIL because commands.ts, reducer.ts, and first-band-mission-reducer.ts do not exist.
+
+- [ ] **Step 2: Move mission-specific legality and event construction intact**
+
+Move the four Master-control and eight mission domain preconditions plus their event-construction
+branches from assertCommandIsLegal and buildV2Event into commands.ts. Reuse existing mission leaf
+functions; do not copy their bodies. Keep global run/stale checks and complete ordered-action
+authorization in the facade: EngineCommandHandler does not receive the cross-domain action list, and
+the mission domain must not import orchestration to compute it. Preserve command branch order,
+payload schema, eventBase inputs, deterministic IDs, entropy purposes, draw order, metadata, and exact
+IllegalActionError calls. Export missionCommandHandler using EngineCommandHandler from core/types.ts.
+
+- [ ] **Step 3: Move event reduction intact and introduce the callback seam**
+
+Move Master-control and mission reducer branches from reduceV2Event into reducer.ts. Keep every
+schema-version branch and payload parser visibly separate. Export reduceMissionEvent for composite
+delegation. Move the six transition discriminators behind firstBandMissionEventReducer: it delegates
+v2–v22 state to reduceMissionEvent and calls reduceFirstBandMissionTransition with
+reduceFirstBandMissionConsequences for v23. No file under domains/mission may import domains/story.
+
+- [ ] **Step 4: Freeze command, reducer, and v23 composite behavior**
+
+Extend mission-runtime.spec.ts with fixed pre-cda462e fixtures for:
+
+- all twelve command-to-event discriminators;
+- reducer equality for every mission-capable version 11–20 and 23;
+- complete v23 prepare, revise-party, cancel, deploy, retreat, and extraction state hashes;
+- archive recovery/no-op assertions for every one of those six transitions;
+- a tampered first-band story/archive consequence;
+- a tampered mission payload;
+- dual-tampered story/mission events for all six transitions proving story consequence divergence
+  still wins before mission-payload or entropy divergence;
+- immutable command, state, and event inputs.
+
+Expected errors must assert class, message, sequence, and code where the class exposes a code. Reuse
+the existing complete combat/portal fixtures; do not duplicate their 5,000-line leaf oracle.
+
+- [ ] **Step 5: Route the facade through the new owners**
+
+Replace only the extracted command/event branches in engine.ts with the new handlers. Leave global
+run/stale checks, legacy-v1 reduction, registry construction, ordered legal actions, bootstrap,
+apply, and replay in engine.ts for their owning later tasks.
+
+- [ ] **Step 6: Run Task 9B gates**
+
+~~~bash
+corepack pnpm --filter @summonlab/engine test -- \
+  src/domains/mission/mission-control.spec.ts \
+  src/domains/mission/mission-runtime.spec.ts \
+  src/engine.spec.ts src/objectives.spec.ts src/property.spec.ts \
+  src/compatibility/replay-vectors.spec.ts src/module-boundaries.spec.ts
+corepack pnpm --filter @summonlab/evaluation test -- \
+  src/evaluation.spec.ts src/moderated-playtest.spec.ts
+corepack pnpm validate:attempt-aftermath
+corepack pnpm validate:foundry-strategies
+corepack pnpm --filter @summonlab/engine lint
+corepack pnpm --filter @summonlab/engine typecheck
+~~~
+
+Expected: all frozen events, state hashes, action order, proof artifacts, and 250/10,000 property
+counts remain unchanged.
+
+- [ ] **Step 7: Commit and push**
+
+~~~bash
+git add packages/engine/src/domains/mission \
+  packages/engine/src/orchestration/first-band-mission-reducer.ts \
+  packages/engine/src/engine.ts packages/engine/src/engine.spec.ts
+git commit -m "refactor(engine): extract mission dispatch"
+git push origin HEAD:codex/engine-modularization
+~~~
 
 ---
 
 ## Task 10: Introduce validated command and event registries
 
+**Outcome:** The engine has an executable, total, unique ownership map for every modern command and
+event discriminator.
+
 **Files:**
 
-- Create: `packages/engine/src/orchestration/command-registry.ts`
-- Create: `packages/engine/src/orchestration/event-registry.ts`
-- Create: `packages/engine/src/orchestration/registries.spec.ts`
-- Modify: `packages/engine/src/domains/settlement/commands.ts`
-- Modify: `packages/engine/src/domains/settlement/reducer.ts`
-- Modify: `packages/engine/src/domains/mission/commands.ts`
-- Modify: `packages/engine/src/domains/mission/reducer.ts`
-- Modify: `packages/engine/src/domains/story/commands.ts`
-- Modify: `packages/engine/src/domains/story/reducer.ts`
-- Modify: `packages/engine/src/domains/synthesis/commands.ts`
-- Modify: `packages/engine/src/domains/synthesis/reducer.ts`
-- Modify: `packages/engine/src/engine.ts`
+- Create: packages/engine/src/orchestration/command-registry.ts
+- Create: packages/engine/src/orchestration/event-registry.ts
+- Create: packages/engine/src/orchestration/registries.spec.ts
+- Modify: packages/engine/src/engine.ts
+- Read only unless a type-only correction is required:
+  packages/engine/src/domains/{settlement,mission,story,synthesis}/{commands,reducer}.ts
+- Test: packages/engine/src/compatibility/public-api.spec.ts
+- Test: packages/engine/src/compatibility/replay-vectors.spec.ts
+- Test: packages/engine/src/module-boundaries.spec.ts
 
-- [ ] Import and use the interfaces defined in `core/types.ts`:
+**Interfaces:**
 
-  ```ts
-  export interface EngineCommandHandler<C extends EngineCommand = EngineCommand> {
-    readonly ownerId: string;
-    readonly commandTypes: readonly C['commandType'][];
-    assertLegal(state: EngineGameState, command: C): void;
-    buildEvent(state: EngineGameState, command: C): AuthoritativeEvent;
-  }
+~~~ts
+export interface EngineCommandRegistry {
+  readonly ownerIds: readonly string[];
+  readonly commandTypes: readonly EngineCommand['commandType'][];
+  handlerFor(commandType: EngineCommand['commandType']): EngineCommandHandler;
+}
 
-  export interface EngineEventReducer {
-    readonly ownerId: string;
-    readonly eventTypes: readonly string[];
-    reduce(state: EngineGameState, event: AuthoritativeEvent): EngineGameState;
-  }
-  ```
+export function createCommandRegistry(
+  handlers: readonly EngineCommandHandler[]
+): EngineCommandRegistry;
 
-- [ ] Implement `createCommandRegistry(handlers)` and `createEventRegistry(reducers)` as ordered,
-  immutable maps. Throw during construction on an empty discriminator list or duplicate owner and
-  name both conflicting owners in the error. Compose the four domain command handlers, four domain
-  reducers, and the v23 composite mission/story reducer in explicit source order.
+export interface EngineEventRegistry {
+  readonly ownerIds: readonly string[];
+  readonly eventTypes: readonly string[];
+  reducerFor(eventType: string): EngineEventReducer | undefined;
+}
 
-- [ ] Add registry coverage tests that derive command discriminators from `EngineCommandSchema` and
-  compare event ownership with the complete checked-in `MODERN_EVENT_TYPES` inventory from Task 1.
-  Assert exactly one owner for every discriminator, no extra owner, and deterministic duplicate errors
-  naming both `ownerId` values. Treat `run.initialized` and the three legacy-v1 events as explicit
-  non-registry exceptions.
+export function createEventRegistry(
+  reducers: readonly EngineEventReducer[]
+): EngineEventRegistry;
+~~~
 
-- [ ] Route modern command validation/event building and modern event reduction through registry
-  lookup. Keep the v1 reducer as an explicit legacy path outside the modern registry. Preserve the
-  exact unsupported-command and unsupported-event errors.
+Registry maps are private. Object.freeze(new Map()) is forbidden because it does not prevent set().
+Construction rejects an empty discriminator array and duplicate discriminators. Duplicate errors
+name the discriminator plus both conflicting ownerId values deterministically.
 
-- [ ] Run registry, compatibility, engine, and database integration gates:
+Composition order is explicit:
 
-  ```bash
-  pnpm --filter @summonlab/engine test -- \
-    src/orchestration/registries.spec.ts src/engine.spec.ts src/property.spec.ts \
-    src/compatibility/public-api.spec.ts src/compatibility/replay-vectors.spec.ts \
-    src/module-boundaries.spec.ts
-  pnpm --filter @summonlab/database test
-  pnpm --filter @summonlab/database test:integration
-  ```
+- Commands: settlement, mission, story, synthesis.
+- Events: settlement, mission, first-band-mission, story, synthesis.
+- run.initialized remains the only discriminator absent from the modern event registry.
+- State schema v1 selects the legacy reducer before registry lookup. The three LEGACY_EVENT_TYPES
+  intentionally overlap modern settlement-owned strings and therefore remain in MODERN_EVENT_TYPES.
 
-  Expected: ownership is total and unique, legacy replay still passes, and committed events are
-  unchanged.
+- [ ] **Step 1: Write failing registry-construction tests**
 
-- [ ] Commit static dispatch:
+Create registries.spec.ts. Assert private lookup behavior, source-order ownerIds, empty-list errors,
+and exact duplicate messages such as:
 
-  ```bash
-  git add packages/engine/src/orchestration packages/engine/src/domains \
-    packages/engine/src/engine.ts
-  git commit -m "refactor(engine): add typed dispatch registries"
-  ```
+~~~ts
+expect(() => createEventRegistry([
+  fakeReducer('alpha', ['mission.deployed']),
+  fakeReducer('beta', ['mission.deployed'])
+])).toThrow(
+  'Event discriminator mission.deployed is owned by both alpha and beta'
+);
+~~~
+
+Run the spec and expect module-not-found RED.
+
+- [ ] **Step 2: Implement immutable lookup-only registries**
+
+Build each private Map once inside its factory, expose frozen arrays copied from inputs, and expose
+only handlerFor or reducerFor. handlerFor may throw only for a schema-valid command discriminator
+missing from construction; reducerFor returns undefined so reduceParsedEvent can preserve the
+existing unsupported-event wording and sequence.
+
+- [ ] **Step 3: Add exhaustive ownership tests**
+
+Derive command types from EngineCommandSchema. Compare event ownership exactly to
+MODERN_EVENT_TYPES. Assert every modern discriminator appears exactly once, no registry extras exist,
+run.initialized is absent, and all three known legacy strings are present under the settlement owner.
+Do not require LEGACY_EVENT_TYPES to be disjoint and do not derive the expected inventory from replay
+fixtures.
+
+- [ ] **Step 4: Replace modern facade switches with registry lookup**
+
+Construct the registries in explicit source order. Route event building and modern event reduction
+through lookup. The existing orchestration authorization adapter may use registry lookup to select a
+domain validator, but it retains command-specific placement of full ordered-action checks. Keep these
+outside the registries:
+
+- run-ID mismatch and stale-version checks;
+- settlement's injected complete action IDs, first-band archive availability, Master-control action
+  authorization, and mission-reservation/action precedence;
+- the legacy-v1 event reducer and legacy event construction;
+- run.initialized replay bootstrap handling;
+- the exact unsupported-command/event error adapters;
+- legal-action ordering and directive influence attachment.
+
+- [ ] **Step 5: Prove behavior and boundaries**
+
+~~~bash
+corepack pnpm --filter @summonlab/engine test -- \
+  src/orchestration/registries.spec.ts src/engine.spec.ts src/property.spec.ts \
+  src/compatibility/public-api.spec.ts src/compatibility/replay-vectors.spec.ts \
+  src/module-boundaries.spec.ts
+corepack pnpm --filter @summonlab/engine lint
+corepack pnpm --filter @summonlab/engine typecheck
+corepack pnpm --filter @summonlab/contracts typecheck
+git diff --check
+~~~
+
+Expected: registry ownership is total/unique; public exports, replay vectors, errors, and hashes are
+unchanged; no domain imports orchestration or another domain.
+
+- [ ] **Step 6: Commit and push**
+
+~~~bash
+git add packages/engine/src/orchestration   packages/engine/src/engine.ts packages/engine/src/domains
+git commit -m "refactor(engine): add typed dispatch registries"
+git push origin HEAD:codex/engine-modularization
+~~~
 
 ---
 
 ## Task 11: Extract ordered legal actions and policy translation
 
-**Files:**
-
-- Create: `packages/engine/src/orchestration/legal-actions.ts`
-- Create: `packages/engine/src/orchestration/policy-commands.ts`
-- Create: `packages/engine/src/orchestration/actions.spec.ts`
-- Modify: `packages/engine/src/context.ts`
-- Modify: `packages/engine/src/engine.ts`
-- Modify: `packages/engine/src/engine.spec.ts`
-
-- [ ] Implement `legalActions(state)` as an explicit ordered composition of core, settlement,
-  mission, story, and synthesis action arrays. Do not deduplicate through a map or set. Preserve
-  `decisionLegalActions` filtering/order exactly.
-
-- [ ] Move `missionTurnLegalActions` to the mission action owner and re-export it through
-  orchestration/public facade. Preserve its public signature.
-
-- [ ] Move `commandFromHeroPolicyResult` and related validated policy-result translation to
-  `policy-commands.ts`. Keep schema parsing, selected-action lookup, and failure order intact.
-
-- [ ] Update `context.ts` to import `decisionLegalActions` directly from orchestration and
-  `hashGameState` directly from core, eliminating the facade cycle.
-
-- [ ] In `actions.spec.ts`, use the Checkpoint A state table to compare entire action arrays, not only
-  IDs. Cover a valid and invalid policy translation at every policy-controlled decision family and
-  assert the exact existing error.
-
-- [ ] Run action, context, policy, and observability gates:
-
-  ```bash
-  pnpm --filter @summonlab/engine test -- \
-    src/orchestration/actions.spec.ts src/engine.spec.ts src/context.spec.ts \
-    src/compatibility/public-api.spec.ts src/compatibility/replay-vectors.spec.ts
-  pnpm --filter @summonlab/policies test
-  pnpm --filter @summonlab/observability test
-  pnpm --filter @summonlab/worker test
-  ```
-
-  Expected: action arrays and decision-context hashes are unchanged in every consumer.
-
-- [ ] Commit action composition and policy translation:
-
-  ```bash
-  git add packages/engine/src/orchestration packages/engine/src/context.ts \
-    packages/engine/src/engine.ts packages/engine/src/engine.spec.ts
-  git commit -m "refactor(engine): extract actions and policy commands"
-  ```
-
----
-
-## Task 12: Extract bootstrap, apply, scheduling, and replay
+**Outcome:** Cross-domain action ordering and policy-result translation are orchestration-owned, and
+context.ts no longer imports the engine facade.
 
 **Files:**
 
-- Create: `packages/engine/src/orchestration/bootstrap.ts`
-- Create: `packages/engine/src/orchestration/apply-command.ts`
-- Create: `packages/engine/src/orchestration/scheduling.ts`
-- Create: `packages/engine/src/orchestration/replay.ts`
-- Create: `packages/engine/src/orchestration/orchestration.spec.ts`
-- Modify: `packages/engine/src/catch-up.ts`
-- Modify: `packages/engine/src/simulation.ts`
-- Replace contents: `packages/engine/src/engine.ts`
-- Modify: `packages/engine/src/index.ts`
+- Create: packages/engine/src/orchestration/legal-actions.ts
+- Create: packages/engine/src/orchestration/command-authorization.ts
+- Create: packages/engine/src/orchestration/policy-commands.ts
+- Create: packages/engine/src/orchestration/actions.spec.ts
+- Modify: packages/engine/src/context.ts
+- Modify: packages/engine/src/engine.ts
+- Test: packages/engine/src/context.spec.ts
+- Test: packages/engine/src/compatibility/public-api.spec.ts
+- Test: packages/engine/src/compatibility/replay-vectors.spec.ts
 
-- [ ] Move bootstrap state composition to `bootstrap.ts` and preserve content verification, default
-  insertion, object-key construction order, initial version/hash, and initial schedule creation.
+**Interfaces:**
 
-- [ ] Move schedule derivation, due/resolved/canceled selection, and schedule ID creation to
-  `scheduling.ts`. Preserve ordering and ID/hash inputs.
+~~~ts
+export function legalActionsForParsedState(
+  state: EngineGameState,
+  actorId: string
+): readonly LegalAction[];
 
-- [ ] Move the command transaction to `apply-command.ts` in its exact current order: parse state,
-  parse command, run `assertCommandIsLegal` (run-ID mismatch before stale version), select legacy or
-  modern event construction, attach directive influences, reduce the draft, hash the parsed next
-  state, parse the final `AuthoritativeEvent` with `afterStateHash`, then derive scheduled/resolved/
-  canceled IDs and final legal actions. Do not catch/relabel existing errors.
+export function legalActions(
+  stateInput: EngineGameState,
+  actorId: string
+): readonly LegalAction[];
 
-- [ ] Move `replayEvents` and `replayEventsStrict` to `replay.ts`, retaining event order, hash-chain
-  checks, schedule checks, and report/error shapes. Route reduction through the event registry.
+export function decisionLegalActions(
+  stateInput: EngineGameState,
+  actorId: string
+): readonly LegalAction[];
 
-- [ ] Update `catch-up.ts` and `simulation.ts` to import their direct orchestration owners.
+export function assertCommandIsLegal(
+  state: EngineGameState,
+  command: EngineCommand
+): void;
 
-- [ ] Replace `packages/engine/src/engine.ts` with an export-only compatibility facade re-exporting
-  the public owners. Keep it at or below 250 lines. Keep `packages/engine/src/index.ts` exports stable.
+export function commandFromHeroPolicyResult(input: {
+  readonly state: EngineGameState;
+  readonly packet: HeroDecisionPacket;
+  readonly result: HeroPolicyResult;
+  readonly decisionJobId: string;
+}): EngineCommand;
+~~~
 
-- [ ] In `orchestration.spec.ts`, assert bootstrap equality, one successful command transaction,
-  directive influence attachment, stale rejection, illegal rejection, reducer rejection, schedule
-  creation/cancelation, final legal actions, byte replay, strict replay, and tampered replay. Add a
-  command with both a wrong `runId` and stale `expectedVersion` and prove `IllegalActionError` still
-  wins. Deep-freeze inputs to prove rejected operations do not mutate them.
+missionTurnLegalActions already belongs to domains/mission/actions.ts and is not moved again.
+Action composition preserves the existing branch-sensitive ordering and early returns; it must not
+deduplicate or sort with a Set or Map.
 
-- [ ] Run all engine and integration consumers:
+command-authorization.ts is the compatibility adapter between global ordered actions and domain
+handlers. It owns envelope precedence and the points at which complete action IDs are checked; domain
+handlers own their state-specific command rules and never import legal-actions.ts.
 
-  ```bash
-  pnpm --filter @summonlab/engine lint
-  pnpm --filter @summonlab/engine typecheck
-  pnpm --filter @summonlab/engine test
-  pnpm --filter @summonlab/engine build
-  pnpm --filter @summonlab/database test
-  pnpm --filter @summonlab/database test:integration
-  pnpm --filter @summonlab/worker test
-  pnpm --filter @summonlab/worker test:integration
-  ```
+- [ ] **Step 1: Write independent action-array and policy RED tests**
 
-  Expected: the entire engine suite and persistence/worker integration suite pass; public API snapshot
-  is unchanged; facade is export-only. This completes Checkpoint D.
+In actions.spec.ts, use Checkpoint A states for all versions 1–23 and compare complete LegalAction
+objects, not only IDs. Include Master, active hero, terminal hero, mission-reserved hero, v21 story,
+v22 synthesis rumor, and v23 first-band archive cases. Add fixed invalid policy cases for packet hash,
+result hash, stale world binding, stale legal-action hash, missing action, and invalid targets; assert
+the existing error messages and IllegalActionError fields. Add direct authorization cases proving:
 
-- [ ] Commit the orchestration facade:
+- wrong run ID wins over a stale expected version;
+- settlement receives the complete composed action IDs rather than settlement-only actions;
+- a mission-reserved actor cannot use a suppressed settlement action;
+- Master-control commands retain their current action/source/error precedence;
+- story.reveal.first.archive still requires both story-domain validity and complete-composer
+  availability.
 
-  ```bash
-  git add packages/engine/src/orchestration packages/engine/src/engine.ts \
-    packages/engine/src/index.ts packages/engine/src/catch-up.ts \
-    packages/engine/src/simulation.ts
-  git commit -m "refactor(engine): complete orchestration facade"
-  ```
+Run the spec and expect module-not-found RED.
+
+- [ ] **Step 2: Move legal action composition intact**
+
+Move action(), masterActionsV2(), heroActionsV2(), legalActionsForParsedState(), legalActions(), and
+decisionLegalActions() plus orchestration-only private helpers to legal-actions.ts. Import domain
+action providers; do not move domain rules into orchestration. Preserve Master-first dispatch,
+mission reservation suppression, story/synthesis short-circuits, settlement tail ordering, and
+expanded travel replacement order.
+
+- [ ] **Step 3: Move orchestration command authorization intact**
+
+Move requiredAction() and assertCommandIsLegal() to command-authorization.ts after legal-actions.ts
+exists. Keep the current command-specific ordering rather than replacing it with a generic
+handler.assertLegal followed by one membership check. In particular, inject complete action IDs into
+assertSettlementCommandLegalWithActionIds, retain the first-band archive check after story-domain
+validation, and preserve the early-return behavior of synthesis and mission/Master-control branches.
+Use the command registry only to locate the owning domain handler; do not change the
+EngineCommandHandler signature or make a domain import orchestration.
+
+- [ ] **Step 4: Move policy translation intact**
+
+Move boundedDecisionText(), commandFromHeroPolicyResult(), and its private validated translation
+helpers to policy-commands.ts. Preserve validation order:
+
+1. parse state, packet, and result;
+2. validate packet/result hashes and current-state bindings;
+3. validate the current legal-action hash;
+4. locate the selected action and validate targets;
+5. derive deterministic command/correlation IDs;
+6. translate the selected action without broadening the legal set.
+
+- [ ] **Step 5: Remove the context facade import**
+
+Change context.ts to import decisionLegalActions from orchestration/legal-actions.ts and continue
+importing hashGameState from core/state.ts. Engine.ts re-exports the public functions without wrapping
+or changing their signatures.
+
+- [ ] **Step 6: Run action and direct-consumer gates**
+
+~~~bash
+corepack pnpm --filter @summonlab/engine test -- \
+  src/orchestration/actions.spec.ts src/engine.spec.ts src/context.spec.ts \
+  src/compatibility/public-api.spec.ts src/compatibility/replay-vectors.spec.ts
+corepack pnpm --filter @summonlab/policies test
+corepack pnpm --filter @summonlab/observability test
+corepack pnpm --filter @summonlab/worker test
+corepack pnpm --filter @summonlab/engine lint
+corepack pnpm --filter @summonlab/engine typecheck
+git diff --check
+~~~
+
+Expected: all action arrays, decision packets, policy errors, and public exports remain unchanged;
+context.ts has no engine.js import.
+
+- [ ] **Step 7: Commit and push**
+
+~~~bash
+git add packages/engine/src/orchestration packages/engine/src/context.ts \
+  packages/engine/src/engine.ts packages/engine/src/engine.spec.ts
+git commit -m "refactor(engine): extract actions and policy commands"
+git push origin HEAD:codex/engine-modularization
+~~~
 
 ---
 
-## Task 13: Export capability predicates and remove duplicated version lists
+## Task 12: Extract bootstrap, apply, event outputs, and replay
+
+**Outcome:** packages/engine/src/engine.ts becomes an export-only compatibility facade of at most 250
+lines, and no internal production module imports it.
 
 **Files:**
 
-- Modify: `packages/engine/src/core/versions.ts`
-- Modify: `packages/engine/src/engine.ts`
-- Modify: `packages/engine/src/compatibility/public-api.snapshot.ts`
-- Modify: `packages/database/src/catch-up.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/communications/+server.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/conversations/+server.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/directives/+server.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/mission/+server.ts`
-- Modify: `apps/web/src/routes/mission/[runId]/+page.server.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/story-patch/+server.ts`
-- Modify: `apps/web/src/routes/story-patch/[runId]/+page.server.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/synthesis/+server.ts`
-- Modify: `apps/web/src/routes/synthesis/[runId]/+page.server.ts`
-- Modify: `apps/web/src/routes/api/runs/[runId]/first-band-archive/+server.ts`
-- Modify: `apps/web/src/routes/first-band-archive/[runId]/+page.server.ts`
+- Create: packages/engine/src/orchestration/bootstrap.ts
+- Create: packages/engine/src/orchestration/apply-command.ts
+- Create: packages/engine/src/orchestration/event-outputs.ts
+- Create: packages/engine/src/orchestration/reduction.ts
+- Create: packages/engine/src/orchestration/replay.ts
+- Create: packages/engine/src/orchestration/orchestration.spec.ts
+- Modify: packages/engine/src/catch-up.ts
+- Modify: packages/engine/src/simulation.ts
+- Replace contents: packages/engine/src/engine.ts
+- Test: packages/engine/src/engine.spec.ts
+- Test: packages/engine/src/module-boundaries.spec.ts
+- Test: packages/engine/src/compatibility/public-api.spec.ts
+- Test: packages/engine/src/compatibility/replay-vectors.spec.ts
 
-- [ ] Find every duplicated engine-version list and classify it by capability:
+**Interfaces:**
 
-  ```bash
-  rg -n "schemaVersion.*(?:===|!==|includes)|\[(?:[0-9]+,?\s*){2,}\]" \
-    packages/database apps/web
-  ```
+~~~ts
+export function createBootstrapEngine(
+  input: BootstrapEngineInput
+): BootstrapEngineResult;
 
-  Replace only lists that exactly equal one of the service predicates defined in Task 5. Leave true
-  migration/schema handling and distinct product policies local. In particular,
-  `packages/database/src/proof.ts` lists and the v13-only campaign projection guard do not match a
-  service predicate and must remain local.
+export function applyCommand(
+  stateInput: EngineGameState,
+  commandInput: EngineCommand
+): EngineApplyResult;
 
-- [ ] Export the predicates through `@summonlab/engine` and add their names to the public API snapshot
-  as the approved additive change.
+export function scheduledEventsFromEvent(
+  event: AuthoritativeEvent
+): readonly ScheduledEvent[];
 
-- [ ] Replace exact duplicated checks in database catch-up and the listed web communication,
-  conversation, directive, mission, story-patch, synthesis, and first-band archive routes. Call the
-  predicate with the parsed state; do not pass an unvalidated database JSON value.
+export function resolvedScheduledEventIdsFromEvent(
+  event: AuthoritativeEvent
+): readonly string[];
 
-- [ ] Add or extend consumer tests so every predicate is evaluated against all schema versions 1–23,
-  and each endpoint/service preserves its existing accepted membership and status/error payload.
-  This explicitly tests the holes in directive and mission service support.
+export function canceledScheduledEventIdsFromEvent(
+  event: AuthoritativeEvent
+): readonly string[];
 
-- [ ] Run engine, database, and web gates:
+export function reduceEvent(
+  stateInput: EngineGameState,
+  eventInput: AuthoritativeEvent
+): EngineGameState;
 
-  ```bash
-  pnpm --filter @summonlab/engine test
-  pnpm --filter @summonlab/database lint
-  pnpm --filter @summonlab/database typecheck
-  pnpm --filter @summonlab/database test
-  pnpm --filter @summonlab/database test:integration
-  pnpm --filter @summonlab/web lint
-  pnpm --filter @summonlab/web typecheck
-  pnpm --filter @summonlab/web test
-  ```
+export function replayEvents(
+  eventInputs: readonly AuthoritativeEvent[]
+): ReplayResult;
 
-  Expected: only predicate names are added to the API snapshot; consumer responses and supported
-  versions do not change. This completes Checkpoint E.
+export function replayEventsStrict(
+  eventInputs: readonly AuthoritativeEvent[]
+): ReplayResult;
+~~~
 
-- [ ] Commit capability ownership:
+event-outputs.ts only decodes event payload/metadata. Domain code continues to create schedule IDs and
+own due/cancel semantics; Task 12 must not centralize those rules.
 
-  ```bash
-  git add packages/engine packages/database/src apps/web/src
-  git commit -m "refactor(engine): centralize version capabilities"
-  ```
+- [ ] **Step 1: Write orchestration transaction RED tests**
+
+Create orchestration.spec.ts with fixed expected bootstrap snapshot/event hashes and a complete
+successful apply result. Add cases for directive influence attachment, scheduled/resolved/canceled
+outputs, illegal action, stale version, reducer tamper, replay hash tamper, and frozen inputs. Add one
+command with both a wrong runId and stale expectedVersion and assert IllegalActionError wins.
+
+Run the spec and expect the five new orchestration modules to be missing.
+
+- [ ] **Step 2: Move bootstrap without reconstructing objects**
+
+Move bootstrap state/event composition to bootstrap.ts. Preserve schema selection, content
+verification, defaults, object-key insertion order, initial schedule creation, EMPTY_STATE_HASH,
+initial version/event cursor, entropy cursor, and final schema parsing. Compare the complete snapshot
+and bootstrap event to the frozen test before deleting the originals.
+
+- [ ] **Step 3: Move event-output decoding**
+
+Move scheduledEventsFromEvent, resolvedScheduledEventIdsFromEvent, and
+canceledScheduledEventIdsFromEvent to event-outputs.ts. Do not move settlement/directive schedule ID
+construction, earliest-due selection, or cancellation policy out of their domains.
+
+- [ ] **Step 4: Move applyCommand in exact transaction order**
+
+Implement apply-command.ts by moving, not rewriting, the transaction. The order is contractual:
+
+1. parse state;
+2. parse command;
+3. call command-authorization.ts, which checks run-ID mismatch, then stale version, then the existing
+   domain/action authorization sequence;
+4. select legacy construction or the command registry owner;
+5. attach directive influences;
+6. reduce the draft through legacy reduction or the event registry;
+7. hash the parsed next state;
+8. parse the final AuthoritativeEvent with afterStateHash;
+9. decode scheduled/resolved/canceled outputs;
+10. calculate final legal actions for the command actor.
+
+Do not catch, wrap, or relabel errors.
+
+- [ ] **Step 5: Move reduction and replay while preserving report shapes**
+
+Move legacy reduction, modern registry dispatch, directive-influence reduction, and the public
+reduceEvent wrapper to reduction.ts. Move replayCheck(), replayEvents(), and replayEventsStrict() to
+replay.ts. Preserve bootstrap sequence/type validation, EMPTY_STATE_HASH handling, event order,
+before/after state hashes, entropy/delta summaries, ReplayIntegrityError messages and sequences, and
+the strict function's first-failed-check behavior. apply-command.ts and replay.ts both call the same
+reduction owner; neither copies legacy or modern reducer dispatch.
+
+- [ ] **Step 6: Finish the facade and direct internal imports**
+
+Replace engine.ts with the explicit compatibility export map below. Do not use broad export-star
+statements from internal owner modules because those could expose private helpers or version arrays.
+
+- From core/versions.ts: every existing named content-version constant plus ENGINE_EPOCH and
+  ENGINE_INVARIANTS; Task 13 adds only the eight capability predicates.
+- From core/state.ts: hashGameState.
+- From core/types.ts: BootstrapAdditionalHeroInput, BootstrapEngineInput, BootstrapEngineResult,
+  EngineApplyResult, ReplayCheck, and ReplayResult as types.
+- From domains/story/runtime.ts: storyPatchCastForState and validateStoryPatchForState.
+- From domains/settlement/routines.ts: resolveDailyRoutine.
+- From domains/mission/actions.ts: missionTurnLegalActions.
+- From domains/mission/master-control.ts: isIrreversibleMasterAction, masterFallbackActionSource,
+  masterFallbackMissionChoice, masterFallbackSafetySource, and selectMasterFallback.
+- From domains/mission/monster-policy.ts: monsterArmorReduction, resolveMonsterPolicyIntent, and the
+  MonsterIntentScenario type.
+- From orchestration/legal-actions.ts: legalActions and decisionLegalActions.
+- From orchestration/policy-commands.ts: commandFromHeroPolicyResult.
+- From orchestration/bootstrap.ts: createBootstrapEngine.
+- From orchestration/apply-command.ts: applyCommand.
+- From orchestration/reduction.ts: reduceEvent.
+- From orchestration/event-outputs.ts: scheduledEventsFromEvent,
+  resolvedScheduledEventIdsFromEvent, and canceledScheduledEventIdsFromEvent.
+- From orchestration/replay.ts: replayEvents and replayEventsStrict.
+
+The compatibility runtime snapshot and compatibility/public-types.ts are the acceptance authority;
+every pre-Task-13 name/type remains present and no unapproved internal symbol becomes public. Update:
+
+- catch-up.ts to import applyCommand and legalActions from their orchestration owners;
+- simulation.ts to import createBootstrapEngine, applyCommand, legalActions, and replayEventsStrict
+  from their orchestration owners.
+
+Remove all temporary facade-import exceptions from module-boundaries.spec.ts.
+
+- [ ] **Step 7: Run structural and consumer gates**
+
+~~~bash
+test "$(wc -l < packages/engine/src/engine.ts)" -le 250
+! rg -n "from ['\"].*engine\.js['\"]"   packages/engine/src --glob '!*.spec.ts' --glob '!engine.ts' --glob '!index.ts'
+corepack pnpm --filter @summonlab/engine lint
+corepack pnpm --filter @summonlab/engine typecheck
+corepack pnpm --filter @summonlab/engine test
+corepack pnpm --filter @summonlab/engine build
+corepack pnpm --filter @summonlab/database test
+corepack pnpm --filter @summonlab/worker test
+corepack pnpm --filter @summonlab/policies test
+corepack pnpm --filter @summonlab/observability test
+git diff --check
+~~~
+
+Expected: facade at most 250 lines, no internal facade imports, public API/replay snapshots unchanged,
+and engine plus hermetic consumers pass.
+
+- [ ] **Step 8: Commit and push**
+
+~~~bash
+git add packages/engine/src/orchestration packages/engine/src/engine.ts \
+  packages/engine/src/catch-up.ts packages/engine/src/simulation.ts \
+  packages/engine/src/module-boundaries.spec.ts
+git commit -m "refactor(engine): complete orchestration facade"
+git push origin HEAD:codex/engine-modularization
+~~~
 
 ---
 
-## Task 14: Update architecture ownership and agent handoffs
+## Task 13: Publish capability predicates and remove exact consumer duplicates
+
+**Outcome:** Service-version membership has one tested owner without moving distinct migration or
+product policies into the engine.
 
 **Files:**
 
-- Modify: `docs/system-architecture/system-map.md`
-- Create: `docs/system-architecture/engine-module-ownership.md`
-- Modify: `docs/superpowers/specs/2026-08-30-engine-modularization-design.md`
+- Modify: packages/engine/src/engine.ts
+- Modify: packages/engine/src/compatibility/public-api.snapshot.ts
+- Test: packages/engine/src/core/core.spec.ts
+- Modify: packages/database/src/catch-up.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/communications/+server.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/conversations/+server.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/directives/+server.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/mission/+server.ts
+- Modify: apps/web/src/routes/mission/[runId]/+page.server.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/story-patch/+server.ts
+- Modify: apps/web/src/routes/story-patch/[runId]/+page.server.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/synthesis/+server.ts
+- Modify: apps/web/src/routes/synthesis/[runId]/+page.server.ts
+- Modify: apps/web/src/routes/api/runs/[runId]/first-band-archive/+server.ts
+- Modify: apps/web/src/routes/first-band-archive/[runId]/+page.server.ts
 
-- [ ] Replace monolith debt notes in `system-map.md` with the new dependency layers and link the
-  detailed ownership document.
+**Public additive exports:**
 
-- [ ] In `engine-module-ownership.md`, record for every module: owned state/commands/events, allowed
-  imports, primary tests, and integration consumers. Include these future-agent handoff boundaries:
+- supportsCatchUp
+- supportsCommunicationApi
+- supportsConversationApi
+- supportsDirectivesApi
+- supportsMissionApi
+- supportsStoryPatchApi
+- supportsSynthesisApi
+- supportsFirstBandArchiveApi
 
-  - Engine kernel owner: contracts, core, registries, apply/replay; coordinates any schema/event change.
-  - Settlement owner: `domains/settlement/**`; does not edit mission or orchestration.
-  - Combat owner: mission monster policy/combat/portal plus mission-focused tests; requests shared
-    lifecycle changes from the mission owner.
-  - Mission lifecycle owner: lifecycle/actions/Master control; coordinates discriminator changes with
-    the kernel owner.
-  - Story owner: `domains/story/**` and story evaluation fixtures.
-  - Synthesis owner: `domains/synthesis/**` and synthesis evaluation fixtures.
-  - Frontend owner: web projections/components/routes; consumes engine APIs and never imports internal
-    engine paths.
+The arrays behind these predicates remain internal to core/versions.ts. Predicates accept a parsed
+EngineGameState and remain exhaustive type guards. First Ember checks, v13 campaign projection,
+database proof/migration lists, Master timing subfeatures, and post-commit schema assertions remain
+local because they express different policies.
 
-- [ ] Record the merge contract for every domain agent: baseline commit, files owned, public behavior
-  changed or explicitly unchanged, tests run, golden hashes affected, migration needs, and follow-up
-  risks. Require domain agents to rebase after kernel changes before editing commands/events.
+- [ ] **Step 1: Add the approved public API RED**
 
-- [ ] Mark the design spec implemented only after all prior checkpoint commands have passed.
+Add the eight names to ENGINE_PUBLIC_RUNTIME_EXPORTS in public-api.snapshot.ts before exporting them.
+Keep core.spec.ts's all-versions 1–23 membership table as the authoritative behavior test.
 
-- [ ] Validate documentation and source boundaries:
+Run:
 
-  ```bash
-  pnpm validate:wiki
-  test -f docs/system-architecture/system-map.md
-  test -f docs/system-architecture/engine-module-ownership.md
-  rg -n "engine-module-ownership\.md" docs/system-architecture/system-map.md
-  rg -n "contracts|core|domains|orchestration" \
-    docs/system-architecture/engine-module-ownership.md
-  pnpm --filter @summonlab/engine test -- src/module-boundaries.spec.ts
-  git diff --check
-  ```
+~~~bash
+corepack pnpm --filter @summonlab/engine test --   src/core/core.spec.ts src/compatibility/public-api.spec.ts
+~~~
 
-  Expected: the wiki validator passes, the new architecture files/link/module sections exist, the
-  source boundary test passes, and Git reports no whitespace errors. `validate:wiki` validates
-  `docs/wiki/**`; the explicit shell checks cover the new system-architecture document.
+Expected: FAIL because the facade does not yet export the eight predicates.
 
-- [ ] Commit ownership documentation:
+- [ ] **Step 2: Export only the predicates**
 
-  ```bash
-  git add docs/system-architecture docs/superpowers/specs
-  git commit -m "docs(engine): record modular ownership"
-  ```
+Re-export the eight predicate functions through engine.ts and update the frozen runtime API snapshot.
+Do not export the version arrays or includesVersion helper.
+
+- [ ] **Step 3: Replace exact duplicate consumer checks**
+
+In each listed database/web file, call the matching predicate only after the snapshot state has been
+parsed as EngineGameState. Replace complete service-membership guards, not schema-specific branches
+that narrow fields or select behavior. Preserve HTTP status codes, response bodies, logging, fallback
+selection, and post-commit assertions.
+
+- [ ] **Step 4: Prove no intended duplicate membership list remains**
+
+Run the focused search and manually classify every remaining match:
+
+~~~bash
+rg -n "schemaVersion.*(?:===|!==|includes)|\[(?:[0-9]+,?\s*){2,}\]"   packages/database/src apps/web/src
+~~~
+
+Expected remaining categories: migrations/proofs, v13 campaign projection, First Ember, Master
+timing/fallback subfeatures, test fixtures, and unrelated numeric arrays.
+
+- [ ] **Step 5: Run engine and consumer gates**
+
+~~~bash
+corepack pnpm --filter @summonlab/engine test
+corepack pnpm --filter @summonlab/database lint
+corepack pnpm --filter @summonlab/database typecheck
+corepack pnpm --filter @summonlab/database test
+corepack pnpm --filter @summonlab/web lint
+corepack pnpm --filter @summonlab/web typecheck
+corepack pnpm --filter @summonlab/web test
+git diff --check
+~~~
+
+Expected: only the eight predicate names are added to the public API; version membership and consumer
+status/error payloads are unchanged.
+
+- [ ] **Step 6: Commit and push**
+
+~~~bash
+git add packages/engine packages/database/src/catch-up.ts apps/web/src
+git commit -m "refactor(engine): centralize version capabilities"
+git push origin HEAD:codex/engine-modularization
+~~~
 
 ---
 
-## Task 15: Run the final repository gate and integrate
+## Task 14: Record technical module ownership
+
+**Outcome:** Future code changes can be assigned by source boundary without documenting checkout or
+agent-process mechanics.
 
 **Files:**
 
-- No planned source changes. If a gate exposes refactor drift, fix it in the owning task's files and
-  commit the smallest behavior-preserving correction before continuing.
+- Modify: docs/system-architecture/system-map.md
+- Create: docs/system-architecture/engine-module-ownership.md
+- Modify: docs/superpowers/specs/2026-08-30-engine-modularization-design.md
 
-- [ ] Confirm structural acceptance criteria:
+**Required ownership sections:**
 
-  ```bash
-  test "$(wc -l < packages/engine/src/engine.ts)" -le 250
-  test "$(wc -l < packages/contracts/src/engine.ts)" -le 5
-  ! rg -n "from ['\"].*engine\.js['\"]" \
-    packages/engine/src --glob '!*.spec.ts' --glob '!engine.ts' --glob '!index.ts'
-  pnpm --filter @summonlab/engine test -- \
-    src/module-boundaries.spec.ts src/compatibility/public-api.spec.ts \
-    src/compatibility/replay-vectors.spec.ts
-  ```
+- contracts/engine: schemas, state unions, command/runtime contracts, compatibility facade;
+- engine/core: deterministic state/hash/event metadata, type ports, capability predicates;
+- engine/domains/settlement;
+- engine/domains/mission, with separate combat/portal and lifecycle/Master-control subsections;
+- engine/domains/story;
+- engine/domains/synthesis;
+- engine/orchestration: registries, composite seams, actions/policy, bootstrap/apply/replay;
+- public facade and direct consumers.
 
-  Expected: both facades meet their size limits, no internal facade imports exist, and all
-  compatibility/boundary tests pass.
+For each top-level boundary, document owned commands/events/state, allowed imports, forbidden
+imports, primary focused tests, and integration consumers. Registries are the executable
+discriminator authority; do not duplicate exhaustive per-file inventories in prose.
 
-- [ ] Rebase on the latest integration baseline while the checkout is still sparse, then rerun the
-  conflict-sensitive gates:
+- [ ] **Step 1: Replace stale monolith documentation**
 
-  ```bash
-  git fetch origin main
-  git rebase origin/main
-  pnpm --filter @summonlab/contracts test
-  pnpm --filter @summonlab/engine test
-  pnpm --filter @summonlab/database test:integration
-  pnpm --filter @summonlab/worker test:integration
-  pnpm --filter @summonlab/web test
-  git diff --check origin/main...HEAD
-  ```
+Update system-map.md to describe contracts → core → domains → orchestration → facade/consumers and
+link engine-module-ownership.md. Replace old 13,000/4,500-line metrics with the final measured values.
 
-  Expected: rebase is clean and every engine consumer passes on the final history.
+- [ ] **Step 2: Write the ownership document**
 
-- [ ] After the focused sparse-checkout gates pass, materialize the full tree in the same feature
-  worktree for asset-bound validators and final integration. This creates one temporary copy of the
-  tracked assets, not one copy per agent:
+Document the required sections and these coordination rules:
 
-  ```bash
-  git sparse-checkout disable
-  test -d assets
-  git status --short
-  ```
+- kernel changes coordinate schema, discriminator, registry, apply, or replay changes;
+- a domain change stays inside its domain unless it changes a public contract;
+- combat changes use mission combat/monster-policy/portal tests and coordinate lifecycle changes;
+- frontend consumes @summonlab/engine and never imports package-internal engine paths;
+- every handoff states behavior changed or unchanged, tests run, golden hashes changed, and migration
+  needs.
 
-  Expected: `assets/` exists and the working tree remains clean.
+Do not mention sparse checkout, worktree creation/removal, asset storage, Git LFS, or branch choreography.
 
-- [ ] Run the complete repository gate in the now-full feature worktree:
+- [ ] **Step 3: Mark the design implemented**
 
-  ```bash
-  pnpm check
-  pnpm test:integration
-  pnpm test:e2e
-  ```
+Update the design spec status only after Tasks 9B–13 gates have passed. Record the final facade sizes
+and link the ownership document. Keep checkout/storage concerns explicitly out of scope.
 
-  Expected: formatting, validators, lint, typecheck, unit/property/integration tests, builds, and
-  browser tests all pass against the exact feature commit.
+- [ ] **Step 4: Validate documentation and source boundaries**
 
-- [ ] Push the implementation branch and integrate it through the repository's normal review path:
+~~~bash
+test -f docs/system-architecture/engine-module-ownership.md
+rg -n "engine-module-ownership\.md" docs/system-architecture/system-map.md
+rg -n "contracts|core|domains|orchestration"   docs/system-architecture/engine-module-ownership.md
+! rg -ni "sparse checkout|git lfs|worktree"   docs/system-architecture/engine-module-ownership.md
+corepack pnpm --filter @summonlab/engine test -- src/module-boundaries.spec.ts
+git diff --check
+~~~
 
-  ```bash
-  git push -u origin codex/engine-modularization
-  ```
+Expected: the architecture link and four layers exist, process/storage topics are absent, and source
+boundaries pass.
 
-- [ ] After merge, use the full integration worktree to verify `main`, then remove only the completed
-  sparse worktree:
+- [ ] **Step 5: Commit and push**
 
-  ```bash
-  git -C /home/joao/Documents/summonlab pull --ff-only origin main
-  git -C /home/joao/Documents/summonlab status --short
-  pnpm db:stop
-  git worktree remove ../summonlab-worktrees/engine
-  git branch -d codex/engine-modularization
-  ```
-
-  Expected: `main` is clean at the merged commit and `git worktree list` shows only intentional
-  worktrees. Do not remove the branch or worktree before the merge is confirmed.
+~~~bash
+git add docs/system-architecture docs/superpowers/specs
+git commit -m "docs(engine): record modular ownership"
+git push origin HEAD:codex/engine-modularization
+~~~
 
 ---
 
-## Git LFS follow-up boundary
+## Task 15: Run the code-focused final gate and prepare integration
 
-Plan and execute Git LFS after this branch merges. The LFS migration should inventory tracked binary
-extensions and CI/deployment support, choose pointer rules, migrate history only with explicit team
-approval, and prove that a fresh clone plus sparse worktree can build the engine without downloading
-unneeded assets. Keeping it separate prevents a storage/history rewrite from obscuring deterministic
-engine diffs or invalidating the refactor's baseline hashes.
+**Outcome:** The feature branch is compatibility-clean, consumer-tested, current with main, pushed,
+and ready for the repository's normal review/merge path.
+
+**Files:**
+
+- No planned source changes.
+- If a gate exposes drift, fix the smallest owning module, add a regression test, commit that fix, and
+  repeat the complete affected gate before continuing.
+
+- [ ] **Step 1: Confirm structural acceptance**
+
+~~~bash
+test "$(wc -l < packages/engine/src/engine.ts)" -le 250
+test "$(wc -l < packages/contracts/src/engine.ts)" -le 5
+! rg -n "from ['\"].*engine\.js['\"]"   packages/engine/src --glob '!*.spec.ts' --glob '!engine.ts' --glob '!index.ts'
+corepack pnpm --filter @summonlab/engine test -- \
+  src/orchestration/registries.spec.ts \
+  src/orchestration/actions.spec.ts \
+  src/orchestration/orchestration.spec.ts \
+  src/module-boundaries.spec.ts \
+  src/compatibility/public-api.spec.ts \
+  src/compatibility/replay-vectors.spec.ts
+~~~
+
+Expected: both facades meet limits, no internal facade import remains, registry ownership is total,
+and compatibility tests pass.
+
+- [ ] **Step 2: Run all hermetic engine and direct-consumer gates**
+
+~~~bash
+corepack pnpm --filter @summonlab/contracts lint
+corepack pnpm --filter @summonlab/contracts typecheck
+corepack pnpm --filter @summonlab/contracts test
+corepack pnpm --filter @summonlab/contracts build
+corepack pnpm --filter @summonlab/engine lint
+corepack pnpm --filter @summonlab/engine typecheck
+corepack pnpm --filter @summonlab/engine test
+corepack pnpm --filter @summonlab/engine build
+corepack pnpm --filter @summonlab/evaluation lint
+corepack pnpm --filter @summonlab/evaluation typecheck
+corepack pnpm --filter @summonlab/evaluation test
+corepack pnpm --filter @summonlab/database lint
+corepack pnpm --filter @summonlab/database typecheck
+corepack pnpm --filter @summonlab/database test
+corepack pnpm --filter @summonlab/database build
+corepack pnpm --filter @summonlab/worker lint
+corepack pnpm --filter @summonlab/worker typecheck
+corepack pnpm --filter @summonlab/worker test
+corepack pnpm --filter @summonlab/worker build
+corepack pnpm --filter @summonlab/web lint
+corepack pnpm --filter @summonlab/web typecheck
+corepack pnpm --filter @summonlab/web test
+corepack pnpm --filter @summonlab/policies test
+corepack pnpm --filter @summonlab/observability test
+corepack pnpm validate:attempt-aftermath
+corepack pnpm validate:foundry-strategies
+git diff --check
+~~~
+
+Expected: every code package directly affected by engine public behavior passes. Root asset/visual
+validators and unrelated browser suites are not part of this engine refactor.
+
+- [ ] **Step 3: Run database-backed gates when the repository test database is available**
+
+Do not add or modify infrastructure in this task. If TEST_DATABASE_URL is configured, run:
+
+~~~bash
+corepack pnpm --filter @summonlab/database test:integration
+corepack pnpm --filter @summonlab/worker test:integration
+~~~
+
+If no test database is available, record both commands as environmental pending in the final handoff;
+do not report them as passing and do not block completion of the hermetic code gate.
+
+- [ ] **Step 4: Rebase on the current integration baseline**
+
+~~~bash
+git status --short
+git fetch origin main
+git rebase origin/main
+git diff --check origin/main...HEAD
+~~~
+
+Expected: the tree is clean and the rebase completes. Resolve conflicts only in files owned by this
+plan, then rerun Steps 1–3.
+
+- [ ] **Step 5: Push the reviewed branch**
+
+~~~bash
+git push --force-with-lease origin HEAD:codex/engine-modularization
+git status --short --branch
+git rev-parse HEAD
+git rev-parse origin/codex/engine-modularization
+~~~
+
+Expected: local and remote hashes match and the working tree is clean. Integration into main happens
+through the repository's normal review/merge path; this plan performs no checkout cleanup, asset
+migration, storage migration, or branch deletion.
