@@ -109,7 +109,6 @@ import {
 	ActivityStartedPayloadSchema,
 	DirectiveChangedPayloadSchema,
 	RoutineStartedPayloadSchema,
-	SETTLEMENT_EVENT_TYPES,
 	TravelStartedPayloadSchema,
 	settlementEventReducer
 } from './domains/settlement/reducer.js';
@@ -137,6 +136,23 @@ import {
 	firstBandMissionCommandHandler,
 	firstBandMissionEventReducer
 } from './orchestration/first-band-mission-reducer.js';
+import { createCommandRegistry } from './orchestration/command-registry.js';
+import { createEventRegistry } from './orchestration/event-registry.js';
+
+const commandRegistry = createCommandRegistry([
+	settlementCommandHandler,
+	firstBandMissionCommandHandler,
+	storyCommandHandler,
+	synthesisCommandHandler
+]);
+
+const eventRegistry = createEventRegistry([
+	settlementEventReducer,
+	missionEventReducer,
+	firstBandMissionEventReducer,
+	storyEventReducer,
+	synthesisEventReducer
+]);
 
 export { storyPatchCastForState, validateStoryPatchForState } from './domains/story/runtime.js';
 export { resolveDailyRoutine } from './domains/settlement/routines.js';
@@ -1116,25 +1132,7 @@ function buildLegacyEvent(state: EngineGameStateV1, command: EngineCommand): Aut
 }
 
 function buildV2Event(state: EngineGameStateModern, command: EngineCommand): AuthoritativeEvent {
-	if (
-		command.commandType === 'settlement.synthesize.hero' ||
-		command.commandType === 'hero.share.synthesis.rumor'
-	) {
-		return synthesisCommandHandler.buildEvent(state, command);
-	}
-	if (
-		command.commandType === 'story.apply.patch' ||
-		command.commandType === 'story.reveal.first.archive'
-	) {
-		return storyCommandHandler.buildEvent(state, command);
-	}
-	if (SETTLEMENT_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		return settlementCommandHandler.buildEvent(state, command as SettlementCommand);
-	}
-	if (MISSION_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		return firstBandMissionCommandHandler.buildEvent(state, command as MissionCommand);
-	}
-	throw new IllegalActionError(command.commandType);
+	return commandRegistry.handlerFor(command.commandType).buildEvent(state, command);
 }
 function reduceLegacyEvent(state: EngineGameStateV1, event: AuthoritativeEvent): EngineGameStateV1 {
 	if (event.eventType === 'hero.destination.selected') {
@@ -1191,21 +1189,8 @@ function reduceV2Event(
 	state: EngineGameStateModern,
 	event: AuthoritativeEvent
 ): EngineGameStateModern {
-	if (storyEventReducer.eventTypes.some((eventType) => eventType === event.eventType)) {
-		return storyEventReducer.reduce(state, event) as EngineGameStateModern;
-	}
-	if (synthesisEventReducer.eventTypes.some((eventType) => eventType === event.eventType)) {
-		return synthesisEventReducer.reduce(state, event) as EngineGameStateModern;
-	}
-	if (SETTLEMENT_EVENT_TYPES.some((eventType) => eventType === event.eventType)) {
-		return settlementEventReducer.reduce(state, event) as EngineGameStateModern;
-	}
-	if (missionEventReducer.eventTypes.some((eventType) => eventType === event.eventType)) {
-		return missionEventReducer.reduce(state, event) as EngineGameStateModern;
-	}
-	if (firstBandMissionEventReducer.eventTypes.some((eventType) => eventType === event.eventType)) {
-		return firstBandMissionEventReducer.reduce(state, event) as EngineGameStateModern;
-	}
+	const reducer = eventRegistry.reducerFor(event.eventType);
+	if (reducer) return reducer.reduce(state, event) as EngineGameStateModern;
 	throw new ReplayIntegrityError(`Unsupported event type: ${event.eventType}`, event.sequence);
 }
 function reduceParsedEvent(state: EngineGameState, event: AuthoritativeEvent): EngineGameState {
