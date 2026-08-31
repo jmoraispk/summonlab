@@ -35,7 +35,7 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 22 | **Heaven's Fall** | Sword | C | A | Overhead Chop Master, Might threshold | Leaping overhead strike; area stagger on landing |
 | 23 | **Severing Intent** | Sword | B | A | Drawing Cut Master, 50,000 swings, defeated a named opponent | Ignores mitigation entirely. Long cooldown. |
 | 24 | **Mirrored Edge** | Sword | B | St | Still Water Master, mentor holding the skill | Parried attacks are returned at the attacker |
-| 25 | **Formless Blade** | Sword | B | P | Swordsmanship Master, three other Blade subfamilies at Expert | Sword techniques function with any bladed weapon |
+| 25 | **Formless Blade** | Sword | B | P | Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert | Sword techniques function with any bladed weapon |
 | 26 | **Void Cut** | Sword | A | A | Severing Intent Master, Affinity Rank IV, rare catalyst | The cut lands regardless of distance or obstruction |
 | 27 | **Ten Thousand Leaves** | Sword | A | A | Thousand Cuts Master, Agility threshold, deed | Afterimages strike every enemy in a wide radius simultaneously |
 | 28 | **One Blade, One World** | Sword | S | A | Void Cut Master, composite deed condition | A single stroke resolved against everything in a line, to the horizon |

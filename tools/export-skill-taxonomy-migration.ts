@@ -176,7 +176,9 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			...row,
 			disposition: 'rename',
 			target: { domain: 'Martial', family: 'Blade', skill: 'Two Blades' },
-			replacementRequires: 'Equip two compatible Blade-family weapons'
+			replacementRequires: 'Equip two compatible Blade-family weapons',
+			replacementEffect:
+				'Enables coordinated two-blade techniques. **Foundation for the two-blade branch.**'
 		};
 
 	if (row.section === 'Paired Blades')
@@ -215,6 +217,15 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			disposition: 'rehome',
 			target: targetForSection(row),
 			replacementRequires: 'Silent Step Expert'
+		};
+
+	if (source === 'Sword:Formless Blade')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires:
+				'Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert'
 		};
 
 	if (source === "Bow:Hunter's Mark")

@@ -28,6 +28,7 @@ export type SkillMigrationRecord = LegacySkillRow & {
 	mergeTarget?: string;
 	rationale?: string;
 	replacementRequires?: string;
+	replacementEffect?: string;
 };
 
 export type SkillMigrationLedger = {
@@ -258,6 +259,19 @@ export function validateTargetTaxonomy(
 		}
 		if (sortedLabels(row.labels).join('|') !== sortedLabels(record.target.labels).join('|'))
 			errors.push(`${record.sourceId} labels do not match ${key}`);
+
+		const expectedFields = {
+			rarity: record.rarity,
+			type: record.type,
+			requires: record.replacementRequires ?? record.requires,
+			effect: record.replacementEffect ?? record.effect
+		};
+		for (const field of ['rarity', 'type', 'requires', 'effect'] as const) {
+			if (row[field] !== expectedFields[field])
+				errors.push(
+					`${field} mismatch for ${key}: expected ${expectedFields[field]}, found ${row[field]}`
+				);
+		}
 	}
 
 	for (const row of rows) {

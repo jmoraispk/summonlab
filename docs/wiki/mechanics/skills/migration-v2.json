@@ -5684,7 +5684,8 @@
 				"family": "Blade",
 				"skill": "Two Blades"
 			},
-			"replacementRequires": "Equip two compatible Blade-family weapons"
+			"replacementRequires": "Equip two compatible Blade-family weapons",
+			"replacementEffect": "Enables coordinated two-blade techniques. **Foundation for the two-blade branch.**"
 		},
 		{
 			"sourceId": "martial-blade.md#paired-blades:2",
@@ -6483,7 +6484,8 @@
 						"value": "Sword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert"
 		},
 		{
 			"sourceId": "martial-blade.md#sword:26",

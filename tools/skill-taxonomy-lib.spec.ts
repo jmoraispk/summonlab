@@ -12,7 +12,12 @@ import {
 	type SkillMigrationLedger
 } from './skill-taxonomy-lib.js';
 
-function targetPage(family: string, skill: string, equipment = '—'): string {
+function targetPage(
+	family: string,
+	skill: string,
+	equipment = '—',
+	details: { rarity?: string; type?: string; requires?: string; effect?: string } = {}
+): string {
 	return `# Martial Skills — ${family}
 
 Domain: **Martial**
@@ -20,7 +25,7 @@ Family: **${family}**
 
 | # | Skill | Equipment | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |
-| 1 | **${skill}** | ${equipment} | F | P | None | Foundation |`;
+| 1 | **${skill}** | ${equipment} | ${details.rarity ?? 'F'} | ${details.type ?? 'P'} | ${details.requires ?? 'None'} | ${details.effect ?? 'Foundation'} |`;
 }
 
 function migrationRecord(family: string, skill: string, row: number, equipment: string[] = []) {
@@ -226,6 +231,9 @@ describe('skill taxonomy migration inventory', () => {
 		expect(replacements['martial-blade.md#dagger:20']).toBe('Blade Throw Master');
 		expect(replacements['martial-hunt-guard-motion.md#bow:11']).toBe('Archery Intermediate');
 		expect(replacements['martial-blade.md#dagger:16']).toBe('Silent Step Expert');
+		expect(replacements['martial-blade.md#sword:25']).toBe(
+			'Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert'
+		);
 		expect(replacements['craft-and-life.md#beast:8']).toBe(
 			'Riding Master, Martial family skill at Expert'
 		);
@@ -237,8 +245,17 @@ describe('skill taxonomy migration inventory', () => {
 
 describe('target skill taxonomy', () => {
 	it('parses the five Martial families and keeps Two Blades as an unlabeled Blade skill', () => {
+		const twoBladesRequires = 'Equip two compatible Blade-family weapons';
+		const twoBladesEffect =
+			'Enables coordinated two-blade techniques. **Foundation for the two-blade branch.**';
 		const files = [
-			['blade.md', targetPage('Blade', 'Two Blades')],
+			[
+				'blade.md',
+				targetPage('Blade', 'Two Blades', '—', {
+					requires: twoBladesRequires,
+					effect: twoBladesEffect
+				})
+			],
 			['body.md', targetPage('Body', 'Footing')],
 			['polearm.md', targetPage('Polearm', 'Spearcraft', 'Spear, Glaive')],
 			['ranged.md', targetPage('Ranged', 'Archery', 'Bow')],
@@ -249,7 +266,11 @@ describe('target skill taxonomy', () => {
 			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
 			sourceRowCount: 520,
 			records: [
-				migrationRecord('Blade', 'Two Blades', 1),
+				{
+					...migrationRecord('Blade', 'Two Blades', 1),
+					replacementRequires: twoBladesRequires,
+					replacementEffect: twoBladesEffect
+				},
 				migrationRecord('Body', 'Footing', 2),
 				migrationRecord('Polearm', 'Spearcraft', 3, ['Spear', 'Glaive']),
 				migrationRecord('Ranged', 'Archery', 4, ['Bow']),
@@ -285,6 +306,17 @@ describe('target skill taxonomy', () => {
 			sourceRowCount: 520,
 			records: [migrationRecord('Blade', 'Missing Skill', 1)]
 		} as SkillMigrationLedger;
+		const retainedWithoutTarget = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceRowCount: 520,
+			records: [
+				{
+					...migrationRecord('Blade', 'Two Blades', 2),
+					disposition: 'retain',
+					target: undefined
+				}
+			]
+		} as SkillMigrationLedger;
 
 		expect(validateTargetTaxonomy(unknownFamilyRow, unmaterializedLedger)).toContain(
 			'unknown Martial family Duelist'
@@ -296,5 +328,34 @@ describe('target skill taxonomy', () => {
 				'Martial/Blade/Two Blades has no legacy lineage'
 			])
 		);
+		expect(validateTargetTaxonomy(validRow, retainedWithoutTarget)).toContain(
+			'legacy.md#blade:2 has no target'
+		);
+	});
+
+	it.each([
+		['rarity', 'E', 'rarity mismatch for Martial/Blade/Measured Cut: expected F, found E'],
+		['type', 'A', 'type mismatch for Martial/Blade/Measured Cut: expected P, found A'],
+		[
+			'requires',
+			'Swordsmanship Expert',
+			'requires mismatch for Martial/Blade/Measured Cut: expected None, found Swordsmanship Expert'
+		],
+		[
+			'effect',
+			'Changed effect',
+			'effect mismatch for Martial/Blade/Measured Cut: expected Foundation, found Changed effect'
+		]
+	] as const)('rejects target %s drift from its migration record', (field, value, diagnostic) => {
+		const [row] = parseTargetSkillRows([
+			{ sourcePath: 'blade.md', source: targetPage('Blade', 'Measured Cut') }
+		]);
+		const ledger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceRowCount: 520,
+			records: [migrationRecord('Blade', 'Measured Cut', 3)]
+		} as SkillMigrationLedger;
+
+		expect(validateTargetTaxonomy([{ ...row, [field]: value }], ledger)).toContain(diagnostic);
 	});
 });
