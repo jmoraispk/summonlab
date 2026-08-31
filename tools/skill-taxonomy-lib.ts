@@ -27,6 +27,7 @@ export type SkillMigrationRecord = LegacySkillRow & {
 	};
 	mergeTarget?: string;
 	rationale?: string;
+	replacementRequires?: string;
 };
 
 export type SkillMigrationLedger = {
@@ -98,6 +99,31 @@ export function validateLegacyInventory(rows: readonly LegacySkillRow[]): string
 	for (const row of rows) {
 		if (sourceIds.has(row.sourceId)) errors.push(`duplicate source id ${row.sourceId}`);
 		sourceIds.add(row.sourceId);
+	}
+
+	return errors;
+}
+
+export function validateMigrationLedger(ledger: SkillMigrationLedger): string[] {
+	const errors: string[] = [];
+	const sourceIds = new Set<string>();
+
+	if (ledger.records.length !== ledger.sourceRowCount)
+		errors.push(
+			`source row count ${ledger.sourceRowCount} does not match ${ledger.records.length} ledger records`
+		);
+
+	for (const record of ledger.records) {
+		if (sourceIds.has(record.sourceId)) errors.push(`duplicate source id ${record.sourceId}`);
+		sourceIds.add(record.sourceId);
+
+		if (record.disposition === 'unmapped') errors.push(`${record.sourceId} is unmapped`);
+		if (['retain', 'rename', 'rehome'].includes(record.disposition) && record.target === undefined)
+			errors.push(`${record.disposition} record ${record.sourceId} requires target`);
+		if (record.disposition === 'merge' && !record.mergeTarget)
+			errors.push(`merge record ${record.sourceId} requires mergeTarget`);
+		if (record.disposition === 'delete' && !record.rationale)
+			errors.push(`delete record ${record.sourceId} requires rationale`);
 	}
 
 	return errors;

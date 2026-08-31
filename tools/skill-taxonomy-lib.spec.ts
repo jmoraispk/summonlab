@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseSkillMarkdown, validateLegacyInventory } from './skill-taxonomy-lib.js';
+import {
+	parseSkillMarkdown,
+	validateLegacyInventory,
+	validateMigrationLedger,
+	type SkillMigrationLedger
+} from './skill-taxonomy-lib.js';
 
 describe('skill taxonomy migration inventory', () => {
 	it('parses a catalog row with its page and section identity', () => {
@@ -49,6 +54,75 @@ describe('skill taxonomy migration inventory', () => {
 
 		expect(validateLegacyInventory([row, row])).toContain(
 			'duplicate source id martial-blade.md#sword:1'
+		);
+	});
+
+	it('reports incomplete and invalid migration dispositions', () => {
+		const record = {
+			sourceId: 'martial-universal.md#universal-martial:1',
+			sourcePath: 'martial-universal.md',
+			section: 'Universal Martial',
+			row: 1,
+			name: 'Footing',
+			rarity: 'F',
+			type: 'P',
+			requires: 'None',
+			effect: 'Foundation'
+		} as const;
+		const ledgerWithUnmappedRecord = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceRowCount: 520,
+			records: [{ ...record, disposition: 'unmapped' }]
+		} satisfies SkillMigrationLedger;
+		const ledgerWithTwoTargetsForOneSource = {
+			...ledgerWithUnmappedRecord,
+			records: [
+				{
+					...record,
+					sourceId: 'martial-blade.md#sword:1',
+					disposition: 'rehome',
+					target: { domain: 'Martial', family: 'Blade', skill: 'Footing' }
+				},
+				{
+					...record,
+					sourceId: 'martial-blade.md#sword:1',
+					disposition: 'rehome',
+					target: { domain: 'Martial', family: 'Body', skill: 'Footing' }
+				}
+			]
+		} satisfies SkillMigrationLedger;
+		const ledgerWithMergeWithoutTarget = {
+			...ledgerWithUnmappedRecord,
+			records: [
+				{
+					...record,
+					sourceId: 'martial-hunt-guard-motion.md#protection:8',
+					disposition: 'merge'
+				}
+			]
+		} satisfies SkillMigrationLedger;
+		const ledgerWithDeleteWithoutRationale = {
+			...ledgerWithUnmappedRecord,
+			records: [
+				{
+					...record,
+					sourceId: 'martial-hunt-guard-motion.md#tracking:1',
+					disposition: 'delete'
+				}
+			]
+		} satisfies SkillMigrationLedger;
+
+		expect(validateMigrationLedger(ledgerWithUnmappedRecord)).toContain(
+			'martial-universal.md#universal-martial:1 is unmapped'
+		);
+		expect(validateMigrationLedger(ledgerWithTwoTargetsForOneSource)).toContain(
+			'duplicate source id martial-blade.md#sword:1'
+		);
+		expect(validateMigrationLedger(ledgerWithMergeWithoutTarget)).toContain(
+			'merge record martial-hunt-guard-motion.md#protection:8 requires mergeTarget'
+		);
+		expect(validateMigrationLedger(ledgerWithDeleteWithoutRationale)).toContain(
+			'delete record martial-hunt-guard-motion.md#tracking:1 requires rationale'
 		);
 	});
 });

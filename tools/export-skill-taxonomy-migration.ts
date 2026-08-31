@@ -7,6 +7,7 @@ import {
 	validateLegacyInventory,
 	type LegacySkillRow,
 	type SkillMarkdownFile,
+	type SkillMigrationRecord,
 	type SkillMigrationLedger
 } from './skill-taxonomy-lib.js';
 
@@ -54,12 +55,229 @@ async function readInventory(workspaceRoot: string): Promise<LegacySkillRow[]> {
 	return parsed as LegacySkillRow[];
 }
 
+const SECTION_TARGETS = {
+	Sword: ['Martial', 'Blade', 'Sword'],
+	Dagger: ['Martial', 'Blade', 'Dagger'],
+	Greatsword: ['Martial', 'Blade', 'Greatsword'],
+	'Paired Blades': ['Martial', 'Blade', undefined],
+	Spear: ['Martial', 'Polearm', 'Spear'],
+	Axe: ['Martial', 'Polearm', 'Halberd'],
+	Hammer: ['Martial', 'Polearm', 'Polehammer'],
+	Bow: ['Martial', 'Ranged', 'Bow'],
+	Crossbow: ['Martial', 'Ranged', 'Crossbow'],
+	Shield: ['Martial', 'Shield', undefined],
+	Unarmed: ['Martial', 'Body', 'Unarmed'],
+	Grappling: ['Martial', 'Body', undefined],
+	Motion: ['Martial', 'Body', undefined],
+	'Universal Martial': ['Martial', 'Body', undefined],
+	'Evocation — Fire': ['Magical', 'Elemental', 'Fire'],
+	'Evocation — Water': ['Magical', 'Elemental', 'Water'],
+	'Evocation — Wood': ['Magical', 'Elemental', 'Wood'],
+	'Evocation — Earth': ['Magical', 'Elemental', 'Earth'],
+	'Evocation — Metal': ['Magical', 'Elemental', 'Metal']
+} as const;
+
+const DIRECT_FAMILIES = new Set([
+	'Ward',
+	'Enchantment',
+	'Restoration',
+	'Mind',
+	'Forging',
+	'Alchemy',
+	'Cooking',
+	'Gathering',
+	'Beast',
+	'Lore'
+]);
+
+const TRACKING_DELETE_RATIONALE = 'Tracking ladder removed by approved taxonomy';
+const THROWN_DELETE_RATIONALE = 'Generic Thrown ladder removed by approved taxonomy';
+const EQUIPMENT_PROGRESSION_DELETE_RATIONALE = 'Equipment progression removed by approved taxonomy';
+
+function targetForSection(row: LegacySkillRow): NonNullable<SkillMigrationRecord['target']> {
+	const sectionTarget = SECTION_TARGETS[row.section as keyof typeof SECTION_TARGETS];
+	if (sectionTarget) {
+		const [domain, family, labelValue] = sectionTarget;
+		return {
+			domain,
+			family,
+			skill: row.name,
+			...(labelValue === undefined
+				? {}
+				: {
+						labels: [
+							{
+								namespace: domain === 'Martial' ? 'Equipment' : 'Element',
+								value: labelValue
+							}
+						]
+					})
+		};
+	}
+
+	if (!DIRECT_FAMILIES.has(row.section))
+		throw new Error(`No migration target configured for section ${row.section}`);
+
+	return {
+		domain: ['Ward', 'Enchantment', 'Restoration', 'Mind'].includes(row.section)
+			? 'Magical'
+			: 'Craft',
+		family: row.section,
+		skill: row.name
+	};
+}
+
+function mapRow(row: LegacySkillRow): SkillMigrationRecord {
+	const source = `${row.section}:${row.name}`;
+
+	if (row.section === 'Tracking')
+		return { ...row, disposition: 'delete', rationale: TRACKING_DELETE_RATIONALE };
+
+	if (
+		['Throwing', 'Hurl', 'Bandolier', 'Impact Sense', 'Everything Is a Weapon'].includes(row.name)
+	)
+		return { ...row, disposition: 'delete', rationale: THROWN_DELETE_RATIONALE };
+
+	if (source === 'Axe:Throwing Axe')
+		return {
+			...row,
+			disposition: 'delete',
+			rationale: 'Short throwing axe is not a Polearm technique in the approved taxonomy'
+		};
+
+	if (row.section === 'Protection') {
+		if (['Armour Training', 'Heavy Bearing', 'Fortress', 'Second Skin'].includes(row.name))
+			return { ...row, disposition: 'delete', rationale: EQUIPMENT_PROGRESSION_DELETE_RATIONALE };
+		if (row.name === 'Punishment')
+			return { ...row, disposition: 'merge', mergeTarget: 'Retaliation Ward' };
+		if (row.name === 'Bulwark of the Line')
+			return { ...row, disposition: 'merge', mergeTarget: 'Phalanx' };
+		if (row.name === 'They Shall Not Pass')
+			return { ...row, disposition: 'merge', mergeTarget: 'The Last Wall' };
+		if (['Taunt', 'Draw Attention', 'Endure'].includes(row.name))
+			return {
+				...row,
+				disposition: 'rehome',
+				target: { domain: 'Martial', family: 'Shield', skill: row.name }
+			};
+		if (['Set Jaw', 'Undying'].includes(row.name))
+			return {
+				...row,
+				disposition: 'rehome',
+				target: { domain: 'Martial', family: 'Body', skill: row.name }
+			};
+	}
+
+	if (source === 'Paired Blades:Two-Hand Fighting')
+		return {
+			...row,
+			disposition: 'rename',
+			target: { domain: 'Martial', family: 'Blade', skill: 'Two Blades' },
+			replacementRequires: 'Equip two compatible Blade-family weapons'
+		};
+
+	if (row.section === 'Paired Blades')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			...(row.requires.includes('Two-Hand Fighting')
+				? { replacementRequires: row.requires.replace('Two-Hand Fighting', 'Two Blades') }
+				: {})
+		};
+
+	if (source === 'Dagger:Throwing Blade')
+		return {
+			...row,
+			disposition: 'rename',
+			target: {
+				domain: 'Martial',
+				family: 'Blade',
+				skill: 'Blade Throw',
+				labels: [{ namespace: 'Equipment', value: 'Dagger' }]
+			}
+		};
+
+	if (source === 'Thrown:Sling')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: {
+				domain: 'Martial',
+				family: 'Ranged',
+				skill: row.name,
+				labels: [{ namespace: 'Equipment', value: 'Sling' }]
+			},
+			replacementRequires: 'Archery Novice'
+		};
+
+	if (source === 'Thrown:Grenade Throw')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Craft', family: 'Alchemy', skill: row.name },
+			replacementRequires: 'Volatiles Novice'
+		};
+
+	const thrownBladePrerequisites: Record<string, string> = {
+		Ricochet: 'Blade Throw Expert',
+		'Fan Throw': 'Blade Throw Master, Dexterity threshold',
+		'Boomerang Arc': 'Ricochet Master',
+		'Storm of Steel': 'Fan Throw Master',
+		'Perfect Arc': 'Boomerang Arc Master'
+	};
+	if (row.name in thrownBladePrerequisites)
+		return {
+			...row,
+			disposition: 'rehome',
+			target: {
+				domain: 'Martial',
+				family: 'Blade',
+				skill: row.name,
+				labels: [{ namespace: 'Equipment', value: 'Dagger' }]
+			},
+			replacementRequires: thrownBladePrerequisites[row.name]
+		};
+
+	if (source === 'Ward:Elemental Guard' || source === 'Ward:Counter Sigil')
+		return {
+			...row,
+			disposition: 'retain',
+			target: {
+				...targetForSection(row),
+				labels: [{ namespace: 'Element', value: 'Attuned' }]
+			}
+		};
+
+	if (
+		[
+			'Enchantment:Weapon Oil',
+			'Enchantment:Armour Imbuing',
+			'Enchantment:Elemental Attunement'
+		].includes(source)
+	)
+		return {
+			...row,
+			disposition: 'retain',
+			target: {
+				...targetForSection(row),
+				labels: [{ namespace: 'Element', value: 'Attuned' }]
+			}
+		};
+
+	return {
+		...row,
+		disposition: DIRECT_FAMILIES.has(row.section) ? 'retain' : 'rehome',
+		target: targetForSection(row)
+	};
+}
+
 function buildLedger(rows: readonly LegacySkillRow[]): SkillMigrationLedger {
 	if (rows.length !== 520) throw new Error(`Expected 520 legacy skill rows, found ${rows.length}`);
 	return {
 		schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
 		sourceRowCount: 520,
-		records: rows.map((row) => ({ ...row, disposition: 'unmapped' }))
+		records: rows.map(mapRow)
 	};
 }
 
