@@ -5,6 +5,10 @@ import {
 	EngineGameStateV15Schema,
 	EngineGameStateV16Schema,
 	EngineGameStateV17Schema,
+	EngineGameStateV23Schema,
+	type AuthoritativeEvent,
+	type EngineCommand,
+	type EngineGameStateV23,
 	type EngineGameStateV16,
 	type EngineGameStateV17,
 	type EntropyDraw
@@ -12,8 +16,14 @@ import {
 import { describe, expect, it } from 'vitest';
 
 import { createEntropyCursor } from '../../entropy.js';
+import { applyCommand, createBootstrapEngine } from '../../engine.js';
 import { IllegalActionError, ReplayIntegrityError } from '../../errors.js';
-import { hashCanonical, sha256Hex } from '../../hash.js';
+import { deterministicUuid, hashCanonical, sha256Hex } from '../../hash.js';
+import {
+	FIRST_BAND_MISSION_EVENT_TYPES,
+	firstBandMissionEventReducer
+} from '../../orchestration/first-band-mission-reducer.js';
+import { MISSION_COMMAND_TYPES, missionCommandHandler } from './commands.js';
 import { retreatMissionAttempt } from './lifecycle.js';
 
 import {
@@ -28,8 +38,76 @@ import {
 	portalPressureStage,
 	resolvePortalMissionTurn
 } from './portal.js';
+import { MISSION_EVENT_TYPES, missionEventReducer } from './reducer.js';
 
 describe('mission runtime ownership', () => {
+	it('assigns mission command and event discriminators to one domain owner', () => {
+		expect(MISSION_COMMAND_TYPES).toStrictEqual([
+			'master.configure.timing',
+			'master.configure.fallback',
+			'master.apply.safety-stop',
+			'master.open.decision',
+			'mission.prepare',
+			'mission.revise.party',
+			'mission.cancel',
+			'mission.deploy',
+			'mission.resolve.turn',
+			'mission.open.extraction',
+			'mission.extract',
+			'mission.retreat'
+		]);
+		expect(missionCommandHandler).toMatchObject({
+			ownerId: 'mission',
+			commandTypes: MISSION_COMMAND_TYPES
+		});
+		expect(MISSION_EVENT_TYPES).toStrictEqual([
+			'master.timing.changed',
+			'master.fallback.changed',
+			'master.safety.stopped',
+			'master.decision.opened',
+			'mission.round.resolved',
+			'mission.extraction.opened'
+		]);
+		expect(missionEventReducer).toMatchObject({
+			ownerId: 'mission',
+			eventTypes: MISSION_EVENT_TYPES
+		});
+		expect(FIRST_BAND_MISSION_EVENT_TYPES).toStrictEqual([
+			'mission.preparation.started',
+			'mission.party.revised',
+			'mission.preparation.canceled',
+			'mission.deployed',
+			'mission.extracted',
+			'mission.retreated'
+		]);
+		expect(firstBandMissionEventReducer).toMatchObject({
+			ownerId: 'first-band-mission',
+			eventTypes: FIRST_BAND_MISSION_EVENT_TYPES
+		});
+		expect(missionEventReducer.eventTypes).not.toContain('mission.preparation.started');
+		expect(missionEventReducer.eventTypes).not.toContain('mission.party.revised');
+		expect(missionEventReducer.eventTypes).not.toContain('mission.preparation.canceled');
+		expect(missionEventReducer.eventTypes).not.toContain('mission.deployed');
+		expect(missionEventReducer.eventTypes).not.toContain('mission.extracted');
+		expect(missionEventReducer.eventTypes).not.toContain('mission.retreated');
+		expect([...missionEventReducer.eventTypes, ...firstBandMissionEventReducer.eventTypes]).toEqual(
+			[
+				'master.timing.changed',
+				'master.fallback.changed',
+				'master.safety.stopped',
+				'master.decision.opened',
+				'mission.round.resolved',
+				'mission.extraction.opened',
+				'mission.preparation.started',
+				'mission.party.revised',
+				'mission.preparation.canceled',
+				'mission.deployed',
+				'mission.extracted',
+				'mission.retreated'
+			]
+		);
+	});
+
 	it('loads the dedicated monster, combat, and portal owners', () => {
 		expect(typeof resolveMonsterPolicyIntent).toBe('function');
 		expect(typeof monsterArmorReduction).toBe('function');
@@ -881,6 +959,212 @@ describe('mission runtime ownership', () => {
 				legalActionIds: []
 			}
 		);
+	});
+
+	it('freezes v23 composite state hashes, archive recovery, precedence, and immutable inputs', () => {
+		type TransitionRecord = {
+			readonly before: EngineGameStateV23;
+			readonly event: AuthoritativeEvent;
+			readonly after: EngineGameStateV23;
+		};
+		const heroId = deterministicUuid('task-9b-v23-hero');
+		const bootstrap = (key: string) =>
+			EngineGameStateV23Schema.parse(
+				createBootstrapEngine({
+					runId: deterministicUuid(`task-9b-v23-${key}-run`),
+					seed: `task-9b-v23-${key}-seed`,
+					heroId,
+					manifestHash: sha256Hex(`task-9b-v23-${key}-manifest`),
+					developmentMissionScenario: {
+						initialMissionId: 'tower-floor-05',
+						availableMissionIds: ['tower-floor-05'],
+						enableFirstBandArchive: true
+					}
+				}).snapshot.state
+			);
+		const command = (state: EngineGameStateV23, key: string, body: object) =>
+			deepFreeze({
+				commandId: deterministicUuid(`task-9b-v23-${key}-command`),
+				runId: state.runId,
+				actorId: state.master.masterId,
+				expectedVersion: state.version,
+				correlationId: deterministicUuid(`task-9b-v23-${key}-correlation`),
+				source: {
+					source: 'manual' as const,
+					timing: 'step' as const,
+					fallbackPolicy: null,
+					directiveIds: [],
+					decisionJobId: null
+				},
+				...body
+			}) as unknown as EngineCommand;
+		const commit = (state: EngineGameStateV23, nextCommand: EngineCommand): TransitionRecord => {
+			const stateHash = hashCanonical(state);
+			const commandHash = hashCanonical(nextCommand);
+			const result = applyCommand(deepFreeze(state), nextCommand);
+			expect(hashCanonical(state)).toBe(stateHash);
+			expect(hashCanonical(nextCommand)).toBe(commandHash);
+			return {
+				before: state,
+				event: result.events[0]!,
+				after: EngineGameStateV23Schema.parse(result.state)
+			};
+		};
+
+		let state = bootstrap('lifecycle');
+		const prepare = commit(
+			state,
+			command(state, 'prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'tower-floor-05'
+			})
+		);
+		state = prepare.after;
+		const revise = commit(
+			state,
+			command(state, 'revise', { commandType: 'mission.revise.party', heroIds: [heroId] })
+		);
+		state = revise.after;
+		const cancel = commit(state, command(state, 'cancel', { commandType: 'mission.cancel' }));
+		state = cancel.after;
+		state = commit(
+			state,
+			command(state, 'reprepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'tower-floor-05'
+			})
+		).after;
+		const deploy = commit(state, command(state, 'deploy', { commandType: 'mission.deploy' }));
+		const retreat = commit(
+			deploy.after,
+			command(deploy.after, 'retreat', { commandType: 'mission.retreat' })
+		);
+
+		let extractionState = bootstrap('extraction');
+		extractionState = commit(
+			extractionState,
+			command(extractionState, 'extraction-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				missionId: 'tower-floor-05'
+			})
+		).after;
+		extractionState = commit(
+			extractionState,
+			command(extractionState, 'extraction-deploy', { commandType: 'mission.deploy' })
+		).after;
+		const extractionAttempt = extractionState.mission.attempt!;
+		extractionState = EngineGameStateV23Schema.parse({
+			...extractionState,
+			mission: {
+				...extractionState.mission,
+				attempt: {
+					...extractionAttempt,
+					status: 'extraction',
+					completedObjectiveIds: ['defeat-the-foundry-warden'],
+					extractionOpenedAt: extractionState.simulatedAt,
+					turnState: {
+						...extractionAttempt.turnState,
+						objective: {
+							...extractionAttempt.turnState.objective,
+							status: 'delivered',
+							recoveredOnRound: 1,
+							deliveredOnRound: 1
+						}
+					}
+				}
+			}
+		});
+		const extract = commit(
+			extractionState,
+			command(extractionState, 'extract', { commandType: 'mission.extract' })
+		);
+
+		const records = { prepare, revise, cancel, deploy, retreat, extract } as const;
+		expect(
+			Object.fromEntries(
+				Object.entries(records).map(([transition, record]) => [
+					transition,
+					hashCanonical(record.after)
+				])
+			)
+		).toStrictEqual({
+			prepare: 'fcc32bbdec32fdba54fdf6f619762601e478505b1bb6ffa23afd1d1bb95acedf',
+			revise: '62293b39f1ea693ff8bb6eb55289fd86f950cbc81f8b59e9edd92f259e7c6044',
+			cancel: '144c9c2e69c92f4673e09f2581ec04cb688acdf5a111b2c73e1ba32d81617b5f',
+			deploy: '44a54ecc88664cebb6bbe680f5de5dfbc92b8996cfa9630e2df8e817dc2a7f87',
+			retreat: 'db1819814427954a9c6320e30d96598f34b43c04bf741436371efe6eaaf0c4c9',
+			extract: '199438099897b2c0802fec5eb29f35ee07ee789c2d2b6ff12f130c07d6c9fcb5'
+		});
+
+		for (const [transition, record] of Object.entries(records)) {
+			const beforeHash = hashCanonical(record.before);
+			const eventHash = hashCanonical(record.event);
+			const reduced = firstBandMissionEventReducer.reduce(
+				deepFreeze(record.before),
+				deepFreeze(record.event)
+			);
+			expect(reduced).toStrictEqual(record.after);
+			expect(hashCanonical(record.before)).toBe(beforeHash);
+			expect(hashCanonical(record.event)).toBe(eventHash);
+			expect(record.after.firstBandArchive.status, transition).toBe(
+				transition === 'extract' ? 'recovered' : 'sealed'
+			);
+
+			const payload = record.event.payload as Record<string, unknown> & {
+				mission: EngineGameStateV23['mission'];
+				firstBandArchive: EngineGameStateV23['firstBandArchive'];
+			};
+			const missionTamper = {
+				...payload,
+				mission: {
+					...payload.mission,
+					attempt: { ...payload.mission.attempt!, preparedAt: '2000-01-01T00:00:01.000Z' }
+				}
+			};
+			const consequenceTamper = {
+				...payload,
+				firstBandArchive: {
+					...payload.firstBandArchive,
+					canonicalMessageHash: '0'.repeat(64)
+				}
+			};
+			const missionEvent = { ...record.event, payload: missionTamper };
+			const consequenceEvent = { ...record.event, payload: consequenceTamper };
+			const dualEvent = {
+				...record.event,
+				payload: { ...missionTamper, firstBandArchive: consequenceTamper.firstBandArchive }
+			};
+			expectErrorShape(
+				() => firstBandMissionEventReducer.reduce(record.before, consequenceEvent),
+				ReplayIntegrityError,
+				{
+					name: 'ReplayIntegrityError',
+					message: 'First-band mission transition payload diverged',
+					sequence: record.event.sequence
+				}
+			);
+			expectErrorShape(
+				() => firstBandMissionEventReducer.reduce(record.before, missionEvent),
+				ReplayIntegrityError,
+				{
+					name: 'ReplayIntegrityError',
+					message: 'First-band mission transition payload diverged',
+					sequence: record.event.sequence
+				}
+			);
+			expectErrorShape(
+				() => firstBandMissionEventReducer.reduce(record.before, dualEvent),
+				ReplayIntegrityError,
+				{
+					name: 'ReplayIntegrityError',
+					message: 'First-band mission transition payload diverged',
+					sequence: record.event.sequence
+				}
+			);
+		}
 	});
 });
 
