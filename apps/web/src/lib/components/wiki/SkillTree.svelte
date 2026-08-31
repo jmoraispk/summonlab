@@ -35,14 +35,9 @@
 				{
 					kind: 'branch',
 					name: 'Blade',
-					children: [
-						['Sword', 'sword'],
-						['Dagger', 'dagger'],
-						['Greatsword', 'greatsword'],
-						['Two Blades', 'blade']
-					].map(([name, anchor]) => ({
+					children: ['Sword', 'Dagger', 'Greatsword', 'Two Blades'].map((name) => ({
 						name,
-						href: `/wiki/mechanics/skills/martial-blade#${anchor}`
+						href: '/wiki/mechanics/skills/martial-blade'
 					}))
 				},
 				{

@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	parseTargetSkillRows,
 	parseSkillMarkdown,
+	findForbiddenSkillReferencesInAuthoredSources,
 	findForbiddenSkillReferences,
 	validateLegacyInventory,
 	validateMigrationLedger,
@@ -101,6 +102,23 @@ describe('skill taxonomy migration inventory', () => {
 			'docs/wiki/example.md: Fire Evocation',
 			'docs/wiki/example.md: ## Paired Blades',
 			'apps/web/src/example.ts: /wiki/mechanics/skills/magical-evocation'
+		]);
+	});
+
+	it('ignores test-only stale identities while scanning authored runtime sources', () => {
+		expect(
+			findForbiddenSkillReferencesInAuthoredSources([
+				{
+					sourcePath: 'apps/web/src/routes/wiki/skill-tree.e2e.ts',
+					source: "expect('/wiki/mechanics/skills/magical-evocation')"
+				},
+				{
+					sourcePath: 'apps/web/src/lib/components/wiki/SkillTree.svelte',
+					source: "href: '/wiki/mechanics/skills/magical-evocation'"
+				}
+			])
+		).toEqual([
+			'apps/web/src/lib/components/wiki/SkillTree.svelte: /wiki/mechanics/skills/magical-evocation'
 		]);
 	});
 

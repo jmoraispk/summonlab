@@ -40,8 +40,8 @@ protection, giving a settlement a reason to cultivate smiths.
 | Granted active skill | Very rare/high tier | Usable only while equipped and a major chase reward |
 | Set membership | Rare | Matching-piece bonuses |
 
-Armor should reinforce fighting approach: plate pairs naturally with Guard and Haft, while lighter
-gear supports Motion and Hunt.
+Armour should reinforce a fighting approach: plate pairs naturally with Shield and Polearm, while
+lighter gear supports Body and Ranged practice.
 
 ## Materials and sources
 

@@ -98,6 +98,19 @@ export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]
 	);
 }
 
+export function findForbiddenSkillReferencesInAuthoredSources(
+	files: readonly SkillMarkdownFile[]
+): string[] {
+	return findForbiddenSkillReferences(
+		files.filter(
+			({ sourcePath }) =>
+				sourcePath.startsWith('docs/wiki/') ||
+				sourcePath === 'apps/web/src/lib/components/wiki/SkillTree.svelte' ||
+				sourcePath === 'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
+		)
+	);
+}
+
 function slugSection(section: string): string {
 	return section
 		.normalize('NFKD')

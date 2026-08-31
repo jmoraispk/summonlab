@@ -13,7 +13,10 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	);
 	await expect(tree.getByRole('button', { name: /martial/i })).toContainText('5 families');
 	await expect(tree.getByRole('heading', { name: 'Skill families' })).toBeVisible();
-	await expect(tree.getByRole('link', { name: 'Two Blades' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Two Blades' })).toHaveAttribute(
+		'href',
+		'/wiki/mechanics/skills/martial-blade'
+	);
 
 	await expect(tree.getByRole('button', { name: /magical/i })).toContainText('5 families');
 	await tree.getByRole('button', { name: /magical/i }).focus();

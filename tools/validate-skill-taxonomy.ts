@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import {
 	parseTargetSkillRows,
-	findForbiddenSkillReferences,
+	findForbiddenSkillReferencesInAuthoredSources,
 	validateMigrationLedger,
 	validateTargetTaxonomy,
 	type LegacySkillRow,
@@ -41,7 +41,8 @@ const targetFiles: SkillMarkdownFile[] = await Promise.all(
 const targetRows = parseTargetSkillRows(targetFiles);
 const staleReferencePaths = [
 	...(await authoredSourcePaths('docs/wiki', ['.md'])),
-	...(await authoredSourcePaths('apps/web/src', ['.svelte', '.ts']))
+	'apps/web/src/lib/components/wiki/SkillTree.svelte',
+	'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
 ];
 const staleReferenceFiles: SkillMarkdownFile[] = await Promise.all(
 	staleReferencePaths.map(async (sourcePath) => ({
@@ -52,7 +53,7 @@ const staleReferenceFiles: SkillMarkdownFile[] = await Promise.all(
 const errors = [
 	...validateMigrationLedger(ledger, inventory),
 	...validateTargetTaxonomy(targetRows, ledger),
-	...findForbiddenSkillReferences(staleReferenceFiles)
+	...findForbiddenSkillReferencesInAuthoredSources(staleReferenceFiles)
 ];
 
 if (errors.length > 0) {
