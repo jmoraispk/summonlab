@@ -5,15 +5,24 @@ test('explores the skill taxonomy through universal and specialized branches', a
 
 	const tree = page.getByRole('region', { name: 'Interactive skill tree' });
 	await expect(tree).toBeVisible();
+	await expect(page.locator('main h1')).toHaveCount(1);
+	await expect(page.locator('main h1')).toHaveText('Skills');
 	await expect(tree.getByRole('button', { name: /martial/i })).toHaveAttribute(
 		'aria-pressed',
 		'true'
 	);
+	await expect(tree.getByRole('button', { name: /martial/i })).toContainText('6 families');
 	await expect(tree.getByRole('heading', { name: 'Universal skills' })).toBeVisible();
 	await expect(tree.getByText('Footing', { exact: true })).toBeVisible();
 	await expect(tree.getByRole('heading', { name: 'Specialized families' })).toBeVisible();
 
-	await tree.getByRole('button', { name: /magical/i }).click();
+	await expect(tree.getByRole('button', { name: /magical/i })).toContainText('5 families');
+	await tree.getByRole('button', { name: /magical/i }).focus();
+	await page.keyboard.press('Enter');
+	await expect(tree.getByRole('button', { name: /magical/i })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 	await expect(tree.getByRole('img', { name: /magical domain/i })).toBeVisible();
 	await expect(tree.getByText(/no supplied universal magical entries/i)).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Fire Evocation' })).toHaveAttribute(
@@ -22,11 +31,22 @@ test('explores the skill taxonomy through universal and specialized branches', a
 	);
 	await expect(tree.getByRole('link', { name: 'Ward' })).toBeVisible();
 
+	await expect(tree.getByRole('button', { name: /craft/i })).toContainText('6 families');
 	await tree.getByRole('button', { name: /craft/i }).click();
 	await expect(tree.getByRole('img', { name: /craft domain/i })).toBeVisible();
 	await expect(tree.getByText(/no supplied universal craft entries/i)).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Forging' })).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Lore' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Source-integrity audit' })).toBeVisible();
+});
+
+test('honors reduced-motion preferences when switching domains', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/wiki/mechanics/skills');
+
+	const tree = page.getByRole('region', { name: 'Interactive skill tree' });
+	await tree.getByRole('button', { name: /magical/i }).click();
+	await expect(tree.locator('.domain-stage')).toHaveCSS('animation-name', 'none');
 });
 
 test('keeps the interactive skill tree within a narrow viewport', async ({ page }) => {

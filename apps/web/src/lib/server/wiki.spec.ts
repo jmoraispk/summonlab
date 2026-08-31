@@ -48,6 +48,14 @@ describe('online wiki registry', () => {
 		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
 	});
 
+	it('provides title-free body HTML for promoted canonical headings', () => {
+		const skills = getWikiPage('mechanics/skills');
+
+		expect(skills?.html).toMatch(/^<h1 id="skills">Skills<\/h1>/);
+		expect(skills?.bodyHtml).not.toContain('<h1');
+		expect(skills?.bodyHtml).toContain('Skills define what a hero can do');
+	});
+
 	it('publishes the fixed six-person Living Village roster', () => {
 		const packet = getWikiPage('art/living-village-heroes');
 		expect(packet?.html).toContain('complete prototype face pool');
