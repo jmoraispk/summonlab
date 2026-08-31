@@ -224,10 +224,102 @@ describe('mission runtime ownership', () => {
 			readonly entropyDraws: readonly EntropyDraw[];
 		};
 		const spawned = spawn(frozenPreDeploy, frozenAttempt, frozenPositions, frozenEntropy);
-		expect(spawned.entropyDraws).toStrictEqual([
-			{ purpose: 'goblin-chain-watch-count', cursor: 0, minimum: 2, maximum: 3, value: 2 },
-			{ purpose: 'goblin-ember-hauler-count', cursor: 1, minimum: 1, maximum: 1, value: 1 }
-		]);
+		expect(spawned).toStrictEqual({
+			monsters: {
+				'13db0ccf-741e-4a47-a1c8-2fe08e29a602': {
+					monsterId: '13db0ccf-741e-4a47-a1c8-2fe08e29a602',
+					dutySlotId: 'goblin-chain-watch',
+					policyId: 'guard-chain-court-v1',
+					label: 'Chain Watch 01',
+					ordinal: 1,
+					nodeId: 'chain-court',
+					status: 'active',
+					vitality: 2,
+					maximumVitality: 2,
+					alertState: 'duty',
+					defeatedOnRound: null,
+					lastActionId: null
+				},
+				'feb2789a-ca07-4e29-93d6-2d9c23444759': {
+					monsterId: 'feb2789a-ca07-4e29-93d6-2d9c23444759',
+					dutySlotId: 'goblin-chain-watch',
+					policyId: 'guard-chain-court-v1',
+					label: 'Chain Watch 02',
+					ordinal: 2,
+					nodeId: 'chain-court',
+					status: 'active',
+					vitality: 2,
+					maximumVitality: 2,
+					alertState: 'duty',
+					defeatedOnRound: null,
+					lastActionId: null
+				},
+				'7cb87c5c-a50a-48c7-a967-e165ad40c22c': {
+					monsterId: '7cb87c5c-a50a-48c7-a967-e165ad40c22c',
+					dutySlotId: 'goblin-ember-hauler',
+					policyId: 'protect-ember-cradle-v1',
+					label: 'Ember Hauler 01',
+					ordinal: 1,
+					nodeId: 'ember-vault',
+					status: 'active',
+					vitality: 1,
+					maximumVitality: 1,
+					alertState: 'duty',
+					defeatedOnRound: null,
+					lastActionId: null
+				}
+			},
+			threatIntents: [
+				{
+					monsterId: '13db0ccf-741e-4a47-a1c8-2fe08e29a602',
+					policyId: 'guard-chain-court-v1',
+					actionId: 'monster.hold.13db0ccf-741e-4a47-a1c8-2fe08e29a602',
+					kind: 'hold',
+					fromNodeId: 'chain-court',
+					toNodeId: 'chain-court',
+					targetId: null,
+					telegraph: 'Chain Watch 01 watches the Chain Court lanes.',
+					anticipatedEffect: 'Maintains its authored duty without gaining hidden knowledge.'
+				},
+				{
+					monsterId: '7cb87c5c-a50a-48c7-a967-e165ad40c22c',
+					policyId: 'protect-ember-cradle-v1',
+					actionId: 'monster.hold.7cb87c5c-a50a-48c7-a967-e165ad40c22c',
+					kind: 'hold',
+					fromNodeId: 'ember-vault',
+					toNodeId: 'ember-vault',
+					targetId: null,
+					telegraph: 'Ember Hauler 01 keeps both hands on the ember cradle.',
+					anticipatedEffect: 'Maintains its authored duty without gaining hidden knowledge.'
+				},
+				{
+					monsterId: 'feb2789a-ca07-4e29-93d6-2d9c23444759',
+					policyId: 'guard-chain-court-v1',
+					actionId: 'monster.hold.feb2789a-ca07-4e29-93d6-2d9c23444759',
+					kind: 'hold',
+					fromNodeId: 'chain-court',
+					toNodeId: 'chain-court',
+					targetId: null,
+					telegraph: 'Chain Watch 02 watches the Chain Court lanes.',
+					anticipatedEffect: 'Maintains its authored duty without gaining hidden knowledge.'
+				}
+			],
+			entropy: { seed: 'task-9a-v13-seed', cursor: 2 },
+			entropyDraws: [
+				{ purpose: 'goblin-chain-watch-count', cursor: 0, minimum: 2, maximum: 3, value: 2 },
+				{ purpose: 'goblin-ember-hauler-count', cursor: 1, minimum: 1, maximum: 1, value: 1 }
+			]
+		});
+		expect(
+			hashCanonical({
+				monsters: spawned.monsters,
+				threatIntents: spawned.threatIntents,
+				entropy: spawned.entropy
+			})
+		).toBe('fbfb60cb6d406c3a822ec35786e804a711f7acb1e1871be50f94fcdd21b51c5e');
+		expect(hashCanonical(spawned)).toBe(
+			'656e4a5555eaa0250eeb8c8ce80fed4ea16eb4c5509d4ba5f5e92fbd24307f9f'
+		);
 		expect(hashCanonical(frozenPreDeploy)).toBe(
 			'b300cc6b4b9d65d8f19706643f27ab16375f7476c9c1a54e09c1d4a8f23ecf8d'
 		);
