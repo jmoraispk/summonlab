@@ -46,19 +46,16 @@ import {
 	MasterDecisionResolutionSchema,
 	MasterDecisionResolutionV2Schema,
 	MasterFallbackConfigurationSchema,
-	MasterFallbackSelectionSchema,
 	ResourceKeySchema,
 	RuntimeBandStoryStateSchema,
 	SocietyStateV4Schema,
 	SocietyStateV5Schema,
 	DirectiveRecordSchema,
 	DirectiveInfluenceRecordSchema,
-	type ActionSource,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV1,
-	type EngineGameStateV11,
 	type EngineGameStateV12,
 	type EngineGameStateV13,
 	type EngineGameStateV14,
@@ -69,20 +66,12 @@ import {
 	type EngineGameStateV19,
 	type EngineGameStateV20,
 	type EngineGameStateV21,
-	type EngineGameStateV22,
 	type EngineGameStateV23,
 	type EntropyDraw,
 	type HeroDecisionPacket,
 	type HeroPolicyResult,
 	type LegalAction,
-	type MasterControlState,
-	type MasterControlStateV2,
-	type MasterDecisionResolution,
-	type MasterDecisionResolutionV2,
-	type MasterFallbackConfiguration,
-	type MasterFallbackSelection,
 	type MissionPackage,
-	type MissionRunState,
 	type MissionRunStateV2,
 	type MissionRunStateV3,
 	type MissionRunStateV4,
@@ -112,8 +101,6 @@ import {
 	TOWER_FLOOR_01_PACKAGE,
 	applyMissionDiscoveryAffordance,
 	listLegalMissionDiscoveryAffordances,
-	planMissionRoute,
-	projectMissionArenaKnowledge,
 	monsterPolicy,
 	visitMissionNode
 } from '@summonlab/content';
@@ -123,12 +110,10 @@ import { createEntropyCursor, drawInteger } from './entropy.js';
 import { IllegalActionError, ReplayIntegrityError, StaleStateVersionError } from './errors.js';
 import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from './hash.js';
 import { eventDeltas, eventSummary } from './journal.js';
-import { addGameSeconds } from './time.js';
 import {
 	missionContentForState,
 	settlementForState,
 	verifiedMissionBinding,
-	verifiedMissionContent,
 	verifiedSettlementContent
 } from './core/content-bindings.js';
 import {
@@ -207,9 +192,54 @@ import {
 	applyResourceChanges,
 	settlementEventReducer
 } from './domains/settlement/reducer.js';
+import {
+	missionLegalActions,
+	missionTurnLegalActions,
+	missionToolTagsForActor,
+	normalizedMissionTurnChoices,
+	type MissionTurnEngineState
+} from './domains/mission/actions.js';
+import {
+	allPartyAtNode,
+	cancelMissionPreparation,
+	completeMissionExtraction,
+	deployMissionAttempt,
+	missionPartyIsReserved,
+	normalizedMissionHeroIds,
+	openMissionExtraction,
+	prepareMissionAttempt,
+	retreatMissionAttempt,
+	reviseMissionParty,
+	type MissionEngineRunState
+} from './domains/mission/lifecycle.js';
+import {
+	applyMasterSafetyStop,
+	configureMasterFallback,
+	configureMasterTiming,
+	configureMasterTimingV2,
+	endMasterDecision,
+	endMasterDecisionV2,
+	isIrreversibleMasterAction,
+	masterDecisionWindow,
+	masterDecisionWindowV2,
+	masterFallbackActionSource,
+	masterFallbackMissionChoice,
+	masterFallbackSafetySource,
+	resolveMasterDecision,
+	resolveMasterDecisionV2,
+	selectMasterFallback
+} from './domains/mission/master-control.js';
 
 export { storyPatchCastForState, validateStoryPatchForState } from './domains/story/runtime.js';
 export { resolveDailyRoutine } from './domains/settlement/routines.js';
+export {
+	isIrreversibleMasterAction,
+	masterFallbackActionSource,
+	masterFallbackMissionChoice,
+	masterFallbackSafetySource,
+	missionTurnLegalActions,
+	selectMasterFallback
+};
 
 export {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
@@ -510,631 +540,6 @@ const MissionTransitionPayloadV11Schema = MissionTransitionPayloadV8Schema.safeE
 	bandStory: RuntimeBandStoryStateSchema,
 	firstBandArchive: FirstBandArchiveStateSchema
 }).strict();
-
-function masterDecisionWindow(
-	control: MasterControlState,
-	commandId: string,
-	openedAt: string
-): MasterControlState {
-	if (control.activeDecision) throw new IllegalActionError('master.decision.open');
-	const ordinal = control.decisionOrdinal + 1;
-	return MasterControlStateSchema.parse({
-		...control,
-		decisionOrdinal: ordinal,
-		activeDecision: {
-			decisionId: deterministicUuid(`${commandId}:master-decision:${ordinal}`),
-			ordinal,
-			timing: control.timing,
-			openedAt,
-			expiresAt:
-				control.timing === 'countdown' ? addGameSeconds(openedAt, control.countdownSeconds) : null
-		}
-	});
-}
-
-function pausedMasterDecision(
-	control: MasterControlState,
-	resolvedAt: string,
-	source: ActionSource
-): MasterDecisionResolution | null {
-	const active = control.activeDecision;
-	if (!active) return null;
-	return MasterDecisionResolutionSchema.parse({
-		...active,
-		resolvedAt,
-		outcome: 'paused',
-		expiryOutcome: 'paused',
-		resolvedActionId: null,
-		source: { ...source, timing: active.timing }
-	});
-}
-
-function configureMasterTiming(
-	control: MasterControlState,
-	commandId: string,
-	timing: MasterControlState['timing'],
-	countdownSeconds: number,
-	observedAt: string,
-	source: ActionSource
-): { readonly control: MasterControlState; readonly paused: MasterDecisionResolution | null } {
-	const paused = pausedMasterDecision(control, observedAt, source);
-	const configured = MasterControlStateSchema.parse({
-		...control,
-		timing,
-		countdownSeconds,
-		revision: control.revision + 1,
-		activeDecision: null,
-		lastResolution: paused ?? control.lastResolution
-	});
-	return {
-		paused,
-		control: paused ? masterDecisionWindow(configured, commandId, observedAt) : configured
-	};
-}
-
-function resolveMasterDecision(
-	control: MasterControlState,
-	commandId: string,
-	decisionId: string,
-	resolvedAt: string,
-	actionId: string,
-	source: ActionSource,
-	missionContinues: boolean
-): { readonly control: MasterControlState; readonly resolution: MasterDecisionResolution } {
-	const active = control.activeDecision;
-	if (!active || active.decisionId !== decisionId || source.timing !== active.timing) {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	const resolvedMillis = Date.parse(resolvedAt);
-	const openedMillis = Date.parse(active.openedAt);
-	const expiresMillis = active.expiresAt ? Date.parse(active.expiresAt) : null;
-	if (resolvedMillis < openedMillis) throw new IllegalActionError('mission.resolve.turn');
-	const manual = source.source === 'manual';
-	const fallback =
-		active.timing !== 'wait' &&
-		(source.source === 'countdown' || source.source === 'step' || source.source === 'continuous') &&
-		source.source === active.timing;
-	if (!manual && !fallback) throw new IllegalActionError('mission.resolve.turn');
-	if (manual && active.timing !== 'wait' && active.timing !== 'countdown') {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	if (active.timing === 'countdown') {
-		if (expiresMillis === null) throw new IllegalActionError('mission.resolve.turn');
-		if (
-			(manual && resolvedMillis >= expiresMillis) ||
-			(fallback && resolvedMillis < expiresMillis)
-		) {
-			throw new IllegalActionError('mission.resolve.turn');
-		}
-	}
-	const outcome = manual ? 'manual' : 'fallback';
-	const expiryOutcome =
-		active.timing === 'countdown'
-			? manual
-				? 'manual-before-expiry'
-				: 'expired-to-fallback'
-			: fallback
-				? 'immediate-fallback'
-				: 'not-applicable';
-	const resolution = MasterDecisionResolutionSchema.parse({
-		...active,
-		resolvedAt,
-		outcome,
-		expiryOutcome,
-		resolvedActionId: actionId,
-		source
-	});
-	let next = MasterControlStateSchema.parse({
-		...control,
-		timing: active.timing === 'step' ? 'wait' : control.timing,
-		revision: control.revision + (active.timing === 'step' ? 1 : 0),
-		activeDecision: null,
-		lastResolution: resolution
-	});
-	if (missionContinues) next = masterDecisionWindow(next, commandId, resolvedAt);
-	return { control: next, resolution };
-}
-
-function endMasterDecision(
-	control: MasterControlState,
-	source: ActionSource
-): { readonly control: MasterControlState; readonly resolution: MasterDecisionResolution | null } {
-	const active = control.activeDecision;
-	if (!active) return { control, resolution: null };
-	const resolution = MasterDecisionResolutionSchema.parse({
-		...active,
-		resolvedAt: active.openedAt,
-		outcome: 'mission-ended',
-		expiryOutcome: 'mission-ended',
-		resolvedActionId: null,
-		source: { ...source, source: 'system', timing: null, fallbackPolicy: null }
-	});
-	return {
-		resolution,
-		control: MasterControlStateSchema.parse({
-			...control,
-			activeDecision: null,
-			lastResolution: resolution
-		})
-	};
-}
-
-function masterDecisionWindowV2(
-	control: MasterControlStateV2,
-	commandId: string,
-	openedAt: string
-): MasterControlStateV2 {
-	if (control.activeDecision) throw new IllegalActionError('master.decision.open');
-	const ordinal = control.decisionOrdinal + 1;
-	return MasterControlStateV2Schema.parse({
-		...control,
-		decisionOrdinal: ordinal,
-		activeDecision: {
-			decisionId: deterministicUuid(`${commandId}:master-decision:${ordinal}`),
-			ordinal,
-			timing: control.timing,
-			openedAt,
-			expiresAt:
-				control.timing === 'countdown' ? addGameSeconds(openedAt, control.countdownSeconds) : null,
-			fallback: control.fallback
-		}
-	});
-}
-
-function pausedMasterDecisionV2(
-	control: MasterControlStateV2,
-	resolvedAt: string,
-	source: ActionSource
-): MasterDecisionResolutionV2 | null {
-	const active = control.activeDecision;
-	if (!active) return null;
-	return MasterDecisionResolutionV2Schema.parse({
-		...active,
-		resolvedAt,
-		outcome: 'paused',
-		expiryOutcome: 'paused',
-		resolvedActionId: null,
-		source: { ...source, timing: active.timing },
-		fallbackSelection: null
-	});
-}
-
-function configureMasterTimingV2(
-	control: MasterControlStateV2,
-	commandId: string,
-	timing: MasterControlStateV2['timing'],
-	countdownSeconds: number,
-	observedAt: string,
-	source: ActionSource
-): { readonly control: MasterControlStateV2; readonly paused: MasterDecisionResolutionV2 | null } {
-	const paused = pausedMasterDecisionV2(control, observedAt, source);
-	const configured = MasterControlStateV2Schema.parse({
-		...control,
-		timing,
-		countdownSeconds,
-		revision: control.revision + 1,
-		activeDecision: null,
-		lastResolution: paused ?? control.lastResolution,
-		consecutiveFallbacks: timing === 'wait' ? 0 : control.consecutiveFallbacks
-	});
-	return {
-		paused,
-		control: paused ? masterDecisionWindowV2(configured, commandId, observedAt) : configured
-	};
-}
-
-type MasterFallbackConfigurationInput = Pick<
-	Extract<EngineCommand, { commandType: 'master.configure.fallback' }>,
-	| 'commandId'
-	| 'observedAt'
-	| 'source'
-	| 'policy'
-	| 'directionText'
-	| 'priorities'
-	| 'protectedHeroId'
-	| 'safetyStops'
->;
-
-function configureMasterFallback(
-	control: MasterControlStateV2,
-	command: MasterFallbackConfigurationInput
-): { readonly control: MasterControlStateV2; readonly paused: MasterDecisionResolutionV2 | null } {
-	const paused = pausedMasterDecisionV2(control, command.observedAt, command.source);
-	const fallback = MasterFallbackConfigurationSchema.parse({
-		configurationVersion: 'master-fallback-v1',
-		policy: command.policy,
-		directionId: deterministicUuid(`${command.commandId}:master-fallback-direction`),
-		directionText: command.directionText,
-		priorities: command.priorities,
-		protectedHeroId: command.protectedHeroId,
-		safetyStops: command.safetyStops,
-		configuredAt: command.observedAt
-	});
-	const configured = MasterControlStateV2Schema.parse({
-		...control,
-		fallback,
-		revision: control.revision + 1,
-		activeDecision: null,
-		lastResolution: paused ?? control.lastResolution,
-		consecutiveFallbacks: 0
-	});
-	return {
-		paused,
-		control: paused
-			? masterDecisionWindowV2(configured, command.commandId, command.observedAt)
-			: configured
-	};
-}
-
-type MasterFallbackEngineState = EngineGameStateV20 | EngineGameStateV21;
-
-function parseMasterFallbackState(state: MasterFallbackEngineState): MasterFallbackEngineState {
-	return state.schemaVersion === 21
-		? EngineGameStateV21Schema.parse(state)
-		: EngineGameStateV20Schema.parse(state);
-}
-
-function masterFallbackPacket(state: MasterFallbackEngineState, legal: readonly LegalAction[]) {
-	const active = state.masterControl.activeDecision!;
-	const attempt = state.mission.attempt!;
-	return {
-		runId: state.runId,
-		stateVersion: state.version,
-		missionId: state.mission.binding.missionId,
-		attemptId: attempt.attemptId,
-		roundNumber: attempt.turnState.roundNumber,
-		decision: active,
-		master: {
-			health: state.master.health,
-			maxHealth: state.master.maxHealth,
-			location: state.master.location
-		},
-		legalActionIds: legal.map((candidate) => candidate.actionId),
-		threatIntentHashes: attempt.turnState.currentThreatIntents.map((intent) =>
-			hashCanonical(intent)
-		)
-	};
-}
-
-function directionRecognized(direction: MasterFallbackConfiguration): boolean {
-	return (
-		direction.priorities.length > 0 ||
-		/\b(hold|defend|guard|attack|fight|inspect|search|secret|recover|ember|objective|move|advance|protect|conserve)\b/iu.test(
-			direction.directionText
-		)
-	);
-}
-
-function scoreDirectedAction(action: LegalAction, direction: MasterFallbackConfiguration): number {
-	let score = 0;
-	const id = action.actionId;
-	const tags = new Set(action.tags);
-	for (const [index, priority] of direction.priorities.entries()) {
-		const weight = 100 - index * 10;
-		if (priority === 'protect-self') {
-			if (action.kind === 'defend' || id === 'mission.hold') score += weight;
-			else if (action.kind === 'move') score += Math.round(weight * 0.3);
-			else if (action.kind === 'attack') score += Math.round(weight * 0.15);
-		}
-		if (priority === 'protect-party') {
-			if (action.kind === 'defend' || tags.has('protect')) score += Math.round(weight * 0.8);
-			else if (action.kind === 'attack') score += Math.round(weight * 0.7);
-			else if (action.kind === 'move') score += Math.round(weight * 0.25);
-		}
-		if (priority === 'focus-objective') {
-			if (id.startsWith('mission.recover.')) score += Math.round(weight * 1.2);
-			else if (action.kind === 'interact') score += Math.round(weight * 0.75);
-			else if (action.kind === 'move') score += Math.round(weight * 0.4);
-			else if (action.kind === 'attack') score += Math.round(weight * 0.25);
-		}
-		if (priority === 'seek-secrets') {
-			if (id.startsWith('mission.inspect.')) score += Math.round(weight * 1.2);
-			else if (tags.has('discovery') || tags.has('secret')) score += weight;
-			else if (action.kind === 'interact') score += Math.round(weight * 0.6);
-			else if (action.kind === 'move') score += Math.round(weight * 0.3);
-		}
-		if (priority === 'conserve-resources') {
-			if (Object.keys(action.resourceCosts).length === 0) score += Math.round(weight * 0.55);
-			if (action.kind === 'defend') score += Math.round(weight * 0.25);
-			if (action.kind === 'attack') score -= Math.round(weight * 0.1);
-		}
-	}
-	const text = direction.directionText.toLowerCase();
-	if (/\b(hold|defend|guard)\b/u.test(text) && action.kind === 'defend') score += 60;
-	if (/\b(attack|fight)\b/u.test(text) && action.kind === 'attack') score += 60;
-	if (/\b(inspect|search|secret)\b/u.test(text) && id.startsWith('mission.inspect.')) score += 60;
-	if (/\b(recover|ember|objective)\b/u.test(text) && id.startsWith('mission.recover.')) score += 60;
-	if (/\b(move|advance)\b/u.test(text) && action.kind === 'move') score += 40;
-	if (/\bprotect\b/u.test(text) && (action.kind === 'defend' || tags.has('protect'))) score += 40;
-	if (direction.protectedHeroId && (action.kind === 'defend' || tags.has('protect'))) score += 35;
-	return score;
-}
-
-export function isIrreversibleMasterAction(action: LegalAction): boolean {
-	return (
-		action.tags.some(
-			(tag) => tag.startsWith('irreversible') || ['permanent', 'consume-hero'].includes(tag)
-		) ||
-		action.actionId.startsWith('mission.synthesize.') ||
-		action.actionId.startsWith('mission.evolve.')
-	);
-}
-
-export function selectMasterFallback(
-	stateInput: MasterFallbackEngineState
-): MasterFallbackSelection {
-	const state = parseMasterFallbackState(stateInput);
-	const active = state.masterControl.activeDecision;
-	if (!active || active.timing === 'wait') throw new IllegalActionError('mission.resolve.turn');
-	const legal = [...missionTurnLegalActions(state, state.master.masterId)].sort((left, right) =>
-		left.actionId.localeCompare(right.actionId)
-	);
-	if (legal.length === 0) throw new IllegalActionError('mission.resolve.turn');
-	const packetHash = hashCanonical(masterFallbackPacket(state, legal));
-	const legalActionHash = hashCanonical(legal);
-	const tieBreakHash = hashCanonical({
-		seed: state.seed,
-		decisionId: active.decisionId,
-		policy: active.fallback.policy,
-		legalActionHash
-	});
-	const classified = active.fallback.policy === 'random' || directionRecognized(active.fallback);
-	let selected: LegalAction;
-	let selectedScore: number;
-	if (active.fallback.policy === 'random') {
-		const index = Number.parseInt(tieBreakHash.slice(0, 8), 16) % legal.length;
-		selected = legal[index]!;
-		selectedScore = 0;
-	} else {
-		const ranked = legal
-			.map((candidate) => ({
-				candidate,
-				score: scoreDirectedAction(candidate, active.fallback),
-				tie: hashCanonical({
-					seed: state.seed,
-					decisionId: active.decisionId,
-					actionId: candidate.actionId
-				})
-			}))
-			.sort((left, right) => right.score - left.score || left.tie.localeCompare(right.tie));
-		selected = ranked[0]!.candidate;
-		selectedScore = ranked[0]!.score;
-	}
-	const stops = active.fallback.safetyStops;
-	const retreatAvailable =
-		state.mission.attempt !== null &&
-		['deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status) &&
-		allPartyAtNode(state, missionContentForState(state).retreat.nodeIds);
-	const safetyStopReason =
-		stops.maximumConsecutiveFallbacks !== null &&
-		state.masterControl.consecutiveFallbacks >= stops.maximumConsecutiveFallbacks
-			? 'fallback-limit'
-			: stops.masterHealthThreshold !== null &&
-				  state.master.health <= stops.masterHealthThreshold &&
-				  retreatAvailable
-				? 'master-health'
-				: stops.whenUnclassified && !classified
-					? 'unclassified-state'
-					: stops.beforeIrreversibleAction && isIrreversibleMasterAction(selected)
-						? 'irreversible-action'
-						: null;
-	const policyId =
-		active.fallback.policy === 'directed' ? 'master-directed-v1' : 'master-random-v1';
-	const explanation = safetyStopReason
-		? `Safety changed ${active.timing} to Wait before ${selected.label.toLowerCase()} (${safetyStopReason}).`
-		: active.fallback.policy === 'random'
-			? `Seeded random selected ${selected.label.toLowerCase()} from ${legal.length} legal actions.`
-			: classified
-				? `Directed scoring selected ${selected.label.toLowerCase()} at ${selectedScore} points.`
-				: `No direction term matched; the disabled classification stop allowed the seeded tie-breaker.`;
-	const resultCore = {
-		selectionVersion: 'master-fallback-selection-v1' as const,
-		policyId,
-		policy: active.fallback.policy,
-		decisionId: active.decisionId,
-		directionId: active.fallback.directionId,
-		classification: classified ? ('classified' as const) : ('unclassified' as const),
-		selectedActionId: selected.actionId,
-		selectedScore,
-		consideredActionIds: legal.map((candidate) => candidate.actionId),
-		packetHash,
-		legalActionHash,
-		tieBreakHash,
-		safetyStopReason,
-		explanation
-	};
-	return MasterFallbackSelectionSchema.parse({
-		...resultCore,
-		policyResultHash: hashCanonical(resultCore)
-	});
-}
-
-export function masterFallbackActionSource(stateInput: MasterFallbackEngineState): ActionSource {
-	const state = parseMasterFallbackState(stateInput);
-	const active = state.masterControl.activeDecision;
-	if (!active || active.timing === 'wait') throw new IllegalActionError('mission.resolve.turn');
-	return {
-		source: active.timing,
-		timing: active.timing,
-		fallbackPolicy: active.fallback.policy,
-		directiveIds: active.fallback.policy === 'directed' ? [active.fallback.directionId] : [],
-		decisionJobId: null
-	};
-}
-
-export function masterFallbackSafetySource(stateInput: MasterFallbackEngineState): ActionSource {
-	return { ...masterFallbackActionSource(stateInput), source: 'system' };
-}
-
-export function masterFallbackMissionChoice(
-	stateInput: MasterFallbackEngineState
-): MissionTurnChoice {
-	const state = parseMasterFallbackState(stateInput);
-	const selection = selectMasterFallback(state);
-	if (selection.safetyStopReason) throw new IllegalActionError('master.apply.safety-stop');
-	return MissionTurnChoiceSchema.parse({
-		actorId: state.master.masterId,
-		actionId: selection.selectedActionId,
-		source: selection.policy === 'random' ? 'random' : 'scripted',
-		policyId: selection.policyId,
-		packetHash: selection.packetHash,
-		legalActionHash: selection.legalActionHash,
-		policyResultHash: selection.policyResultHash,
-		publicIntent: selection.explanation
-	});
-}
-
-function resolveMasterDecisionV2(
-	state: MasterFallbackEngineState,
-	commandId: string,
-	decisionId: string,
-	resolvedAt: string,
-	actionId: string,
-	source: ActionSource,
-	missionContinues: boolean
-): { readonly control: MasterControlStateV2; readonly resolution: MasterDecisionResolutionV2 } {
-	const control = state.masterControl;
-	const active = control.activeDecision;
-	if (!active || active.decisionId !== decisionId || source.timing !== active.timing) {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	const resolvedMillis = Date.parse(resolvedAt);
-	const openedMillis = Date.parse(active.openedAt);
-	const expiresMillis = active.expiresAt ? Date.parse(active.expiresAt) : null;
-	if (resolvedMillis < openedMillis) throw new IllegalActionError('mission.resolve.turn');
-	const manual = source.source === 'manual';
-	const fallback =
-		active.timing !== 'wait' &&
-		(source.source === 'countdown' || source.source === 'step' || source.source === 'continuous') &&
-		source.source === active.timing;
-	if (!manual && !fallback) throw new IllegalActionError('mission.resolve.turn');
-	if (manual && active.timing !== 'wait' && active.timing !== 'countdown') {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	if (active.timing === 'countdown') {
-		if (
-			expiresMillis === null ||
-			(manual && resolvedMillis >= expiresMillis) ||
-			(fallback && resolvedMillis < expiresMillis)
-		) {
-			throw new IllegalActionError('mission.resolve.turn');
-		}
-	}
-	const selection = fallback ? selectMasterFallback(state) : null;
-	if (selection?.safetyStopReason || (selection && selection.selectedActionId !== actionId)) {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	const outcome = manual ? 'manual' : 'fallback';
-	const expiryOutcome =
-		active.timing === 'countdown'
-			? manual
-				? 'manual-before-expiry'
-				: 'expired-to-fallback'
-			: fallback
-				? 'immediate-fallback'
-				: 'not-applicable';
-	const resolution = MasterDecisionResolutionV2Schema.parse({
-		...active,
-		resolvedAt,
-		outcome,
-		expiryOutcome,
-		resolvedActionId: actionId,
-		source,
-		fallbackSelection: selection
-	});
-	let next = MasterControlStateV2Schema.parse({
-		...control,
-		timing: active.timing === 'step' ? 'wait' : control.timing,
-		revision: control.revision + (active.timing === 'step' ? 1 : 0),
-		activeDecision: null,
-		lastResolution: resolution,
-		consecutiveFallbacks: fallback ? control.consecutiveFallbacks + 1 : 0
-	});
-	if (missionContinues) next = masterDecisionWindowV2(next, commandId, resolvedAt);
-	return { control: next, resolution };
-}
-
-function assertFallbackReady(control: MasterControlStateV2, observedAt: string): void {
-	const active = control.activeDecision;
-	if (!active || active.timing === 'wait' || Date.parse(observedAt) < Date.parse(active.openedAt)) {
-		throw new IllegalActionError('master.apply.safety-stop');
-	}
-	if (
-		active.timing === 'countdown' &&
-		(active.expiresAt === null || Date.parse(observedAt) < Date.parse(active.expiresAt))
-	) {
-		throw new IllegalActionError('master.apply.safety-stop');
-	}
-}
-
-function applyMasterSafetyStop(
-	state: MasterFallbackEngineState,
-	commandId: string,
-	decisionId: string,
-	observedAt: string,
-	source: ActionSource
-): { readonly control: MasterControlStateV2; readonly resolution: MasterDecisionResolutionV2 } {
-	assertFallbackReady(state.masterControl, observedAt);
-	const active = state.masterControl.activeDecision!;
-	if (
-		active.decisionId !== decisionId ||
-		hashCanonical(source) !== hashCanonical(masterFallbackSafetySource(state))
-	) {
-		throw new IllegalActionError('master.apply.safety-stop');
-	}
-	const selection = selectMasterFallback(state);
-	if (!selection.safetyStopReason) throw new IllegalActionError('master.apply.safety-stop');
-	const resolution = MasterDecisionResolutionV2Schema.parse({
-		...active,
-		resolvedAt: observedAt,
-		outcome: 'safety-stopped',
-		expiryOutcome: 'safety-stopped',
-		resolvedActionId: null,
-		source,
-		fallbackSelection: selection
-	});
-	const waiting = MasterControlStateV2Schema.parse({
-		...state.masterControl,
-		timing: 'wait',
-		revision: state.masterControl.revision + 1,
-		activeDecision: null,
-		lastResolution: resolution,
-		consecutiveFallbacks: 0
-	});
-	return {
-		resolution,
-		control: masterDecisionWindowV2(waiting, commandId, observedAt)
-	};
-}
-
-function endMasterDecisionV2(
-	control: MasterControlStateV2,
-	source: ActionSource
-): {
-	readonly control: MasterControlStateV2;
-	readonly resolution: MasterDecisionResolutionV2 | null;
-} {
-	const active = control.activeDecision;
-	if (!active) return { control, resolution: null };
-	const resolution = MasterDecisionResolutionV2Schema.parse({
-		...active,
-		resolvedAt: active.openedAt,
-		outcome: 'mission-ended',
-		expiryOutcome: 'mission-ended',
-		resolvedActionId: null,
-		source: { ...source, source: 'system', timing: null, fallbackPolicy: null },
-		fallbackSelection: null
-	});
-	return {
-		resolution,
-		control: MasterControlStateV2Schema.parse({
-			...control,
-			activeDecision: null,
-			lastResolution: resolution,
-			consecutiveFallbacks: 0
-		})
-	};
-}
 
 export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEngineResult {
 	const masterId = deterministicUuid(`${input.runId}:master`);
@@ -1543,579 +948,12 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	return { snapshot: EngineSnapshotSchema.parse({ state, stateHash }), event };
 }
 
-const ACTIVE_MISSION_STATUSES = new Set(['preparing', 'deployed', 'resolving', 'extraction']);
-
-type MissionEngineState =
-	| EngineGameStateV11
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV22
-	| EngineGameStateV23;
-type MissionEngineRunState =
-	| MissionRunState
-	| MissionRunStateV2
-	| MissionRunStateV3
-	| MissionRunStateV4
-	| MissionRunStateV5
-	| MissionRunStateV6
-	| MissionRunStateV7
-	| MissionRunStateV8;
-
-function parseMissionRunState(state: MissionEngineState, value: unknown): MissionEngineRunState {
-	return state.schemaVersion === 23 ||
-		state.schemaVersion === 22 ||
-		state.schemaVersion === 21 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 18
-		? MissionRunStateV8Schema.parse(value)
-		: state.schemaVersion === 17
-			? MissionRunStateV7Schema.parse(value)
-			: state.schemaVersion === 16
-				? MissionRunStateV6Schema.parse(value)
-				: state.schemaVersion === 15
-					? MissionRunStateV5Schema.parse(value)
-					: state.schemaVersion === 14
-						? MissionRunStateV4Schema.parse(value)
-						: state.schemaVersion === 13
-							? MissionRunStateV3Schema.parse(value)
-							: state.schemaVersion === 12
-								? MissionRunStateV2Schema.parse(value)
-								: MissionRunStateSchema.parse(value);
-}
-
-function missionPartyIsReserved(state: MissionEngineState, actorId: string): boolean {
-	const attempt = state.mission.attempt;
-	return Boolean(
-		attempt &&
-		ACTIVE_MISSION_STATUSES.has(attempt.status) &&
-		attempt.party.memberIds.includes(actorId)
-	);
-}
-
-function normalizedMissionHeroIds(heroIds: readonly string[]): string[] {
-	return [...heroIds].sort((left, right) => left.localeCompare(right));
-}
-
-function assertMissionPartyReady(
-	state: MissionEngineState,
-	heroIds: readonly string[],
-	missionId = state.mission.binding.missionId
-): void {
-	if (
-		state.schemaVersion !== 14 &&
-		state.schemaVersion !== 15 &&
-		state.schemaVersion !== 16 &&
-		state.schemaVersion !== 17 &&
-		state.schemaVersion !== 18 &&
-		state.schemaVersion !== 19 &&
-		state.schemaVersion !== 20 &&
-		state.schemaVersion !== 23 &&
-		missionId !== state.mission.binding.missionId
-	) {
-		throw new IllegalActionError('mission.party');
-	}
-	if (
-		(state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23) &&
-		!state.mission.availableMissionIds.includes(missionId)
-	) {
-		throw new IllegalActionError('mission.party');
-	}
-	const mission = verifiedMissionContent(missionId);
-	const normalized = normalizedMissionHeroIds(heroIds);
-	const partySize = normalized.length + 1;
-	if (
-		new Set(normalized).size !== normalized.length ||
-		partySize < mission.deployment.minimumPartyMembers ||
-		partySize > mission.deployment.maximumPartyMembers ||
-		state.master.lifeState !== 'alive' ||
-		state.master.location !== 'summoning-gate'
-	) {
-		throw new IllegalActionError('mission.party');
-	}
-	for (const heroId of normalized) {
-		const hero = state.heroes[heroId];
-		if (
-			!hero ||
-			hero.lifeState !== 'active' ||
-			hero.location !== 'summoning-gate' ||
-			hero.currentActivity !== null ||
-			hero.currentTravel !== null ||
-			hero.currentRoutine !== null ||
-			hero.assignment !== null
-		) {
-			throw new IllegalActionError('mission.party');
-		}
-	}
-}
-
-function prepareMissionAttempt(
-	state: MissionEngineState,
-	commandId: string,
-	heroIds: readonly string[],
-	missionId = state.mission.binding.missionId
-): MissionEngineRunState {
-	assertMissionPartyReady(state, heroIds, missionId);
-	const prior = state.mission.attempt;
-	if (
-		prior &&
-		!['canceled', 'retreat', 'failure', 'death'].includes(prior.status) &&
-		!(
-			(state.schemaVersion === 18 ||
-				state.schemaVersion === 19 ||
-				state.schemaVersion === 20 ||
-				state.schemaVersion === 23) &&
-			prior.status === 'success'
-		)
-	) {
-		throw new IllegalActionError('mission.prepare');
-	}
-	const mission = verifiedMissionContent(missionId);
-	const normalized = normalizedMissionHeroIds(heroIds);
-	const ordinal = state.mission.attemptCount + 1;
-	const attemptId = deterministicUuid(`${commandId}:mission-attempt:${ordinal}`);
-	return parseMissionRunState(state, {
-		...state.mission,
-		binding: verifiedMissionBinding(missionId),
-		...(state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
-			? {
-					aftermath: {
-						...state.mission.aftermath,
-						activeAttemptId: attemptId,
-						consequences: [],
-						archives: prior
-							? [
-									...state.mission.aftermath.archives,
-									{
-										attemptId: prior.attemptId,
-										ordinal: prior.ordinal,
-										binding: state.mission.binding,
-										outcome: prior.outcome!,
-										preparedAt: prior.preparedAt,
-										deployedAt: prior.deployedAt,
-										endedAt: prior.endedAt!,
-										finalRoundNumber: state.mission.attempt!.turnState.roundNumber,
-										consequences: state.mission.aftermath.consequences
-									}
-								]
-							: state.mission.aftermath.archives
-					}
-				}
-			: {}),
-		attemptCount: ordinal,
-		attempt: {
-			attemptId,
-			ordinal,
-			status: 'preparing',
-			party: {
-				masterId: state.master.masterId,
-				heroIds: normalized,
-				memberIds: [state.master.masterId, ...normalized]
-			},
-			entryNodeId: mission.deployment.entryNodeIds[0]!,
-			extractionNodeId: mission.deployment.extractionNodeIds[0]!,
-			positions: {},
-			knowledge: { discoveryIds: [], visitedNodeIds: [] },
-			completedObjectiveIds: [],
-			preparedAt: state.simulatedAt,
-			deployedAt: null,
-			extractionOpenedAt: null,
-			endedAt: null,
-			outcome: null,
-			...(state.schemaVersion === 15
-				? {
-						turnState: {
-							turnVersion: 'mission-turn-v3',
-							maximumRounds: IRON_MOON_PACKAGE.portal.durationRounds,
-							roundNumber: 0,
-							objective: {
-								objectiveId: mission.objectives.find((objective) => objective.primary)!.objectiveId,
-								status: 'available',
-								quota: IRON_MOON_PACKAGE.portal.extractionQuota,
-								minedAmount: 0,
-								quotaReachedOnRound: null,
-								deliveredOnRound: null
-							},
-							policyBinding: {
-								contentVersion: MONSTER_POLICY_CATALOG.contentVersion,
-								contentHash: MONSTER_POLICY_CATALOG.contentHash
-							},
-							monsters: {},
-							partyGuard: Object.fromEntries(
-								[state.master.masterId, ...normalized].map((actorId) => [
-									actorId,
-									{
-										actorId,
-										guard: 3,
-										maximumGuard: 3,
-										status: 'ready',
-										lastChangedOnRound: 0
-									}
-								])
-							),
-							arena: {
-								furnaceState: 'absent',
-								coolingControlNodeId: null,
-								coolingControlExposed: false
-							},
-							currentThreatIntents: [],
-							portal: {
-								portalVersion: 'portal-runtime-v1',
-								portalId: IRON_MOON_PACKAGE.portal.portalId,
-								durationRounds: IRON_MOON_PACKAGE.portal.durationRounds,
-								roundsRemaining: IRON_MOON_PACKAGE.portal.durationRounds,
-								warningAtRemainingRounds: IRON_MOON_PACKAGE.portal.warningAtRemainingRounds,
-								criticalAtRemainingRounds: IRON_MOON_PACKAGE.portal.criticalAtRemainingRounds,
-								pressureStage: 'stable',
-								extractionQuota: IRON_MOON_PACKAGE.portal.extractionQuota,
-								cargoCapacityPerActor: IRON_MOON_PACKAGE.portal.cargoCapacityPerActor,
-								deposits: Object.fromEntries(
-									IRON_MOON_PACKAGE.portal.deposits.map((deposit) => [
-										deposit.depositId,
-										{
-											...deposit,
-											remainingAmount: deposit.initialAmount
-										}
-									])
-								),
-								cargo: Object.fromEntries(
-									[state.master.masterId, ...normalized].map((actorId) => [
-										actorId,
-										{
-											actorId,
-											resource: 'iron-ore',
-											amount: 0,
-											capacity: IRON_MOON_PACKAGE.portal.cargoCapacityPerActor
-										}
-									])
-								),
-								oreLedger: [],
-								extractedAmount: 0,
-								extractionCredited: false
-							},
-							rounds: []
-						}
-					}
-				: state.schemaVersion === 12
-					? {
-							turnState: {
-								turnVersion: 'mission-turn-v1',
-								maximumRounds: 48,
-								roundNumber: 0,
-								objective: {
-									objectiveId: mission.objectives.find((objective) => objective.primary)!
-										.objectiveId,
-									status: 'available',
-									carrierId: null,
-									recoveredOnRound: null,
-									deliveredOnRound: null
-								},
-								rounds: []
-							}
-						}
-					: state.schemaVersion === 13 ||
-						  state.schemaVersion === 14 ||
-						  state.schemaVersion === 16 ||
-						  state.schemaVersion === 17 ||
-						  state.schemaVersion === 18 ||
-						  state.schemaVersion === 19 ||
-						  state.schemaVersion === 20 ||
-						  state.schemaVersion === 23
-						? {
-								turnState: {
-									turnVersion: 'mission-turn-v2',
-									maximumRounds: 48,
-									roundNumber: 0,
-									objective: {
-										objectiveId: mission.objectives.find((objective) => objective.primary)!
-											.objectiveId,
-										status: 'available',
-										carrierId: null,
-										recoveredOnRound: null,
-										deliveredOnRound: null
-									},
-									policyBinding: {
-										contentVersion: MONSTER_POLICY_CATALOG.contentVersion,
-										contentHash: MONSTER_POLICY_CATALOG.contentHash
-									},
-									monsters: {},
-									partyGuard: Object.fromEntries(
-										[state.master.masterId, ...normalized].map((actorId) => [
-											actorId,
-											{
-												actorId,
-												guard: 3,
-												maximumGuard: 3,
-												status: 'ready',
-												lastChangedOnRound: 0
-											}
-										])
-									),
-									arena: {
-										furnaceState: mission.missionId === 'tower-floor-05' ? 'lit' : 'absent',
-										coolingControlNodeId:
-											mission.missionId === 'tower-floor-05' ? 'cooling-control' : null,
-										coolingControlExposed: false
-									},
-									currentThreatIntents: [],
-									rounds: []
-								}
-							}
-						: {})
-		}
-	});
-}
-
-function reviseMissionParty(
-	state: MissionEngineState,
-	heroIds: readonly string[]
-): MissionEngineRunState {
-	const attempt = state.mission.attempt;
-	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.revise.party');
-	assertMissionPartyReady(state, heroIds);
-	const normalized = normalizedMissionHeroIds(heroIds);
-	return parseMissionRunState(state, {
-		...state.mission,
-		attempt: {
-			...attempt,
-			party: {
-				masterId: state.master.masterId,
-				heroIds: normalized,
-				memberIds: [state.master.masterId, ...normalized]
-			},
-			...(state.schemaVersion === 13 ||
-			state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20
-				? {
-						turnState: {
-							...state.mission.attempt!.turnState,
-							partyGuard: Object.fromEntries(
-								[state.master.masterId, ...normalized].map((actorId) => [
-									actorId,
-									state.mission.attempt!.turnState.partyGuard[actorId] ?? {
-										actorId,
-										guard: 3,
-										maximumGuard: 3,
-										status: 'ready',
-										lastChangedOnRound: 0
-									}
-								])
-							),
-							...(state.schemaVersion === 15
-								? {
-										portal: {
-											...state.mission.attempt!.turnState.portal,
-											cargo: Object.fromEntries(
-												[state.master.masterId, ...normalized].map((actorId) => [
-													actorId,
-													state.mission.attempt!.turnState.portal.cargo[actorId] ?? {
-														actorId,
-														resource: 'iron-ore',
-														amount: 0,
-														capacity: state.mission.attempt!.turnState.portal.cargoCapacityPerActor
-													}
-												])
-											)
-										}
-									}
-								: {})
-						}
-					}
-				: {})
-		}
-	});
-}
-
-function cancelMissionPreparation(state: MissionEngineState): MissionEngineRunState {
-	const attempt = state.mission.attempt;
-	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.cancel');
-	return parseMissionRunState(state, {
-		...state.mission,
-		attempt: { ...attempt, status: 'canceled', endedAt: state.simulatedAt, outcome: 'canceled' }
-	});
-}
-
-type MissionDeploymentResolution = {
-	readonly mission: MissionEngineRunState;
-	readonly entropyCursor: number;
-	readonly entropyDraws: EntropyDraw[];
-};
-
-function deployMissionAttempt(state: MissionEngineState): MissionDeploymentResolution {
-	const attempt = state.mission.attempt;
-	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.deploy');
-	assertMissionPartyReady(state, attempt.party.heroIds);
-	const positions = Object.fromEntries(
-		attempt.party.memberIds.map((memberId) => [memberId, attempt.entryNodeId])
-	);
-	let entropy = createEntropyCursor(state.seed, state.entropyCursor);
-	const entropyDraws: EntropyDraw[] = [];
-	const combat =
-		state.schemaVersion === 13 ||
-		state.schemaVersion === 14 ||
-		state.schemaVersion === 16 ||
-		state.schemaVersion === 17 ||
-		state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
-			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy, entropyDraws)
-			: null;
-	if (combat) entropy = combat.entropy;
-	const mission = parseMissionRunState(state, {
-		...state.mission,
-		attempt: {
-			...attempt,
-			status: 'deployed',
-			positions,
-			knowledge: { discoveryIds: [], visitedNodeIds: [attempt.entryNodeId] },
-			deployedAt: state.simulatedAt,
-			...(combat
-				? {
-						turnState: {
-							...(state.schemaVersion === 13 ||
-							state.schemaVersion === 14 ||
-							state.schemaVersion === 16 ||
-							state.schemaVersion === 17 ||
-							state.schemaVersion === 18 ||
-							state.schemaVersion === 19 ||
-							state.schemaVersion === 20 ||
-							state.schemaVersion === 23
-								? state.mission.attempt!.turnState
-								: {}),
-							monsters: combat.monsters,
-							currentThreatIntents: combat.threatIntents
-						}
-					}
-				: {})
-		}
-	});
-	return { mission, entropyCursor: entropy.cursor, entropyDraws };
-}
-
-function openMissionExtraction(
-	state: EngineGameStateV11,
-	completedObjectiveIds: readonly string[]
-): MissionRunState {
-	const attempt = state.mission.attempt;
-	if (!attempt || !['deployed', 'resolving'].includes(attempt.status)) {
-		throw new IllegalActionError('mission.open.extraction');
-	}
-	const mission = missionContentForState(state);
-	const declaredIds = new Set(mission.objectives.map((objective) => objective.objectiveId));
-	const normalized = [...completedObjectiveIds].sort((left, right) => left.localeCompare(right));
-	const primaryIds = mission.objectives
-		.filter((objective) => objective.primary)
-		.map((objective) => objective.objectiveId);
-	if (
-		new Set(normalized).size !== normalized.length ||
-		normalized.some((objectiveId) => !declaredIds.has(objectiveId)) ||
-		primaryIds.some((objectiveId) => !normalized.includes(objectiveId))
-	) {
-		throw new IllegalActionError('mission.open.extraction');
-	}
-	return MissionRunStateSchema.parse({
-		...state.mission,
-		attempt: {
-			...attempt,
-			status: 'extraction',
-			completedObjectiveIds: normalized,
-			extractionOpenedAt: state.simulatedAt
-		}
-	});
-}
-
-function allPartyAtNode(state: MissionEngineState, nodeIds: readonly string[]): boolean {
-	const attempt = state.mission.attempt;
-	return Boolean(
-		attempt &&
-		attempt.party.memberIds.every((memberId) => nodeIds.includes(attempt.positions[memberId]!))
-	);
-}
-
-function completeMissionExtraction(state: MissionEngineState): MissionEngineRunState {
-	const attempt = state.mission.attempt;
-	const mission = missionContentForState(state);
-	const primaryIds = mission.objectives
-		.filter((objective) => objective.primary)
-		.map((objective) => objective.objectiveId);
-	if (
-		attempt?.status !== 'extraction' ||
-		primaryIds.some((objectiveId) => !attempt.completedObjectiveIds.includes(objectiveId)) ||
-		!allPartyAtNode(state, [attempt.extractionNodeId])
-	) {
-		throw new IllegalActionError('mission.extract');
-	}
-	return parseMissionRunState(state, {
-		...state.mission,
-		attempt: { ...attempt, status: 'success', endedAt: state.simulatedAt, outcome: 'success' }
-	});
-}
-
-function retreatMissionAttempt(state: MissionEngineState): MissionEngineRunState {
-	const attempt = state.mission.attempt;
-	const mission = missionContentForState(state);
-	if (
-		!attempt ||
-		!['deployed', 'resolving', 'extraction'].includes(attempt.status) ||
-		!allPartyAtNode(state, mission.retreat.nodeIds)
-	) {
-		throw new IllegalActionError('mission.retreat');
-	}
-	if (state.schemaVersion === 15) {
-		const portalAttempt = state.mission.attempt!;
-		const portal = appendPortalCargoLosses(
-			portalAttempt,
-			portalAttempt.turnState.portal,
-			Math.max(1, portalAttempt.turnState.roundNumber)
-		);
-		return MissionRunStateV5Schema.parse({
-			...state.mission,
-			attempt: {
-				...portalAttempt,
-				status: 'retreat',
-				endedAt: state.simulatedAt,
-				outcome: 'retreat',
-				turnState: { ...portalAttempt.turnState, portal }
-			}
-		});
-	}
-	return parseMissionRunState(state, {
-		...state.mission,
-		attempt: { ...attempt, status: 'retreat', endedAt: state.simulatedAt, outcome: 'retreat' }
-	});
-}
-
 const MISSION_MOVE_PREFIX = 'mission.move.';
 const MISSION_INSPECT_PREFIX = 'mission.inspect.';
 const MISSION_RECOVER_PREFIX = 'mission.recover.';
 const MISSION_ATTACK_PREFIX = 'mission.attack.';
 const MISSION_MINE_PREFIX = 'mission.mine.';
 const MISSION_COOLING_CONTROL_ACTION_ID = 'mission.control.cooling-wheel';
-const MISSION_HOLD_ACTION_ID = 'mission.hold';
 
 type MissionCombatAttempt = NonNullable<EngineGameStateV14['mission']['attempt']>;
 type MissionCombatArena = MissionCombatAttempt['turnState']['arena'];
@@ -2452,320 +1290,6 @@ function spawnMissionCombatants(
 		threatIntents: deriveMonsterIntents(mission, attempt, monsters, positions),
 		entropy
 	};
-}
-
-type MissionTurnEngineState =
-	| EngineGameStateV12
-	| EngineGameStateV13
-	| EngineGameStateV14
-	| EngineGameStateV15
-	| EngineGameStateV16
-	| EngineGameStateV17
-	| EngineGameStateV18
-	| EngineGameStateV19
-	| EngineGameStateV20
-	| EngineGameStateV21
-	| EngineGameStateV23;
-
-function missionToolTagsForActor(state: MissionTurnEngineState, actorId: string): Set<string> {
-	if (
-		state.schemaVersion !== 14 &&
-		state.schemaVersion !== 16 &&
-		state.schemaVersion !== 17 &&
-		state.schemaVersion !== 18 &&
-		state.schemaVersion !== 19 &&
-		state.schemaVersion !== 20 &&
-		state.schemaVersion !== 21 &&
-		state.schemaVersion !== 23
-	)
-		return new Set();
-	return new Set(
-		Object.values(state.mission.evidence)
-			.filter(
-				(evidence) =>
-					evidence.holderActorId === actorId && evidence.evidenceKey === 'foundry-maintenance-route'
-			)
-			.map(() => 'relay-route-memory')
-	);
-}
-
-function missionTurnActionsForState(state: MissionTurnEngineState, actorId: string): LegalAction[] {
-	const attempt = state.mission.attempt;
-	if (
-		!attempt ||
-		!['deployed', 'resolving'].includes(attempt.status) ||
-		!attempt.party.memberIds.includes(actorId) ||
-		attempt.turnState.roundNumber >= attempt.turnState.maximumRounds
-	) {
-		return [];
-	}
-	const mission = missionContentForState(state);
-	const nodeId = attempt.positions[actorId];
-	if (!nodeId) return [];
-	const projection = projectMissionArenaKnowledge(mission, attempt.knowledge);
-	const visibleEdgeIds = new Set(projection.edgeIds);
-	const objective = attempt.turnState.objective;
-	const targetNodeId =
-		objective.status === 'available'
-			? mission.objectives.find((candidate) => candidate.objectiveId === objective.objectiveId)!
-					.targetNodeIds[0]!
-			: attempt.extractionNodeId;
-	const currentRoute = planMissionRoute(mission, nodeId, targetNodeId, attempt.knowledge);
-	const actions: LegalAction[] = [];
-	for (const edge of mission.arena.edges) {
-		if (!visibleEdgeIds.has(edge.edgeId)) continue;
-		const toNodeId =
-			edge.fromNodeId === nodeId
-				? edge.toNodeId
-				: edge.bidirectional && edge.toNodeId === nodeId
-					? edge.fromNodeId
-					: null;
-		if (!toNodeId) continue;
-		const routeAfterMove = planMissionRoute(mission, toNodeId, targetNodeId, attempt.knowledge);
-		const advancesObjective =
-			routeAfterMove !== null &&
-			currentRoute !== null &&
-			routeAfterMove.totalTraversalActions < currentRoute.totalTraversalActions;
-		actions.push(
-			action({
-				actionId: `${MISSION_MOVE_PREFIX}${edge.edgeId}`,
-				actorId,
-				kind: 'move',
-				label: `Move to ${mission.arena.nodes.find((node) => node.nodeId === toNodeId)!.label}`,
-				description: advancesObjective
-					? objective.status === 'available'
-						? 'Advance along a known route toward the primary objective.'
-						: 'Carry the company back along a known return route.'
-					: 'Move along a known authored edge without inventing unseen topology.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: [
-					'mission',
-					'move',
-					edge.exposure,
-					...(advancesObjective
-						? objective.status === 'available'
-							? ['objective', 'objective-route', 'advance']
-							: ['protect', 'return-route', 'extraction']
-						: ['explore'])
-				]
-			})
-		);
-	}
-	for (const affordance of listLegalMissionDiscoveryAffordances(
-		mission,
-		nodeId,
-		attempt.knowledge,
-		missionToolTagsForActor(state, actorId)
-	)) {
-		actions.push(
-			action({
-				actionId: `${MISSION_INSPECT_PREFIX}${affordance.affordanceId}`,
-				actorId,
-				kind: 'interact',
-				label: affordance.label,
-				description: affordance.description,
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['mission', 'inspect', 'interact', 'secret', 'explore', 'discovery']
-			})
-		);
-	}
-	const objectiveDefinition = mission.objectives.find(
-		(candidate) => candidate.objectiveId === objective.objectiveId
-	)!;
-	if (
-		objective.status === 'available' &&
-		state.schemaVersion !== 15 &&
-		objectiveDefinition.completionRule.kind === 'recover-ledger-item' &&
-		objectiveDefinition.targetNodeIds.includes(nodeId)
-	) {
-		actions.push(
-			action({
-				actionId: `${MISSION_RECOVER_PREFIX}${objective.objectiveId}`,
-				actorId,
-				kind: 'interact',
-				label:
-					state.schemaVersion === 16 ||
-					state.schemaVersion === 17 ||
-					state.schemaVersion === 18 ||
-					state.schemaVersion === 19 ||
-					state.schemaVersion === 20
-						? `Recover ${objectiveDefinition.title}`
-						: 'Lift the First Ember',
-				description:
-					state.schemaVersion === 16 ||
-					state.schemaVersion === 17 ||
-					state.schemaVersion === 18 ||
-					state.schemaVersion === 19 ||
-					state.schemaVersion === 20
-						? `Physically recover ${objectiveDefinition.title} before attempting the return route.`
-						: 'Physically recover the primary objective before attempting the return route.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['mission', 'interact', 'recover', 'objective', 'protect', 'work']
-			})
-		);
-	}
-	if (state.schemaVersion === 15) {
-		const cargo = state.mission.attempt!.turnState.portal.cargo[actorId]!;
-		for (const deposit of Object.values(state.mission.attempt!.turnState.portal.deposits)
-			.filter(
-				(candidate) =>
-					candidate.nodeId === nodeId &&
-					candidate.remainingAmount > 0 &&
-					cargo.amount < cargo.capacity
-			)
-			.sort((left, right) => left.depositId.localeCompare(right.depositId))) {
-			const amount = Math.min(
-				deposit.mineAmountPerAction,
-				deposit.remainingAmount,
-				cargo.capacity - cargo.amount
-			);
-			actions.push(
-				action({
-					actionId: `${MISSION_MINE_PREFIX}${deposit.depositId}`,
-					actorId,
-					kind: 'work',
-					label: `Mine ${amount} moon iron`,
-					description: `Transfer ${amount} authored ore from this finite deposit into ${actorId === state.master.masterId ? 'the Master’s' : 'this hero’s'} bounded cargo.`,
-					targetIds: [],
-					resourceCosts: {},
-					tags: ['mission', 'portal', 'mine', 'resource', 'iron-ore', 'work']
-				})
-			);
-		}
-	}
-	if (
-		state.schemaVersion === 13 ||
-		state.schemaVersion === 14 ||
-		state.schemaVersion === 16 ||
-		state.schemaVersion === 17 ||
-		state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
-	) {
-		const combatAttempt = state.mission.attempt!;
-		for (const monster of Object.values(combatAttempt.turnState.monsters)
-			.filter((candidate) => candidate.status === 'active' && candidate.nodeId === nodeId)
-			.sort((left, right) => left.monsterId.localeCompare(right.monsterId))) {
-			actions.push(
-				action({
-					actionId: `${MISSION_ATTACK_PREFIX}${monster.monsterId}`,
-					actorId,
-					kind: 'interact',
-					label: `Strike ${monster.label}`,
-					description:
-						'Commit a basic attack against one co-located threat; the engine applies vitality and armor.',
-					targetIds: [monster.monsterId],
-					resourceCosts: {},
-					tags: ['mission', 'attack', 'combat', 'threat', monster.policyId]
-				})
-			);
-		}
-	}
-	const v14Arena =
-		state.schemaVersion === 14 ||
-		state.schemaVersion === 16 ||
-		state.schemaVersion === 17 ||
-		state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
-			? state.mission.attempt!.turnState.arena
-			: null;
-	if (
-		v14Arena &&
-		nodeId === v14Arena.coolingControlNodeId &&
-		attempt.knowledge.discoveryIds.includes('cooling-control-weakness') &&
-		v14Arena.furnaceState !== 'absent' &&
-		v14Arena.furnaceState !== 'quenched'
-	) {
-		actions.push(
-			action({
-				actionId: MISSION_COOLING_CONTROL_ACTION_ID,
-				actorId,
-				kind: 'interact',
-				label: 'Turn the cooling wheel',
-				description: 'Advance the engine-owned furnace from lit to cooling, then quenched.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['mission', 'interact', 'control', 'cooling', 'furnace']
-			})
-		);
-	}
-	actions.push(
-		action({
-			actionId: MISSION_HOLD_ACTION_ID,
-			actorId,
-			kind: 'defend',
-			label: 'Hold position',
-			description:
-				'Watch the current lane and preserve the present formation for one bounded round.',
-			targetIds: [],
-			resourceCosts: {},
-			tags: ['mission', 'defend', 'guard', 'protect', 'wait']
-		})
-	);
-	return actions.sort((left, right) => left.actionId.localeCompare(right.actionId));
-}
-
-export function missionTurnLegalActions(
-	stateInput: EngineGameState,
-	actorId: string
-): readonly LegalAction[] {
-	const state = EngineGameStateSchema.parse(stateInput);
-	return state.schemaVersion === 12 ||
-		state.schemaVersion === 13 ||
-		state.schemaVersion === 14 ||
-		state.schemaVersion === 15 ||
-		state.schemaVersion === 16 ||
-		state.schemaVersion === 17 ||
-		state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
-		? missionTurnActionsForState(state, actorId)
-		: [];
-}
-
-function normalizedMissionTurnChoices(
-	state: MissionTurnEngineState,
-	choices: readonly MissionTurnChoice[]
-): MissionTurnChoice[] {
-	const attempt = state.mission.attempt;
-	if (!attempt || !['deployed', 'resolving'].includes(attempt.status)) {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	if (attempt.turnState.roundNumber >= attempt.turnState.maximumRounds) {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	const parsedChoices = choices.map((choice) => MissionTurnChoiceSchema.parse(choice));
-	const byActor = new Map(parsedChoices.map((choice) => [choice.actorId, choice]));
-	if (
-		byActor.size !== parsedChoices.length ||
-		parsedChoices.length !== attempt.party.memberIds.length ||
-		attempt.party.memberIds.some((actorId) => !byActor.has(actorId))
-	) {
-		throw new IllegalActionError('mission.resolve.turn');
-	}
-	const normalized = attempt.party.memberIds.map((actorId) => byActor.get(actorId)!);
-	for (const choice of normalized) {
-		if (
-			(choice.actorId === attempt.party.masterId &&
-				state.schemaVersion !== 19 &&
-				state.schemaVersion !== 20 &&
-				choice.source !== 'manual') ||
-			(choice.actorId !== attempt.party.masterId && choice.source === 'manual') ||
-			!missionTurnActionsForState(state, choice.actorId).some(
-				(candidate) => candidate.actionId === choice.actionId
-			)
-		) {
-			throw new IllegalActionError(choice.actionId);
-		}
-	}
-	return normalized;
 }
 
 function missionInitiativeBase(state: MissionTurnEngineState, actorId: string): number {
@@ -4417,118 +2941,13 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 						: [])
 				]
 			: [];
+	const missionActions = missionLegalActions(state, actorId);
 	if (
-		(state.schemaVersion === 11 ||
-			state.schemaVersion === 12 ||
-			state.schemaVersion === 13 ||
-			state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23) &&
-		state.mission.attempt
+		'mission' in state &&
+		state.mission.attempt &&
+		['preparing', 'deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status)
 	) {
-		const attempt = state.mission.attempt;
-		if (attempt.status === 'preparing') {
-			return [
-				...controlActions,
-				action({
-					actionId: 'mission.revise.party',
-					actorId,
-					kind: 'interact',
-					label: 'Revise the threshold party',
-					description: 'Replace the reserved hero list before deployment.',
-					targetIds: attempt.party.heroIds,
-					resourceCosts: {},
-					tags: ['mission', 'preparation', 'party']
-				}),
-				action({
-					actionId: 'mission.deploy',
-					actorId,
-					kind: 'move',
-					label: 'Cross the Tower Threshold',
-					description: 'Commit the exact prepared party to the hash-bound Floor 01 attempt.',
-					targetIds: attempt.party.memberIds,
-					resourceCosts: {},
-					tags: ['mission', 'deployment', 'irreversible-step']
-				}),
-				action({
-					actionId: 'mission.cancel',
-					actorId,
-					kind: 'wait',
-					label: 'Stand the party down',
-					description: 'Cancel before deployment and release every reserved hero.',
-					targetIds: attempt.party.memberIds,
-					resourceCosts: {},
-					tags: ['mission', 'preparation', 'cancel']
-				})
-			];
-		}
-		if (attempt.status === 'deployed' || attempt.status === 'resolving') {
-			const turnActions =
-				state.schemaVersion === 11 ? [] : missionTurnActionsForState(state, actorId);
-			return allPartyAtNode(state, missionContentForState(state).retreat.nodeIds)
-				? [
-						...controlActions,
-						...turnActions,
-						action({
-							actionId: 'mission.retreat',
-							actorId,
-							kind: 'retreat',
-							label:
-								state.schemaVersion === 15
-									? 'Retreat through the portal scar'
-									: 'Retreat through the threshold',
-							description:
-								state.schemaVersion === 15
-									? 'End the expedition alive; all carried ore is abandoned.'
-									: 'End this attempt without preserving the primary objective.',
-							targetIds: attempt.party.memberIds,
-							resourceCosts: {},
-							tags: ['mission', 'retreat', 'authoritative-boundary']
-						})
-					]
-				: [...controlActions, ...turnActions];
-		}
-		if (attempt.status === 'extraction') {
-			const actions: LegalAction[] = [];
-			if (allPartyAtNode(state, [attempt.extractionNodeId])) {
-				actions.push(
-					action({
-						actionId: 'mission.extract',
-						actorId,
-						kind: 'interact',
-						label:
-							state.schemaVersion === 15 ? 'Extract the moon iron' : 'Carry the First Ember home',
-						description:
-							state.schemaVersion === 15
-								? 'Cross the portal scar and atomically credit carried ore to settlement stock.'
-								: 'Complete the recovered objective across the authored extraction boundary.',
-						targetIds: attempt.party.memberIds,
-						resourceCosts: {},
-						tags: ['mission', 'extraction', 'success']
-					})
-				);
-			}
-			if (allPartyAtNode(state, missionContentForState(state).retreat.nodeIds)) {
-				actions.push(
-					action({
-						actionId: 'mission.retreat',
-						actorId,
-						kind: 'retreat',
-						label: 'Abandon the recovery and retreat',
-						description: 'End the attempt without preserving the primary objective.',
-						targetIds: attempt.party.memberIds,
-						resourceCosts: {},
-						tags: ['mission', 'retreat', 'authoritative-boundary']
-					})
-				);
-			}
-			return [...controlActions, ...actions];
-		}
+		return [...controlActions, ...missionActions];
 	}
 	const [inspectGate, ...settlementTail] = settlementLegalActions(state, actorId);
 	const actions: LegalAction[] = [...controlActions, ...(inspectGate ? [inspectGate] : [])];
@@ -4588,35 +3007,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			})
 		);
 	}
-	if (
-		(state.schemaVersion === 11 ||
-			state.schemaVersion === 12 ||
-			state.schemaVersion === 13 ||
-			state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23) &&
-		(!state.mission.attempt ||
-			['canceled', 'retreat', 'failure', 'death'].includes(state.mission.attempt.status) ||
-			(state.schemaVersion >= 18 && state.mission.attempt.status === 'success'))
-	) {
-		actions.push(
-			action({
-				actionId: 'mission.prepare',
-				actorId,
-				kind: 'interact',
-				label: `Prepare ${missionContentForState(state).displayName} party`,
-				description: 'Reserve the Master and up to four ready heroes at the Tower Threshold.',
-				targetIds: [],
-				resourceCosts: {},
-				tags: ['mission', 'preparation', 'content-bound']
-			})
-		);
-	}
+	actions.push(...missionActions);
 	actions.push(...settlementTail);
 	return actions;
 }
@@ -4669,32 +3060,9 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 			if (rumorActions.length > 0) return rumorActions;
 		}
 	}
-	if (
-		(state.schemaVersion === 11 ||
-			state.schemaVersion === 12 ||
-			state.schemaVersion === 13 ||
-			state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23) &&
-		missionPartyIsReserved(state, actorId)
-	) {
-		return state.schemaVersion === 12 ||
-			state.schemaVersion === 13 ||
-			state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23
-			? missionTurnActionsForState(state, actorId)
-			: [];
+	const missionActions = missionLegalActions(state, actorId);
+	if (missionActions.length > 0 || ('mission' in state && missionPartyIsReserved(state, actorId))) {
+		return [...missionActions];
 	}
 	return settlementLegalActions(state, actorId);
 }
@@ -5119,7 +3487,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			prepareMissionAttempt(state, command.commandId, command.heroIds, command.missionId);
 		if (command.commandType === 'mission.revise.party') reviseMissionParty(state, command.heroIds);
 		if (command.commandType === 'mission.cancel') cancelMissionPreparation(state);
-		if (command.commandType === 'mission.deploy') deployMissionAttempt(state);
+		if (command.commandType === 'mission.deploy')
+			deployMissionAttempt(state, spawnMissionCombatants);
 		if (command.commandType === 'mission.resolve.turn') {
 			if (
 				state.schemaVersion !== 12 &&
@@ -5160,7 +3529,8 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 			if (state.schemaVersion === 15) completePortalMissionExtraction(state);
 			else completeMissionExtraction(state);
 		}
-		if (command.commandType === 'mission.retreat') retreatMissionAttempt(state);
+		if (command.commandType === 'mission.retreat')
+			retreatMissionAttempt(state, appendPortalCargoLosses);
 	}
 }
 
@@ -5446,7 +3816,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		} else if (command.commandType === 'mission.deploy') {
 			transition = 'deploy';
 			eventType = 'mission.deployed';
-			const deployment = deployMissionAttempt(state);
+			const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 			mission = deployment.mission;
 			seedCursor = deployment.entropyCursor;
 			entropyDraws = deployment.entropyDraws;
@@ -5487,7 +3857,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		} else if (command.commandType === 'mission.retreat') {
 			transition = 'retreat';
 			eventType = 'mission.retreated';
-			mission = retreatMissionAttempt(state);
+			mission = retreatMissionAttempt(state, appendPortalCargoLosses);
 			summary =
 				state.schemaVersion === 15
 					? 'The complete party retreated through the portal scar; carried ore was abandoned.'
@@ -6217,10 +4587,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			const storyState = reduceFirstBandMissionConsequences(state, {
 				eventId: event.eventId,
 				sequence: event.sequence,
@@ -6236,7 +4606,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6301,10 +4671,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			const expectedControl =
 				expectedMission.attempt !== null &&
 				!['deployed', 'resolving'].includes(expectedMission.attempt.status)
@@ -6321,7 +4691,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6388,10 +4758,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			const expectedControl =
 				expectedMission.attempt !== null &&
 				!['deployed', 'resolving'].includes(expectedMission.attempt.status)
@@ -6408,7 +4778,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6477,10 +4847,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			if (hashCanonical(expected) !== hashCanonical(payload.mission)) {
 				throw new ReplayIntegrityError(
 					'Mission aftermath transition payload diverged',
@@ -6488,7 +4858,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6569,13 +4939,13 @@ function reduceV2Event(
 								}
 							: payload.transition === 'deploy'
 								? {
-										mission: deployMissionAttempt(state).mission,
+										mission: deployMissionAttempt(state, spawnMissionCombatants).mission,
 										resourceChanges: [] as readonly z.infer<typeof ResourceChangeSchema>[]
 									}
 								: payload.transition === 'extract'
 									? completePortalMissionExtraction(state)
 									: {
-											mission: retreatMissionAttempt(state),
+											mission: retreatMissionAttempt(state, appendPortalCargoLosses),
 											resourceChanges: [] as readonly z.infer<typeof ResourceChangeSchema>[]
 										};
 			if (
@@ -6588,7 +4958,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6649,10 +5019,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			if (hashCanonical(expected) !== hashCanonical(payload.mission)) {
 				throw new ReplayIntegrityError(
 					'Mission evidence transition payload diverged',
@@ -6660,7 +5030,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6721,10 +5091,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			if (hashCanonical(expected) !== hashCanonical(payload.mission)) {
 				throw new ReplayIntegrityError(
 					'Mission combat transition payload diverged',
@@ -6732,7 +5102,7 @@ function reduceV2Event(
 				);
 			}
 			if (payload.transition === 'deploy') {
-				const deployment = deployMissionAttempt(state);
+				const deployment = deployMissionAttempt(state, spawnMissionCombatants);
 				if (
 					deployment.entropyCursor !== event.seedCursor ||
 					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
@@ -6787,10 +5157,10 @@ function reduceV2Event(
 						: payload.transition === 'cancel'
 							? cancelMissionPreparation(state)
 							: payload.transition === 'deploy'
-								? deployMissionAttempt(state).mission
+								? deployMissionAttempt(state, spawnMissionCombatants).mission
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 			if (hashCanonical(expected) !== hashCanonical(payload.mission)) {
 				throw new ReplayIntegrityError('Mission transition payload diverged', event.sequence);
 			}
@@ -6833,12 +5203,12 @@ function reduceV2Event(
 					: payload.transition === 'cancel'
 						? cancelMissionPreparation(state)
 						: payload.transition === 'deploy'
-							? deployMissionAttempt(state).mission
+							? deployMissionAttempt(state, spawnMissionCombatants).mission
 							: payload.transition === 'open-extraction'
 								? openMissionExtraction(state, payload.completedObjectiveIds)
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
-									: retreatMissionAttempt(state);
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
 		if (hashCanonical(expected) !== hashCanonical(payload.mission)) {
 			throw new ReplayIntegrityError('Mission transition payload diverged', event.sequence);
 		}
