@@ -104,10 +104,17 @@ export function validateLegacyInventory(rows: readonly LegacySkillRow[]): string
 	return errors;
 }
 
-export function validateMigrationLedger(ledger: SkillMigrationLedger): string[] {
+export function validateMigrationLedger(
+	ledger: SkillMigrationLedger,
+	legacyInventory?: readonly LegacySkillRow[]
+): string[] {
 	const errors: string[] = [];
 	const sourceIds = new Set<string>();
 
+	if (ledger.sourceRowCount !== 520)
+		errors.push(`expected source row count 520, found ${ledger.sourceRowCount}`);
+	if (ledger.records.length !== 520)
+		errors.push(`expected 520 ledger records, found ${ledger.records.length}`);
 	if (ledger.records.length !== ledger.sourceRowCount)
 		errors.push(
 			`source row count ${ledger.sourceRowCount} does not match ${ledger.records.length} ledger records`
@@ -124,6 +131,19 @@ export function validateMigrationLedger(ledger: SkillMigrationLedger): string[] 
 			errors.push(`merge record ${record.sourceId} requires mergeTarget`);
 		if (record.disposition === 'delete' && !record.rationale)
 			errors.push(`delete record ${record.sourceId} requires rationale`);
+	}
+
+	if (legacyInventory) {
+		if (legacyInventory.length !== 520)
+			errors.push(`expected 520 legacy inventory records, found ${legacyInventory.length}`);
+		errors.push(...validateLegacyInventory(legacyInventory));
+		const inventorySourceIds = new Set(legacyInventory.map((row) => row.sourceId));
+		for (const sourceId of inventorySourceIds) {
+			if (!sourceIds.has(sourceId)) errors.push(`missing source id ${sourceId}`);
+		}
+		for (const sourceId of sourceIds) {
+			if (!inventorySourceIds.has(sourceId)) errors.push(`unknown source id ${sourceId}`);
+		}
 	}
 
 	return errors;

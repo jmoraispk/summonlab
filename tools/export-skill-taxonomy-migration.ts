@@ -158,7 +158,10 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			return {
 				...row,
 				disposition: 'rehome',
-				target: { domain: 'Martial', family: 'Shield', skill: row.name }
+				target: { domain: 'Martial', family: 'Shield', skill: row.name },
+				...(['Taunt', 'Endure'].includes(row.name)
+					? { replacementRequires: 'Shield Use Novice' }
+					: {})
 			};
 		if (['Set Jaw', 'Undying'].includes(row.name))
 			return {
@@ -196,6 +199,46 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 				skill: 'Blade Throw',
 				labels: [{ namespace: 'Equipment', value: 'Dagger' }]
 			}
+		};
+
+	if (source === 'Dagger:Hundred Needles')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: 'Blade Throw Master'
+		};
+
+	if (source === 'Dagger:Fleeting Step')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: 'Silent Step Expert'
+		};
+
+	if (source === "Bow:Hunter's Mark")
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: 'Archery Intermediate'
+		};
+
+	if (source === 'Beast:Mounted Combat')
+		return {
+			...row,
+			disposition: 'retain',
+			target: targetForSection(row),
+			replacementRequires: 'Riding Master, Martial family skill at Expert'
+		};
+
+	if (source === 'Forging:Monster Craft')
+		return {
+			...row,
+			disposition: 'retain',
+			target: targetForSection(row),
+			replacementRequires: 'Alloying Master, Beast prerequisite'
 		};
 
 	if (source === 'Thrown:Sling')

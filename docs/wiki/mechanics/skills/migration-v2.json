@@ -391,7 +391,8 @@
 				"domain": "Craft",
 				"family": "Beast",
 				"skill": "Mounted Combat"
-			}
+			},
+			"replacementRequires": "Riding Master, Martial family skill at Expert"
 		},
 		{
 			"sourceId": "craft-and-life.md#beast:9",
@@ -901,7 +902,8 @@
 				"domain": "Craft",
 				"family": "Forging",
 				"skill": "Monster Craft"
-			}
+			},
+			"replacementRequires": "Alloying Master, Beast prerequisite"
 		},
 		{
 			"sourceId": "craft-and-life.md#forging:15",
@@ -5018,7 +5020,8 @@
 						"value": "Dagger"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Silent Step Expert"
 		},
 		{
 			"sourceId": "martial-blade.md#dagger:17",
@@ -5110,7 +5113,8 @@
 						"value": "Dagger"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Blade Throw Master"
 		},
 		{
 			"sourceId": "martial-blade.md#dagger:21",
@@ -8421,7 +8425,8 @@
 						"value": "Bow"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Archery Intermediate"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#bow:12",
@@ -9194,7 +9199,8 @@
 				"domain": "Martial",
 				"family": "Shield",
 				"skill": "Taunt"
-			}
+			},
+			"replacementRequires": "Shield Use Novice"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#protection:3",
@@ -9211,7 +9217,8 @@
 				"domain": "Martial",
 				"family": "Shield",
 				"skill": "Endure"
-			}
+			},
+			"replacementRequires": "Shield Use Novice"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#protection:4",
