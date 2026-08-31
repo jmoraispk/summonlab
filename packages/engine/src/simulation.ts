@@ -1,7 +1,10 @@
 import type { AuthoritativeEvent, EngineCommand, EngineGameState } from '@summonlab/contracts';
 
-import { applyCommand, createBootstrapEngine, legalActions, replayEventsStrict } from './engine.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
+import { applyCommand } from './orchestration/apply-command.js';
+import { createBootstrapEngine } from './orchestration/bootstrap.js';
+import { legalActions } from './orchestration/legal-actions.js';
+import { replayEventsStrict } from './orchestration/replay.js';
 
 function source(source: 'random' | 'manual' | 'habit' | 'system') {
 	return {

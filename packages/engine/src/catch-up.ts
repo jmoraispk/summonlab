@@ -21,9 +21,10 @@ import {
 	type EngineGameStateV13
 } from '@summonlab/contracts';
 
-import { applyCommand, legalActions } from './engine.js';
 import { systemSource } from './core/event-metadata.js';
 import { deterministicUuid } from './hash.js';
+import { applyCommand } from './orchestration/apply-command.js';
+import { legalActions } from './orchestration/legal-actions.js';
 import { compareGameTime } from './time.js';
 
 function habitSource() {

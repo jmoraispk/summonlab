@@ -18,10 +18,6 @@ const FORBIDDEN_PACKAGE_PATTERN =
 	/^@summonlab\/(?:database|worker|web|policies|evaluation)(?:\/|$)/u;
 const FORBIDDEN_RESOLVED_PATH_PATTERN =
 	/(?:^|\/)(?:database|worker|web|policies|evaluation)(?:\/|$)/u;
-const TEMPORARY_ENGINE_FACADE_IMPORTS: ReadonlyMap<string, string> = new Map([
-	['catch-up.ts', 'Task 12'],
-	['simulation.ts', 'Task 12']
-] as const);
 
 const loadedConfig = ts.readConfigFile(ENGINE_TSCONFIG, ts.sys.readFile);
 if (loadedConfig.error) {
@@ -156,19 +152,6 @@ function isRootFacadeReexport(
 	);
 }
 
-function isTemporaryFacadeImport(
-	importerPath: string,
-	reference: ModuleReference,
-	resolved: string | null
-): boolean {
-	return (
-		TEMPORARY_ENGINE_FACADE_IMPORTS.has(importerPath) &&
-		reference.kind === 'import' &&
-		reference.specifier === './engine.js' &&
-		resolved === 'engine.ts'
-	);
-}
-
 function isCompileOnlySelfImportFixture(importerPath: string, reference: ModuleReference): boolean {
 	return (
 		importerPath === COMPILE_ONLY_SELF_IMPORT_FIXTURE &&
@@ -205,7 +188,6 @@ function boundaryViolations(importer: string, reference: ModuleReference): strin
 	if (
 		isEngineFacadeReference(reference, resolved) &&
 		!isRootFacadeReexport(importerPath, reference, resolved) &&
-		!isTemporaryFacadeImport(importerPath, reference, resolved) &&
 		!isCompileOnlySelfImportFixture(importerPath, reference) &&
 		!isBlackBoxReplayFacadeFixture(importerPath, reference, resolved)
 	) {
@@ -306,18 +288,9 @@ describe('engine module boundaries', () => {
 
 	it('enforces the core, domain, orchestration, and public-facade dependency directions', async () => {
 		const violations: string[] = [];
-		const temporaryFacadeImports = new Map<string, string>();
 		for (const file of await sourceFiles(SOURCE_ROOT)) {
 			const source = await readFile(file, 'utf8');
 			for (const reference of moduleReferences(file, source)) {
-				const resolved = resolvedInternalPath(file, reference.specifier);
-				const importerPath = normalizedRelative(file);
-				if (isTemporaryFacadeImport(importerPath, reference, resolved)) {
-					temporaryFacadeImports.set(
-						importerPath,
-						TEMPORARY_ENGINE_FACADE_IMPORTS.get(importerPath)!
-					);
-				}
 				for (const violation of boundaryViolations(file, reference)) {
 					violations.push(`${normalizedRelative(file)} -> ${reference.specifier}: ${violation}`);
 				}
@@ -325,9 +298,5 @@ describe('engine module boundaries', () => {
 		}
 
 		expect(violations).toEqual([]);
-		expect([...temporaryFacadeImports]).toEqual([
-			['catch-up.ts', 'Task 12'],
-			['simulation.ts', 'Task 12']
-		]);
 	});
 });
