@@ -11,7 +11,11 @@ import { IllegalActionError } from '../../errors.js';
 import { hashGameState, replayEventsStrict } from '../../index.js';
 import { ENGINE_REPLAY_VECTOR_CASES } from '../../compatibility/replay-vectors.js';
 import { storyCommandHandler } from './commands.js';
-import { reduceFirstBandMissionConsequences, storyEventReducer } from './reducer.js';
+import {
+	type FirstBandMissionConsequenceView,
+	reduceFirstBandMissionConsequences,
+	storyEventReducer
+} from './reducer.js';
 
 const EXPECTED_STORY_COMMAND_TYPES = ['story.apply.patch', 'story.reveal.first.archive'] as const;
 const EXPECTED_STORY_EVENT_TYPES = ['story.first.archive.revealed', 'story.patch.applied'] as const;
@@ -110,8 +114,24 @@ describe('story domain ownership', () => {
 			bandStory: EngineGameStateV23Schema.parse(before).bandStory,
 			firstBandArchive: EngineGameStateV23Schema.parse(before).firstBandArchive
 		});
+		const consequence = {
+			eventId: event.eventId,
+			sequence: event.sequence,
+			transition: 'extract',
+			mission: expected.mission,
+			bandStory: expected.bandStory,
+			firstBandArchive: expected.firstBandArchive
+		} satisfies FirstBandMissionConsequenceView;
 
-		const reduced = reduceFirstBandMissionConsequences(missionOnly, event);
+		expect(Object.keys(consequence)).toStrictEqual([
+			'eventId',
+			'sequence',
+			'transition',
+			'mission',
+			'bandStory',
+			'firstBandArchive'
+		]);
+		const reduced = reduceFirstBandMissionConsequences(missionOnly, consequence);
 		expect(reduced).toStrictEqual(expected);
 		expect(hashGameState(reduced)).toBe(event.afterStateHash);
 	});

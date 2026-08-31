@@ -36,6 +36,7 @@ import {
 	HeroProgressionSchema,
 	HabitStateSchema,
 	FirstEmberStateSchema,
+	FirstBandArchiveStateSchema,
 	InjurySchema,
 	LegalActionSchema,
 	NeedStateSchema,
@@ -64,6 +65,7 @@ import {
 	MasterFallbackConfigurationSchema,
 	MasterFallbackSelectionSchema,
 	ResourceKeySchema,
+	RuntimeBandStoryStateSchema,
 	RoutineResolutionSchema,
 	ScheduledEventSchema,
 	SettlementRoutePlanSchema,
@@ -223,11 +225,7 @@ import {
 	recoverFirstBandArchive
 } from './domains/story/archive.js';
 import { storyCommandHandler } from './domains/story/commands.js';
-import {
-	FirstBandMissionTransitionPayloadSchema,
-	reduceFirstBandMissionConsequences,
-	storyEventReducer
-} from './domains/story/reducer.js';
+import { reduceFirstBandMissionConsequences, storyEventReducer } from './domains/story/reducer.js';
 import { createStoryPatchCheckpoint } from './domains/story/runtime.js';
 
 export { storyPatchCastForState, validateStoryPatchForState } from './domains/story/runtime.js';
@@ -791,6 +789,11 @@ const MissionTransitionPayloadV9Schema = MissionTransitionPayloadV8Schema.safeEx
 const MissionTransitionPayloadV10Schema = MissionTransitionPayloadV8Schema.safeExtend({
 	masterControl: MasterControlStateV2Schema,
 	decisionResolution: MasterDecisionResolutionV2Schema.nullable()
+}).strict();
+
+const MissionTransitionPayloadV11Schema = MissionTransitionPayloadV8Schema.safeExtend({
+	bandStory: RuntimeBandStoryStateSchema,
+	firstBandArchive: FirstBandArchiveStateSchema
 }).strict();
 
 const SynthesisCommittedPayloadSchema = EmptyMetadataSchema.extend({
@@ -10737,7 +10740,7 @@ function reduceV2Event(
 					event.sequence
 				);
 			}
-			const payload = FirstBandMissionTransitionPayloadSchema.parse(event.payload);
+			const payload = MissionTransitionPayloadV11Schema.parse(event.payload);
 			if (payload.nextVersion !== state.version + 1) {
 				throw new ReplayIntegrityError(
 					'First-band mission transition version diverged',
@@ -10772,7 +10775,14 @@ function reduceV2Event(
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
 									: retreatMissionAttempt(state);
-			const storyState = reduceFirstBandMissionConsequences(state, event);
+			const storyState = reduceFirstBandMissionConsequences(state, {
+				eventId: event.eventId,
+				sequence: event.sequence,
+				transition: payload.transition,
+				mission: payload.mission,
+				bandStory: payload.bandStory,
+				firstBandArchive: payload.firstBandArchive
+			});
 			if (hashCanonical(expectedMission) !== hashCanonical(payload.mission)) {
 				throw new ReplayIntegrityError(
 					'First-band mission transition payload diverged',

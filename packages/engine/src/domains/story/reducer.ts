@@ -4,13 +4,13 @@ import {
 	EngineGameStateV23Schema,
 	FirstBandArchiveRevealSchema,
 	FirstBandArchiveStateSchema,
-	MissionRunStateV8Schema,
 	RuntimeBandStoryStateSchema,
 	StoryPatchCandidateSchema,
 	StoryPatchValidationReportSchema,
 	type AuthoritativeEvent,
 	type EngineGameState,
-	type EngineGameStateV23
+	type EngineGameStateV23,
+	type MissionRunStateV8
 } from '@summonlab/contracts';
 import { z } from 'zod';
 
@@ -39,16 +39,6 @@ const FirstBandArchiveRevealedPayloadSchema = EmptyMetadataSchema.extend({
 	reveal: FirstBandArchiveRevealSchema,
 	firstBandArchive: FirstBandArchiveStateSchema,
 	nextVersion: z.number().int().positive()
-}).strict();
-
-export const FirstBandMissionTransitionPayloadSchema = EmptyMetadataSchema.extend({
-	transition: z.enum(['prepare', 'revise-party', 'cancel', 'deploy', 'extract', 'retreat']),
-	mission: MissionRunStateV8Schema,
-	heroIds: z.array(z.string().uuid()).max(7),
-	completedObjectiveIds: z.array(z.string()).max(20),
-	nextVersion: z.number().int().positive(),
-	bandStory: RuntimeBandStoryStateSchema,
-	firstBandArchive: FirstBandArchiveStateSchema
 }).strict();
 
 export const STORY_EVENT_TYPES = ['story.first.archive.revealed', 'story.patch.applied'] as const;
@@ -145,32 +135,40 @@ function reduceStoryEvent(state: EngineGameState, event: AuthoritativeEvent): En
 
 export function reduceFirstBandMissionConsequences(
 	stateInput: EngineGameStateV23,
-	event: AuthoritativeEvent
+	consequence: FirstBandMissionConsequenceView
 ): EngineGameStateV23 {
 	const state = EngineGameStateV23Schema.parse(stateInput);
-	const payload = FirstBandMissionTransitionPayloadSchema.parse(event.payload);
 	const expectedBandStory =
-		payload.transition === 'extract' ? completeFirstBandStory(state) : state.bandStory;
+		consequence.transition === 'extract' ? completeFirstBandStory(state) : state.bandStory;
 	const expectedArchive = recoverFirstBandArchive(
 		state,
-		event.eventId,
-		payload.mission,
+		consequence.eventId,
+		consequence.mission,
 		expectedBandStory
 	);
 	if (
-		hashCanonical(expectedBandStory) !== hashCanonical(payload.bandStory) ||
-		hashCanonical(expectedArchive) !== hashCanonical(payload.firstBandArchive)
+		hashCanonical(expectedBandStory) !== hashCanonical(consequence.bandStory) ||
+		hashCanonical(expectedArchive) !== hashCanonical(consequence.firstBandArchive)
 	) {
 		throw new ReplayIntegrityError(
 			'First-band mission transition payload diverged',
-			event.sequence
+			consequence.sequence
 		);
 	}
 	return EngineGameStateV23Schema.parse({
 		...state,
-		bandStory: payload.bandStory,
-		firstBandArchive: payload.firstBandArchive
+		bandStory: consequence.bandStory,
+		firstBandArchive: consequence.firstBandArchive
 	});
+}
+
+export interface FirstBandMissionConsequenceView {
+	readonly eventId: string;
+	readonly sequence: number;
+	readonly transition: 'prepare' | 'revise-party' | 'cancel' | 'deploy' | 'extract' | 'retreat';
+	readonly mission: MissionRunStateV8;
+	readonly bandStory: EngineGameStateV23['bandStory'];
+	readonly firstBandArchive: EngineGameStateV23['firstBandArchive'];
 }
 
 export const storyEventReducer: EngineEventReducer = {
