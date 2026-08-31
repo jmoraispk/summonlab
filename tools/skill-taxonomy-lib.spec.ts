@@ -3,12 +3,48 @@ import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 
 import {
+	parseTargetSkillRows,
 	parseSkillMarkdown,
 	validateLegacyInventory,
 	validateMigrationLedger,
+	validateTargetTaxonomy,
 	type LegacySkillRow,
 	type SkillMigrationLedger
 } from './skill-taxonomy-lib.js';
+
+function targetPage(family: string, skill: string, equipment = '—'): string {
+	return `# Martial Skills — ${family}
+
+Domain: **Martial**
+Family: **${family}**
+
+| # | Skill | Equipment | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **${skill}** | ${equipment} | F | P | None | Foundation |`;
+}
+
+function migrationRecord(family: string, skill: string, row: number, equipment: string[] = []) {
+	return {
+		sourceId: `legacy.md#${family.toLowerCase()}:${row}`,
+		sourcePath: 'legacy.md',
+		section: family,
+		row,
+		name: skill,
+		rarity: 'F',
+		type: 'P',
+		requires: 'None',
+		effect: 'Foundation',
+		disposition: 'rehome' as const,
+		target: {
+			domain: 'Martial' as const,
+			family,
+			skill,
+			...(equipment.length > 0
+				? { labels: equipment.map((value) => ({ namespace: 'Equipment' as const, value })) }
+				: {})
+		}
+	};
+}
 
 describe('skill taxonomy migration inventory', () => {
 	it('parses a catalog row with its page and section identity', () => {
@@ -195,6 +231,70 @@ describe('skill taxonomy migration inventory', () => {
 		);
 		expect(replacements['craft-and-life.md#forging:14']).toBe(
 			'Alloying Master, Beast prerequisite'
+		);
+	});
+});
+
+describe('target skill taxonomy', () => {
+	it('parses the five Martial families and keeps Two Blades as an unlabeled Blade skill', () => {
+		const files = [
+			['blade.md', targetPage('Blade', 'Two Blades')],
+			['body.md', targetPage('Body', 'Footing')],
+			['polearm.md', targetPage('Polearm', 'Spearcraft', 'Spear, Glaive')],
+			['ranged.md', targetPage('Ranged', 'Archery', 'Bow')],
+			['shield.md', targetPage('Shield', 'Shield Use')]
+		].map(([sourcePath, source]) => ({ sourcePath, source }));
+		const rows = parseTargetSkillRows(files);
+		const ledger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceRowCount: 520,
+			records: [
+				migrationRecord('Blade', 'Two Blades', 1),
+				migrationRecord('Body', 'Footing', 2),
+				migrationRecord('Polearm', 'Spearcraft', 3, ['Spear', 'Glaive']),
+				migrationRecord('Ranged', 'Archery', 4, ['Bow']),
+				migrationRecord('Shield', 'Shield Use', 5)
+			]
+		} as SkillMigrationLedger;
+
+		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
+		expect([...new Set(rows.map((row) => row.family))].sort()).toEqual([
+			'Blade',
+			'Body',
+			'Polearm',
+			'Ranged',
+			'Shield'
+		]);
+		expect(rows.find((row) => row.name === 'Two Blades')?.labels).toEqual([]);
+		expect(rows.find((row) => row.name === 'Two Blades')?.family).toBe('Blade');
+		expect(rows.find((row) => row.name === 'Spearcraft')?.labels).toEqual([
+			{ namespace: 'Equipment', value: 'Spear' },
+			{ namespace: 'Equipment', value: 'Glaive' }
+		]);
+	});
+
+	it('rejects invalid Martial structure and broken migration lineage', () => {
+		const validRow = parseTargetSkillRows([
+			{ sourcePath: 'blade.md', source: targetPage('Blade', 'Two Blades', 'Two Blades') }
+		]);
+		const unknownFamilyRow = parseTargetSkillRows([
+			{ sourcePath: 'duelist.md', source: targetPage('Duelist', 'Lunge') }
+		]);
+		const unmaterializedLedger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceRowCount: 520,
+			records: [migrationRecord('Blade', 'Missing Skill', 1)]
+		} as SkillMigrationLedger;
+
+		expect(validateTargetTaxonomy(unknownFamilyRow, unmaterializedLedger)).toContain(
+			'unknown Martial family Duelist'
+		);
+		expect(validateTargetTaxonomy(validRow, unmaterializedLedger)).toEqual(
+			expect.arrayContaining([
+				'Equipment label Two Blades is forbidden',
+				'legacy.md#blade:1 targets missing Martial/Blade/Missing Skill',
+				'Martial/Blade/Two Blades has no legacy lineage'
+			])
 		);
 	});
 });

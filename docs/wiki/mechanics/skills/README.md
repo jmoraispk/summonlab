@@ -31,10 +31,11 @@ shorthand, not executable predicates.
 
 ## Catalog navigation
 
-- [Universal Martial](martial-universal.md)
-- [Blade: Sword, Dagger, Greatsword, Paired Blades](martial-blade.md)
-- [Haft and Fist: Spear, Axe, Hammer, Unarmed, Grappling](martial-haft-and-fist.md)
-- [Hunt, Guard, and Motion](martial-hunt-guard-motion.md)
+- [Blade](martial-blade.md)
+- [Polearm](martial-polearm.md)
+- [Ranged](martial-ranged.md)
+- [Shield](martial-shield.md)
+- [Body](martial-body.md)
 - [Evocation: Fire, Water, Wood, Earth, Metal](magical-evocation.md)
 - [Ward, Enchantment, Restoration, and Mind](magical-disciplines.md)
 - [Craft and Life: Forging, Alchemy, Cooking, Gathering, Beast, Lore](craft-and-life.md)

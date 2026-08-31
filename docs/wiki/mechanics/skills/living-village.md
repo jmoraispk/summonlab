@@ -40,11 +40,11 @@ All names bind to their full definitions on the linked catalog pages.
 
 | Role | Subfamily | Included skills |
 | --- | --- | --- |
-| Shared martial basics | [Universal Martial](martial-universal.md) | Footing, Grip, Basic Block, Recovery |
-| Melee attacker | [Sword](martial-blade.md#sword) | Swordsmanship, Measured Cut, Overhead Chop, Horizontal Slash, Cross Guard |
-| Ranged attacker | [Bow](martial-hunt-guard-motion.md#bow) | Archery, Aimed Shot, Quick Loose, Steady Stance |
-| Defender | [Shield](martial-hunt-guard-motion.md#shield) | Shield Use, Raise Shield, Shield Bash, Brace, Cover |
-| Shared movement | [Motion](martial-hunt-guard-motion.md#motion) | Footwork, Dash, Roll |
+| Shared martial basics | [Body](martial-body.md) | Footing, Grip, Basic Block, Recovery |
+| Melee attacker | [Blade](martial-blade.md) | Swordsmanship, Measured Cut, Overhead Chop, Horizontal Slash, Cross Guard |
+| Ranged attacker | [Ranged](martial-ranged.md) | Archery, Aimed Shot, Quick Loose, Steady Stance |
+| Defender | [Shield](martial-shield.md) | Shield Use, Raise Shield, Shield Bash, Brace, Cover |
+| Shared movement | [Body](martial-body.md) | Footwork, Dash, Roll |
 | Fire caster | [Fire Evocation](magical-evocation.md#evocation--fire) | Ember, Spark, Warmth, Ignite |
 | Water caster | [Water Evocation](magical-evocation.md#evocation--water) | Draw Water, Water Bullet, Cold Touch, Flow |
 | Wood caster | [Wood Evocation](magical-evocation.md#evocation--wood) | Quicken, Thorn, Root Grasp, Verdant Step |

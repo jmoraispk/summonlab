@@ -36,6 +36,39 @@ export type SkillMigrationLedger = {
 	records: SkillMigrationRecord[];
 };
 
+export type TargetSkillRow = {
+	targetId: string;
+	domain: SkillDomain;
+	family: string;
+	name: string;
+	labels: SkillLabel[];
+	rarity: string;
+	type: string;
+	requires: string;
+	effect: string;
+};
+
+const DOMAIN_FAMILIES: Record<SkillDomain, ReadonlySet<string>> = {
+	Martial: new Set(['Blade', 'Body', 'Polearm', 'Ranged', 'Shield']),
+	Magical: new Set(['Elemental', 'Enchantment', 'Mind', 'Restoration', 'Ward']),
+	Craft: new Set(['Alchemy', 'Beast', 'Cooking', 'Forging', 'Gathering', 'Lore'])
+};
+
+const EQUIPMENT_LABELS = new Set([
+	'Sword',
+	'Dagger',
+	'Greatsword',
+	'Spear',
+	'Glaive',
+	'Halberd',
+	'Polehammer',
+	'Bow',
+	'Crossbow',
+	'Sling',
+	'Unarmed'
+]);
+const ELEMENT_LABELS = new Set(['Fire', 'Water', 'Wood', 'Earth', 'Metal', 'Attuned']);
+
 function slugSection(section: string): string {
 	return section
 		.normalize('NFKD')
@@ -90,6 +123,150 @@ export function parseSkillMarkdown(sourcePath: string, source: string): LegacySk
 
 export function parseLegacySkillRows(files: readonly SkillMarkdownFile[]): LegacySkillRow[] {
 	return files.flatMap(({ sourcePath, source }) => parseSkillMarkdown(sourcePath, source));
+}
+
+export function parseTargetSkillRows(files: readonly SkillMarkdownFile[]): TargetSkillRow[] {
+	return files.flatMap(({ sourcePath, source }) => {
+		const domainMatch = /^Domain:\s+\*\*(Martial|Magical|Craft)\*\*\s*$/mu.exec(source);
+		if (!domainMatch) throw new Error(`${sourcePath} requires Domain metadata`);
+		const domain = domainMatch[1] as SkillDomain;
+		const pageFamily = /^Family:\s+\*\*(.+?)\*\*\s*$/mu.exec(source)?.[1];
+		const rows: TargetSkillRow[] = [];
+		let section: string | undefined;
+		let columns: string[] | undefined;
+
+		for (const line of source.split(/\r?\n/u)) {
+			const heading = /^##\s+(.+?)\s*$/u.exec(line);
+			if (heading) {
+				section = heading[1];
+				columns = undefined;
+				continue;
+			}
+
+			if (!line.trimStart().startsWith('|')) {
+				columns = undefined;
+				continue;
+			}
+
+			const cells = tableCells(line);
+			if (cells[0] === '#' && cells[1] === 'Skill') {
+				columns = cells;
+				continue;
+			}
+			if (!columns || !/^\d+$/u.test(cells[0] ?? '')) continue;
+
+			const name = /^\*\*(.+?)\*\*(?:\s+.*)?$/u.exec(cells[1] ?? '')?.[1]?.trim();
+			if (!name) continue;
+			const family = pageFamily ?? section;
+			if (!family) throw new Error(`${sourcePath} requires Family metadata or a family heading`);
+			const cell = (column: string) => cells[columns?.indexOf(column) ?? -1] ?? '';
+			const labelColumn = columns.includes('Equipment')
+				? 'Equipment'
+				: columns.includes('Element')
+					? 'Element'
+					: undefined;
+			const labelCell = labelColumn ? cell(labelColumn) : '—';
+			const labels =
+				labelCell === '—' || labelCell === ''
+					? []
+					: labelCell.split(',').map((value) => ({
+							namespace: labelColumn as SkillLabel['namespace'],
+							value: value.trim()
+						}));
+
+			rows.push({
+				targetId: `${domain.toLowerCase()}:${slugSection(family)}:${slugSection(name)}`,
+				domain,
+				family,
+				name,
+				labels,
+				rarity: cell('R'),
+				type: cell('T'),
+				requires: cell('Requires'),
+				effect: cell('Effect')
+			});
+		}
+
+		return rows;
+	});
+}
+
+function targetKey(domain: SkillDomain, family: string, skill: string): string {
+	return `${domain}/${family}/${skill}`;
+}
+
+function sortedLabels(labels: readonly SkillLabel[] | undefined): string[] {
+	return (labels ?? []).map(({ namespace, value }) => `${namespace}:${value}`).sort();
+}
+
+export function validateTargetTaxonomy(
+	rows: readonly TargetSkillRow[],
+	ledger: SkillMigrationLedger
+): string[] {
+	const errors: string[] = [];
+	const rowsByKey = new Map<string, TargetSkillRow>();
+	const targetIds = new Set<string>();
+
+	for (const row of rows) {
+		if (targetIds.has(row.targetId)) errors.push(`duplicate target id ${row.targetId}`);
+		targetIds.add(row.targetId);
+		rowsByKey.set(targetKey(row.domain, row.family, row.name), row);
+
+		if (!DOMAIN_FAMILIES[row.domain].has(row.family))
+			errors.push(`unknown ${row.domain} family ${row.family}`);
+		if (row.name === 'Two Blades' && row.family !== 'Blade')
+			errors.push('Two Blades must belong to Martial/Blade');
+
+		for (const label of row.labels) {
+			if (label.namespace === 'Equipment') {
+				if (label.value === 'Two Blades') errors.push('Equipment label Two Blades is forbidden');
+				else if (row.domain !== 'Martial')
+					errors.push(`Equipment label is invalid for ${row.domain}/${row.family}/${row.name}`);
+				else if (!EQUIPMENT_LABELS.has(label.value))
+					errors.push(`unknown Equipment label ${label.value}`);
+			} else {
+				if (row.domain !== 'Magical')
+					errors.push(`Element label is invalid for ${row.domain}/${row.family}/${row.name}`);
+				else if (!ELEMENT_LABELS.has(label.value))
+					errors.push(`unknown Element label ${label.value}`);
+			}
+		}
+	}
+
+	const lineageKeys = new Set<string>();
+	const mergeTargets = new Set<string>();
+	for (const record of ledger.records) {
+		if (record.disposition === 'delete') continue;
+		if (record.disposition === 'merge') {
+			if (!record.mergeTarget) continue;
+			mergeTargets.add(record.mergeTarget);
+			if (!rows.some((row) => row.name === record.mergeTarget))
+				errors.push(`${record.sourceId} merges into missing ${record.mergeTarget}`);
+			continue;
+		}
+		if (!record.target) {
+			errors.push(`${record.sourceId} has no target`);
+			continue;
+		}
+
+		const key = targetKey(record.target.domain, record.target.family, record.target.skill);
+		const row = rowsByKey.get(key);
+		lineageKeys.add(key);
+		if (!row) {
+			errors.push(`${record.sourceId} targets missing ${key}`);
+			continue;
+		}
+		if (sortedLabels(row.labels).join('|') !== sortedLabels(record.target.labels).join('|'))
+			errors.push(`${record.sourceId} labels do not match ${key}`);
+	}
+
+	for (const row of rows) {
+		const key = targetKey(row.domain, row.family, row.name);
+		if (!lineageKeys.has(key) && !mergeTargets.has(row.name))
+			errors.push(`${key} has no legacy lineage`);
+	}
+
+	return errors;
 }
 
 export function validateLegacyInventory(rows: readonly LegacySkillRow[]): string[] {

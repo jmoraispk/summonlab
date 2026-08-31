@@ -419,16 +419,6 @@
       "spoilerScope": "public"
     },
     {
-      "wikiId": "skills.martial-universal",
-      "path": "docs/wiki/mechanics/skills/martial-universal.md",
-      "pageType": "skill-catalog",
-      "owner": "skill-catalog",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
-      "spoilerScope": "discoverable"
-    },
-    {
       "wikiId": "skills.martial-blade",
       "path": "docs/wiki/mechanics/skills/martial-blade.md",
       "pageType": "skill-catalog",
@@ -439,8 +429,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "skills.martial-haft-fist",
-      "path": "docs/wiki/mechanics/skills/martial-haft-and-fist.md",
+      "wikiId": "skills.martial-polearm",
+      "path": "docs/wiki/mechanics/skills/martial-polearm.md",
       "pageType": "skill-catalog",
       "owner": "skill-catalog",
       "designStatus": "draft",
@@ -449,8 +439,28 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "skills.martial-hunt-guard-motion",
-      "path": "docs/wiki/mechanics/skills/martial-hunt-guard-motion.md",
+      "wikiId": "skills.martial-ranged",
+      "path": "docs/wiki/mechanics/skills/martial-ranged.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.martial-shield",
+      "path": "docs/wiki/mechanics/skills/martial-shield.md",
+      "pageType": "skill-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "draft",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "skills.martial-body",
+      "path": "docs/wiki/mechanics/skills/martial-body.md",
       "pageType": "skill-catalog",
       "owner": "skill-catalog",
       "designStatus": "draft",
