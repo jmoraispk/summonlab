@@ -4,7 +4,13 @@ import { describe, expect, it } from 'vitest';
 import { settlementForState } from '../../core/content-bindings.js';
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
-import { applyCommand, createBootstrapEngine, legalActions, sha256Hex } from '../../index.js';
+import {
+	applyCommand,
+	createBootstrapEngine,
+	decisionLegalActions,
+	legalActions,
+	sha256Hex
+} from '../../index.js';
 import {
 	currentTravelFor,
 	routeHasCapacity,
@@ -80,6 +86,39 @@ function arrivedState() {
 				}
 			}
 		})
+	};
+}
+
+function navigationCapacityActorState() {
+	const initial = EngineGameStateV13Schema.parse(fixture().snapshot.state);
+	const heroId = Object.keys(initial.heroes)[0]!;
+	return {
+		heroId,
+		state: EngineGameStateV13Schema.parse({
+			...initial,
+			heroes: {
+				...initial.heroes,
+				[heroId]: {
+					...initial.heroes[heroId]!,
+					destination: 'training-ground',
+					firstArrivalCompleted: true
+				}
+			}
+		})
+	};
+}
+
+function idleCapacityBlocker(
+	hero: ReturnType<typeof navigationCapacityActorState>['state']['heroes'][string],
+	heroId: string
+) {
+	return {
+		...hero,
+		heroId,
+		equipment: { mainHand: null },
+		assignment: null,
+		dailyPlan: null,
+		currentRoutine: null
 	};
 }
 
@@ -180,7 +219,7 @@ describe('settlement leaf ownership', () => {
 		);
 	});
 
-	it('rejects saturated route and facility capacity with the exact legacy error precedence', () => {
+	it('rejects saturated facility assignment capacity with the exact legacy error precedence', () => {
 		const { state, heroId } = arrivedState();
 		const assigned = applyCommand(state, {
 			...commandBase(state, state.master.masterId, 'assign-workshop'),
@@ -254,6 +293,148 @@ describe('settlement leaf ownership', () => {
 		expect(
 			legalActions(saturated, saturated.master.masterId).map((candidate) => candidate.actionId)
 		).not.toContain(`settlement.assign.${secondHeroId}.workshop`);
+	});
+
+	it('rejects destination-node saturation with the exact legacy travel action and error order', () => {
+		const { state, heroId } = navigationCapacityActorState();
+		const hero = state.heroes[heroId]!;
+		const blockingHeroes = Object.fromEntries(
+			Array.from({ length: 8 }, (_, index) => {
+				const blockerId = deterministicUuid(`task-7a-node-blocker:${index}`);
+				return [
+					blockerId,
+					{
+						...idleCapacityBlocker(hero, blockerId),
+						location: 'training-ground' as const,
+						locationNodeId: 'training-ring',
+						currentTravel: null
+					}
+				];
+			})
+		);
+		const saturated = EngineGameStateV13Schema.parse({
+			...state,
+			heroes: { ...state.heroes, ...blockingHeroes }
+		});
+		const definition = settlementForState(saturated);
+		const route = settlementRouteFor(saturated, definition, heroId, 'training-ring');
+		const command = {
+			...commandBase(saturated, heroId, 'node-saturated-travel'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'training-ring'
+		} satisfies EngineCommand;
+		const before = structuredClone(saturated);
+
+		expect(route).not.toBeNull();
+		expect(routeHasCapacity(saturated, definition, heroId, 'training-ring', route)).toBe(false);
+		expect(decisionLegalActions(saturated, heroId).map((action) => action.actionId)).toStrictEqual([
+			'hero.plan.day',
+			'hero.activity.rest',
+			'hero.equip.13933e53-2ba0-47ec-8784-07dfcce5fcd8',
+			'hero.travel.cistern-steps',
+			'hero.travel.courtyard-heart',
+			'hero.travel.dormitory-bunks',
+			'hero.travel.dormitory-entry',
+			'hero.travel.dormitory-nook',
+			'hero.travel.gate-court',
+			'hero.travel.gate-rail',
+			'hero.travel.kitchen-entry',
+			'hero.travel.kitchen-hearth',
+			'hero.travel.kitchen-table',
+			'hero.travel.training-entry',
+			'hero.travel.training-rack',
+			'hero.travel.wall-overlook',
+			'hero.travel.workshop-bench',
+			'hero.travel.workshop-entry'
+		]);
+
+		let caught: unknown;
+		try {
+			applyCommand(saturated, command);
+		} catch (error) {
+			caught = error;
+		}
+		expect(caught).toBeInstanceOf(IllegalActionError);
+		expect(caught).toMatchObject({
+			name: 'IllegalActionError',
+			code: 'ILLEGAL_ACTION',
+			message: 'Action is not legal in the current state: hero.travel',
+			legalActionIds: [
+				'hero.plan.day',
+				'hero.activity.rest',
+				'hero.equip.13933e53-2ba0-47ec-8784-07dfcce5fcd8',
+				'hero.travel'
+			]
+		});
+		expect(saturated).toStrictEqual(before);
+	});
+
+	it('rejects edge reservation saturation with the exact legacy travel action and error order', () => {
+		const { state, heroId } = navigationCapacityActorState();
+		const hero = state.heroes[heroId]!;
+		const definition = settlementForState(state);
+		const route = settlementRouteFor(state, definition, heroId, 'training-ring');
+		if (!route) throw new Error('Expected the frozen gate-to-training route');
+		const blockingHeroes = Object.fromEntries(
+			Array.from({ length: 6 }, (_, index) => {
+				const blockerId = deterministicUuid(`task-7a-edge-blocker:${index}`);
+				return [
+					blockerId,
+					{
+						...idleCapacityBlocker(hero, blockerId),
+						currentTravel: {
+							travelId: deterministicUuid(`task-7a-edge-travel:${index}`),
+							scheduledEventId: deterministicUuid(`task-7a-edge-schedule:${index}`),
+							fromNodeId: 'gate-dais',
+							toNodeId: 'training-ring',
+							destinationZone: 'training-ground' as const,
+							route,
+							settlementContentVersion: definition.contentVersion,
+							settlementContentHash: state.settlement.navigation.contentHash,
+							startedAt: state.simulatedAt,
+							arrivesAt: '2000-01-01T00:02:06.000Z'
+						}
+					}
+				];
+			})
+		);
+		const saturated = EngineGameStateV13Schema.parse({
+			...state,
+			heroes: { ...state.heroes, ...blockingHeroes }
+		});
+		const command = {
+			...commandBase(saturated, heroId, 'edge-saturated-travel'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'training-ring'
+		} satisfies EngineCommand;
+		const before = structuredClone(saturated);
+
+		expect(routeHasCapacity(saturated, definition, heroId, 'training-ring', route)).toBe(false);
+		expect(decisionLegalActions(saturated, heroId).map((action) => action.actionId)).toStrictEqual([
+			'hero.plan.day',
+			'hero.activity.rest',
+			'hero.equip.13933e53-2ba0-47ec-8784-07dfcce5fcd8'
+		]);
+
+		let caught: unknown;
+		try {
+			applyCommand(saturated, command);
+		} catch (error) {
+			caught = error;
+		}
+		expect(caught).toBeInstanceOf(IllegalActionError);
+		expect(caught).toMatchObject({
+			name: 'IllegalActionError',
+			code: 'ILLEGAL_ACTION',
+			message: 'Action is not legal in the current state: hero.travel',
+			legalActionIds: [
+				'hero.plan.day',
+				'hero.activity.rest',
+				'hero.equip.13933e53-2ba0-47ec-8784-07dfcce5fcd8',
+				'hero.travel'
+			]
+		});
+		expect(saturated).toStrictEqual(before);
 	});
 
 	it('derives the exact daily plan, routine resolution, outcome, and reward order', () => {
