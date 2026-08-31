@@ -1,9 +1,15 @@
-import { EngineGameStateSchema, type EngineGameState } from '@summonlab/contracts';
+import {
+	EngineCommandSchema,
+	EngineGameStateSchema,
+	type AuthoritativeEvent,
+	type EngineCommand,
+	type EngineGameState
+} from '@summonlab/contracts';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from '../../../contracts/src/engine-compatibility-states.snapshot.js';
 import { ReplayIntegrityError } from '../errors.js';
-import { settlementForState } from './content-bindings.js';
+import { missionContentForState, settlementForState } from './content-bindings.js';
 import { hashGameState, parseGameState } from './state.js';
 import type { EngineCommandHandler, EngineEventReducer } from './types.js';
 import {
@@ -110,18 +116,134 @@ describe('deterministic engine core', () => {
 			}
 		};
 
-		expect(() => settlementForState(mismatched)).toThrowError(
-			new ReplayIntegrityError('Settlement content binding is unavailable', 1)
-		);
+		try {
+			settlementForState(mismatched);
+			throw new Error('Expected settlement binding rejection');
+		} catch (error) {
+			expect(error).toBeInstanceOf(ReplayIntegrityError);
+			expect((error as Error).constructor).toBe(ReplayIntegrityError);
+			expect(error).toMatchObject({
+				name: 'ReplayIntegrityError',
+				message: 'Settlement content binding is unavailable',
+				sequence: 1
+			});
+		}
 	});
 
-	it('defines stable owner ports without orchestration ownership', () => {
-		expectTypeOf<EngineCommandHandler>().toHaveProperty('ownerId');
-		expectTypeOf<EngineCommandHandler>().toHaveProperty('commandTypes');
-		expectTypeOf<EngineCommandHandler>().toHaveProperty('assertLegal');
-		expectTypeOf<EngineCommandHandler>().toHaveProperty('buildEvent');
-		expectTypeOf<EngineEventReducer>().toHaveProperty('ownerId');
-		expectTypeOf<EngineEventReducer>().toHaveProperty('eventTypes');
-		expectTypeOf<EngineEventReducer>().toHaveProperty('reduce');
+	it.each([
+		['content version', { contentVersion: 'tower-floor-01-v999' }],
+		['content hash', { contentHash: '0'.repeat(64) }]
+	] as const)('rejects a mission binding %s mismatch with the legacy error', (_label, binding) => {
+		const state = parseGameState(ENGINE_COMPATIBILITY_STATE_FIXTURES[22]);
+		if (state.schemaVersion !== 23) throw new Error('Expected v23 fixture');
+		const mismatched = {
+			...state,
+			mission: {
+				...state.mission,
+				binding: { ...state.mission.binding, ...binding }
+			}
+		};
+
+		try {
+			missionContentForState(mismatched);
+			throw new Error('Expected mission binding rejection');
+		} catch (error) {
+			expect(error).toBeInstanceOf(ReplayIntegrityError);
+			expect((error as Error).constructor).toBe(ReplayIntegrityError);
+			expect(error).toMatchObject({
+				name: 'ReplayIntegrityError',
+				message: 'Mission content binding is unavailable',
+				sequence: 1
+			});
+		}
+	});
+
+	it('defines exact stable owner ports without orchestration ownership', () => {
+		type InspectCommand = Extract<EngineCommand, { commandType: 'master.inspect.gate' }>;
+		interface ExpectedCommandHandlerPort {
+			readonly ownerId: string;
+			readonly commandTypes: readonly InspectCommand['commandType'][];
+			assertLegal(state: EngineGameState, command: InspectCommand): void;
+			buildEvent(state: EngineGameState, command: InspectCommand): AuthoritativeEvent;
+		}
+		interface ExpectedEventReducerPort {
+			readonly ownerId: string;
+			readonly eventTypes: readonly string[];
+			reduce(state: EngineGameState, event: AuthoritativeEvent): EngineGameState;
+		}
+		const state = STATES[0]!;
+		const command = EngineCommandSchema.parse({
+			commandId: '1141b6b4-92c7-4a7e-b32d-7043e2c75491',
+			runId: state.runId,
+			actorId: state.master.masterId,
+			expectedVersion: state.version,
+			correlationId: 'e439a130-3c31-4cf8-b53d-d9c9c9f04f3b',
+			source: {
+				source: 'manual',
+				timing: 'step',
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			},
+			commandType: 'master.inspect.gate'
+		});
+		if (command.commandType !== 'master.inspect.gate') throw new Error('Expected inspect command');
+		const event = { eventType: 'core.test.event' } as AuthoritativeEvent;
+		let asserted: readonly [EngineGameState, InspectCommand] | undefined;
+		let built: readonly [EngineGameState, InspectCommand] | undefined;
+		let reduced: readonly [EngineGameState, AuthoritativeEvent] | undefined;
+
+		const commandHandler = {
+			ownerId: 'core.test.command-owner',
+			commandTypes: ['master.inspect.gate'],
+			assertLegal(handlerState: EngineGameState, handlerCommand: InspectCommand): void {
+				asserted = [handlerState, handlerCommand];
+			},
+			buildEvent(
+				handlerState: EngineGameState,
+				handlerCommand: InspectCommand
+			): AuthoritativeEvent {
+				built = [handlerState, handlerCommand];
+				return event;
+			}
+		} as const satisfies EngineCommandHandler<InspectCommand>;
+		const eventReducer = {
+			ownerId: 'core.test.event-owner',
+			eventTypes: ['core.test.event'],
+			reduce(reducerState: EngineGameState, reducerEvent: AuthoritativeEvent): EngineGameState {
+				reduced = [reducerState, reducerEvent];
+				return reducerState;
+			}
+		} as const satisfies EngineEventReducer;
+
+		expectTypeOf<
+			EngineCommandHandler<InspectCommand>
+		>().toEqualTypeOf<ExpectedCommandHandlerPort>();
+		expectTypeOf<EngineEventReducer>().toEqualTypeOf<ExpectedEventReducerPort>();
+		expectTypeOf(commandHandler).toMatchTypeOf<EngineCommandHandler<InspectCommand>>();
+		expectTypeOf(eventReducer).toMatchTypeOf<EngineEventReducer>();
+		expectTypeOf(commandHandler.ownerId).toEqualTypeOf<'core.test.command-owner'>();
+		expectTypeOf(commandHandler.commandTypes).toEqualTypeOf<readonly ['master.inspect.gate']>();
+		expectTypeOf(commandHandler.assertLegal).toEqualTypeOf<
+			(state: EngineGameState, command: InspectCommand) => void
+		>();
+		expectTypeOf(commandHandler.buildEvent).toEqualTypeOf<
+			(state: EngineGameState, command: InspectCommand) => AuthoritativeEvent
+		>();
+		expectTypeOf(eventReducer.ownerId).toEqualTypeOf<'core.test.event-owner'>();
+		expectTypeOf(eventReducer.eventTypes).toEqualTypeOf<readonly ['core.test.event']>();
+		expectTypeOf(eventReducer.reduce).toEqualTypeOf<
+			(state: EngineGameState, event: AuthoritativeEvent) => EngineGameState
+		>();
+		commandHandler.assertLegal(state, command);
+		expect(commandHandler.buildEvent(state, command)).toBe(event);
+		expect(eventReducer.reduce(state, event)).toBe(state);
+		expect(commandHandler.ownerId).toBe('core.test.command-owner');
+		expect(commandHandler.commandTypes).toEqual(['master.inspect.gate']);
+		expect(eventReducer.ownerId).toBe('core.test.event-owner');
+		expect(eventReducer.eventTypes).toEqual(['core.test.event']);
+		expect(asserted).toEqual([state, command]);
+		expect(built).toEqual([state, command]);
+		expect(reduced).toEqual([state, event]);
 	});
 });
