@@ -314,9 +314,42 @@ describe('engine contracts compatibility', () => {
 			...ENGINE_COMPATIBILITY_STATE_FIXTURES[22],
 			schemaVersion: 24
 		};
-		expect(gameStateContracts.EngineGameStateSchema.safeParse(unsupported)).toStrictEqual(
+		const directVersionResult = gameStateContracts.EngineGameStateV23Schema.safeParse(unsupported);
+		expect(directVersionResult).toStrictEqual(
+			engineContracts.EngineGameStateV23Schema.safeParse(unsupported)
+		);
+		expect(directVersionResult.success).toBe(false);
+		if (directVersionResult.success) {
+			throw new Error('Version 23 state schema unexpectedly accepted schema version 24');
+		}
+		expect(
+			directVersionResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'invalid_value',
+				path: ['schemaVersion'],
+				message: 'Invalid input: expected 23'
+			}
+		]);
+
+		const directUnionResult = gameStateContracts.EngineGameStateSchema.safeParse(unsupported);
+		expect(directUnionResult).toStrictEqual(
 			engineContracts.EngineGameStateSchema.safeParse(unsupported)
 		);
+		expect(directUnionResult.success).toBe(false);
+		if (directUnionResult.success) {
+			throw new Error('Engine state union unexpectedly accepted schema version 24');
+		}
+		expect(
+			directUnionResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'invalid_union',
+				path: ['schemaVersion'],
+				message:
+					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23'"
+			}
+		]);
 	});
 
 	it('parses every command discriminator in its exact union order through the direct module', () => {
@@ -570,9 +603,22 @@ describe('engine contracts compatibility', () => {
 			);
 		}
 		const invalid = { ...commandBase, commandType: 'engine.unknown' };
-		expect(commandContracts.EngineCommandSchema.safeParse(invalid)).toStrictEqual(
-			engineContracts.EngineCommandSchema.safeParse(invalid)
-		);
+		const directResult = commandContracts.EngineCommandSchema.safeParse(invalid);
+		expect(directResult).toStrictEqual(engineContracts.EngineCommandSchema.safeParse(invalid));
+		expect(directResult.success).toBe(false);
+		if (directResult.success) {
+			throw new Error('Engine command union unexpectedly accepted an unknown discriminator');
+		}
+		expect(
+			directResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'invalid_union',
+				path: ['commandType'],
+				message:
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+			}
+		]);
 	});
 
 	it('parses every remaining request branch identically through the direct command module', () => {
@@ -816,6 +862,59 @@ describe('engine contracts compatibility', () => {
 				invalidCase.publicSchema.safeParse(invalidCase.value)
 			);
 		}
+
+		const conversationResult = commandContracts.ConversationRequestSchema.safeParse({
+			...cases[1].value,
+			orderIntent: 'train'
+		});
+		expect(conversationResult.success).toBe(false);
+		if (conversationResult.success) {
+			throw new Error('Conversation request unexpectedly accepted an order intent for say');
+		}
+		expect(
+			conversationResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'custom',
+				path: [],
+				message: 'Only an order has an order intent'
+			}
+		]);
+
+		const strictResult = commandContracts.CommunicationRequestSchema.safeParse({
+			...cases[0].value,
+			unexpected: true
+		});
+		expect(strictResult.success).toBe(false);
+		if (strictResult.success) {
+			throw new Error('Strict communication request unexpectedly accepted an extra key');
+		}
+		expect(
+			strictResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'unrecognized_keys',
+				path: [],
+				message: 'Unrecognized key: "unexpected"'
+			}
+		]);
+
+		const requestUnionResult = commandContracts.DirectiveRequestSchema.safeParse({
+			action: 'unknown'
+		});
+		expect(requestUnionResult.success).toBe(false);
+		if (requestUnionResult.success) {
+			throw new Error('Directive request union unexpectedly accepted an unknown discriminator');
+		}
+		expect(
+			requestUnionResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
+		).toStrictEqual([
+			{
+				code: 'invalid_union',
+				path: ['action'],
+				message: "Invalid discriminator value. Expected 'issue' | 'replace' | 'revoke'"
+			}
+		]);
 	});
 
 	it('parses one strict replay report identically through the direct runtime module', () => {
