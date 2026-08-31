@@ -23,7 +23,8 @@ import {
 	masterFallbackMissionChoice,
 	masterFallbackSafetySource,
 	missionTurnLegalActions,
-	selectMasterFallback
+	selectMasterFallback,
+	supportsMissionApi
 } from '@summonlab/engine';
 import { ScriptedPolicy } from '@summonlab/policies';
 import { json } from '@sveltejs/kit';
@@ -44,15 +45,7 @@ async function assembleMissionChoices(
 	masterActionId: string | null,
 	fallback: boolean
 ): Promise<MissionTurnChoice[]> {
-	if (
-		snapshot.state.schemaVersion !== 13 &&
-		snapshot.state.schemaVersion !== 15 &&
-		snapshot.state.schemaVersion !== 16 &&
-		snapshot.state.schemaVersion !== 17 &&
-		snapshot.state.schemaVersion !== 18 &&
-		snapshot.state.schemaVersion !== 19 &&
-		snapshot.state.schemaVersion !== 20
-	) {
+	if (!supportsMissionApi(snapshot.state)) {
 		throw new IllegalActionError('mission.resolve.turn');
 	}
 	const attempt = snapshot.state.mission.attempt;
@@ -177,15 +170,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		]);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
 		if (!proof) return json({ message: 'Summoned company not found.' }, { status: 404 });
-		if (
-			snapshot.state.schemaVersion !== 13 &&
-			snapshot.state.schemaVersion !== 15 &&
-			snapshot.state.schemaVersion !== 16 &&
-			snapshot.state.schemaVersion !== 17 &&
-			snapshot.state.schemaVersion !== 18 &&
-			snapshot.state.schemaVersion !== 19 &&
-			snapshot.state.schemaVersion !== 20
-		) {
+		if (!supportsMissionApi(snapshot.state)) {
 			return json(
 				{ message: 'This history predates authoritative mission turns.' },
 				{ status: 409 }

@@ -22,7 +22,8 @@ import {
 	eventSummary,
 	gameMinutesBetween,
 	nextCatchUpCommand,
-	realTimeForGameTime
+	realTimeForGameTime,
+	supportsCatchUp
 } from '@summonlab/engine';
 import postgres from 'postgres';
 
@@ -77,17 +78,7 @@ async function loadState(
 		getEngineSnapshotInTransaction(transaction, runId)
 	);
 	if (!snapshot) throw new Error(`Engine snapshot not found: ${runId}`);
-	if (
-		snapshot.state.schemaVersion !== 5 &&
-		snapshot.state.schemaVersion !== 6 &&
-		snapshot.state.schemaVersion !== 7 &&
-		snapshot.state.schemaVersion !== 8 &&
-		snapshot.state.schemaVersion !== 9 &&
-		snapshot.state.schemaVersion !== 10 &&
-		snapshot.state.schemaVersion !== 11 &&
-		snapshot.state.schemaVersion !== 12 &&
-		snapshot.state.schemaVersion !== 13
-	) {
+	if (!supportsCatchUp(snapshot.state)) {
 		throw new Error(`Catch-up requires engine-v5 through engine-v13 state: ${runId}`);
 	}
 	return snapshot.state;

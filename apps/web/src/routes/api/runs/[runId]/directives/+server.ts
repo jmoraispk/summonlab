@@ -8,7 +8,7 @@ import {
 	commitEngineCommand,
 	getEngineSnapshot
 } from '@summonlab/database';
-import { IllegalActionError } from '@summonlab/engine';
+import { IllegalActionError, supportsDirectivesApi } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
@@ -16,15 +16,7 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ params }) => {
 	const snapshot = await getEngineSnapshot(getConfig().databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-	if (
-		snapshot.state.schemaVersion !== 10 &&
-		snapshot.state.schemaVersion !== 11 &&
-		snapshot.state.schemaVersion !== 12 &&
-		snapshot.state.schemaVersion !== 13 &&
-		snapshot.state.schemaVersion !== 16 &&
-		snapshot.state.schemaVersion !== 17 &&
-		snapshot.state.schemaVersion !== 18
-	) {
+	if (!supportsDirectivesApi(snapshot.state)) {
 		return json({ message: 'This history predates scoped directions.' }, { status: 409 });
 	}
 	return json({
@@ -56,15 +48,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const config = getConfig();
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (
-			snapshot.state.schemaVersion !== 10 &&
-			snapshot.state.schemaVersion !== 11 &&
-			snapshot.state.schemaVersion !== 12 &&
-			snapshot.state.schemaVersion !== 13 &&
-			snapshot.state.schemaVersion !== 16 &&
-			snapshot.state.schemaVersion !== 17 &&
-			snapshot.state.schemaVersion !== 18
-		) {
+		if (!supportsDirectivesApi(snapshot.state)) {
 			return json({ message: 'This history predates scoped directions.' }, { status: 409 });
 		}
 		const commandId = randomUUID();

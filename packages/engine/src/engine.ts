@@ -24,7 +24,15 @@ export {
 	SOCIAL_ENGINE_CONTENT_VERSION,
 	STORY_PATCH_ENGINE_CONTENT_VERSION,
 	SYNTHESIS_ENGINE_CONTENT_VERSION,
-	TRAVEL_ENGINE_CONTENT_VERSION
+	TRAVEL_ENGINE_CONTENT_VERSION,
+	supportsCatchUp,
+	supportsCommunicationApi,
+	supportsConversationApi,
+	supportsDirectivesApi,
+	supportsFirstBandArchiveApi,
+	supportsMissionApi,
+	supportsStoryPatchApi,
+	supportsSynthesisApi
 } from './core/versions.js';
 export { hashGameState } from './core/state.js';
 export type {

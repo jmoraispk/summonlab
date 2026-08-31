@@ -8,7 +8,7 @@ import {
 	commitEngineCommand,
 	getEngineSnapshot
 } from '@summonlab/database';
-import { IllegalActionError } from '@summonlab/engine';
+import { IllegalActionError, supportsSynthesisApi } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
 import { synthesisView } from '$lib/server/synthesis';
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!getConfig().devRoutesEnabled) return json({ message: 'Not found.' }, { status: 404 });
 	const snapshot = await getEngineSnapshot(getConfig().databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-	if (snapshot.state.schemaVersion !== 22) {
+	if (!supportsSynthesisApi(snapshot.state)) {
 		return json({ message: 'This run has no synthesis state.' }, { status: 409 });
 	}
 	return json(synthesisView(snapshot.state, snapshot.stateHash));
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	try {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 22) {
+		if (!supportsSynthesisApi(snapshot.state)) {
 			return json({ message: 'This run cannot accept synthesis actions.' }, { status: 409 });
 		}
 		const commandId = randomUUID();

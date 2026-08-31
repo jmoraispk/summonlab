@@ -8,7 +8,7 @@ import {
 	commitEngineCommand,
 	getEngineSnapshot
 } from '@summonlab/database';
-import { IllegalActionError } from '@summonlab/engine';
+import { IllegalActionError, supportsFirstBandArchiveApi } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
 import { firstBandArchiveView } from '$lib/server/first-band-archive';
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!getConfig().devRoutesEnabled) return json({ message: 'Not found.' }, { status: 404 });
 	const snapshot = await getEngineSnapshot(getConfig().databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-	if (snapshot.state.schemaVersion !== 23) {
+	if (!supportsFirstBandArchiveApi(snapshot.state)) {
 		return json({ message: 'This run has no first-band archive.' }, { status: 409 });
 	}
 	return json(firstBandArchiveView(snapshot.state, snapshot.stateHash));
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	try {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (snapshot.state.schemaVersion !== 23) {
+		if (!supportsFirstBandArchiveApi(snapshot.state)) {
 			return json({ message: 'This run cannot reveal the first-band archive.' }, { status: 409 });
 		}
 		const commandId = randomUUID();

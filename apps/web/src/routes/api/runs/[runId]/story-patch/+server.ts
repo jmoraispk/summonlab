@@ -8,7 +8,11 @@ import {
 	commitEngineCommand,
 	getEngineSnapshot
 } from '@summonlab/database';
-import { IllegalActionError, validateStoryPatchForState } from '@summonlab/engine';
+import {
+	IllegalActionError,
+	supportsStoryPatchApi,
+	validateStoryPatchForState
+} from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
 import { runtimeStoryPatchView } from '$lib/server/story-patch';
@@ -19,7 +23,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!getConfig().devRoutesEnabled) return json({ message: 'Not found.' }, { status: 404 });
 	const snapshot = await getEngineSnapshot(getConfig().databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-	if (snapshot.state.schemaVersion !== 21) {
+	if (!supportsStoryPatchApi(snapshot.state)) {
 		return json({ message: 'This run has no runtime story-patch state.' }, { status: 409 });
 	}
 	return json(runtimeStoryPatchView(snapshot.state, snapshot.stateHash));
@@ -42,7 +46,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
 		if (
-			snapshot.state.schemaVersion !== 21 ||
+			!supportsStoryPatchApi(snapshot.state) ||
 			parsed.data.envelopeId !== snapshot.state.bandStory.envelopeId
 		) {
 			return json({ message: 'This run cannot accept that story patch.' }, { status: 409 });

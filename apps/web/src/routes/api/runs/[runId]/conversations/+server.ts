@@ -8,7 +8,11 @@ import {
 	commitEngineCommand,
 	getEngineSnapshot
 } from '@summonlab/database';
-import { IllegalActionError, projectHeroConversationPresentation } from '@summonlab/engine';
+import {
+	IllegalActionError,
+	projectHeroConversationPresentation,
+	supportsConversationApi
+} from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
@@ -42,13 +46,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		const config = getConfig();
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
-		if (
-			snapshot.state.schemaVersion !== 9 &&
-			snapshot.state.schemaVersion !== 10 &&
-			snapshot.state.schemaVersion !== 11 &&
-			snapshot.state.schemaVersion !== 12 &&
-			snapshot.state.schemaVersion !== 13
-		) {
+		if (!supportsConversationApi(snapshot.state)) {
 			return json(
 				{ message: 'This history predates hero conversation outcomes.' },
 				{ status: 409 }

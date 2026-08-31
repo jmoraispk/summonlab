@@ -6,6 +6,7 @@ import {
 	projectMissionArenaKnowledge
 } from '@summonlab/content';
 import { getEngineReplay, getProofRun } from '@summonlab/database';
+import { supportsMissionApi } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
@@ -17,15 +18,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		getProofRun(config.databaseUrl, params.runId).catch(() => null)
 	]);
 	if (!report || !proof) error(404, 'This summoned company could not be loaded.');
-	if (
-		report.snapshot.state.schemaVersion !== 13 &&
-		report.snapshot.state.schemaVersion !== 15 &&
-		report.snapshot.state.schemaVersion !== 16 &&
-		report.snapshot.state.schemaVersion !== 17 &&
-		report.snapshot.state.schemaVersion !== 18 &&
-		report.snapshot.state.schemaVersion !== 19 &&
-		report.snapshot.state.schemaVersion !== 20
-	) {
+	if (!supportsMissionApi(report.snapshot.state)) {
 		error(409, 'This run predates authoritative mission turns.');
 	}
 	const isPortal = report.snapshot.state.schemaVersion === 15;
