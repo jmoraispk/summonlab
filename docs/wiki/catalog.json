@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-08-30",
+  "lastReviewed": "2026-08-31",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -377,9 +377,26 @@
       "pageType": "skill-index",
       "owner": "skill-catalog",
       "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
-      "spoilerScope": "public"
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "public",
+      "assets": [
+        {
+          "assetKey": "martial-domain-v1",
+          "file": "apps/web/static/wiki-media/skills/martial-domain.webp",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "magical-domain-v1",
+          "file": "apps/web/static/wiki-media/skills/magical-domain.webp",
+          "status": "candidate"
+        },
+        {
+          "assetKey": "craft-domain-v1",
+          "file": "apps/web/static/wiki-media/skills/craft-domain.webp",
+          "status": "candidate"
+        }
+      ]
     },
     {
       "wikiId": "skills.framework",

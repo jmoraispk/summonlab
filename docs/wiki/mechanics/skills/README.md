@@ -9,6 +9,13 @@ Skills define what a hero can do. Rarity describes the skill's fixed power/scarc
 describes one hero's realized command of that skill. The catalog spans combat, magic, craft, and
 life disciplines so a hero's value is not reducible to direct combat power.
 
+The skill tree begins with three player-facing domains: **Martial**, **Magical**, and **Craft**.
+Each domain supports two paths. A universal skill can branch directly from its domain; a specialized
+skill passes through a family and subfamily first. In compact form: **domain → universal skill** or
+**domain → family → subfamily → skill**. The supplied catalog currently contains a populated
+Universal Martial set; the equivalent Magical and Craft lanes remain deliberately reserved rather
+than being filled with invented source material.
+
 This section is a companion to the larger progression system. The [framework](framework.md)
 preserves the supplied skill rules; the grouped catalog pages preserve every supplied skill row.
 

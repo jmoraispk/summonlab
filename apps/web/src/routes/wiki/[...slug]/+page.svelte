@@ -1,6 +1,7 @@
 <script lang="ts">
 	import MonsterDatabase from '$lib/components/wiki/MonsterDatabase.svelte';
 	import MonsterVisualMatrix from '$lib/components/wiki/MonsterVisualMatrix.svelte';
+	import SkillTree from '$lib/components/wiki/SkillTree.svelte';
 
 	let { data } = $props();
 </script>
@@ -10,6 +11,10 @@
 </svelte:head>
 
 <main>
+	{#if data.wikiPage.wikiId === 'skills.index'}
+		<SkillTree />
+	{/if}
+
 	{#if data.monsterDatabase}
 		<MonsterDatabase monsters={data.monsterDatabase} />
 	{:else if data.monsterVisual}
