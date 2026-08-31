@@ -7,11 +7,19 @@ describe('online wiki registry', () => {
 	it('publishes every public catalog route from canonical Markdown', () => {
 		const navigation = getWikiNavigation();
 
-		expect(getWikiPageCount()).toBe(98);
+		expect(getWikiPageCount()).toBe(99);
 		expect(navigation.length).toBeGreaterThan(40);
 		for (const entry of navigation) {
 			expect(getWikiPage(entry.href.replace(/^\/wiki\//u, ''))?.title).toBe(entry.title);
 		}
+	});
+
+	it('publishes the Elemental catalog and retires obsolete skill routes', () => {
+		expect(getWikiPage('mechanics/skills/magical-elemental')?.wikiId).toBe(
+			'skills.magical-elemental'
+		);
+		expect(getWikiPage('mechanics/skills/magical-evocation')).toBeNull();
+		expect(getWikiPage('mechanics/skills/martial-universal')).toBeNull();
 	});
 
 	it('publishes one visual database page per canonical monster identity', () => {

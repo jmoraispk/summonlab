@@ -12,11 +12,21 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 		'true'
 	);
 	await expect(tree.getByRole('button', { name: /martial/i })).toContainText('5 families');
-	await expect(tree.getByRole('heading', { name: 'Skill families' })).toBeVisible();
-	await expect(tree.getByRole('link', { name: 'Two Blades' })).toHaveAttribute(
-		'href',
-		'/wiki/mechanics/skills/martial-blade'
+	await expect(tree.getByRole('heading', { name: 'Blade' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Two Blades' })).toBeVisible();
+	await expect(tree.getByText('Two Blades', { exact: true })).toHaveCount(1);
+	await expect(tree.getByText(/universal skills/i)).toHaveCount(0);
+
+	await tree.getByRole('button', { name: 'Sword', exact: true }).click();
+	await expect(tree.getByRole('button', { name: 'Sword', exact: true })).toHaveAttribute(
+		'aria-pressed',
+		'true'
 	);
+	await expect(tree.getByRole('link', { name: 'Two Blades' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Swordsmanship' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Blade Throw' })).toHaveCount(0);
+	await expect(tree.getByRole('button', { name: /show all blade skills/i })).toBeVisible();
+	await tree.getByRole('button', { name: /show all blade skills/i }).click();
 
 	await expect(tree.getByRole('button', { name: /magical/i })).toContainText('5 families');
 	await tree.getByRole('button', { name: /magical/i }).focus();
@@ -26,11 +36,17 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 		'true'
 	);
 	await expect(tree.getByRole('img', { name: /magical domain/i })).toBeVisible();
-	await expect(tree.getByRole('link', { name: 'Fire' })).toHaveAttribute(
-		'href',
-		'/wiki/mechanics/skills/magical-elemental'
-	);
-	await expect(tree.getByRole('link', { name: 'Ward' })).toBeVisible();
+	await expect(tree.getByRole('heading', { name: 'Elemental' })).toBeVisible();
+	await expect(tree.getByRole('button', { name: 'Fire' })).toBeVisible();
+	await expect(tree.getByText('Neutral', { exact: true })).toHaveCount(0);
+	await tree.getByRole('button', { name: 'Fire' }).click();
+	await expect(tree.getByRole('link', { name: 'Ember' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Water Bullet' })).toHaveCount(0);
+	await expect(tree.getByRole('link', { name: 'Warding' })).toBeVisible();
+	await page.keyboard.press('Tab');
+	await page.keyboard.press('Shift+Tab');
+	await expect(tree.getByRole('button', { name: 'Fire' })).toBeFocused();
+	await expect(tree.getByRole('button', { name: 'Fire' })).toHaveCSS('outline-style', 'solid');
 
 	await expect(tree.getByRole('button', { name: /craft/i })).toContainText('6 families');
 	await tree.getByRole('button', { name: /craft/i }).click();
@@ -38,6 +54,7 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	await expect(tree.getByRole('link', { name: 'Forging' })).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Lore' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Source-integrity audit' })).toBeVisible();
+	await expect(page.locator('article footer code')).toHaveText('mechanics/skills/README.md');
 });
 
 test('honors reduced-motion preferences when switching domains', async ({ page }) => {
