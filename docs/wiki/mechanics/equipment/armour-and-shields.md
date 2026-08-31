@@ -9,8 +9,8 @@ metal, and light protection at low weight requires creature scale or fine cloth.
 
 ## Heavy — metal required
 
-Requires the metal line. High mitigation and poise, high weight. Favoured by Guard, Hammer, and
-Greatsword.
+Requires the metal line. High mitigation and poise, high weight. Commonly paired with Shield,
+Polehammer, or Greatsword equipment.
 
 | Armour | R band | Weight | Material required | Notes |
 | --- | --- | --- | --- | --- |
@@ -24,7 +24,8 @@ Greatsword.
 ## Medium — creature scale and hide
 
 Requires the hide and scale line. The best protection-to-weight ratio in the game, and the reason
-monster hunting matters. Favoured by Sword, Spear, Fist, and Paired Blades.
+monster hunting matters. Commonly paired with Sword, Spear, Dagger, and Body-compatible unarmed
+equipment.
 
 | Armour | R band | Weight | Material required | Notes |
 | --- | --- | --- | --- | --- |
@@ -59,7 +60,7 @@ the source draft.
 | Head | Helm, hood, circlet. Heavy helms reduce peripheral awareness. |
 | Chest | The main mitigation piece; determines armour class |
 | Arms | Bracers, sleeves, pauldrons |
-| Hands | Gloves, gauntlets—overlaps with Fist weapons |
+| Hands | Gloves and gauntlets—may overlap with Body-compatible unarmed equipment |
 | Legs | Greaves, trousers |
 | Feet | Boots. The main movement-speed slot. |
 | Cloak | Weather, concealment, small resistances |
@@ -89,4 +90,4 @@ Shields occupy the off-hand and are the only equipment described as protecting o
   concealment, carry capacity, and quick-access mechanics.
 - Define protection of allies through guard geometry/formations without allowing presentation to
   invent collision or cover.
-- Resolve hand armour/Fist weapon overlap and off-hand/two-handed conflicts.
+- Resolve hand armour and unarmed-equipment overlap and off-hand/two-handed conflicts.

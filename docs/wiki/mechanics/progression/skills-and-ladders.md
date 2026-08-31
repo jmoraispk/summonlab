@@ -292,39 +292,31 @@ conflict for review. One-stance exclusivity is compatible with that goal.
 | Trial and boss reward | B–S | Named techniques from named opponents |
 | Merging | C–S | Cross-family late game |
 
-## Ladder structure and shape
+## Family skill graph
 
-| Level | Term | Example |
-| --- | --- | --- |
-| Sector | Broadest grouping | Martial |
-| Family | Discipline | Blade |
-| Subfamily | Specific focus and its ladder | Sword |
+The canonical ownership path is **Domain → Family → Skill**. Equipment and Element are optional
+labels on a skill, never intermediate progression nodes.
+
+| Domain | Families |
+| --- | --- |
+| Martial | Blade, Polearm, Ranged, Shield, Body |
+| Magical | Elemental, Ward, Enchantment, Restoration, Mind |
+| Craft | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
 
 Three structural rules:
 
-1. Every subfamily begins with one Common foundation passive such as Swordsmanship, Knifework, or
-   Shield Use. It grants a small flat focus bonus and forms the single root for all descendants.
-2. Universal Martial techniques such as parrying, feinting, footwork, and disarming sit outside
-   weapon ladders, can be learned from any weapon foundation, and work with any held weapon.
-3. Rarity D and above branches into alternatives sharing prerequisites so heroes diverge.
+1. Every family has one or more Common foundation skills. A foundation such as Swordsmanship,
+   Knifework, Shield Use, or Footing begins a family skill graph rather than a separate ladder.
+2. General combat techniques belong to Body unless their purpose is honestly specific to a concrete
+   tool family. A Body-owned Parry may still declare compatible held equipment in its definition.
+3. Rarity D and above can branch into alternatives sharing prerequisites so heroes diverge.
 
-| Rarity | Major subfamily (~28) | Standard (~16) | Minor (~12) |
-| --- | ---: | ---: | ---: |
-| F | 7 | 4 | 3 |
-| E | 6 | 4 | 3 |
-| D | 5 | 3 | 2 |
-| C | 4 | 2 | 2 |
-| B | 3 | 2 | 1 |
-| A | 2 | 1 | 1 |
-| S | 1 | 0 | 0 |
+Not every family skill graph reaches Legendary. A non-Legendary branch can still contribute through
+merging or a shared capstone.
 
-Not every subfamily reaches Legendary. A non-Legendary line can still contribute through merging
-or a shared capstone.
-
-Every catalog entry needs fixed rarity, skill type, requirements, and effect. The complete intended
-coverage is 17 Martial subfamilies plus Universal Martial, 13 Magical subfamilies, and six Craft and
-Life subfamilies. The companion compendium owns the worked entries; the source says fourteen foci
-still required full ladder treatment when written.
+Every catalog entry needs fixed rarity, skill type, requirements, and effect. The complete authored
+coverage is five Martial families, five Magical families, and six Craft families. Consolidated row
+counts and every legacy disposition are recorded in the [skill migration ledger](../skills/migration-v2.json).
 
 ## Living Village subset
 

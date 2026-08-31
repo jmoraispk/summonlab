@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('explores the skill taxonomy through universal and specialized branches', async ({ page }) => {
+test('explores the skill taxonomy through family paths and optional labels', async ({ page }) => {
 	await page.goto('/wiki/mechanics/skills');
 
 	const tree = page.getByRole('region', { name: 'Interactive skill tree' });
@@ -11,10 +11,9 @@ test('explores the skill taxonomy through universal and specialized branches', a
 		'aria-pressed',
 		'true'
 	);
-	await expect(tree.getByRole('button', { name: /martial/i })).toContainText('6 families');
-	await expect(tree.getByRole('heading', { name: 'Universal skills' })).toBeVisible();
-	await expect(tree.getByText('Footing', { exact: true })).toBeVisible();
-	await expect(tree.getByRole('heading', { name: 'Specialized families' })).toBeVisible();
+	await expect(tree.getByRole('button', { name: /martial/i })).toContainText('5 families');
+	await expect(tree.getByRole('heading', { name: 'Skill families' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Two Blades' })).toBeVisible();
 
 	await expect(tree.getByRole('button', { name: /magical/i })).toContainText('5 families');
 	await tree.getByRole('button', { name: /magical/i }).focus();
@@ -24,17 +23,15 @@ test('explores the skill taxonomy through universal and specialized branches', a
 		'true'
 	);
 	await expect(tree.getByRole('img', { name: /magical domain/i })).toBeVisible();
-	await expect(tree.getByText(/no supplied universal magical entries/i)).toBeVisible();
-	await expect(tree.getByRole('link', { name: 'Fire Evocation' })).toHaveAttribute(
+	await expect(tree.getByRole('link', { name: 'Fire' })).toHaveAttribute(
 		'href',
-		'/wiki/mechanics/skills/magical-evocation#evocation-fire'
+		'/wiki/mechanics/skills/magical-elemental'
 	);
 	await expect(tree.getByRole('link', { name: 'Ward' })).toBeVisible();
 
 	await expect(tree.getByRole('button', { name: /craft/i })).toContainText('6 families');
 	await tree.getByRole('button', { name: /craft/i }).click();
 	await expect(tree.getByRole('img', { name: /craft domain/i })).toBeVisible();
-	await expect(tree.getByText(/no supplied universal craft entries/i)).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Forging' })).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Lore' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Source-integrity audit' })).toBeVisible();

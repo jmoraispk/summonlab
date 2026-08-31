@@ -146,9 +146,9 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier.locator('[data-icon="ember"]')).toBeVisible();
 	await expect(dossier.locator('[data-icon="martial"]').first()).toBeVisible();
 	await expect(dossier.locator('[data-icon="magic"]')).toBeVisible();
-	await expect(dossier).toContainText('Guard');
-	await expect(dossier).toContainText('Fire Evocation');
-	await expect(dossier).toContainText('Universal Martial');
+	await expect(dossier).toContainText('Shield');
+	await expect(dossier).toContainText('Elemental');
+	await expect(dossier).toContainText('Body');
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 	await expect(history.getByText('New', { exact: true })).toHaveCount(4);
 	await expect(oneStar).toHaveAttribute('aria-label', 'View Mara Vey stats');

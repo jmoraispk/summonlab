@@ -27,7 +27,7 @@ effects until both definitions share stable IDs.
 | **Stiletto** | E+ | Light | Dex | Pure thrust; heavy armour penetration, no cutting |
 | **Kukri** | E+ | Light | Might/Dex | Forward-curved; the only dagger with real chopping weight |
 | **Push Dagger** | D+ | Light | Might | Concealable; enormous bonus with Opening |
-| **Throwing Set** | D+ | Light | Dex | A matched bandolier; works with the Thrown ladder |
+| **Throwing Set** | D+ | Light | Dex | A matched bandolier for Blade throwing techniques |
 | **Fang Blade** | C+ | Light | Dex | Monster-tooth construction; innate bleed |
 | **Shadowedge** | B+ | Light | Dex | Produces no reflection or sound |
 
@@ -42,53 +42,48 @@ effects until both definitions share stable IDs.
 | **Odachi** | C+ | Heavy | Might/Dex | Unusually fast for its mass |
 | **Slabsword** | B+ | Very Heavy | Might | More a wall than a blade. Blocks like a shield. |
 
-## Paired Blades — Blade
+## Two Blades compatibility
 
-| Weapon | R band | Weight | Scales | Notes |
-| --- | --- | --- | --- | --- |
-| **Matched Shortswords** | E+ | Light | Dex | The entry pair |
-| **Butterfly Swords** | E+ | Light | Dex | Short, broad; excellent Cross Block |
-| **Hook Swords** | D+ | Medium | Dex | Can link into a single long weapon; enables Hook and Pull |
-| **Twin Dao** | D+ | Medium | Might/Dex | Aggressive; favours Whirlwind |
-| **Wind and Fire Wheels** | C+ | Light | Dex | Ring blades; exceptional Storm of Blades |
-| **Mirrored Pair** | B+ | Medium | Dex | Forged as one and split. Perfect Symmetry activates early. |
+Two Blades is a Blade skill, not an equipment type. Any two compatible Blade weapons can satisfy
+its requirement: two shortswords, two daggers, or a reviewed mixed pair. Matched Shortswords,
+Butterfly Swords, Hook Swords, Twin Dao, Wind and Fire Wheels, and a Mirrored Pair are examples of
+compatible loadouts rather than a separate equipment taxonomy.
 
-## Spear — Haft
+## Spear — Polearm
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
 | **Shortspear** | F+ | Light | Might/Dex | Also throwable |
 | **War Spear** | F+ | Medium | Might | The baseline; works with a shield |
 | **Pike** | E+ | Heavy | Might | Extreme reach, useless up close. Bracing specialist. |
-| **Halberd** | D+ | Heavy | Might | Spear, axe, and hook in one; supports three ladders |
-| **Glaive** | D+ | Medium | Might/Dex | Sweeping cuts; favours Dragon Tail |
-| **Guandao** | C+ | Heavy | Might | Heavy blade on a long haft; the classic general's weapon |
 | **Serpent Spear** | B+ | Medium | Dex | Undulating blade; innate Rend on thrusts |
 
-## Axe — Haft
+## Glaive — Polearm
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
-| **Hand Axe** | F+ | Light | Might | Also a tool; throwable |
-| **War Axe** | F+ | Medium | Might | The baseline |
-| **Bearded Axe** | E+ | Medium | Might | Hooking beard; excellent Hook Shield |
-| **Greataxe** | D+ | Heavy | Might | Two-handed; enormous Reaping Arc |
-| **Bardiche** | D+ | Heavy | Might | Long haft; bridges into the Spear ladder |
-| **Twin Crescent** | C+ | Heavy | Might | Double-headed; Reaping Arc strikes twice |
+| **Glaive** | D+ | Medium | Might/Dex | Sweeping cuts; favours Dragon Tail |
+| **Guandao** | C+ | Heavy | Might | Heavy blade on a long polearm; the classic general's weapon |
 
-## Hammer — Haft
+## Halberd — Polearm
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
-| **Club** | F+ | Light | Might | Improvised, free, surprisingly effective |
-| **Mace** | F+ | Medium | Might | Flanged; the baseline armour-breaker |
+| **Halberd** | D+ | Heavy | Might | Spear, axe, and hook in one; supports reach, hooking, and reaping techniques |
+| **Bardiche** | D+ | Heavy | Might | Long polearm with a broad cutting head |
+| **Twin Crescent** | C+ | Heavy | Might | Double-headed polearm; Reaping Arc strikes twice |
+
+## Polehammer — Polearm
+
+| Weapon | R band | Weight | Scales | Notes |
+| --- | --- | --- | --- | --- |
 | **War Hammer** | E+ | Medium | Might | Spike on the reverse for penetration |
-| **Morningstar** | D+ | Medium | Might | Spiked; adds bleed to blunt damage |
-| **Maul** | D+ | Heavy | Might | Two-handed; the highest poise damage available |
+| **Morningstar** | D+ | Medium | Might | Spiked polehammer; adds bleed to blunt damage |
+| **Maul** | D+ | Heavy | Might | Two-handed polehammer; the highest poise damage available |
 | **Great Maul** | C+ | Very Heavy | Might | Slow enough to be a commitment. Ends what it hits. |
 | **Anvil Hammer** | B+ | Very Heavy | Might | Forged by and for a smith. Doubles as a forging tool. |
 
-## Bow — Hunt
+## Bow — Ranged
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
@@ -99,7 +94,7 @@ effects until both definitions share stable IDs.
 | **War Bow** | C+ | Medium | Might | Draw weight requires real Might; ignores most armour |
 | **Dragonhorn Bow** | B+ | Medium | Might/Dex | Monster-built; arrows carry the source creature's affinity |
 
-## Crossbow — Hunt
+## Crossbow — Ranged
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
@@ -109,19 +104,7 @@ effects until both definitions share stable IDs.
 | **Siege Crossbow** | C+ | Heavy | Might/Dex | Requires bracing; destroys structures |
 | **Clockwork Arbalest** | B+ | Medium | Dex | Self-reloading; supports The Machine |
 
-## Thrown — Hunt
-
-| Weapon | R band | Weight | Scales | Notes |
-| --- | --- | --- | --- | --- |
-| **Sling** | F+ | Light | Dex | Ammunition is free |
-| **Javelins** | F+ | Light | Might | Bundled; heavy single-target |
-| **Throwing Knives** | E+ | Light | Dex | Bandolier; recoverable |
-| **Throwing Axes** | E+ | Medium | Might | Heavier, higher poise damage |
-| **Chakram** | D+ | Light | Dex | Ring blade; innate Ricochet |
-| **Flask Harness** | D+ | Light | Int | Carries alchemical volatiles safely |
-| **Returning Blade** | C+ | Light | Dex | Comes back without Boomerang Arc |
-
-## Fist — Unarmed and Grappling
+## Unarmed — Body
 
 | Weapon | R band | Weight | Scales | Notes |
 | --- | --- | --- | --- | --- |
@@ -129,7 +112,7 @@ effects until both definitions share stable IDs.
 | **Cestus** | F+ | Light | Might | Weighted; converts punches to blunt |
 | **Gauntlets** | E+ | Medium | Might | Also armour for the hands |
 | **Claws** | D+ | Light | Dex | Bladed; converts unarmed to cutting and enables bleed |
-| **Tiger Hooks** | D+ | Medium | Dex | Trap and disarm; bridges into Grappling |
+| **Tiger Hooks** | D+ | Medium | Dex | Trap and disarm; supports Body clinch and control techniques |
 | **Iron Sleeves** | C+ | Heavy | Might | Forearm armour; Palm Block becomes a full parry |
 | **Dragon Fists** | B+ | Medium | Might | Affinity-conductive; enables Empty Force at range |
 

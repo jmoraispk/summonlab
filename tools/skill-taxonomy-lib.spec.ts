@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	parseTargetSkillRows,
 	parseSkillMarkdown,
+	findForbiddenSkillReferences,
 	validateLegacyInventory,
 	validateMigrationLedger,
 	validateTargetTaxonomy,
@@ -82,6 +83,27 @@ function elementLabelsForFamily(
 }
 
 describe('skill taxonomy migration inventory', () => {
+	it('reports exact obsolete taxonomy identities without banning ordinary prose', () => {
+		expect(
+			findForbiddenSkillReferences([
+				{
+					sourcePath: 'docs/wiki/example.md',
+					source:
+						'Universal Martial\nFire Evocation\n## Paired Blades\nA guard uses motion and protection.'
+				},
+				{
+					sourcePath: 'apps/web/src/example.ts',
+					source: "href: '/wiki/mechanics/skills/magical-evocation'"
+				}
+			])
+		).toEqual([
+			'docs/wiki/example.md: Universal Martial',
+			'docs/wiki/example.md: Fire Evocation',
+			'docs/wiki/example.md: ## Paired Blades',
+			'apps/web/src/example.ts: /wiki/mechanics/skills/magical-evocation'
+		]);
+	});
+
 	it('parses a catalog row with its page and section identity', () => {
 		const rows = parseSkillMarkdown(
 			'martial-blade.md',

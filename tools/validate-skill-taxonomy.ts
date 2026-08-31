@@ -1,14 +1,22 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
 	parseTargetSkillRows,
+	findForbiddenSkillReferences,
 	validateMigrationLedger,
 	validateTargetTaxonomy,
 	type LegacySkillRow,
 	type SkillMigrationLedger,
 	type SkillMarkdownFile
 } from './skill-taxonomy-lib.js';
+
+async function authoredSourcePaths(root: string, extensions: readonly string[]): Promise<string[]> {
+	const entries = await readdir(path.resolve(root), { recursive: true });
+	return entries
+		.filter((entry) => extensions.some((extension) => entry.endsWith(extension)))
+		.map((entry) => path.join(root, entry));
+}
 
 const ledgerPath = path.resolve('docs/wiki/mechanics/skills/migration-v2.json');
 const inventoryPath = path.resolve('docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json');
@@ -31,9 +39,20 @@ const targetFiles: SkillMarkdownFile[] = await Promise.all(
 	}))
 );
 const targetRows = parseTargetSkillRows(targetFiles);
+const staleReferencePaths = [
+	...(await authoredSourcePaths('docs/wiki', ['.md'])),
+	...(await authoredSourcePaths('apps/web/src', ['.svelte', '.ts']))
+];
+const staleReferenceFiles: SkillMarkdownFile[] = await Promise.all(
+	staleReferencePaths.map(async (sourcePath) => ({
+		sourcePath,
+		source: await readFile(path.resolve(sourcePath), 'utf8')
+	}))
+);
 const errors = [
 	...validateMigrationLedger(ledger, inventory),
-	...validateTargetTaxonomy(targetRows, ledger)
+	...validateTargetTaxonomy(targetRows, ledger),
+	...findForbiddenSkillReferences(staleReferenceFiles)
 ];
 
 if (errors.length > 0) {

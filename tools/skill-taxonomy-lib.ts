@@ -70,6 +70,34 @@ const EQUIPMENT_LABELS = new Set([
 ]);
 const ELEMENT_LABELS = new Set(['Fire', 'Water', 'Wood', 'Earth', 'Metal', 'Attuned']);
 
+const FORBIDDEN_SKILL_REFERENCES = [
+	'skills.martial-universal',
+	'skills.martial-haft-fist',
+	'skills.martial-hunt-guard-motion',
+	'skills.magical-evocation',
+	'martial-universal.md',
+	'martial-haft-and-fist.md',
+	'martial-hunt-guard-motion.md',
+	'magical-evocation.md',
+	'/wiki/mechanics/skills/martial-universal',
+	'/wiki/mechanics/skills/martial-haft-and-fist',
+	'/wiki/mechanics/skills/martial-hunt-guard-motion',
+	'/wiki/mechanics/skills/magical-evocation',
+	'Universal Martial',
+	'Fire Evocation',
+	'## Paired Blades',
+	'## Thrown — Hunt',
+	'## Fist — Unarmed and Grappling'
+] as const;
+
+export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]): string[] {
+	return files.flatMap(({ sourcePath, source }) =>
+		FORBIDDEN_SKILL_REFERENCES.filter((reference) => source.includes(reference)).map(
+			(reference) => `${sourcePath}: ${reference}`
+		)
+	);
+}
+
 function slugSection(section: string): string {
 	return section
 		.normalize('NFKD')

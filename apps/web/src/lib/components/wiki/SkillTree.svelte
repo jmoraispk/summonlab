@@ -17,16 +17,11 @@
 
 	type SkillFamily = BranchedSkillFamily | LinkedSkillFamily;
 
-	type UniversalBranch =
-		| { kind: 'catalog'; skills: string[]; href: string; note: string }
-		| { kind: 'reserved'; note: string };
-
 	type SkillDomain = {
 		id: DomainId;
 		name: string;
 		image: string;
 		description: string;
-		universal: UniversalBranch;
 		families: SkillFamily[];
 	};
 
@@ -35,30 +30,7 @@
 			id: 'martial',
 			name: 'Martial',
 			image: '/wiki-media/skills/martial-domain.webp',
-			description: 'Technique, weapons, defense, pursuit, and disciplined movement.',
-			universal: {
-				kind: 'catalog',
-				skills: [
-					'Footing',
-					'Grip',
-					'Basic Block',
-					'Recovery',
-					'Feint',
-					'Sidestep',
-					'Parry',
-					'Disarm',
-					'Called Shot',
-					'Riposte',
-					'Second Wind',
-					'Feint Chain',
-					'Combat Reading',
-					'Unbroken Guard',
-					'Perfect Parry',
-					'Battle Instinct'
-				],
-				href: '/wiki/mechanics/skills/martial-universal',
-				note: 'Sixteen supplied techniques work across weapon foundations.'
-			},
+			description: 'Technique, weapons, defense, endurance, and general combat practice.',
 			families: [
 				{
 					kind: 'branch',
@@ -67,7 +39,7 @@
 						['Sword', 'sword'],
 						['Dagger', 'dagger'],
 						['Greatsword', 'greatsword'],
-						['Paired Blades', 'paired-blades']
+						['Two Blades', 'blade']
 					].map(([name, anchor]) => ({
 						name,
 						href: `/wiki/mechanics/skills/martial-blade#${anchor}`
@@ -75,45 +47,29 @@
 				},
 				{
 					kind: 'branch',
-					name: 'Haft',
-					children: ['Spear', 'Axe', 'Hammer'].map((name) => ({
+					name: 'Polearm',
+					children: ['Spear', 'Glaive', 'Halberd', 'Polehammer'].map((name) => ({
 						name,
-						href: `/wiki/mechanics/skills/martial-haft-and-fist#${name.toLowerCase()}`
+						href: '/wiki/mechanics/skills/martial-polearm'
 					}))
 				},
 				{
 					kind: 'branch',
-					name: 'Fist',
-					children: ['Unarmed', 'Grappling'].map((name) => ({
+					name: 'Ranged',
+					children: ['Bow', 'Crossbow'].map((name) => ({
 						name,
-						href: `/wiki/mechanics/skills/martial-haft-and-fist#${name.toLowerCase()}`
+						href: '/wiki/mechanics/skills/martial-ranged'
 					}))
 				},
 				{
-					kind: 'branch',
-					name: 'Hunt',
-					children: ['Bow', 'Crossbow', 'Thrown', 'Tracking'].map((name) => ({
-						name,
-						href: `/wiki/mechanics/skills/martial-hunt-guard-motion#${name.toLowerCase()}`
-					}))
+					kind: 'link',
+					name: 'Shield',
+					href: '/wiki/mechanics/skills/martial-shield'
 				},
 				{
-					kind: 'branch',
-					name: 'Guard',
-					children: ['Shield', 'Protection'].map((name) => ({
-						name,
-						href: `/wiki/mechanics/skills/martial-hunt-guard-motion#${name.toLowerCase()}`
-					}))
-				},
-				{
-					kind: 'branch',
-					name: 'Motion',
-					children: [
-						{
-							name: 'Motion',
-							href: '/wiki/mechanics/skills/martial-hunt-guard-motion#motion'
-						}
-					]
+					kind: 'link',
+					name: 'Body',
+					href: '/wiki/mechanics/skills/martial-body'
 				}
 			]
 		},
@@ -122,17 +78,13 @@
 			name: 'Magical',
 			image: '/wiki-media/skills/magical-domain.webp',
 			description: 'Affinity expression, wards, enchantment, restoration, and the mind.',
-			universal: {
-				kind: 'reserved',
-				note: 'No supplied universal Magical entries yet. The direct-skill lane is reserved for cross-discipline foundations.'
-			},
 			families: [
 				{
 					kind: 'branch',
-					name: 'Evocation',
+					name: 'Elemental',
 					children: ['Fire', 'Water', 'Wood', 'Earth', 'Metal'].map((name) => ({
-						name: `${name} Evocation`,
-						href: `/wiki/mechanics/skills/magical-evocation#evocation-${name.toLowerCase()}`
+						name,
+						href: '/wiki/mechanics/skills/magical-elemental'
 					}))
 				},
 				...['Ward', 'Enchantment', 'Restoration', 'Mind'].map((name): LinkedSkillFamily => ({
@@ -147,10 +99,6 @@
 			name: 'Craft',
 			image: '/wiki-media/skills/craft-domain.webp',
 			description: 'Making, gathering, care, field knowledge, and material transformation.',
-			universal: {
-				kind: 'reserved',
-				note: 'No supplied universal Craft entries yet. The direct-skill lane is reserved for techniques shared by multiple trades.'
-			},
 			families: ['Forging', 'Alchemy', 'Cooking', 'Gathering', 'Beast', 'Lore'].map(
 				(name): LinkedSkillFamily => ({
 					kind: 'link',
@@ -171,9 +119,9 @@
 			<p>Three domains · two ways forward</p>
 			<h2>Choose where mastery begins.</h2>
 		</div>
-		<span>
-			Go straight into universal techniques, or specialize through a family and subfamily.
-		</span>
+		<span
+			>Choose a domain, then follow a family skill graph with optional equipment or Element labels.</span
+		>
 	</header>
 
 	<div class="root" aria-hidden="true">
@@ -181,7 +129,7 @@
 	</div>
 
 	<nav class="domain-switcher" aria-label="Skill domains">
-		{#each domains as domain (domain.id)}
+		{#each domains as domain}
 			<button
 				type="button"
 				aria-pressed={selectedId === domain.id}
@@ -210,45 +158,24 @@
 			</figure>
 
 			<div class="branches">
-				<section class="branch universal-branch">
-					<header>
-						<span>Direct path</span>
-						<h3>Universal skills</h3>
-						<p>{activeDomain.universal.note}</p>
-					</header>
-					{#if activeDomain.universal.kind === 'catalog'}
-						<ul aria-label={`${activeDomain.name} universal skills`}>
-							{#each activeDomain.universal.skills as skill (skill)}
-								<li>{skill}</li>
-							{/each}
-						</ul>
-						<a href={resolve(activeDomain.universal.href as `/wiki/${string}`)}
-							>Open the complete universal catalog <span>→</span></a
-						>
-					{:else}
-						<div class="reserved">
-							<span aria-hidden="true">◇</span>
-							<p>Reserved universal lane</p>
-						</div>
-					{/if}
-				</section>
-
 				<section class="branch family-branch">
 					<header>
-						<span>Specialized path</span>
-						<h3>Specialized families</h3>
-						<p>Choose a supplied family. Authored subfamilies open one level deeper.</p>
+						<span>Family paths</span>
+						<h3>Skill families</h3>
+						<p>
+							Each family owns its skills directly; labels describe compatible equipment or Element.
+						</p>
 					</header>
 					<div class="family-list">
-						{#each activeDomain.families as family (family.name)}
+						{#each activeDomain.families as family}
 							{#if family.kind === 'branch'}
 								<details open>
 									<summary>
 										<span>{family.name}</span>
 										<i>{family.children.length}</i>
 									</summary>
-									<nav aria-label={`${family.name} subfamilies`}>
-										{#each family.children as child (child.href)}
+									<nav aria-label={`${family.name} labels`}>
+										{#each family.children as child}
 											<a href={resolve(child.href as `/wiki/${string}#${string}`)}
 												>{child.name}<span>↗</span></a
 											>
@@ -391,8 +318,7 @@
 	}
 	.domain-switcher button:focus-visible,
 	.family-list summary:focus-visible,
-	.family-list a:focus-visible,
-	.universal-branch > a:focus-visible {
+	.family-list a:focus-visible {
 		outline: 2px solid #e5aa73;
 		outline-offset: -3px;
 	}
@@ -470,7 +396,6 @@
 	}
 	.branches {
 		display: grid;
-		grid-template-rows: minmax(17rem, auto) 1fr;
 		min-width: 0;
 	}
 	.branch {
@@ -479,9 +404,6 @@
 		grid-template-columns: minmax(12rem, 0.72fr) minmax(0, 1.28fr);
 		gap: clamp(1.5rem, 3vw, 3rem);
 		padding: clamp(1.7rem, 3vw, 3rem);
-	}
-	.branch + .branch {
-		border-top: 1px solid var(--tree-line);
 	}
 	.branch::before {
 		position: absolute;
@@ -508,63 +430,12 @@
 		font-family: Georgia, serif;
 		line-height: 1.55;
 	}
-	.universal-branch ul {
-		display: flex;
-		align-content: start;
-		flex-wrap: wrap;
-		gap: 0.45rem;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-	.universal-branch li {
-		padding: 0.38rem 0.55rem;
-		border: 1px solid var(--tree-line);
-		color: rgba(243, 234, 217, 0.76);
-		font-family: Georgia, serif;
-		font-size: 0.9rem;
-	}
-	.universal-branch > a {
-		position: absolute;
-		right: clamp(1.7rem, 3vw, 3rem);
-		bottom: 1.45rem;
-		color: #e5aa73;
-		font:
-			0.67rem ui-monospace,
-			monospace;
-		letter-spacing: 0.08em;
-		text-decoration: none;
-		text-transform: uppercase;
-	}
-	.universal-branch > a span,
 	.family-list a span {
 		display: inline-block;
 		transition: transform 180ms ease;
 	}
-	.universal-branch > a:hover span,
 	.family-list a:hover span {
 		transform: translateX(0.2rem);
-	}
-	.reserved {
-		display: flex;
-		min-height: 8rem;
-		align-items: center;
-		justify-content: center;
-		gap: 0.8rem;
-		border: 1px dashed rgba(231, 206, 164, 0.2);
-		color: var(--tree-muted);
-	}
-	.reserved > span {
-		color: var(--tree-ember);
-		font-size: 1.2rem;
-	}
-	.reserved p {
-		margin: 0;
-		font:
-			0.7rem ui-monospace,
-			monospace;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
 	}
 	.family-list {
 		display: grid;
@@ -656,9 +527,6 @@
 			grid-template-columns: 1fr;
 			gap: 1.35rem;
 		}
-		.universal-branch {
-			padding-bottom: 4.5rem;
-		}
 	}
 
 	@media (max-width: 700px) {
@@ -709,9 +577,6 @@
 		.branch::before {
 			display: none;
 		}
-		.universal-branch > a {
-			right: 1.25rem;
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -721,7 +586,6 @@
 		.domain-stage img,
 		.domain-switcher button,
 		.domain-switcher button::after,
-		.universal-branch > a span,
 		.family-list a span {
 			transition: none;
 		}
