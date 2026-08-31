@@ -386,6 +386,27 @@ export function isIrreversibleMasterAction(action: LegalAction): boolean {
 	);
 }
 
+export function masterFallbackSafetyStopReason(
+	state: MasterFallbackEngineState,
+	selected: LegalAction,
+	classified: boolean,
+	retreatAvailable: boolean
+): MasterFallbackSelection['safetyStopReason'] {
+	const stops = state.masterControl.activeDecision!.fallback.safetyStops;
+	return stops.maximumConsecutiveFallbacks !== null &&
+		state.masterControl.consecutiveFallbacks >= stops.maximumConsecutiveFallbacks
+		? 'fallback-limit'
+		: stops.masterHealthThreshold !== null &&
+			  state.master.health <= stops.masterHealthThreshold &&
+			  retreatAvailable
+			? 'master-health'
+			: stops.whenUnclassified && !classified
+				? 'unclassified-state'
+				: stops.beforeIrreversibleAction && isIrreversibleMasterAction(selected)
+					? 'irreversible-action'
+					: null;
+}
+
 export function selectMasterFallback(
 	stateInput: MasterFallbackEngineState
 ): MasterFallbackSelection {
@@ -426,24 +447,16 @@ export function selectMasterFallback(
 		selected = ranked[0]!.candidate;
 		selectedScore = ranked[0]!.score;
 	}
-	const stops = active.fallback.safetyStops;
 	const retreatAvailable =
 		state.mission.attempt !== null &&
 		['deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status) &&
 		allPartyAtNode(state, missionContentForState(state).retreat.nodeIds);
-	const safetyStopReason =
-		stops.maximumConsecutiveFallbacks !== null &&
-		state.masterControl.consecutiveFallbacks >= stops.maximumConsecutiveFallbacks
-			? 'fallback-limit'
-			: stops.masterHealthThreshold !== null &&
-				  state.master.health <= stops.masterHealthThreshold &&
-				  retreatAvailable
-				? 'master-health'
-				: stops.whenUnclassified && !classified
-					? 'unclassified-state'
-					: stops.beforeIrreversibleAction && isIrreversibleMasterAction(selected)
-						? 'irreversible-action'
-						: null;
+	const safetyStopReason = masterFallbackSafetyStopReason(
+		state,
+		selected,
+		classified,
+		retreatAvailable
+	);
 	const policyId =
 		active.fallback.policy === 'directed' ? 'master-directed-v1' : 'master-random-v1';
 	const explanation = safetyStopReason

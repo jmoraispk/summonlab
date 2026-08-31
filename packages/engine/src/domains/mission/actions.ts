@@ -373,7 +373,7 @@ type MissionActionState =
 	| EngineGameStateV20
 	| EngineGameStateV23;
 
-function supportsMissionActions(state: EngineGameState): state is MissionActionState {
+export function supportsMissionActions(state: EngineGameState): state is MissionActionState {
 	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23].includes(state.schemaVersion);
 }
 

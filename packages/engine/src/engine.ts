@@ -197,6 +197,7 @@ import {
 	missionTurnLegalActions,
 	missionToolTagsForActor,
 	normalizedMissionTurnChoices,
+	supportsMissionActions,
 	type MissionTurnEngineState
 } from './domains/mission/actions.js';
 import {
@@ -2943,7 +2944,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 			: [];
 	const missionActions = missionLegalActions(state, actorId);
 	if (
-		'mission' in state &&
+		supportsMissionActions(state) &&
 		state.mission.attempt &&
 		['preparing', 'deployed', 'resolving', 'extraction'].includes(state.mission.attempt.status)
 	) {
@@ -3061,7 +3062,10 @@ function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalActi
 		}
 	}
 	const missionActions = missionLegalActions(state, actorId);
-	if (missionActions.length > 0 || ('mission' in state && missionPartyIsReserved(state, actorId))) {
+	if (
+		missionActions.length > 0 ||
+		(supportsMissionActions(state) && missionPartyIsReserved(state, actorId))
+	) {
 		return [...missionActions];
 	}
 	return settlementLegalActions(state, actorId);
