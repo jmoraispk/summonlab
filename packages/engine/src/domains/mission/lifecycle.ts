@@ -484,7 +484,6 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 		attempt.party.memberIds.map((memberId) => [memberId, attempt.entryNodeId])
 	);
 	let entropy = createEntropyCursor(state.seed, state.entropyCursor);
-	const entropyDraws: EntropyDraw[] = [];
 	const combat =
 		state.schemaVersion === 13 ||
 		state.schemaVersion === 14 ||
@@ -494,9 +493,10 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23
-			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy, entropyDraws)
+			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy)
 			: null;
 	if (combat) entropy = combat.entropy;
+	const entropyDraws = combat ? [...combat.entropyDraws] : [];
 	const mission = parseMissionRunState(state, {
 		...state.mission,
 		attempt: {

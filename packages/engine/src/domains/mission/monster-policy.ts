@@ -307,16 +307,17 @@ export function spawnMissionCombatants(
 		| EngineGameStateV23,
 	attempt: MissionCombatAttempt,
 	positions: Readonly<Record<string, string>>,
-	entropyInput: ReturnType<typeof createEntropyCursor>,
-	entropyDraws: EntropyDraw[]
+	entropyInput: ReturnType<typeof createEntropyCursor>
 ): {
 	readonly monsters: Record<string, MissionMonsterState>;
 	readonly threatIntents: MissionMonsterIntent[];
 	readonly entropy: ReturnType<typeof createEntropyCursor>;
+	readonly entropyDraws: readonly EntropyDraw[];
 } {
 	verifiedMonsterPolicyBinding(attempt);
 	const mission = missionContentForState(state);
 	let entropy = entropyInput;
+	const entropyDraws: EntropyDraw[] = [];
 	const monsters: Record<string, MissionMonsterState> = {};
 	for (const duty of mission.monsterDuties) {
 		if (duty.activation.kind !== 'on-deployment') continue;
@@ -354,6 +355,7 @@ export function spawnMissionCombatants(
 	return {
 		monsters,
 		threatIntents: deriveMonsterIntents(mission, attempt, monsters, positions),
-		entropy
+		entropy,
+		entropyDraws
 	};
 }
