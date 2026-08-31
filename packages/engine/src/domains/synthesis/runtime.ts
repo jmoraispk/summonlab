@@ -100,6 +100,7 @@ export function synthesisRumorIsAvailable(
 	state: EngineGameStateV22,
 	command: ShareSynthesisRumorCommand
 ): boolean {
+	if (command.actorId === state.master.masterId) return false;
 	const speaker = state.heroes[command.actorId];
 	if (!speaker || !heroCanHearCommunication(speaker)) return false;
 	const requiredActionId = `synthesis.rumor.share.${command.receiptId.slice(-8)}.${command.targetHeroId.slice(-8)}`;
