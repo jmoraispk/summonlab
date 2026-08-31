@@ -371,7 +371,7 @@
 		gap: 2rem;
 		padding: 1rem clamp(1.25rem, 2.8vw, 2.5rem) 1rem 4.6rem;
 		border-bottom: 1px solid var(--tree-line);
-		color: rgba(243, 234, 217, 0.38);
+		color: var(--tree-muted);
 	}
 	.family-record {
 		position: relative;
@@ -436,7 +436,7 @@
 	.label-filter > span {
 		flex: 0 0 auto;
 		padding-top: 0.62rem;
-		color: rgba(243, 234, 217, 0.38);
+		color: var(--tree-muted);
 	}
 	.label-filter > div {
 		display: flex;
@@ -642,6 +642,12 @@
 		.label-filter button,
 		.skill-links a {
 			transition: none;
+		}
+		.domain-stage img,
+		.domain-stage figure:hover img,
+		.family-record > header h3 span,
+		.family-record > header h3 a:hover span {
+			transform: none;
 		}
 	}
 </style>

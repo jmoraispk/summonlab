@@ -13,6 +13,14 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	);
 	await expect(tree.getByRole('button', { name: /martial/i })).toContainText('5 families');
 	await expect(tree.getByRole('heading', { name: 'Blade' })).toBeVisible();
+	await expect(tree.getByText('Family records', { exact: true })).toHaveCSS(
+		'color',
+		'rgb(170, 160, 142)'
+	);
+	await expect(tree.locator('.label-filter > span').first()).toHaveCSS(
+		'color',
+		'rgb(170, 160, 142)'
+	);
 	await expect(tree.getByRole('link', { name: 'Two Blades' })).toBeVisible();
 	await expect(tree.getByText('Two Blades', { exact: true })).toHaveCount(1);
 	await expect(tree.getByText(/universal skills/i)).toHaveCount(0);
@@ -27,6 +35,7 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	await expect(tree.getByRole('link', { name: 'Blade Throw' })).toHaveCount(0);
 	await expect(tree.getByRole('button', { name: /show all blade skills/i })).toBeVisible();
 	await tree.getByRole('button', { name: /show all blade skills/i }).click();
+	await expect(tree.getByRole('link', { name: 'Blade Throw' })).toBeVisible();
 
 	await expect(tree.getByRole('button', { name: /magical/i })).toContainText('5 families');
 	await tree.getByRole('button', { name: /magical/i }).focus();
@@ -64,6 +73,14 @@ test('honors reduced-motion preferences when switching domains', async ({ page }
 	const tree = page.getByRole('region', { name: 'Interactive skill tree' });
 	await tree.getByRole('button', { name: /magical/i }).click();
 	await expect(tree.locator('.domain-stage')).toHaveCSS('animation-name', 'none');
+
+	const domainImage = tree.getByRole('img', { name: /magical domain/i });
+	await domainImage.hover();
+	await expect(domainImage).toHaveCSS('transform', 'none');
+
+	const familyLink = tree.getByRole('link', { name: 'Elemental', exact: true });
+	await familyLink.hover();
+	await expect(familyLink.locator('span')).toHaveCSS('transform', 'none');
 });
 
 test('keeps the interactive skill tree within a narrow viewport', async ({ page }) => {
