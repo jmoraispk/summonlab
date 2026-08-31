@@ -80,6 +80,14 @@ export type BuildFirstBandMissionCommandConsequences = (
 	mission: MissionRunStateV8
 ) => FirstBandMissionCommandConsequences;
 
+export interface MissionCommandHandler extends EngineCommandHandler<MissionCommand> {
+	buildEvent(
+		state: EngineGameState,
+		command: MissionCommand,
+		buildFirstBandConsequences?: BuildFirstBandMissionCommandConsequences
+	): AuthoritativeEvent;
+}
+
 type MissionTransition =
 	'prepare' | 'revise-party' | 'cancel' | 'deploy' | 'open-extraction' | 'extract' | 'retreat';
 
@@ -641,7 +649,7 @@ export function buildMissionEvent(
 	});
 }
 
-export const missionCommandHandler: EngineCommandHandler<MissionCommand> = {
+export const missionCommandHandler: MissionCommandHandler = {
 	ownerId: 'mission',
 	commandTypes: MISSION_COMMAND_TYPES,
 	assertLegal: assertMissionCommandLegal,

@@ -118,12 +118,7 @@ import {
 	missionTurnLegalActions,
 	supportsMissionActions
 } from './domains/mission/actions.js';
-import {
-	MISSION_COMMAND_TYPES,
-	buildMissionEvent,
-	missionCommandHandler,
-	type MissionCommand
-} from './domains/mission/commands.js';
+import { MISSION_COMMAND_TYPES, type MissionCommand } from './domains/mission/commands.js';
 import { missionEventReducer } from './domains/mission/reducer.js';
 import { missionPartyIsReserved } from './domains/mission/lifecycle.js';
 import {
@@ -139,7 +134,7 @@ import {
 	type MonsterIntentScenario
 } from './domains/mission/monster-policy.js';
 import {
-	buildFirstBandMissionCommandConsequences,
+	firstBandMissionCommandHandler,
 	firstBandMissionEventReducer
 } from './orchestration/first-band-mission-reducer.js';
 
@@ -1074,7 +1069,7 @@ function assertCommandIsLegal(state: EngineGameState, command: EngineCommand): v
 		return;
 	}
 	if (MISSION_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		missionCommandHandler.assertLegal(state, command as MissionCommand);
+		firstBandMissionCommandHandler.assertLegal(state, command as MissionCommand);
 		if (
 			command.commandType === 'master.configure.timing' ||
 			command.commandType === 'master.open.decision' ||
@@ -1137,11 +1132,7 @@ function buildV2Event(state: EngineGameStateModern, command: EngineCommand): Aut
 		return settlementCommandHandler.buildEvent(state, command as SettlementCommand);
 	}
 	if (MISSION_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {
-		return buildMissionEvent(
-			state,
-			command as MissionCommand,
-			buildFirstBandMissionCommandConsequences
-		);
+		return firstBandMissionCommandHandler.buildEvent(state, command as MissionCommand);
 	}
 	throw new IllegalActionError(command.commandType);
 }

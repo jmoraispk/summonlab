@@ -1,13 +1,16 @@
 import {
+	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
 	EngineGameStateV14Schema,
 	EngineGameStateV15Schema,
 	EngineGameStateV16Schema,
 	EngineGameStateV17Schema,
+	EngineGameStateV20Schema,
 	EngineGameStateV23Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
+	type EngineGameState,
 	type EngineGameStateV23,
 	type EngineGameStateV16,
 	type EngineGameStateV17,
@@ -21,10 +24,12 @@ import { IllegalActionError, ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical, sha256Hex } from '../../hash.js';
 import {
 	FIRST_BAND_MISSION_EVENT_TYPES,
+	firstBandMissionCommandHandler,
 	firstBandMissionEventReducer
 } from '../../orchestration/first-band-mission-reducer.js';
 import { MISSION_COMMAND_TYPES, missionCommandHandler } from './commands.js';
 import { retreatMissionAttempt } from './lifecycle.js';
+import { masterFallbackSafetySource } from './master-control.js';
 
 import {
 	monsterArmorReduction,
@@ -38,7 +43,78 @@ import {
 	portalPressureStage,
 	resolvePortalMissionTurn
 } from './portal.js';
-import { MISSION_EVENT_TYPES, missionEventReducer } from './reducer.js';
+import {
+	MISSION_EVENT_TYPES,
+	missionEventReducer,
+	reduceFirstBandMissionTransition
+} from './reducer.js';
+
+const MISSION_SCHEMA_VERSIONS = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23] as const;
+
+function missionVersionFixture(schemaVersion: (typeof MISSION_SCHEMA_VERSIONS)[number]) {
+	const key = `task-9b-version-${schemaVersion}`;
+	const developmentMissionScenario =
+		schemaVersion <= 13
+			? undefined
+			: {
+					initialMissionId: schemaVersion === 15 ? 'iron-moon' : 'tower-floor-01',
+					availableMissionIds: [schemaVersion === 15 ? 'iron-moon' : 'tower-floor-01'],
+					...(schemaVersion === 16 ? { enableMissionAftermath: true } : {}),
+					...(schemaVersion === 17 ? { enableMasterPermadeath: true } : {}),
+					...(schemaVersion === 18 ? { enableAttemptAftermath: true } : {}),
+					...(schemaVersion === 19 ? { enableMasterTiming: true } : {}),
+					...(schemaVersion === 20 ? { enableMasterFallback: true } : {}),
+					...(schemaVersion === 23 ? { enableFirstBandArchive: true } : {})
+				};
+	const modern = createBootstrapEngine({
+		runId: deterministicUuid(`${key}-run`),
+		seed: `${key}-seed`,
+		heroId: deterministicUuid(`${key}-hero`),
+		manifestHash: sha256Hex(`${key}-manifest`),
+		...(developmentMissionScenario ? { developmentMissionScenario } : {})
+	}).snapshot.state;
+	if (schemaVersion === 11) {
+		return EngineGameStateV11Schema.parse({
+			...modern,
+			schemaVersion,
+			contentVersion: 'engine-v11'
+		});
+	}
+	if (schemaVersion === 12) {
+		return EngineGameStateV12Schema.parse({
+			...modern,
+			schemaVersion,
+			contentVersion: 'engine-v12'
+		});
+	}
+	return modern;
+}
+
+function missionTestCommand(state: EngineGameState, key: string, body: object): EngineCommand {
+	return {
+		commandId: deterministicUuid(`task-9b-${key}-command`),
+		runId: state.runId,
+		actorId: state.master.masterId,
+		expectedVersion: state.version,
+		correlationId: deterministicUuid(`task-9b-${key}-correlation`),
+		source: {
+			source: 'manual',
+			timing: 'step',
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		...body
+	} as unknown as EngineCommand;
+}
+
+function directlyApplyMissionCommand(state: EngineGameState, command: EngineCommand) {
+	const event = firstBandMissionCommandHandler.buildEvent(state, command as never);
+	const reducer = FIRST_BAND_MISSION_EVENT_TYPES.some((eventType) => eventType === event.eventType)
+		? firstBandMissionEventReducer
+		: missionEventReducer;
+	return { event, state: reducer.reduce(state, event) };
+}
 
 describe('mission runtime ownership', () => {
 	it('assigns mission command and event discriminators to one domain owner', () => {
@@ -84,6 +160,10 @@ describe('mission runtime ownership', () => {
 			ownerId: 'first-band-mission',
 			eventTypes: FIRST_BAND_MISSION_EVENT_TYPES
 		});
+		expect(firstBandMissionCommandHandler).toMatchObject({
+			ownerId: 'mission',
+			commandTypes: MISSION_COMMAND_TYPES
+		});
 		expect(missionEventReducer.eventTypes).not.toContain('mission.preparation.started');
 		expect(missionEventReducer.eventTypes).not.toContain('mission.party.revised');
 		expect(missionEventReducer.eventTypes).not.toContain('mission.preparation.canceled');
@@ -106,6 +186,323 @@ describe('mission runtime ownership', () => {
 				'mission.retreated'
 			]
 		);
+	});
+
+	it('round-trips the composed handler through every mission-capable schema version', () => {
+		const observedHashes = Object.fromEntries(
+			MISSION_SCHEMA_VERSIONS.map((schemaVersion) => {
+				const state = missionVersionFixture(schemaVersion);
+				const heroId = Object.keys(state.heroes)[0]!;
+				const command = missionTestCommand(state, `version-${schemaVersion}-prepare`, {
+					commandType: 'mission.prepare',
+					heroIds: [heroId]
+				});
+				const direct = directlyApplyMissionCommand(state, command);
+				const integrated = applyCommand(state, command);
+				expect(direct.state).toStrictEqual(integrated.state);
+				expect({
+					...direct.event,
+					afterStateHash: integrated.events[0]!.afterStateHash
+				}).toStrictEqual(integrated.events[0]);
+				expect(direct.state.schemaVersion).toBe(schemaVersion);
+				return [schemaVersion, hashCanonical(direct.state)];
+			})
+		);
+		expect(observedHashes).toStrictEqual({
+			11: 'a528128e9a9d1d9a59f22cdb76ad3c9f56dcc35b3a1956d919f452d59b06853a',
+			12: '24e81afb5cdce02252396cf7dbee6107af44c9d81fe86fa53370af93082d4586',
+			13: 'f2a27ab884091b751378a1a8c2d6aff605f81b903d7d64ce556ceee60f1511d9',
+			14: 'e98d06f3a71f91af6ec7e6685a33ca6fe5de1d29eb8cd1e8747322502b968fca',
+			15: '7952c17dd84922de040b38eaa689392f9ea23789df1fb81851b42ea8f0e5b6ff',
+			16: '161f6cbe0a47bfdf3c1dc21ed7fdd5335ea360a1f27915b5fd3152f0916b9cd0',
+			17: '059492e6185d0e11b66b1b4f8b66e04d8deabe87496478600b988bce44965daf',
+			18: '7d93456ab4df6a3257b8a0b6bab20b11cece3d99d857b77525e1143ae350a66c',
+			19: 'c2946a463ca69dc0105aa067c058a99524c6df67c99b6a14883db21fd1f753b9',
+			20: '933b1228f05184a42e26a7311e5331725b1568dca01c30a1df2025414d235c3c',
+			23: 'bde54246ae107bd94f13c3fe6a3d3de6d3edb1396701e9a66072e957a0036f23'
+		});
+	});
+
+	it('maps every owned command to its fixed event discriminator', () => {
+		const initialV13 = missionVersionFixture(13);
+		const heroV13 = Object.keys(initialV13.heroes)[0]!;
+		const prepareV13 = missionTestCommand(initialV13, 'mapping-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroV13]
+		});
+		const preparedV13 = directlyApplyMissionCommand(initialV13, prepareV13).state;
+		const deployV13 = missionTestCommand(preparedV13, 'mapping-deploy', {
+			commandType: 'mission.deploy'
+		});
+		const deployedV13 = directlyApplyMissionCommand(preparedV13, deployV13).state;
+
+		const initialV12 = missionVersionFixture(12);
+		const heroV12 = Object.keys(initialV12.heroes)[0]!;
+		const preparedV12 = directlyApplyMissionCommand(
+			initialV12,
+			missionTestCommand(initialV12, 'mapping-v12-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroV12]
+			})
+		).state;
+		const deployedV12 = directlyApplyMissionCommand(
+			preparedV12,
+			missionTestCommand(preparedV12, 'mapping-v12-deploy', {
+				commandType: 'mission.deploy'
+			})
+		).state;
+
+		const initialV11 = missionVersionFixture(11);
+		const heroV11 = Object.keys(initialV11.heroes)[0]!;
+		const preparedV11 = directlyApplyMissionCommand(
+			initialV11,
+			missionTestCommand(initialV11, 'mapping-v11-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroV11]
+			})
+		).state;
+		const deployedV11 = directlyApplyMissionCommand(
+			preparedV11,
+			missionTestCommand(preparedV11, 'mapping-v11-deploy', {
+				commandType: 'mission.deploy'
+			})
+		).state;
+		const openExtractionV11 = missionTestCommand(deployedV11, 'mapping-open-extraction', {
+			commandType: 'mission.open.extraction',
+			completedObjectiveIds: ['recover-first-ember'],
+			source: {
+				source: 'system',
+				timing: null,
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			}
+		});
+		const extractionV11 = directlyApplyMissionCommand(deployedV11, openExtractionV11).state;
+
+		const initialV20 = missionVersionFixture(20);
+		const heroV20 = Object.keys(initialV20.heroes)[0]!;
+		const fallbackBody = {
+			commandType: 'master.configure.fallback',
+			policy: 'directed',
+			directionText: 'Advance the objective while protecting the company.',
+			priorities: ['focus-objective', 'protect-self', 'protect-party'],
+			protectedHeroId: null,
+			safetyStops: {
+				beforeIrreversibleAction: false,
+				masterHealthThreshold: 100,
+				whenUnclassified: false,
+				maximumConsecutiveFallbacks: null
+			},
+			observedAt: '2032-01-01T00:00:00.000Z'
+		} as const;
+		let safetyState = directlyApplyMissionCommand(
+			initialV20,
+			missionTestCommand(initialV20, 'mapping-v20-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroV20]
+			})
+		).state;
+		safetyState = directlyApplyMissionCommand(
+			safetyState,
+			missionTestCommand(safetyState, 'mapping-v20-deploy', {
+				commandType: 'mission.deploy'
+			})
+		).state;
+		safetyState = directlyApplyMissionCommand(
+			safetyState,
+			missionTestCommand(safetyState, 'mapping-v20-fallback-setup', fallbackBody)
+		).state;
+		safetyState = directlyApplyMissionCommand(
+			safetyState,
+			missionTestCommand(safetyState, 'mapping-v20-timing-setup', {
+				commandType: 'master.configure.timing',
+				timing: 'continuous',
+				countdownSeconds: 5,
+				observedAt: '2032-01-01T00:00:01.000Z'
+			})
+		).state;
+		safetyState = directlyApplyMissionCommand(
+			safetyState,
+			missionTestCommand(safetyState, 'mapping-v20-open-setup', {
+				commandType: 'master.open.decision',
+				observedAt: '2032-01-01T00:00:02.000Z'
+			})
+		).state;
+		const activeSafetyState = EngineGameStateV20Schema.parse(safetyState);
+
+		const cases = [
+			{
+				commandType: 'master.configure.timing',
+				eventType: 'master.timing.changed',
+				state: initialV20,
+				command: missionTestCommand(initialV20, 'mapping-timing', {
+					commandType: 'master.configure.timing',
+					timing: 'step',
+					countdownSeconds: 5,
+					observedAt: '2032-01-01T00:00:00.000Z'
+				})
+			},
+			{
+				commandType: 'master.configure.fallback',
+				eventType: 'master.fallback.changed',
+				state: initialV20,
+				command: missionTestCommand(initialV20, 'mapping-fallback', fallbackBody)
+			},
+			{
+				commandType: 'master.apply.safety-stop',
+				eventType: 'master.safety.stopped',
+				state: activeSafetyState,
+				command: missionTestCommand(activeSafetyState, 'mapping-safety', {
+					commandType: 'master.apply.safety-stop',
+					decisionId: activeSafetyState.masterControl.activeDecision!.decisionId,
+					observedAt: '2032-01-01T00:00:03.000Z',
+					source: masterFallbackSafetySource(activeSafetyState)
+				})
+			},
+			{
+				commandType: 'master.open.decision',
+				eventType: 'master.decision.opened',
+				state: initialV20,
+				command: missionTestCommand(initialV20, 'mapping-open-decision', {
+					commandType: 'master.open.decision',
+					observedAt: '2032-01-01T00:00:00.000Z'
+				})
+			},
+			{
+				commandType: 'mission.prepare',
+				eventType: 'mission.preparation.started',
+				state: initialV13,
+				command: prepareV13
+			},
+			{
+				commandType: 'mission.revise.party',
+				eventType: 'mission.party.revised',
+				state: preparedV13,
+				command: missionTestCommand(preparedV13, 'mapping-revise', {
+					commandType: 'mission.revise.party',
+					heroIds: [heroV13]
+				})
+			},
+			{
+				commandType: 'mission.cancel',
+				eventType: 'mission.preparation.canceled',
+				state: preparedV13,
+				command: missionTestCommand(preparedV13, 'mapping-cancel', {
+					commandType: 'mission.cancel'
+				})
+			},
+			{
+				commandType: 'mission.deploy',
+				eventType: 'mission.deployed',
+				state: preparedV13,
+				command: deployV13
+			},
+			{
+				commandType: 'mission.resolve.turn',
+				eventType: 'mission.round.resolved',
+				state: deployedV12,
+				command: missionTestCommand(deployedV12, 'mapping-resolve', {
+					commandType: 'mission.resolve.turn',
+					choices: [
+						manualChoice(deployedV12.master.masterId, 'mission.move.threshold-to-oath-hall'),
+						scriptedChoice(heroV12, 'mission.hold')
+					]
+				})
+			},
+			{
+				commandType: 'mission.open.extraction',
+				eventType: 'mission.extraction.opened',
+				state: deployedV11,
+				command: openExtractionV11
+			},
+			{
+				commandType: 'mission.extract',
+				eventType: 'mission.extracted',
+				state: extractionV11,
+				command: missionTestCommand(extractionV11, 'mapping-extract', {
+					commandType: 'mission.extract'
+				})
+			},
+			{
+				commandType: 'mission.retreat',
+				eventType: 'mission.retreated',
+				state: deployedV13,
+				command: missionTestCommand(deployedV13, 'mapping-retreat', {
+					commandType: 'mission.retreat'
+				})
+			}
+		] as const;
+
+		expect(cases.map(({ commandType }) => commandType)).toStrictEqual(MISSION_COMMAND_TYPES);
+		const observed = cases.map(({ commandType, eventType, state, command }) => {
+			expect(command.commandType).toBe(commandType);
+			const event = firstBandMissionCommandHandler.buildEvent(state, command as never);
+			expect(event.eventType).toBe(eventType);
+			return { commandType, eventType: event.eventType, eventHash: hashCanonical(event) };
+		});
+		expect(observed).toStrictEqual([
+			{
+				commandType: 'master.configure.timing',
+				eventType: 'master.timing.changed',
+				eventHash: '1fd4c6018917ebfbf6258cf4f48e57029d7548c91a9956e8fd8d205842dd5c4b'
+			},
+			{
+				commandType: 'master.configure.fallback',
+				eventType: 'master.fallback.changed',
+				eventHash: '62e5d8806deebcd5e3efa502bb65f3d7d8a3b1be4f93f409a1a193a5509749c4'
+			},
+			{
+				commandType: 'master.apply.safety-stop',
+				eventType: 'master.safety.stopped',
+				eventHash: '0e5f8b2687886fe689c3de9f4b068e258112c07ee87358be9cd47a9e4016922a'
+			},
+			{
+				commandType: 'master.open.decision',
+				eventType: 'master.decision.opened',
+				eventHash: '8d4b764c9b96d2dbeda4916683c330c0996e64f7cacacbb357d76fcff0ac0823'
+			},
+			{
+				commandType: 'mission.prepare',
+				eventType: 'mission.preparation.started',
+				eventHash: 'd1a7d8915ad6e3d33b9bb3ceb4f8a5656407d8e8c10ffc99f0481474c817d35a'
+			},
+			{
+				commandType: 'mission.revise.party',
+				eventType: 'mission.party.revised',
+				eventHash: 'e36d0d2377f1ed5f482dde36939effd16a21bd7e583db96867875d5e42a082cc'
+			},
+			{
+				commandType: 'mission.cancel',
+				eventType: 'mission.preparation.canceled',
+				eventHash: 'f2f09be184ef322205b6fe8f0ba0c16c79e2bd054497c35f2035f8508f7ac355'
+			},
+			{
+				commandType: 'mission.deploy',
+				eventType: 'mission.deployed',
+				eventHash: 'e73d8403dc4ba6e9bd826a9946e5214db8a75ecb520603f1b742762be6104128'
+			},
+			{
+				commandType: 'mission.resolve.turn',
+				eventType: 'mission.round.resolved',
+				eventHash: '94ed1a6d7127a14f36e440729af8b52131e59789d3273a0e6227332cc988d579'
+			},
+			{
+				commandType: 'mission.open.extraction',
+				eventType: 'mission.extraction.opened',
+				eventHash: '1635fd8ac2509369138e8b4aa678af79af144205dd4b9201bc57adf33f45c810'
+			},
+			{
+				commandType: 'mission.extract',
+				eventType: 'mission.extracted',
+				eventHash: 'c779a99c2b3c9f221ac7de4354d13fc169ec6cd23e61644efbbf43df38018272'
+			},
+			{
+				commandType: 'mission.retreat',
+				eventType: 'mission.retreated',
+				eventHash: '98922c1b99170ff81642c6d74802428cf0fa1c91b827a8501ed1616c603e775e'
+			}
+		]);
 	});
 
 	it('loads the dedicated monster, combat, and portal owners', () => {
@@ -1001,7 +1398,14 @@ describe('mission runtime ownership', () => {
 		const commit = (state: EngineGameStateV23, nextCommand: EngineCommand): TransitionRecord => {
 			const stateHash = hashCanonical(state);
 			const commandHash = hashCanonical(nextCommand);
+			const built = firstBandMissionCommandHandler.buildEvent(state, nextCommand as never);
+			const directlyReduced = firstBandMissionEventReducer.reduce(state, built);
 			const result = applyCommand(deepFreeze(state), nextCommand);
+			expect(directlyReduced).toStrictEqual(result.state);
+			expect({
+				...built,
+				afterStateHash: result.events[0]!.afterStateHash
+			}).toStrictEqual(result.events[0]);
 			expect(hashCanonical(state)).toBe(stateHash);
 			expect(hashCanonical(nextCommand)).toBe(commandHash);
 			return {
@@ -1133,10 +1537,9 @@ describe('mission runtime ownership', () => {
 			};
 			const missionEvent = { ...record.event, payload: missionTamper };
 			const consequenceEvent = { ...record.event, payload: consequenceTamper };
-			const dualEvent = {
-				...record.event,
-				payload: { ...missionTamper, firstBandArchive: consequenceTamper.firstBandArchive }
-			};
+			if (transition !== 'extract') {
+				expect(record.after.firstBandArchive).toStrictEqual(record.before.firstBandArchive);
+			}
 			expectErrorShape(
 				() => firstBandMissionEventReducer.reduce(record.before, consequenceEvent),
 				ReplayIntegrityError,
@@ -1155,15 +1558,66 @@ describe('mission runtime ownership', () => {
 					sequence: record.event.sequence
 				}
 			);
+			const observedTransitions: string[] = [];
+			const distinctiveConsequenceFailure = (
+				_state: EngineGameStateV23,
+				consequence: { readonly transition: string; readonly sequence: number }
+			): never => {
+				observedTransitions.push(consequence.transition);
+				throw new ReplayIntegrityError(
+					`Distinct consequence callback: ${consequence.transition}`,
+					consequence.sequence
+				);
+			};
 			expectErrorShape(
-				() => firstBandMissionEventReducer.reduce(record.before, dualEvent),
+				() =>
+					reduceFirstBandMissionTransition(
+						record.before,
+						missionEvent,
+						distinctiveConsequenceFailure
+					),
 				ReplayIntegrityError,
 				{
 					name: 'ReplayIntegrityError',
-					message: 'First-band mission transition payload diverged',
+					message: `Distinct consequence callback: ${(record.event.payload as { transition: string }).transition}`,
 					sequence: record.event.sequence
 				}
 			);
+			const entropyEvent = { ...record.event, seedCursor: record.event.seedCursor + 1 };
+			expectErrorShape(
+				() => firstBandMissionEventReducer.reduce(record.before, entropyEvent),
+				ReplayIntegrityError,
+				{
+					name: 'ReplayIntegrityError',
+					message:
+						transition === 'deploy'
+							? 'First-band deployment entropy diverged'
+							: 'First-band transition entropy diverged',
+					sequence: record.event.sequence
+				}
+			);
+			const storyAndEntropyEvent = {
+				...consequenceEvent,
+				seedCursor: entropyEvent.seedCursor
+			};
+			expectErrorShape(
+				() =>
+					reduceFirstBandMissionTransition(
+						record.before,
+						storyAndEntropyEvent,
+						distinctiveConsequenceFailure
+					),
+				ReplayIntegrityError,
+				{
+					name: 'ReplayIntegrityError',
+					message: `Distinct consequence callback: ${(record.event.payload as { transition: string }).transition}`,
+					sequence: record.event.sequence
+				}
+			);
+			expect(observedTransitions).toStrictEqual([
+				(record.event.payload as { transition: string }).transition,
+				(record.event.payload as { transition: string }).transition
+			]);
 		}
 	});
 });

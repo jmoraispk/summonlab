@@ -7,10 +7,12 @@ import {
 	type MissionRunStateV8
 } from '@summonlab/contracts';
 
-import type { EngineEventReducer } from '../core/types.js';
-import type {
-	BuildFirstBandMissionCommandConsequences,
-	FirstBandMissionCommandConsequences
+import type { EngineCommandHandler, EngineEventReducer } from '../core/types.js';
+import {
+	missionCommandHandler,
+	type BuildFirstBandMissionCommandConsequences,
+	type FirstBandMissionCommandConsequences,
+	type MissionCommand
 } from '../domains/mission/commands.js';
 import {
 	reduceFirstBandMissionTransition,
@@ -57,6 +59,14 @@ export const buildFirstBandMissionCommandConsequences: BuildFirstBandMissionComm
 		)
 	};
 };
+
+export const firstBandMissionCommandHandler = {
+	ownerId: missionCommandHandler.ownerId,
+	commandTypes: missionCommandHandler.commandTypes,
+	assertLegal: missionCommandHandler.assertLegal,
+	buildEvent: (state: EngineGameState, command: MissionCommand) =>
+		missionCommandHandler.buildEvent(state, command, buildFirstBandMissionCommandConsequences)
+} satisfies EngineCommandHandler<MissionCommand>;
 
 export const firstBandMissionEventReducer: EngineEventReducer = {
 	ownerId: 'first-band-mission',
