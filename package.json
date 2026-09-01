@@ -115,6 +115,7 @@
 		"validate:mission-content": "tsx tools/validate-mission-content.ts",
 		"export:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --write",
 		"validate:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --check",
+		"validate:wiki-affinities": "tsx tools/affinity-wiki-contract.ts",
 		"validate:skill-taxonomy": "tsx tools/validate-skill-taxonomy.ts",
 		"validate:wiki": "node tools/validate-wiki.mjs && pnpm validate:skill-taxonomy",
 		"measure:web-build-budget": "pnpm --filter @summonlab/web build && node tools/validate-web-build-budget.mjs --write",
