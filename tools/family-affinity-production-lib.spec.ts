@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -135,6 +137,46 @@ const validMappingEntries: CurrentClassMappingEntry[] = Array.from({ length: 40 
 }));
 
 describe('family affinity production schemas', () => {
+	it('loads the Goblins packet with source tiers and normalized progression contracts', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/01-goblins.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		expect(
+			packet.forms.map(({ tier, sourceReferences, primaryArchetype }) => ({
+				tier,
+				sourceName: sourceReferences[0],
+				primaryArchetype
+			}))
+		).toEqual([
+			{ tier: 'T1', sourceName: 'Runt', primaryArchetype: 'Mob Harrier (Initiate)' },
+			{ tier: 'T2', sourceName: 'Cutter', primaryArchetype: 'Scrap-Line Bully (Soldier)' },
+			{
+				tier: 'T3',
+				sourceName: 'Raider',
+				primaryArchetype: 'Door-Shield Breacher (Specialist)'
+			},
+			{
+				tier: 'T4',
+				sourceName: 'Warboss',
+				primaryArchetype: 'Banner-Rally Enforcer (Champion)'
+			},
+			{
+				tier: 'T5',
+				sourceName: 'Goblin King',
+				primaryArchetype: 'Warren Lootworks Monarch (Sovereign)'
+			}
+		]);
+	});
+
 	it('parses a complete five-form family packet', () => {
 		expect(() => FamilyPacketSchema.parse(validFamily)).not.toThrow();
 	});

@@ -1,0 +1,152 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "goblins",
+	"displayName": "Goblins",
+	"sourceRaceNumber": 1,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-01.md",
+	"classificationNotes": "Source-draft Goblins are treated as a visual and encounter-production family, not as an accepted universal taxonomy. The packet preserves their short, wiry scavenger identity and violent loot hierarchy while expressing combat behavior as readable encounter roles.",
+	"visualConstants": [
+		"Short, hunched, long-armed humanoid silhouette with an oversized head and pointed ears, disproportionately large hands and feet, hooked nose, and crowded crooked teeth.",
+		"Sickly green or grey-green skin against muddy browns, rust-orange, dull iron, and sparse accents of stolen gold.",
+		"Every carried object reads as stolen, scavenged, or crudely repaired: rags, patched leather, cracked wood, rusted scrap metal, bone, and rope rather than purpose-built matching equipment.",
+		"Loot is the status language: mismatched helmets, coin necklaces, teeth, rings, captured banners, and trophies accumulate with rank.",
+		"Posture and finish communicate hierarchy, from a knock-kneed cringing crouch to an upright swagger amid increasingly prestigious plunder."
+	],
+	"escalationAxis": "Scrap becomes treasure, and posture straightens from a cringing crouch to an upright swagger; rising forms turn stolen equipment into increasingly organized mob control, battlefield infrastructure, and finally a royal loot-production system.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Material provenance stays mundane and legible: muddy rags, patched leather, cracked doors, frayed rope, rusted scrap, bone, coins, and stolen heraldry retain their original mismatched sources.",
+				"Surface and motion effects stay physical: grime, sweat, kicked dust, wobbling oversized gear, loose coins, and brief impact sparks emphasize weight and poor repair without adding supernatural residue."
+			],
+			"counterplaySignal": "Readable hands, ropes, shield hinges, banner poles, loot chutes, and exposed carriers reveal the same physical weak points described by each form's mechanic.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Matching manufactured equipment that erases the scavenged construction language"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Materials and equipment become a stolen incendiary kit: oil-soaked rope, pitch-daubed door shields, heat-blued scrap, charred wood, ceramic fuel flasks, and fuse-bound cleavers remain visibly mismatched and field-repaired.",
+				"Silhouette and active effects expose fuel flow: high-mounted flask racks, trailing fuse cords, directional smoke, and pulsing shield-vent embers make ignition routes readable before flames spread."
+			],
+			"counterplaySignal": "A fuse spits bright sparks from flask to weapon or lootworks station before ignition; cutting that cord or breaking the clearly mounted fuel flask cancels the empowered action.",
+			"forbidden": [
+				"Uniform orange recolor without fuel-bearing construction changes",
+				"Fire made from the Goblin's flesh rather than scavenged fuel and equipment",
+				"Clean forged flame armor that no longer reads as stolen scrap"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Materials and load paths combine scavenged gear with stolen masonry: cracked paving-stone plates, door lintels, ore sacks, pit props, and rope cages are lashed onto rusted equipment with visibly strained joints.",
+				"Silhouette and locomotion become low and load-bearing: wide rubble-packed shields, dragging stone counterweights, planted braces, falling grit, and short dust compressions show when a Goblin is anchored or mobile."
+			],
+			"counterplaySignal": "Taut support ropes and pale fracture seams appear at the loaded edge before an anchored action; severing a rope or striking the seam collapses the brace and opens the Goblin's back.",
+			"forbidden": [
+				"Brown recolor without masonry, load, or locomotion changes",
+				"Seamless noble stone armor that conceals scavenged bindings",
+				"Permanent rock anatomy that erases the wiry Goblin silhouette"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Equipment and profile become improvised sail-rigging: captured pennants, patched kitecloth, vane helmets, ribbed door shields, and rope harnesses create asymmetric surfaces that always show wind direction.",
+				"Motion and effects become pressure-driven: snapping cloth, bowed shield slats, taut tow-lines, dust streamers, and brief directional distortion precede a gust-assisted rush, deflection, or lootworks launch."
+			],
+			"counterplaySignal": "Cloth and tow-lines pull fully taut toward the intended lane before pressure releases; stepping out of that lane or cutting the loaded line leaves the Goblin overextended.",
+			"forbidden": [
+				"Pale recolor without sail, rigging, pressure, or motion changes",
+				"Featureless air bodies or floating anatomy",
+				"Omnidirectional wind effects that hide the attack lane"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Equipment becomes a stolen pressure network: leaking copper cisterns, barrel-stave shields, ship rope, gutter pipe, patched hose, and hand pumps are strapped onto ordinary scrap with visible valves and reservoirs.",
+				"Surfaces and active effects track water state: dark waterlogged cloth, wet specular edges, sloshing tanks, coherent hose jets, drainage channels, and thinning spray reveal remaining pressure and direction."
+			],
+			"counterplaySignal": "A reservoir visibly swells and its valve chatters before a pressure action; opening the valve or puncturing the marked tank drains the attack and leaves slick equipment too heavy to brace.",
+			"forbidden": [
+				"Blue recolor or shapeless water body without reservoirs and flow paths",
+				"Dry equipment emitting water from nowhere",
+				"Opaque spray that conceals the Goblin silhouette or counterplay valve"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "goblin-runt",
+			"displayName": "Runt",
+			"primaryArchetype": "Mob Harrier (Initiate)",
+			"battlefieldDuty": "Flood open flanks, crowd isolated targets, and force the player to create breathing room before stronger Goblins arrive.",
+			"teachingGoal": "Teach that a lone Runt is brittle but a cluster gains nerve, so early crowd separation is safer than trading inside the mob.",
+			"signatureMechanic": "Mob Nerve: the Runt stops cringing and makes rapid stick jabs only while shoulder-to-shoulder with another Goblin; when separated, it hesitates and backs toward the nearest ally.",
+			"telegraph": "Its knees straighten, ears lift, and the sharpened stick rises from a defensive clutch when another Goblin enters arm's reach.",
+			"counterplay": "Displace or quickly remove one member of the cluster; the remaining Runt visibly cringes, pauses its jab chain, and can be cleared before it regroups.",
+			"visualDelta": "Knock-kneed and cringing in a filthy loincloth, with bare oversized feet, empty hands except for a sharpened stick, and almost no loot or protective gear.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Runt"]
+		},
+		{
+			"tier": "T2",
+			"formId": "goblin-cutter",
+			"displayName": "Cutter",
+			"primaryArchetype": "Scrap-Line Bully (Soldier)",
+			"battlefieldDuty": "Hold a messy front line by pinning one target in place while Runts crowd the exposed sides.",
+			"teachingGoal": "Teach the repeatable Goblin formation: the best-equipped bully fixes attention while weaker bodies make the formation dangerous.",
+			"signatureMechanic": "Bully's Hook: the Cutter catches clothing or guard with the notch in its cleaver and leans back, slowing the target while any adjacent Runt gains Mob Nerve from the protected position.",
+			"telegraph": "It drops its oversized helmet over its eyes, turns the cleaver notch inward, and plants one foot before the hook.",
+			"counterplay": "Sidestep the narrow hook, strike during the helmet-blind recovery, or push the Cutter away from its Runts to collapse both the pin and their Mob Nerve.",
+			"visualDelta": "Adds a stolen helmet three sizes too big, mismatched leather scraps, a notched cleaver, and a small coin pouch while remaining hunched and visibly under-armored.",
+			"lowerFormInteraction": "Shelters Runts behind its leather-scrap side and deliberately holds hooked targets where their stick jabs can reach.",
+			"sourceReferences": ["Cutter"]
+		},
+		{
+			"tier": "T3",
+			"formId": "goblin-raider",
+			"displayName": "Raider",
+			"primaryArchetype": "Door-Shield Breacher (Specialist)",
+			"battlefieldDuty": "Change the shape of the encounter by carrying mobile cover into a firing lane, then planting it as a temporary barricade that creates a Goblin advance route.",
+			"teachingGoal": "Teach the qualitative Specialist pivot: the first nearly upright, well-equipped Goblin is dangerous because it edits space and formation access, not because it is merely tougher.",
+			"signatureMechanic": "Claimed Door: the Raider braces its scavenged door shield through incoming fire, then slams the lower edge into the ground to create one-way cover for smaller Goblins; planting commits the shield and leaves the sword arm and back exposed.",
+			"telegraph": "It turns the door broadside, peers through a hacked eye slot, and drags a bright rope brace taut before the ground-slam.",
+			"counterplay": "Interrupt before the rope locks, flank the exposed sword side after planting, cut the visible brace to topple the door, or force the Raider away so the claimed lane no longer advances with it.",
+			"visualDelta": "Stands nearly upright in riveted plate scavenged from three different armies, carrying a real sword and a full door shield with exposed hinges, rope handles, and crude viewing slot.",
+			"lowerFormInteraction": "Runts and Cutters stream behind the planted door; a Cutter can hold its brace while the Raider leaves cover to flank, making the brace carrier a readable way to collapse the formation.",
+			"sourceReferences": ["Raider"]
+		},
+		{
+			"tier": "T4",
+			"formId": "goblin-warboss",
+			"displayName": "Warboss",
+			"primaryArchetype": "Banner-Rally Enforcer (Champion)",
+			"battlefieldDuty": "Claim and patrol a rally zone, combining mob nerve, pins, and door cover into an organized push while personally punishing anyone who attacks the formation head-on.",
+			"teachingGoal": "Teach commander prioritization: lower forms become an army only while the Warboss's trophy standard defines a rally zone, but the hulking champion guards that standard with committed sweeps.",
+			"signatureMechanic": "Helm-Tree Rally: the Warboss plants its banner of enemy helms, straightening nearby Goblins and letting their formation mechanics persist at greater spacing; it answers attacks on the banner with a slow, armor-weighted cleave that cannot turn once committed.",
+			"telegraph": "The stolen helms clatter down the pole, nearby Goblins snap upright, and the Warboss flashes its gold teeth before hauling the chestplate and weapon into a fixed sweeping stance.",
+			"counterplay": "Bait the fixed cleave away from the pole, attack from its trailing side, then topple the banner or pull lower forms beyond its marked trophy radius before they reform.",
+			"visualDelta": "Hulking for a Goblin and openly swaggering, with gold teeth, a knight's oversized chestplate, the best stolen weapon in the mob, and a dragging banner stacked with enemy helms.",
+			"lowerFormInteraction": "Runts retain Mob Nerve across the rally zone, Cutters pin intruders at its edge, and Raiders angle their planted doors toward the banner; removing the banner returns every interaction to its shorter, local form.",
+			"sourceReferences": ["Warboss"]
+		},
+		{
+			"tier": "T5",
+			"formId": "goblin-king",
+			"displayName": "Goblin King",
+			"primaryArchetype": "Warren Lootworks Monarch (Sovereign)",
+			"battlefieldDuty": "Operate a command-and-production boss encounter that converts carried battlefield scrap into reinforcements, promotions, and repaired formation tools while issuing role-specific orders from the royal dais.",
+			"teachingGoal": "Test mastery of the whole family by making the player read which production station and decree is coming, sever its supply chain, and dismantle lower-form formations before confronting the dismounted King.",
+			"signatureMechanic": "Royal Lootworks: the welded throne-dais has three exposed stations fueled by scrap that Cutters deliver. At each command beat the King points to one station: the cage winch brings fresh Runts from a warren hatch, the armory chute outfits a surviving Runt as a Cutter, or the door press repairs a Raider's broken Claimed Door. Between cycles, a captured-flag decree orders Runts to rush, Cutters to collect, Raiders to barricade, and any Warboss to defend the active station. Destroyed stations stay disabled and loss of all three forces the King off the throne.",
+			"telegraph": "The King rises beneath the crown of fused crowns, points a ring-heavy hand, and yanks one captured flag; the selected station's stolen bell rings while its gears visibly spool and the matching lower forms shout and turn toward their ordered route.",
+			"counterplay": "Intercept scrap-carrying Cutters, cut the bright drive rope before the bell finishes, destroy the exposed selected station, or lure its defenders away; each broken station removes one production option, and an empty dais makes the dismounted King fight without replacement troops or repaired doors.",
+			"visualDelta": "Sits upright on a welded throne of recognizable stolen loot above a coin dais, wearing a crown made from fused crowns, a cloak stitched from captured flags, and rings on every finger; the throne's crude winch, chute, and door press extend the treasure silhouette into a working war machine.",
+			"lowerFormInteraction": "Cutters carry dropped scrap to power the throne; Runts arrive through the cage winch and can be outfitted into Cutters; Raiders receive repaired door shields and execute barricade decrees; a Warboss rallies defenders around whichever station the King has activated.",
+			"sourceReferences": ["Goblin King"]
+		}
+	]
+}
