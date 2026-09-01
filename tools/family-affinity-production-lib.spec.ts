@@ -376,13 +376,29 @@ describe('Wave B family packets', () => {
 	);
 
 	it.each([
-		{ fileName: '08-wraiths.json', nativeMotif: /cold|frost/iu },
-		{ fileName: '10-mummies.json', nativeMotif: /sand|dust/iu },
-		{ fileName: '11-demons.json', nativeMotif: /ember|magma|fire/iu },
-		{ fileName: '12-celestials.json', nativeMotif: /light|radiance/iu }
+		{
+			fileName: '08-wraiths.json',
+			nativeMotifBinding:
+				/(?:family-native|non-affinity)[^.]*\b(?:cold|frost)\b|\b(?:cold|frost)\b[^.]*(?:family-native|non-affinity)/iu
+		},
+		{
+			fileName: '10-mummies.json',
+			nativeMotifBinding:
+				/(?:family-native|non-affinity)[^.]*\b(?:sand|dust)\b|\b(?:sand|dust)\b[^.]*(?:family-native|non-affinity)/iu
+		},
+		{
+			fileName: '11-demons.json',
+			nativeMotifBinding:
+				/(?:family-native|non-affinity)[^.]*\b(?:ember|magma|fire)\b|\b(?:ember|magma|fire)\b[^.]*(?:family-native|non-affinity)/iu
+		},
+		{
+			fileName: '12-celestials.json',
+			nativeMotifBinding:
+				/(?:family-native|non-affinity)[^.]*\b(?:light|radiance)\b|\b(?:light|radiance)\b[^.]*(?:family-native|non-affinity)/iu
+		}
 	])(
 		'distinguishes $fileName source-native motifs from elemental affinity construction',
-		async ({ fileName, nativeMotif }) => {
+		async ({ fileName, nativeMotifBinding }) => {
 			const packet = FamilyPacketSchema.parse(
 				JSON.parse(
 					await readFile(
@@ -395,13 +411,16 @@ describe('Wave B family packets', () => {
 				)
 			);
 
-			const normalTheme = [
+			const normalEntries = [
 				...packet.affinityThemes.normal.constructionDimensions,
 				packet.affinityThemes.normal.counterplaySignal,
 				...packet.affinityThemes.normal.forbidden
-			].join(' ');
-			expect(normalTheme).toMatch(nativeMotif);
-			expect(normalTheme).toMatch(/family-native|non-affinity/iu);
+			];
+			expect(normalEntries).toEqual(
+				expect.arrayContaining([expect.stringMatching(nativeMotifBinding)])
+			);
+
+			const normalTheme = normalEntries.join(' ');
 			expect(normalTheme).toMatch(/unexplained elemental anatomy/iu);
 			expect(normalTheme).toMatch(/unexplained elemental glow/iu);
 			expect(normalTheme).toMatch(/unexplained environmental wake/iu);
@@ -413,6 +432,50 @@ describe('Wave B family packets', () => {
 			}
 		}
 	);
+
+	it('gives the two-point T1 Shade explicit construction and counterplay in every elemental theme', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/08-wraiths.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+			const theme = packet.affinityThemes[affinity];
+			const shadeConstruction = theme.constructionDimensions.map((dimension) => {
+				const [shadeBranch, matureBranch] = dimension.split(/T2[–-]T5/u);
+				expect(matureBranch, `${affinity} mature branch`).toBeTruthy();
+				expect(shadeBranch, `${affinity} T1 construction branch`).toMatch(/T1 Shade/iu);
+				return shadeBranch!;
+			});
+			const shadeConstructionText = shadeConstruction.join(' ');
+			expect(shadeConstructionText, `${affinity} two-point identity`).toMatch(
+				/two cold eye points/iu
+			);
+			expect(shadeConstructionText, `${affinity} transient outline`).toMatch(
+				/transient vapor outline/iu
+			);
+			expect(shadeConstructionText, `${affinity} later-form anatomy`).not.toMatch(
+				/chain|crown|armor|hood|blade|shroud/iu
+			);
+
+			const [shadeCounterplay, matureCounterplay] = theme.counterplaySignal.split(/T2[–-]T5/u);
+			expect(matureCounterplay, `${affinity} mature counterplay`).toBeTruthy();
+			expect(shadeCounterplay, `${affinity} T1 counterplay branch`).toMatch(/T1 Shade/iu);
+			expect(shadeCounterplay, `${affinity} eye readability`).toMatch(
+				/eye alignment|eye gap|still center/iu
+			);
+			expect(shadeCounterplay, `${affinity} later-form counterplay anatomy`).not.toMatch(
+				/chain|crown|armor|hood|blade|shroud/iu
+			);
+		}
+	});
 });
 
 describe('family affinity production schemas', () => {
