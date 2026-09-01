@@ -164,6 +164,14 @@ All 161 entries are planned **candidate production targets**, not approved or ru
 Promotion still requires source persistence, review evidence, approval, and a separate runtime
 export.
 
+The Equipment-owned
+[material production manifest](../../../../assets/equipment/experiments/material-equipment-v1/manifest.json)
+expands this budget into explicit, collision-safe targets. Its full-set dependencies enforce the
+required sequence, and its candidate, provenance-result, and review paths are reservations rather
+than evidence that an image exists. The adjacent
+[production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) define
+the execution boundary and deterministic validation command.
+
 ## Source authority and remaining decisions
 
 The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
