@@ -667,6 +667,16 @@
       "spoilerScope": "internal"
     },
     {
+      "wikiId": "sources.affinity-integration-evidence-2026-08-31",
+      "path": "docs/wiki/sources/2026-08-31-affinity-integration-evidence.md",
+      "pageType": "review-evidence",
+      "owner": "architecture",
+      "designStatus": "accepted",
+      "implementationStatus": "verified",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
       "wikiId": "art.living-village-heroes",
       "path": "docs/wiki/art/living-village-heroes.md",
       "pageType": "visual-brief",

@@ -117,7 +117,7 @@
 		"validate:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --check",
 		"validate:wiki-affinities": "tsx tools/affinity-wiki-contract.ts",
 		"validate:skill-taxonomy": "tsx tools/validate-skill-taxonomy.ts",
-		"validate:wiki": "node tools/validate-wiki.mjs && pnpm validate:skill-taxonomy",
+		"validate:wiki": "node tools/validate-wiki.mjs && pnpm validate:wiki-affinities && pnpm validate:skill-taxonomy",
 		"measure:web-build-budget": "pnpm --filter @summonlab/web build && node tools/validate-web-build-budget.mjs --write",
 		"validate:web-build-budget": "node tools/validate-web-build-budget.mjs",
 		"format": "prettier --write .",

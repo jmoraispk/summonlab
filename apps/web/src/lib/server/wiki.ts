@@ -11,6 +11,8 @@ const wikiSources = import.meta.glob('../../../../../docs/wiki/**/*.md', {
 
 const assetSources = import.meta.glob(
 	[
+		'../../../../../assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg',
+		'../../../../../assets/enemies/wiki/affinities/reference/element-cycle-v2.svg',
 		'../../../../../assets/enemies/review/beasts-v1.webp',
 		'../../../../../assets/enemies/review/constructs-v1.webp',
 		'../../../../../assets/enemies/review/goblinoids-v1.webp',

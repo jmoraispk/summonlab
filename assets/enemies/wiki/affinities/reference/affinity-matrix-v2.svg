@@ -9,7 +9,7 @@
 	<defs>
 		<style>
 			.background { fill: #10141d; }
-			.grid { fill: #151c28; stroke: #3a4a63; stroke-width: 1; }
+			.grid { stroke: #3a4a63; stroke-width: 1; }
 			.header { fill: #b8c5d8; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 700; text-anchor: middle; }
 			.row-header { fill: #b8c5d8; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 700; text-anchor: end; }
 			.name { fill: #f3f6fb; font-family: system-ui, sans-serif; font-size: 17px; font-weight: 700; text-anchor: middle; }
@@ -44,7 +44,7 @@
 	<text class="name" x="770" y="174">Sand</text>
 	<text class="meta" x="770" y="197">Wind + Earth · Abrade</text>
 
-	<rect class="grid" x="245" y="235" width="150" height="70" rx="10" />
+	<rect class="grid" x="245" y="235" width="150" height="70" rx="10" fill="#151c28" />
 	<rect class="grid" x="395" y="235" width="150" height="70" rx="10" fill="#123859" data-kind="base" data-name="Water" />
 	<text class="name" x="470" y="264">Water</text>
 	<text class="meta" x="470" y="287">Chill</text>
@@ -55,8 +55,8 @@
 	<text class="name" x="770" y="264">Ice</text>
 	<text class="meta" x="770" y="287">Water + Wind · Freeze</text>
 
-	<rect class="grid" x="245" y="325" width="150" height="70" rx="10" />
-	<rect class="grid" x="395" y="325" width="150" height="70" rx="10" />
+	<rect class="grid" x="245" y="325" width="150" height="70" rx="10" fill="#151c28" />
+	<rect class="grid" x="395" y="325" width="150" height="70" rx="10" fill="#151c28" />
 	<rect class="grid" x="545" y="325" width="150" height="70" rx="10" fill="#531d17" data-kind="base" data-name="Fire" />
 	<text class="name" x="620" y="354">Fire</text>
 	<text class="meta" x="620" y="377">Burn</text>
@@ -64,9 +64,9 @@
 	<text class="name" x="770" y="354">Lightning</text>
 	<text class="meta" x="770" y="377">Fire + Wind · Shock</text>
 
-	<rect class="grid" x="245" y="415" width="150" height="70" rx="10" />
-	<rect class="grid" x="395" y="415" width="150" height="70" rx="10" />
-	<rect class="grid" x="545" y="415" width="150" height="70" rx="10" />
+	<rect class="grid" x="245" y="415" width="150" height="70" rx="10" fill="#151c28" />
+	<rect class="grid" x="395" y="415" width="150" height="70" rx="10" fill="#151c28" />
+	<rect class="grid" x="545" y="415" width="150" height="70" rx="10" fill="#151c28" />
 	<rect class="grid" x="695" y="415" width="150" height="70" rx="10" fill="#153f3c" data-kind="base" data-name="Wind" />
 	<text class="name" x="770" y="444">Wind</text>
 	<text class="meta" x="770" y="467">Lacerate</text>

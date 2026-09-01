@@ -1,13 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
+import catalog from '../../../../../docs/wiki/catalog.json';
+
 import { getMonsterVisualDatabase, getMonsterVisualEntry } from './monster-database';
-import { getWikiNavigation, getWikiPage, getWikiPageCount } from './wiki';
+import { getWikiAsset, getWikiNavigation, getWikiPage, getWikiPageCount } from './wiki';
 
 describe('online wiki registry', () => {
 	it('publishes every public catalog route from canonical Markdown', () => {
 		const navigation = getWikiNavigation();
 
-		expect(getWikiPageCount()).toBe(99);
+		expect(getWikiPageCount()).toBe(catalog.entries.length);
 		expect(navigation.length).toBeGreaterThan(40);
 		for (const entry of navigation) {
 			expect(getWikiPage(entry.href.replace(/^\/wiki\//u, ''))?.title).toBe(entry.title);
@@ -20,6 +22,19 @@ describe('online wiki registry', () => {
 		);
 		expect(getWikiPage('mechanics/skills/magical-evocation')).toBeNull();
 		expect(getWikiPage('mechanics/skills/martial-universal')).toBeNull();
+	});
+
+	it('bundles the accepted affinity diagrams for local wiki rendering', () => {
+		for (const assetPath of [
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg',
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg'
+		]) {
+			expect(getWikiAsset(assetPath)).toMatch(/^(?:data:image\/svg\+xml|\/)/u);
+		}
+
+		expect(getWikiPage('mechanics/progression/affinities')?.html).not.toContain(
+			'github.com/jmoraispk/summonlab/blob/main/assets/enemies/wiki/affinities/reference'
+		);
 	});
 
 	it('publishes one visual database page per canonical monster identity', () => {
