@@ -1,5 +1,10 @@
 # Hero rarity frame candidate packet v1
 
+Status: **superseded — independent-star construction rejected by the owner**.
+
+Retained for provenance only. Do not promote these layered candidates. The current integrated
+one-pass direction lives in `../rarity-frames-v2/`.
+
 This directory is an owner-review packet for the Heroes visual domain. Every file is a
 **candidate**. Nothing here is registered in a shared catalog or exported to runtime.
 

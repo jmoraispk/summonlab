@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-rarity-frames`
 
-Design status: **owner-directed candidate packet; runtime integration not requested**.
+Design status: **integrated one-pass candidate; owner review pending; runtime integration not requested**.
 
 Hero portrait cards use one coherent charcoal, gold, navy, and sapphire frame family across seven
 star ranks. Rarity increases silhouette complexity, ornament density, dragon anatomy, and blue
@@ -21,14 +21,16 @@ every rank.
 | 6★ | elder dragons | fuller bodies, wings, scales, claws, and controlled energy |
 | 7★ | awakened dragons | both mouths open and sapphire energy intensifies |
 
-## Shared star tray
+## Integrated star tray
 
-Every frame reserves the same uninterrupted dark horizontal tray. The tray is an asset constraint,
-not decoration: claws, gems, flames, and scrollwork frame it without entering it. One canonical
-gold-star component is then repeated from one through seven with identical pixels, 88-pixel size,
-12-pixel gaps, a shared baseline, and horizontal centering.
+Every frame contains a horizontal lower tray with its complete rank row generated as part of the
+same illustrated object. The stars retain one warm-gold, broad, friendly five-point treatment while
+sharing the frame's lighting, bevel, shadows, and occlusion. They are not separate sprites or a
+post-generation overlay. Star rows expand symmetrically from one through seven and stay in the same
+lower visual zone.
 
-The candidate packet and provenance live in
-`assets/heroes/visuals/rarity-frames-v1/`. Candidate SVGs are review compositions rather than
-approved runtime exports. Shared catalogs remain unchanged until owner approval and an explicit
+The current candidate packet and provenance live in
+`assets/heroes/visuals/rarity-frames-v2/`. Its combined seven-card sheet is a visual-direction
+candidate rather than a sliced runtime export. The former v1 layered approach is retained only as
+rejected provenance. Shared catalogs remain unchanged until owner approval and an explicit
 integration handoff.
