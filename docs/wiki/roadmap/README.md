@@ -16,7 +16,7 @@ catalog entries, visual briefs, or future interfaces from their owning pages.
 | `decision` | Not safe to schedule until an owner or dependency resolves the named question |
 
 Availability is different from the wiki catalog's design, implementation, visual, and spoiler
-status. For example, Beast Taming can be a detailed design draft with commissioned concept art and
+status. For example, Taming can be a detailed design draft with commissioned concept art and
 still be `off` in Living Village v1.
 
 ## Release matrices

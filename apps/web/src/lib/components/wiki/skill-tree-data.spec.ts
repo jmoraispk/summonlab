@@ -26,7 +26,7 @@ function allLabels() {
 }
 
 describe('skill tree navigation data', () => {
-	it('publishes the exact 5/5/6 family model', () => {
+	it('publishes the exact 5/5/5 family model', () => {
 		expect(domain('martial').families.map((family) => family.name)).toEqual([
 			'Blade',
 			'Polearm',
@@ -46,10 +46,51 @@ describe('skill tree navigation data', () => {
 			'Alchemy',
 			'Cooking',
 			'Gathering',
-			'Beast',
-			'Lore'
+			'Knowledge'
 		]);
-		expect(SKILL_DOMAINS.flatMap((entry) => entry.families)).toHaveLength(16);
+		expect(SKILL_DOMAINS.flatMap((entry) => entry.families)).toHaveLength(15);
+	});
+
+	it('projects creature acquisition, learned knowledge, and pack command to their surviving families', () => {
+		const craft = domain('craft');
+		const martial = domain('martial');
+		const gathering = craft.families.find((family) => family.name === 'Gathering');
+		const knowledge = craft.families.find((family) => family.name === 'Knowledge');
+		const body = martial.families.find((family) => family.name === 'Body');
+
+		expect(body?.description).toContain('mounted movement');
+		expect(body?.description).toContain('multi-companion combat command');
+
+		expect(gathering?.skills).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					name: 'Animal Handling',
+					href: '/wiki/mechanics/skills/craft-and-life#gathering'
+				}),
+				expect.objectContaining({
+					name: 'Monarch of Beasts',
+					href: '/wiki/mechanics/skills/craft-and-life#gathering'
+				})
+			])
+		);
+		expect(knowledge?.skills).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					name: 'Languages',
+					href: '/wiki/mechanics/skills/craft-and-life#knowledge'
+				}),
+				expect.objectContaining({
+					name: 'Read the Body',
+					href: '/wiki/mechanics/skills/craft-and-life#knowledge'
+				})
+			])
+		);
+		expect(knowledge?.skills.some((entry) => entry.name === 'Beast Speech')).toBe(false);
+		expect(body?.skills).toContainEqual({
+			name: 'Pack Bond',
+			href: '/wiki/mechanics/skills/martial-body',
+			labels: []
+		});
 	});
 
 	it('gives every representative skill one unique family owner', () => {
@@ -123,6 +164,8 @@ describe('skill tree navigation data', () => {
 	it('contains no Universal branch or obsolete structural identity', () => {
 		const serialized = JSON.stringify(SKILL_DOMAINS);
 
-		expect(serialized).not.toMatch(/Universal Martial|Universal skills|Tracking|Paired Blades/u);
+		expect(serialized).not.toMatch(
+			/Universal Martial|Universal skills|Tracking|Paired Blades|"Beast"|"Lore"/u
+		);
 	});
 });

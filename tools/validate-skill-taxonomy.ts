@@ -46,7 +46,10 @@ const targetFiles: SkillMarkdownFile[] = await Promise.all(
 const targetRows = parseTargetSkillRows(targetFiles);
 const staleReferencePaths = [
 	...(await authoredSourcePaths('docs/wiki', ['.md'])),
+	...(await authoredSourcePaths('docs/decisions', ['.md'])),
+	...(await authoredSourcePaths('docs/evidence', ['.md'])),
 	'apps/web/src/lib/components/wiki/SkillTree.svelte',
+	'apps/web/src/lib/components/wiki/skill-tree-data.ts',
 	'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
 ];
 const staleReferenceFiles: SkillMarkdownFile[] = await Promise.all(

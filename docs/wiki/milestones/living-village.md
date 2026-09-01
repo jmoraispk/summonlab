@@ -151,7 +151,7 @@ Exact XP amounts, training yield, floor enemy stats, and item stats remain tunin
 fields, owners, and units must be locked in LV-1. If review changes any assumption, version the
 fixture rather than letting each worker choose independently.
 
-Disabled capabilities remain fully documented. An `off` skill—such as Alchemy or Beast
+Disabled capabilities remain fully documented. An `off` skill—such as Alchemy, Animal Handling, or
 Taming—cannot be assigned at summon, appear in a reward, enter the training selector, be proposed by
 a policy, or pass command validation in this release.
 

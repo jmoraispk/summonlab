@@ -121,7 +121,7 @@ occasionally more or none beyond the initial one.
 Aptitudes begin hidden and become known by:
 
 - observed outperformance during sufficient play;
-- immediate appraisal through Lore skill, a rare consumable, or an appraiser;
+- immediate appraisal through Knowledge skill, a rare consumable, or an appraiser;
 - recognition by a mentor in the matching discipline.
 
 Because promotion may awaken aptitudes, looking at an opposing 5★ does not reveal whether it was

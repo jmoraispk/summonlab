@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
@@ -65,6 +66,17 @@ Family: **${family}**
 | 1 | **${skill}** | ${element} | F | P | None | Foundation |`;
 }
 
+function craftTargetPage(family: string, skill: string): string {
+	return `# Craft Skills — ${family}
+
+Domain: **Craft**
+Family: **${family}**
+
+| # | Skill | R | T | Requires | Effect |
+| ---: | --- | :---: | :---: | --- | --- |
+| 1 | **${skill}** | F | P | None | Foundation |`;
+}
+
 function familiesFor(rows: ReturnType<typeof parseTargetSkillRows>, domain: string): string[] {
 	return [...new Set(rows.filter((row) => row.domain === domain).map((row) => row.family))].sort();
 }
@@ -82,6 +94,13 @@ function elementLabelsForFamily(
 				.map((label) => label.value)
 		)
 	].sort();
+}
+
+async function authoredSourcePaths(root: string, extensions: readonly string[]): Promise<string[]> {
+	const entries = await readdir(path.resolve(root), { recursive: true });
+	return entries
+		.filter((entry) => extensions.some((extension) => entry.endsWith(extension)))
+		.map((entry) => path.join(root, entry));
 }
 
 describe('skill taxonomy migration inventory', () => {
@@ -141,6 +160,92 @@ describe('skill taxonomy migration inventory', () => {
 		).toEqual([
 			'apps/web/src/lib/components/wiki/SkillTree.svelte: /wiki/mechanics/skills/magical-evocation'
 		]);
+	});
+
+	it('rejects retired Craft families and requirement variants in maintained active sources', () => {
+		expect(
+			findForbiddenSkillReferencesInAuthoredSources([
+				{
+					sourcePath: 'docs/wiki/mechanics/skills/example.md',
+					source:
+						'Family: **Beast**\n\n| Craft | Forging, Beast, Lore |\nRequires: Beast family prerequisite'
+				},
+				{
+					sourcePath: 'apps/web/src/routes/living-village-lab/summon/fixtures.ts',
+					source: "{ class: 'crafting', description: 'Learned lore', name: 'Lore' }"
+				},
+				{
+					sourcePath: 'apps/web/src/lib/components/wiki/skill-tree-data.ts',
+					source: "{ name: 'Beast', description: 'Creature production' }"
+				},
+				{
+					sourcePath: 'docs/decisions/accepted.md',
+					source: 'The `Lore` family remains available.'
+				},
+				{
+					sourcePath: 'docs/evidence/handoff.md',
+					source: 'Requires: Lore-prerequisite'
+				}
+			])
+		).toEqual([
+			'docs/wiki/mechanics/skills/example.md: retired Craft family Beast',
+			'docs/wiki/mechanics/skills/example.md: retired Craft family Lore',
+			'docs/wiki/mechanics/skills/example.md: retired Craft family requirement',
+			'apps/web/src/routes/living-village-lab/summon/fixtures.ts: retired Craft family Lore',
+			'apps/web/src/lib/components/wiki/skill-tree-data.ts: retired Craft family Beast',
+			'docs/decisions/accepted.md: retired Craft family Lore',
+			'docs/evidence/handoff.md: retired Craft family requirement'
+		]);
+	});
+
+	it('constrains retired family detection to the Craft family cell', () => {
+		expect(
+			findForbiddenSkillReferencesInAuthoredSources([
+				{
+					sourcePath: 'docs/evidence/retired-family.md',
+					source: '| Craft | Beast | Former family |'
+				},
+				{
+					sourcePath: 'docs/evidence/retained-skill.md',
+					source:
+						'| Craft | Gathering | Monarch of Beasts |\n| Craft | Gathering | Beast habitat notes |'
+				}
+			])
+		).toEqual(['docs/evidence/retired-family.md: retired Craft family Beast']);
+	});
+
+	it('allows retained creature skill names and ordinary beast and lore prose', () => {
+		expect(
+			findForbiddenSkillReferencesInAuthoredSources([
+				{
+					sourcePath: 'docs/evidence/creature-notes.md',
+					source: 'Monarch of Beasts preserves old village lore about dangerous creatures.'
+				},
+				{
+					sourcePath: 'apps/web/src/lib/components/wiki/skill-tree-data.ts',
+					source: "skill('Monarch of Beasts')"
+				}
+			])
+		).toEqual([]);
+	});
+
+	it('finds no retired taxonomy structures in the authored validation corpus', async () => {
+		const sourcePaths = [
+			...(await authoredSourcePaths('docs/wiki', ['.md'])),
+			...(await authoredSourcePaths('docs/decisions', ['.md'])),
+			...(await authoredSourcePaths('docs/evidence', ['.md'])),
+			'apps/web/src/lib/components/wiki/SkillTree.svelte',
+			'apps/web/src/lib/components/wiki/skill-tree-data.ts',
+			'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
+		];
+		const sources = await Promise.all(
+			sourcePaths.map(async (sourcePath) => ({
+				sourcePath,
+				source: await readFile(path.resolve(sourcePath), 'utf8')
+			}))
+		);
+
+		expect(findForbiddenSkillReferencesInAuthoredSources(sources)).toEqual([]);
 	});
 
 	it('parses a catalog row with its page and section identity', () => {
@@ -348,6 +453,52 @@ describe('skill taxonomy migration inventory', () => {
 		);
 	});
 
+	it('rejects retired structural references in effective prerequisite and effect fields', () => {
+		const legacyFallback = {
+			...migrationRecord('Body', 'Legacy Fallback', 1),
+			requires: 'Riding Master, Beast family prerequisite',
+			effect: 'Unlocks a Lore-prerequisite technique'
+		};
+		const explicitReplacement = {
+			...migrationRecord('Body', 'Explicit Replacement', 2),
+			requires: 'Beast prerequisite',
+			effect: 'Lore prerequisite',
+			replacementRequires: 'Animal Handling Expert',
+			replacementEffect: 'Interprets creature behavior'
+		};
+		const retiredReplacement = {
+			...migrationRecord('Body', 'Retired Replacement', 3),
+			replacementRequires: 'Beast prerequisite',
+			replacementEffect: 'Unlocks a Lore family prerequisite technique'
+		};
+		const ledger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+			sourceRowCount: 520,
+			records: [legacyFallback, explicitReplacement, retiredReplacement]
+		} as SkillMigrationLedger;
+		const errors = validateMigrationLedger(ledger);
+
+		expect(errors).toEqual(
+			expect.arrayContaining([
+				'legacy.md#body:1 effective requires contains retired Craft family prerequisite',
+				'legacy.md#body:1 effective effect contains retired Craft family prerequisite'
+			])
+		);
+		expect(errors).not.toContain(
+			'legacy.md#body:2 effective requires contains retired Craft family prerequisite'
+		);
+		expect(errors).not.toContain(
+			'legacy.md#body:2 effective effect contains retired Craft family prerequisite'
+		);
+		expect(errors).toEqual(
+			expect.arrayContaining([
+				'legacy.md#body:3 effective requires contains retired Craft family prerequisite',
+				'legacy.md#body:3 effective effect contains retired Craft family prerequisite'
+			])
+		);
+	});
+
 	it('records reviewed Polearm replacements instead of short-tool semantics', async () => {
 		const ledger = JSON.parse(
 			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
@@ -433,16 +584,93 @@ describe('skill taxonomy migration inventory', () => {
 			'Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert'
 		);
 		expect(replacements['craft-and-life.md#beast:8']).toBe(
-			'Riding Master, Martial family skill at Expert'
+			'Riding Master, another Martial skill at Expert'
 		);
 		expect(replacements['craft-and-life.md#forging:14']).toBe(
-			'Alloying Master, Beast prerequisite'
+			'Alloying Master, Animal Handling Expert'
 		);
 	});
 });
 
 describe('target skill taxonomy', () => {
-	it('parses the final five/five/six family hierarchy and optional Element labels', async () => {
+	it('keeps the canonical Markdown aligned with the five-family migration ledger', async () => {
+		const targetPaths = [
+			'docs/wiki/mechanics/skills/martial-blade.md',
+			'docs/wiki/mechanics/skills/martial-polearm.md',
+			'docs/wiki/mechanics/skills/martial-ranged.md',
+			'docs/wiki/mechanics/skills/martial-shield.md',
+			'docs/wiki/mechanics/skills/martial-body.md',
+			'docs/wiki/mechanics/skills/magical-elemental.md',
+			'docs/wiki/mechanics/skills/magical-disciplines.md',
+			'docs/wiki/mechanics/skills/craft-and-life.md'
+		];
+		const [ledgerSource, ...targetSources] = await Promise.all([
+			readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8'),
+			...targetPaths.map((sourcePath) => readFile(sourcePath, 'utf8'))
+		]);
+		const ledger = JSON.parse(ledgerSource) as SkillMigrationLedger;
+		const rows = parseTargetSkillRows(
+			targetPaths.map((sourcePath, index) => ({ sourcePath, source: targetSources[index] }))
+		);
+
+		expect(familiesFor(rows, 'Craft')).toEqual([
+			'Alchemy',
+			'Cooking',
+			'Forging',
+			'Gathering',
+			'Knowledge'
+		]);
+		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
+		expect(rows.filter((row) => row.domain === 'Craft' && row.family === 'Knowledge')).toHaveLength(
+			12
+		);
+		expect(rows.some((row) => row.name === 'Beast Speech')).toBe(false);
+		expect(rows.find((row) => row.name === 'Mounted Combat')).toMatchObject({
+			domain: 'Martial',
+			family: 'Body',
+			requires: 'Riding Master, another Martial skill at Expert'
+		});
+	});
+
+	it('allows exactly the five approved Craft families', () => {
+		const approvedFamilies = ['Alchemy', 'Cooking', 'Forging', 'Gathering', 'Knowledge'];
+		const craftLedger = (family: string) =>
+			({
+				schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+				sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+				sourceRowCount: 520,
+				records: [
+					{
+						...migrationRecord('Blade', `${family} Foundation`, 1),
+						target: { domain: 'Craft' as const, family, skill: `${family} Foundation` }
+					}
+				]
+			}) as SkillMigrationLedger;
+
+		for (const family of approvedFamilies) {
+			const rows = parseTargetSkillRows([
+				{
+					sourcePath: `${family.toLowerCase()}.md`,
+					source: craftTargetPage(family, `${family} Foundation`)
+				}
+			]);
+			expect(validateTargetTaxonomy(rows, craftLedger(family))).toEqual([]);
+		}
+
+		for (const retiredFamily of ['Beast', 'Lore']) {
+			const rows = parseTargetSkillRows([
+				{
+					sourcePath: `${retiredFamily.toLowerCase()}.md`,
+					source: craftTargetPage(retiredFamily, `${retiredFamily} Foundation`)
+				}
+			]);
+			expect(validateTargetTaxonomy(rows, craftLedger(retiredFamily))).toContain(
+				`unknown Craft family ${retiredFamily}`
+			);
+		}
+	});
+
+	it('parses the current Martial and Magical family hierarchy and optional Element labels', async () => {
 		const paths = [
 			'docs/wiki/mechanics/skills/martial-blade.md',
 			'docs/wiki/mechanics/skills/martial-body.md',
@@ -450,8 +678,7 @@ describe('target skill taxonomy', () => {
 			'docs/wiki/mechanics/skills/martial-ranged.md',
 			'docs/wiki/mechanics/skills/martial-shield.md',
 			'docs/wiki/mechanics/skills/magical-elemental.md',
-			'docs/wiki/mechanics/skills/magical-disciplines.md',
-			'docs/wiki/mechanics/skills/craft-and-life.md'
+			'docs/wiki/mechanics/skills/magical-disciplines.md'
 		];
 		const rows = parseTargetSkillRows(
 			await Promise.all(
@@ -461,25 +688,12 @@ describe('target skill taxonomy', () => {
 				}))
 			)
 		);
-		const ledger = JSON.parse(
-			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
-		) as SkillMigrationLedger;
-
-		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
 		expect(familiesFor(rows, 'Magical')).toEqual([
 			'Elemental',
 			'Enchantment',
 			'Mind',
 			'Restoration',
 			'Ward'
-		]);
-		expect(familiesFor(rows, 'Craft')).toEqual([
-			'Alchemy',
-			'Beast',
-			'Cooking',
-			'Forging',
-			'Gathering',
-			'Lore'
 		]);
 		expect(elementLabelsForFamily(rows, 'Elemental')).toEqual([
 			'Earth',

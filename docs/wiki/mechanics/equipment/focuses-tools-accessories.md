@@ -21,35 +21,35 @@ A focus is not required to cast, but it substantially improves magical magnitude
 
 ## Tools
 
-Tools are required to practise craft skills at all, and their quality sets the ceiling on output.
+Tools are required to practise the associated skills, and their quality sets the ceiling on output.
 
-| Family | Tool | R band | Notes |
-| --- | --- | --- | --- |
-| **Forging** | Smith's Hammer | F+ | Required for any Forging skill |
-| | Tongs and Anvil | F+ | Workshop fixture; quality gates Tempering |
-| | Bellows | E+ | Gates the temperature ceiling, and therefore the material ceiling |
-| | Whetstone | F+ | Enables Sharpening in the field |
-| | Runic Chisel | C+ | Required for Runic Foundation |
-| **Alchemy** | Mortar and Pestle | F+ | Required for any Alchemy skill |
-| | Alembic | E+ | Required for Extraction |
-| | Retort | D+ | Required for Transmutation |
-| | Reagent Case | E+ | Prevents component spoilage in the field |
-| | Philosopher's Vessel | C+ | Required for Philosopher's Work |
-| **Cooking** | Field Pot | F+ | Required to cook on a mission |
-| | Chef's Knife | F+ | Quality raises every dish's potency |
-| | Feast Cauldron | D+ | Required for Feast |
-| **Gathering** | Pick | F+ | Required for Mining |
-| | Sickle | F+ | Required for Foraging |
-| | Skinning Knife | F+ | Required for Skinning; quality gates Perfect Cut |
-| | Prospector's Lens | E+ | Required for Prospecting |
-| | Leyline Tap | C+ | Required for Leyline Harvest |
-| **Beast** | Bridle and Saddle | E+ | Required for Riding |
-| | Taming Collar | D+ | Required for Taming |
-| | Beast Whistle | E+ | Commands companions at range |
-| **Lore** | Reading Lens | F+ | Required for Identify |
-| | Scribing Set | E+ | Required for Research and Mapping |
-| | Surveyor's Kit | D+ | Required for Cartography |
-| | Appraiser's Glass | C+ | Required for Read the Body |
+| Domain | Family | Tool | R band | Notes |
+| --- | --- | --- | --- | --- |
+| **Craft** | **Forging** | Smith's Hammer | F+ | Required for any Forging skill |
+| | | Tongs and Anvil | F+ | Workshop fixture; quality gates Tempering |
+| | | Bellows | E+ | Gates the temperature ceiling, and therefore the material ceiling |
+| | | Whetstone | F+ | Enables Sharpening in the field |
+| | | Runic Chisel | C+ | Required for Runic Foundation |
+| **Craft** | **Alchemy** | Mortar and Pestle | F+ | Required for any Alchemy skill |
+| | | Alembic | E+ | Required for Extraction |
+| | | Retort | D+ | Required for Transmutation |
+| | | Reagent Case | E+ | Prevents component spoilage in the field |
+| | | Philosopher's Vessel | C+ | Required for Philosopher's Work |
+| **Craft** | **Cooking** | Field Pot | F+ | Required to cook on a mission |
+| | | Chef's Knife | F+ | Quality raises every dish's potency |
+| | | Feast Cauldron | D+ | Required for Feast |
+| **Craft** | **Gathering** | Pick | F+ | Required for Mining |
+| | | Sickle | F+ | Required for Foraging |
+| | | Skinning Knife | F+ | Required for Skinning; quality gates Perfect Cut |
+| | | Prospector's Lens | E+ | Required for Prospecting |
+| | | Leyline Tap | C+ | Required for Leyline Harvest |
+| | | Taming Collar | D+ | Required for Taming |
+| **Martial** | **Body** | Bridle and Saddle | E+ | Required for Riding |
+| | | Beast Whistle | E+ | Required for Pack Bond |
+| **Craft** | **Knowledge** | Reading Lens | F+ | Required for Identify |
+| | | Scribing Set | E+ | Required for Research and Mapping |
+| | | Surveyor's Kit | D+ | Required for Cartography |
+| | | Appraiser's Glass | C+ | Required for Read the Body |
 
 ## Accessories
 

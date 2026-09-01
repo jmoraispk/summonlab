@@ -210,7 +210,7 @@ the edge of a skill definition; they never create a separate focus or progressio
 | Martial | Polearm | Long-shafted melee techniques; `Equipment: Spear`, `Glaive`, `Halberd`, or `Polehammer` where needed. |
 | Martial | Ranged | Bow and crossbow techniques; `Equipment: Bow` or `Crossbow` where needed. |
 | Martial | Shield | Shield handling, interception, formation defense, and ally-covering techniques. |
-| Martial | Body | Unarmed strikes, grappling, movement, endurance, awareness, and general combat technique. |
+| Martial | Body | Unarmed strikes, grappling, movement, endurance, awareness, mounted movement, and bodily combat command. |
 | Magical | Elemental | Direct elemental magic; every skill has one concrete `Element` label. |
 | Magical | Ward | Barriers, dispelling, and defense; use `Element: Attuned` only when affinity parameterizes the definition. |
 | Magical | Enchantment | Self/ally buffs and object imbuing; use `Element: Attuned` only when affinity parameterizes the definition. |
@@ -219,9 +219,8 @@ the edge of a skill definition; they never create a separate focus or progressio
 | Craft | Forging | Weapons, armour, and tools. |
 | Craft | Alchemy | Potions, poisons, and reagents. |
 | Craft | Cooking | Food, duration buffs, and morale. |
-| Craft | Gathering | Harvesting, mining, foraging, and skinning. |
-| Craft | Beast | Taming, riding, handling, and breeding. |
-| Craft | Lore | Identification, appraisal, cartography, and language. |
+| Craft | Gathering | Harvesting, mining, foraging, skinning, animal handling, taming, and breeding. |
+| Craft | Knowledge | Literacy, identification, appraisal, cartography, language, research, teaching, and specialist understanding. |
 
 Craft skill is structurally useful: smiths set equipment possibilities, alchemists help parties
 survive, cooks support roster function, and a level-1 Master cook remains genuinely valuable.
@@ -241,8 +240,8 @@ rarity contributes to the result. Both input skills are consumed. The result beg
 | Forging + Enchantment | Natural | Imbued-equipment creation |
 | Alchemy + Restoration | Natural | Superior healing craft |
 | Cooking + Enchantment | Unexpected | Lasting-buff food |
-| Beast + Body | Unexpected | Mounted combat |
-| Ranged + Lore | Unexpected | Reading impossible signs at range |
+| Gathering + Body | Unexpected | Mounted and companion combat |
+| Ranged + Knowledge | Unexpected | Reading impossible signs at range |
 | Shield + Mind | Volatile | Wards that turn attacker intent |
 | Forging + Blade | Volatile | Techniques restricted to a self-made weapon |
 | Two copies of the same skill | Fallback | Refined variant for a hero with no partner |
@@ -291,7 +290,7 @@ labels on a skill, never intermediate progression nodes.
 | --- | --- |
 | Martial | Blade, Polearm, Ranged, Shield, Body |
 | Magical | Elemental, Ward, Enchantment, Restoration, Mind |
-| Craft | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
+| Craft | Forging, Alchemy, Cooking, Gathering, Knowledge |
 
 Three structural rules:
 
@@ -305,7 +304,7 @@ Not every family skill graph reaches Legendary. A non-Legendary branch can still
 merging or a shared capstone.
 
 Every catalog entry needs fixed rarity, skill type, requirements, and effect. The complete authored
-coverage is five Martial families, five Magical families, and six Craft families. Consolidated row
+coverage is five Martial families, five Magical families, and five Craft families. Consolidated row
 counts and every legacy disposition are recorded in the [skill migration ledger](../skills/migration-v2.json).
 
 ## Living Village subset

@@ -101,13 +101,16 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 			{
 				name: 'Body',
 				href: bodyHref,
-				description: 'Movement, awareness, endurance, grappling, and unarmed form.',
+				description:
+					'Movement, endurance, unarmed form, mounted movement, and multi-companion combat command.',
 				labels: [equipment('Unarmed')],
 				skills: [
 					skill('Footing', bodyHref),
-					skill('Parry', bodyHref),
 					skill('Martial Form', bodyHref, [equipment('Unarmed')]),
-					skill('Wrestling', bodyHref)
+					skill('Riding', bodyHref),
+					skill('Pack Bond', bodyHref),
+					skill('Mounted Combat', bodyHref),
+					skill('Bonded Mount', bodyHref)
 				]
 			}
 		]
@@ -223,31 +226,25 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 			{
 				name: 'Gathering',
 				href: `${craftHref}#gathering`,
-				description: 'Harvesting, mining, foraging, and careful material recovery.',
+				description: 'Harvesting, living resources, creature care, taming, and breeding.',
 				labels: [],
 				skills: [
 					skill('Gathering', `${craftHref}#gathering`),
-					skill('Prospecting', `${craftHref}#gathering`)
+					skill('Animal Handling', `${craftHref}#gathering`),
+					skill('Taming', `${craftHref}#gathering`),
+					skill('Greater Taming', `${craftHref}#gathering`),
+					skill('Monarch of Beasts', `${craftHref}#gathering`)
 				]
 			},
 			{
-				name: 'Beast',
-				href: `${craftHref}#beast`,
-				description: 'Animal care, taming, riding, breeding, and bonded companions.',
+				name: 'Knowledge',
+				href: `${craftHref}#knowledge`,
+				description: 'Literacy, identification, mapping, languages, and research.',
 				labels: [],
 				skills: [
-					skill('Animal Handling', `${craftHref}#beast`),
-					skill('Taming', `${craftHref}#beast`)
-				]
-			},
-			{
-				name: 'Lore',
-				href: `${craftHref}#lore`,
-				description: 'Identification, appraisal, mapping, language, and research.',
-				labels: [],
-				skills: [
-					skill('Literacy', `${craftHref}#lore`),
-					skill('Read the Body', `${craftHref}#lore`)
+					skill('Literacy', `${craftHref}#knowledge`),
+					skill('Languages', `${craftHref}#knowledge`),
+					skill('Read the Body', `${craftHref}#knowledge`)
 				]
 			}
 		]

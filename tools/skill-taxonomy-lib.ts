@@ -60,7 +60,7 @@ export type TargetSkillRow = {
 const DOMAIN_FAMILIES: Record<SkillDomain, ReadonlySet<string>> = {
 	Martial: new Set(['Blade', 'Body', 'Polearm', 'Ranged', 'Shield']),
 	Magical: new Set(['Elemental', 'Enchantment', 'Mind', 'Restoration', 'Ward']),
-	Craft: new Set(['Alchemy', 'Beast', 'Cooking', 'Forging', 'Gathering', 'Lore'])
+	Craft: new Set(['Alchemy', 'Cooking', 'Forging', 'Gathering', 'Knowledge'])
 };
 
 const EQUIPMENT_LABELS = new Set([
@@ -98,6 +98,33 @@ const FORBIDDEN_SKILL_REFERENCES = [
 	'## Fist — Unarmed and Grappling'
 ] as const;
 
+const RETIRED_CRAFT_FAMILIES = ['Beast', 'Lore'] as const;
+const RETIRED_CRAFT_REQUIREMENT = /\b(?:Beast|Lore)(?:[ -]+family)?[ -]+prerequisite\b/iu;
+
+function retiredCraftFamilyReferences(sourcePath: string, source: string): string[] {
+	const familyReferences = RETIRED_CRAFT_FAMILIES.flatMap((family) => {
+		const escapedFamily = family.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+		const declared = [
+			new RegExp(`^Family:\\s+(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*$`, 'mu'),
+			new RegExp(`^#{1,2}\\s+${escapedFamily}\\s*$`, 'mu'),
+			new RegExp(`^\\|\\s*Craft\\s*\\|[^|]*\\b${escapedFamily}\\b[^|]*\\|`, 'imu'),
+			new RegExp(`^\\|\\s*(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*\\|`, 'imu'),
+			new RegExp(`\\]\\([^)]*#${family.toLowerCase()}\\)`, 'iu'),
+			new RegExp(`\\bname:\\s*['\"]${escapedFamily}['\"]`, 'iu'),
+			new RegExp('`' + escapedFamily + '`\\s+family\\b', 'iu')
+		];
+		return declared.some((pattern) => pattern.test(source))
+			? [`${sourcePath}: retired Craft family ${family}`]
+			: [];
+	});
+	return [
+		...familyReferences,
+		...(RETIRED_CRAFT_REQUIREMENT.test(source)
+			? [`${sourcePath}: retired Craft family requirement`]
+			: [])
+	];
+}
+
 export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]): string[] {
 	return files.flatMap(({ sourcePath, source }) => [
 		...FORBIDDEN_SKILL_REFERENCES.filter((reference) => source.includes(reference)).map(
@@ -108,7 +135,8 @@ export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]
 			: []),
 		...(/^\|\s*Family\s*\|\s*Foci\s*\|/imu.test(source)
 			? [`${sourcePath}: structural Family/Foci table`]
-			: [])
+			: []),
+		...retiredCraftFamilyReferences(sourcePath, source)
 	]);
 }
 
@@ -119,7 +147,10 @@ export function findForbiddenSkillReferencesInAuthoredSources(
 		files.filter(
 			({ sourcePath }) =>
 				sourcePath.startsWith('docs/wiki/') ||
+				sourcePath.startsWith('docs/decisions/') ||
+				sourcePath.startsWith('docs/evidence/') ||
 				sourcePath === 'apps/web/src/lib/components/wiki/SkillTree.svelte' ||
+				sourcePath === 'apps/web/src/lib/components/wiki/skill-tree-data.ts' ||
 				sourcePath === 'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
 		)
 	);
@@ -410,6 +441,17 @@ export function validateMigrationLedger(
 		}
 		if (record.disposition === 'delete' && !record.rationale)
 			errors.push(`delete record ${record.sourceId} requires rationale`);
+		if (record.disposition !== 'delete' && record.disposition !== 'merge') {
+			for (const [field, value] of [
+				['requires', record.replacementRequires ?? record.requires],
+				['effect', record.replacementEffect ?? record.effect]
+			] as const) {
+				if (RETIRED_CRAFT_REQUIREMENT.test(value))
+					errors.push(
+						`${record.sourceId} effective ${field} contains retired Craft family prerequisite`
+					);
+			}
+		}
 	}
 
 	if (legacyInventory) {

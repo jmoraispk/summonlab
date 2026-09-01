@@ -31,6 +31,6 @@ including their pages could be misread as a requirement to implement them immedi
 
 Workers can develop complete text and art ahead of runtime implementation without expanding the
 first release accidentally. The Living Village can focus on summoning, direct hero training, and
-missions while Alchemy, Forging, Cooking, Gathering, Beast Taming, Lore, skill merging, and other
+missions while Alchemy, Forging, Cooking, Gathering, Knowledge, animal taming, skill merging, and other
 systems remain discoverable and assignable as future work. A release validator can later reject any
 disabled skill or feature that becomes reachable through generation, rewards, UI, or replay.

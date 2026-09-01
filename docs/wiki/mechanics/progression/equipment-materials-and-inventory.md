@@ -104,8 +104,8 @@ reduces training yield, regeneration, and practice quality.
 - Good cooking applies pre-mission duration buffs.
 - Feast cooking affects the entire roster.
 
-This makes Cooking, Gathering, and Beast skills structurally useful and pressures a strike team to
-grow into a settlement. It is explicitly an unfinished proposal.
+This makes Cooking, Gathering, Animal Handling, Taming, and Breeding structurally useful and
+pressures a strike team to grow into a settlement. It is explicitly an unfinished proposal.
 
 ## Per-hero inventory
 

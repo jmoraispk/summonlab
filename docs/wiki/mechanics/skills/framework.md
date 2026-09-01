@@ -239,7 +239,7 @@ Skills are not confined to combat.
 | **Polearm** | Long-shafted melee technique; optional Spear, Halberd, Glaive, or Polehammer labels |
 | **Ranged** | Bow, crossbow, and sling technique, narrowed by equipment labels |
 | **Shield** | Blocking, interception, formation defense, and ally cover |
-| **Body** | Unarmed combat, grappling, movement, endurance, awareness, and general combat technique |
+| **Body** | Unarmed combat, grappling, movement, endurance, awareness, mounted movement, and commanding several companions in combat |
 
 #### Magical
 
@@ -258,9 +258,8 @@ Skills are not confined to combat.
 | **Forging** | Weapons, armour, tools |
 | **Alchemy** | Potions, poisons, reagents |
 | **Cooking** | Food, duration buffs, morale |
-| **Gathering** | Harvesting, mining, foraging, skinning |
-| **Beast** | Taming, riding, handling, breeding |
-| **Lore** | Identification, appraisal, cartography, language |
+| **Gathering** | Harvesting, mining, foraging, skinning, animal handling, taming, and breeding |
+| **Knowledge** | Literacy, identification, appraisal, cartography, language, research, teaching, and specialist understanding |
 
 **Craft families are not decorative.** A master smith determines what the martial families have to work with; an alchemist gates what a party survives; a cook keeps a roster functioning. A hero may be level 1 and a Master cook and be genuinely valuable.
 
@@ -279,8 +278,8 @@ Merging is **one** route to rare skills, not the main one, and it does not raise
 | Forging + Enchantment | Natural | Imbued equipment creation |
 | Alchemy + Restoration | Natural | Superior healing craft |
 | Cooking + Enchantment | Unexpected | Food granting lasting buffs |
-| Beast + Body | Unexpected | Mounted combat |
-| Ranged + Lore | Unexpected | Impossible shots guided by recovered knowledge |
+| Gathering + Body | Unexpected | Mounted and companion combat |
+| Ranged + Knowledge | Unexpected | Impossible shots guided by recovered knowledge |
 | Shield + Mind | Volatile | Defenses that turn an attacker's intent |
 | Forging + Blade | Volatile | Techniques usable only with a weapon the hero made |
 | Same skill, two copies | Fallback | A refined variant; guarantees a route for a hero with no partner |
@@ -385,7 +384,7 @@ The same skill therefore reads differently on a hero raised in a training hall a
 | --- | --- |
 | **Martial** | Blade, Polearm, Ranged, Shield, Body |
 | **Magical** | Elemental, Ward, Enchantment, Restoration, Mind |
-| **Craft** | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
+| **Craft** | Forging, Alchemy, Cooking, Gathering, Knowledge |
 
 See the [skill wiki](README.md) for the full ladders.
 

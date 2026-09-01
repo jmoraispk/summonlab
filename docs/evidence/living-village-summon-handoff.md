@@ -68,12 +68,13 @@ The Body/Mind grouping and icon mapping are presentation proposals in this route
 establishes the six-attribute vocabulary and the Martial, Magical, and Craft & Life skill sectors;
 it does not assign these route-local aptitude families to the six people as production state.
 
-The wiki does now preserve all 520 imported draft skill rows and proposes a twelve-skill Living
-Village runtime subset. It explicitly defines aptitudes as innate talent for an attribute, family,
-or learning mode, distinct from learned skills. The dossier therefore uses exact wiki family/focus
-vocabulary (`Guard`, `Fire Evocation`, `Ward`, `Restoration`, `Lore`, `Motion`, and so on) rather
-than the previous invented skill-like labels. These person-to-family assignments remain route-local;
-the screen does not claim that a specific hero owns one of the twelve runtime skills.
+The wiki preserves all 520 imported draft rows in the immutable legacy inventory and reconciles them
+to a 492-skill active target; the Living Village still proposes only a twelve-skill runtime subset.
+It explicitly defines aptitudes as innate talent for an attribute, family, or learning mode, distinct
+from learned skills. The dossier therefore uses current wiki family vocabulary (`Ranged`, `Body`,
+`Shield`, `Elemental`, `Ward`, `Restoration`, and `Knowledge`) rather than invented skill-like labels.
+These person-to-family assignments remain route-local; the screen does not claim that a specific hero
+owns one of the twelve runtime skills.
 
 ## Recommended direction
 

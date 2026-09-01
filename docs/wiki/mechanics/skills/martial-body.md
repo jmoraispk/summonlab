@@ -7,7 +7,8 @@ Family: **Body**
 
 Design status: **draft source import**. These definitions preserve the supplied compendium; exact combat values and Living Village availability require validation.
 
-Body owns unarmed strikes, grappling, movement, endurance, awareness, and general combat techniques. `Unarmed` appears only when a technique truly requires empty hands.
+Body owns unarmed strikes, grappling, movement, endurance, awareness, mounted movement, and bodily
+command in combat. `Unarmed` appears only when a technique truly requires empty hands.
 
 | # | Skill | Equipment | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |
@@ -56,7 +57,7 @@ Body owns unarmed strikes, grappling, movement, endurance, awareness, and genera
 | 43 | **Suplex** | — | D | A | Throw Master, Might threshold | Heavy damage and area knockdown on impact |
 | 44 | **Immovable Grip** | — | C | P | Chokehold Master, 10,000 grabs | Grabbed targets cannot be freed by allies |
 | 45 | **Giant Toss** | — | C | A | Suplex Master, Might threshold | Throws targets of any size, including ones much larger |
-| 46 | **Bind the Beast** | — | B | A | Immovable Grip Master, Beast family prerequisite | Grapples and holds monsters no human should be able to hold |
+| 46 | **Bind the Beast** | — | B | A | Immovable Grip Master, Animal Handling Expert | Grapples and holds monsters no human should be able to hold |
 | 47 | **Footwork** | — | F | P | None | Improved movement speed and turning. **Foundation.** |
 | 48 | **Dash** | — | F | A | Footwork Novice | Short burst of speed in any direction |
 | 49 | **Roll** | — | F | A | Footwork Novice | Evade with brief invulnerability |
@@ -77,5 +78,9 @@ Body owns unarmed strikes, grappling, movement, endurance, awareness, and genera
 | 64 | **The Road Has No End** | — | S | St | Between Places Master, composite condition | Distance ceases to constrain the hero for the duration |
 | 65 | **Set Jaw** | — | E | P | Endure Expert, 5,000 hits taken | Cannot be reduced below a health threshold by a single hit |
 | 66 | **Undying** | — | C | P | Set Jaw Master, survived 500 near-deaths | Survives one otherwise fatal blow per engagement |
+| 67 | **Riding** | — | E | P | Animal Handling Intermediate | Mount and control a trained beast |
+| 68 | **Pack Bond** | — | D | P | Taming Master | Commands several tamed companions to coordinate attacks on the hero's behalf. |
+| 69 | **Mounted Combat** | — | D | P | Riding Master, another Martial skill at Expert | Full combat capability while mounted |
+| 70 | **Bonded Mount** | — | C | P | Mounted Combat Master, Breeding Expert | The mount levels, gains skills, and cannot be permanently killed |
 
 ---
