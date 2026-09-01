@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "harpies",
+	"displayName": "Harpies",
+	"sourceRaceNumber": 13,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-03.md",
+	"classificationNotes": "Source-draft Harpies are treated as a winged visual and encounter-production family, not as an accepted taxonomy or a universal statement about sex, culture, cognition, personhood, social rank, or hostility. Their cliff-flock language becomes readable aerial combat roles while preserving the source anatomy and plumage escalation.",
+	"visualConstants": [
+		"A humanoid torso remains joined to large raptor wings that replace or extend the arms, backward-jointed bird legs, oversized talons, and a feathered head crest.",
+		"Slate grey, brown, and dirty cream mature into iridescent blue-green, storm purple, and white without losing the family feather pattern.",
+		"Feather, hollow bone, sinew, raw hide, braided hair, and gold ankle ornaments remain physically readable materials.",
+		"Bone jewelry, trophy feathers, braided hair, ankle rings, and crest height communicate status without changing the core wing-and-talon silhouette.",
+		"Every attack keeps the wing roots, talons, crest, and flight direction visible enough to preserve counterplay."
+	],
+	"escalationAxis": "Feather quality, talon reach, crest authority, and control of aerial lanes grow from a ragged noise probe into flock formations and a cliff-spanning sovereign storm court.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity wing anatomy, ordinary wing beats, loose-feather wind halo, molting feathers, hollow bone, sinew, raw hide, and cliff dust remain physical family traits rather than Wind affinity construction.",
+				"Motion remains ordinary flight: feathers shed from strain, talons scrape stone, jewelry swings under gravity, and the source wind halo consists only of displaced loose feathers with no supernatural pressure wake."
+			],
+			"counterplaySignal": "The wing-root dip, folded leading edge, exposed ankle ring, or planted talon preserves each form's established physical weak point.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating ordinary wings, flight, or the Sky Queen's loose-feather wind halo as Wind affinity"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Feather and harness construction gains char-resistant overlapping covert feathers, ceramic ember beads, heat-darkened gold rings, and pitch-fed wick cords that stop before the living wing roots.",
+				"Flight cycles become combustion-readable through directional smoke between flight feathers, brief trailing flame along selected outer vanes, and a cooling black wing edge after each committed dive."
+			],
+			"counterplaySignal": "A ceramic bead train ignites from ankle to outer wing before the fire dive; breaking the exposed wick or striking the blackened cooling edge cancels the next ignition.",
+			"forbidden": [
+				"Palette-only orange plumage without changed feather and harness construction",
+				"Glow-only fire treatment without fuel routing, combustion, and cooling response",
+				"Permanent flame anatomy replacing wings, talons, or crest",
+				"Smoke dense enough to hide flight direction or wing-root recovery"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Hollow-bone and hide construction gains shale flight-feather caps, mineral ankle weights, grit-packed leading edges, and breakaway stone talon sheaths while preserving viable feather spans.",
+				"Locomotion alternates between weighted glides and hard stone perches: dust falls from loaded feathers, talons lock into visible cracks, and pale fracture seams open in the active weight or sheath."
+			],
+			"counterplaySignal": "The selected ankle weight drops and its crack turns pale before a crushing descent; break that weight or move beyond the committed perch line to force a slow relaunch.",
+			"forbidden": [
+				"Palette-only brown plumage without mineral load paths and changed flight behavior",
+				"Glow-only earth treatment without weight, fractures, or breakaway stone construction",
+				"Solid rock wings that could not fold or fly",
+				"Boulder effects that conceal the raptor anatomy"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Wing construction becomes pressure-specialized through slotted primary feathers, vane-like crest layers, hollow whistle bones, and tension cords between ankle rings and leading edges.",
+				"Airflow becomes supernatural and directional: visible compression bands follow the selected wing camber, loose feathers align into one lane, and a readable still pocket forms at the inner wing root."
+			],
+			"counterplaySignal": "Both slotted wings lock to one camber and the ordinary loose feathers snap into a straight lane; cross into the lee or strike the still inner wing root before pressure releases.",
+			"forbidden": [
+				"Palette-only pale plumage without vane, slot, and pressure construction",
+				"Glow-only wind treatment without directional compression and a still center",
+				"Ordinary family-native flight or loose feathers presented alone as Wind affinity",
+				"Omnidirectional gust clutter that erases the attack lane"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Feather and jewelry construction gains oil-slick waterproof vanes, shell valves at the ankle rings, narrow skin reservoirs, and braided capillary cords running beside rather than through wing roots.",
+				"Flight shows coherent filling and release: specific feathers darken as reservoirs charge, narrow cutting sheets leave the selected edge, wet reflections track flow, and drainage exposes the valve."
+			],
+			"counterplaySignal": "One shell valve lifts and its connected feathers darken before the water pass; open the valve or attack the drained matte wing edge after release.",
+			"forbidden": [
+				"Palette-only blue plumage without reservoirs, valves, and wet-surface change",
+				"Glow-only water treatment without coherent filling, release, and drainage",
+				"Liquid wings that erase feather anatomy",
+				"Spray that obscures the wing-root or talon telegraph"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "harpy-screecher",
+			"displayName": "Screecher",
+			"primaryArchetype": "Flinch-Cry Initiate (Initiate)",
+			"battlefieldDuty": "Probe attention from a low cliff perch, forcing a brief facing choice before a shallow talon pass.",
+			"teachingGoal": "Teach that the family announces its flight lane through crest, throat, and wing posture before leaving the perch.",
+			"signatureMechanic": "Startle Cry: the Screecher inhales toward one target, shrieks, then makes a single low pass only if that target remains facing the perch.",
+			"telegraph": "Its patchy crest flattens, bare throat expands, and half-molted wings point down the chosen lane.",
+			"counterplay": "Turn or step behind cover during the inhale, then punish the thin talons when the aborted pass lands awkwardly.",
+			"visualDelta": "Scraggly and half-molted with patchy grey feathers, thin claws, wild matted hair, a low crest, and visibly weak wing edges.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Screecher"]
+		},
+		{
+			"tier": "T2",
+			"formId": "harpy-talon",
+			"displayName": "Talon",
+			"primaryArchetype": "Hook-and-Carry Soldier (Soldier)",
+			"battlefieldDuty": "Repeat reliable aerial pressure by hooking a target toward an exposed cliff lane and releasing before a second pass.",
+			"teachingGoal": "Teach players to watch planted talons and wing spread, then deny the straight carry rather than chase the flyer.",
+			"signatureMechanic": "Cliff Hook: the Talon plants one hooked claw, spreads full brown wings, and rakes the other claw through a fixed carry line.",
+			"telegraph": "Bone beads pull taut, one talon closes on stone, and the opposite leg extends beneath fully spread wings.",
+			"counterplay": "Cross behind the planted leg or strike it before launch; a missed hook forces both wings low during recovery.",
+			"visualDelta": "Full brown plumage, hooked talons, bone-bead necklaces, and broad wings held wide replace the Screecher's patchy molt.",
+			"lowerFormInteraction": "A Screecher can mark the carry lane with its cry, but breaking the Talon's planted foot leaves both lower forms exposed on the same perch.",
+			"sourceReferences": ["Talon"]
+		},
+		{
+			"tier": "T3",
+			"formId": "harpy-skyrender",
+			"displayName": "Skyrender",
+			"primaryArchetype": "Crosswind-Lane Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the encounter by cutting one aerial lane into two crossing threat windows with independently banded wing tips.",
+			"teachingGoal": "Teach players to read asymmetric wing bands and occupy the quiet wedge between two sequential passes.",
+			"signatureMechanic": "Rend the Sky: the Skyrender paints one lane with the bright left wing band, climbs, then crosses it with the right wing and spear-length talons; only their intersection is trapped, while the wedge behind the dim wing remains safe.",
+			"telegraph": "Its raised crest turns toward the crossing point while one iridescent wing-tip band flashes, followed by the opposite band at a different angle.",
+			"counterplay": "Match the first band to its lane, move into the dim-wing wedge, and strike the overextended second wing root after the crossing pass.",
+			"visualDelta": "Vivid iridescent feathers, raised crest, spear-length claws, and differently colored bands on the two wing tips create a fully realized asymmetric specialist silhouette.",
+			"lowerFormInteraction": "Screechers hold attention on the first lane and Talons drag targets toward the crossing, but displacing either lower form leaves the safe wedge open.",
+			"sourceReferences": ["Skyrender"]
+		},
+		{
+			"tier": "T4",
+			"formId": "harpy-matriarch",
+			"displayName": "Matriarch",
+			"primaryArchetype": "Plumage-Court Champion (Champion)",
+			"battlefieldDuty": "Marshal a rotating flock formation, protecting one lower flyer with ceremonial plumage while attacking from the opposite edge.",
+			"teachingGoal": "Teach formation rotation: read the gold ankle ring that owns the current guard and punish the uncovered trailing wing.",
+			"signatureMechanic": "Ceremonial Mantle: the Matriarch wraps cloak-like plumage around one lower Harpy, then rotates the flock one quarter-turn and attacks from the open side with the opposite talon.",
+			"telegraph": "Its elaborate crest leans toward the protected flyer, one gold ankle ring lifts, and braided trophy feathers sweep around that side.",
+			"counterplay": "Move opposite the raised ring, separate the sheltered flyer, or strike the trailing wing before the rotation completes.",
+			"visualDelta": "Ceremonial plumage forms a cloak around vivid wings, gold ankle rings cap the talons, the crest becomes elaborate, and hair is braided with trophy feathers.",
+			"lowerFormInteraction": "It shelters Screechers, Talons, or a Skyrender in turn; each uses its learned lane from the protected edge, so removing that lower form shortens the rotation.",
+			"sourceReferences": ["Matriarch"]
+		},
+		{
+			"tier": "T5",
+			"formId": "harpy-sky-queen",
+			"displayName": "Sky Queen",
+			"primaryArchetype": "Four-Perch Storm-Court Sovereign (Sovereign)",
+			"battlefieldDuty": "Command a cliff-arena boss across four destructible perches, composing every lower-form lane before successive perch breaks force closer, simpler phases.",
+			"teachingGoal": "Test mastery of cry facing, planted hooks, crossing bands, and flock rotation while turning the Queen's enormous wing span into a readable arena mechanism.",
+			"signatureMechanic": "Court of Four Cliffs: the Sky Queen spans opposite perches with storm-colored wings and assigns a Screecher, Talon, Skyrender, or Matriarch to each gold-cuffed ledge. One crown feather names the active courtier, whose familiar mechanic establishes a lane; the Queen then closes one wing across it. Destroying the exposed cuff anchor drops that perch, dismisses its courtier, and tears one long primary from the Queen's span. At two remaining perches she must land between commands; at one she loses the loose-feather halo and fights with short committed talon sweeps.",
+			"telegraph": "The full crest-crown raises one named feather, a matching gold cuff rings against its perch, ordinary loose feathers align around the selected lower form, and one enormous wing unfolds across the announced lane.",
+			"counterplay": "Use the selected lower form's learned safe response, then strike the revealed cuff anchor while the spanning wing is committed; every broken perch permanently removes one command and narrows the Queen's reach.",
+			"visualDelta": "Storm-purple and white wings span the cliff arena, the crest forms a full crown, gold cuffs ring every limb, and a family-native non-affinity halo of loose feathers orbits only the physical wing beats.",
+			"lowerFormInteraction": "Each of the four perches binds one Screecher, Talon, Skyrender, or Matriarch command to the Queen; destroying that perch removes the lower form and its associated boss lane for the remainder of the fight.",
+			"sourceReferences": ["Sky Queen"]
+		}
+	]
+}

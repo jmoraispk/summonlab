@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "lizardfolk",
+	"displayName": "Lizardfolk",
+	"sourceRaceNumber": 16,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-03.md",
+	"classificationNotes": "Source-draft Lizardfolk are treated as a reptilian visual and encounter-production family, not as an accepted biological people or a universal statement about culture, technology, intelligence, social rank, personhood, habitat, or hostility. Source swamp and tribal imagery becomes explicit equipment and arena grammar rather than essentialized identity.",
+	"visualConstants": [
+		"An upright forward-leaning reptilian body keeps clawed hands and feet, a long counterbalancing tail, a crocodilian or iguana-like head, and an escalating dorsal ridge.",
+		"Swamp green, mud brown, moss, and ochre are punctuated by warning-bright orange, red, or yellow throat and crest colors.",
+		"Scale, bone, obsidian, hide, river reed, ordinary mud, and feather remain separately legible materials.",
+		"Paint, bone piercings, trophy skulls, woven shields, and feather headdresses accumulate without obscuring natural plating.",
+		"Tail angle, crest posture, dorsal plates, hands, and planted feet preserve the direction and recovery of each attack."
+	],
+	"escalationAxis": "Crest height, dorsal spines, natural plating, tail weaponization, and control of marked hunting ground grow from a lean scout to a sovereign back-sail war court.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity swamp habitat, ordinary mud, damp scales, moss colors, river reed, obsidian, and environmental wetness remain physical context rather than Water or Earth affinity construction.",
+				"Movement stays bodily and equipment-driven: tails balance, claws dig into soil, shields flex, mud flakes or splashes under weight, and warning colors remain pigment without supernatural wake."
+			],
+			"counterplaySignal": "The loaded tail base, planted foot, shield weave, dorsal gap, or mantle tie preserves each form's established weak point.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating swamp water, mud, wet scales, moss color, or ordinary splashes as affinity evidence"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Natural and carried materials gain fired-clay scale guards, ember-cut obsidian, charred reed wraps, pitch gourds, and heat-resistant bone vents mounted around existing crest and dorsal gaps.",
+				"Actions show fuel and cooling through wick-lit warning paint, directional smoke along the tail, brief obsidian ignition, and black matte seams where planted scales shed heat."
+			],
+			"counterplaySignal": "A pitch gourd feeds one bright line from crest to weapon or tail; cut the wrap before ignition or strike the matte dorsal gap during cooldown.",
+			"forbidden": [
+				"Palette-only orange or red scales that duplicate family warning colors",
+				"Glow-only fire treatment without fuel, combustion, and cooling structure",
+				"Flame anatomy replacing crest, dorsal plates, tail, or obsidian gear",
+				"Smoke that conceals planted feet or tail direction"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Affinity structure adds fitted stone scutes, sediment lamination inside shields, crystal wedges between dorsal plates, and mineral tail counterweights beyond ordinary family-native mud.",
+				"Locomotion becomes load-bearing through anchored claws, compressed strata rings, falling grit, and pale fractures at the active shield rim, dorsal wedge, or tail weight."
+			],
+			"counterplaySignal": "The active claw locks into a mineral ring and its dorsal wedge turns chalk-white; break either anchor or cross to the unloaded tail side.",
+			"forbidden": [
+				"Palette-only brown scales or extra mud without fitted mineral structure",
+				"Glow-only earth treatment without anchors, weight, and fractures",
+				"Ordinary swamp mud presented alone as Earth affinity",
+				"Stone bulk that erases the agile reptilian silhouette"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Crest, shield, and mantle construction gains hollow spine flutes, slotted reed panels, vane-cut feathers, vented hide, and tail streamers that remain attached to existing anatomy.",
+				"Motion exposes pressure direction through aligned crest vanes, shield flex, coherent grass and dust streamlines, and a still pocket behind the loaded dorsal ridge."
+			],
+			"counterplaySignal": "Crest vanes and reed slats align down one lane while the tail streamer goes still; cross the lee or strike the silent dorsal gap.",
+			"forbidden": [
+				"Palette-only pale scales without flutes, vanes, and directional pressure",
+				"Glow-only wind treatment without a force route and still center",
+				"Ordinary feathers or tail balancing presented alone as Wind affinity",
+				"Floating or turbulence that hides planted reptilian footwork"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Affinity construction adds shell valves, reed reservoirs, translucent pressure bladders, channel-cut obsidian, and capillary hide bands beyond ordinary swamp dampness.",
+				"Actions show coherent fill and drainage through darkening scale rows, measured jets along spear, shield, blade, or tail, wet reflections, and an exposed valve after pressure loss."
+			],
+			"counterplaySignal": "A reed bladder swells and one scale row darkens before a pressure action; puncture it or open the exposed shell valve after release.",
+			"forbidden": [
+				"Palette-only blue-green scales or ordinary swamp wetness without hydraulic construction",
+				"Glow-only water treatment without reservoirs, coherent flow, and drainage",
+				"Shapeless liquid anatomy replacing natural scales or equipment",
+				"Opaque spray that hides claws, tail, crest, or counterplay valve"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "lizardfolk-scout",
+			"displayName": "Scout",
+			"primaryArchetype": "Tail-Balance Initiate (Initiate)",
+			"battlefieldDuty": "Probe lateral spacing with one bone-spear feint whose true thrust follows the counterbalancing tail.",
+			"teachingGoal": "Teach that the tail reveals attack direction before the spear and leaves the no-crest initiate exposed if displaced.",
+			"signatureMechanic": "Countertail Jab: the Scout swings its long tail opposite the upcoming spear thrust, committing both body axes.",
+			"telegraph": "Ordinary mud flakes from the lean body, the simple hide wrap twists, and the long tail sweeps away from the bone spear.",
+			"counterplay": "Step toward the moving tail rather than the spear and strike the planted rear foot during the fixed jab.",
+			"visualDelta": "Small, lean, mud-caked, and explicitly crestless with a bone spear and simple hide wrap.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Scout"]
+		},
+		{
+			"tier": "T2",
+			"formId": "lizardfolk-warrior",
+			"displayName": "Warrior",
+			"primaryArchetype": "Reed-Shield Soldier (Soldier)",
+			"battlefieldDuty": "Hold a repeatable close line with a woven shield while an obsidian-toothed club attacks around one side.",
+			"teachingGoal": "Teach players to read shield weave tension and cross the unpainted side before the club follows.",
+			"signatureMechanic": "Reed Lock: the Warrior bows its woven shield into an angled brace, then swings the toothed club only along the war-painted snout side.",
+			"telegraph": "Reed fibers pull taut, the low forming crest rises, and snout paint aligns with the club shoulder.",
+			"counterplay": "Cross the unpainted shield edge or cut its taut reed binding, exposing the torso before the club can reverse.",
+			"visualDelta": "A low crest, obsidian-toothed club, woven reed shield, and war paint mature the baseline reptilian soldier.",
+			"lowerFormInteraction": "Scouts jab past the braced shield, but cutting its weave also exposes their predictable countertail lane.",
+			"sourceReferences": ["Warrior"]
+		},
+		{
+			"tier": "T3",
+			"formId": "lizardfolk-spineback",
+			"displayName": "Spineback",
+			"primaryArchetype": "Dorsal-Gate Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the encounter by turning heavy dorsal spines into a one-way mobile gate that partitions the battlefield while twin blades threaten its open hinge.",
+			"teachingGoal": "Teach that natural plating now edits space: follow which spine row lowers and attack through that temporary gate.",
+			"signatureMechanic": "Spine Gate: the Spineback crouches and fans alternate dorsal spines into a barrier, leaving one visibly lowered segment as a passage; twin obsidian blades cover only the alligator-jaw side of that passage.",
+			"telegraph": "Heavy dorsal spines rise in sequence, chest plate-scales lock, the alligator jaw opens toward one side, and one spine segment remains flat.",
+			"counterplay": "Pass through the flat segment from the side opposite the jaw, strike its exposed root, or force the Specialist to turn and collapse the gate.",
+			"visualDelta": "Heavy dorsal spines, thick chest plate-scales, alligator jaw, and twin obsidian blades create a spatial-control silhouette rather than a larger Warrior.",
+			"lowerFormInteraction": "Warriors brace the closed spine segments and Scouts stab through gaps; breaking the lowered root folds the barrier and removes their protected lanes.",
+			"sourceReferences": ["Spineback"]
+		},
+		{
+			"tier": "T4",
+			"formId": "lizardfolk-swamp-chieftain",
+			"displayName": "Swamp Chieftain",
+			"primaryArchetype": "Trophy-Tail Champion (Champion)",
+			"battlefieldDuty": "Command a rotating hunting ring, using a tail-club and trophy skulls to assign lower forms to the open segment.",
+			"teachingGoal": "Teach players to read headdress and tail commitment, then break the trophy tied to the active formation.",
+			"signatureMechanic": "Four Hunts: four trophy skulls hang from crocodilian shoulder plating. The Chieftain strikes one with its tail-club to assign Scout jabs, Warrior shields, or Spineback gates to a quarter-ring, then sweeps only that marked quarter.",
+			"telegraph": "The feather headdress tilts, one skull rattles, and the heavy tail-club draws a groove toward the selected quarter.",
+			"counterplay": "Leave the marked quarter, cut its hanging skull during the tail recovery, and use the resulting gap in the lower-form ring.",
+			"visualDelta": "Crocodilian bulk, trophy skulls on shoulder plating, feathered headdress, and a mature tail-club form the champion silhouette.",
+			"lowerFormInteraction": "Each trophy calls Scouts, Warriors, or a Spineback into a familiar duty; destroying it removes that quarter's formation until the encounter ends.",
+			"sourceReferences": ["Swamp Chieftain"]
+		},
+		{
+			"tier": "T5",
+			"formId": "lizardfolk-saurian-tyrant",
+			"displayName": "Saurian Tyrant",
+			"primaryArchetype": "Back-Sail Warcourt Sovereign (Sovereign)",
+			"battlefieldDuty": "Transform a five-mark hunting ground through a full back-sail crest, ordering lower forms until each cut mantle tie lowers one sail section and removes a phase rule.",
+			"teachingGoal": "Test tail direction, shield weave, spine gates, and trophy quarters while permanent sail collapse turns a formation boss into a readable grounded duel.",
+			"signatureMechanic": "Five Marks of the Sail: five painted panels on the full back-sail map to arena markings. Bone calls Scouts across one line, Reed braces Warriors, Obsidian raises a Spineback gate, Skull orders a Chieftain quarter, and Stone commits the Tyrant's own tail-club through the surviving marks. The ceremonial feather-and-hide mantle is tied once beneath each panel. After the selected learned pattern resolves, its tie stretches across the dorsal gap; cutting it folds that sail panel, erases the mark, and removes the command. With two panels left, the mantle falls and the Tyrant must plant before every tail sweep.",
+			"telegraph": "One body-painted sail panel rises, the matching mantle tie pulls taut, its arena mark is exposed, and the chosen lower form assumes its known posture.",
+			"counterplay": "Use the selected lower-form response, reach the exposed dorsal tie, and cut it; every collapsed panel permanently removes one command and opens that section of the arena.",
+			"visualDelta": "A full back-sail crest, ceremonial feather-and-hide mantle, stone tail-club, and war paint across the entire plated body create an unmistakable sovereign mechanism.",
+			"lowerFormInteraction": "Scout, Warrior, Spineback, and Swamp Chieftain each occupy a painted sail mark; cutting that panel's tie ends the linked lower-form pattern for all later phases.",
+			"sourceReferences": ["Saurian Tyrant"]
+		}
+	]
+}

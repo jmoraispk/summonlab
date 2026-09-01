@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "nagas",
+	"displayName": "Nagas",
+	"sourceRaceNumber": 15,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-03.md",
+	"classificationNotes": "Source-draft Nagas are treated as a serpentine visual and encounter-production family, not as an accepted people or a universal statement about culture, antiquity, intelligence, religion, guardianship, sacred water, treasure, or forbidden knowledge. Temple imagery supplies authored mechanisms while the packet leaves taxonomy, belief, and personhood unresolved.",
+	"visualConstants": [
+		"A humanoid torso rises from a long coiled serpent body; the T1–T2 forms have two arms and no hood, while hood and additional arms begin only at T3.",
+		"Emerald, jade, deep teal, gold, bronze, ivory, and jewel-toned scale patterns remain the family palette.",
+		"Scale, gold, gemstone inlay, silk sash, and temple stone remain separate readable materials rather than a seamless magical body.",
+		"Arm bands, gold scale bands, jeweled brow pieces, sacred script, and later hood crests communicate rank.",
+		"Coil direction, weapon-bearing hands, hood angle where present, and exposed scale seams preserve attack and counterplay readability."
+	],
+	"escalationAxis": "Coil length, scale ornament, temple mechanism authority, hood complexity from T3 onward, and hand count grow from a mobile two-armed skirmisher to a sovereign relic court.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity sacred water association, ordinary damp temple surfaces, jade and teal scales, gold and gemstone inlay, silk, sacred script, and floating relic symbolism remain cultural or physical motifs rather than Water affinity construction.",
+				"Motion remains anatomical and mechanical: coils compress, weapons transfer between existing hands, script stays bounded to inlay, and relics follow visible gold tracks without unexplained elemental wake."
+			],
+			"counterplaySignal": "The loaded outer coil, active hand, hood hinge where present, or exposed relic track preserves the established weak point for each form.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating sacred water association, damp stone, teal scales, script, or floating relics alone as affinity evidence"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no hood and two arms with ember channels confined to arm bands and dorsal scales; T3–T5 retain hood and multiple arms with ceramic vents distributed across existing hood ribs and weapon bands.",
+				"Materials and actions become a kiln liturgy through heat-crazed gold, charred silk edges, ceramic fuel beads, sequential hand-to-hand ignition, and a dark cooling scale seam on the outer coil."
+			],
+			"counterplaySignal": "A fuel bead passes through the existing hands and reaches the outer coil before ignition; interrupt that transfer or strike the black cooling seam after release.",
+			"forbidden": [
+				"Palette-only orange scales without kiln materials and sequential fuel routing",
+				"Glow-only fire treatment without combustion, vents, and cooling response",
+				"Invented early-tier hoods or extra arms to carry fire hardware",
+				"Flame replacing the serpent coil, existing hands, or hood"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no hood and two arms with mineral cuffs and segmented scale weights; T3–T5 retain hood and multiple arms with load-bearing stone inlay following existing hood ribs and arm bands.",
+				"Coil and temple construction gains fitted stone scutes, crystal hinges, sediment-filled gold channels, planted counterweights, and pale fracture seams that move along the currently loaded outer coil."
+			],
+			"counterplaySignal": "One segmented coil row settles against a crystal stop and turns chalk-white before a stone rite; break that stop or move inside the loaded outer curve.",
+			"forbidden": [
+				"Palette-only brown scales without mineral structure and altered load paths",
+				"Glow-only earth treatment without fitted stone, weight, and fractures",
+				"Invented early-tier hoods or extra arms to hold stone ornaments",
+				"Generic rock piles that obscure coil direction or temple mechanisms"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no hood and two arms with sail-cut sashes and flute cuffs; T3–T5 retain hood and multiple arms with pressure vanes mounted only on existing hood ribs, sashes, and weapon bands.",
+				"Movement gains directional pressure through hollow gold flutes, aligned silk streamers, vented scale bands, sequential hand vanes, and a still center at the active coil knot or hood hinge."
+			],
+			"counterplaySignal": "Sashes and hand vanes align toward one lane while the active coil knot becomes perfectly still; cross the lee or strike that knot before release.",
+			"forbidden": [
+				"Palette-only pale scales without flutes, vanes, and directional pressure",
+				"Glow-only wind treatment without a force route and still center",
+				"Invented early-tier hoods or extra arms for wind silhouettes",
+				"Floating that removes coil contact and readable load"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no hood and two arms with shell valves and narrow scale reservoirs; T3–T5 retain hood and multiple arms with hydraulic channels following existing hood ribs, arm bands, and relic tracks.",
+				"Affinity construction becomes visibly hydraulic beyond sacred-water symbolism through pearl cisterns, coherent filling beneath translucent scales, wet silk, pressure transfer between existing hands, and drainage at the outer coil valve."
+			],
+			"counterplaySignal": "A shell valve opens and a coherent fill line travels around the coil before the water rite; vent it at the outer curve or strike the drained matte seam afterward.",
+			"forbidden": [
+				"Palette-only blue scales or sacred-water decoration without hydraulic construction",
+				"Glow-only water treatment without reservoirs, coherent filling, and drainage",
+				"Invented early-tier hoods or extra arms to route water",
+				"Shapeless liquid anatomy erasing serpent and humanoid structure"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "naga-serpentling",
+			"displayName": "Serpentling",
+			"primaryArchetype": "Coil-Snap Initiate (Initiate)",
+			"battlefieldDuty": "Probe spacing with a short coil recoil and one low blowgun or sling shot from a plainly two-armed, hoodless silhouette.",
+			"teachingGoal": "Teach players to read the outer coil as both launch spring and recovery weak point.",
+			"signatureMechanic": "Short Recoil: the Serpentling tightens its slim tail into one loop, fires, and snaps backward along that exact curve.",
+			"telegraph": "Plain dull scales overlap at one outer seam while the bare torso leans inside the small coil.",
+			"counterplay": "Step inside the recoil curve and strike the lifted outer seam before the hoodless Serpentling straightens.",
+			"visualDelta": "Short slim tail, plain dull scales, bare two-armed torso, blowgun or sling, and explicitly no hood.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Serpentling"]
+		},
+		{
+			"tier": "T2",
+			"formId": "naga-coilguard",
+			"displayName": "Coilguard",
+			"primaryArchetype": "Twin-Blade Coil Soldier (Soldier)",
+			"battlefieldDuty": "Hold a repeatable curved front line by bracing longer coils and threatening opposite arcs with two curved daggers.",
+			"teachingGoal": "Teach that the two armed arcs leave the coil interior safe during a committed crossed cut.",
+			"signatureMechanic": "Crossed Crescent: the two-armed, hoodless Coilguard plants patterned coils and sweeps twin daggers from the outer curve toward one crossing point.",
+			"telegraph": "Simple gold arm bands touch, both curved blades turn inward, and the patterned outer coil flattens against the floor.",
+			"counterplay": "Enter the coil interior before the blades cross or strike the flattened outer scale row to break the brace.",
+			"visualDelta": "Longer patterned coils, twin curved daggers, and simple gold bands mature the baseline while retaining two arms and no hood.",
+			"lowerFormInteraction": "A Serpentling can fire across the guarded crescent, but entering the coil interior disrupts both its recoil curve and the Soldier's crossing point.",
+			"sourceReferences": ["Coilguard"]
+		},
+		{
+			"tier": "T3",
+			"formId": "naga-hooded-adept",
+			"displayName": "Hooded Adept",
+			"primaryArchetype": "Four-Hand Script Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the fight by using the first hood and second arm pair to reorder three marked coil segments into a temporary movement rule.",
+			"teachingGoal": "Teach that added anatomy changes the mechanic: follow which of four hands owns each glyph, not merely the brighter scale pattern.",
+			"signatureMechanic": "Three-Glyph Coil: the upper hands reveal the broad cobra hood and place Start and End glyphs while the lower hands rotate one jeweled spine segment between them; crossing the segments out of order tightens the surrounding coil, but striking the hand holding the middle glyph breaks the rule.",
+			"telegraph": "The first broad hood fans open, four hands separate into upper and lower pairs, and three jeweled scale inlays brighten in a readable sequence.",
+			"counterplay": "Read the hand-owned order, cross Start-middle-End, or interrupt the lower hand carrying the middle glyph before the coil closes.",
+			"visualDelta": "First broad cobra hood, four arms, jeweled scale inlay along the spine, and silk sash create the decisive Specialist pivot.",
+			"lowerFormInteraction": "Serpentling shots travel from Start and Coilguards hold End; breaking the middle glyph also releases those lower forms from the scripted route.",
+			"sourceReferences": ["Hooded Adept"]
+		},
+		{
+			"tier": "T4",
+			"formId": "naga-temple-guardian",
+			"displayName": "Temple Guardian",
+			"primaryArchetype": "Six-Hand Threshold Champion (Champion)",
+			"battlefieldDuty": "Guard a temple threshold through three paired weapon postures, changing which coil opening is safe without changing the authored doorway.",
+			"teachingGoal": "Teach players to pair hand posture with gold coil band and exploit the unarmed transition between three thresholds.",
+			"signatureMechanic": "Sixfold Threshold: each pair among six arms holds one weapon posture, and gold banding along the full coil maps that posture to left, center, or right threshold; the ornate brow jewel turns before the active pair swaps.",
+			"telegraph": "The brow ornament rotates, one of three gold coil bands lifts, and the corresponding arm pair crosses weapons over its threshold.",
+			"counterplay": "Move through a band not matched to the raised pair and strike the brow jewel during the unarmed handoff.",
+			"visualDelta": "Gold banding runs the full coil, six arms carry distinct weapons, an ornate brow ornament controls the posture, and sacred script remains bounded to the bands.",
+			"lowerFormInteraction": "Coilguards occupy the two inactive thresholds and a Hooded Adept may script one swap; disrupting the brow jewel opens every lower-form gap at once.",
+			"sourceReferences": ["Temple Guardian"]
+		},
+		{
+			"tier": "T5",
+			"formId": "naga-serpent-empress",
+			"displayName": "Serpent Empress",
+			"primaryArchetype": "Relic-Orbit Sovereign (Sovereign)",
+			"battlefieldDuty": "Command a four-relic temple boss whose enormous coils redraw the arena around lower-form stations until broken gold bands ground each orbit and shorten the sovereign body.",
+			"teachingGoal": "Test coil, blade, glyph, and threshold reading while every successful relic grounding permanently simplifies both arena and silhouette.",
+			"signatureMechanic": "Crown of Four Relics: the gem-studded hood-crown aligns four floating relics on visible gold tracks around the torso. The Dart relic directs Serpentling fire, the Crescent relic arms Coilguard arcs, the Script relic sets an Adept sequence, and the Gate relic closes a Guardian threshold. The Empress's coils fill four concentric lanes, one per relic. When a known pattern resolves, its track hinge opens at the outer coil; breaking it grounds the relic, dismisses that lower form, and forces the corresponding coil ring to unwrap into a straight vulnerable length. At two relics the headdress drops and commands resolve one at a time.",
+			"telegraph": "One hood gem aligns, its relic travels on a visible gold track, the corresponding coil band rises, and the named lower form assumes its familiar posture.",
+			"counterplay": "Use the selected lower-form response, reach the exposed outer-track hinge, and break it; each grounded relic permanently removes one command and opens one concentric lane.",
+			"visualDelta": "Coils fill the frame in four readable rings, the hood fans into a gem-studded crown, a formal headdress frames multiple arms, and four relics orbit on explicit gold tracks.",
+			"lowerFormInteraction": "Serpentling, Coilguard, Hooded Adept, and Temple Guardian each operate one relic and lane; grounding that relic dismisses its lower form and removes its command for the rest of the boss.",
+			"sourceReferences": ["Serpent Empress"]
+		}
+	]
+}

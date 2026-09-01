@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "insectoids",
+	"displayName": "Insectoids",
+	"sourceRaceNumber": 17,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-03.md",
+	"classificationNotes": "Source-draft Insectoids are treated as a chitinous visual and encounter-production family, not as an accepted people or universal claims about intelligence, caste, cognition, individuality, personhood, reproductive role, social organization, or hostility. Hive and caste language becomes authored combat coordination while every biological and cultural claim remains a proposal pending taxonomy review.",
+	"visualConstants": [
+		"Segmented chitinous body, mandibled head, compound eyes, four to six limbs, narrow waist, and rear abdomen remain legible across all forms.",
+		"Chitin brown and black mature into glossy crimson, iridescent green-black, and amber accents without replacing caste-specific limb shapes.",
+		"Chitin, resin, wax comb, translucent wing membrane where anatomically present, and amber remain distinct family materials.",
+		"Shell ridging, fluting, resin plating, spiracle vents, and comb-throne structures communicate specialization rather than generic size.",
+		"Wing state is tier-specific: T1–T2 have no wings, T3 has closed wing cases, T4 has functional wings, and the immense T5 Queen is wingless."
+	],
+	"escalationAxis": "Caste specialization, chitin gloss, limb purpose, vent and wing development, and authority over wax-comb routes grow from a worker probe to a stationary production sovereign.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity amber, translucent wing membrane on the T4 only, chitin gloss, resin, wax comb, and ordinary spiracle vapor remain biological or hive materials rather than Fire, Wind, or other affinity evidence.",
+				"Movement stays anatomical: limbs articulate at visible joints, mandibles open, wing cases remain closed at T3, functional T4 wings beat ordinarily, and the wingless T5 is carried only by attendants or comb mechanisms."
+			],
+			"counterplaySignal": "The loaded limb joint, spiracle valve, wing root when present, abdomen segment, or comb latch preserves each form's established weak point.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating amber color, glossy chitin, ordinary spiracle vapor, or T4 wing membrane as affinity construction"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no wings with heat vents only at existing spiracles; T3 retains closed wing cases as ceramic heat shutters; T4 retains functional wings with char-resistant membrane veins; T5 remains wingless with kiln channels in the immense abdomen and wax throne.",
+				"Materials and cycles become combustion-based through fired resin plates, carbon-dark chitin seams, amber fuel nodules, sequential spiracle ignition, and an ashen cooling joint after each action."
+			],
+			"counterplaySignal": "Amber fuel moves to one spiracle row before ignition; rupture the nodule or strike the ashen joint while that row cools.",
+			"forbidden": [
+				"Palette-only red or amber chitin without combustion construction",
+				"Glow-only fire treatment without fuel, vents, ignition, and cooling",
+				"Invented wings on T1–T2 or T5 and prematurely open T3 wing cases",
+				"Flame replacing caste-specific limbs, chitin, or abdomen"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no wings with mineral cuffs on existing limbs; T3 retains closed wing cases as load-bearing crystal shields; T4 retains functional wings with light shale leading edges; T5 remains wingless with stratified abdomen plates and stone comb anchors.",
+				"Load paths gain sediment-layered chitin, resin-bound aggregate, crystal joint wedges, planted limb anchors, and pale fractures at the active caste tool or comb latch."
+			],
+			"counterplaySignal": "A mineral wedge locks the active limb or abdomen segment and turns chalk-white; break it before release or attack the unloaded opposite joint.",
+			"forbidden": [
+				"Palette-only brown chitin without strata, anchors, and changed load paths",
+				"Glow-only earth treatment without mineral construction and fractures",
+				"Invented wings on T1–T2 or T5 and prematurely open T3 wing cases",
+				"Heavy rock additions that erase segmented anatomy or caste tools"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no wings with pressure flutes limited to spiracles and limb vanes; T3 retains closed wing cases as sealed pressure chambers; T4 retains functional wings with slotted membrane veins; T5 remains wingless with bellows segments in the abdomen and comb throne.",
+				"Force becomes directional through hollow chitin tubes, resin vanes, aligned antennae, counted spiracle pulses, and a still center at the active joint, case seam, wing root, or throne bellows."
+			],
+			"counterplaySignal": "Antennae and resin vanes align while one spiracle row goes silent; cross the lee or strike that still center before pressure releases.",
+			"forbidden": [
+				"Palette-only pale chitin without flutes, vanes, and directional pressure",
+				"Glow-only wind treatment without a force route and still center",
+				"Invented wings on T1–T2 or T5 and prematurely open T3 wing cases",
+				"Treating ordinary T4 wing membranes or flight alone as Wind affinity"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 retain no wings with shell valves between existing segments; T3 retains closed wing cases as paired reservoirs; T4 retains functional wings with capillary membrane veins; T5 remains wingless with hydraulic abdomen chambers and wax-comb cisterns.",
+				"Actions show coherent filling through translucent resin, wet chitin reflection, pressure transfer along existing limbs, controlled jets at caste tools, and visible drainage from the active segment valve."
+			],
+			"counterplaySignal": "A resin chamber swells and a clear fill line reaches the active limb; puncture it or open the segment valve after discharge.",
+			"forbidden": [
+				"Palette-only blue or glossy chitin without hydraulic construction",
+				"Glow-only water treatment without coherent filling, flow, and drainage",
+				"Invented wings on T1–T2 or T5 and prematurely open T3 wing cases",
+				"Liquid bodies that erase chitin segments, mandibles, or caste limbs"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "insectoid-worker",
+			"displayName": "Worker",
+			"primaryArchetype": "Resin-Route Initiate (Initiate)",
+			"battlefieldDuty": "Probe route awareness by carrying one resin pellet between comb markers while avoiding direct confrontation.",
+			"teachingGoal": "Teach that breaking the carried material changes later hive paths, and that the thin wingless form is weakest at its loaded middle limbs.",
+			"signatureMechanic": "Work Trail: the Worker presses a resin pellet onto one floor node, creating a short visible route another Insectoid may follow faster.",
+			"telegraph": "Its dull matte abdomen lowers, thin middle limbs cradle the pellet, and small mandibles point toward the chosen comb marker.",
+			"counterplay": "Strike the exposed middle joint or destroy the pellet before placement; the wingless Worker hunches and retreats without a route.",
+			"visualDelta": "Dull matte brown chitin, thin spindly limbs, small mandibles, no weapons, no wings, and a hunched carrying posture.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Worker"]
+		},
+		{
+			"tier": "T2",
+			"formId": "insectoid-soldier",
+			"displayName": "Soldier",
+			"primaryArchetype": "Blade-Route Soldier (Soldier)",
+			"battlefieldDuty": "Hold a repeatable hive lane by bracing natural forelimb blades along an existing resin route.",
+			"teachingGoal": "Teach that the darker wingless Soldier commits both blade limbs to a marked path and exposes its narrow waist from the side.",
+			"signatureMechanic": "Route Shears: the Soldier follows one resin trail, plants behind its larger mandibles, and closes elongated forelimbs across the path like shears.",
+			"telegraph": "Hardened carapace lowers, both natural blades open around the resin line, and the narrow waist twists square to it.",
+			"counterplay": "Leave the marked route, attack the exposed waist from the side, or erase the resin node to end the guided close.",
+			"visualDelta": "Darker hardened carapace, enlarged mandibles, upright stance, forelimbs elongated into natural blades, and explicitly no wings.",
+			"lowerFormInteraction": "Workers extend routes for Soldiers; destroying the active pellet removes the Soldier's guided lane and forces ordinary movement.",
+			"sourceReferences": ["Soldier"]
+		},
+		{
+			"tier": "T3",
+			"formId": "insectoid-elite-drone",
+			"displayName": "Elite Drone",
+			"primaryArchetype": "Spiracle-Switch Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the encounter by opening alternating spiracle circuits beneath closed wing cases, switching a resin route between pull and push behavior.",
+			"teachingGoal": "Teach players to read side-specific vents and wing-case seams: the Specialist changes route function rather than simply strengthening it.",
+			"signatureMechanic": "Hive Breath: the four-armed Drone keeps its wing cases closed while left spiracles pull units toward a marked resin node and right spiracles push them away; opening one vent bank seals the other and exposes the matching case seam.",
+			"telegraph": "Glossy ridged plating lifts along one side, visible spiracles dilate, four arms brace the abdomen, and one closed wing-case seam separates.",
+			"counterplay": "Move with the announced pull or push, then strike the open-side case seam before the vents switch; the opposite side remains inert.",
+			"visualDelta": "Glossy fluted plating, four arms, visible lateral spiracle vents, and closed wing cases create the decisive specialist silhouette without functional wings.",
+			"lowerFormInteraction": "Worker pellets become pull or push nodes and Soldiers brace on the selected side; breaking the case seam returns all routes to inert markings.",
+			"sourceReferences": ["Elite Drone"]
+		},
+		{
+			"tier": "T4",
+			"formId": "insectoid-royal-guard",
+			"displayName": "Royal Guard",
+			"primaryArchetype": "Wing-Lattice Champion (Champion)",
+			"battlefieldDuty": "Patrol a three-dimensional lattice, using its first functional wings and ceremonial spear to defend one hive route from above.",
+			"teachingGoal": "Teach players to pair wing membrane tension with spear angle, then attack the exposed root after the committed descent.",
+			"signatureMechanic": "Royal Lattice: the Guard connects three resin nodes by flying between them, then dives its spear along only the tautest edge; breaking any node slackens that edge and forces a landing.",
+			"telegraph": "Crimson-and-gold shell ridges align, translucent functional wings pull one lattice edge taut, and the ceremonial spear turns along it.",
+			"counterplay": "Destroy the announced node or leave the taut edge, then strike the wing root when the Guard lands to reset the lattice.",
+			"visualDelta": "Ornate deeply ridged crimson-and-gold shell, translucent functional wings, upright guard posture, and ceremonial spear.",
+			"lowerFormInteraction": "Workers maintain nodes, Soldiers hold ground edges, and Elite Drones reverse one lattice side; removing its node grounds all three duties locally.",
+			"sourceReferences": ["Royal Guard"]
+		},
+		{
+			"tier": "T5",
+			"formId": "insectoid-hive-queen",
+			"displayName": "Hive Queen",
+			"primaryArchetype": "Wax-Comb Production Sovereign (Sovereign)",
+			"battlefieldDuty": "Operate a stationary production boss whose immense wingless abdomen feeds four wax-comb chambers, each generating or modifying a lower-form duty until permanently disconnected.",
+			"teachingGoal": "Test resin routes, blade lanes, vent switching, and aerial lattices while each destroyed abdomen valve removes one production branch and opens the throne.",
+			"signatureMechanic": "Four Comb Broods: the wingless Queen's immense segmented abdomen connects through four visible resin valves to a wax-comb throne. The Work chamber produces a Worker and resin pellet, Blade hardens a surviving Worker into a Soldier, Breath molts a Soldier into an Elite Drone with closed cases, and Royal opens one Drone's cases into a Royal Guard. Tiny useless limbs cannot defend the valves, so attendants reposition the abdomen toward the selected chamber. Breaking the filled valve permanently collapses that comb and prevents its production. At two chambers the abdomen splits at exposed segment seams and every remaining cycle slows.",
+			"telegraph": "Crown-like head plating turns toward one comb, attendants pull the wingless abdomen, translucent resin fills its valve, and the corresponding lower-form silhouette appears behind wax cells.",
+			"counterplay": "Use the announced lower-form response to reach and rupture the filled valve; each collapsed chamber permanently ends that production path and exposes another abdomen seam.",
+			"visualDelta": "Immense segmented wingless abdomen, crown-like head plating, tiny useless limbs, wax-comb throne, four resin valves, and attendants at the base define the sovereign mechanism.",
+			"lowerFormInteraction": "Workers, Soldiers, Elite Drones, and Royal Guards are produced or promoted through four separate comb chambers; destroying a chamber ends that lower-form path for the rest of the boss.",
+			"sourceReferences": ["Hive Queen"]
+		}
+	]
+}

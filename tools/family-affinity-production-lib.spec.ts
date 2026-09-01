@@ -267,6 +267,107 @@ const waveBFamilyFixtures = [
 	}
 ] as const;
 
+const waveCFamilyFixtures = [
+	{
+		fileName: '13-harpies.json',
+		familyId: 'harpies',
+		displayName: 'Harpies',
+		sourceRaceNumber: 13,
+		forms: [
+			{ tier: 'T1', displayName: 'Screecher', sourceReferences: ['Screecher'] },
+			{ tier: 'T2', displayName: 'Talon', sourceReferences: ['Talon'] },
+			{ tier: 'T3', displayName: 'Skyrender', sourceReferences: ['Skyrender'] },
+			{ tier: 'T4', displayName: 'Matriarch', sourceReferences: ['Matriarch'] },
+			{ tier: 'T5', displayName: 'Sky Queen', sourceReferences: ['Sky Queen'] }
+		]
+	},
+	{
+		fileName: '14-minotaurs.json',
+		familyId: 'minotaurs',
+		displayName: 'Minotaurs',
+		sourceRaceNumber: 14,
+		forms: [
+			{ tier: 'T1', displayName: 'Bull-kin', sourceReferences: ['Bull-kin'] },
+			{ tier: 'T2', displayName: 'Charger', sourceReferences: ['Charger'] },
+			{
+				tier: 'T3',
+				displayName: 'Labyrinth Warrior',
+				sourceReferences: ['Labyrinth Warrior']
+			},
+			{
+				tier: 'T4',
+				displayName: 'Arena Champion',
+				sourceReferences: ['Arena Champion']
+			},
+			{ tier: 'T5', displayName: 'Bull Emperor', sourceReferences: ['Bull Emperor'] }
+		]
+	},
+	{
+		fileName: '15-nagas.json',
+		familyId: 'nagas',
+		displayName: 'Nagas',
+		sourceRaceNumber: 15,
+		forms: [
+			{ tier: 'T1', displayName: 'Serpentling', sourceReferences: ['Serpentling'] },
+			{ tier: 'T2', displayName: 'Coilguard', sourceReferences: ['Coilguard'] },
+			{ tier: 'T3', displayName: 'Hooded Adept', sourceReferences: ['Hooded Adept'] },
+			{
+				tier: 'T4',
+				displayName: 'Temple Guardian',
+				sourceReferences: ['Temple Guardian']
+			},
+			{
+				tier: 'T5',
+				displayName: 'Serpent Empress',
+				sourceReferences: ['Serpent Empress']
+			}
+		]
+	},
+	{
+		fileName: '16-lizardfolk.json',
+		familyId: 'lizardfolk',
+		displayName: 'Lizardfolk',
+		sourceRaceNumber: 16,
+		forms: [
+			{ tier: 'T1', displayName: 'Scout', sourceReferences: ['Scout'] },
+			{ tier: 'T2', displayName: 'Warrior', sourceReferences: ['Warrior'] },
+			{ tier: 'T3', displayName: 'Spineback', sourceReferences: ['Spineback'] },
+			{
+				tier: 'T4',
+				displayName: 'Swamp Chieftain',
+				sourceReferences: ['Swamp Chieftain']
+			},
+			{ tier: 'T5', displayName: 'Saurian Tyrant', sourceReferences: ['Saurian Tyrant'] }
+		]
+	},
+	{
+		fileName: '17-insectoids.json',
+		familyId: 'insectoids',
+		displayName: 'Insectoids',
+		sourceRaceNumber: 17,
+		forms: [
+			{ tier: 'T1', displayName: 'Worker', sourceReferences: ['Worker'] },
+			{ tier: 'T2', displayName: 'Soldier', sourceReferences: ['Soldier'] },
+			{ tier: 'T3', displayName: 'Elite Drone', sourceReferences: ['Elite Drone'] },
+			{ tier: 'T4', displayName: 'Royal Guard', sourceReferences: ['Royal Guard'] },
+			{ tier: 'T5', displayName: 'Hive Queen', sourceReferences: ['Hive Queen'] }
+		]
+	},
+	{
+		fileName: '18-arachnids.json',
+		familyId: 'arachnids',
+		displayName: 'Arachnids',
+		sourceRaceNumber: 18,
+		forms: [
+			{ tier: 'T1', displayName: 'Crawler', sourceReferences: ['Crawler'] },
+			{ tier: 'T2', displayName: 'Stalker', sourceReferences: ['Stalker'] },
+			{ tier: 'T3', displayName: 'Weaver', sourceReferences: ['Weaver'] },
+			{ tier: 'T4', displayName: 'Broodmother', sourceReferences: ['Broodmother'] },
+			{ tier: 'T5', displayName: 'Weaver Queen', sourceReferences: ['Weaver Queen'] }
+		]
+	}
+] as const;
+
 describe('Wave A family packets', () => {
 	it.each(waveAFamilyFixtures)(
 		'loads $fileName with exact source identity and tier coverage',
@@ -476,6 +577,123 @@ describe('Wave B family packets', () => {
 			);
 		}
 	});
+});
+
+describe('Wave C family packets', () => {
+	it.each(waveCFamilyFixtures)(
+		'loads $fileName with exact source identity and tier coverage',
+		async ({ fileName, familyId, displayName, sourceRaceNumber, forms }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			expect(packet.familyId).toBe(familyId);
+			expect(packet.displayName).toBe(displayName);
+			expect(packet.sourceRaceNumber).toBe(sourceRaceNumber);
+			expect(packet.sourcePage).toBe('docs/wiki/creatures/monster-races/generator-bestiary-03.md');
+			expect(packet.floorSlot).toBeNull();
+			expect(
+				packet.forms.map(({ tier, displayName: formDisplayName, sourceReferences }) => ({
+					tier,
+					displayName: formDisplayName,
+					sourceReferences
+				}))
+			).toEqual(forms);
+			expect(new Set(packet.forms.map((form) => form.formId)).size).toBe(5);
+			expect(new Set(packet.forms.map((form) => form.battlefieldDuty)).size).toBe(5);
+			expect(packet.forms[2]!.primaryArchetype).toMatch(/Specialist/iu);
+			expect(packet.forms[4]!.primaryArchetype).toMatch(/Sovereign/iu);
+		}
+	);
+
+	it.each([
+		{ fileName: '13-harpies.json', motif: /wing|feather/iu },
+		{ fileName: '14-minotaurs.json', motif: /brazier|eye glow/iu },
+		{ fileName: '15-nagas.json', motif: /sacred water/iu },
+		{ fileName: '16-lizardfolk.json', motif: /swamp|mud/iu },
+		{ fileName: '17-insectoids.json', motif: /amber|wing membrane/iu },
+		{ fileName: '18-arachnids.json', motif: /silk|venom|eye glow/iu }
+	])(
+		'binds $fileName source-native motifs to a non-affinity Normal declaration',
+		async ({ fileName, motif }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+			const normalEntries = [
+				...packet.affinityThemes.normal.constructionDimensions,
+				packet.affinityThemes.normal.counterplaySignal,
+				...packet.affinityThemes.normal.forbidden
+			];
+			const boundEntry = normalEntries.find(
+				(entry) => /family-native|non-affinity/iu.test(entry) && motif.test(entry)
+			);
+
+			expect(boundEntry).toBeDefined();
+			expect(normalEntries.join(' ')).toMatch(/unexplained elemental anatomy/iu);
+			expect(normalEntries.join(' ')).toMatch(/unexplained elemental glow/iu);
+			expect(normalEntries.join(' ')).toMatch(/unexplained environmental wake/iu);
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				expect(packet.affinityThemes[affinity].constructionDimensions).toHaveLength(2);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/palette-only/iu);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/glow-only/iu);
+			}
+		}
+	);
+
+	it.each([
+		{
+			fileName: '15-nagas.json',
+			early: /T1[–-]T2[^.]*no hood[^.]*two arms/iu,
+			later: /T3[–-]T5[^.]*hood[^.]*multiple arms/iu
+		},
+		{
+			fileName: '17-insectoids.json',
+			early: /T1[–-]T2[^.]*no wings/iu,
+			later: /T3[^.]*wing cases[^.]*T4[^.]*functional wings[^.]*T5[^.]*wingless/iu
+		},
+		{
+			fileName: '18-arachnids.json',
+			early: /T1[–-]T2[^.]*spider[^.]*no humanoid torso/iu,
+			later: /T3[–-]T5[^.]*humanoid torso/iu
+		}
+	])(
+		'gives $fileName tier-safe construction branches in every elemental theme',
+		async ({ fileName, early, later }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
+				expect(construction, `${affinity} early anatomy branch`).toMatch(early);
+				expect(construction, `${affinity} later anatomy branch`).toMatch(later);
+			}
+		}
+	);
 });
 
 describe('family affinity production schemas', () => {
