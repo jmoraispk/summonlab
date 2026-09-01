@@ -338,8 +338,20 @@
       "owner": "progression",
       "designStatus": "accepted",
       "implementationStatus": "none",
-      "visualStatus": "brief",
-      "spoilerScope": "discoverable"
+      "visualStatus": "approved",
+      "spoilerScope": "discoverable",
+      "assets": [
+        {
+          "assetKey": "affinity-overcoming-cycle-v2",
+          "file": "assets/enemies/wiki/affinities/reference/element-cycle-v2.svg",
+          "status": "approved"
+        },
+        {
+          "assetKey": "affinity-pairing-matrix-v2",
+          "file": "assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg",
+          "status": "approved"
+        }
+      ]
     },
     {
       "wikiId": "mechanics.progression.skills-ladders",

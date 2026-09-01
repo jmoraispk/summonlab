@@ -70,6 +70,8 @@ Every base affinity therefore sits in exactly three relationships: it **overcome
 
 There is no second cycle. Nothing feeds anything, and no affinity strengthens another. An earlier draft carried a generating cycle alongside the overcoming one; it was removed because it required elements chosen for their relational tidiness rather than for feeling elemental, and the cost of keeping it was Wood and Metal.
 
+![Affinity overcoming cycle: Earth → Water → Fire → Wind → Earth. Four base affinities and six dual affinities make ten total; the dual labels are secondary annotations.](../../../../assets/enemies/wiki/affinities/reference/element-cycle-v2.svg)
+
 ## 2.5 Combat interactions
 
 | Relationship | Damage | Proc chance | Status duration | Additional |
@@ -198,6 +200,8 @@ Produced by two affinities with no quarrel. These are stable states of matter ra
 | **Rot** | Earth, Water | Fire — burns it out | Wind |
 | **Magma** | Fire, Earth | Water — the sea quenches it | Wind |
 | **Ice** | Water, Wind | Fire — melts it | Earth |
+
+![Affinity pairing matrix: rows and columns are Earth, Water, Fire, and Wind. Four base affinities and six dual affinities make ten total.](../../../../assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg)
 
 Every dual is therefore two-up, one-down, one-neutral, which makes it strictly stronger on the wheel than any base affinity. That is deliberate, and it is what the rarity in 2.11 pays for. The reaction-versus-material distinction lives in stability and status flavour, not in cycle position — both groups sit on the wheel identically.
 

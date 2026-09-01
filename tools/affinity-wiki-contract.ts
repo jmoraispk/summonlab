@@ -268,12 +268,79 @@ function svgEdgeFinding(relativePath: string, source: string): string | undefine
 	return `${relativePath}: data-overcomes edges must contain exactly ${requiredEdges}; found ${edges.join(', ') || 'none'}.`;
 }
 
-function svgMatrixFinding(relativePath: string, source: string): string | undefined {
-	const baseCount = [...source.matchAll(/\bdata-kind\s*=\s*["']base["']/giu)].length;
-	const dualCount = [...source.matchAll(/\bdata-kind\s*=\s*["']dual["']/giu)].length;
-	if (baseCount === BASE_AFFINITIES.length && dualCount === DUAL_AFFINITIES.length)
-		return undefined;
-	return `${relativePath}: affinity matrix must contain exactly four data-kind="base" cells and six data-kind="dual" cells; found ${baseCount} base and ${dualCount} dual.`;
+function svgText(source: string, element: 'title' | 'desc'): string | undefined {
+	return source.match(new RegExp(`<${element}[^>]*>([\\s\\S]*?)</${element}>`, 'iu'))?.[1]?.trim();
+}
+
+function svgAttribute(element: string, name: string): string | undefined {
+	return element.match(new RegExp(`\\b${name}\\s*=\\s*["']([^"']+)["']`, 'iu'))?.[1];
+}
+
+function matrixCells(source: string): Array<Record<string, string | undefined>> {
+	return [
+		...source.matchAll(/<[a-z][a-z0-9:-]*\b[^>]*\bdata-kind\s*=\s*["'](?:base|dual)["'][^>]*>/giu)
+	].map((match) => ({
+		kind: svgAttribute(match[0], 'data-kind'),
+		name: svgAttribute(match[0], 'data-name'),
+		parents: svgAttribute(match[0], 'data-parents'),
+		status: svgAttribute(match[0], 'data-status')
+	}));
+}
+
+function svgAccessibilityFindings(relativePath: string, source: string): string[] {
+	const findings: string[] = [];
+	const svgTag = source.match(/<svg\b[^>]*>/iu)?.[0] ?? '';
+	if (svgAttribute(svgTag, 'role') !== 'img') {
+		findings.push(`${relativePath}: accessible SVG must declare role="img".`);
+	}
+	const title = svgText(source, 'title');
+	if (title !== 'Affinity overcoming cycle') {
+		findings.push(
+			`${relativePath}: accessible title must be "Affinity overcoming cycle"; found ${title || 'none'}.`
+		);
+	}
+	const desc = svgText(source, 'desc');
+	if (!desc || !OVERCOMING_EDGES.every(([from, to]) => desc.includes(`${from}>${to}`))) {
+		findings.push(`${relativePath}: accessible description must state ${requiredEdges} verbatim.`);
+	}
+	return findings;
+}
+
+function svgMatrixFindings(relativePath: string, source: string): string[] {
+	const cells = matrixCells(source);
+	const baseCells = cells.filter(({ kind }) => kind === 'base');
+	const dualCells = cells.filter(({ kind }) => kind === 'dual');
+	const findings: string[] = [];
+	if (baseCells.length !== BASE_AFFINITIES.length || dualCells.length !== DUAL_AFFINITIES.length) {
+		findings.push(
+			`${relativePath}: affinity matrix must contain exactly four data-kind="base" cells and six data-kind="dual" cells; found ${baseCells.length} base and ${dualCells.length} dual.`
+		);
+	}
+
+	const names = cells.flatMap(({ name }) => (name ? [name] : []));
+	const expectedNames = [...BASE_AFFINITIES, ...DUAL_AFFINITIES.map(({ name }) => name)];
+	if (!sameSet(names, expectedNames)) {
+		findings.push(
+			`${relativePath}: matrix cells must name exactly ${expectedNames.join(', ')}; found ${names.join(', ') || 'none'}.`
+		);
+	}
+
+	const hasExactDualMetadata =
+		dualCells.length === DUAL_AFFINITIES.length &&
+		DUAL_AFFINITIES.every(({ name, parents, status }) =>
+			dualCells.some(
+				(cell) => cell.name === name && cell.parents === parents.join('|') && cell.status === status
+			)
+		);
+	if (!hasExactDualMetadata) {
+		const actual = dualCells
+			.filter(({ name, parents, status }) => name && parents && status)
+			.map(({ name, parents, status }) => `${name} (${parents}, ${status})`);
+		findings.push(
+			`${relativePath}: dual cells must declare exact data-parents and data-status metadata; found ${actual.join(', ') || 'none'}.`
+		);
+	}
+	return findings;
 }
 
 export async function validateAffinityWiki(root: string): Promise<string[]> {
@@ -380,14 +447,20 @@ export async function validateAffinityWiki(root: string): Promise<string[]> {
 
 	findings.push(...(await immutableSkillSourceFindings(root)));
 
-	for (const [relativePath, check] of [
-		[circleSvgPath, svgEdgeFinding],
-		[matrixSvgPath, svgMatrixFinding]
-	] as const) {
-		const source = await existingSource(path.join(root, relativePath));
-		if (!source) continue;
-		const finding = check(relativePath, source);
-		if (finding) findings.push(finding);
+	const circleSource = await existingSource(path.join(root, circleSvgPath));
+	if (!circleSource) {
+		findings.push(`${circleSvgPath}: required affinity overcoming-cycle SVG is missing.`);
+	} else {
+		const edgeFinding = svgEdgeFinding(circleSvgPath, circleSource);
+		if (edgeFinding) findings.push(edgeFinding);
+		findings.push(...svgAccessibilityFindings(circleSvgPath, circleSource));
+	}
+
+	const matrixSource = await existingSource(path.join(root, matrixSvgPath));
+	if (!matrixSource) {
+		findings.push(`${matrixSvgPath}: required affinity matrix SVG is missing.`);
+	} else {
+		findings.push(...svgMatrixFindings(matrixSvgPath, matrixSource));
 	}
 
 	return findings;

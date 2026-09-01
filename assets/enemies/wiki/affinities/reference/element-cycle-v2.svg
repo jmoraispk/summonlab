@@ -1,0 +1,80 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 720 620"
+	role="img"
+	aria-labelledby="cycle-title cycle-desc"
+>
+	<title id="cycle-title">Affinity overcoming cycle</title>
+	<desc id="cycle-desc">Earth>Water, Water>Fire, Fire>Wind, Wind>Earth. Six dual affinities are secondary annotations outside the cycle.</desc>
+	<defs>
+		<marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+			<path d="M 0 0 L 8 4 L 0 8 z" fill="#d2d8e5" />
+		</marker>
+		<style>
+			.background { fill: #10141d; }
+			.cycle { fill: none; stroke: #53627a; stroke-width: 3; stroke-linecap: round; marker-end: url(#arrowhead); }
+			.base { stroke-width: 2; }
+			.label { font-family: system-ui, sans-serif; text-anchor: middle; }
+			.name { fill: #f3f6fb; font-size: 18px; font-weight: 700; }
+			.status { fill: #b8c5d8; font-size: 13px; }
+			.dual { fill: #202a3a; stroke: #667896; stroke-width: 1; }
+			.dual-label { fill: #d5deeb; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 600; text-anchor: middle; }
+			.caption { fill: #9fadc2; font-family: system-ui, sans-serif; font-size: 14px; text-anchor: middle; }
+		</style>
+	</defs>
+
+	<rect class="background" x="0" y="0" width="720" height="620" rx="24" />
+	<text class="label name" x="360" y="38">Overcoming cycle</text>
+	<text class="caption" x="360" y="60">Clockwise arrows show the only four overcoming relationships.</text>
+
+	<path class="cycle" data-overcomes="Earth>Water" d="M 411 145 A 174 174 0 0 1 529 263" />
+	<path class="cycle" data-overcomes="Water>Fire" d="M 575 313 A 174 174 0 0 1 457 431" />
+	<path class="cycle" data-overcomes="Fire>Wind" d="M 409 477 A 174 174 0 0 1 291 359" />
+	<path class="cycle" data-overcomes="Wind>Earth" d="M 245 311 A 174 174 0 0 1 363 193" />
+
+	<g aria-label="Earth base affinity">
+		<rect class="base" x="292" y="90" width="136" height="82" rx="18" fill="#3c2c1d" stroke="#d5a76c" />
+		<text class="label name" x="360" y="124">Earth</text>
+		<text class="label status" x="360" y="149">Weight</text>
+	</g>
+	<g aria-label="Water base affinity">
+		<rect class="base" x="548" y="240" width="136" height="82" rx="18" fill="#123859" stroke="#76b9e9" />
+		<text class="label name" x="616" y="274">Water</text>
+		<text class="label status" x="616" y="299">Chill</text>
+	</g>
+	<g aria-label="Fire base affinity">
+		<rect class="base" x="292" y="448" width="136" height="82" rx="18" fill="#531d17" stroke="#f08d66" />
+		<text class="label name" x="360" y="482">Fire</text>
+		<text class="label status" x="360" y="507">Burn</text>
+	</g>
+	<g aria-label="Wind base affinity">
+		<rect class="base" x="36" y="240" width="136" height="82" rx="18" fill="#153f3c" stroke="#74c9b8" />
+		<text class="label name" x="104" y="274">Wind</text>
+		<text class="label status" x="104" y="299">Lacerate</text>
+	</g>
+
+	<g aria-label="Secondary dual affinity annotation: Mist">
+		<rect class="dual" x="72" y="112" width="106" height="32" rx="16" />
+		<text class="dual-label" x="125" y="133">Mist · Shroud</text>
+	</g>
+	<g aria-label="Secondary dual affinity annotation: Lightning">
+		<rect class="dual" x="524" y="112" width="132" height="32" rx="16" />
+		<text class="dual-label" x="590" y="133">Lightning · Shock</text>
+	</g>
+	<g aria-label="Secondary dual affinity annotation: Sand">
+		<rect class="dual" x="550" y="398" width="110" height="32" rx="16" />
+		<text class="dual-label" x="605" y="419">Sand · Abrade</text>
+	</g>
+	<g aria-label="Secondary dual affinity annotation: Rot">
+		<rect class="dual" x="70" y="398" width="102" height="32" rx="16" />
+		<text class="dual-label" x="121" y="419">Rot · Decay</text>
+	</g>
+	<g aria-label="Secondary dual affinity annotation: Magma">
+		<rect class="dual" x="222" y="550" width="118" height="32" rx="16" />
+		<text class="dual-label" x="281" y="571">Magma · Melt</text>
+	</g>
+	<g aria-label="Secondary dual affinity annotation: Ice">
+		<rect class="dual" x="380" y="550" width="100" height="32" rx="16" />
+		<text class="dual-label" x="430" y="571">Ice · Freeze</text>
+	</g>
+</svg>

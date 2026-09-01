@@ -13,10 +13,19 @@ import {
 
 const roots: string[] = [];
 
+const validCycleSvg = `<svg role="img"><title>Affinity overcoming cycle</title><desc>Earth>Water, Water>Fire, Fire>Wind, Wind>Earth.</desc><path data-overcomes="Earth>Water" /><path data-overcomes="Water>Fire" /><path data-overcomes="Fire>Wind" /><path data-overcomes="Wind>Earth" /></svg>`;
+
+const validMatrixSvg = `<svg role="img"><title>Affinity pairing matrix</title><desc>Four base affinities and six dual affinities, for ten total affinities.</desc><rect data-kind="base" data-name="Earth" /><rect data-kind="dual" data-name="Rot" data-parents="Earth|Water" data-status="Decay" /><rect data-kind="dual" data-name="Magma" data-parents="Fire|Earth" data-status="Melt" /><rect data-kind="base" data-name="Water" /><rect data-kind="dual" data-name="Mist" data-parents="Water|Fire" data-status="Shroud" /><rect data-kind="dual" data-name="Ice" data-parents="Water|Wind" data-status="Freeze" /><rect data-kind="base" data-name="Fire" /><rect data-kind="dual" data-name="Lightning" data-parents="Fire|Wind" data-status="Shock" /><rect data-kind="base" data-name="Wind" /><rect data-kind="dual" data-name="Sand" data-parents="Wind|Earth" data-status="Abrade" /></svg>`;
+
+const requiredDiagramFixtures = {
+	'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg': validCycleSvg,
+	'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg': validMatrixSvg
+};
+
 async function fixture(files: Record<string, string>): Promise<string> {
 	const root = await mkdtemp(path.join(tmpdir(), 'affinity-wiki-contract-'));
 	roots.push(root);
-	for (const [relativePath, source] of Object.entries(files)) {
+	for (const [relativePath, source] of Object.entries({ ...requiredDiagramFixtures, ...files })) {
 		const filePath = path.join(root, relativePath);
 		await mkdir(path.dirname(filePath), { recursive: true });
 		await writeFile(filePath, source);
@@ -191,19 +200,34 @@ describe('active wiki affinity contract', () => {
 		]);
 	});
 
-	it('checks present affinity diagrams without requiring production SVGs before they ship', async () => {
+	it('requires both complete affinity diagrams', async () => {
+		const missingCycle = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg': '',
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg': ''
+		});
+		expect(await validateAffinityWiki(missingCycle)).toEqual([
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: required affinity overcoming-cycle SVG is missing.',
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg: required affinity matrix SVG is missing.'
+		]);
+
 		const root = await fixture({
 			'docs/wiki/catalog.json': catalog([canonicalEntry]),
 			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
 			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg':
-				'<svg><path data-overcomes="Earth>Fire" /></svg>',
+				'<svg><path data-overcomes="Earth>Fire" /><path data-overcomes="Water>Fire" /><path data-overcomes="Fire>Wind" /><path data-overcomes="Wind>Earth" /></svg>',
 			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg':
-				'<svg><rect data-kind="base" /><rect data-kind="dual" /></svg>'
+				'<svg><rect data-kind="base" /><rect data-kind="base" /><rect data-kind="base" /><rect data-kind="base" /><rect data-kind="dual" /><rect data-kind="dual" /><rect data-kind="dual" /><rect data-kind="dual" /><rect data-kind="dual" /><rect data-kind="dual" /></svg>'
 		});
 
 		expect(await validateAffinityWiki(root)).toEqual([
-			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: data-overcomes edges must contain exactly Earth>Water, Water>Fire, Fire>Wind, Wind>Earth; found Earth>Fire.',
-			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg: affinity matrix must contain exactly four data-kind="base" cells and six data-kind="dual" cells; found 1 base and 1 dual.'
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: data-overcomes edges must contain exactly Earth>Water, Water>Fire, Fire>Wind, Wind>Earth; found Earth>Fire, Water>Fire, Fire>Wind, Wind>Earth.',
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: accessible SVG must declare role="img".',
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: accessible title must be "Affinity overcoming cycle"; found none.',
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: accessible description must state Earth>Water, Water>Fire, Fire>Wind, Wind>Earth verbatim.',
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg: matrix cells must name exactly Fire, Earth, Wind, Water, Mist, Lightning, Sand, Rot, Magma, Ice; found none.',
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg: dual cells must declare exact data-parents and data-status metadata; found none.'
 		]);
 	});
 

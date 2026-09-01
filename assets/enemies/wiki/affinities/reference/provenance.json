@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "summonlab-affinity-diagram-provenance-v1",
+  "status": "approved-supplied-layout",
+  "referenceInputs": [
+    {
+      "file": "/home/joao/.codex/attachments/20e0b264-8fa6-4d0d-9b64-081a6b17716d/element_cycle.svg",
+      "sha256": "114c39dd1d5b0938621010ee6a754aac5f616c5d8c6a93cd262f4b84d8e1699e"
+    },
+    {
+      "file": "/home/joao/.codex/attachments/20e0b264-8fa6-4d0d-9b64-081a6b17716d/affinity_matrix.svg",
+      "sha256": "f55b1be8f877864b5e3e75422d3b1b00f4874205798e53f58c66e802c4347b5c"
+    },
+    {
+      "file": "/home/joao/.codex/attachments/dd503d1e-328c-45ce-a664-4f3dfb1ff157/element_cycle.png",
+      "sha256": "6afa26bb994481ddf604b3dd31eb2b9df208d7bbc5f64914a05f075b182e4ed3"
+    },
+    {
+      "file": "/home/joao/.codex/attachments/8bdda66c-248d-47ad-8752-83b2af7f7bea/affinity_matrix.png",
+      "sha256": "2f61c355454a199e0baa113cfe8c170462ebeb129136ffc578c667f2edc37b22"
+    }
+  ],
+  "outputs": [
+    "assets/enemies/wiki/affinities/reference/element-cycle-v2.svg",
+    "assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg"
+  ],
+  "mechanicsNote": "Mechanical labels and overcoming arrows were rebuilt from the canonical affinity contract rather than copied blindly from the supplied layout references."
+}
