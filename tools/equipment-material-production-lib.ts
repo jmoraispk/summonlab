@@ -1,5 +1,9 @@
+import { createHash } from 'node:crypto';
+
 export const EQUIPMENT_MATERIAL_PRODUCTION_MANIFEST_PATH =
 	'assets/equipment/experiments/material-equipment-v1/manifest.json' as const;
+export const EQUIPMENT_MATERIAL_ALLOCATION_PLAN_PATH =
+	'assets/equipment/experiments/material-equipment-v1/allocation-plan.json' as const;
 
 const PRODUCTION_ID = 'material-equipment-v1' as const;
 const PRODUCTION_ROOT = `assets/equipment/experiments/${PRODUCTION_ID}` as const;
@@ -311,4 +315,142 @@ export function buildEquipmentMaterialProductionManifest() {
 
 export function serializeEquipmentMaterialProductionManifest(): string {
 	return `${JSON.stringify(buildEquipmentMaterialProductionManifest(), null, '\t')}\n`;
+}
+
+function canonicalize(value: unknown): unknown {
+	if (Array.isArray(value)) return value.map(canonicalize);
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(
+			Object.entries(value as Record<string, unknown>)
+				.sort(([left], [right]) => left.localeCompare(right))
+				.map(([key, child]) => [key, canonicalize(child)])
+		);
+	}
+	return value;
+}
+
+function canonicalJsonSha256(value: unknown): string {
+	return createHash('sha256')
+		.update(JSON.stringify(canonicalize(value)))
+		.digest('hex');
+}
+
+export function buildEquipmentMaterialAllocationPlan() {
+	const manifest = buildEquipmentMaterialProductionManifest();
+	const sourceTargets = manifest.targets.filter((target) => target.artifactRole === 'set-source');
+	const reviewGates = sourceTargets.map((source) => ({
+		gateId: `${source.targetId}-review-pass`,
+		sourceTargetId: source.targetId,
+		initialStatus: 'pending' as const,
+		acceptanceRequirement: 'human-accepted-hash-bound-source-receipt' as const,
+		fileExistenceDoesNotPass: true as const,
+		receiptSchemaRequiredBeforeActivation: 'equipment-armour-source-review-receipt-v1' as const,
+		evidencePath: source.output.reviewEvidencePath,
+		unlocksTargetIds: manifest.targets
+			.filter((target) => target.dependsOnTargetId === source.targetId)
+			.map((target) => target.targetId)
+	}));
+	const reviewGateBySource = new Map(
+		reviewGates.map((gate) => [gate.sourceTargetId, gate.gateId] as const)
+	);
+	const jobs = manifest.targets.map((target) => ({
+		jobId: `job-${target.targetId}`,
+		targetId: target.targetId,
+		productionOrder: target.productionOrder,
+		productionWave: target.productionWave,
+		phase: target.dependsOnTargetId === null ? ('independent' as const) : ('armour-piece' as const),
+		consistencySourceTargetId: target.dependsOnTargetId,
+		executionEnvelopeMaterialization:
+			target.dependsOnTargetId === null
+				? ('before-root-dispatch' as const)
+				: ('after-review-receipt-hash-is-known' as const),
+		prerequisiteReviewGateId:
+			target.dependsOnTargetId === null
+				? null
+				: (reviewGateBySource.get(target.dependsOnTargetId) ?? null),
+		synchronousRetryCeiling: 0 as const,
+		dryRun: false as const,
+		permittedOutputs: {
+			candidatePath: target.output.candidatePath,
+			provenanceResultPath: target.output.provenanceResultPath
+		},
+		reviewEvidencePath: target.output.reviewEvidencePath
+	}));
+	const initiallyReadyJobCount = jobs.filter((job) => job.phase === 'independent').length;
+	const armourPieceJobCount = jobs.length - initiallyReadyJobCount;
+	if (initiallyReadyJobCount !== 77 || armourPieceJobCount !== 84 || reviewGates.length !== 21) {
+		throw new Error('Equipment allocation-plan dependency counts drifted from the approved matrix');
+	}
+	assertUnique(
+		jobs.map((job) => job.jobId),
+		'Equipment job ID'
+	);
+	assertUnique(
+		jobs.flatMap((job) => [...Object.values(job.permittedOutputs), job.reviewEvidencePath]),
+		'Equipment reserved path'
+	);
+	if (jobs.some((job) => job.phase === 'armour-piece' && job.prerequisiteReviewGateId === null)) {
+		throw new Error('An Armour piece is missing its full-set review gate');
+	}
+
+	return {
+		schemaVersion: 'equipment-material-allocation-plan-v1' as const,
+		planId: 'material-equipment-v1-full-production-allocation' as const,
+		productionId: PRODUCTION_ID,
+		artifactRole: 'non-executable-allocation-template' as const,
+		status: 'gated' as const,
+		activation: {
+			includedInTemplate: false as const,
+			requiresSeparateHashBoundAuthorization: true as const,
+			requiresRunSpecificImmutableCopy: true as const,
+			prerequisites: [
+				'approved-equipment-visual-profile',
+				'equipment-job-runner-with-strict-schema-reader',
+				'equipment-armour-source-review-receipt-schema',
+				'run-specific-immutable-plan-and-journal',
+				'provider-capacity-verification'
+			] as const
+		},
+		sourceManifest: {
+			path: EQUIPMENT_MATERIAL_PRODUCTION_MANIFEST_PATH,
+			canonicalSha256: canonicalJsonSha256(manifest)
+		},
+		schedulerIntent: {
+			mode: 'dependency-aware-ready-queue' as const,
+			logicalProductionRunCount: 1 as const,
+			configuredMaximumConcurrency: 16 as const,
+			reservedOrchestratorSlots: 1 as const,
+			admissionFormula:
+				'max(0, min(configuredMaximumConcurrency, effectiveTaskSlots - reservedOrchestratorSlots))' as const,
+			capacityProbeCeilings: [2, 4, 8, 12, 16] as const,
+			technicalFailureCircuitBreaker: {
+				failureCountPerEpoch: 3 as const,
+				action: 'stop-new-starts-drain-active-resume-with-backoff' as const,
+				synchronousRetry: false as const
+			}
+		},
+		ownership: {
+			root: PRODUCTION_ROOT,
+			workerOwnedOutputKinds: ['candidate', 'provenance-result'] as const,
+			reviewerOwnedOutputKinds: ['review-evidence'] as const,
+			exclusiveCreateRequired: true as const,
+			forbiddenSharedPaths: [
+				'assets/enemies',
+				'packages/contracts/src/image-production.ts',
+				'skills/summonlab-image-production'
+			]
+		},
+		summary: {
+			jobCount: jobs.length,
+			initiallyReadyJobCount,
+			armourPieceJobCount,
+			armourReviewGateCount: reviewGates.length
+		},
+		reviewGates,
+		jobs
+	};
+}
+
+export function serializeEquipmentMaterialAllocationPlan(): string {
+	return `${JSON.stringify(buildEquipmentMaterialAllocationPlan(), null, '\t')}\n`;
 }

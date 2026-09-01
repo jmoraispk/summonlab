@@ -168,7 +168,14 @@ The Equipment-owned
 [material production manifest](../../../../assets/equipment/experiments/material-equipment-v1/manifest.json)
 expands this budget into explicit, collision-safe targets. Its full-set dependencies enforce the
 required sequence, and its candidate, provenance-result, and review paths are reservations rather
-than evidence that an image exists. The adjacent
+than evidence that an image exists. The Equipment-owned
+[allocation plan](../../../../assets/equipment/experiments/material-equipment-v1/allocation-plan.json)
+maps all 161 targets into one intended, resumable dependency-aware run: 77 jobs are initially ready
+and 84 Armour-piece jobs unlock four at a time only after human acceptance of their complete-set
+source. This is a non-executable planning template, not dispatch authorization or run state. Its
+rank waves are scheduling priority rather than cross-rank gates. Activation later requires an
+Equipment visual profile, strict local runner, hash-bound review receipts, immutable run copy and
+journal, and verified provider capacity. The adjacent
 [production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) define
 the execution boundary and deterministic validation command.
 
@@ -203,6 +210,8 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-01 — production planning — Bound all 161 material targets into one resumable Equipment
+  run with 77 initially ready jobs, 21 human-review gates, and 84 dependent Armour-piece jobs.
 - 2026-09-01 — owner revision — Split each Armour class into Head, Torso, Legs, and Boots; required
   full-set-first visual production; established 161 candidate images across the canonical material
   ladder.
