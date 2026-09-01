@@ -43,12 +43,12 @@ Wiki ID: \`mechanics.progression.affinities\`
 
 ## 2.2 The four affinities
 
-| Affinity | Status |
-| --- | --- |
-| Fire | Burn |
-| Earth | Weight |
-| Wind | Lacerate |
-| Water | Chill |
+| Affinity | Colour | Character | Status | Behaviour |
+| :--- | ---: | :---: | --- | ---: |
+| Fire | Vermilion | Expansion | Burn | Damage over time |
+| Earth | Ochre-brown | Stability | Weight | Reduces poise |
+| Wind | Pale green-grey | Motion | Lacerate | Cutting damage |
+| Water | Deep blue | Flow | Chill | Reduces attack speed |
 
 ## 2.4 The cycle
 
@@ -149,7 +149,10 @@ describe('active wiki affinity contract', () => {
 		const root = await fixture({
 			'docs/wiki/catalog.json': catalog([canonicalEntry]),
 			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage
-				.replace('| Water | Chill |', '| Wood | Bind |')
+				.replace(
+					'| Water | Deep blue | Flow | Chill | Reduces attack speed |',
+					'| Wood | Green | Growth | Bind | Restrains movement |'
+				)
 				.replace('| Ice | Water ✕ Wind | Freeze |', '| Steam | Water ✕ Wind | Scald |')
 				.replace('Earth → Water → Fire → Wind → Earth', 'Earth → Fire → Water → Wind → Earth')
 		});
@@ -159,6 +162,40 @@ describe('active wiki affinity contract', () => {
 			'docs/wiki/mechanics/progression/affinities.md: canonical dual table must contain exactly Mist, Lightning, Sand, Rot, Magma, Ice; found Mist, Lightning, Sand, Rot, Magma, Steam.',
 			'docs/wiki/mechanics/progression/affinities.md: overcoming cycle must contain exactly Earth>Water, Water>Fire, Fire>Wind, Wind>Earth; found Earth>Fire, Fire>Water, Water>Wind, Wind>Earth.'
 		]);
+	});
+
+	it('does not let another affinity table fill a missing Section 2.2 base row', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': `${canonicalAffinityPage.replace(
+				'| Water | Deep blue | Flow | Chill | Reduces attack speed |\n',
+				''
+			)}
+## Appendix
+
+| Affinity | Colour | Character | Status | Behaviour |
+| --- | --- | --- | --- | --- |
+| Water | Deep blue | Flow | Chill | Reduces attack speed |
+`
+		});
+
+		expect(await validateAffinityWiki(root)).toContain(
+			'docs/wiki/mechanics/progression/affinities.md: canonical base table must contain exactly Fire, Earth, Wind, Water; found Fire, Earth, Wind.'
+		);
+	});
+
+	it('reports changed base statuses in the Section 2.2 table', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage.replace(
+				'| Fire | Vermilion | Expansion | Burn | Damage over time |',
+				'| Fire | Vermilion | Expansion | Scorch | Damage over time |'
+			)
+		});
+
+		expect(await validateAffinityWiki(root)).toContain(
+			'docs/wiki/mechanics/progression/affinities.md: canonical base definitions must match Fire (Burn), Earth (Weight), Wind (Lacerate), Water (Chill); found Fire (Scorch), Earth (Weight), Wind (Lacerate), Water (Chill).'
+		);
 	});
 
 	it('reports changed dual parents and statuses in the canonical dual table', async () => {

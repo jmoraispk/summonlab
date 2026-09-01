@@ -37,6 +37,19 @@ type DualDefinition = {
 	status: string;
 };
 
+type BaseDefinition = {
+	name: string;
+	status: string;
+};
+
+const BASE_DEFINITIONS = [
+	{ name: 'Fire', status: 'Burn' },
+	{ name: 'Earth', status: 'Weight' },
+	{ name: 'Wind', status: 'Lacerate' },
+	{ name: 'Water', status: 'Chill' }
+] as const;
+const BASE_TABLE_HEADERS = ['Affinity', 'Colour', 'Character', 'Status', 'Behaviour'] as const;
+
 const requiredBaseNames = BASE_AFFINITIES.join(', ');
 const requiredDualNames = DUAL_AFFINITIES.map(({ name }) => name).join(', ');
 const requiredEdges = OVERCOMING_EDGES.map(([from, to]) => `${from}>${to}`).join(', ');
@@ -84,17 +97,38 @@ function tableRows(source: string): string[][][] {
 	return tables;
 }
 
-function namesInCanonicalTables(source: string, header: string): string[] {
-	return unique(
-		tableRows(source)
-			.filter((table) => table[0]?.[0]?.toLowerCase() === header.toLowerCase())
-			.flatMap((table) => table.slice(1).map((row) => row[0] ?? ''))
-			.filter(Boolean)
-	);
-}
-
 function text(cell: string): string {
 	return cell.replace(/\*+/gu, '').trim();
+}
+
+function numberedSection(source: string, sectionNumber: string): string | undefined {
+	const escapedSectionNumber = sectionNumber.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+	const heading = new RegExp(`^##\\s+${escapedSectionNumber}\\b[^\\n]*$`, 'imu').exec(source);
+	if (!heading) return undefined;
+	const remainder = source.slice(heading.index + heading[0].length);
+	const nextHeading = /^##\s+/mu.exec(remainder);
+	return nextHeading ? remainder.slice(0, nextHeading.index) : remainder;
+}
+
+function baseDefinitionsInCanonicalTable(source: string): BaseDefinition[] {
+	const section = numberedSection(source, '2.2');
+	if (!section) return [];
+	const table = tableRows(section).find((candidate) => {
+		const headers = candidate[0]?.map((header) => text(header).toLowerCase()) ?? [];
+		return (
+			headers.length === BASE_TABLE_HEADERS.length &&
+			BASE_TABLE_HEADERS.every((header, index) => headers[index] === header.toLowerCase())
+		);
+	});
+	if (!table) return [];
+	return table.slice(1).map((row) => ({
+		name: text(row[0] ?? ''),
+		status: text(row[3] ?? '')
+	}));
+}
+
+function baseSummary(definitions: readonly BaseDefinition[]): string {
+	return definitions.map(({ name, status }) => `${name} (${status})`).join(', ');
 }
 
 function dualDefinitionsInCanonicalTables(source: string): DualDefinition[] {
@@ -407,11 +441,24 @@ export async function validateAffinityWiki(root: string): Promise<string[]> {
 		if (!canonical) {
 			findings.push(`${canonicalEntry.path}: required canonical affinity page is missing.`);
 		} else {
-			const baseNames = namesInCanonicalTables(canonical.source, 'Affinity');
+			const baseDefinitions = baseDefinitionsInCanonicalTable(canonical.source);
+			const baseNames = baseDefinitions.map(({ name }) => name);
 			if (!sameSet(baseNames, BASE_AFFINITIES)) {
 				findings.push(
 					`${canonical.relativePath}: canonical base table must contain exactly ${requiredBaseNames}; found ${baseNames.join(', ') || 'none'}.`
 				);
+			} else {
+				const definitionsMatch =
+					baseDefinitions.length === BASE_DEFINITIONS.length &&
+					BASE_DEFINITIONS.every((expected) => {
+						const actual = baseDefinitions.find(({ name }) => name === expected.name);
+						return actual?.status === expected.status;
+					});
+				if (!definitionsMatch) {
+					findings.push(
+						`${canonical.relativePath}: canonical base definitions must match ${baseSummary(BASE_DEFINITIONS)}; found ${baseSummary(baseDefinitions)}.`
+					);
+				}
 			}
 			const dualDefinitions = dualDefinitionsInCanonicalTables(canonical.source);
 			const dualNames = unique(dualDefinitions.map(({ name }) => name));

@@ -154,7 +154,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			disposition: 'rehome',
 			target: targetForSection(row),
 			replacementEffect:
-				'A second sun, briefly. Everything unaligned or Wind-aligned in range is simply gone.'
+				'A second sun, briefly. Its alignment-specific bonus/rider is deferred to the skill-content owner.'
 		};
 
 	if (row.section === 'Tracking')

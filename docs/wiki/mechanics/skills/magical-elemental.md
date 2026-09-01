@@ -30,7 +30,7 @@ prerequisites. Fire, Water, and Earth preserve their imported ladders below.
 | 15 | **Meteor** | Fire | B | A | Charged Fireball Master, Intellect threshold, 25,000 casts, Rank IV | A single falling impact. Long cast, enormous damage, terrain ignition. |
 | 16 | **Phoenix Form** | Fire | B | St | Firestorm Master, Rank IV | Continuous burn aura; the hero revives once at low health while held |
 | 17 | **Sea of Flame** | Fire | A | A | Meteor Master, Rank IV, rare catalyst | Sets the entire field alight for an extended duration |
-| 18 | **Sunfall** | Fire | S | A | Sea of Flame Master, Rank V, composite condition | A second sun, briefly. Everything unaligned or Wind-aligned in range is simply gone. |
+| 18 | **Sunfall** | Fire | S | A | Sea of Flame Master, Rank V, composite condition | A second sun, briefly. Its alignment-specific bonus/rider is deferred to the skill-content owner. |
 | 19 | **Draw Water** | Water | F | A | Water affinity Rank I | Condense drinkable water; wet a surface. **Foundation.** |
 | 20 | **Water Bullet** | Water | F | A | Draw Water Novice | Compressed droplet fired at speed. Cheap, precise. |
 | 21 | **Cold Touch** | Water | F | A | Draw Water Novice | Chills a target briefly; slows attack speed |

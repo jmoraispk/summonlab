@@ -591,7 +591,7 @@ describe('skill taxonomy migration inventory', () => {
 		);
 	});
 
-	it('records deleted Wood rows and deferred Wind rewrite targets without rewriting source provenance', async () => {
+	it("records retired Elemental dispositions and defers Sunfall's alignment rider without rewriting source provenance", async () => {
 		const ledger = JSON.parse(
 			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
 		) as SkillMigrationLedger;
@@ -600,6 +600,16 @@ describe('skill taxonomy migration inventory', () => {
 		const attunement = ledger.records.find(
 			(record) => record.sourceId === 'magical-disciplines.md#enchantment:12'
 		);
+		const sunfall = ledger.records.find(
+			(record) => record.sourceId === 'magical-evocation.md#evocation-fire:18'
+		);
+		const elementalRows = parseTargetSkillRows([
+			{
+				sourcePath: 'docs/wiki/mechanics/skills/magical-elemental.md',
+				source: await readFile('docs/wiki/mechanics/skills/magical-elemental.md', 'utf8')
+			}
+		]);
+		const publishedSunfall = elementalRows.find((row) => row.name === 'Sunfall');
 
 		expect(woodRows).toHaveLength(18);
 		expect(
@@ -626,6 +636,24 @@ describe('skill taxonomy migration inventory', () => {
 			effect: "Grants an ally the hero's affinity temporarily at reduced Resonance",
 			replacementEffect: "Grants an ally the hero's affinity temporarily at reduced affinity rank."
 		});
+		expect(sunfall).toMatchObject({
+			effect:
+				'A second sun, briefly. Everything unaligned or Metal-aligned in range is simply gone.',
+			target: {
+				domain: 'Magical',
+				family: 'Elemental',
+				skill: 'Sunfall',
+				labels: [{ namespace: 'Element', value: 'Fire' }]
+			},
+			replacementEffect:
+				'A second sun, briefly. Its alignment-specific bonus/rider is deferred to the skill-content owner.'
+		});
+		expect(publishedSunfall).toMatchObject({
+			labels: [{ namespace: 'Element', value: 'Fire' }],
+			effect:
+				'A second sun, briefly. Its alignment-specific bonus/rider is deferred to the skill-content owner.'
+		});
+		expect(publishedSunfall?.effect).not.toMatch(/\b(?:Wind|Metal)-aligned\b/iu);
 	});
 
 	it('requires a published target for non-Metal rows that claim deferred Wind metadata', () => {

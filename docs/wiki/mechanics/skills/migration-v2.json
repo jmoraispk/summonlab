@@ -3419,7 +3419,7 @@
 					}
 				]
 			},
-			"replacementEffect": "A second sun, briefly. Everything unaligned or Wind-aligned in range is simply gone."
+			"replacementEffect": "A second sun, briefly. Its alignment-specific bonus/rider is deferred to the skill-content owner."
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:1",
