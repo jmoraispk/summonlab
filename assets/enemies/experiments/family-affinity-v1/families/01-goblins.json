@@ -36,6 +36,7 @@
 			"counterplaySignal": "A fuse spits bright sparks from flask to weapon or lootworks station before ignition; cutting that cord or breaking the clearly mounted fuel flask cancels the empowered action.",
 			"forbidden": [
 				"Uniform orange recolor without fuel-bearing construction changes",
+				"Glow-only fire treatment without visible fuel, combustion hardware, or heat response",
 				"Fire made from the Goblin's flesh rather than scavenged fuel and equipment",
 				"Clean forged flame armor that no longer reads as stolen scrap"
 			]
@@ -48,6 +49,7 @@
 			"counterplaySignal": "Taut support ropes and pale fracture seams appear at the loaded edge before an anchored action; severing a rope or striking the seam collapses the brace and opens the Goblin's back.",
 			"forbidden": [
 				"Brown recolor without masonry, load, or locomotion changes",
+				"Glow-only earth treatment without masonry, load-bearing structure, or fracture behavior",
 				"Seamless noble stone armor that conceals scavenged bindings",
 				"Permanent rock anatomy that erases the wiry Goblin silhouette"
 			]
@@ -60,6 +62,7 @@
 			"counterplaySignal": "Cloth and tow-lines pull fully taut toward the intended lane before pressure releases; stepping out of that lane or cutting the loaded line leaves the Goblin overextended.",
 			"forbidden": [
 				"Pale recolor without sail, rigging, pressure, or motion changes",
+				"Glow-only wind treatment without sail rigging, directional pressure, or driven motion",
 				"Featureless air bodies or floating anatomy",
 				"Omnidirectional wind effects that hide the attack lane"
 			]
@@ -72,6 +75,7 @@
 			"counterplaySignal": "A reservoir visibly swells and its valve chatters before a pressure action; opening the valve or puncturing the marked tank drains the attack and leaves slick equipment too heavy to brace.",
 			"forbidden": [
 				"Blue recolor or shapeless water body without reservoirs and flow paths",
+				"Glow-only water treatment without reservoirs, coherent flow, or wet-surface response",
 				"Dry equipment emitting water from nowhere",
 				"Opaque spray that conceals the Goblin silhouette or counterplay valve"
 			]

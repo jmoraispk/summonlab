@@ -175,6 +175,12 @@ describe('family affinity production schemas', () => {
 				primaryArchetype: 'Warren Lootworks Monarch (Sovereign)'
 			}
 		]);
+
+		for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+			expect(packet.affinityThemes[affinity].forbidden, `${affinity} glow shortcut`).toEqual(
+				expect.arrayContaining([expect.stringMatching(/glow-only/iu)])
+			);
+		}
 	});
 
 	it('parses a complete five-form family packet', () => {
