@@ -31,6 +31,12 @@ type MarkdownFile = {
 	entry: CatalogEntry;
 };
 
+type DualDefinition = {
+	name: string;
+	parents: string[];
+	status: string;
+};
+
 const requiredBaseNames = BASE_AFFINITIES.join(', ');
 const requiredDualNames = DUAL_AFFINITIES.map(({ name }) => name).join(', ');
 const requiredEdges = OVERCOMING_EDGES.map(([from, to]) => `${from}>${to}`).join(', ');
@@ -78,6 +84,33 @@ function namesInCanonicalTables(source: string, header: string): string[] {
 			.flatMap((table) => table.slice(1).map((row) => row[0] ?? ''))
 			.filter(Boolean)
 	);
+}
+
+function text(cell: string): string {
+	return cell.replace(/\*+/gu, '').trim();
+}
+
+function dualDefinitionsInCanonicalTables(source: string): DualDefinition[] {
+	return tableRows(source).flatMap((table) => {
+		const headers = table[0]?.map((header) => text(header).toLowerCase()) ?? [];
+		const nameIndex = headers.indexOf('dual');
+		const parentsIndex = headers.indexOf('from');
+		const statusIndex = headers.indexOf('status');
+		if (nameIndex === -1 || parentsIndex === -1 || statusIndex === -1) return [];
+		return table.slice(1).map((row) => ({
+			name: text(row[nameIndex] ?? ''),
+			parents: text(row[parentsIndex] ?? '')
+				.split(/\s*(?:×|✕|x)\s*/iu)
+				.filter(Boolean),
+			status: text((row[statusIndex] ?? '').split(/[—–-]/u)[0] ?? '')
+		}));
+	});
+}
+
+function dualSummary(definitions: readonly DualDefinition[]): string {
+	return definitions
+		.map(({ name, parents, status }) => `${name} (${parents.join(' × ')}, ${status})`)
+		.join(', ');
 }
 
 function cycleEdges(source: string): string[] | undefined {
@@ -197,7 +230,9 @@ async function immutableSkillSourceFindings(root: string): Promise<string[]> {
 				: undefined;
 		const targetSource = JSON.stringify(target ?? {});
 		const targetUsesRetiredTerm =
-			(term === 'Resonance' && !/\baffinity rank\b/iu.test(targetSource)) ||
+			(term === 'Resonance' &&
+				(/\bresonance\b/iu.test(targetSource) ||
+					!/\b(?:affinity rank|resonant)\b/iu.test(targetSource))) ||
 			(term === 'Wood affinity' && /\bWood\b/iu.test(targetSource)) ||
 			(term === 'Metal affinity' && /\bMetal\b/iu.test(targetSource));
 		if (targetUsesRetiredTerm) {
@@ -237,13 +272,17 @@ export async function validateAffinityWiki(root: string): Promise<string[]> {
 	const catalogPath = path.join(root, catalogRelativePath);
 	const catalogSource = await existingSource(catalogPath);
 	let entries: CatalogEntry[] = [];
-	if (catalogSource) {
-		try {
-			const catalog = JSON.parse(catalogSource) as { entries?: unknown };
-			entries = Array.isArray(catalog.entries) ? (catalog.entries as CatalogEntry[]) : [];
-		} catch {
-			entries = [];
+	if (!catalogSource) {
+		return [`${catalogRelativePath}: required wiki catalog is missing.`];
+	}
+	try {
+		const catalog = JSON.parse(catalogSource) as { entries?: unknown };
+		if (!Array.isArray(catalog.entries)) {
+			return [`${catalogRelativePath}: required wiki catalog has malformed entries structure.`];
 		}
+		entries = catalog.entries as CatalogEntry[];
+	} catch {
+		return [`${catalogRelativePath}: required wiki catalog contains malformed JSON.`];
 	}
 
 	const markdownFiles: MarkdownFile[] = [];
@@ -268,29 +307,64 @@ export async function validateAffinityWiki(root: string): Promise<string[]> {
 		if (monsterFinding) findings.push(monsterFinding);
 	}
 
-	const canonical = markdownFiles.find(
-		(file) => file.entry.wikiId === 'mechanics.progression.affinities'
+	const canonicalEntry = entries.find(
+		(entry) => entry.wikiId === 'mechanics.progression.affinities'
 	);
-	if (canonical) {
-		const baseNames = namesInCanonicalTables(canonical.source, 'Affinity');
-		if (!sameSet(baseNames, BASE_AFFINITIES)) {
-			findings.push(
-				`${canonical.relativePath}: canonical base table must contain exactly ${requiredBaseNames}; found ${baseNames.join(', ') || 'none'}.`
-			);
-		}
-		const dualNames = namesInCanonicalTables(canonical.source, 'Dual');
-		const expectedDualNames = DUAL_AFFINITIES.map(({ name }) => name);
-		if (!sameSet(dualNames, expectedDualNames)) {
-			findings.push(
-				`${canonical.relativePath}: canonical dual table must contain exactly ${requiredDualNames}; found ${dualNames.join(', ') || 'none'}.`
-			);
-		}
-		const edges = cycleEdges(canonical.source);
-		const expectedEdges = OVERCOMING_EDGES.map(([from, to]) => `${from}>${to}`);
-		if (!edges || !sameSet(edges, expectedEdges)) {
-			findings.push(
-				`${canonical.relativePath}: overcoming cycle must contain exactly ${requiredEdges}; found ${edges?.join(', ') || 'none'}.`
-			);
+	if (!canonicalEntry) {
+		findings.push(
+			`${catalogRelativePath}: required canonical affinity entry "mechanics.progression.affinities" is missing.`
+		);
+	} else if (typeof canonicalEntry.path !== 'string' || !canonicalEntry.path.endsWith('.md')) {
+		findings.push(
+			`${catalogRelativePath}: required canonical affinity entry "mechanics.progression.affinities" requires a Markdown path.`
+		);
+	} else {
+		const canonical = markdownFiles.find((file) => file.entry === canonicalEntry);
+		if (!canonical) {
+			findings.push(`${canonicalEntry.path}: required canonical affinity page is missing.`);
+		} else {
+			const baseNames = namesInCanonicalTables(canonical.source, 'Affinity');
+			if (!sameSet(baseNames, BASE_AFFINITIES)) {
+				findings.push(
+					`${canonical.relativePath}: canonical base table must contain exactly ${requiredBaseNames}; found ${baseNames.join(', ') || 'none'}.`
+				);
+			}
+			const dualDefinitions = dualDefinitionsInCanonicalTables(canonical.source);
+			const dualNames = unique(dualDefinitions.map(({ name }) => name));
+			const expectedDualNames = DUAL_AFFINITIES.map(({ name }) => name);
+			if (!sameSet(dualNames, expectedDualNames)) {
+				findings.push(
+					`${canonical.relativePath}: canonical dual table must contain exactly ${requiredDualNames}; found ${dualNames.join(', ') || 'none'}.`
+				);
+			} else {
+				const expectedDefinitions = DUAL_AFFINITIES.map(({ name, parents, status }) => ({
+					name,
+					parents: [...parents],
+					status
+				}));
+				const definitionsMatch =
+					dualDefinitions.length === expectedDefinitions.length &&
+					expectedDefinitions.every((expected) => {
+						const actual = dualDefinitions.find(({ name }) => name === expected.name);
+						return (
+							actual?.status === expected.status &&
+							actual.parents.length === expected.parents.length &&
+							actual.parents.every((parent, index) => parent === expected.parents[index])
+						);
+					});
+				if (!definitionsMatch) {
+					findings.push(
+						`${canonical.relativePath}: canonical dual definitions must match ${dualSummary(expectedDefinitions)}; found ${dualSummary(dualDefinitions)}.`
+					);
+				}
+			}
+			const edges = cycleEdges(canonical.source);
+			const expectedEdges = OVERCOMING_EDGES.map(([from, to]) => `${from}>${to}`);
+			if (!edges || !sameSet(edges, expectedEdges)) {
+				findings.push(
+					`${canonical.relativePath}: overcoming cycle must contain exactly ${requiredEdges}; found ${edges?.join(', ') || 'none'}.`
+				);
+			}
 		}
 	}
 

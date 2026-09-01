@@ -47,14 +47,14 @@ Overcoming: Earth → Water → Fire → Wind → Earth.
 
 ## 2.10 Dual affinities
 
-| Dual | Status |
-| --- | --- |
-| Mist | Shroud |
-| Lightning | Shock |
-| Sand | Abrade |
-| Rot | Decay |
-| Magma | Melt |
-| Ice | Freeze |
+| Dual | From | Status |
+| --- | --- | --- |
+| Mist | Water ✕ Fire | Shroud |
+| Lightning | Fire ✕ Wind | Shock |
+| Sand | Wind ✕ Earth | Abrade |
+| Rot | Earth ✕ Water | Decay |
+| Magma | Fire ✕ Earth | Melt |
+| Ice | Water ✕ Wind | Freeze |
 `;
 
 const catalog = (entries: unknown[]) =>
@@ -141,7 +141,7 @@ describe('active wiki affinity contract', () => {
 			'docs/wiki/catalog.json': catalog([canonicalEntry]),
 			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage
 				.replace('| Water | Chill |', '| Wood | Bind |')
-				.replace('| Ice | Freeze |', '| Steam | Scald |')
+				.replace('| Ice | Water ✕ Wind | Freeze |', '| Steam | Water ✕ Wind | Scald |')
 				.replace('Earth → Water → Fire → Wind → Earth', 'Earth → Fire → Water → Wind → Earth')
 		});
 
@@ -149,6 +149,45 @@ describe('active wiki affinity contract', () => {
 			'docs/wiki/mechanics/progression/affinities.md: canonical base table must contain exactly Fire, Earth, Wind, Water; found Fire, Earth, Wind, Wood.',
 			'docs/wiki/mechanics/progression/affinities.md: canonical dual table must contain exactly Mist, Lightning, Sand, Rot, Magma, Ice; found Mist, Lightning, Sand, Rot, Magma, Steam.',
 			'docs/wiki/mechanics/progression/affinities.md: overcoming cycle must contain exactly Earth>Water, Water>Fire, Fire>Wind, Wind>Earth; found Earth>Fire, Fire>Water, Water>Wind, Wind>Earth.'
+		]);
+	});
+
+	it('reports changed dual parents and statuses in the canonical dual table', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage
+				.replace('Water ✕ Fire | Shroud', 'Fire ✕ Water | Drench')
+				.replace('Water ✕ Wind | Freeze', 'Water ✕ Earth | Freeze')
+		});
+
+		expect(await validateAffinityWiki(root)).toContain(
+			'docs/wiki/mechanics/progression/affinities.md: canonical dual definitions must match Mist (Water × Fire, Shroud), Lightning (Fire × Wind, Shock), Sand (Wind × Earth, Abrade), Rot (Earth × Water, Decay), Magma (Fire × Earth, Melt), Ice (Water × Wind, Freeze); found Mist (Fire × Water, Drench), Lightning (Fire × Wind, Shock), Sand (Wind × Earth, Abrade), Rot (Earth × Water, Decay), Magma (Fire × Earth, Melt), Ice (Water × Earth, Freeze).'
+		);
+	});
+
+	it('reports absent, malformed, and incomplete canonical catalog structure', async () => {
+		const missingCatalog = await fixture({});
+		expect(await validateAffinityWiki(missingCatalog)).toEqual([
+			'docs/wiki/catalog.json: required wiki catalog is missing.'
+		]);
+
+		const malformedCatalog = await fixture({ 'docs/wiki/catalog.json': '{' });
+		expect(await validateAffinityWiki(malformedCatalog)).toEqual([
+			'docs/wiki/catalog.json: required wiki catalog contains malformed JSON.'
+		]);
+
+		const missingCanonicalEntry = await fixture({
+			'docs/wiki/catalog.json': catalog([])
+		});
+		expect(await validateAffinityWiki(missingCanonicalEntry)).toEqual([
+			'docs/wiki/catalog.json: required canonical affinity entry "mechanics.progression.affinities" is missing.'
+		]);
+
+		const missingCanonicalPage = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry])
+		});
+		expect(await validateAffinityWiki(missingCanonicalPage)).toEqual([
+			'docs/wiki/mechanics/progression/affinities.md: required canonical affinity page is missing.'
 		]);
 	});
 
@@ -203,5 +242,47 @@ describe('active wiki affinity contract', () => {
 		expect(await validateAffinityWiki(root)).toEqual([
 			'docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json: immutable skill-source exception for legacy:1 is invalid because its migration target retains "Wood affinity".'
 		]);
+	});
+
+	it('rejects Resonance in a migration target even when it also mentions affinity rank', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json': JSON.stringify([
+				{ sourceId: 'legacy:1', effect: 'Reduced Resonance' }
+			]),
+			'docs/wiki/mechanics/skills/migration-v2.json': JSON.stringify({
+				records: [
+					{
+						sourceId: 'legacy:1',
+						target: { replacementEffect: 'Reduced Resonance at affinity rank' }
+					}
+				]
+			})
+		});
+
+		expect(await validateAffinityWiki(root)).toEqual([
+			'docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json: immutable skill-source exception for legacy:1 is invalid because its migration target retains "Resonance".'
+		]);
+	});
+
+	it('allows current Resonant terminology in a non-rendered migration target', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json': JSON.stringify([
+				{ sourceId: 'legacy:1', effect: 'Reduced Resonance' }
+			]),
+			'docs/wiki/mechanics/skills/migration-v2.json': JSON.stringify({
+				records: [
+					{
+						sourceId: 'legacy:1',
+						target: { replacementEffect: 'Resonant threshold' }
+					}
+				]
+			})
+		});
+
+		expect(await validateAffinityWiki(root)).toEqual([]);
 	});
 });
