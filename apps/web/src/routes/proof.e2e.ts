@@ -28,6 +28,37 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 	expect(left.storyBranch).toBe(right.storyBranch);
 });
 
+test('uses honest non-character states when a generated hero has no approved art', async ({
+	page
+}) => {
+	const created = await page.request.post('/api/runs', {
+		data: {
+			recipe: { ...emberRecipe, seed: 'unpainted-proof' },
+			controlMode: 'random',
+			directive: ''
+		}
+	});
+	expect(created.status()).toBe(201);
+	const { runId } = (await created.json()) as { runId: string };
+
+	await page.goto(`/summon/${runId}`);
+	await expect(page.getByTestId('hero-art-placeholder')).toHaveAttribute(
+		'aria-label',
+		/portrait pending$/u
+	);
+
+	await page.goto(`/play/${runId}`);
+	await expect(page.getByTestId('hero-art-placeholder')).toHaveCount(2);
+	await expect(page.getByTestId('living-settlement')).toBeVisible({ timeout: 6_000 });
+	await expect(page.getByTestId('settlement-occupant')).toBeVisible();
+
+	await page.goto(`/mission/${runId}`);
+	await expect(page.getByTestId('hero-art-placeholder')).toHaveAttribute(
+		'aria-label',
+		/portrait pending$/u
+	);
+});
+
 test('forges, summons, directs, and follows one persistent hero', async ({ page }) => {
 	test.setTimeout(60_000);
 	const created = await page.request.post('/api/runs', {

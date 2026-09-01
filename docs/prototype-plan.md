@@ -1,5 +1,10 @@
 # Capable prototype plan
 
+> **Historical planning document:** ADR 0065 supersedes every procedural or modular character-rig
+> recommendation below. Current product work uses approved authored hero art; missing art is shown
+> as a non-character pending or location marker. Engine, simulation, and product-scope guidance is
+> preserved as historical context.
+
 ## The product bet
 
 Build the smallest version of Summonlab that can produce a story the developers did not write.
@@ -160,7 +165,7 @@ Build a developer-facing `/forge` route before building a large roster. It shoul
 3. show front, three-quarter, profile, and full-body views;
 4. allow any field to be locked while the rest rerolls;
 5. test expressions, injuries, outfits, and lighting;
-6. export the manifest, portrait reference, palette, and rig recipe;
+6. export the manifest, approved portrait reference, palette, and presentation recipe;
 7. render a grid of 50–100 seeds to expose sameness or bias.
 
 The Forge is how the project discovers its character language. It is not a player-facing face editor.

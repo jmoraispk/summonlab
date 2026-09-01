@@ -70,7 +70,9 @@ const appKey = entryKeyByName('entry/app');
 const layoutKey = await routeNodeKey('src/routes/+layout.svelte');
 const homeKey = await routeNodeKey('src/routes/+page.svelte');
 const runtimeKey = await routeNodeKey('src/routes/visual-lab/runtime-bundles/+page.svelte');
-const recognitionKey = await routeNodeKey('src/routes/visual-lab/recognition/+page.svelte');
+// The published evidence key keeps its v1 compatibility name; it now measures the canonical
+// authored-art continuity lab after the dedicated procedural recognition route was retired.
+const recognitionKey = await routeNodeKey('src/routes/visual-lab/+page.svelte');
 const settlementRouteKey = await routeNodeKey('src/routes/settlement-lab/+page.svelte');
 const missionPackageKey = await routeNodeKey('src/routes/mission-lab/+page.svelte');
 const missionLifecycleKey = await routeNodeKey('src/routes/mission/[runId]/+page.svelte');

@@ -6,7 +6,6 @@
 	import remyContinuity from '../../../../../assets/heroes/visuals/hearth-02-continuity-v1.png';
 	import rosterPair from '../../../../../assets/heroes/visuals/hearth-roster-pair-v1.png';
 	import settlementScale from '../../../../../assets/heroes/visuals/hearth-settlement-scale-v1.png';
-	import HeroRig from '$lib/components/HeroRig.svelte';
 	import type { VisualReviewRecord, VisualReviewVerdict } from '@summonlab/contracts';
 
 	let { data } = $props();
@@ -49,13 +48,6 @@
 		data.catalog.assets.find((asset) => asset.assetKey === reviewAssetKey)!
 	);
 	const currentReview = $derived(reviewHistory.latestByAsset[reviewAssetKey] ?? null);
-	const rigStates = [
-		{ label: 'Neutral', expression: 'neutral', equipment: 'none', palette: 'base' },
-		{ label: 'Night watch', expression: 'alert', equipment: 'short-bow', palette: 'night' },
-		{ label: 'Training', expression: 'exertion', equipment: 'practice-blade', palette: 'base' },
-		{ label: 'Injured', expression: 'injured', equipment: 'practice-blade', palette: 'injured' }
-	] as const;
-
 	async function submitReview() {
 		if (!reviewNote.trim() || !reviewer.trim() || reviewBusy) return;
 		reviewBusy = true;
@@ -104,7 +96,6 @@
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
 		<div><span>Phase 3</span><strong>Visual continuity lab</strong></div>
 		<nav aria-label="Visual lab links">
-			<a href={resolve('/visual-lab/recognition')}>Recognition audit</a>
 			<a href={resolve('/visual-lab/summon-card')}>Summon-card request</a>
 			<a href={resolve('/visual-lab/runtime-bundles')}>Runtime bundles</a>
 			<a href={resolve('/forge/contact-sheet')}>100-seed sheet</a>
@@ -293,34 +284,6 @@
 			<div class="limited"><span>Face</span><strong>not claimed at this scale</strong></div>
 		</div>
 		<p class="scale-note">{settlementAsset.productionNote}</p>
-	</section>
-
-	<section class="runtime-rig">
-		<header class="section-heading">
-			<div>
-				<p class="eyebrow">Code-native runtime layers</p>
-				<h2>One rig, state applied</h2>
-			</div>
-			<strong>expression + anchor + palette</strong>
-		</header>
-		<div class="rig-grid" data-testid="runtime-rig-states">
-			{#each rigStates as state (state.label)}
-				<article>
-					<HeroRig
-						manifest={selected.manifest}
-						profile={selectedProfile}
-						expression={state.expression}
-						equipment={state.equipment}
-						paletteMode={state.palette}
-						walking={state.label === 'Night watch'}
-						compact
-					/>
-					<div>
-						<span>{state.label}</span><code>{state.expression} · {state.equipment}</code>
-					</div>
-				</article>
-			{/each}
-		</div>
 	</section>
 
 	<section class="ledger">
@@ -522,7 +485,6 @@
 	.identity,
 	.continuity,
 	.settlement,
-	.runtime-rig,
 	.ledger,
 	.review-gate,
 	.questions {
@@ -610,7 +572,6 @@
 	.identity,
 	.continuity,
 	.settlement,
-	.runtime-rig,
 	.ledger,
 	.review-gate {
 		padding: clamp(3rem, 6vw, 6rem) clamp(1.2rem, 3vw, 3rem);
@@ -864,39 +825,6 @@
 		font-size: 0.65rem;
 		line-height: 1.6;
 	}
-	.rig-grid {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 1px;
-		background: rgba(255, 255, 255, 0.08);
-	}
-	.rig-grid article {
-		min-width: 0;
-		padding: 1rem;
-		background:
-			radial-gradient(circle at 50% 35%, rgba(67, 78, 130, 0.22), transparent 60%), #090b11;
-	}
-	.rig-grid article > :global(figure) {
-		max-height: 24rem;
-		margin: 0 auto;
-	}
-	.rig-grid article > div {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.5rem;
-		padding-top: 0.7rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.07);
-	}
-	.rig-grid span {
-		font:
-			400 0.78rem Georgia,
-			serif;
-	}
-	.rig-grid code {
-		color: #6e919a;
-		font-size: 0.48rem;
-	}
 	.asset-table {
 		border: 1px solid rgba(255, 255, 255, 0.09);
 	}
@@ -1133,9 +1061,6 @@
 			min-height: 42rem;
 		}
 		.recognition {
-			grid-template-columns: 1fr 1fr;
-		}
-		.rig-grid {
 			grid-template-columns: 1fr 1fr;
 		}
 		.review-grid {

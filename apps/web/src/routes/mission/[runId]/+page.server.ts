@@ -9,6 +9,8 @@ import { getEngineReplay, getProofRun } from '@summonlab/database';
 import { supportsMissionApi } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
+import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -40,6 +42,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	return {
 		report,
 		proof,
+		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {
 			isPortal,
 			isAftermath,

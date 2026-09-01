@@ -1,5 +1,8 @@
 # Character Pack 2 production plan
 
+> **Presentation update:** ADR 0065 retires the procedural character renderer described in this
+> completed plan. Candidate and approved authored art remain; missing art is shown as pending.
+
 > Variation revision: the accepted face/clothing feedback and the grade 1–10 monster extension are
 > implemented in [Character Pack 2 variation and monster-grade revision](character-pack-2-variation-revision.md).
 >

@@ -85,7 +85,7 @@
 		<nav aria-label="Settlement lab links">
 			<a href={resolve('/mission-lab')}>Mission lab</a>
 			<a href={resolve('/forge')}>Forge</a>
-			<a href={resolve('/visual-lab/recognition')}>Recognition</a>
+			<a href={resolve('/visual-lab')}>Visual continuity</a>
 			<a href={resolve('/design-reference')}>Design reference</a>
 		</nav>
 	</header>

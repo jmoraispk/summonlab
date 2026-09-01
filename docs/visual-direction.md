@@ -119,7 +119,7 @@ A reproducible visual seed controls body proportions, face, skin, hair, eyes, ag
 
 Temperament affects animation timing and posture tendencies without freezing one expression onto the character. Culture affects gesture, naming, clothing, and ornament separately from inherited appearance.
 
-Build a developer-facing Character Forge before producing a large cast. It must render seed grids, lock individual fields, compare front/profile/full-body views, test expressions and outfits, and export a canonical physical manifest plus rig recipe. Generated summon cards and cinematic images use that manifest and approved reference views; they never redefine the character.
+Build a developer-facing Character Forge before producing a large cast. It must render seed grids, lock individual fields, compare front/profile/full-body views, test expressions and outfits, and export a canonical physical manifest plus an approved presentation reference. Generated summon cards and cinematic images use that manifest and approved reference views; they never redefine the character.
 
 ### Camera hierarchy
 
@@ -175,8 +175,8 @@ Agent latency becomes a short focus animation, not an endless spinner. Show “c
 | Layer | Technique | Use |
 | --- | --- | --- |
 | Interface geometry | SVG and CSS | Tower bands, stars, pity, habits, legal paths |
-| Character portraits | Layered raster or 2D rig | Gaze, breathing, speech, posture, injury |
-| World characters | Sprite sheets or compact rigs | Work, travel, training, combat, social contact |
+| Character portraits | Approved layered raster | Gaze, breathing, speech, posture, injury |
+| World characters | Approved authored sprites or cutouts | Work, travel, training, combat, social contact |
 | Environment | Layered raster scenes | Day/night, fire, weather, construction, damage |
 | Dense effects | Canvas or WebGL | Gate particles, magic, portal fields, crowds |
 | Cinematic accents | Camera and compositing | Summon, promotion, boss gate, death, synthesis |
@@ -209,7 +209,7 @@ The current prototype intentionally uses code-native geometry and interface moti
 
 - one painted settlement diorama with day and night states;
 - one monumental tower cutaway;
-- three modular human portrait rigs;
+- three approved premium hero identity packets;
 - five building activity loops;
 - one portal-world environment;
 - one deterministic monster family;

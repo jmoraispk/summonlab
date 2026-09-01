@@ -323,14 +323,9 @@ candidates are visible in the ledger but produce no runtime files. The build gat
 of initial JavaScript and 296.9 KB with the renderer inspector fully loaded, both gzip and below the
 700 KB ceiling.
 
-`/visual-lab/recognition` stress-tests that approved identity through seven deterministic cases:
-every Mara expression, all five camera tiers, equipment, gait, night color, and localized injury.
-The 390×844/2× profile proves 1.33× or better texture-density margin, 47.8 KB encoded transfer, and a
-5.51 MB decoded-RGBA proxy. The audit route is 44.5 KB gzip and measures live animation and
-case-switch response. Its review console requires an explicit outcome for every claimed cue and
-stores append-only case evidence against the exact audit hash. Recognition evidence remains
-separate from asset approval, so the verdict deliberately stays human-pending until the seven cases
-are reviewed.
+The visual lab keeps recognition review attached to authored anchor, continuity, and settlement
+images. The earlier procedural seven-case renderer route is retired by ADR 0065; its checked audit
+record remains historical evidence and recognition decisions remain separate from asset approval.
 
 ![Visual continuity lab](docs/evidence/phase-3-visual-lab.png)
 

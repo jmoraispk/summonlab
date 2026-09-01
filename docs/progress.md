@@ -41,7 +41,7 @@ Status: **complete** on 2026-08-23.
 | Task | Result | Evidence |
 | --- | --- | --- |
 | `POL-001` | Versioned generator with separate identity, body, features, styling, mind, and rarity cursors; canonical JSON and SHA-256 manifest hash | `@summonlab/characters` deterministic and 100-seed tests |
-| `POL-002` | One original Mara Vey anchor plus a manifest-driven layered SVG rig with walking motion | `assets/heroes/ember-01-anchor-v1.*`, `HeroRig.svelte` |
+| `POL-002` | Historical prototype: one original Mara Vey anchor plus a manifest-driven layered SVG renderer; the renderer was retired by ADR 0065 | `assets/heroes/ember-01-anchor-v1.*`, ADR 0065 |
 | `POL-003` | `/forge` cohort grid, custom seed, six lock channels, reroll counters, adult physicality, personality, habit, and provenance | [Forge evidence](evidence/phase-1-forge.png) |
 | `POL-004` | Full-screen first-person gate, staged seal/reveal/manifest beat, clean-slate observation, and original hero close-up | [Summon evidence](evidence/phase-1-summon.png) |
 | `POL-005` | Trait-scored scripted policy, directive influence, seeded-random policy, and four orchestration modes | Unit and browser replay tests |
@@ -130,12 +130,12 @@ Status: **in progress**. The first visual approval checkpoint completed on 2026-
 | --- | --- | --- |
 | `ART-001` | Production art bible fixes palette, line/value/material rules, camera tiers, continuity contract, motion, and approval rubric | [Art bible](art-bible.md) |
 | `ART-002` | `human-v2` preserves `human-v1` bytes while adding deterministic physiology; `human-v3` preserves both older versions while expanding names through an isolated stream; 1,000-seed diversity and 100-seed visible cohort coverage | Character generator, unit tests, and [contact sheet evidence](evidence/phase-3-contact-sheet.png) |
-| `ART-003` | Separate visual profiles drive identity locks, expression states, normalized equipment/injury anchors, and base/night/injured palette swaps in the code-native runtime rig | `CharacterVisualProfileSchema`, asset catalog, and `HeroRig.svelte` |
+| `ART-003` | Visual profiles retain identity locks and authored-state metadata; procedural character presentation was retired by ADR 0065 | `CharacterVisualProfileSchema`, asset catalog, and ADR 0065 |
 | `ART-004` | Complete: `/visual-lab` compares assets and records append-only accept/revise notes against exact hashes; `/forge/contact-sheet` prints or downloads a deterministic 100-seed audit; CI verifies source bytes and stale-hash rejection | [Visual lab evidence](evidence/phase-3-visual-lab.png), [contact sheet evidence](evidence/phase-3-contact-sheet.png), ADR 0006 |
 | `ART-005` | Two of twelve representative original humans: Mara Vey and Remy Nahl | Anchor and continuity assets under `assets/heroes/visuals` |
 | `ART-006` | Complete: `/visual-lab/summon-card` previews a deterministic manifest-authored image-edit request; paid execution is development-only, one-candidate, cost-acknowledged, no-retry, hash-verified, ephemeral, and non-canonical | [Summon-card lab evidence](evidence/phase-3-summon-card-lab.png), ADR 0007, provider-mock and browser tests |
 | `ART-007` | Complete: approved source assets export as purpose-sized, content-addressed WebP files plus a PixiJS v8 manifest; exact re-encoding and asset/build budgets run in `pnpm check`, while five candidates remain deferred | [Runtime bundle evidence](evidence/phase-3-runtime-bundles.png), [budget report](evidence/phase-3-runtime-budget.json), ADR 0008 |
-| `ART-008` | In progress: a hash-bound seven-case audit covers every approved Mara expression, all five camera tiers, equipment, gait, injury, and a 390×844/2× phone profile; an append-only review console records every claimed cue against the exact audit while keeping recognition separate from asset approval | [Mobile recognition evidence](evidence/phase-3-recognition-mobile.png), [recognition audit](../assets/heroes/visuals/recognition-audit.json), ADRs 0009–0010 |
+| `ART-008` | Historical evidence: a hash-bound seven-case procedural audit covered Mara expressions, camera tiers, equipment, gait, injury, and a 390×844/2× phone profile; ADR 0065 retired that renderer and console while preserving the audit record | [Mobile recognition evidence](evidence/phase-3-recognition-mobile.png), [recognition audit](../assets/heroes/visuals/recognition-audit.json), ADRs 0009–0010 and 0065 |
 
 The image-generation skill produced the five new approval candidates through the built-in path. The
 catalog stores the final normalized prompt set, input references, dimensions, bytes, content hashes,
@@ -158,17 +158,16 @@ anchor, add optional direction, and rebuild the outbound request without making 
 Paid execution remains disabled until a local developer explicitly enables it and supplies a key.
 Open `http://localhost:5173/visual-lab/runtime-bundles` to compare the approved Mara anchor at
 summon, dialogue, and roster sizes and verify that PixiJS loads it through the checked-in alias.
-Open `http://localhost:5173/visual-lab/recognition` at desktop or phone width, switch all seven
-cases, mark every required cue pass or fail at its actual CSS scale, add a short observation, and
-record the hash-bound case verdict. The page preserves append-only review history and reports live
-frame/input observations while keeping recognition evidence separate from asset approval.
+The former procedural recognition route is retired. Review authored anchor, continuity, and
+settlement-scale images in `/visual-lab`; historical seven-case evidence remains preserved but is
+not a current interactive approval surface.
 
 ## Next active slice
 
 Collect feedback on specificity, cross-view identity, rendering style, settlement character scale,
-summon-card composition/prompt, and compressed runtime fidelity. Record all seven Mara case reviews
-in the recognition console. Do not promote Remy, manufacture a machine approval, or generate the
-remaining ten representative humans before the human visual gate.
+summon-card composition/prompt, and compressed runtime fidelity using authored images in the visual
+lab. Do not promote Remy, manufacture a machine approval, or generate the remaining ten
+representative humans before the human visual gate.
 
 ## Phase 4 — living settlement
 

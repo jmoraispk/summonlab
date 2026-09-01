@@ -7,7 +7,7 @@ medieval expansion is defined by the [Character Pack 2 art-direction contract](c
 
 This document converts the broader [visual direction](visual-direction.md) into production rules. It
 applies to original human characters, classic enemy families, the Character Forge, settlement
-scenes, dialogue, summon cards, and later rig exports. The current review pair is Mara Vey and Remy Nahl in the
+scenes, dialogue, summon cards, and later runtime exports. The current review pair is Mara Vey and Remy Nahl in the
 [visual continuity lab](../apps/web/src/routes/visual-lab/+page.svelte).
 
 ## Visual thesis
@@ -98,7 +98,7 @@ archetype.
 | Summon | First-person, near life-size | face, gaze, breath, full silhouette | premium anchor / summon card |
 | Dialogue | Eye-level or over-shoulder, chest-up | face, hair, marks, posture | expression layers and subtle parallax |
 | Roster | Full body or thigh-up group | height, frame, hair, palette, clasp | separated silhouettes and readable relationships |
-| Settlement | Hand-composed 2.5D three-quarter | height, gait, hair mass, cloak/mantle, accent | compact rig or sprite; face is not claimed |
+| Settlement | Hand-composed 2.5D three-quarter | height, gait, hair mass, cloak/mantle, accent | approved authored sprite or cutout; face is not claimed |
 | Mission | Authored third-person arena | silhouette, equipment, stance, action timing | limited tracks and readable consequences |
 
 Free-roaming cameras are out of scope until one courtyard experiment proves they improve embodiment
@@ -139,7 +139,7 @@ or a committed state transition.
 
 ## Settlement environment construction
 
-- Environment plates remain hero-free so character rigs, occupancy, equipment, injury, and actions
+- Environment plates remain hero-free so approved character layers, occupancy, equipment, injury, and actions
   can change without regenerating architecture.
 - A scene plate must match a versioned topology binding. Building labels, hotspots, routes, and
   activity markers remain code-owned layers rather than painted facts.

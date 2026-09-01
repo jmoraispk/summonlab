@@ -3,6 +3,9 @@
 **Status:** Accepted
 **Date:** 2026-08-25
 
+> **Superseded in part:** ADR 0065 replaces the code-native hero fallback described below. The
+> delivery and browser budgets remain accepted.
+
 ## Decision
 
 FIN-005 treats phone performance as two linked evidence classes. Deterministic artifact gates own

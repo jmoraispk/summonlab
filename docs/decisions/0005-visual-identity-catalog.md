@@ -2,6 +2,9 @@
 
 Status: accepted on 2026-08-23.
 
+> **Superseded in part:** ADR 0065 retires procedural character renderers. Versioned identity
+> profiles and the authored-art catalog remain accepted.
+
 ## Context
 
 Character generation, painted anchors, compact rigs, expressions, equipment, injury, roster cards,

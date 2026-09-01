@@ -15,7 +15,8 @@ test('reviews the 18-person Pack 2 cohort at all required scales', async ({ page
 	await page.getByLabel('Approval filter').selectOption('all');
 	await expect(page.getByText('Candidate only')).toBeVisible();
 	await expect(page.getByTestId('pack-two-lineup')).toBeVisible();
-	await expect(page.getByTestId('pack-two-silhouettes').locator('figure')).toHaveCount(18);
+	await expect(page.getByRole('heading', { name: 'Candidate identity lineup' })).toBeVisible();
+	await expect(page.getByTestId('pack-two-identity-lineup').locator('img')).toHaveCount(18);
 	await expect(page.getByTestId('feminine-parity-card')).toHaveCount(6);
 	await expect(page.getByTestId('scale-survival-card')).toHaveCount(18);
 	await expect(page.getByTestId('pack-two-progression')).toBeVisible();

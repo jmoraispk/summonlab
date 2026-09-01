@@ -2,6 +2,9 @@
 
 Status: accepted on 2026-08-24.
 
+> **Historical implementation:** ADR 0065 retires the procedural renderer and interactive route
+> used by this audit. The principle that recognition review remains human-gated is still accepted.
+
 ## Context
 
 The visual catalog records cue scores for source images, but those scores do not prove that a runtime

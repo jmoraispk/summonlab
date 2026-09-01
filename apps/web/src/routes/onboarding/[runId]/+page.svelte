@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import HeroRig from '$lib/components/HeroRig.svelte';
+	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import { trackPlaytestEvent } from '$lib/playtest-analytics';
 
@@ -263,6 +263,14 @@
 								height={portrait.roster.height}
 								alt=""
 							/>
+						{:else}
+							<div
+								class="tab-art-pending"
+								role="img"
+								aria-label={`${hero.draft.manifest.displayName} portrait pending`}
+							>
+								<span aria-hidden="true">✦</span>
+							</div>
 						{/if}
 						<span>0{hero.ordinal}</span>
 						<div>
@@ -288,7 +296,7 @@
 								data-testid="summoned-hero-portrait"
 							/>
 						{:else}
-							<HeroRig manifest={selected.draft.manifest} />
+							<HeroArtPlaceholder name={selected.draft.manifest.displayName} />
 						{/if}
 					{/key}
 				</div>
@@ -641,6 +649,18 @@
 		object-fit: cover;
 		object-position: 50% 14%;
 	}
+	.hero-tabs .tab-art-pending {
+		display: grid;
+		width: 3rem;
+		height: 3.6rem;
+		place-items: center;
+		border: 1px solid rgba(237, 198, 130, 0.24);
+		color: #d5aa59;
+		background: radial-gradient(circle, rgba(213, 170, 89, 0.13), transparent 58%), #090b10;
+	}
+	.hero-tabs .tab-art-pending span {
+		font-size: 1rem;
+	}
 	.hero-tabs button > span {
 		align-self: center;
 		font:
@@ -679,11 +699,6 @@
 		place-items: end center;
 		min-height: 32rem;
 		background: radial-gradient(circle at 50% 65%, rgba(210, 86, 37, 0.24), transparent 44%);
-	}
-	.portrait :global(figure) {
-		width: min(88%, 24rem);
-		margin: 0;
-		filter: drop-shadow(0 1rem 2rem rgba(0, 0, 0, 0.8));
 	}
 	.portrait > img {
 		position: relative;

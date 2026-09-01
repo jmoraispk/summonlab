@@ -15,8 +15,10 @@ test('reviews manifest-backed identity across views and settlement scale', async
 	await expect(page.getByText(/53 kg/)).toBeVisible();
 	await expect(page.getByText('left-handed equipment use')).toBeVisible();
 	await expect(page.getByAltText(/Remy Nahl across front/)).toBeVisible();
-	await expect(page.getByTestId('runtime-rig-states')).toContainText('Night watch');
-	await expect(page.getByTestId('runtime-rig-states')).toContainText('Injured');
+	await expect(page.getByText('Versioned asset ledger')).toBeVisible();
+	await expect(
+		page.getByRole('heading', { name: 'Bind the decision to the pixels.' })
+	).toBeVisible();
 
 	if (process.env.CAPTURE_PHASE3_VISUAL) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE3_VISUAL, fullPage: true });
