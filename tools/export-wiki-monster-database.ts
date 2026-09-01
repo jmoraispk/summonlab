@@ -13,11 +13,13 @@ import {
 	PACK_TWO_MONSTER_FAMILIES
 } from '../packages/content/src/index.js';
 import {
+	assertMonsterVisualIndexProvenance,
 	buildMonsterWikiPage,
 	CURRENT_MONSTER_PRODUCTION_TARGET,
 	LEGACY_MONSTER_VISUAL_STUDIES,
 	matchesContentHash,
 	MONSTER_AFFINITIES,
+	MONSTER_VISUAL_INDEX_SOURCE_STATUS,
 	presentationStatusForVisualStudy,
 	selectCanonicalVariants,
 	type CurrentMonsterAffinity,
@@ -257,7 +259,7 @@ async function writeOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promi
 		`${JSON.stringify(
 			{
 				schemaVersion: 'summonlab-monster-visual-index-v1',
-				sourceStatus: 'producer-candidates',
+				sourceStatus: MONSTER_VISUAL_INDEX_SOURCE_STATUS,
 				monsterCount: monsters.length,
 				affinities: CURRENT_MONSTER_PRODUCTION_TARGET,
 				legacyVisualStudies: LEGACY_MONSTER_VISUAL_STUDIES,
@@ -275,12 +277,14 @@ async function writeOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promi
 async function checkOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promise<void> {
 	const stored = await readJson<{
 		schemaVersion: string;
+		sourceStatus: unknown;
 		monsterCount: number;
 		affinities: readonly CurrentMonsterAffinity[];
 		legacyVisualStudies: readonly string[];
 		sourceVisualLabels: readonly MonsterAffinity[];
 		monsters: MonsterVisualIndexEntry[];
 	}>(visualIndexPath);
+	assertMonsterVisualIndexProvenance(stored);
 	if (stored.schemaVersion !== 'summonlab-monster-visual-index-v1' || stored.monsterCount !== 40) {
 		throw new Error('Monster visual index schema or count is stale');
 	}

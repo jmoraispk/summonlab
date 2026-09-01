@@ -11,6 +11,7 @@ export const CURRENT_MONSTER_PRODUCTION_TARGET = [
 ] as const;
 
 export const LEGACY_MONSTER_VISUAL_STUDIES = ['wood', 'metal'] as const;
+export const MONSTER_VISUAL_INDEX_SOURCE_STATUS = 'producer-candidates' as const;
 
 export type MonsterAffinity = (typeof MONSTER_AFFINITIES)[number];
 export type CurrentMonsterAffinity = (typeof CURRENT_MONSTER_PRODUCTION_TARGET)[number];
@@ -37,6 +38,16 @@ export interface MonsterWikiIdentity {
 	readonly counterplay: string;
 	readonly skills: readonly string[];
 	readonly debutFloor: number | null;
+}
+
+export function assertMonsterVisualIndexProvenance(index: {
+	readonly sourceStatus?: unknown;
+}): void {
+	if (index.sourceStatus !== MONSTER_VISUAL_INDEX_SOURCE_STATUS) {
+		throw new Error(
+			`Monster visual index source status is stale: expected ${MONSTER_VISUAL_INDEX_SOURCE_STATUS}, found ${String(index.sourceStatus)}`
+		);
+	}
 }
 
 function candidateRank(candidate: MonsterVisualCandidate): [number, number] {

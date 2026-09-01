@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	assertMonsterVisualIndexProvenance,
 	buildMonsterWikiPage,
 	CURRENT_MONSTER_PRODUCTION_TARGET,
 	LEGACY_MONSTER_VISUAL_STUDIES,
@@ -27,6 +28,15 @@ const candidate = (
 });
 
 describe('monster wiki database export', () => {
+	it('rejects a visual index tampered to claim runtime-approved provenance', () => {
+		expect(() => assertMonsterVisualIndexProvenance({ sourceStatus: 'runtime-approved' })).toThrow(
+			/expected producer-candidates, found runtime-approved/iu
+		);
+		expect(() =>
+			assertMonsterVisualIndexProvenance({ sourceStatus: 'producer-candidates' })
+		).not.toThrow();
+	});
+
 	it('detects when a source image no longer matches its review-catalog hash', () => {
 		const content = new TextEncoder().encode('bound visual candidate');
 
