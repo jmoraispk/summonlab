@@ -91,11 +91,12 @@ damage = SkillBase
        x (1 - Mitigation)
 ```
 
-The broader draft includes tick-driven action accumulation, the four base affinities, status
-applications, threat, poise, group formations, consumables, kill-sensitive drops, gathering, and
-permanent consequences. Living Village implements only the explanatory seams needed by its
-presentation fixture. Permanent injury, death, recovery time, free-roaming gathering, agentic
-intent, and model narration remain off.
+The broader draft includes tick-driven action accumulation, ten total affinities (four base and six
+dual), status applications, threat, poise, group formations, consumables, kill-sensitive drops,
+gathering, and permanent consequences. Affinity Rank I–V maps directly to monster tiers T1–T5, and
+monsters below T3 should mostly remain Unaligned. Living Village implements only the explanatory
+seams needed by its presentation fixture. Permanent injury, death, recovery time, free-roaming
+gathering, agentic intent, and model narration remain off.
 
 ## Living Village Tower exploration presentation
 

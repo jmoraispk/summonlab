@@ -160,9 +160,7 @@ less than they help a true Novice.
 Every skill declares composable conditions. Higher rarity generally means more conditions rather
 than only larger thresholds.
 
-S-grade requirements use a **minimum affinity rank** wherever a skill carries an infusion. Affinity
-rank replaces the retired Resonance measure; it does not replace mastery or the skill's other
-learning conditions.
+S-grade requirements use a **minimum affinity rank** wherever a skill carries an infusion.
 
 | Condition | Example |
 | --- | --- |

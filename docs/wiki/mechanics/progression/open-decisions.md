@@ -69,6 +69,19 @@ content rather than instructions to repository workers.
 - Dominion radius, tick rate, and whether a field applies inside its owner's party formation.
 - Whether Earth's status remains Weight or becomes Sediment; Weight is the current name.
 
+## Affinity migration tuning retained
+
+- Rot's status is **Decay**, taking over the prior Blight role; the retired Mire status **Sink** has
+  no owner. Magma's **Melt** remains the closest terrain-denial effect.
+- Chill escalates to **torpor**, not Freeze; Freeze remains exclusive to Ice.
+- Earth uses **Weight**; Sediment remains available if accumulation flavour is later wanted.
+- The awakening rate remains deliberately unquantified and needs economy review.
+- The manifestation threshold remains qualitative and needs combat-facing numbers.
+- Dual affinities are intentionally stronger on the wheel than bases, so dual scarcity must remain
+  genuinely high for the base cycle to matter.
+- Dominion still needs rulings for radius, tick rate, and whether it applies inside its owner's
+  party formation.
+
 ## Living Village decisions required before implementation
 
 1. Lock one attribute vocabulary and one Health/Mana/stamina resource model.

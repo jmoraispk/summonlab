@@ -2,9 +2,7 @@
 
 Wiki ID: `mechanics.progression.affinities`
 
-Design status: **accepted supplied design with explicit tuning gaps**. This revision replaces
-the earlier five-element Resonance proposal. Fire, Earth, Wind, and Water are the four base
-affinities; affinity rank is the only affinity progression measure.
+Design status: **accepted supplied design with explicit tuning gaps**.
 
 ## 2.1 What an affinity is
 
@@ -111,7 +109,7 @@ Read only where the attacker's affinity overcomes the defender's. Everywhere els
 
 The grid is **anti-symmetric**: mirror it across the diagonal and every Overwhelming becomes a Reversal and vice versa. Five cells each. Neither state is the privileged one, and neither rank is favoured over the other — the advantage simply follows whoever is further ahead.
 
-Two consequences worth noting. Ranks IV and V can never be reversed by anything on the ladder, since no rank sits two above them from the defender's side of a normal engagement. And Rank III sits at the centre of the grid, triggering nothing and suffering nothing except against a Rank V defender — which makes it the plateau where the cycle behaves exactly as written, and a good default for mid-game content.
+Two consequences worth noting. Ranks III, IV and V can never be reversed by anything on the ladder, since no rank sits two above them from the defender's side of a normal engagement. And Rank III sits at the centre of the grid, triggering nothing and suffering nothing except against a Rank V defender — which makes it the plateau where the cycle behaves exactly as written, and a good default for mid-game content.
 
 ## 2.7 Dominion
 

@@ -42,6 +42,9 @@ inventory, and late-game equipment remain documented but deferred rather than de
 | Stars | Innate endowment at summon and how far it has been nurtured | Born with it; raised with star stones |
 | Levels | Accumulated life-energy of what the hero has killed | Experience, proposed as kills only |
 
+Affinities comprise four base affinities—Fire, Earth, Wind, and Water—and six rare dual
+affinities, for ten total. Unaligned is the absence of affinity, not an eleventh affinity.
+
 Attributes sit at the center of the imported proposal:
 
 | Influence | Proposed mechanism |
