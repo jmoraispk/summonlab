@@ -76,7 +76,7 @@ Used for bows, spear and axe hafts, staves, and tool handles.
 | E | **Yew** | The classic bow wood; excellent draw |
 | D | **Ironwood** | Nearly as strong as steel at half the weight |
 | C | **Heartwood** | Cut from a Treant. Slowly self-repairing. |
-| B | **Worldtree Limb** | Holds Wood-affinity enchantment perfectly |
+| B | **Worldtree Limb** | Holds enchantment exceptionally well |
 | A | **Living Branch** | Still growing. Adapts to its wielder over time. |
 
 ## Monster materials

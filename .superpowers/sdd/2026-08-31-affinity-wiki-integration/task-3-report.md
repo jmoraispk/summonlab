@@ -10,8 +10,8 @@
 - Added accepted `affinity.earth` and `affinity.water` catalog entries in the existing affinity
   ordering: Fire, Earth, Wind, Water.
 - Updated dependent attribute and equipment wording to point to the canonical rules and use
-  `affinity rank` directly. The focuses/tools/accessories page now calls temporary bonuses
-  temporary bonuses to affinity rank.
+  `affinity rank` directly. The focuses/tools/accessories page now calls them temporary bonuses to
+  affinity rank.
 
 No skills, monster content, wiki UI, engine/runtime catalogs, or unrelated domains were changed.
 
@@ -92,3 +92,33 @@ These were intentionally left unchanged per the assigned ownership boundary.
 - Wood is absent as an affinity page and catalog entry. No current Wood or Metal affinity wording
   remains in the Task 3-owned rendered pages; physical-material wording elsewhere was preserved.
 - Catalog schema fields, status values, and affinity ordering match the neighboring entries.
+
+## Fix round 1 — material-row terminology
+
+### Root cause and correction
+
+`docs/wiki/mechanics/equipment/materials.md` described Worldtree Limb as holding a hyphenated
+Wood-affinity enchantment. The earlier Task 3 direct scan only matched the spaced form, and the
+materials page was not originally in the assigned file list. The row now states that the physical
+Worldtree Limb material holds enchantment exceptionally well; it does not name an affinity or add a
+new mechanic. This fix also corrects the duplicated “temporary bonuses” wording above.
+
+### Commands and actual results
+
+```bash
+SUMMONLAB_NODE_BIN=/home/joao/.nvm/versions/node/v24.19.0/bin
+PATH="$SUMMONLAB_NODE_BIN:$PATH"
+rg -n -i '\\b(?:wood|metal)[-[:space:]]+affinity\\b|\\bresonance\\b|\\bfive(?:[-[:space:]]+base)?[[:space:]]+affinit' \
+  docs/wiki/mechanics/affinities \
+  docs/wiki/mechanics/attributes.md \
+  docs/wiki/mechanics/equipment \
+  docs/wiki/catalog.json
+pnpm vitest run tools/affinity-wiki-contract.spec.ts
+pnpm validate:wiki
+git diff --check
+```
+
+The direct search returned no matches (exit status 1 from `rg`, treated as the expected clean
+result). The contract test passed with 1 file and 11 tests. `pnpm validate:wiki` passed, validating
+100 wiki pages and 22 asset references; the skill-taxonomy check reconciled 520 legacy rows and 495
+target rows. `git diff --check` exited 0.
