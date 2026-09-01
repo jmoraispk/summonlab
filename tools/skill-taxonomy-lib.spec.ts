@@ -590,6 +590,43 @@ describe('skill taxonomy migration inventory', () => {
 			'Alloying Master, Animal Handling Expert'
 		);
 	});
+
+	it('records deleted Wood rows and deferred Wind rewrite targets without rewriting source provenance', async () => {
+		const ledger = JSON.parse(
+			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
+		) as SkillMigrationLedger;
+		const woodRows = ledger.records.filter((record) => record.section === 'Evocation — Wood');
+		const metalRows = ledger.records.filter((record) => record.section === 'Evocation — Metal');
+		const attunement = ledger.records.find(
+			(record) => record.sourceId === 'magical-disciplines.md#enchantment:12'
+		);
+
+		expect(woodRows).toHaveLength(18);
+		expect(
+			woodRows.every(
+				(record) =>
+					record.disposition === 'delete' &&
+					record.rationale === 'Wood affinity removed by accepted four-base model' &&
+					!('target' in record)
+			)
+		).toBe(true);
+		expect(metalRows).toHaveLength(18);
+		expect(metalRows.every((record) => ['rename', 'rehome'].includes(record.disposition))).toBe(
+			true
+		);
+		expect(metalRows.map((record) => record.target)).toEqual(
+			Array.from({ length: 18 }, () => ({
+				domain: 'Magical',
+				family: 'Elemental',
+				labels: [{ namespace: 'Element', value: 'Wind' }],
+				publication: 'deferred'
+			}))
+		);
+		expect(attunement).toMatchObject({
+			effect: "Grants an ally the hero's affinity temporarily at reduced Resonance",
+			replacementEffect: "Grants an ally the hero's affinity temporarily at reduced affinity rank."
+		});
+	});
 });
 
 describe('target skill taxonomy', () => {
@@ -695,13 +732,7 @@ describe('target skill taxonomy', () => {
 			'Restoration',
 			'Ward'
 		]);
-		expect(elementLabelsForFamily(rows, 'Elemental')).toEqual([
-			'Earth',
-			'Fire',
-			'Metal',
-			'Water',
-			'Wood'
-		]);
+		expect(elementLabelsForFamily(rows, 'Elemental')).toEqual(['Earth', 'Fire', 'Water']);
 		expect(rows.find((row) => row.name === 'Shield Sigil')?.labels).toEqual([]);
 		expect(rows.find((row) => row.name === 'Elemental Guard')?.labels).toEqual([
 			{ namespace: 'Element', value: 'Attuned' }

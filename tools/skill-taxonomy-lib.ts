@@ -5,6 +5,24 @@ export type SkillDisposition = 'retain' | 'rename' | 'rehome' | 'merge' | 'delet
 export type SkillLabel = { namespace: 'Equipment' | 'Element'; value: string };
 export type SkillMarkdownFile = { sourcePath: string; source: string };
 
+export type PublishedSkillMigrationTarget = {
+	domain: SkillDomain;
+	family: string;
+	skill: string;
+	labels?: SkillLabel[];
+	publication?: never;
+};
+
+export type DeferredSkillMigrationTarget = {
+	domain: SkillDomain;
+	family: string;
+	labels: SkillLabel[];
+	publication: 'deferred';
+	skill?: never;
+};
+
+export type SkillMigrationTarget = PublishedSkillMigrationTarget | DeferredSkillMigrationTarget;
+
 export type LegacySkillRow = {
 	sourceId: string;
 	sourcePath: string;
@@ -19,12 +37,7 @@ export type LegacySkillRow = {
 
 export type SkillMigrationRecord = LegacySkillRow & {
 	disposition: SkillDisposition | 'unmapped';
-	target?: {
-		domain: SkillDomain;
-		family: string;
-		skill: string;
-		labels?: SkillLabel[];
-	};
+	target?: SkillMigrationTarget;
 	mergeTarget?: {
 		domain: SkillDomain;
 		family: string;
@@ -76,7 +89,7 @@ const EQUIPMENT_LABELS = new Set([
 	'Sling',
 	'Unarmed'
 ]);
-const ELEMENT_LABELS = new Set(['Fire', 'Water', 'Wood', 'Earth', 'Metal', 'Attuned']);
+const ELEMENT_LABELS = new Set(['Fire', 'Earth', 'Wind', 'Water', 'Attuned']);
 
 const FORBIDDEN_SKILL_REFERENCES = [
 	'skills.martial-universal',
@@ -361,6 +374,17 @@ export function validateTargetTaxonomy(
 			errors.push(`${record.sourceId} has no target`);
 			continue;
 		}
+		if (record.target.publication === 'deferred') {
+			if (
+				record.target.domain !== 'Magical' ||
+				record.target.family !== 'Elemental' ||
+				record.target.labels.length !== 1 ||
+				record.target.labels[0]?.namespace !== 'Element' ||
+				record.target.labels[0]?.value !== 'Wind'
+			)
+				errors.push(`${record.sourceId} has an invalid deferred Elemental target`);
+			continue;
+		}
 
 		const key = targetKey(record.target.domain, record.target.family, record.target.skill);
 		const row = rowsByKey.get(key);
@@ -432,8 +456,24 @@ export function validateMigrationLedger(
 		sourceIds.add(record.sourceId);
 
 		if (record.disposition === 'unmapped') errors.push(`${record.sourceId} is unmapped`);
-		if (['retain', 'rename', 'rehome'].includes(record.disposition) && record.target === undefined)
-			errors.push(`${record.disposition} record ${record.sourceId} requires target`);
+		if (['retain', 'rename', 'rehome'].includes(record.disposition)) {
+			if (record.target === undefined)
+				errors.push(`${record.disposition} record ${record.sourceId} requires target`);
+			else if (record.target.publication !== 'deferred' && !record.target.skill)
+				errors.push(
+					`${record.disposition} record ${record.sourceId} requires a published target skill`
+				);
+			else if (record.target.publication === 'deferred') {
+				if (
+					record.target.domain !== 'Magical' ||
+					record.target.family !== 'Elemental' ||
+					record.target.labels.length !== 1 ||
+					record.target.labels[0]?.namespace !== 'Element' ||
+					record.target.labels[0]?.value !== 'Wind'
+				)
+					errors.push(`${record.sourceId} has an invalid deferred Elemental target`);
+			}
+		}
 		if (record.disposition === 'merge') {
 			if (!record.mergeTarget) errors.push(`merge record ${record.sourceId} requires mergeTarget`);
 			else if (typeof record.mergeTarget === 'string')

@@ -126,19 +126,11 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 				href: elementalHref,
 				description:
 					'Direct affinity expression, owned by one family and parameterized by element.',
-				labels: [
-					element('Fire'),
-					element('Water'),
-					element('Wood'),
-					element('Earth'),
-					element('Metal')
-				],
+				labels: [element('Fire'), element('Earth'), element('Wind'), element('Water')],
 				skills: [
 					skill('Ember', elementalHref, [element('Fire')]),
 					skill('Water Bullet', elementalHref, [element('Water')]),
-					skill('Thorn', elementalHref, [element('Wood')]),
-					skill('Stone Shard', elementalHref, [element('Earth')]),
-					skill('Iron Needle', elementalHref, [element('Metal')])
+					skill('Stone Shard', elementalHref, [element('Earth')])
 				]
 			},
 			{

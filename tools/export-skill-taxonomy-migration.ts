@@ -80,9 +80,7 @@ const SECTION_TARGETS = {
 	'Universal Martial': ['Martial', 'Body', undefined],
 	'Evocation — Fire': ['Magical', 'Elemental', 'Fire'],
 	'Evocation — Water': ['Magical', 'Elemental', 'Water'],
-	'Evocation — Wood': ['Magical', 'Elemental', 'Wood'],
-	'Evocation — Earth': ['Magical', 'Elemental', 'Earth'],
-	'Evocation — Metal': ['Magical', 'Elemental', 'Metal']
+	'Evocation — Earth': ['Magical', 'Elemental', 'Earth']
 } as const;
 
 const DIRECT_FAMILIES = new Set([
@@ -99,6 +97,14 @@ const DIRECT_FAMILIES = new Set([
 const TRACKING_DELETE_RATIONALE = 'Tracking ladder removed by approved taxonomy';
 const THROWN_DELETE_RATIONALE = 'Generic Thrown ladder removed by approved taxonomy';
 const EQUIPMENT_PROGRESSION_DELETE_RATIONALE = 'Equipment progression removed by approved taxonomy';
+const WOOD_DELETE_RATIONALE = 'Wood affinity removed by accepted four-base model';
+
+const deferredWindTarget = () => ({
+	domain: 'Magical' as const,
+	family: 'Elemental',
+	labels: [{ namespace: 'Element' as const, value: 'Wind' }],
+	publication: 'deferred' as const
+});
 
 function targetForSection(row: LegacySkillRow): NonNullable<SkillMigrationRecord['target']> {
 	const sectionTarget = SECTION_TARGETS[row.section as keyof typeof SECTION_TARGETS];
@@ -135,6 +141,21 @@ function targetForSection(row: LegacySkillRow): NonNullable<SkillMigrationRecord
 
 function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 	const source = `${row.section}:${row.name}`;
+
+	if (row.section === 'Evocation — Wood')
+		return { ...row, disposition: 'delete', rationale: WOOD_DELETE_RATIONALE };
+
+	if (row.section === 'Evocation — Metal')
+		return { ...row, disposition: 'rename', target: deferredWindTarget() };
+
+	if (source === 'Evocation — Fire:Sunfall')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementEffect:
+				'A second sun, briefly. Everything unaligned or Wind-aligned in range is simply gone.'
+		};
 
 	if (row.section === 'Tracking')
 		return { ...row, disposition: 'delete', rationale: TRACKING_DELETE_RATIONALE };
@@ -560,7 +581,13 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			target: {
 				...targetForSection(row),
 				labels: [{ namespace: 'Element', value: 'Attuned' }]
-			}
+			},
+			...(source === 'Enchantment:Elemental Attunement'
+				? {
+						replacementEffect:
+							"Grants an ally the hero's affinity temporarily at reduced affinity rank."
+					}
+				: {})
 		};
 
 	return {

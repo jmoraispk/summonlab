@@ -24,8 +24,8 @@ catalyst,” and “composite condition” are design shorthand, not executable 
 The authored label namespaces are:
 
 - `Equipment`, which identifies a compatible concrete Martial tool;
-- `Element`, which identifies a concrete Elemental affinity or the `Attuned` affinity inherited by
-  another Magical family.
+- `Element`, which identifies a concrete active Elemental affinity or the `Attuned` compatibility
+  label inherited by another Magical family.
 
 An omitted label means family membership is sufficient. It does not create a hidden neutral or
 universal category. `Two Blades` is a skill in Blade, while its two-weapon loadout is a requirement.
@@ -67,9 +67,10 @@ See also the [minimum Living Village subset](living-village.md) and the complete
 | Magical | Elemental, Ward, Enchantment, Restoration, Mind |
 | Craft | Forging, Alchemy, Cooking, Gathering, Knowledge |
 
-Elemental skills use exactly one of Fire, Water, Wood, Earth, or Metal as an `Element` label.
-Ward and Enchantment use `Element: Attuned` only where a definition inherits the hero's current
-affinity. Other neutral Magical skills omit the label.
+Active Element labels are Fire, Earth, Wind, and Water. The current Elemental page preserves Fire,
+Water, and Earth ladders; its Wind family is active but awaits the skill-content pass. Ward and
+Enchantment use `Element: Attuned` only where a definition inherits the hero's current affinity.
+Other neutral Magical skills omit the label.
 
 ## Source-integrity audit
 
@@ -77,9 +78,11 @@ The legacy compendium contained 520 rows. The v2 migration ledger records the di
 row; the consolidated target count is derived by validation and may be lower because approved
 merges and deletions are intentional.
 
-Every target row must trace to at least one legacy row. Retained definitions preserve rarity, type,
-requirements, and effects unless the ledger explicitly records a replacement. Deleted and merged
-definitions remain recoverable through Git history and their ledger rationale.
+Every published target row must trace to at least one legacy row. Retained definitions preserve
+rarity, type, requirements, and effects unless the ledger explicitly records a replacement. An
+explicit deferred migration target records a future family rewrite without publishing unfinished
+skill content. Deleted and merged definitions remain recoverable through Git history and their
+ledger rationale.
 
 `Great Renewal` appears in both Elemental and Restoration with different requirements and effects.
 Their family ownership gives them distinct stable skill IDs even though their display name is
@@ -89,8 +92,8 @@ shared.
 
 - Might, Vitality, Agility, Dexterity, Intellect, and Spirit remain the authoritative attribute
   vocabulary. Executable thresholds must migrate together rather than mix identifiers.
-- Wood, Fire, Earth, Metal, and Water are the five base affinities; Wind is derived from Metal ×
-  Wood. Element statuses and rank numerics still require combat integration.
+- Fire, Earth, Wind, and Water are the active base affinities. Element statuses and rank numerics
+  still require combat integration.
 - Affinity is a learning or compatibility requirement for magical definitions. Element labels
   identify which affinity powers or parameterizes a skill; they are not equipment slots.
 - The merge rule remains two Master-10 inputs consumed with a recipe and catalyst, producing a

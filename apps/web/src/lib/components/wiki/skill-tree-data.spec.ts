@@ -120,10 +120,14 @@ describe('skill tree navigation data', () => {
 		expect(values).not.toContain('Neutral');
 		expect(domain('magical').families[0]?.labels.map((label) => label.value)).toEqual([
 			'Fire',
-			'Water',
-			'Wood',
 			'Earth',
-			'Metal'
+			'Wind',
+			'Water'
+		]);
+		expect(domain('magical').families[0]?.skills.map((skill) => skill.name)).toEqual([
+			'Ember',
+			'Water Bullet',
+			'Stone Shard'
 		]);
 		expect(domain('magical').families[1]?.labels.map((label) => label.value)).toEqual(['Attuned']);
 		expect(domain('magical').families[2]?.labels.map((label) => label.value)).toEqual(['Attuned']);

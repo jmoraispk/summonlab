@@ -228,7 +228,17 @@ async function immutableSkillSourceFindings(root: string): Promise<string[]> {
 			migrationRecord && typeof migrationRecord === 'object'
 				? (migrationRecord as { target?: unknown }).target
 				: undefined;
-		const targetSource = JSON.stringify(target ?? {});
+		const targetSource = JSON.stringify({
+			target: target ?? {},
+			replacementRequires:
+				migrationRecord && typeof migrationRecord === 'object'
+					? (migrationRecord as { replacementRequires?: unknown }).replacementRequires
+					: undefined,
+			replacementEffect:
+				migrationRecord && typeof migrationRecord === 'object'
+					? (migrationRecord as { replacementEffect?: unknown }).replacementEffect
+					: undefined
+		});
 		const targetUsesRetiredTerm =
 			(term === 'Resonance' &&
 				(/\bresonance\b/iu.test(targetSource) ||

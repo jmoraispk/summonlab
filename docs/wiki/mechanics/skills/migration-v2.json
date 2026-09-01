@@ -1591,7 +1591,8 @@
 						"value": "Attuned"
 					}
 				]
-			}
+			},
+			"replacementEffect": "Grants an ally the hero's affinity temporarily at reduced affinity rank."
 		},
 		{
 			"sourceId": "magical-disciplines.md#enchantment:13",
@@ -3417,7 +3418,8 @@
 						"value": "Fire"
 					}
 				]
-			}
+			},
+			"replacementEffect": "A second sun, briefly. Everything unaligned or Wind-aligned in range is simply gone."
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:1",
@@ -3429,17 +3431,17 @@
 			"type": "A",
 			"requires": "Metal affinity Rank I",
 			"effect": "Detect, attract and lightly shape nearby metal. **Foundation.**",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Metalsense",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3452,17 +3454,17 @@
 			"type": "A",
 			"requires": "Metalsense Novice",
 			"effect": "A thin dart of metal; cheap, precise, armour-piercing",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Iron Needle",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3475,17 +3477,17 @@
 			"type": "P",
 			"requires": "Metalsense Novice",
 			"effect": "Small bonus to all cutting damage the hero deals",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Edge",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3498,17 +3500,17 @@
 			"type": "A",
 			"requires": "Metalsense Intermediate",
 			"effect": "Degrades a target's armour or weapon briefly",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Rust Touch",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3521,17 +3523,17 @@
 			"type": "A",
 			"requires": "Iron Needle Expert, Rank II",
 			"effect": "A spray of metal fragments across a cone",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Blade Storm",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3544,17 +3546,17 @@
 			"type": "A",
 			"requires": "Edge Expert",
 			"effect": "Temporarily raises a weapon's damage and penetration",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Sharpen",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3567,17 +3569,17 @@
 			"type": "A",
 			"requires": "Metalsense Expert",
 			"effect": "Metal restraints; roots and silences briefly",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Iron Bindings",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3590,17 +3592,17 @@
 			"type": "A",
 			"requires": "Blade Storm Master, Rank II",
 			"effect": "A cutting line that applies heavy Rend",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Severing Wind",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3613,17 +3615,17 @@
 			"type": "A",
 			"requires": "Rust Touch Master",
 			"effect": "Strips armour entirely for the encounter",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Metal Reave",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3636,17 +3638,17 @@
 			"type": "P",
 			"requires": "Iron Bindings Master, Spirit threshold",
 			"effect": "Several blades orbit the hero, striking automatically",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Floating Blades",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3659,17 +3661,17 @@
 			"type": "P",
 			"requires": "Sharpen Master, 10,000 casts",
 			"effect": "Automatic critical against any target already bleeding",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Keen Sense",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3682,17 +3684,17 @@
 			"type": "A",
 			"requires": "Floating Blades Master, Rank III",
 			"effect": "An orbiting storm; strikes everything nearby continuously",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Thousand Blades",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3705,17 +3707,17 @@
 			"type": "A",
 			"requires": "Metal Reave Master, Rank III",
 			"effect": "Encases a target completely; they cannot act or be healed",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Iron Prison",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3728,17 +3730,17 @@
 			"type": "A",
 			"requires": "Severing Wind Master, Rank III",
 			"effect": "Persistent area; anything that moves within it is cut",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Razor Field",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3751,17 +3753,17 @@
 			"type": "A",
 			"requires": "Thousand Blades Master, Rank IV",
 			"effect": "A single sever that ignores all mitigation and barriers",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "The Cutting Word",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3774,17 +3776,17 @@
 			"type": "St",
 			"requires": "Keen Sense Master, Rank IV",
 			"effect": "The hero's body becomes edged metal; all contact cuts",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Argent Form",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3797,17 +3799,17 @@
 			"type": "A",
 			"requires": "The Cutting Word Master, rare catalyst",
 			"effect": "Every enemy in range is cut simultaneously and identically",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "Ten Thousand Edges",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -3820,17 +3822,17 @@
 			"type": "A",
 			"requires": "Ten Thousand Edges Master, Rank V, composite condition",
 			"effect": "One severance. Everything Wood-aligned in range is divided from itself.",
-			"disposition": "rehome",
+			"disposition": "rename",
 			"target": {
 				"domain": "Magical",
 				"family": "Elemental",
-				"skill": "The Last Cut",
 				"labels": [
 					{
 						"namespace": "Element",
-						"value": "Metal"
+						"value": "Wind"
 					}
-				]
+				],
+				"publication": "deferred"
 			}
 		},
 		{
@@ -4257,18 +4259,8 @@
 			"type": "A",
 			"requires": "Wood affinity Rank I",
 			"effect": "Cause a plant to grow rapidly. **Foundation.**",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Quicken",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:2",
@@ -4280,18 +4272,8 @@
 			"type": "A",
 			"requires": "Quicken Novice",
 			"effect": "Fires a hardened thorn; cheap and fast",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Thorn",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:3",
@@ -4303,18 +4285,8 @@
 			"type": "A",
 			"requires": "Quicken Novice",
 			"effect": "Brief root at the target's feet",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Root Grasp",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:4",
@@ -4326,18 +4298,8 @@
 			"type": "P",
 			"requires": "Quicken Intermediate",
 			"effect": "Move freely through undergrowth; small speed bonus outdoors",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Verdant Step",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:5",
@@ -4349,18 +4311,8 @@
 			"type": "A",
 			"requires": "Thorn Expert, Rank II",
 			"effect": "A spread of thorns across a cone",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Thorn Volley",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:6",
@@ -4372,18 +4324,8 @@
 			"type": "A",
 			"requires": "Root Grasp Expert",
 			"effect": "Extended Ensnare; spreads to adjacent enemies",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Binding Vines",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:7",
@@ -4395,18 +4337,8 @@
 			"type": "A",
 			"requires": "Quicken Expert",
 			"effect": "A wall of growth; blocks movement and projectiles",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Living Barrier",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:8",
@@ -4418,18 +4350,8 @@
 			"type": "A",
 			"requires": "Binding Vines Master",
 			"effect": "Persistent area that roots anything entering it",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Grasping Field",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:9",
@@ -4441,18 +4363,8 @@
 			"type": "A",
 			"requires": "Thorn Volley Master, Alchemy prerequisite",
 			"effect": "Poisonous cloud; stacking degeneration",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Spore Cloud",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:10",
@@ -4464,18 +4376,8 @@
 			"type": "P",
 			"requires": "Living Barrier Master, Rank II",
 			"effect": "Standing regeneration for the hero and nearby allies",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Heartwood",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:11",
@@ -4487,18 +4389,8 @@
 			"type": "A",
 			"requires": "Verdant Step Master, Agility threshold",
 			"effect": "Long reaching strike that pulls the hero to the target",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Whipping Branch",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:12",
@@ -4510,18 +4402,8 @@
 			"type": "A",
 			"requires": "Grasping Field Master, Rank III",
 			"effect": "Terrain becomes forest; permanent difficult ground and cover",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Forest Rise",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:13",
@@ -4533,18 +4415,8 @@
 			"type": "A",
 			"requires": "Spore Cloud Master, Rank III",
 			"effect": "A flowering burst that poisons and blinds",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Blight Bloom",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:14",
@@ -4556,18 +4428,8 @@
 			"type": "St",
 			"requires": "Heartwood Master",
 			"effect": "Rooted and immobile; enormous regeneration and reach",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "World Tree Form",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:15",
@@ -4579,18 +4441,8 @@
 			"type": "A",
 			"requires": "Forest Rise Master, Rank IV",
 			"effect": "Living growth seizes every enemy in the area and constricts",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Strangling Grove",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:16",
@@ -4602,18 +4454,8 @@
 			"type": "A",
 			"requires": "World Tree Form Master, Restoration prerequisite",
 			"effect": "Restores every ally fully and regrows what was lost",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "Great Renewal",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:17",
@@ -4625,18 +4467,8 @@
 			"type": "P",
 			"requires": "Strangling Grove Master, composite condition",
 			"effect": "Every plant in the region reports to and fights for the hero",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "The Wood Remembers",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-wood:18",
@@ -4648,18 +4480,8 @@
 			"type": "A",
 			"requires": "The Wood Remembers Master, Rank V, composite condition",
 			"effect": "Life reclaims the field entirely; everything Earth-aligned is overrun",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"skill": "First Growth",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wood"
-					}
-				]
-			}
+			"disposition": "delete",
+			"rationale": "Wood affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "martial-blade.md#dagger:1",

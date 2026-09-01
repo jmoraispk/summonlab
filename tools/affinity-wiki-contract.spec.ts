@@ -227,6 +227,27 @@ describe('active wiki affinity contract', () => {
 		expect(await validateAffinityWiki(root)).toEqual([]);
 	});
 
+	it('permits immutable source wording when the current replacement effect is ledger metadata', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json': JSON.stringify([
+				{ sourceId: 'legacy:1', effect: 'Reduced Resonance' }
+			]),
+			'docs/wiki/mechanics/skills/migration-v2.json': JSON.stringify({
+				records: [
+					{
+						sourceId: 'legacy:1',
+						target: { domain: 'Magical', family: 'Enchantment', skill: 'Current Effect' },
+						replacementEffect: 'Reduced affinity rank'
+					}
+				]
+			})
+		});
+
+		expect(await validateAffinityWiki(root)).toEqual([]);
+	});
+
 	it('names the immutable skill-source exception when its target retains retired wording', async () => {
 		const root = await fixture({
 			'docs/wiki/catalog.json': catalog([canonicalEntry]),

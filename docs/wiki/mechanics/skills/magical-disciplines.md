@@ -50,7 +50,7 @@ Magical family. Buffs on self and others, and the imbuing of objects. Consumes c
 | 9 | **Sigil Binding** | — | D | C | Armour Imbuing Master, Forging prerequisite | Applies a permanent enchantment to an item with an open slot |
 | 10 | **Empowerment** | — | D | A | Greater Blessing Master, Spirit threshold | One ally's next skill is cast at greatly increased potency |
 | 11 | **Sustained Weave** | — | D | P | Group Blessing Master, 10,000 casts | Buffs the hero applies last substantially longer |
-| 12 | **Elemental Attunement** | Attuned | D | A | Weapon Oil Master, Rank III | Grants an ally the hero's affinity temporarily at reduced Resonance |
+| 12 | **Elemental Attunement** | Attuned | D | A | Weapon Oil Master, Rank III | Grants an ally the hero's affinity temporarily at reduced affinity rank. |
 | 13 | **Greater Sigil** | — | C | C | Sigil Binding Master, Rank III | Applies enchantments no ordinary slot could hold |
 | 14 | **Battle Hymn** | — | C | St | Sustained Weave Master | Continuous party-wide buff while held; heavy mana drain |
 | 15 | **Transference** | — | C | A | Empowerment Master, Rank III | Moves a buff, or a debuff, from one target to another |

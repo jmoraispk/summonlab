@@ -47,15 +47,14 @@ All names bind to their full definitions on the linked catalog pages.
 | Shared movement | [Body](martial-body.md) | Footwork, Dash, Roll |
 | Fire caster | [Elemental](magical-elemental.md) · `Element: Fire` | Ember, Spark, Warmth, Ignite |
 | Water caster | [Elemental](magical-elemental.md) · `Element: Water` | Draw Water, Water Bullet, Cold Touch, Flow |
-| Wood caster | [Elemental](magical-elemental.md) · `Element: Wood` | Quicken, Thorn, Root Grasp, Verdant Step |
 | Earth caster | [Elemental](magical-elemental.md) · `Element: Earth` | Stoneshape, Stone Shard, Harden, Tremor |
-| Metal caster | [Elemental](magical-elemental.md) · `Element: Metal` | Metalsense, Iron Needle, Edge, Rust Touch |
+| Wind caster | [Elemental](magical-elemental.md) · `Element: Wind` | Wind family rewrite pending; see the Elemental family page |
 | Healer | [Restoration](magical-disciplines.md#restoration) | Mending, Close Wound, Soothe, Field Care |
 
-Counting the retained named definitions above yields a **45-definition expansion pool**: 29 Active
-and 16 Passive, all Common. It can support one
-caster per base affinity after the initial loop is proven. It is not the minimum runtime and must
-not all be implemented merely because concept art exists. It deliberately excludes Craft and
+Counting the retained named definitions above yields a **37-definition expansion pool**: 23 Active
+and 14 Passive, all Common. It preserves the Fire, Water, and Earth caster ladders while the Wind
+family rewrite remains unpublished. It is not the minimum runtime and must not all be implemented
+merely because concept art exists. It deliberately excludes Craft and
 Stance skills, higher rarity, alternate learning paths, teaching, merging, and skill loss.
 
 ## Minimum playable rules

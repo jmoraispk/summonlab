@@ -245,7 +245,7 @@ Skills are not confined to combat.
 
 | Family | Scope and optional labels |
 |---|---|
-| **Elemental** | Fire, Water, Wood, Earth, and Metal magic, identified by Element labels |
+| **Elemental** | Fire, Earth, Wind, and Water magic, identified by Element labels |
 | **Ward** | Barriers, dispelling, and defensive magic |
 | **Enchantment** | Buffs on self or others; imbuing objects. Consumes components. |
 | **Restoration** | Healing, curing, revival |
