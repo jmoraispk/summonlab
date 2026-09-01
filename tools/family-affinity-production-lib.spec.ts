@@ -136,6 +136,92 @@ const validMappingEntries: CurrentClassMappingEntry[] = Array.from({ length: 40 
 	}
 }));
 
+const waveAFamilyFixtures = [
+	{
+		fileName: '02-orcs.json',
+		sourceRaceNumber: 2,
+		forms: [
+			{ tier: 'T1', displayName: 'Grunt', sourceReferences: ['Grunt'] },
+			{ tier: 'T2', displayName: 'Warrior', sourceReferences: ['Warrior'] },
+			{ tier: 'T3', displayName: 'Berserker', sourceReferences: ['Berserker'] },
+			{ tier: 'T4', displayName: 'Warchief', sourceReferences: ['Warchief'] },
+			{ tier: 'T5', displayName: 'Overlord', sourceReferences: ['Overlord'] }
+		]
+	},
+	{
+		fileName: '03-giants.json',
+		sourceRaceNumber: 3,
+		forms: [
+			{ tier: 'T1', displayName: 'Brute', sourceReferences: ['Brute'] },
+			{ tier: 'T2', displayName: 'Hill Giant', sourceReferences: ['Hill Giant'] },
+			{ tier: 'T3', displayName: 'Stone Giant', sourceReferences: ['Stone Giant'] },
+			{ tier: 'T4', displayName: 'Mountain Lord', sourceReferences: ['Mountain Lord'] },
+			{ tier: 'T5', displayName: 'Primordial Titan', sourceReferences: ['Primordial Titan'] }
+		]
+	},
+	{
+		fileName: '04-trolls.json',
+		sourceRaceNumber: 4,
+		forms: [
+			{ tier: 'T1', displayName: 'Scrag', sourceReferences: ['Scrag'] },
+			{ tier: 'T2', displayName: 'Bog Troll', sourceReferences: ['Bog Troll'] },
+			{ tier: 'T3', displayName: 'Mutant Troll', sourceReferences: ['Mutant Troll'] },
+			{ tier: 'T4', displayName: 'Scarlord', sourceReferences: ['Scarlord'] },
+			{ tier: 'T5', displayName: 'Elder Troll', sourceReferences: ['Elder Troll'] }
+		]
+	},
+	{
+		fileName: '05-dragons.json',
+		sourceRaceNumber: 5,
+		forms: [
+			{ tier: 'T1', displayName: 'Whelp', sourceReferences: ['Whelp'] },
+			{ tier: 'T2', displayName: 'Fledgling', sourceReferences: ['Fledgling'] },
+			{ tier: 'T3', displayName: 'Drake', sourceReferences: ['Drake'] },
+			{ tier: 'T4', displayName: 'Elder Wyrm', sourceReferences: ['Elder Wyrm'] },
+			{ tier: 'T5', displayName: 'Dragon Emperor', sourceReferences: ['Dragon Emperor'] }
+		]
+	},
+	{
+		fileName: '06-skeletons.json',
+		sourceRaceNumber: 6,
+		forms: [
+			{ tier: 'T1', displayName: 'Rattler', sourceReferences: ['Rattler'] },
+			{ tier: 'T2', displayName: 'Bonesoldier', sourceReferences: ['Bonesoldier'] },
+			{ tier: 'T3', displayName: 'Bone Knight', sourceReferences: ['Bone Knight'] },
+			{ tier: 'T4', displayName: 'Bone Champion', sourceReferences: ['Bone Champion'] },
+			{ tier: 'T5', displayName: 'Lich King', sourceReferences: ['Lich King'] }
+		]
+	}
+] as const;
+
+describe('Wave A family packets', () => {
+	it.each(waveAFamilyFixtures)(
+		'loads $fileName with exact source identity and tier coverage',
+		async ({ fileName, sourceRaceNumber, forms }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			expect(packet.sourceRaceNumber).toBe(sourceRaceNumber);
+			expect(
+				packet.forms.map(({ tier, displayName, sourceReferences }) => ({
+					tier,
+					displayName,
+					sourceReferences
+				}))
+			).toEqual(forms);
+		}
+	);
+});
+
 describe('family affinity production schemas', () => {
 	it('loads the Goblins packet with source tiers and normalized progression contracts', async () => {
 		const packet = FamilyPacketSchema.parse(

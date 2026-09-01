@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "giants",
+	"displayName": "Giants",
+	"sourceRaceNumber": 3,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-01.md",
+	"classificationNotes": "Source-draft Giants are treated as a scale-and-landscape production family rather than a claim that all enormous humanoids share one species, culture, or allegiance. The packet preserves humanlike heavy anatomy, progressive geology, rough mountain materials, and landscape scale while assigning encounter roles through committed weight and terrain displacement.",
+	"visualConstants": [
+		"Humanlike proportions scaled upward with a heavy brow, thick limbs, dense bone, and a slight stoop that communicates the body's own weight.",
+		"Stone grey, granite blue-grey, earth brown, moss green, glacier white, and warm amber eyes remain the family palette without requiring an elemental origin.",
+		"Rough hide, raw stone, moss, lichen, pine, iron chain, and rope accumulate as bodily geology and oversized practical tools.",
+		"Chains, standing-stone jewelry, skin runes, and whole trees function as ornament at a scale that stays legible from the arena.",
+		"Raw scale and geological coverage escalate together until the Sovereign carries a valley, but every form retains recognizable humanoid load paths and slow committed motion."
+	],
+	"escalationAxis": "Each tier expands both physical scale and the amount of lived-in geology across the body, converting a readable tree-club commitment into slope control, chained-megalith orbit, watershed command, and finally an arena that is itself a walking range.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Anatomy and materials stay naturally weathered: thick skin, rough hide, ordinary raw stone plates, moss, lichen, pines, rope, and iron chain accumulate through age and scale rather than magical replacement.",
+				"Motion and wake remain physical and local: muscle loading, chain drag, loose scree, falling needles, water runoff, and impact dust reveal mass without persistent elemental trails or luminous anatomy."
+			],
+			"counterplaySignal": "Hands, heels, rope knots, chain pivots, rune anchors, unstable shelves, and ordinary fracture seams remain visible at every scale as the form's established weak points.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Landscape coverage that obscures the Giant's humanoid joints and committed weight shifts"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Body geology becomes volcanic but remains load-bearing: clinker shelves, basalt plates, charred pine roots, obsidian chain guards, and cooled lava crust form over recognizable hide and stone growth.",
+				"Motion and surface behavior expose heat cycling through opening crust vents, directional ash falls, steam where runoff crosses hot seams, and dark cooling plates that contract between attacks."
+			],
+			"counterplaySignal": "A basalt joint opens to a bright heat sink after committed movement; striking the cooling seam or redirecting shoulder runoff into it fractures the loaded plate.",
+			"forbidden": [
+				"Palette-only fire treatment without volcanic materials, vent cycles, and heat-driven surface change",
+				"Glow-only fire treatment without load-bearing crust or exposed cooling seams",
+				"Featureless flame bodies that erase humanoid anatomy and lived-in geology",
+				"Uniform lava coating that hides chain pivots, heels, and rune anchors"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Existing geology becomes compressed structural architecture: visibly layered sediment ribs, crystal buttresses at loaded joints, ore-veined megaliths, and root-bound talus shelves distinguish Earth from ordinary weathered stone.",
+				"Stance and terrain response become tectonic: heels key into fault-shaped sockets, strata telescope under weight, crystal braces lock during attacks, and localized dust pulses trace the stress path."
+			],
+			"counterplaySignal": "The active crystal buttress turns opaque while a pale fault opens beside it after a committed step; breaking that fault collapses the support without hiding the Giant's body plan.",
+			"forbidden": [
+				"Palette-only earth treatment without compressed strata, joint buttresses, and tectonic stance changes",
+				"Glow-only earth treatment without mineral structure or fracture behavior",
+				"Pasted boulders indistinguishable from the family's ordinary geological aging",
+				"Added mass that closes every gap and conceals humanoid load-bearing anatomy"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Trees, hide, chains, and standing-stone ornaments become directional pressure instruments: flattened pine crowns, hide vanes, whistling ring gates, and suspended menhirs define the flow around the body.",
+				"Silhouette and motion gain aerodynamic displacement through cloud channels under limbs, one-way scree streams, bowed tree lines, chain catenaries, and a still pressure lee that moves with each committed turn."
+			],
+			"counterplaySignal": "Pines and chain loops flatten toward the chosen sweep while a visibly calm lee opens behind the loaded limb; occupying that lee or severing the windward chain avoids the release.",
+			"forbidden": [
+				"Palette-only wind treatment without pressure-shaped vegetation, chain geometry, and directional debris",
+				"Glow-only wind treatment without readable airflow or a stable pressure anchor",
+				"Weightless floating Giants that abandon the family's load-bearing grammar",
+				"Cloud cover that hides joints, terrain routes, or the still lee"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Body geology becomes a watershed system of saturated moss terraces, ice-braced stone, carved runoff channels, hanging pools, and chain-linked spill gates across recognizable skin and rock plates.",
+				"Surface and motion show coherent volume through wet reflections, visibly filling basins, pressure-fed falls, calving ice shelves, and drainage that changes the Giant's balance as reservoirs empty."
+			],
+			"counterplaySignal": "A shoulder basin overtops and a spill gate strains before a water-driven action; opening the gate early or cracking its ice brace drains the loaded side and exposes the dry binding joint.",
+			"forbidden": [
+				"Palette-only water treatment without watershed construction, saturation, and changed weight distribution",
+				"Glow-only water treatment without reservoirs, coherent drainage, or wet surface response",
+				"Shapeless water anatomy that replaces the Giant's skin, stone growth, or joints",
+				"Mist or waterfalls that conceal paths, anchors, or spill-gate counterplay"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "giant-brute",
+			"displayName": "Brute",
+			"primaryArchetype": "Falling-Timber Sweeper (Initiate)",
+			"battlefieldDuty": "Clear a broad but slow front with a tree-trunk club, leaving the fallen timber as a temporary obstacle that changes one simple route through the arena.",
+			"teachingGoal": "Teach the Giant family's readable mass: watch the heels and hands to identify a committed arc, leave it early, then use the displaced landscape during the long recovery.",
+			"signatureMechanic": "Timber Fall: the Brute grips its tree trunk at one end and drops the full length across a marked lane; the club remains grounded until the Giant walks its hands down and lifts again, creating cover on one side and an exposed hand on the other.",
+			"telegraph": "Its weathered hands slide to the trunk's far end, the rear heel digs a dark crescent in the soil, and the bare shoulder rises beneath the weight.",
+			"counterplay": "Cross behind the planted heel before the trunk falls, then strike the grounded hand or use the fallen timber to block the Brute's shortest turn.",
+			"visualDelta": "Twice human height with bare weathered skin, rough hide clothing, dense limbs, a slight stoop, and a stripped tree-trunk club with no developed body geology.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Brute"]
+		},
+		{
+			"tier": "T2",
+			"formId": "giant-hill-giant",
+			"displayName": "Hill Giant",
+			"primaryArchetype": "Slope-Roll Pressure Soldier (Soldier)",
+			"battlefieldDuty": "Apply repeatable ranged pressure by hauling and releasing rope-cradled boulders down selected lanes, then occupying the new low ground behind them.",
+			"teachingGoal": "Teach that Giant terrain attacks have visible load paths: the rope belt, shoulder moss, and first back plates show where the boulder is tied and which slope will carry it.",
+			"signatureMechanic": "Hill Roll: the Giant unhooks one boulder from its rope belt, braces it against a forming back plate, and releases it along the lower of two visible slopes; the empty rope loop then drags behind and can be stepped on during retrieval.",
+			"telegraph": "Moss sheds from one shoulder, the corresponding rope loop pulls taut, and the Giant tests the ground with a broad foot before turning the boulder downhill.",
+			"counterplay": "Move to higher ground or behind the dropped tree cover, then pin or cut the empty dragging loop before the Giant retrieves another boulder.",
+			"visualDelta": "Four times human height, with moss on the shoulders, first stone plates along the back, a thick rope belt, and several boulders carried in oversized rope cradles.",
+			"lowerFormInteraction": "A Brute can knock a stalled boulder into a new line with Timber Fall, but the same trunk can wedge the roll if the player draws the two attacks together.",
+			"sourceReferences": ["Hill Giant"]
+		},
+		{
+			"tier": "T3",
+			"formId": "giant-stone-giant",
+			"displayName": "Stone Giant",
+			"primaryArchetype": "Chain-Megalith Orbit Controller (Specialist)",
+			"battlefieldDuty": "Replace simple linear sweeps with a moving circular exclusion zone, using a chained megalith to divide the arena and pull displaced terrain into a deliberate orbit.",
+			"teachingGoal": "Teach the qualitative Specialist pivot: read chain geometry, move through the quiet center rather than away from raw size, and punish the fixed pivot when the megalith changes orbit.",
+			"signatureMechanic": "Megalith Orbit: the Stone Giant anchors the chain around a boulder-ridged forearm and walks a measured circle, swinging the megalith through a wide outer ring while the space beside its cliff-face brow remains calm. Reversing direction requires the Giant to plant the megalith, step across the chain, and expose the anchor wrist.",
+			"telegraph": "Iron chain rises link by gate-sized link, the megalith scrapes a bright circular track, and runes along one forearm align toward the intended orbit before the first swing.",
+			"counterplay": "Enter the calm inner radius, cross behind the planted megalith during reversal, and strike or bind the exposed wrist anchor before the chain lifts into the opposite orbit.",
+			"visualDelta": "House-sized, with boulder-scale arm ridges, a cliff-face brow, carved skin runes, and a megalith suspended from an iron chain whose pivot hardware remains fully visible.",
+			"lowerFormInteraction": "Hill Giants roll boulders into the outer orbit and Brutes sweep them loose, expanding the ring only while the Stone Giant maintains its anchor; breaking the wrist pivot returns those attacks to independent lanes.",
+			"sourceReferences": ["Stone Giant"]
+		},
+		{
+			"tier": "T4",
+			"formId": "giant-mountain-lord",
+			"displayName": "Mountain Lord",
+			"primaryArchetype": "Watershed Route Commander (Champion)",
+			"battlefieldDuty": "Control multiple terrain routes by opening shoulder waterfalls, dropping pine-marked scree, and assigning lower Giants to exploit the dry route that remains.",
+			"teachingGoal": "Teach players to read a living landscape as a command interface: water, pines, and ring-sized chains announce which route will flood, collapse, or remain safe before the Mountain Lord commits.",
+			"signatureMechanic": "Three Watersheds: the Mountain Lord turns one gate-sized iron ring at its waist to open a shoulder fall, tilts a pine-crag to release scree across a second route, and points lower forms toward the third. The Lord must brace both arms against the terrain while changing the watershed, exposing a runed sternum shelf.",
+			"telegraph": "Pines bend toward one back crag, one waterfall narrows to a suspended sheet, and the selected iron ring groans as both massive hands reach for the landscape.",
+			"counterplay": "Follow the bending pines to the route that will stay dry, redirect a Hill Giant roll into the selected ring, or climb the grounded arm and strike the sternum rune while both hands manage the watershed.",
+			"visualDelta": "Mountain-tall, with waterfalls running from the shoulders, pines rooted in the crags of the back, and iron rings the size of gates set among mature stone shelves.",
+			"lowerFormInteraction": "Brutes sweep the newly dry route, Hill Giants roll along the drained channel, and Stone Giants anchor chains across flooded routes; breaking the selected ring makes those orders arrive as ordinary isolated attacks.",
+			"sourceReferences": ["Mountain Lord"]
+		},
+		{
+			"tier": "T5",
+			"formId": "giant-primordial-titan",
+			"displayName": "Primordial Titan",
+			"primaryArchetype": "Marching-Valley Worldboss (Sovereign)",
+			"battlefieldDuty": "Serve as the changing arena itself, carrying a valley that tilts through timber, slope, orbit, and watershed phases while lower Giants operate visible anchors across its back.",
+			"teachingGoal": "Test mastery of every scale-reading lesson by asking players to identify the Titan's next weight shift, disable the lower-form crew shaping that phase, and move between stable landscape anchors before the valley changes orientation.",
+			"signatureMechanic": "March of the Range: the battle occupies the valley on the Titan's back. At four gait beats, the Titan repeats the family grammar at landscape scale: a forested ridge falls like Timber Fall, a glacier rolls loose like Hill Roll, a chain of standing stones sweeps around a central peak like Megalith Orbit, and shoulder rivers reroute through Three Watersheds. A Brute, Hill Giant, Stone Giant, or Mountain Lord operates the matching rune anchor; disabling that crew and breaking its anchor removes the phase. After two anchors fall, the Titan kneels and rotates the valley ninety degrees, opening new paths through its beard glaciers rather than becoming a larger version of the Champion.",
+			"telegraph": "Clouds shear at the waist, furnace-warm eyes narrow without casting an aura, one valley rune darkens, and the corresponding forest, glacier, standing-stone chain, or river system begins moving several beats before the Titan's foot lands.",
+			"counterplay": "Use the announced landscape route to reach the active lower Giant, defeat or displace it, fracture the exposed rune anchor during the Titan's footfall recovery, and relocate to a surviving standing-stone shelter before the valley rotates; every destroyed anchor permanently removes one gait phase.",
+			"visualDelta": "A walking mountain range with an inhabited valley across the back, glaciers in the beard, cloud banks at the waist, warm furnace-mouth eyes, and four colossal rune anchors integrated into distinct forests, slopes, standing stones, and watersheds.",
+			"lowerFormInteraction": "Each lower Giant operates the anchor that enlarges its learned mechanic, and the Titan's phase ends early when that operator is removed; surviving operators relocate when the valley rotates, preserving readable continuity across the boss encounter.",
+			"sourceReferences": ["Primordial Titan"]
+		}
+	]
+}

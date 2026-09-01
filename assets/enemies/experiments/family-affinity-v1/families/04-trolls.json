@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "trolls",
+	"displayName": "Trolls",
+	"sourceRaceNumber": 4,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-01.md",
+	"classificationNotes": "Source-draft Trolls are treated as a regenerative body-horror production family, not as a claim that all cave, bridge, or bog dwellers share this physiology or hostility. The packet preserves their stooped long-armed anatomy, wet rubbery hide, visible mishealing, embedded debris, and accumulated scar history while giving each hostile form a bounded encounter role.",
+	"visualConstants": [
+		"Tall, stooped, potbellied humanoid silhouette with a small head on a thick neck and disproportionately long arms hanging past the knees.",
+		"Bog green, liver-brown, sallow grey, bruise purple, and wet glistening highlights keep living hide distinct from mud and scavenged rags.",
+		"Rubbery skin, scar tissue, bark-hard callus, mud, rope, and half-swallowed equipment remain visibly bodily rather than worn as deliberate finery.",
+		"Healed-over piercings, embedded bones, lodged weapons, misplaced limbs, stray jaws, and layered scars record prior injury as readable construction history.",
+		"Escalation adds accumulated misregrowth rather than simple size: open gashes become knots, alternate organs, defensive scar architecture, and finally a walking archive of incompatible healing."
+	],
+	"escalationAxis": "Regeneration becomes increasingly visible and strategically wrong, progressing from one unstable wound cycle to lodged-injury pressure, player-steerable mutation, shed scar terrain, and a Sovereign that replays and produces its whole wound history.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Anatomy and materials remain physical bog flesh: rubbery hide, wet scar tissue, bark-hard callus, mud, rope, rags, embedded bone, and corroded weapons show ordinary decay and rapid biological repair.",
+				"Motion and surface effects remain bodily and local: muscle bunching, wound contraction, clear fluid, mud slough, scar cracking, and displaced breath reveal regeneration without magical residue."
+			],
+			"counterplaySignal": "Open wound rims, pale regrowth buds, lodged-object anchors, scar seams, and forming head stalks preserve the exact physical interruption points described by each form.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Clean symmetrical healing that erases the family's accumulated wrongness"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Regrowth incorporates cauterized construction: charcoal callus, heat-blistered hide, iron weapons welded into scar beds, ash-packed wounds, and cracked ceramic salve pots remain layered over living Troll anatomy.",
+				"Healing motion becomes a heat cycle through curling smoke, shrinking black scar plates, red tissue visible only beneath opening cautery seams, and steam when bog moisture reaches the hot regrowth core."
+			],
+			"counterplaySignal": "A cautery seam cracks and vents before tissue regrows; cooling or striking the exposed wet rim stalls the cycle before the black plate closes again.",
+			"forbidden": [
+				"Palette-only fire treatment without cauterized tissue, welded debris, and heat-cycle behavior",
+				"Glow-only fire treatment without a visible wound core or changing scar construction",
+				"Pure flame anatomy that removes rubbery flesh and mishealed body parts",
+				"Uniform char that conceals which wound is active"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Mishealing becomes mineralized load-bearing callus: peat-compressed scar slabs, calcified bone shelves, root-threaded mud nodules, flint lodged in wound rims, and sediment bands record repeated regrowth.",
+				"Posture and motion become anchored through rootlike scar tendons, dragging mineralized limbs, localized dust from flexing callus, and pale fracture seams where living tissue still joins hardened mass."
+			],
+			"counterplaySignal": "A root-scar pulls taut and the adjacent mineral seam pales after a committed attack; breaking that living joint drops the heavy regrowth and opens the soft bud beneath.",
+			"forbidden": [
+				"Palette-only earth treatment without mineralized scar layers, anchoring, and changed limb weight",
+				"Glow-only earth treatment without fracture seams or load-bearing regrowth",
+				"Pasted stones that do not emerge from documented wound history",
+				"Complete stone bodies that erase wet Troll flesh and active healing"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Misgrown anatomy develops pressure-catching tissue: stretched scar membranes between extra limbs, hollow callus vents, rag streamers healed into skin, and vane-like ribs grow from recognizable wounds.",
+				"Movement and silhouette become directionally elastic through inflated wound sacs, bowed long arms, flapping membranes, mud streamers, and one-way pressure releases that snap a distorted limb into its attack path."
+			],
+			"counterplaySignal": "One scar membrane stretches translucent and its connected wound sac inflates along the intended direction; puncturing the sac or moving into the still lee collapses the attack.",
+			"forbidden": [
+				"Palette-only wind treatment without scar membranes, vents, and directional elasticity",
+				"Glow-only wind treatment without pressure-bearing anatomy or readable airflow",
+				"Weightless floating Trolls that abandon long-limbed ground contact",
+				"Turbulence that hides active wounds or the still lee"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Regrowth becomes hydropic and bog-native: translucent fluid cysts, waterlogged callus, reed-threaded scars, shells and corroded blades sealed under wet hide, and bladderlike tissue bridges join old wounds.",
+				"Surface and motion reveal coherent pressure through swelling cysts, draining gashes, rippling scar tissue, heavy dripping limbs, and narrow fluid jets when a healing chamber ruptures."
+			],
+			"counterplaySignal": "A clear cyst fills from dark to pale and a scar valve puckers before pressure moves the limb; puncturing the marked cyst drains both attack and healing into a visible low pool.",
+			"forbidden": [
+				"Palette-only water treatment without hydropic tissue, wet material response, and pressure changes",
+				"Glow-only water treatment without coherent cysts, valves, or drainage",
+				"Shapeless water bodies that remove Troll flesh, scars, and embedded objects",
+				"Opaque bog spray that conceals which cyst or wound is active"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "troll-scrag",
+			"displayName": "Scrag",
+			"primaryArchetype": "Open-Wound Rebounder (Initiate)",
+			"battlefieldDuty": "Probe close space with long-arm swipes while one visibly open gash cycles between collapse and rapid regrowth, creating a simple interrupt-or-withdraw decision.",
+			"teachingGoal": "Teach the family's foundational regeneration rule: the dangerous recovery is announced by a pale wound bud, and striking that bud matters more than trading into already healed mass.",
+			"signatureMechanic": "Bad Closure: after a committed swipe, one half-healing gash contracts into a pale bud that will restore the arm's next attack and seal some damage; interruption at the bud stops the closure and makes the arm hang slack for one cycle.",
+			"telegraph": "The mud-caked Scrag hunches over one always-open gash, whose rim pales and draws inward while the long attacking hand goes limp.",
+			"counterplay": "Step outside the preceding swipe, then strike the pale bud before the gash seals; missing that window lets the Scrag rebound immediately with the restored arm.",
+			"visualDelta": "Gangly, warty, and mud-caked with a small head, long bare arms, scavenged rags, and several half-healing gashes that never all close at once.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Scrag"]
+		},
+		{
+			"tier": "T2",
+			"formId": "troll-bog-troll",
+			"displayName": "Bog Troll",
+			"primaryArchetype": "Lodged-Blade Grapple Soldier (Soldier)",
+			"battlefieldDuty": "Apply repeatable pin pressure by using the rusted blade healed into its side as an anchor for a long-arm drag, then regenerate behind shoulder knots while the target is held.",
+			"teachingGoal": "Teach that embedded debris is both a Troll weapon and a weak point: the rusted blade enables the pin, but moving or removing it interrupts the surrounding regrowth.",
+			"signatureMechanic": "Bog Anchor: the Troll hooks a rope around the blade in its side and throws the loop with one long arm; if the loop catches, it braces against tumorous shoulder knots and drags the target toward the blade-side wound.",
+			"telegraph": "The shoulder knots harden, one hand feeds muddy rope around the protruding blade, and the potbelly turns so the blade-side gash faces the target.",
+			"counterplay": "Avoid the widening rope loop, cut it during the drag, or strike the rusted blade sideways to reopen the anchor wound and soften the braced shoulder.",
+			"visualDelta": "Thicker-limbed than a Scrag, with tumorous regrowth knots across the shoulders, wet bog hide, a rope coil, and a rusted blade still visibly lodged in the side.",
+			"lowerFormInteraction": "A Bog Troll drags targets into a Scrag's long reach and can stand between a healing Scrag and its wound bud; pulling the embedded blade forces the Soldier to abandon that cover.",
+			"sourceReferences": ["Bog Troll"]
+		},
+		{
+			"tier": "T3",
+			"formId": "troll-mutant-troll",
+			"displayName": "Mutant Troll",
+			"primaryArchetype": "Misgrowth-Choice Controller (Specialist)",
+			"battlefieldDuty": "Change the encounter by presenting three incompatible regrowth paths—grasping arm, biting neck jaw, or rib barricade—and forcing the player to choose which mutation the Troll completes.",
+			"teachingGoal": "Teach the qualitative Specialist pivot: Troll regeneration is now steerable encounter state, and reading which wound is fed allows the player to trade one known hazard for interrupting a worse one.",
+			"signatureMechanic": "Wrong-Part Fork: after taking a knee, the Mutant pushes healing mass toward one of three visible buds. The shoulder bud completes an extra grappling arm, the neck seam opens the second jaw into a short denial cone, and the outward ribs knit into a stationary chest-high barrier. Striking the active bud cancels that mutation but diverts the remaining mass to the next clockwise bud, which completes faster; breaking the pale feeder scar stops the fork entirely.",
+			"telegraph": "A thick pulse travels around the asymmetric torso, one bud turns pale and swells, and the extra arm, neck jaw, or outward ribs twitch before their distinct form locks in.",
+			"counterplay": "Identify the active bud, decide whether its known zone is tolerable, and if not strike it before completion; after one diversion, cut the visibly stretched feeder scar rather than chasing every bud.",
+			"visualDelta": "Deliberately asymmetric with an extra arm on one side, a second jaw healed into the neck, ribs grown outward like armor, and a pale scar path visibly connecting the three malformed structures.",
+			"lowerFormInteraction": "Bog Troll anchors can hold targets inside the jaw cone and Scrags shelter behind the rib barrier, but either lower form can also block the feeder scar and become leverage for interrupting the mutation path.",
+			"sourceReferences": ["Mutant Troll"]
+		},
+		{
+			"tier": "T4",
+			"formId": "troll-scarlord",
+			"displayName": "Scarlord",
+			"primaryArchetype": "Scar-Shed Bog Bastion (Champion)",
+			"battlefieldDuty": "Build temporary healing territory by tearing off overlapping chest plates as cover and regrowth beds, then using mismatched limbs to patrol the seams between them.",
+			"teachingGoal": "Teach space-control prioritization: the Scarlord's old scars make lower Trolls recover safely, but every shed plate exposes a fresh soft layer and creates a seam players can exploit.",
+			"signatureMechanic": "Palimpsest Plates: the Scarlord peels one bark-hard chest plate and slams it into the bog. Trolls touching its wet inner face regenerate without exposing their usual bud, while the Scarlord loses armor at the matching chest quadrant. Two adjacent plates can overlap into a covered healing pocket, but striking their bright wet seam collapses both.",
+			"telegraph": "Mismatched arms hook beneath a cracked chest plate, dark fluid beads around its edge, and nearby Trolls turn their open wounds toward the glistening inner surface.",
+			"counterplay": "Attack the newly soft chest quadrant, strike the wet overlap before lower forms enter, or force the Scarlord to place plates apart so they cannot form a protected pocket.",
+			"visualDelta": "A bloated mass of overlapping regrowth with bark-hard scar plating across the chest, mismatched limbs of different sizes, and visible wet layers beneath plates ready to shed.",
+			"lowerFormInteraction": "Scrags close Bad Closure against a plate, Bog Trolls anchor enemies at its edge, and Mutant Trolls feed buds without exposing the feeder scar; destroying the plate restores every familiar interruption window.",
+			"sourceReferences": ["Scarlord"]
+		},
+		{
+			"tier": "T5",
+			"formId": "troll-elder-troll",
+			"displayName": "Elder Troll",
+			"primaryArchetype": "Wound-History Brood Sovereign (Sovereign)",
+			"battlefieldDuty": "Run a production-and-transformation boss encounter that reopens centuries of embedded injuries, buds new lower Trolls from those wounds, and absorbs surviving forms to author the next body phase.",
+			"teachingGoal": "Test mastery of buds, lodged anchors, mutation forks, and scar seams by making every boss phase visibly originate from one embedded weapon or forming head that can be interrupted before its historical wound takes over the arena.",
+			"signatureMechanic": "History Heals Wrong: weapons from a dozen armies divide the Elder's walking landscape into four wound beds. Pulling a spear opens a gash that buds two Scrags; wrenching a rusted sword produces a rope-wielding Bog Troll; feeding a half-formed head completes a Mutant Troll's chosen extra structure; shedding the oldest chest landscape creates a Scarlord healing plate. The Elder chooses one bed by turning its most awake head toward it, while lower Trolls may crawl back into an open bed to be absorbed and accelerate that phase. Permanently severing a bed's pale root scar removes its production option. After two roots fall, different forming heads take control of opposite mismatched limbs, creating alternating tells rather than a simple damage escalation.",
+			"telegraph": "One head opens its eyes, nearby embedded weapons flex outward, and a pale root scar pulses from that head to the selected wound bed while incomplete faces along the route begin mouthing the lower form's tell.",
+			"counterplay": "Interrupt retreating lower Trolls before absorption, use the selected embedded weapon as leverage to expose its root, sever that root during the production contraction, and reposition between the independently signaled limb attacks after the head-control phase begins.",
+			"visualDelta": "A walking landscape of unhealed and re-healed flesh, with multiple heads at different stages of formation, layered scar terrain, mismatched limbs, and weapons from many armies embedded along four visibly rooted wound beds.",
+			"lowerFormInteraction": "The Elder produces Scrags, Bog Trolls, and Mutant Troll structures from specific historical wounds, sheds Scarlord-grade terrain, and can absorb any surviving lower Troll to speed the matching phase; severed roots permanently end those exchanges.",
+			"sourceReferences": ["Elder Troll"]
+		}
+	]
+}
