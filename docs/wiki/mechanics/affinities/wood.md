@@ -2,9 +2,20 @@
 
 Wiki ID: `affinity.wood`
 
-Design status: **draft**
+Design status: **superseded**. Wood was removed from the base-affinity roster by the four-affinity
+revision. This page is retained as provenance for an earlier candidate direction, not as a current
+mechanic or visual-production target.
 
-## Player-facing rule
+## Current disposition
+
+Wood remains available as material identity, environmental flavor, equipment construction, plant
+magic, and creature anatomy. Those uses do not name an affinity. The earlier entanglement and growth
+material may later be dropped or deliberately repurposed into Rot, an Earth × Water dual, but no
+such migration is approved here.
+
+The current affinity rules are defined in [Affinities](../progression/affinities.md).
+
+## Superseded player-facing rule
 
 Wood affinity represents living growth, roots, fibers, adaptation, and patient resilience—not merely
 lumber as a material. Matching actions may gain a bounded chance to apply **Slow** through binding,
@@ -29,7 +40,7 @@ These are contextual contributions and may carry setup time, resource, terrain, 
 
 | Trigger | Effect | Scaling candidates | Resistance/counter | Status |
 | --- | --- | --- | --- | --- |
-| Successful root/fiber/growth-tagged control action | `slow` | Wood resonance, mastery, Vigor/Focus, available biomass | cutting/fire tools, escape strength, terrain, immunity | Draft |
+| Successful root/fiber/growth-tagged control action | `slow` | Historical affinity progress, mastery, available biomass | cutting/fire tools, escape strength, terrain, immunity | Superseded |
 
 Slow must specify whether it changes movement distance, initiative, action cost, or another single
 readable quantity. Stronger immobilization should be a separate Root/Bind effect rather than an

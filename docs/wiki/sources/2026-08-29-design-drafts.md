@@ -1,4 +1,4 @@
-# 2026-08-29 supplied design drafts
+# Supplied design drafts and affinity revision
 
 Wiki ID: `sources.design-drafts-2026-08-29`
 
@@ -9,17 +9,25 @@ visible rather than being silently normalized.
 
 ## Source identity and coverage
 
-The hashes and counts below were checked against the four supplied attachments during ingestion.
+The hashes and counts below were checked against the six supplied attachments during ingestion.
 The attachments are not repository fixtures, so the catalog marks this page `partial`; the wiki
 validator verifies the imported pages and links but does not independently reproduce source
 coverage. Row/section counts are a recorded manual audit, not a future automated guarantee.
 
 | Source | Lines / words | SHA-256 | Wiki destination | Coverage evidence |
 | --- | ---: | --- | --- | --- |
-| `progression_system.md` | 1,033 / 11,201 | `850231ef31da12a1ee98d87331292868b8a2bea9f226a24abce0bc938d867327` | [Progression](../mechanics/progression/README.md) | all seven parts, every table/example, and every parked item represented across seven pages |
+| `progression_system.md` | 1,033 / 11,201 | `850231ef31da12a1ee98d87331292868b8a2bea9f226a24abce0bc938d867327` | [Progression](../mechanics/progression/README.md) | all seven original parts represented across seven pages; conflicting affinity content is visibly superseded by the revision below |
 | `skill_compendium.md` | 867 / 13,636 | `646d82ba7df69e08dc7d1e9ba32fc58104a11bbccb75b92606f2109393d0e858` | [Skills](../mechanics/skills/README.md) | all 32 ladder sections and all 520 parsed skill rows represented across ten pages |
 | `equipment_compendium.md` | 490 / 4,654 | `2dae68ced5a8e075e6b12e5f9910517b5f880ec8d65ebae9bbd79179bfc4daa7` | [Equipment](../mechanics/equipment/README.md) | all rules/examples, 48 material/component rows, 143 equipment rows, set sections, and four unfinished areas across seven pages |
 | `monster_races.md` | 686 / 9,557 | `1cdda0ae7ecffce9216572ae5b287c2678f31ef747004a74b555f5bf37849e4d` | [Generator bestiary](../creatures/monster-races/generator-bestiary-guide.md) | all 495 meaningful source lines, 30 races, 30 constant blocks, and 150 tier descriptions across six pages |
+| `part2_affinities.md` | 249 / 3,295 | `0863d9c601beb468f8fae1422d6eacde9808bec21a37d8c6ca14db7267777d5e` | [Affinities](../mechanics/progression/affinities.md) | complete replacement for the affinity part: four bases, one cycle, ranks, advanced states, Dominion, six duals, and holding rules |
+| `affinity_change_notes.md` | 95 / 953 | `90efd687e0e86e53a08bec4dcc788d98a0b3183cb11aaa017693ef9e10da3220` | [Progression](../mechanics/progression/README.md) | terminology, skill/affinity relation, star gate, open decisions, and downstream migration effects traced through the split progression wiki |
+
+The two 2026-08-31 affinity sources supersede only conflicting affinity material from
+`progression_system.md`. The original source remains authoritative for unaffected attributes,
+skills, stars, levels, equipment, and parked progression mechanics. The change-note document is
+design input rather than a repository instruction; its separate skill-compendium migration remains
+deferred to the user-owned skills pass.
 
 ## Import policy
 
@@ -40,10 +48,11 @@ coverage. Row/section counts are a recorded manual audit, not a future automated
 
 ## Resolved collisions and remaining convergence
 
-The source-precedence decision resolves the first five earlier collisions:
+Source precedence now resolves the first five earlier collisions as follows:
 
 1. use `Might / Vitality / Agility / Dexterity / Intellect / Spirit`;
-2. Wind is derived from Metal × Wood rather than a sixth base affinity;
+2. Fire, Earth, Wind, and Water are the four base affinities; Wood and Metal are retired as
+   affinities;
 3. XP comes from kills; other growth uses separately typed grants;
 4. merging consumes two Master-10 inputs and uses a catalyst and recipe;
 5. passives are unlimited and only one stance may be active.

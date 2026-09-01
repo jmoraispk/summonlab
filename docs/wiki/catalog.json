@@ -57,7 +57,7 @@
       "path": "docs/wiki/mechanics/affinities/README.md",
       "pageType": "mechanic",
       "owner": "progression",
-      "designStatus": "draft",
+      "designStatus": "accepted",
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "public"
@@ -67,7 +67,7 @@
       "path": "docs/wiki/mechanics/affinities/fire.md",
       "pageType": "affinity",
       "owner": "progression",
-      "designStatus": "draft",
+      "designStatus": "accepted",
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "discoverable"
@@ -77,7 +77,7 @@
       "path": "docs/wiki/mechanics/affinities/wind.md",
       "pageType": "affinity",
       "owner": "progression",
-      "designStatus": "draft",
+      "designStatus": "accepted",
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "discoverable"
@@ -87,7 +87,7 @@
       "path": "docs/wiki/mechanics/affinities/wood.md",
       "pageType": "affinity",
       "owner": "progression",
-      "designStatus": "draft",
+      "designStatus": "superseded",
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "discoverable"
@@ -322,11 +322,11 @@
       "spoilerScope": "public"
     },
     {
-      "wikiId": "mechanics.progression.affinities-resonance",
-      "path": "docs/wiki/mechanics/progression/affinities-and-resonance.md",
+      "wikiId": "mechanics.progression.affinities",
+      "path": "docs/wiki/mechanics/progression/affinities.md",
       "pageType": "mechanic",
       "owner": "progression",
-      "designStatus": "draft",
+      "designStatus": "accepted",
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "discoverable"

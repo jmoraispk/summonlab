@@ -160,6 +160,10 @@ less than they help a true Novice.
 Every skill declares composable conditions. Higher rarity generally means more conditions rather
 than only larger thresholds.
 
+S-grade requirements use a **minimum affinity rank** wherever a skill carries an infusion. Affinity
+rank replaces the retired Resonance measure; it does not replace mastery or the skill's other
+learning conditions.
+
 | Condition | Example |
 | --- | --- |
 | Attribute | Dexterity exceeds a threshold |
@@ -173,6 +177,10 @@ than only larger thresholds.
 
 Tracked repetitions are first-class conditions because they cannot simply be bought. One path can
 require many conditions, while a skill can offer multiple independent alternative paths.
+
+Grade B and above skills may also carry additive affinity slots as defined in
+[Affinities](affinities.md#28-affinity-and-skills). The slot belongs to the skill, but the affinity
+belongs to the hero; filling a slot never grants an affinity the hero does not hold.
 
 Example Mythic counter technique:
 

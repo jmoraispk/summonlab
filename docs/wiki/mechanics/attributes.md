@@ -31,7 +31,7 @@ names and mechanical territories above are no longer an open choice.
 
 - Base attributes belong to progression/capability state and change only through typed growth.
 - Skills turn attributes into specific competence. High Might does not automatically grant sword
-  mastery; high Insight does not grant knowledge the actor never observed.
+  mastery; high Intellect does not grant knowledge the actor never observed.
 - Context selects the relevant attribute or combination. The same task must not silently change its
   formula by UI surface.
 - Injuries, needs, equipment, environment, and affect modify derived checks through explicit

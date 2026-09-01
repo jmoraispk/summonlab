@@ -8,7 +8,9 @@ hashes, generation provenance, and prompts remain in the linked domain catalogs/
 
 For individual identities rather than family plates, open the
 [monster database](../creatures/monsters/README.md). It currently binds forty archetypes to 240
-Normal, Wood, Fire, Metal, Water, and Wind candidates or revision studies.
+Normal, Wood, Fire, Metal, Water, and Wind candidates or revision studies. This is a legacy
+six-form evidence set: the current production target is Normal plus Fire, Earth, Wind, and Water.
+Wood and Metal remain candidates only and must not be promoted as affinity variants.
 
 ## First progression families
 

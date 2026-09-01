@@ -84,7 +84,8 @@ The summon agent compares three presentations against the same test receipt:
 
 - **Gate ignition** — portal energy builds, a silhouette crosses, then identity and mechanics
   resolve;
-- **Constellation assembly** — affinity and skill marks form the person before the portrait reveal;
+- **Constellation assembly** — attribute and skill marks form the person before the portrait reveal,
+  with an explicit Unaligned mark rather than an elemental affinity;
 - **Immediate identity** — portrait-first, restrained parallax, then staged mechanical details.
 
 The review should decide one production direction, not ship three permanent animation systems.

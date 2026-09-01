@@ -2,12 +2,13 @@
 
 Wiki ID: `affinity.wind`
 
-Design status: **draft**
+Design status: **authoritative identity with open tuning**
 
 ## Player-facing rule
 
-Wind affinity favors movement, pressure, reach, redirection, and precision. Matching actions may gain
-a bounded chance to apply **Cut** when their pressure or edge defeats the target's protection.
+Wind affinity embodies motion, severance, and displacement. At Rank II or above, an infused skill
+may gain a bounded chance to apply **Lacerate** when its pressure or edge defeats the target's
+protection.
 
 ## Mechanical identity
 
@@ -16,22 +17,19 @@ Candidate verbs: accelerate, redirect, lift, shear, propel, disperse, cushion.
 Wind is not simply “more speed.” It can alter positioning, trajectories, sound, falling, ventilation,
 projectiles, sails, smoke, and area denial.
 
-## Attribute expression proposals
+## Attribute expression
 
-- Agility: improved derived movement, initiative, balance, or precision for matching actions.
-- Focus: stable trajectories, controlled pressure, or maintained currents.
-- Insight: better use of airflow evidence or ranged prediction where a skill permits it.
-
-These are contextual contributions, not a permanent increase to every Agility check.
+On level-up, Wind nudges Agility. It grants no universal precision, comprehension, or secondary
+attribute bonus, and a Wind dual grants no attribute nudge.
 
 ## Candidate triggered effect
 
 | Trigger | Effect | Scaling candidates | Resistance/counter | Status |
 | --- | --- | --- | --- | --- |
-| Successful shear/edge/wind-tagged action | `cut` | Wind resonance, mastery, Agility/Focus, edge quality | armor, guard, cover, pressure resistance | Draft |
+| Successful infused wind action | `lacerate` | Wind rank, mastery, Agility, target movement | armor, guard, cover, pressure resistance | Draft |
 
-Cut may mean laceration, bleeding pressure, armor-gap exposure, or equipment damage. The combat model
-must choose one clear typed consequence rather than let the word change meaning by skill.
+Lacerate deals cutting damage that scales with the target's movement. The combat model must still
+define its proc rate, mitigation, duration, stacking, and precise movement sampling.
 
 ## Environment and civic uses
 
@@ -47,6 +45,6 @@ solid neon ribbons that obscure anatomy or make invisible force unreadable witho
 
 ## Open questions
 
-- Is Cut a wound, status stack, armor interaction, or family of skill-specific effects?
-- How does wind interact with Fire spread and Wood movement without creating automatic combos?
+- Does Lacerate sample distance moved, action speed, or another bounded movement measure?
+- How does Wind interact with Fire's overcoming advantage without creating automatic combos?
 - Which movement bonuses preserve tactical readability and action economy?

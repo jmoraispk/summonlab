@@ -17,7 +17,7 @@ person.
 | Applies to | Skills, materials, equipment | Heroes |
 | Can increase | No | Yes, through nurture |
 | Meaning | What an object fundamentally is | Starting endowment and current nurture |
-| Gates | No hero category | Level cap and points per level in the source proposal |
+| Gates | No hero category | Level cap, points per level, and affinity eligibility in the source proposal |
 
 Stars do not limit skill rarity: a 1★ hero may learn and master a Legendary skill.
 
@@ -90,7 +90,8 @@ skills.
 
 It intentionally separates level from mastery: a level-1 hero may be a Master cook, while a veteran
 fighter may be unable to cook. Non-combat heroes still advance through skill practice, attribute
-training, and Resonance, but combat is the proposed source of level-earned attribute points.
+training, and affinity-rank progress, but combat is the proposed source of level-earned attribute
+points.
 
 This kill-only XP rule is authoritative. Generic progression grants may still carry skill,
 attribute, affinity, or other growth, while synthesis must use essence or another non-XP resource
@@ -107,12 +108,28 @@ access, never the ultimate ceiling.
 | Family | Matching skill progress is faster and epiphanies much likelier |
 | Learning mode | Solo practice, guidance, or pressure yields more |
 | Variety | Novelty is stronger and contexts distinguish more readily |
-| Affinity | Resonance and its track progress faster |
+| Affinity | Matching affinity-rank progress is faster |
 
 Aptitude rarity is magnitude, not category: every category can produce weak or exceptional talent.
 This allows a 1★ hero with one enormous aptitude to remain an exciting summon.
 
-### Awakening and discovery
+## Affinity eligibility and awakening
+
+Affinity eligibility keys off **current stars**, so nurturing a low-native-star hero can open the
+same affinity gate as summoning at that rating.
+
+| Current stars | Affinity eligibility |
+| ---: | --- |
+| 1–2★ | None; the hero remains unaligned at this rating |
+| 3★ | May awaken one base affinity |
+| 4–7★ | May awaken one base affinity or, rarely, a dual affinity |
+
+Eligible heroes roll affinity awakening at level-up and star promotion. Awakening is not
+purchasable, craftable, or guaranteed by accumulated play. Duals can also arise through the bounded
+routes listed in [Affinities](affinities.md#awakening), but both parents must reach Rank III before
+the pair can be held.
+
+### Latent aptitude awakening and discovery
 
 Every star gained above native rank makes one chance-based latent-aptitude awakening roll. A native
 1★ nurtured to 6★ therefore gets five rolls and might end with three or four total aptitudes,

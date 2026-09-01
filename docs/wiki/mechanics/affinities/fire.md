@@ -2,12 +2,12 @@
 
 Wiki ID: `affinity.fire`
 
-Design status: **draft**
+Design status: **authoritative identity with open tuning**
 
 ## Player-facing rule
 
-Fire affinity favors heat, ignition, pressure, transformation, and sustained threat. Matching actions
-may gain a bounded chance to apply **Burn** after defenses and resistances are considered.
+Fire affinity embodies expansion, aggression, and consumption. At Rank II or above, an infused
+skill may gain a bounded chance to apply **Burn** after defenses and resistances are considered.
 
 ## Mechanical identity
 
@@ -16,19 +16,16 @@ Candidate verbs: ignite, heat, consume, temper, flare, cauterize, transform.
 Fire is not automatically “high damage.” It can support offense, crafting, survival, medicine,
 environment control, or industrial work depending on the skill and context.
 
-## Attribute expression proposals
+## Attribute expression
 
-- Might: increased derived force only for registered explosive/thermal actions.
-- Focus: improved control, ignition reliability, or sustained-channel stability.
-- Vigor: heat tolerance or exertion in hot environments.
-
-These are allowed directions to test, not passive bonuses granted together.
+On level-up, Fire nudges Might. It grants no universal precision, comprehension, or secondary
+attribute bonus, and a Fire dual grants no attribute nudge.
 
 ## Candidate triggered effect
 
 | Trigger | Effect | Scaling candidates | Resistance/counter | Status |
 | --- | --- | --- | --- | --- |
-| Successful heat/fire-tagged action | `burn` | Fire resonance, skill mastery, Focus, heat level | fire resistance, wet/cold state, armor/material, cleanse | Draft |
+| Successful infused fire action | `burn` | Fire rank, skill mastery, Might, heat level | fire resistance, wet/cold state, armor/material, cleanse | Draft |
 
 Burn should be a typed damage/pressure-over-time status with explicit potency, duration, stacking,
 decay, and extinguish rules. It must remain useful without making every fire action a damage-over-time

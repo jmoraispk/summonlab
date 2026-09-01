@@ -2,20 +2,20 @@
 
 Wiki ID: `mechanics.affinities`
 
-Design status: **draft**. The shared concept is accepted; the exact roster, values, interactions, and
-proc formulas remain open for simulation and review.
+Design status: **accepted roster with explicit tuning gaps**. Fire, Earth, Wind, and Water are
+the four base affinities. Exact proc rates, combat modifiers, awakening odds, manifestation
+thresholds, and Dominion dimensions remain open for simulation and review.
 
-The supplied [progression affinity draft](../progression/affinities-and-resonance.md) defines the
-five main Wu Xing affinities as Wood, Fire, Earth, Metal, and Water. Visual production needs a
-variant for every main element. Wind is not one of those five: it is derived from Metal × Wood.
-The current monster artwork already includes Wind, so it remains in the visual selector alongside
-the other variants without a separate derived-affinity treatment. Earth is still missing from the
-current monster image set and must be added in a future production pass.
+The supplied [progression affinity revision](../progression/affinities.md) replaces the former Wu
+Xing roster and retires Resonance as a progression measure. Visual production now targets one
+Normal (unaligned) form plus Fire, Earth, Wind, and Water variants for every enemy class. Existing
+Wood and Metal studies remain legacy candidates until their review evidence is migrated or retired;
+they are not approved affinity variants.
 
-Affinities describe how a hero, monster, skill, item, or environment resonates with a family of
-mechanical expressions. Heroes and monsters use the same affinity definitions. An affinity can
-influence derived attributes, unlock or strengthen skill behavior, interact with environments, and
-contribute a bounded chance to typed effects such as burning, cutting, or slowing.
+An affinity is a property of a hero or monster's body and spirit. Heroes and monsters use the same
+definitions and progress from Rank 0 through V. Skills at grade B and above provide additive slots
+that can express an affinity the bearer already holds; skills never lend the bearer an element they
+do not possess.
 
 An affinity is not:
 
@@ -24,14 +24,15 @@ An affinity is not:
 - a damage color whose only purpose is a weakness chart;
 - permission for generated prose to create an unregistered status effect.
 
-## Initial pages
+## Supporting pages
 
-- [Fire](fire.md) — candidate burn application and heat/force/control expression.
-- [Wind](wind.md) — candidate cutting application and speed/precision expression.
-- [Wood](wood.md) — candidate slowing/binding application and growth/endurance expression.
+- [Fire](fire.md) — Burn, Might nudge, and localized thermal visual language.
+- [Wind](wind.md) — Lacerate, Agility nudge, and displacement visual language.
+- [Wood](wood.md) — superseded affinity proposal retained as design history; wood remains available
+  as a material and visual motif.
 
-These examples capture the current brainstorming direction. Their exact attribute matches and
-numbers are proposals, not accepted balance.
+The canonical page owns the complete Earth and Water definitions as well as every cycle, rank, dual,
+awakening, and manifestation rule.
 
 ## Domain model
 
@@ -42,7 +43,7 @@ AffinityDefinition (immutable content)
   environment interactions · counters · incompatibilities · caps
 
 AffinityProfile (actor/item/environment state)
-  sourceId · affinityId · resonance band/value · provenance
+  sourceId · affinityId · rank · rank progress · provenance
   unlocked expressions · temporary modifiers · evolution state
 
 AffinityContribution (one action boundary)
@@ -72,17 +73,9 @@ it did or did not happen.
 
 ## Attribute expression
 
-Affinities modify a derived action rather than silently rewriting base attributes. A matching
-affinity may contribute to:
-
-- force or penetration;
-- speed, initiative, or precision;
-- stamina, recovery, or resistance;
-- concentration, duration, or area control;
-- learning rate or fusion compatibility for matching skills.
-
-Each definition must name which expressions are allowed, their context, scaling source, cap, and
-tradeoff. Possessing more affinities must not grant free universal stats.
+Affinity has one coupling to base attributes: on level-up, a single affinity nudges its matching
+attribute—Fire/Might, Earth/Vitality, Wind/Agility, or Water/Spirit. Dexterity and Intellect remain
+outside the elemental system. Dual affinities grant no attribute nudge.
 
 ## Status-effect contract
 
@@ -100,8 +93,9 @@ Every status definition needs:
 | Visual/audio cues | Redundant readable presentation |
 | Event payload | Replay and journal evidence |
 
-“Burn,” “cut,” and “slow” are candidate typed statuses. Their formulas are intentionally absent
-until the combat/action economy is defined.
+Burn, Weight, Lacerate, and Chill are the four base typed statuses. Their formulas remain absent
+until the combat/action economy is defined; Chill escalates to torpor, while Freeze remains Ice's
+dual-affinity signature.
 
 ## Race, culture, and individuality
 
@@ -112,23 +106,20 @@ personality, intelligence, rarity, and obedience.
 
 ## Skill fusion
 
-Affinities are aspects in the
-[skill lattice](../../../system-architecture/systems/progression-and-skills.md).
-Fusion may preserve, combine, suppress, or transform registered aspects, but it cannot mint effect
-budget. A Fire + Wind recipe might qualify for an authored combustion or cutting-flame definition;
-if no definition/template passes validation, the combination is unavailable rather than improvised.
+Affinity slots are authored skill capabilities in the
+[progression model](../progression/affinities.md#28-affinity-and-skills). Grade B+ skills may carry
+slots, and A/S skills may carry several. When a valid pair is slotted and its dual has been
+manifested, the skill may use the dual status and cycle position instead of either parent.
 
 ## Visual direction
 
-Affinity art should communicate material behavior and motion—embers, pressure, leaves, fibers,
-condensation, distortion, residue—not cover every character in a colored glow. Visual intensity
-reflects the current action/effect state, not moral worth or rarity.
+Affinity art should communicate material behavior and motion—embers, stone stress, displaced dust,
+pressure, condensation, flowing water, distortion, and residue—not cover every character in a
+colored glow. Visual intensity reflects the current action/effect state, not moral worth or rarity.
 
 ## Open questions
 
-- What is the complete affinity roster and its taxonomy?
-- Are resonance values continuous, banded, or both?
-- Can affinities be learned, only awakened, or changed through evolution/synthesis?
-- Should opposing affinities cancel, transform, or coexist?
-- Which effects belong to affinities versus skills, weapons, or environments?
-- What proc frequency keeps effects meaningful without dominating every action?
+- What awakening odds keep single affinities uncommon and dual affinities genuinely rare?
+- What manifestation threshold and reaction-stability costs produce a meaningful mastery arc?
+- Which proc rates and combat modifiers keep the cycle meaningful without dominating every action?
+- What radius and tick rate make Dominion legible without making Rank V arenas unplayable?

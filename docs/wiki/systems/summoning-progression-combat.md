@@ -10,7 +10,7 @@ internal bounded contexts stay separate even though the player experiences them 
 
 - one Normal summoning channel and enough introductory access to form one party;
 - 1★ levels 1–10 with the accepted future cap table preserved in schema;
-- six attributes and a small affinity subset;
+- six attributes and the explicit Unaligned affinity state; 1★ heroes cannot awaken an affinity;
 - 8–12 runtime skills from the complete compendium;
 - 12–20 runtime equipment definitions across weapon, armour, and accessory;
 - direct attribute or owned-skill training;
@@ -91,7 +91,7 @@ damage = SkillBase
        x (1 - Mitigation)
 ```
 
-The broader draft includes tick-driven action accumulation, the five base affinities, status
+The broader draft includes tick-driven action accumulation, the four base affinities, status
 applications, threat, poise, group formations, consumables, kill-sensitive drops, gathering, and
 permanent consequences. Living Village implements only the explanatory seams needed by its
 presentation fixture. Permanent injury, death, recovery time, free-roaming gathering, agentic

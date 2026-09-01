@@ -77,7 +77,7 @@ runtime command is a deterministic rejection, not a hidden no-op.
 | Multiple parties | `off` | One party proves reservation and return |
 | Advanced and Special summon channels | `off` | The fixed six-person Normal sequence is the complete prototype roster |
 | Equipment crafting, enchanting, sets, wear, and repair | `off` | Starter/drop loadouts only |
-| Advanced affinity, dual affinity, and derived affinity | `off` | Only the accepted combat subset may resolve |
+| Hero affinity awakening, affinity ranks, and dual affinity | `off` | Every 1★ prototype hero remains Unaligned; a base affinity may appear only in an explicitly enabled monster fixture |
 | Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |
 | Synthesis | `off` | Irreversible social/economic loop is not needed for v1 |
 | Portals, neighbors, airships, and mounts | `off` | Later world/base milestones |

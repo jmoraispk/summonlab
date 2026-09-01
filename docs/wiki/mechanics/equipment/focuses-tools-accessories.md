@@ -16,7 +16,7 @@ A focus is not required to cast, but it substantially improves magical magnitude
 | **Orb** | D+ | Light | Ward and Mind. Control duration and stability. |
 | **Prayer Beads** | D+ | Light | Restoration. Mana efficiency and healing potency. |
 | **Censer** | C+ | Medium | Enchantment. Reduces component consumption. |
-| **Elemental Core** | B+ | Light | One affinity only. Raises effective Resonance while held. |
+| **Elemental Core** | B+ | Light | One affinity only. Raises effective affinity rank while held. |
 | **Worldtree Staff** | A+ | Medium | Any. Grants a skill and holds three enchantments. |
 
 ## Tools
@@ -64,14 +64,14 @@ rarest equipment in the game.
 | **Storage Ring** | D+ | **Dimensional inventory.** Modest capacity, weight-independent. |
 | **Storage Bracelet** | B+ | Far larger dimensional capacity |
 | **Pocket Space** | A+ | Effectively unlimited. A meaningful reward on its own. |
-| **Affinity Sigil** | C+ | Raises effective Resonance in one element |
+| **Affinity Sigil** | C+ | Raises effective affinity rank in one element |
 | **Master's Token** | B+ | Granted by a teacher. Raises Guidance yield for the bearer. |
 | **Bound Relic** | A+ | Grants an active skill; bound to one hero permanently |
 
 ## Open implementation questions
 
 - Bind focus schools, craft families, skills, gates, and granted effects to stable skill IDs.
-- Normalize Resonance and define whether it is an affinity value, derived stat, or named mechanic.
+- Define how temporary effective-rank bonuses interact with unlocks, rank gaps, and Dominion.
 - Define tool possession versus facility fixtures, field portability, quality ceilings, and what
   happens when access is lost mid-task.
 - Define accessory slots beyond the two-ring limit, and decide whether Pocket Space is wearable.

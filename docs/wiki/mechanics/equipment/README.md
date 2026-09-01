@@ -108,9 +108,9 @@ only when a starter hero can actually use it and combat can explain the differen
 The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
 remain preserved rather than silently normalized:
 
-- The equipment document's Dexterity, Vitality, Intellect/Intelligence, and Resonance references bind
-  to the supplied progression vocabulary. New runtime IDs must migrate away from the old prototype
-  names together.
+- The equipment document's Dexterity, Vitality, and Intellect/Intelligence references bind to the
+  supplied progression vocabulary. Retired Resonance references now use affinity rank. New runtime
+  IDs must migrate away from the old prototype names together.
 - The quality table says Masterwork is material band plus two, which makes Masterwork Copper Rare;
   the accompanying example calls it Uncommon and introduces an undefined Exceptional quality for
   Rare.

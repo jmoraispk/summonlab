@@ -1,9 +1,10 @@
-# Imported attribute and training proposal
+# Attributes and training
 
 Wiki ID: `mechanics.progression.attributes-training`
 
-Design status: **draft**. The six names below conflict with the current shared attribute vocabulary;
-they are preserved for review rather than silently replacing it.
+Design status: **authoritative vocabulary with open tuning**. Might, Vitality, Agility, Dexterity,
+Intellect, and Spirit are the accepted six attributes. Their numeric curves and the broader training
+proposal remain subject to review.
 
 ## Three pillars and six attributes
 
