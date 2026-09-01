@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "celestials",
+	"displayName": "Celestials",
+	"sourceRaceNumber": 12,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-02.md",
+	"classificationNotes": "Source-draft Celestials are treated as winged beings manifested through light and geometric order for authored encounters, not as a biological people or a universal claim about religion, holiness, goodness, authority, moral worth, personhood, or cosmic law. Their light, sunlight colors, halos, and luminous bodies are family-native non-affinity materials and symbols; elemental variants require distinct construction beyond radiance.",
+	"visualConstants": [
+		"An idealized upright humanoid silhouette remains deliberately symmetrical, with feathered wings and a halo above or behind the head even as the body becomes increasingly abstract.",
+		"White, ivory, pale gold, sunlight yellow, and sky blue remain family-native ordered radiance rather than elemental affinity colors.",
+		"Polished gold, white marble, feather, silk, and source-native pure light stay layered so armor, cloth, wing roots, halo joints, and the suggested body remain readable.",
+		"Halos, ring geometry, sacred script, ribbons, censers, blank ceremonial masks, and wing count communicate rank through exact symmetry and moving parts rather than glow or size alone.",
+		"Escalation increases wing pairs and halo complexity from a simple ring to an orrery, but each tier preserves a breakable alignment joint and a learnable ordered command."
+	],
+	"escalationAxis": "A two-wing Messenger draws one line, a Guardian braces it, a four-wing Warden rotates intersecting axes, a six-wing Archon composes those geometries, and an orrery Seraph commands and sheds entire ordered rings as the arena simplifies.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity materials remain white feather, ivory silk, polished gold, white marble, sacred script, restrained sunlight-colored radiance, source-native pure light, and exact halo geometry with visible physical or symbolic joints.",
+				"Motion and effects remain ordered rather than elemental: wings beat in counted pairs, script advances along ring tracks, ribbons mark straight decrees, light stays bounded to body and halo surfaces, and no unexplained wake trails through the environment."
+			],
+			"counterplaySignal": "A ribbon seal, shield grip, wing root, halo bearing, mask seam, or orrery axle preserves the established weak point while source-native light dims to show recovery.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating family-native light, radiance, sunlight color, or halo emission alone as Fire, Wind, or any elemental affinity"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Ordered regalia becomes a solar kiln beyond native light through heat-crazed gold, ceramic halo vents, char-edged feathers, ember channels inside marble armor, and furnace-like ring bearings scaled from the T1 simple halo to the T5 orrery.",
+				"Actions follow counted combustion cycles: vents open in sequence, specific wing pairs fan intake, heat distortion marks a selected decree, and a dark cooling bearing exposes the alignment after release."
+			],
+			"counterplaySignal": "The selected halo bearing darkens and its ceramic vent remains open after a solar cycle; striking it breaks that alignment without extinguishing family-native radiance.",
+			"forbidden": [
+				"Palette-only fire treatment or extra gold-orange applied to family-native sunlight colors",
+				"Glow-only fire treatment without kiln materials, intake behavior, and a cooling bearing",
+				"Generic fire wings that erase feather count, wing roots, and ordered motion",
+				"Brighter family-native light presented as Fire affinity without combustion construction"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Bodies and regalia gain structural sacred masonry through veined marble armor, crystal halo bearings, gold-pin wing roots, engraved plinth shoes, and concentric stone counterweights that preserve the exact wing count and humanoid suggestion.",
+				"Movement and commands become load-bearing through planted symmetry, rotating counterweights, localized marble dust, and pale fractures at the active shield, wing root, ring joint, or orrery axle."
+			],
+			"counterplaySignal": "The crystal bearing or marble joint carrying the current geometry turns chalk-white after commitment; breaking it tilts that axis and opens the symmetric formation.",
+			"forbidden": [
+				"Palette-only earth treatment without sacred masonry, counterweights, and changed load paths",
+				"Glow-only earth treatment without a fracture, bearing, or structural joint",
+				"Pasted rocks that hide feathers, wing pairs, halo geometry, or humanoid proportion",
+				"White marble alone presented as Earth affinity despite being family-native material"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Feathers and halos become pressure machinery through vane-layered pinions, hollow ring flutes, sail-cut ribbons, vented armor, and wing-pair channels that scale explicitly from two wings at T1–T2 to four, six, and many-tiered wings at T3–T5.",
+				"Motion exposes force direction through counted wing camber, script and ribbon streamlines, pressure distortion confined to selected axes, and a still center at the halo bearing, mask, or orrery axle."
+			],
+			"counterplaySignal": "One wing pair and its ribbons align while the governing halo bearing becomes perfectly still; crossing the lee or striking that still center breaks the pressure decree.",
+			"forbidden": [
+				"Palette-only wind treatment without vane feathers, flute geometry, and directional pressure",
+				"Glow-only wind treatment without a still center or readable force route",
+				"Ordinary wing beats presented as Wind affinity without altered feather and halo construction",
+				"Cloud or debris effects that obscure wing count, script order, halo joints, or body symmetry"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Ordered regalia becomes a hydraulic liturgy through pearl-inlaid halo channels, translucent reservoirs within marble armor, wet silk ribbons, shell valves at wing roots, and fluid ring bearings scaled to each tier's halo complexity.",
+				"Actions show coherent filling and drainage: clear fluid advances beneath script, selected feathers lock under pressure, wet reflections reveal moving ring sections, and pressure loss exposes the central bearing."
+			],
+			"counterplaySignal": "A pearl valve lifts as the selected halo or wing pair fills; opening it drains that axis and reveals the otherwise luminous binding core.",
+			"forbidden": [
+				"Palette-only water treatment without reservoirs, valves, wet materials, and pressure routing",
+				"Glow-only water treatment without coherent filling and drainage",
+				"Shapeless blue light or liquid bodies that erase celestial anatomy and geometry",
+				"Sky-blue family-native color presented as Water affinity without hydraulic construction"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "celestial-messenger",
+			"displayName": "Messenger",
+			"primaryArchetype": "Ribbon-Line Decree Initiate (Initiate)",
+			"battlefieldDuty": "Probe positional reading by delivering one straight ribbon decree between its simple halo and a marked floor point, then descending along that line with bare feet exposed.",
+			"teachingGoal": "Teach that ordered actions are exact and interruptible: leave the announced line, then cut the ribbon seal or strike the dim halo joint during descent.",
+			"signatureMechanic": "Single Word: the Messenger unrolls one ivory ribbon from the simple ring halo to a chosen point; sacred script advances once along it, and the slight two-wing figure descends in a straight line to deliver a palm strike before returning upward.",
+			"telegraph": "Both soft wings fold evenly, the plain robe hangs still, and one readable script line travels from the simple halo down the taut ribbon.",
+			"counterplay": "Step off the exact ribbon line and strike its floor seal or the dim ring joint while the Messenger's bare feet and folded wings are committed to descent.",
+			"visualDelta": "A small, slight, symmetrical humanoid in plain white robes with bare feet, two soft feathered wings, a simple ring of family-native light, and one long script ribbon.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Messenger"]
+		},
+		{
+			"tier": "T2",
+			"formId": "celestial-guardian",
+			"displayName": "Guardian",
+			"primaryArchetype": "Halo-Brace Line Soldier (Soldier)",
+			"battlefieldDuty": "Hold a repeatable luminous line by aligning round shield, spear, full two-wing span, and solid ring halo, then thrust only after the formation locks.",
+			"teachingGoal": "Teach mature order as geometry rather than toughness: force the shield off its halo diameter and punish the exposed rear wing root during the fixed thrust.",
+			"signatureMechanic": "Golden Diameter: the Guardian places shield and spear on opposite ends of its solid halo's projected line. The two full wings brace symmetrically and the spear thrusts down that diameter; rotation is impossible until the shield grip releases.",
+			"telegraph": "Gold plate settles, the round shield centers on one side of the halo, the spear tip reaches the opposite side, and both wing roots lock at equal angles.",
+			"counterplay": "Move across the diameter rather than away from the spear, displace the shield grip, or strike the rear wing root while the thrust and opposite wing remain fixed.",
+			"visualDelta": "An idealized armored humanoid in polished gold plate with full two-wing span, a solid ring halo, a long spear, and a round shield sized to align with the halo.",
+			"lowerFormInteraction": "Messenger ribbons can terminate at the Guardian's shield and borrow its diameter, but moving the shield breaks the message line and the brace together.",
+			"sourceReferences": ["Guardian"]
+		},
+		{
+			"tier": "T3",
+			"formId": "celestial-warden",
+			"displayName": "Warden",
+			"primaryArchetype": "Four-Wing Axis Adjudicator (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the floor into intersecting-axis control by rotating two halo rings with separate wing pairs, creating one forbidden crossing and one deliberately safe quadrant.",
+			"teachingGoal": "Teach players to read coupled geometry: match each wing pair to its ring, enter the quadrant where scripts disagree, and strike the stalled bearing before the axes realign.",
+			"signatureMechanic": "Double Injunction: the upper wing pair rotates the outer halo ring and a line of script clockwise; the lower pair rotates the inner ring counterclockwise. Their projected axes sweep the arena, and where matching script meets becomes a damaging lock. Where unlike glyphs cross, both rings stall and reveal the central gold bearing as a safe attack window.",
+			"telegraph": "Four wings separate into upper and lower pairs, two halo rings turn in opposite directions, and script drifts from the arms to mark both projected axes before they move.",
+			"counterplay": "Track unlike glyphs rather than brightness, move into their crossing, and strike the exposed central bearing while both wing pairs pause; staying between matching glyphs triggers the lock.",
+			"visualDelta": "A composed four-winged humanoid in ornate gold armor, with upper and lower feather pairs, two independently rotating halo rings, and sacred script drifting in ordered bands around both arms.",
+			"lowerFormInteraction": "Messenger lines and Guardian diameters can be assigned to one rotating axis, but entering the unlike-glyph quadrant interrupts those lower formations with the Warden's stalled rings.",
+			"sourceReferences": ["Warden"]
+		},
+		{
+			"tier": "T4",
+			"formId": "celestial-archon",
+			"displayName": "Archon",
+			"primaryArchetype": "Six-Wing Geometric Marshal (Champion)",
+			"battlefieldDuty": "Compose line, diameter, and double-axis rules through three wing pairs and interlocking halo rings while a blank mask visibly turns toward the active command.",
+			"teachingGoal": "Teach ordered deconstruction: each wing pair owns one inherited geometry and one mask seam; breaking that seam permanently removes the corresponding ring from the composition.",
+			"signatureMechanic": "Threefold Office: the upper wings and outer ring route Messenger decrees, the middle wings and shield-sized ring brace Guardian diameters, and the lower wings and inner crossed rings sustain a Warden injunction. The faceless mask rotates one third-turn toward the active office, exposing the opposite retaining seam while the sword of source-native pure light follows only that geometry.",
+			"telegraph": "One pair among six wings opens to full symmetry, its halo ring advances, the blank mask turns exactly one third, and the pure-light sword flattens into the selected line or axis.",
+			"counterplay": "Identify the moving wing pair and familiar geometry, take its learned safe space, then strike the opposite mask seam; each broken seam stops one ring and leaves that wing pair lowered.",
+			"visualDelta": "A six-winged upright being in ornate armor with three distinct feather pairs, a faceless blank ceremonial helm, interlocking geometric halo rings, and a sword formed from bounded family-native pure light.",
+			"lowerFormInteraction": "Its three offices command Messenger ribbons, Guardian diameters, and Warden axes; breaking the corresponding mask seam ends that lower-form geometry and removes one ring from the Archon's pattern.",
+			"sourceReferences": ["Archon"]
+		},
+		{
+			"tier": "T5",
+			"formId": "celestial-seraph",
+			"displayName": "Seraph",
+			"primaryArchetype": "Orrery-of-Orders Sovereign (Sovereign)",
+			"battlefieldDuty": "Command a four-orbit boss arena through layered wings and a working orrery halo, issuing and combining lower-form geometries until destroyed axles permanently reduce both orders and bodily abstraction.",
+			"teachingGoal": "Test mastery of straight decrees, braced diameters, intersecting glyphs, and threefold offices while making every successful axle break remove an orbit, wing tier, and phase rule.",
+			"signatureMechanic": "Living Orrery: four halo orbits turn around the Seraph's mostly luminous body. The Word orbit calls Messengers to draw radial ribbons; the Guard orbit places Guardians on a diameter; the Warden orbit counter-rotates paired script axes; and the Archon orbit combines two surviving orders under a six-wing marshal. Wings beyond counting are layered into four readable tiers, each bracing one orbit through a visible gold axle. The Seraph covers the active orbit with three wing tiers but must open the matching tier to issue its command. Striking that axle during the learned lower-form safe window destroys the orbit, dismisses its command, and causes one entire wing tier to fold into the body's clearer humanoid outline. After two breaks, the remaining orbits slow and run sequentially rather than together.",
+			"telegraph": "One orrery orbit stops against a gold axle, its matching tier among the many wings opens like measured shutters, sacred script names the selected geometry, and the lower Celestials assume their familiar symmetric positions.",
+			"counterplay": "Read the chosen orbit and lower-form formation, enter its learned safe line or quadrant, then strike the exposed gold axle before the wing tier closes; each destroyed orbit permanently removes a command and makes later phases slower, more sequential, and more humanoid.",
+			"visualDelta": "A symmetrical being with a body mostly made of bounded family-native light, only a clear humanoid suggestion within, innumerable feathered wings grouped into four readable tiers, and a complex halo operating as a visible four-axle orrery.",
+			"lowerFormInteraction": "Messengers, Guardians, Wardens, and an Archon each operate one orrery orbit; destroying its axle dismisses that formation, removes the linked wing tier, and prevents the Seraph from issuing the order again.",
+			"sourceReferences": ["Seraph"]
+		}
+	]
+}

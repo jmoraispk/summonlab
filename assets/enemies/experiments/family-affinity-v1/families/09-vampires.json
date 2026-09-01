@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "vampires",
+	"displayName": "Vampires",
+	"sourceRaceNumber": 9,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-02.md",
+	"classificationNotes": "Source-draft Vampires are treated as intelligent blood-drinking undead whose authored encounter hierarchy is expressed through age and refinement, not as a biological race or a universal claim about culture, class, heredity, morality, consent, or personhood. Bestial posture, predatory anatomy, couture, crests, and blood-glass remain visual and mechanical production grammar rather than social canon.",
+	"visualConstants": [
+		"A tall or lengthening human silhouette retains corpse-white skin, long fingers, fangs, claws, red eyes, and an absence of warm living complexion.",
+		"Posture escalates from feral hunch to impossible stillness; higher forms widen through fitted coats, tailored cloaks, bat membrane, or shadow wings without obscuring humanlike anatomy.",
+		"Black, bone pallor, deep blood red, and aged gold remain paired with velvet, silk, brocade, polished leather, blood-glass, and bat membrane.",
+		"Blood is family-native feeding matter and lineage symbolism rather than Fire or Water affinity by itself; every use has a source, route, vessel, or recoverable feeding window.",
+		"Signet rings, high collars, jeweled clasps, medals, canes, blades, and family crests communicate authored encounter rank while exposing the hand, vessel, or crest that carries each command."
+	],
+	"escalationAxis": "A hungry animal posture becomes a patient hunter, a formal blood-contract Specialist, a centuries-old cloak lord, and finally a crest-commanding throne sovereign whose shattered blood-glass court removes powers one lineage at a time.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Materials remain undead and court-native: corpse-white skin, black hair, deep family-native blood, velvet, silk, brocade, polished leather, aged gold, blood-glass, and bat membrane retain physical source and wear without elemental substitution.",
+				"Motion and effects remain predatory or ceremonial: scenting, claw flexion, coat turn, still posture, membrane tension, glass refraction, poured blood, and crest reflections identify mechanics without unexplained environmental spectacle."
+			],
+			"counterplaySignal": "A feeding throat, planted claw, opened coat seam, offered cane hand, loaded signet, taut wing-cloak joint, and lit blood-glass crest preserve the established weak points.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Blood used as generic magical decoration without a visible wound, vessel, feeding route, crest, or glass channel"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"The T1 Thrall carries a cracked ceramic heat vessel at the shift knot and blackened claw caps; T2–T5 court materials become a night-forge system through heat-crazed blood-glass, charred velvet hems, ember vents in cane or clasp hardware, blackened membrane ribs, and heat-blued signets while corpse-white skin remains visible.",
+				"Predatory and ceremonial actions follow a heat cycle: blood-glass channels boil toward one limb, cloak vents open, smoke trails the committed lunge or command, and a cooled vessel or wing rib exposes recovery."
+			],
+			"counterplaySignal": "The active glass vessel clears and its gold fitting opens after a heated action; breaking the fitting vents the charge and interrupts the corresponding claw, cloak, or crest route.",
+			"forbidden": [
+				"Palette-only fire treatment without charred couture, vent hardware, and heat-cycled blood-glass",
+				"Glow-only fire treatment without a fuel vessel, heat route, or cooling joint",
+				"Flame skin that hides vampiric pallor, fangs, claws, posture, or tailoring",
+				"Generic burning blood with no distinction from family-native feeding matter"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"The T1 Thrall retains its ragged silhouette with broken coffin splints at the shift knot and mineral-capped claws; T2–T5 regalia gains crypt-mineral structure through onyx signets, marble-white coffin plates, garnet blood-glass, slate coat weights, and faceted membrane braces scaled from coat hems to cloaks and wings.",
+				"Stance and movement become load-bearing through planted heel points, pendular cloak weights, fracture lines in the active crest or throne channel, and dust localized to hard stops rather than a constant wake."
+			],
+			"counterplaySignal": "The onyx signet, cloak weight, or throne channel carrying a command develops a pale fracture after commitment; breaking it collapses that route and unbalances the otherwise perfect posture.",
+			"forbidden": [
+				"Palette-only earth treatment without crypt minerals, weighted silhouette, and changed load behavior",
+				"Glow-only earth treatment without a fracture, joint, or structural crest",
+				"Rock growth that buries corpse-white anatomy, tailored clothing, or bat membrane",
+				"Generic stone aristocrats with no feeding vessel, fangs, claws, or predatory recovery"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"The T1 Thrall gains vane-cut shift strips, swept hair, and pressure-guiding claw webbing without a cloak; the garment dimension becomes a T2 coat, expands through T3–T4 collars and membrane ribs, and becomes T5 shadow-wing sails with hollow cane or clasp flutes.",
+				"Motion exposes direction through hair and hems pulling before a dash, membrane camber, pressure rings around cane gestures, and a still point at the planted claw, clasp, or throne crest."
+			],
+			"counterplaySignal": "Coat or wing material snaps into one line while the controlling claw, clasp, or crest remains still; crossing its lee or striking that anchor breaks the displacement.",
+			"forbidden": [
+				"Palette-only wind treatment without aerodynamic tailoring, membrane changes, and force direction",
+				"Glow-only wind treatment without a still anchor or pressure behavior",
+				"Transparency that erases corpse-white anatomy and material refinement",
+				"Free-floating cloth or hair that does not indicate the chosen pursuit or command lane"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"The T1 Thrall uses a clear carrier-fluid bladder tied over its bloodstained shift and silver valves at the claws; T2–T5 become a hydraulic blood-and-water glassworks through wet silk, sealed crystal vessels, pressure needles, fluid-filled cane channels, and translucent membrane veins distinct from family-native feeding.",
+				"Actions show coherent pressure through filling glass, tightened fabric, narrow jets from a vessel into one claw or crest, wet reflection, and drainage that slackens the active cloak or wing route."
+			],
+			"counterplaySignal": "A silver valve lifts as the selected vessel fills; opening it releases clear carrier fluid, breaks the blood route, and exposes the hand or crest controlling the action.",
+			"forbidden": [
+				"Palette-only water treatment without vessels, valves, wet materials, and pressure transfer",
+				"Glow-only water treatment without coherent filling and drainage",
+				"Shapeless blue bodies or liquid wings that erase vampiric anatomy and couture",
+				"Ordinary blood-glass presented as Water affinity without added hydraulic construction"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "vampire-thrall",
+			"displayName": "Thrall",
+			"primaryArchetype": "Blood-Scent Scramble Initiate (Initiate)",
+			"battlefieldDuty": "Probe wound awareness with a feral crawl that follows one visible blood scent, commits both clawed hands to a pounce, and becomes vulnerable while feeding.",
+			"teachingGoal": "Teach the family bargain early: a Vampire gains tempo only from a readable wound or vessel, and denying the feed leaves its throat and back exposed.",
+			"signatureMechanic": "Red Trail: the Thrall lowers its rat-like face to a fresh blood mark, scrambles along that fixed scent line, and tackles at the end; if it reaches the mark, it feeds for one beat to ready another rush.",
+			"telegraph": "Red eyes drop to the floor, filthy shoulders bunch above the ears, and both clawed hands spread while the nose tracks one visible line.",
+			"counterplay": "Step across rather than along the scent line, cover or move away from the marked wound, then punish the exposed neck and spine during the committed feed.",
+			"visualDelta": "A feral, hunched, corpse-white newly turned figure with filthy hair, rat-like teeth around clear fangs, a bloodstained shift, long clawed fingers, and an animal posture.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Thrall"]
+		},
+		{
+			"tier": "T2",
+			"formId": "vampire-bloodkin",
+			"displayName": "Bloodkin",
+			"primaryArchetype": "Coat-Hem Pursuit Soldier (Soldier)",
+			"battlefieldDuty": "Apply repeatable hunting pressure by pinning a blood mark beneath one coat hem, circling with long claws, then snapping into a fixed inward rake.",
+			"teachingGoal": "Teach that refinement means controlled predation: watch which hem is planted, exit on the unweighted side, and attack the overextended claw rather than fleeing the circle.",
+			"signatureMechanic": "Hunter's Hem: the Bloodkin steps one dark coat tail onto a blood mark and circles it at arm's length; when slicked-back hair and coat align, the hunter cuts inward with both claws but cannot reverse around the pinned hem.",
+			"telegraph": "One boot and coat tail stop over the red mark, long claws lower to hip height, and the still-hunched shoulders square toward the circle's center.",
+			"counterplay": "Cross behind the pinned coat tail, pull the fight off the blood mark, or strike the weighted boot during the inward rake; the Bloodkin must release the hem before pursuing again.",
+			"visualDelta": "A pale upright hunter in a fitted dark coat with long tails, slicked-back hair, prominent fangs and claws, red eyes, and a slight predatory hunch not yet mastered.",
+			"lowerFormInteraction": "Thralls follow the Bloodkin's circular blood scent but collide with its committed inward rake if baited across the pinned hem, turning the shared mark into counterplay.",
+			"sourceReferences": ["Bloodkin"]
+		},
+		{
+			"tier": "T3",
+			"formId": "vampire-noble",
+			"displayName": "Noble",
+			"primaryArchetype": "Blood-Glass Courtesy Duelist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the encounter into a formal duel by offering one target a blood-glass crest and enforcing a readable lane of courtesy while other attacks empower the crest.",
+			"teachingGoal": "Teach players to accept or deliberately break a social-looking combat rule: face the Noble inside the offered lane, shatter the vessel during its bow, and never feed the crest with stray hits.",
+			"signatureMechanic": "Red Courtesy: the composed Noble cuts one drop from its glove into a blood-glass crest at the cane tip and bows toward a target. A narrow velvet-red lane forms between them. The Noble may thrust only along that lane, but attacks entering from outside are caught by the crest and returned as one widening slash. Striking the extended cane hand during the bow shatters the crest and ends the duel.",
+			"telegraph": "One glove is drawn off finger by finger, the cane or ornate blade turns flat beneath a falling blood drop, and the Noble bows without breaking red-eyed contact.",
+			"counterplay": "Either stay in the visible lane and sidestep the fixed thrust, or commit to breaking the duel by striking the extended cane hand during the bow; do not fire through the crest from outside.",
+			"visualDelta": "A fully upright, unnaturally composed Vampire in tailored black velvet with red lining, fitted gloves, red eyes, and an ornate cane-blade ending in a small blood-glass family crest.",
+			"lowerFormInteraction": "Thralls and Bloodkin are held outside the courtesy lane but chase anyone who leaves it; shattering the crest releases them without granting the Noble a reflected slash.",
+			"sourceReferences": ["Noble"]
+		},
+		{
+			"tier": "T4",
+			"formId": "vampire-ancient",
+			"displayName": "Ancient",
+			"primaryArchetype": "Signet-and-Membrane Salon Lord (Champion)",
+			"battlefieldDuty": "Control several duel spaces by opening sections of a bat-membrane cloak with ringed fingers, screening hunters and redirecting blood-glass lanes through deliberate salon geometry.",
+			"teachingGoal": "Teach command-hand prioritization: each signet controls one cloak panel and inherited rule, and attacking the loaded finger permanently tears that panel from the formation.",
+			"signatureMechanic": "Century Salon: the Ancient extends one ringed finger to tension a matching cloak rib. The Fang panel releases Thralls down a scent lane, the Hem panel curves a Bloodkin circle, and the Crest panel bends a Noble courtesy lane around the cloak. The active signet cannot close until the command resolves, leaving its finger and membrane joint exposed.",
+			"telegraph": "The perfectly still face turns by a fraction, one ornate signet catches the available light, and the matching bat-membrane panel stretches between arm and cloak like a dark room divider.",
+			"counterplay": "Read the bright signet, avoid the familiar rule within its panel, and strike either the extended finger or taut membrane joint; a torn panel removes that command and opens the salon sightline.",
+			"visualDelta": "An unnervingly still lord with an ageless corpse-white face, ornate rings on every long finger, a high formal collar, and a wide bat-membrane cloak divided into three ribbed panels.",
+			"lowerFormInteraction": "Distinct cloak panels route Thrall scent rushes, Bloodkin circles, and Noble duel lanes; destroying a panel removes its lower-form command for the encounter.",
+			"sourceReferences": ["Ancient"]
+		},
+		{
+			"tier": "T5",
+			"formId": "vampire-progenitor",
+			"displayName": "Progenitor",
+			"primaryArchetype": "First-Crest Blood Court Sovereign (Sovereign)",
+			"battlefieldDuty": "Rule a three-crest blood-glass throne arena that stages Hunt, Courtesy, and Salon phases, promotes surviving lower Vampires, and sheds one shadow-wing command each time its lineage vessel breaks.",
+			"teachingGoal": "Test mastery of scent lines, pinned hems, duel crests, and command panels while giving every destroyed lineage vessel a permanent, visible simplification of the boss and arena.",
+			"signatureMechanic": "First Blood Court: three tall blood-glass vessels rise behind the throne beneath the grown-looking crown. The Hunt vessel marks wounds and sends Thralls that surviving Bloodkin can pull into circles; the Courtesy vessel appoints a Noble whose shattered crest opens a strike on the throne; the Salon vessel lets an Ancient divide the arena with cloak panels. The Progenitor spreads one pure-shadow wing toward the selected vessel and feeds it through a visible glass vein. Breaking that vein during the lower-form phase shatters the vessel, dismisses its command, and tears away the corresponding wing section. Once two vessels fall, the Progenitor leaves the throne, using only the remaining crest while each shadow-wing recovery exposes the crown root.",
+			"telegraph": "The impossibly still face turns toward one vessel, a fine crown branch aligns with its glass vein, the matching shadow wing unfolds, and every lower Vampire adopts that phase's learned posture.",
+			"counterplay": "Follow the selected crest, resolve or disrupt its familiar lower-form rule, then sever the visible throne vein while the wing is extended; every broken vessel removes a phase, a command route, and one protective wing section.",
+			"visualDelta": "An inhumanly beautiful corpse-pale sovereign seated on a blood-glass throne, wearing a crown fine enough to seem grown, dressed in ageless black couture, and framed by three segmented wings of pure shadow aligned to crest vessels.",
+			"lowerFormInteraction": "The three vessels command and promote Thralls, Bloodkin, Nobles, and an Ancient through Hunt, Courtesy, and Salon grammar; destroying a vessel ends its promotions and prevents the Progenitor from using that grammar again.",
+			"sourceReferences": ["Progenitor"]
+		}
+	]
+}

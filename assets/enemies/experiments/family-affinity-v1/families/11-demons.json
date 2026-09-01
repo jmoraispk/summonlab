@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "demons",
+	"displayName": "Demons",
+	"sourceRaceNumber": 11,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-02.md",
+	"classificationNotes": "Source-draft Demons are treated as physically manifested underworld spirits organized into an authored hostile hierarchy, not as a biological people or a universal claim about religion, evil, culture, cognition, personhood, or social worth. Their source-native embers, magma, smoke, live fire, and obsidian are infernal body materials and non-affinity rank signs; Fire affinity must add a distinct engineered combustion grammar rather than duplicate that identity.",
+	"visualConstants": [
+		"A horned head, broadening shoulders, digitigrade or hooved legs, long tail, claws, and bat-like wing membranes remain legible from cat-sized pest to enthroned sovereign.",
+		"Blood red or ashen hide, char black, source-native ember orange, molten yellow, and obsidian preserve an infernal body whose internal fire is explained anatomy rather than affinity by default.",
+		"Charred hide, obsidian, blackened iron, native molten rock, smoke, and bat membrane retain distinct surfaces instead of collapsing into a generic flame silhouette.",
+		"Brands, infernal sigils, chains, spiked black armor, skull motifs, and horn arrangements communicate authored rank and command routes without implying a universal moral taxonomy.",
+		"Horn count, wing authority, and the proportion of source-native fire or obsidian increase with rank, but every form preserves visible hide, joints, brand routes, and an interruptible hierarchy anchor."
+	],
+	"escalationAxis": "A pest steals brands, a line Fiend spends them, a plated Hellknight sentences targets through a seal, an Archfiend chains the hierarchy into formation, and a throne-bound Prince promotes legions until broken command brands strip away its corona and court.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity materials remain red or ashen hide, obsidian, black iron, bat membrane, smoke, underworld magma, ember cracks, and bounded live fire physically explained by rank, brands, wounds, weapons, or throne channels.",
+				"Motion and effects stay infernal and anatomical: hooves strike, tails balance, membranes tension, brands darken or flare only when commands travel, native magma drips back into a visible throne trough, and smoke follows specific vents rather than creating an unexplained wake."
+			],
+			"counterplaySignal": "A stolen brand, planted hoof, open plate seal, loaded soul chain, throne channel, and dimming horn-root sigil preserve each form's established non-affinity weak point.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating family-native fire, embers, magma, smoke, obsidian, or glowing cracks alone as Fire affinity"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Fire affinity adds an engineered overfire system beyond native infernal heat: ceramic secondary chambers, oxygen-bellows wing ribs, white-hot brand inlays, fuel cages on armor or throne, and quenched obsidian vents preserve hide and anatomy.",
+				"Actions follow a distinct charge-combust-purge cycle through opening intake plates, expanding bellows membranes, directional overfire jets, exhaust smoke, and a visibly dark cooling chamber after each empowered command."
+			],
+			"counterplaySignal": "The secondary chamber purges white to black and its intake plate stays open after overfire; breaking the intake prevents recharge without extinguishing the Demon's family-native core.",
+			"forbidden": [
+				"Palette-only fire treatment or extra orange applied to the family-native ember palette",
+				"Glow-only fire treatment without a secondary chamber, oxygen route, and purge cycle",
+				"More native magma or larger flames with no distinct affinity construction",
+				"Fire that erases horn, hide, hoof, membrane, armor, brand, or hierarchy readability"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Infernal bodies gain load-bearing mineral hierarchy through basalt hoof shoes, faulted obsidian plates, crystal brand studs, sediment-packed horn roots, and throne buttresses while native molten seams remain subordinate accents.",
+				"Stance and command become fault-driven through planted hooves, weighted chain arcs, localized dust, pale fractures at the active brand or armor joint, and a ground route that ends at a visible load anchor."
+			],
+			"counterplaySignal": "A basalt shoe or crystal brand carries the full command load and turns chalk-white after commitment; breaking it unseats the stance or chain hierarchy.",
+			"forbidden": [
+				"Palette-only earth treatment without mineral hierarchy, weighted stance, and fracture behavior",
+				"Glow-only earth treatment without a load path or breakable fault",
+				"Pasted rocks that hide infernal hide, brands, horns, hooves, or wing anatomy",
+				"Obsidian alone presented as Earth affinity despite being family-native material"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Wing and horn anatomy becomes a pressure instrument through vane-cut membranes, hollow horn whistles, chain sails, tail fins, and armor exhaust channels; the T1's small wings flutter a short impulse while T2–T5 route progressively larger pressure loads.",
+				"Motion exposes force direction through membrane camber, smoke streamlines, chain bowing, asymmetric hoof lift, and a still anchor at the brand, horn root, plate seal, or throne channel."
+			],
+			"counterplaySignal": "Membranes and smoke align before a pressure action while the governing brand or horn root becomes still; crossing the lee or striking that anchor collapses the displacement.",
+			"forbidden": [
+				"Palette-only wind treatment without vane anatomy, pressure routing, and force direction",
+				"Glow-only wind treatment without a still center or mechanical airflow",
+				"Generic black smoke that duplicates family-native Archfiend wings without Wind construction",
+				"Tornado effects that hide horns, hooves, tail, brands, chains, or wing count"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"The infernal hierarchy becomes a quenched-pressure system through glassy cooled hide plates, brine-filled brand channels, shell valves at horn roots, wet black iron, and steam condensers across wing ribs or throne pipes.",
+				"Actions show coherent fill-quench-drain behavior: channels flood toward one limb or command seal, steam vents directionally where water meets native heat, and pressure loss leaves the active plate crazed and exposed."
+			],
+			"counterplaySignal": "A shell valve lifts before quenching and the selected plate crazes as steam clears; opening the valve drains the command route and exposes its brand.",
+			"forbidden": [
+				"Palette-only water treatment without brine channels, valves, and quench behavior",
+				"Glow-only water treatment without coherent fill, steam, and drainage",
+				"Shapeless blue bodies that erase infernal material and anatomy",
+				"Steam alone presented as Water affinity without reservoirs, routing, and pressure loss"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "demon-imp",
+			"displayName": "Imp",
+			"primaryArchetype": "Brand-Snatch Pest Initiate (Initiate)",
+			"battlefieldDuty": "Probe target awareness by fluttering behind a marked combatant, stealing one visible infernal brand token with its tail, and becoming bolder only while carrying it.",
+			"teachingGoal": "Teach that infernal power is routed through hierarchy marks: deny the theft, strike the tail-held token, and turn the Imp's tiny rank against higher forms.",
+			"signatureMechanic": "Petty Theft: the Imp's whip tail hooks a loose brand shed by another Demon's attack or a marked arena object; while carrying it, the cat-sized pest can make one needle-tooth dive, but the token swings visibly behind and drops on any interruption.",
+			"telegraph": "Pinprick horns angle back, small bat wings flutter in place, and the whip-thin tail circles one dark-red brand before darting for it.",
+			"counterplay": "Move between the Imp and brand, hit the swinging tail during its straight dive, or collect the dropped token before another Demon can use it.",
+			"visualDelta": "A cat-sized red pest with pinprick horns, small bat wings, needle teeth, clawed feet, and a whip-thin tail shaped to carry one visible brand token.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Imp"]
+		},
+		{
+			"tier": "T2",
+			"formId": "demon-fiend",
+			"displayName": "Fiend",
+			"primaryArchetype": "Hoof-Brand Line Soldier (Soldier)",
+			"battlefieldDuty": "Apply reliable line pressure by stamping a stolen or self-shed brand beneath one goat-like hoof, then charging exactly along the brand's scorched direction.",
+			"teachingGoal": "Teach the repeatable hierarchy grammar: the brand defines direction and fuel, so dislodging it or crossing behind the planted hoof defeats the charge.",
+			"signatureMechanic": "Infernal Stamp: the Fiend presses one hoof onto a brand, opening source-native ember cracks from ankle to shoulder; it releases into a horn-first charge along the sigil's longest line and cannot steer after the hoof lifts.",
+			"telegraph": "One curled horn lowers, the branded hoof grinds until its line is readable, and ember cracks open in sequence up the planted leg.",
+			"counterplay": "Kick or strike the brand before release, cross the trailing-hoof side, or bait the fixed charge past cover; the ember cracks dim while the Fiend returns to the sigil.",
+			"visualDelta": "A human-sized red or ashen Demon with goat-like digitigrade legs, one pair of curling horns, small functional wing membranes, burned brand marks, and source-native ember cracks in the hide.",
+			"lowerFormInteraction": "Imps can deliver stolen brands to a Fiend for immediate stamping; interrupting the carrier denies the Fiend a charge rather than merely delaying the Imp.",
+			"sourceReferences": ["Fiend"]
+		},
+		{
+			"tier": "T3",
+			"formId": "demon-hellknight",
+			"displayName": "Hellknight",
+			"primaryArchetype": "Four-Horn Sentence Jailer (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the floor into positional sentencing by locking one black plate seal and target brand together, forcing a visible choice between a narrow duel cell and breaking the armor route.",
+			"teachingGoal": "Teach that a Specialist's authority has machinery: identify the selected horn pair, avoid crossing the branded boundary, and strike the opened plate seal while the flaming blade enforces elsewhere.",
+			"signatureMechanic": "Sentence Brand: one pair of the Hellknight's four horns aligns with a chest-plate seal, casting a square brand around a target. The source-native flaming blade sweeps only the square's boundary, while the Hellknight must keep the selected seal open to sustain it. Crossing the line triggers the sweep; striking the open seal or forcing the Knight to turn beyond the aligned horns ends the sentence.",
+			"telegraph": "Two horns lower into parallel lines, molten veins converge beneath one black spiked plate, and the flaming blade traces the square once before becoming active.",
+			"counterplay": "Stay inside and evade the Knight's slower body, or attack through the unguarded open plate seal; alternatively force a turn that breaks the selected horn alignment before crossing the boundary.",
+			"visualDelta": "A broad-chested armored Demon with four readable horns, molten veins beneath red or ashen hide, black spiked plate divided by opening brand seals, full bat wings, and a native flaming blade.",
+			"lowerFormInteraction": "Imps carry brands to the square corners and Fiends charge along one edge, but breaking the Hellknight's open seal erases every corner and interrupts any edge charge.",
+			"sourceReferences": ["Hellknight"]
+		},
+		{
+			"tier": "T4",
+			"formId": "demon-archfiend",
+			"displayName": "Archfiend",
+			"primaryArchetype": "Soul-Chain Hierarchy Marshal (Champion)",
+			"battlefieldDuty": "Link brands, charge lines, and sentence cells into a command formation through separate bound-soul chains, each attached to one breakable fused-armor ring.",
+			"teachingGoal": "Teach hierarchy dismantling: each chain empowers one lower duty, but following its loaded arc reveals the exact armor ring whose destruction permanently removes that command.",
+			"signatureMechanic": "Black Chain of Office: the Archfiend's crown of horns selects one of three soul chains. The Pest chain transfers stolen brands, the Charge chain links Fiend stamp lines, and the Sentence chain lets a Hellknight move its square once. Wings of source-native black smoke spread only to screen the active chain. Its fused obsidian armor ring opens under load.",
+			"telegraph": "One horn-crown branch hooks downward, a single soul chain straightens toward its lower form, black-smoke wings part around that route, and the matching armor ring opens.",
+			"counterplay": "Trace the taut chain past the smoke screen, resolve the familiar lower-form tell, and strike the opened armor ring; each broken ring dismisses its soul chain and simplifies the formation.",
+			"visualDelta": "A twice-human-height Demon with obsidian armor fused to visible hide, wings of source-native black smoke supported by membrane spars, a crown of many horns, and three distinct chains of bound souls.",
+			"lowerFormInteraction": "The three chains coordinate Imp brand delivery, Fiend charge lines, and Hellknight sentence cells; breaking a chain ring removes that hierarchy benefit for all linked Demons.",
+			"sourceReferences": ["Archfiend"]
+		},
+		{
+			"tier": "T5",
+			"formId": "demon-prince",
+			"displayName": "Demon Prince",
+			"primaryArchetype": "Corona-Throne Legion Sovereign (Sovereign)",
+			"battlefieldDuty": "Command and promote an infernal legion from a source-native magma throne through four hierarchy brands, then tear free as a simpler winged body as destroyed throne channels strip commands and horn branches.",
+			"teachingGoal": "Test mastery of brand theft, stamped lines, sentence seals, and soul-chain rings while making each interrupted promotion permanently remove part of the Prince's authority and final-phase silhouette.",
+			"signatureMechanic": "Legion Crucible: four black-iron channels cross the magma throne beneath the Prince's branching horn corona. The Tail brand produces Imps from coal cages; the Hoof brand spends a delivered token to raise a Fiend; the Plate brand promotes a Fiend inside a sentence square into a Hellknight; and the Chain brand binds surviving elites under an Archfiend. The Prince points one corona branch to a channel, and its body becomes more native fire only along that visible route. Breaking the exposed brand plate during production drains the channel, removes that rank command, and snaps off the matching horn branch. After two breaks, the Prince leaves the throne with hide and joints reasserted around surviving native fire, cycling only remaining commands; each further plate destroys one wing-span brace and shortens the phase.",
+			"telegraph": "One corona branch lowers toward a throne channel, source-native magma recedes to reveal its brand plate, the corresponding legion rank kneels or assembles, and the vast wings frame that single route.",
+			"counterplay": "Read the selected rank and familiar lower-form tell, interrupt its required carrier or promotion, then strike the exposed throne plate before magma returns; each broken channel permanently removes a command, corona branch, and final-phase brace.",
+			"visualDelta": "A Demon sovereign seated in a physically channeled magma throne, with horns branching into a corona, a body balanced between charred hide and source-native live fire, and enormous bat wings braced to four visible hierarchy plates.",
+			"lowerFormInteraction": "The throne produces Imps, spends their brands on Fiends, promotes Fiends through Hellknight seals, and binds elites under an Archfiend; destroying a brand plate ends that production or promotion step for the fight.",
+			"sourceReferences": ["Demon Prince"]
+		}
+	]
+}

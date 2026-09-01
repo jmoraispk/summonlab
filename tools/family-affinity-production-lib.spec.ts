@@ -194,6 +194,79 @@ const waveAFamilyFixtures = [
 	}
 ] as const;
 
+const waveBFamilyFixtures = [
+	{
+		fileName: '07-rotwalkers.json',
+		sourceRaceNumber: 7,
+		forms: [
+			{ tier: 'T1', displayName: 'Shambler', sourceReferences: ['Shambler'] },
+			{ tier: 'T2', displayName: 'Ghoul', sourceReferences: ['Ghoul'] },
+			{ tier: 'T3', displayName: 'Rot Brute', sourceReferences: ['Rot Brute'] },
+			{ tier: 'T4', displayName: 'Amalgam', sourceReferences: ['Amalgam'] },
+			{ tier: 'T5', displayName: 'Plague Lord', sourceReferences: ['Plague Lord'] }
+		]
+	},
+	{
+		fileName: '08-wraiths.json',
+		sourceRaceNumber: 8,
+		forms: [
+			{ tier: 'T1', displayName: 'Shade', sourceReferences: ['Shade'] },
+			{ tier: 'T2', displayName: 'Haunt', sourceReferences: ['Haunt'] },
+			{ tier: 'T3', displayName: 'Wraith', sourceReferences: ['Wraith'] },
+			{ tier: 'T4', displayName: 'Crowned Specter', sourceReferences: ['Crowned Specter'] },
+			{ tier: 'T5', displayName: 'Death Sovereign', sourceReferences: ['Death Sovereign'] }
+		]
+	},
+	{
+		fileName: '09-vampires.json',
+		sourceRaceNumber: 9,
+		forms: [
+			{ tier: 'T1', displayName: 'Thrall', sourceReferences: ['Thrall'] },
+			{ tier: 'T2', displayName: 'Bloodkin', sourceReferences: ['Bloodkin'] },
+			{ tier: 'T3', displayName: 'Noble', sourceReferences: ['Noble'] },
+			{ tier: 'T4', displayName: 'Ancient', sourceReferences: ['Ancient'] },
+			{ tier: 'T5', displayName: 'Progenitor', sourceReferences: ['Progenitor'] }
+		]
+	},
+	{
+		fileName: '10-mummies.json',
+		sourceRaceNumber: 10,
+		forms: [
+			{ tier: 'T1', displayName: 'Husk', sourceReferences: ['Husk'] },
+			{ tier: 'T2', displayName: 'Tomb Guard', sourceReferences: ['Tomb Guard'] },
+			{ tier: 'T3', displayName: 'Sacred Servant', sourceReferences: ['Sacred Servant'] },
+			{
+				tier: 'T4',
+				displayName: "Pharaoh's Champion",
+				sourceReferences: ["Pharaoh's Champion"]
+			},
+			{ tier: 'T5', displayName: 'God-King', sourceReferences: ['God-King'] }
+		]
+	},
+	{
+		fileName: '11-demons.json',
+		sourceRaceNumber: 11,
+		forms: [
+			{ tier: 'T1', displayName: 'Imp', sourceReferences: ['Imp'] },
+			{ tier: 'T2', displayName: 'Fiend', sourceReferences: ['Fiend'] },
+			{ tier: 'T3', displayName: 'Hellknight', sourceReferences: ['Hellknight'] },
+			{ tier: 'T4', displayName: 'Archfiend', sourceReferences: ['Archfiend'] },
+			{ tier: 'T5', displayName: 'Demon Prince', sourceReferences: ['Demon Prince'] }
+		]
+	},
+	{
+		fileName: '12-celestials.json',
+		sourceRaceNumber: 12,
+		forms: [
+			{ tier: 'T1', displayName: 'Messenger', sourceReferences: ['Messenger'] },
+			{ tier: 'T2', displayName: 'Guardian', sourceReferences: ['Guardian'] },
+			{ tier: 'T3', displayName: 'Warden', sourceReferences: ['Warden'] },
+			{ tier: 'T4', displayName: 'Archon', sourceReferences: ['Archon'] },
+			{ tier: 'T5', displayName: 'Seraph', sourceReferences: ['Seraph'] }
+		]
+	}
+] as const;
+
 describe('Wave A family packets', () => {
 	it.each(waveAFamilyFixtures)(
 		'loads $fileName with exact source identity and tier coverage',
@@ -271,6 +344,75 @@ describe('Wave A family packets', () => {
 		expect(mutantTroll.visualDelta).toMatch(/outward rib sprouts/iu);
 		expect(mutantTroll.visualDelta).toMatch(/only the selected bud.*completes its motif/iu);
 	});
+});
+
+describe('Wave B family packets', () => {
+	it.each(waveBFamilyFixtures)(
+		'loads $fileName with exact source identity and tier coverage',
+		async ({ fileName, sourceRaceNumber, forms }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			expect(packet.sourceRaceNumber).toBe(sourceRaceNumber);
+			expect(packet.sourcePage).toBe('docs/wiki/creatures/monster-races/generator-bestiary-02.md');
+			expect(packet.floorSlot).toBeNull();
+			expect(
+				packet.forms.map(({ tier, displayName, sourceReferences }) => ({
+					tier,
+					displayName,
+					sourceReferences
+				}))
+			).toEqual(forms);
+		}
+	);
+
+	it.each([
+		{ fileName: '08-wraiths.json', nativeMotif: /cold|frost/iu },
+		{ fileName: '10-mummies.json', nativeMotif: /sand|dust/iu },
+		{ fileName: '11-demons.json', nativeMotif: /ember|magma|fire/iu },
+		{ fileName: '12-celestials.json', nativeMotif: /light|radiance/iu }
+	])(
+		'distinguishes $fileName source-native motifs from elemental affinity construction',
+		async ({ fileName, nativeMotif }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			const normalTheme = [
+				...packet.affinityThemes.normal.constructionDimensions,
+				packet.affinityThemes.normal.counterplaySignal,
+				...packet.affinityThemes.normal.forbidden
+			].join(' ');
+			expect(normalTheme).toMatch(nativeMotif);
+			expect(normalTheme).toMatch(/family-native|non-affinity/iu);
+			expect(normalTheme).toMatch(/unexplained elemental anatomy/iu);
+			expect(normalTheme).toMatch(/unexplained elemental glow/iu);
+			expect(normalTheme).toMatch(/unexplained environmental wake/iu);
+
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				expect(packet.affinityThemes[affinity].constructionDimensions).toHaveLength(2);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/palette-only/iu);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/glow-only/iu);
+			}
+		}
+	);
 });
 
 describe('family affinity production schemas', () => {
