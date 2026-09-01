@@ -40,8 +40,8 @@
 			<p>Summonlab bestiary · 40 identities · 240 visual studies</p>
 			<h1 id="monster-database-heading">Monster database</h1>
 			<span>
-				Every monster identity anchors five affinity variants. Open an identity to compare the
-				complete set and inspect its current combat language.
+				Every monster identity anchors the Normal plus Fire, Earth, Wind, and Water production
+				target. Open an identity to inspect available candidates and preserved legacy evidence.
 			</span>
 		</div>
 		<nav aria-label="Monster families">

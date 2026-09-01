@@ -3,16 +3,16 @@
 Wiki ID: `creatures.monster-database`
 
 This is the visual identity index for the **40 currently authored monster archetypes**. Every card
-opens a dedicated monster page. Each page leads with the identity reference and keeps
-the existing Normal, Wood, Fire, Metal, Water, and Wind studies available for review.
+opens a dedicated monster page. Each page leads with the identity reference and separates the
+accepted target from preserved visual evidence.
 
-That six-form set is a **legacy candidate roster**, not the current production target. The accepted
-affinity model now requires five forms per class: Normal plus Fire, Earth, Wind, and Water. Wood and
-Metal candidates must not be promoted as affinity variants, and Earth replacements remain to be
-produced through a separately reviewed, provenance-bound batch.
+Current production target: Normal, Fire, Earth, Wind, Water
 
-The online images are web derivatives of the current production artwork. Source provenance and
-review state remain in the internal visual catalog rather than the public presentation.
+Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
+
+The online images are web derivatives of candidate artwork. Earth remains a current target without
+an available candidate in this preserved set. Candidate evidence is not approved or runtime art;
+source provenance and review state remain in the visual catalog.
 
 ## Arachnids
 

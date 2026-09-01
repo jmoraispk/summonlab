@@ -3,11 +3,13 @@
 
 	import AffinityIcon from './AffinityIcon.svelte';
 
-	type ElementalAffinity = 'wood' | 'fire' | 'metal' | 'water' | 'wind';
+	type CurrentAffinity = 'fire' | 'earth' | 'wind' | 'water';
+	type LegacyVisualLabel = 'wood' | 'metal';
 
 	type Variant = {
 		affinity: string;
 		status: string;
+		presentationStatus: string;
 		thumbnailPath: string;
 		candidatePath: string;
 		contentHash: string;
@@ -24,19 +26,45 @@
 	let { monster }: { monster: Monster } = $props();
 	let selectedIndex = $state(0);
 
-	function elementalAffinity(affinity: string): ElementalAffinity {
-		if (['wood', 'fire', 'metal', 'water', 'wind'].includes(affinity)) {
-			return affinity as ElementalAffinity;
+	function currentAffinity(affinity: string): CurrentAffinity {
+		if (['fire', 'earth', 'wind', 'water'].includes(affinity)) {
+			return affinity as CurrentAffinity;
 		}
-		throw new Error(`Unsupported monster affinity: ${affinity}`);
+		throw new Error(`Unsupported current monster target: ${affinity}`);
 	}
 
-	const normal = $derived(monster.variants[0]);
+	const currentTargets: readonly CurrentAffinity[] = ['fire', 'earth', 'wind', 'water'];
+	const normal = $derived(
+		monster.variants.find(
+			(variant) =>
+				variant.affinity === 'normal' && variant.presentationStatus === 'current-target-candidate'
+		)
+	);
 	const affinityVariants = $derived(
-		monster.variants.slice(1).map((variant) => ({
-			...variant,
-			affinity: elementalAffinity(variant.affinity)
-		}))
+		currentTargets.flatMap((target) => {
+			const variant = monster.variants.find(
+				(entry) =>
+					entry.affinity === target && entry.presentationStatus === 'current-target-candidate'
+			);
+			return variant ? [{ ...variant, affinity: currentAffinity(variant.affinity) }] : [];
+		})
+	);
+	const missingCurrentTargets = $derived(
+		currentTargets.filter(
+			(target) =>
+				!monster.variants.some(
+					(variant) =>
+						variant.affinity === target && variant.presentationStatus === 'current-target-candidate'
+				)
+		)
+	);
+	const legacyStudies = $derived(
+		(['wood', 'metal'] as const).flatMap((legacyLabel) => {
+			const variant = monster.variants.find(
+				(entry) => entry.affinity === legacyLabel && entry.presentationStatus === 'legacy-candidate'
+			);
+			return variant ? [{ ...variant, affinity: legacyLabel as LegacyVisualLabel }] : [];
+		})
 	);
 	const selectedVariant = $derived(affinityVariants[selectedIndex]);
 	const label = (affinity: string) => affinity[0]?.toUpperCase() + affinity.slice(1);
@@ -81,7 +109,8 @@
 	{/if}
 
 	<div class="variant-heading">
-		<h2>Affinity Variants</h2>
+		<h2>Current production target</h2>
+		<p>Normal plus Fire, Earth, Wind, and Water. Available images remain candidate evidence.</p>
 	</div>
 
 	{#if selectedVariant}
@@ -93,23 +122,24 @@
 			>
 				<img
 					src={selectedVariant.thumbnailPath}
-					alt={`${monster.name}, ${label(selectedVariant.affinity)} affinity variant`}
+					alt={`${monster.name}, ${label(selectedVariant.affinity)} current-target candidate`}
 					width="720"
 					height="480"
 				/>
 				<span class="variant-mark">
 					<AffinityIcon affinity={selectedVariant.affinity} />
 				</span>
+				<span class="variant-status">current-target candidate</span>
 				<button
 					class="carousel-control previous"
 					type="button"
-					aria-label="Previous affinity variant"
+					aria-label="Previous current-target candidate"
 					onclick={() => moveSelection(-1)}>←</button
 				>
 				<button
 					class="carousel-control next"
 					type="button"
-					aria-label="Next affinity variant"
+					aria-label="Next current-target candidate"
 					onclick={() => moveSelection(1)}>→</button
 				>
 				<figcaption>
@@ -124,12 +154,12 @@
 				</figcaption>
 			</figure>
 
-			<div class="variant-selector" role="group" aria-label="Choose an affinity variant">
+			<div class="variant-selector" role="group" aria-label="Choose a current-target candidate">
 				{#each affinityVariants as variant, index (variant.affinity)}
 					<button
 						class={`affinity-${variant.affinity}`}
 						type="button"
-						aria-label={`${label(variant.affinity)} affinity variant`}
+						aria-label={`${label(variant.affinity)} current-target candidate`}
 						aria-controls="selected-affinity-variant"
 						aria-pressed={selectedIndex === index}
 						title={label(variant.affinity)}
@@ -138,9 +168,43 @@
 						<AffinityIcon affinity={variant.affinity} />
 					</button>
 				{/each}
+				{#each missingCurrentTargets as target (target)}
+					<span class={`target-status affinity-${target}`}>
+						<AffinityIcon affinity={target} />
+						<i>{label(target)} candidate not yet available</i>
+					</span>
+				{/each}
 			</div>
 		</div>
 	{/if}
+
+	<section class="legacy-studies" aria-labelledby="legacy-visual-studies-heading">
+		<header>
+			<h2 id="legacy-visual-studies-heading">Legacy visual studies</h2>
+			<p>
+				Wood and Metal legacy-candidate evidence; not current affinities and not runtime assets.
+			</p>
+		</header>
+		<div class="legacy-grid">
+			{#each legacyStudies as study (study.affinity)}
+				<figure class={`legacy-study legacy-${study.affinity}`}>
+					<img
+						src={study.thumbnailPath}
+						alt={`${monster.name}, ${label(study.affinity)} legacy-candidate visual study`}
+						width="720"
+						height="480"
+						loading="lazy"
+					/>
+					<figcaption>
+						<strong>{label(study.affinity)}</strong>
+						<span>legacy-candidate</span>
+						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external GitHub source -->
+						<a href={sourceUrl(study.candidatePath)}>Full-resolution source ↗</a>
+					</figcaption>
+				</figure>
+			{/each}
+		</div>
+	</section>
 </section>
 
 <style>
@@ -154,7 +218,8 @@
 	.matrix > header,
 	.neutral-layout,
 	.variant-heading,
-	.variant-viewer {
+	.variant-viewer,
+	.legacy-studies {
 		max-width: 92rem;
 		margin-inline: auto;
 	}
@@ -263,6 +328,15 @@
 		margin-top: clamp(4rem, 8vw, 7rem);
 		margin-bottom: 1.5rem;
 	}
+	.variant-heading p,
+	.legacy-studies > header p {
+		max-width: 58rem;
+		margin: 0.8rem 0 0;
+		color: rgba(243, 234, 217, 0.68);
+		font:
+			1rem/1.6 Georgia,
+			serif;
+	}
 	.variant-stage {
 		--affinity: #f3ead9;
 		border: 1px solid color-mix(in srgb, var(--affinity) 46%, transparent);
@@ -287,6 +361,21 @@
 		border-radius: 50%;
 		background: rgba(4, 6, 8, 0.82);
 		color: var(--affinity);
+	}
+	.variant-status {
+		position: absolute;
+		top: 1rem;
+		left: 5.25rem;
+		padding: 0.55rem 0.7rem;
+		border: 1px solid color-mix(in srgb, var(--affinity) 42%, transparent);
+		border-radius: 0.2rem;
+		background: rgba(4, 6, 8, 0.82);
+		color: var(--affinity);
+		font:
+			0.62rem ui-monospace,
+			monospace;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
 	}
 	.carousel-control {
 		position: absolute;
@@ -340,6 +429,25 @@
 			border-color 160ms ease,
 			background 160ms ease;
 	}
+	.target-status {
+		display: flex;
+		min-height: 3.75rem;
+		align-items: center;
+		gap: 0.65rem;
+		padding: 0 0.9rem;
+		border: 1px dashed color-mix(in srgb, var(--affinity) 48%, transparent);
+		border-radius: 2rem;
+		color: var(--affinity);
+	}
+	.target-status i {
+		max-width: 9rem;
+		font:
+			0.64rem/1.25 ui-monospace,
+			monospace;
+		font-style: normal;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
 	.variant-selector button:hover {
 		color: var(--affinity);
 		border-color: color-mix(in srgb, var(--affinity) 58%, transparent);
@@ -355,20 +463,68 @@
 		outline: 2px solid #f3ead9;
 		outline-offset: 3px;
 	}
-	.affinity-wood {
-		--affinity: #9ab968;
-	}
 	.affinity-fire {
 		--affinity: #f07842;
 	}
-	.affinity-metal {
-		--affinity: #c9b982;
+	.affinity-earth {
+		--affinity: #d0a15f;
 	}
 	.affinity-water {
 		--affinity: #58b4de;
 	}
 	.affinity-wind {
 		--affinity: #c7e8ec;
+	}
+	.legacy-studies {
+		margin-top: clamp(4rem, 8vw, 7rem);
+	}
+	.legacy-studies > header h2 {
+		margin: 0;
+		font:
+			400 clamp(2rem, 3.7vw, 3.5rem) / 1 Georgia,
+			serif;
+		letter-spacing: -0.04em;
+	}
+	.legacy-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: 1.5rem;
+	}
+	.legacy-study {
+		border: 1px solid var(--line);
+	}
+	.legacy-study img {
+		filter: saturate(0.72);
+	}
+	.legacy-study figcaption {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		padding: 0.9rem 1rem;
+	}
+	.legacy-study figcaption strong {
+		font:
+			400 1.1rem Georgia,
+			serif;
+	}
+	.legacy-study figcaption span {
+		color: rgba(243, 234, 217, 0.55);
+		font:
+			0.62rem ui-monospace,
+			monospace;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.legacy-study figcaption a {
+		margin-left: auto;
+		color: #70c7d2;
+		font:
+			0.62rem ui-monospace,
+			monospace;
+		letter-spacing: 0.05em;
+		text-decoration: none;
+		text-transform: uppercase;
 	}
 	@media (max-width: 58rem) {
 		.matrix {
@@ -395,11 +551,15 @@
 			display: none;
 		}
 		.variant-selector {
+			flex-wrap: wrap;
 			gap: 0.45rem;
 		}
 		.variant-selector button {
 			width: 3.25rem;
 			height: 3.25rem;
+		}
+		.legacy-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {

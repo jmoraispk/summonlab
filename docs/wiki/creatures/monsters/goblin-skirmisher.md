@@ -21,17 +21,22 @@ Runtime status: **roster definition available**
 
 ## Visual matrix
 
-The online plate above leads with the identity reference, then presents Wood, Fire, Metal,
-Water, and Wind as variants of the same monster identity. Affinity may change material, effect,
-equipment treatment, or local anatomy only where the bound production manifest permits it.
+Current production target: Normal, Fire, Earth, Wind, Water
 
-The selector above presents the current production artwork. Provenance and review state remain in
-the internal visual catalog rather than the public monster page.
+Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
+
+The online plate leads with the Normal identity reference. The current-target selector presents
+available Fire, Wind, and Water candidate evidence; Earth remains a current target even though no
+Earth candidate exists in this preserved source set. Candidate evidence is neither approved nor
+runtime artwork.
+
+The separate legacy section preserves the old Wood and Metal studies for review without presenting
+them as current affinities. Source paths and hashes remain in the visual catalog.
 
 ## Canon boundary
 
 - The monster identity, family, battlefield role, telegraph, and counterplay are authored content.
-- The six images are visual proposals for one persistent identity across affinity changes.
+- The six preserved source images are visual proposals for one persistent identity.
 - Visual artwork does not establish combat statistics, morality, culture, or a universal affinity
   assignment.
 - Human approval and runtime promotion remain separate decisions.

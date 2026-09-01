@@ -4,6 +4,17 @@
   "monsterCount": 40,
   "affinities": [
     "normal",
+    "fire",
+    "earth",
+    "wind",
+    "water"
+  ],
+  "legacyVisualStudies": [
+    "wood",
+    "metal"
+  ],
+  "sourceVisualLabels": [
+    "normal",
     "wood",
     "fire",
     "metal",
@@ -30,6 +41,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/normal-v1.png",
           "contentHash": "1dd4dda59f359af7f564a4f56b51fdfd2b70491f42944f6ccc391a6d446b55bc",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/normal.webp",
           "thumbnailHash": "7a4857597863d4af641cf512cc56a07d7fed2ca220a0df75d3e48affff405ae7"
         },
@@ -41,6 +53,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wood-v1.png",
           "contentHash": "aad2951d0b2792928806c3a3a27c4aa0e9459075d9e47484b2612f85f370aded",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/wood.webp",
           "thumbnailHash": "423e701e4bf07306c8cacb4c741cf71bc349b0cd97d12e32798bf774d86975cf"
         },
@@ -52,6 +65,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/fire-v2.png",
           "contentHash": "47cadb676942528e2935a59518e4e86e0edc893d969c281f027b44e0f20c923f",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/fire.webp",
           "thumbnailHash": "d63b9519e78288ec913f3322efc931f3bd3a0932613baca7f9f22a7eb78c8250"
         },
@@ -63,6 +77,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/metal-v1.png",
           "contentHash": "71793e937c6611f1031c09691336b82c308b0b0e221a4940854d6e5586765800",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/metal.webp",
           "thumbnailHash": "408c3b591c60205bd767c0316b8ce237056caec65bf505c2901c6642d6152d1d"
         },
@@ -74,6 +89,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/water-v1.png",
           "contentHash": "ef6e3f3193ea57e0c5e90af8e66cc78697f4835ecbaa07ab22fb554c5267bed8",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/water.webp",
           "thumbnailHash": "deecc079ff6ccea6971048ab4f0b87a8ddc51c04c3ec89d2c0d102833eca8976"
         },
@@ -85,6 +101,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wind-v2.png",
           "contentHash": "0721e283f1cca981dbec4b8819b58f2174b366c98d3735ef23842fdaf58713dd",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-brood-guard/wind.webp",
           "thumbnailHash": "f59da4ca893cef6f94d609128cc8c33881601c82d2b83daea0544ca086d568cc"
         }
@@ -109,6 +126,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/normal-v1.png",
           "contentHash": "d0447e8489a7ccfb23baebce4398b7a17eccbc2a6c16626fe05ae835096a49c5",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-broodmother/normal.webp",
           "thumbnailHash": "5bf75f7ee050bc204a8ea6432a1bd678f7a7bb6b91132555ad7114fb0de32a98"
         },
@@ -120,6 +138,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wood-v1.png",
           "contentHash": "7ab32fdae8a471b2ba187b2736dcb1013c00f2b1764c990f613a2e6a709b735a",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-broodmother/wood.webp",
           "thumbnailHash": "cee750d761c01d5f7243ab8546b21495f37cd8e9bacb4ddcb71cc3daf4704533"
         },
@@ -131,6 +150,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/fire-v1.png",
           "contentHash": "189e1e307bf6ed90f81149bb20f2f6861b6b8f819d66aa1748bd7d3e11ed4556",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-broodmother/fire.webp",
           "thumbnailHash": "a02eba244f7e24f77ee40897c28f4d6338fd19e79156fefded458206a2e860b0"
         },
@@ -142,6 +162,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
           "contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-broodmother/metal.webp",
           "thumbnailHash": "3e07d3b08975b5fd977824c2aa7cc2246fe83de679a20ed5080eb93c874a2d47"
         },
@@ -153,6 +174,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/water-v1.png",
           "contentHash": "26e7d658388aa57a8196a757f6cbb916185bb3f4923b007b768d18a40638f0dd",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-broodmother/water.webp",
           "thumbnailHash": "34a6c0f034b46f3b32983a0835ca5deb20e2f61eef26b217696daad15c8926f6"
         },
@@ -164,6 +186,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wind-v1.png",
           "contentHash": "e410dd6831eb5ef4e04434eaa94162bde8bc973919d0414523ab8d3689130d28",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-broodmother/wind.webp",
           "thumbnailHash": "7622ae2a245da3df1a6634a5694b2c86e7723a3c865993e866d0a96e41c8d569"
         }
@@ -188,6 +211,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/normal-v1.png",
           "contentHash": "f8e247dc6792939f0f7977b6d1fd638ce4150db9a1a7a6c260505352710ad210",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-spider/normal.webp",
           "thumbnailHash": "a4ccd390a4c62347f66b15103c458555b1dd48068ddf0643a3b2ec4528f9ca00"
         },
@@ -199,6 +223,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wood-v1.png",
           "contentHash": "6777118d1ab47db2bae4a97adcf72bc49b68f285921380abfbdf22a3383a3b7f",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-spider/wood.webp",
           "thumbnailHash": "78296ae8098b7c49890edc3f595e214f15c1fac1d6e63d5cf8c22054458b6788"
         },
@@ -210,6 +235,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/fire-v1.png",
           "contentHash": "a1956c56a33928ec0ce3f213c4d5bafc62c86909dd0f80d9917a58efd22aaa8a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-spider/fire.webp",
           "thumbnailHash": "536db4c80d2eaa7980f5297bff3b0be34caf001cdd398aef0d2a6f309f5759b3"
         },
@@ -221,6 +247,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/metal-v1.png",
           "contentHash": "5fdbeda143cbff85d4b1edf21a0d1655a947ce8ae2f49f5f58d74c95a47472a5",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-spider/metal.webp",
           "thumbnailHash": "69c4e24ec1fb5581e688e76bf9d15f226771b46e6b949be154ae745ce334f6cd"
         },
@@ -232,6 +259,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/water-v1.png",
           "contentHash": "03fa24229d9f5008b10f217ddb0dc7665e7c4eaa45152fe8e824a807b367e6d4",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-spider/water.webp",
           "thumbnailHash": "faf25bdf5fe3428a2362b6555273d8af3c677fd7ae3eb090d05aa93b900be69a"
         },
@@ -243,6 +271,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wind-v1.png",
           "contentHash": "2eabc6a864b31bf89de22ab6fca919b4d88bfe051dd7683efd4fbb609a24b614",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-spider/wind.webp",
           "thumbnailHash": "71a3637ea80a887b0639698b77088492e62387fa13f2d234fd9159810ab492f4"
         }
@@ -267,6 +296,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/normal-v1.png",
           "contentHash": "5c949c434f2bfc35d6843dbf0a7683f8698ece3a2bf981533e9e5fd7ab7c7b57",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/web-caster/normal.webp",
           "thumbnailHash": "d42da76e2eb0ba51624bd12ddd6667b5e4ace137b1623f8924a2426a581e028c"
         },
@@ -278,6 +308,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
           "contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/web-caster/wood.webp",
           "thumbnailHash": "ec51400d103e6bf03d5a31573916d4434ad565b7786fa7201705499cb7691cb2"
         },
@@ -289,6 +320,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/fire-v1.png",
           "contentHash": "27f2534d949c7731e5f8af54e5a6e6c7802c96598b211aab05771744a66a0b5d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/web-caster/fire.webp",
           "thumbnailHash": "3055de4bbf37063f06fefa3f727bf5fa845a2a5f7dc844bcbe379085d134d3e5"
         },
@@ -300,6 +332,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v2.png",
           "contentHash": "6a012b761bb88dcf9a6eb0daff75bc5116728dc78936f047bbfd2d2965584dd4",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/web-caster/metal.webp",
           "thumbnailHash": "a8b82770b3f4acd772521af1ae6967facd7eb47172741257925a9942d96200e7"
         },
@@ -311,6 +344,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/water-v1.png",
           "contentHash": "2b1f6e9d5a66b82838597807bb96dc78dd11ca666458cf3f07234be77c59bac5",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/web-caster/water.webp",
           "thumbnailHash": "cd3e8c68d197eaccfe1e6e6a8cea350289a7c59cb030cf1bd0e3c5498572eca2"
         },
@@ -322,6 +356,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wind-v1.png",
           "contentHash": "73eb7b9fbfe261ce55b54f5c2f757119b9e6a527ee6392b2b12208849857f411",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/web-caster/wind.webp",
           "thumbnailHash": "910da9ff991ce092f5655a979f75d5066fa801af25701e507c1b1e5e9b5bf41d"
         }
@@ -346,6 +381,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/normal-v1.png",
           "contentHash": "257f95378104cf89b52f0eb14c509ad6846f5de7ab1721cfdc03dfdc3d1c929c",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hex-adept/normal.webp",
           "thumbnailHash": "8632633b366a76e2d495328939722c7e40f5dc0983a62dc4f2d61fc526af13bf"
         },
@@ -357,6 +393,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wood-v1.png",
           "contentHash": "ddfd929be8c933b0c8b6ec09b6a8baa11d671936ec359bd9d35289f5eb9a6e98",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/hex-adept/wood.webp",
           "thumbnailHash": "e5052e4fc145cd16d67a0a6e882fdc424b8c5682756607de3146e93cb76f3448"
         },
@@ -368,6 +405,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/fire-v1.png",
           "contentHash": "142c4ddaa216e435e615c43de981777eeb4ce213bb870caadd9e34e838b82305",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hex-adept/fire.webp",
           "thumbnailHash": "3275c4ba6e4f331ac5ba115b78c662f873c39a2e1a9577d113e211fcc5c8ce3d"
         },
@@ -379,6 +417,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/metal-v1.png",
           "contentHash": "0913d6aac655b9753a9004671cd3487b2b2d8a6c481214640a4b903070c3d5b6",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/hex-adept/metal.webp",
           "thumbnailHash": "c4ea73ef86dce1e24410965ed4a6137f5153db2085e5da5c04bb7c7e7fa6d7b1"
         },
@@ -390,6 +429,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/water-v1.png",
           "contentHash": "80fb84a1569c5f9e43246d4b411197d29c390ed4ad9f69fb4d53389f0ebc6198",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hex-adept/water.webp",
           "thumbnailHash": "0628327fb21441fe7ce3f9cf46f86d8555115a93000e263b58b50c258660bdfd"
         },
@@ -401,6 +441,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wind-v2.png",
           "contentHash": "6905f6a2010676d386344305e0eef043412ed92f2c9e2eb3e2a6633e8ad047eb",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hex-adept/wind.webp",
           "thumbnailHash": "1f6744d0b6aa3c32a062d811c2734a87f3089ee57288434e51817839c627e034"
         }
@@ -425,6 +466,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/normal-v1.png",
           "contentHash": "dd739934269f532e9232c896f831821f7f7001cf0a94382fe6a2bb4e4bd983c8",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-archmage/normal.webp",
           "thumbnailHash": "e778a4d2a3857d5fb58c41edb5215d023b89f5b780389f487f517843ea61c887"
         },
@@ -436,6 +478,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/wood-v1.png",
           "contentHash": "dbbae54ade9c3288135b12b3aab3d8c890c5fb83b4e7f7aa0179485a3b9a5eec",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-archmage/wood.webp",
           "thumbnailHash": "94a4b572d6b45220a1e0c6652a2d04a59f07bbc3e13074a7600c352e84c4d9db"
         },
@@ -447,6 +490,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/fire-v1.png",
           "contentHash": "e8470c21a8734be165388929700cd8a8af0b1b1d07cba71cb1950b4902d2491a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-archmage/fire.webp",
           "thumbnailHash": "d0ee70e53e4afab7bbc6eebc4d2abeea304b21fa44a9883d9cbe2591797c39df"
         },
@@ -458,6 +502,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/metal-v1.png",
           "contentHash": "7bb5a88efe883491c7e29ef6517ee0189a1ba626a6fca71b4af1abbb0d15aef7",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-archmage/metal.webp",
           "thumbnailHash": "f196cef9d4773b4b060f22057e030a75a6d11220a88843c2a2b8d42c59e8a03b"
         },
@@ -469,6 +514,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/water-v1.png",
           "contentHash": "4f07b8114b5c387c7eece8e94c4b1e22b82aa6327b4fc0170e273269ca27f98e",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-archmage/water.webp",
           "thumbnailHash": "e10a7e72aee7211b20886ee01c3876598a7cfd1efa85471c5e41c634f660786e"
         },
@@ -480,6 +526,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/wind-v1.png",
           "contentHash": "f74118ddf3705a32ba95ca951210e8d9c9e70b34ef5c2d54c61563fd2c37b512",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-archmage/wind.webp",
           "thumbnailHash": "a8ae4b8b3f19f9677cc736b95b7b05cc5b15f83b7cd1597b65c2e176217e7c77"
         }
@@ -504,6 +551,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/normal-v1.png",
           "contentHash": "f4d2e212adf1344b5aa76f75e582438b1361083987050fc0b494170753a0ce65",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-summoner/normal.webp",
           "thumbnailHash": "12bc8cc5b717e49479880ebad3a846a07102a55093f331a62e80475fa25c352b"
         },
@@ -515,6 +563,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/wood-v1.png",
           "contentHash": "78e4c606022f3d2b58df8a01cdb8b9581583e21cdf187a51bd3e1429750408de",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-summoner/wood.webp",
           "thumbnailHash": "3b46d01d85e97b1434f9aa30826adc968f6d1d5d787caa19636ebe2b473cf6b6"
         },
@@ -526,6 +575,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/fire-v1.png",
           "contentHash": "53ec38b66f466eca25f9e9a756baa4a551f096fde641f9e32efaf9f27903b21e",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-summoner/fire.webp",
           "thumbnailHash": "d9aeb1f0b70f6232e9a8b05b55671edfad46ceda5fdf33a857b7b5ab9a68b70e"
         },
@@ -537,6 +587,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/metal-v1.png",
           "contentHash": "8906a5ea6924ebc892c36d0758a31714c9c73abb897748afe4d85f3647c8e82e",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-summoner/metal.webp",
           "thumbnailHash": "5dcac03721dabe52848a4640e1a12a74c328ad4d05e5f12073d70d157598d9e5"
         },
@@ -548,6 +599,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/water-v1.png",
           "contentHash": "afb88a6313b55b5c5357262fdb7a2745d8ada997946eba9c169124310786b75c",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-summoner/water.webp",
           "thumbnailHash": "31e7b437980ef09107c2d15cc0ad6ef0ef661bf42f32ac6aee63e258388444e1"
         },
@@ -559,6 +611,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/wind-v1.png",
           "contentHash": "25a0f7cea03a17a5818aea056e67bdb66acf3c132a5b3257f048f06d06a1d598",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-summoner/wind.webp",
           "thumbnailHash": "1a2536d1e63d5e6139b23b369334bfa00cc3e55fbc9f929238ee8e0f9b5e35af"
         }
@@ -583,6 +636,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/normal-v1.png",
           "contentHash": "8b98415d4a242c89c24c75c005d5ee9a218a67d3e8d49e3931e4ebc6c1ac784a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ward-mage/normal.webp",
           "thumbnailHash": "1c09992d8c8e326935fa5b0a4bc4e40ae0cb1bdd2a473312a368a86e4b4bf3b0"
         },
@@ -594,6 +648,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/wood-v2.png",
           "contentHash": "e4880757e5a299e0279ad40d485fc72d53eb811f5369bea17fc4e61452c77005",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/ward-mage/wood.webp",
           "thumbnailHash": "5e134f13fea1db5b96c5cfd0475632c277eccb5ef1ade60e2c0218a2c67bd46e"
         },
@@ -605,6 +660,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/fire-v3.png",
           "contentHash": "92b61220126a44480ac980a45f0dc0bf6a861c591dd161155ab40eb05e9f71d4",
           "version": 3,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ward-mage/fire.webp",
           "thumbnailHash": "7592c48d66ee2e3ecd107463903e221622a4fa70690ccdccc1050a3560c0643d"
         },
@@ -616,6 +672,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v2.png",
           "contentHash": "ef5ef73417e3117c9cb0e23e2d611403e794be767ed0d614c00b208a82291d81",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/ward-mage/metal.webp",
           "thumbnailHash": "84acbeda19c3d77eec24c532376ad58008e7e4c3130b71c5ed140feded475483"
         },
@@ -627,6 +684,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/water-v1.png",
           "contentHash": "759fa15dc84f485774fed71e3125c51dcc3894383ee1f6e4f427690291ebae4e",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ward-mage/water.webp",
           "thumbnailHash": "fe1de68b881df6c696264ca7bd7f9f069504b2d91569dd196a1fc3ff70e4cbb9"
         },
@@ -638,6 +696,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/wind-v1.png",
           "contentHash": "f13abe9ab50f6484b221bfafef8cc57523fec6984646f7cc441ab2f37edad6ff",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ward-mage/wind.webp",
           "thumbnailHash": "ea3bd2ee1e7b28f580645663ca176a0eb3e165b82adf6e37d69b8e2ef5a2f130"
         }
@@ -666,6 +725,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png",
           "contentHash": "2facbf837dac20c60474a0e33a81c5c01ce0cdfe3e0727f380a1b7e9f1e5aaf9",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-bear/normal.webp",
           "thumbnailHash": "8d4f879ee4a4ac36a4a366ef097ce3e2ba47c242e390ac4b5e6f712b073ea550"
         },
@@ -677,6 +737,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wood-v2.png",
           "contentHash": "c640a25781520272e1b272301fa87e35fcfb66477f6022a8b790c3ee34c0595c",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-bear/wood.webp",
           "thumbnailHash": "126bb9ff60fe58b7b694118427822b1c863eacd97e645dc1631a054ea2c7fe25"
         },
@@ -688,6 +749,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/fire-v1.png",
           "contentHash": "a36c9c4da2439c8557cfbb71d0e997f0147b1c06d444969ad7acb960cb563e6a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-bear/fire.webp",
           "thumbnailHash": "b6a582e180843d132bea9de2c0ee0c8ed8ea47a01d52307165041bb32525e14f"
         },
@@ -699,6 +761,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/metal-v1.png",
           "contentHash": "54ddc74f76d84dbdc057847412f036a165c530c406b4bf710bdf6ca1f06488c1",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-bear/metal.webp",
           "thumbnailHash": "6de915d4f1bc054261000ffa2af329a7e23eb8940a883f2b602c8466f34b7120"
         },
@@ -710,6 +773,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/water-v1.png",
           "contentHash": "7aeb280568a852d6b9526a7f83da2c69b1e7e263caf8624d2913cc06460ba1fc",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-bear/water.webp",
           "thumbnailHash": "b2942ef3393d330c0ee23df0e3ec8366e2d5e4ac1633a69d5645c82734d05bd0"
         },
@@ -721,6 +785,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/cave-bear/wind-v2.png",
           "contentHash": "2959ed534461995a4d0ca8d9442a992b8ababb7458cb3eecc70ca29faeacd559",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-bear/wind.webp",
           "thumbnailHash": "e9d8970fc6586be1375554292435d9716ea3c3903f26823a2b8925f4e8468858"
         }
@@ -749,6 +814,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png",
           "contentHash": "d183fae2c892306f7c426293e8e2fa75d05c56b1832bf42586cb07427e9526ef",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/dire-wolf/normal.webp",
           "thumbnailHash": "83a6df699cdd1686c8d78af11bffef765242690ee1209d59c33da1e58a9245ff"
         },
@@ -760,6 +826,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png",
           "contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/dire-wolf/wood.webp",
           "thumbnailHash": "00373a6edc0af7ab4248e96fd729f83b67ec664340da08447dbfeb29273e0822"
         },
@@ -771,6 +838,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/fire-v1.png",
           "contentHash": "3a395bbef7da436cbab7311940e908b7bb37f00b6c7bd45b0c59865d1dedbffc",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/dire-wolf/fire.webp",
           "thumbnailHash": "0569177d925d618d36a4f9c472928e76a0954202bd8704408d8fd122f55e3b91"
         },
@@ -782,6 +850,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/metal-v1.png",
           "contentHash": "d9bcc6c5a2784eb747726aeab71983472c651363514346adc0613e41a9c6737b",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/dire-wolf/metal.webp",
           "thumbnailHash": "05de90ba52977ac28f5da94b145b76bb88e1107b670da66831e186dbb3a4738b"
         },
@@ -793,6 +862,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/water-v1.png",
           "contentHash": "434a659f0dfaa6c916ebdb80e7c27b1fe6dec5e4886b6ce5bca35b9be344af10",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/dire-wolf/water.webp",
           "thumbnailHash": "e8ce6f5a87b888fc4b82ab306cec9ffcb223ee03e17936ee749928d7f8165831"
         },
@@ -804,6 +874,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wind-v1.png",
           "contentHash": "f380ed1487a0c9d7e6a20571caba8f51310f91b6bc442ee52f73ad01fed21626",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/dire-wolf/wind.webp",
           "thumbnailHash": "73880c5ea307d77ff327ffb10de49c150a0b45f124a13d5dacc85b8eb67b0088"
         }
@@ -832,6 +903,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/normal-v1.png",
           "contentHash": "c6fb5e9523f741c34503a97dcd4a5a7a0bf9e9ede447ef97d2778548d94c0777",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grey-wolf/normal.webp",
           "thumbnailHash": "599f2bca864e806394e2d9d944f84e26e01355f7eda70b6bc0d7cdd9663509a8"
         },
@@ -843,6 +915,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
           "contentHash": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/grey-wolf/wood.webp",
           "thumbnailHash": "8aa58fc58ed57bb1b0f572fbaa5771bf325705a330a2cdddca3cf9a33661dd4c"
         },
@@ -854,6 +927,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/grey-wolf/fire-v2.png",
           "contentHash": "772d6d8fbbc19128bbeea77470174351caa1b53443ddcc89df334a38b6c99d15",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grey-wolf/fire.webp",
           "thumbnailHash": "262c0755e98c69803187945b738fdecfc5d27c6e37529db93c038837048ed6b2"
         },
@@ -865,6 +939,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
           "contentHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/grey-wolf/metal.webp",
           "thumbnailHash": "148c42bcd59d3098ebd8edff369c4cd37ed3ca91e847123c1f8f3bf1a71f9f07"
         },
@@ -876,6 +951,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/water-v1.png",
           "contentHash": "c49cef7a3291189961b887721e5e98e5b13c275bef97e3377a49a09b1eea28c4",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grey-wolf/water.webp",
           "thumbnailHash": "59dc8d7e39998e0e1d3e16f419cbc68ac54eeac24fb29413737547f17045b82d"
         },
@@ -887,6 +963,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
           "contentHash": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grey-wolf/wind.webp",
           "thumbnailHash": "1d1f9dc8992dcfa77386c7857e8bd1340177a1ec31f3dcf02a7b17a2e7f39628"
         }
@@ -915,6 +992,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png",
           "contentHash": "13138732e4b62ee8c42627598f2e9fad9613bf6b054398ed7e9654fa8dcad980",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-boar/normal.webp",
           "thumbnailHash": "4c23cc226ab5e7c824a793249ba89293fa7dca137775f0dd61ceee8d0691ccb4"
         },
@@ -926,6 +1004,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
           "contentHash": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-boar/wood.webp",
           "thumbnailHash": "d60379618d2fbb080a1a5eafb699b8ea618a11e08b077bc6ce8f362d405c125e"
         },
@@ -937,6 +1016,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/fire-v1.png",
           "contentHash": "505b1a860b81bed120667170a2cf58d3de0c92a20bdf114f994799d7e2fc87b5",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-boar/fire.webp",
           "thumbnailHash": "a7db51588b12a83c5b936694064ca67e321eb2b7638eb95bf3ff50d7b166f0cb"
         },
@@ -948,6 +1028,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/metal-v1.png",
           "contentHash": "5c3fa7b40dad93dc6fdc8f6c2d908d5b552630d4feec304a6c11986bef422bce",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-boar/metal.webp",
           "thumbnailHash": "a0300b933f13aed44e2b0497964da77c66237b544a721b0b95af2422ad54c0d7"
         },
@@ -959,6 +1040,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/water-v1.png",
           "contentHash": "8e81c97f8b9370f99cfd89c279352fc4ce3c157dcca06b6d10e684bd89d687a2",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-boar/water.webp",
           "thumbnailHash": "31d13486cc3eb9a286b35343e34cdeb47adecb7d10d5b4a807e50c4b87f1870a"
         },
@@ -970,6 +1052,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png",
           "contentHash": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tunnel-boar/wind.webp",
           "thumbnailHash": "505174cc1c5b5e9fb10f71697bf588ed7d94dde91473ef29f2be12e3994d12fd"
         }
@@ -994,6 +1077,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/normal-v1.png",
           "contentHash": "f44b9836defdd61cfc5ca53e4b8cd13575ad82647693d0d9a15dd24f21eb8776",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/bone-mage/normal.webp",
           "thumbnailHash": "f4b59a17c531fc734ea2ee373998a6c39ae3ffa50e5f53b03800ab334544296c"
         },
@@ -1005,6 +1089,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/wood-v1.png",
           "contentHash": "755678807185f280e4d0266b458c778482408e6d5a8e8a3c035bf003accace73",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/bone-mage/wood.webp",
           "thumbnailHash": "80b9faeb3d3934b35fe7725db2542a83ff4a954fd34c782810b8313a5aface3a"
         },
@@ -1016,6 +1101,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/fire-v1.png",
           "contentHash": "1b9d7e7a13e61ce4ec525af2b8012e1d2410794f25137f5d5c9f7b16c784bf15",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/bone-mage/fire.webp",
           "thumbnailHash": "6afa36ba759846862641fac67e3594ece048cf642a0d8d8e979f5e9a731764c3"
         },
@@ -1027,6 +1113,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/metal-v1.png",
           "contentHash": "143087d8d78719c8c4a771c183c61910b7723fae438a840af4f06ecc1ebda120",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/bone-mage/metal.webp",
           "thumbnailHash": "ccf31f004b728dc65b6d6aee37cf713cc3b17bedc398a5930889176c70d31e50"
         },
@@ -1038,6 +1125,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/water-v1.png",
           "contentHash": "5babfc7d09421a7c0146a9824cc2b7ab7c7b5385ca136cf7c40729cf49396333",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/bone-mage/water.webp",
           "thumbnailHash": "53fa44e30f66fa101b0b1748c6bd3ef4d2574ec60a7b7bb7a1a74e05253a8f7e"
         },
@@ -1049,6 +1137,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/wind-v1.png",
           "contentHash": "c3358e7818c9510252851a66f43d342cd408361bdea499cd99531ced5743e083",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/bone-mage/wind.webp",
           "thumbnailHash": "1e2478d907cf734bd62b2cbcaebd7b9b36c85cecd34281ff3b1ced6fd10bf90e"
         }
@@ -1073,6 +1162,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/normal-v1.png",
           "contentHash": "571a3c96c11e06deea033ad602f74f742b9dcfcdf8004016ff5dc41831675769",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/death-knight/normal.webp",
           "thumbnailHash": "1227943a270beb65345af968376497e0cf6d19ebff33efc588df94430843aeaa"
         },
@@ -1084,6 +1174,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wood-v1.png",
           "contentHash": "e6333d96611236a09efba50606a45732acd0561f456040c2e0693c44572e15f3",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/death-knight/wood.webp",
           "thumbnailHash": "3cdbd13f2d5931263d1682e3dcd79661ba18ad69713be7c389df7dc59b7d55dd"
         },
@@ -1095,6 +1186,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/fire-v1.png",
           "contentHash": "ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/death-knight/fire.webp",
           "thumbnailHash": "c074fe2686d10ce1a48861fbf0c67f03fbdf788f4a1c9f7c575d5d2eb03e0129"
         },
@@ -1106,6 +1198,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/regression/death-knight/metal-v3.png",
           "contentHash": "ee35e0bd6d5641cf58e0933a29692e15e2f881d898c3b3e4ec83bdcc07f5f0ca",
           "version": 3,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/death-knight/metal.webp",
           "thumbnailHash": "88d6d2582b6fb1da67a6f04b1b6da77c5d092c18a5c6d51ed43ebf6cb9637f73"
         },
@@ -1117,6 +1210,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/water-v1.png",
           "contentHash": "7cf465d187839d124827474309cae6075f95f727d75c6dc02e0388033da73fa9",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/death-knight/water.webp",
           "thumbnailHash": "a724d363a717c64b77a20f87dfd1b8316ba4a86085c3fa4a6cc6205e4be7e0b1"
         },
@@ -1128,6 +1222,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wind-v1.png",
           "contentHash": "b052d6a821d808bfa75b4a551bb8b41ea5d3ab5bad9795d4f64e53ad687c5f09",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/death-knight/wind.webp",
           "thumbnailHash": "984f8d60755224180425dc412f7d7264a28d7b3e7646090dc70d36f5a487096a"
         }
@@ -1152,6 +1247,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/normal-v1.png",
           "contentHash": "18dd6d5248c0306756b2e74621674496cdf7f6bbd4b779c3482592f9a1657d9b",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grave-sentinel/normal.webp",
           "thumbnailHash": "2eff4304b2f4a0c7622b9ed9342933abd498bafacf8f7862ffce63efc7bbc42a"
         },
@@ -1163,6 +1259,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/wood-v2.png",
           "contentHash": "a61b50c8fb71eb056f56502a6d7fc39fe38e3288ef5f767467deec15b1140c5f",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/grave-sentinel/wood.webp",
           "thumbnailHash": "9a98c9d864f68ed743127e26b86846d26909f59fb773c0aef409ff3f4a0fb489"
         },
@@ -1174,6 +1271,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/fire-v1.png",
           "contentHash": "34937e081b36b68744f97ec561c9b280eb732f3abbaa8aa4ba6eaf4e696ee3c1",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grave-sentinel/fire.webp",
           "thumbnailHash": "8a944cf23085d88b981f10e6356e6db1957b127a4e04ebdc1b37adc9cc1605cd"
         },
@@ -1185,6 +1283,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/metal-v1.png",
           "contentHash": "868cac4a30f0d31b2e32c69b376289be89bf717bafcad3228bf46b9a4229613b",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/grave-sentinel/metal.webp",
           "thumbnailHash": "a7053308a823a8e1f313b3be65df6265af3923df9acbf7d87cfd0e7d058b7a33"
         },
@@ -1196,6 +1295,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/water-v1.png",
           "contentHash": "6366073f075e4f0041a0d4c8c44d5131c1e4b1a07d0af142d91388b0d73022a2",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grave-sentinel/water.webp",
           "thumbnailHash": "e5126d19338a740f6e2dc2c47f279661a209bf50a28e4bdaeb29e5227abe7cca"
         },
@@ -1207,6 +1307,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/wind-v1.png",
           "contentHash": "70f61ba99e7178ce633cef621b2203de56244c9288303c7afaf7f27debc00e43",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/grave-sentinel/wind.webp",
           "thumbnailHash": "7df816fd43c63920aba3386ffef29fb57aa6e7b87acc7507e8811c943cca41aa"
         }
@@ -1231,6 +1332,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/normal-v1.png",
           "contentHash": "04e7f936e3362c0c281df76575cb569d0b1919a171d08d909d76e67020cb28c7",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-wraith/normal.webp",
           "thumbnailHash": "b18301a3f6284ec2082722773ad991da4fd317f6d2b6c39a71c82fcd8e4f28f5"
         },
@@ -1242,6 +1344,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/wood-v1.png",
           "contentHash": "124218ee3517cc60e9bc44d715fb5eeaedf04ea0e4ad59560ccd8c7d128f77c9",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-wraith/wood.webp",
           "thumbnailHash": "5b540872b21960d2492eb0acfcca006a899b9d9e48216df01fafc7edec0de890"
         },
@@ -1253,6 +1356,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/fire-v1.png",
           "contentHash": "97b76a4418261b480cb1888c1f7fb4d7630ca11bb22d523af27dca336e53aca8",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-wraith/fire.webp",
           "thumbnailHash": "2a528742e933a3e1032d64dd8bc9b09aca81ce3d336c6a2161f507bf8127e7b8"
         },
@@ -1264,6 +1368,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/metal-v1.png",
           "contentHash": "f2949671627e2ab0b1f42c7a40aec91edf61744a6f77fc164dce74a209c5492a",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-wraith/metal.webp",
           "thumbnailHash": "cbf0d2db160fe34c38803a1e4d44bb53d6d64ec9b5c20efb79c591b6eba3bd94"
         },
@@ -1275,6 +1380,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/water-v1.png",
           "contentHash": "ce939be04359c20f25bf9a7eb4341a8f1e895c929c458a0ac0094541b8681b8a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-wraith/water.webp",
           "thumbnailHash": "526cbdd6e0018a524797749cf12488f3d02c7d52b54b35f27304a042f3ee43e0"
         },
@@ -1286,6 +1392,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/wind-v1.png",
           "contentHash": "4a33b8be367199d20f16dc6081f45f3edd342af138bfc5a5188ca4184cbeb293",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-wraith/wind.webp",
           "thumbnailHash": "0e3abebbf25e8d6e24e78375676f872eee632c6317e9bc06fd101d7ce101c39e"
         }
@@ -1314,6 +1421,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/normal-v1.png",
           "contentHash": "7bf8d910b212d5a9229c342c363c76452453011d83bdb87b5630310ff230b5a7",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/clay-golem/normal.webp",
           "thumbnailHash": "d1e4d658a11d0a42c7af069a5ae1a54dbf25e3faf0aad8477bc4af6250e3a830"
         },
@@ -1325,6 +1433,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v2.png",
           "contentHash": "f2883b1cf31f3ddcd0c8dad84bfd09a9cb46cf2637e569717baedf1e01726736",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/clay-golem/wood.webp",
           "thumbnailHash": "74925733e354655efa350c66fd0922190da91ba229aa2707f7277ad4a1d0149d"
         },
@@ -1336,6 +1445,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/fire-v1.png",
           "contentHash": "6ad09936fbff82050c52ce4538a488e3983e85f0f8ddc112d2310438077ebaf3",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/clay-golem/fire.webp",
           "thumbnailHash": "c09410f3882473f8a7764d6ff9921b0c73d063ebb1aa59a8eafe5e11a921ef62"
         },
@@ -1347,6 +1457,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/metal-v1.png",
           "contentHash": "b16b3889a9541d123f82c0eda453b285baa47485012307143daf5b9fb6d9cce3",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/clay-golem/metal.webp",
           "thumbnailHash": "84d7b70681258deb233a13ae95cc91be0c5effdffe9cf2342f1082fc49438f3d"
         },
@@ -1358,6 +1469,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/water-v1.png",
           "contentHash": "7b1346b635d52a72cde9a2e66d5160fd853a9b196be353c485a9c490e69e013a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/clay-golem/water.webp",
           "thumbnailHash": "43362da4423dfb1cfcef96cf1377c0ccbcc92296375a4ba1ba87a787d8e4694e"
         },
@@ -1369,6 +1481,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wind-v1.png",
           "contentHash": "02b7e427db2acdc43efc56e0c16f67a4a93bbb28bf717aa3553b2b555e84dc60",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/clay-golem/wind.webp",
           "thumbnailHash": "69fde5400503fe4260d9c85a310539bb75558ed7c5a1f312b69f1947eb74f0ee"
         }
@@ -1397,6 +1510,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/normal-v1.png",
           "contentHash": "ed247eaff77ef99da73ba489995befbe09847cb248651485f6507c3786fac98a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/crystal-guardian/normal.webp",
           "thumbnailHash": "99590394046056e18b130561053379179ff1064d77e80a8ac11c0f03f06840e0"
         },
@@ -1408,6 +1522,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wood-v1.png",
           "contentHash": "bcb28a5a3f221b5df99410e6ae7d86a4d08d7001464fc6d303bd9ff36adbd877",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/crystal-guardian/wood.webp",
           "thumbnailHash": "ff221613f06bd30e8d57d85cfa8f490fea10a6b180924fa0181864bdb8be3025"
         },
@@ -1419,6 +1534,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/fire-v1.png",
           "contentHash": "188d19e1b827f81d7d887045420ce561e99fc98d39c0a7446adc03dca3f0f57d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/crystal-guardian/fire.webp",
           "thumbnailHash": "584d4dce7a6fdc3f054b13ea558d1c99100f74b98457709dc8bd86b7349aeb27"
         },
@@ -1430,6 +1546,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/metal-v1.png",
           "contentHash": "838fc1d52bd1d5c35a1c723d8642348e6cee6d099ffed3c9108f4ffb7e55fe44",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/crystal-guardian/metal.webp",
           "thumbnailHash": "b4d0ea8ac196fbb9ad65f2a1231613e547f2b90bca4784ddf52c0eb4a36388de"
         },
@@ -1441,6 +1558,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/water-v1.png",
           "contentHash": "980bc2ea9938f0ad2f78edce7338082bc019de701bd46b7d27bb6b36e244eb06",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/crystal-guardian/water.webp",
           "thumbnailHash": "d86c2fbb40efd5a28471a94fc7af92db45ffe5f7c6a283439abe1afe6e27f9a7"
         },
@@ -1452,6 +1570,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wind-v2.png",
           "contentHash": "6c22aa720624f70a5ba1998d8e5a49618a51902bbcf9981977c8084e624ff9e9",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/crystal-guardian/wind.webp",
           "thumbnailHash": "ad701d4f987b35b0ff215d875510d57f1eb6e2bbf7e22bd6fb8ef52d92dadaba"
         }
@@ -1480,6 +1599,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/normal-v1.png",
           "contentHash": "7e92f0374ba7942f46a46a11e43b3ca0dd148f0cdd015f4c1c6c9856b3bb355d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/iron-sentinel/normal.webp",
           "thumbnailHash": "745843bdd29b78b3a90541e9dcfcf65ce2cab64e9c386e9a6a0f42f4152e1341"
         },
@@ -1491,6 +1611,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/wood-v1.png",
           "contentHash": "4e8f6fc6a9c11b6a81ad7b41456dd368dc6b2cfacbc419a46c7e5912cfbdd147",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/iron-sentinel/wood.webp",
           "thumbnailHash": "9254c2951e538f14cca0697a583a2ea4aa0f9e9d127fc1c85e73bb09c73eb218"
         },
@@ -1502,6 +1623,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/fire-v2.png",
           "contentHash": "a923f633e09792e9207eb2d843bb1f16a1e5a346b1d895362f7fba70ce44128c",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/iron-sentinel/fire.webp",
           "thumbnailHash": "02de684d65c769168180fb246dcf4527ee2d951fcedac323b46a34dc0ddb00ae"
         },
@@ -1513,6 +1635,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/metal-v1.png",
           "contentHash": "fb85f27991d1b8f4a6eebb58f5843e6ee853a18d825365d1eccff004118d1a6e",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/iron-sentinel/metal.webp",
           "thumbnailHash": "54552b06d9c6ee087bf3a11519aacd67cf0298e04479e25781ea61b9f9c365cc"
         },
@@ -1524,6 +1647,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/water-v1.png",
           "contentHash": "bc88ebadc5ab8570e611f522831d43e46e47da52d6ceba1199e130bd07826664",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/iron-sentinel/water.webp",
           "thumbnailHash": "2933fc0e93f5810dc02dd66116430a7820f6dcf8be13fcd852ba559670b03091"
         },
@@ -1535,6 +1659,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/wind-v1.png",
           "contentHash": "9b67ebd5c82ddc6fb259a3481e199c62939765a4c81e0a8ea0beb90c9adc0b9e",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/iron-sentinel/wind.webp",
           "thumbnailHash": "63dd31d54edfe56a2cb7e5f4046c37f6a7928028f9361f0b3101c0170af44051"
         }
@@ -1563,6 +1688,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/normal-v1.png",
           "contentHash": "ed78e5e5c37de72079967fb72286720295cd23d7fb8bb82953ebfcfb4f0a1df0",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-golem/normal.webp",
           "thumbnailHash": "79402dd9d3f724573352be10e836785c8f958c782df110852fbd12984b299667"
         },
@@ -1574,6 +1700,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/wood-v1.png",
           "contentHash": "f9cf937049d5660a8c06200410e29357325c007b0c82a98d004d3804428d2977",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-golem/wood.webp",
           "thumbnailHash": "917bc6966af034051ab33d7b162ff236aa8d1eb188463aae18f00abb47cb399d"
         },
@@ -1585,6 +1712,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/fire-v1.png",
           "contentHash": "f8e1330e9c9e648e00c446ced85276efe00baa8353c56e34e8caaeba67781117",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-golem/fire.webp",
           "thumbnailHash": "1383263e2297a0128542364d68de2158c817fe7026f04d691d4aa74addda655e"
         },
@@ -1596,6 +1724,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/metal-v1.png",
           "contentHash": "00efd4d3ed4b0acc7de8a8e175e53d99d1dcca523e8dfef42f361c3de9dd5e78",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-golem/metal.webp",
           "thumbnailHash": "133872f1f519091d7048224a877440c8f5357c2bb7aff8aeb0c8103128add939"
         },
@@ -1607,6 +1736,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/water-v1.png",
           "contentHash": "54577474e2b33a350bcb7fbb746ee16ba0791a48848e6f43caa12cf1a0732bcd",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-golem/water.webp",
           "thumbnailHash": "fdf3a2defb0bee9e3e1f677f742402b0d6e0528e4708b0e3e39d9b9d08e597ae"
         },
@@ -1618,6 +1748,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/wind-v1.png",
           "contentHash": "b0f83c87fdc8310c9745328292b9bcaa241306ee7c373beb64d387d71a7bc78c",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-golem/wind.webp",
           "thumbnailHash": "e0504d24db098e3685762a32e428a1770360c06fc0eb67d19a8e9b64172cf633"
         }
@@ -1642,6 +1773,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/normal-v1.png",
           "contentHash": "00264e7e1b9ecd6f886e865ce8d8a148068cd1388b7480551715ad20902963a5",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-elder-drake/normal.webp",
           "thumbnailHash": "244aee604dde549ec912a2c0dbe9b65459c6e73371ab4450d501f8f5bafb025f"
         },
@@ -1653,6 +1785,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/wood-v1.png",
           "contentHash": "3a7dfc1d2ac27f3968fb5cafc308f447552a8896ea87f14b506176b90e85af49",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-elder-drake/wood.webp",
           "thumbnailHash": "a3210a5d40fdc92b41fb80bf22229a85a86018acd02fdb32e215e9ba2e3b2466"
         },
@@ -1664,6 +1797,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/fire-v1.png",
           "contentHash": "240288bff6675e0e575f52dabb299f4e6f5c25f22e523fca6df0fc0c2db022fb",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-elder-drake/fire.webp",
           "thumbnailHash": "22d479285be4ccac4575c071dc5a622cb382e89d65750bba708d03366e0e3dab"
         },
@@ -1675,6 +1809,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/metal-v1.png",
           "contentHash": "4a95ae3d01f25d1e1076ea44954ecb7f76d03217ce1adce9ff8e5a0e8492b314",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-elder-drake/metal.webp",
           "thumbnailHash": "618402271224592d9e218bc180aab642022820a865c961e2a8d3e40dba1601de"
         },
@@ -1686,6 +1821,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/water-v1.png",
           "contentHash": "a2d151e7627e3a7a66acad5c071b31ce4682beef6ebc211ad844dadd29b97b98",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-elder-drake/water.webp",
           "thumbnailHash": "1c5c8212cdd9b37ea12e2be8a13994f7466648c1879998b913e2e0a406a12a61"
         },
@@ -1697,6 +1833,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/wind-v1.png",
           "contentHash": "571dd199ee8ceb743b5d95cca0a0c056ccd106f2985ff40aef237c2d10a7c33f",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/armored-elder-drake/wind.webp",
           "thumbnailHash": "61cb714da3194d20d2ed4258e0cf89580547489a300b99baf3dc655398897950"
         }
@@ -1721,6 +1858,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/normal-v1.png",
           "contentHash": "14b00dfe91059042c66490dd1b35e97a89c1902f6b7dad62bdaa11b12ea90a46",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-drake/normal.webp",
           "thumbnailHash": "6cb3f163bf75bda4bae58a075eb221e16af642e72d1a67f973f7a25c14b5be0e"
         },
@@ -1732,6 +1870,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wood-v1.png",
           "contentHash": "1aa5e1b5d00adc2a0f6379a4b0c263c4965d298493176bf6f21ffb027ee1d3bb",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-drake/wood.webp",
           "thumbnailHash": "2b087f20185e56d84fa7f3c7c2af43ecd0a9c94d948036768e7193ed561ef31e"
         },
@@ -1743,6 +1882,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/fire-v1.png",
           "contentHash": "7553eacc3c666693a52521ab95874fed0d5a7f79afb3876fbc15324415b82cac",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-drake/fire.webp",
           "thumbnailHash": "f8d46825c0a489436c436dddd58220e36602c8c659fdc18b2e1746a502d46e16"
         },
@@ -1754,6 +1894,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/metal-v1.png",
           "contentHash": "6d47143732c5715f823aa4c80f32a6b3385c30c5909b41edc94feb00b50e7efb",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-drake/metal.webp",
           "thumbnailHash": "90dd55ff19c9dfb25546fbcc2b9d78514acddf270d18193f0088132a09379f47"
         },
@@ -1765,6 +1906,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/water-v1.png",
           "contentHash": "793563f39f8f6c5f2defd9250970b7f4cef69473888b150497ad9e3a78f6ee08",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-drake/water.webp",
           "thumbnailHash": "0b26fa414504ba3d9c952ef89200e1a98ae7f1a46f52d76798fd14889f7ff0c4"
         },
@@ -1776,6 +1918,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wind-v1.png",
           "contentHash": "94fae2cf743eb34ce2d22df11cf2efe7b39bb09a01b2802628a530dbd050b084",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-drake/wind.webp",
           "thumbnailHash": "539eb25b1f5d2ac3e5e036832ebaaddc62c9ca8ad45107f42f8e5e9efb6dc73d"
         }
@@ -1788,7 +1931,7 @@
       "familyName": "Draconic escalation",
       "role": "Arena-scale apex boss",
       "telegraph": "wings, throat, and tail each stage a distinct arena hazard",
-      "counterplay": "resonance scars exposed only after a committed attack",
+      "counterplay": "arcane scars exposed only after a committed attack",
       "skills": [],
       "debutFloor": null,
       "variants": [
@@ -1800,6 +1943,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/normal-v1.png",
           "contentHash": "65314d3e97028698f4d0b19b42e4cd8131042e989ea173337410ec57986f6953",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-tower-dragon/normal.webp",
           "thumbnailHash": "3349b55674d6478d202e8db44e239a47aff893023226d4e53eaeec0031402e30"
         },
@@ -1811,6 +1955,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/wood-v1.png",
           "contentHash": "b2f521ba12b217cf324c50f056f21542e36a49cec3a612533d87a3b4c5dc1123",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-tower-dragon/wood.webp",
           "thumbnailHash": "ff260b555f86769eeb26415d7f50cc1bcbdaf443eb00970e14899de6e2dab8bb"
         },
@@ -1822,6 +1967,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/fire-v1.png",
           "contentHash": "5a117c23678980304b5df864b60452872fb9b0bf59df79f5a58157559c8f7e39",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-tower-dragon/fire.webp",
           "thumbnailHash": "812dbd3eb373de333f1efac9cc6568cc8ac43f44dbef999cd85eb8bcb2f4acac"
         },
@@ -1833,6 +1979,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/metal-v1.png",
           "contentHash": "a8024d831b721a6f48af5fe1d365a754009924a27f5026ef530a60b87a4f79d9",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-tower-dragon/metal.webp",
           "thumbnailHash": "d7bd12aba5fc016bb05454c038ffafac32065b44ea45bdd8d0b4f27d80c7ec90"
         },
@@ -1844,6 +1991,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/water-v1.png",
           "contentHash": "a947ca28736246a7e09fe55496d5db1c826ef683822d5b366cf05470cf01c8d6",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-tower-dragon/water.webp",
           "thumbnailHash": "94ea5469670fef1af83b8d87027ccd41aadeff323c1ebc84ae4d8f4066b7cb97"
         },
@@ -1855,6 +2003,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/wind-v1.png",
           "contentHash": "acbd1781e44c656eef655b0e5fee1236aff96bacc40862f257b49f32262325df",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/giant-tower-dragon/wind.webp",
           "thumbnailHash": "7c1808685b2adb1e3e04bbb484e1b176ff3b5c5cd7fea6598e537acfa44f42cc"
         }
@@ -1879,6 +2028,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/normal-v2.png",
           "contentHash": "aab251b37629d232ce92efab2f7ed7937af901b8d691432526a1f4dc7aa57fac",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/venom-wyvern/normal.webp",
           "thumbnailHash": "bc4a655581aec191d2bd95f9c24ba8e2f4d34692dfb0e37be2bd1c8c47555376"
         },
@@ -1890,6 +2040,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/wood-v1.png",
           "contentHash": "3b584655e47bd96e446a3d005fbd04facb5f1a6039c9c1363278c0f62c123f86",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/venom-wyvern/wood.webp",
           "thumbnailHash": "193931afe32414aa69c0eec88f650a1c72586cfdfe2b2339ad212cfeb7a529f8"
         },
@@ -1901,6 +2052,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/fire-v1.png",
           "contentHash": "2426cae8730c04f562218e093c60741055e316b774a89e04e52c8a30a9593eb2",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/venom-wyvern/fire.webp",
           "thumbnailHash": "5264ad977fa0c5b5bcad200035c4c9a5e9d9bb78ceca68f3c13d3e09225e7de1"
         },
@@ -1912,6 +2064,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/metal-v1.png",
           "contentHash": "33842e1bda6fa034fe5374f4891a537ef597615e87e91d07f4c94b66e01ef2bd",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/venom-wyvern/metal.webp",
           "thumbnailHash": "2cf627001ad5d7bb7a33f9e77167fbf90c3efec2c88f808c76c83ec39b6e950f"
         },
@@ -1923,6 +2076,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/water-v1.png",
           "contentHash": "91c953f83e572b7ea8ef44c3102b09550624008cca49b897e0c879264c97e7c7",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/venom-wyvern/water.webp",
           "thumbnailHash": "d504155d498eeaa61b91cc3ce355404cc8acd030e9477802508e74b7f61d3e01"
         },
@@ -1934,6 +2088,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/wind-v1.png",
           "contentHash": "3300913498c648b0a94a49df990ddeb897427de61d20f7ed9664b1c3cd6983d1",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/venom-wyvern/wind.webp",
           "thumbnailHash": "7903be9cbac42a89badb411612cb7b3ebee74215a6867fbc5b50c51850c3464b"
         }
@@ -1958,6 +2113,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/normal-v1.png",
           "contentHash": "f087d4d5fdb5186ff2e3a2d86ebda5e567e7e6fc4923a55591a60ab5af08cc67",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/burrowing-worm/normal.webp",
           "thumbnailHash": "c5a095c2e94579e39720519dc778d0eb422383a0e99a03c5c3bbcd8cfb216984"
         },
@@ -1969,6 +2125,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wood-v1.png",
           "contentHash": "df17215aa9ce9543f1aa1c5fab5180c4b5b31b455bc1f19608785d79c2e6404e",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/burrowing-worm/wood.webp",
           "thumbnailHash": "03aa1cbb920c1d3c625b1eb7e5512c9fdb126d81eb2b27f0d2a1e88fab5b2728"
         },
@@ -1980,6 +2137,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/fire-v1.png",
           "contentHash": "bb6cf2fdfe8d4218d945525b92b077f7d9bae6a80e23cd9f58feffb68a9de23c",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/burrowing-worm/fire.webp",
           "thumbnailHash": "b80f600febc609e2331b30093f69987ae3a8f2cfc19edb9521442e748015487f"
         },
@@ -1991,6 +2149,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/metal-v1.png",
           "contentHash": "6939c2ada3db360ec97454ff04d6e2e9f4db012804b5967a11e0bce644d5069e",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/burrowing-worm/metal.webp",
           "thumbnailHash": "ef43dd8c51c7f0d2120d484f52648fc1c01339ee95d0ffcee2f2c849d045af17"
         },
@@ -2002,6 +2161,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/water-v1.png",
           "contentHash": "721cdc9fdb65a6e897075f475f0e0e1496a715bb85506513122df890b7394823",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/burrowing-worm/water.webp",
           "thumbnailHash": "d726f939330f31395e341716dbf5f05ab8604cca100f0a3cdea656941a881dd1"
         },
@@ -2013,6 +2173,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wind-v1.png",
           "contentHash": "0879e288706e4e483c193e5bbcead22ee647520b8beda56f42c610bc0f4146e4",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/burrowing-worm/wind.webp",
           "thumbnailHash": "4ce92115709083875067b102f0ce237084dfcf7ae5a39667ea1aa0c0648822b3"
         }
@@ -2037,6 +2198,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/normal-v1.png",
           "contentHash": "d12fef024ba05bf42966412066c3559b2c1e0f3d9dd6b25d2675e229ca074f4f",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hungry-mimic/normal.webp",
           "thumbnailHash": "d60ecf23db0e2520efc4732837562975870b94ee9bf0d18e5198f36b6698378b"
         },
@@ -2048,6 +2210,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/wood-v1.png",
           "contentHash": "c9855940ba68f2a5007bff4ece7cf0a407a7e6bc939b3bae3ea44119308cb229",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/hungry-mimic/wood.webp",
           "thumbnailHash": "f5e737c120932f0eb77c731a344818341013b52abaea232268b4da247e7dff25"
         },
@@ -2059,6 +2222,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/fire-v1.png",
           "contentHash": "ed2600c5f95c6bcbcfb418326388f8e6b4e20a9683444bd37d6dce77d833af88",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hungry-mimic/fire.webp",
           "thumbnailHash": "86651383b8bc8098ee5ac7cd825eef5f7838e964653c37a0bad20da4bf4b9b2a"
         },
@@ -2070,6 +2234,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/metal-v1.png",
           "contentHash": "09823f34d7a6197628336648a102a57901edb008a346db511ab5b0e0f38dc33d",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/hungry-mimic/metal.webp",
           "thumbnailHash": "efa7d9fbdba49da8570999d93ec0cdabd268bf92211ddfd4828d9da13ee58bf2"
         },
@@ -2081,6 +2246,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/water-v1.png",
           "contentHash": "3638da15a716b437d865b97050d7a5e7b2d20fb3722b7e4343623e310618d56f",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hungry-mimic/water.webp",
           "thumbnailHash": "7a30a14925ac752dc9ac5c19bcf1cc60b60123152b987b19efd72e1b6f504d34"
         },
@@ -2092,6 +2258,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/wind-v1.png",
           "contentHash": "dff9fa434f0ea6c110d0cfa611a7a5c31daa2961f2a64bb8eecab1cc2c5607a3",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hungry-mimic/wind.webp",
           "thumbnailHash": "0249463c51e2975354295b2b153321b840b2109e9e111fa5dc40e5238cb71fda"
         }
@@ -2116,6 +2283,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/normal-v1.png",
           "contentHash": "c78f61460fb62cb60e5fb62385abc39e0aafec150c193a21f43a13bb981b4018",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/slime-colony/normal.webp",
           "thumbnailHash": "ca1743525aceda27f977557f6edc3a29520bb275a024e84d24877bd0342a17fa"
         },
@@ -2127,6 +2295,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/wood-v1.png",
           "contentHash": "25861486094a3fc869c0075a29014d5769fdf7818c9c85a8b103335c6f47535c",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/slime-colony/wood.webp",
           "thumbnailHash": "1c416503c845d7fb07fb1d9786664b08337545f4a42dc7a47de157ddbe81043f"
         },
@@ -2138,6 +2307,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/fire-v1.png",
           "contentHash": "dab9ab74392fa6df25e7e8b440797fd93851ad304daf7ec7ba8e24889cbe967b",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/slime-colony/fire.webp",
           "thumbnailHash": "fc0c5b5ef090a24263c79d7359a2ef25860a4f32bc6b053856b7558d123a5bd7"
         },
@@ -2149,6 +2319,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/metal-v1.png",
           "contentHash": "911c57e09c5fc52f9ac8dd5c315885c025afe080cbaddc60eb419b06be7587ac",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/slime-colony/metal.webp",
           "thumbnailHash": "af4785a53bacef3d28d048203954a470c174fccfe8f66a454a0d3e5a0343234e"
         },
@@ -2160,6 +2331,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/water-v1.png",
           "contentHash": "b2ebba1f3d5d5d0d4e9489a8a5a17d6f68ed544f2e4c526260018d79db268581",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/slime-colony/water.webp",
           "thumbnailHash": "6249536e2ca3f2b2c165344aa2e90d4953da2971c56743371f878a9e9b2029d1"
         },
@@ -2171,6 +2343,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/wind-v1.png",
           "contentHash": "bf17814a372b40f402bf890543e148219d727bdd70b06473f64b1bcbd8b5a25e",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/slime-colony/wind.webp",
           "thumbnailHash": "652be1ad30fe00b110f4ceae0bdbb6ce72b9ebd5f000b5f26540be529c3a95bd"
         }
@@ -2195,6 +2368,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/normal-v1.png",
           "contentHash": "f53293bb3d06349c2ebacf04f53593ffad6fd3c0f137aa768ca5e13dfca5cc8a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-basilisk/normal.webp",
           "thumbnailHash": "5c10d5ea55ba52fc81b13cb333f221f809d3b70c2045495f5ffbed51002719ac"
         },
@@ -2206,6 +2380,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wood-v1.png",
           "contentHash": "5e5120a4e6b20f8e639a78ebe33017d02771d7eda4ee78693c1085495ffda9ff",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-basilisk/wood.webp",
           "thumbnailHash": "2977fd2beb20a81061591d282b14f5f611d7eb6b3a8a2e3df26b500089017ab4"
         },
@@ -2217,6 +2392,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/fire-v1.png",
           "contentHash": "8872d2767ab5ef8a45ad80b8275ed6d386fb098258a0307122e54cb9fd6d4263",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-basilisk/fire.webp",
           "thumbnailHash": "2fdc28e334b6568186c32f63bf8b060eaf2af44a40bbc293be7e8f08986defd3"
         },
@@ -2228,6 +2404,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/metal-v1.png",
           "contentHash": "0dca87274722f9858d0b6ec944e1b68757e6d80f075c0578528b887b1f09b0cc",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-basilisk/metal.webp",
           "thumbnailHash": "a05f1dbd42f4351fe6a300d5d735860cbad610648d0eaf5073c484663063a1ea"
         },
@@ -2239,6 +2416,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/water-v1.png",
           "contentHash": "e4491638baa9ebec42351bf78d3389a125e6dda2475f25320a6b03e2a571feae",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-basilisk/water.webp",
           "thumbnailHash": "aeaf14f56fed975b88db17316593de36e5d06ef0becabf10d4edacc9417da407"
         },
@@ -2250,6 +2428,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wind-v1.png",
           "contentHash": "1577e1c1f5121c12f8940743dccf248731d85ae7d0ea634cbf9509361074c573",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/tower-basilisk/wind.webp",
           "thumbnailHash": "3847841c279ea8605857267f6200421dca97677ebfa882ccb99c9ece7be653bf"
         }
@@ -2274,6 +2453,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/normal-v1.png",
           "contentHash": "2fd4b93c825afc7267ae8eb3fb209b733172de4327b0764bb562222f3950b904",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ember-wisp/normal.webp",
           "thumbnailHash": "4e68a5a735f96c52c96a4bb6e34bb86b76b608edecc4650882fe443106b4dec2"
         },
@@ -2285,6 +2465,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/wood-v1.png",
           "contentHash": "6e9b48092e031fc3c77ee10ddb83dfe851b94d6b5607d8cb1f055ff4c1c43a92",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/ember-wisp/wood.webp",
           "thumbnailHash": "61a6e7d7b71e746f16839d8c16b4e9a6382343192aed406deca3dd2c7f1510e7"
         },
@@ -2296,6 +2477,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/fire-v1.png",
           "contentHash": "eaa5bfa359fcf7e87ea2b913230a33bf4d5f120d97f406c420683c1eed8cac0a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ember-wisp/fire.webp",
           "thumbnailHash": "a772b1e45ba66a209c0bc934d08c18bfe84bfe9cc3aa1f71d2403c054419a60a"
         },
@@ -2307,6 +2489,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/metal-v1.png",
           "contentHash": "a1089acb62b482756f1eeb9bdd412aaa7ff600a289bda5e794ac9320a6f60d93",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/ember-wisp/metal.webp",
           "thumbnailHash": "0edcc13c0efc4998c7e0cb25af3d2ff97ec76937730148660b34d39fafd6bb5a"
         },
@@ -2318,6 +2501,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/water-v1.png",
           "contentHash": "33ff93d432969267adbfe610fc48cd3fe46027a053bde46fa6aa1b57bb569111",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ember-wisp/water.webp",
           "thumbnailHash": "41cf5e4de1bbd9a17658e97f26c48f3cbfdd26755d670cec66f2055eb1b01315"
         },
@@ -2329,6 +2513,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/wind-v1.png",
           "contentHash": "a98900b418b5a09b1a7cf7a6eed1f4bd3222aec96fc20e0364fb4d3dab22f484",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ember-wisp/wind.webp",
           "thumbnailHash": "e61179fa47a036e7c7ad5687ddcad5dfb7dfd8a3b6d2bf959e7db088600ce522"
         }
@@ -2353,6 +2538,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/normal-v1.png",
           "contentHash": "5b4f7be063209465e8ee907709050cbaffbfe581c57c0b7fbfaf40da2ecd90a4",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-colossus/normal.webp",
           "thumbnailHash": "402b41deb120886451dcde0d3acdd929df18b2093334d71db70f4b5cba5091a2"
         },
@@ -2364,6 +2550,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wood-v2.png",
           "contentHash": "4b58b1acc4c3ee01e4d3d1f127a7ccf41387db658bbc6cf2150330e9e9624fa7",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-colossus/wood.webp",
           "thumbnailHash": "7cba59c2fb1eba87db8a4abddc7856831f8dd4a1f4fa41e824d9eba771958445"
         },
@@ -2375,6 +2562,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/fire-v1.png",
           "contentHash": "cb9e6a6957d7600f4d5ce8373b764f700d47f1b69f4fc73df345aed3aff10c5d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-colossus/fire.webp",
           "thumbnailHash": "73c15ef916a8baaebbe1efb0853af7d13411efcdd3f9394f7a3d391d6021e95f"
         },
@@ -2386,6 +2574,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/metal-v1.png",
           "contentHash": "e35a19685f83c0573ac05b0e8a211b2b3dacb09d423e5422e0610c62594d93d5",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-colossus/metal.webp",
           "thumbnailHash": "a61bc4ed488bdc0f1a9ac520568f5e3ec3caf337faf3194da255598ab97c23b4"
         },
@@ -2397,6 +2586,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/water-v1.png",
           "contentHash": "e53cb55eabb48f6dc542f458ffe7c336a8de33dca4b79cc01659c05a0aa9eafd",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-colossus/water.webp",
           "thumbnailHash": "04ce961948648a34d5076a33ff498d8062982b276537eaa26bbdb5fd5ca26a22"
         },
@@ -2408,6 +2598,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wind-v1.png",
           "contentHash": "a24171987bd7d4ed52714008b64c8bbdcd7d25197190fe2448dff9eaaf0ba804",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-colossus/wind.webp",
           "thumbnailHash": "48e4a66c6790d13564690801ba536f386411977039c5425cdf919f36e9d04ca9"
         }
@@ -2432,6 +2623,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/normal-v1.png",
           "contentHash": "f951b6691ca45c14c38ba4db9d84a98dec9ac558dd5e44f35b8078fdb46307d7",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-breaker/normal.webp",
           "thumbnailHash": "cd96ec37f8d903f44a69037df4d2995bc363aa0dfa2a844e36c09ca137824af7"
         },
@@ -2443,6 +2635,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wood-v1.png",
           "contentHash": "cc3c95a9f06c3a51c44c16aeed4249caf74ad7c8d0b60ad23f26421e74697c5a",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-breaker/wood.webp",
           "thumbnailHash": "9d865ed8285df278c384b6da060c2a1a345336d444a94673401950df11afdf7e"
         },
@@ -2454,6 +2647,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/fire-v1.png",
           "contentHash": "308867628e304ddb3358556761ca9a86d86a7872e84000efc1bf6c5d5e2ce925",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-breaker/fire.webp",
           "thumbnailHash": "b8d72b36d210cba871893f7056603eb5a79176afa7f5b53affb71582a3ee86f7"
         },
@@ -2465,6 +2659,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/metal-v1.png",
           "contentHash": "36b0a6fcc6c0c7f8a4f3138da011b3be023dfe563dead785f05db02d33e0fc27",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-breaker/metal.webp",
           "thumbnailHash": "065d006f6844c4770ca5e3d79c7c8420690d2818e91b2f58aa64af3170aee024"
         },
@@ -2476,6 +2671,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/water-v1.png",
           "contentHash": "cec4f55242ad2aace597113113d00ab8afa78c2a8fa5348c249ed8cc8a1aa89a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-breaker/water.webp",
           "thumbnailHash": "50ef5dcff0dbd021d164fedb58aeed52b86d9791fc27f1cd1221c09f24ad9dc7"
         },
@@ -2487,6 +2683,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wind-v1.png",
           "contentHash": "43d5f1648c62c90a22ba3c989b21dedcb8bde72b95cf653a168acfa658972b2d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/stone-breaker/wind.webp",
           "thumbnailHash": "969556997e5d664312f3496b45907f745c043c85d08ef1c23253812e61a67c8b"
         }
@@ -2511,6 +2708,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/normal-v1.png",
           "contentHash": "8c3708fb431091a59ff27b5524fc31b162c76c420b4c8eaaaea5939d45432c93",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/storm-stalker/normal.webp",
           "thumbnailHash": "f11f099f4e0b0e2333fb8e14fba2b1eb9c04b3bd97d2b0e0f37aeebc9261267b"
         },
@@ -2522,6 +2720,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wood-v1.png",
           "contentHash": "2a21208da3469851b5bffbde4b47528292193bf1f1efc96049c3d6e8609845e2",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/storm-stalker/wood.webp",
           "thumbnailHash": "6268b2f62419edccb19f60353058f515a3c541188bdeac72e1a5fcc6866db110"
         },
@@ -2533,6 +2732,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/fire-v1.png",
           "contentHash": "c1169e2b2925a363eb1bcc5dff2f1bc40a814bf88c1d91b57799b62d83bb8276",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/storm-stalker/fire.webp",
           "thumbnailHash": "982fe18cfcfac644a8b747a81ee9e201d4d8a3a973e910bc533fc8b04d9567b0"
         },
@@ -2544,6 +2744,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/metal-v1.png",
           "contentHash": "2e3c538b627372238eb878d5d076073bd98e2499d4b4c0ef0af0ffc4d087d834",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/storm-stalker/metal.webp",
           "thumbnailHash": "2cff6903830ee318416cb58aa75487f84e94a3071840ded4663f9990e6c2327c"
         },
@@ -2555,6 +2756,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/water-v2.png",
           "contentHash": "768638d8b6c5dbfe6f4ddc2cb3ae1c6e8f4d3bcb5328607497ae025fe4a53dc2",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/storm-stalker/water.webp",
           "thumbnailHash": "9b6c742c698e6407cac11cd49a87ee471e4961a5847973cf7d43d2e46101056b"
         },
@@ -2566,6 +2768,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wind-v1.png",
           "contentHash": "238c5e8ba85e75b637a4bbe6daae9e01a35bb23ac15bb31b02800308d7c136d3",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/storm-stalker/wind.webp",
           "thumbnailHash": "36c3a70297e0dd2726fe7b4cb1805e8a5cb9d3695b20842d8bb49a08a315f67c"
         }
@@ -2594,6 +2797,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/normal-v1.png",
           "contentHash": "8d1a34d167809d768f02014ef2df807d917a3f153b3e7d4e132c179462bd3341",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-archer/normal.webp",
           "thumbnailHash": "d0dd558448194e49daa5d7999821c49e4ea4408c0c011a463955ceb3bbea63e2"
         },
@@ -2605,6 +2809,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/wood-v1.png",
           "contentHash": "2d9a369b69063b0081fd57111edef5f31a5189b3aa996772858c4c60310508f7",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-archer/wood.webp",
           "thumbnailHash": "48f4c3760b9003128d858f470825e75a57ec8da03c72770c399108efe9dadad5"
         },
@@ -2616,6 +2821,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/fire-v1.png",
           "contentHash": "ec3397c82fcd9071bb95347fc00a572a720f215e583113f23ea7770d9af50c94",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-archer/fire.webp",
           "thumbnailHash": "0766d8dab3c38b72475362d9cc4c7c1d8825fa0189df2325807190e93344a164"
         },
@@ -2627,6 +2833,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/metal-v1.png",
           "contentHash": "3a15b57dd3287f9d7c2e95e9807a8c708c3bf54c6cf9497e3463b1aa7e6c11f3",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-archer/metal.webp",
           "thumbnailHash": "4d2613cc17bc74fe96e7681592c983f24d187da230c18fd7880055968ea925dd"
         },
@@ -2638,6 +2845,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/water-v1.png",
           "contentHash": "b5f3a770e42a4384fac35f3fb6ea9be21e6f586aab6657724cad18b9f5edaba2",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-archer/water.webp",
           "thumbnailHash": "5d6b590ddea5ed7546256d236f97d09345f2b86a08c44e8af5cbaa9dddbd3a90"
         },
@@ -2649,6 +2857,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/wind-v1.png",
           "contentHash": "7a5c519f79fab736f7646168fbfb56e5487a2502a0c43318184d7d678952854d",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-archer/wind.webp",
           "thumbnailHash": "5699b5bb7026793c332b0d3420d19be7a07012f98b9e3ed4f3972c0a2ffd3c35"
         }
@@ -2677,6 +2886,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/normal-v1.png",
           "contentHash": "7bde0da4e7ff500a4cd1c41aae65f4633aecfda1a4d71f28b180fbbb20a99858",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-chieftain/normal.webp",
           "thumbnailHash": "3e771bc3ed8f6083ce61802705b44949f56847e1c1c433e6f4869a0981f22900"
         },
@@ -2688,6 +2898,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/wood-v1.png",
           "contentHash": "fa4df42076f9bbc2a9850b24247310ac13e1156c66b9c61498a3adf9aa0db3ee",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-chieftain/wood.webp",
           "thumbnailHash": "4412bfda3354f24300208d41a45df73c5c2fabb2b032d84a52192d1e56e2c07d"
         },
@@ -2699,6 +2910,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/fire-v1.png",
           "contentHash": "eb7d049dbecb36e0dfa18d16970fe1c97c9b39c7d21259dd31f86850b1fccfc9",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-chieftain/fire.webp",
           "thumbnailHash": "959395c5cb4552f3b723a1146c8894fb0ad92817a2edcee177c7b62261b9c9b9"
         },
@@ -2710,6 +2922,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/metal-v1.png",
           "contentHash": "a936773d5fb77cbe45dad601cff12ac82bdadf7b113b1a27028af68592ca9d9b",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-chieftain/metal.webp",
           "thumbnailHash": "3232b56dea480af51db04ac1ae5f55ddea854cb5d960b89579f93dd4b77303e0"
         },
@@ -2721,6 +2934,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/water-v1.png",
           "contentHash": "097e0811fa5e9d3f40f9bdbc609ed598c910ed76bcfbeb55464a7fb53a81fd48",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-chieftain/water.webp",
           "thumbnailHash": "f52ff993672f4abf9e3b6bfe4393e90fd8129d095de2ef561f280a37d40d352f"
         },
@@ -2732,6 +2946,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/wind-v1.png",
           "contentHash": "5a1df4ebab5e5550b799263ba0b30758a8b3a80d5634dd624b6c65a476473456",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-chieftain/wind.webp",
           "thumbnailHash": "587eb202245c29cfcf66ba46ade46b1f8714c7be60bec354eeb4195c64a66459"
         }
@@ -2760,6 +2975,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/normal-v1.png",
           "contentHash": "d354c9556a4d992a50993e3d53f1a6eb7a0ab162f4257b94b39e2af96fa1ce84",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-hexweaver/normal.webp",
           "thumbnailHash": "83cd13e8046d226e3e2e42d2e42939078abe5d2960c73843773849383bb7690c"
         },
@@ -2771,6 +2987,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/wood-v1.png",
           "contentHash": "4a46ac691451e50ed7208e2c510f4afd7916193240686087bf23808eb87a90cf",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-hexweaver/wood.webp",
           "thumbnailHash": "f88a71db9f006661e9d278199565ebd7bf42f8ee4dc3ab0621feec230c8a1431"
         },
@@ -2782,6 +2999,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/fire-v1.png",
           "contentHash": "e981986f0580abdc6edc9681818b8f2ec97ef273d6bcd0016cb80d8a5a734297",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-hexweaver/fire.webp",
           "thumbnailHash": "cb2880ea655d422e71d601d9ad751aac4a1916203866fcd811079e869b5ba161"
         },
@@ -2793,6 +3011,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/metal-v1.png",
           "contentHash": "f3201f7d4bbaf999fa7474e10f07fa97b228b24fdd9131bf73e732f6c0c62c47",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-hexweaver/metal.webp",
           "thumbnailHash": "5522b89dc76e2cd3e925ad9c97fd80a1f81ea25b3bf0c64dececbb896538c983"
         },
@@ -2804,6 +3023,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/water-v1.png",
           "contentHash": "b9fe454446e0de0bb141f06a1dad47848c74ca7824b1409f2f1e49ed72572229",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-hexweaver/water.webp",
           "thumbnailHash": "9bc7bc1d9e1157636e59aa28d3ffa4326ab5d9b8163dd6c611e054bf361019e6"
         },
@@ -2815,6 +3035,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/wind-v1.png",
           "contentHash": "e59ae994a367a182096307739f800fcd2b0327ca6de3e6f01030a52c1e9db903",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-hexweaver/wind.webp",
           "thumbnailHash": "033cbfd12e05c2dea7e27b748c8c84e3ab76c36135734bb431c24bfd330400cc"
         }
@@ -2843,6 +3064,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/normal-v1.png",
           "contentHash": "a672557adf12dee0ec8de6511c47ca9739d0eeb10adb3bfb8a54edf1a9401bc2",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-skirmisher/normal.webp",
           "thumbnailHash": "61086c3b8ff4c8a90ea23a19f1e1b2d2ae7d65a2a8bca78ae795a8b351e79a55"
         },
@@ -2854,6 +3076,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wood-v1.png",
           "contentHash": "05ed339ddd1c6d3efc70e273890594d3487193ad68e2e21bd9107cf259593f12",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-skirmisher/wood.webp",
           "thumbnailHash": "02110d5c6696f0715eb764c30f2b379da8efe9b3b553dc3e23cd6a34ef2e1f82"
         },
@@ -2865,6 +3088,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/fire-v1.png",
           "contentHash": "02e9cd6b39f3501820a6ccd1caa4538a7769845a9f21690f5c9fdbafb6e611f1",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-skirmisher/fire.webp",
           "thumbnailHash": "78a96c87ba68cfa90bae33d27fa2e5d2aeba0749a3f38665e9ab0e031266c228"
         },
@@ -2876,6 +3100,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/metal-v1.png",
           "contentHash": "a4a514a0cfb84d3746477562954015bd5b108150da18a88be48fb4eb8c983e2f",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-skirmisher/metal.webp",
           "thumbnailHash": "dcf9a1b9ae2dc58780a9bde9ef3100eb940e81a86739a719c40b816a0aea75c8"
         },
@@ -2887,6 +3112,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/water-v1.png",
           "contentHash": "a1d7a8c2d9947d66ff83dc2d1152969462f5b0e7bc8b11791556fbc90cfefbd5",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-skirmisher/water.webp",
           "thumbnailHash": "536b9cc1dd63b28b2d290acc8945bcd6f5279954c91ea5b240ef3cf61766a3e6"
         },
@@ -2898,6 +3124,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wind-v1.png",
           "contentHash": "b12550c87437f5cf38ea61462de7e7fe30de6ea477a8e53a098f08f9e10c40a8",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/goblin-skirmisher/wind.webp",
           "thumbnailHash": "44731e1b8f875c7ea65cd1b7f49a580de2835d368b99aedadb24b0c2cbd691e4"
         }
@@ -2926,6 +3153,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/normal-v1.png",
           "contentHash": "489ae441e5139cfca0a7ead44098f7d6bffa74bf7fe58305bc45b6e8ee02a330",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-troll/normal.webp",
           "thumbnailHash": "9d7f026463f54a7246fa3b360ac44dcb2706a7ca0427969edb48cce5a31f0db3"
         },
@@ -2937,6 +3165,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wood-v1.png",
           "contentHash": "6e53ddfe7ad5284b98e4ee390df8a80e328168743673364069f3bddd46116b41",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-troll/wood.webp",
           "thumbnailHash": "c1a6d3dfc2884f68024c069a7f7142a8e6d1db693c803a6959f0c2efcec26404"
         },
@@ -2948,6 +3177,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/fire-v1.png",
           "contentHash": "48b3a2c619dce8a83479d5503137ffeede7a87c9195a790f096e0e9d4fcc6cc5",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-troll/fire.webp",
           "thumbnailHash": "41226eb0148aea8915d62a8ca422e2fa22fbbbad1c777ee48fe1b469c3d155cb"
         },
@@ -2959,6 +3189,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/metal-v1.png",
           "contentHash": "f54e321cb64a162bb930d4e9361451d23a1a4707701b08620bc909f934bd37b9",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-troll/metal.webp",
           "thumbnailHash": "73d41e1bcf39784190b0fa7cfdbbfd9db7645e7a7c2a77d45c24126eaaad9df2"
         },
@@ -2970,6 +3201,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/water-v1.png",
           "contentHash": "a74e03c0bc3eea2d5e544a586d2a81d389a2b20531d365faf4dec20a536515fc",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-troll/water.webp",
           "thumbnailHash": "78ea84526da14165b097fa796fb5f9a4d7d652ae4e3fc74302d0ab535f11651b"
         },
@@ -2981,6 +3213,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wind-v1.png",
           "contentHash": "3d40ed23b0ec8c6ffb3c07e22842a2666a8cb7b5444d090d4ee9cc0eed4e2da0",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/cave-troll/wind.webp",
           "thumbnailHash": "12cf3f28910e160b7c6be2c7f1b3325417bb78a77f8822698ec87796b6c1042c"
         }
@@ -3009,6 +3242,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/normal-v1.png",
           "contentHash": "83079b524a41ab2db875b6a67117e7d794da2c6920ca266ad0ac4a860e972e68",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-giant/normal.webp",
           "thumbnailHash": "19f8678d08e420c7f1cff5f4dd8cdea763e8abcf7d23970ba36a2ebd72d613b3"
         },
@@ -3020,6 +3254,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/wood-v2.png",
           "contentHash": "feae94da7162be315791ae981714036f2a47a2ee17b3375199b2347736cde8a2",
           "version": 2,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-giant/wood.webp",
           "thumbnailHash": "ce3c4f7a9033c4489a88b3e8083660084da7073437fdf6c296a704b4bdc34fe1"
         },
@@ -3031,6 +3266,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/fire-v1.png",
           "contentHash": "75876ce51c93ffead3566d011b3ae40c89b2d4885346387972ef7278ff33ab95",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-giant/fire.webp",
           "thumbnailHash": "cff8cc49025f48c24935c1cddacca4a2f0f34985e22952fa9ef878857f080cee"
         },
@@ -3042,6 +3278,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/metal-v1.png",
           "contentHash": "13a0a93ffd01af2a463fae11c504fd63dd11e6771a3deae3520ee86647515053",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-giant/metal.webp",
           "thumbnailHash": "b2025482973e037a6fc1fcd44bc23189c166338b37f2f3082f3bae4129982704"
         },
@@ -3053,6 +3290,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/water-v1.png",
           "contentHash": "f4327eb3b6fca1e2cda4bace28ecaccc5e6a4464814983cb5f2b92601b0f55f9",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-giant/water.webp",
           "thumbnailHash": "912033c98a504df1ba24cd964ed3251c3a1e3f16a5169fdde5bdc14112155951"
         },
@@ -3064,6 +3302,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/wind-v1.png",
           "contentHash": "ec1e739f20f5b8372f54d0488908a2a6081c6fa127973a6c79005d57d75a8961",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/frost-giant/wind.webp",
           "thumbnailHash": "155b42d487f4d15b2de2f23247314a9e9a1a4e3e9f4b9460e71910f50dacef32"
         }
@@ -3092,6 +3331,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/normal-v1.png",
           "contentHash": "1443514b656b83227da27594780e7903ef9661154385747983b060b49785c8d7",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hill-giant/normal.webp",
           "thumbnailHash": "6122c484a41f993066ec8b9f7ac679addbc61504bee31d318c2bf552d290d73d"
         },
@@ -3103,6 +3343,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/wood-v1.png",
           "contentHash": "a52105f9f022ac162c5442d46cbeffaef46eb1b85dbc5bbdd6ee3b7220d3c8ad",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/hill-giant/wood.webp",
           "thumbnailHash": "2414bad86134ea0540435dca4b07670aacdcd285f3b5167b0364a9fb91301b01"
         },
@@ -3114,6 +3355,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/fire-v1.png",
           "contentHash": "f098c446a1f19229c7a9833d153467c9148afcc7c2adfad5582a358cc6b16f98",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hill-giant/fire.webp",
           "thumbnailHash": "1c251a640865bcffab27d7c87312045421764042dd095a73c596a6dd7d6d31c2"
         },
@@ -3125,6 +3367,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/metal-v1.png",
           "contentHash": "92766f931dcc53cc93ffee81a7c76e9846a22c6cde5e61bcca5d72190c505e02",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/hill-giant/metal.webp",
           "thumbnailHash": "dd83ef936e8eb71baec45d4a06f54f2c39a500ce86e7defbc4fb2498bfccbbb7"
         },
@@ -3136,6 +3379,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/water-v1.png",
           "contentHash": "964df980abbbcd4ae1625f94b586a28f6d83ccbe29ab2c489517151405241b9a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hill-giant/water.webp",
           "thumbnailHash": "0315db9d72668d493b7d60523cddb2353d9902e24538c55d4dbb68796653a772"
         },
@@ -3147,6 +3391,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/wind-v1.png",
           "contentHash": "a59835be84227cb1999f91560b6f2da19f209f7ebea7eb9f8441f069da60de1a",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/hill-giant/wind.webp",
           "thumbnailHash": "c1b5be41395fd2753733af9a19c9ab4e8cec2bf1355ae52f0f9ea65fd4b45b77"
         }
@@ -3175,6 +3420,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/normal-v1.png",
           "contentHash": "df4a36612ada2308f68aa5353147ffd59bd299b1b2dbb29fe43783f2f13f3d67",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/normal.webp",
           "thumbnailHash": "3e851565da8606efe1b4064c9da5dc6ede6140146e4b6529c4fcf19ebdfcd5ba"
         },
@@ -3186,6 +3432,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/wood-v1.png",
           "contentHash": "6df56f28255e0eefd6c45cc55139661ae40c1b2e0a5908265c0be085939d3f12",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/wood.webp",
           "thumbnailHash": "dac1e30fde0a8c70a22d21492dab21538edb7ed32b7f92c012caa8db02b64963"
         },
@@ -3197,6 +3444,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/fire-v1.png",
           "contentHash": "490c27cc509160e925af7533832ea2bd1c5fdad4db193ea69dbae1836b2ed067",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/fire.webp",
           "thumbnailHash": "d0a280cbf6af1276ee52a306ae8f690b6ffe52bc1aac30cdf721db461d000829"
         },
@@ -3208,6 +3456,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/metal-v1.png",
           "contentHash": "88dd2c938a5dd5d7586ce91888692f0c64070070d3519c61ff0e4bbc73ef6cc5",
           "version": 1,
+          "presentationStatus": "legacy-candidate",
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/metal.webp",
           "thumbnailHash": "9f34367e3dbb6f053492f7df53a1273d898a1df5c5379050febdbdde4120c71b"
         },
@@ -3219,6 +3468,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/water-v2.png",
           "contentHash": "29173ec88ee62d315b34a979e3a99be0ac3b3c0a5812181af48f6c3ed3d0e480",
           "version": 2,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/water.webp",
           "thumbnailHash": "f72b3f8a20711badb8bb0b2c43924fe339b2d520c4ee4bfee083a4873f1a9418"
         },
@@ -3230,6 +3480,7 @@
           "candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/wind-v1.png",
           "contentHash": "e7fb13a512a2ea1f0a7886d325330e03ca3c8f80f8594934f323caccda13be07",
           "version": 1,
+          "presentationStatus": "current-target-candidate",
           "thumbnailPath": "/wiki-media/monsters/ogoblin-brute/wind.webp",
           "thumbnailHash": "c8690d49ace90d079322b3508717829bc94ddbe021332eebbb423c4c84452f56"
         }

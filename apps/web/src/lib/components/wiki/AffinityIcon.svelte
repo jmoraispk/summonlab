@@ -1,14 +1,13 @@
 <script lang="ts">
-	type Affinity = 'wood' | 'fire' | 'metal' | 'water' | 'wind';
+	type Affinity = 'fire' | 'earth' | 'wind' | 'water';
 
 	let { affinity }: { affinity: Affinity } = $props();
 
 	const iconNames: Record<Affinity, string> = {
-		wood: 'wood-trunk',
 		fire: 'fire-flame',
-		metal: 'metal-ingot',
-		water: 'water-drop',
-		wind: 'wind-current'
+		earth: 'earth-crystal',
+		wind: 'wind-current',
+		water: 'water-drop'
 	};
 	const iconName = $derived(iconNames[affinity]);
 </script>
@@ -23,22 +22,16 @@
 	aria-hidden="true"
 	data-affinity-icon={iconName}
 >
-	{#if affinity === 'wood'}
-		<path d="M7 5.5 17 7c2.2.35 4 2.55 4 5s-1.8 4.65-4 5L7 18.5" />
-		<ellipse cx="7" cy="12" rx="4" ry="6.5" />
-		<path d="M7 8.7c1.05 0 1.9 1.48 1.9 3.3S8.05 15.3 7 15.3 5.1 13.82 5.1 12 5.95 8.7 7 8.7Z" />
-		<path d="M6.1 12h1.8" />
-	{:else if affinity === 'fire'}
+	{#if affinity === 'fire'}
 		<path
 			d="M12.6 2.8c.6 3.25-1.2 4.6-2.5 6.15-1.15 1.38-1.8 2.55-1.15 4.4.55-1.25 1.45-2.1 2.75-2.85-.15 2.1.95 3.35 2.55 4.65"
 		/>
 		<path
 			d="M16.15 7.25c2.05 2.15 3.1 4.4 2.65 7.05-.55 3.2-3.25 5.4-6.75 5.4-3.85 0-6.85-2.5-6.85-6.25 0-2.15.95-4.15 2.8-6.05-.05 2.05.5 3.5 1.75 4.45"
 		/>
-	{:else if affinity === 'metal'}
-		<path d="M4 17h16l-2.75-8H6.75L4 17Z" />
-		<path d="m6.75 9 2.8-3h4.9l2.8 3" />
-		<path d="M8.5 13h7" />
+	{:else if affinity === 'earth'}
+		<path d="m12 2.8 6.6 5.7-2.1 9.2L12 21.2l-4.5-3.5-2.1-9.2L12 2.8Z" />
+		<path d="m5.4 8.5 6.6 3.2 6.6-3.2M12 11.7v9.5" />
 	{:else if affinity === 'water'}
 		<path
 			d="M12 2.8c-2.5 3.4-6.15 7.3-6.15 11.05A6.15 6.15 0 0 0 12 20a6.15 6.15 0 0 0 6.15-6.15C18.15 10.1 14.5 6.2 12 2.8Z"
