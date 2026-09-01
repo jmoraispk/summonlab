@@ -78,14 +78,29 @@ def validate_manifest_shape(manifest: dict) -> list[str]:
             continue
 
         frames = family.get("frames")
-        ranks = [frame.get("rank") for frame in frames if _is_mapping(frame)] if isinstance(frames, list) else []
+        if not isinstance(frames, list):
+            errors.append(f"{family_id} must contain frames as a list")
+            ranks = []
+        else:
+            if len(frames) != len(EXPECTED_RANKS):
+                errors.append(f"{family_id} must contain exactly seven frame records")
+            ranks = []
+            for frame in frames:
+                if not _is_mapping(frame):
+                    errors.append(f"{family_id} frame entries must be objects")
+                    continue
+                rank = frame.get("rank")
+                if not isinstance(rank, int) or isinstance(rank, bool) or rank not in EXPECTED_RANKS:
+                    errors.append(f"{family_id} frame entries must have ranks 1 through 7")
+                else:
+                    ranks.append(rank)
+                if not isinstance(frame.get("path"), str) or not frame.get("path"):
+                    errors.append(f"{family_id} frame entries must include path")
         valid_ranks = [rank for rank in ranks if isinstance(rank, int) and not isinstance(rank, bool)]
         if len(valid_ranks) != len(EXPECTED_RANKS) or set(valid_ranks) != set(EXPECTED_RANKS):
             errors.append(f"{family_id} must contain ranks 1 through 7 exactly once")
         if not _is_mapping(family.get("sheet")):
             errors.append(f"{family_id} must contain one sheet record")
-        if not isinstance(frames, list):
-            errors.append(f"{family_id} must contain frames as a list")
 
     unknown_ids = sorted({family_id for family_id in ids if isinstance(family_id, str) and family_id not in FAMILY_ORDER})
     for family_id in unknown_ids:

@@ -39,6 +39,11 @@ class ManifestShapeTests(unittest.TestCase):
         errors = MODULE.validate_manifest_shape(self.manifest)
         self.assertIn("fire must contain ranks 1 through 7 exactly once", errors)
 
+    def test_malformed_eighth_frame_fails(self) -> None:
+        self.manifest["families"][2]["frames"].append({})
+        errors = MODULE.validate_manifest_shape(self.manifest)
+        self.assertIn("fire must contain exactly seven frame records", errors)
+
     def test_wrong_preferred_family_fails(self) -> None:
         self.manifest["preferredStartingFamily"] = "neutral"
         errors = MODULE.validate_manifest_shape(self.manifest)
