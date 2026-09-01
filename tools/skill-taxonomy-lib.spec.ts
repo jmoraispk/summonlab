@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
@@ -95,6 +96,13 @@ function elementLabelsForFamily(
 	].sort();
 }
 
+async function authoredSourcePaths(root: string, extensions: readonly string[]): Promise<string[]> {
+	const entries = await readdir(path.resolve(root), { recursive: true });
+	return entries
+		.filter((entry) => extensions.some((extension) => entry.endsWith(extension)))
+		.map((entry) => path.join(root, entry));
+}
+
 describe('skill taxonomy migration inventory', () => {
 	it('reports exact obsolete taxonomy identities without banning ordinary prose', () => {
 		expect(
@@ -171,6 +179,22 @@ describe('skill taxonomy migration inventory', () => {
 			'docs/wiki/mechanics/skills/example.md: retired Craft family Lore',
 			'apps/web/src/routes/living-village-lab/summon/fixtures.ts: retired Craft family Lore'
 		]);
+	});
+
+	it('finds no retired taxonomy structures in the authored validation corpus', async () => {
+		const sourcePaths = [
+			...(await authoredSourcePaths('docs/wiki', ['.md'])),
+			'apps/web/src/lib/components/wiki/SkillTree.svelte',
+			'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
+		];
+		const sources = await Promise.all(
+			sourcePaths.map(async (sourcePath) => ({
+				sourcePath,
+				source: await readFile(path.resolve(sourcePath), 'utf8')
+			}))
+		);
+
+		expect(findForbiddenSkillReferencesInAuthoredSources(sources)).toEqual([]);
 	});
 
 	it('parses a catalog row with its page and section identity', () => {
