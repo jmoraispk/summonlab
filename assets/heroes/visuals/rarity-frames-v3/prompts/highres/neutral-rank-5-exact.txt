@@ -1,0 +1,34 @@
+Use case: stylized-concept
+Asset type: high-resolution single-frame candidate for neutral hero rarity rank 5 of 7
+
+Primary request:
+Generate ONE new high-resolution portrait image containing exactly ONE complete empty rank-5 hero-card frame. Re-render the rank-5 design from the supplied corrected seven-frame authority sheet and rank crop at 1024×1536 detail. The result must be a newly generated single-frame image, not an enlarged crop. Preserve the authority sheet's exact silhouette identity, gradual neutral color stage, integrated star tray, cute gold-star design, and coherent premium 3D metalwork family.
+
+Input images:
+- Reference image 1 is the complete corrected seven-rank authority sheet. Use it to preserve cross-rank family, fixed footprint, opening width, tray baseline, star style, and color progression.
+- Reference image 2 is the isolated rank-5 crop. Use it only for this rank's silhouette, ornaments, materials, mouth state, and exact star count. Ignore any label, dark comparison backdrop, or neighboring sliver in the crop.
+
+Single-frame geometry:
+- Exact 1024×1536 portrait canvas, orthographic front view.
+- One centered complete frame, fully inside the canvas with about 48 pixels of clear margin at every outer edge; no cropping.
+- Large clean warm-white empty hero opening at least 68% of frame width.
+- Dragon anatomy, wings, horns, claws, and energy hug the outer rails or grow upward/outward; nothing invades the hero opening.
+- Built-in horizontal bottom tray in the same family position and proportion used by the authority sheet.
+- No numeral, title, caption, UI, or comparison-sheet backdrop.
+
+Rank-5 identity:
+Guardian frame with two LEAN warm-gold dragon bodies acting as narrow vertical rail ornaments, small folded wings or no visible wings, contained claws, modest sapphire accents, and BOTH MOUTHS COMPLETELY CLOSED. Preserve a broad hero opening.
+Color stage: 30% navy/dark iron, 55% warm gold, 15% restrained sapphire.
+Mouth gate: Every dragon mouth in this image must be fully closed; no teeth, jaw gap, roar, or open mouth.
+
+Integrated stars:
+- The tray contains exactly 5 identical warm-gold stars, no more and no fewer.
+- Stars are physically inset or seated in the tray and share its lighting, bevel, shadows, and occlusion.
+- Use the same cute broad softly rounded upright five-point silhouette, cream-gold center, amber bevel, restrained warm glow, tight even spacing, and symmetric center-out arrangement seen in the authority sheet.
+- Stars appear nowhere else.
+
+Style:
+Premium cinematic fantasy-game frame concept art, symmetrical polished 3D ornamental metalwork, crisp silhouette, realistic iron/gold/enamel/gem separation, clean studio lighting, controlled emission, high detail, coherent with all seven neutral ranks.
+
+Avoid:
+multiple frames, independent or floating star sprites, incorrect star count, different star shapes, labels or text, hero character, scenery, dark hero opening, affinity-specific fire/water/earth/wind cues, horizontal sprawl, narrow opening, open mouths before rank 7, closed mouths at rank 7, perspective, crop, logo, watermark, browser chrome, or the word "master".

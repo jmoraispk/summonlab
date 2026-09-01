@@ -44,6 +44,10 @@ runtime summon pool.
 Use the full [art bible](../../art-bible.md) and
 [human art direction](../../character-pack-2-art-direction.md) as the production authority.
 
+The candidate [hero rarity frame system](hero-rarity-frames.md) defines the shared 1★–7★ portrait
+frame and deterministic warm-gold star treatment. It remains separate from approved hero identity
+anchors and runtime catalogs until owner review.
+
 ## Required packet per hero
 
 | Artifact | Source requirement | Living Village use |

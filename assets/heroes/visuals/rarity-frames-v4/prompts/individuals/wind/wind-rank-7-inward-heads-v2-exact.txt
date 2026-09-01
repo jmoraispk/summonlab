@@ -1,0 +1,21 @@
+Use case: precise-object-edit
+Asset type: corrected high-resolution single-frame candidate for Wind affinity hero rarity rank 7 of 7
+
+Primary request:
+Regenerate the supplied Wind 7-star hero-card frame with exactly one targeted anatomical correction: both roaring dragon heads must face inward toward the central hero opening. The dragon on the viewer's left must turn its head to the right; the dragon on the viewer's right must turn its head to the left. Their open mouths should roar diagonally inward toward the upper center of the empty portrait opening, mirroring the inward-facing head direction shown in the accepted Wind seven-rank sheet. They must not face or roar toward the outer canvas edges.
+
+Input images:
+- Reference image 1 is the edit target and owns the complete 1024×1536 frame, outer silhouette, materials, affinity treatment, wings, bodies, claws, hero opening, tray, integrated stars, lighting, and polish. Preserve it as closely as possible outside the two head orientations.
+- Reference image 2 is the accepted Wind progression sheet. Its rank-7 panel owns the correct inward-facing mirrored head direction only. Ignore its dark comparison background, labels, and smaller resolution.
+
+Composition and invariants:
+- Exactly one complete centered portrait frame on an exact 1024×1536 RGB canvas.
+- Orthographic front view with the same clean warm-white background and empty warm-white hero opening.
+- Preserve the existing broad central opening and keep the complete frame inside the same fixed outer envelope.
+- Preserve both open roaring mouths, visible jaw gaps, teeth, and dark mouth cavities. Only the facing direction changes.
+- Preserve the current silver-and-warm-gold metal, deep navy recesses, vivid blue Wind energy, blue gems, swept wings, dragon bodies, lower claws, and symmetrical cinematic 3D rendering.
+- Preserve the same horizontal lower tray with exactly seven identical integrated warm-gold stars—no more and no fewer—in the same baseline, size, shape, color, tight spacing, and center-out arrangement.
+- Stars remain physically built into the frame and share its lighting, bevel, shadow, and occlusion; they are never independent sprites.
+
+Avoid:
+outward-facing heads, both heads facing the same direction, closed mouths, incorrect star count, moved or floating stars, changed star color, narrowed hero opening, wider frame sprawl, altered affinity, extra gems, text, labels, hero, scenery, crop, perspective, logo, or watermark.

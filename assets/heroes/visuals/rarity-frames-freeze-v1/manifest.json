@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "approved-visual-source",
+  "runtimeStatus": "not-runtime-ready",
+  "decision": "docs/decisions/0066-hero-rarity-frame-v3-v4-sources-are-frozen.md",
+  "assetCount": 48,
+  "checksums": "assets/heroes/visuals/rarity-frames-freeze-v1/checksums.sha256",
+  "checksumsSha256": "44bd9b1664665a869d028938c04b5323c32277d1f3685e19aecb19d23c494d60",
+  "sourceGroups": {
+    "v3": {
+      "role": "comparison-neutral-and-affinity-authority",
+      "paths": [
+        "assets/heroes/visuals/rarity-frames-v3/candidates/highres/*.png",
+        "assets/heroes/visuals/rarity-frames-v3/candidates/sheets/*.png"
+      ]
+    },
+    "v4": {
+      "role": "equal-canvas-production-source-set",
+      "paths": [
+        "assets/heroes/visuals/rarity-frames-v4/candidates/individuals/*/*.png",
+        "assets/heroes/visuals/rarity-frames-v4/candidates/sheets/gemless-neutral-seven-rank-v1.png"
+      ]
+    }
+  },
+  "excluded": [
+    "references",
+    "superseded candidates",
+    "rejected provider outputs",
+    "prompts",
+    "review evidence",
+    "runtime catalogs"
+  ]
+}

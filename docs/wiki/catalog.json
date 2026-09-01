@@ -677,6 +677,16 @@
       "spoilerScope": "internal"
     },
     {
+      "wikiId": "art.hero-rarity-frames",
+      "path": "docs/wiki/art/hero-rarity-frames.md",
+      "pageType": "visual-brief",
+      "owner": "visuals",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "approved",
+      "spoilerScope": "public"
+    },
+    {
       "wikiId": "art.living-village-heroes",
       "path": "docs/wiki/art/living-village-heroes.md",
       "pageType": "visual-brief",

@@ -1,0 +1,40 @@
+Use case: stylized-concept
+Asset type: revised candidate comparison sheet for fantasy hero-card rarity frames
+
+Primary request:
+Generate ONE single ultra-wide landscape comparison sheet with exactly seven complete empty portrait hero-card frames in one horizontal row, ordered left to right from rarity 1 through rarity 7. Generate all seven complete cards together in one cohesive image-generation pass. Each frame, its horizontal bottom tray, and its rank stars must be one indivisible illustrated object with shared material, light, shadows, bevel, and occlusion. Never make the stars look like separate sprites or a later overlay.
+
+Input images:
+- Reference image 1 is the equal seven-column comparison-layout authority.
+- Reference image 2 is the ornament, material, silhouette, and dragon-progression authority.
+- Reference image 3 is the previous one-pass sheet: preserve its correct 1–7 counts, integrated trays, warm-white openings, dark navy backdrop, and coherent family while correcting the failures listed below.
+- Reference image 4 is the high-resolution 7-star open-mouth authority: use its unmistakable roaring jaw gap, teeth, dark mouth cavity, and blue flame energy only for rank 7.
+
+Non-negotiable comparison geometry:
+- Exactly seven cards, all inside equal invisible portrait bounding boxes with identical outer width, outer height, top alignment, bottom baseline, opening scale, and tray height.
+- Equal narrow gutters; front-facing orthographic presentation; no perspective; no cropping or overlap.
+- Large clean warm-white empty hero opening inside every frame.
+- Same-height horizontal bottom tray in the same vertical zone on every card.
+- Small black numerals 1, 2, 3, 4, 5, 6, 7 above the corresponding cards; no other text.
+
+Integrated star contract:
+- Card 1 tray contains exactly 1 star; card 2 exactly 2; card 3 exactly 3; card 4 exactly 4; card 5 exactly 5; card 6 exactly 6; card 7 exactly 7.
+- Stars appear only inside the bottom trays.
+- Use one consistent star design across all ranks: cute broad softly rounded five-point silhouette, upright orientation, warm dimensional gold, cream-gold center, amber bevel, restrained warm glow.
+- Keep the same apparent star height, bevel, and material across all cards, with tight even spacing and symmetric center-out expansion. Seven stars nearly span the tray.
+- Stars are physically inset, embossed, or seated in the tray and share its lighting and shadows.
+
+Corrected rarity progression:
+1. Minimal disciplined charcoal-black forged iron, subtle antique bronze-gold edge, restrained engraved texture.
+2. The same dark forged foundation with broader horned shoulders, refined antique-gold edging, and restrained scale engraving.
+3. Navy enamel inlays, elegant antique-gold gothic arcs, a small sapphire crest, and sculpted corners; still no dragons.
+4. First prestige jump with paired small heraldic dragon heads, richer navy enamel, sapphire crest, and antique warm-gold filigree. IMPORTANT: rank 4 must remain predominantly warm gold, charcoal, navy, and sapphire—NOT a silver or white-metal frame. Allow only tiny pale specular highlights.
+5. Two lean elegant gold guardian dragons become structural side columns. Use narrow bodies, small folded wings, restrained claws, and minimal contained blue energy. Closed mouths.
+6. A decisive elder-dragon upgrade over rank 5: broader heavier bodies, visibly larger folded wings, denser scale relief, larger claws, a heavier crown silhouette, richer gold mass, deeper navy enamel, and stronger but still contained sapphire energy. Closed mouths. Do not awaken yet.
+7. Unmistakable awakened apex: two majestic gold dragons with larger unfurled wings and BOTH MOUTHS CLEARLY OPEN IN A ROAR. Each mouth must show a large readable jaw gap, upper and lower teeth, dark blue mouth cavity, and sapphire breath light. Strong blue magical flame travels through the frame recesses; the central sapphire crest is largest; seven gold stars span the tray. Rank 7 must be instantly distinguishable from rank 6 even as a thumbnail.
+
+Style and palette:
+Premium cinematic fantasy-game frame concept art, polished symmetrical 3D ornamental metalwork, crisp silhouettes, realistic charcoal iron, antique warm gold, deep navy enamel, and sapphire separation, clean studio lighting, high detail, restrained glow. Keep one coherent family and do not introduce new rarity colors.
+
+Avoid:
+separate or floating stars, incorrect star counts, stars above the opening, inconsistent star shapes or colors, dominant silver at rank 4, open mouths before rank 7, closed mouths at rank 7, similar silhouettes for ranks 5 and 6, rainbow colors, red/purple/green drift, heroes, scenery, dark openings, unequal card sizes, mismatched baselines, perspective, UI buttons, browser chrome, logos, watermarks, captions, or the word "master".

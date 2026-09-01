@@ -15,3 +15,12 @@
 - Do not block safe implementation work on unanswered preferences. State the current assumption, proceed on reversible work, and record durable answers in the relevant project document.
 - Treat feedback as accepted, revise, experiment, or deferred. Preserve accepted decisions in the repository so later turns do not have to rediscover them.
 - Prefer small reviewable slices with visible evidence over long periods without a user checkpoint.
+
+## Remote preview links
+
+- The collaborator connects to this remote server through `10.110.24.218`; Cursor does not
+  automatically forward ports.
+- Bind every user-facing local preview or development server to `0.0.0.0` and publish its URL with
+  `10.110.24.218` instead of `localhost` or `127.0.0.1`.
+- Preserve the full port, path, query string, and session key when rewriting a preview URL for the
+  collaborator. Verify the listening interface before sharing the link.
