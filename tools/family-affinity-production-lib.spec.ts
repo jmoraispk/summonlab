@@ -165,7 +165,7 @@ describe('family affinity production schemas', () => {
 		);
 	});
 
-	it('rejects a T3 without its signature mechanic, telegraph, and counterplay', () => {
+	it('rejects a T3 without a signature mechanic', () => {
 		const forms = structuredClone(validFamily.forms);
 		forms[2]!.signatureMechanic = null;
 		expect(() => FamilyPacketSchema.parse({ ...validFamily, forms })).toThrow(
@@ -173,11 +173,30 @@ describe('family affinity production schemas', () => {
 		);
 	});
 
-	it('rejects a T5 without boss mechanics and lower-form interaction', () => {
+	it('rejects a T3 without a telegraph', () => {
+		const forms = structuredClone(validFamily.forms);
+		forms[2]!.telegraph = null;
+		expect(() => FamilyPacketSchema.parse({ ...validFamily, forms })).toThrow(/T3.*telegraph/i);
+	});
+
+	it('rejects a T3 without counterplay', () => {
+		const forms = structuredClone(validFamily.forms);
+		forms[2]!.counterplay = null;
+		expect(() => FamilyPacketSchema.parse({ ...validFamily, forms })).toThrow(/T3.*counterplay/i);
+	});
+
+	it('rejects a T5 without a boss mechanic', () => {
 		const forms = structuredClone(validFamily.forms);
 		forms[4]!.signatureMechanic = null;
-		forms[4]!.lowerFormInteraction = null;
 		expect(() => FamilyPacketSchema.parse({ ...validFamily, forms })).toThrow(/T5.*boss mechanic/i);
+	});
+
+	it('rejects a T5 without lower-form interaction', () => {
+		const forms = structuredClone(validFamily.forms);
+		forms[4]!.lowerFormInteraction = null;
+		expect(() => FamilyPacketSchema.parse({ ...validFamily, forms })).toThrow(
+			/T5.*lower-form interaction/i
+		);
 	});
 
 	it('rejects affinities outside the approved production IDs', () => {
@@ -187,6 +206,14 @@ describe('family affinity production schemas', () => {
 		};
 		expect(() => FamilyPacketSchema.parse({ ...validFamily, affinityThemes })).toThrow(
 			/unrecognized key|invalid key/i
+		);
+	});
+
+	it('requires all five approved affinity themes', () => {
+		const affinityThemes = structuredClone(validFamily.affinityThemes) as Record<string, unknown>;
+		delete affinityThemes.water;
+		expect(() => FamilyPacketSchema.parse({ ...validFamily, affinityThemes })).toThrow(
+			/expected object|invalid input/i
 		);
 	});
 
@@ -203,6 +230,21 @@ describe('family affinity production schemas', () => {
 				entries: [...validMappingEntries.slice(0, 39), validMappingEntries[0]]
 			})
 		).toThrow(/current class IDs must be unique/i);
+	});
+
+	it('requires candidate-reuse eligibility for all five approved affinities', () => {
+		const entries = structuredClone(validMappingEntries);
+		const candidateReuseByAffinity = entries[0]!.candidateReuseByAffinity as Record<
+			string,
+			boolean
+		>;
+		delete candidateReuseByAffinity.water;
+		expect(() =>
+			CurrentClassMappingFileSchema.parse({
+				schemaVersion: 'current-class-mapping-v1',
+				entries
+			})
+		).toThrow(/expected boolean|invalid input/i);
 	});
 
 	it('requires canonical IDs only for map dispositions', () => {
@@ -223,6 +265,6 @@ describe('family affinity production schemas', () => {
 				schemaVersion: 'current-class-mapping-v1',
 				entries: retiredWithCanonicalIds
 			})
-		).toThrow(/retire.*canonical IDs must be null/i);
+		).toThrow(/retire.*canonical IDs to be null/i);
 	});
 });

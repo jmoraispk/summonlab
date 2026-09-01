@@ -11,7 +11,6 @@ export const CURRENT_CLASS_DISPOSITIONS = [
 ] as const;
 export const FAMILY_AFFINITY_ROOT = 'assets/enemies/experiments/family-affinity-v1' as const;
 
-const ProductionAffinitySchema = z.enum(PRODUCTION_AFFINITIES);
 const FormTierSchema = z.enum(FORM_TIERS);
 const CurrentClassDispositionSchema = z.enum(CURRENT_CLASS_DISPOSITIONS);
 const IdSchema = z.string().regex(/^[a-z][a-z0-9-]*$/u, 'IDs must be lowercase slugs');
@@ -22,6 +21,26 @@ const AffinityThemeSchema = z
 		constructionDimensions: z.array(RequiredTextSchema).min(2),
 		counterplaySignal: RequiredTextSchema,
 		forbidden: z.array(RequiredTextSchema).min(1)
+	})
+	.strict();
+
+const AffinityThemeMapSchema = z
+	.object({
+		normal: AffinityThemeSchema,
+		fire: AffinityThemeSchema,
+		earth: AffinityThemeSchema,
+		wind: AffinityThemeSchema,
+		water: AffinityThemeSchema
+	})
+	.strict();
+
+const CandidateReuseByAffinitySchema = z
+	.object({
+		normal: z.boolean(),
+		fire: z.boolean(),
+		earth: z.boolean(),
+		wind: z.boolean(),
+		water: z.boolean()
 	})
 	.strict();
 
@@ -81,7 +100,7 @@ export const FamilyPacketSchema = z
 		visualConstants: z.array(RequiredTextSchema).min(1),
 		escalationAxis: RequiredTextSchema,
 		floorSlot: z.number().int().positive().nullable(),
-		affinityThemes: z.record(ProductionAffinitySchema, AffinityThemeSchema),
+		affinityThemes: AffinityThemeMapSchema,
 		forms: z.array(FamilyFormSchema).length(5, 'Family packets must contain exactly five forms')
 	})
 	.strict()
@@ -109,7 +128,7 @@ export const CurrentClassMappingEntrySchema = z
 		canonicalFamilyId: IdSchema.nullable(),
 		canonicalFormId: IdSchema.nullable(),
 		rationale: RequiredTextSchema,
-		candidateReuseByAffinity: z.record(ProductionAffinitySchema, z.boolean())
+		candidateReuseByAffinity: CandidateReuseByAffinitySchema
 	})
 	.strict()
 	.superRefine((entry, context) => {
@@ -127,7 +146,7 @@ export const CurrentClassMappingEntrySchema = z
 		if (entry.canonicalFamilyId !== null || entry.canonicalFormId !== null) {
 			context.addIssue({
 				code: 'custom',
-				message: `${entry.disposition} entries require canonical IDs must be null`
+				message: `${entry.disposition} entries require canonical IDs to be null`
 			});
 		}
 	});
