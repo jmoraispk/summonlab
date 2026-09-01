@@ -6,11 +6,15 @@ Design status: **draft sketch**. The source explicitly says materials, equipment
 need dedicated passes and that its names are placeholders. The supplied `equipment_compendium.md`
 is the companion catalog and should refine this framework without silently promoting it to canon.
 
-## Fixed rarity
+## Finished-item rank
 
-Equipment and materials share the skill scale F Common through S Legendary. Their underlying rarity
-never changes. Enchantment adds properties but does not raise rarity: an enchanted Common sword
-remains a Common sword and retains that tier’s ceiling.
+Equipment and materials share the skill scale F Common through S Legendary. A material's rank is
+fixed. A finished item's rank is its material rank plus the smith's `+0`, `+1`, or `+2`
+craftsmanship result, capped at S. Once made, the item's final rank is fixed. Enchantment adds
+properties but does not raise it.
+
+The canonical rule and examples live in
+[Equipment rarity and craftsmanship](../equipment/rarity-and-weight.md).
 
 ## Weight
 
@@ -64,18 +68,10 @@ general material fusion exists is unresolved.
 
 ### Predictable material tiers
 
-Familiar item shapes repeat in ascending material, giving the player a reliable Gathering/Forging
-floor that does not require luck.
-
-| Rarity | Placeholder metal | Placeholder hide/cloth |
-| --- | --- | --- |
-| F Common | Copper | Coarse hide, rough cloth |
-| E Uncommon | Iron | Boiled leather, woven wool |
-| D Rare | Steel | Scaled leather, layered silk |
-| C Epic | Blacksteel | Lamellar, warded weave |
-| B Mythic | Skyiron (meteoric) | Drakescale |
-| A Fabled | Starmetal | Ancient hide |
-| S Legendary | Sunsteel | No proposal |
+Familiar item shapes repeat in ascending materials, giving the player a reliable
+Gathering/Forging floor that does not require luck. Metal, hide/scale, cloth/fibre, and wood/haft
+each have one canonical material at every rank. The complete ladder lives in
+[Equipment materials](../equipment/materials.md) so this progression sketch cannot drift from it.
 
 ### Monster sets
 

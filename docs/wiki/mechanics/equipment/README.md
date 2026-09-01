@@ -70,7 +70,7 @@ acceptance verdict for the full compendium.
 | Representative equipment for the five Martial families | Shortsword, Knife, Greatblade, War Spear, Glaive, Halberd, Polehammer, Hunting Bow, Light Crossbow, Round Shield, Hand Wraps |
 | Basic defensive choices | Buckler, Round Shield, Mail, Hide Armour, Boiled Leather, Padded Coat, Travelling Robes |
 | Basic magical choices | Talisman, Wand, Staff |
-| Materials sufficient for those items | Copper, Bronze, Iron, Coarse Hide, Rough Pelt, Boiled Leather, Thick Hide, Rough Cloth, Hemp Weave, Wool, Canvas, Pine, Ash, Oak, Yew |
+| Materials sufficient for those items | Copper, Iron, Coarse Hide, Boiled Leather, Hemp Weave, Wool, Ash, Yew |
 
 The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
 deliberate milestone reward. Whether all five Martial families need to ship immediately depends on
@@ -85,8 +85,8 @@ roles:
 - defense: Buckler, Round Shield, Mail, Hide Armour, Boiled Leather, Padded Coat, and Travelling
   Robes;
 - accessories: Ring and Amulet;
-- materials needed to describe those instances: Copper, Iron, Coarse Hide, Boiled Leather, Rough
-  Cloth, and Hemp Weave.
+- materials needed to describe those instances: Copper, Iron, Coarse Hide, Boiled Leather, Hemp
+  Weave, and Wool.
 
 That is thirteen equippable definitions plus six material definitions. Add another weapon family
 only when a starter hero can actually use it and combat can explain the difference.
@@ -128,9 +128,9 @@ remain preserved rather than silently normalized:
 - The equipment document's Dexterity, Vitality, Intellect/Intelligence, and Resonance references bind
   to the supplied progression vocabulary. New runtime IDs must migrate away from the old prototype
   names together.
-- The quality table says Masterwork is material band plus two, which makes Masterwork Copper Rare;
-  the accompanying example calls it Uncommon and introduces an undefined Exceptional quality for
-  Rare.
+- A material supplies base rank. Item and material difficulty set the required Forging level;
+  Standard work keeps the base rank, Fine work adds one rank, and Masterwork adds two, capped at S.
+  The exact difficulty values and benefit table remain to be authored.
 - Weight tolerance uses Might supported by Vitality as authored.
 - An item's rarity is fixed forever, while Living Metal grows with its wielder. Growth can be
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
@@ -154,5 +154,7 @@ remain preserved rather than silently normalized:
 
 - 2026-09-01 — owner revision — Removed three rejected metals from the material vocabulary and
   recorded the Equipment visual-production sequence.
+- 2026-09-01 — owner revision — Simplified each material family to one material per rank and
+  accepted material-plus-craftsmanship as the finished-item rank rule.
 - 2026-08-29 — draft — Imported the complete owner-supplied equipment compendium and identified a
   bounded Living Village candidate subset.

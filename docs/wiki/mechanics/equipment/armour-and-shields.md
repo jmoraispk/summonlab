@@ -34,7 +34,7 @@ equipment.
 | **Studded Leather** | E+ | Medium | Hide + metal studs | Hybrid; some blunt protection |
 | **Scale Harness** | D+ | Medium | Beast scale | Approaches mail at lower weight |
 | **Chitin Plate** | C+ | Light | Chitin | Very light, strong against cuts, weak to blunt |
-| **Lamellar** | C+ | Medium | Serpentscale or metal | Laced plates; flexible and quiet |
+| **Lamellar** | C+ | Medium | Beast scale or metal | Laced plates; flexible and quiet |
 | **Drakescale Coat** | B+ | Medium | Drakescale | Near-plate mitigation with heat resistance |
 | **Wyrmscale** | A+ | Light | Wyrmscale | Plate-tier protection at light weight. The best armour in the game. |
 
@@ -45,11 +45,11 @@ the source draft.
 
 | Armour | R band | Weight | Material required | Notes |
 | --- | --- | --- | --- | --- |
-| **Padded Coat** | F+ | Light | Rough cloth | Token protection; worn under everything else |
+| **Padded Coat** | F+ | Light | Hemp weave | Token protection; worn under everything else |
 | **Travelling Robes** | F+ | Light | Hemp or wool | No protection, no penalty |
 | **Silk Weave** | D+ | Light | Layered silk | Resists piercing far better than it should |
-| **Warded Robes** | C+ | Light | Warded weave | Standing magical resistance |
-| **Spidersilk Mantle** | C+ | Light | Spider silk | Light, tough, holds two enchantments |
+| **Warded Robes** | C+ | Light | Spellweave | Standing magical resistance |
+| **Spellweave Mantle** | C+ | Light | Spellweave | Light, tough, holds two enchantments |
 | **Moonweave Vestments** | B+ | Light | Moonweave | Substantial mana pool and regeneration |
 | **Starcloth Raiment** | A+ | Light | Starcloth | Every caster stat, and a granted skill |
 
