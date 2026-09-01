@@ -659,6 +659,7 @@
 		.skill-links a {
 			transition: none;
 		}
+		.domain-tree button[aria-expanded]::after,
 		.domain-tree button .domain-node-image,
 		.domain-tree button:hover .domain-node-image,
 		.domain-tree button:active .domain-node-image,

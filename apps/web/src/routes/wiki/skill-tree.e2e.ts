@@ -104,8 +104,12 @@ test('honors reduced-motion preferences when switching domains', async ({ page }
 	await page.goto('/wiki/mechanics/skills');
 
 	const tree = page.getByRole('region', { name: 'Interactive skill tree' });
-	await tree.getByRole('button', { name: /Magic.*5 families/i }).click();
+	const magic = tree.getByRole('button', { name: /Magic.*5 families/i });
+	await magic.click();
 	await expect(tree.locator('.domain-branch')).toHaveCSS('animation-name', 'none');
+	expect(await magic.evaluate((button) => getComputedStyle(button, '::after').transform)).toBe(
+		'none'
+	);
 
 	const domainImage = tree.locator('.domain-node-image').nth(1);
 	await domainImage.hover();
