@@ -34,6 +34,43 @@ Detailed source material:
 - [Rewards and engagement](../mechanics/rewards-and-engagement.md)
 - [Living Village release matrix](../roadmap/living-village-v1.md)
 
+## Target combat modes and party requirements
+
+Design status: **accepted direction; exact balance and unlock counts remain outside the current
+milestone**
+
+The complete game distinguishes two combat modes:
+
+### Expeditions
+
+Expeditions are open-world exploration. Enemy difficulty increases as the expedition reaches more
+dangerous territory, but the player may return home voluntarily rather than committing to a fixed
+sequence of battles. Species practice belongs to this mode: the player may select an unlocked
+species to hunt, and a configured number of victories against that species unlocks the next species
+in the authored progression. The exact victory counts, travel structure, and reward tuning require
+a later combat-content pass.
+
+### Tower Challenges
+
+A Tower Challenge is a five-floor high-difficulty sequence. Every floor is substantially harder
+than ordinary expedition combat and culminates in its authored boss class. A challenge requires a
+party on every floor. The number of required parties is versioned by floor; the initial target may
+use one party, while later floors may require multiple parties. All five battles in one challenge
+attempt must be completed consecutively. Recovery, substitution, and state-carryover rules require
+their own balance specification before implementation.
+
+### Tower Exploration
+
+Tower Exploration is practice for a particular challenge floor rather than a challenge clear. It
+allows multiple independent parties to explore the same floor simultaneously. Each party owns its
+own attempt, state, receipts, retreat decision, and rewards; one party's exploration cannot mutate
+another party's combat state. Exploration evidence may prepare the player for the challenge, but it
+does not satisfy the requirement to complete all five challenge battles in sequence.
+
+These target modes do not silently change the narrower Living Village prototype below. That
+prototype continues to prove one-party reservation, repeated encounters, safety thresholds, and
+receipt handoff until shared contracts promote the broader design.
+
 ## Combat design draft
 
 Design status: **supplied draft under owner review**
@@ -156,10 +193,11 @@ damage = SkillBase
 
 The broader draft includes tick-driven action accumulation, ten total affinities (four base and six
 dual), status applications, threat, poise, group formations, consumables, kill-sensitive drops,
-gathering, and permanent consequences. Affinity Rank I–V maps directly to monster tiers T1–T5, and
-monsters below T3 should mostly remain Unaligned. Living Village implements only the explanatory
-seams needed by its presentation fixture. Permanent injury, death, recovery time, free-roaming
-gathering, agentic intent, and model narration remain off.
+gathering, and permanent consequences. The accepted family consolidation keeps form tier,
+numerical level, and affinity rank as separate axes; any restriction on low-tier affinity use must
+be authored explicitly. Living Village implements only the explanatory seams needed by its
+presentation fixture. Permanent injury, death, recovery time, free-roaming gathering, agentic
+intent, and model narration remain off.
 
 ### Accepted combat presentation direction
 

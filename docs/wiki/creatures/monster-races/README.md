@@ -52,6 +52,15 @@ These are generator-ready **seed briefs**, not accepted species canon or runtime
 source tiers mix age, office, caste, mutation, equipment, size, construction quality, and combat
 power; each race needs a taxonomy/mechanics pass before tier names become executable definitions.
 
+The accepted consolidation direction preserves all 30 families and their complete five-form
+coverage. Each floor has one primary family, and each family's T1–T5 forms become distinct combat
+classes following Initiate, Soldier, Specialist, Champion, and Sovereign functions. The detailed
+mapping remains a source-to-target consolidation task; the seed tables are not rewritten in place.
+
+The resulting visual program contains 150 forms. Every form targets Normal plus Fire, Earth, Wind,
+and Water, for 750 candidate images before review. Dual-affinity images require separate explicit
+manifests.
+
 ## Required entry depth
 
 Before a family can drive broad image generation, its wiki work should answer:

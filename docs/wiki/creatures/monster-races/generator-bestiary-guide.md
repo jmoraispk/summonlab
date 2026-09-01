@@ -13,6 +13,26 @@ A generator-ready reference. Each race has:
 - **Escalation axis** — the single physical property that grows from Tier 1 to Tier 5. Keep this phrase in the prompt at every tier.
 - **Progression tiers** — T1 (fodder) through T5 (ruler), with the visual change spelled out.
 
+## Consolidation target
+
+The source has been audited: all 30 entries contain exactly one T1, T2, T3, T4, and T5 form, for
+150 named forms total. Consolidation keeps that coverage but gives every tier a combat purpose as
+well as a visual escalation. A form is a named combat class, not the same creature with only a
+higher numerical level.
+
+| Tier | Canonical function | Required distinction |
+| --- | --- | --- |
+| T1 — Initiate | Probe/fodder | introduces one family mechanic with obvious counterplay |
+| T2 — Soldier | Reliable pressure | establishes the mature baseline body and repeatable combat grammar |
+| T3 — Specialist | Signature pivot | delivers the family's defining specialist role or mechanical twist |
+| T4 — Champion | Command/elite pressure | combines mechanics, supports lower tiers, or controls encounter space |
+| T5 — Sovereign | Floor boss | caps the family with unique command, production, transformation, or arena behavior |
+
+T3 is the first fully realized expression of the family, not merely a medium-sized specimen. T5 is
+an authored boss that tests what T1–T4 taught; added health, scale, ornament, or glow alone cannot
+make a valid Sovereign. Existing source names and visuals remain inputs until the consolidation
+ledger maps each one to a final family form and combat archetype.
+
 **Prompting note:** hold the silhouette and palette constant, change only the escalation axis and the ornamentation density. That is what makes a T1 and a T5 read as kin rather than two unrelated monsters.
 
 ## Index
