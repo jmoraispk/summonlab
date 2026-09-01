@@ -93,9 +93,7 @@ const DIRECT_FAMILIES = new Set([
 	'Forging',
 	'Alchemy',
 	'Cooking',
-	'Gathering',
-	'Beast',
-	'Lore'
+	'Gathering'
 ]);
 
 const TRACKING_DELETE_RATIONALE = 'Tracking ladder removed by approved taxonomy';
@@ -365,12 +363,122 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			replacementRequires: 'Archery Intermediate'
 		};
 
+	if (source === 'Grappling:Bind the Beast')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: targetForSection(row),
+			replacementRequires: 'Immovable Grip Master, Animal Handling Expert'
+		};
+
+	if (source === 'Beast:Animal Handling')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Craft', family: 'Gathering', skill: row.name },
+			replacementEffect:
+				'Animals do not flee or attack on sight; can calm hostile beasts and build trust through feeding. **Foundation.**'
+		};
+
+	if (['Beast:Calm', 'Beast:Feed'].includes(source))
+		return {
+			...row,
+			disposition: 'merge',
+			mergeTarget: { domain: 'Craft', family: 'Gathering', skill: 'Animal Handling' },
+			rationale: 'Consolidated into Animal Handling by the approved creature acquisition ladder'
+		};
+
+	if (source === 'Beast:Riding')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Martial', family: 'Body', skill: row.name }
+		};
+
+	if (source === 'Beast:Taming')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Craft', family: 'Gathering', skill: row.name },
+			replacementRequires: 'Animal Handling Master'
+		};
+
+	if (source === 'Beast:Beast Speech')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Craft', family: 'Knowledge', skill: row.name },
+			replacementRequires: 'Animal Handling Expert, Languages Novice'
+		};
+
+	if (source === 'Beast:Pack Bond')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Martial', family: 'Body', skill: row.name },
+			replacementEffect:
+				"Commands several tamed companions to coordinate attacks on the hero's behalf."
+		};
+
 	if (source === 'Beast:Mounted Combat')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Martial', family: 'Body', skill: row.name },
+			replacementRequires: 'Riding Master, Body skill at Expert'
+		};
+
+	if (source === 'Beast:Breeding' || source === 'Beast:Monarch of Beasts')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Craft', family: 'Gathering', skill: row.name }
+		};
+
+	if (source === 'Beast:Greater Taming')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Craft', family: 'Gathering', skill: row.name },
+			replacementRequires: 'Taming Master, Rank III'
+		};
+
+	if (source === 'Beast:Bonded Mount')
+		return {
+			...row,
+			disposition: 'rehome',
+			target: { domain: 'Martial', family: 'Body', skill: row.name }
+		};
+
+	if (row.section === 'Lore')
+		return {
+			...row,
+			disposition: 'rename',
+			target: { domain: 'Craft', family: 'Knowledge', skill: row.name }
+		};
+
+	if (source === "Alchemy:Philosopher's Work")
 		return {
 			...row,
 			disposition: 'retain',
 			target: targetForSection(row),
-			replacementRequires: 'Riding Master, Martial family skill at Expert'
+			replacementRequires: 'Transmutation Master, Research Expert'
+		};
+
+	if (source === 'Cooking:Monster Cuisine')
+		return {
+			...row,
+			disposition: 'retain',
+			target: targetForSection(row),
+			replacementRequires: 'Butchery Master, Animal Handling Expert'
+		};
+
+	if (source === 'Forging:Runic Foundation')
+		return {
+			...row,
+			disposition: 'retain',
+			target: targetForSection(row),
+			replacementRequires: 'Alloying Master, Literacy Expert'
 		};
 
 	if (source === 'Forging:Monster Craft')
@@ -378,7 +486,15 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			...row,
 			disposition: 'retain',
 			target: targetForSection(row),
-			replacementRequires: 'Alloying Master, Beast prerequisite'
+			replacementRequires: 'Alloying Master, Animal Handling Expert'
+		};
+
+	if (source === 'Gathering:Prospecting')
+		return {
+			...row,
+			disposition: 'retain',
+			target: targetForSection(row),
+			replacementRequires: 'Mining Expert, Cartography Novice'
 		};
 
 	if (source === 'Thrown:Sling')

@@ -60,7 +60,7 @@ export type TargetSkillRow = {
 const DOMAIN_FAMILIES: Record<SkillDomain, ReadonlySet<string>> = {
 	Martial: new Set(['Blade', 'Body', 'Polearm', 'Ranged', 'Shield']),
 	Magical: new Set(['Elemental', 'Enchantment', 'Mind', 'Restoration', 'Ward']),
-	Craft: new Set(['Alchemy', 'Beast', 'Cooking', 'Forging', 'Gathering', 'Lore'])
+	Craft: new Set(['Alchemy', 'Cooking', 'Forging', 'Gathering', 'Knowledge'])
 };
 
 const EQUIPMENT_LABELS = new Set([

@@ -65,6 +65,17 @@ Family: **${family}**
 | 1 | **${skill}** | ${element} | F | P | None | Foundation |`;
 }
 
+function craftTargetPage(family: string, skill: string): string {
+	return `# Craft Skills — ${family}
+
+Domain: **Craft**
+Family: **${family}**
+
+| # | Skill | R | T | Requires | Effect |
+| ---: | --- | :---: | :---: | --- | --- |
+| 1 | **${skill}** | F | P | None | Foundation |`;
+}
+
 function familiesFor(rows: ReturnType<typeof parseTargetSkillRows>, domain: string): string[] {
 	return [...new Set(rows.filter((row) => row.domain === domain).map((row) => row.family))].sort();
 }
@@ -432,17 +443,53 @@ describe('skill taxonomy migration inventory', () => {
 		expect(replacements['martial-blade.md#sword:25']).toBe(
 			'Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert'
 		);
-		expect(replacements['craft-and-life.md#beast:8']).toBe(
-			'Riding Master, Martial family skill at Expert'
-		);
+		expect(replacements['craft-and-life.md#beast:8']).toBe('Riding Master, Body skill at Expert');
 		expect(replacements['craft-and-life.md#forging:14']).toBe(
-			'Alloying Master, Beast prerequisite'
+			'Alloying Master, Animal Handling Expert'
 		);
 	});
 });
 
 describe('target skill taxonomy', () => {
-	it('parses the final five/five/six family hierarchy and optional Element labels', async () => {
+	it('allows exactly the five approved Craft families', () => {
+		const approvedFamilies = ['Alchemy', 'Cooking', 'Forging', 'Gathering', 'Knowledge'];
+		const craftLedger = (family: string) =>
+			({
+				schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+				sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+				sourceRowCount: 520,
+				records: [
+					{
+						...migrationRecord('Blade', `${family} Foundation`, 1),
+						target: { domain: 'Craft' as const, family, skill: `${family} Foundation` }
+					}
+				]
+			}) as SkillMigrationLedger;
+
+		for (const family of approvedFamilies) {
+			const rows = parseTargetSkillRows([
+				{
+					sourcePath: `${family.toLowerCase()}.md`,
+					source: craftTargetPage(family, `${family} Foundation`)
+				}
+			]);
+			expect(validateTargetTaxonomy(rows, craftLedger(family))).toEqual([]);
+		}
+
+		for (const retiredFamily of ['Beast', 'Lore']) {
+			const rows = parseTargetSkillRows([
+				{
+					sourcePath: `${retiredFamily.toLowerCase()}.md`,
+					source: craftTargetPage(retiredFamily, `${retiredFamily} Foundation`)
+				}
+			]);
+			expect(validateTargetTaxonomy(rows, craftLedger(retiredFamily))).toContain(
+				`unknown Craft family ${retiredFamily}`
+			);
+		}
+	});
+
+	it('parses the current Martial and Magical family hierarchy and optional Element labels', async () => {
 		const paths = [
 			'docs/wiki/mechanics/skills/martial-blade.md',
 			'docs/wiki/mechanics/skills/martial-body.md',
@@ -450,8 +497,7 @@ describe('target skill taxonomy', () => {
 			'docs/wiki/mechanics/skills/martial-ranged.md',
 			'docs/wiki/mechanics/skills/martial-shield.md',
 			'docs/wiki/mechanics/skills/magical-elemental.md',
-			'docs/wiki/mechanics/skills/magical-disciplines.md',
-			'docs/wiki/mechanics/skills/craft-and-life.md'
+			'docs/wiki/mechanics/skills/magical-disciplines.md'
 		];
 		const rows = parseTargetSkillRows(
 			await Promise.all(
@@ -461,25 +507,12 @@ describe('target skill taxonomy', () => {
 				}))
 			)
 		);
-		const ledger = JSON.parse(
-			await readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8')
-		) as SkillMigrationLedger;
-
-		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
 		expect(familiesFor(rows, 'Magical')).toEqual([
 			'Elemental',
 			'Enchantment',
 			'Mind',
 			'Restoration',
 			'Ward'
-		]);
-		expect(familiesFor(rows, 'Craft')).toEqual([
-			'Alchemy',
-			'Beast',
-			'Cooking',
-			'Forging',
-			'Gathering',
-			'Lore'
 		]);
 		expect(elementLabelsForFamily(rows, 'Elemental')).toEqual([
 			'Earth',
