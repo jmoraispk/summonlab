@@ -19,9 +19,23 @@
       "sha256": "2f61c355454a199e0baa113cfe8c170462ebeb129136ffc578c667f2edc37b22"
     }
   ],
+  "promotions": [
+    {
+      "referenceInput": "/home/joao/.codex/attachments/20e0b264-8fa6-4d0d-9b64-081a6b17716d/element_cycle.svg",
+      "output": "assets/enemies/wiki/affinities/reference/element-cycle-v2.svg",
+      "sha256": "3dc9333cda34dda485c40c84ce241170517188c80baf2758340ef8f6978b36f7",
+      "normalization": "terminal-newline-only"
+    },
+    {
+      "referenceInput": "/home/joao/.codex/attachments/20e0b264-8fa6-4d0d-9b64-081a6b17716d/affinity_matrix.svg",
+      "output": "assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg",
+      "sha256": "f55b1be8f877864b5e3e75422d3b1b00f4874205798e53f58c66e802c4347b5c",
+      "normalization": "none"
+    }
+  ],
   "outputs": [
     "assets/enemies/wiki/affinities/reference/element-cycle-v2.svg",
     "assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg"
   ],
-  "mechanicsNote": "Mechanical labels and overcoming arrows were rebuilt from the canonical affinity contract rather than copied blindly from the supplied layout references."
+  "mechanicsNote": "The user-supplied SVGs are the approved wiki page assets. The cycle output differs from its supplied source only by a terminal newline; the matrix output is byte-identical. Canonical mechanics remain independently enforced by the affinity wiki contract."
 }

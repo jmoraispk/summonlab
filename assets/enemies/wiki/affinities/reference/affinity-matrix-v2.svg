@@ -1,76 +1,65 @@
-<svg
-	xmlns="http://www.w3.org/2000/svg"
-	viewBox="0 0 860 660"
-	role="img"
-	aria-labelledby="matrix-title matrix-desc"
->
-	<title id="matrix-title">Affinity pairing matrix</title>
-	<desc id="matrix-desc">Rows and columns are Earth, Water, Fire, Wind. Four base affinities and six dual affinities make ten total affinities.</desc>
-	<defs>
-		<style>
-			.background { fill: #10141d; }
-			.grid { stroke: #3a4a63; stroke-width: 1; }
-			.header { fill: #b8c5d8; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 700; text-anchor: middle; }
-			.row-header { fill: #b8c5d8; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 700; text-anchor: end; }
-			.name { fill: #f3f6fb; font-family: system-ui, sans-serif; font-size: 17px; font-weight: 700; text-anchor: middle; }
-			.meta { fill: #c3cedd; font-family: system-ui, sans-serif; font-size: 12px; text-anchor: middle; }
-			.caption { fill: #9fadc2; font-family: system-ui, sans-serif; font-size: 15px; text-anchor: middle; }
-		</style>
-	</defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="480" viewBox="0 0 680 480" role="img"><title>Affinity pairing matrix, ten affinities</title><desc>A four by four grid. The diagonal holds the four base affinities water, fire, wind and earth. The six cells above hold the dual affinities mist, ice, rot, lightning, magma and sand.</desc>
+<rect x="0" y="0" width="680" height="480" rx="16" fill="#0F0F12"/>
 
-	<rect class="background" x="0" y="0" width="860" height="660" rx="24" />
-	<text class="name" x="470" y="48">Affinity pairing matrix</text>
-	<text class="caption" x="470" y="74">Upper triangle: every unique base-affinity pairing.</text>
+<text x="197" y="54" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#128167; Water</text>
+<text x="323" y="54" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#128293; Fire</text>
+<text x="449" y="54" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#127786;&#65039; Wind</text>
+<text x="575" y="54" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#9968;&#65039; Earth</text>
 
-	<text class="header" x="320" y="128">Earth</text>
-	<text class="header" x="470" y="128">Water</text>
-	<text class="header" x="620" y="128">Fire</text>
-	<text class="header" x="770" y="128">Wind</text>
-	<text class="row-header" x="180" y="187">Earth</text>
-	<text class="row-header" x="180" y="277">Water</text>
-	<text class="row-header" x="180" y="367">Fire</text>
-	<text class="row-header" x="180" y="457">Wind</text>
+<text x="88" y="120" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#128167; Water</text>
+<text x="88" y="204" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#128293; Fire</text>
+<text x="88" y="288" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#127786;&#65039; Wind</text>
+<text x="88" y="372" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#9A9AA6">&#9968;&#65039; Earth</text>
 
-	<rect class="grid" x="245" y="145" width="150" height="70" rx="10" fill="#3c2c1d" data-kind="base" data-name="Earth" />
-	<text class="name" x="320" y="174">Earth</text>
-	<text class="meta" x="320" y="197">Weight</text>
-	<rect class="grid" x="395" y="145" width="150" height="70" rx="10" fill="#253824" data-kind="dual" data-name="Rot" data-parents="Earth|Water" data-status="Decay" />
-	<text class="name" x="470" y="174">Rot</text>
-	<text class="meta" x="470" y="197">Earth + Water · Decay</text>
-	<rect class="grid" x="545" y="145" width="150" height="70" rx="10" fill="#552018" data-kind="dual" data-name="Magma" data-parents="Fire|Earth" data-status="Melt" />
-	<text class="name" x="620" y="174">Magma</text>
-	<text class="meta" x="620" y="197">Fire + Earth · Melt</text>
-	<rect class="grid" x="695" y="145" width="150" height="70" rx="10" fill="#4a3c24" data-kind="dual" data-name="Sand" data-parents="Wind|Earth" data-status="Abrade" />
-	<text class="name" x="770" y="174">Sand</text>
-	<text class="meta" x="770" y="197">Wind + Earth · Abrade</text>
+<rect x="138" y="82" width="118" height="76" rx="10" fill="#0E2E4F" stroke="#3B8BD4" stroke-width="2"/>
+<text x="197" y="106" text-anchor="middle" dominant-baseline="central" font-size="24">&#128167;</text>
+<text x="197" y="130" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#B8DBF8">Water</text>
+<text x="197" y="146" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#7EB2E0">Chill</text>
 
-	<rect class="grid" x="245" y="235" width="150" height="70" rx="10" fill="#151c28" />
-	<rect class="grid" x="395" y="235" width="150" height="70" rx="10" fill="#123859" data-kind="base" data-name="Water" />
-	<text class="name" x="470" y="264">Water</text>
-	<text class="meta" x="470" y="287">Chill</text>
-	<rect class="grid" x="545" y="235" width="150" height="70" rx="10" fill="#445061" data-kind="dual" data-name="Mist" data-parents="Water|Fire" data-status="Shroud" />
-	<text class="name" x="620" y="264">Mist</text>
-	<text class="meta" x="620" y="287">Water + Fire · Shroud</text>
-	<rect class="grid" x="695" y="235" width="150" height="70" rx="10" fill="#1d5260" data-kind="dual" data-name="Ice" data-parents="Water|Wind" data-status="Freeze" />
-	<text class="name" x="770" y="264">Ice</text>
-	<text class="meta" x="770" y="287">Water + Wind · Freeze</text>
+<rect x="264" y="82" width="118" height="76" rx="10" fill="#34383E" stroke="#C8CCD4" stroke-width="1"/>
+<text x="323" y="106" text-anchor="middle" dominant-baseline="central" font-size="24">&#9729;&#65039;</text>
+<text x="323" y="130" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#E8EBEF">Mist</text>
+<text x="323" y="146" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#B0B5BE">Shroud</text>
 
-	<rect class="grid" x="245" y="325" width="150" height="70" rx="10" fill="#151c28" />
-	<rect class="grid" x="395" y="325" width="150" height="70" rx="10" fill="#151c28" />
-	<rect class="grid" x="545" y="325" width="150" height="70" rx="10" fill="#531d17" data-kind="base" data-name="Fire" />
-	<text class="name" x="620" y="354">Fire</text>
-	<text class="meta" x="620" y="377">Burn</text>
-	<rect class="grid" x="695" y="325" width="150" height="70" rx="10" fill="#4d421d" data-kind="dual" data-name="Lightning" data-parents="Fire|Wind" data-status="Shock" />
-	<text class="name" x="770" y="354">Lightning</text>
-	<text class="meta" x="770" y="377">Fire + Wind · Shock</text>
+<rect x="390" y="82" width="118" height="76" rx="10" fill="#0D3A44" stroke="#4FC7D6" stroke-width="1"/>
+<text x="449" y="106" text-anchor="middle" dominant-baseline="central" font-size="24">&#10052;&#65039;</text>
+<text x="449" y="130" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#A5E4ED">Ice</text>
+<text x="449" y="146" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#6FBBC7">Freeze</text>
 
-	<rect class="grid" x="245" y="415" width="150" height="70" rx="10" fill="#151c28" />
-	<rect class="grid" x="395" y="415" width="150" height="70" rx="10" fill="#151c28" />
-	<rect class="grid" x="545" y="415" width="150" height="70" rx="10" fill="#151c28" />
-	<rect class="grid" x="695" y="415" width="150" height="70" rx="10" fill="#153f3c" data-kind="base" data-name="Wind" />
-	<text class="name" x="770" y="444">Wind</text>
-	<text class="meta" x="770" y="467">Lacerate</text>
+<rect x="516" y="82" width="118" height="76" rx="10" fill="#2A3512" stroke="#7FA33C" stroke-width="1"/>
+<text x="575" y="106" text-anchor="middle" dominant-baseline="central" font-size="24">&#9760;&#65039;</text>
+<text x="575" y="130" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#C6DB8C">Rot</text>
+<text x="575" y="146" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#9BB861">Decay</text>
 
-	<text class="caption" x="470" y="562">4 base affinities + 6 dual affinities = 10 total affinities</text>
-	<text class="caption" x="470" y="588">Each dual cell records its exact parents and signature status.</text>
+<rect x="264" y="166" width="118" height="76" rx="10" fill="#4A1409" stroke="#FF7A33" stroke-width="2"/>
+<text x="323" y="190" text-anchor="middle" dominant-baseline="central" font-size="24">&#128293;</text>
+<text x="323" y="214" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#FFCBAE">Fire</text>
+<text x="323" y="230" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#E89D74">Burn</text>
+
+<rect x="390" y="166" width="118" height="76" rx="10" fill="#453807" stroke="#E8C22B" stroke-width="1"/>
+<text x="449" y="190" text-anchor="middle" dominant-baseline="central" font-size="24">&#9889;</text>
+<text x="449" y="214" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#F7E39B">Lightning</text>
+<text x="449" y="230" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#D4B855">Shock</text>
+
+<rect x="516" y="166" width="118" height="76" rx="10" fill="#3D1004" stroke="#C93A12" stroke-width="1"/>
+<text x="575" y="190" text-anchor="middle" dominant-baseline="central" font-size="24">&#127755;</text>
+<text x="575" y="214" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#F0A882">Magma</text>
+<text x="575" y="230" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#CE8058">Melt</text>
+
+<rect x="390" y="250" width="118" height="76" rx="10" fill="#0C3B30" stroke="#2FB58A" stroke-width="2"/>
+<text x="449" y="274" text-anchor="middle" dominant-baseline="central" font-size="24">&#127786;&#65039;</text>
+<text x="449" y="298" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#B4EDD8">Wind</text>
+<text x="449" y="314" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#72C7A8">Lacerate</text>
+
+<rect x="516" y="250" width="118" height="76" rx="10" fill="#453A1C" stroke="#D4B368" stroke-width="1"/>
+<text x="575" y="274" text-anchor="middle" dominant-baseline="central" font-size="24">&#9203;</text>
+<text x="575" y="298" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#EBD9A6">Sand</text>
+<text x="575" y="314" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#BFA574">Abrade</text>
+
+<rect x="516" y="334" width="118" height="76" rx="10" fill="#3A2510" stroke="#8B5A2B" stroke-width="2"/>
+<text x="575" y="358" text-anchor="middle" dominant-baseline="central" font-size="24">&#9968;&#65039;</text>
+<text x="575" y="382" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="14" font-weight="500" fill="#D9B48A">Earth</text>
+<text x="575" y="398" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#B08B5E">Weight</text>
+
+<text x="340" y="446" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="13" fill="#9A9AA6">4 base affinities + 6 dual affinities = 10 total affinities</text>
 </svg>

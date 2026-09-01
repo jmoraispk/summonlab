@@ -1,80 +1,67 @@
-<svg
-	xmlns="http://www.w3.org/2000/svg"
-	viewBox="0 0 720 620"
-	role="img"
-	aria-labelledby="cycle-title cycle-desc"
->
-	<title id="cycle-title">Affinity overcoming cycle</title>
-	<desc id="cycle-desc">Earth>Water, Water>Fire, Fire>Wind, Wind>Earth. Six dual affinities are secondary annotations outside the cycle.</desc>
-	<defs>
-		<marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-			<path d="M 0 0 L 8 4 L 0 8 z" fill="#d2d8e5" />
-		</marker>
-		<style>
-			.background { fill: #10141d; }
-			.cycle { fill: none; stroke: #53627a; stroke-width: 3; stroke-linecap: round; marker-end: url(#arrowhead); }
-			.base { stroke-width: 2; }
-			.label { font-family: system-ui, sans-serif; text-anchor: middle; }
-			.name { fill: #f3f6fb; font-size: 18px; font-weight: 700; }
-			.status { fill: #b8c5d8; font-size: 13px; }
-			.dual { fill: #202a3a; stroke: #667896; stroke-width: 1; }
-			.dual-label { fill: #d5deeb; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 600; text-anchor: middle; }
-			.caption { fill: #9fadc2; font-family: system-ui, sans-serif; font-size: 14px; text-anchor: middle; }
-		</style>
-	</defs>
+<svg width="100%" viewBox="0 0 682 492" role="img" style="" xmlns="http://www.w3.org/2000/svg"><title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Four-element ring with dual affinities</title><desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Water, fire, wind and earth as rounded rectangles on a ring, with arcing arrows showing what each overcomes. Mist, lightning, sand and rot sit outside the ring as pills. Magma and ice sit at the centre. A legend distinguishes base affinities from dual affinities by node shape.</desc>
+<rect x="8" y="8" width="664" height="474" rx="16" fill="#0F0F12" style="fill:rgb(15, 15, 18);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
 
-	<rect class="background" x="0" y="0" width="720" height="620" rx="24" />
-	<text class="label name" x="360" y="38">Overcoming cycle</text>
-	<text class="caption" x="360" y="60">Clockwise arrows show the only four overcoming relationships.</text>
+<path d="M 192.9 175.0 A 155 155 0 0 1 273.6 83.9" fill="none" stroke="#8A8A96" stroke-width="1.5" style="fill:none;stroke:rgb(138, 138, 150);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M 400.0 81.1 A 155 155 0 0 1 484.7 168.4" fill="none" stroke="#8A8A96" stroke-width="1.5" style="fill:none;stroke:rgb(138, 138, 150);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M 487.1 273.0 A 155 155 0 0 1 406.4 364.1" fill="none" stroke="#8A8A96" stroke-width="1.5" style="fill:none;stroke:rgb(138, 138, 150);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M 280.0 366.9 A 155 155 0 0 1 195.3 279.6" fill="none" stroke="#8A8A96" stroke-width="1.5" style="fill:none;stroke:rgb(138, 138, 150);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
 
-	<path class="cycle" data-overcomes="Earth>Water" d="M 411 145 A 174 174 0 0 1 529 263" />
-	<path class="cycle" data-overcomes="Water>Fire" d="M 575 313 A 174 174 0 0 1 457 431" />
-	<path class="cycle" data-overcomes="Fire>Wind" d="M 409 477 A 174 174 0 0 1 191 303" />
-	<path class="cycle" data-overcomes="Wind>Earth" d="M 145 313 A 174 174 0 0 1 363 193" />
+<path d="M0 0 L-8 -4 L-8 4 Z" fill="#8A8A96" transform="translate(280.0,81.1) rotate(-22.8)" style="fill:rgb(138, 138, 150);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M0 0 L-8 -4 L-8 4 Z" fill="#8A8A96" transform="translate(487.1,175.0) rotate(71.6)" style="fill:rgb(138, 138, 150);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M0 0 L-8 -4 L-8 4 Z" fill="#8A8A96" transform="translate(400.0,366.9) rotate(157.2)" style="fill:rgb(138, 138, 150);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M0 0 L-8 -4 L-8 4 Z" fill="#8A8A96" transform="translate(192.9,273.0) rotate(-108.4)" style="fill:rgb(138, 138, 150);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
 
-	<g aria-label="Earth base affinity">
-		<rect class="base" x="292" y="90" width="136" height="82" rx="18" fill="#3c2c1d" stroke="#d5a76c" />
-		<text class="label name" x="360" y="124">Earth</text>
-		<text class="label status" x="360" y="149">Weight</text>
-	</g>
-	<g aria-label="Water base affinity">
-		<rect class="base" x="548" y="240" width="136" height="82" rx="18" fill="#123859" stroke="#76b9e9" />
-		<text class="label name" x="616" y="274">Water</text>
-		<text class="label status" x="616" y="299">Chill</text>
-	</g>
-	<g aria-label="Fire base affinity">
-		<rect class="base" x="292" y="448" width="136" height="82" rx="18" fill="#531d17" stroke="#f08d66" />
-		<text class="label name" x="360" y="482">Fire</text>
-		<text class="label status" x="360" y="507">Burn</text>
-	</g>
-	<g aria-label="Wind base affinity">
-		<rect class="base" x="36" y="240" width="136" height="82" rx="18" fill="#153f3c" stroke="#74c9b8" />
-		<text class="label name" x="104" y="274">Wind</text>
-		<text class="label status" x="104" y="299">Lacerate</text>
-	</g>
+<rect x="290" y="30" width="100" height="78" rx="18" fill="#4A1409" stroke="#FF7A33" stroke-width="1.5" style="fill:rgb(74, 20, 9);stroke:rgb(255, 122, 51);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="340" y="49" text-anchor="middle" dominant-baseline="central" font-size="22" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:22px;font-weight:400;text-anchor:middle;dominant-baseline:central">🔥</text>
+<text x="340" y="75" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="14" font-weight="500" fill="#FFCBAE" style="fill:rgb(255, 203, 174);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Fire</text>
+<text x="340" y="93" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#E89D74" style="fill:rgb(232, 157, 116);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Burn</text>
 
-	<g aria-label="Secondary dual affinity annotation: Mist">
-		<rect class="dual" x="72" y="112" width="106" height="32" rx="16" />
-		<text class="dual-label" x="125" y="133">Mist · Shroud</text>
-	</g>
-	<g aria-label="Secondary dual affinity annotation: Lightning">
-		<rect class="dual" x="524" y="112" width="132" height="32" rx="16" />
-		<text class="dual-label" x="590" y="133">Lightning · Shock</text>
-	</g>
-	<g aria-label="Secondary dual affinity annotation: Sand">
-		<rect class="dual" x="550" y="398" width="110" height="32" rx="16" />
-		<text class="dual-label" x="605" y="419">Sand · Abrade</text>
-	</g>
-	<g aria-label="Secondary dual affinity annotation: Rot">
-		<rect class="dual" x="70" y="398" width="102" height="32" rx="16" />
-		<text class="dual-label" x="121" y="419">Rot · Decay</text>
-	</g>
-	<g aria-label="Secondary dual affinity annotation: Magma">
-		<rect class="dual" x="222" y="550" width="118" height="32" rx="16" />
-		<text class="dual-label" x="281" y="571">Magma · Melt</text>
-	</g>
-	<g aria-label="Secondary dual affinity annotation: Ice">
-		<rect class="dual" x="380" y="550" width="100" height="32" rx="16" />
-		<text class="dual-label" x="430" y="571">Ice · Freeze</text>
-	</g>
+<rect x="445" y="185" width="100" height="78" rx="18" fill="#0C3B30" stroke="#2FB58A" stroke-width="1.5" style="fill:rgb(12, 59, 48);stroke:rgb(47, 181, 138);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="495" y="204" text-anchor="middle" dominant-baseline="central" font-size="22" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:22px;font-weight:400;text-anchor:middle;dominant-baseline:central">🌪️</text>
+<text x="495" y="230" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="14" font-weight="500" fill="#B4EDD8" style="fill:rgb(180, 237, 216);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Wind</text>
+<text x="495" y="248" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#72C7A8" style="fill:rgb(114, 199, 168);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Lacerate</text>
+
+<rect x="290" y="340" width="100" height="78" rx="18" fill="#3A2510" stroke="#8B5A2B" stroke-width="1.5" style="fill:rgb(58, 37, 16);stroke:rgb(139, 90, 43);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="340" y="359" text-anchor="middle" dominant-baseline="central" font-size="22" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:22px;font-weight:400;text-anchor:middle;dominant-baseline:central">⛰️</text>
+<text x="340" y="385" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="14" font-weight="500" fill="#D9B48A" style="fill:rgb(217, 180, 138);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Earth</text>
+<text x="340" y="403" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#B08B5E" style="fill:rgb(176, 139, 94);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Weight</text>
+
+<rect x="135" y="185" width="100" height="78" rx="18" fill="#0E2E4F" stroke="#3B8BD4" stroke-width="1.5" style="fill:rgb(14, 46, 79);stroke:rgb(59, 139, 212);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="185" y="204" text-anchor="middle" dominant-baseline="central" font-size="22" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:22px;font-weight:400;text-anchor:middle;dominant-baseline:central">💧</text>
+<text x="185" y="230" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="14" font-weight="500" fill="#B8DBF8" style="fill:rgb(184, 219, 248);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Water</text>
+<text x="185" y="248" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#7EB2E0" style="fill:rgb(126, 178, 224);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Chill</text>
+
+<rect x="147" y="58" width="84" height="30" rx="15" fill="#34383E" stroke="#C8CCD4" stroke-width="1" style="fill:rgb(52, 56, 62);stroke:rgb(200, 204, 212);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="173" y="73" text-anchor="middle" dominant-baseline="central" font-size="14" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:central">☁️</text>
+<text x="198" y="73" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#E8EBEF" style="fill:rgb(232, 235, 239);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Mist</text>
+
+<rect x="437" y="58" width="108" height="30" rx="15" fill="#453807" stroke="#E8C22B" stroke-width="1" style="fill:rgb(69, 56, 7);stroke:rgb(232, 194, 43);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="461" y="73" text-anchor="middle" dominant-baseline="central" font-size="14" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:central">⚡</text>
+<text x="500" y="73" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#F7E39B" style="fill:rgb(247, 227, 155);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Lightning</text>
+
+<rect x="449" y="360" width="84" height="30" rx="15" fill="#453A1C" stroke="#D4B368" stroke-width="1" style="fill:rgb(69, 58, 28);stroke:rgb(212, 179, 104);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="473" y="375" text-anchor="middle" dominant-baseline="central" font-size="14" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:central">⏳</text>
+<text x="500" y="375" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#EBD9A6" style="fill:rgb(235, 217, 166);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Sand</text>
+
+<rect x="150" y="360" width="78" height="30" rx="15" fill="#2A3512" stroke="#7FA33C" stroke-width="1" style="fill:rgb(42, 53, 18);stroke:rgb(127, 163, 60);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="175" y="375" text-anchor="middle" dominant-baseline="central" font-size="14" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:central">☠️</text>
+<text x="198" y="375" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#C6DB8C" style="fill:rgb(198, 219, 140);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Rot</text>
+
+<rect x="292" y="190" width="96" height="30" rx="15" fill="#3D1004" stroke="#C93A12" stroke-width="1" style="fill:rgb(61, 16, 4);stroke:rgb(201, 58, 18);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="316" y="205" text-anchor="middle" dominant-baseline="central" font-size="14" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:central">🌋</text>
+<text x="349" y="205" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#F0A882" style="fill:rgb(240, 168, 130);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Magma</text>
+
+<rect x="304" y="228" width="72" height="30" rx="15" fill="#0D3A44" stroke="#4FC7D6" stroke-width="1" style="fill:rgb(13, 58, 68);stroke:rgb(79, 199, 214);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="328" y="243" text-anchor="middle" dominant-baseline="central" font-size="14" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:central">❄️</text>
+<text x="349" y="243" text-anchor="middle" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#A5E4ED" style="fill:rgb(165, 228, 237);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">Ice</text>
+
+<line x1="160" y1="456" x2="182" y2="456" stroke="#8A8A96" stroke-width="1.5" style="fill:rgb(0, 0, 0);stroke:rgb(138, 138, 150);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<path d="M0 0 L-8 -4 L-8 4 Z" fill="#8A8A96" transform="translate(190,456)" style="fill:rgb(138, 138, 150);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="200" y="456" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#8E8E9A" style="fill:rgb(142, 142, 154);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:central">overcomes</text>
+
+<rect x="290" y="448" width="22" height="16" rx="4" fill="#2A2A32" stroke="#9A9AA6" stroke-width="1" style="fill:rgb(42, 42, 50);stroke:rgb(154, 154, 166);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="320" y="456" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#8E8E9A" style="fill:rgb(142, 142, 154);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:central">base affinity</text>
+
+<rect x="420" y="448" width="22" height="16" rx="8" fill="#2A2A32" stroke="#9A9AA6" stroke-width="1" style="fill:rgb(42, 42, 50);stroke:rgb(154, 154, 166);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="450" y="456" dominant-baseline="central" font-family="anthropic-sans, sans-serif" font-size="12" fill="#8E8E9A" style="fill:rgb(142, 142, 154);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:anthropic-sans, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:central">dual affinity</text>
 </svg>

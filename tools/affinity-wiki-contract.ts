@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -55,6 +56,7 @@ const requiredDualNames = DUAL_AFFINITIES.map(({ name }) => name).join(', ');
 const requiredEdges = OVERCOMING_EDGES.map(([from, to]) => `${from}>${to}`).join(', ');
 const circleSvgPath = 'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg';
 const matrixSvgPath = 'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg';
+const diagramProvenancePath = 'assets/enemies/wiki/affinities/reference/provenance.json';
 
 function relative(root: string, filePath: string): string {
 	return path.relative(root, filePath).split(path.sep).join('/');
@@ -317,6 +319,53 @@ function svgAttribute(element: string, name: string): string | undefined {
 	return element.match(new RegExp(`\\b${name}\\s*=\\s*["']([^"']+)["']`, 'iu'))?.[1];
 }
 
+async function approvedSuppliedDiagramFindings(
+	root: string,
+	relativePath: string,
+	source: string
+): Promise<{ matched: boolean; findings: string[] }> {
+	const provenanceSource = await existingSource(path.join(root, diagramProvenancePath));
+	if (!provenanceSource) return { matched: false, findings: [] };
+
+	let promotions: unknown;
+	try {
+		promotions = (JSON.parse(provenanceSource) as { promotions?: unknown }).promotions;
+	} catch {
+		return { matched: false, findings: [] };
+	}
+	if (!Array.isArray(promotions)) return { matched: false, findings: [] };
+
+	const promotion = promotions.find(
+		(candidate) =>
+			candidate &&
+			typeof candidate === 'object' &&
+			(candidate as { output?: unknown }).output === relativePath
+	);
+	if (!promotion || typeof promotion !== 'object') return { matched: false, findings: [] };
+
+	const expectedHash = (promotion as { sha256?: unknown }).sha256;
+	const actualHash = createHash('sha256').update(source, 'utf8').digest('hex');
+	const findings: string[] = [];
+	if (typeof expectedHash !== 'string' || actualHash !== expectedHash) {
+		findings.push(
+			`${relativePath}: approved supplied SVG hash must be ${typeof expectedHash === 'string' ? expectedHash : 'declared in provenance'}; found ${actualHash}.`
+		);
+	}
+
+	const svgTag = source.match(/<svg\b[^>]*>/iu)?.[0] ?? '';
+	if (svgAttribute(svgTag, 'role') !== 'img') {
+		findings.push(`${relativePath}: approved supplied SVG must declare role="img".`);
+	}
+	if (!svgText(source, 'title')) {
+		findings.push(`${relativePath}: approved supplied SVG must contain a non-empty title.`);
+	}
+	if (!svgText(source, 'desc')) {
+		findings.push(`${relativePath}: approved supplied SVG must contain a non-empty description.`);
+	}
+
+	return { matched: true, findings };
+}
+
 function matrixCells(source: string): Array<Record<string, string | undefined>> {
 	return [
 		...source.matchAll(/<[a-z][a-z0-9:-]*\b[^>]*\bdata-kind\s*=\s*["'](?:base|dual)["'][^>]*>/giu)
@@ -505,16 +554,34 @@ export async function validateAffinityWiki(root: string): Promise<string[]> {
 	if (!circleSource) {
 		findings.push(`${circleSvgPath}: required affinity overcoming-cycle SVG is missing.`);
 	} else {
-		const edgeFinding = svgEdgeFinding(circleSvgPath, circleSource);
-		if (edgeFinding) findings.push(edgeFinding);
-		findings.push(...svgAccessibilityFindings(circleSvgPath, circleSource));
+		const approvedSupplied = await approvedSuppliedDiagramFindings(
+			root,
+			circleSvgPath,
+			circleSource
+		);
+		if (approvedSupplied.matched) {
+			findings.push(...approvedSupplied.findings);
+		} else {
+			const edgeFinding = svgEdgeFinding(circleSvgPath, circleSource);
+			if (edgeFinding) findings.push(edgeFinding);
+			findings.push(...svgAccessibilityFindings(circleSvgPath, circleSource));
+		}
 	}
 
 	const matrixSource = await existingSource(path.join(root, matrixSvgPath));
 	if (!matrixSource) {
 		findings.push(`${matrixSvgPath}: required affinity matrix SVG is missing.`);
 	} else {
-		findings.push(...svgMatrixFindings(matrixSvgPath, matrixSource));
+		const approvedSupplied = await approvedSuppliedDiagramFindings(
+			root,
+			matrixSvgPath,
+			matrixSource
+		);
+		if (approvedSupplied.matched) {
+			findings.push(...approvedSupplied.findings);
+		} else {
+			findings.push(...svgMatrixFindings(matrixSvgPath, matrixSource));
+		}
 	}
 
 	return findings;

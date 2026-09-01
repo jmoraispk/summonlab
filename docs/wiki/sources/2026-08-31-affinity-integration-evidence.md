@@ -125,7 +125,7 @@ web and worker servers on `5174` and `4174` were stopped after capture.
 
 | Route | Review result | Screenshot |
 | --- | --- | --- |
-| `/wiki/mechanics/progression/affinities` | Passed: the only cycle reads Earth → Water → Fire → Wind → Earth; both SVGs decode locally; the matrix visibly contains four bases plus six duals with distinct cell fills. | [progression affinities](../../evidence/affinity-wiki-integration-2026-08-31/progression-affinities-main-efa9742.png) |
+| `/wiki/mechanics/progression/affinities` | Passed: the only cycle reads Earth → Water → Fire → Wind → Earth; both owner-supplied SVGs decode locally; the matrix visibly contains four bases plus six duals with distinct cell fills. | [progression affinities with supplied diagrams](../../evidence/affinity-wiki-integration-2026-08-31/progression-affinities-supplied-diagrams-d0fd339.png) |
 | `/wiki/mechanics/affinities` | Passed: the navigation page states four bases, six rare duals, and ten total, and lists the exact roster. | [affinity index](../../evidence/affinity-wiki-integration-2026-08-31/affinities-index-main-efa9742.png) |
 | `/wiki/mechanics/skills/magical-elemental` | Passed: Fire, Water, and Earth ladders remain published; Wind is explicitly active and deferred to its owner rewrite; Sunfall remains Fire while its alignment-specific bonus/rider is deferred to the skill-content owner. | [magical elemental](../../evidence/affinity-wiki-integration-2026-08-31/magical-elemental-main-efa9742.png) |
 | `/wiki/creatures/monsters/dire-wolf` | Passed: the current Normal/Fire/Earth/Wind/Water target is separate from the Wood and Metal `legacy-candidate` studies; Earth is visibly pending and candidate evidence is neither approved nor runtime. | [Dire Wolf](../../evidence/affinity-wiki-integration-2026-08-31/dire-wolf-main-efa9742.png) |
@@ -133,12 +133,20 @@ web and worker servers on `5174` and `4174` were stopped after capture.
 These PNGs are review evidence only. They are not approved assets, runtime assets, source candidate
 images, or inputs to any source hash.
 
+After owner approval of the supplied diagrams, the progression route was rechecked at
+`http://127.0.0.1:4178`: it returned HTTP `200`, both local SVG routes decoded, and a fresh
+1440 × 1000-viewport full-page screenshot was captured. The matrix SVG output is byte-identical to
+the supplied source. The cycle SVG output differs only by a terminal newline introduced during the
+repository import. Their approved output hashes are enforced through the provenance-bound affinity
+contract.
+
 | Screenshot | SHA-256 |
 | --- | --- |
 | `affinities-index-main-efa9742.png` | `ccd1e875602d911c7b1f7c414828f58b78e1b16a84bab2cda5a8230920dd919d` |
 | `dire-wolf-main-efa9742.png` | `bcb729d1ca9c6b691e91ebee736c82d88100ebb9dd71c7bf0be5f595debb0d66` |
 | `magical-elemental-main-efa9742.png` | `d152cc68643702cb768dc5d958d6782ebb2bd1e22f98f1bcea86ea39525e05bf` |
 | `progression-affinities-main-efa9742.png` | `d5029b1dda695b18bb154b6f17b0e1db8ae32fe6ceec3442ca4e12c2913c7b2f` |
+| `progression-affinities-supplied-diagrams-d0fd339.png` | `aaa4d8ed1088e63f036d36709d7a4ddca7109a13441326afbbd8d220fbc62893` |
 
 ## Prior task commits
 

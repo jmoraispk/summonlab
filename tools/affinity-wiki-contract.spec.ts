@@ -17,6 +17,25 @@ const validCycleSvg = `<svg role="img"><title>Affinity overcoming cycle</title><
 
 const validMatrixSvg = `<svg role="img"><title>Affinity pairing matrix</title><desc>Four base affinities and six dual affinities, for ten total affinities.</desc><rect data-kind="base" data-name="Earth" /><rect data-kind="dual" data-name="Rot" data-parents="Earth|Water" data-status="Decay" /><rect data-kind="dual" data-name="Magma" data-parents="Fire|Earth" data-status="Melt" /><rect data-kind="base" data-name="Water" /><rect data-kind="dual" data-name="Mist" data-parents="Water|Fire" data-status="Shroud" /><rect data-kind="dual" data-name="Ice" data-parents="Water|Wind" data-status="Freeze" /><rect data-kind="base" data-name="Fire" /><rect data-kind="dual" data-name="Lightning" data-parents="Fire|Wind" data-status="Shock" /><rect data-kind="base" data-name="Wind" /><rect data-kind="dual" data-name="Sand" data-parents="Wind|Earth" data-status="Abrade" /></svg>`;
 
+const suppliedCycleSvg = `<svg role="img"><title>Four-element ring with dual affinities</title><desc>Water, fire, wind and earth on a ring, with arrows showing what each overcomes.</desc><text>Fire Wind Earth Water Mist Lightning Sand Rot Magma Ice</text></svg>`;
+const suppliedMatrixSvg = `<svg role="img"><title>Affinity pairing matrix, ten affinities</title><desc>A four by four grid with four base affinities and six dual affinities.</desc><text>Water Fire Wind Earth Mist Ice Rot Lightning Magma Sand</text></svg>`;
+const suppliedDiagramProvenance = JSON.stringify({
+	schemaVersion: 'summonlab-affinity-diagram-provenance-v1',
+	status: 'approved-supplied-layout',
+	promotions: [
+		{
+			referenceInput: '/attachments/element_cycle.svg',
+			output: 'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg',
+			sha256: '2493dbc7859b0b72c10900470f1456adff406f857db8f6b3d4005abdc84a8a74'
+		},
+		{
+			referenceInput: '/attachments/affinity_matrix.svg',
+			output: 'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg',
+			sha256: '96ee38228ebfa3941fd8fbad17815cccae6ffc085c0372380e6d59489f1bd121'
+		}
+	]
+});
+
 const requiredDiagramFixtures = {
 	'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg': validCycleSvg,
 	'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg': validMatrixSvg
@@ -76,6 +95,18 @@ const canonicalEntry = {
 };
 
 describe('active wiki affinity contract', () => {
+	it('accepts byte-identical approved supplied diagrams without private metadata', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg': suppliedCycleSvg,
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg': suppliedMatrixSvg,
+			'assets/enemies/wiki/affinities/reference/provenance.json': suppliedDiagramProvenance
+		});
+
+		expect(await validateAffinityWiki(root)).toEqual([]);
+	});
+
 	it('publishes exactly four bases and six duals with one cycle', async () => {
 		const root = await fixture({
 			'docs/wiki/catalog.json': catalog([canonicalEntry]),

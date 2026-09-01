@@ -15,8 +15,8 @@ describe('affinity wiki diagrams', () => {
 			return [...data.subarray(offset, offset + 3)];
 		};
 
-		expect(pixel(280, 160)).toEqual([60, 44, 29]);
-		expect(pixel(430, 250)).toEqual([18, 56, 89]);
-		expect(pixel(280, 250)).toEqual([21, 28, 40]);
+		expect(pixel(530, 345)).toEqual([58, 37, 16]);
+		expect(pixel(150, 90)).toEqual([14, 46, 79]);
+		expect(pixel(275, 260)).toEqual([15, 15, 18]);
 	});
 });
