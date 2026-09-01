@@ -29,8 +29,8 @@
 
 	<path class="cycle" data-overcomes="Earth>Water" d="M 411 145 A 174 174 0 0 1 529 263" />
 	<path class="cycle" data-overcomes="Water>Fire" d="M 575 313 A 174 174 0 0 1 457 431" />
-	<path class="cycle" data-overcomes="Fire>Wind" d="M 409 477 A 174 174 0 0 1 291 359" />
-	<path class="cycle" data-overcomes="Wind>Earth" d="M 245 311 A 174 174 0 0 1 363 193" />
+	<path class="cycle" data-overcomes="Fire>Wind" d="M 409 477 A 174 174 0 0 1 191 303" />
+	<path class="cycle" data-overcomes="Wind>Earth" d="M 145 313 A 174 174 0 0 1 363 193" />
 
 	<g aria-label="Earth base affinity">
 		<rect class="base" x="292" y="90" width="136" height="82" rx="18" fill="#3c2c1d" stroke="#d5a76c" />

@@ -231,6 +231,51 @@ describe('active wiki affinity contract', () => {
 		]);
 	});
 
+	it('rejects a duplicate cycle edge that replaces a required edge', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg': validCycleSvg.replace(
+				'data-overcomes="Wind>Earth"',
+				'data-overcomes="Earth>Water"'
+			)
+		});
+
+		expect(await validateAffinityWiki(root)).toEqual([
+			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg: data-overcomes edges must contain exactly Earth>Water, Water>Fire, Fire>Wind, Wind>Earth; found Earth>Water, Water>Fire, Fire>Wind, Earth>Water.'
+		]);
+	});
+
+	it('rejects a duplicate base cell name that replaces a required base', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg': validMatrixSvg.replace(
+				'data-name="Wind"',
+				'data-name="Earth"'
+			)
+		});
+
+		expect(await validateAffinityWiki(root)).toEqual([
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg: matrix cells must name exactly Fire, Earth, Wind, Water, Mist, Lightning, Sand, Rot, Magma, Ice; found Earth, Rot, Magma, Water, Mist, Ice, Fire, Lightning, Earth, Sand.'
+		]);
+	});
+
+	it('rejects a duplicate dual cell name that replaces a required dual', async () => {
+		const root = await fixture({
+			'docs/wiki/catalog.json': catalog([canonicalEntry]),
+			'docs/wiki/mechanics/progression/affinities.md': canonicalAffinityPage,
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg': validMatrixSvg.replace(
+				'data-name="Sand"',
+				'data-name="Rot"'
+			)
+		});
+
+		expect(await validateAffinityWiki(root)).toContain(
+			'assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg: matrix cells must name exactly Fire, Earth, Wind, Water, Mist, Lightning, Sand, Rot, Magma, Ice; found Earth, Rot, Magma, Water, Mist, Ice, Fire, Lightning, Wind, Rot.'
+		);
+	});
+
 	it('permits immutable source wording only when its migration target is current', async () => {
 		const root = await fixture({
 			'docs/wiki/catalog.json': catalog([canonicalEntry]),

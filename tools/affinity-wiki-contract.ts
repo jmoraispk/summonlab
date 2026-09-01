@@ -52,7 +52,14 @@ function unique(values: readonly string[]): string[] {
 }
 
 function sameSet(actual: readonly string[], expected: readonly string[]): boolean {
-	return actual.length === expected.length && actual.every((value) => expected.includes(value));
+	const actualSet = new Set(actual);
+	const expectedSet = new Set(expected);
+	return (
+		actual.length === actualSet.size &&
+		expected.length === expectedSet.size &&
+		actualSet.size === expectedSet.size &&
+		[...actualSet].every((value) => expectedSet.has(value))
+	);
 }
 
 function tableRows(source: string): string[][][] {
