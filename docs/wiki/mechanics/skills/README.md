@@ -80,10 +80,9 @@ row; the consolidated target count is derived by validation and may be lower bec
 merges and deletions are intentional.
 
 Every published target row must trace to at least one legacy row. Retained definitions preserve
-rarity, type, requirements, and effects unless the ledger explicitly records a replacement. An
-explicit deferred migration target records a future family rewrite without publishing unfinished
-skill content. Deleted and merged definitions remain recoverable through Git history and their
-ledger rationale.
+rarity, type, requirements, and effects unless the ledger explicitly records a replacement.
+Unpublished future rewrites are not emitted as migration targets. Deleted and merged definitions
+remain recoverable through Git history and their ledger rationale.
 
 `Great Renewal` remains a Restoration skill. Its deleted legacy Elemental source row is retained
 only in migration provenance and does not publish a second current skill.

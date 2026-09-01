@@ -411,8 +411,8 @@
           "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
         },
         {
-          "assetKey": "magical-domain-v1",
-          "file": "apps/web/static/wiki-media/skills/magical-domain.webp",
+          "assetKey": "magical-domain-v2",
+          "file": "apps/web/static/wiki-media/skills/magical-domain-v2.webp",
           "status": "candidate",
           "generationMode": "built-in-imagegen",
           "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
