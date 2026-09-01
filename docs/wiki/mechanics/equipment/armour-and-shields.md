@@ -19,7 +19,7 @@ Polehammer, or Greatsword equipment.
 | **Brigandine** | E+ | Medium | Metal + leather | Plates riveted inside cloth. The practical middle. |
 | **Half Plate** | D+ | Heavy | Steel or better | Torso and limbs; joints left in mail |
 | **Full Plate** | C+ | Heavy | Blacksteel or better | Complete coverage. The highest mitigation available. |
-| **Great Plate** | B+ | Very Heavy | Deepvein or better | Effectively a walking fortification |
+| **Great Plate** | B+ | Very Heavy | Skyiron or better | Effectively a walking fortification |
 
 ## Medium — creature scale and hide
 

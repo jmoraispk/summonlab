@@ -16,13 +16,10 @@ Used for plate, mail, blades, hafts, and every tool worth owning.
 | F | **Copper** | Soft, heavy for its strength, easy to work. The first thing a smith learns on. |
 | F | **Bronze** | Harder than copper, holds an edge better, corrodes slowly |
 | E | **Iron** | The workhorse. Cheap, plentiful, unremarkable. |
-| E | **Pig Steel** | Crude high-carbon steel—brittle, but takes a vicious edge |
 | D | **Steel** | Properly worked. The standard for a serious weapon. |
 | D | **Silversteel** | Lighter than steel; bonus against undead and Void-touched |
 | C | **Blacksteel** | Dense, dark, resists heat. Favours heavy weapons and plate. |
-| C | **Coldiron** | Resists and disrupts magic; poor conductor of enchantment |
 | B | **Skyiron** | Meteoric. Unnaturally light for its strength; holds enchantment readily. |
-| B | **Deepvein** | Mined far below. Extremely dense; the best plate material in the game. |
 | A | **Starmetal** | Weightless to the touch. Every property is superlative. |
 | A | **Aurichalc** | Amplifies whatever affinity its wielder holds |
 | S | **Sunsteel** | Exists in fragments. Cannot be worked without Godsmithing. |

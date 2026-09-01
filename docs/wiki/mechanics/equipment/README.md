@@ -70,7 +70,7 @@ acceptance verdict for the full compendium.
 | Representative equipment for the five Martial families | Shortsword, Knife, Greatblade, War Spear, Glaive, Halberd, Polehammer, Hunting Bow, Light Crossbow, Round Shield, Hand Wraps |
 | Basic defensive choices | Buckler, Round Shield, Mail, Hide Armour, Boiled Leather, Padded Coat, Travelling Robes |
 | Basic magical choices | Talisman, Wand, Staff |
-| Materials sufficient for those items | Copper, Bronze, Iron, Pig Steel, Coarse Hide, Rough Pelt, Boiled Leather, Thick Hide, Rough Cloth, Hemp Weave, Wool, Canvas, Pine, Ash, Oak, Yew |
+| Materials sufficient for those items | Copper, Bronze, Iron, Coarse Hide, Rough Pelt, Boiled Leather, Thick Hide, Rough Cloth, Hemp Weave, Wool, Canvas, Pine, Ash, Oak, Yew |
 
 The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
 deliberate milestone reward. Whether all five Martial families need to ship immediately depends on
@@ -102,6 +102,23 @@ only when a starter hero can actually use it and combat can explain the differen
 - Settlement capabilities and tools eventually gate crafting, but the first static settlement does
   not need a crafting loop.
 - Creature content supplies monster materials and named-creature signature components.
+
+## Visual-production sequence
+
+Equipment visual work follows this owner-directed sequence:
+
+1. simplify and review the canonical material vocabulary;
+2. establish the equipment theory that maps item construction, material, craftsmanship, rarity,
+   wear, and role to visible differences;
+3. prepare candidate equipment coverage for every retained canonical material;
+4. in parallel, let the creature-content owner define candidate item drops for every monster
+   without promoting them into the Equipment catalog;
+5. after that dependency is reviewed, create Equipment-owned candidates for selected monster-drop
+   materials.
+
+Material studies, equipment candidates, approved sources, and runtime exports remain separate.
+Creature-drop definitions are an input to later Equipment work, not permission for either owner to
+edit the other domain's shared catalogs.
 
 ## Source authority and remaining decisions
 
@@ -135,5 +152,7 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-01 — owner revision — Removed three rejected metals from the material vocabulary and
+  recorded the Equipment visual-production sequence.
 - 2026-08-29 — draft — Imported the complete owner-supplied equipment compendium and identified a
   bounded Living Village candidate subset.
