@@ -621,17 +621,17 @@ describe('skill taxonomy migration inventory', () => {
 			)
 		).toBe(true);
 		expect(metalRows).toHaveLength(18);
-		expect(metalRows.every((record) => ['rename', 'rehome'].includes(record.disposition))).toBe(
-			true
-		);
-		expect(metalRows.map((record) => record.target)).toEqual(
-			Array.from({ length: 18 }, () => ({
-				domain: 'Magical',
-				family: 'Elemental',
-				labels: [{ namespace: 'Element', value: 'Wind' }],
-				publication: 'deferred'
-			}))
-		);
+		expect(
+			metalRows.every(
+				(record) =>
+					record.disposition === 'delete' &&
+					record.rationale === 'Metal affinity removed by accepted four-base model' &&
+					!('target' in record)
+			)
+		).toBe(true);
+		expect(
+			ledger.records.some((record) => record.target && 'publication' in record.target)
+		).toBe(false);
 		expect(attunement).toMatchObject({
 			effect: "Grants an ally the hero's affinity temporarily at reduced Resonance",
 			replacementEffect: "Grants an ally the hero's affinity temporarily at reduced affinity rank."
@@ -656,32 +656,6 @@ describe('skill taxonomy migration inventory', () => {
 		expect(publishedSunfall?.effect).not.toMatch(/\b(?:Wind|Metal)-aligned\b/iu);
 	});
 
-	it('requires a published target for non-Metal rows that claim deferred Wind metadata', () => {
-		const nonMetalDeferredTarget = {
-			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
-			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
-			sourceRowCount: 520,
-			records: [
-				{
-					...migrationRecord('Enchantment', 'Elemental Attunement', 1),
-					disposition: 'retain',
-					target: {
-						domain: 'Magical',
-						family: 'Elemental',
-						labels: [{ namespace: 'Element', value: 'Wind' }],
-						publication: 'deferred'
-					}
-				}
-			]
-		} as unknown as SkillMigrationLedger;
-
-		expect(validateMigrationLedger(nonMetalDeferredTarget)).toContain(
-			'retain record legacy.md#enchantment:1 requires a published target skill'
-		);
-		expect(validateTargetTaxonomy([], nonMetalDeferredTarget)).toContain(
-			'retain record legacy.md#enchantment:1 requires a published target skill'
-		);
-	});
 });
 
 describe('target skill taxonomy', () => {

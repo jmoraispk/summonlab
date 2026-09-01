@@ -5,11 +5,15 @@
 
 	type DomainId = (typeof SKILL_DOMAINS)[number]['id'];
 
-	let selectedId = $state<DomainId>('martial');
+	let selectedId = $state<DomainId | null>(null);
 	let selectedLabels = $state<Record<string, string>>({});
 	let activeDomain = $derived(
-		SKILL_DOMAINS.find((domain) => domain.id === selectedId) ?? SKILL_DOMAINS[0]
+		selectedId ? (SKILL_DOMAINS.find((domain) => domain.id === selectedId) ?? null) : null
 	);
+
+	function toggleDomain(id: DomainId): void {
+		selectedId = selectedId === id ? null : id;
+	}
 
 	function selectLabel(family: SkillTreeFamily, value: string): void {
 		selectedLabels = { ...selectedLabels, [family.name]: value };
@@ -42,57 +46,58 @@
 		</span>
 	</header>
 
-	<div class="root" aria-hidden="true">
-		<span>Skills</span>
-		<i>Domain</i>
-		<i>Family</i>
-		<i>Skill</i>
-	</div>
+	<div class="tree-root" aria-hidden="true"><span>Skills</span></div>
 
-	<nav class="domain-switcher" aria-label="Skill domains">
+	<nav class="domain-tree" aria-label="Skill domains">
 		{#each SKILL_DOMAINS as domain (domain.id)}
 			<button
+				class:active={selectedId === domain.id}
 				type="button"
-				aria-pressed={selectedId === domain.id}
-				onclick={() => (selectedId = domain.id)}
+				aria-expanded={selectedId === domain.id}
+				aria-controls="skill-domain-branch"
+				onclick={() => toggleDomain(domain.id)}
 			>
-				<span>{domain.name}</span>
-				<i>{domain.families.length} families</i>
+				<span class="domain-node-image">
+					<img src={domain.image} alt="" width="900" height="900" />
+				</span>
+				<strong>{domain.name}</strong>
+				<small>{domain.families.length} families</small>
 			</button>
 		{/each}
 	</nav>
 
-	{#key activeDomain.id}
-		<div class="domain-stage">
-			<figure>
-				<img
-					src={activeDomain.image}
-					alt={`${activeDomain.name} domain emblem`}
-					width="900"
-					height="900"
-					loading="eager"
-				/>
-				<figcaption>
-					<span>{activeDomain.families.length} families</span>
-					<strong>{activeDomain.name}</strong>
-					<p>{activeDomain.description}</p>
-				</figcaption>
-			</figure>
+	{#if activeDomain}
+		<section
+			id="skill-domain-branch"
+			class="domain-branch"
+			aria-label={`${activeDomain.name} families`}
+		>
+			<header class="branch-header">
+				<div>
+					<span>{activeDomain.families.length} family records</span>
+					<h3>{activeDomain.name}</h3>
+				</div>
+				<p>{activeDomain.description}</p>
+			</header>
 
-			<div class="family-ledger" aria-label={`${activeDomain.name} families`}>
+			<div class="family-ledger">
 				<header class="ledger-header">
 					<span>Family records</span>
 					<span>Representative skills</span>
 				</header>
 				{#each activeDomain.families as family, index (family.name)}
+					{@const selectedLabel = selectedLabels[family.name]}
+					{@const visibleFamilySkills = visibleSkills(family)}
 					<section class="family-record">
-						<div class="family-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+						<div class="family-index" aria-hidden="true">
+							{String(index + 1).padStart(2, '0')}
+						</div>
 						<header>
-							<h3>
+							<h4>
 								<a href={resolve(family.href as `/wiki/${string}`)}
 									>{family.name}<span aria-hidden="true">↗</span></a
 								>
-							</h3>
+							</h4>
 							<p>{family.description}</p>
 						</header>
 
@@ -104,13 +109,13 @@
 										{#each family.labels as label (label.value)}
 											<button
 												type="button"
-												aria-pressed={selectedLabels[family.name] === label.value}
+												aria-pressed={selectedLabel === label.value}
 												onclick={() => selectLabel(family, label.value)}
 											>
 												{label.value}
 											</button>
 										{/each}
-										{#if selectedLabels[family.name]}
+										{#if selectedLabel}
 											<button
 												class="reset-filter"
 												type="button"
@@ -124,23 +129,30 @@
 								</div>
 							{/if}
 
-							<nav class="skill-links" aria-label={`${family.name} representative skills`}>
-								{#each visibleSkills(family) as skill (skill.name)}
-									<a href={resolve(skill.href as `/wiki/${string}`)}>
-										<strong>{skill.name}</strong>
-										{#each skill.labels as label (`${label.namespace}-${label.value}`)}
-											<span>{label.value}</span>
-										{/each}
-										<i aria-hidden="true">↗</i>
-									</a>
-								{/each}
-							</nav>
+							{#if visibleFamilySkills.length > 0}
+								<nav class="skill-links" aria-label={`${family.name} representative skills`}>
+									{#each visibleFamilySkills as skill (skill.name)}
+										<a href={resolve(skill.href as `/wiki/${string}`)}>
+											<strong>{skill.name}</strong>
+											{#each skill.labels as label (`${label.namespace}-${label.value}`)}
+												<span>{label.value}</span>
+											{/each}
+											<i aria-hidden="true">↗</i>
+										</a>
+									{/each}
+								</nav>
+							{:else}
+								<p class="empty-result">
+									{family.emptyLabelMessages?.[selectedLabel] ??
+										'No published representative skills match this label.'}
+								</p>
+							{/if}
 						</div>
 					</section>
 				{/each}
 			</div>
-		</div>
-	{/key}
+		</section>
+	{/if}
 </section>
 
 <style>
@@ -150,8 +162,8 @@
 		--tree-ember: #d4773d;
 		--tree-focus: #e5aa73;
 		--tree-surface: #0c0b08;
-		--tree-line: rgba(231, 206, 164, 0.16);
-		width: min(78rem, calc(100% - 2rem));
+		--tree-line: rgba(231, 206, 164, 0.14);
+		width: min(76rem, calc(100% - 2rem));
 		margin: 0 auto;
 		padding: clamp(3.5rem, 6vw, 6rem) 0 0;
 	}
@@ -161,7 +173,7 @@
 		align-items: end;
 		justify-content: space-between;
 		gap: 3rem;
-		margin-bottom: 2.75rem;
+		margin-bottom: 3.5rem;
 	}
 	.tree-intro p {
 		margin: 0 0 0.8rem;
@@ -185,156 +197,165 @@
 	.tree-intro > span {
 		max-width: 27rem;
 		padding-bottom: 0.25rem;
-		color: rgba(243, 234, 217, 0.62);
+		color: rgba(243, 234, 217, 0.67);
 		font-family: Georgia, serif;
 		font-size: 1.02rem;
 		line-height: 1.55;
 		text-wrap: pretty;
 	}
 
-	.root {
-		display: flex;
-		align-items: center;
-		gap: 0;
-		min-height: 3.4rem;
-		border-top: 1px solid var(--tree-line);
-		color: var(--tree-muted);
-		font:
-			0.61rem ui-monospace,
-			monospace;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
+	.tree-root {
+		position: relative;
+		display: grid;
+		place-items: center;
+		min-height: 3.25rem;
 	}
-	.root span {
-		align-self: stretch;
+	.tree-root span {
 		display: grid;
 		min-width: 7rem;
+		min-height: 3.25rem;
 		place-items: center;
-		border-right: 1px solid var(--tree-line);
+		border: 1px solid var(--tree-line);
+		background: var(--tree-surface);
 		color: var(--tree-paper);
 		font-family: Georgia, serif;
 		font-size: 1rem;
-		letter-spacing: 0;
-		text-transform: none;
 	}
-	.root i {
-		font-style: normal;
-	}
-	.root i::before {
-		margin: 0 0.75rem;
-		color: var(--tree-ember);
-		content: '→';
+	.tree-root::after {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		width: 1px;
+		height: 1.5rem;
+		background: var(--tree-line);
+		content: '';
 	}
 
-	.domain-switcher {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		border-top: 1px solid var(--tree-line);
-		border-bottom: 1px solid var(--tree-line);
-	}
-	.domain-switcher button {
+	.domain-tree {
 		position: relative;
-		display: flex;
-		min-width: 0;
-		min-height: 5.5rem;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 1rem clamp(0.8rem, 2vw, 1.5rem);
-		border: 0;
-		border-right: 1px solid var(--tree-line);
-		background: transparent;
-		color: rgba(243, 234, 217, 0.54);
-		text-align: left;
-		cursor: pointer;
-		transition:
-			background 180ms ease,
-			color 180ms ease;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(0.5rem, 4vw, 3rem);
+		margin-top: 1.5rem;
+		padding: 1.75rem 0 2.5rem;
 	}
-	.domain-switcher button:last-child {
-		border-right: 0;
-	}
-	.domain-switcher button::after {
+	.domain-tree::before {
 		position: absolute;
-		right: 1rem;
-		bottom: -1px;
-		left: 1rem;
-		height: 2px;
+		top: 0;
+		right: 16.666%;
+		left: 16.666%;
+		height: 1px;
+		background: var(--tree-line);
+		content: '';
+	}
+	.domain-tree button {
+		position: relative;
+		display: grid;
+		min-width: 0;
+		justify-items: center;
+		gap: 0.45rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--tree-muted);
+		text-align: center;
+		cursor: pointer;
+	}
+	.domain-tree button::before {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		width: 1px;
+		height: 1.75rem;
+		background: var(--tree-line);
+		content: '';
+	}
+	.domain-tree button::after {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		width: 1px;
+		height: 2.5rem;
 		background: var(--tree-ember);
 		content: '';
-		transform: scaleX(0);
-		transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+		opacity: 0;
+		transform: scaleY(0);
+		transform-origin: top;
+		transition:
+			opacity 180ms ease,
+			transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.domain-switcher button:hover,
-	.domain-switcher button[aria-pressed='true'] {
-		background: rgba(212, 119, 61, 0.055);
-		color: var(--tree-paper);
-	}
-	.domain-switcher button:active {
-		background: rgba(212, 119, 61, 0.1);
-	}
-	.domain-switcher button[aria-pressed='true']::after {
-		transform: scaleX(1);
-	}
-	.domain-switcher button span {
-		font-family: Georgia, serif;
-		font-size: clamp(1.1rem, 2vw, 1.5rem);
-	}
-	.domain-switcher button i {
-		color: var(--tree-muted);
-		font:
-			0.61rem ui-monospace,
-			monospace;
-		font-style: normal;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.domain-stage {
-		display: grid;
-		grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1.65fr);
-		border-bottom: 1px solid var(--tree-line);
-		animation: domain-reveal 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
-	}
-	.domain-stage > figure {
-		position: relative;
-		min-width: 0;
-		min-height: 42rem;
-		margin: 0;
+	.domain-node-image {
+		display: block;
+		width: clamp(5.5rem, 18vw, 13rem);
+		aspect-ratio: 1;
 		overflow: hidden;
-		border-right: 1px solid var(--tree-line);
+		border: 1px solid var(--tree-line);
+		border-radius: 50%;
 		background: var(--tree-surface);
+		transition:
+			border-color 180ms ease,
+			transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.domain-stage > figure::after {
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(180deg, transparent 48%, rgba(7, 6, 4, 0.97));
-		content: '';
-		pointer-events: none;
-	}
-	.domain-stage img {
+	.domain-node-image img {
 		display: block;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		filter: saturate(0.8) contrast(1.04);
-		transition:
-			filter 220ms ease,
-			transform 220ms ease;
+		filter: saturate(0.72) contrast(1.08) brightness(0.82);
+		transition: filter 180ms ease;
 	}
-	.domain-stage figure:hover img {
-		transform: scale(1.018);
-		filter: saturate(0.94) contrast(1.04);
+	.domain-tree strong {
+		color: rgba(243, 234, 217, 0.72);
+		font-family: Georgia, serif;
+		font-size: clamp(1.05rem, 2vw, 1.45rem);
+		font-weight: 400;
+		line-height: 1.1;
 	}
-	.domain-stage figcaption {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		z-index: 1;
-		padding: 2rem;
+	.domain-tree small {
+		font:
+			0.61rem ui-monospace,
+			monospace;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
-	.domain-stage figcaption > span,
+	.domain-tree button:hover .domain-node-image,
+	.domain-tree button[aria-expanded='true'] .domain-node-image {
+		border-color: rgba(229, 170, 115, 0.72);
+		transform: translateY(-0.18rem);
+	}
+	.domain-tree button:hover .domain-node-image img,
+	.domain-tree button[aria-expanded='true'] .domain-node-image img {
+		filter: saturate(0.94) contrast(1.05) brightness(0.96);
+	}
+	.domain-tree button:hover strong,
+	.domain-tree button[aria-expanded='true'] strong {
+		color: var(--tree-paper);
+	}
+	.domain-tree button:active .domain-node-image {
+		border-color: var(--tree-ember);
+		transform: translateY(0);
+	}
+	.domain-tree button[aria-expanded='true']::after {
+		opacity: 1;
+		transform: scaleY(1);
+	}
+
+	.domain-branch {
+		border-top: 1px solid var(--tree-line);
+		border-bottom: 1px solid var(--tree-line);
+		animation: domain-reveal 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.branch-header {
+		display: grid;
+		grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.2fr);
+		align-items: end;
+		gap: 2rem;
+		padding: 1.5rem clamp(1.25rem, 3vw, 2.5rem);
+		border-bottom: 1px solid var(--tree-line);
+		background: rgba(12, 11, 8, 0.34);
+	}
+	.branch-header span,
 	.ledger-header,
 	.label-filter > span,
 	.family-index {
@@ -345,25 +366,25 @@
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
-	.domain-stage figcaption strong {
-		display: block;
-		margin-top: 0.55rem;
+	.branch-header h3 {
+		margin: 0.45rem 0 0;
 		font-family: Georgia, serif;
 		font-size: clamp(2rem, 3vw, 3rem);
 		font-weight: 400;
+		line-height: 1;
 		letter-spacing: -0.035em;
 	}
-	.domain-stage figcaption p {
-		max-width: 30rem;
-		margin: 0.6rem 0 0;
-		color: rgba(243, 234, 217, 0.65);
+	.branch-header p {
+		max-width: 42rem;
+		margin: 0;
+		color: rgba(243, 234, 217, 0.67);
 		font-family: Georgia, serif;
 		line-height: 1.55;
 	}
 
 	.family-ledger {
 		min-width: 0;
-		background: rgba(12, 11, 8, 0.34);
+		background: rgba(12, 11, 8, 0.2);
 	}
 	.ledger-header {
 		display: grid;
@@ -388,9 +409,9 @@
 		position: absolute;
 		top: 1.9rem;
 		left: 1.5rem;
-		color: rgba(212, 119, 61, 0.62);
+		color: rgba(212, 119, 61, 0.68);
 	}
-	.family-record > header h3 {
+	.family-record > header h4 {
 		margin: 0;
 		font-family: Georgia, serif;
 		font-size: clamp(1.4rem, 2.3vw, 2rem);
@@ -398,27 +419,27 @@
 		line-height: 1;
 		letter-spacing: -0.025em;
 	}
-	.family-record > header h3 a {
+	.family-record > header h4 a {
 		display: inline-flex;
+		min-height: 2.75rem;
 		align-items: center;
 		gap: 0.55rem;
-		min-height: 2.75rem;
 		color: var(--tree-paper);
 		text-decoration: none;
 	}
-	.family-record > header h3 span {
+	.family-record > header h4 span {
 		color: var(--tree-ember);
 		font:
 			0.8rem ui-monospace,
 			monospace;
 		transition: transform 180ms ease;
 	}
-	.family-record > header h3 a:hover span {
+	.family-record > header h4 a:hover span {
 		transform: translate(0.18rem, -0.1rem);
 	}
 	.family-record > header p {
 		margin: 0.55rem 0 0;
-		color: rgba(243, 234, 217, 0.55);
+		color: rgba(243, 234, 217, 0.62);
 		font-family: Georgia, serif;
 		font-size: 0.93rem;
 		line-height: 1.5;
@@ -492,7 +513,7 @@
 		min-height: 3.25rem;
 		padding: 0.55rem 0.7rem;
 		background: #0b0a07;
-		color: rgba(243, 234, 217, 0.72);
+		color: rgba(243, 234, 217, 0.76);
 		text-decoration: none;
 		transition:
 			background 180ms ease,
@@ -504,6 +525,9 @@
 	}
 	.skill-links a:active {
 		background: rgba(212, 119, 61, 0.15);
+	}
+	.skill-links a:last-child:nth-child(odd) {
+		grid-column: 1 / -1;
 	}
 	.skill-links strong {
 		min-width: 0;
@@ -531,15 +555,26 @@
 			monospace;
 		font-style: normal;
 	}
+	.empty-result {
+		min-height: 3.25rem;
+		margin: 0;
+		padding: 0.85rem 1rem;
+		border: 1px solid var(--tree-line);
+		background: #0b0a07;
+		color: var(--tree-muted);
+		font-family: Georgia, serif;
+		font-size: 0.9rem;
+		line-height: 1.5;
+	}
 
-	.domain-switcher button:focus-visible,
-	.family-record > header h3 a:focus-visible,
+	.domain-tree button:focus-visible,
+	.family-record > header h4 a:focus-visible,
 	.label-filter button:focus-visible,
 	.skill-links a:focus-visible {
 		position: relative;
 		z-index: 1;
 		outline: 2px solid var(--tree-focus);
-		outline-offset: -3px;
+		outline-offset: 3px;
 	}
 
 	@keyframes domain-reveal {
@@ -553,10 +588,7 @@
 		}
 	}
 
-	@media (max-width: 1080px) {
-		.domain-stage {
-			grid-template-columns: minmax(16rem, 0.58fr) minmax(0, 1.42fr);
-		}
+	@media (max-width: 860px) {
 		.ledger-header {
 			display: none;
 		}
@@ -566,7 +598,7 @@
 		}
 	}
 
-	@media (max-width: 700px) {
+	@media (max-width: 640px) {
 		.skill-tree {
 			padding-top: 3rem;
 		}
@@ -574,42 +606,26 @@
 			align-items: start;
 			flex-direction: column;
 			gap: 1.15rem;
-			margin-bottom: 2rem;
+			margin-bottom: 2.75rem;
 		}
-		.root {
+		.domain-tree {
+			gap: 0.5rem;
+		}
+		.domain-tree small {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
 			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
 		}
-		.root span {
-			min-width: 5rem;
-		}
-		.root i::before {
-			margin: 0 0.35rem;
-		}
-		.domain-switcher button {
-			min-height: 4.8rem;
-			align-items: start;
-			flex-direction: column;
-			gap: 0.2rem;
-			justify-content: center;
-		}
-		.domain-switcher button i {
-			font-size: 0.52rem;
-			letter-spacing: 0.02em;
-		}
-		.domain-stage {
-			display: block;
-		}
-		.domain-stage > figure {
-			min-height: 0;
-			aspect-ratio: 4 / 3;
-			border-right: 0;
-			border-bottom: 1px solid var(--tree-line);
-		}
-		.domain-stage figcaption {
+		.branch-header {
+			grid-template-columns: 1fr;
+			gap: 0.65rem;
 			padding: 1.25rem;
-		}
-		.domain-stage figcaption p {
-			font-size: 0.9rem;
 		}
 		.family-record {
 			padding: 1.45rem 1.1rem 1.5rem 3.35rem;
@@ -632,21 +648,24 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.domain-stage {
+		.domain-branch {
 			animation: none;
 		}
-		.domain-stage img,
-		.domain-switcher button,
-		.domain-switcher button::after,
-		.family-record > header h3 span,
+		.domain-tree button::after,
+		.domain-node-image,
+		.domain-node-image img,
+		.family-record > header h4 span,
 		.label-filter button,
 		.skill-links a {
 			transition: none;
 		}
-		.domain-stage img,
-		.domain-stage figure:hover img,
-		.family-record > header h3 span,
-		.family-record > header h3 a:hover span {
+		.domain-tree button[aria-expanded]::after,
+		.domain-tree button .domain-node-image,
+		.domain-tree button:hover .domain-node-image,
+		.domain-tree button:active .domain-node-image,
+		.domain-tree button[aria-expanded='true'] .domain-node-image,
+		.family-record > header h4 span,
+		.family-record > header h4 a:hover span {
 			transform: none;
 		}
 	}

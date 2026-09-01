@@ -67,8 +67,9 @@ See also the [minimum Living Village subset](living-village.md) and the complete
 | Magical | Elemental, Ward, Enchantment, Restoration, Mind |
 | Craft | Forging, Alchemy, Cooking, Gathering, Knowledge |
 
-Active Element labels are Fire, Earth, Wind, and Water. The current Elemental page preserves Fire,
-Water, and Earth ladders; its Wind family is active but awaits the skill-content pass. Ward and
+Fire, Water, Wind, and Earth are the active Element labels. Fire, Water, and Earth currently have
+published Elemental ladders. Wind is active but its skill ladder is not published yet. Wood and
+Metal legacy ladders are deleted; neither is renamed or folded into Earth. Ward and
 Enchantment use `Element: Attuned` only where a definition inherits the hero's current affinity.
 Other neutral Magical skills omit the label.
 
@@ -79,10 +80,9 @@ row; the consolidated target count is derived by validation and may be lower bec
 merges and deletions are intentional.
 
 Every published target row must trace to at least one legacy row. Retained definitions preserve
-rarity, type, requirements, and effects unless the ledger explicitly records a replacement. An
-explicit deferred migration target records a future family rewrite without publishing unfinished
-skill content. Deleted and merged definitions remain recoverable through Git history and their
-ledger rationale.
+rarity, type, requirements, and effects unless the ledger explicitly records a replacement.
+Unpublished future rewrites are not emitted as migration targets. Deleted and merged definitions
+remain recoverable through Git history and their ledger rationale.
 
 `Great Renewal` remains a Restoration skill. Its deleted legacy Elemental source row is retained
 only in migration provenance and does not publish a second current skill.

@@ -7,6 +7,8 @@ import { promisify } from 'node:util';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { SKILL_DOMAINS } from '../apps/web/src/lib/components/wiki/skill-tree-data.js';
+
 const execFileAsync = promisify(execFile);
 const temporaryRoots: string[] = [];
 const validatorPath = path.resolve('tools/validate-wiki.mjs');
@@ -127,6 +129,17 @@ async function writeFixture(options: { provenance: boolean; mutateDerived?: bool
 }
 
 describe('wiki generated-art provenance validation', () => {
+	it('binds every runtime skill-tree domain image to the Skills index catalog', async () => {
+		const catalog = JSON.parse(await readFile('docs/wiki/catalog.json', 'utf8')) as {
+			entries: Array<{ wikiId: string; assets?: Array<{ file: string }> }>;
+		};
+		const skillsIndex = catalog.entries.find((entry) => entry.wikiId === 'skills.index');
+
+		expect(skillsIndex?.assets?.map((asset) => asset.file)).toEqual(
+			SKILL_DOMAINS.map((domain) => `apps/web/static${domain.image}`)
+		);
+	});
+
 	it('rejects a generated wiki asset without a provenance manifest', async () => {
 		const root = await writeFixture({ provenance: false });
 

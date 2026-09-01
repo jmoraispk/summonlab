@@ -117,6 +117,61 @@
 			"productionNote": "Recovered from the original generation session and verified against persisted source/output hashes. Approval candidate only; this record does not claim human approval."
 		},
 		{
+			"assetKey": "magical-domain-v2",
+			"status": "approval-candidate",
+			"generationMode": "built-in-imagegen",
+			"createdAt": "2026-09-01T17:55:27.455Z",
+			"prompt": "Use case: stylized-concept\nAsset type: square game-wiki domain emblem prototype, intended to be cropped into a circular UI node\nPrimary request: Create Prototype A, a four-element cardinal astrolabe derived from the supplied Magical domain emblem.\nInput image: Image 1 is a style and structural reference only.\nScene/backdrop: near-black void with restrained sparks, mist, and elemental energy.\nSubject: one realistic ornate brass arcane instrument with a luminous central arcane star and exactly four independent elemental nodes at cardinal positions: Fire above as a living orange flame; Wind at right as a pale translucent air vortex; Earth below as grounded rough stone or mineral; Water at left as a sculptural blue wave.\nStyle/medium: high-detail photographed fantasy artifact, materially realistic brass, glass, stone, water, flame, and air; match the reference's visual density and dramatic lighting.\nComposition/framing: centered, symmetrical square composition with generous black corners; all critical symbols must survive a circular crop.\nLighting/mood: mysterious, ceremonial, luminous center, restrained contrast.\nConstraints: exactly four elemental symbols and exactly four outer elemental nodes; keep the brass strictly as neutral framework; no text, lettering, rune words, watermark, people, or creatures.\nAvoid: no leaf, branch, plant, wood-growth symbol, sword, needle, floating blade, compass needle, metal ingot, metal-affinity symbol, fifth node, duplicated element, extra orb, or Earth/Metal/Wood hybrid.",
+			"referenceInputs": [
+				{
+					"assetKey": "magical-domain-v1",
+					"file": "apps/web/static/wiki-media/skills/magical-domain.webp",
+					"width": 900,
+					"height": 900,
+					"bytes": 127534,
+					"sha256": "8a9ca85a3f8c43ccaaebefe5bb17fae87228cfadb5077200bf558c58cd61aa68",
+					"prompt": "Use case: precise-object-edit\nAsset type: dark fantasy game wiki domain plate\nPrimary request: Replace only the white-and-light-gray checkerboard background with a deep solid charcoal-black field (#0b0a08) and a very restrained arcane blue-and-ember vignette immediately behind the ritual astrolabe.\nConstraints: preserve the five-affinity astrolabe, flame, water, wood, stone, metal needle, center light, exact composition, textures, lighting, scale, and colors; no checkerboard, no transparency, no frame, no written runes, no text, no watermark, no new objects; square image; background should merge naturally into a near-black website."
+				}
+			],
+			"sourceOriginal": {
+				"file": "assets/wiki/skills/domain-art-v1/sources/magical-four-element-v2.png",
+				"width": 1254,
+				"height": 1254,
+				"bytes": 2227139,
+				"sha256": "1695996c492726bd5bb20e0ce2f2dd2ff2e23a3e77c7a5037a073ee058c15194"
+			},
+			"derived": {
+				"file": "apps/web/static/wiki-media/skills/magical-domain-v2.webp",
+				"width": 1200,
+				"height": 1200,
+				"bytes": 249758,
+				"sha256": "9c5419783b004d7eb4a04aef59566c78519b9ad2a396dce468df7e7f4bb77beb",
+				"recipe": "sharp resize 1200x1200 fit cover; webp quality 88"
+			},
+			"history": {
+				"session": "rollout-2026-08-31T10-22-05-01a058d5-4568-76e1-bae0-81d6988ab046_01a058d7-aeee-7911-b762-f1640cc5c824.jsonl",
+				"initialGenerationOrdinal": 5207
+			},
+			"recognitionChecks": [
+				{
+					"name": "four elemental nodes",
+					"passed": true,
+					"note": "Visual inspection finds exactly four cardinal nodes: Fire above, Wind right, Earth below, and Water left."
+				},
+				{
+					"name": "circular thumbnail legibility",
+					"passed": true,
+					"note": "The four elemental motifs and luminous center remain distinct in the circular skill-tree crop."
+				},
+				{
+					"name": "retired motifs and text absent",
+					"passed": true,
+					"note": "Visual inspection finds no Wood or Metal affinity symbol, fifth node, text, lettering, or watermark."
+				}
+			],
+			"productionNote": "Prototype A was selected for the four-element Magic domain implementation. The retained generated source and derived runtime asset were verified against persisted hashes; the catalog remains approval-candidate under the wiki asset lifecycle."
+		},
+		{
 			"assetKey": "craft-domain-v1",
 			"status": "approval-candidate",
 			"generationMode": "built-in-imagegen",

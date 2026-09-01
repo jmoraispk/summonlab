@@ -63,10 +63,12 @@ heroes, and domains feel observed rather than advertised.
   quick lookup.
 - **Register:** Hybrid. The wiki is a product reference library with restrained brand expression;
   game routes may carry stronger scene-specific art direction.
-- **Memorable signature:** A single full-bleed image plate anchors each major reference surface.
+- **Memorable signature:** Expressive domain imagery anchors major reference surfaces; the skill
+  taxonomy uses three circular image roots connected to one flat family ledger.
 - **Restraint:** Navigation, filters, tables, and dense records remain flat, legible, and quiet.
 - **Anti-references:** Do not resemble generic SaaS cards, glass panels, parchment cosplay,
-  ornamental connector diagrams, gradient text, or pill-heavy marketing layouts.
+  ornamental diagrams, gradient text, or pill-heavy marketing layouts. Structural connectors that
+  clarify taxonomy relationships are permitted; ornamental connector diagrams remain forbidden.
 - **Token ownership/runtime mapping:** Ownership model B. Runtime styles are canonical; this file
   mirrors accepted values from `src/routes/wiki/+layout.svelte`, wiki page styles, and maintained
   components. Feature styles consume those roles without introducing a parallel theme package.
@@ -130,7 +132,8 @@ least 40px in compact taxonomy controls and preserve wrapping at narrow widths.
 Links navigate and buttons change local state. The archive index owns global discovery. Taxonomy
 surfaces use domain selectors, local label filters, ledger rows, and direct canonical links. An
 optional label filters compatibility but never appears as an ownership node; unlabeled family-wide
-skills remain visible under every label filter.
+skills remain visible under every label filter. Circular nodes are reserved for top-level taxonomy
+roots; family and skill records remain flat ledger content.
 
 ### Forms and overlays
 
@@ -157,10 +160,13 @@ compatibility, not progression or ownership.
 
 ## Do's and Don'ts
 
-- **Do:** Let one canonical image plate carry the expressive weight of a reference surface.
+- **Do:** Let expressive domain imagery carry the visual weight of a reference surface, with
+  circular nodes reserved for top-level taxonomy roots.
 - **Do:** Use Georgia, utility monospace, ember markers, and fine rules consistently with the wiki.
 - **Do:** Keep dense records flat, navigable, and complete on narrow screens.
 - **Don't:** Turn families into generic identical cards or labels into a hidden hierarchy.
-- **Don't:** Add glass, gradient type, broad shadows, oversized pills, or decorative tree lines.
+- **Don't:** Add glass, gradient type, broad shadows, oversized pills, ornamental diagrams, or
+  decorative tree lines. Structural connectors are permitted when they clarify taxonomy
+  relationships.
 - **Don't:** Invent asynchronous states, balance values, or interactions that canonical content does
   not support.
