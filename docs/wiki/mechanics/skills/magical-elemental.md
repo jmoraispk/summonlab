@@ -9,7 +9,10 @@ Design status: **draft source import**. These definitions preserve the supplied 
 
 Elemental owns the active affinity-specific magical ladders. The Element label records compatibility
 without creating another progression node; each foundation chain remains expressed through skill
-prerequisites. Fire, Water, and Earth preserve their imported ladders below.
+prerequisites. Fire, Water, Wind, and Earth are the active Element labels. Fire, Water, and Earth
+currently have published Elemental ladders. Wind is active but its skill ladder is not published
+yet. Wood and Metal legacy ladders are deleted; neither is renamed or folded into Earth. Fire,
+Water, and Earth preserve their imported ladders below.
 
 | # | Skill | Element | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |

@@ -67,8 +67,9 @@ See also the [minimum Living Village subset](living-village.md) and the complete
 | Magical | Elemental, Ward, Enchantment, Restoration, Mind |
 | Craft | Forging, Alchemy, Cooking, Gathering, Knowledge |
 
-Active Element labels are Fire, Earth, Wind, and Water. The current Elemental page preserves Fire,
-Water, and Earth ladders; its Wind family is active but awaits the skill-content pass. Ward and
+Fire, Water, Wind, and Earth are the active Element labels. Fire, Water, and Earth currently have
+published Elemental ladders. Wind is active but its skill ladder is not published yet. Wood and
+Metal legacy ladders are deleted; neither is renamed or folded into Earth. Ward and
 Enchantment use `Element: Attuned` only where a definition inherits the hero's current affinity.
 Other neutral Magical skills omit the label.
 
