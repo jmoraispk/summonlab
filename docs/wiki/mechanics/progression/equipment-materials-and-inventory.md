@@ -16,6 +16,13 @@ properties but does not raise it.
 The canonical rule and examples live in
 [Equipment rarity and craftsmanship](../equipment/rarity-and-weight.md).
 
+## Crafted item streams
+
+Forging produces Equipment, Alchemy produces Potion, and Cooking produces Food. Recipes and effects
+do not create more item classes. Gathering, Beast, and Lore provide inputs or world-state outcomes
+rather than parallel item catalogs. The canonical Equipment forms live in the
+[Equipment index](../equipment/README.md).
+
 ## Weight
 
 Every equipment piece has weight, linking gear to attributes. The source drives weight tolerance
@@ -64,7 +71,7 @@ Forging and Alchemy are crafting rather than synthesis: they transform materials
 three-to-one star-stone fusion model does not automatically apply to ordinary materials, and whether
 general material fusion exists is unresolved.
 
-## Three equipment lines
+## Three equipment sources
 
 ### Predictable material tiers
 

@@ -1,80 +1,53 @@
-# Casting focuses, tools, and accessories
+# Staffs, tools, and accessories
 
 Wiki ID: `mechanics.equipment.focuses-tools-accessories`
 
-Design status: **draft**.
+Design status: **owner-revised draft**.
 
-## Casting focuses
+## Staff
 
-A focus is not required to cast, but it substantially improves magical magnitude and control.
+Staff is the single canonical Magical focus. It occupies both hands and uses wood as its
+rank-bearing material. Magical school, affinity, enchantment, named provenance, and visual form may
+change its properties without creating Wand, Orb, Talisman, Prayer Beads, Censer, or Elemental Core
+classes.
 
-| Focus | R band | Weight | Favours |
-| --- | --- | --- | --- |
-| **Talisman** | F+ | Light | Any. The cheapest focus; a paper charm. |
-| **Wand** | F+ | Light | Elemental. Fast, low magnitude. |
-| **Staff** | E+ | Medium | Elemental and Ward. Highest raw magnitude; two-handed. |
-| **Orb** | D+ | Light | Ward and Mind. Control duration and stability. |
-| **Prayer Beads** | D+ | Light | Restoration. Mana efficiency and healing potency. |
-| **Censer** | C+ | Medium | Enchantment. Reduces component consumption. |
-| **Elemental Core** | B+ | Light | One affinity only. Raises effective Resonance while held. |
-| **Worldtree Staff** | A+ | Medium | Any. Grants a skill and holds three enchantments. |
+A hero does not require a Staff to use Magical skills. The Staff improves magical capability once
+the shared Magical and equipment contracts define that benefit.
 
-## Tools
+## Tool
 
-Tools are required to practise craft skills at all, and their quality sets the ceiling on output.
+Tool is one equipment class with a Craft-family tag. The tag says which work it enables; it does
+not create a new top-level item class.
 
-| Family | Tool | R band | Notes |
-| --- | --- | --- | --- |
-| **Forging** | Smith's Hammer | F+ | Required for any Forging skill |
-| | Tongs and Anvil | F+ | Workshop fixture; quality gates Tempering |
-| | Bellows | E+ | Gates the temperature ceiling, and therefore the material ceiling |
-| | Whetstone | F+ | Enables Sharpening in the field |
-| | Runic Chisel | C+ | Required for Runic Foundation |
-| **Alchemy** | Mortar and Pestle | F+ | Required for any Alchemy skill |
-| | Alembic | E+ | Required for Extraction |
-| | Retort | D+ | Required for Transmutation |
-| | Reagent Case | E+ | Prevents component spoilage in the field |
-| | Philosopher's Vessel | C+ | Required for Philosopher's Work |
-| **Cooking** | Field Pot | F+ | Required to cook on a mission |
-| | Chef's Knife | F+ | Quality raises every dish's potency |
-| | Feast Cauldron | D+ | Required for Feast |
-| **Gathering** | Pick | F+ | Required for Mining |
-| | Sickle | F+ | Required for Foraging |
-| | Skinning Knife | F+ | Required for Skinning; quality gates Perfect Cut |
-| | Prospector's Lens | E+ | Required for Prospecting |
-| | Leyline Tap | C+ | Required for Leyline Harvest |
-| **Beast** | Bridle and Saddle | E+ | Required for Riding |
-| | Taming Collar | D+ | Required for Taming |
-| | Beast Whistle | E+ | Commands companions at range |
-| **Lore** | Reading Lens | F+ | Required for Identify |
-| | Scribing Set | E+ | Required for Research and Mapping |
-| | Surveyor's Kit | D+ | Required for Cartography |
-| | Appraiser's Glass | C+ | Required for Read the Body |
+| Craft tag | Typical presentation |
+| --- | --- |
+| **Forging** | Hammer and smithing implements |
+| **Alchemy** | Mortar, vessels, and reagent implements |
+| **Cooking** | Knife, pot, and hearth implements |
+| **Gathering** | Pick, sickle, or harvesting implements |
+| **Beast** | Riding and handling gear |
+| **Lore** | Reading, writing, surveying, and appraisal implements |
 
-## Accessories
+A Tool has one rank-bearing material chosen by its dominant working component. Other handles,
+bindings, containers, and fittings are required visual construction but do not add another rank.
 
-Accessories are where attribute bonuses and granted skills concentrate. They are deliberately the
-rarest equipment in the game.
+## Accessory
 
-| Accessory | R band | Notes |
-| --- | --- | --- |
-| **Ring** | E+ | Small bonuses. Two may be worn. |
-| **Amulet** | E+ | Resistances and affinity support |
-| **Bracelet** | D+ | Commonly the enchantment carrier |
-| **Storage Ring** | D+ | **Dimensional inventory.** Modest capacity, weight-independent. |
-| **Storage Bracelet** | B+ | Far larger dimensional capacity |
-| **Pocket Space** | A+ | Effectively unlimited. A meaningful reward on its own. |
-| **Affinity Sigil** | C+ | Raises effective Resonance in one element |
-| **Master's Token** | B+ | Granted by a teacher. Raises Guidance yield for the bearer. |
-| **Bound Relic** | A+ | Grants an active skill; bound to one hero permanently |
+Accessory is one equipment class. Ring, amulet, and bracelet are presentation forms, not separate
+mechanical classes. The standard model needs one Accessory slot; a later balance pass may justify a
+second without adding more Accessory types.
+
+Storage objects, affinity sigils, teacher tokens, and bound relics are special rewards or authored
+properties on an Accessory. They are not core craftable item classes.
+
+## Rank
+
+The item design and selected material set the combined crafting difficulty. The material supplies
+base rank, and Forging craftsmanship adds `+0`, `+1`, or `+2`, capped at S, as defined in
+[Equipment rarity and craftsmanship](rarity-and-weight.md).
 
 ## Open implementation questions
 
-- Bind focus schools, craft families, skills, gates, and granted effects to stable skill IDs.
-- Normalize Resonance and define whether it is an affinity value, derived stat, or named mechanic.
-- Define tool possession versus facility fixtures, field portability, quality ceilings, and what
-  happens when access is lost mid-task.
-- Define accessory slots beyond the two-ring limit, and decide whether Pocket Space is wearable.
-- Define dimensional capacity, carried-item weight, quick-access, loss on defeat, and reservation.
-- Taming Collar and “commands companions” require animal-welfare and agency semantics before
-  implementation.
+- Define the single Staff benefit without duplicating Magical skill effects.
+- Define which material is rank-bearing for each Craft-tagged Tool presentation.
+- Define the bounded property budget for Accessory rank and special rewards.

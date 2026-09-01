@@ -50,10 +50,10 @@ supported by Vitality in the source draft.
 
 | Class | Typical wearer | Penalty if over tolerance |
 | --- | --- | --- |
-| **Light** | Dagger, Bow, Body-compatible unarmed equipment, casters | Rarely an issue |
-| **Medium** | Sword, Spear, Crossbow, Shield | Movement and evasion loss |
-| **Heavy** | Greatsword, Halberd, Polehammer, Tower Shield | Movement, evasion, attack speed and initiative loss |
-| **Very Heavy** | Bulwark builds only | Severe penalties across all Agility-driven stats |
+| **Light** | Dagger, Robes, Accessory | Rarely an issue |
+| **Medium** | One-handed Weapon, Spear, Bow, Light Armour, Shield, Staff, Tool | Movement and evasion loss |
+| **Heavy** | Two-handed Sword, Axe, Mace, or Heavy Armour | Movement, evasion, attack speed and initiative loss |
+| **Very Heavy** | Exceptional named Equipment only | Severe penalties across all Agility-driven stats |
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,
 which is one of the main reasons a roster wants a good armoursmith.
@@ -65,6 +65,5 @@ which is one of the main reasons a roster wants a good armoursmith.
 - Define whether weight is per item, total loadout, carried inventory, or some combination.
 - Define exact tolerance, penalty curves, stacking, and how Weightless Craft affects reservations
   and visuals.
-- Define the exact meaning of `F+`, `E+`, and the other minimum-band notation.
 - Define the shared item-difficulty and material-difficulty scales, the Forging margins for Fine and
   Masterwork, and the bounded benefit improvement for craftsmanship beyond S.

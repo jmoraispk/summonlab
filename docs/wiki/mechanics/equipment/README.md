@@ -2,9 +2,9 @@
 
 Wiki ID: `mechanics.equipment`
 
-Design status: **draft imported from the owner's initial equipment compendium**. The catalog is
-complete as a design inventory, but numerical combat behavior, acquisition, durability, and the
-Living Village shipping selection remain unresolved.
+Design status: **owner-revised draft**. The canonical item classes and material relationships are
+now intentionally smaller than the imported compendium. Numerical combat behavior, acquisition,
+durability, and the Living Village shipping selection remain unresolved.
 
 Equipment covers materials, weapons, armour, shields, casting focuses, tools, accessories, and
 sets. It is a companion to the progression and skill systems: equipment supplements a build,
@@ -13,10 +13,8 @@ capability.
 
 ## Reading the catalog
 
-`R` is the rarity band: F Common, E Uncommon, D Rare, C Epic, B Mythic, A Fabled, and S Legendary.
-`F+`, `E+`, and similar entries currently mean that the listed band is the item's minimum or
-starting band; the exact interpretation is an open rules question. Weight is Light, Medium, Heavy,
-or Very Heavy. `Scales` names the attribute a weapon's damage keys off.
+`R` is rank: F Common, E Uncommon, D Rare, C Epic, B Mythic, A Fabled, and S Legendary. Material
+supplies base rank, while craftsmanship may add zero, one, or two ranks, capped at S.
 
 ## Complete draft
 
@@ -24,11 +22,34 @@ or Very Heavy. `Scales` names the attribute a weapon's damage keys off.
 - [Materials](materials.md)
 - [Weapons](weapons.md)
 - [Armour and shields](armour-and-shields.md)
-- [Casting focuses, tools, and accessories](focuses-tools-accessories.md)
+- [Staffs, tools, and accessories](focuses-tools-accessories.md)
 - [Sets, enchantment, and bound equipment](sets.md)
 
-Together these pages preserve every rule, table, example, item, and explicitly unfinished area in
-the supplied compendium. They should not be read as implemented behavior.
+These owner-revised pages supersede the imported item's breadth while preserving unresolved rules
+honestly. They should not be read as implemented behavior.
+
+## Craft output streams
+
+Only three Craft families produce item catalogs:
+
+| Craft family | Single output stream |
+| --- | --- |
+| **Forging** | Equipment |
+| **Alchemy** | Potion |
+| **Cooking** | Food |
+
+Forging is deliberately the broad durable-item craft. Alchemy recipes change what a Potion does
+without creating coating, bomb, antidote, or elixir item classes. Cooking recipes change what Food
+does without creating ration, meal, broth, or feast item classes.
+
+Gathering supplies materials and ingredients, Beast produces companion and handling outcomes, and
+Lore produces knowledge. They do not receive item classes merely for symmetry.
+
+The Equipment stream contains thirteen canonical forms:
+
+- six Weapons: Sword, Dagger, Spear, Bow, Axe, and Mace;
+- three Armour classes: Heavy Armour, Light Armour, and Robes;
+- Shield, Staff, Tool, and Accessory.
 
 ## Candidate Living Village subset
 
@@ -57,39 +78,29 @@ acquire or receive an item
 - deterministic receipts for item acquisition and loadout changes.
 
 Durability, repair, crafting, enchantment, sets, monster crafting, bound items, storage magic,
-field tools, consumables, and ammunition variants are outside the minimum unless another Living
-Village rule depends on them.
+field tools, Potions, and Food are outside the minimum unless another Living Village rule depends
+on them.
 
 ### Candidate expansion pool
 
-This is a Common/Uncommon expansion pool, not the initial runtime target and not a deletion or
-acceptance verdict for the full compendium.
+This Common/Uncommon pool exercises every canonical Equipment form without adding another class.
 
 | Need | Candidate items |
 | --- | --- |
-| Representative equipment for the five Martial families | Shortsword, Knife, Greatblade, War Spear, Glaive, Halberd, Polehammer, Hunting Bow, Light Crossbow, Round Shield, Hand Wraps |
-| Basic defensive choices | Buckler, Round Shield, Mail, Hide Armour, Boiled Leather, Padded Coat, Travelling Robes |
-| Basic magical choices | Talisman, Wand, Staff |
+| Weapons | Sword, Dagger, Spear, Bow, Axe, Mace |
+| Defence | Heavy Armour, Light Armour, Robes, Shield |
+| Magical equipment | Staff |
+| Utility equipment | Tool, Accessory |
 | Materials sufficient for those items | Copper, Iron, Coarse Hide, Boiled Leather, Hemp Weave, Wool, Ash, Yew |
 
 The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
-deliberate milestone reward. Whether all five Martial families need to ship immediately depends on
-which skill families the Living Village hero roster can actually receive.
+deliberate milestone reward.
 
 ### Initial runtime selection
 
-Keep the first combat slice within 12–20 equipment definitions and align it to the initial skill
-roles:
-
-- weapons/focuses: Arming Sword, Hunting Bow, Wand, and Staff;
-- defense: Buckler, Round Shield, Mail, Hide Armour, Boiled Leather, Padded Coat, and Travelling
-  Robes;
-- accessories: Ring and Amulet;
-- materials needed to describe those instances: Copper, Iron, Coarse Hide, Boiled Leather, Hemp
-  Weave, and Wool.
-
-That is thirteen equippable definitions plus six material definitions. Add another weapon family
-only when a starter hero can actually use it and combat can explain the difference.
+Use at most one starter definition for each of the thirteen canonical Equipment forms. A smaller
+runtime subset may omit forms that no starter hero can use, but it must not replace them with
+additional weapon, armour, focus, tool, or accessory classes.
 
 ## Ownership and interfaces
 
@@ -134,15 +145,13 @@ remain preserved rather than silently normalized:
 - Weight tolerance uses Might supported by Vitality as authored.
 - An item's rarity is fixed forever, while Living Metal grows with its wielder. Growth can be
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
-- The set section says there are three independent axes but presents four subsections: material,
-  monster, enchanted, and forged/bound equipment.
-- Armour class is determined by material, yet several armour designs accept multiple material
-  families or reuse a material name as an item name.
-- Accessory slots are not defined beyond two rings; Pocket Space may be an item, capability, or
-  progression reward rather than a worn accessory.
-- Handedness and slot conflicts are prose-only: two compatible Blade weapons, two-handed
-  weapons/foci, shields, Body-compatible unarmed equipment, hand armour, and Iron Sleeves need one
-  legality model.
+- Clarify whether material/monster is one source axis while enchantment and binding are independent
+  overlays rather than additional item classes.
+- Armour is one item in one Armour slot. Accessory begins with one slot. Exact inventory and
+  loadout representation still requires an executable contract.
+- The six-weapon hand model is accepted in prose: a two-handed item occupies both hands, Shield
+  requires one free hand, and Dual Wield permits only one-handed Swords and Daggers. Exact combat
+  tradeoffs remain open.
 - Damage, mitigation, poise, penetration, bleed, Rend, initiative, evasion, attack speed, mana,
   affinity, and granted-skill effects await the combat and status contracts.
 - Monster materials taken from sapient peoples require source, consent, death, personhood, and
@@ -152,9 +161,11 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
-- 2026-09-01 — owner revision — Removed three rejected metals from the material vocabulary and
-  recorded the Equipment visual-production sequence.
+- 2026-09-01 — owner revision — Reduced crafted outputs to Equipment, Potion, and Food; reduced
+  Equipment to thirteen forms and Weapons to Sword, Dagger, Spear, Bow, Axe, and Mace.
 - 2026-09-01 — owner revision — Simplified each material family to one material per rank and
   accepted material-plus-craftsmanship as the finished-item rank rule.
+- 2026-09-01 — owner revision — Removed three rejected metals from the material vocabulary and
+  recorded the Equipment visual-production sequence.
 - 2026-08-29 — draft — Imported the complete owner-supplied equipment compendium and identified a
   bounded Living Village candidate subset.

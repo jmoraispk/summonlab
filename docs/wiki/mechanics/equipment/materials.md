@@ -10,7 +10,7 @@ craftsmanship can raise the finished item's rank above that base.
 
 ## Metal line
 
-Used for plate, mail, blades, hafts, and every tool worth owning.
+Used as the rank-bearing material for most Weapons, Heavy Armour, Shield, Accessory, and many Tools.
 
 | R | Material | Character |
 | --- | --- | --- |
@@ -64,6 +64,25 @@ Used for bows, spear and axe hafts, staves, and tool handles.
 | B | **Spiritwood** | Naturally resonant timber that carries enchantment without warping |
 | A | **Living Branch** | Still growing. Adapts to its wielder over time. |
 | S | **Worldtree Limb** | A living fragment of the Worldtree; cannot be worked without Godsmithing |
+
+## Rank-bearing item mapping
+
+Every durable item has exactly one rank-bearing material. Other physical components remain visible
+and necessary, but they do not contribute another rank.
+
+| Material family | Rank-bearing item forms | Natural Domains |
+| --- | --- | --- |
+| **Metal** | Sword, Dagger, Spear, Axe, Mace, Heavy Armour, Shield, Accessory, and most Tools | Martial and Craft |
+| **Wood** | Bow, Staff, and some Tools | Martial, Magical, and Craft |
+| **Hide or scale** | Light Armour | All three |
+| **Cloth or fibre** | Robes and workwear | Magical and Craft |
+
+The mapping is deliberately fixed. A Spear's metal head supplies rank while its wood shaft is
+secondary. A Bow or Staff uses wood for rank. Heavy Armour and Shield use metal, Light Armour uses
+hide or scale, and Robes use cloth or fibre.
+
+These are natural Domain fits rather than equip restrictions. The material system does not forbid
+a Magical hero from wearing Heavy Armour or a Martial hero from wearing Robes.
 
 ## Monster materials
 
