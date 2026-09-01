@@ -1,6 +1,6 @@
 # 0066 — Hero rarity frame v3 and v4 sources are frozen
 
-**Status:** Accepted
+**Status:** Superseded by ADR 0067
 
 **Date:** 2026-09-01
 
