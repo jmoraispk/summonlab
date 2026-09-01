@@ -23,6 +23,10 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	);
 	await expect(tree.getByRole('link', { name: 'Two Blades' })).toBeVisible();
 	await expect(tree.getByText('Two Blades', { exact: true })).toHaveCount(1);
+	await expect(tree.getByRole('link', { name: 'Pack Bond' })).toHaveAttribute(
+		'href',
+		'/wiki/mechanics/skills/martial-body'
+	);
 	await expect(tree.getByText(/universal skills/i)).toHaveCount(0);
 
 	await tree.getByRole('button', { name: 'Sword', exact: true }).click();
@@ -64,11 +68,23 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	await expect(tree.getByRole('button', { name: 'Fire' })).toBeFocused();
 	await expect(tree.getByRole('button', { name: 'Fire' })).toHaveCSS('outline-style', 'solid');
 
-	await expect(tree.getByRole('button', { name: /craft/i })).toContainText('6 families');
+	await expect(tree.getByRole('button', { name: /craft/i })).toContainText('5 families');
 	await tree.getByRole('button', { name: /craft/i }).click();
 	await expect(tree.getByRole('img', { name: /craft domain/i })).toBeVisible();
 	await expect(tree.getByRole('link', { name: 'Forging' })).toBeVisible();
-	await expect(tree.getByRole('link', { name: 'Lore' })).toBeVisible();
+	await expect(tree.getByRole('heading', { name: 'Gathering' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Animal Handling' })).toHaveAttribute(
+		'href',
+		'/wiki/mechanics/skills/craft-and-life#gathering'
+	);
+	await expect(tree.getByRole('link', { name: 'Monarch of Beasts' })).toBeVisible();
+	await expect(tree.getByRole('heading', { name: 'Knowledge' })).toBeVisible();
+	await expect(tree.getByRole('link', { name: 'Beast Speech' })).toHaveAttribute(
+		'href',
+		'/wiki/mechanics/skills/craft-and-life#knowledge'
+	);
+	await expect(tree.getByRole('link', { name: 'Beast', exact: true })).toHaveCount(0);
+	await expect(tree.getByRole('link', { name: 'Lore', exact: true })).toHaveCount(0);
 	await expect(page.getByRole('heading', { name: 'Source-integrity audit' })).toBeVisible();
 	await expect(page.locator('article footer code')).toHaveText('mechanics/skills/README.md');
 });
