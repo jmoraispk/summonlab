@@ -303,6 +303,25 @@ function sortedLabels(labels: readonly SkillLabel[] | undefined): string[] {
 	return (labels ?? []).map(({ namespace, value }) => `${namespace}:${value}`).sort();
 }
 
+function isDeferredWindRewrite(record: SkillMigrationRecord): boolean {
+	return (
+		['rename', 'rehome'].includes(record.disposition) &&
+		record.sourceId.startsWith('magical-evocation.md#evocation-metal:') &&
+		record.sourcePath === 'docs/wiki/mechanics/skills/magical-evocation.md' &&
+		record.section === 'Evocation — Metal'
+	);
+}
+
+function hasValidDeferredWindTarget(target: DeferredSkillMigrationTarget): boolean {
+	return (
+		target.domain === 'Magical' &&
+		target.family === 'Elemental' &&
+		target.labels.length === 1 &&
+		target.labels[0]?.namespace === 'Element' &&
+		target.labels[0]?.value === 'Wind'
+	);
+}
+
 export function validateTargetTaxonomy(
 	rows: readonly TargetSkillRow[],
 	ledger: SkillMigrationLedger
@@ -375,13 +394,11 @@ export function validateTargetTaxonomy(
 			continue;
 		}
 		if (record.target.publication === 'deferred') {
-			if (
-				record.target.domain !== 'Magical' ||
-				record.target.family !== 'Elemental' ||
-				record.target.labels.length !== 1 ||
-				record.target.labels[0]?.namespace !== 'Element' ||
-				record.target.labels[0]?.value !== 'Wind'
-			)
+			if (!isDeferredWindRewrite(record))
+				errors.push(
+					`${record.disposition} record ${record.sourceId} requires a published target skill`
+				);
+			else if (!hasValidDeferredWindTarget(record.target))
 				errors.push(`${record.sourceId} has an invalid deferred Elemental target`);
 			continue;
 		}
@@ -464,13 +481,11 @@ export function validateMigrationLedger(
 					`${record.disposition} record ${record.sourceId} requires a published target skill`
 				);
 			else if (record.target.publication === 'deferred') {
-				if (
-					record.target.domain !== 'Magical' ||
-					record.target.family !== 'Elemental' ||
-					record.target.labels.length !== 1 ||
-					record.target.labels[0]?.namespace !== 'Element' ||
-					record.target.labels[0]?.value !== 'Wind'
-				)
+				if (!isDeferredWindRewrite(record))
+					errors.push(
+						`${record.disposition} record ${record.sourceId} requires a published target skill`
+					);
+				else if (!hasValidDeferredWindTarget(record.target))
 					errors.push(`${record.sourceId} has an invalid deferred Elemental target`);
 			}
 		}

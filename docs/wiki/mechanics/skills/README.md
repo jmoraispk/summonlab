@@ -84,9 +84,8 @@ explicit deferred migration target records a future family rewrite without publi
 skill content. Deleted and merged definitions remain recoverable through Git history and their
 ledger rationale.
 
-`Great Renewal` appears in both Elemental and Restoration with different requirements and effects.
-Their family ownership gives them distinct stable skill IDs even though their display name is
-shared.
+`Great Renewal` remains a Restoration skill. Its deleted legacy Elemental source row is retained
+only in migration provenance and does not publish a second current skill.
 
 ## Source authority and remaining decisions
 

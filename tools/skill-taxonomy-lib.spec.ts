@@ -627,6 +627,33 @@ describe('skill taxonomy migration inventory', () => {
 			replacementEffect: "Grants an ally the hero's affinity temporarily at reduced affinity rank."
 		});
 	});
+
+	it('requires a published target for non-Metal rows that claim deferred Wind metadata', () => {
+		const nonMetalDeferredTarget = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+			sourceRowCount: 520,
+			records: [
+				{
+					...migrationRecord('Enchantment', 'Elemental Attunement', 1),
+					disposition: 'retain',
+					target: {
+						domain: 'Magical',
+						family: 'Elemental',
+						labels: [{ namespace: 'Element', value: 'Wind' }],
+						publication: 'deferred'
+					}
+				}
+			]
+		} as unknown as SkillMigrationLedger;
+
+		expect(validateMigrationLedger(nonMetalDeferredTarget)).toContain(
+			'retain record legacy.md#enchantment:1 requires a published target skill'
+		);
+		expect(validateTargetTaxonomy([], nonMetalDeferredTarget)).toContain(
+			'retain record legacy.md#enchantment:1 requires a published target skill'
+		);
+	});
 });
 
 describe('target skill taxonomy', () => {

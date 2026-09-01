@@ -61,7 +61,7 @@ Stance skills, higher rarity, alternate learning paths, teaching, merging, and s
 
 1. A summoned hero receives one role package containing its foundation plus a small legal action
    set. Initial summoning cannot roll outside the twelve selected definitions; later Living Village
-   content may draw from the 45-definition expansion pool after explicit promotion.
+   content may draw from the 37-definition expansion pool after explicit promotion.
 2. Known skills have stable IDs and a Novice progress value. Training raises that value through a
    versioned grant; combat can also grant pressure practice.
 3. Each combat action names its skill, attacker, target or target shape, mana cost if any, and
