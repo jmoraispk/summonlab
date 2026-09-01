@@ -1,6 +1,6 @@
 # Monster Family, Floor, and Affinity Image Production Design
 
-Status: **proposed for implementation planning**
+Status: **approved for implementation planning**
 
 Date: 2026-09-01
 
@@ -26,7 +26,8 @@ affinity, or runtime approval.
 9. Species practice uses an authored unlock sequence in which victories against the current species
    unlock the next species; exact counts belong to later combat tuning.
 10. Every canonical form targets Normal, Fire, Earth, Wind, and Water artwork.
-11. Wood and Metal receive no new production and their historical candidates leave active catalogs.
+11. Wood and Metal receive no new production. Their candidate pixels and active production records
+    are deleted outright; Git history is the only recovery path.
 12. Images remain candidates until explicit review; this design does not promote runtime assets.
 
 ## Verified source coverage
@@ -210,9 +211,9 @@ The canonical production matrix is:
 The five targets are Normal, Fire, Earth, Wind, and Water. Dual-affinity images are rare exceptions
 and require separate manifests outside this matrix.
 
-One target owns one versioned target JSON, one assignment JSON, one collision-safe candidate path,
-and one result receipt. Generated images never overwrite another attempt and never update a shared
-catalog directly.
+One target attempt owns one versioned target JSON, one versioned assignment JSON, one collision-safe
+candidate path, and one result receipt. A rejected attempt allocates a new version rather than
+overwriting any of those files. Generated images never update a shared catalog directly.
 
 ## Production sequence
 
@@ -225,16 +226,21 @@ archetype remains ambiguous.
 ### Phase 2 — Retire Wood and Metal
 
 Remove Wood and Metal candidates, thumbnails, targets, assignments, and result receipts from active
-experiments and galleries. Before deletion, write a retirement ledger containing each path,
-SHA-256, source experiment, and recovery commit. Git history is the byte-recovery mechanism; active
-wiki pages and catalogs retain only the retirement record, not renderable legacy candidates.
+experiments and galleries. Do not create a legacy folder, hash ledger, or retirement catalog. Tests
+must resolve the exact repository-owned paths before deletion and must prove afterward that no
+active Wood or Metal target, artifact, thumbnail, result, or wiki reference remains. Git history is
+the sole recovery mechanism.
 
 ### Phase 3 — Earth bridge wave
 
 Map the forty missing Earth coordinates to their consolidated forms. Generate Earth candidates
 first for every retained class whose identity remains valid. Renamed targets use new paths; retired
-classes receive no replacement merely to preserve the old count. This wave validates the Earth
-theme before the 750-target program expands.
+classes receive no replacement merely to preserve the old count. Mapped primary forms may reuse an
+accepted bridge candidate inside the 750-target matrix. Retained secondary archetypes and fauna use
+bridge-only targets outside that matrix so the canonical count remains 750. This wave may use a
+hash-bound, provisional mapped Normal reference before the complete Normal anchor gate; its Earth
+output cannot reach approved-review until the canonical Normal anchor passes. The wave validates
+the Earth theme before the 750-target program expands.
 
 ### Phase 4 — Normal identity anchors
 
@@ -301,7 +307,8 @@ The implementation must provide:
 - executable validation for thirty families, five unique tiers per family, and 150 canonical forms;
 - exact reconciliation for all forty current classes and all 150 supplied source forms;
 - exact target counts by family, tier, and affinity;
-- retirement-ledger reconciliation for every removed Wood/Metal artifact;
+- zero active Wood/Metal targets, artifacts, thumbnails, results, or wiki references after direct
+  deletion;
 - manifest, assignment, result, candidate, and reference hash checks;
 - per-family contact sheets and review summaries;
 - explicit separation of candidate, approved-review, and runtime status;
