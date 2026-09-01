@@ -825,7 +825,7 @@ FIN-005 separates reproducible delivery budgets from browser behavior. `player-v
 derives content-addressed 832 px phone and 1681 px desktop title WebPs from the accepted source and
 checks both encoded and decoded sizes. The title's responsive source selection keeps the phone from
 downloading the desktop candidate. Player Hearth routes resolve approved purpose-sized portrait
-assets on the server and otherwise retain code-native rigs; they do not import multi-megabyte source
+assets on the server and otherwise show an explicit non-character placeholder; they do not import multi-megabyte source
 PNGs into the route graph.
 
 `phone-performance-report-v1` measures one real arrived campaign in Chromium at 390×844/2× with

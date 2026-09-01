@@ -1,5 +1,9 @@
 # Character Pack 2 runtime proof
 
+> **Historical evidence:** ADR 0065 retired the procedural character renderer and its dedicated
+> runtime proof route. This record is preserved to explain the earlier experiment, not to describe
+> current product behavior.
+
 Status: **implemented; Pack 2 premium approval pending**
 
 Route: `/forge/pack-2/runtime`

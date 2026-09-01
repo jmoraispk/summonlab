@@ -4,6 +4,8 @@ import { assembleHeroDecisionPacket, projectHeroConversationPresentation } from 
 import { createHeroDecisionPreview } from '@summonlab/policies';
 import { error } from '@sveltejs/kit';
 
+import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -46,5 +48,11 @@ export const load: PageServerLoad = async ({ params }) => {
 					? 'Set OPENAI_API_KEY locally to enable the one-call preview.'
 					: 'Ready for one manual, non-applying model call.'
 	};
-	return { snapshot, conversation, decisionPreview, modelPolicy };
+	return {
+		snapshot,
+		conversation,
+		decisionPreview,
+		modelPolicy,
+		heroPortrait: runtimePortraitFor(snapshot.manifestHash, snapshot.manifest.artKey, 'summon')
+	};
 };

@@ -80,7 +80,7 @@ slots. Cultural and technological packs change clothing, materials, gesture voca
 architecture, and props without implying phenotype, personality, aptitude, or rarity.
 
 Realistic approved portraits anchor summon, roster, dialogue, and high-value scenes. Small
-code-native figures preserve silhouette, hair, palette, signature attire, equipment, and gait in
+approved authored small-scale assets preserve silhouette, hair, palette, signature attire, equipment, and gait in
 the base and missions. The same presentation state feeds training, synthesis, story, and memorials.
 
 ## Interfaces

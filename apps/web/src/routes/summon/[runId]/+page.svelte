@@ -8,9 +8,8 @@
 		ProofRunSnapshot
 	} from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
-	import heroAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
 	import EventJournal from '$lib/components/EventJournal.svelte';
-	import HeroRig from '$lib/components/HeroRig.svelte';
+	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
@@ -443,13 +442,15 @@
 			</div>
 
 			<div class="hero-presence">
-				{#if snapshot.manifest.artKey === 'ember-01-anchor-v1'}
+				{#if data.heroPortrait}
 					<img
-						src={heroAnchor}
+						src={data.heroPortrait.publicPath}
+						width={data.heroPortrait.width}
+						height={data.heroPortrait.height}
 						alt={`${snapshot.manifest.displayName} steps out of the summoning gate`}
 					/>
 				{:else}
-					<HeroRig manifest={snapshot.manifest} />
+					<HeroArtPlaceholder name={snapshot.manifest.displayName} />
 				{/if}
 			</div>
 
@@ -965,7 +966,7 @@
 				{/if}
 				<a class="follow" href={resolve('/play/[runId]', { runId: snapshot.runId })}>
 					<span>Follow to {destinationLabel}</span>
-					<small>Watch the same rig continue through the settlement</small>
+					<small>Continue with the same manifest-bound identity in the settlement</small>
 				</a>
 			</section>
 		{/if}

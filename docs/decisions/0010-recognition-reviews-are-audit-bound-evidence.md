@@ -2,6 +2,9 @@
 
 Status: accepted on 2026-08-24.
 
+> **Historical implementation:** ADR 0065 retires the procedural renderer and interactive route
+> described here. Existing hash-bound evidence is preserved but is not a live approval surface.
+
 ## Context
 
 ADR 0009 defines a repeatable human recognition audit but originally left its seven case decisions

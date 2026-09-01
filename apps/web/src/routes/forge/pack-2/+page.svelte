@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type { VisualReviewRecord, VisualReviewVerdict } from '@summonlab/contracts';
-	import HeroRig from '$lib/components/HeroRig.svelte';
 	import remyEquipped from '../../../../../../assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 	import remyEvolved from '../../../../../../assets/heroes/visuals/forge-v2/benchmarks/remy-esen-evolution-3star-v1.png';
 	import brynAnchor from '../../../../../../assets/heroes/visuals/forge-v2/cohort/bryn-vale-anchor-v1.png';
@@ -36,7 +35,6 @@
 	let proportion = $state('all');
 	let rarity = $state('all');
 	let approval = $state('all');
-	let revealSilhouettes = $state(false);
 	// svelte-ignore state_referenced_locally
 	let reviewHistory = $state(data.reviewHistory);
 	let reviewVerdict = $state<VisualReviewVerdict>('approved');
@@ -441,20 +439,24 @@
 		<header class="section-heading">
 			<div>
 				<span>04</span>
-				<h2 id="silhouette-title">Unlabeled silhouette test</h2>
+				<h2 id="silhouette-title">Candidate identity lineup</h2>
 			</div>
-			<button onclick={() => (revealSilhouettes = !revealSilhouettes)}>
-				{revealSilhouettes ? 'Hide identities' : 'Reveal identities'}
-			</button>
+			<p>Premium candidates remain visibly review-bound until a human decision promotes them.</p>
 		</header>
-		<div class="silhouette-grid" data-testid="pack-two-silhouettes">
+		<div class="silhouette-grid" data-testid="pack-two-identity-lineup">
 			{#each data.cohort as entry (entry.draft.manifestHash)}
+				{@const anchor = entry.assets.find((asset) => asset.role === 'full-body-anchor')!}
 				<article>
-					<HeroRig manifest={entry.draft.manifest} compact />
-					{#if revealSilhouettes}
-						<strong>{entry.draft.manifest.displayName}</strong>
-						<small>{entry.draft.manifest.bodyBuild} · {entry.draft.manifest.heightCm} cm</small>
-					{/if}
+					<img
+						src={images[anchor.assetKey]}
+						alt={`${entry.draft.manifest.displayName} candidate anchor`}
+					/>
+					<strong>{entry.draft.manifest.displayName}</strong>
+					<small
+						>{entry.draft.manifest.bodyBuild} · {entry.draft.manifest.heightCm} cm · {reviewState(
+							anchor.assetKey
+						)}</small
+					>
 				</article>
 			{/each}
 		</div>
@@ -520,7 +522,12 @@
 							alt={`${entry.draft.manifest.displayName} roster crop`}
 						/>
 					</div>
-					<div class="settlement"><HeroRig manifest={entry.draft.manifest} compact /></div>
+					<div class="settlement">
+						<img
+							src={images[anchor.assetKey]}
+							alt={`${entry.draft.manifest.displayName} candidate anchor simulated at settlement scale`}
+						/>
+					</div>
 					<footer>
 						<strong>{entry.draft.manifest.displayName}</strong><span>roster · settlement</span>
 					</footer>
@@ -583,9 +590,9 @@
 				the first reveal should select an already approved cached portrait. New premium art, equipment
 				edits, and evolution variants stay in the asynchronous authoring pipeline.
 			</p>
-			<a class="proof-note" href={resolve('/forge/pack-2/runtime')}
-				>Open procedural runtime proof →</a
-			>
+			<p class="proof-note">
+				Procedural character rendering is retired. Missing art remains visibly pending.
+			</p>
 		</div>
 	</section>
 
@@ -1145,8 +1152,12 @@
 		color: #0a0b0d;
 		background: #ece9e2;
 	}
-	.silhouette-grid :global(svg) {
-		filter: brightness(0);
+	.silhouette-grid img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 2 / 3;
+		object-fit: cover;
+		object-position: 50% 18%;
 	}
 	.silhouette-grid strong,
 	.silhouette-grid small {
@@ -1235,8 +1246,12 @@
 		padding: 1rem;
 		background: radial-gradient(circle at 50% 85%, #8aa7dd20, transparent 45%);
 	}
-	.settlement :global(figure) {
+	.settlement img {
+		display: block;
 		width: 3rem;
+		aspect-ratio: 2 / 3;
+		object-fit: cover;
+		object-position: 50% 18%;
 	}
 	.survival-grid footer {
 		grid-column: 1/-1;
@@ -1331,8 +1346,7 @@
 		margin-top: 1.2rem;
 	}
 	.verdict button,
-	.record-review,
-	.silhouettes .section-heading button {
+	.record-review {
 		border: 1px solid #ffffff20;
 		padding: 0.7rem;
 		color: #f4efe57a;

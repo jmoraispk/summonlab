@@ -6,7 +6,6 @@
 		SettlementPresentation,
 		SettlementSceneDefinition
 	} from '@summonlab/contracts';
-	import HeroRig from './HeroRig.svelte';
 
 	let {
 		scene,
@@ -128,13 +127,9 @@
 				{#if occupant.pose === 'work'}<span class="spark">✦</span><span class="spark">✦</span>{/if}
 				{#if occupant.pose === 'train'}<i class="arc"></i>{/if}
 			</div>
-			<div class="rig">
-				<HeroRig
-					{manifest}
-					compact
-					walking={occupant.pose === 'walk'}
-					paletteMode={presentation.dayPhase === 'night' ? 'night' : 'base'}
-				/>
+			<div class="presence-marker" aria-hidden="true">
+				<span>✦</span>
+				<i></i>
 			</div>
 			<div class="activity-tag">
 				<span>{manifest.displayName}</span>
@@ -347,30 +342,33 @@
 			left 0.8s linear,
 			top 0.8s linear;
 	}
-	.rig {
-		transform-origin: 50% 100%;
-		animation: breathe 2.5s ease-in-out infinite;
+	.presence-marker {
+		display: grid;
+		place-items: center;
+		width: 2.2rem;
+		height: 2.2rem;
+		margin: 0 auto;
+		border: 1px solid rgba(213, 170, 89, 0.72);
+		border-radius: 50%;
+		color: #f2cf87;
+		background: rgba(5, 8, 12, 0.92);
+		box-shadow:
+			0 0 0 0.28rem rgba(213, 170, 89, 0.12),
+			0 0.6rem 1.2rem rgba(0, 0, 0, 0.55);
+		animation: marker-pulse 2.5s ease-in-out infinite;
 	}
-	.pose-train .rig {
-		animation: train 1.05s ease-in-out infinite;
+	.presence-marker i {
+		position: absolute;
+		top: 2rem;
+		width: 0.35rem;
+		height: 0.35rem;
+		border-radius: 50%;
+		background: #d5aa59;
+		box-shadow: 0 0 0.7rem #d5aa59;
 	}
-	.pose-work .rig {
-		animation: work 0.9s ease-in-out infinite;
-	}
-	.pose-sleep .rig {
-		animation: sleep 3s ease-in-out infinite;
-		transform: rotate(76deg) translate(15%, 18%) scale(0.88);
-	}
-	.pose-eat .rig {
-		animation: eat 1.4s ease-in-out infinite;
-	}
-	.pose-downed .rig {
-		transform: rotate(58deg) translate(15%, 10%);
-		filter: saturate(0.4);
-	}
-	.pose-dead .rig {
-		transform: rotate(82deg) translate(15%, 20%);
-		filter: grayscale(1) brightness(0.45);
+	.pose-downed .presence-marker,
+	.pose-dead .presence-marker {
+		filter: grayscale(1) brightness(0.58);
 	}
 	.activity-tag {
 		position: absolute;
@@ -607,32 +605,11 @@
 			filter: brightness(1.35);
 		}
 	}
-	@keyframes breathe {
+	@keyframes marker-pulse {
 		50% {
-			transform: translateY(-2%) scaleY(1.015);
-		}
-	}
-	@keyframes train {
-		35% {
-			transform: rotate(-8deg) translate(-4%, -2%);
-		}
-		70% {
-			transform: rotate(8deg) translate(5%, 1%);
-		}
-	}
-	@keyframes work {
-		50% {
-			transform: rotate(5deg) translate(3%, 2%);
-		}
-	}
-	@keyframes sleep {
-		50% {
-			transform: rotate(76deg) translate(15%, 18%) scale(0.86);
-		}
-	}
-	@keyframes eat {
-		50% {
-			transform: rotate(3deg) translateY(2%);
+			box-shadow:
+				0 0 0 0.45rem rgba(213, 170, 89, 0.05),
+				0 0.6rem 1.2rem rgba(0, 0, 0, 0.55);
 		}
 	}
 	@keyframes rise {
@@ -732,18 +709,6 @@
 		*::after {
 			animation: none !important;
 			transition: none !important;
-		}
-		.rig {
-			transform: none;
-		}
-		.pose-sleep .rig {
-			transform: rotate(76deg) translate(15%, 18%) scale(0.88);
-		}
-		.pose-downed .rig {
-			transform: rotate(58deg) translate(15%, 10%);
-		}
-		.pose-dead .rig {
-			transform: rotate(82deg) translate(15%, 20%);
 		}
 		.event-cue {
 			opacity: 1;

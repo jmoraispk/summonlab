@@ -1,5 +1,8 @@
 # Character Pack 2 variation and monster-grade revision
 
+> **Historical renderer note:** ADR 0065 retires the procedural character renderer discussed in
+> this revision. The manifest and authored candidate findings remain valid production evidence.
+
 Status: **implemented as reviewable `human-v5` and `pack-two-monster-grades-v1` candidates**
 
 ## Accepted feedback

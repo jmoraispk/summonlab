@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import HeroRig from '$lib/components/HeroRig.svelte';
 	import faceProof from '../../../../../../assets/heroes/visuals/forge-v2/revisions/human-v5-face-grammar-proof-v1.png';
 	import variationProof from '../../../../../../assets/heroes/visuals/forge-v2/revisions/human-v5-face-attire-proof-v1.png';
 
@@ -207,7 +206,12 @@
 		<div class="lineup-stage">
 			{#each data.lineup as draft (draft.manifest.characterId)}
 				<article style={`--height:${draft.manifest.heightCm}`}>
-					<div class="lineup-rig"><HeroRig manifest={draft.manifest} compact /></div>
+					<div
+						class="height-measure"
+						aria-label={`${draft.manifest.heightCm} centimeter data marker`}
+					>
+						<span></span>
+					</div>
 					<strong>{draft.manifest.heightCm}</strong>
 					<span>{draft.manifest.physiology?.heightBand} · {draft.manifest.bodyBuild}</span>
 				</article>
@@ -217,11 +221,19 @@
 
 	<section class="contact-sheet" aria-label="One hundred deterministic hero manifests">
 		{#each data.drafts as draft, index (draft.manifest.characterId)}
-			<article data-testid="contact-card">
+			<article
+				data-testid="contact-card"
+				data-build={draft.manifest.bodyBuild}
+				data-height-band={draft.manifest.physiology?.heightBand}
+				data-proportion={draft.manifest.physiology?.proportions?.profile}
+			>
 				<header>
 					<span>{String(index + 1).padStart(3, '0')}</span><code>{draft.recipe.seed}</code>
 				</header>
-				<div class="rig"><HeroRig manifest={draft.manifest} compact /></div>
+				<div class="manifest-mark" aria-label="Manifest data only; portrait not authored">
+					<span aria-hidden="true">{'✦'.repeat(draft.manifest.rarityStars)}</span>
+					<small>Data only</small>
+				</div>
 				<h2>{draft.manifest.displayName}</h2>
 				<p>
 					{draft.manifest.adultAge} · {draft.manifest.heightCm} cm · {draft.manifest.bodyBuild}
@@ -245,8 +257,8 @@
 
 	<footer class="page-footer">
 		<p>
-			Manifest bytes are authoritative. These code-native rigs are distribution diagnostics, not
-			approved portrait art.
+			Manifest bytes are authoritative. These data markers are distribution diagnostics, not
+			character art.
 		</p>
 		<code>{data.generationVersion} · 1,000 audited · 100 displayed · deterministic export</code>
 	</footer>
@@ -525,14 +537,25 @@
 		min-width: 7rem;
 		place-items: center;
 	}
-	.lineup-rig {
-		width: 6.5rem;
+	.height-measure {
+		display: grid;
+		width: 2.5rem;
 		height: calc(var(--height) * 1.8px);
+		align-items: end;
+		border-right: 1px solid rgba(210, 160, 77, 0.65);
+		background: repeating-linear-gradient(
+			to bottom,
+			transparent 0 1.75rem,
+			rgba(210, 160, 77, 0.22) 1.75rem 1.8rem
+		);
 	}
-	.lineup-rig :global(figure),
-	.lineup-rig :global(svg) {
-		width: 100%;
-		height: 100%;
+	.height-measure span {
+		display: block;
+		width: 0.65rem;
+		height: 0.65rem;
+		margin: 0 0 -0.3rem auto;
+		border-radius: 50%;
+		background: #d2a04d;
 	}
 	.lineup-stage strong,
 	.lineup-stage span {
@@ -582,18 +605,22 @@
 		color: #55737b;
 		font-size: 0.4rem;
 	}
-	.rig {
+	.manifest-mark {
+		display: grid;
 		height: 8rem;
 		margin: 0.35rem 0;
-		overflow: hidden;
+		place-content: center;
+		gap: 0.45rem;
+		border: 1px solid rgba(210, 160, 77, 0.16);
+		color: #d2a04d;
+		text-align: center;
+		background: radial-gradient(circle, rgba(210, 160, 77, 0.1), transparent 55%), #080b10;
 	}
-	.rig :global(figure) {
-		width: 100%;
-		height: 100%;
-	}
-	.rig :global(svg) {
-		width: 100%;
-		height: 100%;
+	.manifest-mark small {
+		color: rgba(246, 241, 231, 0.38);
+		font-size: 0.42rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
 	}
 	.contact-sheet h2 {
 		margin: 0.35rem 0;
@@ -715,7 +742,7 @@
 			border-color: #bbb;
 			background: #fff;
 		}
-		.rig {
+		.manifest-mark {
 			float: left;
 			width: 12mm;
 			height: 18mm;

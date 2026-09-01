@@ -48,10 +48,12 @@ apps/web/src/lib/components/living-village/hero-activity/**
 docs/evidence/living-village-hero-activity-*
 ```
 
-You may read `HearthScene.svelte`, `LivingHearthScene.svelte`, `HeroRig.svelte`, `/settlement-lab`,
+You may read `HearthScene.svelte`, `LivingHearthScene.svelte`, `/settlement-lab`,
 existing hero assets, and the Living Village wiki pages. Do not edit the unified Village route,
 shared layouts, homepage navigation, production routes, contracts, catalogs, other lab routes, or
-another agent's component folder.
+another agent's component folder. Do not introduce procedural character renderers. Use approved
+authored character art when available; otherwise show a neutral location or pending-art marker that
+does not depict a person.
 
 Suggested branch: `codex/lv-hero-activity` in its own worktree, based on the latest
 `codex/shared-system-architecture`.

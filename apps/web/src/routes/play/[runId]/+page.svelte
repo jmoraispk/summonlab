@@ -10,7 +10,7 @@
 	} from '@summonlab/contracts';
 	import { onMount, tick } from 'svelte';
 	import EventJournal from '$lib/components/EventJournal.svelte';
-	import HeroRig from '$lib/components/HeroRig.svelte';
+	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
@@ -284,7 +284,17 @@
 							? 'Listen before speaking.'
 							: 'Balance first. Then reach.'}
 				</div>
-				<HeroRig manifest={snapshot.manifest} {walking} />
+				{#if data.heroPortrait}
+					<img
+						class="walking-portrait"
+						src={data.heroPortrait.publicPath}
+						width={data.heroPortrait.width}
+						height={data.heroPortrait.height}
+						alt={`${snapshot.manifest.displayName} crossing Hearth 01`}
+					/>
+				{:else}
+					<HeroArtPlaceholder name={snapshot.manifest.displayName} compact />
+				{/if}
 			</div>
 
 			<div class="foreground"><span></span><span></span><span></span></div>
@@ -432,7 +442,7 @@
 					alt={`${snapshot.manifest.displayName} portrait`}
 				/>
 			{:else}
-				<HeroRig manifest={snapshot.manifest} compact />
+				<HeroArtPlaceholder name={snapshot.manifest.displayName} compact />
 			{/if}
 		</div>
 		<div class="hud-copy">
@@ -908,6 +918,15 @@
 
 	.walker.at-destination {
 		left: 75%;
+	}
+
+	.walking-portrait {
+		display: block;
+		width: 100%;
+		aspect-ratio: 2 / 3;
+		object-fit: cover;
+		object-position: 50% 18%;
+		mask-image: linear-gradient(#000 82%, transparent);
 	}
 
 	.thought {

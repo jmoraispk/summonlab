@@ -1,5 +1,9 @@
 # Character Pack 2 completion audit
 
+> **Historical audit:** ADR 0065 retires the procedural runtime proof and renderer recorded here.
+> Authored candidate assets and manifest audits remain current; deleted route references below
+> describe the state at the time of this audit.
+
 Date: **2026-08-29**
 
 Implementation status: **complete**

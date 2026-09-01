@@ -48,8 +48,8 @@ change.
 - Hero identity has separate layers: body and appearance belong to the visual manifest; stable
   personality, mutable affect, goals, habits, knowledge, and relationships belong to cognition and
   society.
-- Player-facing portraits and conversations use realistic, identity-locked art. Code-native rigs
-  remain useful for small settlement and tactical figures.
+- Player-facing heroes use approved, identity-locked authored art at every scale. Until an authored
+  settlement or tactical asset exists, the UI shows a non-character location or pending-art marker.
 - The supplied progression document is authoritative over earlier conversational conflicts. Star
   caps are `10, 20, 30, 40, 50, 70, 99` for `1★` through `7★`; unfinished source material remains
   visibly unfinished rather than filled by older assumptions.

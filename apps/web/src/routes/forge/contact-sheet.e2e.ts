@@ -20,15 +20,11 @@ test('renders and exports the deterministic Pack 2 cohort audit', async ({ page 
 	]);
 	await expect(page.getByText('pack-two-cohort-0', { exact: true })).toBeVisible();
 	await expect(page.getByText('pack-two-cohort-99', { exact: true })).toBeVisible();
-	const renderedDimensions = await page
-		.getByTestId('contact-card')
-		.locator('figure')
-		.evaluateAll((figures) => ({
-			builds: new Set(figures.map((figure) => (figure as HTMLElement).dataset.build)).size,
-			heightBands: new Set(figures.map((figure) => (figure as HTMLElement).dataset.heightBand))
-				.size,
-			proportions: new Set(figures.map((figure) => (figure as HTMLElement).dataset.proportion)).size
-		}));
+	const renderedDimensions = await page.getByTestId('contact-card').evaluateAll((cards) => ({
+		builds: new Set(cards.map((card) => (card as HTMLElement).dataset.build)).size,
+		heightBands: new Set(cards.map((card) => (card as HTMLElement).dataset.heightBand)).size,
+		proportions: new Set(cards.map((card) => (card as HTMLElement).dataset.proportion)).size
+	}));
 	expect(renderedDimensions).toEqual({ builds: 6, heightBands: 4, proportions: 4 });
 	if (process.env.CAPTURE_PHASE3_CONTACT) {
 		await page.screenshot({ path: process.env.CAPTURE_PHASE3_CONTACT, fullPage: true });

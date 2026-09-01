@@ -343,7 +343,7 @@ appearance seed
   → height and body composition
   → face and phenotype ranges
   → hair, eyes, marks, voice, posture
-  → outfit fit and rig recipe
+  → outfit fit and approved presentation recipe
   → stable manifest hash
 ```
 
@@ -537,7 +537,6 @@ Development routes are unavailable in production builds unless explicitly secure
 | `/visual-lab` | hash-bound asset comparison and append-only human review gate |
 | `/visual-lab/summon-card` | development-only, hash-bound summon-card request preview and one-shot execution gate |
 | `/visual-lab/runtime-bundles` | approved-only WebP budget ledger and live PixiJS bundle proof |
-| `/visual-lab/recognition` | human-gated identity stress matrix and measured 390×844/2× delivery profile |
 | `/replay/[runId]` | event timeline and deterministic replay |
 | `/debug/decisions/[jobId]` | redacted packet/result inspector |
 
@@ -715,7 +714,7 @@ This hybrid keeps the tower coherent and testable while allowing the cast to mak
 
 ```text
 art brief → original concept → approved reference sheet
-   → layered source → rig/export → asset manifest
+   → layered source → runtime export → asset manifest
    → automated checks → in-game review → approved bundle
 ```
 
@@ -724,7 +723,7 @@ Source files remain separate from optimized runtime assets. Every runtime asset 
 Initial budgets:
 
 - settlement background: layered at design resolution, tiled/segmented for runtime;
-- hero rig: head, hair groups, torso, upper/lower limbs, hands, expression overlays, equipment anchors;
+- hero art: approved summon, dialogue, roster, and settlement-scale authored exports;
 - portraits: fixed aspect ratios for roster, dialogue, summon card, and memorial;
 - animation: idle, walk, work, speak, react, hurt, downed, and dead before role-specific combat;
 - effects: summon gate, ember power, portal, hidden-route reveal, hit, heal, death, synthesis.
@@ -904,7 +903,7 @@ Estimated engineering effort: **1–2 weeks**.
 progress](progress.md).
 
 - `POL-001` implement deterministic manifest generator and hash;
-- `POL-002` build one original modular hero rig;
+- `POL-002` build one original premium hero identity packet;
 - `POL-003` build minimal `/forge` seed grid and lock/reroll controls;
 - `POL-004` implement summon scene and first-person camera beat;
 - `POL-005` implement one scripted and one random first-choice policy;
@@ -1206,7 +1205,7 @@ Art-system work and engine work may overlap after schemas stabilize. Mission con
 - No feature enters P0 without removing or delaying comparable effort.
 - A visual prototype may fake data; a gameplay milestone may not fake state transitions.
 - Prefer one deep building over five shallow buildings during implementation, then expand after the pattern is stable.
-- Prefer one excellent hero rig over a large inconsistent roster.
+- Prefer one excellent premium hero identity packet over a large inconsistent roster.
 - Never solve an agent-quality issue by exposing hidden world truth.
 - Never solve latency by letting the client apply speculative game consequences.
 - Defer free movement, non-humans, romance, and 100-floor content until the first five floors are fun.
@@ -1218,10 +1217,10 @@ turn incorporates feedback where available and continues reversible production i
 
 1. accept or revise Mara Vey, Remy Nahl, their roster composition, and settlement scale;
 2. review the first approved runtime bundle at summon, dialogue, and roster sizes;
-3. run the seven-case recognition audit, explicitly record every claimed cue, and decide whether
-   Mara survives expression, state, and actual CSS-scale changes;
+3. review Mara's authored anchor, continuity, and settlement-scale images and explicitly record
+   which identity cues survive each approved presentation;
 4. only after visual acceptance, expand the representative cohort from two toward twelve humans;
-5. extend the audit to Remy only after an explicit anchor approval;
+5. extend authored continuity and scale review to Remy only after an explicit anchor approval;
 6. rerun visual, accessibility, performance, browser, and deterministic manifest gates;
 7. commit and push each reviewable checkpoint.
 

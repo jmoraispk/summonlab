@@ -2,6 +2,10 @@
 
 Status: accepted on 2026-08-24.
 
+> **Superseded in part:** ADR 0065 replaces the procedural hero layer with a non-character
+> location/activity marker until approved authored settlement art exists. Server-state projection
+> remains accepted.
+
 ## Context
 
 Hearth 01 needs continuous day/night ambience, visible occupants, and distinct work, sleep, eat,
