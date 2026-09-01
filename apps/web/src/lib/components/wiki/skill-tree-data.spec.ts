@@ -58,6 +58,9 @@ describe('skill tree navigation data', () => {
 		const knowledge = craft.families.find((family) => family.name === 'Knowledge');
 		const body = martial.families.find((family) => family.name === 'Body');
 
+		expect(body?.description).toContain('mounted movement');
+		expect(body?.description).toContain('multi-companion combat command');
+
 		expect(gathering?.skills).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({

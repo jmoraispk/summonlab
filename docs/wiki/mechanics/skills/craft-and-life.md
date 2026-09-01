@@ -107,9 +107,9 @@ Feeds Forging, Alchemy and Cooking, and makes hauling heroes worth a roster slot
 
 ## Knowledge
 
-Craft and Life. Literacy, identification, appraisal, cartography, language, research, and specialist
-understanding. The support ladder everything else quietly depends on — and the only route to
-revealing another hero's aptitudes.
+Craft and Life. Literacy, identification, appraisal, cartography, language, research, teaching, and
+specialist understanding. The support ladder everything else quietly depends on — and the only route
+to revealing another hero's aptitudes.
 
 | # | Skill | Label | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |

@@ -99,22 +99,30 @@ const FORBIDDEN_SKILL_REFERENCES = [
 ] as const;
 
 const RETIRED_CRAFT_FAMILIES = ['Beast', 'Lore'] as const;
+const RETIRED_CRAFT_REQUIREMENT = /\b(?:Beast|Lore)(?:[ -]+family)?[ -]+prerequisite\b/iu;
 
 function retiredCraftFamilyReferences(sourcePath: string, source: string): string[] {
-	return RETIRED_CRAFT_FAMILIES.flatMap((family) => {
+	const familyReferences = RETIRED_CRAFT_FAMILIES.flatMap((family) => {
 		const escapedFamily = family.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 		const declared = [
-			new RegExp(`^Family:\\s+\\*\\*${escapedFamily}\\*\\*\\s*$`, 'mu'),
+			new RegExp(`^Family:\\s+(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*$`, 'mu'),
 			new RegExp(`^#{1,2}\\s+${escapedFamily}\\s*$`, 'mu'),
 			new RegExp(`^\\|\\s*Craft\\s*\\|[^\\n]*\\b${escapedFamily}\\b`, 'imu'),
 			new RegExp(`^\\|\\s*(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*\\|`, 'imu'),
 			new RegExp(`\\]\\([^)]*#${family.toLowerCase()}\\)`, 'iu'),
-			new RegExp(`name:\\s*['\"]${escapedFamily}['\"]\\s*,\\s*class:\\s*['\"]crafting['\"]`, 'iu')
+			new RegExp(`\\bname:\\s*['\"]${escapedFamily}['\"]`, 'iu'),
+			new RegExp('`' + escapedFamily + '`\\s+family\\b', 'iu')
 		];
 		return declared.some((pattern) => pattern.test(source))
 			? [`${sourcePath}: retired Craft family ${family}`]
 			: [];
 	});
+	return [
+		...familyReferences,
+		...(RETIRED_CRAFT_REQUIREMENT.test(source)
+			? [`${sourcePath}: retired Craft family requirement`]
+			: [])
+	];
 }
 
 export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]): string[] {
@@ -139,7 +147,10 @@ export function findForbiddenSkillReferencesInAuthoredSources(
 		files.filter(
 			({ sourcePath }) =>
 				sourcePath.startsWith('docs/wiki/') ||
+				sourcePath.startsWith('docs/decisions/') ||
+				sourcePath.startsWith('docs/evidence/') ||
 				sourcePath === 'apps/web/src/lib/components/wiki/SkillTree.svelte' ||
+				sourcePath === 'apps/web/src/lib/components/wiki/skill-tree-data.ts' ||
 				sourcePath === 'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
 		)
 	);
@@ -430,6 +441,17 @@ export function validateMigrationLedger(
 		}
 		if (record.disposition === 'delete' && !record.rationale)
 			errors.push(`delete record ${record.sourceId} requires rationale`);
+		if (record.disposition !== 'delete' && record.disposition !== 'merge') {
+			for (const [field, value] of [
+				['requires', record.replacementRequires ?? record.requires],
+				['effect', record.replacementEffect ?? record.effect]
+			] as const) {
+				if (RETIRED_CRAFT_REQUIREMENT.test(value))
+					errors.push(
+						`${record.sourceId} effective ${field} contains retired Craft family prerequisite`
+					);
+			}
+		}
 	}
 
 	if (legacyInventory) {

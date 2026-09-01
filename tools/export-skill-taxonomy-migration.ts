@@ -425,7 +425,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 			...row,
 			disposition: 'rehome',
 			target: { domain: 'Martial', family: 'Body', skill: row.name },
-			replacementRequires: 'Riding Master, Body skill at Expert'
+			replacementRequires: 'Riding Master, another Martial skill at Expert'
 		};
 
 	if (source === 'Beast:Breeding' || source === 'Beast:Monarch of Beasts')

@@ -27,14 +27,14 @@ Add assertions for:
 
 - exact Craft families `Alchemy, Cooking, Forging, Gathering, Knowledge`;
 - target totals `493`, with `258 Martial`, `160 Magical`, `75 Craft`;
-- Craft counts `16, 16, 12, 18, 13` by approved family;
+- Craft counts `16, 12, 16, 18, 13` for Alchemy, Cooking, Forging, Gathering, and Knowledge;
 - `Calm` and `Feed` merge into `Animal Handling`;
 - former Beast rows rehome to their approved Gathering, Knowledge, or Body destinations;
 - `Pack Bond` remains a separate Body skill whose replacement effect explicitly commands several tamed companions to coordinate attacks;
 - `Greater Taming` follows `Taming`, not Pack Bond;
 - active prerequisite text contains no `Beast prerequisite` or `Lore prerequisite`.
 
-Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts tools/export-skill-taxonomy-migration.spec.ts`  
+Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts tools/export-skill-taxonomy-migration.spec.ts`
 Expected: FAIL on the old six-family mapping and counts.
 
 **Step 2: Implement deterministic mappings**
@@ -43,9 +43,9 @@ Update the allowed Craft families and exporter mappings. Preserve source identit
 
 **Step 3: Regenerate and verify the ledger**
 
-Run: `pnpm exec tsx tools/export-skill-taxonomy-migration.ts --write`  
-Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts tools/export-skill-taxonomy-migration.spec.ts`  
-Run: `pnpm validate:skill-taxonomy`  
+Run: `pnpm exec tsx tools/export-skill-taxonomy-migration.ts --write`
+Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts tools/export-skill-taxonomy-migration.spec.ts`
+Run: `pnpm validate:skill-taxonomy`
 Expected: PASS after canonical Markdown is synchronized in Task 2; focused exporter tests should pass in this task.
 
 **Step 4: Commit**
@@ -67,7 +67,7 @@ Commit message: `feat(skills): encode five-family craft migration`
 
 Extend taxonomy tests so active authored sources cannot declare Beast or Lore as families and canonical target Markdown must match the generated ledger.
 
-Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts`  
+Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts`
 Expected: FAIL while old wiki text remains.
 
 **Step 2: Apply the approved taxonomy**
@@ -82,9 +82,9 @@ Expected: FAIL while old wiki text remains.
 
 **Step 3: Validate canonical agreement**
 
-Run: `pnpm validate:skill-taxonomy`  
-Run: `pnpm validate:wiki`  
-Run: `rg -n "\b(Beast|Lore)\b" docs/wiki apps/web/src/routes/living-village-lab/summon/fixtures.ts`  
+Run: `pnpm validate:skill-taxonomy`
+Run: `pnpm validate:wiki`
+Run: `rg -n "\b(Beast|Lore)\b" docs/wiki apps/web/src/routes/living-village-lab/summon/fixtures.ts`
 Expected: validators PASS; remaining matches, if any, refer to beasts as creatures or clearly historical records rather than active family labels.
 
 **Step 4: Commit**
@@ -103,7 +103,7 @@ Commit message: `docs(skills): establish gathering and knowledge families`
 
 Assert exact 5/5/5 family symmetry, the absence of Beast/Lore nodes, and representative links for Gathering, Knowledge, and Body including Pack Bond.
 
-Run: `pnpm exec vitest run apps/web/src/lib/components/wiki/skill-tree-data.spec.ts`  
+Run: `pnpm exec vitest run apps/web/src/lib/components/wiki/skill-tree-data.spec.ts`
 Expected: FAIL against the old six-family Craft projection.
 
 **Step 2: Update the projection**
@@ -112,10 +112,10 @@ Update only taxonomy data and concise descriptions. Preserve current typography,
 
 **Step 3: Run focused UI verification**
 
-Run: `pnpm exec vitest run apps/web/src/lib/components/wiki/skill-tree-data.spec.ts`  
-Run: `PLAYWRIGHT_PORT=4178 pnpm --filter @summonlab/web exec playwright test src/routes/wiki/skill-tree.e2e.ts`  
-Run: `pnpm --filter @summonlab/web lint`  
-Run: `pnpm --filter @summonlab/web check`  
+Run: `pnpm exec vitest run apps/web/src/lib/components/wiki/skill-tree-data.spec.ts`
+Run: `PLAYWRIGHT_PORT=4178 pnpm --filter @summonlab/web exec playwright test src/routes/wiki/skill-tree.e2e.ts`
+Run: `pnpm --filter @summonlab/web lint`
+Run: `pnpm --filter @summonlab/web check`
 Run: `pnpm --filter @summonlab/web build`
 
 Inspect `/wiki/skill-tree` in a live browser at desktop and mobile widths, confirming keyboard traversal, five Craft nodes, readable expanded skills, stable layout, and reduced-motion behavior.

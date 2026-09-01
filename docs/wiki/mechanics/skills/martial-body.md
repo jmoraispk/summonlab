@@ -80,7 +80,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 66 | **Undying** | — | C | P | Set Jaw Master, survived 500 near-deaths | Survives one otherwise fatal blow per engagement |
 | 67 | **Riding** | — | E | P | Animal Handling Intermediate | Mount and control a trained beast |
 | 68 | **Pack Bond** | — | D | P | Taming Master | Commands several tamed companions to coordinate attacks on the hero's behalf. |
-| 69 | **Mounted Combat** | — | D | P | Riding Master, Body skill at Expert | Full combat capability while mounted |
+| 69 | **Mounted Combat** | — | D | P | Riding Master, another Martial skill at Expert | Full combat capability while mounted |
 | 70 | **Bonded Mount** | — | C | P | Mounted Combat Master, Breeding Expert | The mount levels, gains skills, and cannot be permanently killed |
 
 ---

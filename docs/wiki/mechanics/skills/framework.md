@@ -239,7 +239,7 @@ Skills are not confined to combat.
 | **Polearm** | Long-shafted melee technique; optional Spear, Halberd, Glaive, or Polehammer labels |
 | **Ranged** | Bow, crossbow, and sling technique, narrowed by equipment labels |
 | **Shield** | Blocking, interception, formation defense, and ally cover |
-| **Body** | Unarmed combat, grappling, movement, endurance, awareness, and general combat technique |
+| **Body** | Unarmed combat, grappling, movement, endurance, awareness, mounted movement, and commanding several companions in combat |
 
 #### Magical
 

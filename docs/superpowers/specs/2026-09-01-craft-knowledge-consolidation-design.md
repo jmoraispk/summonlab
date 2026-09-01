@@ -1,7 +1,7 @@
 # Craft Knowledge Consolidation Design
 
-**Date:** 2026-09-01  
-**Status:** Approved for implementation  
+**Date:** 2026-09-01
+**Status:** Approved for implementation
 **Supersedes:** The Craft-family portion of the 2026-08-31 skill-taxonomy consolidation design
 
 ## Goal

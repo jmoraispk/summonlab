@@ -400,7 +400,7 @@
 				"family": "Body",
 				"skill": "Mounted Combat"
 			},
-			"replacementRequires": "Riding Master, Body skill at Expert"
+			"replacementRequires": "Riding Master, another Martial skill at Expert"
 		},
 		{
 			"sourceId": "craft-and-life.md#beast:9",

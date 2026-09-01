@@ -101,7 +101,8 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 			{
 				name: 'Body',
 				href: bodyHref,
-				description: 'Movement, endurance, unarmed form, and mounted companion command.',
+				description:
+					'Movement, endurance, unarmed form, mounted movement, and multi-companion combat command.',
 				labels: [equipment('Unarmed')],
 				skills: [
 					skill('Footing', bodyHref),

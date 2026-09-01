@@ -19,11 +19,41 @@ afterEach(async () => {
 });
 
 describe('skill taxonomy migration exporter', () => {
-	it('encodes the approved five-family Craft consolidation', async () => {
-		const ledger = JSON.parse(await readFile(SKILL_MIGRATION_V2_PATH, 'utf8')) as {
+	it('generates and verifies the approved five-family Craft consolidation', async () => {
+		await expect(exportSkillTaxonomyMigration({ mode: 'check' })).resolves.toEqual({
+			mode: 'check',
+			sourceRowCount: 520,
+			inSync: true,
+			written: false
+		});
+
+		const workspaceRoot = await mkdtemp(path.join(os.tmpdir(), 'skill-taxonomy-sync-'));
+		temporaryRoots.push(workspaceRoot);
+		const inventoryPath = path.join(workspaceRoot, LEGACY_SKILL_INVENTORY_V1_PATH);
+		await mkdir(path.dirname(inventoryPath), { recursive: true });
+		await writeFile(inventoryPath, await readFile(LEGACY_SKILL_INVENTORY_V1_PATH, 'utf8'));
+
+		await expect(exportSkillTaxonomyMigration({ workspaceRoot, mode: 'write' })).resolves.toEqual({
+			mode: 'write',
+			sourceRowCount: 520,
+			inSync: true,
+			written: true
+		});
+		await expect(exportSkillTaxonomyMigration({ workspaceRoot, mode: 'check' })).resolves.toEqual({
+			mode: 'check',
+			sourceRowCount: 520,
+			inSync: true,
+			written: false
+		});
+
+		const ledger = JSON.parse(
+			await readFile(path.join(workspaceRoot, SKILL_MIGRATION_V2_PATH), 'utf8')
+		) as {
 			records: Array<{
 				sourceId: string;
 				disposition: string;
+				requires: string;
+				effect: string;
 				target?: { domain: string; family: string; skill: string };
 				mergeTarget?: { domain: string; family: string; skill: string };
 				replacementRequires?: string;
@@ -85,6 +115,10 @@ describe('skill taxonomy migration exporter', () => {
 			target: { domain: 'Craft', family: 'Gathering', skill: 'Greater Taming' },
 			replacementRequires: expect.stringMatching(/^Taming Master/u)
 		});
+		expect(bySource.get('craft-and-life.md#beast:8')).toMatchObject({
+			target: { domain: 'Martial', family: 'Body', skill: 'Mounted Combat' },
+			replacementRequires: 'Riding Master, another Martial skill at Expert'
+		});
 		expect(
 			Object.fromEntries(
 				ledger.records
@@ -112,10 +146,12 @@ describe('skill taxonomy migration exporter', () => {
 		});
 		expect(
 			activeRecords.flatMap((record) => [
-				record.replacementRequires ?? '',
-				record.replacementEffect ?? ''
+				record.replacementRequires ?? record.requires,
+				record.replacementEffect ?? record.effect
 			])
-		).not.toContainEqual(expect.stringMatching(/(?:Beast|Lore) prerequisite/u));
+		).not.toContainEqual(
+			expect.stringMatching(/\b(?:Beast|Lore)(?:[ -]+family)?[ -]+prerequisite\b/iu)
+		);
 	});
 
 	it('rejects a coordinated inventory and ledger rewrite outside the frozen digest', async () => {
