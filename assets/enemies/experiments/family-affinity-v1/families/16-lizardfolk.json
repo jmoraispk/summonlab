@@ -30,10 +30,10 @@
 		},
 		"fire": {
 			"constructionDimensions": [
-				"Natural and carried materials gain fired-clay scale guards, ember-cut obsidian, charred reed wraps, pitch gourds, and heat-resistant bone vents mounted around existing crest and dorsal gaps.",
-				"Actions show fuel and cooling through wick-lit warning paint, directional smoke along the tail, brief obsidian ignition, and black matte seams where planted scales shed heat."
+				"Tier-safe construction: T1 Scout uses ember-cut bone spear points, charred hide wrap, a pitch cord along the tail, and fired-clay guards on existing scale rows and planted feet; T2 Warrior may vent through its low crest and reed shield; T3–T5 may mount heat-resistant bone vents only around their mature dorsal spines and armor.",
+				"Actions show fuel and cooling through T1 spear-wick smoke and a matte tail scale, T2 shield-edge ignition, and T3–T5 directional smoke along the selected dorsal gap and obsidian weapon."
 			],
-			"counterplaySignal": "A pitch gourd feeds one bright line from crest to weapon or tail; cut the wrap before ignition or strike the matte dorsal gap during cooldown.",
+			"counterplaySignal": "T1 Scout exposes the pitch cord between its bone spear, hide wrap, and tail before ignition; T2 Warrior exposes the low-crest vent or shield wrap, while T3–T5 expose the matte dorsal gap during cooldown.",
 			"forbidden": [
 				"Palette-only orange or red scales that duplicate family warning colors",
 				"Glow-only fire treatment without fuel, combustion, and cooling structure",
@@ -43,10 +43,10 @@
 		},
 		"earth": {
 			"constructionDimensions": [
-				"Affinity structure adds fitted stone scutes, sediment lamination inside shields, crystal wedges between dorsal plates, and mineral tail counterweights beyond ordinary family-native mud.",
-				"Locomotion becomes load-bearing through anchored claws, compressed strata rings, falling grit, and pale fractures at the active shield rim, dorsal wedge, or tail weight."
+				"Tier-safe construction: T1 Scout uses a mineral-capped bone spear, grit-stiffened hide wrap, fitted guards on existing scale rows, a tail counterweight, and wedges beneath planted feet; T2 Warrior may laminate its shield and low crest; T3–T5 may place crystal wedges between mature dorsal plates and heavier natural armor.",
+				"Locomotion becomes load-bearing through the T1 planted foot and fractured spear cap, the T2 shield anchor, and T3–T5 compressed strata at the active dorsal wedge or tail weight."
 			],
-			"counterplaySignal": "The active claw locks into a mineral ring and its dorsal wedge turns chalk-white; break either anchor or cross to the unloaded tail side.",
+			"counterplaySignal": "T1 Scout locks one planted foot into a mineral ring while the bone spear cap turns chalk-white; T2 Warrior exposes its low-crest or shield anchor, while T3–T5 expose the loaded dorsal wedge before release.",
 			"forbidden": [
 				"Palette-only brown scales or extra mud without fitted mineral structure",
 				"Glow-only earth treatment without anchors, weight, and fractures",
@@ -56,10 +56,10 @@
 		},
 		"wind": {
 			"constructionDimensions": [
-				"Crest, shield, and mantle construction gains hollow spine flutes, slotted reed panels, vane-cut feathers, vented hide, and tail streamers that remain attached to existing anatomy.",
-				"Motion exposes pressure direction through aligned crest vanes, shield flex, coherent grass and dust streamlines, and a still pocket behind the loaded dorsal ridge."
+				"Tier-safe construction: T1 Scout uses whistle holes in the bone spear, a vented hide wrap, tail streamers, and vane strips tied to existing scale rows and planted feet; T2 Warrior may add reed panels and vanes to its low crest; T3–T5 may add hollow flutes and pressure vanes only along mature dorsal spines and mantles.",
+				"Motion exposes pressure through the T1 spear whistle and tail line, the T2 shield flex, and T3–T5 coherent streamlines that leave a still pocket behind the loaded dorsal ridge."
 			],
-			"counterplaySignal": "Crest vanes and reed slats align down one lane while the tail streamer goes still; cross the lee or strike the silent dorsal gap.",
+			"counterplaySignal": "T1 Scout aligns its bone spear, hide-wrap vane, and tail streamer down one lane while a planted foot stays still; T2 Warrior aligns low-crest vanes and reed slats, while T3–T5 expose the silent dorsal gap from the lee.",
 			"forbidden": [
 				"Palette-only pale scales without flutes, vanes, and directional pressure",
 				"Glow-only wind treatment without a force route and still center",

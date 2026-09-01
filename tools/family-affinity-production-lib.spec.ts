@@ -615,15 +615,15 @@ describe('Wave C family packets', () => {
 	);
 
 	it.each([
-		{ fileName: '13-harpies.json', motif: /wing|feather/iu },
-		{ fileName: '14-minotaurs.json', motif: /brazier|eye glow/iu },
-		{ fileName: '15-nagas.json', motif: /sacred water/iu },
-		{ fileName: '16-lizardfolk.json', motif: /swamp|mud/iu },
-		{ fileName: '17-insectoids.json', motif: /amber|wing membrane/iu },
-		{ fileName: '18-arachnids.json', motif: /silk|venom|eye glow/iu }
+		{ fileName: '13-harpies.json', motifs: [/ordinary wing/iu, /loose-feather wind halo/iu] },
+		{ fileName: '14-minotaurs.json', motifs: [/brazier-like eye glow/iu] },
+		{ fileName: '15-nagas.json', motifs: [/sacred water/iu] },
+		{ fileName: '16-lizardfolk.json', motifs: [/swamp/iu, /ordinary mud/iu] },
+		{ fileName: '17-insectoids.json', motifs: [/amber/iu, /wing membrane/iu] },
+		{ fileName: '18-arachnids.json', motifs: [/silk/iu, /venom/iu, /eye glow/iu] }
 	])(
-		'binds $fileName source-native motifs to a non-affinity Normal declaration',
-		async ({ fileName, motif }) => {
+		'binds every $fileName source-native motif to a non-affinity Normal declaration',
+		async ({ fileName, motifs }) => {
 			const packet = FamilyPacketSchema.parse(
 				JSON.parse(
 					await readFile(
@@ -640,11 +640,12 @@ describe('Wave C family packets', () => {
 				packet.affinityThemes.normal.counterplaySignal,
 				...packet.affinityThemes.normal.forbidden
 			];
-			const boundEntry = normalEntries.find(
-				(entry) => /family-native|non-affinity/iu.test(entry) && motif.test(entry)
-			);
-
-			expect(boundEntry).toBeDefined();
+			for (const motif of motifs) {
+				const boundEntry = normalEntries.find(
+					(entry) => /family-native|non-affinity/iu.test(entry) && motif.test(entry)
+				);
+				expect(boundEntry, `direct Normal binding for ${motif.source}`).toBeDefined();
+			}
 			expect(normalEntries.join(' ')).toMatch(/unexplained elemental anatomy/iu);
 			expect(normalEntries.join(' ')).toMatch(/unexplained elemental glow/iu);
 			expect(normalEntries.join(' ')).toMatch(/unexplained environmental wake/iu);
@@ -691,9 +692,156 @@ describe('Wave C family packets', () => {
 				const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
 				expect(construction, `${affinity} early anatomy branch`).toMatch(early);
 				expect(construction, `${affinity} later anatomy branch`).toMatch(later);
+				const counterplay = packet.affinityThemes[affinity].counterplaySignal;
+				if (fileName === '15-nagas.json') {
+					expect(counterplay, `${affinity} hood-independent counterplay`).not.toMatch(
+						/hood|multiple arms/iu
+					);
+				}
+				if (fileName === '17-insectoids.json') {
+					expect(counterplay, `${affinity} wing-independent counterplay`).not.toMatch(
+						/wing root|wing case|functional wing/iu
+					);
+				}
+				if (fileName === '18-arachnids.json') {
+					expect(counterplay, `${affinity} torso-independent counterplay`).not.toMatch(
+						/humanoid|torso|hand/iu
+					);
+				}
 			}
 		}
 	);
+
+	it('keeps Harpy elemental attachments tier-appropriate before gold ankle status markers', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/13-harpies.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+			const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
+			const [earlyConstruction, matureConstruction] = construction.split(/T4[–-]T5/u);
+			expect(earlyConstruction, `${affinity} T1–T3 construction`).toMatch(/T1[–-]T3/iu);
+			expect(earlyConstruction, `${affinity} source-supported attachment`).toMatch(
+				/bead|strap|talon|wing root/iu
+			);
+			expect(earlyConstruction, `${affinity} premature status marker`).not.toMatch(
+				/gold ankle ring|gold cuff/iu
+			);
+			expect(matureConstruction, `${affinity} T4–T5 status attachment`).toMatch(
+				/gold[^.]*ankle ring|gold[^.]*cuff/iu
+			);
+
+			const [earlyCounterplay, matureCounterplay] =
+				packet.affinityThemes[affinity].counterplaySignal.split(/T4[–-]T5/u);
+			expect(earlyCounterplay, `${affinity} T1–T3 counterplay`).toMatch(/T1[–-]T3/iu);
+			expect(earlyCounterplay, `${affinity} premature counterplay marker`).not.toMatch(
+				/gold ankle ring|gold cuff/iu
+			);
+			expect(matureCounterplay, `${affinity} T4–T5 counterplay`).toBeTruthy();
+		}
+	});
+
+	it('keeps every Minotaur elemental T1 branch on uncapped initiate equipment', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/14-minotaurs.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+			const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
+			const [t1Construction, matureConstruction] = construction.split(/T2[–-]T5/u);
+			expect(t1Construction, `${affinity} T1 anatomy`).toMatch(/T1 Bull-kin/iu);
+			expect(t1Construction, `${affinity} T1 source identity`).toMatch(
+				/short uncapped horns[^.]*rope harness[^.]*wooden maul[^.]*unarmored/iu
+			);
+			expect(t1Construction, `${affinity} premature mature equipment`).not.toMatch(
+				/\bbronze\b|\bcap(?:ped)?\b|\bchain\b|\bplate\b|\bcistern\b|\barmor\b/iu
+			);
+			expect(matureConstruction, `${affinity} T2–T5 construction`).toBeTruthy();
+
+			const [t1Counterplay, matureCounterplay] =
+				packet.affinityThemes[affinity].counterplaySignal.split(/T2[–-]T5/u);
+			expect(t1Counterplay, `${affinity} T1 counterplay`).toMatch(/T1 Bull-kin/iu);
+			expect(t1Counterplay, `${affinity} T1 readable anchor`).toMatch(
+				/rope|wood|hoof|short horn|tail|planted/iu
+			);
+			expect(t1Counterplay, `${affinity} premature mature counterplay`).not.toMatch(
+				/\bbronze\b|\bcap(?:ped)?\b|\bchain\b|\bplate\b|\bcistern\b|\barmor\b/iu
+			);
+			expect(matureCounterplay, `${affinity} T2–T5 counterplay`).toBeTruthy();
+		}
+	});
+
+	it('keeps crestless Lizardfolk T1 Fire, Earth, and Wind construction on source anatomy', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/16-lizardfolk.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		for (const affinity of ['fire', 'earth', 'wind'] as const) {
+			const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
+			const [t1Construction, laterConstruction] = construction.split(/T2 Warrior/u);
+			expect(t1Construction, `${affinity} T1 anatomy`).toMatch(/T1 Scout/iu);
+			expect(t1Construction, `${affinity} T1 source-supported structure`).toMatch(
+				/bone spear|hide wrap|tail|scale row|planted foot/iu
+			);
+			expect(t1Construction, `${affinity} premature crest`).not.toMatch(/crest|dorsal/iu);
+			expect(laterConstruction, `${affinity} T2 low crest`).toMatch(/low crest/iu);
+			expect(laterConstruction, `${affinity} T3–T5 dorsal structure`).toMatch(
+				/T3[–-]T5[^.]*dorsal/iu
+			);
+
+			const [t1Counterplay, laterCounterplay] =
+				packet.affinityThemes[affinity].counterplaySignal.split(/T2 Warrior/u);
+			expect(t1Counterplay, `${affinity} T1 counterplay`).toMatch(/T1 Scout/iu);
+			expect(t1Counterplay, `${affinity} premature counterplay anatomy`).not.toMatch(
+				/crest|dorsal/iu
+			);
+			expect(laterCounterplay, `${affinity} later counterplay`).toBeTruthy();
+		}
+	});
+
+	it('gives the Insectoid Water Queen abdomen-and-comb counterplay instead of active limbs', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/17-insectoids.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+		const [mobileCounterplay, queenCounterplay] =
+			packet.affinityThemes.water.counterplaySignal.split(/T5 Queen/u);
+
+		expect(mobileCounterplay).toMatch(/T1[–-]T4[^.]*active limb/iu);
+		expect(queenCounterplay).toMatch(/abdomen valve|comb cistern/iu);
+		expect(queenCounterplay).not.toMatch(/active limb/iu);
+	});
 });
 
 describe('family affinity production schemas', () => {

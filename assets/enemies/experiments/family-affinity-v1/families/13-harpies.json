@@ -30,10 +30,10 @@
 		},
 		"fire": {
 			"constructionDimensions": [
-				"Feather and harness construction gains char-resistant overlapping covert feathers, ceramic ember beads, heat-darkened gold rings, and pitch-fed wick cords that stop before the living wing roots.",
+				"Tier-safe attachments: T1–T3 use ceramic ember beads on rawhide straps, pitch-fed wick cords beside talons, and char-resistant covert feathers that stop before living wing roots; T4–T5 add heat-darkened gold ankle rings and gold cuffs as mature vent mounts without backfilling those status markers onto earlier forms.",
 				"Flight cycles become combustion-readable through directional smoke between flight feathers, brief trailing flame along selected outer vanes, and a cooling black wing edge after each committed dive."
 			],
-			"counterplaySignal": "A ceramic bead train ignites from ankle to outer wing before the fire dive; breaking the exposed wick or striking the blackened cooling edge cancels the next ignition.",
+			"counterplaySignal": "T1–T3 expose the rawhide strap, ceramic bead train, or wick beside a talon before the fire dive; T4–T5 route that tell through a lifted gold ankle ring or gold cuff, while every tier exposes the blackened cooling wing edge after release.",
 			"forbidden": [
 				"Palette-only orange plumage without changed feather and harness construction",
 				"Glow-only fire treatment without fuel routing, combustion, and cooling response",
@@ -43,10 +43,10 @@
 		},
 		"earth": {
 			"constructionDimensions": [
-				"Hollow-bone and hide construction gains shale flight-feather caps, mineral ankle weights, grit-packed leading edges, and breakaway stone talon sheaths while preserving viable feather spans.",
+				"Tier-safe attachments: T1–T3 bind shale feather caps, mineral weights, and breakaway talon sheaths with bone beads and rawhide straps at talons or wing roots; T4–T5 seat the same loads in reinforced gold ankle rings and gold cuffs without granting rank ornaments to earlier forms.",
 				"Locomotion alternates between weighted glides and hard stone perches: dust falls from loaded feathers, talons lock into visible cracks, and pale fracture seams open in the active weight or sheath."
 			],
-			"counterplaySignal": "The selected ankle weight drops and its crack turns pale before a crushing descent; break that weight or move beyond the committed perch line to force a slow relaunch.",
+			"counterplaySignal": "T1–T3 drop a rawhide-strapped talon weight whose crack turns pale before descent; T4–T5 release the weight from a gold ankle ring or gold cuff, and breaking either tier's visible mount forces a slow relaunch.",
 			"forbidden": [
 				"Palette-only brown plumage without mineral load paths and changed flight behavior",
 				"Glow-only earth treatment without weight, fractures, or breakaway stone construction",
@@ -56,10 +56,10 @@
 		},
 		"wind": {
 			"constructionDimensions": [
-				"Wing construction becomes pressure-specialized through slotted primary feathers, vane-like crest layers, hollow whistle bones, and tension cords between ankle rings and leading edges.",
+				"Tier-safe attachments: T1–T3 tension slotted feathers and hollow whistle bones with rawhide straps between talons and wing roots; T4–T5 anchor those cords to gold ankle rings and gold cuffs while retaining the same wing anatomy.",
 				"Airflow becomes supernatural and directional: visible compression bands follow the selected wing camber, loose feathers align into one lane, and a readable still pocket forms at the inner wing root."
 			],
-			"counterplaySignal": "Both slotted wings lock to one camber and the ordinary loose feathers snap into a straight lane; cross into the lee or strike the still inner wing root before pressure releases.",
+			"counterplaySignal": "T1–T3 pull one rawhide wing-root strap taut as loose feathers snap into a straight lane; T4–T5 lift the linked gold ankle ring or gold cuff, and every tier leaves a still inner wing root open from the lee.",
 			"forbidden": [
 				"Palette-only pale plumage without vane, slot, and pressure construction",
 				"Glow-only wind treatment without directional compression and a still center",
@@ -69,10 +69,10 @@
 		},
 		"water": {
 			"constructionDimensions": [
-				"Feather and jewelry construction gains oil-slick waterproof vanes, shell valves at the ankle rings, narrow skin reservoirs, and braided capillary cords running beside rather than through wing roots.",
+				"Tier-safe attachments: T1–T3 mount shell valves and narrow skin reservoirs on braided rawhide straps beside talons and wing roots; T4–T5 integrate those valves into gold ankle rings and gold cuffs without changing the earlier status silhouette.",
 				"Flight shows coherent filling and release: specific feathers darken as reservoirs charge, narrow cutting sheets leave the selected edge, wet reflections track flow, and drainage exposes the valve."
 			],
-			"counterplaySignal": "One shell valve lifts and its connected feathers darken before the water pass; open the valve or attack the drained matte wing edge after release.",
+			"counterplaySignal": "T1–T3 lift a shell valve on a rawhide talon strap as connected feathers darken; T4–T5 lift that valve from a gold ankle ring or gold cuff, and every tier exposes the drained matte wing edge after release.",
 			"forbidden": [
 				"Palette-only blue plumage without reservoirs, valves, and wet-surface change",
 				"Glow-only water treatment without coherent filling, release, and drainage",

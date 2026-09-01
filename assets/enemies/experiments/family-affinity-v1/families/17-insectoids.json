@@ -72,7 +72,7 @@
 				"Tier-safe anatomy: T1–T2 retain no wings with shell valves between existing segments; T3 retains closed wing cases as paired reservoirs; T4 retains functional wings with capillary membrane veins; T5 remains wingless with hydraulic abdomen chambers and wax-comb cisterns.",
 				"Actions show coherent filling through translucent resin, wet chitin reflection, pressure transfer along existing limbs, controlled jets at caste tools, and visible drainage from the active segment valve."
 			],
-			"counterplaySignal": "A resin chamber swells and a clear fill line reaches the active limb; puncture it or open the segment valve after discharge.",
+			"counterplaySignal": "T1–T4 route a clear fill line from a swelling resin chamber to the active limb; puncture that chamber or open its segment valve after discharge. T5 Queen routes the fill through an abdomen valve into the selected comb cistern; rupture that valve while attendants turn the wingless abdomen, without relying on the Queen's tiny useless limbs.",
 			"forbidden": [
 				"Palette-only blue or glossy chitin without hydraulic construction",
 				"Glow-only water treatment without coherent filling, flow, and drainage",
