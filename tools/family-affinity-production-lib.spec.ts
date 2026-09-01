@@ -220,6 +220,57 @@ describe('Wave A family packets', () => {
 			).toEqual(forms);
 		}
 	);
+
+	it('gives the wingless Dragon Whelp ground-based Fire and Wind construction branches', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/05-dragons.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		expect(packet.forms[0]!.visualDelta).toMatch(/wingless/iu);
+
+		const fireTheme = packet.affinityThemes.fire;
+		expect(fireTheme.constructionDimensions.join(' ')).toMatch(
+			/wingless T1 Whelp.*(?:ground|pounce)/iu
+		);
+		expect(fireTheme.counterplaySignal).toMatch(/wingless T1 Whelp.*ground pounce/iu);
+		expect(fireTheme.constructionDimensions.join(' ')).toMatch(/T2[–-]T5.*(?:wing|membrane)/iu);
+
+		const windTheme = packet.affinityThemes.wind;
+		expect(windTheme.constructionDimensions.join(' ')).toMatch(
+			/wingless T1 Whelp.*(?:ground|pounce)/iu
+		);
+		expect(windTheme.counterplaySignal).toMatch(/wingless T1 Whelp.*ground pounce/iu);
+		expect(windTheme.constructionDimensions.join(' ')).toMatch(/T2[–-]T5.*(?:wing|membrane)/iu);
+	});
+
+	it('keeps all three Mutant Troll motifs incomplete and inert until Wrong-Part Fork selects one', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/04-trolls.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+		const mutantTroll = packet.forms[2]!;
+
+		expect(mutantTroll.visualDelta).toMatch(/three visibly incomplete, inert motifs/iu);
+		expect(mutantTroll.visualDelta).toMatch(/budded extra arm/iu);
+		expect(mutantTroll.visualDelta).toMatch(/sealed second-jaw seam/iu);
+		expect(mutantTroll.visualDelta).toMatch(/outward rib sprouts/iu);
+		expect(mutantTroll.visualDelta).toMatch(/only the selected bud.*completes its motif/iu);
+	});
 });
 
 describe('family affinity production schemas', () => {

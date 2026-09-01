@@ -30,15 +30,16 @@
 		},
 		"fire": {
 			"constructionDimensions": [
-				"Scale and breath anatomy become heat-bearing: blackened scale rims, ember seams beneath overlapping plates, vented horn channels, charred membrane spars, and a visible throat furnace remain integrated with the Dragon body plan.",
-				"Motion and surface response follow combustion cycles through inflating throat plates, directional smoke along spinal ridges, heat-tensioned membrane, cooling belly seams, and flame confined to announced breath or wingbeat lanes."
+				"For the wingless T1 Whelp, heat-bearing construction stays ground-based: blackened scale rims, ember seams beneath belly plates, a visible throat furnace, heat-swollen hindleg seams, and tail-tip smoke align with its committed ground pounce; no wing, membrane, powered-takeoff, or flight anatomy appears early.",
+				"For T2–T5, maturing flight anatomy adds vented horn channels, charred membrane spars, heat-tensioned wings, and directional smoke along the spinal ridge while retaining overlapping scales, pale belly sinks, and the visible throat furnace.",
+				"Across all tiers, motion and surface response follow a readable combustion cycle: throat plates inflate before release, cooling belly seams open afterward, and flame stays confined to the announced ground-pounce, breath, or wingbeat lane."
 			],
-			"counterplaySignal": "The throat furnace closes while pale belly heat sinks open after breath or a powered takeoff; striking the exposed sink interrupts the next combustion cycle.",
+			"counterplaySignal": "For the wingless T1 Whelp, the throat furnace closes and a pale belly heat sink opens after its ground pounce; striking that exposed sink interrupts the next combustion cycle. For T2–T5, the same sink opens after breath or powered takeoff beneath the age-appropriate wing structure.",
 			"forbidden": [
-				"Palette-only fire treatment without throat, scale, horn, and membrane construction changes",
+				"Palette-only fire treatment without tier-appropriate throat, scale, horn, ground-pressure, or membrane construction changes",
 				"Glow-only fire treatment without visible combustion routing or cooling behavior",
-				"Featureless flame anatomy that erases wings, scales, horns, or age silhouette",
-				"Constant emission that hides the breath lane and exposed heat sink"
+				"Featureless flame anatomy that erases scales, horns, the Whelp's wingless body, or later wing silhouettes",
+				"Constant emission that hides the announced ground, breath, or wingbeat lane and exposed heat sink"
 			]
 		},
 		"earth": {
@@ -56,15 +57,16 @@
 		},
 		"wind": {
 			"constructionDimensions": [
-				"Flight anatomy becomes pressure-tuned through ribbed translucent membrane windows, vane-like horn branches, feather-fine scale fringes, hollow spinal channels, and aerodynamic tail fins.",
-				"Silhouette and motion expose airflow via membrane camber, directional vapor channels, debris streamers, pressure dents under the chest, and a visible still center inside every turning lane."
+				"For the wingless T1 Whelp, pressure-tuned construction stays ground-based: feather-fine cheek and flank scale fringes, hollow spinal channels, an aerodynamic tail fin, and pressure dents beneath the chest point along its four-legged ground pounce; no wing, membrane, takeoff, or flight anatomy appears early.",
+				"For T2–T5, maturing flight anatomy adds ribbed translucent membrane windows, vane-like horn branches, adjustable wing camber, and inner-knuckle pressure anchors while retaining directional scale fringes, spinal channels, and tail control.",
+				"Across all tiers, debris streamers and directional vapor channels expose force direction while a visible still center sits behind the Whelp's loaded shoulder or inside each later turning lane."
 			],
-			"counterplaySignal": "Wing windows bow toward the chosen line while the pressure anchor at the inner wing knuckle becomes visibly still; entering that lee or striking the anchor spoils the turn.",
+			"counterplaySignal": "For the wingless T1 Whelp, cheek fringes stream flat before its ground pounce while a still pressure pocket forms behind the loaded shoulder; entering that lee or striking the grounded shoulder spoils the launch. For T2–T5, bowed wing windows and the still inner-knuckle anchor expose the corresponding flight turn.",
 			"forbidden": [
-				"Palette-only wind treatment without pressure-tuned anatomy, camber, and directional debris",
+				"Palette-only wind treatment without tier-appropriate ground-pressure or flight construction and directional debris",
 				"Glow-only wind treatment without readable airflow or a stable pressure anchor",
-				"Transparency alone that removes scale, membrane, and horn construction",
-				"Omnidirectional cloud effects that hide the flight lane"
+				"Transparency alone that removes scale and horn construction, invents Whelp membranes, or erases later wing membranes",
+				"Omnidirectional cloud effects that hide the announced ground-pounce or flight lane"
 			]
 		},
 		"water": {
