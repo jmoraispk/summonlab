@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-rarity-frames`
 
-Design status: **corrected v4 production-review candidate; owner review pending; runtime integration not requested**.
+Design status: **uniform v4 production-review candidates; owner review pending; runtime integration not requested**.
 
 Hero portrait cards use one coherent charcoal, gold, navy, and sapphire frame family across seven
 star ranks. Rarity increases silhouette complexity, ornament density, dragon anatomy, and blue
@@ -29,12 +29,22 @@ sharing the frame's lighting, bevel, shadows, and occlusion. They are not separa
 post-generation overlay. Star rows expand symmetrically from one through seven and stay in the same
 lower visual zone.
 
-The current production-review packet and provenance live in
-`assets/heroes/visuals/rarity-frames-v3/`. It preserves the prior v3 combined sheet, adds a corrected
-v4 neutral authority, seven newly generated 1024×1536 neutral candidates with exact star counts, and
-Fire, Water, Earth, and Wind affinity comparison studies. The affinity begins subtly at rank 3 and
-increases through rank 7 while ranks 1–2 remain neutral. Across every current progression, dragon
-mouths remain completely closed through rank 6; only rank 7 opens both mouths.
+The accepted comparison direction remains preserved in `assets/heroes/visuals/rarity-frames-v3/`.
+The current equal-canvas production packet and provenance live in
+`assets/heroes/visuals/rarity-frames-v4/`. It adds a gemless no-affinity authority and 35 individual
+1024×1536 RGB candidates: Neutral, Fire, Water, Earth, and Wind at every rank from 1 through 7.
+
+Neutral dragons use gemless tempered steel and dark iron without blue gems or affinity emission.
+Ranks 1–2 are byte-identical neutral frames across all five sets; affinity begins subtly at rank 3
+and increases through rank 7. Dragon mouths remain completely closed through rank 6; only rank 7
+opens both mouths.
+
+The internal horizontal hero opening is now a measurable review constraint. Within each seven-rank
+family, widest measured central opening divided by narrowest must be no more than 1.20. Current
+candidate variation ranges from 13.84% to 18.88%. Any correction needed to meet this bound scales the
+complete rendered frame—including its integrated tray and stars—as one indivisible image; the stars
+are never moved independently. Untouched provider renders and normalization hashes remain in the v4
+packet.
 
 All files remain visual-direction candidates. They are not transparent runtime exports and have not
 been registered in any shared catalog. The former v1 layered approach remains rejected provenance,

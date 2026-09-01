@@ -1,0 +1,213 @@
+{
+  "method": "median central warm-white opening width at y=520..1117; complete-frame horizontal scaling only",
+  "canvas": "1024x1536 RGB",
+  "allowed_family_ratio": 1.2,
+  "normalization_band_px": [
+    430,
+    510
+  ],
+  "families": {
+    "neutral": {
+      "openings_px": {
+        "neutral-rank-1-v1.png": 510,
+        "neutral-rank-2-v1.png": 498,
+        "neutral-rank-3-v1.png": 497,
+        "neutral-rank-4-v1.png": 496,
+        "neutral-rank-5-v1.png": 464,
+        "neutral-rank-6-v1.png": 504,
+        "neutral-rank-7-v1.png": 448
+      },
+      "narrowest_px": 448,
+      "widest_px": 510,
+      "ratio": 1.138393,
+      "variation_percent": 13.84,
+      "passes_20_percent_cap": true,
+      "whole_frame_normalizations": {
+        "neutral-rank-1-v1.png": {
+          "provider_source": "references/geometry-raw/neutral/neutral-rank-1-v1-provider.png",
+          "provider_sha256": "1ddd155f8f083396f2836a926aa69eed68b3c6341b81433d7352e442d8b1ea13",
+          "scale_x": 0.942699,
+          "requested_opening_px": 510,
+          "normalized_sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98",
+          "before_opening_px": 541
+        }
+      }
+    },
+    "fire": {
+      "openings_px": {
+        "fire-rank-1-v1.png": 510,
+        "fire-rank-2-v1.png": 498,
+        "fire-rank-3-v1.png": 510,
+        "fire-rank-4-v1.png": 488,
+        "fire-rank-5-v1.png": 480,
+        "fire-rank-6-v1.png": 490,
+        "fire-rank-7-v1.png": 432
+      },
+      "narrowest_px": 432,
+      "widest_px": 510,
+      "ratio": 1.180556,
+      "variation_percent": 18.06,
+      "passes_20_percent_cap": true,
+      "whole_frame_normalizations": {
+        "fire-rank-1-v1.png": {
+          "provider_source": "references/geometry-raw/fire/fire-rank-1-v1-provider.png",
+          "provider_sha256": "1ddd155f8f083396f2836a926aa69eed68b3c6341b81433d7352e442d8b1ea13",
+          "scale_x": 0.942699,
+          "requested_opening_px": 510,
+          "normalized_sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98",
+          "before_opening_px": 541
+        },
+        "fire-rank-3-v1.png": {
+          "provider_source": "references/geometry-raw/fire/fire-rank-3-v1-provider.png",
+          "provider_sha256": "8f306fd5050a226ade5ad1581eac24ac881b7266e8de94630f4b233fa18f9c1b",
+          "scale_x": 0.988372,
+          "requested_opening_px": 510,
+          "normalized_sha256": "6c1025c1dce3e884e254a1f32854bb88f1a5e9ea5851f8127adacd8c6ee3d42d",
+          "before_opening_px": 516
+        },
+        "fire-rank-7-v1.png": {
+          "provider_source": "references/geometry-raw/fire/fire-rank-7-v1-provider.png",
+          "provider_sha256": "5b60d6aa9faefa9a7d51fcf9076ce7dcc558ff5a256f4c73daeaecd60bab7986",
+          "scale_x": 1.04878,
+          "requested_opening_px": 430,
+          "normalized_sha256": "b5b1bdbdbe8462341d53613b8ac29893521cfe64616b1d41a9a6f2fba2011827",
+          "before_opening_px": 410
+        }
+      }
+    },
+    "water": {
+      "openings_px": {
+        "water-rank-1-v1.png": 510,
+        "water-rank-2-v1.png": 498,
+        "water-rank-3-v1.png": 510,
+        "water-rank-4-v1.png": 451,
+        "water-rank-5-v1.png": 430,
+        "water-rank-6-v1.png": 474,
+        "water-rank-7-v1.png": 431
+      },
+      "narrowest_px": 430,
+      "widest_px": 510,
+      "ratio": 1.186047,
+      "variation_percent": 18.6,
+      "passes_20_percent_cap": true,
+      "whole_frame_normalizations": {
+        "water-rank-1-v1.png": {
+          "provider_source": "references/geometry-raw/water/water-rank-1-v1-provider.png",
+          "provider_sha256": "1ddd155f8f083396f2836a926aa69eed68b3c6341b81433d7352e442d8b1ea13",
+          "scale_x": 0.942699,
+          "requested_opening_px": 510,
+          "normalized_sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98",
+          "before_opening_px": 541
+        },
+        "water-rank-3-v1.png": {
+          "provider_source": "references/geometry-raw/water/water-rank-3-v1-provider.png",
+          "provider_sha256": "b28ea306ad17ac62b452ea4e1a878070956b1e4fb8b863e699dcf61d64065583",
+          "scale_x": 0.953271,
+          "requested_opening_px": 510,
+          "normalized_sha256": "186a3735e448d4a5809f52057d97fc98549b41befcbf7608dbd5b06b54f29de6",
+          "before_opening_px": 535
+        },
+        "water-rank-5-v1.png": {
+          "provider_source": "references/geometry-raw/water/water-rank-5-v1-provider.png",
+          "provider_sha256": "7534a345646da1cd9710db569667896d77e91e0e060f363e11bc59a2a4e00d02",
+          "scale_x": 1.075,
+          "requested_opening_px": 430,
+          "normalized_sha256": "d8da96d5e41f85f937ee294f90178f4d887b6d6e3ae8ad4c61d26543d0620bde",
+          "before_opening_px": 400
+        },
+        "water-rank-7-v1.png": {
+          "provider_source": "references/geometry-raw/water/water-rank-7-v1-provider.png",
+          "provider_sha256": "ac42b89f61add7cac4f9d254cdbac7d5e245013261ee1f853ae35940b8518f02",
+          "scale_x": 1.004673,
+          "requested_opening_px": 430,
+          "normalized_sha256": "3a3009e937511d553fbb7663b353388c00ec25abae49a6ae7c629117d2873a0c",
+          "before_opening_px": 428
+        }
+      }
+    },
+    "earth": {
+      "openings_px": {
+        "earth-rank-1-v1.png": 510,
+        "earth-rank-2-v1.png": 498,
+        "earth-rank-3-v1.png": 496,
+        "earth-rank-4-v1.png": 478,
+        "earth-rank-5-v1.png": 460,
+        "earth-rank-6-v1.png": 464,
+        "earth-rank-7-v1.png": 430
+      },
+      "narrowest_px": 430,
+      "widest_px": 510,
+      "ratio": 1.186047,
+      "variation_percent": 18.6,
+      "passes_20_percent_cap": true,
+      "whole_frame_normalizations": {
+        "earth-rank-1-v1.png": {
+          "provider_source": "references/geometry-raw/earth/earth-rank-1-v1-provider.png",
+          "provider_sha256": "1ddd155f8f083396f2836a926aa69eed68b3c6341b81433d7352e442d8b1ea13",
+          "scale_x": 0.942699,
+          "requested_opening_px": 510,
+          "normalized_sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98",
+          "before_opening_px": 541
+        },
+        "earth-rank-7-v1.png": {
+          "provider_source": "references/geometry-raw/earth/earth-rank-7-v1-provider.png",
+          "provider_sha256": "0563f54ccf88668de9f8e5a5f38de7b203a6bed8958ff68d925df38901c0b23d",
+          "scale_x": 1.046229,
+          "requested_opening_px": 430,
+          "normalized_sha256": "087981e5c7a973a6ac951ef4cb008f5e4fbe43454d44a8de7efda85fea27ebc9",
+          "before_opening_px": 411
+        }
+      }
+    },
+    "wind": {
+      "openings_px": {
+        "wind-rank-1-v1.png": 510,
+        "wind-rank-2-v1.png": 498,
+        "wind-rank-3-v1.png": 499,
+        "wind-rank-4-v1.png": 479,
+        "wind-rank-5-v1.png": 430,
+        "wind-rank-6-v1.png": 430,
+        "wind-rank-7-v1.png": 429
+      },
+      "narrowest_px": 429,
+      "widest_px": 510,
+      "ratio": 1.188811,
+      "variation_percent": 18.88,
+      "passes_20_percent_cap": true,
+      "whole_frame_normalizations": {
+        "wind-rank-1-v1.png": {
+          "provider_source": "references/geometry-raw/wind/wind-rank-1-v1-provider.png",
+          "provider_sha256": "1ddd155f8f083396f2836a926aa69eed68b3c6341b81433d7352e442d8b1ea13",
+          "scale_x": 0.942699,
+          "requested_opening_px": 510,
+          "normalized_sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98",
+          "before_opening_px": 541
+        },
+        "wind-rank-5-v1.png": {
+          "provider_source": "references/geometry-raw/wind/wind-rank-5-v1-provider.png",
+          "provider_sha256": "0827c28464b29e9d83fc095cdc626f611d4a16bbddd031dcd3a222b362da29d3",
+          "scale_x": 1.046229,
+          "requested_opening_px": 430,
+          "normalized_sha256": "07b2d9aa2d45541d1e71162af3949ef3e413fb12c020b658d61511cc1bbdd0e9",
+          "before_opening_px": 411
+        },
+        "wind-rank-6-v1.png": {
+          "provider_source": "references/geometry-raw/wind/wind-rank-6-v1-provider.png",
+          "provider_sha256": "10c8c69093fabda340a51eded1d6840dc38241954c179443c080166c17d7746e",
+          "scale_x": 1.069652,
+          "requested_opening_px": 430,
+          "normalized_sha256": "1fdecde8d6beb5bf792df3efcb246d6a3cb0f3eb0e8d8773a403d2e54b06df33",
+          "before_opening_px": 402
+        },
+        "wind-rank-7-v1.png": {
+          "provider_source": "references/geometry-raw/wind/wind-rank-7-v1-provider.png",
+          "provider_sha256": "d559fec2881e2f350825a2357b34d32d5a75755165c7b3393f9db2b8de16aa02",
+          "scale_x": 1.075,
+          "requested_opening_px": 430,
+          "normalized_sha256": "14c410353cc93c05d5449558222de5323cd2ea54327a7aef70ef3ae19d571356",
+          "before_opening_px": 400
+        }
+      }
+    }
+  }
+}
