@@ -243,7 +243,7 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 				labels: [],
 				skills: [
 					skill('Literacy', `${craftHref}#knowledge`),
-					skill('Beast Speech', `${craftHref}#knowledge`),
+					skill('Languages', `${craftHref}#knowledge`),
 					skill('Read the Body', `${craftHref}#knowledge`)
 				]
 			}

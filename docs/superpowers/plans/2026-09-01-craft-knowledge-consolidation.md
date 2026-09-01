@@ -26,16 +26,17 @@
 Add assertions for:
 
 - exact Craft families `Alchemy, Cooking, Forging, Gathering, Knowledge`;
-- target totals `493`, with `258 Martial`, `160 Magical`, `75 Craft`;
-- Craft counts `16, 12, 16, 18, 13` for Alchemy, Cooking, Forging, Gathering, and Knowledge;
+- target totals `492`, with `258 Martial`, `160 Magical`, `74 Craft`;
+- Craft counts `16, 12, 16, 18, 12` for Alchemy, Cooking, Forging, Gathering, and Knowledge;
 - `Calm` and `Feed` merge into `Animal Handling`;
+- `Beast Speech` is deleted from the active target with an explicit approved rationale while its legacy row remains immutable;
 - former Beast rows rehome to their approved Gathering, Knowledge, or Body destinations;
 - `Pack Bond` remains a separate Body skill whose replacement effect explicitly commands several tamed companions to coordinate attacks;
 - `Greater Taming` follows `Taming`, not Pack Bond;
 - active prerequisite text contains no `Beast prerequisite` or `Lore prerequisite`.
 
 Run: `pnpm exec vitest run tools/skill-taxonomy-lib.spec.ts tools/export-skill-taxonomy-migration.spec.ts`
-Expected: FAIL on the old six-family mapping and counts.
+Expected: FAIL while `Beast Speech` remains active and the target total remains 493.
 
 **Step 2: Implement deterministic mappings**
 
@@ -74,7 +75,7 @@ Expected: FAIL while old wiki text remains.
 
 - Fold Calm and Feed into Animal Handling's effect.
 - Move Animal Handling, Taming, Breeding, Greater Taming, and Monarch of Beasts into Gathering.
-- Rename Lore to Knowledge and add Beast Speech.
+- Rename Lore to Knowledge and retire Beast Speech from the active target.
 - Move Riding, Pack Bond, Mounted Combat, and Bonded Mount into Body.
 - Describe Pack Bond as active multi-beast combat command on the hero's behalf.
 - Repair numbering, counts, links, anchors, capability labels, fixtures, and prerequisites.

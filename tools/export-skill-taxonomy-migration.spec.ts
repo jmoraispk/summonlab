@@ -91,10 +91,10 @@ describe('skill taxonomy migration exporter', () => {
 			Cooking: 12,
 			Forging: 16,
 			Gathering: 18,
-			Knowledge: 13
+			Knowledge: 12
 		});
-		expect(domainCounts).toEqual({ Martial: 258, Magical: 160, Craft: 75 });
-		expect(activeRecords).toHaveLength(493);
+		expect(domainCounts).toEqual({ Martial: 258, Magical: 160, Craft: 74 });
+		expect(activeRecords).toHaveLength(492);
 		expect(bySource.get('craft-and-life.md#beast:2')).toMatchObject({
 			disposition: 'merge',
 			mergeTarget: { domain: 'Craft', family: 'Gathering', skill: 'Animal Handling' }
@@ -102,6 +102,10 @@ describe('skill taxonomy migration exporter', () => {
 		expect(bySource.get('craft-and-life.md#beast:3')).toMatchObject({
 			disposition: 'merge',
 			mergeTarget: { domain: 'Craft', family: 'Gathering', skill: 'Animal Handling' }
+		});
+		expect(bySource.get('craft-and-life.md#beast:6')).toMatchObject({
+			disposition: 'delete',
+			rationale: 'Beast Speech is removed by the approved active taxonomy revision'
 		});
 		expect(bySource.get('craft-and-life.md#beast:1')).toMatchObject({
 			target: { domain: 'Craft', family: 'Gathering', skill: 'Animal Handling' },
@@ -125,7 +129,7 @@ describe('skill taxonomy migration exporter', () => {
 					.filter(
 						(record) =>
 							record.sourceId.startsWith('craft-and-life.md#beast:') &&
-							record.disposition !== 'merge'
+							!['delete', 'merge'].includes(record.disposition)
 					)
 					.map((record) => [
 						record.target?.skill,
@@ -136,7 +140,6 @@ describe('skill taxonomy migration exporter', () => {
 			'Animal Handling': 'Craft/Gathering',
 			Riding: 'Martial/Body',
 			Taming: 'Craft/Gathering',
-			'Beast Speech': 'Craft/Knowledge',
 			'Pack Bond': 'Martial/Body',
 			'Mounted Combat': 'Martial/Body',
 			Breeding: 'Craft/Gathering',

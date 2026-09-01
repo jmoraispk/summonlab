@@ -198,17 +198,32 @@ describe('skill taxonomy migration inventory', () => {
 		]);
 	});
 
+	it('constrains retired family detection to the Craft family cell', () => {
+		expect(
+			findForbiddenSkillReferencesInAuthoredSources([
+				{
+					sourcePath: 'docs/evidence/retired-family.md',
+					source: '| Craft | Beast | Former family |'
+				},
+				{
+					sourcePath: 'docs/evidence/retained-skill.md',
+					source:
+						'| Craft | Gathering | Monarch of Beasts |\n| Craft | Gathering | Beast habitat notes |'
+				}
+			])
+		).toEqual(['docs/evidence/retired-family.md: retired Craft family Beast']);
+	});
+
 	it('allows retained creature skill names and ordinary beast and lore prose', () => {
 		expect(
 			findForbiddenSkillReferencesInAuthoredSources([
 				{
 					sourcePath: 'docs/evidence/creature-notes.md',
-					source:
-						'Beast Speech helps handlers understand creatures. Monarch of Beasts preserves old village lore.'
+					source: 'Monarch of Beasts preserves old village lore about dangerous creatures.'
 				},
 				{
 					sourcePath: 'apps/web/src/lib/components/wiki/skill-tree-data.ts',
-					source: "skill('Beast Speech'), skill('Monarch of Beasts')"
+					source: "skill('Monarch of Beasts')"
 				}
 			])
 		).toEqual([]);
@@ -606,6 +621,10 @@ describe('target skill taxonomy', () => {
 			'Knowledge'
 		]);
 		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
+		expect(rows.filter((row) => row.domain === 'Craft' && row.family === 'Knowledge')).toHaveLength(
+			12
+		);
+		expect(rows.some((row) => row.name === 'Beast Speech')).toBe(false);
 		expect(rows.find((row) => row.name === 'Mounted Combat')).toMatchObject({
 			domain: 'Martial',
 			family: 'Body',

@@ -358,13 +358,8 @@
 			"type": "P",
 			"requires": "Animal Handling Expert, Lore prerequisite",
 			"effect": "Understand and be understood by animals",
-			"disposition": "rehome",
-			"target": {
-				"domain": "Craft",
-				"family": "Knowledge",
-				"skill": "Beast Speech"
-			},
-			"replacementRequires": "Animal Handling Expert, Languages Novice"
+			"disposition": "delete",
+			"rationale": "Beast Speech is removed by the approved active taxonomy revision"
 		},
 		{
 			"sourceId": "craft-and-life.md#beast:7",

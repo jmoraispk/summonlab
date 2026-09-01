@@ -107,7 +107,7 @@ function retiredCraftFamilyReferences(sourcePath: string, source: string): strin
 		const declared = [
 			new RegExp(`^Family:\\s+(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*$`, 'mu'),
 			new RegExp(`^#{1,2}\\s+${escapedFamily}\\s*$`, 'mu'),
-			new RegExp(`^\\|\\s*Craft\\s*\\|[^\\n]*\\b${escapedFamily}\\b`, 'imu'),
+			new RegExp(`^\\|\\s*Craft\\s*\\|[^|]*\\b${escapedFamily}\\b[^|]*\\|`, 'imu'),
 			new RegExp(`^\\|\\s*(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*\\|`, 'imu'),
 			new RegExp(`\\]\\([^)]*#${family.toLowerCase()}\\)`, 'iu'),
 			new RegExp(`\\bname:\\s*['\"]${escapedFamily}['\"]`, 'iu'),

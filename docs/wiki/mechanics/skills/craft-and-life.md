@@ -118,13 +118,12 @@ to revealing another hero's aptitudes.
 | 3 | **Mapping** | — | F | C | Literacy Novice | Records explored terrain; shared across the roster |
 | 4 | **Appraisal** | — | E | A | Identify Expert | Reveals an item's full properties, including hidden ones |
 | 5 | **Languages** | — | E | P | Literacy Expert, Intellect threshold | Read and speak languages the hero has not learned |
-| 6 | **Beast Speech** | — | E | P | Animal Handling Expert, Languages Novice | Understand and be understood by animals |
-| 7 | **Research** | — | E | C | Literacy Expert | Extracts skill learn-conditions from recovered texts |
-| 8 | **Read the Body** | — | D | A | Appraisal Master, Intellect threshold | **Reveals one hidden aptitude in a hero.** The primary appraisal route. |
-| 9 | **Cartography** | — | D | C | Mapping Master | Predicts unexplored terrain; reveals node and boss locations |
-| 10 | **Ancient Script** | — | D | P | Languages Master, Research Expert | Reads pre-collapse texts; unlocks high-rarity learn paths |
-| 11 | **Deep Appraisal** | — | C | A | Read the Body Master | Reveals a hero's full aptitude set, and a monster's complete profile |
-| 12 | **The Archive** | — | C | P | Ancient Script Master, 10,000 texts read | The settlement gains a library; all heroes learn faster |
-| 13 | **Recovered Knowledge** | — | B | C | The Archive Master, composite condition | Reconstructs a lost skill from fragments — a route to Fabled techniques |
+| 6 | **Research** | — | E | C | Literacy Expert | Extracts skill learn-conditions from recovered texts |
+| 7 | **Read the Body** | — | D | A | Appraisal Master, Intellect threshold | **Reveals one hidden aptitude in a hero.** The primary appraisal route. |
+| 8 | **Cartography** | — | D | C | Mapping Master | Predicts unexplored terrain; reveals node and boss locations |
+| 9 | **Ancient Script** | — | D | P | Languages Master, Research Expert | Reads pre-collapse texts; unlocks high-rarity learn paths |
+| 10 | **Deep Appraisal** | — | C | A | Read the Body Master | Reveals a hero's full aptitude set, and a monster's complete profile |
+| 11 | **The Archive** | — | C | P | Ancient Script Master, 10,000 texts read | The settlement gains a library; all heroes learn faster |
+| 12 | **Recovered Knowledge** | — | B | C | The Archive Master, composite condition | Reconstructs a lost skill from fragments — a route to Fabled techniques |
 
 ---

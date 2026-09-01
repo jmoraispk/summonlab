@@ -406,9 +406,8 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 	if (source === 'Beast:Beast Speech')
 		return {
 			...row,
-			disposition: 'rehome',
-			target: { domain: 'Craft', family: 'Knowledge', skill: row.name },
-			replacementRequires: 'Animal Handling Expert, Languages Novice'
+			disposition: 'delete',
+			rationale: 'Beast Speech is removed by the approved active taxonomy revision'
 		};
 
 	if (source === 'Beast:Pack Bond')

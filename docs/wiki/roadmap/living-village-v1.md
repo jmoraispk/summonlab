@@ -46,7 +46,7 @@ seventh roster slot are outside this release.
 ## Skill availability
 
 The immutable legacy inventory preserves all 520 supplied definitions. The
-[skill wiki](../mechanics/skills/README.md) presents the reconciled 493-skill active target.
+[skill wiki](../mechanics/skills/README.md) presents the reconciled 492-skill active target.
 
 | Skill area | State | Release behavior |
 | --- | --- | --- |

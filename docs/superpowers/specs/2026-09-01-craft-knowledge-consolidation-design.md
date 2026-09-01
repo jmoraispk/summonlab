@@ -34,7 +34,7 @@ The creature progression is:
 
 ### Craft / Knowledge
 
-Knowledge covers learned interpretation: literacy, identification, appraisal, mapping, languages, research, teaching, and specialist understanding. `Beast Speech` moves here because it is a language and interpretation skill, not a creature-production skill.
+Knowledge covers learned interpretation: literacy, identification, appraisal, mapping, languages, research, teaching, and specialist understanding. `Beast Speech` is removed from the active taxonomy by the approved revision; its immutable legacy row remains auditable through a delete disposition in the migration ledger.
 
 All active requirements and prose use `Knowledge`, never `Lore`.
 
@@ -51,7 +51,7 @@ These skills may depend on Gathering skills across domains. `Pack Bond` is delib
 
 ## Consolidations and prerequisite repair
 
-- Delete no approved retained skill other than merging `Calm` and `Feed` into `Animal Handling`.
+- Delete no approved retained skill other than `Beast Speech`; merge `Calm` and `Feed` into `Animal Handling`.
 - Replace structural `Beast prerequisite` references with concrete surviving skills.
 - Replace structural `Lore prerequisite` references with `Knowledge` or a concrete Knowledge skill.
 - `Bind the Beast`, monster crafting, and monster cuisine must point to surviving prerequisites.
@@ -63,15 +63,16 @@ Starting from the approved 495-row target:
 
 - `Calm` merges into `Animal Handling` (-1).
 - `Feed` merges into `Animal Handling` (-1).
-- All other former Beast skills are retained and rehomed.
+- `Beast Speech` is deleted from the active taxonomy (-1).
+- All remaining former Beast skills are retained and rehomed.
 
-Expected final target: 493 skills.
+Expected final target: 492 skills.
 
 | Domain | Expected skills |
 | --- | ---: |
 | Martial | 258 |
 | Magical | 160 |
-| Craft | 75 |
+| Craft | 74 |
 
 Expected Craft family counts:
 
@@ -81,7 +82,7 @@ Expected Craft family counts:
 | Alchemy | 16 |
 | Cooking | 12 |
 | Gathering | 18 |
-| Knowledge | 13 |
+| Knowledge | 12 |
 
 ## Wiki and interactive behavior
 
@@ -90,7 +91,7 @@ Expected Craft family counts:
 - Craft expands to exactly five family nodes. `Beast` and `Lore` are absent.
 - Body previews the mounted and multi-companion combat skills.
 - Gathering previews creature acquisition/progression skills.
-- Knowledge previews learned and interpretive skills, including Beast Speech.
+- Knowledge previews retained learned and interpretive skills such as Languages and Read the Body.
 
 ## Verification contract
 

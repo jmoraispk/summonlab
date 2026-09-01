@@ -69,7 +69,7 @@ establishes the six-attribute vocabulary and the Martial, Magical, and Craft & L
 it does not assign these route-local aptitude families to the six people as production state.
 
 The wiki preserves all 520 imported draft rows in the immutable legacy inventory and reconciles them
-to a 493-skill active target; the Living Village still proposes only a twelve-skill runtime subset.
+to a 492-skill active target; the Living Village still proposes only a twelve-skill runtime subset.
 It explicitly defines aptitudes as innate talent for an attribute, family, or learning mode, distinct
 from learned skills. The dossier therefore uses current wiki family vocabulary (`Ranged`, `Body`,
 `Shield`, `Elemental`, `Ward`, `Restoration`, and `Knowledge`) rather than invented skill-like labels.

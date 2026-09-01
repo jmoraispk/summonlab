@@ -76,7 +76,7 @@ describe('skill tree navigation data', () => {
 		expect(knowledge?.skills).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({
-					name: 'Beast Speech',
+					name: 'Languages',
 					href: '/wiki/mechanics/skills/craft-and-life#knowledge'
 				}),
 				expect.objectContaining({
@@ -85,6 +85,7 @@ describe('skill tree navigation data', () => {
 				})
 			])
 		);
+		expect(knowledge?.skills.some((entry) => entry.name === 'Beast Speech')).toBe(false);
 		expect(body?.skills).toContainEqual({
 			name: 'Pack Bond',
 			href: '/wiki/mechanics/skills/martial-body',

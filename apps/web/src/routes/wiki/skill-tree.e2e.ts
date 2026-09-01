@@ -79,10 +79,11 @@ test('explores the skill taxonomy through family paths and optional labels', asy
 	);
 	await expect(tree.getByRole('link', { name: 'Monarch of Beasts' })).toBeVisible();
 	await expect(tree.getByRole('heading', { name: 'Knowledge' })).toBeVisible();
-	await expect(tree.getByRole('link', { name: 'Beast Speech' })).toHaveAttribute(
+	await expect(tree.getByRole('link', { name: 'Languages' })).toHaveAttribute(
 		'href',
 		'/wiki/mechanics/skills/craft-and-life#knowledge'
 	);
+	await expect(tree.getByRole('link', { name: 'Beast Speech' })).toHaveCount(0);
 	await expect(tree.getByRole('link', { name: 'Beast', exact: true })).toHaveCount(0);
 	await expect(tree.getByRole('link', { name: 'Lore', exact: true })).toHaveCount(0);
 	await expect(page.getByRole('heading', { name: 'Source-integrity audit' })).toBeVisible();
