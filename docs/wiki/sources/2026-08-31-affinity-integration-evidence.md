@@ -140,7 +140,11 @@ images, or inputs to any source hash.
 
 ## Prior task commits
 
-| Task | Commit | Subject |
+The final column contains sanitized scope notes rather than guaranteed verbatim commit subjects, so
+this active evidence page can describe each batch without republishing retired terminology. Every
+commit hash remains exact.
+
+| Task | Commit | Sanitized scope note |
 | --- | --- | --- |
 | 1 | `f9e6eca00a78930b4a86b80b23e3af07866f794e` | `test(wiki): lock four-affinity contract` |
 | 1 | `6d748ba6d81b90311da6bbcd0ba8a77cdbbe0dbd` | `fix(wiki): validate canonical affinity details` |
