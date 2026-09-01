@@ -21,6 +21,7 @@ test-results/
 *.pid
 artifacts/local-provider-runs/
 artifacts/private-playtest/
+.superpowers/
 
 # Private inspiration sources: checksums and derived audits may be committed, source media may not.
 references/private/
