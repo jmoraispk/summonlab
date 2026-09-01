@@ -54,8 +54,7 @@ universal category. `Two Blades` is a skill in Blade, while its two-weapon loado
 - [Alchemy](craft-and-life.md#alchemy)
 - [Cooking](craft-and-life.md#cooking)
 - [Gathering](craft-and-life.md#gathering)
-- [Beast](craft-and-life.md#beast)
-- [Lore](craft-and-life.md#lore)
+- [Knowledge](craft-and-life.md#knowledge)
 
 See also the [minimum Living Village subset](living-village.md) and the complete
 [skill framework](framework.md).
@@ -66,7 +65,7 @@ See also the [minimum Living Village subset](living-village.md) and the complete
 | --- | --- |
 | Martial | Blade, Polearm, Ranged, Shield, Body |
 | Magical | Elemental, Ward, Enchantment, Restoration, Mind |
-| Craft | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
+| Craft | Forging, Alchemy, Cooking, Gathering, Knowledge |
 
 Elemental skills use exactly one of Fire, Water, Wood, Earth, or Metal as an `Element` label.
 Ward and Enchantment use `Element: Attuned` only where a definition inherits the hero's current

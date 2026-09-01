@@ -98,6 +98,25 @@ const FORBIDDEN_SKILL_REFERENCES = [
 	'## Fist — Unarmed and Grappling'
 ] as const;
 
+const RETIRED_CRAFT_FAMILIES = ['Beast', 'Lore'] as const;
+
+function retiredCraftFamilyReferences(sourcePath: string, source: string): string[] {
+	return RETIRED_CRAFT_FAMILIES.flatMap((family) => {
+		const escapedFamily = family.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+		const declared = [
+			new RegExp(`^Family:\\s+\\*\\*${escapedFamily}\\*\\*\\s*$`, 'mu'),
+			new RegExp(`^#{1,2}\\s+${escapedFamily}\\s*$`, 'mu'),
+			new RegExp(`^\\|\\s*Craft\\s*\\|[^\\n]*\\b${escapedFamily}\\b`, 'imu'),
+			new RegExp(`^\\|\\s*(?:\\*\\*)?${escapedFamily}(?:\\*\\*)?\\s*\\|`, 'imu'),
+			new RegExp(`\\]\\([^)]*#${family.toLowerCase()}\\)`, 'iu'),
+			new RegExp(`name:\\s*['\"]${escapedFamily}['\"]\\s*,\\s*class:\\s*['\"]crafting['\"]`, 'iu')
+		];
+		return declared.some((pattern) => pattern.test(source))
+			? [`${sourcePath}: retired Craft family ${family}`]
+			: [];
+	});
+}
+
 export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]): string[] {
 	return files.flatMap(({ sourcePath, source }) => [
 		...FORBIDDEN_SKILL_REFERENCES.filter((reference) => source.includes(reference)).map(
@@ -108,7 +127,8 @@ export function findForbiddenSkillReferences(files: readonly SkillMarkdownFile[]
 			: []),
 		...(/^\|\s*Family\s*\|\s*Foci\s*\|/imu.test(source)
 			? [`${sourcePath}: structural Family/Foci table`]
-			: [])
+			: []),
+		...retiredCraftFamilyReferences(sourcePath, source)
 	]);
 }
 

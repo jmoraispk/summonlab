@@ -154,6 +154,25 @@ describe('skill taxonomy migration inventory', () => {
 		]);
 	});
 
+	it('rejects retired Craft families in active authored structures', () => {
+		expect(
+			findForbiddenSkillReferencesInAuthoredSources([
+				{
+					sourcePath: 'docs/wiki/mechanics/skills/example.md',
+					source: 'Family: **Beast**\n\n| Craft | Forging, Beast, Lore |'
+				},
+				{
+					sourcePath: 'apps/web/src/routes/living-village-lab/summon/fixtures.ts',
+					source: "{ name: 'Lore', class: 'crafting' }"
+				}
+			])
+		).toEqual([
+			'docs/wiki/mechanics/skills/example.md: retired Craft family Beast',
+			'docs/wiki/mechanics/skills/example.md: retired Craft family Lore',
+			'apps/web/src/routes/living-village-lab/summon/fixtures.ts: retired Craft family Lore'
+		]);
+	});
+
 	it('parses a catalog row with its page and section identity', () => {
 		const rows = parseSkillMarkdown(
 			'martial-blade.md',
@@ -451,6 +470,36 @@ describe('skill taxonomy migration inventory', () => {
 });
 
 describe('target skill taxonomy', () => {
+	it('keeps the canonical Markdown aligned with the five-family migration ledger', async () => {
+		const targetPaths = [
+			'docs/wiki/mechanics/skills/martial-blade.md',
+			'docs/wiki/mechanics/skills/martial-polearm.md',
+			'docs/wiki/mechanics/skills/martial-ranged.md',
+			'docs/wiki/mechanics/skills/martial-shield.md',
+			'docs/wiki/mechanics/skills/martial-body.md',
+			'docs/wiki/mechanics/skills/magical-elemental.md',
+			'docs/wiki/mechanics/skills/magical-disciplines.md',
+			'docs/wiki/mechanics/skills/craft-and-life.md'
+		];
+		const [ledgerSource, ...targetSources] = await Promise.all([
+			readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8'),
+			...targetPaths.map((sourcePath) => readFile(sourcePath, 'utf8'))
+		]);
+		const ledger = JSON.parse(ledgerSource) as SkillMigrationLedger;
+		const rows = parseTargetSkillRows(
+			targetPaths.map((sourcePath, index) => ({ sourcePath, source: targetSources[index] }))
+		);
+
+		expect(familiesFor(rows, 'Craft')).toEqual([
+			'Alchemy',
+			'Cooking',
+			'Forging',
+			'Gathering',
+			'Knowledge'
+		]);
+		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
+	});
+
 	it('allows exactly the five approved Craft families', () => {
 		const approvedFamilies = ['Alchemy', 'Cooking', 'Forging', 'Gathering', 'Knowledge'];
 		const craftLedger = (family: string) =>

@@ -86,7 +86,7 @@ export const heroes: readonly HeroFixture[] = [
 		aptitudes: [
 			{ name: 'Ranged', class: 'martial' },
 			{ name: 'Body', class: 'martial' },
-			{ name: 'Lore', class: 'crafting' }
+			{ name: 'Knowledge', class: 'crafting' }
 		]
 	},
 	{
@@ -133,7 +133,7 @@ export const heroes: readonly HeroFixture[] = [
 		},
 		aptitudes: [
 			{ name: 'Ward', class: 'magic' },
-			{ name: 'Lore', class: 'crafting' },
+			{ name: 'Knowledge', class: 'crafting' },
 			{ name: 'Restoration', class: 'magic' }
 		]
 	},
@@ -157,7 +157,7 @@ export const heroes: readonly HeroFixture[] = [
 		},
 		aptitudes: [
 			{ name: 'Mind', class: 'magic' },
-			{ name: 'Lore', class: 'crafting' },
+			{ name: 'Knowledge', class: 'crafting' },
 			{ name: 'Enchantment', class: 'magic' }
 		]
 	},
@@ -182,7 +182,7 @@ export const heroes: readonly HeroFixture[] = [
 		aptitudes: [
 			{ name: 'Ward', class: 'magic' },
 			{ name: 'Enchantment', class: 'magic' },
-			{ name: 'Lore', class: 'crafting' }
+			{ name: 'Knowledge', class: 'crafting' }
 		]
 	},
 	{

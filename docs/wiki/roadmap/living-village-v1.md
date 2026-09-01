@@ -55,9 +55,8 @@ All 520 supplied definitions remain in the [skill wiki](../mechanics/skills/READ
 | Forging | `off` | No forge operation, recipes, crafting UI, or Forging reward |
 | Alchemy | `off` | No brewing, reagents, potions, poisons, Alchemy UI, or Alchemy reward |
 | Cooking | `off` | No food/upkeep loop, meals, buffs, or Cooking assignment |
-| Gathering | `off` | No mining, foraging, skinning, nodes, or cargo loop |
-| Beast | `off` | No taming, riding, breeding, mounts, companions, or Beast assignment |
-| Lore | `off` | No appraisal, research, cartography, language, or aptitude-reveal action |
+| Gathering | `off` | No mining, foraging, skinning, animal handling, taming, breeding, nodes, or cargo loop |
+| Knowledge | `off` | No appraisal, research, cartography, language, or aptitude-reveal action |
 | Skill mastery beyond initial slice | `off` | No higher mastery promotions or practice-profile bonuses |
 | Teaching and mentorship | `off` | No teacher assignment or Guidance multiplier |
 | Skill merging | `off` | Recipes stay documented; no preview, catalyst, consumption, or result generation |

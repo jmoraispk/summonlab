@@ -43,10 +43,10 @@ Tools are required to practise craft skills at all, and their quality sets the c
 | | Skinning Knife | F+ | Required for Skinning; quality gates Perfect Cut |
 | | Prospector's Lens | E+ | Required for Prospecting |
 | | Leyline Tap | C+ | Required for Leyline Harvest |
-| **Beast** | Bridle and Saddle | E+ | Required for Riding |
 | | Taming Collar | D+ | Required for Taming |
-| | Beast Whistle | E+ | Commands companions at range |
-| **Lore** | Reading Lens | F+ | Required for Identify |
+| **Body** | Bridle and Saddle | E+ | Required for Riding |
+| | Beast Whistle | E+ | Required for Pack Bond |
+| **Knowledge** | Reading Lens | F+ | Required for Identify |
 | | Scribing Set | E+ | Required for Research and Mapping |
 | | Surveyor's Kit | D+ | Required for Cartography |
 | | Appraiser's Glass | C+ | Required for Read the Body |

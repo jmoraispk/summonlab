@@ -130,7 +130,7 @@ whether the system creates healthy, comprehensible desire to continue:
 ## Living Village availability
 
 The [Living Village v1 matrix](../roadmap/living-village-v1.md) may enable a small placeholder reward
-table while the complete system remains documented. Alchemy, Beast Taming, crafting, story,
+table while the complete system remains documented. Alchemy, Animal Handling and Taming, crafting, story,
 construction, and other disabled features cannot appear as reward requirements or grant unusable
 outputs in that release.
 
