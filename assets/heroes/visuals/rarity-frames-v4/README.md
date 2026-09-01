@@ -16,7 +16,7 @@ Nothing here is approved or bound to runtime.
 - Neutral dragons are gemless tempered steel and dark iron, with no blue or affinity emission.
 - Dragon mouths stay closed through rank 6. Rank 7 alone opens both mouths.
 - Within each seven-rank family, widest measured central hero opening divided by narrowest is no more
-  than 1.20. Current measured variation is 13.84%–18.88%.
+  than 1.20. Current measured variation is 13.84%–18.60%.
 
 ## Contents
 
@@ -26,6 +26,7 @@ Nothing here is approved or bound to runtime.
 - `references/crops/`: sheet-derived references used only to guide generation;
 - `references/geometry-raw/`: untouched provider renders for candidates receiving bounded
   whole-frame normalization;
+- `references/superseded/`: prior candidate versions retained after targeted visual correction;
 - `prompts/`: exact sheet prompts and rank-specific individual production prompts;
 - `scripts/prepare_individuals.py`: deterministic crop and prompt preparation;
 - `scripts/normalize_geometry.py`: geometry audit and complete-frame-only normalization;

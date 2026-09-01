@@ -167,12 +167,12 @@
         "wind-rank-4-v1.png": 479,
         "wind-rank-5-v1.png": 430,
         "wind-rank-6-v1.png": 430,
-        "wind-rank-7-v1.png": 429
+        "wind-rank-7-v2.png": 435
       },
-      "narrowest_px": 429,
+      "narrowest_px": 430,
       "widest_px": 510,
-      "ratio": 1.188811,
-      "variation_percent": 18.88,
+      "ratio": 1.186047,
+      "variation_percent": 18.6,
       "passes_20_percent_cap": true,
       "whole_frame_normalizations": {
         "wind-rank-1-v1.png": {
@@ -198,14 +198,19 @@
           "requested_opening_px": 430,
           "normalized_sha256": "1fdecde8d6beb5bf792df3efcb246d6a3cb0f3eb0e8d8773a403d2e54b06df33",
           "before_opening_px": 402
-        },
+        }
+      },
+      "superseded_candidates": {
         "wind-rank-7-v1.png": {
+          "reason": "dragon heads faced outward instead of inward toward the hero opening",
+          "retained_path": "references/superseded/wind/wind-rank-7-v1-normalized.png",
           "provider_source": "references/geometry-raw/wind/wind-rank-7-v1-provider.png",
           "provider_sha256": "d559fec2881e2f350825a2357b34d32d5a75755165c7b3393f9db2b8de16aa02",
           "scale_x": 1.075,
           "requested_opening_px": 430,
           "normalized_sha256": "14c410353cc93c05d5449558222de5323cd2ea54327a7aef70ef3ae19d571356",
-          "before_opening_px": 400
+          "before_opening_px": 400,
+          "active_replacement": "candidates/individuals/wind/wind-rank-7-v2.png"
         }
       }
     }

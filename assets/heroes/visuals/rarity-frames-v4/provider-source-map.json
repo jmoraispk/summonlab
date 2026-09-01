@@ -50,7 +50,19 @@
       "4": { "provider_source": "exec-bb76c2b9-fed1-4776-8cc3-aef3e3b06389.png", "prompt": "prompts/individuals/wind/wind-rank-4-exact.txt" },
       "5": { "provider_source": "exec-86fd5cc3-92dd-4c2a-99f2-42b1b514ceb2.png", "prompt": "prompts/individuals/wind/wind-rank-5-exact.txt" },
       "6": { "provider_source": "exec-73dbfa4f-9d27-4dfa-80e3-dbdd6b98dacf.png", "prompt": "prompts/individuals/wind/wind-rank-6-exact.txt" },
-      "7": { "provider_source": "exec-fa1281a3-8dbb-4569-ac9e-87ea1d384c3c.png", "prompt": "prompts/individuals/wind/wind-rank-7-exact.txt" }
+      "7": {
+        "provider_source": "exec-13880ff7-b448-4706-b49c-306087edda4e.png",
+        "prompt": "prompts/individuals/wind/wind-rank-7-inward-heads-v2-exact.txt",
+        "prompt_sha256": "7e53290c7290ea5f842dbaff51ccea1e86c3eb6d570c0264998d7351c039abca",
+        "retained_path": "candidates/individuals/wind/wind-rank-7-v2.png",
+        "sha256": "84c2ff9c3308cc3566b0efba94f20b7db12fb4abc9da3a6f48743d7a2b79c41b",
+        "supersedes": {
+          "provider_source": "exec-fa1281a3-8dbb-4569-ac9e-87ea1d384c3c.png",
+          "prompt": "prompts/individuals/wind/wind-rank-7-exact.txt",
+          "retained_path": "references/superseded/wind/wind-rank-7-v1-normalized.png",
+          "reason": "dragon heads faced outward"
+        }
+      }
     }
   }
 }

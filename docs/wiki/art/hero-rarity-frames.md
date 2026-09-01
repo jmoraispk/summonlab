@@ -41,10 +41,14 @@ opens both mouths.
 
 The internal horizontal hero opening is now a measurable review constraint. Within each seven-rank
 family, widest measured central opening divided by narrowest must be no more than 1.20. Current
-candidate variation ranges from 13.84% to 18.88%. Any correction needed to meet this bound scales the
+candidate variation ranges from 13.84% to 18.60%. Any correction needed to meet this bound scales the
 complete rendered frame—including its integrated tray and stars—as one indivisible image; the stars
 are never moved independently. Untouched provider renders and normalization hashes remain in the v4
 packet.
+
+Wind rank 7 uses the corrected v2 composition: the left dragon faces right and the right dragon
+faces left, so both open mouths roar inward toward the hero opening. The outward-facing v1 remains
+superseded provenance and is not shown as the active candidate.
 
 All files remain visual-direction candidates. They are not transparent runtime exports and have not
 been registered in any shared catalog. The former v1 layered approach remains rejected provenance,

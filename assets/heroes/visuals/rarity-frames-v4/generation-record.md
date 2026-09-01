@@ -35,7 +35,7 @@ therefore lists provider sources only for Neutral 1–7 and affinity ranks 3–7
 | Fire | shared neutral | shared neutral | `exec-2346bb51` | `exec-6a03a708` | `exec-80945840` | `exec-9395343f` | `exec-c908b2c9` |
 | Water | shared neutral | shared neutral | `exec-ae39d30d` | `exec-a30b73aa` | `exec-0ff7be36` | `exec-00965994` | `exec-6cec4b15` |
 | Earth | shared neutral | shared neutral | `exec-cf0ba7ec` | `exec-aaf364e2` | `exec-771b458b` | `exec-1fb953d5` | `exec-4f1552ee` |
-| Wind | shared neutral | shared neutral | `exec-4cd35fe9` | `exec-bb76c2b9` | `exec-86fd5cc3` | `exec-73dbfa4f` | `exec-fa1281a3` |
+| Wind | shared neutral | shared neutral | `exec-4cd35fe9` | `exec-bb76c2b9` | `exec-86fd5cc3` | `exec-73dbfa4f` | `exec-13880ff7` |
 
 The identifiers are abbreviated in the table for readability. Complete provider filenames and their
 prompt bindings are persisted in `provider-source-map.json`. Final file hashes and every whole-frame
@@ -54,6 +54,10 @@ adjustment are reproducible from `geometry-report.json` and a local
   correction retained.
 - Water rank 5: first pass `exec-ff9a4c16-ded2-4df9-b676-d69099cbcbbd.png` rejected for open mouths;
   correction retained.
+- Wind rank 7: committed v1 `exec-fa1281a3-8dbb-4569-ac9e-87ea1d384c3c.png` was superseded after
+  owner review because both dragon heads faced outward. The targeted v2 correction
+  `exec-13880ff7-b448-4706-b49c-306087edda4e.png` turns both open roars inward while preserving
+  seven integrated stars. V1 remains under `references/superseded/wind/`.
 
 Rejected provider outputs were not copied into the candidate packet. Exact correction prompts are
 retained beside their initial prompts.

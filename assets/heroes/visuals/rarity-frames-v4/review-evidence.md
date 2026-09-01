@@ -16,7 +16,7 @@ evidence. It contains no approved or runtime assets.
   - Fire: 432–510 px, 18.06% variation;
   - Water: 430–510 px, 18.60% variation;
   - Earth: 430–510 px, 18.60% variation;
-  - Wind: 429–510 px, 18.88% variation.
+  - Wind: 430–510 px, 18.60% variation.
 - Every widest/narrowest ratio is below the required 1.20 cap.
 - The measurement method, exact per-rank readings, normalization factors, and hashes live in
   `geometry-report.json`.
@@ -34,6 +34,8 @@ evidence. It contains no approved or runtime assets.
 - Ranks 3–7 add ornament, heraldry, guardian anatomy, elder density, and awakening in sequence.
 - Fire, Water, Earth, and Wind begin affinity expression at rank 3 and increase it through rank 7.
 - Dragon mouths remain visually sealed through rank 6. Rank 7 alone shows two open roaring mouths.
+- Wind rank 7 v2 turns the left dragon head rightward and the right dragon head leftward so both
+  open roars point inward toward the hero opening, matching the accepted Wind authority.
 - Whole-frame normalization retained integrated relationships; stars were never moved separately.
 - Hero openings remain broad and clear of characters, scenery, and interface text.
 
@@ -56,4 +58,3 @@ evidence. It contains no approved or runtime assets.
 4. Does rank 7’s open-mouth awakening separate decisively from the closed-mouth rank 6 in every
    family?
 5. Which family, if any, should advance to approval-focused transparency and runtime-fit work?
-

@@ -458,7 +458,7 @@
         <div class="status-line" aria-label="Review status">
           <span class="status status--candidate">Candidate only</span>
           <span class="status status--pass">35 equal canvases</span>
-          <span class="status status--pass">13.84–18.88% opening variation</span>
+          <span class="status status--pass">13.84–18.60% opening variation</span>
           <span class="status status--pass">Closed through 6★ · open at 7★</span>
         </div>
       </div>
@@ -598,7 +598,7 @@
       { id: 'fire', name: 'Fire', note: 'ember channels and tempered heat', variation: 18.06 },
       { id: 'water', name: 'Water', note: 'flowing enamel and contained current', variation: 18.60 },
       { id: 'earth', name: 'Earth', note: 'mineral strata and amber seams', variation: 18.60 },
-      { id: 'wind', name: 'Wind', note: 'swept fins and pressure traces', variation: 18.88 }
+      { id: 'wind', name: 'Wind', note: 'swept fins and pressure traces', variation: 18.60 }
     ];
     const rankNames = ['Rectangular', 'Horned', 'Gothic', 'Heraldry', 'Guardians', 'Elder', 'Awakened'];
     const familyRoot = document.querySelector('#families');
@@ -619,7 +619,8 @@
       strip.setAttribute('aria-label', `${family.name} frames from one to seven stars`);
 
       for (let rank = 1; rank <= 7; rank += 1) {
-        const path = `../candidates/individuals/${family.id}/${family.id}-rank-${rank}-v1.png`;
+        const version = family.id === 'wind' && rank === 7 ? 2 : 1;
+        const path = `../candidates/individuals/${family.id}/${family.id}-rank-${rank}-v${version}.png`;
         const mouth = rank < 4 ? 'No dragon' : rank < 7 ? 'Closed' : 'Open roar';
         const mouthClass = rank === 7 ? 'mouth mouth--open' : 'mouth';
         const article = document.createElement('article');
