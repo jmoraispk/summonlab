@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-rarity-frames`
 
-Design status: **feedback-revised integrated v3 candidate; owner review pending; runtime integration not requested**.
+Design status: **corrected v4 production-review candidate; owner review pending; runtime integration not requested**.
 
 Hero portrait cards use one coherent charcoal, gold, navy, and sapphire frame family across seven
 star ranks. Rarity increases silhouette complexity, ornament density, dragon anatomy, and blue
@@ -18,8 +18,8 @@ every rank.
 | 3★ | gilded wing | navy enamel, wing corners, and sapphire crest |
 | 4★ | dragon heraldry | paired closed-mouth dragon heads and lower claws |
 | 5★ | dragon guardians | full closed-mouth bodies along the rails |
-| 6★ | elder dragons | fuller bodies, wings, scales, claws, and controlled energy |
-| 7★ | awakened dragons | both mouths open and sapphire energy intensifies |
+| 6★ | elder dragons | fuller bodies, folded wings, closed mouths, and controlled energy |
+| 7★ | awakened dragons | both mouths open in a roar and sapphire energy intensifies |
 
 ## Integrated star tray
 
@@ -29,9 +29,14 @@ sharing the frame's lighting, bevel, shadows, and occlusion. They are not separa
 post-generation overlay. Star rows expand symmetrically from one through seven and stay in the same
 lower visual zone.
 
-The current candidate packet and provenance live in
-`assets/heroes/visuals/rarity-frames-v2/`. Its current v3 combined sheet is a visual-direction
-candidate rather than a sliced runtime export. The packet retains the exact submitted prompts, the
-v2 critique, and seven higher-resolution individual references with their incorrect observed star
-counts clearly labeled. The former v1 layered approach is retained only as rejected provenance.
-Shared catalogs remain unchanged until owner approval and an explicit integration handoff.
+The current production-review packet and provenance live in
+`assets/heroes/visuals/rarity-frames-v3/`. It preserves the prior v3 combined sheet, adds a corrected
+v4 neutral authority, seven newly generated 1024×1536 neutral candidates with exact star counts, and
+Fire, Water, Earth, and Wind affinity comparison studies. The affinity begins subtly at rank 3 and
+increases through rank 7 while ranks 1–2 remain neutral. Across every current progression, dragon
+mouths remain completely closed through rank 6; only rank 7 opens both mouths.
+
+All files remain visual-direction candidates. They are not transparent runtime exports and have not
+been registered in any shared catalog. The former v1 layered approach remains rejected provenance,
+and shared catalogs and contracts remain unchanged until owner approval and an explicit integration
+handoff.

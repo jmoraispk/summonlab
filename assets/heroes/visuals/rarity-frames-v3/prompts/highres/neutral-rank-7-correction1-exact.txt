@@ -1,0 +1,10 @@
+Use case: stylized-concept image correction
+Asset type: high-resolution single-frame candidate for neutral hero rarity rank 7 of 7
+
+Correct ONLY the integrated bottom star tray in reference image 1. Preserve the entire successful frame design exactly: one complete centered frame, the same broad warm-white hero opening, the same outer footprint, gold-and-deep-navy material balance, sapphire energy, wings, crown, dragon bodies, claws, lighting, and especially BOTH DRAGON MOUTHS CLEARLY OPEN IN A ROAR.
+
+The current tray incorrectly contains eight stars. Re-render the horizontal bottom tray so it contains exactly SEVEN stars—7 total, no more and no fewer. Remove one star, then center the seven remaining identical stars as one tight, evenly spaced, symmetric center-out row. Each star must use the same cute broad softly rounded upright five-point silhouette, cream-gold center, amber bevel, and restrained warm glow. The stars remain physically inset in the tray and share the tray's lighting, bevel, shadows, and occlusion. Stars appear nowhere else.
+
+Reference image 2 is the corrected seven-rank authority sheet. Use its rank-7 panel as the counting and placement authority: exactly seven gold stars in the built-in bottom rail.
+
+Output one new 1024×1536 portrait image. No text, labels, numeral, hero, scenery, UI, logo, watermark, crop, second frame, floating star sprites, closed mouths, or eighth star.

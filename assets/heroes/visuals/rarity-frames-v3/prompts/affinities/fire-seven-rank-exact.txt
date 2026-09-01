@@ -1,0 +1,38 @@
+Use case: stylized-concept
+Asset type: seven-rank fire affinity hero-card frame comparison sheet
+
+Primary request:
+Generate ONE single ultra-wide landscape image containing exactly seven complete empty portrait hero-card frames in one horizontal row, ordered 1★ through 7★. Preserve the corrected neutral authority sheet's exact seven silhouettes, fixed card footprint, broad hero openings, integrated trays, exact gold-star counts, ornament progression, and mouth states. Apply the FIRE affinity only from ranks 3 through 7, beginning subtly and increasing gradually. Ranks 1 and 2 remain neutral.
+
+Input images:
+- Reference image 1 is the corrected neutral seven-rank authority. Preserve its composition, silhouettes, widths, opening sizes, tray positions, star style/counts, and rarity ornament progression.
+- Reference image 2 is the prior accepted neutral family and establishes premium polished 3D material rendering.
+
+Fixed geometry and rarity invariants:
+- Exactly seven equal portrait card boxes, equal narrow gutters, same outer width/height, aligned top and bottom, orthographic front view, no crop or overlap.
+- Every warm-white empty hero opening remains at least 68% of card width, including ranks 6 and 7.
+- Ornament and affinity effects hug outer rails or grow upward/outward inside the fixed box; nothing invades or obscures the hero opening.
+- Card N contains exactly N identical integrated warm-gold stars in its built-in lower tray, for exact counts 1, 2, 3, 4, 5, 6, 7.
+- Rank 1 is rectangular; rank 2 is clearly horned/curved; rank 3 has gothic arcs; rank 4 introduces small heraldic dragon heads; rank 5 has lean guardian dragons; rank 6 has compact elder dragons and tightly folded wings; rank 7 is the awakened apex.
+- ALL DRAGON MOUTHS AT RANKS 1 THROUGH 6 ARE COMPLETELY CLOSED. No teeth, jaw gaps, or roars before rank 7.
+- ONLY RANK 7 has both mouths clearly open, with visible jaw gaps, teeth, dark mouth cavities, and affinity-lit breath.
+
+Fire affinity language:
+- Palette: vermilion, ember-orange, soot-black, and localized white-hot metal.
+- Material behavior: fine ember channels, heat-tempered metal, localized heat distortion, tiny cooling ash, and contained flame only in recesses.
+- Ranks 1–2: 0% affinity, unchanged neutral charcoal/bronze low-rank frames.
+- Rank 3: 15% affinity, only a small material hint in narrow recesses and the tiny crest.
+- Rank 4: 35% affinity, visible but subordinate to the neutral iron/gold structure.
+- Rank 5: 55% affinity, clear rail and dragon-body material behavior with restrained local emission.
+- Rank 6: 75% affinity, stronger material transformation and energy while the closed-mouth elder silhouette remains readable.
+- Rank 7: 100% affinity expression, strongest localized energy and breath light while retaining warm-gold stars and a broad clean opening.
+- Affinity is a material and motion language, not a uniform color overlay.
+
+Comparison labels:
+Small black numerals 1, 2, 3, 4, 5, 6, 7 above the corresponding cards; no other text.
+
+Style:
+Premium cinematic fantasy-game card-frame concept art, symmetrical polished 3D ornamental metalwork, crisp silhouettes, clean studio lighting, high detail, restrained local emission, coherent rarity family.
+
+Avoid:
+full-frame red wash, constant wall of fire, lava everywhere, smoke obscuring the opening, affinity color at ranks 1 or 2, immediate full affinity at rank 3, floating stars, incorrect star counts, non-gold stars, open mouths at ranks 1–6, closed mouths at rank 7, horizontal sprawl, narrow or obscured hero openings, inconsistent card sizes, heroes, scenery, perspective, crop, UI controls, browser chrome, logo, watermark, captions, or the word "master".
