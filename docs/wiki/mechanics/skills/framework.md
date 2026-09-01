@@ -216,7 +216,7 @@ This is the single most useful authoring tool in the system. It lets one skill b
 
 Rarity never increases — but a higher-rarity skill can name a lower one as a learn condition. Mastering Fireball does not turn Fireball into Fire Meteor. It grants the *right to learn* Fire Meteor, which was always a Mythic skill and always will be.
 
-Each focus therefore has a **ladder**: a chain of skills climbing in rarity, each gated on the mastery of what came before, plus attributes, plus repetitions, plus whatever deed or source the tier demands. Part 5 works several of these out in full.
+Each family may therefore contain one or more **skill graphs**: prerequisite chains climbing in rarity, each gated on the mastery of what came before, plus attributes, plus repetitions, plus whatever deed or source the tier demands. Part 5 works several of these out in full.
 
 Progression up a ladder comes from:
 
@@ -233,28 +233,27 @@ Skills are not confined to combat.
 
 #### Martial
 
-| Family | Foci |
+| Family | Scope and optional labels |
 |---|---|
-| **Blade** | Sword, dagger, greatsword, paired blades |
-| **Haft** | Spear, axe, polearm, hammer |
-| **Fist** | Unarmed, grappling, gauntlet |
-| **Hunt** | Bow, crossbow, thrown, tracking, ambush |
-| **Guard** | Shield, defence, poise, protection |
-| **Motion** | Movement, evasion, positioning, traversal |
+| **Blade** | Cutting, thrusting, and coordinated blade techniques; optional Sword, Dagger, or Greatsword labels |
+| **Polearm** | Long-shafted melee technique; optional Spear, Halberd, Glaive, or Polehammer labels |
+| **Ranged** | Bow, crossbow, and sling technique, narrowed by equipment labels |
+| **Shield** | Blocking, interception, formation defense, and ally cover |
+| **Body** | Unarmed combat, grappling, movement, endurance, awareness, and general combat technique |
 
 #### Magical
 
-| Family | Foci |
+| Family | Scope and optional labels |
 |---|---|
-| **Evocation** | Offensive magic, per element |
-| **Ward** | Barriers, dispelling, defensive magic, per element |
+| **Elemental** | Fire, Water, Wood, Earth, and Metal magic, identified by Element labels |
+| **Ward** | Barriers, dispelling, and defensive magic |
 | **Enchantment** | Buffs on self or others; imbuing objects. Consumes components. |
 | **Restoration** | Healing, curing, revival |
 | **Mind** | Control, perception, illusion, deception |
 
 #### Craft and life
 
-| Family | Foci |
+| Family | Scope and optional labels |
 |---|---|
 | **Forging** | Weapons, armour, tools |
 | **Alchemy** | Potions, poisons, reagents |
@@ -269,20 +268,20 @@ Skills are not confined to combat.
 
 Merging is **one** route to rare skills, not the main one, and it does not raise any skill's rarity — it consumes two skills and produces a *different* skill that was always of that rarity.
 
-**Merging is for combining unlike things.** It works well across families and poorly within a line. Two basic fire skills do not merge into a meteor; a meteor is earned by climbing the Fire ladder. But Blade plus Evocation genuinely produces something neither parent could reach alone.
+**Merging is for combining unlike things.** It works well across families and poorly within a line. Two basic fire skills do not merge into a meteor; a meteor is earned by climbing its prerequisite chain. But Blade plus Elemental genuinely produces something neither parent could reach alone.
 
 **Requirements.** Both inputs at Master 10. A recipe must exist. A catalyst material is consumed, and its rarity contributes to the result. Both inputs are consumed.
 
 | Example pairing | Character | Result |
 |---|---|---|
-| Blade + Motion | Natural | Mobile strikes, closing techniques |
-| Blade + Evocation | Natural | Elemental weapon arts |
+| Blade + Body | Natural | Mobile strikes, closing techniques |
+| Blade + Elemental | Natural | Elemental weapon arts |
 | Forging + Enchantment | Natural | Imbued equipment creation |
 | Alchemy + Restoration | Natural | Superior healing craft |
 | Cooking + Enchantment | Unexpected | Food granting lasting buffs |
-| Beast + Motion | Unexpected | Mounted combat |
-| Hunt + Lore | Unexpected | Tracking the impossible |
-| Guard + Mind | Volatile | Wards that turn an attacker's intent |
+| Beast + Body | Unexpected | Mounted combat |
+| Ranged + Lore | Unexpected | Impossible shots guided by recovered knowledge |
+| Shield + Mind | Volatile | Defenses that turn an attacker's intent |
 | Forging + Blade | Volatile | Techniques usable only with a weapon the hero made |
 | Same skill, two copies | Fallback | A refined variant; guarantees a route for a hero with no partner |
 
@@ -320,31 +319,40 @@ Merging is **one** route to rare skills, not the main one, and it does not raise
 
 ## Part 5 — Skill Ladders
 
-A **ladder** is the chain of skills for one focus, climbing in rarity, each gated on what came before. Every focus in every family has one.
+A **ladder** is a prerequisite chain of skills climbing in rarity. A family may contain several
+chains, and labels can distinguish compatible equipment or elements without owning progression.
 
 **The full catalogue lives in the companion [skill wiki](README.md).** This part defines the framework it is built on.
 
 ### 5.1 Structure
 
-| Level | Term | Example |
-|---|---|---|
-| **Sector** | The broadest grouping | Martial |
-| **Family** | A discipline within a sector | Blade |
-| **Subfamily** | A specific focus, with its own ladder | Sword, Dagger, Greatsword, Paired Blades |
+| Level | Meaning | Example |
+| --- | --- | --- |
+| Domain | Broad source of practice | Martial |
+| Family | The skill's single aptitude and progression home | Blade |
+| Skill | One learnable definition | Measured Cut |
+| Optional label | Compatibility or affinity metadata | Equipment: Sword |
 
-#### The three structural rules
+#### The structural rules
 
-**1. Every subfamily opens with a foundation passive.** A single Common passive — *Swordsmanship*, *Knifework*, *Shield Use* — that grants a small flat bonus with that weapon or focus and does nothing else. Its real job is to be the **single root the whole ladder hangs from**: every other skill in the subfamily names it, directly or indirectly, as a prerequisite. This gives each ladder one clean entry point and makes a hero's competence with a weapon a real, visible thing rather than an implicit assumption.
+**1. Family membership owns progression.** Every skill has exactly one family, and family aptitude
+governs its practice and epiphany. Broad techniques such as Parry and Footwork belong to Body even
+when their effects permit compatible Blade, Polearm, or Shield equipment.
 
-**2. Universal skills sit outside the ladders.** Some techniques — parrying, feinting, footwork, disarming — belong to no single weapon. These live in a **Universal Martial** set, are learnable from any weapon foundation, and function with anything the hero is holding. Without this, *Parry* would have to be written four times in the Blade family alone.
+**2. Labels narrow compatibility, never ownership.** `Equipment: Sword` and `Element: Fire` are
+filterable metadata. A missing label means family membership is sufficient; it does not create a
+hidden category. Loadout conditions such as using two compatible Blade weapons belong in
+`Requires`, not in a label.
 
-**3. Rarity D and above branches.** A single line up to Rare, then several parallel options at each higher tier drawing on the same prerequisite. Two heroes who both mastered Fireball should not have the same mid-game.
+**3. Prerequisites preserve authored chains.** Foundation skills remain learnable roots where the
+catalog defines them. Rarity D and above may branch into parallel options drawing on a shared
+prerequisite, so two heroes who mastered Fireball need not have the same mid-game.
 
 ### 5.2 Ladder shape
 
-The rarity distribution within a ladder is a pyramid, weighted heavily toward the bottom. A hero will hold many skills from the same subfamily over a long career, so the lower tiers need real breadth.
+The rarity distribution within a ladder is a pyramid, weighted heavily toward the bottom. A hero will hold many skills from the same family over a long career, so the lower tiers need real breadth.
 
-| Rarity | Major subfamily (~28) | Standard subfamily (~16) | Minor subfamily (~12) |
+| Rarity | Major ladder (~28) | Standard ladder (~16) | Minor ladder (~12) |
 |---|---|---|---|
 | **F** Common | 7 | 4 | 3 |
 | **E** Uncommon | 6 | 4 | 3 |
@@ -354,7 +362,7 @@ The rarity distribution within a ladder is a pyramid, weighted heavily toward th
 | **A** Fabled | 2 | 1 | 1 |
 | **S** Legendary | 1 | 0 | 0 |
 
-**Not every subfamily reaches Legendary.** Only a handful do, which is what makes those lines the ones players talk about. A subfamily without a Legendary skill still contributes to one through merging or through a shared capstone.
+**Not every ladder reaches Legendary.** Only a handful do, which is what makes those lines the ones players talk about. A ladder without a Legendary skill can still contribute to one through merging or through a shared capstone.
 
 ### 5.3 Ladder entry format
 
@@ -373,11 +381,11 @@ The same skill therefore reads differently on a hero raised in a training hall a
 
 ### 5.5 Coverage
 
-| Sector | Families | Subfamilies |
-|---|---|---|
-| **Martial** | Blade, Haft, Fist, Hunt, Guard, Motion | 17, plus the Universal Martial set |
-| **Magical** | Evocation, Ward, Enchantment, Restoration, Mind | 13 |
-| **Craft and Life** | Forging, Alchemy, Cooking, Gathering, Beast, Lore | 6 |
+| Domain | Families |
+| --- | --- |
+| **Martial** | Blade, Polearm, Ranged, Shield, Body |
+| **Magical** | Elemental, Ward, Enchantment, Restoration, Mind |
+| **Craft** | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
 
 See the [skill wiki](README.md) for the full ladders.
 

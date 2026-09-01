@@ -84,8 +84,8 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Measured risk · situational lead'
 		},
 		aptitudes: [
-			{ name: 'Hunt', class: 'martial' },
-			{ name: 'Motion', class: 'martial' },
+			{ name: 'Ranged', class: 'martial' },
+			{ name: 'Body', class: 'martial' },
 			{ name: 'Lore', class: 'crafting' }
 		]
 	},
@@ -108,9 +108,9 @@ export const heroes: readonly HeroFixture[] = [
 			tendency: 'Low risk · decisive under threat'
 		},
 		aptitudes: [
-			{ name: 'Guard', class: 'martial' },
-			{ name: 'Fire Evocation', class: 'magic' },
-			{ name: 'Universal Martial', class: 'martial' }
+			{ name: 'Shield', class: 'martial' },
+			{ name: 'Elemental', class: 'magic' },
+			{ name: 'Body', class: 'martial' }
 		]
 	},
 	{
@@ -205,8 +205,8 @@ export const heroes: readonly HeroFixture[] = [
 		},
 		aptitudes: [
 			{ name: 'Blade', class: 'martial' },
-			{ name: 'Motion', class: 'martial' },
-			{ name: 'Universal Martial', class: 'martial' }
+			{ name: 'Body', class: 'martial' },
+			{ name: 'Ranged', class: 'martial' }
 		]
 	}
 ] as const;

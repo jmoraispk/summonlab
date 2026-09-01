@@ -7,11 +7,19 @@ describe('online wiki registry', () => {
 	it('publishes every public catalog route from canonical Markdown', () => {
 		const navigation = getWikiNavigation();
 
-		expect(getWikiPageCount()).toBe(98);
+		expect(getWikiPageCount()).toBe(99);
 		expect(navigation.length).toBeGreaterThan(40);
 		for (const entry of navigation) {
 			expect(getWikiPage(entry.href.replace(/^\/wiki\//u, ''))?.title).toBe(entry.title);
 		}
+	});
+
+	it('publishes the Elemental catalog and retires obsolete skill routes', () => {
+		expect(getWikiPage('mechanics/skills/magical-elemental')?.wikiId).toBe(
+			'skills.magical-elemental'
+		);
+		expect(getWikiPage('mechanics/skills/magical-evocation')).toBeNull();
+		expect(getWikiPage('mechanics/skills/martial-universal')).toBeNull();
 	});
 
 	it('publishes one visual database page per canonical monster identity', () => {
@@ -46,6 +54,14 @@ describe('online wiki registry', () => {
 			(entry) => entry.href === '/wiki/mechanics/progression'
 		);
 		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
+	});
+
+	it('provides title-free body HTML for promoted canonical headings', () => {
+		const skills = getWikiPage('mechanics/skills');
+
+		expect(skills?.html).toMatch(/^<h1 id="skills">Skills<\/h1>/);
+		expect(skills?.bodyHtml).not.toContain('<h1');
+		expect(skills?.bodyHtml).toContain('Skills define what a hero can do');
 	});
 
 	it('publishes the fixed six-person Living Village roster', () => {

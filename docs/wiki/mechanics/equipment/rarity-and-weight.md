@@ -52,9 +52,9 @@ supported by Vitality in the source draft.
 
 | Class | Typical wearer | Penalty if over tolerance |
 | --- | --- | --- |
-| **Light** | Motion, Hunt, Dagger, casters | Rarely an issue |
-| **Medium** | Sword, Paired Blades, Spear, Fist | Movement and evasion loss |
-| **Heavy** | Guard, Hammer, Greatsword | Movement, evasion, attack speed and initiative loss |
+| **Light** | Dagger, Bow, Body-compatible unarmed equipment, casters | Rarely an issue |
+| **Medium** | Sword, Spear, Crossbow, Shield | Movement and evasion loss |
+| **Heavy** | Greatsword, Halberd, Polehammer, Tower Shield | Movement, evasion, attack speed and initiative loss |
 | **Very Heavy** | Bulwark builds only | Severe penalties across all Agility-driven stats |
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,

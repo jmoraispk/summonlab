@@ -11,8 +11,8 @@ A focus is not required to cast, but it substantially improves magical magnitude
 | Focus | R band | Weight | Favours |
 | --- | --- | --- | --- |
 | **Talisman** | F+ | Light | Any. The cheapest focus; a paper charm. |
-| **Wand** | F+ | Light | Evocation. Fast, low magnitude. |
-| **Staff** | E+ | Medium | Evocation and Ward. Highest raw magnitude; two-handed. |
+| **Wand** | F+ | Light | Elemental. Fast, low magnitude. |
+| **Staff** | E+ | Medium | Elemental and Ward. Highest raw magnitude; two-handed. |
 | **Orb** | D+ | Light | Ward and Mind. Control duration and stability. |
 | **Prayer Beads** | D+ | Light | Restoration. Mana efficiency and healing potency. |
 | **Censer** | C+ | Medium | Enchantment. Reduces component consumption. |

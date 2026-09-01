@@ -199,39 +199,29 @@ Meteor. Ladder advancement combines:
 Family aptitude materially raises the chance of rare epiphanies and therefore affects access as
 well as speed.
 
-## Sectors, families, and foci
+## Domains, families, and labels
 
-### Martial
+The canonical ownership path is **Domain → Family → Skill**. Equipment and Element are labels at
+the edge of a skill definition; they never create a separate focus or progression layer.
 
-| Family | Foci |
-| --- | --- |
-| Blade | Sword, dagger, greatsword, paired blades |
-| Haft | Spear, axe, polearm, hammer |
-| Fist | Unarmed, grappling, gauntlet |
-| Hunt | Bow, crossbow, thrown, tracking, ambush |
-| Guard | Shield, defense, poise, protection |
-| Motion | Movement, evasion, positioning, traversal |
-
-### Magical
-
-| Family | Foci |
-| --- | --- |
-| Evocation | Offensive magic authored per element |
-| Ward | Barriers, dispelling, and defense per element |
-| Enchantment | Self/ally buffs and component-consuming object imbuing |
-| Restoration | Healing, curing, revival |
-| Mind | Control, perception, illusion, deception |
-
-### Craft and life
-
-| Family | Foci |
-| --- | --- |
-| Forging | Weapons, armor, tools |
-| Alchemy | Potions, poisons, reagents |
-| Cooking | Food, duration buffs, morale |
-| Gathering | Harvesting, mining, foraging, skinning |
-| Beast | Taming, riding, handling, breeding |
-| Lore | Identification, appraisal, cartography, language |
+| Domain | Family | Scope and optional labels |
+| --- | --- | --- |
+| Martial | Blade | Cutting and blade handling; `Equipment: Sword`, `Dagger`, or `Greatsword` where needed. Two Blades is a Blade skill whose compatible two-weapon loadout is a requirement. |
+| Martial | Polearm | Long-shafted melee techniques; `Equipment: Spear`, `Glaive`, `Halberd`, or `Polehammer` where needed. |
+| Martial | Ranged | Bow and crossbow techniques; `Equipment: Bow` or `Crossbow` where needed. |
+| Martial | Shield | Shield handling, interception, formation defense, and ally-covering techniques. |
+| Martial | Body | Unarmed strikes, grappling, movement, endurance, awareness, and general combat technique. |
+| Magical | Elemental | Direct elemental magic; every skill has one concrete `Element` label. |
+| Magical | Ward | Barriers, dispelling, and defense; use `Element: Attuned` only when affinity parameterizes the definition. |
+| Magical | Enchantment | Self/ally buffs and object imbuing; use `Element: Attuned` only when affinity parameterizes the definition. |
+| Magical | Restoration | Healing, curing, and revival. |
+| Magical | Mind | Control, perception, illusion, and deception. |
+| Craft | Forging | Weapons, armour, and tools. |
+| Craft | Alchemy | Potions, poisons, and reagents. |
+| Craft | Cooking | Food, duration buffs, and morale. |
+| Craft | Gathering | Harvesting, mining, foraging, and skinning. |
+| Craft | Beast | Taming, riding, handling, and breeding. |
+| Craft | Lore | Identification, appraisal, cartography, and language. |
 
 Craft skill is structurally useful: smiths set equipment possibilities, alchemists help parties
 survive, cooks support roster function, and a level-1 Master cook remains genuinely valuable.
@@ -246,14 +236,14 @@ rarity contributes to the result. Both input skills are consumed. The result beg
 
 | Pair | Character | Result direction |
 | --- | --- | --- |
-| Blade + Motion | Natural | Mobile strikes and closing |
-| Blade + Evocation | Natural | Elemental weapon arts |
+| Blade + Body | Natural | Mobile strikes and closing |
+| Blade + Elemental | Natural | Elemental weapon arts |
 | Forging + Enchantment | Natural | Imbued-equipment creation |
 | Alchemy + Restoration | Natural | Superior healing craft |
 | Cooking + Enchantment | Unexpected | Lasting-buff food |
-| Beast + Motion | Unexpected | Mounted combat |
-| Hunt + Lore | Unexpected | Tracking the impossible |
-| Guard + Mind | Volatile | Wards that turn attacker intent |
+| Beast + Body | Unexpected | Mounted combat |
+| Ranged + Lore | Unexpected | Reading impossible signs at range |
+| Shield + Mind | Volatile | Wards that turn attacker intent |
 | Forging + Blade | Volatile | Techniques restricted to a self-made weapon |
 | Two copies of the same skill | Fallback | Refined variant for a hero with no partner |
 
@@ -292,39 +282,31 @@ conflict for review. One-stance exclusivity is compatible with that goal.
 | Trial and boss reward | B–S | Named techniques from named opponents |
 | Merging | C–S | Cross-family late game |
 
-## Ladder structure and shape
+## Family skill graph
 
-| Level | Term | Example |
-| --- | --- | --- |
-| Sector | Broadest grouping | Martial |
-| Family | Discipline | Blade |
-| Subfamily | Specific focus and its ladder | Sword |
+The canonical ownership path is **Domain → Family → Skill**. Equipment and Element are optional
+labels on a skill, never intermediate progression nodes.
+
+| Domain | Families |
+| --- | --- |
+| Martial | Blade, Polearm, Ranged, Shield, Body |
+| Magical | Elemental, Ward, Enchantment, Restoration, Mind |
+| Craft | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
 
 Three structural rules:
 
-1. Every subfamily begins with one Common foundation passive such as Swordsmanship, Knifework, or
-   Shield Use. It grants a small flat focus bonus and forms the single root for all descendants.
-2. Universal Martial techniques such as parrying, feinting, footwork, and disarming sit outside
-   weapon ladders, can be learned from any weapon foundation, and work with any held weapon.
-3. Rarity D and above branches into alternatives sharing prerequisites so heroes diverge.
+1. Every family has one or more Common foundation skills. A foundation such as Swordsmanship,
+   Knifework, Shield Use, or Footing begins a family skill graph rather than a separate ladder.
+2. General combat techniques belong to Body unless their purpose is honestly specific to a concrete
+   tool family. A Body-owned Parry may still declare compatible held equipment in its definition.
+3. Rarity D and above can branch into alternatives sharing prerequisites so heroes diverge.
 
-| Rarity | Major subfamily (~28) | Standard (~16) | Minor (~12) |
-| --- | ---: | ---: | ---: |
-| F | 7 | 4 | 3 |
-| E | 6 | 4 | 3 |
-| D | 5 | 3 | 2 |
-| C | 4 | 2 | 2 |
-| B | 3 | 2 | 1 |
-| A | 2 | 1 | 1 |
-| S | 1 | 0 | 0 |
+Not every family skill graph reaches Legendary. A non-Legendary branch can still contribute through
+merging or a shared capstone.
 
-Not every subfamily reaches Legendary. A non-Legendary line can still contribute through merging
-or a shared capstone.
-
-Every catalog entry needs fixed rarity, skill type, requirements, and effect. The complete intended
-coverage is 17 Martial subfamilies plus Universal Martial, 13 Magical subfamilies, and six Craft and
-Life subfamilies. The companion compendium owns the worked entries; the source says fourteen foci
-still required full ladder treatment when written.
+Every catalog entry needs fixed rarity, skill type, requirements, and effect. The complete authored
+coverage is five Martial families, five Magical families, and six Craft families. Consolidated row
+counts and every legacy disposition are recorded in the [skill migration ledger](../skills/migration-v2.json).
 
 ## Living Village subset
 

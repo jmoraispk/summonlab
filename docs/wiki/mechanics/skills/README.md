@@ -2,122 +2,113 @@
 
 Wiki ID: `skills.index`
 
-Design status: **draft source import**. The supplied framework and all supplied catalog rows are
-preserved here, but they are not yet accepted balance or executable content.
+Design status: **draft source import**. The consolidated taxonomy preserves the authored catalog
+through an auditable migration ledger, but its balance and runtime behavior are not yet accepted.
 
-Skills define what a hero can do. Rarity describes the skill's fixed power/scarcity band; mastery
-describes one hero's realized command of that skill. The catalog spans combat, magic, craft, and
-life disciplines so a hero's value is not reducible to direct combat power.
+Skills define what a hero can do. Rarity describes a skill's fixed power and scarcity band;
+mastery describes one hero's realized command of that skill. The catalog spans combat, magic,
+craft, and life disciplines so a hero's value is not reducible to direct combat power.
 
-This section is a companion to the larger progression system. The [framework](framework.md)
-preserves the supplied skill rules; the grouped catalog pages preserve every supplied skill row.
+The canonical ownership path is **Domain → Family → Skill**. Every skill belongs to exactly one
+family, and that family owns aptitude and progression. Optional labels narrow compatibility or
+affinity without creating another progression level.
 
 ## Reading the catalog
 
 `R` is rarity: **F** Common, **E** Uncommon, **D** Rare, **C** Epic, **B** Mythic, **A** Fabled,
 and **S** Legendary. `T` is type: **A**ctive, **P**assive, **St**ance, or **C**raft.
 
-`Requires` records the principal learning path. The source says most Rare and higher skills have
-alternative paths, but those paths have not yet been authored in the catalog tables. Requirements
-such as “threshold,” “deed,” “rare catalyst,” and “composite condition” are therefore design
-shorthand, not executable predicates.
+`Requires` records the principal learning path. Requirements such as “threshold,” “deed,” “rare
+catalyst,” and “composite condition” are design shorthand, not executable predicates.
+
+The authored label namespaces are:
+
+- `Equipment`, which identifies a compatible concrete Martial tool;
+- `Element`, which identifies a concrete Elemental affinity or the `Attuned` affinity inherited by
+  another Magical family.
+
+An omitted label means family membership is sufficient. It does not create a hidden neutral or
+universal category. `Two Blades` is a skill in Blade, while its two-weapon loadout is a requirement.
 
 ## Catalog navigation
 
-- [Universal Martial](martial-universal.md)
-- [Blade: Sword, Dagger, Greatsword, Paired Blades](martial-blade.md)
-- [Haft and Fist: Spear, Axe, Hammer, Unarmed, Grappling](martial-haft-and-fist.md)
-- [Hunt, Guard, and Motion](martial-hunt-guard-motion.md)
-- [Evocation: Fire, Water, Wood, Earth, Metal](magical-evocation.md)
-- [Ward, Enchantment, Restoration, and Mind](magical-disciplines.md)
-- [Craft and Life: Forging, Alchemy, Cooking, Gathering, Beast, Lore](craft-and-life.md)
-- [Minimum Living Village subset](living-village.md)
+### Martial
 
-## Supplied taxonomy
+- [Blade](martial-blade.md)
+- [Polearm](martial-polearm.md)
+- [Ranged](martial-ranged.md)
+- [Shield](martial-shield.md)
+- [Body](martial-body.md)
 
-| Sector | Families and supplied subfamilies |
+### Magical
+
+- [Elemental](magical-elemental.md)
+- [Ward](magical-disciplines.md#ward)
+- [Enchantment](magical-disciplines.md#enchantment)
+- [Restoration](magical-disciplines.md#restoration)
+- [Mind](magical-disciplines.md#mind)
+
+### Craft
+
+- [Forging](craft-and-life.md#forging)
+- [Alchemy](craft-and-life.md#alchemy)
+- [Cooking](craft-and-life.md#cooking)
+- [Gathering](craft-and-life.md#gathering)
+- [Beast](craft-and-life.md#beast)
+- [Lore](craft-and-life.md#lore)
+
+See also the [minimum Living Village subset](living-village.md) and the complete
+[skill framework](framework.md).
+
+## Canonical taxonomy
+
+| Domain | Families |
 | --- | --- |
-| Universal | Universal Martial |
-| Martial — Blade | Sword, Dagger, Greatsword, Paired Blades |
-| Martial — Haft | Spear, Axe, Hammer |
-| Martial — Fist | Unarmed, Grappling |
-| Martial — Hunt | Bow, Crossbow, Thrown, Tracking |
-| Martial — Guard | Shield, Protection |
-| Martial — Motion | Motion |
-| Magical | Fire, Water, Wood, Earth, and Metal Evocation; Ward; Enchantment; Restoration; Mind |
-| Craft and Life | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
+| Martial | Blade, Polearm, Ranged, Shield, Body |
+| Magical | Elemental, Ward, Enchantment, Restoration, Mind |
+| Craft | Forging, Alchemy, Cooking, Gathering, Beast, Lore |
 
-The framework uses the hierarchy **sector → family → subfamily → skill**. Its intended structural
-rules are one foundation entry per subfamily, universal techniques outside weapon ladders, and
-branching at Rare and above. The Evocation ladders currently open with Active foundations rather
-than the “foundation passive” required by the framework, so the more general rule should probably
-be “one foundation skill” unless those five entries change type.
+Elemental skills use exactly one of Fire, Water, Wood, Earth, or Metal as an `Element` label.
+Ward and Enchantment use `Element: Attuned` only where a definition inherits the hero's current
+affinity. Other neutral Magical skills omit the label.
 
 ## Source-integrity audit
 
-The source's catalog contains exactly **520** parsed skill rows across **32** titled sections.
+The legacy compendium contained 520 rows. The v2 migration ledger records the disposition of every
+row; the consolidated target count is derived by validation and may be lower because approved
+merges and deletions are intentional.
 
-| Sector | Supplied summary | Audited rows |
-| --- | ---: | ---: |
-| Universal | 16 | 16 |
-| Martial — Blade | 86 | 86 |
-| Martial — Haft | 46 | **44** |
-| Martial — Fist | 30 | 30 |
-| Martial — Hunt | 54 | 54 |
-| Martial — Guard | 32 | 32 |
-| Martial — Motion | 18 | 18 |
-| Magical | 155 | **160** |
-| Craft and Life | 84 | **80** |
-| **Total** | **~521** | **520** |
+Every target row must trace to at least one legacy row. Retained definitions preserve rarity, type,
+requirements, and effects unless the ledger explicitly records a replacement. Deleted and merged
+definitions remain recoverable through Git history and their ledger rationale.
 
-The exact audited rarity distribution is F 126, E 112, D 109, C 79, B 55, A 25, and S 14. The
-exact type distribution is Active 281, Passive 141, Stance 38, and Craft 60.
-
-The supplied statement that Legendary skills occur in nine subfamilies is inconsistent with the
-tables. Fourteen sections contain an S entry: Sword, Dagger, Unarmed, Bow, Shield, Motion, all five
-Evocation elements, Restoration, Mind, and Forging. The prose list omits Forging and itself names
-thirteen sections rather than nine.
-
-`Great Renewal` also appears twice: Wood Evocation #16 and Restoration #14 have different
-requirements and effects. They require distinct stable skill IDs even if the shared display name is
-intentional.
+`Great Renewal` appears in both Elemental and Restoration with different requirements and effects.
+Their family ownership gives them distinct stable skill IDs even though their display name is
+shared.
 
 ## Source authority and remaining decisions
 
-- The source's Might, Vitality, Agility, Dexterity, Intellect, and Spirit vocabulary is
-  authoritative. New executable thresholds must migrate together rather than mix old and new IDs.
+- Might, Vitality, Agility, Dexterity, Intellect, and Spirit remain the authoritative attribute
+  vocabulary. Executable thresholds must migrate together rather than mix identifiers.
 - Wood, Fire, Earth, Metal, and Water are the five base affinities; Wind is derived from Metal ×
   Wood. Element statuses and rank numerics still require combat integration.
-- The source says skills and affinities have no direct relation while also authoring magical skills
-  per element. The architecture models affinity as a typed skill aspect and permits bounded fusion.
-  “No slotting or arbitrary infusion” can remain true, but the content relation needs one canonical
-  formulation.
-- The source merge rule is authoritative: two Master-10 inputs are consumed, a recipe and catalyst
-  are required, and the result begins at Novice 1. Exact recipe coverage and balance remain work.
-- The source allows unlimited passives and one active stance. Combat must balance passive effects
-  without inventing a conflicting equipped-passive cap.
-- The framework's approximate rarity counts (about 90/70/55/40/28/15/2 from F through S) differ
-  sharply from this catalog's 126/112/109/79/55/25/14. Clarify whether the former was a target for
-  the complete game or only an early estimate.
-- The source's “remaining” polearm and greatsword variants are ambiguous because Spear already
-  covers polearms and Greatsword already has a ladder. Core family lists also mention Gauntlet,
-  Ambush, Defence, and Poise foci absent from this compendium.
+- Affinity is a learning or compatibility requirement for magical definitions. Element labels
+  identify which affinity powers or parameterizes a skill; they are not equipment slots.
+- The merge rule remains two Master-10 inputs consumed with a recipe and catalyst, producing a
+  distinct Novice-1 result. Exact recipe coverage and balance remain work.
+- Passives remain unlimited and only one active stance may be held. Combat must not invent a
+  conflicting equipped-passive cap.
+- Future equipment labels should be added only when authored definitions support them; family
+  symmetry is not a reason to invent more content.
 
 ## Runtime work still required
 
 The prose effects intentionally lack exact mana costs, cooldowns, ranges, target shapes, durations,
 scaling, status definitions, immunity rules, and boss exceptions. Absolutes such as “cannot,”
-“permanently,” “everything,” and “ceases” are fantasy descriptions until bounded operators exist.
-All action counters and requirements need stable event IDs, while every status term—Burn, Ensnare,
+“permanently,” and “everything” remain fantasy descriptions until bounded operators exist. All
+action counters and requirements need stable event IDs, while every status term—Burn, Ensnare,
 Weight, Rend, Chill, bleed, poison, blind, daze, stagger, root, and others—needs one versioned status
 catalog.
 
-The source remains valuable as the complete authored design inventory. Runtime agents may select
-from accepted definitions; they may not turn these descriptions into unreviewed mechanics.
-
-## Supplied extension notes
-
-The source says remaining Haft foci (polearm variants), Blade greatsword variants, and
-subfamily-specific merge recipes are still to be authored. Its theoretical apex is a named but
-effectively unobtainable skill inheriting from every family, intended as orientation rather than a
-normal acquisition goal.
+The source remains valuable as authored design inventory. Runtime agents may select from accepted
+definitions; they may not turn these descriptions into unreviewed mechanics.

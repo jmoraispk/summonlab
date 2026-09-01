@@ -67,14 +67,14 @@ acceptance verdict for the full compendium.
 
 | Need | Candidate items |
 | --- | --- |
-| One weapon per drafted martial family | Shortsword, Knife, Greatblade, Matched Shortswords, War Spear, War Axe, Mace, Hunting Bow, Light Crossbow, Javelins, Hand Wraps |
+| Representative equipment for the five Martial families | Shortsword, Knife, Greatblade, War Spear, Glaive, Halberd, Polehammer, Hunting Bow, Light Crossbow, Round Shield, Hand Wraps |
 | Basic defensive choices | Buckler, Round Shield, Mail, Hide Armour, Boiled Leather, Padded Coat, Travelling Robes |
 | Basic magical choices | Talisman, Wand, Staff |
 | Materials sufficient for those items | Copper, Bronze, Iron, Pig Steel, Coarse Hide, Rough Pelt, Boiled Leather, Thick Hide, Rough Cloth, Hemp Weave, Wool, Canvas, Pine, Ash, Oak, Yew |
 
 The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
-deliberate milestone reward. Whether all eleven martial families need to ship immediately depends
-on which skill families the Living Village hero roster can actually receive.
+deliberate milestone reward. Whether all five Martial families need to ship immediately depends on
+which skill families the Living Village hero roster can actually receive.
 
 ### Initial runtime selection
 
@@ -123,8 +123,9 @@ remain preserved rather than silently normalized:
   families or reuse a material name as an item name.
 - Accessory slots are not defined beyond two rings; Pocket Space may be an item, capability, or
   progression reward rather than a worn accessory.
-- Handedness and slot conflicts are prose-only: paired weapons, two-handed weapons/foci, shields,
-  Fist weapons, hand armour, and Iron Sleeves need one legality model.
+- Handedness and slot conflicts are prose-only: two compatible Blade weapons, two-handed
+  weapons/foci, shields, Body-compatible unarmed equipment, hand armour, and Iron Sleeves need one
+  legality model.
 - Damage, mitigation, poise, penetration, bleed, Rend, initiative, evasion, attack speed, mana,
   affinity, and granted-skill effects await the combat and status contracts.
 - Monster materials taken from sapient peoples require source, consent, death, personhood, and

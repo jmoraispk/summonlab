@@ -8,7 +8,7 @@ The [Living Village release matrix](../../roadmap/living-village-v1.md) is autho
 documented skill IDs are actually enabled.
 
 The first playable village needs enough skills to make summoning, party composition, combat, and
-training visibly different without implementing the entire 520-skill catalog.
+training visibly different without implementing the entire consolidated catalog.
 
 ## Initial runtime selection
 
@@ -38,21 +38,22 @@ Unaligned. Summoning never waives a requirement merely because a package wants t
 
 All names bind to their full definitions on the linked catalog pages.
 
-| Role | Subfamily | Included skills |
+| Role | Family / label | Included skills |
 | --- | --- | --- |
-| Shared martial basics | [Universal Martial](martial-universal.md) | Footing, Grip, Basic Block, Recovery |
-| Melee attacker | [Sword](martial-blade.md#sword) | Swordsmanship, Measured Cut, Overhead Chop, Horizontal Slash, Cross Guard |
-| Ranged attacker | [Bow](martial-hunt-guard-motion.md#bow) | Archery, Aimed Shot, Quick Loose, Steady Stance |
-| Defender | [Shield](martial-hunt-guard-motion.md#shield) | Shield Use, Raise Shield, Shield Bash, Brace, Cover |
-| Shared movement | [Motion](martial-hunt-guard-motion.md#motion) | Footwork, Dash, Roll |
-| Fire caster | [Fire Evocation](magical-evocation.md#evocation--fire) | Ember, Spark, Warmth, Ignite |
-| Water caster | [Water Evocation](magical-evocation.md#evocation--water) | Draw Water, Water Bullet, Cold Touch, Flow |
-| Wood caster | [Wood Evocation](magical-evocation.md#evocation--wood) | Quicken, Thorn, Root Grasp, Verdant Step |
-| Earth caster | [Earth Evocation](magical-evocation.md#evocation--earth) | Stoneshape, Stone Shard, Harden, Tremor |
-| Metal caster | [Metal Evocation](magical-evocation.md#evocation--metal) | Metalsense, Iron Needle, Edge, Rust Touch |
+| Shared martial basics | [Body](martial-body.md) | Footing, Grip, Basic Block, Recovery |
+| Melee attacker | [Blade](martial-blade.md) | Swordsmanship, Measured Cut, Overhead Chop, Horizontal Slash, Cross Guard |
+| Ranged attacker | [Ranged](martial-ranged.md) | Archery, Aimed Shot, Quick Loose, Steady Stance |
+| Defender | [Shield](martial-shield.md) | Shield Use, Raise Shield, Shield Bash, Brace, Cover |
+| Shared movement | [Body](martial-body.md) | Footwork, Dash, Roll |
+| Fire caster | [Elemental](magical-elemental.md) · `Element: Fire` | Ember, Spark, Warmth, Ignite |
+| Water caster | [Elemental](magical-elemental.md) · `Element: Water` | Draw Water, Water Bullet, Cold Touch, Flow |
+| Wood caster | [Elemental](magical-elemental.md) · `Element: Wood` | Quicken, Thorn, Root Grasp, Verdant Step |
+| Earth caster | [Elemental](magical-elemental.md) · `Element: Earth` | Stoneshape, Stone Shard, Harden, Tremor |
+| Metal caster | [Elemental](magical-elemental.md) · `Element: Metal` | Metalsense, Iron Needle, Edge, Rust Touch |
 | Healer | [Restoration](magical-disciplines.md#restoration) | Mending, Close Wound, Soothe, Field Care |
 
-This is a **45-definition expansion pool**: 29 Active and 16 Passive, all Common. It can support one
+Counting the retained named definitions above yields a **45-definition expansion pool**: 29 Active
+and 16 Passive, all Common. It can support one
 caster per base affinity after the initial loop is proven. It is not the minimum runtime and must
 not all be implemented merely because concept art exists. It deliberately excludes Craft and
 Stance skills, higher rarity, alternate learning paths, teaching, merging, and skill loss.
@@ -79,8 +80,8 @@ Stance skills, higher rarity, alternate learning paths, teaching, merging, and s
 ## Deliberately deferred
 
 - every Uncommon through Legendary skill;
-- Dagger, Greatsword, Paired Blades, Haft, Fist, Crossbow, Thrown, Tracking, Protection, Ward,
-  Enchantment, Mind, and all Craft and Life ladders;
+- Dagger- and Greatsword-labeled Blade skills, Polearm, Crossbow-labeled Ranged skills, Ward,
+  Enchantment, Mind, and all Craft ladders;
 - mastery promotion bonuses and permanent attribute awards;
 - multiple acquisition paths, manuals, mentorship, epiphany, monster-material skills, and trials;
 - skill merging, catalysts, consumption, inherited practice bonuses, and the apex skill;

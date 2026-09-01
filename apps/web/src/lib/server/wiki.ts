@@ -52,6 +52,7 @@ export interface WikiPage {
 	wikiId: string;
 	title: string;
 	html: string;
+	bodyHtml: string;
 	href: string;
 	sourcePath: string;
 	designStatus: string;
@@ -196,10 +197,12 @@ const pages = catalog.entries
 		const sourcePath = entryPath(entry);
 		const source = wikiByPath.get(sourcePath);
 		if (!source) return null;
+		const bodySource = source.replace(/^# [^\r\n]+(?:\r?\n){1,2}/u, '');
 		return {
 			wikiId: entry.wikiId,
 			title: titleFromMarkdown(source),
 			html: renderMarkdown(source, sourcePath),
+			bodyHtml: renderMarkdown(bodySource, sourcePath),
 			href: routeFromWikiPath(sourcePath),
 			sourcePath,
 			designStatus: entry.designStatus,

@@ -2,54 +2,57 @@
 
 Wiki ID: `skills.craft-and-life`
 
+Domain: **Craft**
+
 Design status: **draft source import**. These definitions preserve the supplied compendium; exact combat values and Living Village availability require validation.
 
 ## Forging
 
 Craft and Life. Weapons, armour and tools. Determines what every martial family has to work with.
 
-| # | Skill | R | T | Requires | Effect |
-|---|---|---|---|---|---|
-| 1 | **Ore Sense** | F | P | None | Identifies raw material quality by eye. **Foundation.** |
-| 2 | **Simple Smithing** | F | C | Ore Sense Novice, forge access | Produces Common weapons and armour |
-| 3 | **Sharpening** | F | C | Ore Sense Novice | Restores and slightly improves a weapon's edge |
-| 4 | **Fittings** | F | C | Simple Smithing Intermediate | Straps, buckles, hafts; reduces an item's weight slightly |
-| 5 | **Weaponsmithing** | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon weapons; better base stats |
-| 6 | **Armoursmithing** | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon armour; weight becomes controllable |
-| 7 | **Fuel Craft** | E | C | Ore Sense Expert, Gathering prerequisite | Better fuel; raises the quality ceiling of every forging skill |
-| 8 | **Alloying** | D | C | Intellect threshold, either smithing at Expert | Combines materials; unlocks Rare output |
-| 9 | **Tempering** | D | C | Dexterity threshold, 2,000 items forged | Raises the quality roll on any forged item |
-| 10 | **Weightless Craft** | D | C | Armoursmithing Master, Fittings Master | Armour at a given protection level weighs substantially less |
-| 11 | **Runic Foundation** | C | C | Alloying Master, Lore prerequisite | Forged items gain enchantment slots |
-| 12 | **Master's Mark** | C | P | Tempering Master, 10,000 items forged | Items bear the smith's mark; permanent bonus to any wielder |
-| 13 | **Living Metal** | B | C | Runic Foundation Master, rare material, Rank III | Forged items grow with their wielder rather than staying static |
-| 14 | **Monster Craft** | B | C | Alloying Master, Beast or Tracking prerequisite | Works monster materials into equipment with affinity-matched set bonuses |
-| 15 | **Soul Forging** | A | C | Living Metal Master, composite condition | Binds an item to one hero permanently; it gains an active skill |
-| 16 | **Godsmithing** | S | C | Soul Forging Master, composite condition | Produces a Legendary item. Once. |
+| # | Skill | Label | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **Ore Sense** | — | F | P | None | Identifies raw material quality by eye. **Foundation.** |
+| 2 | **Simple Smithing** | — | F | C | Ore Sense Novice, forge access | Produces Common weapons and armour |
+| 3 | **Sharpening** | — | F | C | Ore Sense Novice | Restores and slightly improves a weapon's edge |
+| 4 | **Fittings** | — | F | C | Simple Smithing Intermediate | Straps, buckles, hafts; reduces an item's weight slightly |
+| 5 | **Weaponsmithing** | — | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon weapons; better base stats |
+| 6 | **Armoursmithing** | — | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon armour; weight becomes controllable |
+| 7 | **Fuel Craft** | — | E | C | Ore Sense Expert, Gathering prerequisite | Better fuel; raises the quality ceiling of every forging skill |
+| 8 | **Alloying** | — | D | C | Intellect threshold, either smithing at Expert | Combines materials; unlocks Rare output |
+| 9 | **Tempering** | — | D | C | Dexterity threshold, 2,000 items forged | Raises the quality roll on any forged item |
+| 10 | **Weightless Craft** | — | D | C | Armoursmithing Master, Fittings Master | Armour at a given protection level weighs substantially less |
+| 11 | **Runic Foundation** | — | C | C | Alloying Master, Lore prerequisite | Forged items gain enchantment slots |
+| 12 | **Master's Mark** | — | C | P | Tempering Master, 10,000 items forged | Items bear the smith's mark; permanent bonus to any wielder |
+| 13 | **Living Metal** | — | B | C | Runic Foundation Master, rare material, Rank III | Forged items grow with their wielder rather than staying static |
+| 14 | **Monster Craft** | — | B | C | Alloying Master, Beast prerequisite | Works monster materials into equipment with affinity-matched set bonuses |
+| 15 | **Soul Forging** | — | A | C | Living Metal Master, composite condition | Binds an item to one hero permanently; it gains an active skill |
+| 16 | **Godsmithing** | — | S | C | Soul Forging Master, composite condition | Produces a Legendary item. Once. |
 
 ---
 
 ## Alchemy
 
-Craft and Life. Potions, poisons, reagents. Feeds every other sector.
+Craft and Life. Potions, poisons, reagents. Feeds every other domain.
 
-| # | Skill | R | T | Requires | Effect |
-|---|---|---|---|---|---|
-| 1 | **Reagent Sense** | F | P | None | Identifies herbs, fungi and organs by sight. **Foundation.** |
-| 2 | **Simple Brewing** | F | C | Reagent Sense Novice | Basic healing and stamina draughts |
-| 3 | **Preservation** | F | C | Reagent Sense Novice | Materials and food keep far longer |
-| 4 | **Extraction** | F | C | Simple Brewing Intermediate | Separates a material into its usable components |
-| 5 | **Poisoncraft** | E | C | Extraction Expert | Weapon coatings; stacking degeneration |
-| 6 | **Potion Brewing** | E | C | Simple Brewing Master | Attribute and resistance potions with real duration |
-| 7 | **Volatiles** | E | C | Extraction Expert, Intellect threshold | Throwable flasks — fire, acid, smoke, adhesive |
-| 8 | **Antidotes** | E | C | Poisoncraft Intermediate | Cures for poison, disease and Blight |
-| 9 | **Concentration** | D | C | Potion Brewing Master, 2,000 brews | Doubles a potion's potency at reduced duration, or the reverse |
-| 10 | **Transmutation** | D | C | Extraction Master, Intellect threshold | Converts one material into another of the same rarity |
-| 11 | **Elixir Craft** | D | C | Concentration Master, Rank II | Potions that grant temporary skills rather than stats |
-| 12 | **Deathcap** | C | C | Poisoncraft Master, Volatiles Master | Poisons that persist through cleansing and resist antidotes |
-| 13 | **Philosopher's Work** | C | C | Transmutation Master, Lore prerequisite | Raises a material one rarity tier. Slow, expensive, unreliable. |
-| 14 | **Panacea** | B | C | Elixir Craft Master, Antidotes Master | Cures any condition, including permanent ones |
-| 15 | **Elixir of Years** | A | C | Panacea Master, composite condition | Grants a permanent attribute increase. Once per hero, ever. |
+| # | Skill | Label | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **Reagent Sense** | — | F | P | None | Identifies herbs, fungi and organs by sight. **Foundation.** |
+| 2 | **Simple Brewing** | — | F | C | Reagent Sense Novice | Basic healing and stamina draughts |
+| 3 | **Preservation** | — | F | C | Reagent Sense Novice | Materials and food keep far longer |
+| 4 | **Extraction** | — | F | C | Simple Brewing Intermediate | Separates a material into its usable components |
+| 5 | **Poisoncraft** | — | E | C | Extraction Expert | Weapon coatings; stacking degeneration |
+| 6 | **Potion Brewing** | — | E | C | Simple Brewing Master | Attribute and resistance potions with real duration |
+| 7 | **Volatiles** | — | E | C | Extraction Expert, Intellect threshold | Throwable flasks — fire, acid, smoke, adhesive |
+| 8 | **Antidotes** | — | E | C | Poisoncraft Intermediate | Cures for poison, disease and Blight |
+| 9 | **Concentration** | — | D | C | Potion Brewing Master, 2,000 brews | Doubles a potion's potency at reduced duration, or the reverse |
+| 10 | **Transmutation** | — | D | C | Extraction Master, Intellect threshold | Converts one material into another of the same rarity |
+| 11 | **Elixir Craft** | — | D | C | Concentration Master, Rank II | Potions that grant temporary skills rather than stats |
+| 12 | **Deathcap** | — | C | C | Poisoncraft Master, Volatiles Master | Poisons that persist through cleansing and resist antidotes |
+| 13 | **Philosopher's Work** | — | C | C | Transmutation Master, Lore prerequisite | Raises a material one rarity tier. Slow, expensive, unreliable. |
+| 14 | **Panacea** | — | B | C | Elixir Craft Master, Antidotes Master | Cures any condition, including permanent ones |
+| 15 | **Elixir of Years** | — | A | C | Panacea Master, composite condition | Grants a permanent attribute increase. Once per hero, ever. |
+| 16 | **Grenade Throw** | — | E | A | Volatiles Novice | Delivers an alchemical flask accurately at range |
 
 ---
 
@@ -57,20 +60,20 @@ Craft and Life. Potions, poisons, reagents. Feeds every other sector.
 
 Craft and Life. Food, duration buffs, morale. Structurally load-bearing — a poorly fed roster underperforms across the board.
 
-| # | Skill | R | T | Requires | Effect |
-|---|---|---|---|---|---|
-| 1 | **Cooking** | F | P | None | Prepared food removes the unfed penalty. **Foundation.** |
-| 2 | **Field Rations** | F | C | Cooking Novice | Portable food that keeps on a long mission |
-| 3 | **Butchery** | F | C | Cooking Novice | Better yield from carcasses; feeds Gathering |
-| 4 | **Hearth Meal** | E | C | Cooking Intermediate | Small party-wide buff before a mission |
-| 5 | **Preserving** | E | C | Field Rations Expert, Alchemy prerequisite | Food keeps indefinitely; buffs do not decay |
-| 6 | **Seasoning** | E | C | Cooking Expert, Dexterity threshold | Raises the potency of every dish the hero makes |
-| 7 | **Restorative Broth** | D | C | Hearth Meal Master, Restoration prerequisite | Food that heals over time and clears minor conditions |
-| 8 | **Monster Cuisine** | D | C | Butchery Master, Beast prerequisite | Cooks monster materials; buffs matched to the creature's affinity |
-| 9 | **Feast** | D | C | Hearth Meal Master, 2,000 meals cooked | Buffs the entire roster at once, not just the active party |
-| 10 | **Comfort** | C | P | Feast Master | Well-fed heroes train faster and recover faster between missions |
-| 11 | **Banquet of the Five** | C | C | Monster Cuisine Master, Feast Master | A dish per affinity; each ally receives the one matching theirs |
-| 12 | **The Long Table** | B | P | Comfort Master, composite condition | The entire settlement gains a permanent standing bonus while the hero cooks |
+| # | Skill | Label | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **Cooking** | — | F | P | None | Prepared food removes the unfed penalty. **Foundation.** |
+| 2 | **Field Rations** | — | F | C | Cooking Novice | Portable food that keeps on a long mission |
+| 3 | **Butchery** | — | F | C | Cooking Novice | Better yield from carcasses; feeds Gathering |
+| 4 | **Hearth Meal** | — | E | C | Cooking Intermediate | Small party-wide buff before a mission |
+| 5 | **Preserving** | — | E | C | Field Rations Expert, Alchemy prerequisite | Food keeps indefinitely; buffs do not decay |
+| 6 | **Seasoning** | — | E | C | Cooking Expert, Dexterity threshold | Raises the potency of every dish the hero makes |
+| 7 | **Restorative Broth** | — | D | C | Hearth Meal Master, Restoration prerequisite | Food that heals over time and clears minor conditions |
+| 8 | **Monster Cuisine** | — | D | C | Butchery Master, Beast prerequisite | Cooks monster materials; buffs matched to the creature's affinity |
+| 9 | **Feast** | — | D | C | Hearth Meal Master, 2,000 meals cooked | Buffs the entire roster at once, not just the active party |
+| 10 | **Comfort** | — | C | P | Feast Master | Well-fed heroes train faster and recover faster between missions |
+| 11 | **Banquet of the Five** | — | C | C | Monster Cuisine Master, Feast Master | A dish per affinity; each ally receives the one matching theirs |
+| 12 | **The Long Table** | — | B | P | Comfort Master, composite condition | The entire settlement gains a permanent standing bonus while the hero cooks |
 
 ---
 
@@ -78,21 +81,21 @@ Craft and Life. Food, duration buffs, morale. Structurally load-bearing — a po
 
 Craft and Life. Harvesting, mining, foraging, skinning. Feeds Forging, Alchemy and Cooking, and makes hauling heroes worth a roster slot.
 
-| # | Skill | R | T | Requires | Effect |
-|---|---|---|---|---|---|
-| 1 | **Gathering** | F | P | None | Enables harvesting of nodes and carcasses. **Foundation.** |
-| 2 | **Mining** | F | C | Gathering Novice | Ore, stone and gems |
-| 3 | **Foraging** | F | C | Gathering Novice | Herbs, fungi, wild food |
-| 4 | **Skinning** | F | C | Gathering Novice | Hide, scale and bone from felled creatures |
-| 5 | **Careful Harvest** | E | P | Any gathering skill at Expert | Nodes yield more and are not exhausted as quickly |
-| 6 | **Prospecting** | E | P | Mining Expert, Lore prerequisite | Reveals nearby nodes and their quality |
-| 7 | **Bulk Carry** | E | P | Might threshold, 5,000 gathers | Substantially increased carry capacity for materials |
-| 8 | **Deep Vein** | D | C | Prospecting Master | Access to Rare and better material nodes |
-| 9 | **Perfect Cut** | D | P | Skinning Master, Dexterity threshold | Signature components from monsters drop far more often |
-| 10 | **Cultivation** | D | C | Foraging Master | Grow reagents rather than finding them; a settlement supply |
-| 11 | **Leyline Harvest** | C | C | Deep Vein Master, Rank III | Extract elementally-charged material from affinity nodes |
-| 12 | **Nothing Wasted** | C | P | Careful Harvest Master, 25,000 gathers | Every harvest yields something usable, including from failures |
-| 13 | **The Earth Provides** | B | P | Leyline Harvest Master, composite condition | Nodes in the region replenish permanently and yield a tier higher |
+| # | Skill | Label | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **Gathering** | — | F | P | None | Enables harvesting of nodes and carcasses. **Foundation.** |
+| 2 | **Mining** | — | F | C | Gathering Novice | Ore, stone and gems |
+| 3 | **Foraging** | — | F | C | Gathering Novice | Herbs, fungi, wild food |
+| 4 | **Skinning** | — | F | C | Gathering Novice | Hide, scale and bone from felled creatures |
+| 5 | **Careful Harvest** | — | E | P | Any gathering skill at Expert | Nodes yield more and are not exhausted as quickly |
+| 6 | **Prospecting** | — | E | P | Mining Expert, Lore prerequisite | Reveals nearby nodes and their quality |
+| 7 | **Bulk Carry** | — | E | P | Might threshold, 5,000 gathers | Substantially increased carry capacity for materials |
+| 8 | **Deep Vein** | — | D | C | Prospecting Master | Access to Rare and better material nodes |
+| 9 | **Perfect Cut** | — | D | P | Skinning Master, Dexterity threshold | Signature components from monsters drop far more often |
+| 10 | **Cultivation** | — | D | C | Foraging Master | Grow reagents rather than finding them; a settlement supply |
+| 11 | **Leyline Harvest** | — | C | C | Deep Vein Master, Rank III | Extract elementally-charged material from affinity nodes |
+| 12 | **Nothing Wasted** | — | C | P | Careful Harvest Master, 25,000 gathers | Every harvest yields something usable, including from failures |
+| 13 | **The Earth Provides** | — | B | P | Leyline Harvest Master, composite condition | Nodes in the region replenish permanently and yield a tier higher |
 
 ---
 
@@ -100,20 +103,20 @@ Craft and Life. Harvesting, mining, foraging, skinning. Feeds Forging, Alchemy a
 
 Craft and Life. Taming, riding, handling, breeding. Merges into mounted combat and feeds Cooking and Gathering.
 
-| # | Skill | R | T | Requires | Effect |
-|---|---|---|---|---|---|
-| 1 | **Animal Handling** | F | P | None | Animals do not flee or attack on sight. **Foundation.** |
-| 2 | **Calm** | F | A | Animal Handling Novice | Pacifies a hostile beast briefly |
-| 3 | **Feed** | F | C | Animal Handling Novice | Builds trust with a creature over time |
-| 4 | **Riding** | E | P | Animal Handling Intermediate | Mount and control a trained beast |
-| 5 | **Taming** | E | A | Calm Master, Feed Expert | Permanently binds a low-tier creature as a companion |
-| 6 | **Beast Speech** | E | P | Animal Handling Expert, Lore prerequisite | Understand and be understood by animals |
-| 7 | **Pack Bond** | D | P | Taming Master | Several companions at once; they coordinate |
-| 8 | **Mounted Combat** | D | P | Riding Master, any martial subfamily at Expert | Full combat capability while mounted |
-| 9 | **Breeding** | D | C | Taming Master, Cultivation or equivalent | Produces creatures with inherited traits |
-| 10 | **Greater Taming** | C | A | Pack Bond Master, Rank III | Binds mid-tier monsters, not merely animals |
-| 11 | **Bonded Mount** | C | P | Mounted Combat Master, Breeding Expert | The mount levels, gains skills, and cannot be permanently killed |
-| 12 | **Monarch of Beasts** | B | P | Greater Taming Master, composite condition | High-tier monsters may be bound; they retain their own affinity rank |
+| # | Skill | Label | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **Animal Handling** | — | F | P | None | Animals do not flee or attack on sight. **Foundation.** |
+| 2 | **Calm** | — | F | A | Animal Handling Novice | Pacifies a hostile beast briefly |
+| 3 | **Feed** | — | F | C | Animal Handling Novice | Builds trust with a creature over time |
+| 4 | **Riding** | — | E | P | Animal Handling Intermediate | Mount and control a trained beast |
+| 5 | **Taming** | — | E | A | Calm Master, Feed Expert | Permanently binds a low-tier creature as a companion |
+| 6 | **Beast Speech** | — | E | P | Animal Handling Expert, Lore prerequisite | Understand and be understood by animals |
+| 7 | **Pack Bond** | — | D | P | Taming Master | Several companions at once; they coordinate |
+| 8 | **Mounted Combat** | — | D | P | Riding Master, Martial family skill at Expert | Full combat capability while mounted |
+| 9 | **Breeding** | — | D | C | Taming Master, Cultivation or equivalent | Produces creatures with inherited traits |
+| 10 | **Greater Taming** | — | C | A | Pack Bond Master, Rank III | Binds mid-tier monsters, not merely animals |
+| 11 | **Bonded Mount** | — | C | P | Mounted Combat Master, Breeding Expert | The mount levels, gains skills, and cannot be permanently killed |
+| 12 | **Monarch of Beasts** | — | B | P | Greater Taming Master, composite condition | High-tier monsters may be bound; they retain their own affinity rank |
 
 ---
 
@@ -121,19 +124,19 @@ Craft and Life. Taming, riding, handling, breeding. Merges into mounted combat a
 
 Craft and Life. Identification, appraisal, cartography, language. The support ladder everything else quietly depends on — and the only route to revealing another hero's aptitudes.
 
-| # | Skill | R | T | Requires | Effect |
-|---|---|---|---|---|---|
-| 1 | **Literacy** | F | P | None | Read manuals, maps and inscriptions. **Foundation.** |
-| 2 | **Identify** | F | A | Literacy Novice | Reveals an item's rarity and basic properties |
-| 3 | **Mapping** | F | C | Literacy Novice | Records explored terrain; shared across the roster |
-| 4 | **Appraisal** | E | A | Identify Expert | Reveals an item's full properties, including hidden ones |
-| 5 | **Languages** | E | P | Literacy Expert, Intellect threshold | Read and speak languages the hero has not learned |
-| 6 | **Research** | E | C | Literacy Expert | Extracts skill learn-conditions from recovered texts |
-| 7 | **Read the Body** | D | A | Appraisal Master, Intellect threshold | **Reveals one hidden aptitude in a hero.** The primary appraisal route. |
-| 8 | **Cartography** | D | C | Mapping Master | Predicts unexplored terrain; reveals node and boss locations |
-| 9 | **Ancient Script** | D | P | Languages Master, Research Expert | Reads pre-collapse texts; unlocks high-rarity learn paths |
-| 10 | **Deep Appraisal** | C | A | Read the Body Master | Reveals a hero's full aptitude set, and a monster's complete profile |
-| 11 | **The Archive** | C | P | Ancient Script Master, 10,000 texts read | The settlement gains a library; all heroes learn faster |
-| 12 | **Recovered Knowledge** | B | C | The Archive Master, composite condition | Reconstructs a lost skill from fragments — a route to Fabled techniques |
+| # | Skill | Label | R | T | Requires | Effect |
+| ---: | --- | --- | :---: | :---: | --- | --- |
+| 1 | **Literacy** | — | F | P | None | Read manuals, maps and inscriptions. **Foundation.** |
+| 2 | **Identify** | — | F | A | Literacy Novice | Reveals an item's rarity and basic properties |
+| 3 | **Mapping** | — | F | C | Literacy Novice | Records explored terrain; shared across the roster |
+| 4 | **Appraisal** | — | E | A | Identify Expert | Reveals an item's full properties, including hidden ones |
+| 5 | **Languages** | — | E | P | Literacy Expert, Intellect threshold | Read and speak languages the hero has not learned |
+| 6 | **Research** | — | E | C | Literacy Expert | Extracts skill learn-conditions from recovered texts |
+| 7 | **Read the Body** | — | D | A | Appraisal Master, Intellect threshold | **Reveals one hidden aptitude in a hero.** The primary appraisal route. |
+| 8 | **Cartography** | — | D | C | Mapping Master | Predicts unexplored terrain; reveals node and boss locations |
+| 9 | **Ancient Script** | — | D | P | Languages Master, Research Expert | Reads pre-collapse texts; unlocks high-rarity learn paths |
+| 10 | **Deep Appraisal** | — | C | A | Read the Body Master | Reveals a hero's full aptitude set, and a monster's complete profile |
+| 11 | **The Archive** | — | C | P | Ancient Script Master, 10,000 texts read | The settlement gains a library; all heroes learn faster |
+| 12 | **Recovered Knowledge** | — | B | C | The Archive Master, composite condition | Reconstructs a lost skill from fragments — a route to Fabled techniques |
 
 ---
