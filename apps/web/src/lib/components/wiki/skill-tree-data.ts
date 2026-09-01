@@ -8,6 +8,7 @@ export type SkillTreeFamily = {
 	description: string;
 	labels: SkillTreeLabel[];
 	skills: SkillTreeSkill[];
+	emptyLabelMessages?: Partial<Record<string, string>>;
 };
 
 export type SkillTreeDomain = {
@@ -117,8 +118,8 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 	},
 	{
 		id: 'magical',
-		name: 'Magical',
-		image: '/wiki-media/skills/magical-domain.webp',
+		name: 'Magic',
+		image: '/wiki-media/skills/magical-domain-v2.webp',
 		description: 'Affinity expression, wards, enchantment, restoration, and the mind.',
 		families: [
 			{
@@ -127,6 +128,9 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 				description:
 					'Direct affinity expression, owned by one family and parameterized by element.',
 				labels: [element('Fire'), element('Earth'), element('Wind'), element('Water')],
+				emptyLabelMessages: {
+					Wind: 'The Wind skill ladder is not published yet.'
+				},
 				skills: [
 					skill('Ember', elementalHref, [element('Fire')]),
 					skill('Water Bullet', elementalHref, [element('Water')]),

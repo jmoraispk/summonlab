@@ -26,6 +26,22 @@ function allLabels() {
 }
 
 describe('skill tree navigation data', () => {
+	it('publishes presentation names and the empty Wind ladder message', () => {
+		expect(SKILL_DOMAINS.map(({ name }) => name)).toEqual(['Martial', 'Magic', 'Craft']);
+		expect(domain('magical')).toMatchObject({
+			id: 'magical',
+			name: 'Magic',
+			image: '/wiki-media/skills/magical-domain-v2.webp'
+		});
+
+		expect(domain('magical').families.find((family) => family.name === 'Elemental'))
+			.toMatchObject({
+				emptyLabelMessages: {
+					Wind: 'The Wind skill ladder is not published yet.'
+				}
+			});
+	});
+
 	it('publishes the exact 5/5/5 family model', () => {
 		expect(domain('martial').families.map((family) => family.name)).toEqual([
 			'Blade',
@@ -129,6 +145,11 @@ describe('skill tree navigation data', () => {
 			'Water Bullet',
 			'Stone Shard'
 		]);
+		expect(domain('magical').families[0]?.skills.every((skill) =>
+			skill.labels.filter((label) => label.namespace === 'Element').length === 1
+		)).toBe(true);
+		expect(labels.map((label) => label.value)).not.toContain('Wood');
+		expect(labels.map((label) => label.value)).not.toContain('Metal');
 		expect(domain('magical').families[1]?.labels.map((label) => label.value)).toEqual(['Attuned']);
 		expect(domain('magical').families[2]?.labels.map((label) => label.value)).toEqual(['Attuned']);
 	});
