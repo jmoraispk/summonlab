@@ -1,10 +1,10 @@
 # Hero rarity frame production review packet v3
 
-Status: **candidate — owner visual review pending**.
+Status: **approved visual source — frozen by ADR 0066; runtime export pending**.
 
 This packet preserves the prior integrated v3 comparison image and adds a corrected neutral
 authority sheet, seven newly generated high-resolution neutral frames, and four affinity progression
-studies. Stars are generated as part of each frame's illustrated bottom tray; no candidate assembles
+studies. Stars are generated as part of each frame's illustrated bottom tray; no source assembles
 the stars separately.
 
 ## Hard rarity gates
@@ -20,8 +20,8 @@ the stars separately.
 
 - `candidates/sheets/neutral-progression-v4.png`: corrected seven-rank neutral authority sheet;
 - `candidates/highres/neutral-rank-1-v1.png` through `neutral-rank-7-v1.png`: seven newly generated
-  1024×1536 neutral frame candidates;
-- `candidates/sheets/affinity-*-v1.png`: Fire, Water, Earth, and Wind comparison candidates with
+  1024×1536 neutral frame sources;
+- `candidates/sheets/affinity-*-v1.png`: Fire, Water, Earth, and Wind comparison sources with
   neutral ranks 1–2 and gradually increasing affinity expression from ranks 3–7;
 - `references/crops/`: rank crops derived from the corrected sheet and used only as generation
   references;
@@ -31,6 +31,6 @@ the stars separately.
 - `generation-record.md`: source-bound provider, prompt, hash, and correction provenance;
 - `review-evidence.md`: bounded visual inspection results and review questions.
 
-Nothing in this packet is approved or registered for runtime. The affinity sheets are visual studies
-only and do not modify or reinterpret shared affinity contracts or catalogs.
-
+The v3 PNGs listed in `../rarity-frames-freeze-v1/checksums.sha256` are frozen approved visual
+sources. They are not transparent runtime exports and are not registered in a shared runtime
+catalog. The affinity sheets do not modify or reinterpret shared affinity contracts.

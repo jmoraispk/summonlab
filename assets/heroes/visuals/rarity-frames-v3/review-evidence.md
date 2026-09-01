@@ -2,10 +2,10 @@
 
 ## Authoring status
 
-Status: **candidate — owner visual approval pending**.
+Status: **approved visual source — frozen by ADR 0066; runtime export pending**.
 
-The packet contains review candidates and generation references only. It does not contain approved or
-runtime assets.
+The checksum-listed PNGs are approved visual sources. Generation references and rejected outputs
+remain provenance only; no runtime-ready exports are present.
 
 ## Bounded visual inspection
 
@@ -18,7 +18,7 @@ runtime assets.
 - Rank 4 introduces small heraldic dragon heads; ranks 5 and 6 build guardian and elder anatomy.
 - Dragon mouths are visibly closed at ranks 4, 5, and 6. Rank 7 alone has two visibly open roaring
   mouths with readable jaw gaps, teeth, and lit mouth cavities.
-- All seven high-resolution neutral candidates are 1024×1536 and contain one complete frame with the
+- All seven high-resolution neutral sources are 1024×1536 and contain one complete frame with the
   exact intended integrated warm-gold star count.
 - The Fire, Water, Earth, and Wind sheets keep ranks 1–2 neutral and increase affinity expression
   from ranks 3–7 without changing star color.
@@ -34,16 +34,11 @@ runtime assets.
   and engine sizing have not been produced or requested.
 - The affinity sheets are direction studies. They are not authorization to alter canonical affinity
   semantics.
-- Owner visual approval is still required before any candidate is promoted or prepared for runtime.
+- Owner visual approval is recorded by ADR 0066. Runtime preparation remains a separate integration.
 
-## Owner review questions
+## Owner approval record
 
-1. Does the rectangular 1★ versus horned 2★ silhouette now provide enough early progression?
-2. Do 5★ and 6★ separate clearly through body weight, wing density, and energy without shrinking the
-   hero opening?
-3. Does the closed-mouth 6★ to open-roar 7★ transition create the awakened-power jump you wanted?
-4. Across Fire, Water, Earth, and Wind, does rank 3 begin subtly enough and rank 7 feel fully expressed
-   without overtaking the rarity frame family?
-5. Which neutral authority and which affinity sheet, if any, should advance to an approval-focused
-   cleanup pass?
-
+- The rectangular 1★ and horned 2★ silhouettes provide the accepted early separation.
+- Elder weight at 6★ increases power without invalidating hero space.
+- Closed mouths through 6★ and open roars at 7★ form the accepted awakening gate.
+- Fire, Water, Earth, and Wind onset and progression are accepted as the affinity authority.

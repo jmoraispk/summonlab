@@ -2,10 +2,10 @@
 
 ## Authoring status
 
-Status: **candidate — owner visual approval pending**.
+Status: **approved visual source — frozen by ADR 0066; runtime export pending**.
 
-The packet contains production-review candidates, generation references, prompts, and inspection
-evidence. It contains no approved or runtime assets.
+The checksum-listed active PNGs are approved visual sources. Generation references, prompts,
+superseded outputs, and inspection evidence remain provenance; no runtime-ready exports are present.
 
 ## Dimensional evidence
 
@@ -26,7 +26,7 @@ evidence. It contains no approved or runtime assets.
 - The no-affinity authority contains seven aligned frames with integrated star counts 1–7.
 - Neutral uses charcoal iron, tempered steel, restrained warm-gold trim, and flat forged crests. It
   contains no blue gems, affinity-colored gems, or affinity emission.
-- Every individual candidate contains exactly one complete frame and one horizontal lower star tray.
+- Every approved individual source contains exactly one complete frame and one horizontal lower star tray.
 - Stars retain the same warm-gold, broad, softly rounded five-point treatment and are rendered as
   part of the frame object.
 - Rank 1 remains relatively rectangular; rank 2 adds a horned silhouette without an abrupt material
@@ -45,16 +45,14 @@ evidence. It contains no approved or runtime assets.
   engine sizing have not been produced or requested.
 - The opening metric is a bounded image-analysis measurement for review consistency, not a runtime
   layout contract.
-- Affinity candidates are visual studies and do not authorize changes to canonical affinity
+- Affinity sources are visual studies and do not authorize changes to canonical affinity
   semantics.
-- Owner approval is required before promotion or runtime preparation.
+- Owner visual approval is recorded by ADR 0066. Runtime preparation remains a separate integration.
 
-## Owner review questions
+## Owner approval record
 
-1. Does the gemless neutral treatment preserve enough prestige through ranks 5–7 without spending an
-   affinity color?
-2. Does the internal hero space now feel consistent enough when each family is read left to right?
-3. Do ranks 1–2 remain distinct enough through silhouette alone?
-4. Does rank 7’s open-mouth awakening separate decisively from the closed-mouth rank 6 in every
-   family?
-5. Which family, if any, should advance to approval-focused transparency and runtime-fit work?
+- The gemless neutral treatment is accepted through ranks 1–7.
+- Internal hero-space consistency and the measured 20% cap are accepted.
+- Ranks 1–2 are accepted as distinct through silhouette without affinity color.
+- The closed-mouth 6★ to open-roar 7★ awakening is accepted in every family.
+- Corrected inward-facing Wind rank 7 v2 is the frozen active Wind apex source.

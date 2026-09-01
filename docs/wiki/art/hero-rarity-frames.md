@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-rarity-frames`
 
-Design status: **uniform v4 production-review candidates; owner review pending; runtime integration not requested**.
+Design status: **v3 + v4 visual sources approved and checksum-frozen; runtime export pending**.
 
 Hero portrait cards use one coherent charcoal, gold, navy, and sapphire frame family across seven
 star ranks. Rarity increases silhouette complexity, ornament density, dragon anatomy, and blue
@@ -32,7 +32,7 @@ lower visual zone.
 The accepted comparison direction remains preserved in `assets/heroes/visuals/rarity-frames-v3/`.
 The current equal-canvas production packet and provenance live in
 `assets/heroes/visuals/rarity-frames-v4/`. It adds a gemless no-affinity authority and 35 individual
-1024×1536 RGB candidates: Neutral, Fire, Water, Earth, and Wind at every rank from 1 through 7.
+1024×1536 RGB source frames: Neutral, Fire, Water, Earth, and Wind at every rank from 1 through 7.
 
 Neutral dragons use gemless tempered steel and dark iron without blue gems or affinity emission.
 Ranks 1–2 are byte-identical neutral frames across all five sets; affinity begins subtly at rank 3
@@ -40,17 +40,22 @@ and increases through rank 7. Dragon mouths remain completely closed through ran
 opens both mouths.
 
 The internal horizontal hero opening is now a measurable review constraint. Within each seven-rank
-family, widest measured central opening divided by narrowest must be no more than 1.20. Current
-candidate variation ranges from 13.84% to 18.60%. Any correction needed to meet this bound scales the
+family, widest measured central opening divided by narrowest must be no more than 1.20. Frozen-source
+variation ranges from 13.84% to 18.60%. Any correction needed to meet this bound scales the
 complete rendered frame—including its integrated tray and stars—as one indivisible image; the stars
 are never moved independently. Untouched provider renders and normalization hashes remain in the v4
 packet.
 
 Wind rank 7 uses the corrected v2 composition: the left dragon faces right and the right dragon
 faces left, so both open mouths roar inward toward the hero opening. The outward-facing v1 remains
-superseded provenance and is not shown as the active candidate.
+superseded provenance and is not shown as the active source.
 
-All files remain visual-direction candidates. They are not transparent runtime exports and have not
-been registered in any shared catalog. The former v1 layered approach remains rejected provenance,
-and shared catalogs and contracts remain unchanged until owner approval and an explicit integration
-handoff.
+ADR 0066 freezes v3 as the comparison/affinity authority and v4 as the equal-canvas production
+source set. The 48 approved PNGs are byte-bound by
+`assets/heroes/visuals/rarity-frames-freeze-v1/checksums.sha256`. Historical `candidates/` path names
+record their generation stage and do not override this approval.
+
+These approved sources are not transparent runtime exports and have not been registered in a shared
+catalog. The former layered approach and outward-facing Wind rank 7 v1 remain rejected or
+superseded provenance. Shared catalogs and contracts remain unchanged until an explicit runtime
+integration handoff.
