@@ -45,11 +45,16 @@ does without creating ration, meal, broth, or feast item classes.
 Gathering supplies materials and ingredients, Beast produces companion and handling outcomes, and
 Lore produces knowledge. They do not receive item classes merely for symmetry.
 
-The Equipment stream contains thirteen canonical forms:
+The Equipment stream contains thirteen canonical classes:
 
 - six Weapons: Sword, Dagger, Spear, Bow, Axe, and Mace;
-- three Armour classes: Heavy Armour, Light Armour, and Robes;
+- three Armour classes: Heavy Armour, Light Armour, and Robes, each delivered as a four-item set;
 - Shield, Staff, Tool, and Accessory.
+
+The four Armour items are Head, Torso, Legs, and Boots. This produces twenty-two concrete
+equippable forms across the complete Equipment stream: six Weapons, twelve Armour items, Shield,
+Staff, Tool, and Accessory. The current production baseline covers Weapons, Armour, Shield, and
+Staff; Tool and Accessory remain documented for later work.
 
 ## Candidate Living Village subset
 
@@ -77,20 +82,18 @@ acquire or receive an item
 - one projection shared by roster, equipment, party assembly, combat result, and hero visuals;
 - deterministic receipts for item acquisition and loadout changes.
 
-Durability, repair, crafting, enchantment, sets, monster crafting, bound items, storage magic,
-field tools, Potions, and Food are outside the minimum unless another Living Village rule depends
-on them.
+Durability, repair, enchantment, sets, monster crafting, bound items, storage magic, field tools,
+Potions, and Food are outside the minimum unless another Living Village rule depends on them.
 
 ### Candidate expansion pool
 
-This Common/Uncommon pool exercises every canonical Equipment form without adding another class.
+This Common/Uncommon pool exercises the current production baseline without adding another class.
 
 | Need | Candidate items |
 | --- | --- |
 | Weapons | Sword, Dagger, Spear, Bow, Axe, Mace |
-| Defence | Heavy Armour, Light Armour, Robes, Shield |
+| Defence | Head, Torso, Legs, and Boots for each of Heavy Armour, Light Armour, and Robes; Shield |
 | Magical equipment | Staff |
-| Utility equipment | Tool, Accessory |
 | Materials sufficient for those items | Copper, Iron, Coarse Hide, Boiled Leather, Hemp Weave, Wool, Ash, Yew |
 
 The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
@@ -98,9 +101,10 @@ deliberate milestone reward.
 
 ### Initial runtime selection
 
-Use at most one starter definition for each of the thirteen canonical Equipment forms. A smaller
-runtime subset may omit forms that no starter hero can use, but it must not replace them with
-additional weapon, armour, focus, tool, or accessory classes.
+Use at most one starter definition for each selected concrete Equipment form. A smaller runtime
+subset may omit Weapons that no starter hero can use, but every included Armour class must retain
+all four of its items. It must not replace omitted forms with additional weapon, armour, focus,
+tool, or accessory classes.
 
 ## Ownership and interfaces
 
@@ -110,8 +114,8 @@ additional weapon, armour, focus, tool, or accessory classes.
 - Presentation consumes equipment references and approved visual bindings.
 - Expedition consumes an exact reserved loadout and publishes wear/loss outcomes if those mechanics
   are adopted.
-- Settlement capabilities and tools eventually gate crafting, but the first static settlement does
-  not need a crafting loop.
+- The prototype exposes a bounded Forging/Gathering loop without requiring settlement upgrades or
+  equippable Tools.
 - Creature content supplies monster materials and named-creature signature components.
 
 ## Visual-production sequence
@@ -131,6 +135,35 @@ Material studies, equipment candidates, approved sources, and runtime exports re
 Creature-drop definitions are an input to later Equipment work, not permission for either owner to
 edit the other domain's shared catalogs.
 
+### Material coverage and image budget
+
+The full canonical material ladder has seven materials in each of four families. Every Armour
+material requires five images in a fixed sequence: one complete-set consistency image followed by
+four separate item images for Head, Torso, Legs, and Boots. The complete set is production evidence;
+the four pieces are the item images.
+
+| Material family | Images per material | Materials | Images |
+| --- | ---: | ---: | ---: |
+| Metal | five Weapons + Shield + five-image Heavy Armour sequence | 7 | 77 |
+| Wood | Bow + Staff | 7 | 14 |
+| Hide or scale | five-image Light Armour sequence | 7 | 35 |
+| Cloth or fibre | five-image Robes sequence | 7 | 35 |
+| **Total** |  | **28** | **161** |
+
+Equivalently, each rank contributes 23 images across its four materials, and seven ranks contribute
+`23 × 7 = 161` images. The total consists of 140 isolated equipment images and 21 complete-set
+consistency images.
+
+This budget assumes one image per Weapon class and material, with no additional image for
+craftsmanship grades or one-handed/two-handed use. It excludes Tools, Accessories, named sets, and
+monster-derived equipment. A reduced prototype Weapon selection subtracts one image per omitted
+Weapon at every included material rank; it does not reduce the five-image requirement for an
+included Armour set.
+
+All 161 entries are planned **candidate production targets**, not approved or runtime assets.
+Promotion still requires source persistence, review evidence, approval, and a separate runtime
+export.
+
 ## Source authority and remaining decisions
 
 The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
@@ -147,8 +180,9 @@ remain preserved rather than silently normalized:
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
 - Clarify whether material/monster is one source axis while enchantment and binding are independent
   overlays rather than additional item classes.
-- Armour is one item in one Armour slot. Accessory begins with one slot. Exact inventory and
-  loadout representation still requires an executable contract.
+- Armour uses four items—Head, Torso, Legs, and Boots—authored from one consistent full-set source.
+  Accessory begins with one slot. Exact inventory and loadout representation still requires an
+  executable contract.
 - The six-weapon hand model is accepted in prose: a two-handed item occupies both hands, Shield
   requires one free hand, and Dual Wield permits only one-handed Swords and Daggers. Exact combat
   tradeoffs remain open.
@@ -161,8 +195,11 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-01 — owner revision — Split each Armour class into Head, Torso, Legs, and Boots; required
+  full-set-first visual production; established 161 candidate images across the canonical material
+  ladder.
 - 2026-09-01 — owner revision — Reduced crafted outputs to Equipment, Potion, and Food; reduced
-  Equipment to thirteen forms and Weapons to Sword, Dagger, Spear, Bow, Axe, and Mace.
+  Equipment to thirteen classes and Weapons to Sword, Dagger, Spear, Bow, Axe, and Mace.
 - 2026-09-01 — owner revision — Simplified each material family to one material per rank and
   accepted material-plus-craftsmanship as the finished-item rank rule.
 - 2026-09-01 — owner revision — Removed three rejected metals from the material vocabulary and

@@ -16,8 +16,33 @@ styles, coverage details, and monster-derived appearances do not create more mec
 These are natural fits, not Domain locks. A hero may use another Domain's typical armour when the
 eventual equipment and weight rules permit it.
 
-An Armour item is one equipped item. Helm, chest, arms, hands, legs, feet, cloak, and belt may
-change its visual construction, but they are not eight separately equipped mechanical items.
+Each Armour class is authored as one visually consistent set and equipped as four separate items:
+
+| Item | Includes |
+| --- | --- |
+| **Head** | Helmet, hat, hood, or another class-appropriate head covering |
+| **Torso** | Primary upper-body protection or robe body, including any attached sleeves |
+| **Legs** | Pants, skirt, robe lower, or leg protection |
+| **Boots** | Boots, shoes, greaves, or another class-appropriate foot treatment |
+
+Vambraces, gloves, belts, and cloaks may appear as construction details but are not separate item
+slots in this scope.
+
+## Required set-production sequence
+
+Anything authored as a set must establish the complete matching set before its pieces are produced:
+
+1. create one image showing the full set together;
+2. use that accepted set image as the consistency source;
+3. create four separate item images in order: Head, Torso, Legs, and Boots.
+
+The complete-set image is required visual-production evidence, not a fifth equippable item. The
+four item images must preserve the accepted set's material, silhouette language, palette, trim,
+fastenings, wear, and ornament. Weapons are independent items and do not need to match an Armour
+set unless a later named set explicitly includes them.
+
+This rule applies to Heavy Armour, Light Armour, and Robes at every retained material rank. It also
+applies to any later named or monster-derived equipment explicitly presented as a set.
 
 ## Shields
 
@@ -38,6 +63,7 @@ defined in [Equipment rarity and craftsmanship](rarity-and-weight.md).
 
 - Define the compact protection, weight, and magical-support differences among the three armour
   classes.
+- Define whether the four Armour items divide protection evenly or use slot-specific values.
 - Define the exact benefit and weight effects that distinguish Shield presentations without
   multiplying classes.
 - Define how later monster materials bind to Light Armour without creating a separate class for

@@ -18,7 +18,8 @@ the wiki and may continue through independent design or concept-art work.
 | Visible local training | `on` | Player selects one enabled attribute or owned skill, confirms a block, and sees the hero walk to the Court and train |
 | One three-hero party | `on` | One prepared party and one active attempt |
 | Tower species hunts | `on` | Sequential Floors 1–10 expose known species hunts with a remaining-Health return threshold and material haul |
-| Material inventory | `on` | Species drops persist in the shared Village inventory; crafting remains off, and at least one selected material needs a visible fixed use before release |
+| Material inventory | `on` | Gathered and species-drop materials persist in the shared Village inventory and expose their Forging uses |
+| Forging and Gathering loop | `on` | Gathering supplies the scoped material families; Forging turns selected materials into prototype Weapons and Armour |
 | Combat | `placeholder` | Forthcoming combat design plugs into a deterministic request/receipt boundary; a transparent mathematical resolver may prove integration first |
 | Rewards and engagement | `placeholder` | First-clear, training, repeat-hunt, material, and daily-return claims use a small versioned reward table |
 | Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
@@ -49,13 +50,14 @@ All 520 supplied definitions remain in the [skill wiki](../mechanics/skills/READ
 
 | Skill area | State | Release behavior |
 | --- | --- | --- |
-| Initial twelve combat/training skills | `on` | Only the reviewed allowlist may be summoned, trained, displayed as usable, or resolved |
+| Selected Martial families | `on` | Use a reviewed allowlist drawn from only a few Martial families; exact selection remains a combat-owner decision |
 | Other Martial skills | `off` | Catalog and concept work allowed; runtime acquisition and actions rejected |
+| Selected Magical families | `on` | Use a reviewed allowlist drawn from one or two Magical families; exact selection remains a combat-owner decision |
 | Other Magical skills | `off` | Catalog and concept work allowed; runtime acquisition and actions rejected |
-| Forging | `off` | No forge operation, recipes, crafting UI, or Forging reward |
+| Forging | `on` | One of the only two enabled Craft families; produces the scoped prototype Weapons and Armour |
 | Alchemy | `off` | No brewing, reagents, potions, poisons, Alchemy UI, or Alchemy reward |
 | Cooking | `off` | No food/upkeep loop, meals, buffs, or Cooking assignment |
-| Gathering | `off` | No mining, foraging, skinning, nodes, or cargo loop |
+| Gathering | `on` | One of the only two enabled Craft families; supplies materials used by Forging |
 | Beast | `off` | No taming, riding, breeding, mounts, companions, or Beast assignment |
 | Lore | `off` | No appraisal, research, cartography, language, or aptitude-reveal action |
 | Skill mastery beyond initial slice | `off` | No higher mastery promotions or practice-profile bonuses |
@@ -76,7 +78,8 @@ runtime command is a deterministic rejection, not a hidden no-op.
 | Expedition navigation and discoveries | `off` | Mission selection leads directly to resolution/presentation |
 | Multiple parties | `off` | One party proves reservation and return |
 | Advanced and Special summon channels | `off` | The fixed six-person Normal sequence is the complete prototype roster |
-| Equipment crafting, enchanting, sets, wear, and repair | `off` | Starter/drop loadouts only |
+| Equipment crafting | `on` | A bounded Forging selection proves gathered material → Weapon or Armour → inventory |
+| Enchanting, set bonuses, wear, and repair | `off` | The prototype proves ordinary equipment creation before adding overlays or maintenance |
 | Advanced affinity, dual affinity, and derived affinity | `off` | Only the accepted combat subset may resolve |
 | Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |
 | Synthesis | `off` | Irreversible social/economic loop is not needed for v1 |
@@ -101,6 +104,8 @@ slice by a directly useful progression, training, or equipment reward.
 ## Release gates
 
 - The executable allowlist rejects every `off` skill and capability from all entry points.
+- Forging and Gathering are the only enabled Craft families; no recipe or reward silently depends
+  on an off Craft family.
 - Summoning rejects every hero identity outside the fixed six and cannot grant one identity twice.
 - A new player completes summon → inspect/equip in Village → Court training or species hunt →
   visible return → improved retry.
