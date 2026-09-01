@@ -7,15 +7,23 @@ Status: **candidate — owner visual approval pending**.
 The v1 independent-star construction is rejected for visual direction. It remains in source control
 only as provenance and must not be promoted.
 
+## Current review target
+
+`candidates/hero-rarity-progression-integrated-stars-v3.png`
+
+The prior v2 sheet and its prompt-level critique remain available in `review-feedback-v2.md`.
+
 ## Bounded inspection
 
 - One generated sheet contains seven aligned portrait frame columns labeled 1 through 7.
 - Visible integrated star counts are exactly 1, 2, 3, 4, 5, 6, and 7 from left to right.
 - All stars use the same warm-gold, beveled five-point treatment and remain inside the lower trays.
-- The frames share charcoal, antique gold, navy enamel, sapphire, and warm-white opening colors.
+- The frames share charcoal, antique gold, navy enamel, sapphire, and warm-white opening colors;
+  rank 4 is no longer a dominant silver frame.
 - Ranks 1–3 remain non-dragon frames; rank 4 introduces paired heraldic dragon heads.
-- Ranks 5 and 6 use increasingly mature structural dragons.
-- Rank 7 has two open dragon mouths, larger wings, stronger sapphire energy, and seven tray stars.
+- Rank 6 has broader bodies, larger wings, more ornament mass, and stronger energy than rank 5.
+- Rank 7 has two visibly open mouths with readable jaw gaps, larger wings, stronger sapphire energy,
+  and seven tray stars.
 - No hero artwork is present inside the seven warm-white openings.
 - Shared visual catalogs, runtime catalogs, and engine contracts remain unchanged.
 
@@ -29,6 +37,6 @@ only as provenance and must not be promoted.
 ## Owner review questions
 
 1. Does generating stars and frames together solve the pasted-on star problem?
-2. Is the ornament progression from 1★ through 7★ strong enough without changing palette families?
-3. Are ranks 6 and 7 now decisively different, especially through the 7★ open mouths and blue energy?
+2. Does 4★ now remain inside the accepted warm-gold/navy family?
+3. Are 5★, 6★, and 7★ decisively different through body mass, wings, energy, and open mouths?
 4. Should this exact sheet become the authority for the next production pass?

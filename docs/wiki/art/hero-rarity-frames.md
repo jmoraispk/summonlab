@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-rarity-frames`
 
-Design status: **integrated one-pass candidate; owner review pending; runtime integration not requested**.
+Design status: **feedback-revised integrated v3 candidate; owner review pending; runtime integration not requested**.
 
 Hero portrait cards use one coherent charcoal, gold, navy, and sapphire frame family across seven
 star ranks. Rarity increases silhouette complexity, ornament density, dragon anatomy, and blue
@@ -30,7 +30,8 @@ post-generation overlay. Star rows expand symmetrically from one through seven a
 lower visual zone.
 
 The current candidate packet and provenance live in
-`assets/heroes/visuals/rarity-frames-v2/`. Its combined seven-card sheet is a visual-direction
-candidate rather than a sliced runtime export. The former v1 layered approach is retained only as
-rejected provenance. Shared catalogs remain unchanged until owner approval and an explicit
-integration handoff.
+`assets/heroes/visuals/rarity-frames-v2/`. Its current v3 combined sheet is a visual-direction
+candidate rather than a sliced runtime export. The packet retains the exact submitted prompts, the
+v2 critique, and seven higher-resolution individual references with their incorrect observed star
+counts clearly labeled. The former v1 layered approach is retained only as rejected provenance.
+Shared catalogs remain unchanged until owner approval and an explicit integration handoff.
