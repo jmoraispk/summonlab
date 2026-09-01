@@ -1,0 +1,8 @@
+Use case: stylized-concept image correction
+Asset type: high-resolution single-frame candidate for fire affinity hero rarity rank 4 of 7
+
+Correct ONLY the two heraldic dragon mouths in reference image 1. Preserve the complete successful 1024×1536 Fire frame exactly: same centered envelope, broad warm-white hero opening, restrained rank-4 ember channels, black-and-gold structure, red crest gems, wings, scales, claws, lighting, integrated tray, and exactly four warm-gold stars.
+
+Seal both dragon mouths completely. Upper and lower jaws meet naturally with a continuous closed lip line. Show no teeth, jaw gap, tongue, dark mouth cavity, roar, or breath. Preserve the red eye/ember accents without opening the mouths. Heads remain outside the hero opening.
+
+Critical invariants: exactly four integrated gold stars; same opening width and tray baseline; no floating stars, crop, text, hero, logo, watermark, extra frame, or change to Fire material language.

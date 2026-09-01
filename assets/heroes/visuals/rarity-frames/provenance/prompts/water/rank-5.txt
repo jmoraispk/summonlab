@@ -1,0 +1,8 @@
+Use case: stylized-concept image correction
+Asset type: high-resolution single-frame candidate for water affinity hero rarity rank 5 of 7
+
+Correct ONLY the two guardian dragon mouths in reference image 1. Preserve the complete successful 1024×1536 Water frame exactly: same centered envelope, broad warm-white hero opening, rank-5 cobalt current material, gold dragon bodies, blue gems, wings, scales, claws, lighting, integrated tray, and exactly five warm-gold stars.
+
+Seal both dragon mouths completely. Upper and lower jaws meet naturally with a continuous closed lip line. Show no teeth, jaw gap, tongue, dark mouth cavity, roar, droplets from the mouth, or breath. Preserve blue eye/current accents without opening the mouths. Heads remain outside the hero opening.
+
+Critical invariants: exactly five integrated gold stars; same opening width and tray baseline; no floating stars, crop, text, hero, logo, watermark, extra frame, or change to Water material language.

@@ -1,0 +1,425 @@
+{
+  "schema": "summonlab-hero-rarity-frames",
+  "status": "approved-visual-source",
+  "runtimeStatus": "not-runtime-ready",
+  "preferredStartingFamily": "legacy-neutral",
+  "familyOrder": [
+    "legacy-neutral",
+    "neutral",
+    "fire",
+    "water",
+    "earth",
+    "wind"
+  ],
+  "assetCount": 48,
+  "families": [
+    {
+      "id": "legacy-neutral",
+      "sheet": {
+        "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/sheet.png",
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "sha256": "9fb2737d196b9c0ea704fff2f8db6fd9be1bd6e353cf6d2656f5f1cc8b9b0786"
+      },
+      "frames": [
+        {
+          "rank": 1,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-1.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "9a8a4ec717d3e977e62d11856b74845e84403dfcaf1f4ead2cfabcf6ed27892a"
+        },
+        {
+          "rank": 2,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-2.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "94d605a32fdb4be07fbb6b72570026ca7073361999da8ee644852796eba2884c"
+        },
+        {
+          "rank": 3,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-3.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "218cc71d2aef588c3c723ace7eb863f40c305654826d3c7b29291e881eced5d9"
+        },
+        {
+          "rank": 4,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-4.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "85d28a25762b80f15aa4ac01bc9a7ce21a7d4158c66ffdf10d339a03bd2f0fc9"
+        },
+        {
+          "rank": 5,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-5.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "c5345d3164db212c9e16b494694716ea7b62e7808c9801db4c6150c5eec84667"
+        },
+        {
+          "rank": 6,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-6.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "eb66a5efef449d0a612b46845f1645c4935e302b8896ef13aac8013ceae6663e"
+        },
+        {
+          "rank": 7,
+          "path": "assets/heroes/visuals/rarity-frames/families/legacy-neutral/frames/rank-7.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "a9d2898e91f143d744e652135d04b99d4cb3de74627034eba16f65f647d82a9b"
+        }
+      ]
+    },
+    {
+      "id": "neutral",
+      "sheet": {
+        "path": "assets/heroes/visuals/rarity-frames/families/neutral/sheet.png",
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "sha256": "d5ce04fca1bb6c99cd261f71ab2268ba6ad2d8301a509026e0f0bfac4848f1a2"
+      },
+      "frames": [
+        {
+          "rank": 1,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-1.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98"
+        },
+        {
+          "rank": 2,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-2.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "80cb0cc2f274e4266ff892304223db696ae4181117b0925c396d4d8ef04606e2"
+        },
+        {
+          "rank": 3,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-3.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "1b4011cd61de82406e15b686827fc1b7f218e9762f6d215ee5c83449dea3ae24"
+        },
+        {
+          "rank": 4,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-4.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "997b32b1b1f16d096045a71fdb6e3c6a5df8046a16f87df67297cc36f3558d0f"
+        },
+        {
+          "rank": 5,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-5.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "8c8899d0b489611401f1455cefc9ac4304a7fa910524ad0a79f8339cc314642d"
+        },
+        {
+          "rank": 6,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-6.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "a7900919c0bbe79905c93180aad0151b5520094910e9c4581f657c0b6908d17f"
+        },
+        {
+          "rank": 7,
+          "path": "assets/heroes/visuals/rarity-frames/families/neutral/frames/rank-7.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "557342b358df82285b9c4df3283257e28270dca83b3d2ad3b4f8b6e1e9236420"
+        }
+      ]
+    },
+    {
+      "id": "fire",
+      "sheet": {
+        "path": "assets/heroes/visuals/rarity-frames/families/fire/sheet.png",
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "sha256": "99d49772c1b99c14d69bfd841107f2a7cce3a20da4d8b5767e1b7b8d27224dd9"
+      },
+      "frames": [
+        {
+          "rank": 1,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-1.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98"
+        },
+        {
+          "rank": 2,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-2.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "80cb0cc2f274e4266ff892304223db696ae4181117b0925c396d4d8ef04606e2"
+        },
+        {
+          "rank": 3,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-3.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "6c1025c1dce3e884e254a1f32854bb88f1a5e9ea5851f8127adacd8c6ee3d42d"
+        },
+        {
+          "rank": 4,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-4.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "6c61178a0ca21051defe8a9930b68082bfd61d2c31a53089a14b8fa5f93014bc"
+        },
+        {
+          "rank": 5,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-5.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "eb98a607595eac73c2683fa96068343e284b59e4be3939c97b69aa9a8fbca2a2"
+        },
+        {
+          "rank": 6,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-6.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "6c025120d956a4873a89c10737d860f4eee2d2cf6a93cd7e6be287d385761e22"
+        },
+        {
+          "rank": 7,
+          "path": "assets/heroes/visuals/rarity-frames/families/fire/frames/rank-7.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "b5b1bdbdbe8462341d53613b8ac29893521cfe64616b1d41a9a6f2fba2011827"
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "sheet": {
+        "path": "assets/heroes/visuals/rarity-frames/families/water/sheet.png",
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "sha256": "4c4d55a7526733d1ab625c28fedd833d81fdd2539e42a62e4e03ce59db6d8c5d"
+      },
+      "frames": [
+        {
+          "rank": 1,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-1.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98"
+        },
+        {
+          "rank": 2,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-2.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "80cb0cc2f274e4266ff892304223db696ae4181117b0925c396d4d8ef04606e2"
+        },
+        {
+          "rank": 3,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-3.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "186a3735e448d4a5809f52057d97fc98549b41befcbf7608dbd5b06b54f29de6"
+        },
+        {
+          "rank": 4,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-4.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "8891577280b0c6e0a1f26e5e9e848422a9fad9ff683293e4686b546630b53de0"
+        },
+        {
+          "rank": 5,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-5.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "d8da96d5e41f85f937ee294f90178f4d887b6d6e3ae8ad4c61d26543d0620bde"
+        },
+        {
+          "rank": 6,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-6.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "86edbec19d48ad5bb79accb143a58392fbaeeece82b6d2b41148e388d47d1c10"
+        },
+        {
+          "rank": 7,
+          "path": "assets/heroes/visuals/rarity-frames/families/water/frames/rank-7.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "3a3009e937511d553fbb7663b353388c00ec25abae49a6ae7c629117d2873a0c"
+        }
+      ]
+    },
+    {
+      "id": "earth",
+      "sheet": {
+        "path": "assets/heroes/visuals/rarity-frames/families/earth/sheet.png",
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "sha256": "38f14868d87a25d9efffb7250d0a03be3222d2212bd1fc1e794d6b8746e52b97"
+      },
+      "frames": [
+        {
+          "rank": 1,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-1.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98"
+        },
+        {
+          "rank": 2,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-2.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "80cb0cc2f274e4266ff892304223db696ae4181117b0925c396d4d8ef04606e2"
+        },
+        {
+          "rank": 3,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-3.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "4e08c5a6db27974f7487e205365f29ddeff9e4dc36af2cf61bb093e3b21bb6de"
+        },
+        {
+          "rank": 4,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-4.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "abd9859ebda95da808713479f20ba62137255c4c308d58b31444036e39bbb816"
+        },
+        {
+          "rank": 5,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-5.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "057b52eacbb22578829376b282537f744355723ea6a7a6b8dfb3bb5986855de1"
+        },
+        {
+          "rank": 6,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-6.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "df75bbcd43ffc20358a0f7b6a7d604db586d144b94c0252c7e62f8e7891aeeac"
+        },
+        {
+          "rank": 7,
+          "path": "assets/heroes/visuals/rarity-frames/families/earth/frames/rank-7.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "087981e5c7a973a6ac951ef4cb008f5e4fbe43454d44a8de7efda85fea27ebc9"
+        }
+      ]
+    },
+    {
+      "id": "wind",
+      "sheet": {
+        "path": "assets/heroes/visuals/rarity-frames/families/wind/sheet.png",
+        "width": 2172,
+        "height": 724,
+        "mode": "RGB",
+        "sha256": "d60ef04a417d57415cee561b827555ae2da267065a95f9dc8c2fabef1b589c6a"
+      },
+      "frames": [
+        {
+          "rank": 1,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-1.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "98a9d2cfe8d3ddce75da3f95e531f615acccd42b6ada4af4a094337a8cfcdb98"
+        },
+        {
+          "rank": 2,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-2.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "80cb0cc2f274e4266ff892304223db696ae4181117b0925c396d4d8ef04606e2"
+        },
+        {
+          "rank": 3,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-3.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "8ce23cfdef1188cca37abeecaf492e9271f3571b43d01860c6e0d29a2192643d"
+        },
+        {
+          "rank": 4,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-4.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "adeb8eab0e0f64416ca47813977b51a54fc0c96f95db6ea8e6a8c6d2fbce2c74"
+        },
+        {
+          "rank": 5,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-5.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "07b2d9aa2d45541d1e71162af3949ef3e413fb12c020b658d61511cc1bbdd0e9"
+        },
+        {
+          "rank": 6,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-6.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "1fdecde8d6beb5bf792df3efcb246d6a3cb0f3eb0e8d8773a403d2e54b06df33"
+        },
+        {
+          "rank": 7,
+          "path": "assets/heroes/visuals/rarity-frames/families/wind/frames/rank-7.png",
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB",
+          "sha256": "84c2ff9c3308cc3566b0efba94f20b7db12fb4abc9da3a6f48743d7a2b79c41b"
+        }
+      ]
+    }
+  ]
+}
