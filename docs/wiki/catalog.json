@@ -73,6 +73,16 @@
       "spoilerScope": "discoverable"
     },
     {
+      "wikiId": "affinity.earth",
+      "path": "docs/wiki/mechanics/affinities/earth.md",
+      "pageType": "affinity",
+      "owner": "progression",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
       "wikiId": "affinity.wind",
       "path": "docs/wiki/mechanics/affinities/wind.md",
       "pageType": "affinity",
@@ -83,11 +93,11 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "affinity.wood",
-      "path": "docs/wiki/mechanics/affinities/wood.md",
+      "wikiId": "affinity.water",
+      "path": "docs/wiki/mechanics/affinities/water.md",
       "pageType": "affinity",
       "owner": "progression",
-      "designStatus": "superseded",
+      "designStatus": "accepted",
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "discoverable"

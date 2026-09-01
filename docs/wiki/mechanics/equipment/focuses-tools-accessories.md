@@ -71,7 +71,7 @@ rarest equipment in the game.
 ## Open implementation questions
 
 - Bind focus schools, craft families, skills, gates, and granted effects to stable skill IDs.
-- Define how temporary effective-rank bonuses interact with unlocks, rank gaps, and Dominion.
+- Define how temporary bonuses to affinity rank interact with unlocks, rank gaps, and Dominion.
 - Define tool possession versus facility fixtures, field portability, quality ceilings, and what
   happens when access is lost mid-task.
 - Define accessory slots beyond the two-ring limit, and decide whether Pocket Space is wearable.

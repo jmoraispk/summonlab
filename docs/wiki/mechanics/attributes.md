@@ -43,9 +43,9 @@ names and mechanical territories above are no longer an open choice.
 
 ## Affinity interaction
 
-An [affinity](affinities/README.md) improves matching actions and, under the supplied progression
-design, contributes a modest permanent nudge to its matching attribute on level gain. The grant is
-explicit in the progression receipt; it is never a hidden projection-only bonus.
+An affinity improves matching actions and contributes a modest permanent nudge to its matching
+attribute on level gain. The grant is explicit in the progression receipt; it is never a hidden
+projection-only bonus. See [Affinities](progression/affinities.md) for the canonical rules.
 
 This distinction makes balance and identity clearer:
 
