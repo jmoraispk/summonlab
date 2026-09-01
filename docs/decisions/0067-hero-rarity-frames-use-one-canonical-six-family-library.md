@@ -19,10 +19,9 @@ frames, and all 48 retained PNGs can be preserved byte-for-byte under one curren
 - Each family owns stable, unversioned filenames: `sheet.png` and `frames/rank-1.png` through
   `frames/rank-7.png`. `manifest.json` and `checksums.sha256` bind the inventory, dimensions, modes,
   and approved bytes.
-- The five versioned roots `rarity-frames-v1`, `rarity-frames-v2`, `rarity-frames-v3`,
-  `rarity-frames-v4`, and `rarity-frames-freeze-v1` are removed from the current tree after canonical
-  validation. Git history remains their recovery path; retained provenance is summarized under the
-  canonical root.
+- Superseded versioned packet roots are removed from the current tree after canonical validation.
+  Git history remains their recovery path; retained provenance is summarized under the canonical
+  root.
 - The canonical review page and active wiki use only current, unversioned paths and describe the
   files as approved visual sources rather than candidates.
 - Approved visual source does not mean runtime-ready. The canonical PNGs remain opaque RGB source
