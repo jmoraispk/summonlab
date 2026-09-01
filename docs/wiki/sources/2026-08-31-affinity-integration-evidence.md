@@ -4,7 +4,8 @@ Wiki ID: `sources.affinity-integration-evidence-2026-08-31`
 
 This page records the final review gate for the four-base, six-dual affinity wiki integration. The
 integration batch is dated 2026-08-31; the complete acceptance rerun and local preview were
-performed on 2026-09-01 in the required repository worktree.
+performed on 2026-09-01 in the required repository worktree after rebasing onto `origin/main` at
+`efa974222257a570f7ef64292864f14104c35d21`.
 
 No runtime catalog or engine contract changed
 
@@ -101,8 +102,8 @@ pnpm --filter @summonlab/web typecheck
 | --- | --- |
 | `pnpm validate:wiki` | Exit `0`; 101 cataloged wiki pages and 24 asset references across 23 files; the chained affinity contract and skill-taxonomy reconciliation passed. |
 | `pnpm validate:wiki-monsters` | Exit `0`; 40 monster pages and 240 preserved web visual studies validated. |
-| `pnpm validate:skill-taxonomy` | Exit `0`; 520 mapped legacy rows and 459 target rows reconciled: 254 Martial, 124 Magical, 81 Craft. |
-| `pnpm --filter @summonlab/web test` | Exit `0`; 18 test files and 81 tests passed. |
+| `pnpm validate:skill-taxonomy` | Exit `0`; 520 mapped legacy rows and 456 target rows reconciled: 258 Martial, 124 Magical, 74 Craft. |
+| `pnpm --filter @summonlab/web test` | Exit `0`; 18 test files and 82 tests passed. |
 | `pnpm --filter @summonlab/web typecheck` | Exit `0`; 0 errors and 0 warnings. |
 
 Supplemental final-batch checks passed:
@@ -116,27 +117,28 @@ Supplemental final-batch checks passed:
 
 ## Local preview evidence
 
-`pnpm dev:app` started the local application at `http://127.0.0.1:5173`. A local Chromium session
+`pnpm dev:app` started this worktree's local application at `http://127.0.0.1:5174`; port `5173` was
+already owned by an unrelated main checkout and was not used or stopped. A local Chromium session
 visited each exact route, required HTTP `200`, evaluated the relevant rendered content, loaded and
-decoded each route image, and captured a 1440 × 1000-viewport full-page screenshot. The server was
-stopped after capture.
+decoded each route image, and captured a 1440 × 1000-viewport full-page screenshot. This worktree's
+web and worker servers on `5174` and `4174` were stopped after capture.
 
 | Route | Review result | Screenshot |
 | --- | --- | --- |
-| `/wiki/mechanics/progression/affinities` | Passed: the only cycle reads Earth → Water → Fire → Wind → Earth; both SVGs decode locally; the matrix visibly contains four bases plus six duals with distinct cell fills. | [progression affinities](../../evidence/affinity-wiki-integration-2026-08-31/progression-affinities-82a164b.png) |
-| `/wiki/mechanics/affinities` | Passed: the navigation page states four bases, six rare duals, and ten total, and lists the exact roster. | [affinity index](../../evidence/affinity-wiki-integration-2026-08-31/affinities-index-82a164b.png) |
-| `/wiki/mechanics/skills/magical-elemental` | Passed: Fire, Water, and Earth ladders remain published, Wind is explicitly active and deferred to its owner rewrite, and retired element labels are not published as current affinities. | [magical elemental](../../evidence/affinity-wiki-integration-2026-08-31/magical-elemental-82a164b.png) |
-| `/wiki/creatures/monsters/dire-wolf` | Passed: the current Normal/Fire/Earth/Wind/Water target is separate from the Wood and Metal `legacy-candidate` studies; Earth is visibly pending and candidate evidence is neither approved nor runtime. | [Dire Wolf](../../evidence/affinity-wiki-integration-2026-08-31/dire-wolf-82a164b.png) |
+| `/wiki/mechanics/progression/affinities` | Passed: the only cycle reads Earth → Water → Fire → Wind → Earth; both SVGs decode locally; the matrix visibly contains four bases plus six duals with distinct cell fills. | [progression affinities](../../evidence/affinity-wiki-integration-2026-08-31/progression-affinities-main-efa9742.png) |
+| `/wiki/mechanics/affinities` | Passed: the navigation page states four bases, six rare duals, and ten total, and lists the exact roster. | [affinity index](../../evidence/affinity-wiki-integration-2026-08-31/affinities-index-main-efa9742.png) |
+| `/wiki/mechanics/skills/magical-elemental` | Passed: Fire, Water, and Earth ladders remain published, Wind is explicitly active and deferred to its owner rewrite, and retired element labels are not published as current affinities. | [magical elemental](../../evidence/affinity-wiki-integration-2026-08-31/magical-elemental-main-efa9742.png) |
+| `/wiki/creatures/monsters/dire-wolf` | Passed: the current Normal/Fire/Earth/Wind/Water target is separate from the Wood and Metal `legacy-candidate` studies; Earth is visibly pending and candidate evidence is neither approved nor runtime. | [Dire Wolf](../../evidence/affinity-wiki-integration-2026-08-31/dire-wolf-main-efa9742.png) |
 
 These PNGs are review evidence only. They are not approved assets, runtime assets, source candidate
 images, or inputs to any source hash.
 
 | Screenshot | SHA-256 |
 | --- | --- |
-| `affinities-index-82a164b.png` | `0822ce30329c54ef54563042818371de3af3ad692f9656f9751160fbcce3dfe7` |
-| `dire-wolf-82a164b.png` | `bf8b23a6841880e4addb71dff370748a9ebd11ec44a829d19932dca6b94e539d` |
-| `magical-elemental-82a164b.png` | `c3ef1ef1e925e02c7088413cfe14917b8d4c8272a7945a2194c3ec829fb9a8fa` |
-| `progression-affinities-82a164b.png` | `e841df9ade6529b72144ebc1fa17e0a34b3bbee956b2e20695b02dac0f9870d1` |
+| `affinities-index-main-efa9742.png` | `ccd1e875602d911c7b1f7c414828f58b78e1b16a84bab2cda5a8230920dd919d` |
+| `dire-wolf-main-efa9742.png` | `bcb729d1ca9c6b691e91ebee736c82d88100ebb9dd71c7bf0be5f595debb0d66` |
+| `magical-elemental-main-efa9742.png` | `41fa9b65fe25a1d085671c019cad79e2ddb40eed66fc6f1af9412e26abbfbaba` |
+| `progression-affinities-main-efa9742.png` | `d5029b1dda695b18bb154b6f17b0e1db8ae32fe6ceec3442ca4e12c2913c7b2f` |
 
 ## Prior task commits
 
@@ -146,17 +148,17 @@ commit hash remains exact.
 
 | Task | Commit | Sanitized scope note |
 | --- | --- | --- |
-| 1 | `f9e6eca00a78930b4a86b80b23e3af07866f794e` | `test(wiki): lock four-affinity contract` |
-| 1 | `6d748ba6d81b90311da6bbcd0ba8a77cdbbe0dbd` | `fix(wiki): validate canonical affinity details` |
-| 2 | `f3e0db16c5af137a4b7933ea8e917cbfd5015346` | `docs(wiki): replace canonical affinity progression` |
-| 3 | `4ccafdb9d13a2c80e625101ed6f0dbf19216156b` | `docs(wiki): publish four base affinity references` |
-| 3 | `2d91666f9ab7a40cc2afb5ba2483cfbf4081b046` | Material terminology correction |
-| 4 | `8d871398db5f8a840ca3990e72f2cdc207a411d5` | `docs(wiki): align skills with four affinities` |
-| 4 | `9b6b52d9d245fd35fa7a81c87f1a1ed0b28d7f96` | `fix(wiki): restrict deferred wind migration` |
-| 5 | `f31c08fbd69f066f1cd85f0141ce4ec80607fe72` | `docs(wiki): add verified affinity diagrams` |
-| 5 | `badf6269e33b2a8cbc1d19bc3d2524d31c34e568` | `fix(wiki): connect affinity cycle paths` |
-| 6 | `cc051b430fd4511fca39f55b3ad02766a355c139` | `fix(wiki): separate current and legacy affinity visuals` |
-| 6 | `82a164beed8f6af1e766cfba4674d46ecf937366` | `fix(wiki): validate monster visual provenance` |
+| 1 | `e487d110aad11c09e007628ff8409d2d1816c012` | `test(wiki): lock four-affinity contract` |
+| 1 | `40a90980a89dac51809ba2b0166615fc9fac4080` | `fix(wiki): validate canonical affinity details` |
+| 2 | `72508231f442c2ba4e7d2e06f14c38cc7e1f40c6` | `docs(wiki): replace canonical affinity progression` |
+| 3 | `6ef2f9e88be3c952ba2528649888fe9098c1cfcc` | `docs(wiki): publish four base affinity references` |
+| 3 | `b219d33dfdadde4e23eeefb7f5bf1e5f6a97532d` | Material terminology correction |
+| 4 | `a48379c51e840edf4ad4514c9c9b47640e2746ce` | `docs(wiki): align skills with four affinities` |
+| 4 | `eadc439a1af7cd28a22cc25d5ce8ce5fc6dfdba4` | `fix(wiki): restrict deferred wind migration` |
+| 5 | `59f78041d4c806a941e77dff778539ba5348435c` | `docs(wiki): add verified affinity diagrams` |
+| 5 | `fef39d1778599e1ccc716458409bf8366891678a` | `fix(wiki): connect affinity cycle paths` |
+| 6 | `eca80bde4d4cb9afe09c0e8551269974e7751830` | `fix(wiki): separate current and legacy affinity visuals` |
+| 6 | `99199533d4ad4cc38b54ee3bd641b3335c7b10d3` | `fix(wiki): validate monster visual provenance` |
 
 ## Remaining owner handoffs
 
