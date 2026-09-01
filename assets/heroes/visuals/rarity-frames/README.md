@@ -21,9 +21,17 @@ frames for each family, in this order:
 6. Wind
 
 `manifest.json`, `checksums.sha256`, and `provenance/source-map.json` bind every canonical asset to
-exactly one frozen v3 or v4 source byte stream. The source packets remain the historical production
-record: v3 supplies Legacy Neutral and the four affinity sheets; v4 supplies gemless Neutral and
-the individual Neutral, Fire, Water, Earth, and Wind frame matrix.
+exactly one frozen v3 or v4 source byte stream. Manifest source paths are immutable until explicitly
+superseded. The source packets remain the historical production record in Git: v3 supplies Legacy
+Neutral and the four affinity sheets; v4 supplies gemless Neutral and the individual Neutral, Fire,
+Water, Earth, and Wind frame matrix.
+
+Paths under this unversioned root are current. Versioned packet paths recorded in the manifest,
+source map, `provenance/provider-source-map.json`, and `provenance/geometry-report.json` are
+historical identifiers recoverable from pre-retirement commit
+`6995b8bce7d52e0ae6ba4120cc14366dd70dbf6e`; they are not current filesystem paths. The provider
+map retains exact `exec-*` source identities, while the geometry report retains raw and normalized
+hashes, scale factors, and measured openings.
 
 ## Visual production rules
 
@@ -40,3 +48,20 @@ the individual Neutral, Fire, Water, Earth, and Wind frame matrix.
 The final submitted prompt text is copied under `provenance/prompts/`; source-map records for
 inherited affinity ranks 1–2 intentionally use `inheritedFrom: neutral` instead of inventing a
 family-specific prompt.
+
+## Verification
+
+Run the canonical filesystem, image, checksum, and provenance validator from the repository root:
+
+```text
+python3 tools/validate-hero-rarity-frames.py assets/heroes/visuals/rarity-frames
+```
+
+Replay the local wiki/catalog and migration-scope delivery checks with:
+
+```text
+python3 tools/verify-hero-rarity-frame-delivery.py --repo-root . --base-ref origin/main
+```
+
+Add `--base-url http://10.110.24.218:4177` to verify the review page and all 48 manifest PNGs over
+HTTP.
