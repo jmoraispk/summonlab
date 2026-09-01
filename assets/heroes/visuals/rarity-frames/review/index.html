@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Summonlab · Current hero rarity-frame review</title>
+  <style>
+    :root {
+      --ink: #18222c;
+      --muted: #596674;
+      --canvas: #e7ebee;
+      --surface: #ffffff;
+      --well: #f5f3ee;
+      --chrome: #111c27;
+      --chrome-soft: #1b2936;
+      --line: #bac2c9;
+      --line-strong: #6f7a84;
+      --gold: #a96f0a;
+      --gold-soft: #fff1ce;
+      --blue: #006ba6;
+      --pass: #126847;
+      --pending: #855000;
+      --focus: #087dba;
+      --scroll-thumb: #687681;
+      --scroll-track: #d8dde1;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+      scrollbar-width: thin;
+    }
+
+    *::-webkit-scrollbar { width: 12px; height: 12px; }
+    *::-webkit-scrollbar-track { background: var(--scroll-track); }
+    *::-webkit-scrollbar-thumb {
+      border: 3px solid var(--scroll-track);
+      border-radius: 999px;
+      background: var(--scroll-thumb);
+    }
+    *::-webkit-scrollbar-thumb:hover { background: #4d5963; }
+    *::-webkit-scrollbar-thumb:active { background: #35414b; }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .masthead {
+      border-bottom: 1px solid #364654;
+      background: var(--chrome);
+      color: #f7f8f9;
+    }
+
+    .masthead__inner,
+    .section-nav__inner,
+    main {
+      width: min(1880px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .masthead__inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 520px);
+      gap: 38px;
+      align-items: end;
+      padding: 42px 0 38px;
+    }
+
+    .eyebrow {
+      margin-bottom: 12px;
+      color: #f0c46e;
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 18ch;
+      margin-bottom: 16px;
+      font-size: clamp(2.5rem, 5vw, 4.4rem);
+      font-weight: 760;
+      letter-spacing: -.045em;
+      line-height: .98;
+      text-wrap: balance;
+    }
+
+    h2 {
+      margin-bottom: 7px;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      letter-spacing: -.035em;
+      line-height: 1.05;
+      text-wrap: balance;
+    }
+
+    h3 { margin-bottom: 4px; }
+
+    .lede {
+      max-width: 74ch;
+      margin-bottom: 0;
+      color: #cbd2d8;
+      font-size: 1.05rem;
+      text-wrap: pretty;
+    }
+
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      border: 1px solid #667481;
+      padding: 5px 10px;
+      color: #e3e7ea;
+      font-size: .78rem;
+      font-weight: 760;
+    }
+
+    .status::before {
+      width: 7px;
+      height: 7px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+
+    .status--approved { color: #8ee0bb; }
+    .status--pending { color: #ffd082; }
+    .status--preferred { border-color: #bd8f3d; color: #ffe4aa; }
+
+    .review-gate {
+      border-top: 3px solid #d6a440;
+      padding: 19px 20px;
+      background: var(--chrome-soft);
+    }
+
+    .review-gate strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #ffe0a1;
+      font-size: 1rem;
+    }
+
+    .review-gate p { margin-bottom: 0; color: #d5dbe0; }
+
+    .section-nav {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .97);
+    }
+
+    .section-nav__inner {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding-block: 10px;
+      scrollbar-gutter: stable;
+    }
+
+    .section-nav a {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 720;
+      text-decoration: none;
+    }
+
+    .section-nav a:hover { background: #edf0f2; color: var(--ink); }
+
+    main { padding: 42px 0 70px; }
+    section { scroll-margin-top: 72px; }
+
+    .intro {
+      display: flex;
+      gap: 28px;
+      align-items: end;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 16px;
+    }
+
+    .intro p { max-width: 78ch; margin-bottom: 0; color: var(--muted); }
+
+    .library-count {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 720;
+    }
+
+    .library-count strong { color: var(--ink); }
+
+    .loading,
+    .load-error {
+      border: 1px solid var(--line-strong);
+      padding: 18px;
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .load-error { border-left: 5px solid #a33325; color: #75271d; }
+
+    .family {
+      margin-bottom: 40px;
+      border-top: 4px solid var(--line-strong);
+      background: var(--surface);
+    }
+
+    .family--preferred { border-top-color: var(--gold); }
+
+    .family__head {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      padding: 13px 15px;
+    }
+
+    .family__title {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .family__title h3 { margin: 0; font-size: 1.3rem; }
+    .family__title span { color: var(--muted); font-size: .82rem; }
+
+    .preference {
+      flex: 0 0 auto;
+      border: 1px solid #c49031;
+      padding: 4px 8px;
+      background: var(--gold-soft);
+      color: #704400;
+      font-size: .74rem;
+      font-weight: 800;
+    }
+
+    .sheet-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .sheet-card__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: space-between;
+      border-left: 1px solid var(--line);
+      padding: 16px;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .sheet-card__meta strong { color: var(--ink); }
+
+    .art-button {
+      display: block;
+      width: 100%;
+      border: 0;
+      padding: 0;
+      background: var(--well);
+      cursor: zoom-in;
+    }
+
+    .art-button:hover { outline: 3px solid var(--blue); outline-offset: -3px; }
+    .art-button:active { outline-color: var(--ink); }
+    .art-button img { display: block; width: 100%; height: auto; }
+
+    .frame-labels,
+    .frame-strip {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(168px, 1fr));
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .frame-labels {
+      padding: 12px 8px 8px;
+      background: #d5dade;
+      color: var(--muted);
+      font-size: .74rem;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .frame-strip {
+      padding: 0 8px 8px;
+      background: #d5dade;
+    }
+
+    .frame-cell {
+      min-width: 168px;
+      background: var(--surface);
+    }
+
+    .frame-cell__head,
+    .frame-cell__foot {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 9px;
+    }
+
+    .frame-cell__head { border-bottom: 1px solid var(--line); font-size: .76rem; }
+    .frame-cell__head strong { font-size: 1rem; }
+    .mouth { color: var(--pass); font-weight: 760; }
+    .mouth--open { color: var(--pending); }
+    .frame-cell .art-button { aspect-ratio: 2 / 3; }
+    .frame-cell img { aspect-ratio: 2 / 3; object-fit: contain; }
+    .frame-cell__foot { border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+
+    .text-link {
+      color: var(--blue);
+      font-weight: 720;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .text-link:hover { text-decoration-thickness: 2px; }
+
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 56px;
+      border: 1px solid var(--line-strong);
+      background: var(--line);
+    }
+
+    .rule { padding: 18px; background: var(--surface); }
+    .rule strong { display: block; margin-bottom: 5px; }
+    .rule p { margin-bottom: 0; color: var(--muted); font-size: .88rem; }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 22px;
+      justify-content: space-between;
+      margin-top: 54px;
+      border-top: 2px solid var(--ink);
+      padding-top: 18px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    dialog {
+      width: min(96vw, 1200px);
+      max-width: none;
+      max-height: 96vh;
+      border: 2px solid var(--ink);
+      padding: 0;
+      background: var(--well);
+      color: var(--ink);
+    }
+
+    dialog::backdrop { background: rgba(14, 22, 30, .84); }
+
+    .dialog-bar {
+      position: sticky;
+      z-index: 2;
+      top: 0;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line-strong);
+      padding: 11px 13px;
+      background: var(--surface);
+    }
+
+    .dialog-bar p { margin: 0; font-weight: 760; }
+    .dialog-actions { display: flex; gap: 12px; align-items: center; }
+
+    .close-button {
+      min-height: 40px;
+      border: 1px solid var(--line-strong);
+      padding: 7px 13px;
+      background: var(--chrome);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 720;
+    }
+
+    .close-button:hover { background: #26394a; }
+    .close-button:active { background: #071019; }
+
+    .dialog-media {
+      display: grid;
+      place-items: center;
+      min-height: 70vh;
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .dialog-media img { display: block; max-width: min(100%, 1024px); height: auto; }
+
+    @media (max-width: 900px) {
+      .masthead__inner { grid-template-columns: 1fr; }
+      .sheet-card { grid-template-columns: 1fr; }
+      .sheet-card__meta { border-top: 1px solid var(--line); border-left: 0; }
+      .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .masthead__inner,
+      .section-nav__inner,
+      main { width: min(100% - 24px, 1880px); }
+      .masthead__inner { padding: 28px 0; }
+      .intro, .family__head { align-items: start; flex-direction: column; }
+      .library-count { flex: initial; }
+      .rules { grid-template-columns: 1fr; }
+      .dialog-bar { align-items: start; }
+      .dialog-actions { align-items: end; flex-direction: column-reverse; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+
+    @media (forced-colors: active) {
+      * { scrollbar-color: auto; }
+      .status::before { forced-color-adjust: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead__inner">
+      <div>
+        <p class="eyebrow">Current visual authority</p>
+        <h1>Six complete progressions. One canonical library.</h1>
+        <p class="lede">Review every approved full-set sheet and every production-scale frame from the stable, unversioned hero rarity-frame paths. Legacy Neutral leads the review as the preferred rollout start.</p>
+        <div class="status-line" aria-label="Library status">
+          <span class="status status--approved">Approved visual source</span>
+          <span class="status status--pending">Runtime export pending</span>
+          <span class="status status--preferred">Preferred start · Legacy Neutral</span>
+        </div>
+      </div>
+      <aside class="review-gate">
+        <strong>Approved pixels are not runtime-ready exports.</strong>
+        <p>This page establishes visual decision authority only. Transparency, cleanup, runtime sizing, catalog binding, and contract changes require a separate integration handoff.</p>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="section-nav" aria-label="Review links">
+    <div class="section-nav__inner">
+      <a href="#families">Six-family review</a>
+      <a href="#rules">Production rules</a>
+      <a href="../manifest.json" target="_blank" rel="noopener">Manifest</a>
+      <a href="../checksums.sha256" target="_blank" rel="noopener">Checksums</a>
+      <a href="../review-evidence.md" target="_blank" rel="noopener">Review evidence</a>
+      <a href="../provenance/source-map.json" target="_blank" rel="noopener">Provenance</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="families" aria-labelledby="families-title">
+      <div class="intro">
+        <div>
+          <h2 id="families-title">Canonical family review</h2>
+          <p>Each family is one review unit: its 2172×724 authority sheet appears first, followed by ranks 1–7 at 1024×1536. Open any image for a larger inspection view.</p>
+        </div>
+        <div class="library-count"><strong>6 sheets</strong> · <strong>42 frames</strong> · 48 approved PNGs</div>
+      </div>
+      <p class="loading" id="review-status" role="status">Loading the canonical manifest…</p>
+      <div id="family-list"></div>
+    </section>
+
+    <section class="rules" id="rules" aria-label="Approved production rules">
+      <div class="rule"><strong>One illustrated object</strong><p>Frame, tray, and complete warm-gold star row remain integrated. No CSS, SVG, canvas, or independent star overlays alter the artwork.</p></div>
+      <div class="rule"><strong>Seven-rank progression</strong><p>Every family includes ranks 1 through 7. Affinity expression begins at rank 3; affinity ranks 1–2 retain the neutral source.</p></div>
+      <div class="rule"><strong>Awakening gate</strong><p>Dragon mouths remain closed through rank 6. Both mouths open only at rank 7.</p></div>
+      <div class="rule"><strong>Current source boundary</strong><p>Canonical paths and hashes preserve approved source pixels. Runtime export and registration remain pending.</p></div>
+    </section>
+
+    <footer>
+      <span>Summonlab Heroes · current approved visual source</span>
+      <span>No engine, affinity, or shared runtime catalog change is authorized here</span>
+    </footer>
+  </main>
+
+  <dialog id="art-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-bar">
+      <p id="dialog-title">Full-resolution artwork</p>
+      <div class="dialog-actions">
+        <a class="text-link" id="dialog-original" href="../families/legacy-neutral/sheet.png" target="_blank" rel="noopener">Open original PNG</a>
+        <button class="close-button" id="dialog-close" type="button" onclick="this.closest('dialog').close()">Close</button>
+      </div>
+    </div>
+    <div class="dialog-media"><img id="dialog-image" src="" alt=""></div>
+  </dialog>
+
+  <script>
+    const familyOrder = ['legacy-neutral', 'neutral', 'fire', 'water', 'earth', 'wind'];
+    const sheetPath = (family) => `../families/${family}/sheet.png`;
+    const framePath = (family, rank) => `../families/${family}/frames/rank-${rank}.png`;
+
+    const familyCopy = {
+      'legacy-neutral': { name: 'Legacy Neutral', note: 'approved comparison direction · preferred rollout start' },
+      neutral: { name: 'Neutral', note: 'gemless forged steel and dark iron' },
+      fire: { name: 'Fire', note: 'ember channels and tempered heat' },
+      water: { name: 'Water', note: 'flowing enamel and contained current' },
+      earth: { name: 'Earth', note: 'mineral strata and amber seams' },
+      wind: { name: 'Wind', note: 'swept fins and pressure traces' }
+    };
+    const rankNames = ['Rectangular', 'Horned', 'Gilded wing', 'Heraldry', 'Guardians', 'Elder', 'Awakened'];
+    const familyList = document.querySelector('#family-list');
+    const reviewStatus = document.querySelector('#review-status');
+    const dialog = document.querySelector('#art-dialog');
+    const dialogImage = document.querySelector('#dialog-image');
+    const dialogTitle = document.querySelector('#dialog-title');
+    const dialogOriginal = document.querySelector('#dialog-original');
+    let opener = null;
+
+    const createTextElement = (tag, className, text) => {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      element.textContent = text;
+      return element;
+    };
+
+    const createArtButton = (path, title, alt, width, height, lazy = true) => {
+      const button = document.createElement('button');
+      button.className = 'art-button';
+      button.type = 'button';
+      button.dataset.view = path;
+      button.dataset.title = title;
+      button.setAttribute('aria-label', `Inspect ${title}`);
+
+      const image = document.createElement('img');
+      image.src = path;
+      image.alt = alt;
+      image.width = width;
+      image.height = height;
+      image.decoding = 'async';
+      if (lazy) image.loading = 'lazy';
+      button.append(image);
+      return button;
+    };
+
+    const createFamily = (familyRecord) => {
+      const family = familyRecord.id;
+      const copy = familyCopy[family];
+      const section = document.createElement('section');
+      section.className = family === 'legacy-neutral' ? 'family family--preferred' : 'family';
+      section.id = `family-${family}`;
+      section.setAttribute('aria-labelledby', `family-title-${family}`);
+
+      const head = document.createElement('div');
+      head.className = 'family__head';
+      const title = document.createElement('div');
+      title.className = 'family__title';
+      const heading = createTextElement('h3', '', copy.name);
+      heading.id = `family-title-${family}`;
+      title.append(heading, createTextElement('span', '', copy.note));
+      head.append(title);
+      if (family === 'legacy-neutral') head.append(createTextElement('span', 'preference', 'Preferred start · Legacy Neutral'));
+
+      const sheet = document.createElement('div');
+      sheet.className = 'sheet-card';
+      sheet.append(createArtButton(
+        sheetPath(family),
+        `${copy.name} seven-rank sheet`,
+        `${copy.name} hero rarity frames progressing from rank 1 through rank 7`,
+        familyRecord.sheet.width,
+        familyRecord.sheet.height,
+        family !== 'legacy-neutral'
+      ));
+      const sheetMeta = document.createElement('div');
+      sheetMeta.className = 'sheet-card__meta';
+      sheetMeta.append(
+        createTextElement('strong', '', 'Full-set authority sheet'),
+        createTextElement('span', '', `${familyRecord.sheet.width}×${familyRecord.sheet.height} · ${familyRecord.sheet.mode} PNG`)
+      );
+      const sheetLink = createTextElement('a', 'text-link', 'Open sheet PNG');
+      sheetLink.href = sheetPath(family);
+      sheetLink.target = '_blank';
+      sheetLink.rel = 'noopener';
+      sheetMeta.append(sheetLink);
+      sheet.append(sheetMeta);
+
+      const labels = document.createElement('div');
+      labels.className = 'frame-labels';
+      labels.setAttribute('aria-hidden', 'true');
+      for (let rank = 1; rank <= 7; rank += 1) labels.append(createTextElement('span', '', `Rank ${rank}`));
+
+      const strip = document.createElement('div');
+      strip.className = 'frame-strip';
+      strip.setAttribute('aria-label', `${copy.name} individual frames from rank 1 through rank 7`);
+      familyRecord.frames.forEach((frame) => {
+        const rank = frame.rank;
+        const cell = document.createElement('article');
+        cell.className = 'frame-cell';
+        const cellHead = document.createElement('div');
+        cellHead.className = 'frame-cell__head';
+        cellHead.append(createTextElement('strong', '', `${rank}★`));
+        const mouthLabel = rank < 4 ? 'No dragon' : rank < 7 ? 'Closed' : 'Open roar';
+        cellHead.append(createTextElement('span', rank === 7 ? 'mouth mouth--open' : 'mouth', mouthLabel));
+
+        const art = createArtButton(
+          framePath(family, rank),
+          `${copy.name} rank ${rank} frame`,
+          `${copy.name} rank ${rank} ${rankNames[rank - 1].toLowerCase()} hero-card frame with ${rank} integrated gold ${rank === 1 ? 'star' : 'stars'}`,
+          frame.width,
+          frame.height
+        );
+
+        const cellFoot = document.createElement('div');
+        cellFoot.className = 'frame-cell__foot';
+        cellFoot.append(createTextElement('span', '', rankNames[rank - 1]));
+        const frameLink = createTextElement('a', 'text-link', 'PNG');
+        frameLink.href = framePath(family, rank);
+        frameLink.target = '_blank';
+        frameLink.rel = 'noopener';
+        cellFoot.append(frameLink);
+        cell.append(cellHead, art, cellFoot);
+        strip.append(cell);
+      });
+
+      section.append(head, sheet, labels, strip);
+      return section;
+    };
+
+    const validateManifest = (manifest) => {
+      const manifestOrder = manifest.families.map((family) => family.id);
+      if (manifest.status !== 'approved-visual-source' || manifest.runtimeStatus !== 'not-runtime-ready') {
+        throw new Error('The manifest status does not match the approved-source boundary.');
+      }
+      if (manifest.assetCount !== 48 || manifestOrder.join(',') !== familyOrder.join(',')) {
+        throw new Error('The manifest family order or asset count is not canonical.');
+      }
+      manifest.families.forEach((family) => {
+        const ranks = family.frames.map((frame) => frame.rank).join(',');
+        if (family.frames.length !== 7 || ranks !== '1,2,3,4,5,6,7') {
+          throw new Error(`${family.id} does not contain the complete seven-rank progression.`);
+        }
+      });
+    };
+
+    const initializeReview = async () => {
+      try {
+        const response = await fetch('../manifest.json');
+        if (!response.ok) throw new Error(`Manifest request returned HTTP ${response.status}.`);
+        const manifest = await response.json();
+        validateManifest(manifest);
+        manifest.families.forEach((family) => familyList.append(createFamily(family)));
+        reviewStatus.remove();
+      } catch (error) {
+        reviewStatus.className = 'load-error';
+        reviewStatus.textContent = `The canonical review could not load: ${error.message}`;
+      }
+    };
+
+    familyList.addEventListener('click', (event) => {
+      const button = event.target.closest('.art-button');
+      if (!button) return;
+      opener = button;
+      dialogImage.src = button.dataset.view;
+      dialogImage.alt = button.dataset.title;
+      dialogTitle.textContent = button.dataset.title;
+      dialogOriginal.href = button.dataset.view;
+      dialog.showModal();
+    });
+
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      dialogImage.src = '';
+      if (opener) opener.focus();
+    });
+
+    initializeReview();
+  </script>
+</body>
+</html>

@@ -2,60 +2,66 @@
 
 Wiki ID: `art.hero-rarity-frames`
 
-Design status: **v3 + v4 visual sources approved and checksum-frozen; runtime export pending**.
+Design status: **six-family visual source approved; runtime export pending**.
 
-Hero portrait cards use one coherent charcoal, gold, navy, and sapphire frame family across seven
-star ranks. Rarity increases silhouette complexity, ornament density, dragon anatomy, and blue
-energy. It does not cycle through unrelated colors, and the stars remain one warm-gold component at
-every rank.
+The current hero rarity-frame library contains six complete families in canonical review order:
 
-## Progression
+1. **Legacy Neutral** — the approved comparison direction and the preferred starting family for
+   initial rollout;
+2. **Neutral** — a gemless no-affinity progression in tempered steel and dark iron;
+3. **Fire**;
+4. **Water**;
+5. **Earth**;
+6. **Wind**.
+
+Legacy Neutral and Neutral are separate authorities. Legacy Neutral preserves the established
+charcoal, gold, navy, and sapphire comparison language. Neutral removes affinity gems, blue
+emission, and affinity color so it can serve as a gemless baseline. The Legacy Neutral rollout
+preference is a visual-production recommendation, not a runtime default or catalog binding.
+
+## Canonical source
+
+The current source root is `assets/heroes/visuals/rarity-frames/`. Its
+[manifest](../../../assets/heroes/visuals/rarity-frames/manifest.json) records family order, preferred
+start, dimensions, image modes, and SHA-256 values. The
+[checksum list](../../../assets/heroes/visuals/rarity-frames/checksums.sha256) binds all six sheets
+and all 42 individual frames. The
+[review page](../../../assets/heroes/visuals/rarity-frames/review/index.html) presents every family
+as its full-set sheet followed by ranks 1 through 7.
+
+Each family owns one 2172×724 RGB sheet and seven 1024×1536 RGB individual frames at stable,
+unversioned paths. Git history preserves retired generation packets and rejected or superseded
+artwork; those historical paths are not active review authority.
+
+## Seven-rank progression
 
 | Rank | Frame identity | Power cue |
 | --- | --- | --- |
 | 1★ | forged charcoal iron | disciplined construction and scale engraving |
 | 2★ | horned iron | curved gold-edged silhouette |
-| 3★ | gilded wing | navy enamel, wing corners, and sapphire crest |
+| 3★ | gilded wing | wing corners, crest, and the first affinity expression where applicable |
 | 4★ | dragon heraldry | paired closed-mouth dragon heads and lower claws |
 | 5★ | dragon guardians | full closed-mouth bodies along the rails |
 | 6★ | elder dragons | fuller bodies, folded wings, closed mouths, and controlled energy |
-| 7★ | awakened dragons | both mouths open in a roar and sapphire energy intensifies |
+| 7★ | awakened dragons | both mouths open in a roar and energy reaches its apex |
 
-## Integrated star tray
+Every family contains all seven ranks. Affinity ranks 1–2 are byte-identical copies of the Neutral
+frames; Fire, Water, Earth, and Wind begin expressing their materials at rank 3. Wind rank 7 uses
+the approved inward-facing-heads correction: the left dragon faces right and the right dragon faces
+left, so both open mouths roar toward the hero opening.
 
-Every frame contains a horizontal lower tray with its complete rank row generated as part of the
-same illustrated object. The stars retain one warm-gold, broad, friendly five-point treatment while
-sharing the frame's lighting, bevel, shadows, and occlusion. They are not separate sprites or a
-post-generation overlay. Star rows expand symmetrically from one through seven and stay in the same
-lower visual zone.
+## Integrated tray and mouth gate
 
-The accepted comparison direction remains preserved in `assets/heroes/visuals/rarity-frames-v3/`.
-The current equal-canvas production packet and provenance live in
-`assets/heroes/visuals/rarity-frames-v4/`. It adds a gemless no-affinity authority and 35 individual
-1024×1536 RGB source frames: Neutral, Fire, Water, Earth, and Wind at every rank from 1 through 7.
+Every frame contains its complete warm-gold star row in the lower illustrated tray. Frame, tray,
+stars, bevel, lighting, shadow, and occlusion form one indivisible rendered object. The stars are not
+separate sprites and must not be recreated as CSS, SVG, canvas, or post-generation overlays.
 
-Neutral dragons use gemless tempered steel and dark iron without blue gems or affinity emission.
-Ranks 1–2 are byte-identical neutral frames across all five sets; affinity begins subtly at rank 3
-and increases through rank 7. Dragon mouths remain completely closed through rank 6; only rank 7
-opens both mouths.
+Dragon mouths remain closed through rank 6. Both mouths open only at rank 7. This mouth gate is part
+of the readable rarity progression across Legacy Neutral, Neutral, Fire, Water, Earth, and Wind.
 
-The internal horizontal hero opening is now a measurable review constraint. Within each seven-rank
-family, widest measured central opening divided by narrowest must be no more than 1.20. Frozen-source
-variation ranges from 13.84% to 18.60%. Any correction needed to meet this bound scales the
-complete rendered frame—including its integrated tray and stars—as one indivisible image; the stars
-are never moved independently. Untouched provider renders and normalization hashes remain in the v4
-packet.
+## Runtime boundary
 
-Wind rank 7 uses the corrected v2 composition: the left dragon faces right and the right dragon
-faces left, so both open mouths roar inward toward the hero opening. The outward-facing v1 remains
-superseded provenance and is not shown as the active source.
-
-ADR 0066 freezes v3 as the comparison/affinity authority and v4 as the equal-canvas production
-source set. The 48 approved PNGs are byte-bound by
-`assets/heroes/visuals/rarity-frames-freeze-v1/checksums.sha256`. Historical `candidates/` path names
-record their generation stage and do not override this approval.
-
-These approved sources are not transparent runtime exports and have not been registered in a shared
-catalog. The former layered approach and outward-facing Wind rank 7 v1 remain rejected or
-superseded provenance. Shared catalogs and contracts remain unchanged until an explicit runtime
-integration handoff.
+ADR 0067 establishes the canonical six-family visual authority and supersedes ADR 0066. These
+approved RGB PNGs are source artwork, not transparent runtime exports. Runtime transparency,
+cleanup, sizing, registration, and any engine, affinity, or shared catalog contract change remain
+pending a separate integration decision.
