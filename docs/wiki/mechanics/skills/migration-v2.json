@@ -3431,18 +3431,8 @@
 			"type": "A",
 			"requires": "Metal affinity Rank I",
 			"effect": "Detect, attract and lightly shape nearby metal. **Foundation.**",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:2",
@@ -3454,18 +3444,8 @@
 			"type": "A",
 			"requires": "Metalsense Novice",
 			"effect": "A thin dart of metal; cheap, precise, armour-piercing",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:3",
@@ -3477,18 +3457,8 @@
 			"type": "P",
 			"requires": "Metalsense Novice",
 			"effect": "Small bonus to all cutting damage the hero deals",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:4",
@@ -3500,18 +3470,8 @@
 			"type": "A",
 			"requires": "Metalsense Intermediate",
 			"effect": "Degrades a target's armour or weapon briefly",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:5",
@@ -3523,18 +3483,8 @@
 			"type": "A",
 			"requires": "Iron Needle Expert, Rank II",
 			"effect": "A spray of metal fragments across a cone",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:6",
@@ -3546,18 +3496,8 @@
 			"type": "A",
 			"requires": "Edge Expert",
 			"effect": "Temporarily raises a weapon's damage and penetration",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:7",
@@ -3569,18 +3509,8 @@
 			"type": "A",
 			"requires": "Metalsense Expert",
 			"effect": "Metal restraints; roots and silences briefly",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:8",
@@ -3592,18 +3522,8 @@
 			"type": "A",
 			"requires": "Blade Storm Master, Rank II",
 			"effect": "A cutting line that applies heavy Rend",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:9",
@@ -3615,18 +3535,8 @@
 			"type": "A",
 			"requires": "Rust Touch Master",
 			"effect": "Strips armour entirely for the encounter",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:10",
@@ -3638,18 +3548,8 @@
 			"type": "P",
 			"requires": "Iron Bindings Master, Spirit threshold",
 			"effect": "Several blades orbit the hero, striking automatically",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:11",
@@ -3661,18 +3561,8 @@
 			"type": "P",
 			"requires": "Sharpen Master, 10,000 casts",
 			"effect": "Automatic critical against any target already bleeding",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:12",
@@ -3684,18 +3574,8 @@
 			"type": "A",
 			"requires": "Floating Blades Master, Rank III",
 			"effect": "An orbiting storm; strikes everything nearby continuously",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:13",
@@ -3707,18 +3587,8 @@
 			"type": "A",
 			"requires": "Metal Reave Master, Rank III",
 			"effect": "Encases a target completely; they cannot act or be healed",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:14",
@@ -3730,18 +3600,8 @@
 			"type": "A",
 			"requires": "Severing Wind Master, Rank III",
 			"effect": "Persistent area; anything that moves within it is cut",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:15",
@@ -3753,18 +3613,8 @@
 			"type": "A",
 			"requires": "Thousand Blades Master, Rank IV",
 			"effect": "A single sever that ignores all mitigation and barriers",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:16",
@@ -3776,18 +3626,8 @@
 			"type": "St",
 			"requires": "Keen Sense Master, Rank IV",
 			"effect": "The hero's body becomes edged metal; all contact cuts",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:17",
@@ -3799,18 +3639,8 @@
 			"type": "A",
 			"requires": "The Cutting Word Master, rare catalyst",
 			"effect": "Every enemy in range is cut simultaneously and identically",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-metal:18",
@@ -3822,18 +3652,8 @@
 			"type": "A",
 			"requires": "Ten Thousand Edges Master, Rank V, composite condition",
 			"effect": "One severance. Everything Wood-aligned in range is divided from itself.",
-			"disposition": "rename",
-			"target": {
-				"domain": "Magical",
-				"family": "Elemental",
-				"labels": [
-					{
-						"namespace": "Element",
-						"value": "Wind"
-					}
-				],
-				"publication": "deferred"
-			}
+			"disposition": "delete",
+			"rationale": "Metal affinity removed by accepted four-base model"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-water:1",

@@ -5,23 +5,12 @@ export type SkillDisposition = 'retain' | 'rename' | 'rehome' | 'merge' | 'delet
 export type SkillLabel = { namespace: 'Equipment' | 'Element'; value: string };
 export type SkillMarkdownFile = { sourcePath: string; source: string };
 
-export type PublishedSkillMigrationTarget = {
+export type SkillMigrationTarget = {
 	domain: SkillDomain;
 	family: string;
 	skill: string;
 	labels?: SkillLabel[];
-	publication?: never;
 };
-
-export type DeferredSkillMigrationTarget = {
-	domain: SkillDomain;
-	family: string;
-	labels: SkillLabel[];
-	publication: 'deferred';
-	skill?: never;
-};
-
-export type SkillMigrationTarget = PublishedSkillMigrationTarget | DeferredSkillMigrationTarget;
 
 export type LegacySkillRow = {
 	sourceId: string;
@@ -303,25 +292,6 @@ function sortedLabels(labels: readonly SkillLabel[] | undefined): string[] {
 	return (labels ?? []).map(({ namespace, value }) => `${namespace}:${value}`).sort();
 }
 
-function isDeferredWindRewrite(record: SkillMigrationRecord): boolean {
-	return (
-		['rename', 'rehome'].includes(record.disposition) &&
-		record.sourceId.startsWith('magical-evocation.md#evocation-metal:') &&
-		record.sourcePath === 'docs/wiki/mechanics/skills/magical-evocation.md' &&
-		record.section === 'Evocation — Metal'
-	);
-}
-
-function hasValidDeferredWindTarget(target: DeferredSkillMigrationTarget): boolean {
-	return (
-		target.domain === 'Magical' &&
-		target.family === 'Elemental' &&
-		target.labels.length === 1 &&
-		target.labels[0]?.namespace === 'Element' &&
-		target.labels[0]?.value === 'Wind'
-	);
-}
-
 export function validateTargetTaxonomy(
 	rows: readonly TargetSkillRow[],
 	ledger: SkillMigrationLedger
@@ -393,16 +363,6 @@ export function validateTargetTaxonomy(
 			errors.push(`${record.sourceId} has no target`);
 			continue;
 		}
-		if (record.target.publication === 'deferred') {
-			if (!isDeferredWindRewrite(record))
-				errors.push(
-					`${record.disposition} record ${record.sourceId} requires a published target skill`
-				);
-			else if (!hasValidDeferredWindTarget(record.target))
-				errors.push(`${record.sourceId} has an invalid deferred Elemental target`);
-			continue;
-		}
-
 		const key = targetKey(record.target.domain, record.target.family, record.target.skill);
 		const row = rowsByKey.get(key);
 		lineageKeys.add(key);
@@ -476,18 +436,10 @@ export function validateMigrationLedger(
 		if (['retain', 'rename', 'rehome'].includes(record.disposition)) {
 			if (record.target === undefined)
 				errors.push(`${record.disposition} record ${record.sourceId} requires target`);
-			else if (record.target.publication !== 'deferred' && !record.target.skill)
+			else if (!record.target.skill)
 				errors.push(
 					`${record.disposition} record ${record.sourceId} requires a published target skill`
 				);
-			else if (record.target.publication === 'deferred') {
-				if (!isDeferredWindRewrite(record))
-					errors.push(
-						`${record.disposition} record ${record.sourceId} requires a published target skill`
-					);
-				else if (!hasValidDeferredWindTarget(record.target))
-					errors.push(`${record.sourceId} has an invalid deferred Elemental target`);
-			}
 		}
 		if (record.disposition === 'merge') {
 			if (!record.mergeTarget) errors.push(`merge record ${record.sourceId} requires mergeTarget`);

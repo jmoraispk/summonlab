@@ -98,13 +98,7 @@ const TRACKING_DELETE_RATIONALE = 'Tracking ladder removed by approved taxonomy'
 const THROWN_DELETE_RATIONALE = 'Generic Thrown ladder removed by approved taxonomy';
 const EQUIPMENT_PROGRESSION_DELETE_RATIONALE = 'Equipment progression removed by approved taxonomy';
 const WOOD_DELETE_RATIONALE = 'Wood affinity removed by accepted four-base model';
-
-const deferredWindTarget = () => ({
-	domain: 'Magical' as const,
-	family: 'Elemental',
-	labels: [{ namespace: 'Element' as const, value: 'Wind' }],
-	publication: 'deferred' as const
-});
+const METAL_DELETE_RATIONALE = 'Metal affinity removed by accepted four-base model';
 
 function targetForSection(row: LegacySkillRow): NonNullable<SkillMigrationRecord['target']> {
 	const sectionTarget = SECTION_TARGETS[row.section as keyof typeof SECTION_TARGETS];
@@ -146,7 +140,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 		return { ...row, disposition: 'delete', rationale: WOOD_DELETE_RATIONALE };
 
 	if (row.section === 'Evocation — Metal')
-		return { ...row, disposition: 'rename', target: deferredWindTarget() };
+		return { ...row, disposition: 'delete', rationale: METAL_DELETE_RATIONALE };
 
 	if (source === 'Evocation — Fire:Sunfall')
 		return {

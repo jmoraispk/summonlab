@@ -60,9 +60,7 @@ describe('skill taxonomy migration exporter', () => {
 				replacementEffect?: string;
 			}>;
 		};
-		const activeRecords = ledger.records.filter(
-			(record) => record.disposition !== 'delete' && record.disposition !== 'merge'
-		);
+		const activeRecords = ledger.records.filter((record) => record.target?.skill);
 		const bySource = new Map(ledger.records.map((record) => [record.sourceId, record]));
 		const familyCounts = Object.fromEntries(
 			['Alchemy', 'Cooking', 'Forging', 'Gathering', 'Knowledge'].map((family) => [
@@ -93,8 +91,18 @@ describe('skill taxonomy migration exporter', () => {
 			Gathering: 18,
 			Knowledge: 12
 		});
-		expect(domainCounts).toEqual({ Martial: 258, Magical: 160, Craft: 74 });
-		expect(activeRecords).toHaveLength(492);
+		expect(domainCounts).toEqual({ Martial: 258, Magical: 124, Craft: 74 });
+		expect(activeRecords).toHaveLength(456);
+		const metalRows = ledger.records.filter((record) => record.section === 'Evocation — Metal');
+		expect(metalRows).toHaveLength(18);
+		expect(
+			metalRows.every(
+				(record) =>
+					record.disposition === 'delete' &&
+					record.rationale === 'Metal affinity removed by accepted four-base model' &&
+					!('target' in record)
+			)
+		).toBe(true);
 		expect(bySource.get('craft-and-life.md#beast:2')).toMatchObject({
 			disposition: 'merge',
 			mergeTarget: { domain: 'Craft', family: 'Gathering', skill: 'Animal Handling' }
