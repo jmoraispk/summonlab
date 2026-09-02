@@ -138,6 +138,70 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 		]);
 	});
 
+	it('ignores single-line, multiline, and unterminated HTML comments', () => {
+		const rows = [row('martial:blade:first', 'First')];
+		const entirelyCommented = `<!--
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+-->`;
+		expect(() => parseAcceptedMotifMap(entirelyCommented, rows)).toThrow(/accepted status/u);
+
+		const liveMapWithRetiredComments = `# Map
+
+<!-- **Status:** Proposed -->
+<!--
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.retired\` | **Retired First** |
+-->
+
+\`\`\`md
+<!-- unterminated inside the fence
+**Status:** Proposed
+\`\`\`
+
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |
+
+<!-- unterminated retired example
+**Status:** Accepted
+| \`blade.retired-tail\` | **Retired Tail** |`;
+		expect(parseAcceptedMotifMap(liveMapWithRetiredComments, rows).entries).toEqual([
+			{
+				mapEntryId: 'blade.first',
+				domain: 'Martial',
+				family: 'Blade',
+				memberTargetIds: ['martial:blade:first']
+			}
+		]);
+	});
+
+	it('ignores literal motif Markdown inside raw HTML blocks', () => {
+		const rows = [row('martial:blade:first', 'First')];
+		const markdown = `<pre data-example="retired">
+**Status:** Proposed
+## Martial
+### Blade
+| \`blade.retired\` | **Retired** |
+</pre>
+
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |`;
+		expect(parseAcceptedMotifMap(markdown, rows).entries).toHaveLength(1);
+		expect(parseAcceptedMotifMap(markdown, rows).entries[0]?.mapEntryId).toBe('blade.first');
+	});
+
 	it('rejects cycles and parents outside a motif family', () => {
 		expect(() =>
 			validateVisualLineage([

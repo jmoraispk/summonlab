@@ -85,6 +85,8 @@ function skillKey(domain: SkillDomain, family: string, name: string): string {
 function liveMarkdownLines(markdown: string): string[] {
 	const lines: string[] = [];
 	let fence: { marker: '`' | '~'; length: number } | null = null;
+	let rawBlock: 'pre' | 'script' | 'style' | 'textarea' | null = null;
+	let inHtmlComment = false;
 	for (const line of markdown.split(/\r?\n/u)) {
 		if (fence) {
 			const closingFence = new RegExp(
@@ -94,8 +96,24 @@ function liveMarkdownLines(markdown: string): string[] {
 			if (closingFence.test(line)) fence = null;
 			continue;
 		}
-		if (/^(?: {4}|\t)/u.test(line)) continue;
-		const openingFence = /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(line)?.[1];
+		if (rawBlock) {
+			if (new RegExp(`</${rawBlock}\\s*>`, 'iu').test(line)) rawBlock = null;
+			continue;
+		}
+
+		let liveLine = line;
+		if (inHtmlComment) {
+			const commentEnd = liveLine.indexOf('-->');
+			if (commentEnd === -1) {
+				lines.push('');
+				continue;
+			}
+			liveLine = liveLine.slice(commentEnd + 3);
+			inHtmlComment = false;
+		}
+
+		if (/^(?: {4}|\t)/u.test(liveLine)) continue;
+		const openingFence = /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(liveLine)?.[1];
 		if (openingFence) {
 			fence = {
 				marker: openingFence[0] as '`' | '~',
@@ -103,7 +121,38 @@ function liveMarkdownLines(markdown: string): string[] {
 			};
 			continue;
 		}
-		lines.push(line);
+		const rawBlockOpening = /^ {0,3}<(pre|script|style|textarea)(?:\s|>|$)/iu
+			.exec(liveLine)?.[1]
+			?.toLowerCase();
+		if (
+			rawBlockOpening === 'pre' ||
+			rawBlockOpening === 'script' ||
+			rawBlockOpening === 'style' ||
+			rawBlockOpening === 'textarea'
+		) {
+			if (!new RegExp(`</${rawBlockOpening}\\s*>`, 'iu').test(liveLine)) {
+				rawBlock = rawBlockOpening;
+			}
+			continue;
+		}
+
+		let uncommented = '';
+		let cursor = 0;
+		while (cursor < liveLine.length) {
+			const commentStart = liveLine.indexOf('<!--', cursor);
+			if (commentStart === -1) {
+				uncommented += liveLine.slice(cursor);
+				break;
+			}
+			uncommented += liveLine.slice(cursor, commentStart);
+			const commentEnd = liveLine.indexOf('-->', commentStart + 4);
+			if (commentEnd === -1) {
+				inHtmlComment = true;
+				break;
+			}
+			cursor = commentEnd + 3;
+		}
+		lines.push(uncommented);
 	}
 	return lines;
 }
