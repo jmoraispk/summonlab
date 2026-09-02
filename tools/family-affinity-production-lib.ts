@@ -529,6 +529,25 @@ export const FamilyAffinityManifestSchema = z
 				});
 			}
 		}
+		const allActiveCoordinates = [
+			...manifest.canonicalMatrix.activeCoordinates,
+			...manifest.bridge.activeCoordinates
+		];
+		for (const field of [
+			'coordinateId',
+			'targetPath',
+			'assignmentPath',
+			'targetSha256',
+			'assignmentSha256'
+		] as const) {
+			const values = allActiveCoordinates.map((coordinate) => coordinate[field]);
+			if (new Set(values).size !== values.length) {
+				context.addIssue({
+					code: 'custom',
+					message: `Global duplicate active ${field} across canonical and bridge namespaces`
+				});
+			}
+		}
 		const bridgeCurrentTargets = manifest.bridge.activeCoordinates.map(
 			({ currentClassId, affinity }) => `${currentClassId}/${affinity}`
 		);

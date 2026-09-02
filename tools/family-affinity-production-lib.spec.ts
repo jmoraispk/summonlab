@@ -2558,6 +2558,37 @@ describe('family affinity production manifest', () => {
 		}
 	});
 
+	it.each(['coordinateId', 'targetPath', 'assignmentPath'] as const)(
+		'rejects cross-namespace reuse of active %s during manifest parse and bundle validation',
+		async (field) => {
+			const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+			const bundle = buildFamilyAffinityProductionBundle(familyPackets, mapping);
+			const canonical = bundle.manifest.canonicalMatrix.activeCoordinates[0]!;
+			const paths = bridgeAttemptPaths('bridge-class', 'earth', 1);
+			const bridge = {
+				...canonical,
+				namespace: 'bridge' as const,
+				coordinateId: 'bridge-class/goblins/goblin-runt/earth',
+				currentClassId: 'bridge-class',
+				affinity: 'earth' as const,
+				targetPath: paths.target,
+				targetSha256: '1'.repeat(64),
+				assignmentPath: paths.assignment,
+				assignmentSha256: '2'.repeat(64),
+				status: 'earth-bridge-provisional' as const
+			};
+			bridge[field] = canonical[field] as never;
+			const forged = structuredClone(bundle.manifest);
+			forged.bridge = { targetCount: 1, assignmentCount: 1, activeCoordinates: [bridge] };
+			expect(() => FamilyAffinityManifestSchema.parse(forged)).toThrow(
+				/global duplicate|cross-namespace/i
+			);
+			expect(() => validateFamilyAffinityProductionBundle({ ...bundle, manifest: forged })).toThrow(
+				/global duplicate|cross-namespace/i
+			);
+		}
+	);
+
 	it('rejects wrong-family, wrong-form, stale, foreign, and manifest-unbound Normal approvals', async () => {
 		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
 		const approved = structuredClone(buildFamilyAffinityProductionBundle(familyPackets, mapping));
@@ -3361,6 +3392,56 @@ describe('controller-only family affinity revision allocation', () => {
 					reviewPath: fixture.target.ownedPaths.decision
 				})
 			).rejects.toThrow(/duplicate active.*coordinate/i);
+			await expect(readFile(join(fixture.root, proposedV2Target))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('refuses a forged cross-namespace manifest before allocation mutation', async () => {
+		const fixture = await makeRevisionFixture();
+		try {
+			const manifest = JSON.parse(
+				await readFile(join(fixture.root, fixture.manifestPath), 'utf8')
+			) as {
+				canonicalMatrix: { activeCoordinates: Array<Record<string, unknown>> };
+				bridge: {
+					targetCount: number;
+					assignmentCount: number;
+					activeCoordinates: Array<Record<string, unknown>>;
+				};
+			};
+			const canonical = manifest.canonicalMatrix.activeCoordinates[0]!;
+			manifest.bridge = {
+				targetCount: 1,
+				assignmentCount: 1,
+				activeCoordinates: [
+					{
+						...canonical,
+						namespace: 'bridge',
+						currentClassId: 'bridge-class'
+					}
+				]
+			};
+			const forgedBytes = stableFamilyAffinityJson(manifest);
+			await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+			const proposedV2Target = fixture.coordinate.targetPath.replace(
+				'target-v1.json',
+				'target-v2.json'
+			);
+			await expect(
+				allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'canonical',
+					coordinateId: fixture.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: fixture.target.ownedPaths.decision
+				})
+			).rejects.toThrow(/global duplicate|cross-namespace/i);
+			expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(forgedBytes);
 			await expect(readFile(join(fixture.root, proposedV2Target))).rejects.toMatchObject({
 				code: 'ENOENT'
 			});
