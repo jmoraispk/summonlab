@@ -1,10 +1,14 @@
 # Material equipment production v1
 
-Status: **ready for deliberate activation**. The exact visual profile hash
-`f773bdaab246314d53a596c11404a9e242826838926ecb8121948b375c267d5a` is owner-accepted, and the
-77 root targets plus 77 assignments are materialized and deterministic. No live run, journal,
-review receipt, child packet, candidate, result, approved source, runtime export, or generated image
-has been created.
+Status: **root production complete; owner review in progress**. Run
+`material-equipment-v1-run-001` has terminal evidence for all 77 root targets: 16 `candidate`, 60
+`revise`, and one `failed`, producing 76 reviewable PNGs. These are canonical checklist states, not
+approval decisions. No full-set source has passed the human gate, so all 84 Armour-piece targets
+remain unproduced. No candidate is approved or promoted to runtime.
+
+The immutable root evidence is summarized in the
+[review packet](review-packets/material-equipment-v1-run-001/README.md). Future revisions must use a
+new versioned namespace; do not rename, replace, or reinterpret v1 evidence in place.
 
 The checked [manifest](manifest.json) expands the four material ladders into 161 image targets. The
 adjacent [allocation plan](allocation-plan.json) binds every target into one intended, resumable
@@ -65,13 +69,13 @@ promotion are later integration actions and must not be inferred from generation
 The current `summonlab-image-production` target contract is enemy-specific and does not accept this
 Equipment manifest. Do not dispatch these entries through that contract. The Equipment plan also
 forbids writes to `assets/enemies`, the shared image-production contract, and the installed skill.
-Equipment now has its own accepted visual profile and local controller with strict schema reading,
+Equipment has its own accepted visual profile and local controller with strict schema reading,
 reference routing, prompt rendering, exclusive persistence, review receipts, append-only journal,
-reconciliation, and result verification. The allocation remains inert until an operator creates a
-run-specific immutable plan and receipt-last activation. The controller never calls image
-generation and never creates workers.
+reconciliation, and result verification. The v1 allocation was activated into its immutable run
+plan, and its root jobs are now terminal. The controller never calls image generation and never
+creates workers.
 
-## Exact operator workflow
+## Historical operator workflow
 
 The state transition is deliberately one-way and evidence-bound:
 
@@ -83,9 +87,9 @@ human full-set receipt → four child packets → continued claims
 candidate review remains separate from approval and runtime promotion
 ```
 
-Run every command from the repository root with Node 24.14.1. Profile export is deterministic
-maintenance; acceptance was a one-time owner action and must not be repeated over the existing
-exclusive artifact.
+The commands below document how the now-complete v1 root run was operated. They are retained for
+audit and recovery, not as instructions to activate another v1 run. Profile acceptance and run
+activation are one-time exclusive actions and must not be repeated over the existing artifacts.
 
 ```bash
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
@@ -112,8 +116,8 @@ workflow is auditable, not as a rerunnable command. `report-readiness`, `simulat
 write zero files. The simulation uses in-memory events, unlocks all 84 child jobs in fixtures,
 exercises the three-failure pause/resume breaker, and generates zero images.
 
-Activation is the explicit start boundary. Do not run this block until the operator intends to
-start the live production run:
+The following block records the activation boundary used by v1. Do not rerun it against the
+existing run ID:
 
 ```bash
 EQUIPMENT_RUN_ID=material-equipment-v1-run-001

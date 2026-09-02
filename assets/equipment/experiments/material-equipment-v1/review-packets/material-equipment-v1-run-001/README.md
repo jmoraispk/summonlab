@@ -5,7 +5,10 @@ production evidence only: no candidate is approved or available to runtime code.
 
 ## Run result
 
-| Rank | Candidate | Revise | Failed | Image files |
+The labels below are machine-checklist states, not approval decisions or overall visual scores.
+For human review, read `candidate` as **pass**, `revise` as **check**, and `failed` as **no image**.
+
+| Rank | Pass (`candidate`) | Check (`revise`) | No image (`failed`) | Image files |
 | --- | ---: | ---: | ---: | ---: |
 | F | 4 | 6 | 1 | 10 |
 | E | 3 | 8 | 0 | 11 |
@@ -26,12 +29,20 @@ action.
 
 ## Reading the sheets
 
-- Green: `candidate` — passed the worker's objective checks, but is still unapproved.
-- Amber: `revise` — a reviewable image exists, with one or more recorded criterion failures.
-- Red: `failed` — no reviewable image exists; consult the provenance result.
+- Green: **pass** (canonical status `candidate`) — passed every worker checklist criterion, but is
+  still unapproved.
+- Amber: **check** (canonical status `revise`) — a reviewable image exists, but one or more strict
+  checklist criteria were flagged. This is not a human rejection; many flags in this run are only
+  misses against the 8% framing target.
+- Red: **no image** (canonical status `failed`) — no reviewable image exists; consult the provenance
+  result.
 
 The contact sheets are derived previews. The canonical review inputs are the individual PNGs under
 `../../candidates/`, paired with the JSON provenance results under `../../results/`.
+
+Owner feedback and the proposed rules for a future, separately versioned revision are recorded in
+the [v2 revision brief](v2-revision-brief.md). The original v1 images, results, and status labels
+remain unchanged as immutable production evidence.
 
 ## Rank sheets
 

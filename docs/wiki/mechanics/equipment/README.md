@@ -179,13 +179,20 @@ journal, and verified provider capacity. The adjacent
 [production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) define
 the execution boundary and deterministic validation command.
 
-### Activation-ready operator sequence
+### Root-production review state
 
-The profile hash
-`f773bdaab246314d53a596c11404a9e242826838926ecb8121948b375c267d5a` has exact owner acceptance,
-and all 77 root targets plus 77 assignments exist. Zero-write readiness therefore reports **ready
-for activation**. The live run remains intentionally absent: there are no live plan, activation,
-journal events, review receipts, children, candidates, results, or generated images.
+Run `material-equipment-v1-run-001` is activated and its root phase is complete. All 77 root jobs
+have verified provenance results and terminal journal evidence: 16 are machine-checklist
+`candidate`, 60 are `revise`, and one is `failed`. There are 76 reviewable PNGs because the failed
+Ash Staff call returned no usable image.
+
+These states are not approval decisions. Read `candidate` as **pass**, `revise` as **check**, and
+`failed` as **no image**. Most check states in this run are strict framing-margin flags. The
+[root review packet](../../../../assets/equipment/experiments/material-equipment-v1/review-packets/material-equipment-v1-run-001/README.md)
+contains the rank sheets, exact totals, and the owner-feedback brief for a separately versioned v2.
+
+The 84 Armour-piece jobs remain gated and unproduced. No full-set source has been accepted through
+the gate, and no candidate has been approved or promoted to runtime.
 
 ```text
 profile candidate → exact owner acceptance → 77 root packets
@@ -195,7 +202,11 @@ human full-set receipt → four child packets → continued claims
 candidate review remains separate from approval and runtime promotion
 ```
 
-Run the readiness checks from the repository root. These commands create no run or image state:
+#### Historical operator reference
+
+The commands below document the v1 workflow. They are retained for audit and recovery; the
+one-time profile acceptance and activation commands must not be rerun against existing artifacts.
+Read-only checks still create no run or image state:
 
 ```bash
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
@@ -214,7 +225,8 @@ command is recorded in the
 [Equipment-local production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md)
 and must not overwrite the existing exclusive acceptance.
 
-Activation is deliberate and immutable; it is not part of readiness validation:
+The following block records the activation boundary used by v1. Do not rerun it against the
+existing run ID:
 
 ```bash
 EQUIPMENT_RUN_ID=material-equipment-v1-run-001
@@ -355,6 +367,11 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-02 — owner visual review — Made within-class weapon pose and full-set Armour camera,
+  empty-interior, and Head-item consistency explicit; recorded v2 revision feedback without
+  mutating v1 evidence.
+- 2026-09-02 — root production — Completed all 77 root jobs with 76 reviewable images; retained 84
+  Armour-piece jobs behind full-set human-review gates.
 - 2026-09-01 — production planning — Bound all 161 material targets into one resumable Equipment
   run with 77 initially ready jobs, 21 human-review gates, and 84 dependent Armour-piece jobs.
 - 2026-09-01 — owner revision — Split each Armour class into Head, Torso, Legs, and Boots; required

@@ -44,6 +44,17 @@ set unless a later named set explicitly includes them.
 This rule applies to Heavy Armour, Light Armour, and Robes at every retained material rank. It also
 applies to any later named or monster-derived equipment explicitly presented as a set.
 
+### Full-set visual anchor
+
+All full-set sources use one consistent moderate three-quarter view and facing direction. Coarse
+Hide is the composition reference: the set appears empty and self-supported, with subtle cavity
+shading inside openings. A visible mannequin, body, or black void figure is not part of the asset.
+
+The Head item must be present and readable in every full-set source. Camera consistency applies
+across material ranks: sets do not alternate between straight-on, opposite-facing, and strongly
+rotated views. Each source must also retain its class silhouette—mobile Light Armour, protective
+Heavy Armour, or cloth-led Robes—before its four separated items can be produced.
+
 ## Shields
 
 Shield is one equipment class with metal as its rank-bearing material. Size and shape may change

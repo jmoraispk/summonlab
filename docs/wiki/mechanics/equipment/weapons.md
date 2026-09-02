@@ -55,6 +55,22 @@ The weapon design and selected material set the combined crafting difficulty. Th
 base rank, and Forging craftsmanship adds `+0`, `+1`, or `+2`, capped at S, as defined in
 [Equipment rarity and craftsmanship](rarity-and-weight.md).
 
+## Visual production rules
+
+Material tiers within one Weapon class are comparison variants, not independent compositions.
+Every tier therefore keeps the same camera, pivot, normalized size, and class-specific pose. An
+item stands clear of the ground plane; it is never presented lying on the floor.
+
+- Sword, Dagger, Spear, Axe, and Mace use a controlled upright pose with a slight right diagonal.
+- Bow tiers preserve the same placement, cant, draw profile, and normalized height.
+- Mace hafts remain shorter than a Sword but long enough to read as practical weapons rather than
+  clubs.
+- Weapon subtype is not a rank cue. If single-bit and double-bit Axes both exist, they are authored
+  variants rather than automatic low-rank/high-rank stages.
+
+These are visual-comparison rules. Weapons remain independent and do not need to match an Armour
+set unless a later named set explicitly binds them.
+
 ## Open implementation questions
 
 - Define the compact signature-technique set for each weapon with the Martial skill owner.
