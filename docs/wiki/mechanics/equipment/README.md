@@ -181,10 +181,14 @@ manifest uses Bronze, Ash, and Hard Leather; its approval-candidate visual profi
 Equipment class to a hash-checked pose or camera reference, locks the standard single-bit Axe, uses
 an 8% framing target with a 5% hard minimum, and requires empty self-supporting Armour sets.
 
-V2 remains inert. It has no profile acceptance, target packets, assignments, run, review receipts,
-candidates, results, approved sources, or runtime exports. The v1 execution contract intentionally
-cannot accept or write v2; a separate Equipment-local execution-contract review is required before
-activation.
+The owner has accepted the v2 visual profile through a canonical-hash and reference-byte-bound
+receipt whose scope is visual-profile-only. Additive v2 schemas now define the future target,
+assignment, result, Armour-review, and contract-readiness records. Its deterministic renderer now
+builds and validates the 77 root envelopes in memory with class-scoped references. V2 remains inert:
+it has no materialized target packets, assignments, run, activation, review receipts, candidates,
+results, approved sources, or runtime exports. Packet materialization, immutable run state, and a
+byte- and PNG-metadata-verifying v2 persistence path remain required. The v1 runner intentionally
+cannot write v2.
 
 ### Root-production review state
 
@@ -374,6 +378,9 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-02 — v2 profile acceptance — Recorded the owner's profile-only acceptance and added the
+  isolated v2 execution-record schemas and in-memory packet renderer without materializing packets
+  or authorizing a run or image generation.
 - 2026-09-02 — v2 planning — Prepared a collision-safe 161-target manifest, inert allocation plan,
   and approval-candidate visual profile with hash-bound class pose and Armour camera references.
 - 2026-09-02 — owner material lock — Locked Bronze, Ash, and Hard Leather; deferred double-bit Axes

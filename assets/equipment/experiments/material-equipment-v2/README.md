@@ -1,17 +1,19 @@
 # Material Equipment v2 planning package
 
-Status: **inert planning package; profile approval pending**.
+Status: **owner-accepted visual profile; execution remains inert**.
 
 This directory prepares the collision-safe successor to `material-equipment-v1`. It contains only:
 
 - a deterministic 161-target [manifest](manifest.json);
 - a non-executable [allocation plan](allocation-plan.json) with 77 root jobs, 84 gated Armour-piece
   jobs, and 21 full-set review gates;
-- an approval-candidate [visual profile](visual-profile/profile.json) and its local schema.
+- an approval-candidate [visual profile](visual-profile/profile.json), its hash-bound owner
+  [acceptance receipt](visual-profile/acceptance.json), and local structural schemas.
 
-It contains no profile acceptance, target packets, assignments, run, review receipts, candidates,
-results, approved sources, or runtime exports. Existing v1 evidence is immutable and explicitly
-forbidden as an output destination.
+The acceptance scope is `visual-profile-only`: it does not authorize packet materialization, a run,
+or image generation. This directory still contains no target packets, assignments, run, Armour
+review receipts, candidates, results, approved sources, or runtime exports. Existing v1 evidence is
+immutable and explicitly forbidden as an output destination.
 
 ## Locked v2 changes
 
@@ -37,20 +39,22 @@ Run from the repository root:
 ```bash
 corepack pnpm tsx tools/export-equipment-material-production-v2.ts
 corepack pnpm tsx tools/export-equipment-image-profile-v2.ts
+corepack pnpm tsx tools/export-equipment-image-contracts-v2.ts --check
 corepack pnpm tsx tools/export-equipment-material-production-v2.ts --check
 corepack pnpm tsx tools/export-equipment-image-profile-v2.ts --check
 ```
 
 ## Execution boundary
 
-The current Equipment execution contract intentionally supports v1 only. It must not be used to
-accept this profile, build v2 packets, persist v2 results, or activate a v2 run. Before generation,
-Equipment needs a separately reviewed v2 execution-contract slice that binds the new root, profile
-schema, class-scoped references, 8% target/5% minimum framing rule, and empty Armour presentation.
-That future integration remains Equipment-local and must not modify engine contracts or shared
-runtime catalogs.
+The additive v2 schemas define profile acceptance, target, assignment, result, Armour-source review,
+and contract-readiness records. The deterministic renderer builds and validates all 77 root envelopes
+in memory with class-scoped references, but does not materialize them. The current runner still
+supports v1 only and must not persist v2 results or activate a v2 run. Before generation, Equipment
+still needs reviewed packet materialization, an immutable v2 run plan and journal, a byte- and
+PNG-metadata-verifying exclusive persistence path, explicit activation, and provider-capacity
+evidence. That work remains Equipment-local and must not modify engine contracts or shared runtime
+catalogs.
 
-`visual-profile/profile.schema.json` is structural documentation, not sufficient approval
-validation. Any future acceptance path must parse the profile with
-`EquipmentVisualProfileV2Schema.parse` so repository-path, reference-binding, class-completeness,
-reference-scope, and primary-Axe semantic invariants are enforced.
+The JSON schemas are structural documentation. Acceptance also parses the profile with
+`EquipmentVisualProfileV2Schema.parse`, verifies the deterministic canonical hash, and verifies all
+ten referenced files byte-for-byte.

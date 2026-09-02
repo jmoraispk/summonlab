@@ -37,8 +37,15 @@
 		"equipment-material-production-v2.spec.ts",
 		"equipment-image-profile-v2.ts",
 		"equipment-image-profile-v2.spec.ts",
+		"equipment-image-production-contract-v2.ts",
+		"equipment-image-production-contract-v2.spec.ts",
+		"equipment-image-profile-acceptance-v2.ts",
+		"equipment-image-profile-acceptance-v2.spec.ts",
+		"equipment-image-packets-v2.ts",
+		"equipment-image-packets-v2.spec.ts",
 		"export-equipment-image-profile.ts",
 		"export-equipment-image-profile-v2.ts",
+		"export-equipment-image-contracts-v2.ts",
 		"export-equipment-material-production.ts",
 		"export-equipment-material-production-v2.ts"
 	]
