@@ -10,6 +10,7 @@ import {
 	rename,
 	rm,
 	symlink,
+	unlink,
 	writeFile
 } from 'node:fs/promises';
 import os from 'node:os';
@@ -1014,6 +1015,48 @@ describe('scoped contact-sheet export', () => {
 		).rejects.toThrow(/source snapshot changed during export/iu);
 	}, 60_000);
 
+	it('rejects a coherent alternate directory tree consumed only during planner reads', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const alternate = await productionFixtureRoot();
+		await installReferencePackets(alternate, false);
+		await installCandidatePacket(alternate, {
+			jobId: 'charcoal-forged-stone-v2',
+			role: 'backing',
+			bytes: await validBacking([180, 40, 70])
+		});
+		const directories = ['targets', 'assignments', 'results', 'candidates'].map(
+			(name) => `assets/wiki/skills/icon-production-v1/${name}/references`
+		);
+		let swapped = false;
+		const report = await exportSkillIconRuntime({
+			root,
+			mode: 'write',
+			scope: 'references',
+			testHooks: {
+				beforeContactSheetPlanner: async ({ attempt }) => {
+					if (attempt !== 0) return;
+					for (const relative of directories) {
+						await rename(path.join(root, relative), `${path.join(root, relative)}.original`);
+						await rename(path.join(alternate, relative), path.join(root, relative));
+					}
+					swapped = true;
+				},
+				afterContactSheetPlanner: async ({ attempt }) => {
+					if (attempt !== 0 || !swapped) return;
+					for (const relative of [...directories].reverse()) {
+						await rename(path.join(root, relative), path.join(alternate, relative));
+						await rename(`${path.join(root, relative)}.original`, path.join(root, relative));
+					}
+				}
+			}
+		});
+		expect(report.contactSheet?.path).toBe(SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH);
+		expect(
+			await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).toMatchObject({ inSync: true, drift: [] });
+	}, 90_000);
+
 	it('cleans a private pre-link lock stage so a simulated crash never blocks the next writer', async () => {
 		const root = await productionFixtureRoot();
 		await installReferencePackets(root, false);
@@ -1036,6 +1079,74 @@ describe('scoped contact-sheet export', () => {
 		await expect(access(path.join(authority, 'review/.contact-sheet.lock'))).rejects.toMatchObject({
 			code: 'ENOENT'
 		});
+		expect(
+			await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
+		).toMatchObject({ inSync: true, written: true });
+	}, 60_000);
+
+	it('rejects schema-valid and same-byte staged lock inode substitutions', async () => {
+		for (const replacement of ['dead-schema', 'same-bytes'] as const) {
+			const root = await productionFixtureRoot();
+			await installReferencePackets(root, false);
+			await expect(
+				exportSkillIconRuntime({
+					root,
+					mode: 'write',
+					scope: 'references',
+					testHooks: {
+						afterContactSheetLockStage: async ({ stagePath, lockBytes }) => {
+							await unlink(stagePath);
+							if (replacement === 'same-bytes') {
+								await writeFile(stagePath, lockBytes);
+							} else {
+								const forged = JSON.parse(lockBytes.toString('utf8')) as {
+									pid: number;
+									processIdentity: { startTicks: string };
+								};
+								forged.pid = 999_999_999;
+								forged.processIdentity.startTicks = '1';
+								await writeFile(stagePath, `${JSON.stringify(forged)}\n`);
+							}
+							await chmod(stagePath, 0o600);
+						}
+					}
+				})
+			).rejects.toThrow(/lock identity changed before link/iu);
+			expect(
+				await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
+			).toMatchObject({ inSync: true, written: true });
+		}
+	}, 90_000);
+
+	it('rejects a same-byte final lock substitution without admitting a second writer', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		let secondWriterRefused = false;
+		await expect(
+			exportSkillIconRuntime({
+				root,
+				mode: 'write',
+				scope: 'references',
+				testHooks: {
+					afterContactSheetLockLink: async ({ lockPath, lockBytes }) => {
+						await unlink(lockPath);
+						await writeFile(lockPath, lockBytes);
+						await chmod(lockPath, 0o600);
+						await expect(
+							exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
+						).rejects.toThrow(/contact-sheet export already active|timed out/iu);
+						secondWriterRefused = true;
+					}
+				}
+			})
+		).rejects.toThrow(/lock identity changed during link/iu);
+		expect(secondWriterRefused).toBe(true);
+		const lockPath = path.join(
+			root,
+			'assets/wiki/skills/icon-production-v1/review/.contact-sheet.lock'
+		);
+		expect(JSON.parse(await readFile(lockPath, 'utf8'))).toMatchObject({ pid: process.pid });
+		await unlink(lockPath);
 		expect(
 			await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
 		).toMatchObject({ inSync: true, written: true });

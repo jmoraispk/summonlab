@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { constants } from 'node:fs';
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { constants, type Dirent } from 'node:fs';
 import {
 	link,
 	lstat,
@@ -35,7 +36,9 @@ import {
 } from '../packages/contracts/src/index.js';
 import {
 	SKILL_ICON_CATALOG_PATH,
+	SKILL_ICON_MOTIF_MAP_PATH,
 	SKILL_ICON_MOTIF_SOURCE_PATH,
+	SKILL_ICON_VISUAL_SPECS_PATH,
 	exportSkillIconProduction
 } from './export-skill-icon-production.js';
 import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
@@ -165,6 +168,7 @@ interface DesiredContactSheet {
 
 interface SnapshottedContactSheet extends DesiredContactSheet {
 	readonly sourceSnapshot: string;
+	readonly readSession: ContactSheetReadSession;
 }
 
 interface PlannedContactSheet extends DesiredContactSheet {
@@ -172,19 +176,169 @@ interface PlannedContactSheet extends DesiredContactSheet {
 }
 
 export interface SkillIconRuntimeTestHooks {
+	readonly beforeContactSheetPlanner?: (input: {
+		readonly attempt: number;
+	}) => void | Promise<void>;
+	readonly afterContactSheetPlanner?: (input: { readonly attempt: number }) => void | Promise<void>;
 	readonly beforeContactSheetPublish?: (input: {
 		readonly path: string;
 		readonly stagePath: string;
 	}) => void | Promise<void>;
 	readonly beforeContactSheetFinalLink?: () => void | Promise<void>;
 	readonly afterContactSheetFinalLink?: () => void | Promise<void>;
-	readonly afterContactSheetLockStage?: () => void | Promise<void>;
+	readonly afterContactSheetLockStage?: (input: {
+		readonly stagePath: string;
+		readonly lockBytes: Buffer;
+	}) => void | Promise<void>;
+	readonly afterContactSheetLockLink?: (input: {
+		readonly lockPath: string;
+		readonly lockBytes: Buffer;
+	}) => void | Promise<void>;
 }
 
 interface ParentFingerprint {
 	readonly realPath: string;
 	readonly device: number;
 	readonly inode: number;
+}
+
+interface ReadSetFile {
+	readonly path: string;
+	readonly parent: ParentFingerprint;
+	readonly device: number;
+	readonly inode: number;
+	readonly bytes: number;
+	readonly hash: string;
+}
+
+interface ReadSetDirectory {
+	readonly path: string;
+	readonly device: number;
+	readonly inode: number;
+	readonly entries: readonly string[];
+}
+
+const contactSheetReadContext = new AsyncLocalStorage<ContactSheetReadSession>();
+
+class ContactSheetReadSetChanged extends Error {
+	constructor() {
+		super('contact-sheet authoritative read set changed');
+	}
+}
+
+class ContactSheetReadSession {
+	readonly #root: string;
+	readonly #files = new Map<string, ReadSetFile>();
+	readonly #directories = new Map<string, ReadSetDirectory>();
+
+	constructor(root: string) {
+		this.#root = path.resolve(root);
+	}
+
+	#relative(absolute: string): string {
+		const relative = path.relative(this.#root, absolute).split(path.sep).join('/');
+		if (!relative || relative === '..' || relative.startsWith('../')) {
+			throw new Error(`Contact-sheet read escaped authority: ${absolute}`);
+		}
+		return relative;
+	}
+
+	async readFile(location: string, label: string): Promise<Buffer> {
+		const absolute = path.resolve(location);
+		const parent = await directoryFingerprint(path.dirname(absolute));
+		const { bytes, device, inode } = await readDirectRegularFileIdentity(absolute, label);
+		this.#files.set(this.#relative(absolute), {
+			path: this.#relative(absolute),
+			parent,
+			device,
+			inode,
+			bytes: bytes.byteLength,
+			hash: sha256(bytes)
+		});
+		return bytes;
+	}
+
+	async readDirectory(location: string): Promise<Dirent[]> {
+		const absolute = path.resolve(location);
+		const bound = await openBoundDirectory(absolute);
+		try {
+			const entries = await readdir(bound.procPath, { withFileTypes: true });
+			const identities = await Promise.all(
+				entries.map(async (entry) => {
+					const metadata = await lstat(path.join(bound.procPath, entry.name));
+					return `${entry.name}\0${metadata.dev}\0${metadata.ino}\0${metadata.mode}`;
+				})
+			);
+			this.#directories.set(this.#relative(absolute), {
+				path: this.#relative(absolute),
+				device: bound.identity.device,
+				inode: bound.identity.inode,
+				entries: identities.sort((left, right) => left.localeCompare(right))
+			});
+			return entries;
+		} finally {
+			await bound.handle.close();
+		}
+	}
+
+	async verify(): Promise<boolean> {
+		for (const expected of this.#directories.values()) {
+			const absolute = path.resolve(this.#root, expected.path);
+			const bound = await openBoundDirectory(absolute).catch(() => null);
+			if (!bound) return false;
+			try {
+				if (bound.identity.device !== expected.device || bound.identity.inode !== expected.inode) {
+					return false;
+				}
+				const entries = await readdir(bound.procPath, { withFileTypes: true });
+				const identities = await Promise.all(
+					entries.map(async (entry) => {
+						const metadata = await lstat(path.join(bound.procPath, entry.name));
+						return `${entry.name}\0${metadata.dev}\0${metadata.ino}\0${metadata.mode}`;
+					})
+				);
+				identities.sort((left, right) => left.localeCompare(right));
+				if (JSON.stringify(identities) !== JSON.stringify(expected.entries)) return false;
+			} finally {
+				await bound.handle.close();
+			}
+		}
+		for (const expected of this.#files.values()) {
+			const absolute = path.resolve(this.#root, expected.path);
+			const parent = await directoryFingerprint(path.dirname(absolute)).catch(() => null);
+			if (!parent || !sameDirectory(parent, expected.parent)) return false;
+			const current = await readDirectRegularFileIdentity(
+				absolute,
+				`Read-set ${expected.path}`
+			).catch(() => null);
+			if (
+				!current ||
+				current.device !== expected.device ||
+				current.inode !== expected.inode ||
+				current.bytes.byteLength !== expected.bytes ||
+				sha256(current.bytes) !== expected.hash
+			) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	digest(): string {
+		return sha256(
+			Buffer.from(
+				JSON.stringify({
+					files: [...this.#files.values()].sort((a, b) => a.path.localeCompare(b.path)),
+					directories: [...this.#directories.values()].sort((a, b) => a.path.localeCompare(b.path))
+				})
+			)
+		);
+	}
+}
+
+async function assertContactSheetReadSetCurrent(): Promise<void> {
+	const session = contactSheetReadContext.getStore();
+	if (session && !(await session.verify())) throw new ContactSheetReadSetChanged();
 }
 
 function sha256(bytes: Buffer): string {
@@ -201,43 +355,6 @@ function reviewSheetPath(kind: 'reference-assets' | 'pilot-icons', revision: num
 	return `assets/wiki/skills/icon-production-v1/review/${kind}-v${revision}.png`;
 }
 
-function excludedSnapshotEntry(relativePath: string): boolean {
-	const name = path.basename(relativePath);
-	return (
-		name === '.contact-sheet.lock' ||
-		name.startsWith('.contact-sheet-staging-') ||
-		/^(?:reference-assets|pilot-icons)-v[1-9]\d*\.png$/u.test(name)
-	);
-}
-
-async function sourceSnapshotDigest(root: string): Promise<string> {
-	const digest = createHash('sha256');
-	const visit = async (absolute: string, relative: string): Promise<void> => {
-		if (excludedSnapshotEntry(relative)) return;
-		const metadata = await lstat(absolute);
-		if (metadata.isSymbolicLink()) {
-			throw new Error(`Source snapshot contains unsafe symbolic link: ${relative}`);
-		}
-		if (metadata.isDirectory()) {
-			digest.update(`D\0${relative}\0${metadata.dev}\0${metadata.ino}\0`);
-			const entries = (await readdir(absolute)).sort((left, right) => left.localeCompare(right));
-			for (const entry of entries) await visit(path.join(absolute, entry), `${relative}/${entry}`);
-			return;
-		}
-		if (!metadata.isFile()) throw new Error(`Source snapshot entry is unsafe: ${relative}`);
-		const bytes = await readDirectRegularFile(absolute, `Source snapshot ${relative}`);
-		digest.update(
-			`F\0${relative}\0${metadata.dev}\0${metadata.ino}\0${metadata.size}\0${sha256(bytes)}\0`
-		);
-	};
-	const productionRoot = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
-	await visit(productionRoot, 'assets/wiki/skills/icon-production-v1');
-	for (const relative of [...CANONICAL_SKILL_SOURCE_PATHS, SKILL_ICON_MOTIF_SOURCE_PATH]) {
-		await visit(path.resolve(root, relative), relative);
-	}
-	return digest.digest('hex');
-}
-
 function inside(parent: string, child: string): boolean {
 	const relative = path.relative(parent, child);
 	return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..');
@@ -250,7 +367,10 @@ async function metadataOrNull(location: string) {
 	});
 }
 
-async function readDirectRegularFile(location: string, label: string): Promise<Buffer> {
+async function readDirectRegularFileIdentity(
+	location: string,
+	label: string
+): Promise<{ bytes: Buffer; device: number; inode: number }> {
 	const absolute = path.resolve(location);
 	const before = await lstat(absolute);
 	if (before.isSymbolicLink() || !before.isFile()) {
@@ -276,10 +396,16 @@ async function readDirectRegularFile(location: string, label: string): Promise<B
 		) {
 			throw new Error(`${label} changed while reading`);
 		}
-		return bytes;
+		return { bytes, device: opened.dev, inode: opened.ino };
 	} finally {
 		await handle.close();
 	}
+}
+
+async function readDirectRegularFile(location: string, label: string): Promise<Buffer> {
+	const session = contactSheetReadContext.getStore();
+	if (session) return session.readFile(location, label);
+	return (await readDirectRegularFileIdentity(location, label)).bytes;
 }
 
 async function readLayer(location: string, label: string): Promise<Buffer> {
@@ -488,7 +614,9 @@ async function listRepositoryJsonFiles(root: string, relativeDirectory: string):
 			throw new Error(`Required directory is missing or unsafe: ${relativeDirectory}`);
 		}
 	}
-	const entries = await readdir(current, { withFileTypes: true });
+	const entries = contactSheetReadContext.getStore()
+		? await contactSheetReadContext.getStore()!.readDirectory(current)
+		: await readdir(current, { withFileTypes: true });
 	return entries
 		.filter((entry) => entry.name.endsWith('.json'))
 		.map((entry) => {
@@ -1091,10 +1219,15 @@ async function planReferenceContactSheet(root: string): Promise<DesiredContactSh
 				.join('; ')
 		);
 	}
+	const cellInputs = await Promise.all(
+		selected.map(async ({ target, label }) => ({
+			candidate: await loadBoundCandidate(root, target),
+			label
+		}))
+	);
+	await assertContactSheetReadSetCurrent();
 	const cells = await Promise.all(
-		selected.map(async ({ target, label }) =>
-			renderReferenceCell(await loadBoundCandidate(root, target), label)
-		)
+		cellInputs.map(({ candidate, label }) => renderReferenceCell(candidate, label))
 	);
 	return {
 		kind: 'reference-assets',
@@ -1118,6 +1251,17 @@ async function loadPilotCatalog(root: string) {
 }
 
 async function planPilotContactSheet(root: string): Promise<DesiredContactSheet> {
+	await Promise.all(
+		[
+			...CANONICAL_SKILL_SOURCE_PATHS,
+			SKILL_ICON_MOTIF_SOURCE_PATH,
+			SKILL_ICON_MOTIF_MAP_PATH,
+			SKILL_ICON_VISUAL_SPECS_PATH,
+			SKILL_ICON_CATALOG_PATH
+		].map(async (relativePath) =>
+			readDirectRegularFile(path.resolve(root, relativePath), `Canonical authority ${relativePath}`)
+		)
+	);
 	const currency = await exportSkillIconProduction({ root, mode: 'check' });
 	if (!currency.inSync) {
 		throw new Error(
@@ -1175,7 +1319,7 @@ async function planPilotContactSheet(root: string): Promise<DesiredContactSheet>
 			loadApprovedReference(root, framePathFor(rarity), 'rarity-frame', rarity)
 		])
 	);
-	const cards = await Promise.all(
+	const cardInputs = await Promise.all(
 		SKILL_ICON_PILOT_TARGET_IDS.map(async (targetId) => {
 			const record = byTargetId.get(targetId)!;
 			if (record.status !== 'candidate' && record.status !== 'approved') {
@@ -1211,15 +1355,17 @@ async function planPilotContactSheet(root: string): Promise<DesiredContactSheet>
 				framePromises.get(record.rarity)!
 			]);
 			const composite = await composeSkillHexBuffers({ backing, art, frame });
-			return renderSkillReviewCard({
+			return {
 				composite,
 				name: record.name,
 				mastery: 'Intermediate',
 				level: 7,
 				rarity: record.rarity
-			});
+			} as const;
 		})
 	);
+	await assertContactSheetReadSetCurrent();
+	const cards = await Promise.all(cardInputs.map((input) => renderSkillReviewCard(input)));
 	return {
 		kind: 'pilot-icons',
 		bytes: await renderSkillContactSheet(cards),
@@ -1549,6 +1695,7 @@ async function acquireContactSheetLock(
 		await mkdir(stagePath, { mode: 0o700 });
 		await syncDirectory(authority);
 		const stage = await openBoundDirectory(stagePath);
+		let ownedLockIdentity: { device: number; inode: number } | null = null;
 		try {
 			const record = ContactSheetLockSchema.parse({
 				schemaVersion: 'skill-icon-contact-sheet-lock-v1',
@@ -1567,12 +1714,49 @@ async function acquireContactSheetLock(
 			);
 			try {
 				const metadata = await handle.stat();
+				ownedLockIdentity = { device: metadata.dev, inode: metadata.ino };
 				await handle.writeFile(bytes);
 				await handle.sync();
 				await stage.handle.sync();
-				await testHooks?.afterContactSheetLockStage?.();
+				await testHooks?.afterContactSheetLockStage?.({
+					stagePath: privatePath,
+					lockBytes: bytes
+				});
+				const [heldBefore, stagedBefore] = await Promise.all([handle.stat(), lstat(privatePath)]);
+				if (
+					heldBefore.dev !== metadata.dev ||
+					heldBefore.ino !== metadata.ino ||
+					stagedBefore.isSymbolicLink() ||
+					!stagedBefore.isFile() ||
+					stagedBefore.dev !== metadata.dev ||
+					stagedBefore.ino !== metadata.ino ||
+					!(await readBoundFile(stage, 'lock.stage')).equals(bytes)
+				) {
+					throw new Error('Staged contact-sheet lock identity changed before link');
+				}
 				await link(privatePath, lockPath);
 				await directory.handle.sync();
+				await testHooks?.afterContactSheetLockLink?.({ lockPath, lockBytes: bytes });
+				const [heldAfter, stagedAfter, linkedAfter] = await Promise.all([
+					handle.stat(),
+					lstat(privatePath),
+					lstat(lockPath)
+				]);
+				const linkedBytes = await readBoundFile(directory, '.contact-sheet.lock');
+				if (
+					heldAfter.dev !== metadata.dev ||
+					heldAfter.ino !== metadata.ino ||
+					heldAfter.nlink < 2 ||
+					stagedAfter.dev !== metadata.dev ||
+					stagedAfter.ino !== metadata.ino ||
+					linkedAfter.dev !== metadata.dev ||
+					linkedAfter.ino !== metadata.ino ||
+					!linkedBytes.equals(bytes) ||
+					ContactSheetLockSchema.parse(JSON.parse(linkedBytes.toString('utf8'))).transactionId !==
+						record.transactionId
+				) {
+					throw new Error('Contact-sheet lock identity changed during link');
+				}
 				return {
 					path: lockPath,
 					bytes,
@@ -1585,6 +1769,16 @@ async function acquireContactSheetLock(
 				await handle.close();
 			}
 		} catch (error) {
+			const currentLock = await lstat(lockPath).catch(() => null);
+			if (
+				currentLock &&
+				ownedLockIdentity &&
+				currentLock.dev === ownedLockIdentity.device &&
+				currentLock.ino === ownedLockIdentity.inode
+			) {
+				await unlink(lockPath);
+				await directory.handle.sync();
+			}
 			await stage.handle.close();
 			await cleanupDerivedStage(root, {
 				schemaVersion: 'skill-icon-contact-sheet-lock-v1',
@@ -1673,7 +1867,7 @@ async function publishContactSheet(
 		await stage.handle.sync();
 		await testHooks?.beforeContactSheetPublish?.({ path: sheet.path, stagePath });
 		await assertNoConcurrentPromotion(root);
-		if ((await sourceSnapshotDigest(root)) !== sheet.sourceSnapshot) return false;
+		if (!(await sheet.readSession.verify())) return false;
 		const staged = await lstat(stagePath);
 		if (
 			!stageFile ||
@@ -1699,7 +1893,7 @@ async function publishContactSheet(
 		) {
 			throw new Error(`Contact-sheet identity changed during publication: ${sheet.path}`);
 		}
-		return (await sourceSnapshotDigest(root)) === sheet.sourceSnapshot;
+		return sheet.readSession.verify();
 	} catch (error) {
 		if (linked && stageFile) {
 			const current = await lstat(destination).catch(() => null);
@@ -1739,10 +1933,19 @@ async function writeContactSheet(
 		await assertNoConcurrentPromotion(root);
 		let wrote = false;
 		for (let attempt = 0; attempt < 3; attempt += 1) {
-			const before = await sourceSnapshotDigest(root);
-			const desired = await planner();
-			const sourceSnapshot = await sourceSnapshotDigest(root);
-			if (before !== sourceSnapshot) continue;
+			const readSession = new ContactSheetReadSession(root);
+			await testHooks?.beforeContactSheetPlanner?.({ attempt });
+			let desired: DesiredContactSheet;
+			try {
+				desired = await contactSheetReadContext.run(readSession, planner);
+			} catch (error) {
+				if (error instanceof ContactSheetReadSetChanged) continue;
+				throw error;
+			} finally {
+				await testHooks?.afterContactSheetPlanner?.({ attempt });
+			}
+			if (!(await readSession.verify())) continue;
+			const sourceSnapshot = readSession.digest();
 			const sheet = await inventoryContactSheets(review, desired);
 			const latestBytes = await readBoundFile(review, path.basename(sheet.path)).catch(
 				(error: NodeJS.ErrnoException) => {
@@ -1755,7 +1958,7 @@ async function writeContactSheet(
 				root,
 				review,
 				lock.stage,
-				{ ...sheet, sourceSnapshot },
+				{ ...sheet, sourceSnapshot, readSession },
 				testHooks
 			);
 			if (current) return { sheet, written: true };

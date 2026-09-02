@@ -152,8 +152,11 @@ on an incomplete or colliding latest packet. Sheet revisions are independent: un
 bytes reuse the latest `*-vN.png`, while changed bytes allocate `N + 1` after the highest historical
 sheet without replacing older review evidence. Contact sheets never become an image source.
 Each write is serialized by a crash-recoverable, process-epoch-bound coordinator lock and guarded
-by a digest of the complete authoritative source snapshot before and after descriptor-bound
-publication; a changed snapshot is replanned with bounded retries and is never reported current.
+by a planner-bound read set: opened file and directory identities, exact bytes, and membership are
+revalidated before rendering and before and after descriptor-bound publication. A changed read set
+is replanned with bounded retries and is never reported current. Held lock descriptors and both
+hard links are identity-checked at publication boundaries. Same-UID arbitrary unlink between those
+checks remains an operating-system trust boundary unless the filesystem supplies advisory locking.
 
 ## Manifest model
 
