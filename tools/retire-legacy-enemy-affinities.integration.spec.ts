@@ -125,6 +125,40 @@ describe('retirement filesystem boundary', () => {
 		).rejects.toThrow(/recursive root is a symlink/iu);
 	});
 
+	it('rejects a symlinked file beneath a recursive root without touching its target', async () => {
+		const root = await makeRepository();
+		const recursiveRoot = resolve(root, RETIREMENT_RECURSIVE_ROOTS[0]);
+		const outside = await mkdtemp(join(tmpdir(), 'summonlab-retirement-outside-'));
+		temporaryRoots.push(outside);
+		const outsideFile = resolve(outside, 'wood.json');
+		const sentinel = '{"affinity":"wood","ownership":"external"}\n';
+		await writeFile(outsideFile, sentinel);
+		await mkdir(resolve(recursiveRoot, 'targets/wolf'), { recursive: true });
+		await symlink(outsideFile, resolve(recursiveRoot, 'targets/wolf/wood.json'), 'file');
+
+		await expect(
+			runLegacyAffinityRetirement({ repositoryRoot: root, mode: 'check', log: silent })
+		).rejects.toThrow(/refusing symlink in retirement traversal/iu);
+		expect(await readFile(outsideFile, 'utf8')).toBe(sentinel);
+	});
+
+	it('rejects a nested symlink directory beneath a recursive root without touching its target', async () => {
+		const root = await makeRepository();
+		const recursiveRoot = resolve(root, RETIREMENT_RECURSIVE_ROOTS[0]);
+		const outside = await mkdtemp(join(tmpdir(), 'summonlab-retirement-outside-'));
+		temporaryRoots.push(outside);
+		const outsideFile = resolve(outside, 'wood.json');
+		const sentinel = '{"affinity":"wood","ownership":"external-directory"}\n';
+		await writeFile(outsideFile, sentinel);
+		await mkdir(resolve(recursiveRoot, 'targets'), { recursive: true });
+		await symlink(outside, resolve(recursiveRoot, 'targets/wolf'), 'dir');
+
+		await expect(
+			runLegacyAffinityRetirement({ repositoryRoot: root, mode: 'check', log: silent })
+		).rejects.toThrow(/refusing symlink in retirement traversal/iu);
+		expect(await readFile(outsideFile, 'utf8')).toBe(sentinel);
+	});
+
 	it('rejects a symlinked ancestor of an exact dependency path', async () => {
 		const root = await makeRepository();
 		const outside = await mkdtemp(join(tmpdir(), 'summonlab-retirement-outside-'));
