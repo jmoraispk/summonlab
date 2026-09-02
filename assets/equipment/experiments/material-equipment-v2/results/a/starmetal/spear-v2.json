@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-starmetal-spear-v2",
+	"targetId": "material-equipment-v2-starmetal-spear-v2",
+	"assignmentId": "assignment-material-equipment-v2-starmetal-spear-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "b28b52e0191a2d035d667d9ca28d27b04d62b15477479663a8acff70d5bdddc1",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "spear-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/spear-v1.png",
+			"contentHash": "15e1d942b8760bb269a4a70074008a7be2999636c354fb802f15bd962a99f6b6"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-starmetal-spear-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-ad372ac0-6913-4aa3-a24c-7cd5de6c573a",
+			"requestStartedAt": "2026-09-02T22:30:40.383Z",
+			"generationCompletedAt": "2026-09-02T22:31:20.901Z",
+			"inspectionCompletedAt": "2026-09-02T22:32:28.814Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/spear-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1191985,
+		"sha256": "00f794467897185f280a0a8101dddb835a5258e030ac58c053a26d722e7fa97d"
+	},
+	"candidateSha256": "00f794467897185f280a0a8101dddb835a5258e030ac58c053a26d722e7fa97d",
+	"startedAt": "2026-09-02T22:30:40.383Z",
+	"completedAt": "2026-09-02T22:32:28.814Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/spear-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/a/starmetal/spear-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

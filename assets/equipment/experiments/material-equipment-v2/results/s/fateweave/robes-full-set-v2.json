@@ -1,0 +1,105 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-fateweave-robes-full-set-v2",
+	"targetId": "material-equipment-v2-fateweave-robes-full-set-v2",
+	"assignmentId": "assignment-material-equipment-v2-fateweave-robes-full-set-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "447efa03ee54e012d7a89064833f365c609b8a34fd8ff05b8da1385e9962713c",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "coarse-hide-armour-camera",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-full-set-v1.png",
+			"contentHash": "b3b973ffa5eec4fb7f0125202b16b845cd271feec5c5d1351ebd55bfb7fef247"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-fateweave-robes-full-set-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06441-a523-70c2-b4c2-68051eb11c3d/exec-b37eb2d9-1f5e-4645-9f14-1cb41ba86fc3.png",
+			"requestStartedAt": "2026-09-02T22:34:33.279Z",
+			"generationCompletedAt": "2026-09-02T22:35:22.047Z",
+			"inspectionCompletedAt": "2026-09-02T22:35:38.003Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "empty-full-set",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/s/fateweave/robes-full-set-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2206343,
+		"sha256": "1f7e063f8881479a8131744b1efeea50a9f8de9719bc3f1f12ff7ecd27128a3b"
+	},
+	"candidateSha256": "1f7e063f8881479a8131744b1efeea50a9f8de9719bc3f1f12ff7ecd27128a3b",
+	"startedAt": "2026-09-02T22:34:33.279Z",
+	"completedAt": "2026-09-02T22:35:38.003Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/s/fateweave/robes-full-set-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/s/fateweave/robes-full-set-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

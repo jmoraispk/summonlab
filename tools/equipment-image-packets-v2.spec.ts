@@ -1,6 +1,9 @@
 import { createHash } from 'node:crypto';
+import { cp, mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import type { EquipmentV2ArmourSourceReviewReceipt } from './equipment-image-production-contract-v2.js';
 import {
@@ -18,9 +21,50 @@ import {
 	validateEquipmentResultV2
 } from './equipment-image-packets-v2.js';
 import {
+	EQUIPMENT_V2_PRODUCTION_ROOT,
 	buildEquipmentMaterialAllocationPlanV2,
 	buildEquipmentMaterialProductionManifestV2
 } from './equipment-material-production-v2.js';
+
+const temporaryDirectories: string[] = [];
+
+afterEach(async () => {
+	await Promise.all(
+		temporaryDirectories
+			.splice(0)
+			.map((directory) => rm(directory, { recursive: true, force: true }))
+	);
+});
+
+function absolute(workspaceRoot: string, repositoryPath: string): string {
+	return path.join(workspaceRoot, ...repositoryPath.split('/'));
+}
+
+async function emptyProductionWorkspace(): Promise<string> {
+	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-v2-packets-'));
+	temporaryDirectories.push(workspaceRoot);
+	await cp(
+		absolute(process.cwd(), EQUIPMENT_V2_PRODUCTION_ROOT),
+		absolute(workspaceRoot, EQUIPMENT_V2_PRODUCTION_ROOT),
+		{
+			recursive: true,
+			filter: (source) => {
+				const relative = path.relative(
+					absolute(process.cwd(), EQUIPMENT_V2_PRODUCTION_ROOT),
+					source
+				);
+				return !['targets', 'assignments', 'candidates', 'results', 'reviews', 'runs'].includes(
+					relative.split(path.sep)[0] ?? ''
+				);
+			}
+		}
+	);
+	for (const reference of buildEquipmentVisualProfileV2().references) {
+		await mkdir(path.dirname(absolute(workspaceRoot, reference.path)), { recursive: true });
+		await cp(absolute(process.cwd(), reference.path), absolute(workspaceRoot, reference.path));
+	}
+	return workspaceRoot;
+}
 
 function fixture() {
 	const manifest = buildEquipmentMaterialProductionManifestV2();
@@ -225,9 +269,10 @@ describe('Equipment v2 deterministic packets', () => {
 	it('validates an exact root envelope and rejects packet mutation', async () => {
 		const sources = fixture();
 		const packet = buildRootEquipmentPacketsV2(sources)[0]!;
+		const workspaceRoot = await emptyProductionWorkspace();
 		await expect(
 			validateEquipmentPacketV2({
-				workspaceRoot: process.cwd(),
+				workspaceRoot,
 				...sources,
 				target: packet.target,
 				assignment: packet.assignment
@@ -240,7 +285,7 @@ describe('Equipment v2 deterministic packets', () => {
 		});
 		await expect(
 			validateEquipmentPacketV2({
-				workspaceRoot: process.cwd(),
+				workspaceRoot,
 				...sources,
 				target: {
 					...packet.target,
@@ -332,9 +377,10 @@ describe('Equipment v2 deterministic packets', () => {
 	});
 
 	it('reports contract readiness without authorizing generation or writing files', async () => {
+		const workspaceRoot = await emptyProductionWorkspace();
 		await expect(
 			assessEquipmentV2ContractReadiness({
-				workspaceRoot: process.cwd(),
+				workspaceRoot,
 				checkedAt: '2026-09-02T20:40:00.000Z'
 			})
 		).resolves.toMatchObject({

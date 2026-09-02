@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-starmetal-mace-v2",
+	"targetId": "material-equipment-v2-starmetal-mace-v2",
+	"assignmentId": "assignment-material-equipment-v2-starmetal-mace-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "b3da40ef68043ea152b921dd03764f7a863f72c1b6c31d7f38719bcd8607622a",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "mace-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/mace-v1.png",
+			"contentHash": "286e4dd52cf4205ecdcd9949f6d677ed93eb4fd7b0c33041dc6baec1cb86551d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-starmetal-mace-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a0643e-4698-7451-9894-7c7567aca868/exec-d0baa5a1-63ed-40d9-ab50-53f77dddb525.png",
+			"requestStartedAt": "2026-09-02T22:30:57.004Z",
+			"generationCompletedAt": "2026-09-02T22:31:41.328Z",
+			"inspectionCompletedAt": "2026-09-02T22:32:39.055Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/mace-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1156447,
+		"sha256": "6d9bf35505dc4df226ff7eb26085352a76c4793e834ef66235bd82e7e75a300e"
+	},
+	"candidateSha256": "6d9bf35505dc4df226ff7eb26085352a76c4793e834ef66235bd82e7e75a300e",
+	"startedAt": "2026-09-02T22:30:57.004Z",
+	"completedAt": "2026-09-02T22:32:39.055Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/mace-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/a/starmetal/mace-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

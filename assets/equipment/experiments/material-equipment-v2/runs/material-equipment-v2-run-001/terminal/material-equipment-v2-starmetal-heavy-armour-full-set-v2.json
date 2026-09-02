@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-starmetal-heavy-armour-full-set-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-starmetal-heavy-armour-full-set-v2",
+	"recordedAt": "2026-09-02T22:34:46.678Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "candidate",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/a/starmetal/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "fd71f6f46ed0968a1644a850acf399a92051167fa675fdedba718087199aaf12"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/a/starmetal/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "00677c671a8df0559224c331ff87cd25d0640e370d30c4f1c1872cb4a0818cea"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/a/starmetal/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "8c6d3387fdd871d91ec0c3693276883c82594d0eb66be5f9468640e7b5f9b8fc",
+		"candidateSha256": "d0acddaa77ad4d363d5fd425e57581f54daaec7c60ae383711ee9e0694cda5c3"
+	}
+}

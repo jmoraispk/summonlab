@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-skyiron-axe-v2",
+	"targetId": "material-equipment-v2-skyiron-axe-v2",
+	"assignmentId": "assignment-material-equipment-v2-skyiron-axe-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "92cda0f341137575c5c0eccc66c16fc0124f4f29319119d0442fb8d0b244cfca",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "axe-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/axe-v1.png",
+			"contentHash": "c522fbf1b24093b490252d5fa900f1ea452b5c132d1fb129ed790839defa0d6d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-skyiron-axe-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-1f281c2e-c764-4081-8542-505d2bad03e7",
+			"requestStartedAt": "2026-09-02T22:28:30.953Z",
+			"generationCompletedAt": "2026-09-02T22:29:13.051Z",
+			"inspectionCompletedAt": "2026-09-02T22:29:53.215Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/b/skyiron/axe-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1330936,
+		"sha256": "865b4c5b57a6039daeb448b5acfc6794dda770b0cbf77b1bee95ef7677b0954e"
+	},
+	"candidateSha256": "865b4c5b57a6039daeb448b5acfc6794dda770b0cbf77b1bee95ef7677b0954e",
+	"startedAt": "2026-09-02T22:28:30.953Z",
+	"completedAt": "2026-09-02T22:29:53.215Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/b/skyiron/axe-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/b/skyiron/axe-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

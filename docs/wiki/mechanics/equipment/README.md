@@ -190,6 +190,13 @@ byte- and PNG-metadata-verifying exclusive persistence. The 84 Armour pieces rem
 unmaterialized. Candidates and results remain review evidence rather than approved or runtime
 assets; the v1/shared runner remains separate.
 
+The v2 root run is complete: all 77 attempts have verified results and terminal receipts. Producer
+triage recorded 37 **pass** (`candidate`), 33 **check** (`revise`), and 7 **no image** (`failed`),
+for 70 reviewable PNGs. The no-image targets are Bronze Mace, Bronze Shield, Coarse Hide Light
+Armour full set, Iron Axe, Blacksteel Heavy Armour full set, Heartwood Staff, and Sunsteel Sword.
+These are immutable single-call outcomes, not approval decisions. No full Armour set has been human
+accepted, so all 84 piece images remain locked and absent.
+
 ### Root-production review state
 
 Run `material-equipment-v1-run-001` is activated and its root phase is complete. All 77 root jobs

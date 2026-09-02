@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-living-branch-bow-v2",
+	"targetId": "material-equipment-v2-living-branch-bow-v2",
+	"assignmentId": "assignment-material-equipment-v2-living-branch-bow-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "cc3e8fed37df2601aefe385540e8701f1ea8d18e43ee0671dca6f5fde0ddebd8",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "bow-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/ash/bow-v1.png",
+			"contentHash": "79dc8ac9bda5d078773465cddb076bb177292e88db1e608bff19e547974f7eb2"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-living-branch-bow-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen:exec-de73ba0d-cfd3-46f1-8f9c-e214cdd2be0c",
+			"requestStartedAt": "2026-09-02T22:31:23.794Z",
+			"generationCompletedAt": "2026-09-02T22:32:02.910Z",
+			"inspectionCompletedAt": "2026-09-02T22:32:30.898Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/a/living-branch/bow-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1224477,
+		"sha256": "169f836fae32e8628e4f12993c0d743bf00f1fa60c43cec7a4356c33b2dd8976"
+	},
+	"candidateSha256": "169f836fae32e8628e4f12993c0d743bf00f1fa60c43cec7a4356c33b2dd8976",
+	"startedAt": "2026-09-02T22:31:23.794Z",
+	"completedAt": "2026-09-02T22:32:30.898Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/a/living-branch/bow-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/a/living-branch/bow-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

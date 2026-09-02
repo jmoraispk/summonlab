@@ -1,0 +1,105 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-drakescale-light-armour-full-set-v2",
+	"targetId": "material-equipment-v2-drakescale-light-armour-full-set-v2",
+	"assignmentId": "assignment-material-equipment-v2-drakescale-light-armour-full-set-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "aefa1ed42921f3243124f566b23aabd0c4946053941ed76b9c83ea91d3e4d995",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "coarse-hide-armour-camera",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-full-set-v1.png",
+			"contentHash": "b3b973ffa5eec4fb7f0125202b16b845cd271feec5c5d1351ebd55bfb7fef247"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-drakescale-light-armour-full-set-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-3edb3879-afe2-407b-a1fa-d611cab925f0",
+			"requestStartedAt": "2026-09-02T22:30:20.034Z",
+			"generationCompletedAt": "2026-09-02T22:31:11.419Z",
+			"inspectionCompletedAt": "2026-09-02T22:32:33.517Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "empty-full-set",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/b/drakescale/light-armour-full-set-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2184447,
+		"sha256": "a3080cb64310949908fb30520847e39998db5ec47b95fb057c8f228feca3302c"
+	},
+	"candidateSha256": "a3080cb64310949908fb30520847e39998db5ec47b95fb057c8f228feca3302c",
+	"startedAt": "2026-09-02T22:30:20.034Z",
+	"completedAt": "2026-09-02T22:32:33.517Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/b/drakescale/light-armour-full-set-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/b/drakescale/light-armour-full-set-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-spiritwood-bow-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-spiritwood-bow-v2",
+	"recordedAt": "2026-09-02T22:31:45.981Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/b/spiritwood/bow-v2.json",
+		"canonicalSha256": "b90c6dec67c112aa36f3aca7d1c26fc3c6bbd4589743e0dace1c9d089e65470b"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/b/spiritwood/bow-v2.json",
+		"canonicalSha256": "0775468f2401a9bfd6c26388c7679fbf394558657620cb3fda7252abddbc11fd"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/b/spiritwood/bow-v2.json",
+		"canonicalSha256": "81d86aba3f4abd009322bb112c96334f60a1ec30fe514a4ab83e07bc33d8fc75",
+		"candidateSha256": "e1aebd710a1b4718418f42b62d9a3c7bd94d9c17152836e8d99d6f9ef1759d11"
+	}
+}

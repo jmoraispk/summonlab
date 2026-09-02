@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-heartwood-staff-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-heartwood-staff-v2",
+	"recordedAt": "2026-09-02T22:31:53.254Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "failed",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/c/heartwood/staff-v2.json",
+		"canonicalSha256": "1009a8ffece744fc06a295b979ed247fc9fdb01be2f57f73f505552054dd177d"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/c/heartwood/staff-v2.json",
+		"canonicalSha256": "162afff600850b4c9d43f7f0ee30311f8fc9911ab6b40162c61124f6451afe10"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/c/heartwood/staff-v2.json",
+		"canonicalSha256": "e4db070d479d9f19a942af021ff0ee8e877352bf006ed21a45fe0b3070a4ada7",
+		"candidateSha256": null
+	}
+}

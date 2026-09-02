@@ -20,6 +20,19 @@ remain limited to the candidate and provenance-result paths in their immutable a
 There are no approved sources or runtime exports. Existing v1 evidence is immutable and explicitly
 forbidden as an output destination.
 
+## Root run result
+
+`material-equipment-v2-run-001` has completed all 77 authorized root attempts. Every root has a
+verified provenance result and root-orchestrator terminal receipt. Machine-checklist outcomes are
+37 `candidate` (**pass**), 33 `revise` (**check**), and 7 `failed` (**no image**), yielding 70
+reviewable PNGs. These labels are producer triage, not human approval or rejection.
+
+The seven no-image targets are Bronze Mace, Bronze Shield, Coarse Hide Light Armour full set, Iron
+Axe, Blacksteel Heavy Armour full set, Heartwood Staff, and Sunsteel Sword. Their single-call
+assignments returned no safely bindable source; each failure remains recorded rather than silently
+retried or replaced. The 84 Armour pieces remain gated, with zero review receipts and zero child
+packets.
+
 ## Locked v2 changes
 
 - Bronze replaces the old F-rank metal name.

@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-blacksteel-heavy-armour-full-set-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-blacksteel-heavy-armour-full-set-v2",
+	"recordedAt": "2026-09-02T22:31:48.048Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "failed",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/c/blacksteel/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "0161c87a1a07eedbc1c74e7489c2e43d492da3229751a7e0ea6fa7b3bf2b795f"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/c/blacksteel/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "2323adea8ebe9ade866a03284426c4e2dba07197ca262790a1125bb498451ea3"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/c/blacksteel/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "228a32bbe4dafc83c32882a92ba8e1e1306acee876217b86e4629409bbd0f0cb",
+		"candidateSha256": null
+	}
+}
