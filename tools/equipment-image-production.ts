@@ -25,6 +25,7 @@ import {
 	activateEquipmentRun,
 	reportEquipmentRunReadiness
 } from './equipment-image-run-readiness.js';
+import { claimNextEquipmentJobs, recordEquipmentRunEvent } from './equipment-image-run-recorder.js';
 
 const PROFILE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/visual-profile/profile.json` as const;
 const MANIFEST_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/manifest.json` as const;
@@ -73,6 +74,19 @@ function parseOptions(
 function requireOption(options: ReadonlyMap<string, string>, name: string): string {
 	const value = options.get(name);
 	if (value === undefined) throw new Error(`Required argument missing: ${name}`);
+	return value;
+}
+
+function requireNonnegativeIntegerOption(
+	options: ReadonlyMap<string, string>,
+	name: string
+): number {
+	const source = requireOption(options, name);
+	if (!/^(0|[1-9][0-9]*)$/u.test(source)) {
+		throw new Error(`${name} must be a nonnegative integer`);
+	}
+	const value = Number(source);
+	if (!Number.isSafeInteger(value)) throw new Error(`${name} must be a safe integer`);
 	return value;
 }
 
@@ -249,6 +263,130 @@ export async function runEquipmentImageProductionCli(input: {
 			activatedBy: requireOption(options, '--activated-by')
 		});
 		return { command, ...result };
+	}
+
+	if (command === 'claim-next') {
+		const options = parseOptions(commandArgs, [
+			'--run-id',
+			'--available-worker-slots',
+			'--epoch-id',
+			'--actor',
+			'--requested-at',
+			'--recorded-at'
+		]);
+		const actor = requireOption(options, '--actor');
+		const claims = await claimNextEquipmentJobs({
+			workspaceRoot: input.workspaceRoot,
+			runId: options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID,
+			availableWorkerSlots: requireNonnegativeIntegerOption(options, '--available-worker-slots'),
+			epochId: requireOption(options, '--epoch-id'),
+			actor,
+			requestedAt: requireOption(options, '--requested-at'),
+			recordedAt: requireOption(options, '--recorded-at'),
+			lockOwnerId: `${actor}-claim-controller`
+		});
+		return { command, claims, claimedJobs: claims.length };
+	}
+
+	if (
+		command === 'record-start' ||
+		command === 'record-terminal' ||
+		command === 'release-claim' ||
+		command === 'pause-epoch' ||
+		command === 'resume-epoch'
+	) {
+		const commonOptions = [
+			'--run-id',
+			'--event-id',
+			'--actor',
+			'--requested-at',
+			'--recorded-at'
+		] as const;
+		const commandSpecificOptions =
+			command === 'record-start'
+				? ['--claim-id', '--target-id', '--worker-id']
+				: command === 'record-terminal'
+					? [
+							'--target-id',
+							'--worker-id',
+							'--status',
+							'--result-canonical-sha256',
+							'--failure-kind'
+						]
+					: command === 'release-claim'
+						? ['--claim-id', '--target-id', '--worker-id', '--reason']
+						: command === 'pause-epoch'
+							? ['--epoch-id', '--reason']
+							: ['--previous-epoch-id', '--epoch-id', '--reason'];
+		const options = parseOptions(commandArgs, [...commonOptions, ...commandSpecificOptions]);
+		const runId = options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID;
+		const eventId = requireOption(options, '--event-id');
+		const actor = requireOption(options, '--actor');
+		const requestCommon = {
+			schemaVersion: 'equipment-production-event-request-v1' as const,
+			eventId,
+			runId,
+			requestedAt: requireOption(options, '--requested-at'),
+			actor
+		};
+		let request: unknown;
+		if (command === 'record-start') {
+			request = {
+				...requestCommon,
+				kind: 'worker-started',
+				claimId: requireOption(options, '--claim-id'),
+				targetId: requireOption(options, '--target-id'),
+				workerId: requireOption(options, '--worker-id')
+			};
+		} else if (command === 'record-terminal') {
+			const status = requireOption(options, '--status');
+			if (!['candidate', 'revise', 'failed'].includes(status)) {
+				throw new Error('--status must be candidate, revise, or failed');
+			}
+			request = {
+				...requestCommon,
+				kind: 'job-terminal',
+				targetId: requireOption(options, '--target-id'),
+				workerId: requireOption(options, '--worker-id'),
+				status,
+				resultCanonicalSha256:
+					status === 'failed' ? null : requireOption(options, '--result-canonical-sha256'),
+				failureKind: status === 'failed' ? requireOption(options, '--failure-kind') : null
+			};
+		} else if (command === 'release-claim') {
+			request = {
+				...requestCommon,
+				kind: 'claim-released',
+				claimId: requireOption(options, '--claim-id'),
+				targetId: requireOption(options, '--target-id'),
+				workerId: requireOption(options, '--worker-id'),
+				reason: requireOption(options, '--reason')
+			};
+		} else if (command === 'pause-epoch') {
+			request = {
+				...requestCommon,
+				kind: 'epoch-paused',
+				epochId: requireOption(options, '--epoch-id'),
+				technicalFailureCount: 3,
+				reason: requireOption(options, '--reason')
+			};
+		} else {
+			request = {
+				...requestCommon,
+				kind: 'epoch-resumed',
+				previousEpochId: requireOption(options, '--previous-epoch-id'),
+				epochId: requireOption(options, '--epoch-id'),
+				reason: requireOption(options, '--reason')
+			};
+		}
+		const result = await recordEquipmentRunEvent({
+			workspaceRoot: input.workspaceRoot,
+			runId,
+			request,
+			recordedAt: requireOption(options, '--recorded-at'),
+			lockOwnerId: `${actor}-${command}-controller`
+		});
+		return { command, event: result.event, eventPath: result.eventPath };
 	}
 
 	throw new Error(`Unknown Equipment image-production command: ${command}`);
