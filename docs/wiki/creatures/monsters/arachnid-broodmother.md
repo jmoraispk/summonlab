@@ -6,7 +6,7 @@ Wiki ID: `monster.arachnid-broodmother`
 
 Design status: **draft canonical form**
 
-Visual-production status: **planned; no coordinate on this page is approved or runtime art**
+Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -61,17 +61,20 @@ Its three broods repair the learned mechanics of Crawlers, Stalkers, and Weavers
 
 ## Five-coordinate candidate-production matrix
 
-| Affinity | Production status | Target definition | Assignment | Candidate ownership path | Result ownership path |
-| --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/normal-v1.json` |
-| Fire | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/wind-v1.json` |
-| Water | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/water-v1.json` |
+| Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/normal-v1.json` |
+| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/fire-v1.json` |
+| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/earth-v1.json` |
+| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/wind-v1.json` |
+| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-broodmother/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-broodmother/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-broodmother/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-broodmother/water-v1.json` |
 
 ### Status semantics
 
-- `planned` means the Normal identity-anchor attempt is owned and may be produced; it does not mean an image exists.
-- `blocked-on-anchor` means an elemental attempt must wait for accepted Normal anchor evidence before production.
+- `planned` means the active attempt is owned and may be produced; it does not mean an image exists.
+- `blocked-on-anchor` means the active attempt must wait for accepted Normal anchor evidence before production.
+- `candidate-only` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
+- `approved-review` means the immutable review evidence accepted the candidate; it is not runtime art.
+- `revision-required` means review evidence requires another attempt. Where the active version has not been generated, the label reports the prior failed-attempt count.
 - Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
-- Any future image remains candidate-only until independent review. Runtime promotion is a separate integration decision.
+- Runtime promotion is a separate integration decision and is never performed by this wiki export.

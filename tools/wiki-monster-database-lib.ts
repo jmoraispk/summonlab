@@ -51,12 +51,32 @@ export type MonsterWikiBuildInput = {
 	mapping: CurrentClassMappingFile;
 	manifest: FamilyAffinityManifest;
 	targets: readonly FamilyAffinityTarget[];
+	reviewEvidence: readonly MonsterWikiReviewEvidence[];
 	candidateReferences: readonly LegacyCandidateReference[];
 };
 
+export type MonsterWikiReviewEvidence = {
+	coordinateId: string;
+	activeVersion: number;
+	state: 'planned' | 'candidate' | 'approved-review' | 'rejected' | 'revise';
+	candidatePath: string | null;
+	candidateSha256: string | null;
+	revisionRequired: boolean;
+	historyAttemptCount: number;
+	historyRevisionRequiredCount: number;
+};
+
+export type MonsterWikiPresentationStatus =
+	| 'planned'
+	| 'blocked-on-anchor'
+	| 'candidate-only'
+	| 'approved-review'
+	| 'revision-required';
+
 export type CanonicalProductionCoordinate = {
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	status: 'planned' | 'blocked-on-anchor' | 'earth-bridge-provisional';
+	status: 'planned' | 'blocked-on-anchor';
+	presentationStatus: MonsterWikiPresentationStatus;
 	coordinateId: string;
 	targetId: string;
 	targetPath: string;
@@ -64,7 +84,9 @@ export type CanonicalProductionCoordinate = {
 	candidatePath: string;
 	resultPath: string;
 	version: number;
-	sourceStatus: 'planned-ownership';
+	candidateExists: boolean;
+	historyAttemptCount: number;
+	historyRevisionRequiredCount: number;
 };
 
 export type CanonicalMonsterForm = FamilyForm & {
@@ -133,6 +155,13 @@ export function buildCanonicalMonsterWikiDatabase(
 	const mapping = CurrentClassMappingFileSchema.parse(input.mapping);
 	const manifest = FamilyAffinityManifestSchema.parse(input.manifest);
 	const targets = input.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
+	const reviewEvidenceByCoordinate = new Map(
+		input.reviewEvidence.map((evidence) => [evidence.coordinateId, evidence])
+	);
+	assertUnique(
+		input.reviewEvidence.map(({ coordinateId }) => coordinateId),
+		'review evidence coordinate'
+	);
 
 	if (families.length !== 30) fail(`expected 30 families, found ${families.length}`);
 	assertUnique(
@@ -203,13 +232,72 @@ export function buildCanonicalMonsterWikiDatabase(
 		);
 		if (!sourceForm) fail(`coordinate ${coordinate.coordinateId} has no canonical form`);
 		validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
-		const expectedStatus = coordinate.affinity === 'normal' ? 'planned' : 'blocked-on-anchor';
-		if (coordinate.status !== expectedStatus) {
-			fail(`${coordinate.coordinateId} must initially use ${expectedStatus}`);
+		if (coordinate.status !== 'planned' && coordinate.status !== 'blocked-on-anchor') {
+			fail(`${coordinate.coordinateId} must use planned or blocked-on-anchor status`);
 		}
+		const reviewEvidence = reviewEvidenceByCoordinate.get(coordinate.coordinateId);
+		if (!reviewEvidence) fail(`missing review evidence for ${coordinate.coordinateId}`);
+		if (reviewEvidence.activeVersion !== coordinate.activeVersion) {
+			fail(`review evidence version drift for ${coordinate.coordinateId}`);
+		}
+		const hasCandidate = reviewEvidence.candidatePath !== null;
+		if (hasCandidate !== (reviewEvidence.candidateSha256 !== null)) {
+			fail(`incomplete candidate evidence for ${coordinate.coordinateId}`);
+		}
+		if (
+			!Number.isInteger(reviewEvidence.historyAttemptCount) ||
+			!Number.isInteger(reviewEvidence.historyRevisionRequiredCount) ||
+			reviewEvidence.historyAttemptCount < 0 ||
+			reviewEvidence.historyRevisionRequiredCount < 0 ||
+			reviewEvidence.historyRevisionRequiredCount > reviewEvidence.historyAttemptCount
+		) {
+			fail(`invalid review history counts for ${coordinate.coordinateId}`);
+		}
+		if (
+			hasCandidate &&
+			(reviewEvidence.candidatePath !== target.ownedPaths.candidate ||
+				!/^[a-f0-9]{64}$/u.test(reviewEvidence.candidateSha256 ?? ''))
+		) {
+			fail(`candidate evidence drift for ${coordinate.coordinateId}`);
+		}
+		if (
+			(reviewEvidence.state === 'candidate' ||
+				reviewEvidence.state === 'approved-review' ||
+				reviewEvidence.state === 'rejected' ||
+				reviewEvidence.state === 'revise') &&
+			!hasCandidate
+		) {
+			fail(`review state requires candidate evidence for ${coordinate.coordinateId}`);
+		}
+		if (reviewEvidence.state === 'planned' && hasCandidate) {
+			fail(`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`);
+		}
+		if (
+			reviewEvidence.revisionRequired !==
+			(reviewEvidence.state === 'rejected' || reviewEvidence.state === 'revise')
+		) {
+			fail(`revision-required evidence disagrees with review state: ${coordinate.coordinateId}`);
+		}
+		if (coordinate.status === 'blocked-on-anchor' && reviewEvidence.state !== 'planned') {
+			fail(`blocked coordinate cannot carry active candidate evidence: ${coordinate.coordinateId}`);
+		}
+		const presentationStatus: MonsterWikiPresentationStatus =
+			coordinate.status === 'blocked-on-anchor'
+				? 'blocked-on-anchor'
+				: reviewEvidence.state === 'approved-review'
+					? 'approved-review'
+					: reviewEvidence.state === 'candidate'
+						? 'candidate-only'
+						: reviewEvidence.state === 'rejected' ||
+							  reviewEvidence.state === 'revise' ||
+							  reviewEvidence.revisionRequired ||
+							  reviewEvidence.historyRevisionRequiredCount > 0
+							? 'revision-required'
+							: 'planned';
 		const production: CanonicalProductionCoordinate = {
 			affinity: coordinate.affinity,
 			status: coordinate.status,
+			presentationStatus,
 			coordinateId: coordinate.coordinateId,
 			targetId: target.targetId,
 			targetPath: coordinate.targetPath,
@@ -217,7 +305,9 @@ export function buildCanonicalMonsterWikiDatabase(
 			candidatePath: target.ownedPaths.candidate,
 			resultPath: target.ownedPaths.result,
 			version: coordinate.activeVersion,
-			sourceStatus: 'planned-ownership'
+			candidateExists: hasCandidate,
+			historyAttemptCount: reviewEvidence.historyAttemptCount,
+			historyRevisionRequiredCount: reviewEvidence.historyRevisionRequiredCount
 		};
 		const formCoordinates = coordinatesByForm.get(coordinate.formId) ?? [];
 		formCoordinates.push(production);
@@ -225,6 +315,9 @@ export function buildCanonicalMonsterWikiDatabase(
 	}
 	if (targetsByCoordinate.size !== manifest.canonicalMatrix.activeCoordinates.length) {
 		fail('target records contain coordinates outside the active manifest');
+	}
+	if (reviewEvidenceByCoordinate.size !== manifest.canonicalMatrix.activeCoordinates.length) {
+		fail('review evidence contains coordinates outside the active manifest');
 	}
 
 	const canonicalFamilies: CanonicalMonsterFamily[] = sortedFamilies.map((family) => {
@@ -384,11 +477,34 @@ function textOrNotApplicable(value: string | null): string {
 	return value === null ? 'Not applicable for this form.' : sanitizeRenderedCopy(value);
 }
 
+function affinityLabel(affinity: (typeof PRODUCTION_AFFINITIES)[number]): string {
+	return `${affinity[0]!.toUpperCase()}${affinity.slice(1)}`;
+}
+
+function coordinateEvidenceLabel(coordinate: CanonicalProductionCoordinate): string {
+	if (coordinate.presentationStatus === 'revision-required') {
+		return coordinate.historyRevisionRequiredCount > 0
+			? `revision-required (${coordinate.historyRevisionRequiredCount} prior attempt${coordinate.historyRevisionRequiredCount === 1 ? '' : 's'}; active v${coordinate.version} not generated)`
+			: 'revision-required';
+	}
+	return coordinate.presentationStatus;
+}
+
+function formVisualProductionStatus(form: CanonicalMonsterForm): string {
+	const states = form.coordinates
+		.map(
+			(coordinate) =>
+				`${affinityLabel(coordinate.affinity)}: ${coordinateEvidenceLabel(coordinate)}`
+		)
+		.join('; ');
+	return `${states}. Candidate and review evidence only; no coordinate on this page is runtime art.`;
+}
+
 export function buildMonsterWikiPage(form: CanonicalMonsterForm): string {
 	const coordinates = form.coordinates
 		.map(
 			(coordinate) =>
-				`| ${coordinate.affinity[0]!.toUpperCase()}${coordinate.affinity.slice(1)} | \`${coordinate.status}\` | \`${coordinate.targetPath}\` | \`${coordinate.assignmentPath}\` | \`${coordinate.candidatePath}\` | \`${coordinate.resultPath}\` |`
+				`| ${affinityLabel(coordinate.affinity)} | \`${coordinate.status}\` | \`${coordinateEvidenceLabel(coordinate)}\` | v${coordinate.version} | \`${coordinate.targetPath}\` | \`${coordinate.assignmentPath}\` | \`${coordinate.candidatePath}\` | \`${coordinate.resultPath}\` |`
 		)
 		.join('\n');
 	const constants = form.visualConstants
@@ -402,7 +518,7 @@ Wiki ID: \`monster.${form.formId}\`
 
 Design status: **draft canonical form**
 
-Visual-production status: **planned; no coordinate on this page is approved or runtime art**
+Visual-production status: **${formVisualProductionStatus(form)}**
 
 ## Identity
 
@@ -453,16 +569,19 @@ ${textOrNotApplicable(form.lowerFormInteraction)}
 
 ## Five-coordinate candidate-production matrix
 
-| Affinity | Production status | Target definition | Assignment | Candidate ownership path | Result ownership path |
-| --- | --- | --- | --- | --- | --- |
+| Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${coordinates}
 
 ### Status semantics
 
-- \`planned\` means the Normal identity-anchor attempt is owned and may be produced; it does not mean an image exists.
-- \`blocked-on-anchor\` means an elemental attempt must wait for accepted Normal anchor evidence before production.
+- \`planned\` means the active attempt is owned and may be produced; it does not mean an image exists.
+- \`blocked-on-anchor\` means the active attempt must wait for accepted Normal anchor evidence before production.
+- \`candidate-only\` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
+- \`approved-review\` means the immutable review evidence accepted the candidate; it is not runtime art.
+- \`revision-required\` means review evidence requires another attempt. Where the active version has not been generated, the label reports the prior failed-attempt count.
 - Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
-- Any future image remains candidate-only until independent review. Runtime promotion is a separate integration decision.
+- Runtime promotion is a separate integration decision and is never performed by this wiki export.
 `;
 }
 
@@ -526,8 +645,9 @@ hostility. Read the [creature taxonomy](../taxonomy.md) before turning a family 
 No floor order or difficulty value is assigned here. Every \`floorSlot\` remains unassigned until a
 separate authored combat integration chooses it.
 
-Production statuses describe owned attempts, not finished images. Candidate, approved-review, and
-runtime are separate states; this export promotes nothing.
+Production statuses describe target availability. Evidence statuses are derived from validated,
+immutable candidate/result/review records. Candidate, approved-review, and runtime remain separate
+states; this export promotes nothing.
 
 ${familySections}
 
@@ -582,13 +702,16 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 			variants: form.coordinates.map((coordinate) => ({
 				affinity: coordinate.affinity,
 				status: coordinate.status,
-				presentationStatus: coordinate.sourceStatus,
+				presentationStatus: coordinate.presentationStatus,
 				targetId: coordinate.targetId,
 				targetPath: coordinate.targetPath,
 				assignmentPath: coordinate.assignmentPath,
 				candidatePath: coordinate.candidatePath,
 				resultPath: coordinate.resultPath,
-				version: coordinate.version
+				version: coordinate.version,
+				candidateExists: coordinate.candidateExists,
+				historyAttemptCount: coordinate.historyAttemptCount,
+				historyRevisionRequiredCount: coordinate.historyRevisionRequiredCount
 			}))
 		})),
 		legacyRoutes: legacyMonsterRouteMap(database),

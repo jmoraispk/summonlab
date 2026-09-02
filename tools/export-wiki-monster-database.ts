@@ -10,6 +10,7 @@ import {
 	loadFamilyAffinityActiveSources,
 	type FamilyAffinityManifest
 } from './family-affinity-production-lib.js';
+import { buildFamilyAffinityReviewArtifacts } from './family-affinity-review-lib.js';
 import {
 	assertGeneratedMonsterWikiFreshness,
 	assertManagedMonsterCatalogEntries,
@@ -66,6 +67,7 @@ function versionFrom(entry: LegacyCatalogEntry): number {
 
 async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 	const { families, mapping } = await loadFamilyAffinityActiveSources(repositoryRoot);
+	const reviewArtifacts = await buildFamilyAffinityReviewArtifacts(repositoryRoot);
 	const manifest = FamilyAffinityManifestSchema.parse(
 		await readJson(resolve(productionRoot, 'manifest.json'))
 	);
@@ -91,7 +93,8 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 			});
 		}
 	}
-	return { families, mapping, manifest, targets, candidateReferences };
+	const reviewEvidence = reviewArtifacts.families.flatMap(({ summary }) => summary.cells);
+	return { families, mapping, manifest, targets, reviewEvidence, candidateReferences };
 }
 
 function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDatabase): WikiCatalog {
@@ -228,11 +231,11 @@ const input = await loadBuildInput();
 if (write) {
 	const deleted = await writeOutputs(input);
 	console.log(
-		`Exported 30 families, 150 canonical forms, 750 planned coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
+		`Exported 30 families, 150 canonical forms, 750 production coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
 	);
 } else {
 	await checkOutputs(input);
 	console.log(
-		'Validated 30 families, 150 canonical forms, 750 planned coordinates, and 40 reconciliations.'
+		'Validated 30 families, 150 canonical forms, 750 production coordinates, and 40 reconciliations.'
 	);
 }

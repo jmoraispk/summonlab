@@ -53,6 +53,13 @@ This family is the strongest immediate test for the [affinity system](../mechani
 the wiki must determine whether affinity is body, origin, resource, skill, environment, or several
 layered concepts before individual runtime anchors are commissioned.
 
+The current canonical production matrix supersedes that historical four-character plate for form
+and affinity review. T1–T4 have accepted Normal anchors plus Fire, Earth, Wind, and Water candidates;
+T5 remains visibly ungenerated while its Normal telegraph is revised. Every affinity image below is
+still candidate-only and none is runtime art.
+
+![Elementals family-affinity review matrix](../../../assets/enemies/experiments/family-affinity-v1/review/families/elementals/contact-sheet.png)
+
 ### Arachnids
 
 ![Arachnid family](../../../assets/enemies/review/pack-2/arachnids-v1.png)

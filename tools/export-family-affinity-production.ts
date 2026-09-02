@@ -647,16 +647,73 @@ async function loadAndValidateExistingCorpus(
 			const assignmentBytes = (
 				await readFamilyAffinityOwnedFile(repositoryRoot, assignmentPath)
 			).toString('utf8');
+			let target: FamilyAffinityTarget;
+			let assignment: FamilyAffinityAssignment;
+			try {
+				target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes));
+			} catch {
+				throw new Error(`Immutable attempt target drift: ${targetPath}`);
+			}
+			try {
+				assignment = FamilyAffinityAssignmentSchema.parse(JSON.parse(assignmentBytes));
+			} catch {
+				throw new Error(`Immutable attempt assignment drift: ${assignmentPath}`);
+			}
 			if (coordinate.namespace === 'canonical' && version === 1) {
-				if (targetBytes !== expectedV1.get(targetPath)) {
-					throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
+				const expectedTargetBytes = expectedV1.get(targetPath);
+				const expectedAssignmentBytes = expectedV1.get(assignmentPath);
+				if (!expectedTargetBytes || !expectedAssignmentBytes) {
+					throw new Error(`Missing packet-derived v1 control: ${targetPath}`);
 				}
-				if (assignmentBytes !== expectedV1.get(assignmentPath)) {
-					throw new Error(`Immutable packet-derived v1 assignment drift: ${assignmentPath}`);
+				if (targetBytes !== expectedTargetBytes || assignmentBytes !== expectedAssignmentBytes) {
+					const expectedTarget = FamilyAffinityTargetSchema.parse(JSON.parse(expectedTargetBytes));
+					const expectedAssignment = FamilyAffinityAssignmentSchema.parse(
+						JSON.parse(expectedAssignmentBytes)
+					);
+					if (
+						expectedTarget.affinity === 'normal' ||
+						expectedTarget.status !== 'blocked-on-anchor' ||
+						target.status !== 'planned' ||
+						target.anchor.kind !== 'normal-approved-review'
+					) {
+						throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
+					}
+					const normalizedTarget = FamilyAffinityTargetSchema.parse({
+						...target,
+						status: 'blocked-on-anchor',
+						anchor: {
+							...target.anchor,
+							reviewReceiptSha256: null,
+							normalCandidatePath: null,
+							normalCandidateSha256: null,
+							normalResultPath: null,
+							normalResultSha256: null
+						}
+					});
+					if (stableFamilyAffinityJson(normalizedTarget) !== expectedTargetBytes) {
+						throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
+					}
+					// targetSha256 is the mechanical consequence of the target transition;
+					// dispatchStatus is the assignment's only independent semantic delta.
+					const normalizedAssignment = FamilyAffinityAssignmentSchema.parse({
+						...assignment,
+						dispatchStatus: 'blocked-on-anchor',
+						targetSha256: familyAffinitySha256(expectedTarget)
+					});
+					if (
+						assignment.dispatchStatus !== 'planned' ||
+						assignment.targetSha256 !== familyAffinitySha256(target) ||
+						stableFamilyAffinityJson(normalizedAssignment) !== expectedAssignmentBytes
+					) {
+						throw new Error(`Immutable packet-derived v1 assignment drift: ${assignmentPath}`);
+					}
+					await validateFamilyAffinityNormalAnchorEvidence({
+						repositoryRoot,
+						manifestPath,
+						targetPath
+					});
 				}
 			}
-			const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes));
-			const assignment = FamilyAffinityAssignmentSchema.parse(JSON.parse(assignmentBytes));
 			const derivedCoordinate = {
 				...coordinate,
 				activeVersion: version,

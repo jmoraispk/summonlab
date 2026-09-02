@@ -10,8 +10,9 @@ hostility. Read the [creature taxonomy](../taxonomy.md) before turning a family 
 No floor order or difficulty value is assigned here. Every `floorSlot` remains unassigned until a
 separate authored combat integration chooses it.
 
-Production statuses describe owned attempts, not finished images. Candidate, approved-review, and
-runtime are separate states; this export promotes nothing.
+Production statuses describe target availability. Evidence statuses are derived from validated,
+immutable candidate/result/review records. Candidate, approved-review, and runtime remain separate
+states; this export promotes nothing.
 
 ## 01 · Goblins
 

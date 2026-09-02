@@ -86,7 +86,16 @@ async function productionInput(): Promise<MonsterWikiBuildInput> {
 			});
 		}
 	}
-	return { families, mapping, manifest, targets, candidateReferences };
+	const reviewEvidence = (
+		await Promise.all(
+			families.map(async ({ familyId }) =>
+				json<{ cells: MonsterWikiBuildInput['reviewEvidence'] }>(
+					new URL(`review/families/${familyId}/summary.json`, productionRoot)
+				)
+			)
+		)
+	).flatMap(({ cells }) => cells);
+	return { families, mapping, manifest, targets, reviewEvidence, candidateReferences };
 }
 
 function cloneInput(input: MonsterWikiBuildInput): MonsterWikiBuildInput {
@@ -94,7 +103,7 @@ function cloneInput(input: MonsterWikiBuildInput): MonsterWikiBuildInput {
 }
 
 describe('canonical monster wiki database', () => {
-	it('builds exactly thirty families, 150 forms, 750 planned coordinates, and forty reconciliations', async () => {
+	it('builds exactly thirty families, 150 forms, 750 evidence-backed coordinates, and forty reconciliations', async () => {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
 
 		expect(database.counts).toEqual({
@@ -121,13 +130,11 @@ describe('canonical monster wiki database', () => {
 				'wind',
 				'water'
 			]);
-			expect(form.coordinates.map(({ status }) => status)).toEqual([
-				'planned',
-				'blocked-on-anchor',
-				'blocked-on-anchor',
-				'blocked-on-anchor',
-				'blocked-on-anchor'
-			]);
+			expect(
+				form.coordinates.every(
+					({ status }) => status === 'planned' || status === 'blocked-on-anchor'
+				)
+			).toBe(true);
 		}
 		expect(database.reconciliation.map(({ currentClassId }) => currentClassId)).toHaveLength(40);
 		expect(
@@ -135,6 +142,57 @@ describe('canonical monster wiki database', () => {
 				Object.values(candidateReuseByAffinity).every((eligible) => eligible === false)
 			)
 		).toBe(true);
+	});
+
+	it('reflects the current Elementals candidate and review state without claiming runtime', async () => {
+		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		for (const formId of [
+			'elemental-wisp',
+			'elemental-spirit',
+			'elemental-warden',
+			'elemental-colossus'
+		]) {
+			const form = database.forms.find((candidate) => candidate.formId === formId)!;
+			expect(form.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
+				'approved-review',
+				'candidate-only',
+				'candidate-only',
+				'candidate-only',
+				'candidate-only'
+			]);
+			expect(buildMonsterWikiPage(form)).toContain(
+				'Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only.'
+			);
+		}
+
+		const sovereign = database.forms.find(
+			(candidate) => candidate.formId === 'elemental-sovereign'
+		)!;
+		expect(sovereign.coordinates.map(({ status }) => status)).toEqual([
+			'planned',
+			'blocked-on-anchor',
+			'blocked-on-anchor',
+			'blocked-on-anchor',
+			'blocked-on-anchor'
+		]);
+		expect(sovereign.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
+			'revision-required',
+			'blocked-on-anchor',
+			'blocked-on-anchor',
+			'blocked-on-anchor',
+			'blocked-on-anchor'
+		]);
+		expect(sovereign.coordinates[0]).toMatchObject({
+			version: 2,
+			candidateExists: false,
+			historyAttemptCount: 1,
+			historyRevisionRequiredCount: 1
+		});
+		const page = buildMonsterWikiPage(sovereign);
+		expect(page).toContain('active v2 not generated');
+		expect(page).toContain(
+			'Candidate and review evidence only; no coordinate on this page is runtime art.'
+		);
 	});
 
 	it('renders family mechanics, canonical form detail, and candidate-safe production semantics', async () => {
@@ -157,8 +215,8 @@ describe('canonical monster wiki database', () => {
 		expect(page).toContain('## Combat reading');
 		expect(page).toContain('### Lower-form interaction');
 		expect(page).toContain('## Five-coordinate candidate-production matrix');
-		expect(page).toContain('`planned` means the Normal identity-anchor attempt is owned');
-		expect(page).toContain('`blocked-on-anchor` means an elemental attempt must wait');
+		expect(page).toContain('`planned` means the active attempt is owned');
+		expect(page).toContain('`blocked-on-anchor` means the active attempt must wait');
 		expect(page).toContain('`assets/enemies/experiments/family-affinity-v1/candidates/');
 		expect(page).not.toMatch(
 			/\]\(assets\/enemies\/experiments\/family-affinity-v1\/(?:candidates|results)/u
@@ -247,6 +305,28 @@ describe('canonical monster wiki database', () => {
 			'missing affinity',
 			(input: MonsterWikiBuildInput): unknown =>
 				input.manifest.canonicalMatrix.activeCoordinates.pop()
+		],
+		[
+			'missing review evidence',
+			(input: MonsterWikiBuildInput): unknown =>
+				(input.reviewEvidence as MonsterWikiBuildInput['reviewEvidence'][number][]).pop()
+		],
+		[
+			'stale review evidence version',
+			(input: MonsterWikiBuildInput): number => ++input.reviewEvidence[0]!.activeVersion
+		],
+		[
+			'planned state with forged candidate evidence',
+			(input: MonsterWikiBuildInput): void => {
+				const evidence = input.reviewEvidence.find(
+					({ state, candidatePath }) => state === 'planned' && candidatePath === null
+				)!;
+				const target = input.targets.find(
+					({ coordinateId }) => coordinateId === evidence.coordinateId
+				)!;
+				evidence.candidatePath = target.ownedPaths.candidate;
+				evidence.candidateSha256 = 'a'.repeat(64);
+			}
 		],
 		[
 			'fake current class',
