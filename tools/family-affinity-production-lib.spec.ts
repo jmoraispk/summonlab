@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 
 import { describe, expect, it } from 'vitest';
 
@@ -139,6 +139,8 @@ const validMappingEntries: CurrentClassMappingEntry[] = Array.from({ length: 40 
 const waveAFamilyFixtures = [
 	{
 		fileName: '02-orcs.json',
+		familyId: 'orcs',
+		displayName: 'Orcs',
 		sourceRaceNumber: 2,
 		forms: [
 			{ tier: 'T1', displayName: 'Grunt', sourceReferences: ['Grunt'] },
@@ -150,6 +152,8 @@ const waveAFamilyFixtures = [
 	},
 	{
 		fileName: '03-giants.json',
+		familyId: 'giants',
+		displayName: 'Giants',
 		sourceRaceNumber: 3,
 		forms: [
 			{ tier: 'T1', displayName: 'Brute', sourceReferences: ['Brute'] },
@@ -161,6 +165,8 @@ const waveAFamilyFixtures = [
 	},
 	{
 		fileName: '04-trolls.json',
+		familyId: 'trolls',
+		displayName: 'Trolls',
 		sourceRaceNumber: 4,
 		forms: [
 			{ tier: 'T1', displayName: 'Scrag', sourceReferences: ['Scrag'] },
@@ -172,6 +178,8 @@ const waveAFamilyFixtures = [
 	},
 	{
 		fileName: '05-dragons.json',
+		familyId: 'dragons',
+		displayName: 'Dragons',
 		sourceRaceNumber: 5,
 		forms: [
 			{ tier: 'T1', displayName: 'Whelp', sourceReferences: ['Whelp'] },
@@ -183,6 +191,8 @@ const waveAFamilyFixtures = [
 	},
 	{
 		fileName: '06-skeletons.json',
+		familyId: 'skeletons',
+		displayName: 'Skeletons',
 		sourceRaceNumber: 6,
 		forms: [
 			{ tier: 'T1', displayName: 'Rattler', sourceReferences: ['Rattler'] },
@@ -197,6 +207,8 @@ const waveAFamilyFixtures = [
 const waveBFamilyFixtures = [
 	{
 		fileName: '07-rotwalkers.json',
+		familyId: 'rotwalkers',
+		displayName: 'Rotwalkers',
 		sourceRaceNumber: 7,
 		forms: [
 			{ tier: 'T1', displayName: 'Shambler', sourceReferences: ['Shambler'] },
@@ -208,6 +220,8 @@ const waveBFamilyFixtures = [
 	},
 	{
 		fileName: '08-wraiths.json',
+		familyId: 'wraiths',
+		displayName: 'Wraiths',
 		sourceRaceNumber: 8,
 		forms: [
 			{ tier: 'T1', displayName: 'Shade', sourceReferences: ['Shade'] },
@@ -219,6 +233,8 @@ const waveBFamilyFixtures = [
 	},
 	{
 		fileName: '09-vampires.json',
+		familyId: 'vampires',
+		displayName: 'Vampires',
 		sourceRaceNumber: 9,
 		forms: [
 			{ tier: 'T1', displayName: 'Thrall', sourceReferences: ['Thrall'] },
@@ -230,6 +246,8 @@ const waveBFamilyFixtures = [
 	},
 	{
 		fileName: '10-mummies.json',
+		familyId: 'mummies',
+		displayName: 'Mummies',
 		sourceRaceNumber: 10,
 		forms: [
 			{ tier: 'T1', displayName: 'Husk', sourceReferences: ['Husk'] },
@@ -245,6 +263,8 @@ const waveBFamilyFixtures = [
 	},
 	{
 		fileName: '11-demons.json',
+		familyId: 'demons',
+		displayName: 'Demons',
 		sourceRaceNumber: 11,
 		forms: [
 			{ tier: 'T1', displayName: 'Imp', sourceReferences: ['Imp'] },
@@ -256,6 +276,8 @@ const waveBFamilyFixtures = [
 	},
 	{
 		fileName: '12-celestials.json',
+		familyId: 'celestials',
+		displayName: 'Celestials',
 		sourceRaceNumber: 12,
 		forms: [
 			{ tier: 'T1', displayName: 'Messenger', sourceReferences: ['Messenger'] },
@@ -457,6 +479,111 @@ const waveDFamilyFixtures = [
 			{ tier: 'T3', displayName: 'Abyssal Hunter', sourceReferences: ['Abyssal Hunter'] },
 			{ tier: 'T4', displayName: 'Deep Priest', sourceReferences: ['Deep Priest'] },
 			{ tier: 'T5', displayName: 'Leviathan Lord', sourceReferences: ['Leviathan Lord'] }
+		]
+	}
+] as const;
+
+const waveEFamilyFixtures = [
+	{
+		fileName: '25-werebeasts.json',
+		familyId: 'werebeasts',
+		displayName: 'Werebeasts',
+		sourceRaceNumber: 25,
+		forms: [
+			{ tier: 'T1', displayName: 'Afflicted', sourceReferences: ['Afflicted'] },
+			{ tier: 'T2', displayName: 'Half-turned', sourceReferences: ['Half-turned'] },
+			{ tier: 'T3', displayName: 'Werebeast', sourceReferences: ['Werebeast'] },
+			{ tier: 'T4', displayName: 'Alpha', sourceReferences: ['Alpha'] },
+			{
+				tier: 'T5',
+				displayName: 'Primal Beast-King',
+				sourceReferences: ['Primal Beast-King']
+			}
+		]
+	},
+	{
+		fileName: '26-gargoyles.json',
+		familyId: 'gargoyles',
+		displayName: 'Gargoyles',
+		sourceRaceNumber: 26,
+		forms: [
+			{ tier: 'T1', displayName: 'Grotesque', sourceReferences: ['Grotesque'] },
+			{ tier: 'T2', displayName: 'Sentinel', sourceReferences: ['Sentinel'] },
+			{ tier: 'T3', displayName: 'Guardian', sourceReferences: ['Guardian'] },
+			{
+				tier: 'T4',
+				displayName: 'Cathedral Warden',
+				sourceReferences: ['Cathedral Warden']
+			},
+			{
+				tier: 'T5',
+				displayName: 'Stone Sovereign',
+				sourceReferences: ['Stone Sovereign']
+			}
+		]
+	},
+	{
+		fileName: '27-djinn.json',
+		familyId: 'djinn',
+		displayName: 'Djinn',
+		sourceRaceNumber: 27,
+		forms: [
+			{ tier: 'T1', displayName: 'Wisp-spirit', sourceReferences: ['Wisp-spirit'] },
+			{ tier: 'T2', displayName: 'Lesser Djinn', sourceReferences: ['Lesser Djinn'] },
+			{ tier: 'T3', displayName: 'Djinn', sourceReferences: ['Djinn'] },
+			{ tier: 'T4', displayName: 'Great Djinn', sourceReferences: ['Great Djinn'] },
+			{ tier: 'T5', displayName: 'Wish-Sultan', sourceReferences: ['Wish-Sultan'] }
+		]
+	},
+	{
+		fileName: '28-fae.json',
+		familyId: 'fae',
+		displayName: 'Fae',
+		sourceRaceNumber: 28,
+		forms: [
+			{ tier: 'T1', displayName: 'Pixie', sourceReferences: ['Pixie'] },
+			{ tier: 'T2', displayName: 'Sprite', sourceReferences: ['Sprite'] },
+			{ tier: 'T3', displayName: 'Fae Knight', sourceReferences: ['Fae Knight'] },
+			{ tier: 'T4', displayName: 'Fae Noble', sourceReferences: ['Fae Noble'] },
+			{ tier: 'T5', displayName: 'Fae Monarch', sourceReferences: ['Fae Monarch'] }
+		]
+	},
+	{
+		fileName: '29-void-horrors.json',
+		familyId: 'void-horrors',
+		displayName: 'Void Horrors',
+		sourceRaceNumber: 29,
+		forms: [
+			{ tier: 'T1', displayName: 'Crawler', sourceReferences: ['Crawler'] },
+			{ tier: 'T2', displayName: 'Hollow', sourceReferences: ['Hollow'] },
+			{ tier: 'T3', displayName: 'Fracture', sourceReferences: ['Fracture'] },
+			{ tier: 'T4', displayName: 'Encroacher', sourceReferences: ['Encroacher'] },
+			{
+				tier: 'T5',
+				displayName: 'Outer Sovereign',
+				sourceReferences: ['Outer Sovereign']
+			}
+		]
+	},
+	{
+		fileName: '30-doppelgangers.json',
+		familyId: 'doppelgangers',
+		displayName: 'Doppelgangers',
+		sourceRaceNumber: 30,
+		forms: [
+			{ tier: 'T1', displayName: 'Blank', sourceReferences: ['Blank'] },
+			{
+				tier: 'T2',
+				displayName: 'Halfling Copy',
+				sourceReferences: ['Halfling Copy']
+			},
+			{ tier: 'T3', displayName: 'Mimic', sourceReferences: ['Mimic'] },
+			{ tier: 'T4', displayName: 'Facewearer', sourceReferences: ['Facewearer'] },
+			{
+				tier: 'T5',
+				displayName: 'Faceless Sovereign',
+				sourceReferences: ['Faceless Sovereign']
+			}
 		]
 	}
 ] as const;
@@ -1110,7 +1237,9 @@ describe('Wave D family packets', () => {
 			expect(normalEntries.join(' ')).toMatch(/unexplained elemental glow/iu);
 			expect(normalEntries.join(' ')).toMatch(/unexplained environmental wake/iu);
 			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
-				expect(packet.affinityThemes[affinity].constructionDimensions).toHaveLength(2);
+				expect(
+					packet.affinityThemes[affinity].constructionDimensions.length
+				).toBeGreaterThanOrEqual(2);
 				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/palette-only/iu);
 				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/glow-only/iu);
 			}
@@ -1219,6 +1348,411 @@ describe('Wave D family packets', () => {
 		};
 		expect(() => assertEngineeredFlameElementalFireTheme(deficientNativeHeatTheme)).toThrow(
 			/engineered Fire route/iu
+		);
+	});
+});
+
+describe('Wave E family packets', () => {
+	it.each(waveEFamilyFixtures)(
+		'loads $fileName with exact source identity and authored tier contracts',
+		async ({ fileName, familyId, displayName, sourceRaceNumber, forms }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			expect(packet.familyId).toBe(familyId);
+			expect(packet.displayName).toBe(displayName);
+			expect(packet.sourceRaceNumber).toBe(sourceRaceNumber);
+			expect(packet.sourcePage).toBe('docs/wiki/creatures/monster-races/generator-bestiary-05.md');
+			expect(packet.floorSlot).toBeNull();
+			expect(
+				packet.forms.map(({ tier, displayName: formDisplayName, sourceReferences }) => ({
+					tier,
+					displayName: formDisplayName,
+					sourceReferences
+				}))
+			).toEqual(forms);
+			expect(new Set(packet.forms.map((form) => form.formId)).size).toBe(5);
+			expect(new Set(packet.forms.map((form) => form.battlefieldDuty)).size).toBe(5);
+			expect(packet.forms[2]!.primaryArchetype).toMatch(/Specialist/iu);
+			expect(packet.forms[2]!.signatureMechanic).toBeTruthy();
+			expect(packet.forms[2]!.telegraph).toBeTruthy();
+			expect(packet.forms[2]!.counterplay).toBeTruthy();
+			expect(packet.forms[4]!.primaryArchetype).toMatch(/Sovereign/iu);
+			expect(packet.forms[4]!.signatureMechanic).toMatch(/arena|phase|command|produc|transform/iu);
+			expect(packet.forms[4]!.lowerFormInteraction).toBeTruthy();
+		}
+	);
+
+	it.each([
+		{
+			fileName: '25-werebeasts.json',
+			motifs: [
+				/\bfur\b/iu,
+				/eye glow/iu,
+				/moon glow/iu,
+				/torn cloth/iu,
+				/broken chain/iu,
+				/iron collar/iu,
+				/transformation curse/iu
+			]
+		},
+		{
+			fileName: '26-gargoyles.json',
+			motifs: [
+				/carved stone/iu,
+				/moss/iu,
+				/water staining/iu,
+				/amber rune glow/iu,
+				/amber seam glow/iu,
+				/bronze/iu,
+				/water-spout architecture/iu
+			]
+		},
+		{
+			fileName: '27-djinn.json',
+			motifs: [
+				/air identity/iu,
+				/fire identity/iu,
+				/spirit identity/iu,
+				/smoke/iu,
+				/vapor/iu,
+				/warm inner glow/iu,
+				/gold/iu,
+				/brass/iu,
+				/hovering/iu,
+				/vortex/iu
+			]
+		},
+		{
+			fileName: '28-fae.json',
+			motifs: [
+				/wild-wood/iu,
+				/\bleaf\b/iu,
+				/\bbark\b/iu,
+				/\bbranches\b/iu,
+				/glowing pollen/iu,
+				/glowing motes/iu,
+				/\bdew\b/iu,
+				/stained glass/iu,
+				/reality bending/iu
+			]
+		},
+		{
+			fileName: '29-void-horrors.json',
+			motifs: [
+				/negative space/iu,
+				/void black/iu,
+				/star flecks/iu,
+				/cold eye accent/iu,
+				/fractured geometry/iu,
+				/non-reflection/iu
+			]
+		},
+		{
+			fileName: '30-doppelgangers.json',
+			motifs: [
+				/clay-grey skin/iu,
+				/copied colors/iu,
+				/borrowed colors/iu,
+				/shapeshifting/iu,
+				/(?:masks|faces)/iu,
+				/smooth flesh/iu
+			]
+		}
+	])(
+		'binds every $fileName source-native risk motif independently in Normal',
+		async ({ fileName, motifs }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+			const normalEntries = [
+				...packet.affinityThemes.normal.constructionDimensions,
+				packet.affinityThemes.normal.counterplaySignal,
+				...packet.affinityThemes.normal.forbidden
+			];
+			for (const motif of motifs) {
+				const boundEntry = normalEntries.find(
+					(entry) => /family-native|non-affinity/iu.test(entry) && motif.test(entry)
+				);
+				expect(boundEntry, `direct Normal binding for ${motif.source}`).toBeDefined();
+			}
+			expect(normalEntries.join(' ')).toMatch(/unexplained elemental anatomy/iu);
+			expect(normalEntries.join(' ')).toMatch(/unexplained elemental glow/iu);
+			expect(normalEntries.join(' ')).toMatch(/unexplained environmental wake/iu);
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				expect(
+					packet.affinityThemes[affinity].constructionDimensions.length
+				).toBeGreaterThanOrEqual(2);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/palette-only/iu);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/glow-only/iu);
+			}
+		}
+	);
+
+	it.each([
+		{
+			fileName: '25-werebeasts.json',
+			checks: [
+				/T1[^.]*mostly human[^.]*patchy fur[^.]*long fingers/iu,
+				/T2[^.]*muzzle[^.]*crouched hybrid/iu,
+				/T3[^.]*digitigrade[^.]*claws/iu,
+				/T4[^.]*chain[^.]*collar[^.]*moon[^.]*eyes/iu,
+				/T5[^.]*horn[^.]*antler[^.]*runes/iu
+			]
+		},
+		{
+			fileName: '26-gargoyles.json',
+			checks: [
+				/T1[^.]*wings too small for flight/iu,
+				/T2[^.]*small wings/iu,
+				/T3[^.]*broad functional wings[^.]*amber seams/iu,
+				/T4[^.]*marble[^.]*bronze[^.]*tracery/iu,
+				/T5[^.]*buttress wings[^.]*throne[^.]*attendants/iu
+			]
+		},
+		{
+			fileName: '27-djinn.json',
+			checks: [
+				/T1[^.]*mostly vapor[^.]*half-face[^.]*no jewelry/iu,
+				/T2[^.]*defined torso[^.]*cuffs/iu,
+				/T3[^.]*visible wind arms[^.]*orbiting rings/iu,
+				/T4[^.]*crown[^.]*script/iu,
+				/T5[^.]*vortex[^.]*throne[^.]*lamps/iu
+			]
+		},
+		{
+			fileName: '28-fae.json',
+			checks: [
+				/T1[^.]*palm[^.]*simple insect wings/iu,
+				/T2[^.]*layered petals/iu,
+				/T3[^.]*stained-glass[^.]*antlers/iu,
+				/T4[^.]*gown[^.]*mask[^.]*crown[^.]*court/iu,
+				/T5[^.]*impossible geometry[^.]*season crown[^.]*reality bend/iu
+			]
+		},
+		{
+			fileName: '29-void-horrors.json',
+			checks: [
+				/T1[^.]*thin limbs[^.]*no face[^.]*no reflection/iu,
+				/T2[^.]*face-hole/iu,
+				/T3[^.]*eyes[^.]*star interior/iu,
+				/T4[^.]*vast partial[^.]*negative limbs/iu,
+				/T5[^.]*eye-ring[^.]*unresolved sovereign/iu
+			]
+		},
+		{
+			fileName: '30-doppelgangers.json',
+			checks: [
+				/T1[^.]*blank[^.]*no face[^.]*no hair[^.]*no clothes/iu,
+				/T2[^.]*partial copy/iu,
+				/T3[^.]*seams[^.]*wrong hand/iu,
+				/T4[^.]*layered faces/iu,
+				/T5[^.]*body-wide faces[^.]*mask crown/iu
+			]
+		}
+	])(
+		'keeps $fileName elemental construction and counterplay tier-safe',
+		async ({ fileName, checks }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
+				const counterplay = packet.affinityThemes[affinity].counterplaySignal;
+				for (const check of checks) {
+					expect(construction, `${affinity} construction ${check.source}`).toMatch(check);
+					expect(counterplay, `${affinity} counterplay ${check.source}`).toMatch(check);
+				}
+			}
+		}
+	);
+
+	it.each(['fire', 'wind'] as const)(
+		'gives Djinn $affinity an engineered process distinct from native air, fire, and smoke',
+		async (affinity) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							'../assets/enemies/experiments/family-affinity-v1/families/27-djinn.json',
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+			const theme = packet.affinityThemes[affinity];
+			expect(theme.constructionDimensions.join(' ')).toMatch(
+				/(?:engineered|additional)[^.]*process[^.]*(?:apparatus|channel|valve|vane|collar|ring)/iu
+			);
+			expect(theme.counterplaySignal).toMatch(
+				/(?:break|sever|disrupt|open|expose)[^.]*\b(?:apparatus|channel|valve|vane|collar|ring)\b/iu
+			);
+		}
+	);
+});
+
+describe('complete family packet roster audit', () => {
+	it('discovers and reconciles exactly thirty numbered packets and 150 source forms', async () => {
+		const directoryUrl = new URL(
+			'../assets/enemies/experiments/family-affinity-v1/families/',
+			import.meta.url
+		);
+		const numberedFiles = (await readdir(directoryUrl))
+			.filter((fileName) => /^\d{2}-[a-z0-9-]+\.json$/u.test(fileName))
+			.sort();
+		const goblinFixture = {
+			fileName: '01-goblins.json',
+			familyId: 'goblins',
+			displayName: 'Goblins',
+			sourceRaceNumber: 1,
+			forms: [
+				{ tier: 'T1', displayName: 'Runt', sourceReferences: ['Runt'] },
+				{ tier: 'T2', displayName: 'Cutter', sourceReferences: ['Cutter'] },
+				{ tier: 'T3', displayName: 'Raider', sourceReferences: ['Raider'] },
+				{ tier: 'T4', displayName: 'Warboss', sourceReferences: ['Warboss'] },
+				{ tier: 'T5', displayName: 'Goblin King', sourceReferences: ['Goblin King'] }
+			]
+		} as const;
+		const sourceFixtures = [
+			goblinFixture,
+			...waveAFamilyFixtures,
+			...waveBFamilyFixtures,
+			...waveCFamilyFixtures,
+			...waveDFamilyFixtures,
+			...waveEFamilyFixtures
+		];
+
+		expect(numberedFiles).toEqual(sourceFixtures.map(({ fileName }) => fileName));
+		const packets = await Promise.all(
+			numberedFiles.map(async (fileName) =>
+				FamilyPacketSchema.parse(
+					JSON.parse(await readFile(new URL(fileName, directoryUrl), 'utf8'))
+				)
+			)
+		);
+		const familyIds = packets.map(({ familyId }) => familyId);
+		const formIds = packets.flatMap(({ forms }) => forms.map(({ formId }) => formId));
+		const sourceRaceNumbers = packets.map(({ sourceRaceNumber }) => sourceRaceNumber);
+
+		expect(sourceRaceNumbers).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
+		expect(new Set(familyIds).size).toBe(30);
+		expect(new Set(formIds).size).toBe(150);
+		for (const [index, packet] of packets.entries()) {
+			const fixture = sourceFixtures[index]!;
+			const expectedVolume = Math.ceil(packet.sourceRaceNumber / 6)
+				.toString()
+				.padStart(2, '0');
+			expect(packet.familyId).toBe(fixture.familyId);
+			expect(packet.displayName).toBe(fixture.displayName);
+			expect(packet.sourcePage).toBe(
+				`docs/wiki/creatures/monster-races/generator-bestiary-${expectedVolume}.md`
+			);
+			expect(packet.floorSlot).toBeNull();
+			expect(Object.keys(packet.affinityThemes).sort()).toEqual([
+				'earth',
+				'fire',
+				'normal',
+				'water',
+				'wind'
+			]);
+			expect(
+				packet.forms.map(({ tier, displayName, sourceReferences }) => ({
+					tier,
+					displayName,
+					sourceReferences
+				}))
+			).toEqual(fixture.forms);
+		}
+
+		const audit = `families=${packets.length} forms=${formIds.length} tiersPerFamily=5 sourceFormsReconciled=${packets.flatMap(({ forms }) => forms).length}`;
+		expect(audit).toBe('families=30 forms=150 tiersPerFamily=5 sourceFormsReconciled=150');
+	});
+});
+
+describe('final Task 3 roster cleanup', () => {
+	it('defines the Lich King grave seals as independent source-supported paths', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/06-skeletons.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+		const sovereign = packet.forms[4]!;
+		expect(`${sovereign.signatureMechanic} ${sovereign.lowerFormInteraction}`).toMatch(
+			/independent[^.]*Rattle[^.]*Mail[^.]*Helm[^.]*Crown/iu
+		);
+		expect(`${sovereign.signatureMechanic} ${sovereign.lowerFormInteraction}`).toMatch(
+			/without requiring[^.]*previous[^.]*promotion/iu
+		);
+	});
+
+	it('preserves the God-King permanent sandstorm halo as non-affinity burial sand', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/10-mummies.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+		expect(packet.forms[4]!.visualDelta).toMatch(/permanent sandstorm halo/iu);
+		expect(packet.forms[4]!.visualDelta).toMatch(
+			/(?:family-native|non-affinity)[^.]*burial sand[^.]*(?:not|rather than)[^.]*Earth[^.]*Wind/iu
+		);
+	});
+
+	it('keeps Elder Warden mushrooms non-luminous under reflected heartwood light', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/22-treants.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+		const champion = packet.forms[3]!;
+		expect(`${champion.signatureMechanic} ${champion.telegraph}`).toMatch(
+			/mushrooms[^.]*(?:catch|reflect)[^.]*amber heartwood light/iu
+		);
+		expect(`${champion.signatureMechanic} ${champion.telegraph}`).toMatch(
+			/(?:non-luminous|do not emit light)/iu
 		);
 	});
 });

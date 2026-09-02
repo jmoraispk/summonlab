@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "doppelgangers",
+  "displayName": "Doppelgangers",
+  "sourceRaceNumber": 30,
+  "sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-05.md",
+  "classificationNotes": "Source-draft Doppelgangers are treated as a copy-quality and leaking-disguise visual and encounter-production family. Claims about infiltration, motive, social behavior, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.",
+  "visualConstants": [
+    "A generic humanoid copy silhouette retains one deliberate flaw until layered face and mask motifs appear at explicit upper tiers.",
+    "Clay-grey skin, putty, borrowed colors, porcelain, copied cloth, and smooth flesh remain discrete source materials rather than Earth affinity.",
+    "Seams, wrong joints, ill-fitting clothes, and layered masks reveal copy quality while preserving the readable original-copy relationship.",
+    "Disguise fidelity escalates from an entirely blank true form to a sovereign carrying many stolen-looking faces at once."
+  ],
+  "escalationAxis": "Copy fidelity and the number of simultaneous borrowed identities advance from blank smooth flesh to a body-wide sovereign mask procession.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": [
+        "Family-native, non-affinity clay-grey skin, copied colors or borrowed colors, shapeshifting, masks and faces, and smooth flesh remain source-supported body material, disguise behavior, and identity leakage—not Earth or any other affinity.",
+        "Putty, mask porcelain, borrowed cloth, seams, wrong joints, and deliberately imperfect fit preserve copy readability without elemental substitution."
+      ],
+      "counterplaySignal": "The established blank wrist, unfinished limb, jaw seam, rotating face edge, or mask-crown latch remains readable against the borrowed copy.",
+      "forbidden": ["unexplained elemental anatomy", "unexplained elemental glow", "unexplained environmental wake", "Affinity construction that obscures which feature is copied and which remains native"]
+    },
+    "fire": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
+        "Heat-black copied cloth edges, ember seam channels, controlled combustion cuffs, smoke shed from only borrowed surfaces, and cooling gaps preserve the clay-grey copy break."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch after combustion, always preserving copy readability.",
+      "forbidden": ["Palette-only orange copy", "Glow-only fire treatment", "Uniform burning body", "Fire effects that hide the borrowed-versus-native boundary"]
+    },
+    "earth": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
+        "Compressed mineral seam clasps, sediment-set copied hems, crystal joint keys, planted weight, and pale fractures add external load structure without treating clay-grey flesh as Earth affinity."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch after a committed load, always preserving copy readability.",
+      "forbidden": ["Palette-only brown copy", "Glow-only earth treatment", "Treating clay-grey skin as stone", "Mineral mass that hides the copied identity"]
+    },
+    "wind": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
+        "Directional copied-cloth vanes, pressure seams, borrowed-color wake lines, aerodynamic displacement, and one still native-flesh center make force direction readable without blurring the disguise boundary."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch at the still center, always preserving copy readability.",
+      "forbidden": ["Palette-only pale copy", "Glow-only wind treatment", "Transparency that erases copy defects", "Directionless borrowed-color wake"]
+    },
+    "water": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
+        "Pressurized seam conduits, reflective borrowed-color fills, coherent fluid transitions limited to copied surfaces, mist valves, and draining joint marks preserve smooth native flesh and copy readability."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch after pressure loss, always preserving copy readability.",
+      "forbidden": ["Palette-only blue copy", "Glow-only water treatment", "Shapeless liquid body", "Reflection or mist that hides copied-versus-native anatomy"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1", "formId": "doppelganger-blank", "displayName": "Blank", "primaryArchetype": "Featureless-Reach Initiate (Initiate)",
+      "battlefieldDuty": "Probe close timing with one smooth unfinished reach from a deliberately generic stance.", "teachingGoal": "Teach that the blank wrist briefly creases before featureless fingers extend.",
+      "signatureMechanic": "Unpainted Reach: one clay-grey arm lengthens without a shoulder turn, then returns through a visible wrist crease.", "telegraph": "The smooth wrist dimples while the blank head with no face, hair, or clothing remains perfectly still.",
+      "counterplay": "Step across the extending arm and strike the temporary wrist crease before it smooths.", "visualDelta": "Blank smooth grey humanoid with no face, no hair, no clothing, and an unfinished mannequin-like surface.",
+      "lowerFormInteraction": null, "sourceReferences": ["Blank"]
+    },
+    {
+      "tier": "T2", "formId": "doppelganger-halfling-copy", "displayName": "Halfling Copy", "primaryArchetype": "Unfinished-Side Soldier (Soldier)",
+      "battlefieldDuty": "Repeat copied weapon pressure from a partial disguise whose one grey arm cannot complete the same motion.", "teachingGoal": "Teach that the blurred mouth announces the copied strike while the unfinished arm remains the safe side.",
+      "signatureMechanic": "Half-Learned Cut: the finished side copies a simple cut as the unformed grey arm attempts and fails to mirror it.", "telegraph": "The nearly right face blurs at the mouth and borrowed color drains toward the finished shoulder.",
+      "counterplay": "Cross the unfinished-arm side and punish its smooth shoulder after the copied cut.", "visualDelta": "Half-copied form with one unformed grey arm and a nearly right face blurred at the mouth.",
+      "lowerFormInteraction": "Blanks reach from the copied side; striking the unfinished shoulder exposes both wrist creases.", "sourceReferences": ["Halfling Copy"]
+    },
+    {
+      "tier": "T3", "formId": "doppelganger-mimic", "displayName": "Mimic", "primaryArchetype": "Mirror-Error Specialist (Specialist)",
+      "battlefieldDuty": "Qualitatively pivot into a reactive copy specialist that perfectly mirrors one action except for a wrong hand joint and jaw seam.", "teachingGoal": "Teach players to offer a harmless motion, identify the anatomically impossible mirror, and attack the jaw seam during correction.",
+      "signatureMechanic": "One Error Copy: the near-perfect human copy mirrors the target's last committed posture, but one hand bends the wrong way and pulls a faint jaw seam open.", "telegraph": "Borrowed clothing settles into exact symmetry while the wrong hand rotates one joint too far and the jaw seam pales.",
+      "counterplay": "Feed a short recoverable motion, move opposite the wrong hand, and strike the open jaw seam before the copy corrects.", "visualDelta": "Near-perfect human copy betrayed by faint jaw seams and one hand jointed the wrong way.",
+      "lowerFormInteraction": "Halfling Copies repeat the offered motion imperfectly; interrupting their finished side delays the Mimic's correction.", "sourceReferences": ["Mimic"]
+    },
+    {
+      "tier": "T4", "formId": "doppelganger-facewearer", "displayName": "Facewearer", "primaryArchetype": "Three-Face Champion (Champion)",
+      "battlefieldDuty": "Control three alternating attack rules by rotating layered faces to the front of an otherwise flawless copy.", "teachingGoal": "Teach that the rear mask edge moves before the next face and remains vulnerable after the transition.",
+      "signatureMechanic": "Front in Turn: three layered faces rotate through the front position, each calling a learned reach, cut, or mirrored response while the vacated edge stays open.", "telegraph": "Two mask profiles slide backward and the third face becomes unnaturally still before its rule begins.",
+      "counterplay": "Read the incoming profile, answer its familiar rule, and strike the trailing mask edge after it rotates away.", "visualDelta": "Flawless copy wearing three layered faces like masks, each shifting to the front in turn.",
+      "lowerFormInteraction": "Blank, Halfling Copy, and Mimic each supply one face rule; disabling that lower form leaves its layer unable to close.", "sourceReferences": ["Facewearer"]
+    },
+    {
+      "tier": "T5", "formId": "doppelganger-faceless-sovereign", "displayName": "Faceless Sovereign", "primaryArchetype": "Many-Face Sovereign (Sovereign)",
+      "battlefieldDuty": "Transform a copy arena through body-wide face processions while the mask crown commands learned lower-form defects.", "teachingGoal": "Test blank wrists, unfinished sides, wrong joints, and rotating mask edges while each removed crown mask strips one copied phase from the body.",
+      "signatureMechanic": "Arena Transformation — Parade of Faces: one mask-crown segment lowers, body-wide faces stream from chest to arms and back, and the sovereign copies a lower Doppelganger rule until its source defect reaches the crown latch.", "telegraph": "Borrowed colors move across the smooth flesh, one crown mask tips forward, and the called lower-form defect appears on the last face in the procession.",
+      "counterplay": "Answer the announced copied rule and strike the crown latch when its source defect arrives; each removed mask erases one procession and reveals more blank native flesh.", "visualDelta": "Shifting parade of stolen-looking faces across chest, arms, and back beneath a crown made of masks.",
+      "lowerFormInteraction": "Blank, Halfling Copy, Mimic, and Facewearer each define one mask-crown phase; solving its defect exposes the linked latch.", "sourceReferences": ["Faceless Sovereign"]
+    }
+  ]
+}

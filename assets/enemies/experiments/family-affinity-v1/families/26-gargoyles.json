@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "gargoyles",
+  "displayName": "Gargoyles",
+  "sourceRaceNumber": 26,
+  "sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-05.md",
+  "classificationNotes": "Source-draft Gargoyles are treated as an animated architectural-statue visual and encounter-production family. Claims about origin, night behavior, duty, rank, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.",
+  "visualConstants": [
+    "Squat crouched construction, hunched shoulders, horned beast face, clawed grip, and folded architectural wings remain recognizable.",
+    "Sandstone, granite, marble, bronze, mortar, moss, and water staining remain discrete built materials rather than flesh.",
+    "Relief carving, water-spout mouths, restrained amber seams, and pedestal fragments preserve the architectural source grammar.",
+    "Stone quality and wing architecture escalate from useless carved flaps to sovereign buttresses while load-bearing joints stay readable."
+  ],
+  "escalationAxis": "Material refinement and wing architecture progress from a perched chipped ornament to a sovereign architecture that commands its own statuary court.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": [
+        "Family-native, non-affinity carved stone, moss and water staining, amber rune glow and amber seam glow, bronze, and water-spout architecture remain source-supported masonry, weathering, ornament, and restrained animation—not Earth, Water, Fire, or any other affinity.",
+        "Mortar, pedestal fragments, relief detail, horns, claws, and folded wings retain architectural load paths with no elemental substitution."
+      ],
+      "counterplaySignal": "The established perch chip, mortar joint, amber hinge seam, tracery brace, or throne-pedestal bond remains readable.",
+      "forbidden": ["unexplained elemental anatomy", "unexplained elemental glow", "unexplained environmental wake", "Treating native stone, staining, or spout design as affinity evidence"]
+    },
+    "fire": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
+        "Heat-black mortar, ceramic fuel grooves, ember-cut relief channels, smoke gargles, and cooling shutters add controlled combustion while carved stone remains visible."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a cooling joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one throne vent after combustion.",
+      "forbidden": ["Palette-only orange stone", "Glow-only fire treatment", "Uniform molten statue", "Premature wing architecture"]
+    },
+    "earth": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
+        "Compressed sediment laminates, crystal mortar keys, added load ribs, planted dust, and pale fracture routes engineer mineral force beyond the family's ordinary masonry."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a loaded joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one throne fault after a committed load.",
+      "forbidden": ["Palette-only brown stone", "Glow-only earth treatment", "Pasted rocks", "Extra mass that erases carving"]
+    },
+    "wind": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
+        "Directional pressure flutes, relief-edge vanes, debris vectors, aerodynamic mortar gaps, and a still chest keystone add engineered airflow without granting early flight."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a still joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one still throne keystone between gusts.",
+      "forbidden": ["Palette-only pale stone", "Glow-only wind treatment", "Flight for T1 or sustained flight for T2", "Directionless dust"]
+    },
+    "water": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
+        "Pressurized spout conduits, reflective fill marks, valve-cut mortar, coherent drainage channels, and mist exhaust add hydraulic force beyond native water staining and architecture."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a drain joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one throne valve after pressure loss.",
+      "forbidden": ["Palette-only blue stone", "Glow-only water treatment", "Treating water staining as Water affinity", "Spray that hides masonry joints"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1", "formId": "gargoyle-grotesque", "displayName": "Grotesque", "primaryArchetype": "Perch-Drop Initiate (Initiate)",
+      "battlefieldDuty": "Probe approach timing with one short drop from a low architectural perch.", "teachingGoal": "Teach that chipped sandstone feet must release together and leave the crude wing roots immobile.",
+      "signatureMechanic": "Chipped Drop: the perched Grotesque releases both claws for a low body slam, then scrapes back to its pedestal fragment.", "telegraph": "Crude features tilt down and dust falls from the chipped toe that bears the perch load.",
+      "counterplay": "Leave the short drop lane and strike the loaded toe or tiny wing root during the scrape back.", "visualDelta": "Small perched chipped-sandstone figure with crude features and wings too small to be useful for flight.",
+      "lowerFormInteraction": null, "sourceReferences": ["Grotesque"]
+    },
+    {
+      "tier": "T2", "formId": "gargoyle-sentinel", "displayName": "Sentinel", "primaryArchetype": "Wall-Hop Soldier (Soldier)",
+      "battlefieldDuty": "Repeat short wall-to-floor hops that anchor a predictable claw line.", "teachingGoal": "Teach that moss compression and the small wing fold announce the landing claw.",
+      "signatureMechanic": "Mossed Hop: granite legs push from a wall while small bat wings stabilize, never sustain, one blunt-claw landing.", "telegraph": "Weathered moss squeezes from one shoulder and the matching small wing unfolds halfway.",
+      "counterplay": "Cross under the unwinged side and punish the mortar gap at the landing shoulder.", "visualDelta": "Crouched granite body, weathered moss streaks, small bat wings, blunt claws, and clear masonry joints.",
+      "lowerFormInteraction": "Grotesques drop into the Sentinel's landing lane; breaking its shoulder gap makes both land short.", "sourceReferences": ["Sentinel"]
+    },
+    {
+      "tier": "T3", "formId": "gargoyle-guardian", "displayName": "Guardian", "primaryArchetype": "Relief-Dive Specialist (Specialist)",
+      "battlefieldDuty": "Qualitatively pivot into a true aerial threat that traces one carved relief route before a broad-wing dive.", "teachingGoal": "Teach players to read amber joint order and step through the final unlit relief segment.",
+      "signatureMechanic": "Cornice Route: amber seams illuminate shoulder, elbow, and ankle reliefs in order while broad functional wings bank toward the matching dive lane.", "telegraph": "The upright body turns, broad wings lock, and three amber seams light along one carved relief path.",
+      "counterplay": "Track the seam order, cross through the unlit segment, and strike the wing hinge after the dive commits.", "visualDelta": "Standing upright figure with carved relief detail, broad functional wings, and glowing amber seams at the joints.",
+      "lowerFormInteraction": "Sentinels occupy the first lit landing; breaking their wall-hop anchor erases that segment.", "sourceReferences": ["Guardian"]
+    },
+    {
+      "tier": "T4", "formId": "gargoyle-cathedral-warden", "displayName": "Cathedral Warden", "primaryArchetype": "Tracery-Aisle Champion (Champion)",
+      "battlefieldDuty": "Control alternating aisles by opening marble-and-bronze wing tracery as a load-bearing screen.", "teachingGoal": "Teach that bronze braces darken before each tracery aisle closes and can be broken from the open side.",
+      "signatureMechanic": "Rose-Window Guard: one ornate wing frames a closing aisle while the opposite tracery panel vents through a water-spout mouth.", "telegraph": "Spired horns align with an aisle and verdigris bronze drains from the brace about to carry the marble wing.",
+      "counterplay": "Take the open aisle and break the darkening bronze brace before the framed wing closes.", "visualDelta": "Marble and verdigris bronze construction, spired horns, ornate carved armor, and wings framed like window tracery.",
+      "lowerFormInteraction": "Guardians dive along the framed aisle; breaking its brace forces them to land and exposes their hinges.", "sourceReferences": ["Cathedral Warden"]
+    },
+    {
+      "tier": "T5", "formId": "gargoyle-stone-sovereign", "displayName": "Stone Sovereign", "primaryArchetype": "Buttress-Court Sovereign (Sovereign)",
+      "battlefieldDuty": "Command an architectural boss arena where buttress wings, throne quadrants, and statuary attendants restage every learned load path.", "teachingGoal": "Test perch chips, hop hinges, relief routes, and tracery braces while each disabled attendant removes one throne support.",
+      "signatureMechanic": "Arena Command — Living Elevation: the throne rotates toward one of four statuary attendants, buttress wings frame that quadrant, and the attendant performs a lower-form rule before its pedestal becomes the sovereign's exposed support.", "telegraph": "One buttress wing settles onto the throne, the matching attendant lifts from the base, and familiar amber joints illuminate its source-form posture.",
+      "counterplay": "Answer the attendant's learned tell and break its pedestal bond; each lost support opens a throne quadrant and limits the sovereign's wing span.", "visualDelta": "Architectural-scale body with flying-buttress wings, a throne carved from its own pedestal, and statuary attendants at the base.",
+      "lowerFormInteraction": "Grotesque, Sentinel, Guardian, and Cathedral Warden attendants each govern one elevation; solving their mechanic exposes the linked throne support.", "sourceReferences": ["Stone Sovereign"]
+    }
+  ]
+}

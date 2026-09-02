@@ -80,7 +80,7 @@
 		{
 			"tier": "T4", "formId": "treant-elder-warden", "displayName": "Elder Warden", "primaryArchetype": "Heartwood-Habitat Champion (Champion)",
 			"battlefieldDuty": "Control alternating habitats by opening an amber heartwood cavity that directs birds, mushrooms, and vine screens.", "teachingGoal": "Teach that resident life announces which ancient limb is active and leaves the cavity open after command.",
-			"signatureMechanic": "Hollow Council: birds leave one branch, mushrooms brighten at one root, and a vine screen grows between them before the cavity releases amber sap.", "telegraph": "The hollow trunk opens, amber heartwood pulses, and residents move toward the selected branch-root pair.",
+			"signatureMechanic": "Hollow Council: birds leave one branch, non-luminous mushrooms unfurl at one root and catch reflected amber heartwood light rather than emitting light, and a vine screen grows between them before the cavity releases amber sap.", "telegraph": "The hollow trunk opens, amber heartwood pulses, and mushrooms catch reflected amber heartwood light as residents move toward the selected branch-root pair; the mushrooms remain non-luminous.",
 			"counterplay": "Cross outside the marked pair and strike the open heartwood cavity after the sap release.", "visualDelta": "Ancient hollow trunk with amber heartwood cavity, nesting birds, and mushrooms along the base.",
 			"lowerFormInteraction": "Oakheart vine knots stabilize the screen; cutting their braid shortens the command.", "sourceReferences": ["Elder Warden"]
 		},

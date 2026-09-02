@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "djinn",
+  "displayName": "Djinn",
+  "sourceRaceNumber": 27,
+  "sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-05.md",
+  "classificationNotes": "Source-draft Djinn are treated as a bound smoke-bodied spirit visual and encounter-production family. Claims about air identity, fire identity, spirit identity, binding, wishes, culture, rank, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.",
+  "visualConstants": [
+    "A hovering humanoid upper body tapers into smoke instead of legs; solidity and scale change only at explicit tiers.",
+    "Sapphire or violet smoke, warm inner light, gold, brass, turquoise, silk, and gemstones remain distinct source materials.",
+    "Cuffs, rings, headpieces, lamps, and script mark proposed binding status without establishing universal culture or morality.",
+    "The body becomes less solid and more spatially dominant from half-face vapor to a palace-scale throne vortex."
+  ],
+  "escalationAxis": "Increasingly coherent command over a smoke body and proposed binding ornaments advances from a small vapor probe to a sovereign lamp-court vortex.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": [
+        "Family-native, non-affinity air identity, fire identity, and spirit identity from the source draft, plus smoke or vapor, warm inner glow, gold or brass, hovering, and the T5 vortex, remain proposed identity, body material, ornament, locomotion, and silhouette—not automatic Fire, Wind, or any other affinity.",
+        "Silk, turquoise, gemstones, cuffs, rings, lamps, and bounded script retain visible material edges with no elemental substitution."
+      ],
+      "counterplaySignal": "The established vapor knot, cuff gap, ring alignment, script break, or lamp tether remains readable.",
+      "forbidden": ["unexplained elemental anatomy", "unexplained elemental glow", "unexplained environmental wake", "Treating native smoke, heat, hovering, or vortex motion as affinity evidence"]
+    },
+    "fire": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays mostly vapor with one half-face and no jewelry; T2 first gains a defined torso and plain cuffs; T3 first gains visible wind arms and orbiting rings; T4 first gains a crown and sacred script; T5 alone gains a lower-body vortex, floating throne, and bound lamps.",
+        "An engineered combustion process routes external fuel through an intake-collar apparatus, ignition rings, exhaust glyphs, and cooling gaps, visibly separate from the native warm glow and smoke body."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 stays mostly vapor with one half-face and no jewelry; T2 exposes its defined torso and cuffs; T3 visible wind arms and orbiting rings expose an alignment gap; T4 crown and script expose one broken glyph; T5 vortex, throne, and lamps expose a tether, and players can break the active intake-collar apparatus after exhaust.",
+      "forbidden": ["Palette-only orange smoke", "Glow-only fire treatment", "Native warmth or smoke alone presented as Fire affinity", "Premature jewelry or sovereign anatomy"]
+    },
+    "earth": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays mostly vapor with one half-face and no jewelry; T2 first gains a defined torso and plain cuffs; T3 first gains visible wind arms and orbiting rings; T4 first gains a crown and sacred script; T5 alone gains a lower-body vortex, floating throne, and bound lamps.",
+        "Compressed mineral binding weights, sediment smoke baffles, crystal cuff keys, localized grit, and fractured load seals add anchored mass while the body still hovers."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 stays mostly vapor with one half-face and no jewelry; T2 exposes its defined torso and cuffs; T3 visible wind arms and orbiting rings expose an alignment gap; T4 crown and script expose one broken glyph; T5 vortex, throne, and lamps expose a tether, and the active mineral key fractures after a committed anchor pull.",
+      "forbidden": ["Palette-only brown smoke", "Glow-only earth treatment", "Solid stone legs", "Pasted rocks that erase vapor"]
+    },
+    "wind": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays mostly vapor with one half-face and no jewelry; T2 first gains a defined torso and plain cuffs; T3 first gains visible wind arms and orbiting rings; T4 first gains a crown and sacred script; T5 alone gains a lower-body vortex, floating throne, and bound lamps.",
+        "An additional pressure process drives directional smoke through an intake-vane apparatus, calibrated ring channels, debris vectors, and a mechanically still center, distinct from native hovering and vapor."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 stays mostly vapor with one half-face and no jewelry; T2 exposes its defined torso and cuffs; T3 visible wind arms and orbiting rings expose an alignment gap; T4 crown and script expose one broken glyph; T5 vortex, throne, and lamps expose a tether, and players can disrupt the intake-vane apparatus when the directional channels reach their still center.",
+      "forbidden": ["Palette-only pale smoke", "Glow-only wind treatment", "Native hovering or vortex motion alone presented as Wind affinity", "Directionless transparency"]
+    },
+    "water": {
+      "constructionDimensions": [
+        "Tier-safe anatomy: T1 stays mostly vapor with one half-face and no jewelry; T2 first gains a defined torso and plain cuffs; T3 first gains visible wind arms and orbiting rings; T4 first gains a crown and sacred script; T5 alone gains a lower-body vortex, floating throne, and bound lamps.",
+        "Pressurized binding conduits, reflective fill lines, coherent fluid-to-vapor transitions, cuff valves, and draining mist jets add hydraulic structure beyond native smoke."
+      ],
+      "counterplaySignal": "Tier-safe anchors: T1 stays mostly vapor with one half-face and no jewelry; T2 exposes its defined torso and cuffs; T3 visible wind arms and orbiting rings expose an alignment gap; T4 crown and script expose one broken glyph; T5 vortex, throne, and lamps expose a tether, and pressure loss opens the active cuff valve.",
+      "forbidden": ["Palette-only blue smoke", "Glow-only water treatment", "Shapeless liquid Djinn", "Mist that hides the binding anchor"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1", "formId": "djinn-wisp-spirit", "displayName": "Wisp-spirit", "primaryArchetype": "Half-Face Feint Initiate (Initiate)",
+      "battlefieldDuty": "Probe target reading with one vapor feint that resolves only when the half-face turns complete.", "teachingGoal": "Teach that the faint inner glow condenses at a single vapor knot before the small rush.",
+      "signatureMechanic": "Unfinished Glance: the half-face forms on one side of the vapor and darts along that gaze before dissolving.", "telegraph": "A faint warm point gathers beneath one unfinished eye while the opposite face remains smoke.",
+      "counterplay": "Cross behind the forming eye and strike the dense vapor knot after the dart.", "visualDelta": "Small mostly vapor Wisp-spirit with only a half-formed face, faint warm glow, no jewelry, and no defined torso.",
+      "lowerFormInteraction": null, "sourceReferences": ["Wisp-spirit"]
+    },
+    {
+      "tier": "T2", "formId": "djinn-lesser-djinn", "displayName": "Lesser Djinn", "primaryArchetype": "Cuff-Pull Soldier (Soldier)",
+      "battlefieldDuty": "Repeat a bounded two-arm pull from a defined torso and visible cuff anchors.", "teachingGoal": "Teach that the plain cuff facing inward carries the binding load and opens after the pull.",
+      "signatureMechanic": "Bound Draw: both solid arms pull a smoke line toward the bare torso while one plain gold wrist cuff tightens.", "telegraph": "The sash points forward, the torso sharpens, and one unadorned cuff rotates inward.",
+      "counterplay": "Leave the draw line and strike the inward cuff before the torso softens back into smoke.", "visualDelta": "Defined humanoid torso trailing into smoke, bare chest, sash, and plain gold wrist cuffs.",
+      "lowerFormInteraction": "Wisp-spirits dart along the draw line; breaking the cuff disperses their vapor knots.", "sourceReferences": ["Lesser Djinn"]
+    },
+    {
+      "tier": "T3", "formId": "djinn-djinn", "displayName": "Djinn", "primaryArchetype": "Ring-Vector Specialist (Specialist)",
+      "battlefieldDuty": "Qualitatively pivot into a directional controller that separates visible wind-arm direction from orbiting-ring release order.", "teachingGoal": "Teach players to read ring alignment, use the quiet vector, and interrupt the wrist gap rather than chase smoke.",
+      "signatureMechanic": "Three-Wish Vector: three gold rings align around one visible wind forearm, then release pressure lanes in outer-to-inner order while the other arm stays still.", "telegraph": "Ornate sash tails stream in one direction and the three forearm rings click into visibly unequal spacing.",
+      "counterplay": "Move through the still arm's lane and strike the widest ring gap before the inner release.", "visualDelta": "Sharply defined figure with ornate sashes and jewelry, arms of visibly swirling wind, and gold rings orbiting the forearms.",
+      "lowerFormInteraction": "Lesser Djinn pull targets across the first vector; breaking their cuff interrupts the outer ring.", "sourceReferences": ["Djinn"]
+    },
+    {
+      "tier": "T4", "formId": "djinn-great-djinn", "displayName": "Great Djinn", "primaryArchetype": "Script-Storm Champion (Champion)",
+      "battlefieldDuty": "Control alternating script zones through a giant storm-colored body without obscuring the readable binding glyph.", "teachingGoal": "Teach that crown direction selects a script and the final open glyph is the interrupt point.",
+      "signatureMechanic": "Crowned Clause: the jeweled crown points to one sacred line written in vapor, and the giant body curls around that line until its final glyph closes.", "telegraph": "One crown jewel aligns with the floor while sacred script writes outward from the matching smoke shoulder.",
+      "counterplay": "Cross outside the writing direction and break the final open glyph before the storm body closes around it.", "visualDelta": "Giant storm-colored smoke body, jeweled crown, and sacred script written visibly through surrounding vapor.",
+      "lowerFormInteraction": "Djinn ring vectors trace the selected clause; breaking a ring gap leaves its glyph permanently open.", "sourceReferences": ["Great Djinn"]
+    },
+    {
+      "tier": "T5", "formId": "djinn-wish-sultan", "displayName": "Wish-Sultan", "primaryArchetype": "Lamp-Court Sovereign (Sovereign)",
+      "battlefieldDuty": "Command a palace-scale vortex arena where four bound lamps stage learned lower-form clauses around a floating throne.", "teachingGoal": "Test vapor knots, cuff loads, ring vectors, and script gaps while each severed lamp tether simplifies the sovereign vortex.",
+      "signatureMechanic": "Arena Command — Four Bound Lamps: one lamp orbits to the throne front, its smoke robe forms a lower Djinn posture, and the vortex closes a corresponding court lane until that form's learned anchor is solved.", "telegraph": "The floating throne turns, one lamp descends on a visible gold tether, and the smoke robes adopt a familiar half-face, cuff, ring, or script silhouette.",
+      "counterplay": "Answer the announced lower-form lesson and sever the exposed lamp tether; each freed lamp opens a court lane and removes one vortex command.", "visualDelta": "Palace-scale Wish-Sultan with a lower-body vortex, floating throne, constellation of bound lamps, and robes woven from smoke and gold.",
+      "lowerFormInteraction": "Wisp-spirit, Lesser Djinn, Djinn, and Great Djinn rules each bind one lamp phase; resolving the rule exposes that lamp's tether.", "sourceReferences": ["Wish-Sultan"]
+    }
+  ]
+}
