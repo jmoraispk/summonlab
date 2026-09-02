@@ -3580,6 +3580,25 @@ describe('family affinity revision CLI parsing', () => {
 		}
 	);
 
+	it('rejects unknown flags and positional arguments', () => {
+		expect(() =>
+			parseFamilyAffinityRevisionCli(['--caller-role', 'integration-controller', '--unknown', 'x'])
+		).toThrow(/unknown or positional argument.*--unknown/i);
+		expect(() => parseFamilyAffinityRevisionCli(['positional', 'value'])).toThrow(
+			/unknown or positional argument.*positional/i
+		);
+	});
+
+	it.each(['--caller-role', '--namespace', '--coordinate', '--review-path', '--entry'])(
+		'rejects a missing value after %s',
+		(flag) => {
+			const prefix = flag === '--caller-role' ? [] : ['--caller-role', 'integration-controller'];
+			expect(() => parseFamilyAffinityRevisionCli([...prefix, flag])).toThrow(
+				new RegExp(`Missing value after ${flag}`)
+			);
+		}
+	);
+
 	it('rejects ambiguous single and batch flags in either order', () => {
 		const entry = JSON.stringify({
 			namespace: 'canonical',
