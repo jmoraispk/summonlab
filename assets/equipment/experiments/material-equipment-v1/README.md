@@ -203,7 +203,9 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
 
 After a controller crash, inspect reconciliation first without authorization. A complete verified
 pair reports one required append; either partial pair blocks; no output preserves the active worker
-regardless of elapsed time. Then explicitly authorize only the reported terminal append:
+regardless of elapsed time. Copy the dry response’s exact `terminalStatus` and
+`resultCanonicalSha256`; terminal authorization is invalid if either value or the underlying
+evidence changes before the locked append:
 
 ```bash
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
@@ -216,7 +218,9 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
     --worker-id "$EQUIPMENT_WORKER_ID" --observed-at 2026-09-02T01:30:00.000Z \
     --event-id reconcile-terminal-001 --actor root-orchestrator \
     --requested-at 2026-09-02T01:30:00.000Z --recorded-at 2026-09-02T01:30:01.000Z \
-    --acknowledge-terminal yes
+    --acknowledge-terminal yes \
+    --expected-terminal-status candidate \
+    --expected-result-canonical-sha256 "$EQUIPMENT_RESULT_CANONICAL_SHA256"
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
   corepack pnpm tsx tools/equipment-image-production.ts report \
     --run-id "$EQUIPMENT_RUN_ID" --created-at "$EQUIPMENT_RUN_CREATED_AT" \
@@ -226,6 +230,8 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
 If no output exists, terminal failure requires an exact target, worker, non-empty reason, event
 identity, operator, timestamps, and `--acknowledge-operator-confirmed-failure yes`. Reconciliation
 appends that evidence and deletes nothing. Started workers are never expired by elapsed time.
+Dry, terminal-append, and operator-confirmed-failure modes are mutually exclusive; partial mode
+flags, append metadata without a mode, and mixed-mode options are rejected before reconciliation.
 
 ```bash
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \

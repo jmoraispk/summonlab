@@ -32,6 +32,8 @@ import {
 
 interface TerminalAuthorization {
 	readonly acknowledged: boolean;
+	readonly expectedTerminalStatus: 'candidate' | 'revise';
+	readonly expectedResultCanonicalSha256: string;
 	readonly eventId: string;
 	readonly actor: string;
 	readonly requestedAt: string;
@@ -186,6 +188,58 @@ function assertExactActiveWorker(
 	}
 }
 
+async function verifyTerminalEvidence(input: {
+	readonly workspaceRoot: string;
+	readonly targetPath: string;
+	readonly assignmentPath: string;
+	readonly candidatePath: string;
+	readonly resultPath: string;
+}) {
+	const [candidateState, resultState] = await Promise.all([
+		repositoryPathState(input.workspaceRoot, input.candidatePath),
+		repositoryPathState(input.workspaceRoot, input.resultPath)
+	]);
+	if (candidateState !== 'file' || resultState !== 'file') {
+		throw new Error('Authorized terminal reconciliation requires a complete candidate/result pair');
+	}
+	const resultValue = EquipmentImageResultSchema.parse(
+		await readEquipmentRepositoryJson(input.workspaceRoot, input.resultPath)
+	);
+	const verified = await verifyEquipmentImageResult({
+		workspaceRoot: input.workspaceRoot,
+		targetPath: input.targetPath,
+		assignmentPath: input.assignmentPath,
+		resultPath: input.resultPath,
+		result: resultValue
+	});
+	if (verified.status === 'failed') {
+		throw new Error('A failed Equipment result cannot coexist with candidate output');
+	}
+	return {
+		terminalStatus: verified.status,
+		resultCanonicalSha256: canonicalJsonSha256(resultValue)
+	};
+}
+
+function assertTerminalAuthorizationMatches(
+	authorization: TerminalAuthorization,
+	evidence: Awaited<ReturnType<typeof verifyTerminalEvidence>>
+): void {
+	if (authorization.acknowledged !== true) {
+		throw new Error('Verified terminal reconciliation requires explicit acknowledgement');
+	}
+	if (authorization.expectedTerminalStatus !== evidence.terminalStatus) {
+		throw new Error(
+			`Authorization expected terminal status ${authorization.expectedTerminalStatus}, received ${evidence.terminalStatus}`
+		);
+	}
+	if (authorization.expectedResultCanonicalSha256 !== evidence.resultCanonicalSha256) {
+		throw new Error(
+			'Authorization expected result canonical SHA-256 does not match verified evidence'
+		);
+	}
+}
+
 export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 	if (!Number.isFinite(Date.parse(input.observedAt))) {
 		throw new Error('Reconciliation observedAt must be an ISO date-time');
@@ -277,36 +331,23 @@ export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 		};
 	}
 
-	if (candidateState !== 'file' || resultState !== 'file') {
-		throw new Error('Reconciliation output evidence must be regular files');
-	}
-	const resultValue = EquipmentImageResultSchema.parse(
-		await readEquipmentRepositoryJson(input.workspaceRoot, paths.resultPath)
-	);
-	const verified = await verifyEquipmentImageResult({
+	const terminalEvidence = await verifyTerminalEvidence({
 		workspaceRoot: input.workspaceRoot,
 		targetPath: paths.targetPath,
 		assignmentPath: paths.assignmentPath,
-		resultPath: paths.resultPath,
-		result: resultValue
+		candidatePath: paths.candidatePath,
+		resultPath: paths.resultPath
 	});
-	if (verified.status === 'failed') {
-		throw new Error('A failed Equipment result cannot coexist with candidate output');
-	}
-	const resultCanonicalSha256 = canonicalJsonSha256(resultValue);
 	const authorization = input.terminalAuthorization;
 	if (authorization === undefined) {
 		return {
 			action: 'append-terminal-event' as const,
 			writesRequired: 1 as const,
 			writesPerformed: 0 as const,
-			terminalStatus: verified.status,
-			resultCanonicalSha256
+			...terminalEvidence
 		};
 	}
-	if (authorization.acknowledged !== true) {
-		throw new Error('Verified terminal reconciliation requires explicit acknowledgement');
-	}
+	assertTerminalAuthorizationMatches(authorization, terminalEvidence);
 	const appended = await recordEquipmentRunEvent({
 		workspaceRoot: input.workspaceRoot,
 		runId: input.runId,
@@ -319,19 +360,31 @@ export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 			kind: 'job-terminal',
 			targetId: input.targetId,
 			workerId: input.workerId,
-			status: verified.status,
-			resultCanonicalSha256,
+			status: authorization.expectedTerminalStatus,
+			resultCanonicalSha256: authorization.expectedResultCanonicalSha256,
 			failureKind: null
 		},
 		recordedAt: authorization.recordedAt,
-		lockOwnerId: `${authorization.actor}-reconcile-controller`
+		lockOwnerId: `${authorization.actor}-reconcile-controller`,
+		testHooks: {
+			afterEventFileCreated: async () => {
+				const lockedEvidence = await verifyTerminalEvidence({
+					workspaceRoot: input.workspaceRoot,
+					targetPath: paths.targetPath,
+					assignmentPath: paths.assignmentPath,
+					candidatePath: paths.candidatePath,
+					resultPath: paths.resultPath
+				});
+				assertTerminalAuthorizationMatches(authorization, lockedEvidence);
+			}
+		}
 	});
 	return {
 		action: 'append-terminal-event' as const,
 		writesRequired: 1 as const,
 		writesPerformed: 1 as const,
-		terminalStatus: verified.status,
-		resultCanonicalSha256,
+		terminalStatus: authorization.expectedTerminalStatus,
+		resultCanonicalSha256: authorization.expectedResultCanonicalSha256,
 		event: appended.event,
 		eventPath: appended.eventPath
 	};

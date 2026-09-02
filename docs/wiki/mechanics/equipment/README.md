@@ -294,7 +294,10 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
 Crash reconciliation is read-only until explicitly acknowledged. It blocks partial output, never
 time-reaps a started worker, verifies a complete immutable pair before a terminal append, and
 requires exact target, worker, reason, acknowledgement, and append identity for operator-confirmed
-failure. Report remains zero-write:
+failure. Terminal append authorization must copy both the exact status and exact canonical result
+SHA-256 from the prior dry response; locked re-verification rejects drift without an append. Dry,
+terminal-append, and operator-confirmed-failure modes are complete and mutually exclusive. Report
+remains zero-write:
 
 ```bash
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
@@ -308,7 +311,9 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
     --worker-id "$EQUIPMENT_WORKER_ID" \
     --observed-at 2026-09-02T01:30:00.000Z --event-id reconcile-terminal-001 \
     --actor root-orchestrator --requested-at 2026-09-02T01:30:00.000Z \
-    --recorded-at 2026-09-02T01:30:01.000Z --acknowledge-terminal yes
+    --recorded-at 2026-09-02T01:30:01.000Z --acknowledge-terminal yes \
+    --expected-terminal-status candidate \
+    --expected-result-canonical-sha256 "$EQUIPMENT_RESULT_CANONICAL_SHA256"
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
   corepack pnpm tsx tools/equipment-image-production.ts report \
     --run-id "$EQUIPMENT_RUN_ID" --created-at "$EQUIPMENT_RUN_CREATED_AT" \

@@ -306,38 +306,67 @@ export async function runEquipmentImageProductionCli(input: {
 			'--requested-at',
 			'--recorded-at',
 			'--acknowledge-terminal',
+			'--expected-terminal-status',
+			'--expected-result-canonical-sha256',
 			'--operator-confirmed-failure-reason',
 			'--acknowledge-operator-confirmed-failure'
 		]);
 		const targetId = requireOption(options, '--target-id');
 		const workerId = requireOption(options, '--worker-id');
 		const observedAt = requireOption(options, '--observed-at');
-		const operatorFailureReason = options.get('--operator-confirmed-failure-reason');
-		const terminalAcknowledgement = options.get('--acknowledge-terminal');
-		if (operatorFailureReason !== undefined && terminalAcknowledgement !== undefined) {
+		const terminalNames = [
+			'--acknowledge-terminal',
+			'--expected-terminal-status',
+			'--expected-result-canonical-sha256'
+		] as const;
+		const operatorNames = [
+			'--operator-confirmed-failure-reason',
+			'--acknowledge-operator-confirmed-failure'
+		] as const;
+		const metadataNames = ['--event-id', '--actor', '--requested-at', '--recorded-at'] as const;
+		const hasAny = (names: readonly string[]) => names.some((name) => options.has(name));
+		const hasAll = (names: readonly string[]) => names.every((name) => options.has(name));
+		const terminalMode = hasAny(terminalNames);
+		const operatorMode = hasAny(operatorNames);
+		const metadataMode = hasAny(metadataNames);
+		const dryMode = !terminalMode && !operatorMode && !metadataMode;
+		const completeTerminalMode =
+			terminalMode &&
+			!operatorMode &&
+			hasAll(terminalNames) &&
+			hasAll(metadataNames) &&
+			options.get('--acknowledge-terminal') === 'yes';
+		const completeOperatorMode =
+			operatorMode &&
+			!terminalMode &&
+			hasAll(operatorNames) &&
+			hasAll(metadataNames) &&
+			options.get('--acknowledge-operator-confirmed-failure') === 'yes';
+		if (Number(dryMode) + Number(completeTerminalMode) + Number(completeOperatorMode) !== 1) {
 			throw new Error(
-				'Reconcile accepts either terminal or operator-failure authorization, not both'
+				'Reconcile requires exactly one complete reconciliation mode: dry, terminal append, or operator-confirmed failure'
 			);
-		}
-		if (
-			operatorFailureReason === undefined &&
-			options.has('--acknowledge-operator-confirmed-failure')
-		) {
-			throw new Error('Operator-failure acknowledgement requires an exact failure reason');
 		}
 		const actor = options.get('--actor');
 		const eventId = options.get('--event-id');
 		const requestedAt = options.get('--requested-at');
 		const recordedAt = options.get('--recorded-at');
-		const hasAppendFields = [actor, eventId, requestedAt, recordedAt].some(
-			(value) => value !== undefined
-		);
+		const expectedTerminalStatus = options.get('--expected-terminal-status');
 		if (
-			hasAppendFields &&
-			[actor, eventId, requestedAt, recordedAt].some((value) => value === undefined)
+			completeTerminalMode &&
+			expectedTerminalStatus !== 'candidate' &&
+			expectedTerminalStatus !== 'revise'
+		) {
+			throw new Error('--expected-terminal-status must be candidate or revise');
+		}
+		const expectedResultCanonicalSha256 = options.get('--expected-result-canonical-sha256');
+		if (
+			completeTerminalMode &&
+			(expectedResultCanonicalSha256 === undefined ||
+				!/^[a-f0-9]{64}$/u.test(expectedResultCanonicalSha256))
 		) {
 			throw new Error(
-				'Authorized reconciliation requires event ID, actor, requested-at, and recorded-at together'
+				'--expected-result-canonical-sha256 must be exactly 64 lowercase hexadecimal characters'
 			);
 		}
 		return {
@@ -348,25 +377,27 @@ export async function runEquipmentImageProductionCli(input: {
 				targetId,
 				workerId,
 				observedAt,
-				...(terminalAcknowledgement === undefined
+				...(!completeTerminalMode
 					? {}
 					: {
 							terminalAuthorization: {
-								acknowledged: terminalAcknowledgement === 'yes',
+								acknowledged: true,
+								expectedTerminalStatus: expectedTerminalStatus as 'candidate' | 'revise',
+								expectedResultCanonicalSha256: expectedResultCanonicalSha256!,
 								eventId: eventId!,
 								actor: actor!,
 								requestedAt: requestedAt!,
 								recordedAt: recordedAt!
 							}
 						}),
-				...(operatorFailureReason === undefined
+				...(!completeOperatorMode
 					? {}
 					: {
 							operatorConfirmedFailure: {
 								targetId,
 								workerId,
-								reason: operatorFailureReason,
-								acknowledged: options.get('--acknowledge-operator-confirmed-failure') === 'yes',
+								reason: options.get('--operator-confirmed-failure-reason')!,
+								acknowledged: true,
 								eventId: eventId!,
 								operator: actor!,
 								confirmedAt: requestedAt!,
