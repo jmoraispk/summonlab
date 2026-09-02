@@ -36,15 +36,6 @@
 				"status": "pending-informative-v1-blind-review"
 			},
 			{
-				"riskId": "death-knight-wood-overlay-design",
-				"coordinate": "death-knight-wood-v4",
-				"sourceTargetId": "affinity-workflow-v1-death-knight-wood",
-				"severity": "blocking",
-				"concern": "The canonical basic-v1 source belongs to the cohort that repeatedly read as ordinary base armor with affinity effects layered over it.",
-				"requiredResolution": "After informative v1 blind review, author a plan-owned versioned override that makes load-bearing root and bark anatomy, resin joints, transformed equipment, command identity, and compact framing explicit before activation.",
-				"status": "pending-informative-v1-blind-review"
-			},
-			{
 				"riskId": "death-knight-fire-overlay-design",
 				"coordinate": "death-knight-fire-v4",
 				"sourceTargetId": "affinity-workflow-v1-death-knight-fire",
@@ -81,30 +72,12 @@
 				"status": "pending-informative-v1-blind-review"
 			},
 			{
-				"riskId": "cave-bear-wood-repeated-paw-readability",
-				"coordinate": "cave-bear-wood-v3",
-				"sourceTargetId": "affinity-workflow-v1-cave-bear-wood-v2",
-				"severity": "blocking",
-				"concern": "The v2 target references the paw-occluded v1 design and again hid the far hind paw on its first attempt before a correction passed.",
-				"requiredResolution": "After informative v1 blind review, route an accepted successful stance or replace the failed design reference, then strengthen independent paw contact and non-overlap instructions before activation.",
-				"status": "pending-informative-v1-blind-review"
-			},
-			{
 				"riskId": "cave-bear-wind-unresolved-paw-occlusion",
 				"coordinate": "cave-bear-wind-v3",
 				"sourceTargetId": "affinity-workflow-v1-cave-bear-wind-v2",
 				"severity": "blocking",
 				"concern": "The source references the failed v1 design and every original and v2 attempt still hid the far hind paw, leaving the correction unresolved.",
 				"requiredResolution": "After informative v1 blind review, replace the failed design reference and author a materially different staggered stance or camera solution proven to expose four grounded paws before activation.",
-				"status": "pending-informative-v1-blind-review"
-			},
-			{
-				"riskId": "death-knight-metal-framing-and-scale",
-				"coordinate": "death-knight-metal-v4",
-				"sourceTargetId": "affinity-workflow-v1-death-knight-metal-v3",
-				"severity": "risk",
-				"concern": "The semantic design is strong, but v3 still needed a framing correction and its smaller selected scale has not received human visual acceptance.",
-				"requiredResolution": "Use informative v1 feedback to decide whether the selected v3 scale remains elite; if accepted, route that exact successful design with compact finial, sword, and boot bounds, otherwise author a new versioned design.",
 				"status": "pending-informative-v1-blind-review"
 			},
 			{
@@ -144,24 +117,6 @@
 				"status": "pending-informative-v1-blind-review"
 			},
 			{
-				"riskId": "elemental-wood-historical-v3-framing",
-				"coordinate": "elemental-wood-v4",
-				"sourceTargetId": "affinity-workflow-v1-elemental-wood-v2",
-				"severity": "risk",
-				"concern": "The semantic source missed the first-attempt frame under safe-frame-v3, whose central lock omission is corrected by the planned v4 protocol.",
-				"requiredResolution": "Confirm after informative v1 review that the v4 central lock and compact target composition preserve the accepted Wood construction without another framing correction.",
-				"status": "pending-informative-v1-blind-review"
-			},
-			{
-				"riskId": "grey-wolf-wood-historical-v3-framing",
-				"coordinate": "grey-wolf-wood-v3",
-				"sourceTargetId": "affinity-workflow-v1-grey-wolf-wood",
-				"severity": "risk",
-				"concern": "The semantic source missed its first-attempt frame under safe-frame-v3, whose central lock omission is corrected by the planned v4 protocol.",
-				"requiredResolution": "Confirm after informative v1 review that safe-frame-v4 preserves the accepted wolf and Wood construction while containing every tail, root, and effect extent.",
-				"status": "pending-informative-v1-blind-review"
-			},
-			{
 				"riskId": "grey-wolf-water-historical-v3-framing",
 				"coordinate": "grey-wolf-water-v3",
 				"sourceTargetId": "affinity-workflow-v1-grey-wolf-water",
@@ -178,41 +133,145 @@
 		"effectiveImageWorkers": 3,
 		"waveCount": 8,
 		"waves": [
-			["death-knight-normal-v4", "elemental-fire-v4", "grey-wolf-metal-v3"],
-			["cave-bear-water-v3", "death-knight-wood-v4", "elemental-wind-v4"],
-			["grey-wolf-normal-v3", "cave-bear-fire-v3", "death-knight-metal-v4"],
-			["elemental-water-v4", "grey-wolf-wood-v3", "cave-bear-wind-v3"],
-			["death-knight-fire-v4", "elemental-metal-v4", "grey-wolf-water-v3"],
-			["cave-bear-normal-v3", "death-knight-wind-v4", "elemental-wood-v4"],
-			["grey-wolf-fire-v3", "cave-bear-metal-v3", "death-knight-water-v4"],
-			["elemental-normal-v4", "grey-wolf-wind-v3", "cave-bear-wood-v3"]
+			[
+				"death-knight-normal-v4",
+				"elemental-fire-v4",
+				"grey-wolf-metal-v3"
+			],
+			[
+				"cave-bear-water-v3",
+				"death-knight-wood-v4",
+				"elemental-wind-v4"
+			],
+			[
+				"grey-wolf-normal-v3",
+				"cave-bear-fire-v3",
+				"death-knight-metal-v4"
+			],
+			[
+				"elemental-water-v4",
+				"grey-wolf-wood-v3",
+				"cave-bear-wind-v3"
+			],
+			[
+				"death-knight-fire-v4",
+				"elemental-metal-v4",
+				"grey-wolf-water-v3"
+			],
+			[
+				"cave-bear-normal-v3",
+				"death-knight-wind-v4",
+				"elemental-wood-v4"
+			],
+			[
+				"grey-wolf-fire-v3",
+				"cave-bear-metal-v3",
+				"death-knight-water-v4"
+			],
+			[
+				"elemental-normal-v4",
+				"grey-wolf-wind-v3",
+				"cave-bear-wood-v3"
+			]
 		]
 	},
 	"targets": [
-		{"key":"death-knight-normal-v4","speciesId":"death-knight","affinity":"normal","version":"v4"},
-		{"key":"death-knight-wood-v4","speciesId":"death-knight","affinity":"wood","version":"v4"},
-		{"key":"death-knight-fire-v4","speciesId":"death-knight","affinity":"fire","version":"v4"},
-		{"key":"death-knight-metal-v4","speciesId":"death-knight","affinity":"metal","version":"v4"},
-		{"key":"death-knight-water-v4","speciesId":"death-knight","affinity":"water","version":"v4"},
-		{"key":"death-knight-wind-v4","speciesId":"death-knight","affinity":"wind","version":"v4"},
-		{"key":"elemental-normal-v4","speciesId":"elemental","affinity":"normal","version":"v4"},
-		{"key":"elemental-wood-v4","speciesId":"elemental","affinity":"wood","version":"v4"},
-		{"key":"elemental-fire-v4","speciesId":"elemental","affinity":"fire","version":"v4"},
-		{"key":"elemental-metal-v4","speciesId":"elemental","affinity":"metal","version":"v4"},
-		{"key":"elemental-water-v4","speciesId":"elemental","affinity":"water","version":"v4"},
-		{"key":"elemental-wind-v4","speciesId":"elemental","affinity":"wind","version":"v4"},
-		{"key":"grey-wolf-normal-v3","speciesId":"grey-wolf","affinity":"normal","version":"v3"},
-		{"key":"grey-wolf-wood-v3","speciesId":"grey-wolf","affinity":"wood","version":"v3"},
-		{"key":"grey-wolf-fire-v3","speciesId":"grey-wolf","affinity":"fire","version":"v3"},
-		{"key":"grey-wolf-metal-v3","speciesId":"grey-wolf","affinity":"metal","version":"v3"},
-		{"key":"grey-wolf-water-v3","speciesId":"grey-wolf","affinity":"water","version":"v3"},
-		{"key":"grey-wolf-wind-v3","speciesId":"grey-wolf","affinity":"wind","version":"v3"},
-		{"key":"cave-bear-normal-v3","speciesId":"cave-bear","affinity":"normal","version":"v3"},
-		{"key":"cave-bear-wood-v3","speciesId":"cave-bear","affinity":"wood","version":"v3"},
-		{"key":"cave-bear-fire-v3","speciesId":"cave-bear","affinity":"fire","version":"v3"},
-		{"key":"cave-bear-metal-v3","speciesId":"cave-bear","affinity":"metal","version":"v3"},
-		{"key":"cave-bear-water-v3","speciesId":"cave-bear","affinity":"water","version":"v3"},
-		{"key":"cave-bear-wind-v3","speciesId":"cave-bear","affinity":"wind","version":"v3"}
+		{
+			"key": "death-knight-normal-v4",
+			"speciesId": "death-knight",
+			"affinity": "normal",
+			"version": "v4"
+		},
+		{
+			"key": "death-knight-fire-v4",
+			"speciesId": "death-knight",
+			"affinity": "fire",
+			"version": "v4"
+		},
+		{
+			"key": "death-knight-water-v4",
+			"speciesId": "death-knight",
+			"affinity": "water",
+			"version": "v4"
+		},
+		{
+			"key": "death-knight-wind-v4",
+			"speciesId": "death-knight",
+			"affinity": "wind",
+			"version": "v4"
+		},
+		{
+			"key": "elemental-normal-v4",
+			"speciesId": "elemental",
+			"affinity": "normal",
+			"version": "v4"
+		},
+		{
+			"key": "elemental-fire-v4",
+			"speciesId": "elemental",
+			"affinity": "fire",
+			"version": "v4"
+		},
+		{
+			"key": "elemental-water-v4",
+			"speciesId": "elemental",
+			"affinity": "water",
+			"version": "v4"
+		},
+		{
+			"key": "elemental-wind-v4",
+			"speciesId": "elemental",
+			"affinity": "wind",
+			"version": "v4"
+		},
+		{
+			"key": "grey-wolf-normal-v3",
+			"speciesId": "grey-wolf",
+			"affinity": "normal",
+			"version": "v3"
+		},
+		{
+			"key": "grey-wolf-fire-v3",
+			"speciesId": "grey-wolf",
+			"affinity": "fire",
+			"version": "v3"
+		},
+		{
+			"key": "grey-wolf-water-v3",
+			"speciesId": "grey-wolf",
+			"affinity": "water",
+			"version": "v3"
+		},
+		{
+			"key": "grey-wolf-wind-v3",
+			"speciesId": "grey-wolf",
+			"affinity": "wind",
+			"version": "v3"
+		},
+		{
+			"key": "cave-bear-normal-v3",
+			"speciesId": "cave-bear",
+			"affinity": "normal",
+			"version": "v3"
+		},
+		{
+			"key": "cave-bear-fire-v3",
+			"speciesId": "cave-bear",
+			"affinity": "fire",
+			"version": "v3"
+		},
+		{
+			"key": "cave-bear-water-v3",
+			"speciesId": "cave-bear",
+			"affinity": "water",
+			"version": "v3"
+		},
+		{
+			"key": "cave-bear-wind-v3",
+			"speciesId": "cave-bear",
+			"affinity": "wind",
+			"version": "v3"
+		}
 	],
 	"plannedPathTemplates": {
 		"target": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/{speciesId}/{affinity}-{version}.json",

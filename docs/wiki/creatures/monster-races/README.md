@@ -34,8 +34,7 @@ review images do not yet prove production combat rigs.
 See the [monster visual gallery](../../art/monster-gallery.md) for all current plates and honest
 candidate status. The [monster database](../monsters/README.md) separates the forty authored
 archetypes one by one and presents each identity reference above the Normal plus Fire, Earth, Wind,
-and Water production target. Wood and Metal studies remain separately labeled legacy-candidate
-evidence.
+and Water production target. Available images remain candidate-only; Earth is still pending.
 
 ## Supplied thirty-race generator bestiary
 

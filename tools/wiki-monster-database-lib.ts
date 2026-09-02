@@ -1,22 +1,12 @@
 import { createHash } from 'node:crypto';
 
-export const MONSTER_AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
-
-export const CURRENT_MONSTER_PRODUCTION_TARGET = [
-	'normal',
-	'fire',
-	'earth',
-	'wind',
-	'water'
-] as const;
-
-export const LEGACY_MONSTER_VISUAL_STUDIES = ['wood', 'metal'] as const;
+export const MONSTER_AFFINITIES = ['normal', 'fire', 'earth', 'wind', 'water'] as const;
+export const AVAILABLE_MONSTER_CANDIDATE_AFFINITIES = ['normal', 'fire', 'wind', 'water'] as const;
 export const MONSTER_VISUAL_INDEX_SOURCE_STATUS = 'producer-candidates' as const;
 
 export type MonsterAffinity = (typeof MONSTER_AFFINITIES)[number];
-export type CurrentMonsterAffinity = (typeof CURRENT_MONSTER_PRODUCTION_TARGET)[number];
-export type LegacyMonsterVisualStudy = (typeof LEGACY_MONSTER_VISUAL_STUDIES)[number];
-export type MonsterVisualPresentationStatus = 'current-target-candidate' | 'legacy-candidate';
+export type CurrentMonsterAffinity = MonsterAffinity;
+export type MonsterVisualPresentationStatus = 'candidate-only';
 
 export interface MonsterVisualCandidate {
 	readonly targetId: string;
@@ -61,7 +51,7 @@ export function matchesContentHash(content: Uint8Array, expectedHash: string): b
 export function selectCanonicalVariants(
 	candidates: readonly MonsterVisualCandidate[]
 ): readonly MonsterVisualCandidate[] {
-	return MONSTER_AFFINITIES.map((affinity) => {
+	return AVAILABLE_MONSTER_CANDIDATE_AFFINITIES.map((affinity) => {
 		const matches = candidates
 			.filter((candidate) => candidate.affinity === affinity)
 			.sort((left, right) => {
@@ -78,31 +68,22 @@ export function selectCanonicalVariants(
 export function partitionMonsterVisualStudies(candidates: readonly MonsterVisualCandidate[]): {
 	readonly currentCandidates: readonly MonsterVisualCandidate[];
 	readonly missingCurrentTargets: readonly CurrentMonsterAffinity[];
-	readonly legacyCandidates: readonly MonsterVisualCandidate[];
 } {
 	const candidateByAffinity = new Map(
 		candidates.map((candidate) => [candidate.affinity, candidate])
 	);
-	const currentCandidates = CURRENT_MONSTER_PRODUCTION_TARGET.flatMap((affinity) => {
-		const candidate = affinity === 'earth' ? undefined : candidateByAffinity.get(affinity);
-		return candidate ? [candidate] : [];
-	});
-	const missingCurrentTargets = CURRENT_MONSTER_PRODUCTION_TARGET.filter(
-		(affinity) => affinity === 'earth' || !candidateByAffinity.has(affinity)
-	);
-	const legacyCandidates = LEGACY_MONSTER_VISUAL_STUDIES.flatMap((affinity) => {
+	const currentCandidates = MONSTER_AFFINITIES.flatMap((affinity) => {
 		const candidate = candidateByAffinity.get(affinity);
 		return candidate ? [candidate] : [];
 	});
-	return { currentCandidates, missingCurrentTargets, legacyCandidates };
+	const missingCurrentTargets = MONSTER_AFFINITIES.filter(
+		(affinity) => !candidateByAffinity.has(affinity)
+	);
+	return { currentCandidates, missingCurrentTargets };
 }
 
-export function presentationStatusForVisualStudy(
-	affinity: MonsterAffinity
-): MonsterVisualPresentationStatus {
-	return LEGACY_MONSTER_VISUAL_STUDIES.includes(affinity as LegacyMonsterVisualStudy)
-		? 'legacy-candidate'
-		: 'current-target-candidate';
+export function presentationStatusForVisualStudy(): MonsterVisualPresentationStatus {
+	return 'candidate-only';
 }
 
 export function wikiPresentationCounterplay(
@@ -142,20 +123,14 @@ Runtime status: **${monster.debutFloor === null ? 'not scheduled' : 'roster defi
 
 Current production target: Normal, Fire, Earth, Wind, Water
 
-Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
-
-The online plate leads with the Normal identity reference. The current-target selector presents
-available Fire, Wind, and Water candidate evidence; Earth remains a current target even though no
-Earth candidate exists in this preserved source set. Candidate evidence is neither approved nor
-runtime artwork.
-
-The separate legacy section preserves the old Wood and Metal studies for review without presenting
-them as current affinities. Source paths and hashes remain in the visual catalog.
+The online plate leads with the Normal identity reference. The selector presents available Fire,
+Wind, and Water candidate evidence; Earth remains a current target even though no Earth candidate
+exists in this source set. Candidate evidence is neither approved nor runtime artwork.
 
 ## Canon boundary
 
 - The monster identity, family, battlefield role, telegraph, and counterplay are authored content.
-- The six preserved source images are visual proposals for one persistent identity.
+- The four available source images are visual proposals for one persistent identity.
 - Visual artwork does not establish combat statistics, morality, culture, or a universal affinity
   assignment.
 - Human approval and runtime promotion remain separate decisions.

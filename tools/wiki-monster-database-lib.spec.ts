@@ -3,8 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	assertMonsterVisualIndexProvenance,
 	buildMonsterWikiPage,
-	CURRENT_MONSTER_PRODUCTION_TARGET,
-	LEGACY_MONSTER_VISUAL_STUDIES,
+	MONSTER_AFFINITIES,
 	matchesContentHash,
 	partitionMonsterVisualStudies,
 	presentationStatusForVisualStudy,
@@ -52,56 +51,38 @@ describe('monster wiki database export', () => {
 	it('selects one strongest candidate for every canonical affinity', () => {
 		const selected = selectCanonicalVariants([
 			candidate('normal', 'candidate', 1),
-			candidate('wood', 'candidate', 1),
 			candidate('fire', 'revise', 2),
 			candidate('fire', 'candidate', 1),
-			candidate('metal', 'candidate', 1),
 			candidate('water', 'candidate', 1),
 			candidate('wind', 'revise', 1),
 			candidate('wind', 'revise', 2)
 		]);
 
-		expect(selected.map((entry) => entry.affinity)).toEqual([
-			'normal',
-			'wood',
-			'fire',
-			'metal',
-			'water',
-			'wind'
-		]);
+		expect(selected.map((entry) => entry.affinity)).toEqual(['normal', 'fire', 'wind', 'water']);
 		expect(selected.find((entry) => entry.affinity === 'fire')?.version).toBe(1);
 		expect(selected.find((entry) => entry.affinity === 'wind')?.version).toBe(2);
 	});
 
-	it('separates the current five-form target from preserved legacy visual studies', () => {
+	it('keeps the five-form target explicit while Earth awaits a candidate', () => {
 		const visuals = [
 			candidate('normal', 'candidate', 1),
-			candidate('wood', 'candidate', 1),
 			candidate('fire', 'candidate', 1),
-			candidate('metal', 'candidate', 1),
 			candidate('water', 'candidate', 1),
 			candidate('wind', 'candidate', 1)
 		];
 
-		expect(CURRENT_MONSTER_PRODUCTION_TARGET).toEqual(['normal', 'fire', 'earth', 'wind', 'water']);
-		expect(LEGACY_MONSTER_VISUAL_STUDIES).toEqual(['wood', 'metal']);
+		expect(MONSTER_AFFINITIES).toEqual(['normal', 'fire', 'earth', 'wind', 'water']);
 		expect(partitionMonsterVisualStudies(visuals)).toEqual({
-			currentCandidates: [visuals[0], visuals[2], visuals[5], visuals[4]],
-			missingCurrentTargets: ['earth'],
-			legacyCandidates: [visuals[1], visuals[3]]
+			currentCandidates: [visuals[0], visuals[1], visuals[3], visuals[2]],
+			missingCurrentTargets: ['earth']
 		});
-		expect(presentationStatusForVisualStudy('fire')).toBe('current-target-candidate');
-		expect(presentationStatusForVisualStudy('wood')).toBe('legacy-candidate');
-		expect(presentationStatusForVisualStudy('metal')).toBe('legacy-candidate');
+		expect(presentationStatusForVisualStudy()).toBe('candidate-only');
 	});
 
-	it('rejects an incomplete six-affinity identity set', () => {
-		expect(() =>
-			selectCanonicalVariants([
-				candidate('normal', 'candidate', 1),
-				candidate('wood', 'candidate', 1)
-			])
-		).toThrow(/missing affinity/i);
+	it('rejects an incomplete available-candidate identity set', () => {
+		expect(() => selectCanonicalVariants([candidate('normal', 'candidate', 1)])).toThrow(
+			/missing affinity/i
+		);
 	});
 
 	it('renders an individual editable wiki page around generated visual evidence', () => {
@@ -122,9 +103,7 @@ describe('monster wiki database export', () => {
 		expect(page).toContain('Beasts');
 		expect(page).toContain('Fast flanking predator');
 		expect(page).toContain('Current production target: Normal, Fire, Earth, Wind, Water');
-		expect(page).toContain(
-			'Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets'
-		);
+		expect(page).toContain('Candidate evidence is neither approved nor runtime artwork.');
 		expect(page).not.toMatch(/candidate matrix|hash-bound|hashes, and statuses/iu);
 	});
 

@@ -8,7 +8,6 @@
 	"width": 1920,
 	"height": 1080,
 	"sourceCount": 24,
-	"imagePath": "assets/enemies/experiments/affinity-workflow-v1/review/rounds/breadth-v1/contact-sheet.png",
 	"imageByteSha256": "77b340d3f428f095074ef6c24c6d20d526b8e21f321adfd1938d88e2dedb582a",
 	"orderedSources": [
 		{
@@ -48,15 +47,6 @@
 			"candidateByteSha256": "1577e1c1f5121c12f8940743dccf248731d85ae7d0ea634cbf9509361074c573"
 		},
 		{
-			"index": 5,
-			"opaqueLabel": "S05",
-			"targetId": "affinity-workflow-v1-tunnel-boar-metal",
-			"resultId": "result-affinity-workflow-v1-tunnel-boar-metal",
-			"resultCanonicalSha256": "72e3686b82d4f81a01fb02a4689cb25033b02d7266f20409017ea4f50509be9d",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/metal-v1.png",
-			"candidateByteSha256": "5c3fa7b40dad93dc6fdc8f6c2d908d5b552630d4feec304a6c11986bef422bce"
-		},
-		{
 			"index": 6,
 			"opaqueLabel": "S06",
 			"targetId": "affinity-workflow-v1-tower-basilisk-fire",
@@ -66,24 +56,6 @@
 			"candidateByteSha256": "8872d2767ab5ef8a45ad80b8275ed6d386fb098258a0307122e54cb9fd6d4263"
 		},
 		{
-			"index": 7,
-			"opaqueLabel": "S07",
-			"targetId": "affinity-workflow-v1-tower-basilisk-metal",
-			"resultId": "result-affinity-workflow-v1-tower-basilisk-metal",
-			"resultCanonicalSha256": "75345874aaf3257a993b658e359662c9de1dad54ef681ff0212d9e3f078b5a2b",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/metal-v1.png",
-			"candidateByteSha256": "0dca87274722f9858d0b6ec944e1b68757e6d80f075c0578528b887b1f09b0cc"
-		},
-		{
-			"index": 8,
-			"opaqueLabel": "S08",
-			"targetId": "affinity-workflow-v1-tunnel-boar-wood",
-			"resultId": "result-affinity-workflow-v1-tunnel-boar-wood",
-			"resultCanonicalSha256": "ffcf0e893af3059fc09f5dbf70a67eb40a082106a75f10b2dc752b958be852cf",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wood-v1.png",
-			"candidateByteSha256": "cd7e8248fa4ad58bf7e9d498307a09cbf348ee59405eb2c5b3a845e77e623dd2"
-		},
-		{
 			"index": 9,
 			"opaqueLabel": "S09",
 			"targetId": "affinity-workflow-v1-tunnel-boar-wind",
@@ -91,15 +63,6 @@
 			"resultCanonicalSha256": "c5b197a2d8e8854e694eeee168cf35854e7c4ee30e9aeea1dd6895da48bbcaae",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/wind-v1.png",
 			"candidateByteSha256": "6c2c3062774c6ce9b4418f0097e37765eabde9edba06baad0d4465bdd78191d0"
-		},
-		{
-			"index": 10,
-			"opaqueLabel": "S10",
-			"targetId": "affinity-workflow-v1-goblin-wood",
-			"resultId": "result-affinity-workflow-v1-goblin-wood",
-			"resultCanonicalSha256": "a34a17862dc1c52146ba57f52ca81ecf71d1af8047aae29e1f4f1220ef47f913",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wood-v1.png",
-			"candidateByteSha256": "7ec01b47b2f1feca24e0e74f6088fc0844c40c84fd62972e46d1d4769ee6ee25"
 		},
 		{
 			"index": 11,
@@ -147,15 +110,6 @@
 			"candidateByteSha256": "14b00dfe91059042c66490dd1b35e97a89c1902f6b7dad62bdaa11b12ea90a46"
 		},
 		{
-			"index": 16,
-			"opaqueLabel": "S16",
-			"targetId": "affinity-workflow-v1-tower-basilisk-wood",
-			"resultId": "result-affinity-workflow-v1-tower-basilisk-wood",
-			"resultCanonicalSha256": "f2ff57d452e5d857c97e0a50e446294188883b8af3c212c0382360f66cb1b5c1",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/tower-basilisk/wood-v1.png",
-			"candidateByteSha256": "5e5120a4e6b20f8e639a78ebe33017d02771d7eda4ee78693c1085495ffda9ff"
-		},
-		{
 			"index": 17,
 			"opaqueLabel": "S17",
 			"targetId": "affinity-workflow-v1-goblin-wind",
@@ -183,24 +137,6 @@
 			"candidateByteSha256": "3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa"
 		},
 		{
-			"index": 20,
-			"opaqueLabel": "S20",
-			"targetId": "affinity-workflow-v1-cave-drake-metal",
-			"resultId": "result-affinity-workflow-v1-cave-drake-metal",
-			"resultCanonicalSha256": "87a5ed8ea87e0a6151d57b090b351991b361af07d25eea360a5d844ed5e74dfe",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/metal-v1.png",
-			"candidateByteSha256": "6d47143732c5715f823aa4c80f32a6b3385c30c5909b41edc94feb00b50e7efb"
-		},
-		{
-			"index": 21,
-			"opaqueLabel": "S21",
-			"targetId": "affinity-workflow-v1-cave-drake-wood",
-			"resultId": "result-affinity-workflow-v1-cave-drake-wood",
-			"resultCanonicalSha256": "a2a99602a087855a848fad3c97e4ed56fddbce114b2327662e15bc31a6a0f459",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-drake/wood-v1.png",
-			"candidateByteSha256": "1aa5e1b5d00adc2a0f6379a4b0c263c4965d298493176bf6f21ffb027ee1d3bb"
-		},
-		{
 			"index": 22,
 			"opaqueLabel": "S22",
 			"targetId": "affinity-workflow-v1-cave-drake-fire",
@@ -217,15 +153,6 @@
 			"resultCanonicalSha256": "87c53e49aa9508c8c10b7a086305da65feb85218608e039aa17a4112503d716e",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/normal-v1.png",
 			"candidateByteSha256": "d3bea916206fd2a157c71911ff6ff8d5ee5759a3c4540d91591dd902012e6706"
-		},
-		{
-			"index": 24,
-			"opaqueLabel": "S24",
-			"targetId": "affinity-workflow-v1-goblin-metal",
-			"resultId": "result-affinity-workflow-v1-goblin-metal",
-			"resultCanonicalSha256": "d51bc405e8f2caaf7f157ab5428e5ba494e7fac63108481be239ee4709f8fbb3",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/metal-v1.png",
-			"candidateByteSha256": "8696e759fc7f5e3c70b7fefb87c794579404968c31765f9499e6967d74545896"
 		}
 	]
 }

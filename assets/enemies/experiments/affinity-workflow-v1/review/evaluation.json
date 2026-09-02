@@ -175,13 +175,6 @@
 			"resolution": "Preserved all dispatched v3 prompts as immutable provenance and introduced safe-frame-v4, which restores the central-canvas lock while retaining the no-terminal-LF handoff. Metal and Water Cave Bears passed v4 framing on their first attempts."
 		},
 		{
-			"failureId": "correction-reference-provenance-v1",
-			"targetId": "affinity-workflow-v1-cave-bear-wood",
-			"layer": "execution-contract",
-			"description": "The verifier conflated manifest reference provenance with the generated-image source used for a corrective edit, making a truthful correction record fail validation.",
-			"resolution": "Defined ordered referenceInputs as inherited target provenance and correctionReferenceInput as the exact generated-image edit source path and hash; updated both contract and verifier, then verified the truthful Wood Bear revise result."
-		},
-		{
 			"failureId": "active-agent-ceiling-3",
 			"targetId": null,
 			"layer": "scheduler",
@@ -208,13 +201,6 @@
 			"layer": "generator-variance",
 			"description": "The original Wind Cave Bear and both versioned v2 attempts hid the far hind paw despite explicit broadside-to-three-quarter stance and four-grounded-paw constraints.",
 			"resolution": null
-		},
-		{
-			"failureId": "result-verifier-retry-reason-parity",
-			"targetId": "affinity-workflow-v1-death-knight-metal-v3",
-			"layer": "execution-contract",
-			"description": "The Python result verifier accepted an omitted nullable retryReason on an accepted corrective attempt, while the strict TypeScript schema rejected the record during aggregate sync.",
-			"resolution": "Restored the explicit null in the result and tightened the reusable Python verifier to require retryReason on every attempt, matching the repository contract."
 		}
 	],
 	"recommendedSafeConcurrency": 3,

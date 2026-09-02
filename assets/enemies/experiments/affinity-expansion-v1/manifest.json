@@ -3,17 +3,20 @@
 	"experimentId": "affinity-expansion-v1",
 	"generatedAt": "2026-08-30T20:00:00.000Z",
 	"status": "producer-complete",
-	"affinities": ["normal", "wood", "fire", "metal", "water", "wind"],
+	"affinities": [
+		"normal",
+		"fire",
+		"water",
+		"wind"
+	],
 	"species": [
 		{
 			"speciesId": "goblin-skirmisher",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-skirmisher/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-skirmisher/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-skirmisher/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-skirmisher/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-skirmisher/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-skirmisher/wind.json"
 			]
@@ -21,12 +24,10 @@
 		{
 			"speciesId": "goblin-archer",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-archer/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-archer/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-archer/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-archer/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-archer/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-archer/wind.json"
 			]
@@ -34,12 +35,10 @@
 		{
 			"speciesId": "goblin-hexweaver",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-hexweaver/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-hexweaver/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-hexweaver/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-hexweaver/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-hexweaver/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-hexweaver/wind.json"
 			]
@@ -47,12 +46,10 @@
 		{
 			"speciesId": "goblin-chieftain",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-chieftain/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-chieftain/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-chieftain/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-chieftain/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-chieftain/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/goblin-chieftain/wind.json"
 			]
@@ -60,12 +57,10 @@
 		{
 			"speciesId": "dire-wolf",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/dire-wolf/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/dire-wolf/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/dire-wolf/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/dire-wolf/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/dire-wolf/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/dire-wolf/wind.json"
 			]
@@ -73,12 +68,10 @@
 		{
 			"speciesId": "ember-wisp",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ember-wisp/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/ember-wisp/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ember-wisp/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/ember-wisp/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ember-wisp/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ember-wisp/wind.json"
 			]
@@ -86,12 +79,10 @@
 		{
 			"speciesId": "stone-breaker",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-breaker/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-breaker/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-breaker/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-breaker/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-breaker/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-breaker/wind.json"
 			]
@@ -99,12 +90,10 @@
 		{
 			"speciesId": "storm-stalker",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/storm-stalker/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/storm-stalker/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/storm-stalker/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/storm-stalker/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/storm-stalker/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/storm-stalker/wind.json"
 			]
@@ -112,12 +101,10 @@
 		{
 			"speciesId": "frost-colossus",
 			"priority": 1,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-colossus/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-colossus/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-colossus/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-colossus/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-colossus/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-colossus/wind.json"
 			]
@@ -125,12 +112,10 @@
 		{
 			"speciesId": "clay-golem",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/clay-golem/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/clay-golem/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/clay-golem/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/clay-golem/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/clay-golem/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/clay-golem/wind.json"
 			]
@@ -138,12 +123,10 @@
 		{
 			"speciesId": "stone-golem",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-golem/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-golem/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-golem/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-golem/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-golem/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/stone-golem/wind.json"
 			]
@@ -151,12 +134,10 @@
 		{
 			"speciesId": "iron-sentinel",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/iron-sentinel/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/iron-sentinel/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/iron-sentinel/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/iron-sentinel/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/iron-sentinel/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/iron-sentinel/wind.json"
 			]
@@ -164,12 +145,10 @@
 		{
 			"speciesId": "crystal-guardian",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/crystal-guardian/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/crystal-guardian/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/crystal-guardian/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/crystal-guardian/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/crystal-guardian/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/crystal-guardian/wind.json"
 			]
@@ -177,12 +156,10 @@
 		{
 			"speciesId": "grave-sentinel",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/grave-sentinel/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/grave-sentinel/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/grave-sentinel/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/grave-sentinel/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/grave-sentinel/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/grave-sentinel/wind.json"
 			]
@@ -190,12 +167,10 @@
 		{
 			"speciesId": "tower-wraith",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-wraith/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-wraith/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-wraith/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-wraith/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-wraith/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-wraith/wind.json"
 			]
@@ -203,12 +178,10 @@
 		{
 			"speciesId": "bone-mage",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/bone-mage/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/bone-mage/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/bone-mage/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/bone-mage/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/bone-mage/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/bone-mage/wind.json"
 			]
@@ -216,12 +189,10 @@
 		{
 			"speciesId": "venom-wyvern",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/venom-wyvern/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/venom-wyvern/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/venom-wyvern/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/venom-wyvern/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/venom-wyvern/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/venom-wyvern/wind.json"
 			]
@@ -229,12 +200,10 @@
 		{
 			"speciesId": "armored-elder-drake",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-elder-drake/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-elder-drake/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-elder-drake/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-elder-drake/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-elder-drake/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-elder-drake/wind.json"
 			]
@@ -242,12 +211,10 @@
 		{
 			"speciesId": "giant-tower-dragon",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-tower-dragon/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-tower-dragon/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-tower-dragon/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-tower-dragon/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-tower-dragon/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-tower-dragon/wind.json"
 			]
@@ -255,12 +222,10 @@
 		{
 			"speciesId": "hungry-mimic",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hungry-mimic/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/hungry-mimic/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hungry-mimic/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/hungry-mimic/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hungry-mimic/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hungry-mimic/wind.json"
 			]
@@ -268,12 +233,10 @@
 		{
 			"speciesId": "slime-colony",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/slime-colony/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/slime-colony/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/slime-colony/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/slime-colony/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/slime-colony/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/slime-colony/wind.json"
 			]
@@ -281,12 +244,10 @@
 		{
 			"speciesId": "burrowing-worm",
 			"priority": 2,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/burrowing-worm/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/burrowing-worm/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/burrowing-worm/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/burrowing-worm/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/burrowing-worm/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/burrowing-worm/wind.json"
 			]
@@ -294,12 +255,10 @@
 		{
 			"speciesId": "ogoblin-brute",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ogoblin-brute/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/ogoblin-brute/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ogoblin-brute/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/ogoblin-brute/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ogoblin-brute/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ogoblin-brute/wind.json"
 			]
@@ -307,12 +266,10 @@
 		{
 			"speciesId": "cave-troll",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/wind.json"
 			]
@@ -320,12 +277,10 @@
 		{
 			"speciesId": "hill-giant",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hill-giant/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/hill-giant/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hill-giant/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/hill-giant/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hill-giant/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hill-giant/wind.json"
 			]
@@ -333,12 +288,10 @@
 		{
 			"speciesId": "frost-giant",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-giant/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-giant/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-giant/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-giant/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-giant/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/frost-giant/wind.json"
 			]
@@ -346,12 +299,10 @@
 		{
 			"speciesId": "hex-adept",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hex-adept/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/hex-adept/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hex-adept/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/hex-adept/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hex-adept/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/hex-adept/wind.json"
 			]
@@ -359,12 +310,10 @@
 		{
 			"speciesId": "ward-mage",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ward-mage/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/ward-mage/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ward-mage/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/ward-mage/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ward-mage/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/ward-mage/wind.json"
 			]
@@ -372,12 +321,10 @@
 		{
 			"speciesId": "tower-summoner",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-summoner/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-summoner/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-summoner/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-summoner/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-summoner/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-summoner/wind.json"
 			]
@@ -385,12 +332,10 @@
 		{
 			"speciesId": "tower-archmage",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-archmage/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-archmage/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-archmage/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-archmage/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-archmage/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tower-archmage/wind.json"
 			]
@@ -398,12 +343,10 @@
 		{
 			"speciesId": "tunnel-spider",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tunnel-spider/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tunnel-spider/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tunnel-spider/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/tunnel-spider/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tunnel-spider/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/tunnel-spider/wind.json"
 			]
@@ -411,12 +354,10 @@
 		{
 			"speciesId": "web-caster",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/web-caster/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/web-caster/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/web-caster/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/web-caster/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/web-caster/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/web-caster/wind.json"
 			]
@@ -424,12 +365,10 @@
 		{
 			"speciesId": "armored-brood-guard",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-brood-guard/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-brood-guard/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-brood-guard/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-brood-guard/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-brood-guard/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/armored-brood-guard/wind.json"
 			]
@@ -437,12 +376,10 @@
 		{
 			"speciesId": "giant-broodmother",
 			"priority": 3,
-			"targetCount": 6,
+			"targetCount": 4,
 			"targetPaths": [
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-broodmother/normal.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-broodmother/wood.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-broodmother/fire.json",
-				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-broodmother/metal.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-broodmother/water.json",
 				"assets/enemies/experiments/affinity-expansion-v1/targets/giant-broodmother/wind.json"
 			]
@@ -450,15 +387,10 @@
 	],
 	"counts": {
 		"species": 34,
-		"affinitiesPerSpecies": 6,
-		"targets": 204,
-		"assignments": 204,
-		"ownedOutputPaths": 408,
-		"maximumProviderCallsWithOneRetry": 408
-	},
-	"baselineGuard": {
-		"experimentId": "affinity-workflow-v1",
-		"targetCount": 60,
-		"definitionHash": "8c62d9869c8f49b4dad8243b0d7ed3a7590e6d090054ac7b0c1a402d987adfbf"
+		"affinitiesPerSpecies": 4,
+		"targets": 136,
+		"assignments": 136,
+		"ownedOutputPaths": 272,
+		"maximumProviderCallsWithOneRetry": 272
 	}
 }

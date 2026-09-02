@@ -1,0 +1,20 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"family-affinity-production-lib.ts",
+		"family-affinity-production-lib.spec.ts",
+		"retire-legacy-enemy-affinities-lib.ts",
+		"retire-legacy-enemy-affinities-lib.spec.ts",
+		"retire-legacy-enemy-affinities.ts",
+		"wiki-monster-database-lib.ts",
+		"wiki-monster-database-lib.spec.ts",
+		"export-wiki-monster-database.ts"
+	]
+}

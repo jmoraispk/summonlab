@@ -41,12 +41,12 @@ describe('online wiki registry', () => {
 		const monsters = getMonsterVisualDatabase();
 
 		expect(monsters).toHaveLength(40);
-		expect(monsters.every((monster) => monster.variants.length === 6)).toBe(true);
+		expect(monsters.every((monster) => monster.variants.length === 4)).toBe(true);
 		expect(monsters.every((monster) => monster.variants[0]?.affinity === 'normal')).toBe(true);
 		expect(getWikiPage('creatures/monsters/death-knight')?.wikiId).toBe('monster.death-knight');
 		expect(
 			getMonsterVisualEntry('monster.death-knight')?.variants.map((entry) => entry.affinity)
-		).toEqual(['normal', 'wood', 'fire', 'metal', 'water', 'wind']);
+		).toEqual(['normal', 'fire', 'wind', 'water']);
 		expect(
 			getWikiNavigation().find((entry) => entry.href === '/wiki/creatures/monsters/death-knight')
 		).toMatchObject({ section: 'Creatures', group: 'Monsters', pageType: 'monster-entry' });

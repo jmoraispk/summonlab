@@ -15,8 +15,6 @@ import {
 import {
 	assertMonsterVisualIndexProvenance,
 	buildMonsterWikiPage,
-	CURRENT_MONSTER_PRODUCTION_TARGET,
-	LEGACY_MONSTER_VISUAL_STUDIES,
 	matchesContentHash,
 	MONSTER_AFFINITIES,
 	MONSTER_VISUAL_INDEX_SOURCE_STATUS,
@@ -156,11 +154,9 @@ accepted target from preserved visual evidence.
 
 Current production target: Normal, Fire, Earth, Wind, Water
 
-Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
-
-The online images are web derivatives of candidate artwork. Earth remains a current target without
-an available candidate in this preserved set. Candidate evidence is not approved or runtime art;
-source provenance and review state remain in the visual catalog.
+The online images are web derivatives of candidate artwork for Normal, Fire, Wind, and Water. Earth
+remains a current target without an available candidate in this source set. Candidate evidence is
+not approved or runtime art; source provenance and review state remain in the visual catalog.
 
 ${sections}
 
@@ -237,7 +233,7 @@ async function buildVisualIndex(write: boolean): Promise<MonsterVisualIndexEntry
 			}
 			rendered.push({
 				...variant,
-				presentationStatus: presentationStatusForVisualStudy(variant.affinity),
+				presentationStatus: presentationStatusForVisualStudy(),
 				thumbnailPath,
 				thumbnailHash: contentHash(thumbnail)
 			});
@@ -261,9 +257,8 @@ async function writeOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promi
 				schemaVersion: 'summonlab-monster-visual-index-v1',
 				sourceStatus: MONSTER_VISUAL_INDEX_SOURCE_STATUS,
 				monsterCount: monsters.length,
-				affinities: CURRENT_MONSTER_PRODUCTION_TARGET,
-				legacyVisualStudies: LEGACY_MONSTER_VISUAL_STUDIES,
-				sourceVisualLabels: MONSTER_AFFINITIES,
+				affinities: MONSTER_AFFINITIES,
+				availableCandidateAffinities: ['normal', 'fire', 'wind', 'water'],
 				monsters
 			},
 			null,
@@ -280,8 +275,7 @@ async function checkOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promi
 		sourceStatus: unknown;
 		monsterCount: number;
 		affinities: readonly CurrentMonsterAffinity[];
-		legacyVisualStudies: readonly string[];
-		sourceVisualLabels: readonly MonsterAffinity[];
+		availableCandidateAffinities: readonly MonsterAffinity[];
 		monsters: MonsterVisualIndexEntry[];
 	}>(visualIndexPath);
 	assertMonsterVisualIndexProvenance(stored);
@@ -289,9 +283,9 @@ async function checkOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promi
 		throw new Error('Monster visual index schema or count is stale');
 	}
 	if (
-		JSON.stringify(stored.affinities) !== JSON.stringify(CURRENT_MONSTER_PRODUCTION_TARGET) ||
-		JSON.stringify(stored.legacyVisualStudies) !== JSON.stringify(LEGACY_MONSTER_VISUAL_STUDIES) ||
-		JSON.stringify(stored.sourceVisualLabels) !== JSON.stringify(MONSTER_AFFINITIES)
+		JSON.stringify(stored.affinities) !== JSON.stringify(MONSTER_AFFINITIES) ||
+		JSON.stringify(stored.availableCandidateAffinities) !==
+			JSON.stringify(['normal', 'fire', 'wind', 'water'])
 	) {
 		throw new Error('Monster visual index production-target metadata is stale');
 	}
@@ -353,13 +347,13 @@ const check = process.argv.includes('--check');
 if (write === check) throw new Error('Pass exactly one of --write or --check');
 
 const monsters = await buildVisualIndex(write);
-if (monsters.length !== 40 || monsters.some((monster) => monster.variants.length !== 6)) {
-	throw new Error('Expected 40 monsters with six preserved visual studies each');
+if (monsters.length !== 40 || monsters.some((monster) => monster.variants.length !== 4)) {
+	throw new Error('Expected 40 monsters with four available candidate images each');
 }
 if (write) {
 	await writeOutputs(monsters);
-	console.log('Exported 40 monster pages and 240 preserved web visual studies.');
+	console.log('Exported 40 monster pages and 160 candidate-only web images.');
 } else {
 	await checkOutputs(monsters);
-	console.log('Validated 40 monster pages and 240 preserved web visual studies.');
+	console.log('Validated 40 monster pages and 160 candidate-only web images.');
 }

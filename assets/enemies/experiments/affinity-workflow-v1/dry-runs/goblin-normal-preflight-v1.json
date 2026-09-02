@@ -144,12 +144,6 @@
         "mutated": false
       },
       {
-        "path": "assets/enemies/experiments/affinity-workflow-v1/review/contact-sheet.png",
-        "sha256AtStart": "070e516c3fbdf9633f076015518cbd794da26a55f7c8676758904bc7e010de7c",
-        "sha256AtCompletion": "070e516c3fbdf9633f076015518cbd794da26a55f7c8676758904bc7e010de7c",
-        "mutated": false
-      },
-      {
         "path": "assets/enemies/experiments/affinity-workflow-v1/generation-record.md",
         "sha256AtStart": "26a047e3288efe9cfb4eb67c846b58d0dbc5c7305ed568061852f45a69f677eb",
         "sha256AtCompletion": "26a047e3288efe9cfb4eb67c846b58d0dbc5c7305ed568061852f45a69f677eb",

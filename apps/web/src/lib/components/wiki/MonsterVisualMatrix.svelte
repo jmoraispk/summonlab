@@ -4,7 +4,6 @@
 	import AffinityIcon from './AffinityIcon.svelte';
 
 	type CurrentAffinity = 'fire' | 'earth' | 'wind' | 'water';
-	type LegacyVisualLabel = 'wood' | 'metal';
 
 	type Variant = {
 		affinity: string;
@@ -36,15 +35,13 @@
 	const currentTargets: readonly CurrentAffinity[] = ['fire', 'earth', 'wind', 'water'];
 	const normal = $derived(
 		monster.variants.find(
-			(variant) =>
-				variant.affinity === 'normal' && variant.presentationStatus === 'current-target-candidate'
+			(variant) => variant.affinity === 'normal' && variant.presentationStatus === 'candidate-only'
 		)
 	);
 	const affinityVariants = $derived(
 		currentTargets.flatMap((target) => {
 			const variant = monster.variants.find(
-				(entry) =>
-					entry.affinity === target && entry.presentationStatus === 'current-target-candidate'
+				(entry) => entry.affinity === target && entry.presentationStatus === 'candidate-only'
 			);
 			return variant ? [{ ...variant, affinity: currentAffinity(variant.affinity) }] : [];
 		})
@@ -54,17 +51,9 @@
 			(target) =>
 				!monster.variants.some(
 					(variant) =>
-						variant.affinity === target && variant.presentationStatus === 'current-target-candidate'
+						variant.affinity === target && variant.presentationStatus === 'candidate-only'
 				)
 		)
-	);
-	const legacyStudies = $derived(
-		(['wood', 'metal'] as const).flatMap((legacyLabel) => {
-			const variant = monster.variants.find(
-				(entry) => entry.affinity === legacyLabel && entry.presentationStatus === 'legacy-candidate'
-			);
-			return variant ? [{ ...variant, affinity: legacyLabel as LegacyVisualLabel }] : [];
-		})
 	);
 	const selectedVariant = $derived(affinityVariants[selectedIndex]);
 	const label = (affinity: string) => affinity[0]?.toUpperCase() + affinity.slice(1);
@@ -110,7 +99,9 @@
 
 	<div class="variant-heading">
 		<h2>Current production target</h2>
-		<p>Normal plus Fire, Earth, Wind, and Water. Available images remain candidate evidence.</p>
+		<p>
+			Normal plus Fire, Earth, Wind, and Water. Available images remain candidate-only evidence.
+		</p>
 	</div>
 
 	{#if selectedVariant}
@@ -122,14 +113,14 @@
 			>
 				<img
 					src={selectedVariant.thumbnailPath}
-					alt={`${monster.name}, ${label(selectedVariant.affinity)} current-target candidate`}
+					alt={`${monster.name}, ${label(selectedVariant.affinity)} candidate-only image`}
 					width="720"
 					height="480"
 				/>
 				<span class="variant-mark">
 					<AffinityIcon affinity={selectedVariant.affinity} />
 				</span>
-				<span class="variant-status">current-target candidate</span>
+				<span class="variant-status">candidate-only</span>
 				<button
 					class="carousel-control previous"
 					type="button"
@@ -154,12 +145,12 @@
 				</figcaption>
 			</figure>
 
-			<div class="variant-selector" role="group" aria-label="Choose a current-target candidate">
+			<div class="variant-selector" role="group" aria-label="Choose a candidate-only image">
 				{#each affinityVariants as variant, index (variant.affinity)}
 					<button
 						class={`affinity-${variant.affinity}`}
 						type="button"
-						aria-label={`${label(variant.affinity)} current-target candidate`}
+						aria-label={`${label(variant.affinity)} candidate-only image`}
 						aria-controls="selected-affinity-variant"
 						aria-pressed={selectedIndex === index}
 						title={label(variant.affinity)}
@@ -177,34 +168,6 @@
 			</div>
 		</div>
 	{/if}
-
-	<section class="legacy-studies" aria-labelledby="legacy-visual-studies-heading">
-		<header>
-			<h2 id="legacy-visual-studies-heading">Legacy visual studies</h2>
-			<p>
-				Wood and Metal legacy-candidate evidence; not current affinities and not runtime assets.
-			</p>
-		</header>
-		<div class="legacy-grid">
-			{#each legacyStudies as study (study.affinity)}
-				<figure class={`legacy-study legacy-${study.affinity}`}>
-					<img
-						src={study.thumbnailPath}
-						alt={`${monster.name}, ${label(study.affinity)} legacy-candidate visual study`}
-						width="720"
-						height="480"
-						loading="lazy"
-					/>
-					<figcaption>
-						<strong>{label(study.affinity)}</strong>
-						<span>legacy-candidate</span>
-						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external GitHub source -->
-						<a href={sourceUrl(study.candidatePath)}>Full-resolution source ↗</a>
-					</figcaption>
-				</figure>
-			{/each}
-		</div>
-	</section>
 </section>
 
 <style>
@@ -218,8 +181,7 @@
 	.matrix > header,
 	.neutral-layout,
 	.variant-heading,
-	.variant-viewer,
-	.legacy-studies {
+	.variant-viewer {
 		max-width: 92rem;
 		margin-inline: auto;
 	}
@@ -328,8 +290,7 @@
 		margin-top: clamp(4rem, 8vw, 7rem);
 		margin-bottom: 1.5rem;
 	}
-	.variant-heading p,
-	.legacy-studies > header p {
+	.variant-heading p {
 		max-width: 58rem;
 		margin: 0.8rem 0 0;
 		color: rgba(243, 234, 217, 0.68);
@@ -475,57 +436,6 @@
 	.affinity-wind {
 		--affinity: #c7e8ec;
 	}
-	.legacy-studies {
-		margin-top: clamp(4rem, 8vw, 7rem);
-	}
-	.legacy-studies > header h2 {
-		margin: 0;
-		font:
-			400 clamp(2rem, 3.7vw, 3.5rem) / 1 Georgia,
-			serif;
-		letter-spacing: -0.04em;
-	}
-	.legacy-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-		margin-top: 1.5rem;
-	}
-	.legacy-study {
-		border: 1px solid var(--line);
-	}
-	.legacy-study img {
-		filter: saturate(0.72);
-	}
-	.legacy-study figcaption {
-		display: flex;
-		align-items: center;
-		gap: 0.8rem;
-		padding: 0.9rem 1rem;
-	}
-	.legacy-study figcaption strong {
-		font:
-			400 1.1rem Georgia,
-			serif;
-	}
-	.legacy-study figcaption span {
-		color: rgba(243, 234, 217, 0.55);
-		font:
-			0.62rem ui-monospace,
-			monospace;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-	}
-	.legacy-study figcaption a {
-		margin-left: auto;
-		color: #70c7d2;
-		font:
-			0.62rem ui-monospace,
-			monospace;
-		letter-spacing: 0.05em;
-		text-decoration: none;
-		text-transform: uppercase;
-	}
 	@media (max-width: 58rem) {
 		.matrix {
 			padding-inline: 1rem;
@@ -557,9 +467,6 @@
 		.variant-selector button {
 			width: 3.25rem;
 			height: 3.25rem;
-		}
-		.legacy-grid {
-			grid-template-columns: 1fr;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {

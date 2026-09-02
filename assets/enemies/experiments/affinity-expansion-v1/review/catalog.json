@@ -4,8 +4,8 @@
 	"generatedAt": "2026-08-30T23:30:00.000Z",
 	"status": "producer-candidates",
 	"speciesCount": 34,
-	"targetCount": 204,
-	"candidateCount": 204,
+	"targetCount": 136,
+	"candidateCount": 136,
 	"reviseCount": 0,
 	"entries": [
 		{
@@ -24,21 +24,6 @@
 			"bytes": 1891559
 		},
 		{
-			"targetId": "affinity-expansion-v1-goblin-skirmisher-wood",
-			"speciesId": "goblin-skirmisher",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-skirmisher-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/wood-v1.png",
-			"contentHash": "05ed339ddd1c6d3efc70e273890594d3487193ad68e2e21bd9107cf259593f12",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2022107
-		},
-		{
 			"targetId": "affinity-expansion-v1-goblin-skirmisher-fire",
 			"speciesId": "goblin-skirmisher",
 			"affinity": "fire",
@@ -52,21 +37,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2029061
-		},
-		{
-			"targetId": "affinity-expansion-v1-goblin-skirmisher-metal",
-			"speciesId": "goblin-skirmisher",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-skirmisher-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/metal-v1.png",
-			"contentHash": "a4a514a0cfb84d3746477562954015bd5b108150da18a88be48fb4eb8c983e2f",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2111158
 		},
 		{
 			"targetId": "affinity-expansion-v1-goblin-skirmisher-water",
@@ -114,21 +84,6 @@
 			"bytes": 1959466
 		},
 		{
-			"targetId": "affinity-expansion-v1-goblin-archer-wood",
-			"speciesId": "goblin-archer",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-archer-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/wood-v1.png",
-			"contentHash": "2d9a369b69063b0081fd57111edef5f31a5189b3aa996772858c4c60310508f7",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1991537
-		},
-		{
 			"targetId": "affinity-expansion-v1-goblin-archer-fire",
 			"speciesId": "goblin-archer",
 			"affinity": "fire",
@@ -142,21 +97,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1979909
-		},
-		{
-			"targetId": "affinity-expansion-v1-goblin-archer-metal",
-			"speciesId": "goblin-archer",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-archer-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-archer/metal-v1.png",
-			"contentHash": "3a15b57dd3287f9d7c2e95e9807a8c708c3bf54c6cf9497e3463b1aa7e6c11f3",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1910907
 		},
 		{
 			"targetId": "affinity-expansion-v1-goblin-archer-water",
@@ -204,21 +144,6 @@
 			"bytes": 1982995
 		},
 		{
-			"targetId": "affinity-expansion-v1-goblin-hexweaver-wood",
-			"speciesId": "goblin-hexweaver",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-hexweaver-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/wood-v1.png",
-			"contentHash": "4a46ac691451e50ed7208e2c510f4afd7916193240686087bf23808eb87a90cf",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2058501
-		},
-		{
 			"targetId": "affinity-expansion-v1-goblin-hexweaver-fire",
 			"speciesId": "goblin-hexweaver",
 			"affinity": "fire",
@@ -232,21 +157,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2019486
-		},
-		{
-			"targetId": "affinity-expansion-v1-goblin-hexweaver-metal",
-			"speciesId": "goblin-hexweaver",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-hexweaver-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-hexweaver/metal-v1.png",
-			"contentHash": "f3201f7d4bbaf999fa7474e10f07fa97b228b24fdd9131bf73e732f6c0c62c47",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1992571
 		},
 		{
 			"targetId": "affinity-expansion-v1-goblin-hexweaver-water",
@@ -294,21 +204,6 @@
 			"bytes": 2132335
 		},
 		{
-			"targetId": "affinity-expansion-v1-goblin-chieftain-wood",
-			"speciesId": "goblin-chieftain",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-chieftain-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/wood-v1.png",
-			"contentHash": "fa4df42076f9bbc2a9850b24247310ac13e1156c66b9c61498a3adf9aa0db3ee",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2208527
-		},
-		{
 			"targetId": "affinity-expansion-v1-goblin-chieftain-fire",
 			"speciesId": "goblin-chieftain",
 			"affinity": "fire",
@@ -322,21 +217,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2172214
-		},
-		{
-			"targetId": "affinity-expansion-v1-goblin-chieftain-metal",
-			"speciesId": "goblin-chieftain",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/goblin-chieftain-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-chieftain/metal-v1.png",
-			"contentHash": "a936773d5fb77cbe45dad601cff12ac82bdadf7b113b1a27028af68592ca9d9b",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1974905
 		},
 		{
 			"targetId": "affinity-expansion-v1-goblin-chieftain-water",
@@ -384,21 +264,6 @@
 			"bytes": 2021598
 		},
 		{
-			"targetId": "affinity-expansion-v1-dire-wolf-wood",
-			"speciesId": "dire-wolf",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/dire-wolf-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/wood-v1.png",
-			"contentHash": "e7d3600e8cc53b9792582a6c4f947da2fd536bee636924fa3004c4a0640a74d4",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2305481
-		},
-		{
 			"targetId": "affinity-expansion-v1-dire-wolf-fire",
 			"speciesId": "dire-wolf",
 			"affinity": "fire",
@@ -412,21 +277,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2207229
-		},
-		{
-			"targetId": "affinity-expansion-v1-dire-wolf-metal",
-			"speciesId": "dire-wolf",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/dire-wolf-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/metal-v1.png",
-			"contentHash": "d9bcc6c5a2784eb747726aeab71983472c651363514346adc0613e41a9c6737b",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2225388
 		},
 		{
 			"targetId": "affinity-expansion-v1-dire-wolf-water",
@@ -474,21 +324,6 @@
 			"bytes": 1937192
 		},
 		{
-			"targetId": "affinity-expansion-v1-ember-wisp-wood",
-			"speciesId": "ember-wisp",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/wood-v1.png",
-			"contentHash": "6e9b48092e031fc3c77ee10ddb83dfe851b94d6b5607d8cb1f055ff4c1c43a92",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2136673
-		},
-		{
 			"targetId": "affinity-expansion-v1-ember-wisp-fire",
 			"speciesId": "ember-wisp",
 			"affinity": "fire",
@@ -502,21 +337,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1936299
-		},
-		{
-			"targetId": "affinity-expansion-v1-ember-wisp-metal",
-			"speciesId": "ember-wisp",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ember-wisp-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ember-wisp/metal-v1.png",
-			"contentHash": "a1089acb62b482756f1eeb9bdd412aaa7ff600a289bda5e794ac9320a6f60d93",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2282863
 		},
 		{
 			"targetId": "affinity-expansion-v1-ember-wisp-water",
@@ -564,21 +384,6 @@
 			"bytes": 2050674
 		},
 		{
-			"targetId": "affinity-expansion-v1-stone-breaker-wood",
-			"speciesId": "stone-breaker",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/wood-v1.png",
-			"contentHash": "cc3c95a9f06c3a51c44c16aeed4249caf74ad7c8d0b60ad23f26421e74697c5a",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2082256
-		},
-		{
 			"targetId": "affinity-expansion-v1-stone-breaker-fire",
 			"speciesId": "stone-breaker",
 			"affinity": "fire",
@@ -592,21 +397,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2008770
-		},
-		{
-			"targetId": "affinity-expansion-v1-stone-breaker-metal",
-			"speciesId": "stone-breaker",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/stone-breaker-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-breaker/metal-v1.png",
-			"contentHash": "36b0a6fcc6c0c7f8a4f3138da011b3be023dfe563dead785f05db02d33e0fc27",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1923922
 		},
 		{
 			"targetId": "affinity-expansion-v1-stone-breaker-water",
@@ -654,21 +444,6 @@
 			"bytes": 2147163
 		},
 		{
-			"targetId": "affinity-expansion-v1-storm-stalker-wood",
-			"speciesId": "storm-stalker",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/storm-stalker-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/wood-v1.png",
-			"contentHash": "2a21208da3469851b5bffbde4b47528292193bf1f1efc96049c3d6e8609845e2",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2227581
-		},
-		{
 			"targetId": "affinity-expansion-v1-storm-stalker-fire",
 			"speciesId": "storm-stalker",
 			"affinity": "fire",
@@ -682,21 +457,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2024772
-		},
-		{
-			"targetId": "affinity-expansion-v1-storm-stalker-metal",
-			"speciesId": "storm-stalker",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/storm-stalker-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/storm-stalker/metal-v1.png",
-			"contentHash": "2e3c538b627372238eb878d5d076073bd98e2499d4b4c0ef0af0ffc4d087d834",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2290912
 		},
 		{
 			"targetId": "affinity-expansion-v1-storm-stalker-water",
@@ -744,21 +504,6 @@
 			"bytes": 2634522
 		},
 		{
-			"targetId": "affinity-expansion-v1-frost-colossus-wood",
-			"speciesId": "frost-colossus",
-			"affinity": "wood",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-wood-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/wood-v2.png",
-			"contentHash": "4b58b1acc4c3ee01e4d3d1f127a7ccf41387db658bbc6cf2150330e9e9624fa7",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2312785
-		},
-		{
 			"targetId": "affinity-expansion-v1-frost-colossus-fire",
 			"speciesId": "frost-colossus",
 			"affinity": "fire",
@@ -772,21 +517,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2236270
-		},
-		{
-			"targetId": "affinity-expansion-v1-frost-colossus-metal",
-			"speciesId": "frost-colossus",
-			"affinity": "metal",
-			"priority": 1,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/frost-colossus-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-colossus/metal-v1.png",
-			"contentHash": "e35a19685f83c0573ac05b0e8a211b2b3dacb09d423e5422e0610c62594d93d5",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2177024
 		},
 		{
 			"targetId": "affinity-expansion-v1-frost-colossus-water",
@@ -834,21 +564,6 @@
 			"bytes": 2240070
 		},
 		{
-			"targetId": "affinity-expansion-v1-clay-golem-wood",
-			"speciesId": "clay-golem",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-wood-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/wood-v2.png",
-			"contentHash": "f2883b1cf31f3ddcd0c8dad84bfd09a9cb46cf2637e569717baedf1e01726736",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2033091
-		},
-		{
 			"targetId": "affinity-expansion-v1-clay-golem-fire",
 			"speciesId": "clay-golem",
 			"affinity": "fire",
@@ -862,21 +577,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2282431
-		},
-		{
-			"targetId": "affinity-expansion-v1-clay-golem-metal",
-			"speciesId": "clay-golem",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/clay-golem-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/clay-golem/metal-v1.png",
-			"contentHash": "b16b3889a9541d123f82c0eda453b285baa47485012307143daf5b9fb6d9cce3",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2199929
 		},
 		{
 			"targetId": "affinity-expansion-v1-clay-golem-water",
@@ -924,21 +624,6 @@
 			"bytes": 1918971
 		},
 		{
-			"targetId": "affinity-expansion-v1-stone-golem-wood",
-			"speciesId": "stone-golem",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/stone-golem-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/wood-v1.png",
-			"contentHash": "f9cf937049d5660a8c06200410e29357325c007b0c82a98d004d3804428d2977",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2034521
-		},
-		{
 			"targetId": "affinity-expansion-v1-stone-golem-fire",
 			"speciesId": "stone-golem",
 			"affinity": "fire",
@@ -952,21 +637,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1915337
-		},
-		{
-			"targetId": "affinity-expansion-v1-stone-golem-metal",
-			"speciesId": "stone-golem",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/stone-golem-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/stone-golem/metal-v1.png",
-			"contentHash": "00efd4d3ed4b0acc7de8a8e175e53d99d1dcca523e8dfef42f361c3de9dd5e78",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2190922
 		},
 		{
 			"targetId": "affinity-expansion-v1-stone-golem-water",
@@ -1014,21 +684,6 @@
 			"bytes": 2161077
 		},
 		{
-			"targetId": "affinity-expansion-v1-iron-sentinel-wood",
-			"speciesId": "iron-sentinel",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/iron-sentinel-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/wood-v1.png",
-			"contentHash": "4e8f6fc6a9c11b6a81ad7b41456dd368dc6b2cfacbc419a46c7e5912cfbdd147",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2433145
-		},
-		{
 			"targetId": "affinity-expansion-v1-iron-sentinel-fire",
 			"speciesId": "iron-sentinel",
 			"affinity": "fire",
@@ -1042,21 +697,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1942069
-		},
-		{
-			"targetId": "affinity-expansion-v1-iron-sentinel-metal",
-			"speciesId": "iron-sentinel",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/iron-sentinel-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/iron-sentinel/metal-v1.png",
-			"contentHash": "fb85f27991d1b8f4a6eebb58f5843e6ee853a18d825365d1eccff004118d1a6e",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2116445
 		},
 		{
 			"targetId": "affinity-expansion-v1-iron-sentinel-water",
@@ -1104,21 +744,6 @@
 			"bytes": 1986467
 		},
 		{
-			"targetId": "affinity-expansion-v1-crystal-guardian-wood",
-			"speciesId": "crystal-guardian",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/wood-v1.png",
-			"contentHash": "bcb28a5a3f221b5df99410e6ae7d86a4d08d7001464fc6d303bd9ff36adbd877",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2046605
-		},
-		{
 			"targetId": "affinity-expansion-v1-crystal-guardian-fire",
 			"speciesId": "crystal-guardian",
 			"affinity": "fire",
@@ -1132,21 +757,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2155695
-		},
-		{
-			"targetId": "affinity-expansion-v1-crystal-guardian-metal",
-			"speciesId": "crystal-guardian",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/crystal-guardian-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/crystal-guardian/metal-v1.png",
-			"contentHash": "838fc1d52bd1d5c35a1c723d8642348e6cee6d099ffed3c9108f4ffb7e55fe44",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2159638
 		},
 		{
 			"targetId": "affinity-expansion-v1-crystal-guardian-water",
@@ -1194,21 +804,6 @@
 			"bytes": 2155288
 		},
 		{
-			"targetId": "affinity-expansion-v1-grave-sentinel-wood",
-			"speciesId": "grave-sentinel",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/grave-sentinel-wood-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/wood-v2.png",
-			"contentHash": "a61b50c8fb71eb056f56502a6d7fc39fe38e3288ef5f767467deec15b1140c5f",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2065892
-		},
-		{
 			"targetId": "affinity-expansion-v1-grave-sentinel-fire",
 			"speciesId": "grave-sentinel",
 			"affinity": "fire",
@@ -1222,21 +817,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1949100
-		},
-		{
-			"targetId": "affinity-expansion-v1-grave-sentinel-metal",
-			"speciesId": "grave-sentinel",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/grave-sentinel-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/grave-sentinel/metal-v1.png",
-			"contentHash": "868cac4a30f0d31b2e32c69b376289be89bf717bafcad3228bf46b9a4229613b",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2000937
 		},
 		{
 			"targetId": "affinity-expansion-v1-grave-sentinel-water",
@@ -1284,21 +864,6 @@
 			"bytes": 1965687
 		},
 		{
-			"targetId": "affinity-expansion-v1-tower-wraith-wood",
-			"speciesId": "tower-wraith",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-wraith-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/wood-v1.png",
-			"contentHash": "124218ee3517cc60e9bc44d715fb5eeaedf04ea0e4ad59560ccd8c7d128f77c9",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2121911
-		},
-		{
 			"targetId": "affinity-expansion-v1-tower-wraith-fire",
 			"speciesId": "tower-wraith",
 			"affinity": "fire",
@@ -1312,21 +877,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1967711
-		},
-		{
-			"targetId": "affinity-expansion-v1-tower-wraith-metal",
-			"speciesId": "tower-wraith",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-wraith-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-wraith/metal-v1.png",
-			"contentHash": "f2949671627e2ab0b1f42c7a40aec91edf61744a6f77fc164dce74a209c5492a",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1975144
 		},
 		{
 			"targetId": "affinity-expansion-v1-tower-wraith-water",
@@ -1374,21 +924,6 @@
 			"bytes": 1969820
 		},
 		{
-			"targetId": "affinity-expansion-v1-bone-mage-wood",
-			"speciesId": "bone-mage",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/bone-mage-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/wood-v1.png",
-			"contentHash": "755678807185f280e4d0266b458c778482408e6d5a8e8a3c035bf003accace73",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2118678
-		},
-		{
 			"targetId": "affinity-expansion-v1-bone-mage-fire",
 			"speciesId": "bone-mage",
 			"affinity": "fire",
@@ -1402,21 +937,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1972529
-		},
-		{
-			"targetId": "affinity-expansion-v1-bone-mage-metal",
-			"speciesId": "bone-mage",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/bone-mage-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/bone-mage/metal-v1.png",
-			"contentHash": "143087d8d78719c8c4a771c183c61910b7723fae438a840af4f06ecc1ebda120",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2157036
 		},
 		{
 			"targetId": "affinity-expansion-v1-bone-mage-water",
@@ -1464,21 +984,6 @@
 			"bytes": 2126183
 		},
 		{
-			"targetId": "affinity-expansion-v1-venom-wyvern-wood",
-			"speciesId": "venom-wyvern",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/venom-wyvern-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/wood-v1.png",
-			"contentHash": "3b584655e47bd96e446a3d005fbd04facb5f1a6039c9c1363278c0f62c123f86",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2197768
-		},
-		{
 			"targetId": "affinity-expansion-v1-venom-wyvern-fire",
 			"speciesId": "venom-wyvern",
 			"affinity": "fire",
@@ -1492,21 +997,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2083870
-		},
-		{
-			"targetId": "affinity-expansion-v1-venom-wyvern-metal",
-			"speciesId": "venom-wyvern",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/venom-wyvern-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/venom-wyvern/metal-v1.png",
-			"contentHash": "33842e1bda6fa034fe5374f4891a537ef597615e87e91d07f4c94b66e01ef2bd",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1912958
 		},
 		{
 			"targetId": "affinity-expansion-v1-venom-wyvern-water",
@@ -1554,21 +1044,6 @@
 			"bytes": 2305487
 		},
 		{
-			"targetId": "affinity-expansion-v1-armored-elder-drake-wood",
-			"speciesId": "armored-elder-drake",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/armored-elder-drake-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/wood-v1.png",
-			"contentHash": "3a7dfc1d2ac27f3968fb5cafc308f447552a8896ea87f14b506176b90e85af49",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2126309
-		},
-		{
 			"targetId": "affinity-expansion-v1-armored-elder-drake-fire",
 			"speciesId": "armored-elder-drake",
 			"affinity": "fire",
@@ -1582,21 +1057,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2044610
-		},
-		{
-			"targetId": "affinity-expansion-v1-armored-elder-drake-metal",
-			"speciesId": "armored-elder-drake",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/armored-elder-drake-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-elder-drake/metal-v1.png",
-			"contentHash": "4a95ae3d01f25d1e1076ea44954ecb7f76d03217ce1adce9ff8e5a0e8492b314",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2104171
 		},
 		{
 			"targetId": "affinity-expansion-v1-armored-elder-drake-water",
@@ -1644,21 +1104,6 @@
 			"bytes": 2094854
 		},
 		{
-			"targetId": "affinity-expansion-v1-giant-tower-dragon-wood",
-			"speciesId": "giant-tower-dragon",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/giant-tower-dragon-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/wood-v1.png",
-			"contentHash": "b2f521ba12b217cf324c50f056f21542e36a49cec3a612533d87a3b4c5dc1123",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2180111
-		},
-		{
 			"targetId": "affinity-expansion-v1-giant-tower-dragon-fire",
 			"speciesId": "giant-tower-dragon",
 			"affinity": "fire",
@@ -1672,21 +1117,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2259699
-		},
-		{
-			"targetId": "affinity-expansion-v1-giant-tower-dragon-metal",
-			"speciesId": "giant-tower-dragon",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/giant-tower-dragon-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-tower-dragon/metal-v1.png",
-			"contentHash": "a8024d831b721a6f48af5fe1d365a754009924a27f5026ef530a60b87a4f79d9",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2158313
 		},
 		{
 			"targetId": "affinity-expansion-v1-giant-tower-dragon-water",
@@ -1734,21 +1164,6 @@
 			"bytes": 2092061
 		},
 		{
-			"targetId": "affinity-expansion-v1-hungry-mimic-wood",
-			"speciesId": "hungry-mimic",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/hungry-mimic-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/wood-v1.png",
-			"contentHash": "c9855940ba68f2a5007bff4ece7cf0a407a7e6bc939b3bae3ea44119308cb229",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2357260
-		},
-		{
 			"targetId": "affinity-expansion-v1-hungry-mimic-fire",
 			"speciesId": "hungry-mimic",
 			"affinity": "fire",
@@ -1762,21 +1177,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2305839
-		},
-		{
-			"targetId": "affinity-expansion-v1-hungry-mimic-metal",
-			"speciesId": "hungry-mimic",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/hungry-mimic-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hungry-mimic/metal-v1.png",
-			"contentHash": "09823f34d7a6197628336648a102a57901edb008a346db511ab5b0e0f38dc33d",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2325334
 		},
 		{
 			"targetId": "affinity-expansion-v1-hungry-mimic-water",
@@ -1824,21 +1224,6 @@
 			"bytes": 2261411
 		},
 		{
-			"targetId": "affinity-expansion-v1-slime-colony-wood",
-			"speciesId": "slime-colony",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/slime-colony-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/wood-v1.png",
-			"contentHash": "25861486094a3fc869c0075a29014d5769fdf7818c9c85a8b103335c6f47535c",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2243147
-		},
-		{
 			"targetId": "affinity-expansion-v1-slime-colony-fire",
 			"speciesId": "slime-colony",
 			"affinity": "fire",
@@ -1852,21 +1237,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2015191
-		},
-		{
-			"targetId": "affinity-expansion-v1-slime-colony-metal",
-			"speciesId": "slime-colony",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/slime-colony-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/slime-colony/metal-v1.png",
-			"contentHash": "911c57e09c5fc52f9ac8dd5c315885c025afe080cbaddc60eb419b06be7587ac",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2103508
 		},
 		{
 			"targetId": "affinity-expansion-v1-slime-colony-water",
@@ -1914,21 +1284,6 @@
 			"bytes": 2554732
 		},
 		{
-			"targetId": "affinity-expansion-v1-burrowing-worm-wood",
-			"speciesId": "burrowing-worm",
-			"affinity": "wood",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/burrowing-worm-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/wood-v1.png",
-			"contentHash": "df17215aa9ce9543f1aa1c5fab5180c4b5b31b455bc1f19608785d79c2e6404e",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2219045
-		},
-		{
 			"targetId": "affinity-expansion-v1-burrowing-worm-fire",
 			"speciesId": "burrowing-worm",
 			"affinity": "fire",
@@ -1942,21 +1297,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2142961
-		},
-		{
-			"targetId": "affinity-expansion-v1-burrowing-worm-metal",
-			"speciesId": "burrowing-worm",
-			"affinity": "metal",
-			"priority": 2,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/burrowing-worm-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/burrowing-worm/metal-v1.png",
-			"contentHash": "6939c2ada3db360ec97454ff04d6e2e9f4db012804b5967a11e0bce644d5069e",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2342881
 		},
 		{
 			"targetId": "affinity-expansion-v1-burrowing-worm-water",
@@ -2004,21 +1344,6 @@
 			"bytes": 2134343
 		},
 		{
-			"targetId": "affinity-expansion-v1-ogoblin-brute-wood",
-			"speciesId": "ogoblin-brute",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ogoblin-brute-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/wood-v1.png",
-			"contentHash": "6df56f28255e0eefd6c45cc55139661ae40c1b2e0a5908265c0be085939d3f12",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2171476
-		},
-		{
 			"targetId": "affinity-expansion-v1-ogoblin-brute-fire",
 			"speciesId": "ogoblin-brute",
 			"affinity": "fire",
@@ -2032,21 +1357,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2036656
-		},
-		{
-			"targetId": "affinity-expansion-v1-ogoblin-brute-metal",
-			"speciesId": "ogoblin-brute",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ogoblin-brute-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ogoblin-brute/metal-v1.png",
-			"contentHash": "88dd2c938a5dd5d7586ce91888692f0c64070070d3519c61ff0e4bbc73ef6cc5",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2327839
 		},
 		{
 			"targetId": "affinity-expansion-v1-ogoblin-brute-water",
@@ -2094,21 +1404,6 @@
 			"bytes": 2102653
 		},
 		{
-			"targetId": "affinity-expansion-v1-cave-troll-wood",
-			"speciesId": "cave-troll",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/cave-troll-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/wood-v1.png",
-			"contentHash": "6e53ddfe7ad5284b98e4ee390df8a80e328168743673364069f3bddd46116b41",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2013001
-		},
-		{
 			"targetId": "affinity-expansion-v1-cave-troll-fire",
 			"speciesId": "cave-troll",
 			"affinity": "fire",
@@ -2122,21 +1417,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2100705
-		},
-		{
-			"targetId": "affinity-expansion-v1-cave-troll-metal",
-			"speciesId": "cave-troll",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/cave-troll-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/cave-troll/metal-v1.png",
-			"contentHash": "f54e321cb64a162bb930d4e9361451d23a1a4707701b08620bc909f934bd37b9",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2118590
 		},
 		{
 			"targetId": "affinity-expansion-v1-cave-troll-water",
@@ -2184,21 +1464,6 @@
 			"bytes": 1973214
 		},
 		{
-			"targetId": "affinity-expansion-v1-hill-giant-wood",
-			"speciesId": "hill-giant",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/hill-giant-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/wood-v1.png",
-			"contentHash": "a52105f9f022ac162c5442d46cbeffaef46eb1b85dbc5bbdd6ee3b7220d3c8ad",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2162588
-		},
-		{
 			"targetId": "affinity-expansion-v1-hill-giant-fire",
 			"speciesId": "hill-giant",
 			"affinity": "fire",
@@ -2212,21 +1477,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2131704
-		},
-		{
-			"targetId": "affinity-expansion-v1-hill-giant-metal",
-			"speciesId": "hill-giant",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/hill-giant-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hill-giant/metal-v1.png",
-			"contentHash": "92766f931dcc53cc93ffee81a7c76e9846a22c6cde5e61bcca5d72190c505e02",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2135320
 		},
 		{
 			"targetId": "affinity-expansion-v1-hill-giant-water",
@@ -2274,21 +1524,6 @@
 			"bytes": 2046476
 		},
 		{
-			"targetId": "affinity-expansion-v1-frost-giant-wood",
-			"speciesId": "frost-giant",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/frost-giant-wood-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/wood-v2.png",
-			"contentHash": "feae94da7162be315791ae981714036f2a47a2ee17b3375199b2347736cde8a2",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2067143
-		},
-		{
 			"targetId": "affinity-expansion-v1-frost-giant-fire",
 			"speciesId": "frost-giant",
 			"affinity": "fire",
@@ -2302,21 +1537,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1948494
-		},
-		{
-			"targetId": "affinity-expansion-v1-frost-giant-metal",
-			"speciesId": "frost-giant",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/frost-giant-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/frost-giant/metal-v1.png",
-			"contentHash": "13a0a93ffd01af2a463fae11c504fd63dd11e6771a3deae3520ee86647515053",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2038200
 		},
 		{
 			"targetId": "affinity-expansion-v1-frost-giant-water",
@@ -2364,21 +1584,6 @@
 			"bytes": 2092924
 		},
 		{
-			"targetId": "affinity-expansion-v1-hex-adept-wood",
-			"speciesId": "hex-adept",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/wood-v1.png",
-			"contentHash": "ddfd929be8c933b0c8b6ec09b6a8baa11d671936ec359bd9d35289f5eb9a6e98",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2102123
-		},
-		{
 			"targetId": "affinity-expansion-v1-hex-adept-fire",
 			"speciesId": "hex-adept",
 			"affinity": "fire",
@@ -2392,21 +1597,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2210049
-		},
-		{
-			"targetId": "affinity-expansion-v1-hex-adept-metal",
-			"speciesId": "hex-adept",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/hex-adept-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/hex-adept/metal-v1.png",
-			"contentHash": "0913d6aac655b9753a9004671cd3487b2b2d8a6c481214640a4b903070c3d5b6",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2093492
 		},
 		{
 			"targetId": "affinity-expansion-v1-hex-adept-water",
@@ -2454,21 +1644,6 @@
 			"bytes": 2457437
 		},
 		{
-			"targetId": "affinity-expansion-v1-ward-mage-wood",
-			"speciesId": "ward-mage",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ward-mage-wood-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/wood-v2.png",
-			"contentHash": "e4880757e5a299e0279ad40d485fc72d53eb811f5369bea17fc4e61452c77005",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2480015
-		},
-		{
 			"targetId": "affinity-expansion-v1-ward-mage-fire",
 			"speciesId": "ward-mage",
 			"affinity": "fire",
@@ -2482,21 +1657,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2017911
-		},
-		{
-			"targetId": "affinity-expansion-v1-ward-mage-metal",
-			"speciesId": "ward-mage",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/ward-mage-metal-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/ward-mage/metal-v2.png",
-			"contentHash": "ef5ef73417e3117c9cb0e23e2d611403e794be767ed0d614c00b208a82291d81",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2198615
 		},
 		{
 			"targetId": "affinity-expansion-v1-ward-mage-water",
@@ -2544,21 +1704,6 @@
 			"bytes": 2253843
 		},
 		{
-			"targetId": "affinity-expansion-v1-tower-summoner-wood",
-			"speciesId": "tower-summoner",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-summoner-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/wood-v1.png",
-			"contentHash": "78e4c606022f3d2b58df8a01cdb8b9581583e21cdf187a51bd3e1429750408de",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2249158
-		},
-		{
 			"targetId": "affinity-expansion-v1-tower-summoner-fire",
 			"speciesId": "tower-summoner",
 			"affinity": "fire",
@@ -2572,21 +1717,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2091267
-		},
-		{
-			"targetId": "affinity-expansion-v1-tower-summoner-metal",
-			"speciesId": "tower-summoner",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-summoner-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-summoner/metal-v1.png",
-			"contentHash": "8906a5ea6924ebc892c36d0758a31714c9c73abb897748afe4d85f3647c8e82e",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2349882
 		},
 		{
 			"targetId": "affinity-expansion-v1-tower-summoner-water",
@@ -2634,21 +1764,6 @@
 			"bytes": 2151413
 		},
 		{
-			"targetId": "affinity-expansion-v1-tower-archmage-wood",
-			"speciesId": "tower-archmage",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-archmage-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/wood-v1.png",
-			"contentHash": "dbbae54ade9c3288135b12b3aab3d8c890c5fb83b4e7f7aa0179485a3b9a5eec",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2181501
-		},
-		{
 			"targetId": "affinity-expansion-v1-tower-archmage-fire",
 			"speciesId": "tower-archmage",
 			"affinity": "fire",
@@ -2662,21 +1777,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2244760
-		},
-		{
-			"targetId": "affinity-expansion-v1-tower-archmage-metal",
-			"speciesId": "tower-archmage",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tower-archmage-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tower-archmage/metal-v1.png",
-			"contentHash": "7bb5a88efe883491c7e29ef6517ee0189a1ba626a6fca71b4af1abbb0d15aef7",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2322868
 		},
 		{
 			"targetId": "affinity-expansion-v1-tower-archmage-water",
@@ -2724,21 +1824,6 @@
 			"bytes": 2154064
 		},
 		{
-			"targetId": "affinity-expansion-v1-tunnel-spider-wood",
-			"speciesId": "tunnel-spider",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tunnel-spider-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/wood-v1.png",
-			"contentHash": "6777118d1ab47db2bae4a97adcf72bc49b68f285921380abfbdf22a3383a3b7f",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2122392
-		},
-		{
 			"targetId": "affinity-expansion-v1-tunnel-spider-fire",
 			"speciesId": "tunnel-spider",
 			"affinity": "fire",
@@ -2752,21 +1837,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2213256
-		},
-		{
-			"targetId": "affinity-expansion-v1-tunnel-spider-metal",
-			"speciesId": "tunnel-spider",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/tunnel-spider-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/tunnel-spider/metal-v1.png",
-			"contentHash": "5fdbeda143cbff85d4b1edf21a0d1655a947ce8ae2f49f5f58d74c95a47472a5",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 1992921
 		},
 		{
 			"targetId": "affinity-expansion-v1-tunnel-spider-water",
@@ -2814,21 +1884,6 @@
 			"bytes": 1988096
 		},
 		{
-			"targetId": "affinity-expansion-v1-web-caster-wood",
-			"speciesId": "web-caster",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/wood-v1.png",
-			"contentHash": "c4fd0e2672c01bebf719a24b6a774166a3c66c5c911458921010ceeeebd0d146",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2238540
-		},
-		{
 			"targetId": "affinity-expansion-v1-web-caster-fire",
 			"speciesId": "web-caster",
 			"affinity": "fire",
@@ -2842,21 +1897,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1982818
-		},
-		{
-			"targetId": "affinity-expansion-v1-web-caster-metal",
-			"speciesId": "web-caster",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v2",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/web-caster-metal-v2.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/web-caster/metal-v2.png",
-			"contentHash": "6a012b761bb88dcf9a6eb0daff75bc5116728dc78936f047bbfd2d2965584dd4",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2220003
 		},
 		{
 			"targetId": "affinity-expansion-v1-web-caster-water",
@@ -2904,21 +1944,6 @@
 			"bytes": 2367737
 		},
 		{
-			"targetId": "affinity-expansion-v1-armored-brood-guard-wood",
-			"speciesId": "armored-brood-guard",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/armored-brood-guard-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/wood-v1.png",
-			"contentHash": "aad2951d0b2792928806c3a3a27c4aa0e9459075d9e47484b2612f85f370aded",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2170558
-		},
-		{
 			"targetId": "affinity-expansion-v1-armored-brood-guard-fire",
 			"speciesId": "armored-brood-guard",
 			"affinity": "fire",
@@ -2932,21 +1957,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 1948353
-		},
-		{
-			"targetId": "affinity-expansion-v1-armored-brood-guard-metal",
-			"speciesId": "armored-brood-guard",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/armored-brood-guard-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/armored-brood-guard/metal-v1.png",
-			"contentHash": "71793e937c6611f1031c09691336b82c308b0b0e221a4940854d6e5586765800",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2075176
 		},
 		{
 			"targetId": "affinity-expansion-v1-armored-brood-guard-water",
@@ -2994,21 +2004,6 @@
 			"bytes": 1989943
 		},
 		{
-			"targetId": "affinity-expansion-v1-giant-broodmother-wood",
-			"speciesId": "giant-broodmother",
-			"affinity": "wood",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/giant-broodmother-wood-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/wood-v1.png",
-			"contentHash": "7ab32fdae8a471b2ba187b2736dcb1013c00f2b1764c990f613a2e6a709b735a",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2258774
-		},
-		{
 			"targetId": "affinity-expansion-v1-giant-broodmother-fire",
 			"speciesId": "giant-broodmother",
 			"affinity": "fire",
@@ -3022,21 +2017,6 @@
 			"height": 1024,
 			"mediaType": "image/png",
 			"bytes": 2066736
-		},
-		{
-			"targetId": "affinity-expansion-v1-giant-broodmother-metal",
-			"speciesId": "giant-broodmother",
-			"affinity": "metal",
-			"priority": 3,
-			"status": "candidate",
-			"selectedVersion": "v1",
-			"resultPath": "assets/enemies/experiments/affinity-expansion-v1/results/giant-broodmother-metal-v1.json",
-			"candidatePath": "assets/enemies/experiments/affinity-expansion-v1/candidates/giant-broodmother/metal-v1.png",
-			"contentHash": "d92678cf78030415f80365d1df38404fc9d989dfaf29dabdbcf4cf246fdd5cbf",
-			"width": 1536,
-			"height": 1024,
-			"mediaType": "image/png",
-			"bytes": 2152799
 		},
 		{
 			"targetId": "affinity-expansion-v1-giant-broodmother-water",

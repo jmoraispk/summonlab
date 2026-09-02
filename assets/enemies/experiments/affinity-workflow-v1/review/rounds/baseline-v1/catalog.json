@@ -18,19 +18,6 @@
 			"promoted": false
 		},
 		{
-			"targetId": "affinity-workflow-v1-death-knight-wood",
-			"resultId": "result-affinity-workflow-v1-death-knight-wood-v1",
-			"assignmentId": "assignment-affinity-workflow-v1-death-knight-wood",
-			"speciesId": "death-knight",
-			"affinity": "wood",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wood-v1.png",
-			"candidateHash": "e6333d96611236a09efba50606a45732acd0561f456040c2e0693c44572e15f3",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
 			"targetId": "affinity-workflow-v1-death-knight-fire",
 			"resultId": "result-affinity-workflow-v1-death-knight-fire-v1",
 			"assignmentId": "assignment-affinity-workflow-v1-death-knight-fire",
@@ -40,19 +27,6 @@
 			"status": "candidate",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/fire-v1.png",
 			"candidateHash": "ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
-			"targetId": "affinity-workflow-v1-death-knight-metal",
-			"resultId": "result-affinity-workflow-v1-death-knight-metal-v1",
-			"assignmentId": "assignment-affinity-workflow-v1-death-knight-metal",
-			"speciesId": "death-knight",
-			"affinity": "metal",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/metal-v1.png",
-			"candidateHash": "eda3cf74f69dd76dc21a178122c30b51a7ca07bb5725660445d7f8f386f98138",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -96,19 +70,6 @@
 			"promoted": false
 		},
 		{
-			"targetId": "affinity-workflow-v1-elemental-wood",
-			"resultId": "result-affinity-workflow-v1-elemental-wood",
-			"assignmentId": "assignment-affinity-workflow-v1-elemental-wood",
-			"speciesId": "elemental",
-			"affinity": "wood",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/wood-v1.png",
-			"candidateHash": "2c91e873016b001fc8b5d98a2e81171a45d7e064c17ff4ce7aadd0588cc0f90a",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
 			"targetId": "affinity-workflow-v1-elemental-fire",
 			"resultId": "result-affinity-workflow-v1-elemental-fire-v1",
 			"assignmentId": "assignment-affinity-workflow-v1-elemental-fire",
@@ -118,19 +79,6 @@
 			"status": "candidate",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/fire-v1.png",
 			"candidateHash": "c10e8876e592e493559287364f3c1564e98488622098a796d11167bacd145b92",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
-			"targetId": "affinity-workflow-v1-elemental-metal",
-			"resultId": "result-affinity-workflow-v1-elemental-metal-v1",
-			"assignmentId": "assignment-affinity-workflow-v1-elemental-metal",
-			"speciesId": "elemental",
-			"affinity": "metal",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/metal-v1.png",
-			"candidateHash": "b026e5b7175c2631ea510e388b682261a6a1b5cdcdd5d99903b79926ada69a8e",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -174,19 +122,6 @@
 			"promoted": false
 		},
 		{
-			"targetId": "affinity-workflow-v1-grey-wolf-wood",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-wood-v1",
-			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-wood",
-			"speciesId": "grey-wolf",
-			"affinity": "wood",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
-			"candidateHash": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
 			"targetId": "affinity-workflow-v1-grey-wolf-fire",
 			"resultId": "result-affinity-workflow-v1-grey-wolf-fire",
 			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-fire",
@@ -196,19 +131,6 @@
 			"status": "revise",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/fire-v1.png",
 			"candidateHash": "e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
-			"targetId": "affinity-workflow-v1-grey-wolf-metal",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-metal",
-			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-metal",
-			"speciesId": "grey-wolf",
-			"affinity": "metal",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
-			"candidateHash": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321",
 			"reviewState": "pending",
 			"promoted": false
 		},
@@ -252,19 +174,6 @@
 			"promoted": false
 		},
 		{
-			"targetId": "affinity-workflow-v1-cave-bear-wood",
-			"resultId": "result-affinity-workflow-v1-cave-bear-wood",
-			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-wood",
-			"speciesId": "cave-bear",
-			"affinity": "wood",
-			"cohort": "controlled",
-			"status": "revise",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png",
-			"candidateHash": "6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
 			"targetId": "affinity-workflow-v1-cave-bear-fire",
 			"resultId": "result-affinity-workflow-v1-cave-bear-fire",
 			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-fire",
@@ -274,19 +183,6 @@
 			"status": "candidate",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/fire-v1.png",
 			"candidateHash": "a36c9c4da2439c8557cfbb71d0e997f0147b1c06d444969ad7acb960cb563e6a",
-			"reviewState": "pending",
-			"promoted": false
-		},
-		{
-			"targetId": "affinity-workflow-v1-cave-bear-metal",
-			"resultId": "result-affinity-workflow-v1-cave-bear-metal",
-			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-metal",
-			"speciesId": "cave-bear",
-			"affinity": "metal",
-			"cohort": "controlled",
-			"status": "candidate",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/metal-v1.png",
-			"candidateHash": "54ddc74f76d84dbdc057847412f036a165c530c406b4bf710bdf6ca1f06488c1",
 			"reviewState": "pending",
 			"promoted": false
 		},

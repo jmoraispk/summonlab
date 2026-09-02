@@ -8,11 +8,9 @@ accepted target from preserved visual evidence.
 
 Current production target: Normal, Fire, Earth, Wind, Water
 
-Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
-
-The online images are web derivatives of candidate artwork. Earth remains a current target without
-an available candidate in this preserved set. Candidate evidence is not approved or runtime art;
-source provenance and review state remain in the visual catalog.
+The online images are web derivatives of candidate artwork for Normal, Fire, Wind, and Water. Earth
+remains a current target without an available candidate in this source set. Candidate evidence is
+not approved or runtime art; source provenance and review state remain in the visual catalog.
 
 ## Arachnids
 

@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import {
-		ENEMY_AFFINITY_ARCHETYPE_LINKS,
-		ENEMY_AFFINITY_EXPANSION_ARCHETYPE_LINKS,
-		ENEMY_AFFINITY_FAMILY_PILOTS,
 		ENEMY_ARCHETYPES,
 		ENEMY_REVIEW_FAMILIES,
 		PACK_TWO_MONSTER_ARCHETYPES,
@@ -33,7 +30,6 @@
 		packLabel: string;
 		image: string;
 		assetKey: string;
-		affinityPilot: (typeof ENEMY_AFFINITY_FAMILY_PILOTS)[number] | null;
 	}
 
 	interface GalleryEnemy {
@@ -53,31 +49,7 @@
 		tactics: string;
 		counterLabel: string;
 		counter: string;
-		affinitySpeciesId: string | null;
-		affinityRoute: 'workflow' | 'expansion' | null;
 	}
-
-	const affinityPilotByFamily: ReadonlyMap<string, (typeof ENEMY_AFFINITY_FAMILY_PILOTS)[number]> =
-		new Map(ENEMY_AFFINITY_FAMILY_PILOTS.map((pilot) => [pilot.familyId, pilot] as const));
-	const affinityLinkByArchetype: ReadonlyMap<
-		string,
-		{ speciesId: string; route: 'workflow' | 'expansion' }
-	> = new Map<string, { speciesId: string; route: 'workflow' | 'expansion' }>([
-		...ENEMY_AFFINITY_ARCHETYPE_LINKS.map(
-			(link) =>
-				[
-					link.archetypeId,
-					{ speciesId: link.affinitySpeciesId, route: 'workflow' as const }
-				] as const
-		),
-		...ENEMY_AFFINITY_EXPANSION_ARCHETYPE_LINKS.map(
-			(link) =>
-				[
-					link.archetypeId,
-					{ speciesId: link.affinitySpeciesId, route: 'expansion' as const }
-				] as const
-		)
-	]);
 
 	const plateImages: Record<string, string> = {
 		'goblinoids-v1': goblinoids,
@@ -113,8 +85,7 @@
 			pack: 'pack-1' as const,
 			packLabel: 'Pack 1',
 			image: plateImages[family.plate]!,
-			assetKey: family.plate,
-			affinityPilot: affinityPilotByFamily.get(family.id) ?? null
+			assetKey: family.plate
 		})),
 		...PACK_TWO_MONSTER_FAMILIES.map((family) => ({
 			id: family.id,
@@ -123,8 +94,7 @@
 			pack: 'pack-2' as const,
 			packLabel: 'Pack 2',
 			image: plateImages[family.plate]!,
-			assetKey: family.plate,
-			affinityPilot: affinityPilotByFamily.get(family.id) ?? null
+			assetKey: family.plate
 		}))
 	];
 
@@ -137,7 +107,6 @@
 			const family = familyById.get(entry.family)!;
 			const sourceFamily = packOneFamilyById.get(entry.family)!;
 			const familyEnemyIds: readonly string[] = sourceFamily.enemyIds;
-			const affinityLink = affinityLinkByArchetype.get(entry.id) ?? null;
 			return {
 				id: entry.id,
 				name: entry.name,
@@ -154,16 +123,13 @@
 				tacticsLabel: 'Skills',
 				tactics: entry.skills.join(' · '),
 				counterLabel: 'Teaches',
-				counter: entry.teaches.join(' · '),
-				affinitySpeciesId: affinityLink?.speciesId ?? null,
-				affinityRoute: affinityLink?.route ?? null
+				counter: entry.teaches.join(' · ')
 			};
 		}),
 		...PACK_TWO_MONSTER_ARCHETYPES.map((entry) => {
 			const family = familyById.get(entry.family)!;
 			const sourceFamily = packTwoFamilyById.get(entry.family)!;
 			const familyMonsterIds: readonly string[] = sourceFamily.monsterIds;
-			const affinityLink = affinityLinkByArchetype.get(entry.id) ?? null;
 			return {
 				id: entry.id,
 				name: entry.name,
@@ -180,9 +146,7 @@
 				tacticsLabel: 'Telegraph',
 				tactics: entry.telegraph,
 				counterLabel: 'Weak point',
-				counter: entry.weakPoint,
-				affinitySpeciesId: affinityLink?.speciesId ?? null,
-				affinityRoute: affinityLink?.route ?? null
+				counter: entry.weakPoint
 			};
 		})
 	];
@@ -314,14 +278,6 @@
 						<div>
 							<span>{family.packLabel} · {family.category}</span>
 							<h3>{family.name}</h3>
-							{#if family.affinityPilot}
-								<a
-									class="affinity-link"
-									data-testid="family-affinity-pilot"
-									href="{resolve('/forge/enemies/affinity-workflow')}#affinity-{family.affinityPilot
-										.affinitySpeciesId}">{family.affinityPilot.label} · six variants →</a
-								>
-							{/if}
 						</div>
 						<code>{family.assetKey}</code>
 					</div>
@@ -370,18 +326,6 @@
 								<dd>{enemy.counter}</dd>
 							</div>
 						</dl>
-						{#if enemy.affinitySpeciesId && enemy.affinityRoute}
-							<a
-								class="affinity-link enemy-affinity-link"
-								data-testid="enemy-affinity-link"
-								href="{resolve(
-									enemy.affinityRoute === 'workflow'
-										? '/forge/enemies/affinity-workflow'
-										: '/forge/enemies/affinity-expansion'
-								)}#affinity-{enemy.affinitySpeciesId}"
-								>Explore Normal + five elemental affinities →</a
-							>
-						{/if}
 					</article>
 				{/each}
 			</div>
@@ -707,22 +651,6 @@
 		color: rgba(244, 239, 229, 0.34);
 		font-size: 0.54rem;
 	}
-	.affinity-link {
-		display: inline-flex;
-		margin-top: 0.7rem;
-		color: #76d2e3;
-		font-size: 0.54rem;
-		font-weight: 700;
-		letter-spacing: 0.05em;
-		line-height: 1.45;
-		text-transform: uppercase;
-	}
-	.affinity-link:hover,
-	.affinity-link:focus-visible {
-		color: #b7f2fc;
-		text-decoration: underline;
-		text-underline-offset: 0.25rem;
-	}
 	.enemy-grid {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -793,11 +721,6 @@
 		font-size: 0.62rem;
 		line-height: 1.5;
 		text-transform: capitalize;
-	}
-	.enemy-affinity-link {
-		margin: 0 1rem 1rem;
-		padding-top: 0.8rem;
-		border-top: 1px solid rgba(118, 210, 227, 0.22);
 	}
 	.proof-grid {
 		display: grid;

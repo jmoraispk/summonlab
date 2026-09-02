@@ -23,9 +23,9 @@ automatically approved runtime assets.
 
 The [monster database](../creatures/monsters/README.md) is the individual production/review surface:
 one page per authored monster, with the identity reference first and the Normal plus Fire, Earth,
-Wind, and Water production target beneath it. Wood and Metal images remain separately labeled
-legacy-candidate evidence. The checked export converts candidate PNGs into compact web derivatives
-while retaining source paths, hashes, versions, and review status.
+Wind, and Water production target beneath it. The checked export converts available candidate PNGs
+into compact web derivatives while retaining source paths, hashes, versions, and review status.
+Earth remains pending, and no candidate is treated as approved or runtime art.
 
 ## Deferred breadth
 

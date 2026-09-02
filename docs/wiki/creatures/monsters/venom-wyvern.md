@@ -23,20 +23,14 @@ Runtime status: **not scheduled**
 
 Current production target: Normal, Fire, Earth, Wind, Water
 
-Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
-
-The online plate leads with the Normal identity reference. The current-target selector presents
-available Fire, Wind, and Water candidate evidence; Earth remains a current target even though no
-Earth candidate exists in this preserved source set. Candidate evidence is neither approved nor
-runtime artwork.
-
-The separate legacy section preserves the old Wood and Metal studies for review without presenting
-them as current affinities. Source paths and hashes remain in the visual catalog.
+The online plate leads with the Normal identity reference. The selector presents available Fire,
+Wind, and Water candidate evidence; Earth remains a current target even though no Earth candidate
+exists in this source set. Candidate evidence is neither approved nor runtime artwork.
 
 ## Canon boundary
 
 - The monster identity, family, battlefield role, telegraph, and counterplay are authored content.
-- The six preserved source images are visual proposals for one persistent identity.
+- The four available source images are visual proposals for one persistent identity.
 - Visual artwork does not establish combat statistics, morality, culture, or a universal affinity
   assignment.
 - Human approval and runtime promotion remain separate decisions.
