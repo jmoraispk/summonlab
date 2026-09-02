@@ -133,7 +133,21 @@ Links navigate and buttons change local state. The archive index owns global dis
 surfaces use domain selectors, local label filters, ledger rows, and direct canonical links. An
 optional label filters compatibility but never appears as an ownership node; unlabeled family-wide
 skills remain visible under every label filter. Circular nodes are reserved for top-level taxonomy
-roots; family and skill records remain flat ledger content.
+roots. Family records remain flat ledger content; a dedicated individual-skill visualization may
+use the accepted hexagonal rarity frame without turning the family ledger into a generic card grid.
+
+### Skill rarity frames
+
+The canonical comparison source is `assets/wiki/skills/rarity-frame-v1/`. Skill rarity uses one
+domain-independent material ladder: weathered iron F, aged bronze E, tempered blue steel D,
+moonlit silver C, blackened amethyst B, champagne electrum A, and ceremonial antique gold S.
+Ornament remains restrained through C, B relies on faceted mineral material, A adds fine spear-leaf
+accents, and S owns the crowned ceremonial apex. Frame rarity and bearer mastery remain separate;
+mastery and level appear only in the second text row beneath a skill.
+
+The approved comparison plate is not a sprite sheet. Runtime work must consume separately produced
+transparent frame assets rather than cropping the plate or approximating its ornament with CSS or
+inline SVG.
 
 ### Forms and overlays
 

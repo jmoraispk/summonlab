@@ -42,6 +42,8 @@ replay evidence make that claim verifiable rather than aspirational.
   six-form candidate set migrating to Normal plus Fire, Earth, Wind, and Water.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
+- [Skill rarity frames](art/skill-rarity-frames.md) — the accepted F–S material and ornament
+  grammar for hexagonal skill displays.
 - [Living Village hero packet](art/living-village-heroes.md) — the fixed Dara, Mara, Jori, Kira,
   Iven, and Remy roster, with bounded derivative work and no additional prototype faces.
 - [Every person can contribute](principles/every-person-contributes.md) — the dignity, opportunity,

@@ -30,6 +30,7 @@ const assetSources = import.meta.glob(
 		'../../../../../assets/heroes/visuals/hearth-roster-pair-v1.png',
 		'../../../../../assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png',
 		'../../../../../assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png',
+		'../../../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp',
 		'../../../../../assets/settlements/hearth-01/hearth-01-environment-v1.png'
 	],
 	{

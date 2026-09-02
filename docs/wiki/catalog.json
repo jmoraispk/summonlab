@@ -677,6 +677,25 @@
       "spoilerScope": "internal"
     },
     {
+      "wikiId": "art.skill-rarity-frames",
+      "path": "docs/wiki/art/skill-rarity-frames.md",
+      "pageType": "visual-brief",
+      "owner": "skill-catalog",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "approved",
+      "spoilerScope": "public",
+      "assets": [
+        {
+          "assetKey": "skill-rarity-option-c-v1",
+          "file": "assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp",
+          "status": "approved",
+          "generationMode": "built-in-imagegen",
+          "provenanceFile": "assets/wiki/skills/rarity-frame-v1/catalog.json"
+        }
+      ]
+    },
+    {
       "wikiId": "art.hero-rarity-frames",
       "path": "docs/wiki/art/hero-rarity-frames.md",
       "pageType": "visual-brief",

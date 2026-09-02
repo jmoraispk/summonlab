@@ -42,6 +42,11 @@ The same fixed scale is proposed for skills, materials, and equipment.
 | A | Fabled | Holder and skill known across a region | 1 in 10,000 | 15 |
 | S | Legendary | Existence disputed; one holder or none | 1 in 100,000 | 2 |
 
+The accepted [skill rarity-frame specification](../../art/skill-rarity-frames.md) maps these bands
+to a fixed material ladder: weathered iron, aged bronze, tempered blue steel, moonlit silver,
+blackened amethyst, champagne electrum, and ceremonial antique gold. Frame material communicates
+rarity; it never communicates a bearer's mastery or level.
+
 Rarity words describe scarcity and origin; mastery words describe practitioner command, so their
 vocabularies must not overlap. The source reserves Divine for off-cycle affinity flavor and offers
 an alternate less-gamey set: Common, Uncommon, Scarce, Storied, Ancient, Fabled, Legendary.

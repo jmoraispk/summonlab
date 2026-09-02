@@ -1,0 +1,57 @@
+{
+	"schemaVersion": "summonlab-wiki-generated-art-v1",
+	"status": "approval-candidate",
+	"assets": [
+		{
+			"assetKey": "skill-rarity-option-c-v1",
+			"status": "approval-candidate",
+			"generationMode": "built-in-imagegen",
+			"createdAt": "2026-09-02T00:38:26Z",
+			"prompt": "Use case: precise-object-edit\nDirection name: Arcane Material Refinement\nAsset type: preview-only Summonlab skill-rarity frame comparison, 1488 x 1059 landscape.\nInput images: Image 1 is the edit target and style anchor.\n\nPrimary request: Create a third independent interpretation of the approved material hierarchy, emphasizing nuanced surface finish and restrained arcane craft while keeping ornaments economical:\nF = matte charcoal iron with hammered wear, a narrow undecorated rim and almost invisible rivets.\nE = softly burnished aged bronze with brown-gold patina, one fine inset line and understated corner collars.\nD = dark tempered blue steel with a subtle heat-treated cobalt sheen, crisp double bevel and tiny angular vertex cuts.\nC = clean moonlit silver, brighter than D but not glowing, a precise stepped rim with one narrow geometric engraved channel.\nB = keep the blackened amethyst frame; deepen the faceted purple mineral inset slightly, with no new outward ornament.\nA = keep champagne electrum; use a gentle pearl-metal highlight, doubled inner rim, six delicate engraved spear-leaf accents, and the refined A crest.\nS = preserve the existing saturated ceremonial antique-gold crown frame, ornament, material, and prominence as closely as possible.\n\nStyle/medium: elegant premium dark-fantasy game UI, realistic forged materials, fine engraving, subtle arcane undertones, pure black background.\nComposition/framing: exact seven-tile 4-over-3 layout from Image 1; consistent hex size and spacing.\n\nText (verbatim):\n\"F\" \"Measured Cut\" \"NOVICE · LV 1\"\n\"E\" \"Ember\" \"NOVICE · LV 3\"\n\"D\" \"Parry\" \"INTERMEDIATE · LV 5\"\n\"C\" \"Stone Skin\" \"INTERMEDIATE · LV 7\"\n\"B\" \"Fireball\" \"EXPERT · LV 10\"\n\"A\" \"Thousand Cuts\" \"EXPERT · LV 3\"\n\"S\" \"Worldfire\" \"MASTER · LV 10\"\n\nConstraints: Change only the frame materials and named ornament details. Preserve icons, inner skill illustrations, text, lettering, font treatment, positions, proportions, and background. The material sequence must be visually obvious: dark iron → bronze → blue steel → silver → dark amethyst → champagne electrum → ornate gold.\nAvoid: duplicate warm metals at F/D; duplicate silvers at E/C; orange or bronze D; flat gray D; bright white A; extra B filigree; modifying S; excessive bloom; altered text; new symbols; watermark.",
+			"referenceInputs": [
+				{
+					"assetKey": "skill-rarity-comparison-base-v1",
+					"file": "assets/wiki/skills/rarity-frame-v1/references/skill-rarity-comparison-base-v1.png",
+					"width": 1487,
+					"height": 1058,
+					"bytes": 2073816,
+					"sha256": "3f6599773c5b053752832fdb7e818210b9ca262935837ce298dc5ef6dff845cb",
+					"prompt": "Use case: precise-object-edit\nAsset type: preview-only Summonlab skill-rarity component study, same 1488 x 1059 landscape composition.\nInput image: Image 1 is the edit target. Preserve it exactly except for the three narrowly specified frame-treatment changes below.\n\nPrimary request:\n1. A / Thousand Cuts: keep the muted champagne-electrum base but increase its restrained pearlescent metallic shine slightly, about 20 percent. Add a refined double inner rim plus small symmetrical engraved flourishes at the six vertices and immediately around the A medallion. The ornament should make A unmistakably more prestigious than C without becoming as ornate, saturated, bright, or thorn-crowned as S. A should be elegant and crafted, not pale white.\n2. F / Measured Cut and E / Ember: swap only their existing frame material and color treatments. F receives E's current dull dark aged-bronze treatment. E receives F's current cleaner cool-steel treatment. Keep the F and E letters, icons, skill names, mastery text, levels, positions, and tile interiors attached to their original tiles.\n3. Leave every other part unchanged.\n\nExact text to preserve verbatim:\nF — Measured Cut — NOVICE · LV 1\nE — Ember — NOVICE · LV 3\nD — Parry — INTERMEDIATE · LV 5\nC — Stone Skin — INTERMEDIATE · LV 7\nB — Fireball — EXPERT · LV 10\nA — Thousand Cuts — EXPERT · LV 3\nS — Worldfire — MASTER · LV 10\n\nInvariants:\n- Preserve exact seven-tile layout, black background, all sizes and positions, icons, F E D C B A S letters, names, mastery/level text, every other frame F/E/D/C/B/S, typography, and spacing.\n- B remains dark amethyst. S remains ornate saturated gold.\n\nConstraints: change only the A frame material, color, shine, and local glow. No changes elsewhere.\nAvoid: pale white, ivory, platinum glare, bright silver, high contrast, yellow gold that matches S, muddy brown, new objects, altered text, watermark."
+				}
+			],
+			"sourceOriginal": {
+				"file": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+				"width": 1487,
+				"height": 1058,
+				"bytes": 2013521,
+				"sha256": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+			},
+			"derived": {
+				"file": "assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp",
+				"width": 1487,
+				"height": 1058,
+				"bytes": 201506,
+				"sha256": "a3c466ab144b8658c7da16b06bc421fded2c20b3960dfeb816bd538f4555f9be",
+				"recipe": "sharp lossless-dimension WebP conversion; quality 90 effort 5"
+			},
+			"recognitionChecks": [
+				{
+					"name": "seven rarity materials remain distinct",
+					"passed": true,
+					"note": "Visual inspection confirms iron F, bronze E, blue-steel D, silver C, amethyst B, electrum A, and gold S treatments."
+				},
+				{
+					"name": "ornament hierarchy remains legible",
+					"passed": true,
+					"note": "F through C remain restrained, B relies on faceted amethyst, A uses fine spear-leaf accents, and S retains the strongest ceremonial silhouette."
+				},
+				{
+					"name": "labels and comparison layout preserved",
+					"passed": true,
+					"note": "All seven rarity letters, skill names, mastery labels, and level examples remain readable in the 4-over-3 comparison plate."
+				}
+			],
+			"productionNote": "The owner selected the third generated interpretation, referred to as Option C, as the canonical skill rarity-frame specification. The comparison plate is approved visual authority; individual transparent runtime exports remain a separate production task."
+		}
+	]
+}
