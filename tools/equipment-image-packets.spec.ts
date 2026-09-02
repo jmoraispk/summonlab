@@ -12,6 +12,7 @@ import {
 } from './equipment-material-production-lib.js';
 import {
 	buildEquipmentProfileAcceptance,
+	buildDependentArmourPackets,
 	buildRootEquipmentPackets,
 	canonicalJsonSha256,
 	materializeRootEquipmentPackets,
@@ -204,6 +205,149 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 `);
 		expect(isolatedPrompt.endsWith('\n')).toBe(false);
 		expect(fullSetPrompt.endsWith('\n')).toBe(false);
+	});
+
+	it('builds exactly Head, Torso, Legs, and Boots from one accepted full-set source', () => {
+		const sources = fixture();
+		const rootPackets = buildRootEquipmentPackets({ ...sources, assignedAt: ASSIGNED_AT });
+		const sourcePacket = rootPackets.find(
+			({ target }) => target.targetId === 'material-equipment-v1-copper-heavy-armour-full-set-v1'
+		)!;
+		const gate = sources.allocation.reviewGates.find(
+			({ sourceTargetId }) => sourceTargetId === sourcePacket.target.targetId
+		)!;
+		const receipt = {
+			schemaVersion: 'equipment-armour-source-review-receipt-v1' as const,
+			receiptId: `${gate.gateId}-receipt`,
+			runId: 'material-equipment-v1-run-001',
+			runPlanCanonicalSha256: '1'.repeat(64),
+			manifestCanonicalSha256: canonicalJsonSha256(sources.manifest),
+			allocationCanonicalSha256: canonicalJsonSha256(sources.allocation),
+			profileCanonicalSha256: canonicalJsonSha256(sources.profile),
+			gateId: gate.gateId,
+			sourceTargetId: sourcePacket.target.targetId,
+			sourceResultCanonicalSha256: '2'.repeat(64),
+			candidateSha256: '3'.repeat(64),
+			decision: 'accepted' as const,
+			reviewer: 'equipment-art-director',
+			reviewedAt: '2026-09-02T00:07:00.000Z'
+		};
+		const packets = buildDependentArmourPackets({
+			...sources,
+			sourceTarget: sourcePacket.target,
+			receipt,
+			assignedAt: '2026-09-02T00:07:01.000Z'
+		});
+
+		expect(packets).toHaveLength(4);
+		expect(packets.map(({ target }) => target.equipment.slot)).toEqual([
+			'head',
+			'torso',
+			'legs',
+			'boots'
+		]);
+		expect(packets.map(({ target }) => target.targetId)).toEqual(gate.unlocksTargetIds);
+		for (const { target, assignment } of packets) {
+			expect(target.references[0]).toEqual({
+				path: sourcePacket.target.output.candidatePath,
+				contentHash: receipt.candidateSha256,
+				purpose:
+					'Authoritative accepted full-set continuity source; preserve material, silhouette language, palette, trim, fastenings, wear, ornament, and exact slot boundary.'
+			});
+			expect(target.references.slice(1)).toEqual(sources.profile.references);
+			expect(target.presentation).toMatchObject({
+				mode: 'dependent-armour-piece',
+				canvas: { width: 1024, height: 1024, mediaType: 'image/png' }
+			});
+			expect(target.consistencySource).toEqual({
+				targetId: sourcePacket.target.targetId,
+				candidatePath: sourcePacket.target.output.candidatePath,
+				candidateSha256: receipt.candidateSha256,
+				reviewReceiptPath: gate.evidencePath,
+				reviewReceiptCanonicalSha256: canonicalJsonSha256(receipt)
+			});
+			expect(assignment.targetId).toBe(target.targetId);
+			expect(assignment.permittedOutputs).toEqual(target.output);
+
+			const prompt = renderEquipmentPrompt(target);
+			const namedSlots = ['head', 'torso', 'legs', 'boots'].filter((slot) =>
+				new RegExp(`\\b${slot}\\b`, 'iu').test(prompt)
+			);
+			expect(namedSlots).toEqual([target.equipment.slot]);
+			expect(prompt).toContain('Do not redesign the accepted full set.');
+			expect(prompt).toContain('Canvas: 1024x1024 image/png');
+		}
+	});
+
+	it('validates a dependent packet against its exact accepted receipt and ordered source bytes', async () => {
+		const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-dependent-packet-'));
+		temporaryDirectories.push(workspaceRoot);
+		const sources = fixture();
+		const sourcePacket = buildRootEquipmentPackets({ ...sources, assignedAt: ASSIGNED_AT }).find(
+			({ target }) => target.targetId.endsWith('copper-heavy-armour-full-set-v1')
+		)!;
+		const gate = sources.allocation.reviewGates.find(
+			({ sourceTargetId }) => sourceTargetId === sourcePacket.target.targetId
+		)!;
+		const sourceBytes = Buffer.from('accepted-copper-heavy-armour-source');
+		const receipt = {
+			schemaVersion: 'equipment-armour-source-review-receipt-v1' as const,
+			receiptId: `${gate.gateId}-receipt`,
+			runId: 'material-equipment-v1-run-001',
+			runPlanCanonicalSha256: '1'.repeat(64),
+			manifestCanonicalSha256: canonicalJsonSha256(sources.manifest),
+			allocationCanonicalSha256: canonicalJsonSha256(sources.allocation),
+			profileCanonicalSha256: canonicalJsonSha256(sources.profile),
+			gateId: gate.gateId,
+			sourceTargetId: sourcePacket.target.targetId,
+			sourceResultCanonicalSha256: '2'.repeat(64),
+			candidateSha256: createHash('sha256').update(sourceBytes).digest('hex'),
+			decision: 'accepted' as const,
+			reviewer: 'equipment-art-director',
+			reviewedAt: '2026-09-02T00:07:00.000Z'
+		};
+		const packet = buildDependentArmourPackets({
+			...sources,
+			sourceTarget: sourcePacket.target,
+			receipt
+		})[0]!;
+		const write = async (repositoryPath: string, bytes: string | Uint8Array) => {
+			const absolutePath = path.join(workspaceRoot, ...repositoryPath.split('/'));
+			await mkdir(path.dirname(absolutePath), { recursive: true });
+			await writeFile(absolutePath, bytes);
+		};
+		await Promise.all([
+			write(gate.evidencePath, `${JSON.stringify(receipt, null, '\t')}\n`),
+			write(sourcePacket.target.output.candidatePath, sourceBytes),
+			...sources.profile.references.map(async (reference) =>
+				write(reference.path, await readFile(path.join(process.cwd(), reference.path)))
+			)
+		]);
+
+		await expect(
+			validateEquipmentPacket({
+				workspaceRoot,
+				...sources,
+				target: packet.target,
+				assignment: packet.assignment
+			})
+		).resolves.toEqual({
+			ownedPaths: [packet.target.output.candidatePath, packet.target.output.resultPath],
+			promptSha256: createHash('sha256').update(renderEquipmentPrompt(packet.target)).digest('hex')
+		});
+
+		await write(
+			gate.evidencePath,
+			`${JSON.stringify({ ...receipt, decision: 'rejected' }, null, '\t')}\n`
+		);
+		await expect(
+			validateEquipmentPacket({
+				workspaceRoot,
+				...sources,
+				target: packet.target,
+				assignment: packet.assignment
+			})
+		).rejects.toThrow(/accepted|receipt/iu);
 	});
 
 	it('validates strict packet bindings, ordered reference bytes, hashes, and empty outputs', async () => {

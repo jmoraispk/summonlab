@@ -4,12 +4,14 @@ import path from 'node:path';
 
 import {
 	EQUIPMENT_PRODUCTION_ROOT,
+	EquipmentArmourSourceReviewReceiptSchema,
 	EquipmentImageAssignmentSchema,
 	EquipmentImageTargetSchema,
 	EquipmentVisualProfileAcceptanceSchema,
 	EquipmentVisualProfileSchema,
 	type EquipmentImageAssignment,
 	type EquipmentImageTarget,
+	type EquipmentArmourSourceReviewReceipt,
 	type EquipmentVisualProfile,
 	type EquipmentVisualProfileAcceptance
 } from './equipment-image-production-contract.js';
@@ -159,6 +161,19 @@ export interface EquipmentRootPacket {
 	readonly target: EquipmentImageTarget;
 	readonly assignment: EquipmentImageAssignment;
 }
+
+export type EquipmentDependentArmourPacket = EquipmentRootPacket;
+
+const AUTHORITATIVE_ARMOUR_SOURCE_PURPOSE =
+	'Authoritative accepted full-set continuity source; preserve material, silhouette language, palette, trim, fastenings, wear, ornament, and exact slot boundary.' as const;
+
+const SOURCE_CONTINUITY_CRITERION = {
+	criterionId: 'accepted-source-continuity',
+	category: 'source-continuity',
+	description:
+		'The isolated piece exactly preserves the accepted full set material, silhouette language, palette, trim, fastenings, wear, ornament, and slot boundary.',
+	required: true
+} as const;
 
 function artifactPacketPath(outputPath: string, directory: 'targets' | 'assignments'): string {
 	const candidatePrefix = `${EQUIPMENT_PRODUCTION_ROOT}/candidates/`;
@@ -337,6 +352,157 @@ export function buildRootEquipmentPackets(input: {
 	return packets;
 }
 
+function dependentComposition(slot: 'head' | 'torso' | 'legs' | 'boots'): string {
+	const compositions = {
+		head: 'Isolate exactly the matching Head piece inside the safe margin',
+		torso: 'Isolate exactly the matching Torso piece inside the safe margin',
+		legs: 'Isolate exactly the complete matching Legs lower-body item or required pair inside the safe margin',
+		boots: 'Isolate exactly one matching Boots pair inside the safe margin'
+	} as const;
+	return compositions[slot];
+}
+
+export function buildDependentArmourPackets(input: {
+	readonly manifest: EquipmentManifest;
+	readonly allocation: EquipmentAllocation;
+	readonly profile: EquipmentVisualProfile;
+	readonly acceptance: EquipmentVisualProfileAcceptance;
+	readonly sourceTarget: EquipmentImageTarget;
+	readonly receipt: EquipmentArmourSourceReviewReceipt;
+	readonly assignedAt?: string;
+}): EquipmentDependentArmourPacket[] {
+	const profile = EquipmentVisualProfileSchema.parse(input.profile);
+	const acceptance = EquipmentVisualProfileAcceptanceSchema.parse(input.acceptance);
+	const sourceTarget = EquipmentImageTargetSchema.parse(input.sourceTarget);
+	const receipt = EquipmentArmourSourceReviewReceiptSchema.parse(input.receipt);
+	assertRootInputs(input.manifest, input.allocation, profile, acceptance);
+	if (receipt.decision !== 'accepted') {
+		throw new Error('Only an accepted Armour source-review receipt can build dependent packets');
+	}
+	if (
+		receipt.manifestCanonicalSha256 !== canonicalJsonSha256(input.manifest) ||
+		receipt.allocationCanonicalSha256 !== canonicalJsonSha256(input.allocation) ||
+		receipt.profileCanonicalSha256 !== canonicalJsonSha256(profile)
+	) {
+		throw new Error('Armour receipt does not bind the packet source artifacts');
+	}
+	const expectedSource = buildRootEquipmentPackets({
+		manifest: input.manifest,
+		allocation: input.allocation,
+		profile,
+		acceptance
+	}).find(({ target }) => target.targetId === receipt.sourceTargetId);
+	if (
+		expectedSource === undefined ||
+		canonicalJsonSha256(expectedSource.target) !== canonicalJsonSha256(sourceTarget) ||
+		sourceTarget.equipment.artifactRole !== 'set-source' ||
+		sourceTarget.presentation.mode !== 'complete-armour-set'
+	) {
+		throw new Error('Armour receipt source is not the exact deterministic full-set root target');
+	}
+	const gate = input.allocation.reviewGates.find(({ gateId }) => gateId === receipt.gateId);
+	if (
+		gate === undefined ||
+		gate.sourceTargetId !== sourceTarget.targetId ||
+		gate.unlocksTargetIds.length !== 4
+	) {
+		throw new Error('Armour receipt does not bind an exact four-child allocation gate');
+	}
+	const manifestChildren = input.manifest.targets.filter(
+		({ dependsOnTargetId }) => dependsOnTargetId === sourceTarget.targetId
+	);
+	const expectedSlots = ['head', 'torso', 'legs', 'boots'] as const;
+	if (
+		manifestChildren.length !== 4 ||
+		manifestChildren.some(
+			(child, index) =>
+				child.targetId !== gate.unlocksTargetIds[index] || child.slot !== expectedSlots[index]
+		)
+	) {
+		throw new Error('Armour dependent targets must be Head, Torso, Legs, and Boots in order');
+	}
+	const profileAcceptanceCanonicalSha256 = canonicalJsonSha256(acceptance);
+	const reviewReceiptCanonicalSha256 = canonicalJsonSha256(receipt);
+	return manifestChildren.map((manifestTarget, index) => {
+		const slot = expectedSlots[index];
+		if (slot === undefined) throw new Error('Armour dependent target slot is missing');
+		const output = {
+			candidatePath: manifestTarget.output.candidatePath,
+			resultPath: manifestTarget.output.provenanceResultPath
+		};
+		const target = EquipmentImageTargetSchema.parse({
+			schemaVersion: 'equipment-image-target-v1',
+			targetId: manifestTarget.targetId,
+			productionId: input.manifest.productionId,
+			profileId: profile.profileId,
+			manifestCanonicalSha256: receipt.manifestCanonicalSha256,
+			allocationCanonicalSha256: receipt.allocationCanonicalSha256,
+			profileCanonicalSha256: receipt.profileCanonicalSha256,
+			profileAcceptanceCanonicalSha256,
+			material: {
+				id: manifestTarget.materialId,
+				name: manifestTarget.materialName,
+				family: manifestTarget.materialFamily,
+				rank: manifestTarget.materialRank,
+				craftsmanship: 'Standard'
+			},
+			equipment: {
+				class: manifestTarget.equipmentClass,
+				artifactRole: manifestTarget.artifactRole,
+				slot
+			},
+			consistencySource: {
+				targetId: sourceTarget.targetId,
+				candidatePath: sourceTarget.output.candidatePath,
+				candidateSha256: receipt.candidateSha256,
+				reviewReceiptPath: gate.evidencePath,
+				reviewReceiptCanonicalSha256
+			},
+			references: [
+				{
+					path: sourceTarget.output.candidatePath,
+					contentHash: receipt.candidateSha256,
+					purpose: AUTHORITATIVE_ARMOUR_SOURCE_PURPOSE
+				},
+				...profile.references
+			],
+			presentation: {
+				mode: profile.dependentPiecePresentation.mode,
+				subject: profile.dependentPiecePresentation.subject,
+				composition: dependentComposition(slot),
+				canvas: profile.dependentPiecePresentation.canvas,
+				negativeConstraints: profile.negativeConstraints
+			},
+			acceptanceCriteria: [...ACCEPTANCE_CRITERIA, SOURCE_CONTINUITY_CRITERION],
+			output
+		});
+		const assignment = EquipmentImageAssignmentSchema.parse({
+			schemaVersion: 'equipment-image-assignment-v1',
+			assignmentId: `assignment-${target.targetId}`,
+			targetId: target.targetId,
+			contractVersion: 'equipment-image-production-contract-v1',
+			rendererVersion: 'equipment-image-prompt-v1',
+			assignedAt: input.assignedAt ?? receipt.reviewedAt,
+			dryRun: false,
+			retryCeiling: 0,
+			permittedOutputs: output,
+			forbiddenSharedPaths: FORBIDDEN_SHARED_PATHS,
+			completionContract: {
+				oneTargetOneImage: true,
+				structuredResultRequired: true,
+				sharedFilesMustRemainUntouched: true,
+				selfPromotionForbidden: true
+			}
+		});
+		return {
+			targetPath: artifactPacketPath(output.candidatePath, 'targets'),
+			assignmentPath: artifactPacketPath(output.candidatePath, 'assignments'),
+			target,
+			assignment
+		};
+	});
+}
+
 function classDescription(target: EquipmentImageTarget): string {
 	const descriptions: Record<string, string> = {
 		sword: 'practical hand-and-a-half straight sword',
@@ -369,7 +535,7 @@ function presentationInstruction(target: EquipmentImageTarget): string {
 	if (target.consistencySource === null || target.equipment.slot === null) {
 		throw new Error('Dependent-piece prompt requires a consistency source and Equipment slot');
 	}
-	return `Create only the matching ${target.equipment.slot} ${classDescription(target)} piece or required pair. ${presentation.composition[0]!.toUpperCase()}${presentation.composition.slice(1)}. Preserve exact continuity with accepted source ${target.consistencySource.targetId}.`;
+	return `Create only the matching ${target.equipment.slot} ${classDescription(target)} piece or required pair. ${presentation.composition[0]!.toUpperCase()}${presentation.composition.slice(1)}. Preserve exact continuity with accepted source ${target.consistencySource.targetId}. Do not redesign the accepted full set.`;
 }
 
 export function renderEquipmentPrompt(unparsedTarget: EquipmentImageTarget): string {
@@ -434,6 +600,20 @@ async function readRegularRepositoryFile(
 	return readFile(absolute);
 }
 
+async function readEquipmentRepositoryJsonForPacket(
+	workspaceRoot: string,
+	repositoryPath: string
+): Promise<unknown> {
+	const bytes = await readRegularRepositoryFile(workspaceRoot, repositoryPath);
+	try {
+		return JSON.parse(bytes.toString('utf8')) as unknown;
+	} catch (error) {
+		throw new Error(`Invalid JSON in Equipment packet evidence: ${repositoryPath}`, {
+			cause: error
+		});
+	}
+}
+
 export async function validateEquipmentPacket(input: {
 	readonly workspaceRoot: string;
 	readonly manifest: EquipmentManifest;
@@ -467,8 +647,46 @@ export async function validateEquipmentPacket(input: {
 	) {
 		throw new Error('Target profile or acceptance hash does not match the accepted profile');
 	}
-	if (canonicalJson(target.references) !== canonicalJson(profile.references)) {
-		throw new Error('Target ordered references do not exactly match the accepted profile');
+	let expectedPacket: EquipmentRootPacket | undefined;
+	if (target.consistencySource === null) {
+		expectedPacket = buildRootEquipmentPackets({
+			manifest: input.manifest,
+			allocation: input.allocation,
+			profile,
+			acceptance
+		}).find((packet) => packet.target.targetId === target.targetId);
+	} else {
+		const receipt = EquipmentArmourSourceReviewReceiptSchema.parse(
+			await readEquipmentRepositoryJsonForPacket(
+				input.workspaceRoot,
+				target.consistencySource.reviewReceiptPath
+			)
+		);
+		if (
+			receipt.decision !== 'accepted' ||
+			receipt.sourceTargetId !== target.consistencySource.targetId ||
+			receipt.candidateSha256 !== target.consistencySource.candidateSha256 ||
+			canonicalJsonSha256(receipt) !== target.consistencySource.reviewReceiptCanonicalSha256
+		) {
+			throw new Error('Dependent packet does not bind its exact accepted Armour receipt');
+		}
+		const sourceTarget = buildRootEquipmentPackets({
+			manifest: input.manifest,
+			allocation: input.allocation,
+			profile,
+			acceptance
+		}).find(({ target: rootTarget }) => rootTarget.targetId === receipt.sourceTargetId)?.target;
+		if (sourceTarget === undefined) {
+			throw new Error('Dependent packet receipt source is not a deterministic root target');
+		}
+		expectedPacket = buildDependentArmourPackets({
+			manifest: input.manifest,
+			allocation: input.allocation,
+			profile,
+			acceptance,
+			sourceTarget,
+			receipt
+		}).find((packet) => packet.target.targetId === target.targetId);
 	}
 	for (const reference of target.references) {
 		const bytes = await readRegularRepositoryFile(input.workspaceRoot, reference.path);
@@ -481,18 +699,14 @@ export async function validateEquipmentPacket(input: {
 			throw new Error(`Assigned output already exists: ${ownedPath}`);
 		}
 	}
-	const expectedPacket = buildRootEquipmentPackets({
-		manifest: input.manifest,
-		allocation: input.allocation,
-		profile,
-		acceptance
-	}).find((packet) => packet.target.targetId === target.targetId);
 	if (
 		expectedPacket === undefined ||
 		canonicalJson(expectedPacket.target) !== canonicalJson(target) ||
 		canonicalJson(expectedPacket.assignment) !== canonicalJson(assignment)
 	) {
-		throw new Error(`Packet does not match the deterministic root packet for ${target.targetId}`);
+		const packetKind =
+			target.consistencySource === null ? 'root packet' : 'dependent Armour packet';
+		throw new Error(`Packet does not match the deterministic ${packetKind} for ${target.targetId}`);
 	}
 	return {
 		ownedPaths: [target.output.candidatePath, target.output.resultPath],

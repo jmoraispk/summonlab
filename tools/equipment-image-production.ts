@@ -26,6 +26,7 @@ import {
 	reportEquipmentRunReadiness
 } from './equipment-image-run-readiness.js';
 import { claimNextEquipmentJobs, recordEquipmentRunEvent } from './equipment-image-run-recorder.js';
+import { materializeDependentArmourPackets } from './equipment-armour-review.js';
 
 const PROFILE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/visual-profile/profile.json` as const;
 const MANIFEST_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/manifest.json` as const;
@@ -286,6 +287,36 @@ export async function runEquipmentImageProductionCli(input: {
 			lockOwnerId: `${actor}-claim-controller`
 		});
 		return { command, claims, claimedJobs: claims.length };
+	}
+
+	if (command === 'review-armour-source') {
+		const options = parseOptions(commandArgs, [
+			'--run-id',
+			'--gate-id',
+			'--reviewer',
+			'--reviewed-at',
+			'--accept-candidate-sha256',
+			'--reject-candidate-sha256'
+		]);
+		const acceptedHash = options.get('--accept-candidate-sha256');
+		const rejectedHash = options.get('--reject-candidate-sha256');
+		if ((acceptedHash === undefined) === (rejectedHash === undefined)) {
+			throw new Error(
+				'Exactly one explicit --accept-candidate-sha256 or --reject-candidate-sha256 is required'
+			);
+		}
+		const reviewer = requireOption(options, '--reviewer');
+		const result = await materializeDependentArmourPackets({
+			workspaceRoot: input.workspaceRoot,
+			runId: options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID,
+			gateId: requireOption(options, '--gate-id'),
+			decision: acceptedHash === undefined ? 'rejected' : 'accepted',
+			reviewer,
+			reviewedAt: requireOption(options, '--reviewed-at'),
+			acknowledgedCandidateSha256: acceptedHash ?? rejectedHash!,
+			lockOwnerId: `${reviewer}-armour-review-controller`
+		});
+		return { command, ...result };
 	}
 
 	if (

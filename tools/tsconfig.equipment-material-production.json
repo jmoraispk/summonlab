@@ -22,6 +22,8 @@
 		"equipment-image-run-journal.spec.ts",
 		"equipment-image-run-recorder.ts",
 		"equipment-image-run-recorder.spec.ts",
+		"equipment-armour-review.ts",
+		"equipment-armour-review.spec.ts",
 		"equipment-image-production.ts",
 		"persist-equipment-image-production-output.ts",
 		"persist-equipment-image-production-output.spec.ts",
