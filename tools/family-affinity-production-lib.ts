@@ -267,8 +267,15 @@ export const FamilyAffinityTargetSchema = z
 				.object({
 					kind: z.literal('normal-approved-review'),
 					normalCoordinateId: RequiredTextSchema,
+					normalVersion: z.number().int().positive(),
+					normalTargetPath: OwnedPathSchema,
+					normalTargetSha256: Sha256Schema,
 					reviewReceiptPath: OwnedPathSchema,
-					reviewReceiptSha256: Sha256Schema.nullable()
+					reviewReceiptSha256: Sha256Schema.nullable(),
+					normalCandidatePath: OwnedPathSchema.nullable(),
+					normalCandidateSha256: Sha256Schema.nullable(),
+					normalResultPath: OwnedPathSchema.nullable(),
+					normalResultSha256: Sha256Schema.nullable()
 				})
 				.strict(),
 			z
@@ -329,6 +336,45 @@ export const FamilyAffinityTargetSchema = z
 				code: 'custom',
 				message: 'Normal targets must be their own identity anchor'
 			});
+		}
+		if (target.affinity === 'normal' && target.status !== 'planned') {
+			context.addIssue({ code: 'custom', message: 'Normal targets must use planned status' });
+		}
+		if (target.affinity !== 'normal' && target.anchor.kind === 'normal-self') {
+			context.addIssue({ code: 'custom', message: 'Elemental targets require a Normal anchor' });
+		}
+		if (target.anchor.kind === 'normal-approved-review') {
+			if (target.anchor.normalCoordinateId !== `${target.familyId}/${target.formId}/normal`) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Elemental anchor must use the same family and form Normal coordinate'
+				});
+			}
+			const evidence = [
+				target.anchor.reviewReceiptSha256,
+				target.anchor.normalCandidatePath,
+				target.anchor.normalCandidateSha256,
+				target.anchor.normalResultPath,
+				target.anchor.normalResultSha256
+			];
+			if (target.status === 'planned' && !evidence.every((value) => value !== null)) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Planned elemental targets require complete Normal approval evidence'
+				});
+			}
+			if (target.status === 'blocked-on-anchor' && !evidence.every((value) => value === null)) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Blocked elemental targets cannot carry approval evidence'
+				});
+			}
+			if (target.status === 'earth-bridge-provisional') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Ordinary Normal anchors cannot use provisional status'
+				});
+			}
 		}
 		if (target.anchor.kind === 'earth-bridge-provisional') {
 			if (target.namespace !== 'bridge' || target.affinity !== 'earth') {
@@ -453,6 +499,8 @@ export const FamilyAffinityReviewReceiptSchema = z
 		targetSha256: Sha256Schema,
 		resultPath: OwnedPathSchema,
 		resultSha256: Sha256Schema,
+		candidatePath: OwnedPathSchema,
+		candidateSha256: Sha256Schema,
 		decision: z.enum(['approved-review', 'rejected', 'revise']),
 		reviewerRole: z.literal('independent-reviewer')
 	})
@@ -637,7 +685,8 @@ function formCounterplay(form: FamilyForm): string {
 function buildCanonicalTarget(
 	family: FamilyPacket,
 	form: FamilyForm,
-	affinity: (typeof PRODUCTION_AFFINITIES)[number]
+	affinity: (typeof PRODUCTION_AFFINITIES)[number],
+	normalTarget?: FamilyAffinityTarget
 ): FamilyAffinityTarget {
 	const coordinateId = `${family.familyId}/${form.formId}/${affinity}`;
 	const version = 1;
@@ -700,8 +749,20 @@ function buildCanonicalTarget(
 				: {
 						kind: 'normal-approved-review' as const,
 						normalCoordinateId: `${family.familyId}/${form.formId}/normal`,
-						reviewReceiptPath: `${FAMILY_AFFINITY_ROOT}/reviews/${family.familyId}/${form.formId}/normal/decision-v1.json`,
-						reviewReceiptSha256: null
+						normalVersion: normalTarget!.version,
+						normalTargetPath: canonicalAttemptPaths(
+							family.familyId,
+							form.formId,
+							'normal',
+							normalTarget!.version
+						).target,
+						normalTargetSha256: familyAffinitySha256(normalTarget!),
+						reviewReceiptPath: normalTarget!.ownedPaths.decision,
+						reviewReceiptSha256: null,
+						normalCandidatePath: null,
+						normalCandidateSha256: null,
+						normalResultPath: null,
+						normalResultSha256: null
 					},
 		precedingAttempt: null,
 		version,
@@ -710,6 +771,16 @@ function buildCanonicalTarget(
 		runtimeCatalogMutationForbidden: true
 	};
 	return FamilyAffinityTargetSchema.parse(target);
+}
+
+function buildCanonicalFormTargets(family: FamilyPacket, form: FamilyForm): FamilyAffinityTarget[] {
+	const normal = buildCanonicalTarget(family, form, 'normal');
+	return [
+		normal,
+		...PRODUCTION_AFFINITIES.filter((affinity) => affinity !== 'normal').map((affinity) =>
+			buildCanonicalTarget(family, form, affinity, normal)
+		)
+	];
 }
 
 function buildAssignment(target: FamilyAffinityTarget): FamilyAffinityAssignment {
@@ -752,9 +823,7 @@ export function buildFamilyAffinityProductionBundle(
 	const targets = sortedFamilies.flatMap((family) =>
 		[...family.forms]
 			.sort((a, b) => FORM_TIERS.indexOf(a.tier) - FORM_TIERS.indexOf(b.tier))
-			.flatMap((form) =>
-				PRODUCTION_AFFINITIES.map((affinity) => buildCanonicalTarget(family, form, affinity))
-			)
+			.flatMap((form) => buildCanonicalFormTargets(family, form))
 	);
 	const assignments = targets.map(buildAssignment);
 	const targetPathById = new Map(
@@ -843,6 +912,84 @@ export function buildFamilyAffinityProductionBundle(
 	return bundle;
 }
 
+type ManifestCoordinate = FamilyAffinityManifest['canonicalMatrix']['activeCoordinates'][number];
+
+export function validateFamilyAffinityAttemptCrossBinding(
+	coordinateInput: unknown,
+	targetInput: unknown,
+	assignmentInput: unknown
+): void {
+	const coordinate = ManifestCoordinateSchema.parse(coordinateInput);
+	const target = FamilyAffinityTargetSchema.parse(targetInput);
+	const assignment = FamilyAffinityAssignmentSchema.parse(assignmentInput);
+	const targetSha256 = familyAffinitySha256(target);
+	const assignmentSha256 = familyAffinitySha256(assignment);
+	const sameIdentity =
+		coordinate.namespace === target.namespace &&
+		coordinate.coordinateId === target.coordinateId &&
+		coordinate.currentClassId === target.currentClassId &&
+		coordinate.familyId === target.familyId &&
+		coordinate.formId === target.formId &&
+		coordinate.affinity === target.affinity &&
+		coordinate.activeVersion === target.version &&
+		coordinate.status === target.status;
+	if (!sameIdentity)
+		throw new Error(`Manifest coordinate cross-binding mismatch: ${coordinate.coordinateId}`);
+	if (
+		coordinate.targetSha256 !== targetSha256 ||
+		coordinate.assignmentSha256 !== assignmentSha256
+	) {
+		throw new Error(`Manifest attempt hash cross-binding mismatch: ${coordinate.coordinateId}`);
+	}
+	if (
+		assignment.targetId !== target.targetId ||
+		assignment.targetSha256 !== targetSha256 ||
+		assignment.namespace !== target.namespace ||
+		assignment.coordinateId !== target.coordinateId ||
+		assignment.version !== target.version ||
+		assignment.dispatchStatus !== target.status ||
+		assignment.allowedOutputs.candidate !== target.ownedPaths.candidate ||
+		assignment.allowedOutputs.result !== target.ownedPaths.result
+	) {
+		throw new Error(`Assignment cross-binding mismatch: ${assignment.assignmentId}`);
+	}
+	if (target.namespace === 'canonical') {
+		const paths = canonicalAttemptPaths(
+			target.familyId,
+			target.formId,
+			target.affinity,
+			target.version
+		);
+		if (
+			coordinate.targetPath !== paths.target ||
+			coordinate.assignmentPath !== paths.assignment ||
+			target.ownedPaths.candidate !== paths.candidate ||
+			target.ownedPaths.result !== paths.result ||
+			target.ownedPaths.decision !== paths.decision ||
+			target.ownedPaths.blindReview !== paths.blindReview
+		) {
+			throw new Error(`Canonical attempt path cross-binding mismatch: ${coordinate.coordinateId}`);
+		}
+		return;
+	}
+	const bridgePrefix = `${FAMILY_AFFINITY_ROOT}/bridge/`;
+	const versionedBridgePaths = [
+		[coordinate.targetPath, `target-v${target.version}.json`],
+		[coordinate.assignmentPath, `assignment-v${target.version}.json`],
+		[target.ownedPaths.candidate, `-v${target.version}.png`],
+		[target.ownedPaths.result, `-v${target.version}.json`],
+		[target.ownedPaths.decision, `-v${target.version}.json`],
+		[target.ownedPaths.blindReview, `-v${target.version}.json`]
+	] as const;
+	if (
+		versionedBridgePaths.some(
+			([path, suffix]) => !path.startsWith(bridgePrefix) || !path.endsWith(suffix)
+		)
+	) {
+		throw new Error(`Bridge attempt path cross-binding mismatch: ${coordinate.coordinateId}`);
+	}
+}
+
 export function validateFamilyAffinityProductionBundle(
 	bundleInput: FamilyAffinityProductionBundle,
 	reviewReceipts: Readonly<Record<string, unknown>> = {}
@@ -874,6 +1021,20 @@ export function validateFamilyAffinityProductionBundle(
 		throw new Error('Canonical assignment coordinates must be unique');
 	}
 	const targetsById = new Map(targets.map((target) => [target.targetId, target]));
+	const targetsByCoordinate = new Map(targets.map((target) => [target.coordinateId, target]));
+	const assignmentsByTargetId = new Map(
+		assignments.map((assignment) => [assignment.targetId, assignment])
+	);
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const target = targetsByCoordinate.get(coordinate.coordinateId);
+		const assignment = target ? assignmentsByTargetId.get(target.targetId) : undefined;
+		if (!target || !assignment) {
+			throw new Error(
+				`Manifest active coordinate has no complete attempt pair: ${coordinate.coordinateId}`
+			);
+		}
+		validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+	}
 	for (const assignment of assignments) {
 		const target = targetsById.get(assignment.targetId);
 		if (
@@ -930,34 +1091,57 @@ export function validateFamilyAffinityProductionBundle(
 			if (target.status !== 'planned') throw new Error('Normal targets must begin planned');
 			continue;
 		}
+		if (target.anchor.kind !== 'normal-approved-review') {
+			throw new Error(
+				`Canonical elemental target requires an exact Normal anchor: ${target.targetId}`
+			);
+		}
+		const anchor = target.anchor;
+		const normalTarget = targets.find(
+			(candidate) => candidate.coordinateId === anchor.normalCoordinateId
+		);
+		const normalManifestCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
+			(candidate) => candidate.coordinateId === anchor.normalCoordinateId
+		);
 		if (target.status === 'planned') {
 			if (
-				target.anchor.kind !== 'normal-approved-review' ||
-				target.anchor.reviewReceiptSha256 === null
+				!normalTarget ||
+				!normalManifestCoordinate ||
+				normalTarget.familyId !== target.familyId ||
+				normalTarget.formId !== target.formId ||
+				normalTarget.affinity !== 'normal' ||
+				normalTarget.version !== anchor.normalVersion ||
+				normalManifestCoordinate.activeVersion !== anchor.normalVersion ||
+				normalManifestCoordinate.targetPath !== anchor.normalTargetPath ||
+				normalManifestCoordinate.targetSha256 !== anchor.normalTargetSha256 ||
+				familyAffinitySha256(normalTarget) !== anchor.normalTargetSha256
 			) {
+				throw new Error(
+					`Elemental target has a stale, foreign, or manifest-unbound Normal anchor: ${target.targetId}`
+				);
+			}
+			if (anchor.reviewReceiptSha256 === null) {
 				throw new Error(
 					`Elemental target cannot be unblocked without a Normal approved-review receipt: ${target.targetId}`
 				);
 			}
-			const anchor = target.anchor;
 			const receiptInput = reviewReceipts[anchor.reviewReceiptPath];
 			if (!receiptInput)
 				throw new Error(`Missing Normal approved-review receipt: ${anchor.reviewReceiptPath}`);
 			const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptInput);
-			const normalTarget = targets.find(
-				(candidate) => candidate.coordinateId === anchor.normalCoordinateId
-			);
-			const normalManifestCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
-				(candidate) => candidate.coordinateId === anchor.normalCoordinateId
-			);
 			if (
 				receipt.decision !== 'approved-review' ||
 				familyAffinitySha256(receipt) !== anchor.reviewReceiptSha256 ||
-				!normalTarget ||
-				!normalManifestCoordinate ||
 				receipt.targetId !== normalTarget.targetId ||
 				receipt.targetSha256 !== familyAffinitySha256(normalTarget) ||
-				normalManifestCoordinate.targetSha256 !== receipt.targetSha256
+				normalManifestCoordinate.targetSha256 !== receipt.targetSha256 ||
+				anchor.reviewReceiptPath !== normalTarget.ownedPaths.decision ||
+				receipt.candidatePath !== normalTarget.ownedPaths.candidate ||
+				receipt.candidatePath !== anchor.normalCandidatePath ||
+				receipt.candidateSha256 !== anchor.normalCandidateSha256 ||
+				receipt.resultPath !== normalTarget.ownedPaths.result ||
+				receipt.resultPath !== anchor.normalResultPath ||
+				receipt.resultSha256 !== anchor.normalResultSha256
 			) {
 				throw new Error(`Stale or mismatched Normal approved-review receipt: ${target.targetId}`);
 			}
@@ -1044,6 +1228,69 @@ export type AllocateFamilyAffinityRevisionInput = {
 	reviewPath: string;
 };
 
+async function validateAllocationAnchor(
+	repositoryRoot: string,
+	manifest: FamilyAffinityManifest,
+	target: FamilyAffinityTarget
+): Promise<void> {
+	if (
+		target.namespace !== 'canonical' ||
+		target.affinity === 'normal' ||
+		target.status !== 'planned'
+	) {
+		return;
+	}
+	if (target.anchor.kind !== 'normal-approved-review') {
+		throw new Error('Planned elemental allocation requires an exact Normal approved-review anchor');
+	}
+	const anchor = target.anchor;
+	const normalCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
+		({ coordinateId }) => coordinateId === `${target.familyId}/${target.formId}/normal`
+	);
+	if (
+		!normalCoordinate ||
+		normalCoordinate.activeVersion !== anchor.normalVersion ||
+		normalCoordinate.targetPath !== anchor.normalTargetPath ||
+		normalCoordinate.targetSha256 !== anchor.normalTargetSha256
+	) {
+		throw new Error('Planned elemental allocation has a stale or manifest-unbound Normal anchor');
+	}
+	const normalTarget = FamilyAffinityTargetSchema.parse(
+		JSON.parse(
+			await readFile(absoluteOwnedPath(repositoryRoot, normalCoordinate.targetPath), 'utf8')
+		)
+	);
+	const receipt = FamilyAffinityReviewReceiptSchema.parse(
+		JSON.parse(await readFile(absoluteOwnedPath(repositoryRoot, anchor.reviewReceiptPath), 'utf8'))
+	);
+	const candidateBytes = await readFile(absoluteOwnedPath(repositoryRoot, receipt.candidatePath));
+	const resultBytes = await readFile(absoluteOwnedPath(repositoryRoot, receipt.resultPath));
+	if (
+		normalTarget.coordinateId !== anchor.normalCoordinateId ||
+		normalTarget.familyId !== target.familyId ||
+		normalTarget.formId !== target.formId ||
+		normalTarget.affinity !== 'normal' ||
+		familyAffinitySha256(normalTarget) !== anchor.normalTargetSha256 ||
+		anchor.reviewReceiptPath !== normalTarget.ownedPaths.decision ||
+		familyAffinitySha256(receipt) !== anchor.reviewReceiptSha256 ||
+		receipt.decision !== 'approved-review' ||
+		receipt.targetId !== normalTarget.targetId ||
+		receipt.targetSha256 !== anchor.normalTargetSha256 ||
+		receipt.candidatePath !== normalTarget.ownedPaths.candidate ||
+		receipt.candidatePath !== anchor.normalCandidatePath ||
+		receipt.candidateSha256 !== anchor.normalCandidateSha256 ||
+		receipt.resultPath !== normalTarget.ownedPaths.result ||
+		receipt.resultPath !== anchor.normalResultPath ||
+		receipt.resultSha256 !== anchor.normalResultSha256 ||
+		createHash('sha256').update(candidateBytes).digest('hex') !== receipt.candidateSha256 ||
+		createHash('sha256').update(resultBytes).digest('hex') !== receipt.resultSha256
+	) {
+		throw new Error(
+			'Planned elemental allocation Normal evidence is stale, foreign, or mismatched'
+		);
+	}
+}
+
 async function allocateFamilyAffinityRevisionUnlocked(
 	input: AllocateFamilyAffinityRevisionInput,
 	manifestAbsolute: string
@@ -1065,6 +1312,8 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	const currentAssignment = FamilyAffinityAssignmentSchema.parse(
 		JSON.parse(await readFile(assignmentAbsolute, 'utf8'))
 	);
+	validateFamilyAffinityAttemptCrossBinding(coordinate, currentTarget, currentAssignment);
+	await validateAllocationAnchor(input.repositoryRoot, manifest, currentTarget);
 	if (
 		currentTarget.coordinateId !== coordinate.coordinateId ||
 		currentTarget.version !== coordinate.activeVersion ||
@@ -1096,6 +1345,8 @@ async function allocateFamilyAffinityRevisionUnlocked(
 		receipt.targetSha256 !== familyAffinitySha256(currentTarget) ||
 		receipt.resultPath !== currentTarget.ownedPaths.result ||
 		receipt.resultSha256 !== createHash('sha256').update(resultBytes).digest('hex') ||
+		receipt.candidatePath !== currentTarget.ownedPaths.candidate ||
+		receipt.candidateSha256 !== createHash('sha256').update(candidateBytes).digest('hex') ||
 		result.targetId !== currentTarget.targetId ||
 		result.targetSha256 !== familyAffinitySha256(currentTarget) ||
 		result.candidatePath !== currentTarget.ownedPaths.candidate ||
@@ -1162,6 +1413,7 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	await mkdir(dirname(nextTargetAbsolute), { recursive: true });
 	await mkdir(dirname(nextAssignmentAbsolute), { recursive: true });
 	const created: string[] = [];
+	const temporaryManifest = `${manifestAbsolute}.revision-${process.pid}-${Date.now()}`;
 	try {
 		await writeFile(nextTargetAbsolute, stableFamilyAffinityJson(nextTarget), { flag: 'wx' });
 		created.push(nextTargetAbsolute);
@@ -1175,10 +1427,10 @@ async function allocateFamilyAffinityRevisionUnlocked(
 		coordinate.assignmentPath = nextAssignmentPath;
 		coordinate.assignmentSha256 = familyAffinitySha256(nextAssignment);
 		coordinate.status = nextTarget.status;
-		const temporaryManifest = `${manifestAbsolute}.revision-${process.pid}-${Date.now()}`;
 		await writeFile(temporaryManifest, stableFamilyAffinityJson(manifest), { flag: 'wx' });
 		await rename(temporaryManifest, manifestAbsolute);
 	} catch (error) {
+		await unlink(temporaryManifest).catch(() => undefined);
 		for (const path of created.reverse()) await unlink(path).catch(() => undefined);
 		throw error;
 	}

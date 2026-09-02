@@ -20,7 +20,10 @@ import {
 	CurrentClassMappingFileSchema,
 	FamilyPacketSchema
 } from './family-affinity-production-lib.js';
-import type { CurrentClassMappingEntry } from './family-affinity-production-lib.js';
+import type {
+	CurrentClassMappingEntry,
+	FamilyAffinityTarget
+} from './family-affinity-production-lib.js';
 import { exportFamilyAffinityProduction } from './export-family-affinity-production.js';
 
 const validFamily = {
@@ -2430,8 +2433,189 @@ describe('family affinity production manifest', () => {
 		assignment.dispatchStatus = 'planned';
 		assignment.targetSha256 = familyAffinitySha256(fire);
 		expect(() => validateFamilyAffinityProductionBundle(changed)).toThrow(
-			/approved-review receipt/i
+			/approval evidence|approved-review receipt/i
 		);
+	});
+
+	it('binds every elemental target to the exact active Normal attempt', async () => {
+		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+		const bundle = buildFamilyAffinityProductionBundle(familyPackets, mapping);
+		const fire = bundle.targets.find(
+			({ familyId, formId, affinity }) =>
+				familyId === 'goblins' && formId === 'goblin-runt' && affinity === 'fire'
+		)!;
+		const normal = bundle.targets.find(
+			({ familyId, formId, affinity }) =>
+				familyId === 'goblins' && formId === 'goblin-runt' && affinity === 'normal'
+		)!;
+		expect(fire.anchor).toMatchObject({
+			kind: 'normal-approved-review',
+			normalCoordinateId: normal.coordinateId,
+			normalVersion: normal.version,
+			normalTargetSha256: familyAffinitySha256(normal)
+		});
+	});
+
+	it('rejects tampered manifest and assignment cross-bindings', async () => {
+		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+		const bundle = buildFamilyAffinityProductionBundle(familyPackets, mapping);
+		for (const mutate of [
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.familyId = 'orcs';
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.formId = 'orc-grunt';
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.affinity = 'fire';
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.activeVersion = 2;
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.status = 'blocked-on-anchor';
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.targetPath = coordinate.targetPath.replace('target-v1', 'target-v2');
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.targetSha256 = '0'.repeat(64);
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.assignmentPath = coordinate.assignmentPath.replace(
+					'assignment-v1',
+					'assignment-v2'
+				);
+			},
+			(coordinate: (typeof bundle.manifest.canonicalMatrix.activeCoordinates)[number]) => {
+				coordinate.assignmentSha256 = '0'.repeat(64);
+			}
+		]) {
+			const changed = structuredClone(bundle);
+			mutate(changed.manifest.canonicalMatrix.activeCoordinates[0]!);
+			expect(() => validateFamilyAffinityProductionBundle(changed)).toThrow();
+		}
+		for (const mutate of [
+			(assignment: (typeof bundle.assignments)[number]) => {
+				assignment.namespace = 'bridge';
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				assignment.coordinateId = 'orcs/orc-grunt/normal';
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				assignment.version = 2;
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				assignment.dispatchStatus = 'blocked-on-anchor';
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				assignment.targetSha256 = '0'.repeat(64);
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				assignment.allowedOutputs.candidate = assignment.allowedOutputs.result;
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				(assignment as unknown as { producerRole: string }).producerRole = 'reviewer';
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				(assignment as unknown as { selfPromotionForbidden: boolean }).selfPromotionForbidden =
+					false;
+			},
+			(assignment: (typeof bundle.assignments)[number]) => {
+				(
+					assignment as unknown as { runtimeCatalogMutationForbidden: boolean }
+				).runtimeCatalogMutationForbidden = false;
+			}
+		]) {
+			const changed = structuredClone(bundle);
+			mutate(changed.assignments[0]!);
+			expect(() => validateFamilyAffinityProductionBundle(changed)).toThrow();
+		}
+	});
+
+	it('rejects wrong-family, wrong-form, stale, foreign, and manifest-unbound Normal approvals', async () => {
+		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+		const approved = structuredClone(buildFamilyAffinityProductionBundle(familyPackets, mapping));
+		const normal = approved.targets.find(
+			({ coordinateId }) => coordinateId === 'goblins/goblin-runt/normal'
+		)!;
+		const fire = approved.targets.find(
+			({ coordinateId }) => coordinateId === 'goblins/goblin-runt/fire'
+		)!;
+		const receipt = {
+			schemaVersion: 'family-affinity-review-receipt-v1' as const,
+			targetId: normal.targetId,
+			targetSha256: familyAffinitySha256(normal),
+			resultPath: normal.ownedPaths.result,
+			resultSha256: 'b'.repeat(64),
+			candidatePath: normal.ownedPaths.candidate,
+			candidateSha256: 'c'.repeat(64),
+			decision: 'approved-review' as const,
+			reviewerRole: 'independent-reviewer' as const
+		};
+		if (fire.anchor.kind !== 'normal-approved-review') throw new Error('Expected Normal anchor');
+		fire.anchor.reviewReceiptSha256 = familyAffinitySha256(receipt);
+		fire.anchor.normalCandidatePath = receipt.candidatePath;
+		fire.anchor.normalCandidateSha256 = receipt.candidateSha256;
+		fire.anchor.normalResultPath = receipt.resultPath;
+		fire.anchor.normalResultSha256 = receipt.resultSha256;
+		fire.status = 'planned';
+		function rebindFire(bundle: typeof approved) {
+			const changedFire = bundle.targets.find(
+				({ coordinateId }) => coordinateId === 'goblins/goblin-runt/fire'
+			)!;
+			const assignment = bundle.assignments.find(
+				({ targetId }) => targetId === changedFire.targetId
+			)!;
+			assignment.targetSha256 = familyAffinitySha256(changedFire);
+			assignment.dispatchStatus = changedFire.status;
+			const coordinate = bundle.manifest.canonicalMatrix.activeCoordinates.find(
+				({ coordinateId }) => coordinateId === changedFire.coordinateId
+			)!;
+			coordinate.targetSha256 = familyAffinitySha256(changedFire);
+			coordinate.assignmentSha256 = familyAffinitySha256(assignment);
+			coordinate.status = changedFire.status;
+		}
+		rebindFire(approved);
+		expect(() =>
+			validateFamilyAffinityProductionBundle(approved, {
+				[normal.ownedPaths.decision]: receipt
+			})
+		).not.toThrow();
+
+		for (const mutate of [
+			(anchor: Extract<typeof fire.anchor, { kind: 'normal-approved-review' }>) => {
+				anchor.normalCoordinateId = 'orcs/orc-grunt/normal';
+			},
+			(anchor: Extract<typeof fire.anchor, { kind: 'normal-approved-review' }>) => {
+				anchor.normalCoordinateId = 'goblins/goblin-cutter/normal';
+			},
+			(anchor: Extract<typeof fire.anchor, { kind: 'normal-approved-review' }>) => {
+				anchor.normalVersion = 2;
+			},
+			(anchor: Extract<typeof fire.anchor, { kind: 'normal-approved-review' }>) => {
+				anchor.reviewReceiptPath = approved.targets.find(
+					({ coordinateId }) => coordinateId === 'orcs/orc-grunt/normal'
+				)!.ownedPaths.decision;
+			},
+			(anchor: Extract<typeof fire.anchor, { kind: 'normal-approved-review' }>) => {
+				anchor.normalTargetSha256 = '0'.repeat(64);
+			}
+		]) {
+			const changed = structuredClone(approved);
+			const changedFire = changed.targets.find(
+				({ coordinateId }) => coordinateId === 'goblins/goblin-runt/fire'
+			)!;
+			if (changedFire.anchor.kind !== 'normal-approved-review') throw new Error('Expected anchor');
+			mutate(changedFire.anchor);
+			const reviewPath = changedFire.anchor.reviewReceiptPath;
+			rebindFire(changed);
+			expect(() =>
+				validateFamilyAffinityProductionBundle(changed, {
+					[reviewPath]: receipt
+				})
+			).toThrow(/anchor|receipt|family|form/i);
+		}
 	});
 
 	it('forbids approved-review promotion for provisional Earth bridge work', async () => {
@@ -2457,6 +2641,8 @@ describe('family affinity production manifest', () => {
 			targetSha256: familyAffinitySha256(provisional),
 			resultPath: provisional.ownedPaths.result,
 			resultSha256: 'b'.repeat(64),
+			candidatePath: provisional.ownedPaths.candidate,
+			candidateSha256: 'c'.repeat(64),
 			decision: 'approved-review',
 			reviewerRole: 'independent-reviewer'
 		};
@@ -2489,6 +2675,45 @@ async function snapshotGenerated(root: string): Promise<string[]> {
 	);
 }
 
+async function stageFamilyProductionSource(root: string) {
+	const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+	for (const family of familyPackets) {
+		await writeOwnedFixture(
+			root,
+			`${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`,
+			family
+		);
+	}
+	await writeOwnedFixture(root, `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`, mapping);
+	return { mapping, familyPackets };
+}
+
+async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinityTarget) {
+	const candidateBytes = `candidate:${target.targetId}`;
+	await writeOwnedFixture(root, target.ownedPaths.candidate, candidateBytes);
+	const result = {
+		schemaVersion: 'family-affinity-result-v1',
+		targetId: target.targetId,
+		targetSha256: familyAffinitySha256(target),
+		candidatePath: target.ownedPaths.candidate,
+		candidateSha256: createHash('sha256').update(candidateBytes).digest('hex'),
+		state: 'rejected'
+	};
+	const resultBytes = stableFamilyAffinityJson(result);
+	await writeOwnedFixture(root, target.ownedPaths.result, resultBytes);
+	await writeOwnedFixture(root, target.ownedPaths.decision, {
+		schemaVersion: 'family-affinity-review-receipt-v1',
+		targetId: target.targetId,
+		targetSha256: familyAffinitySha256(target),
+		resultPath: target.ownedPaths.result,
+		resultSha256: createHash('sha256').update(resultBytes).digest('hex'),
+		candidatePath: target.ownedPaths.candidate,
+		candidateSha256: result.candidateSha256,
+		decision: 'rejected',
+		reviewerRole: 'independent-reviewer'
+	});
+}
+
 describe('deterministic family affinity exporter', () => {
 	it('is byte-stable and check mode detects drift, missing files, and extras', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-affinity-export-'));
@@ -2512,24 +2737,182 @@ describe('deterministic family affinity exporter', () => {
 			).resolves.toMatchObject({ artifactCount: 1501 });
 
 			const targetPath = snapshot.find((entry) => entry.includes('/targets/'))!.split(' ')[0]!;
+			const originalTarget = await readFile(join(root, targetPath), 'utf8');
 			await writeFile(join(root, targetPath), '{"drift":true}\n');
 			await expect(
 				exportFamilyAffinityProduction({ repositoryRoot: root, check: true })
-			).rejects.toThrow(/drifted/i);
-			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			).rejects.toThrow(/drift/i);
+			await expect(
+				exportFamilyAffinityProduction({ repositoryRoot: root, check: false })
+			).rejects.toThrow(/drift/i);
+			await writeFile(join(root, targetPath), originalTarget);
 			await rm(join(root, targetPath));
 			await expect(
 				exportFamilyAffinityProduction({ repositoryRoot: root, check: true })
 			).rejects.toThrow(/missing/i);
-			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
-			await writeOwnedFixture(root, `${FAMILY_AFFINITY_ROOT}/targets/extra.json`, '{}');
+			await expect(
+				exportFamilyAffinityProduction({ repositoryRoot: root, check: false })
+			).rejects.toThrow(/missing/i);
+			await writeFile(join(root, targetPath), originalTarget);
+			await writeFile(
+				join(root, targetPath.replace('target-v1.json', 'target-v2.json')),
+				originalTarget
+			);
 			await expect(
 				exportFamilyAffinityProduction({ repositoryRoot: root, check: true })
-			).rejects.toThrow(/extra/i);
+			).rejects.toThrow(/orphan|unreferenced|extra/i);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 20_000);
+
+	it('refuses to overwrite a drifted immutable v1 attempt', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-affinity-export-immutable-'));
+		try {
+			const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+			for (const family of familyPackets) {
+				await writeOwnedFixture(
+					root,
+					`${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`,
+					family
+				);
+			}
+			await writeOwnedFixture(root, `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`, mapping);
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			const immutablePath = `${FAMILY_AFFINITY_ROOT}/targets/goblins/goblin-runt/normal/target-v1.json`;
+			await writeOwnedFixture(root, immutablePath, '{"tampered":true}\n');
+			await expect(
+				exportFamilyAffinityProduction({ repositoryRoot: root, check: false })
+			).rejects.toThrow(/immutable|drift/i);
+			expect(await readFile(join(root, immutablePath), 'utf8')).toBe('{"tampered":true}\n');
 		} finally {
 			await rm(root, { recursive: true, force: true });
 		}
 	});
+
+	it('preserves canonical revisions, bridge history, and active pointers across exports', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-affinity-export-lifecycle-'));
+		try {
+			await stageFamilyProductionSource(root);
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
+			let manifest = FamilyAffinityManifestSchema.parse(
+				JSON.parse(await readFile(join(root, manifestPath), 'utf8'))
+			);
+			const canonicalCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
+				({ coordinateId }) => coordinateId === 'goblins/goblin-runt/normal'
+			)!;
+			const canonicalTarget = FamilyAffinityTargetSchema.parse(
+				JSON.parse(await readFile(join(root, canonicalCoordinate.targetPath), 'utf8'))
+			);
+			await writeRejectedAttemptEvidence(root, canonicalTarget);
+			await allocateFamilyAffinityRevision({
+				repositoryRoot: root,
+				manifestPath,
+				namespace: 'canonical',
+				coordinateId: canonicalTarget.coordinateId,
+				callerRole: 'integration-controller',
+				reviewPath: canonicalTarget.ownedPaths.decision
+			});
+
+			manifest = FamilyAffinityManifestSchema.parse(
+				JSON.parse(await readFile(join(root, manifestPath), 'utf8'))
+			);
+			const sourceEarthCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
+				({ coordinateId }) => coordinateId === 'goblins/goblin-runt/earth'
+			)!;
+			const sourceEarth = FamilyAffinityTargetSchema.parse(
+				JSON.parse(await readFile(join(root, sourceEarthCoordinate.targetPath), 'utf8'))
+			);
+			const bridgeRoot = `${FAMILY_AFFINITY_ROOT}/bridge/bridge-class/goblins/goblin-runt/earth`;
+			const bridgeCoordinateId = 'bridge-class/goblins/goblin-runt/earth';
+			const bridgeTarget = FamilyAffinityTargetSchema.parse({
+				...sourceEarth,
+				namespace: 'bridge',
+				coordinateId: bridgeCoordinateId,
+				targetId: `bridge/${bridgeCoordinateId}/v1`,
+				currentClassId: 'bridge-class',
+				ownedPaths: {
+					candidate: `${bridgeRoot}/candidate-v1.png`,
+					result: `${bridgeRoot}/result-v1.json`,
+					decision: `${bridgeRoot}/decision-v1.json`,
+					blindReview: `${bridgeRoot}/review-v1.json`
+				},
+				anchor: {
+					kind: 'earth-bridge-provisional',
+					normalCandidatePath: canonicalTarget.ownedPaths.candidate,
+					normalCandidateSha256: 'a'.repeat(64)
+				},
+				status: 'earth-bridge-provisional'
+			});
+			const sourceAssignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(await readFile(join(root, sourceEarthCoordinate.assignmentPath), 'utf8'))
+			);
+			const bridgeAssignment = FamilyAffinityAssignmentSchema.parse({
+				...sourceAssignment,
+				assignmentId: `${bridgeTarget.targetId}/assignment`,
+				targetId: bridgeTarget.targetId,
+				targetSha256: familyAffinitySha256(bridgeTarget),
+				coordinateId: bridgeCoordinateId,
+				namespace: 'bridge',
+				allowedOutputs: {
+					candidate: bridgeTarget.ownedPaths.candidate,
+					result: bridgeTarget.ownedPaths.result
+				},
+				dispatchStatus: 'earth-bridge-provisional'
+			});
+			const bridgeTargetPath = `${bridgeRoot}/target-v1.json`;
+			const bridgeAssignmentPath = `${bridgeRoot}/assignment-v1.json`;
+			await writeOwnedFixture(root, bridgeTargetPath, bridgeTarget);
+			await writeOwnedFixture(root, bridgeAssignmentPath, bridgeAssignment);
+			manifest.bridge = {
+				targetCount: 1,
+				assignmentCount: 1,
+				activeCoordinates: [
+					{
+						namespace: 'bridge',
+						coordinateId: bridgeCoordinateId,
+						familyId: bridgeTarget.familyId,
+						formId: bridgeTarget.formId,
+						currentClassId: 'bridge-class',
+						affinity: 'earth',
+						activeVersion: 1,
+						targetPath: bridgeTargetPath,
+						targetSha256: familyAffinitySha256(bridgeTarget),
+						assignmentPath: bridgeAssignmentPath,
+						assignmentSha256: familyAffinitySha256(bridgeAssignment),
+						status: 'earth-bridge-provisional'
+					}
+				]
+			};
+			await writeOwnedFixture(root, manifestPath, manifest);
+			await writeRejectedAttemptEvidence(root, bridgeTarget);
+			await allocateFamilyAffinityRevision({
+				repositoryRoot: root,
+				manifestPath,
+				namespace: 'bridge',
+				coordinateId: bridgeCoordinateId,
+				callerRole: 'integration-controller',
+				reviewPath: bridgeTarget.ownedPaths.decision
+			});
+
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: true });
+			const stableBefore = await readFile(join(root, manifestPath), 'utf8');
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			expect(await readFile(join(root, manifestPath), 'utf8')).toBe(stableBefore);
+			const preserved = FamilyAffinityManifestSchema.parse(JSON.parse(stableBefore));
+			expect(
+				preserved.canonicalMatrix.activeCoordinates.find(
+					({ coordinateId }) => coordinateId === canonicalTarget.coordinateId
+				)?.activeVersion
+			).toBe(2);
+			expect(preserved.bridge).toMatchObject({ targetCount: 1, assignmentCount: 1 });
+			expect(preserved.bridge.activeCoordinates[0]?.activeVersion).toBe(2);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 30_000);
 });
 
 async function writeOwnedFixture(root: string, path: string, value: string | object) {
@@ -2637,6 +3020,8 @@ async function makeRevisionFixture(options?: {
 		targetSha256: familyAffinitySha256(target),
 		resultPath: target.ownedPaths.result,
 		resultSha256: createHash('sha256').update(resultBytes).digest('hex'),
+		candidatePath: target.ownedPaths.candidate,
+		candidateSha256: result.candidateSha256,
 		decision: options?.decision ?? 'rejected',
 		reviewerRole: 'independent-reviewer'
 	};
@@ -2756,7 +3141,7 @@ describe('controller-only family affinity revision allocation', () => {
 					callerRole: 'integration-controller',
 					reviewPath: stale.target.ownedPaths.decision
 				})
-			).rejects.toThrow(/stale|mismatched/i);
+			).rejects.toThrow(/stale|mismatch/i);
 		} finally {
 			await rm(stale.root, { recursive: true, force: true });
 		}
@@ -2815,7 +3200,7 @@ describe('controller-only family affinity revision allocation', () => {
 					callerRole: 'integration-controller',
 					reviewPath: fixture.target.ownedPaths.decision
 				})
-			).rejects.toThrow(/stale|mismatched/i);
+			).rejects.toThrow(/stale|mismatch/i);
 		} finally {
 			await rm(fixture.root, { recursive: true, force: true });
 		}
