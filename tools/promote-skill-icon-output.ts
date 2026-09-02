@@ -124,16 +124,17 @@ const SnapshotSchema = z
 			});
 	});
 
+const ProcessIdentitySchema = z
+	.object({ bootId: z.string().min(1), startTicks: z.string().regex(/^\d+$/u) })
+	.strict();
+
 export const SkillIconPromotionLockSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-promotion-lock-v1'),
 		transactionId: TransactionTokenSchema,
 		recoveryTokenHash: Sha256Schema,
 		pid: z.number().int().positive(),
-		processIdentity: z
-			.object({ bootId: z.string().min(1), startTicks: z.string().regex(/^\d+$/u) })
-			.strict()
-			.nullable(),
+		processIdentity: ProcessIdentitySchema.nullable(),
 		acquiredAt: z.string().datetime({ offset: true })
 	})
 	.strict();
@@ -143,6 +144,8 @@ export const SkillIconPromotionTokenSchema = z
 		schemaVersion: z.literal('skill-icon-promotion-recovery-token-v1'),
 		transactionId: TransactionTokenSchema,
 		recoveryToken: TransactionTokenSchema,
+		pid: z.number().int().positive(),
+		processIdentity: ProcessIdentitySchema.nullable(),
 		createdAt: z.string().datetime({ offset: true })
 	})
 	.strict();
@@ -515,6 +518,16 @@ async function coordinatorIsLive(lock: PromotionCoordinatorIdentity): Promise<bo
 	return (
 		current.bootId === lock.processIdentity.bootId &&
 		current.startTicks === lock.processIdentity.startTicks
+	);
+}
+
+function sameProcessIdentity(
+	left: PromotionCoordinatorIdentity['processIdentity'],
+	right: PromotionCoordinatorIdentity['processIdentity']
+): boolean {
+	return (
+		left === right ||
+		Boolean(left && right && left.bootId === right.bootId && left.startTicks === right.startTicks)
 	);
 }
 
@@ -1489,6 +1502,12 @@ export async function recoverSkillIconPromotion(options: {
 	if (!lockMetadata) {
 		if (journalMetadata)
 			throw new Error('Promotion journal exists without its transaction lock; cleanup required');
+		const tokenOwnerIsLive = await (options.isCoordinatorLive ?? coordinatorIsLive)({
+			pid: tokenRecord.pid,
+			processIdentity: tokenRecord.processIdentity
+		});
+		if (tokenOwnerIsLive)
+			throw new Error('Recovery refused because a live coordinator owns the pre-lock token');
 		await removeAuthorityFile(tokenAuthority.identity);
 		return;
 	}
@@ -1498,16 +1517,18 @@ export async function recoverSkillIconPromotion(options: {
 		lockAuthority.bytes,
 		'promotion lock'
 	);
+	if (
+		lock.transactionId !== tokenRecord.transactionId ||
+		lock.recoveryTokenHash !== sha256(Buffer.from(token)) ||
+		lock.pid !== tokenRecord.pid ||
+		!sameProcessIdentity(lock.processIdentity, tokenRecord.processIdentity)
+	)
+		throw new Error('Recovery token and lock transaction authority do not match');
 	const isLive = await (options.isCoordinatorLive ?? coordinatorIsLive)({
 		pid: lock.pid,
 		processIdentity: lock.processIdentity
 	});
 	if (isLive) throw new Error('Recovery refused because a live coordinator owns the promotion');
-	if (
-		lock.transactionId !== tokenRecord.transactionId ||
-		lock.recoveryTokenHash !== sha256(Buffer.from(token))
-	)
-		throw new Error('Recovery token and lock transaction authority do not match');
 	if (journalMetadata) {
 		const journalAuthority = await readAuthorityFileIdentity(
 			root,
@@ -1588,6 +1609,8 @@ async function withCoordinatorLock<T>(
 		schemaVersion: 'skill-icon-promotion-recovery-token-v1',
 		transactionId: authority.lock.transactionId,
 		recoveryToken,
+		pid: authority.lock.pid,
+		processIdentity: authority.lock.processIdentity,
 		createdAt: authority.lock.acquiredAt
 	});
 	let tokenIdentity: AuthorityFileIdentity;

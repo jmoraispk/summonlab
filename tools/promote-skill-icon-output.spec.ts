@@ -318,6 +318,8 @@ async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
 			schemaVersion: 'skill-icon-promotion-recovery-token-v1',
 			transactionId,
 			recoveryToken: transactionToken,
+			pid: lock.pid,
+			processIdentity: lock.processIdentity,
 			createdAt: '2026-09-02T10:00:00.000Z'
 		}),
 		{ mode: 0o600 }
@@ -980,8 +982,66 @@ describe('promoteSkillIconOutput', () => {
 		await expect(
 			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
 		).rejects.toMatchObject({ code: 'ENOENT' });
-		await recoverSkillIconPromotion({ root: item.root, transactionToken: observedToken });
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: observedToken,
+			isCoordinatorLive: () => false
+		});
 		await expect(access(tokenPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('refuses token-only recovery while a pre-lock coordinator is paused', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		let release!: () => void;
+		const blocked = new Promise<void>((resolve) => {
+			release = resolve;
+		});
+		let entered!: () => void;
+		const paused = new Promise<void>((resolve) => {
+			entered = resolve;
+		});
+		const promotion = promoteSkillIconOutput({
+			jobId: 'charcoal-forged-stone-v1',
+			reviewPath: item.reviewPath,
+			root: item.root,
+			testHooks: {
+				beforeLockWrite: async () => {
+					entered();
+					await blocked;
+				}
+			}
+		});
+		await paused;
+		const tokenPath = path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH);
+		const tokenRecord = JSON.parse(await readFile(tokenPath, 'utf8')) as {
+			recoveryToken: string;
+			pid: number;
+			processIdentity: unknown;
+		};
+		expect(tokenRecord).toMatchObject({
+			pid: process.pid,
+			processIdentity: { bootId: expect.any(String), startTicks: expect.any(String) }
+		});
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: tokenRecord.recoveryToken,
+				isCoordinatorLive: () => true
+			})
+		).rejects.toThrow(/live coordinator/iu);
+		await expect(access(tokenPath)).resolves.toBeUndefined();
+		release();
+		await expect(promotion).resolves.toMatchObject({ jobId: 'charcoal-forged-stone-v1' });
+	});
+
+	it('fails closed on a malformed token-only authority record', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const tokenPath = path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH);
+		await writeFile(tokenPath, '{', { mode: 0o600 });
+		await expect(
+			recoverSkillIconPromotion({ root: item.root, transactionToken: randomUUID() })
+		).rejects.toThrow(/invalid promotion recovery token|fail-closed/iu);
+		await expect(readFile(tokenPath, 'utf8')).resolves.toBe('{');
 	});
 
 	it('retains the durable token when a partial lock cannot be parsed', async () => {
