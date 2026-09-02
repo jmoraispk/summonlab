@@ -522,6 +522,36 @@ describe('Equipment image-production contracts', () => {
 		).toThrow();
 	});
 
+	it('rejects a root duplicated into the gated set even when an extra target hides the overlap', () => {
+		const duplicatedRootTargetId = validRunPlan.rootPackets[0]!.targetId;
+		const displacedGatedTargetId = validRunPlan.unmaterializedReviewGatedTargetIds[0]!;
+		const unrelatedTargetId = 'material-equipment-v1-unrelated-extra-target-v1';
+		const firstGate = validRunPlan.reviewGates[0]!;
+		const overlappingPlan = {
+			...validRunPlan,
+			targetIds: validRunPlan.targetIds.map((targetId) =>
+				targetId === displacedGatedTargetId ? unrelatedTargetId : targetId
+			),
+			unmaterializedReviewGatedTargetIds: [
+				duplicatedRootTargetId,
+				...validRunPlan.unmaterializedReviewGatedTargetIds.slice(1)
+			],
+			reviewGates: [
+				{
+					...firstGate,
+					unlocksTargetIds: [duplicatedRootTargetId, ...firstGate.unlocksTargetIds.slice(1)]
+				},
+				...validRunPlan.reviewGates.slice(1)
+			]
+		};
+
+		expect(overlappingPlan.targetIds).toHaveLength(161);
+		expect(new Set(overlappingPlan.targetIds).size).toBe(161);
+		expect(overlappingPlan.rootPackets).toHaveLength(77);
+		expect(overlappingPlan.unmaterializedReviewGatedTargetIds).toHaveLength(84);
+		expect(() => EquipmentRunPlanSchema.parse(overlappingPlan)).toThrow();
+	});
+
 	it('rejects reviewer-owned and run-owned result write claims', () => {
 		expect(() =>
 			EquipmentImageResultSchema.parse({

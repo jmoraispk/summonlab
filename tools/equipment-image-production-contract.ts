@@ -512,13 +512,21 @@ export const EquipmentRunPlanSchema = z
 		}
 
 		const sameMembers = (left: readonly string[], right: readonly string[]) => {
+			const leftSet = new Set(left);
 			const rightSet = new Set(right);
-			return left.length === right.length && left.every((value) => rightSet.has(value));
+			return leftSet.size === rightSet.size && [...leftSet].every((value) => rightSet.has(value));
 		};
 		if (!sameMembers(gateChildren, plan.unmaterializedReviewGatedTargetIds)) {
 			context.addIssue({
 				code: 'custom',
 				message: 'Review gate children must equal the unmaterialized review-gated target set'
+			});
+		}
+		const gatedTargetIdSet = new Set(plan.unmaterializedReviewGatedTargetIds);
+		if (rootTargetIds.some((targetId) => gatedTargetIdSet.has(targetId))) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Root packets and review-gated children must be disjoint'
 			});
 		}
 		if (
