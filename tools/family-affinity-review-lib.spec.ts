@@ -27,9 +27,12 @@ import {
 	familyAffinityProducerIdentitySha256,
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
+	familyAffinityReviewAssignmentPath,
+	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinitySha256,
 	stableFamilyAffinityJson,
 	type FamilyAffinityAssignment,
+	type FamilyAffinityReviewAssignment,
 	type FamilyAffinityTarget
 } from './family-affinity-production-lib.js';
 import { exportFamilyAffinityReview } from './export-family-affinity-review.js';
@@ -124,6 +127,32 @@ function reviewIssueInput(
 		targetPath: live.paths.target,
 		productionAssignmentPath: live.paths.assignment,
 		decisionVersion: 1
+	};
+}
+
+function reviewAssignmentWithIdentity(
+	live: Awaited<ReturnType<typeof stageLiveAttempt>>,
+	assignment: FamilyAffinityReviewAssignment,
+	overrides: Pick<FamilyAffinityReviewAssignment, 'issuerId' | 'reviewerId'>
+): FamilyAffinityReviewAssignment {
+	const changed = { ...assignment, ...overrides };
+	return {
+		...changed,
+		issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
+			issuerId: changed.issuerId,
+			reviewerId: changed.reviewerId,
+			kind: changed.reviewKind,
+			manifestPath: changed.manifestPath,
+			manifestSha256: changed.manifestSha256,
+			target: live.activeTarget,
+			targetPath: changed.targetPath,
+			productionAssignment: assignmentFor(live.activeTarget),
+			productionAssignmentPath: changed.productionAssignmentPath,
+			result: live.result,
+			resultSha256: familyAffinityRawSha256(stableFamilyAffinityJson(live.result)),
+			decisionVersion: changed.decisionVersion,
+			permittedReceiptPath: changed.permittedReceiptPath
+		})
 	};
 }
 
@@ -403,6 +432,155 @@ describe('family-affinity review receipt contract', () => {
 				ordinaryFor(live.activeTarget, live.result)
 			)
 		).rejects.toThrow(/attestation|stale|forged|cross-bound/i);
+	});
+
+	it.each([
+		{
+			name: 'one reviewer receiving both roles',
+			kind: 'blind' as const,
+			reviewerId: 'reviewer-beta',
+			issuerId: 'review-controller-delta'
+		},
+		{
+			name: 'ordinary reviewer issuing the blind assignment',
+			kind: 'blind' as const,
+			reviewerId: 'reviewer-gamma',
+			issuerId: 'reviewer-beta'
+		},
+		{
+			name: 'ordinary assignment issuer receiving the blind role',
+			kind: 'blind' as const,
+			reviewerId: 'review-controller-alpha',
+			issuerId: 'review-controller-delta'
+		}
+	])('rejects $name when ordinary authorization exists first', async (attempt) => {
+		const live = await stageLiveAttempt('T3');
+		await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		const invalidPath = familyAffinityReviewAssignmentPath('blind', live.activeTarget, 1);
+		await expect(
+			issueReviewAssignmentExclusive(live.root, {
+				...reviewIssueInput(live, attempt.kind, attempt.reviewerId),
+				issuerId: attempt.issuerId
+			})
+		).rejects.toThrow(/independent|cross-kind|separate|reviewer/i);
+		await expect(readFile(join(live.root, invalidPath))).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each([
+		{
+			name: 'one reviewer receiving both roles',
+			kind: 'ordinary' as const,
+			reviewerId: 'reviewer-gamma',
+			issuerId: 'review-controller-delta'
+		},
+		{
+			name: 'blind reviewer issuing the ordinary assignment',
+			kind: 'ordinary' as const,
+			reviewerId: 'reviewer-beta',
+			issuerId: 'reviewer-gamma'
+		},
+		{
+			name: 'blind assignment issuer receiving the ordinary role',
+			kind: 'ordinary' as const,
+			reviewerId: 'review-controller-alpha',
+			issuerId: 'review-controller-delta'
+		}
+	])('rejects $name when blind authorization exists first', async (attempt) => {
+		const live = await stageLiveAttempt('T3');
+		await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'blind', 'reviewer-gamma')
+		);
+		const invalidPath = familyAffinityReviewAssignmentPath('ordinary', live.activeTarget, 1);
+		await expect(
+			issueReviewAssignmentExclusive(live.root, {
+				...reviewIssueInput(live, attempt.kind, attempt.reviewerId),
+				issuerId: attempt.issuerId
+			})
+		).rejects.toThrow(/independent|cross-kind|separate|reviewer/i);
+		await expect(readFile(join(live.root, invalidPath))).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('fails closed before write when opposite-kind authorization is malformed, tampered, or symlinked', async () => {
+		for (const mode of ['malformed', 'tampered', 'symlink'] as const) {
+			const live = await stageLiveAttempt('T3');
+			const ordinary = await issueReviewAssignmentExclusive(
+				live.root,
+				reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+			);
+			if (mode === 'malformed') {
+				await writeFile(join(live.root, ordinary.path), '{}\n');
+			} else if (mode === 'tampered') {
+				await writeFile(
+					join(live.root, ordinary.path),
+					stableFamilyAffinityJson({
+						...ordinary.assignment,
+						issuerId: 'forged-controller'
+					})
+				);
+			} else {
+				const stored = `${ordinary.path}.stored`;
+				await writeFile(join(live.root, stored), stableFamilyAffinityJson(ordinary.assignment));
+				await rm(join(live.root, ordinary.path));
+				await symlink(join(live.root, stored), join(live.root, ordinary.path));
+			}
+			const invalidPath = familyAffinityReviewAssignmentPath('blind', live.activeTarget, 1);
+			await expect(
+				issueReviewAssignmentExclusive(live.root, reviewIssueInput(live, 'blind', 'reviewer-gamma'))
+			).rejects.toThrow(/symlink|schema|invalid|expected|review/i);
+			await expect(readFile(join(live.root, invalidPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
+
+	it.each([
+		{
+			name: 'the same reviewer in ordinary and blind roles',
+			kind: 'blind' as const,
+			issuerId: 'review-controller-alpha',
+			reviewerId: 'reviewer-beta'
+		},
+		{
+			name: 'the ordinary reviewer as blind issuer',
+			kind: 'blind' as const,
+			issuerId: 'reviewer-beta',
+			reviewerId: 'reviewer-gamma'
+		},
+		{
+			name: 'the blind reviewer as ordinary issuer',
+			kind: 'ordinary' as const,
+			issuerId: 'reviewer-gamma',
+			reviewerId: 'reviewer-beta'
+		},
+		{
+			name: 'the producer as blind controller issuer',
+			kind: 'blind' as const,
+			issuerId: 'producer-alpha',
+			reviewerId: 'reviewer-gamma'
+		}
+	])('aggregation rejects externally placed assignments with $name', async (mutation) => {
+		const live = await stageLiveAttempt('T3');
+		const ordinary = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		const blind = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'blind', 'reviewer-gamma')
+		);
+		const selected = mutation.kind === 'ordinary' ? ordinary : blind;
+		const changed = reviewAssignmentWithIdentity(live, selected.assignment, {
+			issuerId: mutation.issuerId,
+			reviewerId: mutation.reviewerId
+		});
+		await writeFile(join(live.root, selected.path), stableFamilyAffinityJson(changed));
+		await expect(buildFamilyAffinityReviewArtifacts(live.root)).rejects.toThrow(
+			/independent|cross-kind|separate|reviewer|unauthorized|cross-bound/i
+		);
 	});
 
 	it('runs producer result through independent ordinary and T3 blind approval into aggregation', async () => {

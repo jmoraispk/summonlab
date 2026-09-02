@@ -993,6 +993,7 @@ export function validateFamilyAffinityReviewAssignmentEvidence(input: {
 		assignment.coordinateId !== target.coordinateId ||
 		assignment.candidateVersion !== target.version ||
 		assignment.decisionVersion !== target.version ||
+		assignment.issuerId === input.result.producerId ||
 		assignment.reviewerId === input.result.producerId ||
 		assignment.producerIdentitySha256 !==
 			familyAffinityProducerIdentitySha256(input.result.producerId) ||

@@ -254,6 +254,37 @@ async function loadLiveReviewAttempt(
 	};
 }
 
+type ReviewAssignmentIdentityPair = {
+	producerId: string;
+	ordinary?: FamilyAffinityReviewAssignment;
+	blind?: FamilyAffinityReviewAssignment;
+};
+
+function validateReviewAssignmentIdentityPair(input: ReviewAssignmentIdentityPair): void {
+	for (const assignment of [input.ordinary, input.blind]) {
+		if (!assignment) continue;
+		if (
+			assignment.issuerId === input.producerId ||
+			assignment.reviewerId === input.producerId ||
+			assignment.issuerId === assignment.reviewerId
+		) {
+			throw new Error(
+				'Review assignment controller, producer, and reviewer identities must be separate'
+			);
+		}
+	}
+	if (!input.ordinary || !input.blind) return;
+	if (
+		input.ordinary.reviewerId === input.blind.reviewerId ||
+		input.ordinary.issuerId === input.blind.reviewerId ||
+		input.blind.issuerId === input.ordinary.reviewerId
+	) {
+		throw new Error(
+			'Ordinary and blind review assignments require independent cross-kind issuers and reviewers'
+		);
+	}
+}
+
 export async function issueReviewAssignmentExclusive(
 	repositoryRoot: string,
 	input: {
@@ -345,6 +376,37 @@ export async function issueReviewAssignmentExclusive(
 		permittedReceiptPath,
 		exclusiveCreateRequired: true,
 		runtimeCatalogMutationForbidden: true
+	});
+	const oppositeKind = input.kind === 'ordinary' ? 'blind' : 'ordinary';
+	const oppositePath = familyAffinityReviewAssignmentPath(
+		oppositeKind,
+		live.target,
+		input.decisionVersion
+	);
+	const oppositeBytes = await optionalRealFile(repositoryRoot, oppositePath);
+	let oppositeAssignment: FamilyAffinityReviewAssignment | undefined;
+	if (oppositeBytes) {
+		oppositeAssignment = validateFamilyAffinityReviewAssignmentEvidence({
+			reviewAssignment: FamilyAffinityReviewAssignmentSchema.parse(
+				JSON.parse(oppositeBytes.toString('utf8'))
+			),
+			reviewAssignmentPath: oppositePath,
+			kind: oppositeKind,
+			manifestPath,
+			manifestSha256,
+			target: live.target,
+			targetPath: input.targetPath,
+			productionAssignment: live.productionAssignment,
+			productionAssignmentPath: input.productionAssignmentPath,
+			result: live.result,
+			resultSha256
+		});
+	}
+	validateReviewAssignmentIdentityPair({
+		producerId: live.result.producerId,
+		...(input.kind === 'ordinary'
+			? { ordinary: assignment, ...(oppositeAssignment ? { blind: oppositeAssignment } : {}) }
+			: { blind: assignment, ...(oppositeAssignment ? { ordinary: oppositeAssignment } : {}) })
 	});
 	const absolute = await ensureSafeParent(repositoryRoot, path);
 	await writeFile(absolute, stableFamilyAffinityJson(assignment), { flag: 'wx' });
@@ -799,6 +861,7 @@ export async function buildFamilyAffinityReviewArtifacts(
 	}
 	const attemptByTargetId = new Map(attempts.map((attempt) => [attempt.target.targetId, attempt]));
 	const reviewAssignmentByPath = new Map<string, FamilyAffinityReviewAssignment>();
+	const reviewAssignmentPairByAttempt = new Map<string, ReviewAssignmentIdentityPair>();
 	for (const path of reviewAssignmentFiles) {
 		const bytes = await requiredRealFile(repositoryRoot, path);
 		const reviewAssignment = FamilyAffinityReviewAssignmentSchema.parse(
@@ -825,21 +888,31 @@ export async function buildFamilyAffinityReviewArtifacts(
 			candidateBytes,
 			resultBytes
 		});
-		reviewAssignmentByPath.set(
-			path,
-			validateFamilyAffinityReviewAssignmentEvidence({
-				reviewAssignment,
-				reviewAssignmentPath: path,
-				kind: reviewAssignment.reviewKind,
-				manifestPath,
-				target,
-				targetPath: coordinate.targetPath,
-				productionAssignment: assignment,
-				productionAssignmentPath: coordinate.assignmentPath,
-				result: evidence.result,
-				resultSha256: evidence.resultSha256
-			})
-		);
+		const validatedReviewAssignment = validateFamilyAffinityReviewAssignmentEvidence({
+			reviewAssignment,
+			reviewAssignmentPath: path,
+			kind: reviewAssignment.reviewKind,
+			manifestPath,
+			target,
+			targetPath: coordinate.targetPath,
+			productionAssignment: assignment,
+			productionAssignmentPath: coordinate.assignmentPath,
+			result: evidence.result,
+			resultSha256: evidence.resultSha256
+		});
+		reviewAssignmentByPath.set(path, validatedReviewAssignment);
+		const attemptKey = `${target.coordinateId}/v${target.version}`;
+		const pair = reviewAssignmentPairByAttempt.get(attemptKey) ?? {
+			producerId: evidence.result.producerId
+		};
+		if (pair.producerId !== evidence.result.producerId || pair[reviewAssignment.reviewKind]) {
+			throw new Error(`Duplicate or cross-bound review assignment for ${attemptKey}`);
+		}
+		pair[reviewAssignment.reviewKind] = validatedReviewAssignment;
+		reviewAssignmentPairByAttempt.set(attemptKey, pair);
+	}
+	for (const pair of reviewAssignmentPairByAttempt.values()) {
+		validateReviewAssignmentIdentityPair(pair);
 	}
 
 	const ordinaryByKey = new Map<
