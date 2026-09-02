@@ -1759,8 +1759,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.flame-elemental-wisp",
-      "path": "docs/wiki/creatures/monsters/flame-elemental-wisp.md",
+      "wikiId": "monster.elemental-wisp",
+      "path": "docs/wiki/creatures/monsters/elemental-wisp.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",
@@ -1769,8 +1769,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.flame-elemental-flame-spirit",
-      "path": "docs/wiki/creatures/monsters/flame-elemental-flame-spirit.md",
+      "wikiId": "monster.elemental-spirit",
+      "path": "docs/wiki/creatures/monsters/elemental-spirit.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",
@@ -1779,8 +1779,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.flame-elemental-blaze-warden",
-      "path": "docs/wiki/creatures/monsters/flame-elemental-blaze-warden.md",
+      "wikiId": "monster.elemental-warden",
+      "path": "docs/wiki/creatures/monsters/elemental-warden.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",
@@ -1789,8 +1789,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.flame-elemental-magma-lord",
-      "path": "docs/wiki/creatures/monsters/flame-elemental-magma-lord.md",
+      "wikiId": "monster.elemental-colossus",
+      "path": "docs/wiki/creatures/monsters/elemental-colossus.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",
@@ -1799,8 +1799,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.flame-elemental-conflagration-sovereign",
-      "path": "docs/wiki/creatures/monsters/flame-elemental-conflagration-sovereign.md",
+      "wikiId": "monster.elemental-sovereign",
+      "path": "docs/wiki/creatures/monsters/elemental-sovereign.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "draft",

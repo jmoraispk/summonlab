@@ -9,6 +9,7 @@ import {
 	BridgeIdentityPacketSchema,
 	bridgeAttemptPaths,
 	CurrentClassMappingFileSchema,
+	currentClassMappingPath,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
@@ -105,9 +106,7 @@ export const EarthBridgeWaveSchema = z
 	.object({
 		schemaVersion: z.literal('earth-bridge-wave-v1'),
 		waveId: z.literal('earth-bridge-v1'),
-		sourceMappingPath: z.literal(
-			'assets/enemies/experiments/family-affinity-v1/current-class-mapping.json'
-		),
+		sourceMappingPath: OwnedPathSchema,
 		sourceMappingSha256: Sha256Schema,
 		sourceVisualIndexPath: z.literal('docs/wiki/creatures/monsters/visual-index.json'),
 		sourceVisualIndexSha256: Sha256Schema,
@@ -449,7 +448,10 @@ function buildBridgeIdentityPacket(input: {
 	});
 }
 
-function buildBridgeTarget(packet: BridgeIdentityPacket): FamilyAffinityTarget {
+function buildBridgeTarget(
+	packet: BridgeIdentityPacket,
+	mappingPath: string
+): FamilyAffinityTarget {
 	if (packet.status === 'blocked-on-identity-decision') {
 		throw new Error(`${packet.currentClassId} is blocked and cannot receive output authority`);
 	}
@@ -487,7 +489,7 @@ function buildBridgeTarget(packet: BridgeIdentityPacket): FamilyAffinityTarget {
 			familyPacketSha256: familyAffinitySha256(packet),
 			sourcePage: packet.sourcePage,
 			sourceReferences: packet.sourceReferences.map(({ path }) => path),
-			mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`
+			mappingPath
 		},
 		presentationContract: PRESENTATION_CONTRACT,
 		acceptanceCriteria: [
@@ -597,6 +599,7 @@ export async function buildEarthBridgeMaterialization(input: {
 	manifest: unknown;
 }): Promise<EarthBridgeBuild> {
 	const mapping = CurrentClassMappingFileSchema.parse(input.mapping);
+	const mappingPath = currentClassMappingPath(mapping);
 	const manifest = FamilyAffinityManifestSchema.parse(input.manifest);
 	const visualIndex = input.visualIndex as VisualIndex;
 	if (!Array.isArray(visualIndex.reconciliation?.entries)) {
@@ -737,7 +740,7 @@ export async function buildEarthBridgeMaterialization(input: {
 			});
 			continue;
 		}
-		const target = buildBridgeTarget(packet);
+		const target = buildBridgeTarget(packet, mappingPath);
 		const assignment = buildBridgeAssignment(target);
 		const paths = bridgeAttemptPaths(mappingEntry.currentClassId, 'earth', 1);
 		bridgeTargets.push(target);
@@ -766,10 +769,7 @@ export async function buildEarthBridgeMaterialization(input: {
 	if (entries.length === 0 || entries.length > 40) {
 		throw new Error(`Earth bridge targetCount must be between 1 and 40; got ${entries.length}`);
 	}
-	const mappingBytes = await readRealFile(
-		input.repositoryRoot,
-		`${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`
-	);
+	const mappingBytes = await readRealFile(input.repositoryRoot, mappingPath);
 	const visualIndexBytes = await readRealFile(
 		input.repositoryRoot,
 		'docs/wiki/creatures/monsters/visual-index.json'
@@ -777,7 +777,7 @@ export async function buildEarthBridgeMaterialization(input: {
 	const wave = EarthBridgeWaveSchema.parse({
 		schemaVersion: 'earth-bridge-wave-v1',
 		waveId: 'earth-bridge-v1',
-		sourceMappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`,
+		sourceMappingPath: mappingPath,
 		sourceMappingSha256: rawHash(mappingBytes),
 		sourceVisualIndexPath: 'docs/wiki/creatures/monsters/visual-index.json',
 		sourceVisualIndexSha256: rawHash(visualIndexBytes),
@@ -871,6 +871,98 @@ export async function materializeEarthBridgeWave(options: {
 	repositoryRoot: string;
 	check: boolean;
 }): Promise<{ mode: 'check' | 'write'; artifactCount: number; targetCount: number }> {
+	const historicalWavePath = `${FAMILY_AFFINITY_ROOT}/waves/earth-bridge-v1.json`;
+	if (await fileExists(absoluteContainedPath(options.repositoryRoot, historicalWavePath))) {
+		const wave = EarthBridgeWaveSchema.parse(
+			JSON.parse((await readRealFile(options.repositoryRoot, historicalWavePath)).toString('utf8'))
+		);
+		const mappingBytes = await readRealFile(options.repositoryRoot, wave.sourceMappingPath);
+		if (rawHash(mappingBytes) !== wave.sourceMappingSha256) {
+			throw new Error('Historical Earth bridge mapping source hash drift');
+		}
+		const visualIndexBytes = await readRealFile(options.repositoryRoot, wave.sourceVisualIndexPath);
+		if (rawHash(visualIndexBytes) !== wave.sourceVisualIndexSha256) {
+			const migrationPath = `${FAMILY_AFFINITY_ROOT}/migrations/flame-elementals-to-elementals-v1.json`;
+			if (!(await fileExists(absoluteContainedPath(options.repositoryRoot, migrationPath)))) {
+				throw new Error('Historical Earth bridge visual-index source hash drift');
+			}
+			const migration = JSON.parse(
+				(await readRealFile(options.repositoryRoot, migrationPath)).toString('utf8')
+			) as { migrationId?: string; replacementFamilyId?: string };
+			if (
+				migration.migrationId !== 'flame-elementals-to-elementals-v1' ||
+				migration.replacementFamilyId !== 'elementals'
+			) {
+				throw new Error('Historical Earth bridge visual-index drift lacks the family migration');
+			}
+		}
+		const manifest = FamilyAffinityManifestSchema.parse(
+			JSON.parse(
+				(
+					await readRealFile(options.repositoryRoot, `${FAMILY_AFFINITY_ROOT}/manifest.json`)
+				).toString('utf8')
+			)
+		);
+		const wispRetirementPath = `${FAMILY_AFFINITY_ROOT}/migrations/retire-legacy-ember-wisp-bridge-v1.json`;
+		let retiredWispArtifacts = new Map<string, string>();
+		if (await fileExists(absoluteContainedPath(options.repositoryRoot, wispRetirementPath))) {
+			const retirement = JSON.parse(
+				(await readRealFile(options.repositoryRoot, wispRetirementPath)).toString('utf8')
+			) as {
+				retirementId?: string;
+				currentClassId?: string;
+				archivedArtifacts?: Array<{ path: string; archivePath: string }>;
+			};
+			if (
+				retirement.retirementId !== 'retire-legacy-ember-wisp-bridge-v1' ||
+				retirement.currentClassId !== 'ember-wisp' ||
+				!Array.isArray(retirement.archivedArtifacts)
+			) {
+				throw new Error('Historical Earth bridge has an invalid Wisp retirement receipt');
+			}
+			retiredWispArtifacts = new Map(
+				retirement.archivedArtifacts.map(({ path, archivePath }) => [path, archivePath])
+			);
+		}
+		for (const entry of wave.entries) {
+			if (entry.targetKind === 'blocked-bridge-only') continue;
+			const targetBytes = await readRealFile(
+				options.repositoryRoot,
+				retiredWispArtifacts.get(entry.targetPath!) ?? entry.targetPath!
+			);
+			const assignmentBytes = await readRealFile(
+				options.repositoryRoot,
+				retiredWispArtifacts.get(entry.assignmentPath!) ?? entry.assignmentPath!
+			);
+			const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+			const assignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(assignmentBytes.toString('utf8'))
+			);
+			if (
+				familyAffinitySha256(target) !== entry.targetSha256 ||
+				familyAffinitySha256(assignment) !== entry.assignmentSha256
+			) {
+				throw new Error(`Historical Earth bridge attempt hash drift: ${entry.currentClassId}`);
+			}
+			const remainsActive = manifest.bridge.activeCoordinates.some(
+				(coordinate) =>
+					coordinate.currentClassId === entry.currentClassId && coordinate.affinity === 'earth'
+			);
+			if (
+				!remainsActive &&
+				!(entry.currentClassId === 'ember-wisp' && retiredWispArtifacts.size > 0)
+			) {
+				throw new Error(
+					`Historical Earth bridge class left the active bridge: ${entry.currentClassId}`
+				);
+			}
+		}
+		return {
+			mode: options.check ? 'check' : 'write',
+			artifactCount: wave.dispatchableTargetCount * 2 + 2,
+			targetCount: wave.targetCount
+		};
+	}
 	const mapping = JSON.parse(
 		(
 			await readRealFile(

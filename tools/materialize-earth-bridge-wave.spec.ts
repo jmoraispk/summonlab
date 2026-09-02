@@ -7,7 +7,8 @@ import { describe, expect, it } from 'vitest';
 import {
 	buildEarthBridgeWave,
 	buildEarthBridgeMaterialization,
-	EarthBridgeWaveSchema
+	EarthBridgeWaveSchema,
+	materializeEarthBridgeWave
 } from './materialize-earth-bridge-wave.js';
 
 const repositoryRoot = process.cwd();
@@ -18,11 +19,17 @@ async function readJson(path: string): Promise<unknown> {
 }
 
 describe('Earth bridge wave controller', () => {
+	it('validates the sealed v1 bridge after the canonical Elementals migration', async () => {
+		await expect(
+			materializeEarthBridgeWave({ repositoryRoot, check: true })
+		).resolves.toMatchObject({ mode: 'check', targetCount: 40, artifactCount: 80 });
+	});
+
 	it('derives all retained current classes in source order without duplicating canonical coordinates', async () => {
 		const wave = EarthBridgeWaveSchema.parse(
 			await buildEarthBridgeWave({
 				repositoryRoot,
-				mapping: await readJson(`${familyRoot}/current-class-mapping.json`),
+				mapping: await readJson(`${familyRoot}/mappings/current-class-mapping-v2.json`),
 				visualIndex: await readJson('docs/wiki/creatures/monsters/visual-index.json'),
 				manifest: await readJson(`${familyRoot}/manifest.json`)
 			})
@@ -69,7 +76,7 @@ describe('Earth bridge wave controller', () => {
 	it('materializes 39 bridge dispatch packets while retaining the blocked Tower Basilisk decision', async () => {
 		const build = await buildEarthBridgeMaterialization({
 			repositoryRoot,
-			mapping: await readJson(`${familyRoot}/current-class-mapping.json`),
+			mapping: await readJson(`${familyRoot}/mappings/current-class-mapping-v2.json`),
 			visualIndex: await readJson('docs/wiki/creatures/monsters/visual-index.json'),
 			manifest: await readJson(`${familyRoot}/manifest.json`)
 		});
@@ -188,7 +195,7 @@ describe('Earth bridge wave controller', () => {
 	it('binds each retained entry to the exact existing Normal candidate bytes', async () => {
 		const wave = await buildEarthBridgeWave({
 			repositoryRoot,
-			mapping: await readJson(`${familyRoot}/current-class-mapping.json`),
+			mapping: await readJson(`${familyRoot}/mappings/current-class-mapping-v2.json`),
 			visualIndex: await readJson('docs/wiki/creatures/monsters/visual-index.json'),
 			manifest: await readJson(`${familyRoot}/manifest.json`)
 		});
@@ -204,7 +211,7 @@ describe('Earth bridge wave controller', () => {
 	});
 
 	it('fails closed on missing Normal references, duplicate canonical claims, and retired leakage', async () => {
-		const mapping = (await readJson(`${familyRoot}/current-class-mapping.json`)) as {
+		const mapping = (await readJson(`${familyRoot}/mappings/current-class-mapping-v2.json`)) as {
 			entries: Array<Record<string, unknown>>;
 		};
 		const visualIndex = (await readJson('docs/wiki/creatures/monsters/visual-index.json')) as {

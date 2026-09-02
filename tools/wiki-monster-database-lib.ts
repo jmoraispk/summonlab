@@ -18,6 +18,13 @@ import {
 
 export const MONSTER_AFFINITIES = PRODUCTION_AFFINITIES;
 export const MONSTER_VISUAL_INDEX_SOURCE_STATUS = 'canonical-production-plan' as const;
+export const RETIRED_CANONICAL_MONSTER_FORM_IDS = [
+	'flame-elemental-wisp',
+	'flame-elemental-flame-spirit',
+	'flame-elemental-blaze-warden',
+	'flame-elemental-magma-lord',
+	'flame-elemental-conflagration-sovereign'
+] as const;
 
 const TIER_TITLES = {
 	T1: 'Initiate',
@@ -624,7 +631,12 @@ export function obsoleteGeneratedMonsterPages(
 	existingFileNames: readonly string[]
 ): string[] {
 	const existing = new Set(existingFileNames);
-	return legacyMonsterPageFileNames(database).filter((fileName) => existing.has(fileName));
+	return [
+		...legacyMonsterPageFileNames(database),
+		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `${formId}.md`)
+	]
+		.filter((fileName) => existing.has(fileName))
+		.sort();
 }
 
 export function unmanagedMonsterPageCollisions(
@@ -634,7 +646,8 @@ export function unmanagedMonsterPageCollisions(
 	const managed = new Set([
 		'README.md',
 		...generatedMonsterPageFileNames(database),
-		...legacyMonsterPageFileNames(database)
+		...legacyMonsterPageFileNames(database),
+		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `${formId}.md`)
 	]);
 	return existingFileNames
 		.filter((fileName) => /^[a-z][a-z0-9-]*\.md$/u.test(fileName) && !managed.has(fileName))
@@ -647,7 +660,8 @@ export function assertManagedMonsterCatalogEntries(
 ): void {
 	const allowedMonsterWikiIds = new Set([
 		...database.forms.map(({ formId }) => `monster.${formId}`),
-		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`)
+		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`),
+		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `monster.${formId}`)
 	]);
 	const unknown = entries
 		.map(({ wikiId }) => wikiId)

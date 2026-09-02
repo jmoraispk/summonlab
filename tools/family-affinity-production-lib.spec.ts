@@ -22,6 +22,7 @@ import {
 	buildFamilyAffinityProductionBundle,
 	bridgeAttemptPaths,
 	canonicalAttemptPaths,
+	FAMILY_AFFINITY_ACTIVE_SOURCES_PATH,
 	FamilyAffinityAssignmentSchema,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityManifestSchema,
@@ -32,6 +33,7 @@ import {
 	familyAffinityReviewAssignmentPath,
 	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinitySha256,
+	familyPacketPath,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityProductionBundle,
 	validateFamilyAffinityAttemptCrossBinding,
@@ -2797,7 +2799,61 @@ async function stageFamilyProductionSource(root: string) {
 		);
 	}
 	await writeOwnedFixture(root, `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`, mapping);
+	await writeOwnedFixture(root, FAMILY_AFFINITY_ACTIVE_SOURCES_PATH, {
+		schemaVersion: 'family-affinity-active-sources-v1',
+		mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`,
+		familyPacketPaths: familyPackets.map(familyPacketPath)
+	});
 	return { mapping, familyPackets };
+}
+
+function makeElementalReplacementFixture(source: ReturnType<typeof FamilyPacketSchema.parse>) {
+	const formIds = [
+		'elemental-wisp',
+		'elemental-spirit',
+		'elemental-warden',
+		'elemental-colossus',
+		'elemental-sovereign'
+	] as const;
+	return FamilyPacketSchema.parse({
+		...source,
+		packetPath: `${FAMILY_AFFINITY_ROOT}/family-replacements/21-elementals.json`,
+		familyId: 'elementals',
+		displayName: 'Elementals',
+		forms: source.forms.map((form, index) => ({ ...form, formId: formIds[index]! }))
+	});
+}
+
+async function stageElementalReplacementSources(
+	root: string,
+	mapping: ReturnType<typeof CurrentClassMappingFileSchema.parse>,
+	familyPackets: Array<ReturnType<typeof FamilyPacketSchema.parse>>
+) {
+	const source = familyPackets.find(({ familyId }) => familyId === 'flame-elementals')!;
+	const replacement = makeElementalReplacementFixture(source);
+	const replacementMapping = CurrentClassMappingFileSchema.parse({
+		...structuredClone(mapping),
+		mappingPath: `${FAMILY_AFFINITY_ROOT}/mappings/current-class-mapping-v2.json`,
+		entries: mapping.entries.map((entry) =>
+			entry.currentClassId === 'ember-wisp'
+				? {
+						...entry,
+						canonicalFamilyId: 'elementals',
+						canonicalFormId: 'elemental-wisp'
+					}
+				: entry
+		)
+	});
+	await writeOwnedFixture(root, replacement.packetPath!, replacement);
+	await writeOwnedFixture(root, replacementMapping.mappingPath!, replacementMapping);
+	await writeOwnedFixture(root, FAMILY_AFFINITY_ACTIVE_SOURCES_PATH, {
+		schemaVersion: 'family-affinity-active-sources-v1',
+		mappingPath: replacementMapping.mappingPath,
+		familyPacketPaths: familyPackets.map((family) =>
+			family.familyId === 'flame-elementals' ? replacement.packetPath : familyPacketPath(family)
+		)
+	});
+	return { replacement, replacementMapping };
 }
 
 async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinityTarget) {
@@ -2897,6 +2953,61 @@ async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinity
 }
 
 describe('deterministic family affinity exporter', () => {
+	it('replaces only pristine Flame Elementals plans and preserves their source packet', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-affinity-elementals-migration-'));
+		try {
+			const { mapping, familyPackets } = await stageFamilyProductionSource(root);
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			const legacyPacketPath = `${FAMILY_AFFINITY_ROOT}/families/21-flame-elementals.json`;
+			const legacyPacketBefore = await readFile(join(root, legacyPacketPath));
+			const preservedTargetPath = `${FAMILY_AFFINITY_ROOT}/targets/goblins/goblin-runt/normal/target-v1.json`;
+			const preservedTargetBefore = await readFile(join(root, preservedTargetPath));
+			await stageElementalReplacementSources(root, mapping, familyPackets);
+			await expect(
+				exportFamilyAffinityProduction({ repositoryRoot: root, check: true })
+			).rejects.toThrow(/migration required/i);
+			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
+			await expect(
+				exportFamilyAffinityProduction({ repositoryRoot: root, check: true })
+			).resolves.toMatchObject({ artifactCount: 1501 });
+			expect(await readFile(join(root, legacyPacketPath))).toEqual(legacyPacketBefore);
+			expect(await readFile(join(root, preservedTargetPath))).toEqual(preservedTargetBefore);
+			const manifest = FamilyAffinityManifestSchema.parse(
+				JSON.parse(await readFile(join(root, FAMILY_AFFINITY_ROOT, 'manifest.json'), 'utf8'))
+			);
+			expect(manifest.canonicalMatrix.activeCoordinates).toHaveLength(750);
+			expect(
+				manifest.canonicalMatrix.activeCoordinates.filter(
+					({ familyId }) => familyId === 'elementals'
+				)
+			).toHaveLength(25);
+			expect(
+				manifest.canonicalMatrix.activeCoordinates.some(
+					({ familyId }) => familyId === 'flame-elementals'
+				)
+			).toBe(false);
+			expect(manifest.mappingReservations.sourcePath).toBe(
+				`${FAMILY_AFFINITY_ROOT}/mappings/current-class-mapping-v2.json`
+			);
+			await expect(
+				readFile(
+					join(
+						root,
+						`${FAMILY_AFFINITY_ROOT}/migrations/archive/flame-elementals-to-elementals-v1/targets/flame-elementals/flame-elemental-wisp/normal/target-v1.json`
+					)
+				)
+			).resolves.toBeTruthy();
+			await expect(
+				readFile(
+					join(root, `${FAMILY_AFFINITY_ROOT}/migrations/flame-elementals-to-elementals-v1.json`),
+					'utf8'
+				)
+			).resolves.toContain('"oldPlanningArtifactCount":50');
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 30_000);
+
 	it('is byte-stable and check mode detects drift, missing files, and extras', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-affinity-export-'));
 		try {
@@ -2909,6 +3020,11 @@ describe('deterministic family affinity exporter', () => {
 				);
 			}
 			await writeOwnedFixture(root, `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`, mapping);
+			await writeOwnedFixture(root, FAMILY_AFFINITY_ACTIVE_SOURCES_PATH, {
+				schemaVersion: 'family-affinity-active-sources-v1',
+				mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`,
+				familyPacketPaths: familyPackets.map(familyPacketPath)
+			});
 			const first = await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
 			expect(first.artifactCount).toBe(1501);
 			const snapshot = await snapshotGenerated(root);
@@ -2960,6 +3076,11 @@ describe('deterministic family affinity exporter', () => {
 				);
 			}
 			await writeOwnedFixture(root, `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`, mapping);
+			await writeOwnedFixture(root, FAMILY_AFFINITY_ACTIVE_SOURCES_PATH, {
+				schemaVersion: 'family-affinity-active-sources-v1',
+				mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`,
+				familyPacketPaths: familyPackets.map(familyPacketPath)
+			});
 			await exportFamilyAffinityProduction({ repositoryRoot: root, check: false });
 			const immutablePath = `${FAMILY_AFFINITY_ROOT}/targets/goblins/goblin-runt/normal/target-v1.json`;
 			await writeOwnedFixture(root, immutablePath, '{"tampered":true}\n');
@@ -4409,14 +4530,29 @@ describe('controller-only family affinity revision allocation', () => {
 		}
 	});
 
-	it('keeps the corrected Earth Wisp bound to its immutable bridge source packet', async () => {
-		const targetPath = `${FAMILY_AFFINITY_ROOT}/bridge/targets/ember-wisp/earth/target-v3.json`;
-		const current = FamilyAffinityTargetSchema.parse(
-			JSON.parse(await readFile(targetPath, 'utf8'))
+	it('keeps the retired Earth Wisp provenance bound to its immutable bridge source packet', async () => {
+		const retirement = JSON.parse(
+			await readFile(
+				`${FAMILY_AFFINITY_ROOT}/migrations/retire-legacy-ember-wisp-bridge-v1.json`,
+				'utf8'
+			)
+		) as { archivedArtifacts: Array<{ path: string; archivePath: string }> };
+		const archivedPathByOriginal = new Map(
+			retirement.archivedArtifacts.map(({ path, archivePath }) => [path, archivePath])
 		);
-		const resultBytes = await readFile(current.ownedPaths.result);
+		const originalTargetPath = `${FAMILY_AFFINITY_ROOT}/bridge/targets/ember-wisp/earth/target-v3.json`;
+		const targetPath = archivedPathByOriginal.get(originalTargetPath);
+		expect(targetPath).toBeDefined();
+		const current = FamilyAffinityTargetSchema.parse(
+			JSON.parse(await readFile(targetPath!, 'utf8'))
+		);
+		const archivedResultPath = archivedPathByOriginal.get(current.ownedPaths.result);
+		const archivedReviewPath = archivedPathByOriginal.get(current.ownedPaths.decision);
+		expect(archivedResultPath).toBeDefined();
+		expect(archivedReviewPath).toBeDefined();
+		const resultBytes = await readFile(archivedResultPath!);
 		const result = JSON.parse(resultBytes.toString('utf8')) as { candidateSha256: string };
-		const reviewBytes = await readFile(current.ownedPaths.decision);
+		const reviewBytes = await readFile(archivedReviewPath!);
 		const nextPaths = bridgeAttemptPaths(current.currentClassId!, current.affinity, 4);
 		const correctionEvent = {
 			...earthWispSemanticCorrection,

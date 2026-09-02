@@ -1,0 +1,96 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"packetPath": "assets/enemies/experiments/family-affinity-v1/family-replacements/21-elementals.json",
+	"familyId": "elementals",
+	"displayName": "Elementals",
+	"sourceRaceNumber": 21,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-04.md",
+	"classificationNotes": "Source-draft Elementals are treated as magical entities whose temporary bodies take on unaffiliated spell-matter or one of the four base affinities. This is a visual and encounter-production family, not an accepted claim about origin, life, cognition, agency, personhood, summoning, or hostility. A flame-like outer contour describes shape and motion only; it does not imply Fire affinity.",
+	"visualConstants": [
+		"Every form is organized around one readable binding seed or core, with no flesh, worn armor, ordinary clothing, handheld weapon, or fixed face.",
+		"The T1 Wisp is a small asymmetric teardrop or flame-like shape without limbs; T2–T5 develop a legless hovering upper body with exactly two coherent arm channels and a tapering lower body.",
+		"Affinity substance forms the complete load-bearing body, limbs, mantle, and directional wake rather than appearing as a colored exterior aura or decorative overlay.",
+		"Form coherence, core structure, and spatial control progress from one wandering Wisp to a four-facet Sovereign while the active telegraph and exposed counterplay remain readable."
+	],
+	"escalationAxis": "Form coherence, core complexity, and control over shaped affinity substance rise from one drifting teardrop to a sovereign that transforms the arena through four learned binding patterns.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Unaffiliated forms use desaturated silver-grey, softly translucent neutral spell-matter folded inward around a matte charcoal binding seed or core.",
+				"Motion remains smooth, quiet, and self-contained, leaving only a brief colorless distortion with no elemental particles, status cue, or environmental residue."
+			],
+			"counterplaySignal": "The charcoal seed, channel gap, core ring, mantle shutter, or sovereign facet dulls after the form commits to its family mechanic.",
+			"forbidden": ["Affinity-coded body colour or material", "Elemental status or environmental wake", "Radiant halo or void-like absence", "Featureless orb without the form's declared silhouette"]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Vermilion living combustion, a yellow-hot inner seam, controlled ember grain, black exhaust markers, and restrained heat distortion form the complete body.",
+				"The body expands and curls upward during motion; higher forms route combustion through their established channels, mantle sections, and core facets without acquiring extra anatomy."
+			],
+			"counterplaySignal": "The active throat, channel, mantle shutter, or core facet turns pale and exhausts to black immediately after ignition, exposing the established opening.",
+			"forbidden": ["Uniform orange glow without material structure", "Fire pasted over a neutral body", "Premature high-tier mantle or facet anatomy", "Magma, lightning, or another dual-affinity material"]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Ochre-brown and umber earth magic forms the complete body from circulating soil, clay, silt, and fine mineral grains held in the family's flame-like contours.",
+				"Motion compresses, folds, and settles downward; load-bearing mineral seams and restrained pale-ochre faults articulate channels, mantle sections, and core facets without turning the form into a Golem."
+			],
+			"counterplaySignal": "A loaded seam compacts, hairline faults spread, and the seed, channel gap, mantle shutter, or sovereign facet loosens after the committed action.",
+			"forbidden": ["Red or yellow combustion", "Embers, smoke, char, lava, or molten rock", "A solid rock projectile or ordinary masonry body", "Brown palette without earthen material behavior"]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Pale green-grey compressed air, translucent pressure sheets, directional ribbons, and thin shear edges form the complete body around a clear still core.",
+				"Motion stretches laterally and spirals through aligned channels, vanes, mantle planes, and facets while visible debris vectors remain sparse and local."
+			],
+			"counterplaySignal": "The still core or channel gap becomes sharply clear when the surrounding pressure body commits to a drift, sweep, convergence, or arena pattern.",
+			"forbidden": ["Lightning or electrical arcs", "Cloud body without load-bearing pressure structure", "Directionless fog", "Pale recolour without aerodynamic motion"]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Deep-blue cohesive liquid, surface-tension membranes, circulating current lines, droplets, and pressure rings form the complete body around a dense clear core.",
+				"Motion pours upward through the flame-like family contour and returns through visible channels, mantle shells, and core facets without becoming ice or shapeless mist."
+			],
+			"counterplaySignal": "A pressure ring expands and the seed, return channel, drainage shutter, or core facet clears when the committed flow briefly loses pressure.",
+			"forbidden": ["Ice or frost anatomy", "Shapeless mist without a liquid circuit", "Water pasted over a neutral body", "Blue palette without cohesive fluid behavior"]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1", "formId": "elemental-wisp", "displayName": "Wisp", "primaryArchetype": "Drift-Trace Initiate (Initiate)",
+			"battlefieldDuty": "Probe movement with one small airborne entity that commits to a visibly prepared destination.", "teachingGoal": "Teach that the Wisp's tapered tail and a gathering eddy reveal its next drift before the core moves.",
+			"signatureMechanic": "Trace Drift: the Wisp curls its lower tail toward a small gathering eddy, glides to that point as one continuous creature, and briefly dims on arrival.", "telegraph": "The asymmetric teardrop leans, its pointed crest bends, and its continuous lower tail curls toward the forming eddy.",
+			"counterplay": "Leave the gathering eddy, follow behind the completed drift, and strike the dimmed binding seed before the body recovers.", "visualDelta": "Palm-sized asymmetric teardrop or flame-like entity with one visible seed, a pointed crest, a continuous tapering tail, no face, no limbs, and no projectile trail.",
+			"lowerFormInteraction": null, "sourceReferences": ["Wisp"]
+		},
+		{
+			"tier": "T2", "formId": "elemental-spirit", "displayName": "Elemental Spirit", "primaryArchetype": "Tether-Reach Soldier (Soldier)",
+			"battlefieldDuty": "Apply repeatable mid-range pressure with one committed arm channel.", "teachingGoal": "Teach that the extended arm remains committed while the opposite side of the single core is exposed.",
+			"signatureMechanic": "Tether Reach: one arm channel lengthens across a marked lane while the compact torso and opposite arm hold the binding core in place.", "telegraph": "The legless upper body narrows, one arm thins into a taut tether, and the core shifts visibly away from it.",
+			"counterplay": "Cross behind the extending tether and strike the exposed side of the core before the arm retracts.", "visualDelta": "Human-sized faceless hovering torso with exactly two tapering arms, one central seed-core, and a legless lower body dissolving into a continuous tail.",
+			"lowerFormInteraction": "Wisps drift toward the tether endpoint; crossing behind the committed arm separates them from the Spirit.", "sourceReferences": ["Flame Spirit"]
+		},
+		{
+			"tier": "T3", "formId": "elemental-warden", "displayName": "Elemental Warden", "primaryArchetype": "Twin-Conduit Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot into a lane controller whose two arm channels alternate between sweep and guard.", "teachingGoal": "Teach that the attacking conduit fixes one lane while the opposite guard leaves one edge of the ring core exposed.",
+			"signatureMechanic": "Twin Conduit: one arm becomes a sweeping affinity channel while the other compacts into a guard; the two roles reverse after every sweep.", "telegraph": "One conduit straightens toward the marked lane, the opposite arm folds inward, and one side of the ring core becomes visible.",
+			"counterplay": "Enter behind the sweeping conduit and strike the exposed ring edge before the two arms reverse.", "visualDelta": "Fully coherent hovering upper body with exactly two strong arm conduits, a divided ring core, broad shoulders, and a narrow tapering lower body.",
+			"lowerFormInteraction": "Elemental Spirits hold the guarded lane with Tether Reach; interrupting their tether opens the Warden's core flank.", "sourceReferences": ["Blaze Warden"]
+		},
+		{
+			"tier": "T4", "formId": "elemental-colossus", "displayName": "Elemental Colossus", "primaryArchetype": "Mantle-Orbit Champion (Champion)",
+			"battlefieldDuty": "Control encounter space by shifting three articulated mantle sections between a barrier and converging marked lanes.", "teachingGoal": "Teach that the core shutter is visible only while the three mantle sections widen and change formation.",
+			"signatureMechanic": "Mantle Orbit: three affinity-built mantle sections widen into a barrier ring, expose the central shutter, and then converge through three marked lanes.", "telegraph": "The broad hovering body stills, three mantle sections separate along visible seams, and the central shutter turns toward the open gap.",
+			"counterplay": "Cross a widening mantle gap and strike the exposed shutter before the three sections converge.", "visualDelta": "Large broad floating upper body with exactly two integrated arms, three articulated mantle sections, a shuttered core, and no feet, worn armor, or independent rock anatomy.",
+			"lowerFormInteraction": "Elemental Wardens feed one conduit into each mantle lane; breaking the linked ring edge leaves that mantle gap open.", "sourceReferences": ["Magma Lord"]
+		},
+		{
+			"tier": "T5", "formId": "elemental-sovereign", "displayName": "Elemental Sovereign", "primaryArchetype": "Four-Facet Sovereign (Sovereign)",
+			"battlefieldDuty": "Transform the arena through four binding patterns that recombine every lower-form lesson.", "teachingGoal": "Test drift destinations, committed tethers, alternating conduits, and mantle gaps as permanent stages of one authored boss encounter.",
+			"signatureMechanic": "Arena Transformation — Fourfold Lattice: four core facets successively invoke Trace Drift, Tether Reach, Twin Conduit, and Mantle Orbit; resolving a pattern permanently dims its facet and weakens the final lattice.", "telegraph": "One of four core facets turns outward, its matching orbital vane aligns with the arena, and the lower-form silhouette appears within the selected path.",
+			"counterplay": "Resolve the announced lower-form lesson and strike the outward-facing facet; every dimmed facet removes one pattern from the final transformation.", "visualDelta": "Tall complete hovering figure with exactly two coherent arms, a four-facet central core, four orbital vanes, a tapering lower body, and an affinity-built arena wake.",
+			"lowerFormInteraction": "Wisp, Elemental Spirit, Elemental Warden, and Elemental Colossus each govern one facet; solving that form's counterplay permanently disables its lattice pattern.", "sourceReferences": ["Conflagration Sovereign"]
+		}
+	]
+}

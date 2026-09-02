@@ -1,19 +1,21 @@
 import { lstat, mkdir, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
 	buildFamilyAffinityProductionBundle,
-	CurrentClassMappingFileSchema,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityReviewReceiptSchema,
 	FamilyAffinityTargetSchema,
+	loadFamilyAffinityActiveSources,
 	readFamilyAffinityOwnedFile,
+	familyAffinityRawSha256,
 	familyAffinitySha256,
 	FamilyPacketSchema,
 	stableFamilyAffinityJson,
+	validateCanonicalTargetSourceBinding,
 	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityNormalAnchorEvidence,
 	validateFamilyAffinityProductionBundle,
@@ -179,6 +181,409 @@ type LoadedCorpus = {
 	assignments: FamilyAffinityAssignment[];
 	expectedAttemptPaths: Set<string>;
 };
+
+const ELEMENTAL_REPLACEMENT_MIGRATION_ID = 'flame-elementals-to-elementals-v1';
+const ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID = 'flame-elementals';
+const ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID = 'elementals';
+const ELEMENTAL_REPLACEMENT_RECEIPT_PATH = `${FAMILY_AFFINITY_ROOT}/migrations/${ELEMENTAL_REPLACEMENT_MIGRATION_ID}.json`;
+const ELEMENTAL_REPLACEMENT_ARCHIVE_ROOT = `${FAMILY_AFFINITY_ROOT}/migrations/archive/${ELEMENTAL_REPLACEMENT_MIGRATION_ID}`;
+const LEGACY_WISP_RETIREMENT_ID = 'retire-legacy-ember-wisp-bridge-v1';
+const LEGACY_WISP_RETIREMENT_RECEIPT_PATH = `${FAMILY_AFFINITY_ROOT}/migrations/${LEGACY_WISP_RETIREMENT_ID}.json`;
+const LEGACY_WISP_RETIREMENT_ARCHIVE_ROOT = `${FAMILY_AFFINITY_ROOT}/migrations/archive/${LEGACY_WISP_RETIREMENT_ID}`;
+
+async function rejectElementalReplacementEvidence(
+	repositoryRoot: string,
+	target: FamilyAffinityTarget
+): Promise<void> {
+	for (const path of Object.values(target.ownedPaths)) {
+		if (await fileExists(join(repositoryRoot, path))) {
+			throw new Error(
+				`Elemental family replacement refuses produced or reviewed evidence: ${path}`
+			);
+		}
+	}
+	for (const reviewRoot of ['review/assignments', 'review/blind', 'review/decisions']) {
+		const files = await listFiles(join(repositoryRoot, FAMILY_AFFINITY_ROOT, reviewRoot));
+		if (files.some((path) => path.includes(`/${ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID}/`))) {
+			throw new Error('Elemental family replacement refuses existing canonical review evidence');
+		}
+	}
+}
+
+async function maybeMigrateElementalFamilyReplacement(input: {
+	repositoryRoot: string;
+	manifestPath: string;
+	sourceBundle: ReturnType<typeof buildFamilyAffinityProductionBundle>;
+	check: boolean;
+}): Promise<boolean> {
+	const manifestBytes = await readFamilyAffinityOwnedFile(input.repositoryRoot, input.manifestPath);
+	const existing = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const existingFamilyIds = new Set(
+		existing.canonicalMatrix.activeCoordinates.map(({ familyId }) => familyId)
+	);
+	const expectedFamilyIds = new Set(
+		input.sourceBundle.manifest.canonicalMatrix.activeCoordinates.map(({ familyId }) => familyId)
+	);
+	if (!existingFamilyIds.has(ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID)) return false;
+	if (
+		expectedFamilyIds.has(ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID) &&
+		!expectedFamilyIds.has(ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID)
+	) {
+		return false;
+	}
+	if (
+		existingFamilyIds.has(ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID) ||
+		expectedFamilyIds.has(ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID) ||
+		!expectedFamilyIds.has(ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID)
+	) {
+		throw new Error(
+			'Existing canonical family set differs outside the supported Elementals replacement'
+		);
+	}
+	if (input.check) {
+		throw new Error(
+			'Family affinity production export check failed: Elementals migration required'
+		);
+	}
+	const oldCoordinates = existing.canonicalMatrix.activeCoordinates.filter(
+		({ familyId }) => familyId === ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID
+	);
+	const newCoordinates = input.sourceBundle.manifest.canonicalMatrix.activeCoordinates.filter(
+		({ familyId }) => familyId === ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID
+	);
+	if (oldCoordinates.length !== 25 || newCoordinates.length !== 25) {
+		throw new Error('Elemental family replacement requires exactly 25 old and 25 new coordinates');
+	}
+	const preservedExpectedIds = input.sourceBundle.manifest.canonicalMatrix.activeCoordinates
+		.filter(({ familyId }) => familyId !== ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID)
+		.map(({ coordinateId }) => coordinateId);
+	const preservedExistingIds = existing.canonicalMatrix.activeCoordinates
+		.filter(({ familyId }) => familyId !== ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID)
+		.map(({ coordinateId }) => coordinateId);
+	if (
+		preservedExpectedIds.length !== 725 ||
+		preservedExpectedIds.some((coordinateId, index) => coordinateId !== preservedExistingIds[index])
+	) {
+		throw new Error('Elemental family replacement would alter a non-replaced canonical coordinate');
+	}
+	const legacyPacketPath = `${FAMILY_AFFINITY_ROOT}/families/21-flame-elementals.json`;
+	const legacyPacketBytes = await readFamilyAffinityOwnedFile(
+		input.repositoryRoot,
+		legacyPacketPath
+	);
+	const legacyPacket = FamilyPacketSchema.parse(JSON.parse(legacyPacketBytes.toString('utf8')));
+	if (
+		legacyPacket.familyId !== ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID ||
+		legacyPacket.sourceRaceNumber !== 21 ||
+		legacyPacket.packetPath !== undefined
+	) {
+		throw new Error('Legacy Flame Elementals packet is not the expected immutable source packet');
+	}
+	const oldArtifacts: Array<{ path: string; archivePath: string; sha256: string }> = [];
+	for (const coordinate of oldCoordinates) {
+		if (coordinate.activeVersion !== 1) {
+			throw new Error('Elemental family replacement refuses revised canonical coordinates');
+		}
+		const targetBytes = await readFamilyAffinityOwnedFile(
+			input.repositoryRoot,
+			coordinate.targetPath
+		);
+		const assignmentBytes = await readFamilyAffinityOwnedFile(
+			input.repositoryRoot,
+			coordinate.assignmentPath
+		);
+		const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+		const assignment = FamilyAffinityAssignmentSchema.parse(
+			JSON.parse(assignmentBytes.toString('utf8'))
+		);
+		if (
+			target.status !== (target.affinity === 'normal' ? 'planned' : 'blocked-on-anchor') ||
+			target.precedingAttempt !== null ||
+			target.sources.familyPacketPath !== legacyPacketPath
+		) {
+			throw new Error('Elemental family replacement refuses a non-pristine old planning target');
+		}
+		const form = legacyPacket.forms.find(({ formId }) => formId === target.formId);
+		if (!form) throw new Error(`Legacy Elemental target has an unknown form: ${target.formId}`);
+		validateCanonicalTargetSourceBinding(target, legacyPacket, form);
+		validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+		await rejectElementalReplacementEvidence(input.repositoryRoot, target);
+		for (const [path, bytes] of [
+			[coordinate.targetPath, targetBytes],
+			[coordinate.assignmentPath, assignmentBytes]
+		] as const) {
+			oldArtifacts.push({
+				path,
+				archivePath: `${ELEMENTAL_REPLACEMENT_ARCHIVE_ROOT}/${path.slice(`${FAMILY_AFFINITY_ROOT}/`.length)}`,
+				sha256: familyAffinityRawSha256(bytes)
+			});
+		}
+	}
+	const retiredControllerArtifacts: Array<{
+		path: string;
+		archivePath: string;
+		sha256: string;
+	}> = [];
+	for (const path of [
+		`${FAMILY_AFFINITY_ROOT}/review/families/flame-elementals/summary.json`,
+		`${FAMILY_AFFINITY_ROOT}/review/families/flame-elementals/contact-sheet.png`
+	]) {
+		if (!(await fileExists(join(input.repositoryRoot, path)))) continue;
+		const bytes = await readFamilyAffinityOwnedFile(input.repositoryRoot, path);
+		retiredControllerArtifacts.push({
+			path,
+			archivePath: `${ELEMENTAL_REPLACEMENT_ARCHIVE_ROOT}/${path.slice(`${FAMILY_AFFINITY_ROOT}/`.length)}`,
+			sha256: familyAffinityRawSha256(bytes)
+		});
+	}
+	const newArtifactValues = new Map(
+		input.sourceBundle.artifacts.map(({ path, value }) => [path, value] as const)
+	);
+	const newArtifacts = newCoordinates.flatMap((coordinate) => [
+		{ path: coordinate.targetPath, value: newArtifactValues.get(coordinate.targetPath) },
+		{ path: coordinate.assignmentPath, value: newArtifactValues.get(coordinate.assignmentPath) }
+	]);
+	if (newArtifacts.some(({ value }) => value === undefined)) {
+		throw new Error('Elemental family replacement is missing a derived planning artifact');
+	}
+	for (const { path } of newArtifacts) {
+		if (await fileExists(join(input.repositoryRoot, path))) {
+			throw new Error(`Elemental family replacement path already exists: ${path}`);
+		}
+	}
+	for (const { archivePath } of [...oldArtifacts, ...retiredControllerArtifacts]) {
+		if (await fileExists(join(input.repositoryRoot, archivePath))) {
+			throw new Error(`Elemental family replacement archive path already exists: ${archivePath}`);
+		}
+	}
+	if (await fileExists(join(input.repositoryRoot, ELEMENTAL_REPLACEMENT_RECEIPT_PATH))) {
+		throw new Error('Elemental family replacement receipt exists before manifest migration');
+	}
+	const replacementByIndex = new Map(
+		oldCoordinates.map((coordinate, index) => [coordinate.coordinateId, newCoordinates[index]!])
+	);
+	const nextManifest = FamilyAffinityManifestSchema.parse({
+		...existing,
+		canonicalMatrix: {
+			...existing.canonicalMatrix,
+			activeCoordinates: existing.canonicalMatrix.activeCoordinates.map((coordinate) =>
+				coordinate.familyId === ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID
+					? replacementByIndex.get(coordinate.coordinateId)!
+					: coordinate
+			)
+		},
+		mappingReservations: input.sourceBundle.manifest.mappingReservations,
+		ownership: input.sourceBundle.manifest.ownership
+	});
+	const receipt = {
+		schemaVersion: 'family-affinity-family-replacement-v1',
+		migrationId: ELEMENTAL_REPLACEMENT_MIGRATION_ID,
+		sourceFamilyId: ELEMENTAL_REPLACEMENT_SOURCE_FAMILY_ID,
+		replacementFamilyId: ELEMENTAL_REPLACEMENT_TARGET_FAMILY_ID,
+		canonicalCoordinateCount: 25,
+		oldPlanningArtifactCount: oldArtifacts.length,
+		newPlanningArtifactCount: newArtifacts.length,
+		retiredControllerArtifactCount: retiredControllerArtifacts.length,
+		legacyPacketPath,
+		legacyPacketSha256: familyAffinityRawSha256(legacyPacketBytes),
+		bridgeCoordinatesPreserved: existing.bridge.activeCoordinates.length,
+		oldArtifacts,
+		retiredControllerArtifacts,
+		newArtifacts: newArtifacts.map(({ path, value }) => ({
+			path,
+			sha256: familyAffinityRawSha256(stableFamilyAffinityJson(value))
+		})),
+		runtimeCatalogMutationForbidden: true
+	};
+	const created: string[] = [];
+	const archived: Array<{ path: string; archivePath: string }> = [];
+	let receiptWritten = false;
+	try {
+		for (const { path, value } of newArtifacts) {
+			const absolute = join(input.repositoryRoot, path);
+			await mkdir(dirname(absolute), { recursive: true });
+			await writeFile(absolute, stableFamilyAffinityJson(value), { flag: 'wx' });
+			created.push(path);
+		}
+		for (const artifact of [...oldArtifacts, ...retiredControllerArtifacts]) {
+			const archiveAbsolute = join(input.repositoryRoot, artifact.archivePath);
+			await mkdir(dirname(archiveAbsolute), { recursive: true });
+			await rename(join(input.repositoryRoot, artifact.path), archiveAbsolute);
+			archived.push(artifact);
+		}
+		const receiptAbsolute = join(input.repositoryRoot, ELEMENTAL_REPLACEMENT_RECEIPT_PATH);
+		await mkdir(dirname(receiptAbsolute), { recursive: true });
+		await writeFile(receiptAbsolute, stableFamilyAffinityJson(receipt), { flag: 'wx' });
+		receiptWritten = true;
+		const manifestTemporary = `${join(input.repositoryRoot, input.manifestPath)}.family-replacement-${process.pid}`;
+		await writeFile(manifestTemporary, stableFamilyAffinityJson(nextManifest), { flag: 'wx' });
+		await rename(manifestTemporary, join(input.repositoryRoot, input.manifestPath));
+	} catch (error) {
+		if (receiptWritten) {
+			await unlink(join(input.repositoryRoot, ELEMENTAL_REPLACEMENT_RECEIPT_PATH)).catch(
+				() => undefined
+			);
+		}
+		for (const artifact of archived.reverse()) {
+			await rename(
+				join(input.repositoryRoot, artifact.archivePath),
+				join(input.repositoryRoot, artifact.path)
+			).catch(() => undefined);
+		}
+		for (const path of created.reverse()) {
+			await unlink(join(input.repositoryRoot, path)).catch(() => undefined);
+		}
+		throw error;
+	}
+	return true;
+}
+
+async function maybeRetireLegacyWispBridge(input: {
+	repositoryRoot: string;
+	manifestPath: string;
+	check: boolean;
+}): Promise<boolean> {
+	const manifestBytes = await readFamilyAffinityOwnedFile(input.repositoryRoot, input.manifestPath);
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const coordinate = manifest.bridge.activeCoordinates.find(
+		(entry) => entry.currentClassId === 'ember-wisp'
+	);
+	if (!coordinate) {
+		if (!(await fileExists(join(input.repositoryRoot, LEGACY_WISP_RETIREMENT_RECEIPT_PATH)))) {
+			return false;
+		}
+		return true;
+	}
+	if (
+		coordinate.coordinateId !== 'ember-wisp/flame-elementals/flame-elemental-wisp/earth' ||
+		coordinate.activeVersion !== 4 ||
+		coordinate.status !== 'earth-bridge-provisional'
+	) {
+		throw new Error('Legacy Wisp bridge retirement found an unexpected active coordinate');
+	}
+	if (input.check) {
+		throw new Error(
+			'Family affinity production export check failed: legacy Wisp retirement required'
+		);
+	}
+	const protectedPaths = new Set<string>();
+	for (let version = 1; version <= coordinate.activeVersion; version += 1) {
+		const targetPath = pathAtVersion(coordinate.targetPath, coordinate.activeVersion, version);
+		const assignmentPath = pathAtVersion(
+			coordinate.assignmentPath,
+			coordinate.activeVersion,
+			version
+		);
+		const target = FamilyAffinityTargetSchema.parse(
+			JSON.parse(
+				(await readFamilyAffinityOwnedFile(input.repositoryRoot, targetPath)).toString('utf8')
+			)
+		);
+		const assignment = FamilyAffinityAssignmentSchema.parse(
+			JSON.parse(
+				(await readFamilyAffinityOwnedFile(input.repositoryRoot, assignmentPath)).toString('utf8')
+			)
+		);
+		validateFamilyAffinityAttemptCrossBinding(
+			{
+				...coordinate,
+				activeVersion: version,
+				targetPath,
+				targetSha256: familyAffinitySha256(target),
+				assignmentPath,
+				assignmentSha256: familyAffinitySha256(assignment)
+			},
+			target,
+			assignment
+		);
+		protectedPaths.add(targetPath);
+		protectedPaths.add(assignmentPath);
+		for (const path of Object.values(target.ownedPaths)) {
+			if (await fileExists(join(input.repositoryRoot, path))) protectedPaths.add(path);
+		}
+	}
+	for (const root of [
+		`${FAMILY_AFFINITY_ROOT}/review/bridge/assignments`,
+		`${FAMILY_AFFINITY_ROOT}/review/bridge/decisions`,
+		`${FAMILY_AFFINITY_ROOT}/review/bridge/blind`
+	]) {
+		for (const absolutePath of await listFiles(join(input.repositoryRoot, root))) {
+			const ownedPath = relative(input.repositoryRoot, absolutePath).split(sep).join('/');
+			if (ownedPath.includes('/ember-wisp/')) protectedPaths.add(ownedPath);
+		}
+	}
+	const archivedArtifacts = await Promise.all(
+		[...protectedPaths].sort().map(async (path) => {
+			const bytes = await readFamilyAffinityOwnedFile(input.repositoryRoot, path);
+			return {
+				path,
+				archivePath: `${LEGACY_WISP_RETIREMENT_ARCHIVE_ROOT}/${path.slice(`${FAMILY_AFFINITY_ROOT}/`.length)}`,
+				sha256: familyAffinityRawSha256(bytes)
+			};
+		})
+	);
+	for (const { archivePath } of archivedArtifacts) {
+		if (await fileExists(join(input.repositoryRoot, archivePath))) {
+			throw new Error(`Legacy Wisp retirement archive collision: ${archivePath}`);
+		}
+	}
+	if (await fileExists(join(input.repositoryRoot, LEGACY_WISP_RETIREMENT_RECEIPT_PATH))) {
+		throw new Error('Legacy Wisp retirement receipt exists before bridge retirement');
+	}
+	const nextManifest = FamilyAffinityManifestSchema.parse({
+		...manifest,
+		bridge: {
+			targetCount: manifest.bridge.targetCount - 1,
+			assignmentCount: manifest.bridge.assignmentCount - 1,
+			activeCoordinates: manifest.bridge.activeCoordinates.filter(
+				(entry) => entry.currentClassId !== 'ember-wisp'
+			)
+		}
+	});
+	const receipt = {
+		schemaVersion: 'family-affinity-bridge-retirement-v1',
+		retirementId: LEGACY_WISP_RETIREMENT_ID,
+		currentClassId: 'ember-wisp',
+		playerFacingReplacement: 'elementals/elemental-wisp',
+		retiredCoordinate: coordinate,
+		archivedArtifactCount: archivedArtifacts.length,
+		archivedArtifacts,
+		activeBridgeCoordinateCountAfterRetirement: nextManifest.bridge.targetCount,
+		candidatePromotionForbidden: true,
+		runtimeCatalogMutationForbidden: true
+	};
+	const moved: typeof archivedArtifacts = [];
+	let receiptWritten = false;
+	try {
+		for (const artifact of archivedArtifacts) {
+			const archiveAbsolute = join(input.repositoryRoot, artifact.archivePath);
+			await mkdir(dirname(archiveAbsolute), { recursive: true });
+			await rename(join(input.repositoryRoot, artifact.path), archiveAbsolute);
+			moved.push(artifact);
+		}
+		const receiptAbsolute = join(input.repositoryRoot, LEGACY_WISP_RETIREMENT_RECEIPT_PATH);
+		await mkdir(dirname(receiptAbsolute), { recursive: true });
+		await writeFile(receiptAbsolute, stableFamilyAffinityJson(receipt), { flag: 'wx' });
+		receiptWritten = true;
+		const manifestTemporary = `${join(input.repositoryRoot, input.manifestPath)}.wisp-retirement-${process.pid}`;
+		await writeFile(manifestTemporary, stableFamilyAffinityJson(nextManifest), { flag: 'wx' });
+		await rename(manifestTemporary, join(input.repositoryRoot, input.manifestPath));
+	} catch (error) {
+		if (receiptWritten) {
+			await unlink(join(input.repositoryRoot, LEGACY_WISP_RETIREMENT_RECEIPT_PATH)).catch(
+				() => undefined
+			);
+		}
+		for (const artifact of moved.reverse()) {
+			await rename(
+				join(input.repositoryRoot, artifact.archivePath),
+				join(input.repositoryRoot, artifact.path)
+			).catch(() => undefined);
+		}
+		throw error;
+	}
+	return true;
+}
 
 async function loadAndValidateExistingCorpus(
 	repositoryRoot: string,
@@ -396,38 +801,7 @@ export async function exportFamilyAffinityProduction(options: {
 	repositoryRoot: string;
 	check: boolean;
 }) {
-	const familyDirectory = join(options.repositoryRoot, FAMILY_AFFINITY_ROOT, 'families');
-	const familyDirectoryMetadata = await lstat(familyDirectory);
-	if (familyDirectoryMetadata.isSymbolicLink() || !familyDirectoryMetadata.isDirectory()) {
-		throw new Error('Family packet directory must be a real directory');
-	}
-	const familyFileNames = (await readdir(familyDirectory))
-		.filter((fileName) => /^\d{2}-[a-z0-9-]+\.json$/u.test(fileName))
-		.sort();
-	const families = await Promise.all(
-		familyFileNames.map(async (fileName) =>
-			FamilyPacketSchema.parse(
-				JSON.parse(
-					(
-						await readFamilyAffinityOwnedFile(
-							options.repositoryRoot,
-							`${FAMILY_AFFINITY_ROOT}/families/${fileName}`
-						)
-					).toString('utf8')
-				)
-			)
-		)
-	);
-	const mapping = CurrentClassMappingFileSchema.parse(
-		JSON.parse(
-			(
-				await readFamilyAffinityOwnedFile(
-					options.repositoryRoot,
-					`${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`
-				)
-			).toString('utf8')
-		)
-	);
+	const { families, mapping } = await loadFamilyAffinityActiveSources(options.repositoryRoot);
 	const bundle = buildFamilyAffinityProductionBundle(families, mapping);
 	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	const manifestAbsolute = join(options.repositoryRoot, manifestPath);
@@ -443,6 +817,17 @@ export async function exportFamilyAffinityProduction(options: {
 	}
 	try {
 		if (await fileExists(manifestAbsolute)) {
+			await maybeMigrateElementalFamilyReplacement({
+				repositoryRoot: options.repositoryRoot,
+				manifestPath,
+				sourceBundle: bundle,
+				check: options.check
+			});
+			await maybeRetireLegacyWispBridge({
+				repositoryRoot: options.repositoryRoot,
+				manifestPath,
+				check: options.check
+			});
 			await migrateExactLegacyReviewPaths(
 				options.repositoryRoot,
 				manifestPath,

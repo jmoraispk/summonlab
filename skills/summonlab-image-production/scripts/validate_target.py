@@ -372,7 +372,7 @@ def validate_family(
     if namespace == "bridge" and canonical_coordinate is None and packet_kind != "bridge-identity":
         fail("bridge-only targets require bridge identity sources")
     packet_path = sources.get("familyPacketPath")
-    expected_canonical_packet = re.fullmatch(
+    legacy_canonical_packet = re.fullmatch(
         rf"{re.escape(FAMILY_ROOT)}/families/[0-9]{{2}}-{re.escape(family_id)}\.json",
         packet_path if isinstance(packet_path, str) else "",
     )
@@ -380,8 +380,6 @@ def validate_family(
         f"{FAMILY_ROOT}/bridge/identities/{current_class}.json"
         if namespace == "bridge" else None
     )
-    if packet_kind == "canonical-family" and not expected_canonical_packet:
-        fail("canonical family packet path does not match the target family")
     if packet_kind == "bridge-identity" and packet_path != expected_bridge_packet:
         fail("bridge identity packet path does not match currentClassId")
     packet_absolute = absolute_project_path(workspace, packet_path)
@@ -391,6 +389,16 @@ def validate_family(
     if packet_kind == "canonical-family":
         if packet.get("schemaVersion") != "family-packet-v1" or packet.get("familyId") != family_id:
             fail("family packet source does not match the target")
+        self_bound_packet_path = packet.get("packetPath")
+        if self_bound_packet_path is None:
+            if not legacy_canonical_packet:
+                fail("canonical family packet path does not match the target family")
+        elif (
+            not isinstance(self_bound_packet_path, str)
+            or not self_bound_packet_path.startswith(f"{FAMILY_ROOT}/")
+            or str(project_path(self_bound_packet_path)) != packet_path
+        ):
+            fail("canonical family packet replacement is not self-bound")
     elif (
         packet.get("schemaVersion") != "bridge-identity-packet-v1"
         or packet.get("currentClassId") != current_class
@@ -405,11 +413,23 @@ def validate_family(
         sources.get("familyPacketSha256"), "sources.familyPacketSha256"
     ):
         fail("family packet source hash changed")
-    if sources.get("mappingPath") != f"{FAMILY_ROOT}/current-class-mapping.json":
+    mapping_path = sources.get("mappingPath")
+    if not isinstance(mapping_path, str) or not mapping_path.startswith(f"{FAMILY_ROOT}/"):
         fail("family mapping path is invalid")
-    mapping_absolute = absolute_project_path(workspace, sources["mappingPath"])
+    mapping_absolute = absolute_project_path(workspace, mapping_path)
     if not mapping_absolute.is_file():
         fail("family mapping source is missing")
+    mapping = load_json(mapping_absolute)
+    self_bound_mapping_path = mapping.get("mappingPath")
+    legacy_mapping_path = f"{FAMILY_ROOT}/current-class-mapping.json"
+    if self_bound_mapping_path is None:
+        if mapping_path != legacy_mapping_path:
+            fail("family mapping replacement is not self-bound")
+    elif (
+        not isinstance(self_bound_mapping_path, str)
+        or str(project_path(self_bound_mapping_path)) != mapping_path
+    ):
+        fail("family mapping replacement is not self-bound")
     require_string(sources, "sourcePage")
     source_references = sources.get("sourceReferences")
     if not isinstance(source_references, list) or not source_references or not all(

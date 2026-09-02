@@ -27,10 +27,10 @@
 			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
 			"references/target-schema.md": "5a4c4e0936eadcae97358914d232329827f07848dc932a749abbaa539b26068e",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
-			"scripts/family_dispatch_gate.mjs": "46c81c3199638caa141a6424d317ed3ee9d6901015095633aed20fff05a1da38",
+			"scripts/family_dispatch_gate.mjs": "938ec3ad37300a6333f924f62982d895230f69cb48901f066a6a8bfeabe3d3d8",
 			"scripts/persist_family_candidate.py": "0c87b4d1c82b1659f1e8c4ba6df2f9d0b06735b730a3e68e17ae4abd1b5a23ce",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
-			"scripts/validate_target.py": "219a607ac5a50833f1e5d7e00eca245d37e9b9e7e3768143e958412d3ca1d58e",
+			"scripts/validate_target.py": "aa3fd2f7f31896e84ef675ac5ae6bb11f60a61f337c2295ff40902e23e42baee",
 			"scripts/verify_result.py": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa",
 			"scripts/write_family_result.py": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
 		}
@@ -46,7 +46,7 @@
 		},
 		"bundle": {
 			"path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "46c81c3199638caa141a6424d317ed3ee9d6901015095633aed20fff05a1da38"
+			"sha256": "938ec3ad37300a6333f924f62982d895230f69cb48901f066a6a8bfeabe3d3d8"
 		},
 		"sources": [
 			{
@@ -55,7 +55,7 @@
 			},
 			{
 				"path": "tools/family-affinity-production-lib.ts",
-				"sha256": "6bb07a1cfa6031d2ad53ceee860b951978b923800c2b2cb26e5adce47ec7213d"
+				"sha256": "98fc27d45f5cb3e49e1c4fea31ff8a57c840f4c0677efcef8376c767121a5686"
 			},
 			{
 				"path": "package.json",

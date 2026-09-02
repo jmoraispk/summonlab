@@ -19,6 +19,12 @@
 - Every one of the current forty classes receives exactly one explicit disposition: `map`, `rename-map`, `secondary-archetype`, `fauna`, or `retire`.
 - Delete Wood/Metal pixels and active records directly. Do not create a legacy folder, retirement ledger, or hash ledger; Git history is the recovery path.
 - Candidate, approved-review, and runtime are distinct states. Generation cannot approve or promote an image.
+- Family 21 is affinity-neutral `Elementals`, with Wisp, Elemental Spirit, Elemental Warden,
+  Elemental Colossus, and Elemental Sovereign as its T1–T5 forms. Affinity substance forms the
+  body; a flame-like contour is shape language, not evidence of Fire.
+- The former Flame Elementals packet and Ember Wisp bridge attempts are immutable provenance, not
+  active production. Future Wisp production uses `elementals/elemental-wisp/*` after its Normal
+  anchor is independently approved.
 - Do not modify `packages/contracts`, engine code, skills, unrelated visual domains, or shared runtime catalogs. Any later runtime promotion is a separate integration request to the root orchestrator.
 - Family authors own only one numbered family packet. Producers own only one target's candidate and result receipt. The controller alone writes aggregate manifests, indexes, contact sheets, and wiki output.
 - Each implementation task ends with focused tests, a concise Conventional Commit, and a push of the current branch.
@@ -124,7 +130,7 @@ Each family packet is an independent subagent task. Dispatch no more than the av
 | A | `generator-bestiary-01.md` | `02-orcs.json`, `03-giants.json`, `04-trolls.json`, `05-dragons.json`, `06-skeletons.json` |
 | B | `generator-bestiary-02.md` | `07-rotwalkers.json`, `08-wraiths.json`, `09-vampires.json`, `10-mummies.json`, `11-demons.json`, `12-celestials.json` |
 | C | `generator-bestiary-03.md` | `13-harpies.json`, `14-minotaurs.json`, `15-nagas.json`, `16-lizardfolk.json`, `17-insectoids.json`, `18-arachnids.json` |
-| D | `generator-bestiary-04.md` | `19-slimes.json`, `20-golems.json`, `21-flame-elementals.json`, `22-treants.json`, `23-fungalfolk.json`, `24-deep-ones.json` |
+| D | `generator-bestiary-04.md` | `19-slimes.json`, `20-golems.json`, active replacement `family-replacements/21-elementals.json`, `22-treants.json`, `23-fungalfolk.json`, `24-deep-ones.json` |
 | E | `generator-bestiary-05.md` | `25-werebeasts.json`, `26-gargoyles.json`, `27-djinn.json`, `28-fae.json`, `29-void-horrors.json`, `30-doppelgangers.json` |
 
 - [ ] Before dispatch, extend the controller-owned test to discover numbered packet files and require source race numbers 1–30 exactly once, unique family/form IDs, exactly 150 forms, and exact T1–T5 coverage per family.
@@ -497,7 +503,7 @@ Run five collision-safe family waves. A family reviewer must close each wave bef
 | 1 | Skeletons, Rotwalkers, Wraiths, Vampires, Mummies | 125 |
 | 2 | Demons, Celestials, Harpies, Minotaurs, Nagas | 125 |
 | 3 | Lizardfolk, Insectoids, Arachnids, Slimes, Golems | 125 |
-| 4 | Flame Elementals, Treants, Fungalfolk, Deep Ones, Werebeasts | 125 |
+| 4 | Elementals, Treants, Fungalfolk, Deep Ones, Werebeasts | 125 |
 | 5 | Gargoyles, Djinn, Fae, Void Horrors, Doppelgangers | 125 |
 
 - [ ] For each wave, compute missing coordinates from validated review state; do not regenerate accepted candidates merely to fill a dispatch quota.

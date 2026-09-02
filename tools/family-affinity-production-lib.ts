@@ -14,6 +14,10 @@ export const CURRENT_CLASS_DISPOSITIONS = [
 	'retire'
 ] as const;
 export const FAMILY_AFFINITY_ROOT = 'assets/enemies/experiments/family-affinity-v1' as const;
+export const FAMILY_AFFINITY_ACTIVE_SOURCES_PATH =
+	`${FAMILY_AFFINITY_ROOT}/active-sources.json` as const;
+export const FAMILY_AFFINITY_LEGACY_MAPPING_PATH =
+	`${FAMILY_AFFINITY_ROOT}/current-class-mapping.json` as const;
 export const CURRENT_CLASS_SOURCE_ROSTER =
 	'docs/wiki/creatures/monsters/visual-index.json' as const;
 
@@ -21,6 +25,10 @@ const FormTierSchema = z.enum(FORM_TIERS);
 const CurrentClassDispositionSchema = z.enum(CURRENT_CLASS_DISPOSITIONS);
 const IdSchema = z.string().regex(/^[a-z][a-z0-9-]*$/u, 'IDs must be lowercase slugs');
 const RequiredTextSchema = z.string().trim().min(1, 'Expected non-empty text');
+const ActiveSourcePathSchema = z
+	.string()
+	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
+	.refine((value) => !value.includes('..'), 'Active source paths cannot traverse directories');
 
 const AffinityThemeSchema = z
 	.object({
@@ -98,6 +106,7 @@ export const FamilyFormSchema = z
 export const FamilyPacketSchema = z
 	.object({
 		schemaVersion: z.literal('family-packet-v1'),
+		packetPath: ActiveSourcePathSchema.optional(),
 		familyId: IdSchema,
 		displayName: RequiredTextSchema,
 		sourceRaceNumber: z.number().int().positive(),
@@ -171,6 +180,7 @@ export const CurrentClassMappingEntrySchema = z
 export const CurrentClassMappingFileSchema = z
 	.object({
 		schemaVersion: z.literal('current-class-mapping-v1'),
+		mappingPath: ActiveSourcePathSchema.optional(),
 		entries: z
 			.array(CurrentClassMappingEntrySchema)
 			.length(40, 'Current-class mapping files must contain exactly 40 current classes')
@@ -185,6 +195,21 @@ export const CurrentClassMappingFileSchema = z
 
 export type CurrentClassMappingEntry = z.infer<typeof CurrentClassMappingEntrySchema>;
 export type CurrentClassMappingFile = z.infer<typeof CurrentClassMappingFileSchema>;
+
+export const FamilyAffinityActiveSourcesSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-active-sources-v1'),
+		mappingPath: ActiveSourcePathSchema,
+		familyPacketPaths: z.array(ActiveSourcePathSchema).length(30)
+	})
+	.strict()
+	.superRefine((registry, context) => {
+		if (new Set(registry.familyPacketPaths).size !== registry.familyPacketPaths.length) {
+			context.addIssue({ code: 'custom', message: 'Active family packet paths must be unique' });
+		}
+	});
+
+export type FamilyAffinityActiveSources = z.infer<typeof FamilyAffinityActiveSourcesSchema>;
 
 export type CurrentClassVisualSource = {
 	id: string;
@@ -1868,8 +1893,15 @@ export function auditCurrentClassMapping(
 	};
 }
 
-function familyPacketPath(family: FamilyPacket): string {
-	return `${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`;
+export function familyPacketPath(family: FamilyPacket): string {
+	return (
+		family.packetPath ??
+		`${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`
+	);
+}
+
+export function currentClassMappingPath(mapping: CurrentClassMappingFile): string {
+	return mapping.mappingPath ?? FAMILY_AFFINITY_LEGACY_MAPPING_PATH;
 }
 
 export function canonicalAttemptPaths(
@@ -1934,7 +1966,8 @@ function buildCanonicalTarget(
 	family: FamilyPacket,
 	form: FamilyForm,
 	affinity: (typeof PRODUCTION_AFFINITIES)[number],
-	normalTarget?: FamilyAffinityTarget
+	normalTarget?: FamilyAffinityTarget,
+	mappingPath: string = FAMILY_AFFINITY_LEGACY_MAPPING_PATH
 ): FamilyAffinityTarget {
 	const coordinateId = `${family.familyId}/${form.formId}/${affinity}`;
 	const version = 1;
@@ -1967,7 +2000,7 @@ function buildCanonicalTarget(
 			familyPacketSha256: familyAffinitySha256(family),
 			sourcePage: family.sourcePage,
 			sourceReferences: form.sourceReferences,
-			mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`
+			mappingPath
 		},
 		presentationContract: {
 			framing: 'full-body-readable',
@@ -2061,11 +2094,23 @@ export function validateCanonicalTargetSourceBinding(
 	if (family.familyId !== target.familyId || form.formId !== target.formId) {
 		throw new Error(`Packet-to-target source identity drift: ${target.coordinateId}`);
 	}
-	const expectedNormal = buildCanonicalTarget(family, form, 'normal');
+	const expectedNormal = buildCanonicalTarget(
+		family,
+		form,
+		'normal',
+		undefined,
+		target.sources.mappingPath
+	);
 	const expected =
 		target.affinity === 'normal'
 			? expectedNormal
-			: buildCanonicalTarget(family, form, target.affinity, expectedNormal);
+			: buildCanonicalTarget(
+					family,
+					form,
+					target.affinity,
+					expectedNormal,
+					target.sources.mappingPath
+				);
 	for (const field of CANONICAL_TARGET_SOURCE_FIELDS) {
 		if (stableJson(target[field]) !== stableJson(expected[field])) {
 			throw new Error(`Packet-to-target source drift for ${target.coordinateId}: ${field}`);
@@ -2073,12 +2118,16 @@ export function validateCanonicalTargetSourceBinding(
 	}
 }
 
-function buildCanonicalFormTargets(family: FamilyPacket, form: FamilyForm): FamilyAffinityTarget[] {
-	const normal = buildCanonicalTarget(family, form, 'normal');
+function buildCanonicalFormTargets(
+	family: FamilyPacket,
+	form: FamilyForm,
+	mappingPath: string
+): FamilyAffinityTarget[] {
+	const normal = buildCanonicalTarget(family, form, 'normal', undefined, mappingPath);
 	return [
 		normal,
 		...PRODUCTION_AFFINITIES.filter((affinity) => affinity !== 'normal').map((affinity) =>
-			buildCanonicalTarget(family, form, affinity, normal)
+			buildCanonicalTarget(family, form, affinity, normal, mappingPath)
 		)
 	];
 }
@@ -2110,6 +2159,7 @@ export function buildFamilyAffinityProductionBundle(
 ): FamilyAffinityProductionBundle {
 	const families = familyInputs.map((input) => FamilyPacketSchema.parse(input));
 	const mapping = CurrentClassMappingFileSchema.parse(mappingInput);
+	const mappingPath = currentClassMappingPath(mapping);
 	if (families.length !== 30) throw new Error('Canonical matrix requires exactly 30 families');
 	if (new Set(families.map(({ familyId }) => familyId)).size !== 30) {
 		throw new Error('Canonical matrix requires 30 unique family IDs');
@@ -2123,7 +2173,13 @@ export function buildFamilyAffinityProductionBundle(
 	const targets = sortedFamilies.flatMap((family) =>
 		[...family.forms]
 			.sort((a, b) => FORM_TIERS.indexOf(a.tier) - FORM_TIERS.indexOf(b.tier))
-			.flatMap((form) => buildCanonicalFormTargets(family, form))
+			.flatMap((form) =>
+				buildCanonicalFormTargets(
+					family,
+					form,
+					family.packetPath === undefined ? FAMILY_AFFINITY_LEGACY_MAPPING_PATH : mappingPath
+				)
+			)
 	);
 	const assignments = targets.map(buildAssignment);
 	const targetPathById = new Map(
@@ -2182,7 +2238,7 @@ export function buildFamilyAffinityProductionBundle(
 		},
 		bridge: { targetCount: 0, assignmentCount: 0, activeCoordinates: [] },
 		mappingReservations: {
-			sourcePath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`,
+			sourcePath: mappingPath,
 			retainedCurrentClassCount: mapping.entries.filter(
 				({ disposition }) => disposition !== 'retire'
 			).length,
@@ -2572,6 +2628,52 @@ export async function readFamilyAffinityOwnedFile(
 	ownedPath: string
 ): Promise<Buffer> {
 	return readOwnedFileNoSymlinks(repositoryRoot, ownedPath);
+}
+
+export async function loadFamilyAffinityActiveSources(repositoryRoot: string): Promise<{
+	registry: FamilyAffinityActiveSources;
+	families: FamilyPacket[];
+	mapping: CurrentClassMappingFile;
+}> {
+	const registry = FamilyAffinityActiveSourcesSchema.parse(
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(repositoryRoot, FAMILY_AFFINITY_ACTIVE_SOURCES_PATH)).toString(
+				'utf8'
+			)
+		)
+	);
+	const families = await Promise.all(
+		registry.familyPacketPaths.map(async (path) => {
+			const family = FamilyPacketSchema.parse(
+				JSON.parse((await readOwnedFileNoSymlinks(repositoryRoot, path)).toString('utf8'))
+			);
+			if (familyPacketPath(family) !== path) {
+				throw new Error(`Active family packet path is not self-bound: ${path}`);
+			}
+			return family;
+		})
+	);
+	if (new Set(families.map(({ familyId }) => familyId)).size !== 30) {
+		throw new Error('Active family registry requires 30 unique family IDs');
+	}
+	if (new Set(families.map(({ sourceRaceNumber }) => sourceRaceNumber)).size !== 30) {
+		throw new Error('Active family registry requires 30 unique source race numbers');
+	}
+	const ordered = [...families].sort(
+		(left, right) => left.sourceRaceNumber - right.sourceRaceNumber
+	);
+	if (families.some((family, index) => family !== ordered[index])) {
+		throw new Error('Active family registry must preserve source race order');
+	}
+	const mapping = CurrentClassMappingFileSchema.parse(
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(repositoryRoot, registry.mappingPath)).toString('utf8')
+		)
+	);
+	if (currentClassMappingPath(mapping) !== registry.mappingPath) {
+		throw new Error('Active current-class mapping path is not self-bound');
+	}
+	return { registry, families, mapping };
 }
 
 export type AllocateFamilyAffinityRevisionInput = {

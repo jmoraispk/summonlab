@@ -59,7 +59,7 @@ ledger maps each one to a final family form and combat archetype.
 | 18 | Arachnids | Web-weaving predators | Eye count, leg span, silk finery |
 | 19 | Slimes | Amorphous devourers | Internal structure emerging from formlessness |
 | 20 | Golems | Constructed servants | Material quality: clay to gemstone |
-| 21 | Flame Elementals | Living fire | Flame color and core definition |
+| 21 | Elementals | Affinity-bodied magical entities | Form coherence, core complexity, and substance control |
 | 22 | Treants | Ambulatory forest | Age, girth, and what grows on them |
 | 23 | Fungalfolk | Spore and mycelium | Cap size, bioluminescence, spore density |
 | 24 | Deep Ones | Abyssal ocean horror | Humanoid giving way to abyssal; bioluminescence |
@@ -82,7 +82,7 @@ The complete seed entries are preserved in five volumes:
 
 - **Keep constant across tiers:** silhouette, palette, material. Change only ornamentation density and the escalation axis.
 - **Keep the axis phrase in every prompt.** "Tusks curling past the cheekbones" at T3 and "tusks the length of daggers" at T5 read as the same creature aging. "Bigger orc" does not.
-- **Scale is not the only axis.** Several races here deliberately escalate through refinement (Vampires, Golems), condensation (Wraiths, Flame Elementals), or subtraction (Void Horrors). Mixing the axis types keeps a 30-race roster from feeling repetitive.
+- **Scale is not the only axis.** Several races here deliberately escalate through refinement (Vampires, Golems), condensation (Wraiths), form coherence (Elementals), or subtraction (Void Horrors). Mixing the axis types keeps a 30-race roster from feeling repetitive.
 - **T1 should look like it loses.** Give it bad posture, incomplete gear, and visible vulnerability. T5 should be composed, still, and heavily ornamented — the visual difference between a mob and a boss is usually confidence, not size.
 
 ## Canon and mechanics boundary
@@ -94,7 +94,9 @@ office, or material at once despite the shared prompting rule. Each promoted fam
 an explicit interpretation of what its tiers mean.
 
 The source contains no monster statistics, floor assignments, rewards, encounter formulas, or
-explicit affinity profiles. Fire is explicit in the concepts for Demons, Flame Elementals, and
-Djinn; air is explicit for Djinn. Other elemental readings—such as Wind Harpies, Wood Treants,
-Water Deep Ones, or Void Void Horrors—would be new design decisions and must not be inferred from
-palette, habitat, material, or name alone.
+explicit affinity profiles. Family 21 Elementals are the exception: their five canonical forms each
+have a Normal body and one body for every base affinity, while affinity substance changes material
+without changing form identity or combat duty. Fire remains explicit in the source concepts for
+Demons and Djinn, and air remains explicit for Djinn. Other affinity readings—such as Wind Harpies,
+Earth Treants, Water Deep Ones, or Fire Void Horrors—would be new design decisions and must not be
+inferred from palette, habitat, material, or name alone.

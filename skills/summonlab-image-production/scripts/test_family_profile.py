@@ -238,6 +238,57 @@ class FamilyProfileTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "blocked-on-anchor"):
                 validate(blocked, blocked_assignment, self.workspace)
 
+    def test_self_bound_replacement_packet_and_mapping_are_dispatchable(self) -> None:
+        replacement_packet_path = f"{ROOT}/family-replacements/01-goblins.json"
+        replacement_packet = {
+            "schemaVersion": "family-packet-v1",
+            "packetPath": replacement_packet_path,
+            "familyId": "goblins",
+        }
+        self._write_json(replacement_packet_path, replacement_packet)
+        replacement_mapping_path = f"{ROOT}/mappings/current-class-mapping-v2.json"
+        replacement_mapping = {
+            "schemaVersion": "current-class-mapping-v1",
+            "mappingPath": replacement_mapping_path,
+        }
+        self._write_json(replacement_mapping_path, replacement_mapping)
+        target = self._target()
+        target["sources"].update(
+            {
+                "familyPacketPath": replacement_packet_path,
+                "familyPacketSha256": hashlib.sha256(
+                    canonical_json(replacement_packet).encode("utf-8")
+                ).hexdigest(),
+                "mappingPath": replacement_mapping_path,
+            }
+        )
+        self.assertEqual(
+            validate(target, self._assignment(target), self.workspace)["status"],
+            "planned",
+        )
+
+        replacement_packet["packetPath"] = f"{ROOT}/family-replacements/forged.json"
+        self._write_json(replacement_packet_path, replacement_packet)
+        forged_packet_target = json.loads(canonical_json(target))
+        forged_packet_target["sources"]["familyPacketSha256"] = hashlib.sha256(
+            canonical_json(replacement_packet).encode("utf-8")
+        ).hexdigest()
+        with self.assertRaisesRegex(ValueError, "packet replacement is not self-bound"):
+            validate(
+                forged_packet_target,
+                self._assignment(forged_packet_target),
+                self.workspace,
+            )
+
+        self._write_json(replacement_packet_path, {
+            **replacement_packet,
+            "packetPath": replacement_packet_path,
+        })
+        replacement_mapping["mappingPath"] = f"{ROOT}/mappings/forged.json"
+        self._write_json(replacement_mapping_path, replacement_mapping)
+        with self.assertRaisesRegex(ValueError, "mapping replacement is not self-bound"):
+            validate(target, self._assignment(target), self.workspace)
+
     def test_provisional_bridge_earth_is_dispatchable_but_never_approved(self) -> None:
         target = self._target("earth", "bridge")
         assignment = self._assignment(target)

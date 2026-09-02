@@ -45,24 +45,34 @@ before promoting an entry to canon.
 | T4 | Basalt Colossus | Huge black basalt body, plates floating slightly apart and held by magic, molten core visible through the chest cavity. |
 | T5 | Master Golem | White marble with gold inlay, sculptural relief carved across every surface, a gemstone heart, a rune-halo hovering above the shoulders. |
 
-## 21. Flame Elementals
+## 21. Elementals
 
-**What they are.** Living fire given a body. An elemental has no flesh at all — it is combustion holding a shape, usually roughly humanoid, with limbs that trail into flame and no fixed face. Its temperature is legible in its color, exactly as real fire is: dull orange at the bottom, yellow-white in the middle, and blue-white at the hottest. The strongest have condensed a solid core at the center — a star, or a shell of cooled obsidian cracked open by the fire inside.
+**What they are.** Magical entities whose temporary bodies are shaped from neutral spell-matter or
+one of the four base affinities: Fire, Earth, Wind, or Water. An Elemental has no flesh, fixed face,
+ordinary clothing, or handheld weapon. One binding seed or core holds its body together. Its outer
+shape remains recognizable when its affinity changes: an Earth form is not a Fire creature covered
+in rocks, and a Water form is not a flame recolored blue. The substance itself becomes the body.
 
 **Visual constants**
-- **Silhouette:** Roughly humanoid, wider at the top, limbs and head dissolving upward into flame. No feet — it tapers or hovers.
-- **Palette:** Orange and yellow at low tiers, white-hot with blue edges at mid, blue-white with black obsidian at the top.
-- **Material:** Open flame, ember, smoke, cooled obsidian crust, molten rock.
-- **Ornamentation:** Ember showers, heat-shimmer distortion, floating cinders, cracked obsidian plating, flame crown.
-- **Escalation axis:** Flame color temperature and how defined the core has become.
+- **Silhouette:** A small asymmetric teardrop at T1; from T2 onward, a legless hovering upper body with exactly two arm channels and a tapering lower body. A flame-like contour describes shape, not Fire.
+- **Palette:** Normal is desaturated silver-grey. Fire is vermilion, Earth ochre-brown and umber, Wind pale green-grey, and Water deep blue.
+- **Material:** Neutral spell-matter, living combustion, circulating earth magic, compressed air, or cohesive water according to affinity. Never treat affinity as a decorative aura over another body.
+- **Ornamentation:** One seed, then an exposed core, a divided ring, three mantle sections, and finally four core facets with matching orbital vanes.
+- **Escalation axis:** Form coherence, core complexity, and control over shaped affinity substance.
 
 | Tier | Name | Visual |
 |------|------|--------|
-| T1 | Wisp | Candle-sized flicker, dull orange, barely a shape, drifting cinders. |
-| T2 | Flame Spirit | Human-sized humanoid fire, yellow-orange, no fixed face, arms trailing into smoke. |
-| T3 | Blaze Warden | A white-hot core with blue edges, arms shaped into directed jets of flame, heat-shimmer aura. |
-| T4 | Magma Lord | A cracked obsidian shell over living fire, molten rock running through the fissures, a mantle of smoke. |
-| T5 | Conflagration Sovereign | A blue-white star at the center of the chest, solar corona around the whole body, a crown of standing flame, ground scorched in a ring. |
+| T1 | Wisp | Palm-sized asymmetric teardrop or flame-like entity with a pointed crest, continuous tapering tail, one visible seed, no face, and no limbs. |
+| T2 | Elemental Spirit | Human-sized faceless hovering torso with exactly two tapering arms, one central core, and a legless lower body dissolving into a continuous tail. |
+| T3 | Elemental Warden | Fully coherent hovering upper body with exactly two strong arm conduits, a divided ring core, broad shoulders, and a narrow tapering lower body. |
+| T4 | Elemental Colossus | Large floating upper body with exactly two integrated arms, three articulated mantle sections, and a shuttered central core. |
+| T5 | Elemental Sovereign | Tall complete hovering figure with exactly two coherent arms, a four-facet central core, four orbital vanes, and an affinity-shaped arena wake. |
+
+For the Wisp, the flame-like outline is shared shape language. Fire makes it living vermilion
+combustion; Earth makes it an ochre-brown and umber flow of soil, clay, silt, and fine mineral grains;
+Wind makes it pale green-grey compressed air; Water makes it deep-blue cohesive liquid; and Normal
+makes it desaturated silver-grey neutral spell-matter. Earth settles and compacts rather than burns,
+and must not show red flame, embers, smoke, char, lava, or a solid rock-projectile body.
 
 ## 22. Treants
 

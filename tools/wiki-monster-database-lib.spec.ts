@@ -1,12 +1,12 @@
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
 import {
-	CurrentClassMappingFileSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
-	FamilyPacketSchema
+	loadFamilyAffinityActiveSources
 } from './family-affinity-production-lib.js';
 import { familyAffinitySha256 } from './family-affinity-production-lib.js';
 import {
@@ -21,6 +21,7 @@ import {
 	legacyMonsterPageFileNames,
 	legacyMonsterRouteMap,
 	obsoleteGeneratedMonsterPages,
+	RETIRED_CANONICAL_MONSTER_FORM_IDS,
 	unmanagedMonsterPageCollisions,
 	type LegacyCandidateReference,
 	type MonsterWikiBuildInput
@@ -30,24 +31,14 @@ const productionRoot = new URL(
 	'../assets/enemies/experiments/family-affinity-v1/',
 	import.meta.url
 );
+const repositoryRoot = fileURLToPath(new URL('../', import.meta.url));
 
 async function json<T>(url: URL): Promise<T> {
 	return JSON.parse(await readFile(url, 'utf8')) as T;
 }
 
 async function productionInput(): Promise<MonsterWikiBuildInput> {
-	const familyDirectory = new URL('families/', productionRoot);
-	const familyFileNames = (await readdir(familyDirectory))
-		.filter((fileName) => /^\d{2}-[a-z0-9-]+\.json$/u.test(fileName))
-		.sort();
-	const families = await Promise.all(
-		familyFileNames.map(async (fileName) =>
-			FamilyPacketSchema.parse(await json(new URL(fileName, familyDirectory)))
-		)
-	);
-	const mapping = CurrentClassMappingFileSchema.parse(
-		await json(new URL('current-class-mapping.json', productionRoot))
-	);
+	const { families, mapping } = await loadFamilyAffinityActiveSources(repositoryRoot);
 	const manifest = FamilyAffinityManifestSchema.parse(
 		await json(new URL('manifest.json', productionRoot))
 	);
@@ -295,7 +286,7 @@ describe('canonical monster wiki database', () => {
 		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow();
 	});
 
-	it('deletes only the exact forty managed legacy pages and preserves unknown Markdown', async () => {
+	it('deletes managed legacy and retired canonical pages while preserving unknown Markdown', async () => {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
 		const expected = generatedMonsterPageFileNames(database);
 		const managedLegacy = legacyMonsterPageFileNames(database);
@@ -304,12 +295,18 @@ describe('canonical monster wiki database', () => {
 			'visual-index.json',
 			...expected,
 			...managedLegacy,
+			...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `${formId}.md`),
 			'hand-authored-encounter.md',
 			'notes.txt'
 		];
 
 		expect(managedLegacy).toHaveLength(40);
-		expect(obsoleteGeneratedMonsterPages(database, existing)).toEqual(managedLegacy);
+		expect(obsoleteGeneratedMonsterPages(database, existing)).toEqual(
+			[
+				...managedLegacy,
+				...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `${formId}.md`)
+			].sort()
+		);
 		expect(unmanagedMonsterPageCollisions(database, existing)).toEqual([
 			'hand-authored-encounter.md'
 		]);

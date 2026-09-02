@@ -5,10 +5,9 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-	CurrentClassMappingFileSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
-	FamilyPacketSchema,
+	loadFamilyAffinityActiveSources,
 	type FamilyAffinityManifest
 } from './family-affinity-production-lib.js';
 import {
@@ -20,6 +19,7 @@ import {
 	buildMonsterWikiPage,
 	generatedMonsterPageFileNames,
 	obsoleteGeneratedMonsterPages,
+	RETIRED_CANONICAL_MONSTER_FORM_IDS,
 	unmanagedMonsterPageCollisions,
 	type CanonicalMonsterWikiDatabase,
 	type LegacyCandidateReference,
@@ -28,7 +28,6 @@ import {
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const productionRoot = resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1');
-const familyRoot = resolve(productionRoot, 'families');
 const monsterWikiRoot = resolve(repositoryRoot, 'docs/wiki/creatures/monsters');
 const visualIndexPath = resolve(monsterWikiRoot, 'visual-index.json');
 const wikiCatalogPath = resolve(repositoryRoot, 'docs/wiki/catalog.json');
@@ -66,17 +65,7 @@ function versionFrom(entry: LegacyCatalogEntry): number {
 }
 
 async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
-	const familyFiles = (await readdir(familyRoot))
-		.filter((fileName) => /^\d{2}-[a-z0-9-]+\.json$/u.test(fileName))
-		.sort();
-	const families = await Promise.all(
-		familyFiles.map(async (fileName) =>
-			FamilyPacketSchema.parse(await readJson(resolve(familyRoot, fileName)))
-		)
-	);
-	const mapping = CurrentClassMappingFileSchema.parse(
-		await readJson(resolve(productionRoot, 'current-class-mapping.json'))
-	);
+	const { families, mapping } = await loadFamilyAffinityActiveSources(repositoryRoot);
 	const manifest = FamilyAffinityManifestSchema.parse(
 		await readJson(resolve(productionRoot, 'manifest.json'))
 	);
@@ -110,7 +99,8 @@ function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDataba
 	const replaceableWikiIds = new Set([
 		'creatures.monster-database',
 		...database.forms.map(({ formId }) => `monster.${formId}`),
-		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`)
+		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`),
+		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `monster.${formId}`)
 	]);
 	const retained = current.entries.filter((entry) => !replaceableWikiIds.has(entry.wikiId));
 	return {
