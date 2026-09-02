@@ -2444,6 +2444,18 @@ export type AllocateFamilyAffinityRevisionInput = {
 	reviewPath: string;
 };
 
+export type FamilyAffinityRevisionBatchEntry = Pick<
+	AllocateFamilyAffinityRevisionInput,
+	'namespace' | 'coordinateId' | 'reviewPath'
+>;
+
+export type AllocateFamilyAffinityRevisionBatchInput = Pick<
+	AllocateFamilyAffinityRevisionInput,
+	'repositoryRoot' | 'manifestPath' | 'callerRole'
+> & {
+	entries: readonly FamilyAffinityRevisionBatchEntry[];
+};
+
 async function validateAllocationAnchor(
 	repositoryRoot: string,
 	manifest: FamilyAffinityManifest,
@@ -2690,18 +2702,12 @@ async function validateFullActiveCorpusBeforeAllocation(
 	}
 }
 
-async function allocateFamilyAffinityRevisionUnlocked(
-	input: AllocateFamilyAffinityRevisionInput,
-	manifestAbsolute: string
+async function prepareFamilyAffinityRevision(
+	input: Pick<AllocateFamilyAffinityRevisionInput, 'repositoryRoot' | 'manifestPath'> &
+		FamilyAffinityRevisionBatchEntry,
+	manifest: FamilyAffinityManifest,
+	manifestSha256: string
 ) {
-	const manifestBytes = await readOwnedFileNoSymlinks(input.repositoryRoot, input.manifestPath);
-	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
-	await validateFullActiveCorpusBeforeAllocation(
-		input.repositoryRoot,
-		manifest,
-		input.manifestPath,
-		familyAffinityRawSha256(manifestBytes)
-	);
 	const collection = input.namespace === 'canonical' ? manifest.canonicalMatrix : manifest.bridge;
 	const coordinate = collection.activeCoordinates.find(
 		({ coordinateId }) => coordinateId === input.coordinateId
@@ -2726,7 +2732,7 @@ async function allocateFamilyAffinityRevisionUnlocked(
 		manifest,
 		currentTarget,
 		input.manifestPath,
-		familyAffinityRawSha256(manifestBytes)
+		manifestSha256
 	);
 	if (
 		currentTarget.coordinateId !== coordinate.coordinateId ||
@@ -2787,7 +2793,7 @@ async function allocateFamilyAffinityRevisionUnlocked(
 		reviewAssignmentPath,
 		kind: 'ordinary',
 		manifestPath: input.manifestPath,
-		manifestSha256: familyAffinityRawSha256(manifestBytes),
+		manifestSha256,
 		target: currentTarget,
 		targetPath: coordinate.targetPath,
 		productionAssignment: currentAssignment,
@@ -2825,7 +2831,7 @@ async function allocateFamilyAffinityRevisionUnlocked(
 			reviewAssignmentPath: blindAssignmentPath,
 			kind: 'blind',
 			manifestPath: input.manifestPath,
-			manifestSha256: familyAffinityRawSha256(manifestBytes),
+			manifestSha256,
 			target: currentTarget,
 			targetPath: coordinate.targetPath,
 			productionAssignment: currentAssignment,
@@ -2859,12 +2865,6 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	};
 	const nextTargetPath = nextPaths.target;
 	const nextAssignmentPath = nextPaths.assignment;
-	const proposedPaths = [nextTargetPath, nextAssignmentPath, ...Object.values(nextOwnedPaths)];
-	for (const proposed of proposedPaths) {
-		if (await exists(absoluteOwnedPath(input.repositoryRoot, proposed))) {
-			throw new Error(`Revision allocation collision: ${proposed}`);
-		}
-	}
 	const targetStatus =
 		currentTarget.status === 'earth-bridge-provisional'
 			? currentTarget.status
@@ -2887,41 +2887,149 @@ async function allocateFamilyAffinityRevisionUnlocked(
 		}
 	});
 	const nextAssignment = buildAssignment(nextTarget);
-	const nextTargetAbsolute = absoluteOwnedPath(input.repositoryRoot, nextTargetPath);
-	const nextAssignmentAbsolute = absoluteOwnedPath(input.repositoryRoot, nextAssignmentPath);
-	await mkdir(dirname(nextTargetAbsolute), { recursive: true });
-	await mkdir(dirname(nextAssignmentAbsolute), { recursive: true });
-	const created: string[] = [];
-	const temporaryManifest = `${manifestAbsolute}.revision-${process.pid}-${Date.now()}`;
-	try {
-		await writeFile(nextTargetAbsolute, stableFamilyAffinityJson(nextTarget), { flag: 'wx' });
-		created.push(nextTargetAbsolute);
-		await writeFile(nextAssignmentAbsolute, stableFamilyAffinityJson(nextAssignment), {
-			flag: 'wx'
-		});
-		created.push(nextAssignmentAbsolute);
-		coordinate.activeVersion = nextVersion;
-		coordinate.targetPath = nextTargetPath;
-		coordinate.targetSha256 = familyAffinitySha256(nextTarget);
-		coordinate.assignmentPath = nextAssignmentPath;
-		coordinate.assignmentSha256 = familyAffinitySha256(nextAssignment);
-		coordinate.status = nextTarget.status;
-		await writeFile(temporaryManifest, stableFamilyAffinityJson(manifest), { flag: 'wx' });
-		await rename(temporaryManifest, manifestAbsolute);
-	} catch (error) {
-		await unlink(temporaryManifest).catch(() => undefined);
-		for (const path of created.reverse()) await unlink(path).catch(() => undefined);
-		throw error;
-	}
 	return {
+		namespace: input.namespace,
+		coordinateId: input.coordinateId,
 		targetPath: nextTargetPath,
 		assignmentPath: nextAssignmentPath,
 		target: nextTarget,
-		assignment: nextAssignment
+		assignment: nextAssignment,
+		proposedPaths: [nextTargetPath, nextAssignmentPath, ...Object.values(nextOwnedPaths)]
 	};
 }
 
-export async function allocateFamilyAffinityRevision(input: AllocateFamilyAffinityRevisionInput) {
+async function assertRealRepositoryParent(repositoryRoot: string, repositoryPath: string) {
+	const absolute = absoluteOwnedPath(repositoryRoot, repositoryPath);
+	const parent = dirname(absolute);
+	const metadata = await lstat(parent);
+	if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+		throw new Error(`Revision allocation parent must be a real directory: ${repositoryPath}`);
+	}
+}
+
+async function allocateFamilyAffinityRevisionBatchUnlocked(
+	input: AllocateFamilyAffinityRevisionBatchInput,
+	manifestAbsolute: string
+) {
+	if (input.entries.length === 0) {
+		throw new Error('Revision allocation batch requires at least one entry');
+	}
+	const entryKeys = input.entries.map(
+		({ namespace, coordinateId }) => `${namespace}\0${coordinateId}`
+	);
+	if (new Set(entryKeys).size !== entryKeys.length) {
+		throw new Error('Revision allocation batch contains a duplicate namespace and coordinate');
+	}
+	const reviewPaths = input.entries.map(({ reviewPath }) => reviewPath);
+	if (new Set(reviewPaths).size !== reviewPaths.length) {
+		throw new Error('Revision allocation batch contains a duplicate review path');
+	}
+
+	const manifestBytes = await readOwnedFileNoSymlinks(input.repositoryRoot, input.manifestPath);
+	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	await validateFullActiveCorpusBeforeAllocation(
+		input.repositoryRoot,
+		manifest,
+		input.manifestPath,
+		manifestSha256
+	);
+
+	const allocations = [];
+	for (const entry of input.entries) {
+		allocations.push(
+			await prepareFamilyAffinityRevision(
+				{
+					repositoryRoot: input.repositoryRoot,
+					manifestPath: input.manifestPath,
+					...entry
+				},
+				manifest,
+				manifestSha256
+			)
+		);
+	}
+
+	const proposedPaths = allocations.flatMap(({ proposedPaths }) => proposedPaths);
+	if (new Set(proposedPaths).size !== proposedPaths.length) {
+		throw new Error('Revision allocation batch contains overlapping output paths');
+	}
+	for (const proposed of proposedPaths) {
+		if (await exists(absoluteOwnedPath(input.repositoryRoot, proposed))) {
+			throw new Error(`Revision allocation collision: ${proposed}`);
+		}
+	}
+	for (const allocation of allocations) {
+		await assertRealRepositoryParent(input.repositoryRoot, allocation.targetPath);
+		await assertRealRepositoryParent(input.repositoryRoot, allocation.assignmentPath);
+	}
+
+	const nextManifest = structuredClone(manifest);
+	for (const allocation of allocations) {
+		const collection =
+			allocation.namespace === 'canonical' ? nextManifest.canonicalMatrix : nextManifest.bridge;
+		const coordinate = collection.activeCoordinates.find(
+			({ coordinateId }) => coordinateId === allocation.coordinateId
+		)!;
+		coordinate.activeVersion = allocation.target.version;
+		coordinate.targetPath = allocation.targetPath;
+		coordinate.targetSha256 = familyAffinitySha256(allocation.target);
+		coordinate.assignmentPath = allocation.assignmentPath;
+		coordinate.assignmentSha256 = familyAffinitySha256(allocation.assignment);
+		coordinate.status = allocation.target.status;
+	}
+	FamilyAffinityManifestSchema.parse(nextManifest);
+
+	const unchangedManifestBytes = await readOwnedFileNoSymlinks(
+		input.repositoryRoot,
+		input.manifestPath
+	);
+	if (!unchangedManifestBytes.equals(manifestBytes)) {
+		throw new Error('Revision allocation manifest changed after batch validation');
+	}
+
+	const created: string[] = [];
+	const temporaryManifest = `${manifestAbsolute}.revision-allocation.tmp`;
+	let temporaryManifestCreated = false;
+	try {
+		for (const allocation of allocations) {
+			const nextTargetAbsolute = absoluteOwnedPath(input.repositoryRoot, allocation.targetPath);
+			const nextAssignmentAbsolute = absoluteOwnedPath(
+				input.repositoryRoot,
+				allocation.assignmentPath
+			);
+			await writeFile(nextTargetAbsolute, stableFamilyAffinityJson(allocation.target), {
+				flag: 'wx'
+			});
+			created.push(nextTargetAbsolute);
+			await writeFile(nextAssignmentAbsolute, stableFamilyAffinityJson(allocation.assignment), {
+				flag: 'wx'
+			});
+			created.push(nextAssignmentAbsolute);
+		}
+		const finalManifestBytes = await readOwnedFileNoSymlinks(
+			input.repositoryRoot,
+			input.manifestPath
+		);
+		if (!finalManifestBytes.equals(manifestBytes)) {
+			throw new Error('Revision allocation manifest changed before atomic commit');
+		}
+		await writeFile(temporaryManifest, stableFamilyAffinityJson(nextManifest), { flag: 'wx' });
+		temporaryManifestCreated = true;
+		await rename(temporaryManifest, manifestAbsolute);
+		temporaryManifestCreated = false;
+	} catch (error) {
+		if (temporaryManifestCreated) await unlink(temporaryManifest).catch(() => undefined);
+		for (const createdPath of created.reverse()) await unlink(createdPath).catch(() => undefined);
+		throw error;
+	}
+
+	return allocations.map(({ proposedPaths: _proposedPaths, ...allocation }) => allocation);
+}
+
+export async function allocateFamilyAffinityRevisionBatch(
+	input: AllocateFamilyAffinityRevisionBatchInput
+) {
 	if (input.callerRole !== 'integration-controller') {
 		throw new Error(
 			'Only the integration-controller may allocate revisions; producers and reviewers are forbidden'
@@ -2940,8 +3048,24 @@ export async function allocateFamilyAffinityRevision(input: AllocateFamilyAffini
 		throw error;
 	}
 	try {
-		return await allocateFamilyAffinityRevisionUnlocked(input, manifestAbsolute);
+		return await allocateFamilyAffinityRevisionBatchUnlocked(input, manifestAbsolute);
 	} finally {
 		await unlink(lockPath).catch(() => undefined);
 	}
+}
+
+export async function allocateFamilyAffinityRevision(input: AllocateFamilyAffinityRevisionInput) {
+	const [allocation] = await allocateFamilyAffinityRevisionBatch({
+		repositoryRoot: input.repositoryRoot,
+		manifestPath: input.manifestPath,
+		callerRole: input.callerRole,
+		entries: [
+			{
+				namespace: input.namespace,
+				coordinateId: input.coordinateId,
+				reviewPath: input.reviewPath
+			}
+		]
+	});
+	return allocation!;
 }

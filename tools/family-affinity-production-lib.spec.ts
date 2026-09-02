@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	auditCurrentClassMapping,
 	allocateFamilyAffinityRevision,
+	allocateFamilyAffinityRevisionBatch,
 	buildFamilyAffinityProductionBundle,
 	bridgeAttemptPaths,
 	canonicalAttemptPaths,
@@ -3318,6 +3319,115 @@ async function makeRevisionFixture(options?: {
 	return { root, target, manifestPath, coordinate, receipt, result };
 }
 
+async function addRevisionEvidence(
+	fixture: Awaited<ReturnType<typeof makeRevisionFixture>>,
+	formId: 'goblin-cutter' | 'goblin-raider' = 'goblin-cutter',
+	decision: 'rejected' | 'revise' = 'revise'
+) {
+	const manifestBytes = await readFile(join(fixture.root, fixture.manifestPath));
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const coordinate = manifest.canonicalMatrix.activeCoordinates.find(
+		({ coordinateId }) => coordinateId === `goblins/${formId}/normal`
+	)!;
+	const target = FamilyAffinityTargetSchema.parse(
+		JSON.parse(await readFile(join(fixture.root, coordinate.targetPath), 'utf8'))
+	);
+	const productionAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(join(fixture.root, coordinate.assignmentPath), 'utf8'))
+	);
+	const candidateBytes = `candidate-pixels-${formId}-v1`;
+	await writeOwnedFixture(fixture.root, target.ownedPaths.candidate, candidateBytes);
+	const result = {
+		schemaVersion: 'family-affinity-result-v1' as const,
+		targetId: target.targetId,
+		targetSha256: familyAffinitySha256(target),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		producerId: `producer-${formId}`,
+		candidatePath: target.ownedPaths.candidate,
+		candidateSha256: familyAffinityRawSha256(candidateBytes),
+		resultPath: target.ownedPaths.result,
+		sourcePath: target.sources.familyPacketPath,
+		sourceSha256: target.sources.familyPacketSha256,
+		promptSha256: familyAffinityPromptSha256(target, productionAssignment),
+		state: 'candidate-only' as const,
+		runtimeCatalogMutationForbidden: true as const
+	};
+	const resultBytes = stableFamilyAffinityJson(result);
+	await writeOwnedFixture(fixture.root, target.ownedPaths.result, resultBytes);
+	const receipt = {
+		...makeOrdinaryReviewReceipt(target, {
+			decision,
+			candidateSha256: result.candidateSha256,
+			resultSha256: familyAffinityRawSha256(resultBytes),
+			producerId: result.producerId
+		}),
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256
+	};
+	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
+	const reviewAssignment = {
+		schemaVersion: 'family-affinity-review-assignment-v1',
+		issuerRole: 'controller',
+		issuerId: `review-controller-${formId}`,
+		issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
+			issuerId: `review-controller-${formId}`,
+			reviewerId: receipt.reviewerId,
+			kind: 'ordinary',
+			manifestPath: fixture.manifestPath,
+			manifestSha256,
+			target,
+			targetPath: coordinate.targetPath,
+			productionAssignment,
+			productionAssignmentPath: coordinate.assignmentPath,
+			result,
+			resultSha256: receipt.resultSha256,
+			decisionVersion: target.version,
+			permittedReceiptPath: target.ownedPaths.decision
+		}),
+		reviewKind: 'ordinary',
+		assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
+		reviewerId: receipt.reviewerId,
+		producerId: result.producerId,
+		producerIdentitySha256: receipt.producerIdentitySha256,
+		manifestPath: fixture.manifestPath,
+		manifestSha256,
+		targetId: target.targetId,
+		targetPath: coordinate.targetPath,
+		targetSha256: familyAffinitySha256(target),
+		productionAssignmentPath: coordinate.assignmentPath,
+		productionAssignmentSha256: familyAffinitySha256(productionAssignment),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		decisionVersion: target.version,
+		candidatePath: result.candidatePath,
+		candidateSha256: result.candidateSha256,
+		resultPath: result.resultPath,
+		resultSha256: receipt.resultSha256,
+		sourcePath: result.sourcePath,
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256,
+		permittedReceiptPath: target.ownedPaths.decision,
+		exclusiveCreateRequired: true,
+		runtimeCatalogMutationForbidden: true
+	};
+	await writeOwnedFixture(
+		fixture.root,
+		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
+		reviewAssignment
+	);
+	await writeOwnedFixture(fixture.root, target.ownedPaths.decision, receipt);
+	return {
+		target,
+		coordinate,
+		entry: {
+			namespace: 'canonical' as const,
+			coordinateId: target.coordinateId,
+			reviewPath: target.ownedPaths.decision
+		}
+	};
+}
+
 async function stagePlannedElemental(
 	fixture: Awaited<ReturnType<typeof makeRevisionFixture>>,
 	affinity: 'fire' | 'earth' | 'wind' | 'water' = 'fire'
@@ -3406,6 +3516,199 @@ async function stagePlannedElemental(
 }
 
 describe('controller-only family affinity revision allocation', () => {
+	it('atomically allocates sibling review receipts bound to one manifest snapshot', async () => {
+		const fixture = await makeRevisionFixture({ decision: 'revise' });
+		try {
+			const sibling = await addRevisionEvidence(fixture);
+			const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+			const allocations = await allocateFamilyAffinityRevisionBatch({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				callerRole: 'integration-controller',
+				entries: [
+					{
+						namespace: 'canonical',
+						coordinateId: fixture.target.coordinateId,
+						reviewPath: fixture.target.ownedPaths.decision
+					},
+					sibling.entry
+				]
+			});
+			expect(allocations.map(({ target }) => target.version)).toEqual([2, 2]);
+			expect(allocations.map(({ target }) => target.precedingAttempt?.targetId)).toEqual([
+				fixture.target.targetId,
+				sibling.target.targetId
+			]);
+			const manifestAfterText = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+			expect(manifestAfterText).not.toBe(manifestBefore);
+			const manifestAfter = FamilyAffinityManifestSchema.parse(JSON.parse(manifestAfterText));
+			for (const coordinateId of [fixture.target.coordinateId, sibling.target.coordinateId]) {
+				const active = manifestAfter.canonicalMatrix.activeCoordinates.find(
+					(coordinate) => coordinate.coordinateId === coordinateId
+				)!;
+				expect(active.activeVersion).toBe(2);
+				expect(active.targetPath).toMatch(/target-v2\.json$/u);
+				expect(active.assignmentPath).toMatch(/assignment-v2\.json$/u);
+			}
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('shows why sequential allocation stales an outstanding sibling receipt', async () => {
+		const fixture = await makeRevisionFixture({ decision: 'revise' });
+		try {
+			const sibling = await addRevisionEvidence(fixture);
+			await allocateFamilyAffinityRevision({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				namespace: 'canonical',
+				coordinateId: fixture.target.coordinateId,
+				callerRole: 'integration-controller',
+				reviewPath: fixture.target.ownedPaths.decision
+			});
+			await expect(
+				allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'canonical',
+					coordinateId: sibling.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: sibling.target.ownedPaths.decision
+				})
+			).rejects.toThrow(/stale|forged|unauthorized|cross-bound/i);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('rejects duplicate and mixed-invalid batches without changing the manifest or writing pairs', async () => {
+		for (const failure of ['duplicate', 'mixed-invalid'] as const) {
+			const fixture = await makeRevisionFixture({ decision: 'revise' });
+			try {
+				const sibling = await addRevisionEvidence(fixture);
+				const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+				const firstEntry = {
+					namespace: 'canonical' as const,
+					coordinateId: fixture.target.coordinateId,
+					reviewPath: fixture.target.ownedPaths.decision
+				};
+				const entries =
+					failure === 'duplicate'
+						? [firstEntry, firstEntry]
+						: [firstEntry, { ...sibling.entry, reviewPath: 'foreign/review.json' }];
+				await expect(
+					allocateFamilyAffinityRevisionBatch({
+						repositoryRoot: fixture.root,
+						manifestPath: fixture.manifestPath,
+						callerRole: 'integration-controller',
+						entries
+					})
+				).rejects.toThrow();
+				expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(
+					manifestBefore
+				);
+				for (const target of [fixture.target, sibling.target]) {
+					const paths = canonicalAttemptPaths(target.familyId, target.formId, target.affinity, 2);
+					await expect(readFile(join(fixture.root, paths.target))).rejects.toMatchObject({
+						code: 'ENOENT'
+					});
+					await expect(readFile(join(fixture.root, paths.assignment))).rejects.toMatchObject({
+						code: 'ENOENT'
+					});
+				}
+			} finally {
+				await rm(fixture.root, { recursive: true, force: true });
+			}
+		}
+	});
+
+	it('rejects a collision anywhere in the batch before creating any other pair', async () => {
+		const fixture = await makeRevisionFixture({ decision: 'revise' });
+		try {
+			const sibling = await addRevisionEvidence(fixture);
+			const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+			const firstPaths = canonicalAttemptPaths(
+				fixture.target.familyId,
+				fixture.target.formId,
+				fixture.target.affinity,
+				2
+			);
+			const siblingPaths = canonicalAttemptPaths(
+				sibling.target.familyId,
+				sibling.target.formId,
+				sibling.target.affinity,
+				2
+			);
+			await writeOwnedFixture(fixture.root, siblingPaths.target, 'foreign-owner');
+			await expect(
+				allocateFamilyAffinityRevisionBatch({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					callerRole: 'integration-controller',
+					entries: [
+						{
+							namespace: 'canonical',
+							coordinateId: fixture.target.coordinateId,
+							reviewPath: fixture.target.ownedPaths.decision
+						},
+						sibling.entry
+					]
+				})
+			).rejects.toThrow(/collision/i);
+			expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(manifestBefore);
+			await expect(readFile(join(fixture.root, firstPaths.target))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(readFile(join(fixture.root, firstPaths.assignment))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			expect(await readFile(join(fixture.root, siblingPaths.target), 'utf8')).toBe('foreign-owner');
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('rolls back every created pair when a late manifest staging failure occurs', async () => {
+		const fixture = await makeRevisionFixture({ decision: 'revise' });
+		try {
+			const sibling = await addRevisionEvidence(fixture);
+			const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+			const staleTemporary = `${fixture.manifestPath}.revision-allocation.tmp`;
+			await writeOwnedFixture(fixture.root, staleTemporary, 'foreign-staging-owner');
+			await expect(
+				allocateFamilyAffinityRevisionBatch({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					callerRole: 'integration-controller',
+					entries: [
+						{
+							namespace: 'canonical',
+							coordinateId: fixture.target.coordinateId,
+							reviewPath: fixture.target.ownedPaths.decision
+						},
+						sibling.entry
+					]
+				})
+			).rejects.toMatchObject({ code: 'EEXIST' });
+			expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(manifestBefore);
+			expect(await readFile(join(fixture.root, staleTemporary), 'utf8')).toBe(
+				'foreign-staging-owner'
+			);
+			for (const target of [fixture.target, sibling.target]) {
+				const paths = canonicalAttemptPaths(target.familyId, target.formId, target.affinity, 2);
+				await expect(readFile(join(fixture.root, paths.target))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+				await expect(readFile(join(fixture.root, paths.assignment))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+			}
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
 	it('validates an approved Normal receipt as the exact filesystem anchor for an elemental target', async () => {
 		const fixture = await makeRevisionFixture({
 			formId: 'goblin-cutter',
