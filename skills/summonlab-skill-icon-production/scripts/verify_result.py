@@ -6,10 +6,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import stat
-import struct
 import subprocess
-import zlib
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -18,87 +18,28 @@ from validate_target import (
     absolute_project_path,
     fail,
     load_json,
+    run_asset_inspection,
     run_contract_validation,
     validate,
 )
 
-PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+GEOMETRY_PATH = "assets/wiki/skills/icon-production-v1/geometry.json"
+FAILURE_KINDS = {
+    "provider-failure",
+    "provider-throttle",
+    "timeout",
+    "malformed-output",
+    "persistence",
+    "validation",
+    "other",
+}
 
 
-def inspect_rgba_png(path: Path) -> dict[str, Any]:
-    metadata = path.lstat()
-    if stat.S_ISLNK(metadata.st_mode):
-        fail("candidate path cannot be a symbolic link")
-    if not stat.S_ISREG(metadata.st_mode):
-        fail("candidate path must be a regular file")
-    data = path.read_bytes()
-    if len(data) < 57 or not data.startswith(PNG_SIGNATURE):
-        fail("retained candidate is not a PNG")
-    offset = len(PNG_SIGNATURE)
-    ihdr: bytes | None = None
-    compressed = bytearray()
-    seen_iend = False
-    while offset < len(data):
-        if offset + 12 > len(data):
-            fail("retained candidate has a truncated PNG chunk")
-        length = struct.unpack(">I", data[offset : offset + 4])[0]
-        kind = data[offset + 4 : offset + 8]
-        end = offset + 12 + length
-        if end > len(data):
-            fail("retained candidate has a truncated PNG payload")
-        payload = data[offset + 8 : offset + 8 + length]
-        expected_crc = struct.unpack(">I", data[offset + 8 + length : end])[0]
-        if zlib.crc32(kind + payload) & 0xFFFFFFFF != expected_crc:
-            fail("retained candidate has an invalid PNG checksum")
-        if ihdr is None:
-            if kind != b"IHDR" or length != 13:
-                fail("retained candidate has an invalid PNG header")
-            ihdr = payload
-        elif kind == b"IHDR":
-            fail("retained candidate has multiple PNG headers")
-        if kind == b"IDAT":
-            compressed.extend(payload)
-        if kind == b"IEND":
-            if length != 0 or end != len(data):
-                fail("retained candidate has an invalid PNG terminator")
-            seen_iend = True
-            break
-        offset = end
-    if ihdr is None or not compressed or not seen_iend:
-        fail("retained candidate is an incomplete PNG")
-    width, height, bit_depth, color_type, compression, filtering, interlace = struct.unpack(
-        ">IIBBBBB", ihdr
-    )
-    if (width, height) != (1024, 1024):
-        fail("retained candidate must be exactly 1024x1024")
-    if (
-        bit_depth != 8
-        or color_type != 6
-        or compression != 0
-        or filtering != 0
-        or interlace != 0
-    ):
-        fail("retained candidate must be an 8-bit, non-interlaced RGBA PNG")
-    expected_raw_bytes = height * (1 + width * 4)
-    decompressor = zlib.decompressobj()
-    try:
-        raw = decompressor.decompress(bytes(compressed), expected_raw_bytes + 1)
-        raw += decompressor.flush()
-    except zlib.error as error:
-        fail(f"retained candidate PNG pixels cannot be decoded: {error}")
-    if not decompressor.eof or len(raw) != expected_raw_bytes:
-        fail("retained candidate PNG pixel payload has an invalid length")
-    if any(raw[row * (1 + width * 4)] > 4 for row in range(height)):
-        fail("retained candidate PNG uses an unsupported row filter")
-    return {
-        "path": path,
-        "mediaType": "image/png",
-        "width": width,
-        "height": height,
-        "bytes": len(data),
-        "alphaMode": "rgba",
-        "contentHash": hashlib.sha256(data).hexdigest(),
-    }
+def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> None:
+    if isinstance(attempt_count, bool) or not isinstance(attempt_count, int):
+        fail("attempt count must be an integer")
+    if not 1 <= attempt_count <= 1 + assignment["retryCeiling"]:
+        fail("attempt count violates the assignment retry ceiling")
 
 
 def _changed_repository_paths(workspace: Path) -> set[str]:
@@ -164,10 +105,7 @@ def verify(
         contract_root=contract_root or root,
     )
 
-    if isinstance(attempt_count, bool) or not isinstance(attempt_count, int):
-        fail("attempt count must be an integer")
-    if not 1 <= attempt_count <= 1 + assignment["retryCeiling"]:
-        fail("attempt count violates the assignment retry ceiling")
+    _validate_attempt_count(assignment, attempt_count)
 
     expected_result = absolute_project_path(
         root, target["output"]["resultPath"], must_exist=True, regular_file=True
@@ -188,7 +126,26 @@ def verify(
         candidate = absolute_project_path(
             root, candidate_path, must_exist=True, regular_file=True
         )
-        inspection = inspect_rgba_png(candidate)
+        geometry_path = absolute_project_path(
+            root, GEOMETRY_PATH, must_exist=True, regular_file=True
+        )
+        inspection = run_asset_inspection(
+            candidate,
+            target["role"],
+            load_json(geometry_path),
+            contract_root=contract_root or root,
+        )
+        if (
+            inspection.get("width") != target["canvas"]["width"]
+            or inspection.get("height") != target["canvas"]["height"]
+            or inspection.get("mediaType") != target["canvas"]["mediaType"]
+        ):
+            fail("retained candidate does not match the target canvas")
+        violations = inspection.get("violations")
+        if not isinstance(violations, list):
+            fail("repository asset inspector returned invalid violations")
+        if violations:
+            fail("repository role-aware asset inspection failed: " + "; ".join(violations))
         expected_output = {
             "path": candidate_path,
             "mediaType": inspection["mediaType"],
@@ -200,23 +157,33 @@ def verify(
         }
         if output != expected_output:
             fail("result candidate metadata does not match the exact retained bytes")
+        findings = result["findings"]
+        full_size_findings = [
+            finding
+            for finding in findings
+            if finding.get("evaluator") == "automated"
+            and finding.get("category")
+            in {"geometry", "alpha", "safe-zone", "registration"}
+            and finding.get("outcome") != "not-applicable"
+        ]
+        recognition_findings = [
+            finding
+            for finding in findings
+            if finding.get("evaluator") == "producer"
+            and finding.get("category") == "recognition"
+            and finding.get("outcome") != "not-applicable"
+        ]
+        if not full_size_findings or not recognition_findings:
+            fail("retained image requires explicit full-size and 96-pixel inspection findings")
         if result["status"] == "candidate":
-            findings = result["findings"]
-            has_full_size_pass = any(
-                finding.get("evaluator") == "automated"
-                and finding.get("category")
-                in {"geometry", "alpha", "safe-zone", "registration"}
-                and finding.get("outcome") == "pass"
-                for finding in findings
-            )
-            has_recognition_pass = any(
-                finding.get("evaluator") == "producer"
-                and finding.get("category") == "recognition"
-                and finding.get("outcome") == "pass"
-                for finding in findings
-            )
-            if not has_full_size_pass or not has_recognition_pass:
-                fail("candidate requires explicit full-size and 96-pixel inspection passes")
+            if any(
+                finding.get("outcome") in {"concern", "fail"} for finding in findings
+            ):
+                fail("candidate findings must be clean without concerns or failures")
+            if any(finding.get("outcome") != "pass" for finding in full_size_findings):
+                fail("candidate requires a full-size inspection pass")
+            if any(finding.get("outcome") != "pass" for finding in recognition_findings):
+                fail("candidate requires a 96-pixel inspection pass")
 
     written = result["writtenOutputPaths"]
     expected_written = (
@@ -244,9 +211,187 @@ def verify(
     }
 
 
+def _ensure_safe_parent(workspace: Path, destination: Path) -> None:
+    relative_parent = destination.parent.relative_to(workspace)
+    cursor = workspace
+    for part in relative_parent.parts:
+        cursor = cursor / part
+        try:
+            metadata = cursor.lstat()
+        except FileNotFoundError:
+            try:
+                cursor.mkdir(mode=0o755)
+            except FileExistsError:
+                pass
+            metadata = cursor.lstat()
+        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+            fail(f"result parent is not a safe directory: {cursor}")
+
+
+def persist_failed_result(
+    target: dict[str, Any],
+    assignment: dict[str, Any],
+    workspace: Path,
+    *,
+    attempt_count: int,
+    failure_kind: str,
+    failure_message: str,
+    contract_root: Path | None = None,
+    target_path: Path | None = None,
+    assignment_path: Path | None = None,
+) -> dict[str, Any]:
+    root = workspace.absolute()
+    validate(
+        target,
+        assignment,
+        root,
+        target_path=target_path,
+        assignment_path=assignment_path,
+        allow_existing_outputs=False,
+        contract_root=contract_root or root,
+    )
+    _validate_attempt_count(assignment, attempt_count)
+    if failure_kind not in FAILURE_KINDS:
+        fail("failure kind is unsupported")
+    if not isinstance(failure_message, str) or not failure_message.strip():
+        fail("failure message must be non-empty")
+    dirty = _changed_repository_paths(root)
+    if dirty:
+        fail(f"cannot persist failure result in a dirty workspace: {sorted(dirty)}")
+    completed_at = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace(
+        "+00:00", "Z"
+    )
+    exact_prompt = target["exactPrompt"]
+    result = {
+        "schemaVersion": "skill-icon-result-v1",
+        "resultId": f"result-{target['jobId']}",
+        "jobId": target["jobId"],
+        "assignmentId": assignment["assignmentId"],
+        "status": "failed",
+        "exactPrompt": exact_prompt,
+        "promptHash": hashlib.sha256(exact_prompt.encode("utf-8")).hexdigest(),
+        "referenceInputs": [
+            {"path": reference["path"], "contentHash": reference["contentHash"]}
+            for reference in target["references"]
+        ],
+        "output": None,
+        "resultPath": target["output"]["resultPath"],
+        "findings": [
+            {
+                "category": "other",
+                "evaluator": "producer",
+                "outcome": "fail",
+                "observation": failure_message.strip(),
+            }
+        ],
+        "failureReason": {
+            "kind": failure_kind,
+            "message": failure_message.strip(),
+        },
+        "startedAt": completed_at,
+        "completedAt": completed_at,
+        "totalWallTimeMs": 0,
+        "writtenOutputPaths": [target["output"]["resultPath"]],
+        "noSharedFilesEdited": True,
+        "selfPromoted": False,
+    }
+    run_contract_validation(
+        "execution",
+        target,
+        assignment,
+        result=result,
+        contract_root=contract_root or root,
+    )
+    result_path = absolute_project_path(root, target["output"]["resultPath"])
+    _ensure_safe_parent(root, result_path)
+    result_bytes = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    parent_metadata = result_path.parent.lstat()
+    parent_real_path = result_path.parent.resolve()
+    if root != parent_real_path and root not in parent_real_path.parents:
+        fail("result parent escaped the workspace root")
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY
+    if hasattr(os, "O_NOFOLLOW"):
+        directory_flags |= os.O_NOFOLLOW
+    parent_descriptor = os.open(result_path.parent, directory_flags)
+    opened_parent = os.fstat(parent_descriptor)
+    if (opened_parent.st_dev, opened_parent.st_ino) != (
+        parent_metadata.st_dev,
+        parent_metadata.st_ino,
+    ):
+        os.close(parent_descriptor)
+        fail("result parent identity changed before exclusive create")
+    file_flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    if hasattr(os, "O_NOFOLLOW"):
+        file_flags |= os.O_NOFOLLOW
+    descriptor: int | None = None
+    created = False
+    created_metadata: os.stat_result | None = None
+    try:
+        descriptor = os.open(
+            result_path.name,
+            file_flags,
+            0o644,
+            dir_fd=parent_descriptor,
+        )
+        created = True
+        created_metadata = os.fstat(descriptor)
+        with os.fdopen(descriptor, "wb", closefd=False) as stream:
+            stream.write(result_bytes)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.close(descriptor)
+        descriptor = None
+        retained_metadata = os.stat(
+            result_path.name, dir_fd=parent_descriptor, follow_symlinks=False
+        )
+        current_parent = result_path.parent.lstat()
+        if (
+            not stat.S_ISREG(retained_metadata.st_mode)
+            or (retained_metadata.st_dev, retained_metadata.st_ino)
+            != (created_metadata.st_dev, created_metadata.st_ino)
+            or (current_parent.st_dev, current_parent.st_ino)
+            != (parent_metadata.st_dev, parent_metadata.st_ino)
+            or result_path.parent.resolve() != parent_real_path
+        ):
+            fail("result or parent identity changed during exclusive persistence")
+        os.fsync(parent_descriptor)
+    except Exception:
+        if descriptor is not None:
+            os.close(descriptor)
+        if created:
+            try:
+                retained_metadata = os.stat(
+                    result_path.name, dir_fd=parent_descriptor, follow_symlinks=False
+                )
+                if created_metadata is not None and (
+                    retained_metadata.st_dev,
+                    retained_metadata.st_ino,
+                ) == (created_metadata.st_dev, created_metadata.st_ino):
+                    os.unlink(result_path.name, dir_fd=parent_descriptor)
+                    os.fsync(parent_descriptor)
+            except FileNotFoundError:
+                pass
+        raise
+    finally:
+        os.close(parent_descriptor)
+    return verify(
+        target,
+        assignment,
+        result,
+        result_path,
+        root,
+        attempt_count=attempt_count,
+        contract_root=contract_root or root,
+        target_path=target_path,
+        assignment_path=assignment_path,
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Verify one SkillIconResult and exact retained candidate bytes."
+        description=(
+            "Verify one SkillIconResult, or exclusively persist a result-only provider failure."
+        )
     )
     parser.add_argument("target", help="target JSON path")
     parser.add_argument("assignment", help="assignment JSON path")
@@ -258,25 +403,63 @@ def main() -> None:
         required=True,
         help="actual image-generation calls, including at most one corrective edit",
     )
+    parser.add_argument(
+        "--write-failure",
+        action="store_true",
+        help="exclusive-create and verify a failed result without a candidate",
+    )
+    parser.add_argument("--failure-kind", choices=sorted(FAILURE_KINDS))
+    parser.add_argument("--failure-message")
     args = parser.parse_args()
     try:
         workspace = Path(args.workspace_root).absolute()
         target_path = _path_argument(workspace, args.target, "target")
         assignment_path = _path_argument(workspace, args.assignment, "assignment")
-        result_path = _path_argument(workspace, args.result, "result")
         target = load_json(target_path)
         assignment = load_json(assignment_path)
-        report = verify(
-            target,
-            assignment,
-            load_json(result_path),
-            result_path,
-            workspace,
-            attempt_count=args.attempt_count,
-            target_path=target_path,
-            assignment_path=assignment_path,
+        declared_result_path = absolute_project_path(
+            workspace, target["output"]["resultPath"]
         )
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
+        supplied_result_path = Path(args.result)
+        if not supplied_result_path.is_absolute():
+            supplied_result_path = workspace / supplied_result_path
+        if supplied_result_path.absolute() != declared_result_path:
+            fail("RESULT argument does not match target.output.resultPath")
+        if args.write_failure:
+            if args.failure_kind is None or args.failure_message is None:
+                fail("--write-failure requires --failure-kind and --failure-message")
+            report = persist_failed_result(
+                target,
+                assignment,
+                workspace,
+                attempt_count=args.attempt_count,
+                failure_kind=args.failure_kind,
+                failure_message=args.failure_message,
+                target_path=target_path,
+                assignment_path=assignment_path,
+            )
+        else:
+            if args.failure_kind is not None or args.failure_message is not None:
+                fail("failure options require --write-failure")
+            result_path = _path_argument(workspace, args.result, "result")
+            report = verify(
+                target,
+                assignment,
+                load_json(result_path),
+                result_path,
+                workspace,
+                attempt_count=args.attempt_count,
+                target_path=target_path,
+                assignment_path=assignment_path,
+            )
+    except (
+        KeyError,
+        OSError,
+        TypeError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        ValueError,
+    ) as error:
         raise SystemExit(f"result verification failed: {error}") from error
     print(json.dumps(report, indent=2, sort_keys=True))
 

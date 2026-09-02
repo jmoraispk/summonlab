@@ -16,10 +16,14 @@ Unknown fields are invalid.
 - `findings`, timestamps, and elapsed time report the job honestly.
 - `noSharedFilesEdited` is exactly `true`; `selfPromoted` is exactly `false`.
 
-Candidate output metadata must equal the retained bytes: versioned path, `image/png`, 1024×1024,
-8-bit RGBA, byte count, and lowercase SHA-256. A candidate has no failed finding and includes both
-automated and producer passes. Record the full-size geometry/alpha inspection and the producer's
-96-pixel recognition inspection explicitly. `revise` retains an image and at least one concern or
+Candidate output metadata must equal the retained bytes: versioned path, target media type and
+dimensions, alpha mode, byte count, and lowercase SHA-256. Verification invokes the repository's
+`inspectSkillIconAsset`: individual artwork must satisfy visible-area, safe-zone, exclusion, and
+alpha rules; frames must satisfy aperture and six-edge registration; backings must satisfy aperture
+coverage; calibration plates use their declared canvas and may be RGB. A candidate has no concern
+or failure and explicitly passes both required views; unrelated role-inapplicable findings may
+remain `not-applicable`. Every retained `candidate` or `revise` records automated full-size geometry
+evidence and producer 96-pixel recognition evidence; `revise` also records at least one concern or
 failure. `failed` retains no image and supplies a failed finding or structured `failureReason`.
 
 ## Persistence and verification
@@ -33,6 +37,19 @@ the verifier separately with `--attempt-count`; it must be `1..retryCeiling+1`. 
 the live Zod execution contract, recomputes reference and candidate hashes, parses PNG structure,
 rejects symlinks, compares the result argument with the owned result file, and requires the complete
 Git change set to equal the result's one or two written paths.
+
+When provider failure, throttle, timeout, malformed output, persistence, or validation leaves no
+role-valid image, do not call the image persistence helper and do not fabricate a candidate. From a
+clean preflight state, exclusive-create and immediately verify the result-only failure:
+
+```bash
+python3 <skill-directory>/scripts/verify_result.py \
+  TARGET ASSIGNMENT RESULT WORKSPACE_ROOT --attempt-count ACTUAL_CALLS \
+  --write-failure --failure-kind FAILURE_KIND --failure-message "HONEST DETAIL"
+```
+
+This mode refuses either pre-existing output or any other repository change, writes only the
+assigned result path with `output: null`, and verifies the strict execution and ownership contract.
 
 If verification fails after this job newly created outputs, report the failure for coordinator
 handling. Do not delete, replace, promote, or move evidence and do not touch shared files.

@@ -15,13 +15,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from validate_target import validate  # noqa: E402
-from verify_result import verify  # noqa: E402
+from validate_target import load_json, validate  # noqa: E402
+from verify_result import persist_failed_result, verify  # noqa: E402
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 HASH = "a" * 64
 JOB_ID = "martial-blade-horizontal-slash-v1"
+STYLE_AUTHORITY_PATH = (
+    "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png"
+)
+GEOMETRY_REFERENCE_PATH = (
+    "assets/wiki/skills/icon-production-v1/references/geometry-guide.png"
+)
+CALIBRATION_PATH = (
+    "assets/wiki/skills/icon-production-v1/masters/calibration/blade-sweeping-cut.png"
+)
 CANDIDATE_PATH = (
     "assets/wiki/skills/icon-production-v1/candidates/icons/"
     f"{JOB_ID}.png"
@@ -40,7 +49,12 @@ ASSIGNMENT_PATH = (
 )
 
 
-def png(width: int = 1024, height: int = 1024, color_type: int = 6) -> bytes:
+def png(
+    width: int = 1024,
+    height: int = 1024,
+    color_type: int = 6,
+    pattern: str = "center",
+) -> bytes:
     channels = {2: 3, 6: 4}[color_type]
 
     def chunk(kind: bytes, data: bytes) -> bytes:
@@ -51,7 +65,31 @@ def png(width: int = 1024, height: int = 1024, color_type: int = 6) -> bytes:
             + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
         )
 
-    rows = b"".join(b"\0" + bytes(width * channels) for _ in range(height))
+    transparent_pixel = bytes(channels)
+    visible_pixel = b"\x8c\x9a\xb0" + (b"\xff" if color_type == 6 else b"")
+    empty_row = transparent_pixel * width
+    if pattern == "transparent":
+        rows = b"".join(b"\0" + empty_row for _ in range(height))
+    elif pattern == "center":
+        half = min(width, height) // 12
+        left = width // 2 - half
+        right = width // 2 + half
+        painted_row = (
+            transparent_pixel * left
+            + visible_pixel * (right - left)
+            + transparent_pixel * (width - right)
+        )
+        rows = b"".join(
+            b"\0" + (painted_row if height // 2 - half <= y < height // 2 + half else empty_row)
+            for y in range(height)
+        )
+    elif pattern == "corner":
+        painted_row = visible_pixel * 96 + transparent_pixel * (width - 96)
+        rows = b"".join(b"\0" + (painted_row if y < 96 else empty_row) for y in range(height))
+    elif pattern == "full":
+        rows = b"".join(b"\0" + visible_pixel * width for _ in range(height))
+    else:
+        raise ValueError(f"unsupported PNG fixture pattern: {pattern}")
     return (
         b"\x89PNG\r\n\x1a\n"
         + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, color_type, 0, 0, 0))
@@ -72,8 +110,9 @@ class Packet:
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name).resolve()
         self.reference_paths = [
-            "assets/wiki/skills/icon-production-v1/references/painted-emblem-authority.png",
-            "assets/wiki/skills/icon-production-v1/references/geometry-guide.png",
+            STYLE_AUTHORITY_PATH,
+            GEOMETRY_REFERENCE_PATH,
+            CALIBRATION_PATH,
         ]
         references: list[dict[str, str]] = []
         for index, reference_path in enumerate(self.reference_paths):
@@ -85,9 +124,13 @@ class Packet:
                 {
                     "path": reference_path,
                     "purpose": (
-                        "Global Painted Emblem visual authority."
+                        "Global Painted Emblem style authority."
                         if index == 0
-                        else "Geometry guide for registration and safe zones."
+                        else (
+                            "Geometry guide for registration and safe zones."
+                            if index == 1
+                            else "Approved motif-family calibration plate."
+                        )
                     ),
                     "contentHash": hashlib.sha256(data).hexdigest(),
                 }
@@ -130,6 +173,44 @@ class Packet:
         }
         self.target_file = write_json(self.root, TARGET_PATH, self.target)
         self.assignment_file = write_json(self.root, ASSIGNMENT_PATH, self.assignment)
+        geometry = json.loads(
+            (REPOSITORY_ROOT / "assets/wiki/skills/icon-production-v1/geometry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        write_json(
+            self.root,
+            "assets/wiki/skills/icon-production-v1/geometry.json",
+            geometry,
+        )
+        self.catalog: dict[str, object] = {
+            "schemaVersion": "skill-icon-catalog-v1",
+            "records": [
+                {
+                    "targetId": "martial:blade:horizontal-slash",
+                    "domain": "Martial",
+                    "family": "Blade",
+                    "name": "Horizontal Slash",
+                    "labels": [{"namespace": "Equipment", "value": "Sword"}],
+                    "rarity": "F",
+                    "type": "A",
+                    "requires": "Swordsmanship Novice",
+                    "effect": "Wide but shallow.",
+                    "mapEntryId": "blade.sweeping-cut",
+                    "motifFamily": "blade.sweeping-cut",
+                    "primaryVisualParent": None,
+                    "status": "mapped",
+                    "visualSpec": None,
+                    "assets": None,
+                    "review": None,
+                }
+            ],
+        }
+        self.catalog_file = write_json(
+            self.root,
+            "assets/wiki/skills/icon-production-v1/catalog.json",
+            self.catalog,
+        )
         subprocess.run(["git", "init", "-q"], cwd=self.root, check=True)
         subprocess.run(
             ["git", "config", "user.email", "test@example.invalid"],
@@ -202,6 +283,85 @@ class Packet:
     def rewrite_result(self) -> None:
         self.result_file = write_json(self.root, RESULT_PATH, self.result)
 
+    def rewrite_catalog(self) -> None:
+        self.catalog_file = write_json(
+            self.root,
+            "assets/wiki/skills/icon-production-v1/catalog.json",
+            self.catalog,
+        )
+
+    def rebind_role(
+        self,
+        role: str,
+        job_id: str,
+        *,
+        width: int = 1024,
+        height: int = 1024,
+        color_type: int = 6,
+        pattern: str = "transparent",
+    ) -> None:
+        if self.candidate_file.exists() or self.candidate_file.is_symlink():
+            self.candidate_file.unlink()
+        if self.result_file.exists() or self.result_file.is_symlink():
+            self.result_file.unlink()
+        scope = "calibration" if role == "calibration-plate" else "references"
+        candidate_path = (
+            f"assets/wiki/skills/icon-production-v1/candidates/{scope}/{job_id}.png"
+        )
+        result_path = f"assets/wiki/skills/icon-production-v1/results/{scope}/{job_id}.json"
+        target_path = f"assets/wiki/skills/icon-production-v1/targets/{scope}/{job_id}.json"
+        assignment_path = (
+            f"assets/wiki/skills/icon-production-v1/assignments/{scope}/{job_id}.json"
+        )
+        self.target.update(
+            {
+                "jobId": job_id,
+                "role": role,
+                "skillTargetId": None,
+                "motifFamily": "blade.sweeping-cut" if role == "calibration-plate" else None,
+                "rarity": "F" if role == "rarity-frame" else None,
+                "canvas": {"width": width, "height": height, "mediaType": "image/png"},
+                "output": {"candidatePath": candidate_path, "resultPath": result_path},
+            }
+        )
+        assignment_id = f"assignment-{job_id}"
+        self.assignment.update(
+            {
+                "assignmentId": assignment_id,
+                "jobId": job_id,
+                "targetPath": target_path,
+                "assignmentPath": assignment_path,
+                "permittedOutputs": {
+                    "candidatePath": candidate_path,
+                    "resultPath": result_path,
+                },
+            }
+        )
+        self.candidate_bytes = png(width, height, color_type, pattern)
+        self.candidate_file = self.root / candidate_path
+        self.candidate_file.parent.mkdir(parents=True, exist_ok=True)
+        self.candidate_file.write_bytes(self.candidate_bytes)
+        output = {
+            "path": candidate_path,
+            "mediaType": "image/png",
+            "width": width,
+            "height": height,
+            "bytes": len(self.candidate_bytes),
+            "alphaMode": "rgba" if color_type == 6 else "rgb",
+            "contentHash": hashlib.sha256(self.candidate_bytes).hexdigest(),
+        }
+        self.result.update(
+            {
+                "resultId": f"result-{job_id}",
+                "jobId": job_id,
+                "assignmentId": assignment_id,
+                "output": output,
+                "resultPath": result_path,
+                "writtenOutputPaths": [candidate_path, result_path],
+            }
+        )
+        self.result_file = write_json(self.root, result_path, self.result)
+
     def verify(self, *, attempt_count: int = 1) -> dict[str, object]:
         return verify(
             self.target,
@@ -240,6 +400,56 @@ class SkillIconVerifierTests(unittest.TestCase):
         assert isinstance(references, list)
         references[0]["purpose"] = "An unrelated texture reference."
         with self.assertRaisesRegex(ValueError, "Painted Emblem"):
+            self.packet.verify()
+
+    def test_one_spoofing_reference_cannot_satisfy_multiple_authorities(self) -> None:
+        references = self.packet.target["references"]
+        inputs = self.packet.result["referenceInputs"]
+        assert isinstance(references, list)
+        assert isinstance(inputs, list)
+        references[:] = [
+            {
+                **references[0],
+                "purpose": (
+                    "Global Painted Emblem style authority and geometry guide for registration."
+                ),
+            }
+        ]
+        inputs[:] = [
+            {
+                "path": references[0]["path"],
+                "contentHash": references[0]["contentHash"],
+            }
+        ]
+        self.packet.rewrite_result()
+        with self.assertRaisesRegex(ValueError, "geometry|calibration|authority"):
+            self.packet.verify()
+
+    def test_catalog_motif_family_requires_exact_calibration_authority(self) -> None:
+        references = self.packet.target["references"]
+        inputs = self.packet.result["referenceInputs"]
+        assert isinstance(references, list)
+        assert isinstance(inputs, list)
+        references[:] = [item for item in references if item["path"] != CALIBRATION_PATH]
+        inputs[:] = [item for item in inputs if item["path"] != CALIBRATION_PATH]
+        self.packet.rewrite_result()
+        with self.assertRaisesRegex(ValueError, "calibration"):
+            self.packet.verify()
+
+    def test_catalog_parent_must_be_approved_before_dispatch(self) -> None:
+        records = self.packet.catalog["records"]
+        assert isinstance(records, list)
+        records[0]["primaryVisualParent"] = "martial:blade:swordsmanship"
+        records.append(
+            {
+                **records[0],
+                "targetId": "martial:blade:swordsmanship",
+                "name": "Swordsmanship",
+                "primaryVisualParent": None,
+            }
+        )
+        self.packet.rewrite_catalog()
+        with self.assertRaisesRegex(ValueError, "parent must be approved"):
             self.packet.verify()
 
     def test_rejects_target_assignment_mismatch(self) -> None:
@@ -325,6 +535,45 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.packet.rewrite_result()
         self.assert_invalid("RGBA|alpha")
 
+    def test_rejects_fully_transparent_art_even_with_rgba_header(self) -> None:
+        self.packet.candidate_bytes = png(pattern="transparent")
+        self.packet.candidate_file.write_bytes(self.packet.candidate_bytes)
+        output = self.packet.result["output"]
+        assert isinstance(output, dict)
+        output["bytes"] = len(self.packet.candidate_bytes)
+        output["contentHash"] = hashlib.sha256(self.packet.candidate_bytes).hexdigest()
+        self.packet.rewrite_result()
+        self.assert_invalid("visible pixels|visible area")
+
+    def test_rejects_visible_art_outside_safe_zone(self) -> None:
+        self.packet.candidate_bytes = png(pattern="corner")
+        self.packet.candidate_file.write_bytes(self.packet.candidate_bytes)
+        output = self.packet.result["output"]
+        assert isinstance(output, dict)
+        output["bytes"] = len(self.packet.candidate_bytes)
+        output["contentHash"] = hashlib.sha256(self.packet.candidate_bytes).hexdigest()
+        self.packet.rewrite_result()
+        self.assert_invalid("safe region|medallion exclusion")
+
+    def test_accepts_role_valid_calibration_canvas_and_rgb_png(self) -> None:
+        self.packet.rebind_role(
+            "calibration-plate",
+            "blade-sweeping-cut-calibration-v1",
+            width=2048,
+            height=1024,
+            color_type=2,
+            pattern="full",
+        )
+        self.assertEqual(self.packet.verify()["verification"], "pass")
+
+    def test_rejects_backing_without_aperture_coverage(self) -> None:
+        self.packet.rebind_role("backing", "universal-backing-v1")
+        self.assert_invalid("cover at least 85%")
+
+    def test_rejects_frame_without_edge_registration(self) -> None:
+        self.packet.rebind_role("rarity-frame", "rarity-frame-f-v1")
+        self.assert_invalid("six edge bands|frame coverage")
+
     def test_rejects_incorrect_dimensions(self) -> None:
         self.packet.candidate_bytes = png(512, 512)
         self.packet.candidate_file.write_bytes(self.packet.candidate_bytes)
@@ -359,6 +608,134 @@ class SkillIconVerifierTests(unittest.TestCase):
         }
         self.packet.rewrite_result()
         self.assert_invalid("96-pixel inspection")
+
+    def test_candidate_rejects_concerns(self) -> None:
+        findings = self.packet.result["findings"]
+        assert isinstance(findings, list)
+        findings.append(
+            {
+                "category": "manifest-fidelity",
+                "evaluator": "producer",
+                "outcome": "concern",
+                "observation": "A secondary flourish may be too prominent.",
+            }
+        )
+        self.packet.rewrite_result()
+        self.assert_invalid("clean|concern")
+
+    def test_candidate_allows_unrelated_role_inapplicable_finding(self) -> None:
+        findings = self.packet.result["findings"]
+        assert isinstance(findings, list)
+        findings.append(
+            {
+                "category": "registration",
+                "evaluator": "producer",
+                "outcome": "not-applicable",
+                "observation": "Frame-edge registration does not apply to individual art.",
+            }
+        )
+        self.packet.rewrite_result()
+        self.assertEqual(self.packet.verify()["status"], "candidate")
+
+    def test_revise_with_retained_image_requires_96_pixel_finding(self) -> None:
+        self.packet.result["status"] = "revise"
+        self.packet.result["findings"] = [
+            {
+                "category": "geometry",
+                "evaluator": "automated",
+                "outcome": "concern",
+                "observation": "The effect approaches the safe-zone edge.",
+            }
+        ]
+        self.packet.rewrite_result()
+        self.assert_invalid("96-pixel inspection")
+
+    def test_accepts_revise_with_both_view_findings_and_concern(self) -> None:
+        self.packet.result["status"] = "revise"
+        self.packet.result["findings"] = [
+            {
+                "category": "geometry",
+                "evaluator": "automated",
+                "outcome": "pass",
+                "observation": "Role-aware geometry inspection passed.",
+            },
+            {
+                "category": "recognition",
+                "evaluator": "producer",
+                "outcome": "concern",
+                "observation": "The silhouette is weak at 96 pixels.",
+            },
+        ]
+        self.packet.rewrite_result()
+        self.assertEqual(self.packet.verify()["status"], "revise")
+
+    def test_persists_and_verifies_provider_and_malformed_result_only_failures(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        report = persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="provider-failure",
+            failure_message="The provider returned no image bytes.",
+            contract_root=REPOSITORY_ROOT,
+        )
+        retained = load_json(self.packet.root / RESULT_PATH)
+        self.assertEqual(report["verification"], "pass")
+        self.assertEqual(retained["status"], "failed")
+        self.assertIsNone(retained["output"])
+        self.assertEqual(retained["writtenOutputPaths"], [RESULT_PATH])
+        self.assertFalse(self.packet.candidate_file.exists())
+        (self.packet.root / RESULT_PATH).unlink()
+        second_report = persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="malformed-output",
+            failure_message="The provider returned undecodable image bytes.",
+            contract_root=REPOSITORY_ROOT,
+        )
+        second = load_json(self.packet.root / RESULT_PATH)
+        self.assertEqual(second_report["verification"], "pass")
+        self.assertEqual(second["failureReason"]["kind"], "malformed-output")
+
+    def test_result_only_failure_refuses_collision(self) -> None:
+        self.packet.candidate_file.unlink()
+        with self.assertRaisesRegex(ValueError, "pre-existing output collision"):
+            persist_failed_result(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                attempt_count=1,
+                failure_kind="malformed-output",
+                failure_message="The provider returned undecodable bytes.",
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_failed_result_cannot_coexist_with_candidate_bytes(self) -> None:
+        self.packet.result.update(
+            {
+                "status": "failed",
+                "output": None,
+                "findings": [
+                    {
+                        "category": "other",
+                        "evaluator": "producer",
+                        "outcome": "fail",
+                        "observation": "Provider failure.",
+                    }
+                ],
+                "failureReason": {
+                    "kind": "provider-failure",
+                    "message": "Provider failure.",
+                },
+                "writtenOutputPaths": [RESULT_PATH],
+            }
+        )
+        self.packet.rewrite_result()
+        self.assert_invalid("claims no output but a candidate exists")
 
     def test_rejects_retry_ceiling_violation(self) -> None:
         self.packet.assignment["retryCeiling"] = 0

@@ -1,8 +1,10 @@
 # Producer review rubric
 
 Inspect the exact selected raster at full 1024 resolution and as a 96×96 view before persistence.
-Record concise `pass`, `concern`, `fail`, or `not-applicable` findings; only a clean result is a
-candidate. This is informed producer inspection, not owner acceptance or blind recognition.
+Record concise `pass`, `concern`, or `fail` findings for both views of every retained image,
+including `revise`; `not-applicable` does not satisfy either required view. A candidate explicitly
+passes both views and has no concern or failure; unrelated role-inapplicable criteria may remain
+`not-applicable`. This is informed producer inspection, not owner acceptance or blind recognition.
 
 ## Shared checks
 
