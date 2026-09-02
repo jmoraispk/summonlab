@@ -9,6 +9,7 @@ import {
 	auditCurrentClassMapping,
 	allocateFamilyAffinityRevision,
 	buildFamilyAffinityProductionBundle,
+	bridgeAttemptPaths,
 	FamilyAffinityAssignmentSchema,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityManifestSchema,
@@ -16,6 +17,7 @@ import {
 	familyAffinitySha256,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityProductionBundle,
+	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityReviewPromotion,
 	CurrentClassMappingFileSchema,
 	FamilyPacketSchema
@@ -2533,6 +2535,29 @@ describe('family affinity production manifest', () => {
 		}
 	});
 
+	it('rejects a duplicate manifest coordinate that replaces a missing reverse link', async () => {
+		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(buildFamilyAffinityProductionBundle(familyPackets, mapping));
+		changed.manifest.canonicalMatrix.activeCoordinates[1] = structuredClone(
+			changed.manifest.canonicalMatrix.activeCoordinates[0]!
+		);
+		expect(() => validateFamilyAffinityProductionBundle(changed)).toThrow(
+			/duplicate active.*coordinate|exact set|reverse/i
+		);
+	});
+
+	it('rejects duplicate manifest attempt paths before ordinary path binding', async () => {
+		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
+		for (const field of ['targetPath', 'assignmentPath'] as const) {
+			const changed = structuredClone(buildFamilyAffinityProductionBundle(familyPackets, mapping));
+			changed.manifest.canonicalMatrix.activeCoordinates[1]![field] =
+				changed.manifest.canonicalMatrix.activeCoordinates[0]![field];
+			expect(() => validateFamilyAffinityProductionBundle(changed)).toThrow(
+				/duplicate active.*path/i
+			);
+		}
+	});
+
 	it('rejects wrong-family, wrong-form, stale, foreign, and manifest-unbound Normal approvals', async () => {
 		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
 		const approved = structuredClone(buildFamilyAffinityProductionBundle(familyPackets, mapping));
@@ -2622,12 +2647,19 @@ describe('family affinity production manifest', () => {
 		const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
 		const bundle = buildFamilyAffinityProductionBundle(familyPackets, mapping);
 		const source = bundle.targets.find(({ affinity }) => affinity === 'earth')!;
+		const provisionalPaths = bridgeAttemptPaths('bridge-class', 'earth', 1);
 		const provisional = FamilyAffinityTargetSchema.parse({
 			...source,
 			namespace: 'bridge',
 			coordinateId: `bridge-class/${source.familyId}/${source.formId}/earth`,
 			targetId: `bridge/bridge-class/${source.familyId}/${source.formId}/earth/v1`,
 			currentClassId: 'bridge-class',
+			ownedPaths: {
+				candidate: provisionalPaths.candidate,
+				result: provisionalPaths.result,
+				decision: provisionalPaths.decision,
+				blindReview: provisionalPaths.blindReview
+			},
 			status: 'earth-bridge-provisional',
 			anchor: {
 				kind: 'earth-bridge-provisional',
@@ -2824,8 +2856,8 @@ describe('deterministic family affinity exporter', () => {
 			const sourceEarth = FamilyAffinityTargetSchema.parse(
 				JSON.parse(await readFile(join(root, sourceEarthCoordinate.targetPath), 'utf8'))
 			);
-			const bridgeRoot = `${FAMILY_AFFINITY_ROOT}/bridge/bridge-class/goblins/goblin-runt/earth`;
 			const bridgeCoordinateId = 'bridge-class/goblins/goblin-runt/earth';
+			const bridgePaths = bridgeAttemptPaths('bridge-class', 'earth', 1);
 			const bridgeTarget = FamilyAffinityTargetSchema.parse({
 				...sourceEarth,
 				namespace: 'bridge',
@@ -2833,10 +2865,10 @@ describe('deterministic family affinity exporter', () => {
 				targetId: `bridge/${bridgeCoordinateId}/v1`,
 				currentClassId: 'bridge-class',
 				ownedPaths: {
-					candidate: `${bridgeRoot}/candidate-v1.png`,
-					result: `${bridgeRoot}/result-v1.json`,
-					decision: `${bridgeRoot}/decision-v1.json`,
-					blindReview: `${bridgeRoot}/review-v1.json`
+					candidate: bridgePaths.candidate,
+					result: bridgePaths.result,
+					decision: bridgePaths.decision,
+					blindReview: bridgePaths.blindReview
 				},
 				anchor: {
 					kind: 'earth-bridge-provisional',
@@ -2861,8 +2893,8 @@ describe('deterministic family affinity exporter', () => {
 				},
 				dispatchStatus: 'earth-bridge-provisional'
 			});
-			const bridgeTargetPath = `${bridgeRoot}/target-v1.json`;
-			const bridgeAssignmentPath = `${bridgeRoot}/assignment-v1.json`;
+			const bridgeTargetPath = bridgePaths.target;
+			const bridgeAssignmentPath = bridgePaths.assignment;
 			await writeOwnedFixture(root, bridgeTargetPath, bridgeTarget);
 			await writeOwnedFixture(root, bridgeAssignmentPath, bridgeAssignment);
 			manifest.bridge = {
@@ -2928,6 +2960,9 @@ async function makeRevisionFixture(options?: {
 	const root = await mkdtemp(join(tmpdir(), 'family-affinity-revision-'));
 	const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
 	const bundle = buildFamilyAffinityProductionBundle(familyPackets, mapping);
+	for (const artifact of bundle.artifacts) {
+		await writeOwnedFixture(root, artifact.path, artifact.value as object);
+	}
 	const source = bundle.targets.find(
 		({ familyId, formId, affinity }) =>
 			familyId === 'goblins' && formId === 'goblin-runt' && affinity === 'normal'
@@ -2941,7 +2976,7 @@ async function makeRevisionFixture(options?: {
 	let assignmentPath = coordinate.assignmentPath;
 	if (options?.namespace === 'bridge') {
 		const coordinateId = `bridge-class/${source.familyId}/${source.formId}/earth`;
-		const bridgeRoot = `${FAMILY_AFFINITY_ROOT}/bridge/bridge-class/${source.familyId}/${source.formId}/earth`;
+		const bridgePaths = bridgeAttemptPaths('bridge-class', 'earth', 1);
 		target = FamilyAffinityTargetSchema.parse({
 			...source,
 			namespace: 'bridge',
@@ -2951,10 +2986,10 @@ async function makeRevisionFixture(options?: {
 			affinity: 'earth',
 			constructionDimensions: ['mineral load frame', 'fracture seam locomotion'],
 			ownedPaths: {
-				candidate: `${bridgeRoot}/candidate-v1.png`,
-				result: `${bridgeRoot}/result-v1.json`,
-				decision: `${bridgeRoot}/decision-v1.json`,
-				blindReview: `${bridgeRoot}/review-v1.json`
+				candidate: bridgePaths.candidate,
+				result: bridgePaths.result,
+				decision: bridgePaths.decision,
+				blindReview: bridgePaths.blindReview
 			},
 			anchor: {
 				kind: 'earth-bridge-provisional',
@@ -2963,8 +2998,8 @@ async function makeRevisionFixture(options?: {
 			},
 			status: 'earth-bridge-provisional'
 		});
-		targetPath = `${bridgeRoot}/target-v1.json`;
-		assignmentPath = `${bridgeRoot}/assignment-v1.json`;
+		targetPath = bridgePaths.target;
+		assignmentPath = bridgePaths.assignment;
 		const assignment = FamilyAffinityAssignmentSchema.parse({
 			...bundle.assignments.find(({ targetId }) => targetId === source.targetId)!,
 			assignmentId: `${target.targetId}/assignment`,
@@ -3032,6 +3067,77 @@ async function makeRevisionFixture(options?: {
 }
 
 describe('controller-only family affinity revision allocation', () => {
+	it('rejects a foreign bridge path even when every generic suffix is valid', async () => {
+		const fixture = await makeRevisionFixture({ namespace: 'bridge' });
+		try {
+			const assignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, fixture.coordinate.assignmentPath), 'utf8'))
+			);
+			const coordinate = structuredClone(fixture.coordinate);
+			const target = structuredClone(fixture.target);
+			coordinate.targetPath = coordinate.targetPath.replace('/bridge-class/', '/foreign-orc/');
+			coordinate.assignmentPath = coordinate.assignmentPath.replace(
+				'/bridge-class/',
+				'/foreign-orc/'
+			);
+			target.ownedPaths.candidate = target.ownedPaths.candidate.replace(
+				'/bridge-class/',
+				'/foreign-orc/'
+			);
+			target.ownedPaths.result = target.ownedPaths.result.replace(
+				'/bridge-class/',
+				'/foreign-orc/'
+			);
+			target.ownedPaths.decision = target.ownedPaths.decision.replace(
+				'/bridge-class/',
+				'/foreign-orc/'
+			);
+			target.ownedPaths.blindReview = target.ownedPaths.blindReview.replace(
+				'/bridge-class/',
+				'/foreign-orc/'
+			);
+			assignment.targetSha256 = familyAffinitySha256(target);
+			assignment.allowedOutputs = {
+				candidate: target.ownedPaths.candidate,
+				result: target.ownedPaths.result
+			};
+			coordinate.targetSha256 = familyAffinitySha256(target);
+			coordinate.assignmentSha256 = familyAffinitySha256(assignment);
+			expect(() =>
+				validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment)
+			).toThrow(/exact bridge|bridge.*paths.*exact|bridge attempt path/i);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('rejects swapped bridge target, assignment, candidate, and result paths', async () => {
+		const fixture = await makeRevisionFixture({ namespace: 'bridge' });
+		try {
+			const assignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, fixture.coordinate.assignmentPath), 'utf8'))
+			);
+			const swappedManifest = structuredClone(fixture.coordinate);
+			[swappedManifest.targetPath, swappedManifest.assignmentPath] = [
+				swappedManifest.assignmentPath,
+				swappedManifest.targetPath
+			];
+			expect(() =>
+				validateFamilyAffinityAttemptCrossBinding(swappedManifest, fixture.target, assignment)
+			).toThrow(/bridge|path/i);
+			const swappedTarget = structuredClone(fixture.target);
+			[swappedTarget.ownedPaths.candidate, swappedTarget.ownedPaths.result] = [
+				swappedTarget.ownedPaths.result,
+				swappedTarget.ownedPaths.candidate
+			];
+			expect(() =>
+				validateFamilyAffinityAttemptCrossBinding(fixture.coordinate, swappedTarget, assignment)
+			).toThrow(/bridge|path/i);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
 	it('allocates canonical vN+1 without overwriting the rejected attempt', async () => {
 		const fixture = await makeRevisionFixture();
 		try {
@@ -3201,6 +3307,63 @@ describe('controller-only family affinity revision allocation', () => {
 					reviewPath: fixture.target.ownedPaths.decision
 				})
 			).rejects.toThrow(/stale|mismatch/i);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('refuses allocation when an unrelated active manifest coordinate is tampered', async () => {
+		const fixture = await makeRevisionFixture();
+		try {
+			const manifest = JSON.parse(
+				await readFile(join(fixture.root, fixture.manifestPath), 'utf8')
+			) as {
+				canonicalMatrix: { activeCoordinates: Array<{ coordinateId: string; familyId: string }> };
+			};
+			const originalManifest = structuredClone(manifest);
+			const unrelated = manifest.canonicalMatrix.activeCoordinates.find(
+				({ coordinateId }) => coordinateId !== fixture.target.coordinateId
+			)!;
+			unrelated.familyId = 'tampered-family';
+			await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+			const tamperedManifestBytes = stableFamilyAffinityJson(manifest);
+			const proposedV2Target = fixture.coordinate.targetPath.replace(
+				'target-v1.json',
+				'target-v2.json'
+			);
+			await expect(
+				allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'canonical',
+					coordinateId: fixture.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: fixture.target.ownedPaths.decision
+				})
+			).rejects.toThrow(/active corpus|manifest|cross-bind/i);
+			expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(
+				tamperedManifestBytes
+			);
+			await expect(readFile(join(fixture.root, proposedV2Target))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			originalManifest.canonicalMatrix.activeCoordinates[1] = structuredClone(
+				originalManifest.canonicalMatrix.activeCoordinates[0]!
+			);
+			await writeOwnedFixture(fixture.root, fixture.manifestPath, originalManifest);
+			await expect(
+				allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'canonical',
+					coordinateId: fixture.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: fixture.target.ownedPaths.decision
+				})
+			).rejects.toThrow(/duplicate active.*coordinate/i);
+			await expect(readFile(join(fixture.root, proposedV2Target))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
 		} finally {
 			await rm(fixture.root, { recursive: true, force: true });
 		}

@@ -331,6 +331,17 @@ export const FamilyAffinityTargetSchema = z
 		if (target.namespace === 'bridge' && target.currentClassId === null) {
 			context.addIssue({ code: 'custom', message: 'Bridge targets require currentClassId' });
 		}
+		if (target.namespace === 'bridge' && target.currentClassId !== null) {
+			const paths = bridgeAttemptPaths(target.currentClassId, target.affinity, target.version);
+			if (
+				target.ownedPaths.candidate !== paths.candidate ||
+				target.ownedPaths.result !== paths.result ||
+				target.ownedPaths.decision !== paths.decision ||
+				target.ownedPaths.blindReview !== paths.blindReview
+			) {
+				context.addIssue({ code: 'custom', message: 'Bridge target owned paths must be exact' });
+			}
+		}
 		if (target.affinity === 'normal' && target.anchor.kind !== 'normal-self') {
 			context.addIssue({
 				code: 'custom',
@@ -481,7 +492,53 @@ export const FamilyAffinityManifestSchema = z
 			})
 			.strict()
 	})
-	.strict();
+	.strict()
+	.superRefine((manifest, context) => {
+		if (manifest.canonicalMatrix.activeCoordinates.length !== 750) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Canonical manifest requires exactly 750 active coordinates'
+			});
+		}
+		if (
+			manifest.bridge.targetCount !== manifest.bridge.activeCoordinates.length ||
+			manifest.bridge.assignmentCount !== manifest.bridge.activeCoordinates.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Bridge counts must equal active bridge coordinate coverage'
+			});
+		}
+		for (const [label, coordinates] of [
+			['canonical', manifest.canonicalMatrix.activeCoordinates],
+			['bridge', manifest.bridge.activeCoordinates]
+		] as const) {
+			for (const field of ['coordinateId', 'targetPath', 'assignmentPath'] as const) {
+				const values = coordinates.map((coordinate) => coordinate[field]);
+				if (new Set(values).size !== values.length) {
+					context.addIssue({
+						code: 'custom',
+						message: `Duplicate active ${label} ${field === 'coordinateId' ? 'coordinate' : field}`
+					});
+				}
+			}
+			if (coordinates.some((coordinate) => coordinate.namespace !== label)) {
+				context.addIssue({
+					code: 'custom',
+					message: `${label} active coordinates must use the ${label} namespace`
+				});
+			}
+		}
+		const bridgeCurrentTargets = manifest.bridge.activeCoordinates.map(
+			({ currentClassId, affinity }) => `${currentClassId}/${affinity}`
+		);
+		if (new Set(bridgeCurrentTargets).size !== bridgeCurrentTargets.length) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Duplicate active bridge current-class affinity target'
+			});
+		}
+	});
 
 export type FamilyAffinityManifest = z.infer<typeof FamilyAffinityManifestSchema>;
 
@@ -671,6 +728,25 @@ function canonicalAttemptPaths(
 		result: `${FAMILY_AFFINITY_ROOT}/results/${familyId}/${formId}/${affinity}-v${version}.json`,
 		decision: `${FAMILY_AFFINITY_ROOT}/reviews/${familyId}/${formId}/${affinity}/decision-v${version}.json`,
 		blindReview: `${FAMILY_AFFINITY_ROOT}/blind-reviews/${familyId}/${formId}/${affinity}/review-v${version}.json`
+	};
+}
+
+export function bridgeAttemptPaths(
+	currentClassId: string,
+	affinity: (typeof PRODUCTION_AFFINITIES)[number],
+	version: number
+) {
+	IdSchema.parse(currentClassId);
+	if (!Number.isInteger(version) || version < 1)
+		throw new Error('Bridge attempt version must be positive');
+	const bridgeRoot = `${FAMILY_AFFINITY_ROOT}/bridge`;
+	return {
+		target: `${bridgeRoot}/targets/${currentClassId}/${affinity}/target-v${version}.json`,
+		assignment: `${bridgeRoot}/assignments/${currentClassId}/${affinity}/assignment-v${version}.json`,
+		candidate: `${bridgeRoot}/candidates/${currentClassId}/${affinity}-v${version}.png`,
+		result: `${bridgeRoot}/results/${currentClassId}/${affinity}-v${version}.json`,
+		decision: `${bridgeRoot}/reviews/${currentClassId}/${affinity}/decision-v${version}.json`,
+		blindReview: `${bridgeRoot}/blind-reviews/${currentClassId}/${affinity}/review-v${version}.json`
 	};
 }
 
@@ -972,21 +1048,16 @@ export function validateFamilyAffinityAttemptCrossBinding(
 		}
 		return;
 	}
-	const bridgePrefix = `${FAMILY_AFFINITY_ROOT}/bridge/`;
-	const versionedBridgePaths = [
-		[coordinate.targetPath, `target-v${target.version}.json`],
-		[coordinate.assignmentPath, `assignment-v${target.version}.json`],
-		[target.ownedPaths.candidate, `-v${target.version}.png`],
-		[target.ownedPaths.result, `-v${target.version}.json`],
-		[target.ownedPaths.decision, `-v${target.version}.json`],
-		[target.ownedPaths.blindReview, `-v${target.version}.json`]
-	] as const;
+	const paths = bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version);
 	if (
-		versionedBridgePaths.some(
-			([path, suffix]) => !path.startsWith(bridgePrefix) || !path.endsWith(suffix)
-		)
+		coordinate.targetPath !== paths.target ||
+		coordinate.assignmentPath !== paths.assignment ||
+		target.ownedPaths.candidate !== paths.candidate ||
+		target.ownedPaths.result !== paths.result ||
+		target.ownedPaths.decision !== paths.decision ||
+		target.ownedPaths.blindReview !== paths.blindReview
 	) {
-		throw new Error(`Bridge attempt path cross-binding mismatch: ${coordinate.coordinateId}`);
+		throw new Error(`Exact bridge attempt path cross-binding mismatch: ${coordinate.coordinateId}`);
 	}
 }
 
@@ -1019,6 +1090,23 @@ export function validateFamilyAffinityProductionBundle(
 	const assignmentCoordinates = assignments.map(({ coordinateId }) => coordinateId);
 	if (new Set(assignmentCoordinates).size !== 750) {
 		throw new Error('Canonical assignment coordinates must be unique');
+	}
+	const manifestCoordinateIds = manifest.canonicalMatrix.activeCoordinates.map(
+		({ coordinateId }) => coordinateId
+	);
+	const targetCoordinateSet = new Set(coordinateIds);
+	const assignmentCoordinateSet = new Set(assignmentCoordinates);
+	if (
+		manifestCoordinateIds.some(
+			(coordinateId) =>
+				!targetCoordinateSet.has(coordinateId) || !assignmentCoordinateSet.has(coordinateId)
+		) ||
+		coordinateIds.some((coordinateId) => !manifestCoordinateIds.includes(coordinateId)) ||
+		assignmentCoordinates.some((coordinateId) => !manifestCoordinateIds.includes(coordinateId))
+	) {
+		throw new Error(
+			'Canonical manifest, target, and assignment coordinates require exact set equality and reverse coverage'
+		);
 	}
 	const targetsById = new Map(targets.map((target) => [target.targetId, target]));
 	const targetsByCoordinate = new Map(targets.map((target) => [target.coordinateId, target]));
@@ -1291,6 +1379,45 @@ async function validateAllocationAnchor(
 	}
 }
 
+async function validateFullActiveCorpusBeforeAllocation(
+	repositoryRoot: string,
+	manifest: FamilyAffinityManifest
+): Promise<void> {
+	const seenTargetIds = new Set<string>();
+	const seenAssignmentIds = new Set<string>();
+	for (const coordinate of [
+		...manifest.canonicalMatrix.activeCoordinates,
+		...manifest.bridge.activeCoordinates
+	]) {
+		const target = FamilyAffinityTargetSchema.parse(
+			JSON.parse(await readFile(absoluteOwnedPath(repositoryRoot, coordinate.targetPath), 'utf8'))
+		);
+		const assignment = FamilyAffinityAssignmentSchema.parse(
+			JSON.parse(
+				await readFile(absoluteOwnedPath(repositoryRoot, coordinate.assignmentPath), 'utf8')
+			)
+		);
+		validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+		if (seenTargetIds.has(target.targetId) || seenAssignmentIds.has(assignment.assignmentId)) {
+			throw new Error('Active corpus contains an unreferenced or duplicate attempt pair');
+		}
+		seenTargetIds.add(target.targetId);
+		seenAssignmentIds.add(assignment.assignmentId);
+		await validateAllocationAnchor(repositoryRoot, manifest, target);
+		if (
+			target.anchor.kind === 'earth-bridge-provisional' &&
+			(await exists(absoluteOwnedPath(repositoryRoot, target.ownedPaths.decision)))
+		) {
+			const receipt = FamilyAffinityReviewReceiptSchema.parse(
+				JSON.parse(
+					await readFile(absoluteOwnedPath(repositoryRoot, target.ownedPaths.decision), 'utf8')
+				)
+			);
+			validateFamilyAffinityReviewPromotion(target, receipt);
+		}
+	}
+}
+
 async function allocateFamilyAffinityRevisionUnlocked(
 	input: AllocateFamilyAffinityRevisionInput,
 	manifestAbsolute: string
@@ -1298,6 +1425,7 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	const manifest = FamilyAffinityManifestSchema.parse(
 		JSON.parse(await readFile(manifestAbsolute, 'utf8'))
 	);
+	await validateFullActiveCorpusBeforeAllocation(input.repositoryRoot, manifest);
 	const collection = input.namespace === 'canonical' ? manifest.canonicalMatrix : manifest.bridge;
 	const coordinate = collection.activeCoordinates.find(
 		({ coordinateId }) => coordinateId === input.coordinateId
