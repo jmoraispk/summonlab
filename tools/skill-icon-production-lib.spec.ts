@@ -203,6 +203,28 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 	});
 
 	it.each([
+		['type-1 tag', '<pre>', '</pr<!-- retired -->e>', '</pre>'],
+		['CDATA', '<![CDATA[', ']]<!-- retired -->>', ']]>'],
+		['processing instruction', '<?retired', '?<!-- retired -->>', '?>']
+	])(
+		'does not synthesize a %s terminator by deleting an HTML comment',
+		(_label, opener, apparentTerminator, closer) => {
+			const markdown = `${opener}
+${apparentTerminator}
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |
+${closer}`;
+			expect(() => parseAcceptedMotifMap(markdown, [row('martial:blade:first', 'First')])).toThrow(
+				/accepted status/u
+			);
+		}
+	);
+
+	it.each([
 		[
 			'generic block tag',
 			`<div>

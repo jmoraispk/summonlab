@@ -86,77 +86,49 @@ interface MarkdownBlockToken {
 }
 
 interface MarkdownLexer {
-	lexer(source: string, options: { readonly gfm: boolean }): readonly MarkdownBlockToken[];
+	lexer(source: string): readonly MarkdownBlockToken[];
+}
+
+interface MarkdownLexerConstructor {
+	new (options: unknown): MarkdownLexer;
 }
 
 const webRequire = createRequire(new URL('../apps/web/package.json', import.meta.url));
-const { marked } = webRequire('marked') as { readonly marked: MarkdownLexer };
+const { Marked } = webRequire('marked') as { readonly Marked: MarkdownLexerConstructor };
+
+function commentPrefixedTypeOneHtmlBlock(source: string): MarkdownBlockToken | undefined {
+	const opening = /^ {0,3}<!--[\s\S]*?-->[ \t]*<(pre|script|style|textarea)(?:[ \t]|>|$)/iu.exec(
+		source
+	);
+	if (!opening) return undefined;
+
+	const tagName = opening[1] ?? '';
+	const closing = new RegExp(`</${tagName}>`, 'iu').exec(source.slice(opening[0].length));
+	if (!closing) {
+		return { type: 'comment-prefixed-type-one-html', raw: source };
+	}
+
+	const closingEnd = opening[0].length + closing.index + closing[0].length;
+	const lineEnd = source.indexOf('\n', closingEnd);
+	return {
+		type: 'comment-prefixed-type-one-html',
+		raw: lineEnd === -1 ? source : source.slice(0, lineEnd + 1)
+	};
+}
+
+const motifMarkdownLexer = new Marked({
+	gfm: true,
+	extensions: [
+		{
+			name: 'comment-prefixed-type-one-html',
+			level: 'block',
+			tokenizer: commentPrefixedTypeOneHtmlBlock
+		}
+	]
+});
 
 function skillKey(domain: SkillDomain, family: string, name: string): string {
 	return `${domain}\u0000${family}\u0000${name}`;
-}
-
-function stripHtmlComments(
-	line: string,
-	inComment: boolean
-): { readonly line: string; readonly inComment: boolean } {
-	let output = '';
-	let cursor = 0;
-	if (inComment) {
-		const commentEnd = line.indexOf('-->');
-		if (commentEnd === -1) return { line: '', inComment: true };
-		cursor = commentEnd + 3;
-		inComment = false;
-	}
-	while (cursor < line.length) {
-		const commentStart = line.indexOf('<!--', cursor);
-		if (commentStart === -1) {
-			output += line.slice(cursor);
-			break;
-		}
-		output += line.slice(cursor, commentStart);
-		const commentEnd = line.indexOf('-->', commentStart + 4);
-		if (commentEnd === -1) return { line: output, inComment: true };
-		cursor = commentEnd + 3;
-	}
-	return { line: output, inComment };
-}
-
-function stripHtmlCommentsFromMarkdown(markdown: string): string {
-	const lines: string[] = [];
-	let fence: { marker: '`' | '~'; length: number } | null = null;
-	let inHtmlComment = false;
-	for (const line of markdown.split(/\r?\n/u)) {
-		if (fence) {
-			const closingFence = new RegExp(
-				`^ {0,3}${fence.marker === '`' ? '`' : '~'}{${fence.length},}\\s*$`,
-				'u'
-			);
-			if (closingFence.test(line)) fence = null;
-			lines.push(line);
-			continue;
-		}
-		if (!inHtmlComment && /^(?: {4}|\t)/u.test(line)) {
-			lines.push(line);
-			continue;
-		}
-		const openingFence = !inHtmlComment
-			? /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(line)?.[1]
-			: undefined;
-		if (openingFence) {
-			fence = {
-				marker: openingFence[0] as '`' | '~',
-				length: openingFence.length
-			};
-			lines.push(line);
-			continue;
-		}
-
-		const stripped = stripHtmlComments(line, inHtmlComment);
-		inHtmlComment = stripped.inComment;
-		lines.push(stripped.line);
-	}
-	return lines.join('\n');
 }
 
 export async function loadCanonicalSkillRows(
@@ -197,7 +169,7 @@ export function parseAcceptedMotifMap(
 	markdown: string,
 	canonicalRows: readonly TargetSkillRow[]
 ): SkillIconMotifMap {
-	const tokens = marked.lexer(stripHtmlCommentsFromMarkdown(markdown), { gfm: true });
+	const tokens = motifMarkdownLexer.lexer(markdown);
 	const statuses = tokens.flatMap((token) => {
 		if (token.type !== 'paragraph') return [];
 		const status = /^\*\*Status:\*\*\s+(.+?)\s*$/u.exec(token.raw.trim());
