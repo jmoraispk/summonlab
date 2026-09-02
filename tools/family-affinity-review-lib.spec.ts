@@ -864,6 +864,44 @@ describe('family-affinity review receipt contract', () => {
 		});
 	}, 15_000);
 
+	it('aggregates a valid independently assigned T3 disagreement as revision-required', async () => {
+		const live = await stageLiveAttempt('T3', true);
+		const ordinaryAssignment = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		const blindAssignment = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'blind', 'reviewer-gamma')
+		);
+		await createReviewReceiptExclusive(
+			live.root,
+			ordinaryAssignment.path,
+			ordinaryFor(live.activeTarget, live.result, 'approved-review')
+		);
+		await createReviewReceiptExclusive(
+			live.root,
+			blindAssignment.path,
+			blindFor(live.activeTarget, live.result, 'revise')
+		);
+
+		const artifacts = await buildFamilyAffinityReviewArtifacts(live.root);
+		const cell = artifacts.families
+			.find(({ familyId }) => familyId === 'goblins')!
+			.summary.cells.find(({ coordinateId }) => coordinateId === live.activeTarget.coordinateId)!;
+		expect(cell).toMatchObject({
+			state: 'revise',
+			label: 'REVISION REQUIRED',
+			revisionRequired: true,
+			candidateSha256: live.result.candidateSha256
+		});
+		expect(artifacts.catalog).toMatchObject({
+			generatedCount: live.baselineCatalog!.generatedCount + 1,
+			approvedReviewCount: live.baselineCatalog!.approvedReviewCount,
+			revisionRequiredCount: live.baselineCatalog!.revisionRequiredCount + 1
+		});
+	}, 15_000);
+
 	it('retains immutable rejected v1 history while deriving current review state only from active v2', async () => {
 		const live = await stageLiveAttempt('T1', true);
 		const issued = await issueReviewAssignmentExclusive(
@@ -1104,10 +1142,7 @@ describe('initial family review evidence', () => {
 		temporaryRoots.push(root);
 		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-		await cp(source, destination, {
-			recursive: true,
-			filter: (path) => !path.includes(`${join(source, 'review')}`)
-		});
+		await cp(source, destination, { recursive: true });
 		await stripBridgeFixture(root);
 		const external = join(root, 'outside');
 		await mkdir(join(destination, 'candidates'), { recursive: true });
@@ -1121,10 +1156,7 @@ describe('initial family review evidence', () => {
 		temporaryRoots.push(root);
 		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-		await cp(source, destination, {
-			recursive: true,
-			filter: (path) => !path.includes(`${join(source, 'review')}`)
-		});
+		await cp(source, destination, { recursive: true });
 		await stripBridgeFixture(root);
 		await mkdir(join(destination, 'review/decisions'), { recursive: true });
 		await writeFile(join(destination, 'review/decisions/not-a-receipt.json'), '{}');
@@ -1277,8 +1309,9 @@ describe('initial family review evidence', () => {
 			bridgeCoordinateCount: 1,
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
-			historicalAttemptCount: 1,
-			historicalRevisionRequiredCount: 1
+			historicalAttemptCount: canonicalBaseline.historicalAttemptCount + 1,
+			historicalRevisionRequiredCount:
+				canonicalBaseline.historicalRevisionRequiredCount + 1
 		});
 		expect(await Promise.all(historyPaths.map((path) => readFile(join(root, path))))).toEqual(
 			before

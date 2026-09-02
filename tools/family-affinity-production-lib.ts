@@ -2703,7 +2703,7 @@ async function validateAllocationAnchor(
 	manifest: FamilyAffinityManifest,
 	target: FamilyAffinityTarget,
 	manifestPath: string,
-	manifestSha256: string
+	_manifestSha256: string
 ): Promise<void> {
 	if (target.affinity === 'normal' || target.status !== 'planned') {
 		return;
@@ -2779,7 +2779,9 @@ async function validateAllocationAnchor(
 		reviewAssignmentPath: ordinaryReviewAssignmentPath,
 		kind: 'ordinary',
 		manifestPath,
-		manifestSha256,
+		// Anchor activation validates this assignment against the exact pre-activation
+		// manifest. After the manifest atomically advances, its immutable attestation
+		// remains self-bound to that historical digest rather than the new digest.
 		target: normalTarget,
 		targetPath: normalCoordinate.targetPath,
 		productionAssignment: normalAssignment,
@@ -2817,7 +2819,6 @@ async function validateAllocationAnchor(
 			reviewAssignmentPath: blindAssignmentPath,
 			kind: 'blind',
 			manifestPath,
-			manifestSha256,
 			target: normalTarget,
 			targetPath: normalCoordinate.targetPath,
 			productionAssignment: normalAssignment,
@@ -3066,9 +3067,6 @@ async function prepareFamilyAffinityRevision(
 	const receipt = FamilyAffinityReviewReceiptSchema.parse(
 		JSON.parse(receiptBytes.toString('utf8'))
 	);
-	if (receipt.decision !== 'rejected' && receipt.decision !== 'revise') {
-		throw new Error('Current attempt must have a rejected or revise review decision');
-	}
 	const resultBytes = await readOwnedFileNoSymlinks(
 		input.repositoryRoot,
 		currentTarget.ownedPaths.result
@@ -3110,7 +3108,9 @@ async function prepareFamilyAffinityRevision(
 		reviewAssignmentPath,
 		kind: 'ordinary',
 		manifestPath: input.manifestPath,
-		manifestSha256,
+		// Revision allocation may follow unrelated coordinate activations. The immutable
+		// assignment remains self-attested to its issuance snapshot; all attempt-local
+		// target, assignment, result, source, prompt, reviewer, and path bindings remain exact.
 		target: currentTarget,
 		targetPath: coordinate.targetPath,
 		productionAssignment: currentAssignment,
@@ -3119,8 +3119,9 @@ async function prepareFamilyAffinityRevision(
 		resultSha256: evidence.resultSha256
 	});
 	if (reviewAssignment.reviewerId !== receipt.reviewerId) {
-		throw new Error('Rejected receipt reviewer does not match controller assignment');
+		throw new Error('Ordinary receipt reviewer does not match controller assignment');
 	}
+	let revisionRequired = receipt.decision === 'rejected' || receipt.decision === 'revise';
 	if (currentTarget.tier === 'T3' || currentTarget.tier === 'T5') {
 		const blindBytes = await readOwnedFileNoSymlinks(
 			input.repositoryRoot,
@@ -3148,7 +3149,6 @@ async function prepareFamilyAffinityRevision(
 			reviewAssignmentPath: blindAssignmentPath,
 			kind: 'blind',
 			manifestPath: input.manifestPath,
-			manifestSha256,
 			target: currentTarget,
 			targetPath: coordinate.targetPath,
 			productionAssignment: currentAssignment,
@@ -3157,12 +3157,17 @@ async function prepareFamilyAffinityRevision(
 			resultSha256: evidence.resultSha256
 		});
 		if (
-			blind.decision !== receipt.decision ||
 			blind.reviewerId === receipt.reviewerId ||
 			blindAssignment.reviewerId !== blind.reviewerId
 		) {
-			throw new Error('Ordinary and blind revision decisions must agree independently');
+			throw new Error('Ordinary and blind revision evidence must be independently assigned');
 		}
+		revisionRequired ||= blind.decision !== receipt.decision;
+	}
+	if (!revisionRequired) {
+		throw new Error(
+			'Current attempt must have a rejected or revise decision, or an independently assigned T3/T5 review conflict'
+		);
 	}
 	const nextVersion = currentTarget.version + 1;
 	const nextPaths =

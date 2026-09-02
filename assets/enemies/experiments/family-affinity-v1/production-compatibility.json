@@ -58,14 +58,14 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-	"skillContractSha256": "71ce3338816983241552594a78a8cc960426dbd2c4158d33f790a66c0bf27bdb",
+	"skillContractSha256": "0e1065fdee6720617813aaf80a4bbc81cace7408cd6b4cffcac0a336fa56b364",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-				"sha256": "71ce3338816983241552594a78a8cc960426dbd2c4158d33f790a66c0bf27bdb"
+				"sha256": "0e1065fdee6720617813aaf80a4bbc81cace7408cd6b4cffcac0a336fa56b364"
       },
       {
         "path": "SKILL.md",
@@ -97,7 +97,7 @@
       },
       {
         "path": "scripts/family_dispatch_gate.mjs",
-				"sha256": "938ec3ad37300a6333f924f62982d895230f69cb48901f066a6a8bfeabe3d3d8"
+				"sha256": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490"
       },
       {
         "path": "scripts/persist_family_candidate.py",
@@ -120,7 +120,7 @@
         "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-		"bundleSha256": "6802413c73abe746c3fa43dd442c460394cbeb3fd670a3ba9718c8eb74d20f4b"
+		"bundleSha256": "32d97cbce8169c613cd8b73fd59ba393ab866b02082e6c0df599218d0347e8d2"
   },
   "repositoryDispatch": {
     "path": "tools/check-family-affinity-production-dispatch.ts",
@@ -133,7 +133,7 @@
     },
     "bundle": {
       "path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "938ec3ad37300a6333f924f62982d895230f69cb48901f066a6a8bfeabe3d3d8"
+			"sha256": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490"
     },
     "sources": [
       {
@@ -142,11 +142,11 @@
       },
       {
         "path": "tools/family-affinity-production-lib.ts",
-				"sha256": "98fc27d45f5cb3e49e1c4fea31ff8a57c840f4c0677efcef8376c767121a5686"
+				"sha256": "eb11667fc639d094ebe9ce855471878de1a7ea7fe3b6a0acddef064eb14fdc4d"
       },
       {
         "path": "package.json",
-				"sha256": "c7f7975648e6cbd8c002d593c6af4aa645e7b7ed2fa15bbf84580c791eeec53c"
+				"sha256": "62f682772cdd0e42278e46166d46ac623fd07bb26c25d30b558ab19f4623ba8c"
       },
       {
         "path": "pnpm-lock.yaml",

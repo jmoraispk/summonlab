@@ -20,6 +20,8 @@
 		"family-affinity-review-lib.spec.ts",
 		"export-family-affinity-review.ts",
 		"allocate-family-affinity-revision.ts",
+		"activate-family-affinity-normal-anchors.ts",
+		"activate-family-affinity-normal-anchors.spec.ts",
 		"materialize-earth-bridge-wave.ts",
 		"materialize-earth-bridge-wave.spec.ts",
 		"retire-legacy-enemy-affinities-lib.ts",

@@ -149,11 +149,11 @@ export function evaluateFamilyAffinityReviewAttempt(input: {
 	if (blind?.reviewerId === ordinary.reviewerId) {
 		throw new Error('Blind reviewer must be independent from the ordinary reviewer');
 	}
-	if (blind && blind.decision !== ordinary.decision) {
-		throw new Error('Ordinary and blind review decisions disagree');
-	}
 	if (requiresBlind && !blind)
 		throw new Error('T3/T5 candidate version requires a blind review receipt');
+	if (blind && blind.decision !== ordinary.decision) {
+		return { state: 'revise', revisionRequired: true, approved: false };
+	}
 	if (
 		target.anchor.kind === 'earth-bridge-provisional' &&
 		ordinary.decision === 'approved-review'
