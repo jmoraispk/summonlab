@@ -461,6 +461,41 @@ const waveDFamilyFixtures = [
 	}
 ] as const;
 
+type FireTheme = ReturnType<typeof FamilyPacketSchema.parse>['affinityThemes']['fire'];
+
+function assertEngineeredFlameElementalFireTheme(theme: FireTheme): void {
+	const engineeredProcess = theme.constructionDimensions.find((dimension) =>
+		/(?:engineered|external|additional)[^.]*combustion[^.]*intake[^.]*ignition[^.]*(?:exhaust|cooling)/iu.test(
+			dimension
+		)
+	);
+	if (!engineeredProcess) {
+		throw new Error(
+			'Engineered Fire route must tie an added combustion process to intake, ignition, and exhaust or cooling'
+		);
+	}
+
+	const addedApparatus =
+		/(?:intake collar|ignition ring|exhaust marker|cooling shutter|fuel collar|intake vane)/iu;
+	const readableDisruption = /(?:open|expos|dim|break|sever|disrupt|attack|strike)/iu;
+	if (
+		!addedApparatus.test(theme.counterplaySignal) ||
+		!readableDisruption.test(theme.counterplaySignal)
+	) {
+		throw new Error('Engineered Fire route requires counterplay against its added apparatus');
+	}
+
+	if (
+		!theme.forbidden.some((rejection) =>
+			/(?:temperature alone[^.]*Fire affinity|Fire affinity[^.]*temperature alone)/iu.test(
+				rejection
+			)
+		)
+	) {
+		throw new Error('Engineered Fire route must reject temperature alone as affinity evidence');
+	}
+}
+
 describe('Wave A family packets', () => {
 	it.each(waveAFamilyFixtures)(
 		'loads $fileName with exact source identity and tier coverage',
@@ -1158,6 +1193,34 @@ describe('Wave D family packets', () => {
 			}
 		}
 	);
+
+	it('requires Flame Elemental Fire affinity to add a disruptible combustion process beyond native flame', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/21-flame-elementals.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+
+		expect(() => assertEngineeredFlameElementalFireTheme(packet.affinityThemes.fire)).not.toThrow();
+
+		const deficientNativeHeatTheme: FireTheme = {
+			constructionDimensions: [
+				'Native living fire becomes hotter and brighter.',
+				'Temperature rises from orange to blue-white while the same flame emits more smoke.'
+			],
+			counterplaySignal: 'Wait for the native flame temperature to fall, then approach.',
+			forbidden: ['Palette-only recolor', 'Glow-only treatment']
+		};
+		expect(() => assertEngineeredFlameElementalFireTheme(deficientNativeHeatTheme)).toThrow(
+			/engineered Fire route/iu
+		);
+	});
 });
 
 describe('family affinity production schemas', () => {
