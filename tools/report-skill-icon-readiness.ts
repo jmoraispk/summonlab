@@ -5,6 +5,8 @@ import { pathToFileURL } from 'node:url';
 
 import { SkillIconCatalogSchema, type SkillIconCatalog } from '../packages/contracts/src/index.js';
 
+import { exportSkillIconProduction } from './export-skill-icon-production.js';
+
 export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'martial:blade:horizontal-slash',
 	'martial:blade:crescent-sweep',
@@ -23,11 +25,36 @@ export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'craft:forging:godsmithing'
 ] as const;
 
-const PILOT_CALIBRATION_FAMILIES = new Set([
-	'blade.sweeping-cut',
-	'elemental.fire-projectile',
-	'forging.smithing'
-]);
+const REQUIRED_REFERENCE_ASSETS = [
+	...(['f', 'e', 'd', 'c', 'b', 'a', 's'] as const).map((rarity) => ({
+		id: `rarity-frame-${rarity}-v1`,
+		role: 'rarity-frame' as const,
+		path: `assets/wiki/skills/icon-production-v1/masters/frames/${rarity}.png`
+	})),
+	{
+		id: 'charcoal-forged-stone-v1',
+		role: 'backing' as const,
+		path: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+	}
+] as const;
+
+const REQUIRED_PILOT_CALIBRATIONS = [
+	{
+		id: 'blade.sweeping-cut',
+		role: 'calibration-plate' as const,
+		path: 'assets/wiki/skills/icon-production-v1/masters/calibration/blade-sweeping-cut.png'
+	},
+	{
+		id: 'elemental.fire-projectile',
+		role: 'calibration-plate' as const,
+		path: 'assets/wiki/skills/icon-production-v1/masters/calibration/elemental-fire-projectile.png'
+	},
+	{
+		id: 'forging.smithing',
+		role: 'calibration-plate' as const,
+		path: 'assets/wiki/skills/icon-production-v1/masters/calibration/forging-smithing.png'
+	}
+] as const;
 
 export type SkillIconReadinessState =
 	| 'foundation-incomplete'
@@ -39,15 +66,18 @@ export type SkillIconReadinessState =
 export interface SkillIconReviewedArtifact {
 	readonly id: string;
 	readonly role: 'rarity-frame' | 'backing' | 'calibration-plate';
+	readonly path: string;
 	readonly contentHash: string;
 	readonly review: {
-		decision: 'accepted' | 'revise' | 'rejected';
-		contentHash: string;
+		readonly decision: 'accepted' | 'revise' | 'rejected';
+		readonly artifactId: string;
+		readonly role: 'rarity-frame' | 'backing' | 'calibration-plate';
+		readonly path: string;
+		readonly contentHash: string;
 	};
 }
 
 export interface SkillIconReadinessEvidence {
-	readonly catalogCurrent?: boolean;
 	readonly referenceAssets?: readonly SkillIconReviewedArtifact[];
 	readonly calibrationPlates?: readonly SkillIconReviewedArtifact[];
 	readonly pilot?: {
@@ -60,6 +90,10 @@ export interface SkillIconReadinessEvidence {
 		readonly catalogHash: string;
 		readonly reviewedCatalogHash: string;
 	};
+}
+
+export interface SkillIconCatalogCurrency {
+	readonly catalogCurrent: boolean;
 }
 
 export interface SkillIconReadinessReport {
@@ -82,8 +116,26 @@ function acceptedArtifact(artifact: SkillIconReviewedArtifact): boolean {
 	return (
 		artifact.review.decision === 'accepted' &&
 		/^[a-f0-9]{64}$/u.test(artifact.contentHash) &&
+		artifact.id === artifact.review.artifactId &&
+		artifact.role === artifact.review.role &&
+		artifact.path === artifact.review.path &&
 		artifact.contentHash === artifact.review.contentHash
 	);
+}
+
+function acceptedRequiredArtifacts(
+	required: readonly { readonly id: string; readonly role: string; readonly path: string }[],
+	provided: readonly SkillIconReviewedArtifact[]
+): number {
+	return required.filter((requirement) =>
+		provided.some(
+			(artifact) =>
+				artifact.id === requirement.id &&
+				artifact.role === requirement.role &&
+				artifact.path === requirement.path &&
+				acceptedArtifact(artifact)
+		)
+	).length;
 }
 
 export function hashSkillIconCatalog(catalog: SkillIconCatalog): string {
@@ -94,25 +146,21 @@ export function hashSkillIconCatalog(catalog: SkillIconCatalog): string {
 
 export function buildSkillIconReadinessReport(
 	catalog: SkillIconCatalog,
-	evidence: SkillIconReadinessEvidence
+	evidence: SkillIconReadinessEvidence,
+	currency: SkillIconCatalogCurrency
 ): SkillIconReadinessReport {
 	const lifecycle = { mapped: 0, authored: 0, candidate: 0, approved: 0 };
 	for (const record of catalog.records) lifecycle[record.status] += 1;
-	const references = (evidence.referenceAssets ?? []).filter(acceptedArtifact);
-	const rarityCount = new Set(
-		references.filter((item) => item.role === 'rarity-frame').map((item) => item.id)
-	).size;
-	const backingCount = new Set(
-		references.filter((item) => item.role === 'backing').map((item) => item.id)
-	).size;
-	const referencesAccepted = rarityCount + backingCount;
+	const referencesAccepted = acceptedRequiredArtifacts(
+		REQUIRED_REFERENCE_ASSETS,
+		evidence.referenceAssets ?? []
+	);
 	const foundationComplete =
-		evidence.catalogCurrent === true && rarityCount === 7 && backingCount === 1;
-	const calibrations = (evidence.calibrationPlates ?? []).filter(acceptedArtifact);
-	const acceptedCalibrationIds = new Set(calibrations.map((artifact) => artifact.id));
-	const calibrationsAccepted = [...PILOT_CALIBRATION_FAMILIES].filter((id) =>
-		acceptedCalibrationIds.has(id)
-	).length;
+		currency.catalogCurrent && referencesAccepted === REQUIRED_REFERENCE_ASSETS.length;
+	const calibrationsAccepted = acceptedRequiredArtifacts(
+		REQUIRED_PILOT_CALIBRATIONS,
+		evidence.calibrationPlates ?? []
+	);
 
 	const recordsById = new Map(catalog.records.map((record) => [record.targetId, record] as const));
 	const pilotTargetSetMatches =
@@ -126,7 +174,7 @@ export function buildSkillIconReadinessReport(
 		);
 	});
 	const pilotAccepted =
-		calibrationsAccepted === PILOT_CALIBRATION_FAMILIES.size &&
+		calibrationsAccepted === REQUIRED_PILOT_CALIBRATIONS.length &&
 		evidence.pilot?.decision === 'accepted' &&
 		pilotTargetSetMatches &&
 		pilotHashesMatch;
@@ -138,9 +186,9 @@ export function buildSkillIconReadinessReport(
 
 	const blockers: string[] = [];
 	if (catalog.records.length !== 456) blockers.push(`expected 456 canonical records`);
-	if (evidence.catalogCurrent !== true) blockers.push('catalog export is not confirmed current');
-	if (rarityCount !== 7) blockers.push(`accepted rarity frames ${rarityCount}/7`);
-	if (backingCount !== 1) blockers.push(`accepted backing assets ${backingCount}/1`);
+	if (!currency.catalogCurrent) blockers.push('catalog export is not current');
+	if (referencesAccepted !== REQUIRED_REFERENCE_ASSETS.length)
+		blockers.push(`accepted reference assets ${referencesAccepted}/8`);
 	if (foundationComplete && calibrationsAccepted !== 3)
 		blockers.push(`accepted pilot calibration plates ${calibrationsAccepted}/3`);
 	if (foundationComplete && !pilotAccepted)
@@ -180,13 +228,16 @@ async function main(args: readonly string[]): Promise<void> {
 		'assets/wiki/skills/icon-production-v1/review/readiness-evidence.json'
 	);
 	const catalog = SkillIconCatalogSchema.parse(JSON.parse(await readFile(catalogPath, 'utf8')));
+	const exportReport = await exportSkillIconProduction({ mode: 'check' });
 	const evidence = await readFile(evidencePath, 'utf8')
 		.then((source) => JSON.parse(source) as SkillIconReadinessEvidence)
 		.catch((error: NodeJS.ErrnoException) => {
 			if (error.code === 'ENOENT') return {};
 			throw error;
 		});
-	const report = buildSkillIconReadinessReport(catalog, evidence);
+	const report = buildSkillIconReadinessReport(catalog, evidence, {
+		catalogCurrent: exportReport.inSync
+	});
 	process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 	if (
 		args[0] === '--require-pilot' &&

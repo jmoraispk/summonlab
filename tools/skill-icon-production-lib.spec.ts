@@ -1,10 +1,21 @@
-import { readFile } from 'node:fs/promises';
+import {
+	access,
+	copyFile,
+	mkdir,
+	mkdtemp,
+	readFile,
+	realpath,
+	rm,
+	symlink
+} from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
 import {
 	buildSkillIconCatalog,
+	CANONICAL_SKILL_SOURCE_PATHS,
 	loadCanonicalSkillRows,
 	parseAcceptedMotifMap,
 	summarizeSkillIconCatalog,
@@ -12,6 +23,10 @@ import {
 	type SkillIconVisualSpecs
 } from './skill-icon-production-lib.js';
 import type { TargetSkillRow } from './skill-taxonomy-lib.js';
+import {
+	exportSkillIconProduction,
+	SKILL_ICON_MOTIF_SOURCE_PATH
+} from './export-skill-icon-production.js';
 
 function row(targetId: string, name: string): TargetSkillRow {
 	return {
@@ -81,6 +96,46 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 				rows
 			)
 		).toThrow(/backticked/u);
+	});
+
+	it('ignores fenced and indented code when discovering acceptance and assignments', () => {
+		const rows = [row('martial:blade:first', 'First')];
+		const fencedOnly = `~~~markdown
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+~~~`;
+		expect(() => parseAcceptedMotifMap(fencedOnly, rows)).toThrow(/accepted status/u);
+
+		const liveMap = `# Map
+
+\`\`\`md
+**Status:** Proposed
+## Martial
+### Blade
+| \`blade.fake\` | **Not a skill** |
+\`\`\`
+
+    **Status:** Proposed
+    ## Magical
+    ### Elemental
+    | \`blade.indented\` | **Not a skill** |
+
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |`;
+		expect(parseAcceptedMotifMap(liveMap, rows).entries).toEqual([
+			{
+				mapEntryId: 'blade.first',
+				domain: 'Martial',
+				family: 'Blade',
+				memberTargetIds: ['martial:blade:first']
+			}
+		]);
 	});
 
 	it('rejects cycles and parents outside a motif family', () => {
@@ -219,5 +274,36 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 				records: [{ ...specs.records[0]!, name: 'Stale copy' } as never]
 			})
 		).toThrow(/canonical field name/u);
+	});
+
+	it('rejects a symlink ancestor before writing any catalog file outside the workspace', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-export-root-'));
+		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-export-outside-'));
+		try {
+			for (const sourcePath of [...CANONICAL_SKILL_SOURCE_PATHS, SKILL_ICON_MOTIF_SOURCE_PATH]) {
+				const destination = path.join(root, sourcePath);
+				await mkdir(path.dirname(destination), { recursive: true });
+				await copyFile(path.resolve(sourcePath), destination);
+			}
+			const skillAssets = path.join(root, 'assets/wiki/skills');
+			await mkdir(skillAssets, { recursive: true });
+			await symlink(await realpath(outside), path.join(skillAssets, 'icon-production-v1'), 'dir');
+
+			await expect(exportSkillIconProduction({ root, mode: 'write' })).rejects.toThrow(
+				/symbolic link ancestor/u
+			);
+			await expect(access(path.join(outside, 'motif-map.json'))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(access(path.join(outside, 'visual-specs.json'))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(access(path.join(outside, 'catalog.json'))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(root, { recursive: true, force: true });
+			await rm(outside, { recursive: true, force: true });
+		}
 	});
 });

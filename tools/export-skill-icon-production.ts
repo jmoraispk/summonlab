@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { lstat, mkdir, open, readFile, rename, unlink } from 'node:fs/promises';
+import { lstat, mkdir, open, readFile, realpath, rename, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -50,8 +50,69 @@ async function regularFileBytes(filePath: string): Promise<Buffer | null> {
 	return readFile(filePath);
 }
 
+function isInside(parent: string, child: string): boolean {
+	const relative = path.relative(parent, child);
+	return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..');
+}
+
+async function metadataOrNull(filePath: string) {
+	return lstat(filePath).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+}
+
+async function assertSafeDestination(
+	root: string,
+	destination: string,
+	createParents: boolean
+): Promise<void> {
+	const realRoot = await realpath(root);
+	const relativeDestination = path.relative(root, destination);
+	if (
+		relativeDestination === '' ||
+		path.isAbsolute(relativeDestination) ||
+		relativeDestination === '..' ||
+		relativeDestination.startsWith(`..${path.sep}`)
+	) {
+		throw new Error(`Skill icon output resolves outside workspace root: ${destination}`);
+	}
+
+	const parentRelative = path.dirname(relativeDestination);
+	const segments = parentRelative === '.' ? [] : parentRelative.split(path.sep);
+	let cursor = root;
+	for (const segment of segments) {
+		cursor = path.join(cursor, segment);
+		let metadata = await metadataOrNull(cursor);
+		if (!metadata) {
+			if (!createParents) return;
+			await mkdir(cursor).catch((error: NodeJS.ErrnoException) => {
+				if (error.code !== 'EEXIST') throw error;
+			});
+			metadata = await metadataOrNull(cursor);
+		}
+		if (metadata?.isSymbolicLink()) {
+			throw new Error(`Refusing symbolic link ancestor in skill icon output path: ${cursor}`);
+		}
+		if (!metadata?.isDirectory()) {
+			throw new Error(`Skill icon output ancestor is not a directory: ${cursor}`);
+		}
+		const realCursor = await realpath(cursor);
+		if (!isInside(realRoot, realCursor)) {
+			throw new Error(`Skill icon output parent resolves outside real workspace root: ${cursor}`);
+		}
+	}
+
+	const destinationMetadata = await metadataOrNull(destination);
+	if (destinationMetadata?.isSymbolicLink()) {
+		throw new Error(`Refusing symbolic link skill icon output destination: ${destination}`);
+	}
+	if (destinationMetadata && !destinationMetadata.isFile()) {
+		throw new Error(`Skill icon output destination is not a regular file: ${destination}`);
+	}
+}
+
 async function writeAtomically(destination: string, bytes: Buffer): Promise<void> {
-	await mkdir(path.dirname(destination), { recursive: true });
 	const temporary = `${destination}.stage-${process.pid}-${randomUUID()}.tmp`;
 	let handle: Awaited<ReturnType<typeof open>> | null = null;
 	try {
@@ -103,6 +164,7 @@ export async function exportSkillIconProduction(options: {
 	const motifMarkdown = await readFile(path.resolve(root, SKILL_ICON_MOTIF_SOURCE_PATH), 'utf8');
 	const motifMap = parseAcceptedMotifMap(motifMarkdown, rows);
 	const visualSpecsDestination = path.resolve(root, SKILL_ICON_VISUAL_SPECS_PATH);
+	await assertSafeDestination(root, visualSpecsDestination, false);
 	const currentVisualBytes = await regularFileBytes(visualSpecsDestination);
 	const visualSpecs = currentVisualBytes
 		? (JSON.parse(currentVisualBytes.toString('utf8')) as SkillIconVisualSpecs)
@@ -132,12 +194,14 @@ export async function exportSkillIconProduction(options: {
 	const written: string[] = [];
 	for (const output of outputs) {
 		const destination = path.resolve(root, output.path);
+		await assertSafeDestination(root, destination, false);
 		const current = await regularFileBytes(destination);
 		const matches = current?.equals(output.bytes) ?? false;
 		if (options.mode === 'write' && !matches) {
 			if (output.source && current !== null) {
 				throw new Error(`Refusing to rewrite authored visual state: ${output.path}`);
 			}
+			await assertSafeDestination(root, destination, true);
 			await writeAtomically(destination, output.bytes);
 			written.push(output.path);
 		}

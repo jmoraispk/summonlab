@@ -82,6 +82,32 @@ function skillKey(domain: SkillDomain, family: string, name: string): string {
 	return `${domain}\u0000${family}\u0000${name}`;
 }
 
+function liveMarkdownLines(markdown: string): string[] {
+	const lines: string[] = [];
+	let fence: { marker: '`' | '~'; length: number } | null = null;
+	for (const line of markdown.split(/\r?\n/u)) {
+		if (fence) {
+			const closingFence = new RegExp(
+				`^ {0,3}${fence.marker === '`' ? '`' : '~'}{${fence.length},}\\s*$`,
+				'u'
+			);
+			if (closingFence.test(line)) fence = null;
+			continue;
+		}
+		if (/^(?: {4}|\t)/u.test(line)) continue;
+		const openingFence = /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(line)?.[1];
+		if (openingFence) {
+			fence = {
+				marker: openingFence[0] as '`' | '~',
+				length: openingFence.length
+			};
+			continue;
+		}
+		lines.push(line);
+	}
+	return lines;
+}
+
 export async function loadCanonicalSkillRows(
 	root = process.cwd()
 ): Promise<readonly TargetSkillRow[]> {
@@ -120,7 +146,9 @@ export function parseAcceptedMotifMap(
 	markdown: string,
 	canonicalRows: readonly TargetSkillRow[]
 ): SkillIconMotifMap {
-	const statuses = [...markdown.matchAll(/^\*\*Status:\*\*\s+(.+?)\s*$/gmu)].map(
+	const liveLines = liveMarkdownLines(markdown);
+	const liveMarkdown = liveLines.join('\n');
+	const statuses = [...liveMarkdown.matchAll(/^\*\*Status:\*\*\s+(.+?)\s*$/gmu)].map(
 		(match) => match[1]
 	);
 	if (statuses.length !== 1 || statuses[0] !== 'Accepted') {
@@ -134,7 +162,7 @@ export function parseAcceptedMotifMap(
 	let domain: SkillDomain | undefined;
 	let family: string | undefined;
 
-	for (const line of markdown.split(/\r?\n/u)) {
+	for (const line of liveLines) {
 		const domainHeading = /^##\s+(Martial|Magical|Craft)\s*$/u.exec(line);
 		if (domainHeading) {
 			domain = domainHeading[1] as SkillDomain;

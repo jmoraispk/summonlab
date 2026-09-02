@@ -5,6 +5,7 @@ import {
 	buildSkillIconReadinessReport,
 	hashSkillIconCatalog,
 	SKILL_ICON_PILOT_TARGET_IDS,
+	type SkillIconCatalogCurrency,
 	type SkillIconReadinessEvidence
 } from './report-skill-icon-readiness.js';
 
@@ -22,29 +23,53 @@ function catalog(approved: number): SkillIconCatalog {
 	};
 }
 
-function reviewedArtifact(id: string, role: 'rarity-frame' | 'backing' | 'calibration-plate') {
+function reviewedArtifact(
+	id: string,
+	role: 'rarity-frame' | 'backing' | 'calibration-plate',
+	path: string
+) {
 	return {
 		id,
 		role,
+		path,
 		contentHash: HASH,
-		review: { decision: 'accepted' as const, contentHash: HASH }
+		review: { decision: 'accepted' as const, artifactId: id, role, path, contentHash: HASH }
 	};
 }
 
 function acceptedEvidence(pilotCatalog: SkillIconCatalog): SkillIconReadinessEvidence {
 	const pilotRecords = pilotCatalog.records.slice(0, 15);
 	return {
-		catalogCurrent: true,
 		referenceAssets: [
 			...['F', 'E', 'D', 'C', 'B', 'A', 'S'].map((rarity) =>
-				reviewedArtifact(`frame-${rarity.toLowerCase()}`, 'rarity-frame')
+				reviewedArtifact(
+					`rarity-frame-${rarity.toLowerCase()}-v1`,
+					'rarity-frame',
+					`assets/wiki/skills/icon-production-v1/masters/frames/${rarity.toLowerCase()}.png`
+				)
 			),
-			reviewedArtifact('backing', 'backing')
+			reviewedArtifact(
+				'charcoal-forged-stone-v1',
+				'backing',
+				'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+			)
 		],
 		calibrationPlates: [
-			reviewedArtifact('blade.sweeping-cut', 'calibration-plate'),
-			reviewedArtifact('elemental.fire-projectile', 'calibration-plate'),
-			reviewedArtifact('forging.smithing', 'calibration-plate')
+			reviewedArtifact(
+				'blade.sweeping-cut',
+				'calibration-plate',
+				'assets/wiki/skills/icon-production-v1/masters/calibration/blade-sweeping-cut.png'
+			),
+			reviewedArtifact(
+				'elemental.fire-projectile',
+				'calibration-plate',
+				'assets/wiki/skills/icon-production-v1/masters/calibration/elemental-fire-projectile.png'
+			),
+			reviewedArtifact(
+				'forging.smithing',
+				'calibration-plate',
+				'assets/wiki/skills/icon-production-v1/masters/calibration/forging-smithing.png'
+			)
 		],
 		pilot: {
 			targetIds: pilotRecords.map((record) => record.targetId),
@@ -59,15 +84,19 @@ function acceptedEvidence(pilotCatalog: SkillIconCatalog): SkillIconReadinessEvi
 	};
 }
 
+const CURRENT: SkillIconCatalogCurrency = { catalogCurrent: true };
+
 describe('skill icon readiness', () => {
 	it('keeps a mapped-only catalog at foundation-incomplete', () => {
-		expect(buildSkillIconReadinessReport(catalog(0), {}).state).toBe('foundation-incomplete');
+		expect(buildSkillIconReadinessReport(catalog(0), {}, CURRENT).state).toBe(
+			'foundation-incomplete'
+		);
 	});
 
 	it('reports an explicitly hash-bound accepted pilot as activation-eligible', () => {
 		const pilotCatalog = catalog(15);
 		expect(
-			buildSkillIconReadinessReport(pilotCatalog, acceptedEvidence(pilotCatalog))
+			buildSkillIconReadinessReport(pilotCatalog, acceptedEvidence(pilotCatalog), CURRENT)
 		).toMatchObject({
 			state: 'eligible-for-owner-activation',
 			approved: 15,
@@ -86,7 +115,7 @@ describe('skill icon readiness', () => {
 					: artifact
 			)
 		};
-		expect(buildSkillIconReadinessReport(pilotCatalog, evidence).state).toBe(
+		expect(buildSkillIconReadinessReport(pilotCatalog, evidence, CURRENT).state).toBe(
 			'foundation-incomplete'
 		);
 
@@ -101,7 +130,111 @@ describe('skill icon readiness', () => {
 				}
 			}
 		};
-		expect(buildSkillIconReadinessReport(pilotCatalog, stalePilot).state).toBe('pilot-incomplete');
+		expect(buildSkillIconReadinessReport(pilotCatalog, stalePilot, CURRENT).state).toBe(
+			'pilot-incomplete'
+		);
+	});
+
+	it('requires exact accepted reference and calibration identities, roles, and paths', () => {
+		const pilotCatalog = catalog(15);
+		const evidence = acceptedEvidence(pilotCatalog);
+		const wrongFrameIdentity: SkillIconReadinessEvidence = {
+			...evidence,
+			referenceAssets: evidence.referenceAssets!.map((artifact, index) =>
+				index === 0
+					? {
+							...artifact,
+							id: 'rarity-frame-f-copy-v1',
+							review: { ...artifact.review, artifactId: 'rarity-frame-f-copy-v1' }
+						}
+					: artifact
+			)
+		};
+		expect(buildSkillIconReadinessReport(pilotCatalog, wrongFrameIdentity, CURRENT).state).toBe(
+			'foundation-incomplete'
+		);
+
+		const wrongFramePath: SkillIconReadinessEvidence = {
+			...evidence,
+			referenceAssets: evidence.referenceAssets!.map((artifact, index) =>
+				index === 0
+					? {
+							...artifact,
+							path: 'assets/wiki/skills/icon-production-v1/masters/frames/not-f.png',
+							review: {
+								...artifact.review,
+								path: 'assets/wiki/skills/icon-production-v1/masters/frames/not-f.png'
+							}
+						}
+					: artifact
+			)
+		};
+		expect(buildSkillIconReadinessReport(pilotCatalog, wrongFramePath, CURRENT).state).toBe(
+			'foundation-incomplete'
+		);
+
+		const wrongCalibration: SkillIconReadinessEvidence = {
+			...evidence,
+			calibrationPlates: evidence.calibrationPlates!.map((artifact, index) =>
+				index === 0
+					? {
+							...artifact,
+							role: 'backing',
+							review: { ...artifact.review, role: 'backing' }
+						}
+					: artifact
+			)
+		};
+		expect(buildSkillIconReadinessReport(pilotCatalog, wrongCalibration, CURRENT).state).toBe(
+			'pilot-incomplete'
+		);
+
+		const wrongCalibrationPath: SkillIconReadinessEvidence = {
+			...evidence,
+			calibrationPlates: evidence.calibrationPlates!.map((artifact, index) =>
+				index === 0
+					? {
+							...artifact,
+							path: 'assets/wiki/skills/icon-production-v1/masters/calibration/wrong.png',
+							review: {
+								...artifact.review,
+								path: 'assets/wiki/skills/icon-production-v1/masters/calibration/wrong.png'
+							}
+						}
+					: artifact
+			)
+		};
+		expect(buildSkillIconReadinessReport(pilotCatalog, wrongCalibrationPath, CURRENT).state).toBe(
+			'pilot-incomplete'
+		);
+	});
+
+	it('uses computed catalog currency rather than a durable evidence claim', () => {
+		const pilotCatalog = catalog(15);
+		const dishonestEvidence = {
+			...acceptedEvidence(pilotCatalog),
+			catalogCurrent: true
+		} as SkillIconReadinessEvidence & { catalogCurrent: boolean };
+		expect(
+			buildSkillIconReadinessReport(pilotCatalog, dishonestEvidence, { catalogCurrent: false })
+				.state
+		).toBe('foundation-incomplete');
+
+		const completeCatalog = catalog(456);
+		const completeEvidence: SkillIconReadinessEvidence & { catalogCurrent: boolean } = {
+			...acceptedEvidence(completeCatalog),
+			catalogCurrent: true,
+			bulkActivation: {
+				decision: 'accepted',
+				catalogHash: hashSkillIconCatalog(completeCatalog),
+				reviewedCatalogHash: hashSkillIconCatalog(completeCatalog)
+			}
+		};
+		expect(
+			buildSkillIconReadinessReport(completeCatalog, completeEvidence, {
+				catalogCurrent: false
+			}).state
+		).not.toBe('complete');
 	});
 
 	it('requires explicit owner activation before bulk-active or complete', () => {
@@ -114,7 +247,9 @@ describe('skill icon readiness', () => {
 				reviewedCatalogHash: hashSkillIconCatalog(partialCatalog)
 			}
 		};
-		expect(buildSkillIconReadinessReport(partialCatalog, evidence).state).toBe('bulk-active');
+		expect(buildSkillIconReadinessReport(partialCatalog, evidence, CURRENT).state).toBe(
+			'bulk-active'
+		);
 
 		const completeCatalog = catalog(456);
 		const completeEvidence: SkillIconReadinessEvidence = {
@@ -125,6 +260,8 @@ describe('skill icon readiness', () => {
 				reviewedCatalogHash: hashSkillIconCatalog(completeCatalog)
 			}
 		};
-		expect(buildSkillIconReadinessReport(completeCatalog, completeEvidence).state).toBe('complete');
+		expect(buildSkillIconReadinessReport(completeCatalog, completeEvidence, CURRENT).state).toBe(
+			'complete'
+		);
 	});
 });
