@@ -1,0 +1,41 @@
+{
+  "assignmentId": "assignment-rarity-frame-c-v1",
+  "completedAt": "2026-09-02T23:34:50.120Z",
+  "exactPrompt": "Create exactly one standalone 1024\u00d71024 RGBA PNG rarity-frame layer for tier C (Epic). Use the supplied Option C comparison only as visual authority and the supplied geometry guide as registration authority; do not crop, trace, or reuse source pixels. Preserve the shared point-up hexagonal geometry and exact registration. Build a moonlit-silver frame with bright but controlled silver, a stepped rim, and one precise geometric channel; it must read brighter and more precisely finished than the D-tier blue steel without bloom. Include one small integrated top-center medallion bearing only the uppercase letter C. Keep every visible frame pixel inside the outer aperture envelope, keep the entire interior inside the 78%-scale inner hexagon fully transparent, and keep the canvas outside the common aperture fully transparent. The frame must form a substantial continuous rim along all six sides and remain legible at 96 pixels. No skill icon, emblem, backing, background, scenery, glow, or any other symbol, number, word, label, or text. Output only the isolated frame layer.",
+  "failureReason": {
+    "kind": "malformed-output",
+    "message": "The first built-in imagegen invocation completed without emitting its provider output metadata to the job runner; the diagnostic invocation then incorrectly created a second fresh raster instead of a targeted edit. Neither raster is retained because this violates the one-initial-plus-optional-corrective-edit protocol."
+  },
+  "findings": [
+    {
+      "category": "other",
+      "evaluator": "producer",
+      "observation": "The first built-in imagegen invocation completed without emitting its provider output metadata to the job runner; the diagnostic invocation then incorrectly created a second fresh raster instead of a targeted edit. Neither raster is retained because this violates the one-initial-plus-optional-corrective-edit protocol.",
+      "outcome": "fail"
+    }
+  ],
+  "jobId": "rarity-frame-c-v1",
+  "noSharedFilesEdited": true,
+  "output": null,
+  "promptHash": "58960ad11e2adccf30d334bb5ed90dba38000f5c7257bf2344587799f30a7e19",
+  "referenceInputs": [
+    {
+      "contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce",
+      "path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png"
+    },
+    {
+      "contentHash": "8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4",
+      "path": "assets/wiki/skills/icon-production-v1/references/geometry-guide.png"
+    }
+  ],
+  "resultId": "result-rarity-frame-c-v1",
+  "resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-c-v1.json",
+  "schemaVersion": "skill-icon-result-v1",
+  "selfPromoted": false,
+  "startedAt": "2026-09-02T23:33:55.420Z",
+  "status": "failed",
+  "totalWallTimeMs": 54700,
+  "writtenOutputPaths": [
+    "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-c-v1.json"
+  ]
+}
