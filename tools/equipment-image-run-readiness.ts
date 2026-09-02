@@ -48,6 +48,11 @@ interface FileIdentity {
 	readonly inode: number;
 }
 
+interface ActivationEvidenceResult {
+	readonly state: 'absent' | 'valid' | 'invalid';
+	readonly blockers: Array<{ code: string; message: string; path?: string }>;
+}
+
 export interface BuildEquipmentRunPlanInput {
 	readonly workspaceRoot: string;
 	readonly runId: string;
@@ -174,6 +179,17 @@ function assertCanonicalMatch(label: string, actual: unknown, expected: unknown)
 	if (canonicalJsonSha256(actual) !== canonicalJsonSha256(expected)) {
 		throw new Error(`${label} is stale or does not match its deterministic Equipment exporter`);
 	}
+}
+
+function packetPathForCandidate(
+	candidatePath: string,
+	directory: 'targets' | 'assignments'
+): string {
+	const prefix = `${EQUIPMENT_PRODUCTION_ROOT}/candidates/`;
+	if (!candidatePath.startsWith(prefix) || !candidatePath.endsWith('.png')) {
+		throw new Error(`Invalid reserved Equipment candidate path: ${candidatePath}`);
+	}
+	return `${EQUIPMENT_PRODUCTION_ROOT}/${directory}/${candidatePath.slice(prefix.length, -4)}.json`;
 }
 
 async function readAndVerifyStaticArtifacts(workspaceRoot: string): Promise<{
@@ -329,10 +345,53 @@ async function verifyOutputReservations(
 	return blockers;
 }
 
+async function verifyPreActivationChildPacketAbsence(
+	workspaceRoot: string,
+	plan: EquipmentRunPlan
+): Promise<Array<{ code: string; message: string; path?: string }>> {
+	const candidateByTargetId = new Map(
+		plan.targetIds.map(
+			(targetId, index) => [targetId, plan.reservedPaths.candidates[index]!] as const
+		)
+	);
+	const blockers: Array<{ code: string; message: string; path?: string }> = [];
+	for (const targetId of plan.unmaterializedReviewGatedTargetIds) {
+		const candidatePath = candidateByTargetId.get(targetId);
+		if (candidatePath === undefined) {
+			blockers.push({
+				code: 'premature-child-packet',
+				message: `Review-gated child has no deterministic candidate reservation: ${targetId}`
+			});
+			continue;
+		}
+		for (const repositoryPath of [
+			packetPathForCandidate(candidatePath, 'targets'),
+			packetPathForCandidate(candidatePath, 'assignments')
+		]) {
+			try {
+				if ((await pathStateWithoutFollowing(workspaceRoot, repositoryPath)) !== 'absent') {
+					blockers.push({
+						code: 'premature-child-packet',
+						message: `Pre-activation review-gated child packet evidence must be absent: ${repositoryPath}`,
+						path: repositoryPath
+					});
+				}
+			} catch (error) {
+				blockers.push({
+					code: 'premature-child-packet',
+					message: error instanceof Error ? error.message : String(error),
+					path: repositoryPath
+				});
+			}
+		}
+	}
+	return blockers;
+}
+
 async function verifyActivationEvidence(input: {
 	readonly workspaceRoot: string;
 	readonly expectedPlan: EquipmentRunPlan;
-}): Promise<Array<{ code: string; message: string; path?: string }>> {
+}): Promise<ActivationEvidenceResult> {
 	const paths = runPaths(input.expectedPlan.runId);
 	let planState: Awaited<ReturnType<typeof pathStateWithoutFollowing>>;
 	let activationState: Awaited<ReturnType<typeof pathStateWithoutFollowing>>;
@@ -342,26 +401,32 @@ async function verifyActivationEvidence(input: {
 			pathStateWithoutFollowing(input.workspaceRoot, paths.activationPath)
 		]);
 	} catch (error) {
-		return [
-			{
-				code: 'invalid-activation',
-				message: error instanceof Error ? error.message : String(error),
-				path: paths.runDirectory
-			}
-		];
+		return {
+			state: 'invalid',
+			blockers: [
+				{
+					code: 'invalid-activation',
+					message: error instanceof Error ? error.message : String(error),
+					path: paths.runDirectory
+				}
+			]
+		};
 	}
 	const planExists = planState !== 'absent';
 	const activationExists = activationState !== 'absent';
-	if (!planExists && !activationExists) return [];
+	if (!planExists && !activationExists) return { state: 'absent', blockers: [] };
 	if (planExists !== activationExists) {
-		return [
-			{
-				code: 'incomplete-activation',
-				message:
-					'Incomplete activation: immutable plan and matching receipt must either both exist or both be absent',
-				path: paths.runDirectory
-			}
-		];
+		return {
+			state: 'invalid',
+			blockers: [
+				{
+					code: 'incomplete-activation',
+					message:
+						'Incomplete activation: immutable plan and matching receipt must either both exist or both be absent',
+					path: paths.runDirectory
+				}
+			]
+		};
 	}
 
 	try {
@@ -382,15 +447,18 @@ async function verifyActivationEvidence(input: {
 		) {
 			throw new Error('Run activation receipt does not hash-bind the persisted immutable plan');
 		}
-		return [];
+		return { state: 'valid', blockers: [] };
 	} catch (error) {
-		return [
-			{
-				code: 'invalid-activation',
-				message: error instanceof Error ? error.message : String(error),
-				path: paths.runDirectory
-			}
-		];
+		return {
+			state: 'invalid',
+			blockers: [
+				{
+					code: 'invalid-activation',
+					message: error instanceof Error ? error.message : String(error),
+					path: paths.runDirectory
+				}
+			]
+		};
 	}
 }
 
@@ -422,9 +490,16 @@ export async function reportEquipmentRunReadiness(
 			]
 		});
 	}
+	const activationEvidence = await verifyActivationEvidence({
+		workspaceRoot: input.workspaceRoot,
+		expectedPlan: plan
+	});
 	const blockers = [
 		...(await verifyOutputReservations(input.workspaceRoot, plan)),
-		...(await verifyActivationEvidence({ workspaceRoot: input.workspaceRoot, expectedPlan: plan }))
+		...activationEvidence.blockers,
+		...(activationEvidence.state !== 'valid'
+			? await verifyPreActivationChildPacketAbsence(input.workspaceRoot, plan)
+			: [])
 	];
 	return EquipmentRunReadinessReportSchema.parse({
 		schemaVersion: 'equipment-production-run-readiness-report-v1',
@@ -519,6 +594,19 @@ export async function activateEquipmentRun(
 	input: ActivateEquipmentRunInput
 ): Promise<EquipmentRunActivationResult> {
 	const paths = runPaths(input.runId);
+	const initialReadiness = await reportEquipmentRunReadiness({
+		workspaceRoot: input.workspaceRoot,
+		runId: input.runId,
+		createdAt: input.createdAt,
+		checkedAt: input.activatedAt
+	});
+	if (initialReadiness.status !== 'ready') {
+		throw new Error(
+			`Run activation refused by readiness: ${initialReadiness.blockers
+				.map(({ message }) => message)
+				.join('; ')}`
+		);
+	}
 	await ensureRealDirectory(input.workspaceRoot, EQUIPMENT_PRODUCTION_ROOT);
 	await ensureRealDirectory(input.workspaceRoot, paths.runsDirectory);
 

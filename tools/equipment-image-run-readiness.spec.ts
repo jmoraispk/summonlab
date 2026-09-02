@@ -34,9 +34,15 @@ const SOURCE_WORKSPACE_ROOT = process.cwd();
 const PROFILE_REFERENCE_PATH =
 	'assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 const RUN_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs/${DEFAULT_EQUIPMENT_RUN_ID}`;
+const RUNS_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs`;
 const PLAN_PATH = `${RUN_DIRECTORY}/plan.json`;
 const ACTIVATION_PATH = `${RUN_DIRECTORY}/activation.json`;
 const LOCK_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/runs/.${DEFAULT_EQUIPMENT_RUN_ID}.activation.lock`;
+const FIRST_CHILD_TARGET_ID = 'material-equipment-v1-copper-heavy-armour-head-v1';
+const FIRST_CHILD_TARGET_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/targets/f/copper/heavy-armour-head-v1.json`;
+const FIRST_CHILD_ASSIGNMENT_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/assignments/f/copper/heavy-armour-head-v1.json`;
+const LAST_CHILD_TARGET_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/targets/s/fateweave/robes-boots-v1.json`;
+const FIRST_ROOT_CANDIDATE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/candidates/f/copper/sword-v1.png`;
 const CREATED_AT = '2026-09-01T23:15:00.000Z';
 const CHECKED_AT = '2026-09-01T23:18:00.000Z';
 const ACTIVATED_AT = '2026-09-01T23:16:00.000Z';
@@ -380,6 +386,115 @@ describe('Equipment immutable run readiness', () => {
 	});
 
 	it.each([
+		{
+			label: 'a zero-byte target only',
+			expectedBlockers: 1,
+			materialize: async (workspaceRoot: string) => {
+				await mkdir(path.dirname(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH)), {
+					recursive: true
+				});
+				await writeFile(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH), '');
+			}
+		},
+		{
+			label: 'a zero-byte assignment only',
+			expectedBlockers: 1,
+			materialize: async (workspaceRoot: string) => {
+				await mkdir(path.dirname(absolute(workspaceRoot, FIRST_CHILD_ASSIGNMENT_PATH)), {
+					recursive: true
+				});
+				await writeFile(absolute(workspaceRoot, FIRST_CHILD_ASSIGNMENT_PATH), '');
+			}
+		},
+		{
+			label: 'both zero-byte packet sides',
+			expectedBlockers: 2,
+			materialize: async (workspaceRoot: string) => {
+				for (const repositoryPath of [FIRST_CHILD_TARGET_PATH, FIRST_CHILD_ASSIGNMENT_PATH]) {
+					await mkdir(path.dirname(absolute(workspaceRoot, repositoryPath)), { recursive: true });
+					await writeFile(absolute(workspaceRoot, repositoryPath), '');
+				}
+			}
+		},
+		{
+			label: 'a symbolic-link target',
+			expectedBlockers: 1,
+			materialize: async (workspaceRoot: string) => {
+				const source = (await firstRootPacketPaths(workspaceRoot)).targetPath;
+				await mkdir(path.dirname(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH)), {
+					recursive: true
+				});
+				await symlink(
+					absolute(workspaceRoot, source),
+					absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH)
+				);
+			}
+		},
+		{
+			label: 'the last deterministically enumerated child target',
+			expectedBlockers: 1,
+			materialize: async (workspaceRoot: string) => {
+				await mkdir(path.dirname(absolute(workspaceRoot, LAST_CHILD_TARGET_PATH)), {
+					recursive: true
+				});
+				await writeFile(absolute(workspaceRoot, LAST_CHILD_TARGET_PATH), '');
+			}
+		}
+	])(
+		'blocks pre-activation child packet evidence: $label',
+		async ({ materialize, expectedBlockers }) => {
+			const workspaceRoot = await makeFixture();
+			await materialize(workspaceRoot);
+			const before = await snapshotTree(workspaceRoot);
+
+			const report = await readyReport(workspaceRoot);
+
+			expect(report.status).toBe('blocked');
+			expect(report.writesPerformed).toBe(0);
+			expect(report.blockers).toHaveLength(expectedBlockers);
+			expect(report.blockers.every(({ code }) => code === 'premature-child-packet')).toBe(true);
+			expect(await snapshotTree(workspaceRoot)).toEqual(before);
+		}
+	);
+
+	it('keeps valid activation evidence ready after later child materialization without inferring gate acceptance', async () => {
+		const workspaceRoot = await makeFixture();
+		await activate(workspaceRoot);
+		await writeJson(workspaceRoot, FIRST_CHILD_TARGET_PATH, { materializedBy: 'later-task' });
+		await writeJson(workspaceRoot, FIRST_CHILD_ASSIGNMENT_PATH, {
+			materializedBy: 'later-task'
+		});
+
+		const report = await readyReport(workspaceRoot);
+		const persistedPlan = EquipmentRunPlanSchema.parse(await readJson(workspaceRoot, PLAN_PATH));
+
+		expect(report).toMatchObject({ status: 'ready', writesPerformed: 0, blockers: [] });
+		expect(persistedPlan.unmaterializedReviewGatedTargetIds).toContain(FIRST_CHILD_TARGET_ID);
+	});
+
+	it('rejects child packet evidence when activation evidence is incomplete', async () => {
+		const workspaceRoot = await makeFixture();
+		const plan = await buildEquipmentRunPlan({
+			workspaceRoot,
+			runId: DEFAULT_EQUIPMENT_RUN_ID,
+			createdAt: CREATED_AT
+		});
+		await writeJson(workspaceRoot, PLAN_PATH, plan);
+		await mkdir(path.dirname(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH)), {
+			recursive: true
+		});
+		await writeFile(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH), '');
+
+		const report = await readyReport(workspaceRoot);
+
+		expect(report.status).toBe('blocked');
+		expect(report.blockers.map(({ code }) => code)).toEqual([
+			'incomplete-activation',
+			'premature-child-packet'
+		]);
+	});
+
+	it.each([
 		['77 root jobs', (manifest: MutableManifest) => manifest.targets.shift()],
 		[
 			'84 gated jobs',
@@ -529,6 +644,53 @@ describe('Equipment immutable run readiness', () => {
 
 		expect(await snapshotTree(workspaceRoot)).toEqual(before);
 	});
+
+	it.each([
+		{
+			label: 'stale manifest',
+			block: async (workspaceRoot: string) => {
+				const manifestPath = `${EQUIPMENT_PRODUCTION_ROOT}/manifest.json`;
+				const manifest = await readJson(workspaceRoot, manifestPath);
+				manifest.schemaVersion = `${manifest.schemaVersion}-stale`;
+				await writeJson(workspaceRoot, manifestPath, manifest);
+			}
+		},
+		{
+			label: 'premature child packet',
+			block: async (workspaceRoot: string) => {
+				await mkdir(path.dirname(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH)), {
+					recursive: true
+				});
+				await writeFile(absolute(workspaceRoot, FIRST_CHILD_TARGET_PATH), '');
+			}
+		},
+		{
+			label: 'partial root output',
+			block: async (workspaceRoot: string) => {
+				await mkdir(path.dirname(absolute(workspaceRoot, FIRST_ROOT_CANDIDATE_PATH)), {
+					recursive: true
+				});
+				await writeFile(absolute(workspaceRoot, FIRST_ROOT_CANDIDATE_PATH), 'partial');
+			}
+		}
+	])(
+		'performs zero activation infrastructure writes when initial preflight blocks: $label',
+		async ({ block }) => {
+			const workspaceRoot = await makeFixture();
+			await block(workspaceRoot);
+			await expect(lstat(absolute(workspaceRoot, RUNS_DIRECTORY))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			const before = await snapshotTree(workspaceRoot);
+
+			await expect(activate(workspaceRoot)).rejects.toThrow(/readiness/iu);
+
+			expect(await snapshotTree(workspaceRoot)).toEqual(before);
+			await expect(lstat(absolute(workspaceRoot, RUNS_DIRECTORY))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	);
 
 	it('exposes zero-write readiness and fixture-only activation through the CLI', async () => {
 		const workspaceRoot = await makeFixture();
