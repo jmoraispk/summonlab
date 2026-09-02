@@ -70,6 +70,15 @@ The [second candidate](./mockups/opening-village-desktop-v2.png) established the
 facilities but placed Forge on the left and Kitchen on the right and pushed some content too close to
 the frame edges.
 
+### Lightweight Residence growth study
+
+This is loose visual guidance, not a production tier contract. It tests one architectural lineage from
+the opening Hearth House through a larger Resident Hall to a high-level Observatory Manor. Exact tier
+count, costs, capacity, dimensions, and construction behavior remain undefined so interface work stays
+the priority.
+
+![Residence growth study](./mockups/residence-growth-study.png)
+
 ### Shared Village Inventory
 
 ![Desktop Village Inventory](./mockups/village-inventory-desktop.png)

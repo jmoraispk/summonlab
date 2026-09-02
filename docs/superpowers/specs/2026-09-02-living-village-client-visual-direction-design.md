@@ -180,6 +180,12 @@ feels additive. Upgrades should extend the starter buildings rather than replace
 an unrelated background. A future design pass must establish the tier progression for each building and
 the transitions for construction, improvement, and resident arrival.
 
+The [Residence growth study](../../design-proposals/living-village-ui/mockups/residence-growth-study.png)
+illustrates that principle in three loose stages: Hearth House, Resident Hall, and Observatory Manor.
+It establishes only the idea that the same building gains height, wings, activity, and astronomical
+ornament. It does not define a runtime tier count, costs, capacity, production dimensions, or a content
+catalog.
+
 The first opening-state candidate used one residence and three empty construction sites. It established
 the permanent road and plot logic but felt too bare to communicate that play begins in a real village.
 It is superseded as the active direction.
