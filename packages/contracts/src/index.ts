@@ -17,6 +17,7 @@ export * from './presentation.js';
 export * from './run.js';
 export * from './settlement.js';
 export * from './settlement-scene.js';
+export * from './skill-icon-production.js';
 export * from './social.js';
 export * from './story-workshop.js';
 export * from './visual.js';
