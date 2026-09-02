@@ -373,16 +373,22 @@ async function ensureSafeResultParent(
 	let cursor = root;
 	for (const component of components) {
 		cursor = path.join(cursor, component);
+		let metadata;
 		try {
-			const metadata = await lstat(cursor);
-			if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
-				throw new Error(
-					`Result parent cannot be a symbolic link or non-directory: ${repositoryPath}`
-				);
-			}
+			metadata = await lstat(cursor);
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-			await mkdir(cursor);
+			try {
+				await mkdir(cursor);
+			} catch (mkdirError) {
+				if ((mkdirError as NodeJS.ErrnoException).code !== 'EEXIST') throw mkdirError;
+			}
+			metadata = await lstat(cursor);
+		}
+		if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+			throw new Error(
+				`Result parent cannot be a symbolic link or non-directory: ${repositoryPath}`
+			);
 		}
 	}
 }

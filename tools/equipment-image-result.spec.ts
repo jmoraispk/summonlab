@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -54,6 +54,54 @@ function jsonBytes(value: unknown): string {
 	return `${JSON.stringify(value, null, '\t')}\n`;
 }
 
+function resultForPacket(
+	packet: ReturnType<typeof buildRootEquipmentPackets>[number],
+	candidateBytes: Buffer
+) {
+	const candidateSha256 = hash(candidateBytes);
+	return {
+		schemaVersion: 'equipment-image-result-v1' as const,
+		resultId: `result-${packet.target.targetId}`,
+		targetId: packet.target.targetId,
+		assignmentId: packet.assignment.assignmentId,
+		status: 'candidate' as const,
+		promptSha256: hash(renderEquipmentPrompt(packet.target)),
+		referenceInputs: packet.target.references.map(({ path: referencePath, contentHash }) => ({
+			path: referencePath,
+			contentHash
+		})),
+		attempts: [
+			{
+				attemptId: `attempt-${packet.target.targetId}`,
+				attemptNumber: 1 as const,
+				sourceOutputId: `imagegen-output-${packet.target.targetId}`,
+				requestStartedAt: '2026-09-01T23:06:00.000Z',
+				generationCompletedAt: '2026-09-01T23:07:00.000Z',
+				inspectionCompletedAt: '2026-09-01T23:08:00.000Z'
+			}
+		],
+		findings: packet.target.acceptanceCriteria.map(({ criterionId }) => ({
+			criterionId,
+			outcome: 'pass' as const,
+			observation: `Inspected ${criterionId}.`
+		})),
+		candidate: {
+			path: packet.target.output.candidatePath,
+			mediaType: 'image/png' as const,
+			width: packet.target.presentation.canvas.width,
+			height: packet.target.presentation.canvas.height,
+			bytes: candidateBytes.byteLength,
+			sha256: candidateSha256
+		},
+		candidateSha256,
+		startedAt: '2026-09-01T23:05:59.000Z',
+		completedAt: '2026-09-01T23:08:01.000Z',
+		writtenOutputPaths: [packet.target.output.candidatePath, packet.target.output.resultPath],
+		noSharedFilesEdited: true as const,
+		selfPromoted: false as const
+	};
+}
+
 async function fixture() {
 	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-image-result-'));
 	temporaryDirectories.push(workspaceRoot);
@@ -92,49 +140,7 @@ async function fixture() {
 	})
 		.png()
 		.toBuffer();
-	const candidateSha256 = hash(candidateBytes);
-	const findings = packet.target.acceptanceCriteria.map(({ criterionId }) => ({
-		criterionId,
-		outcome: 'pass' as const,
-		observation: `Inspected ${criterionId}.`
-	}));
-	const result = {
-		schemaVersion: 'equipment-image-result-v1' as const,
-		resultId: `result-${packet.target.targetId}`,
-		targetId: packet.target.targetId,
-		assignmentId: packet.assignment.assignmentId,
-		status: 'candidate' as const,
-		promptSha256: hash(renderEquipmentPrompt(packet.target)),
-		referenceInputs: packet.target.references.map(({ path: referencePath, contentHash }) => ({
-			path: referencePath,
-			contentHash
-		})),
-		attempts: [
-			{
-				attemptId: `attempt-${packet.target.targetId}`,
-				attemptNumber: 1 as const,
-				sourceOutputId: 'imagegen-output-1',
-				requestStartedAt: '2026-09-01T23:06:00.000Z',
-				generationCompletedAt: '2026-09-01T23:07:00.000Z',
-				inspectionCompletedAt: '2026-09-01T23:08:00.000Z'
-			}
-		],
-		findings,
-		candidate: {
-			path: packet.target.output.candidatePath,
-			mediaType: 'image/png' as const,
-			width: packet.target.presentation.canvas.width,
-			height: packet.target.presentation.canvas.height,
-			bytes: candidateBytes.byteLength,
-			sha256: candidateSha256
-		},
-		candidateSha256,
-		startedAt: '2026-09-01T23:05:59.000Z',
-		completedAt: '2026-09-01T23:08:01.000Z',
-		writtenOutputPaths: [packet.target.output.candidatePath, packet.target.output.resultPath],
-		noSharedFilesEdited: true as const,
-		selfPromoted: false as const
-	};
+	const result = resultForPacket(packet, candidateBytes);
 
 	await Promise.all([
 		writeRepositoryFile(workspaceRoot, PROFILE_PATH, jsonBytes(profile)),
@@ -154,7 +160,7 @@ async function fixture() {
 		profile,
 		acceptance,
 		candidateBytes,
-		candidateSha256,
+		candidateSha256: result.candidateSha256,
 		result
 	};
 }
@@ -444,6 +450,74 @@ describe('Equipment image worker result verification', () => {
 });
 
 describe('Equipment image result persistence and CLI', () => {
+	it('concurrently persists distinct owned results when their shared result ancestors are absent', async () => {
+		const valid = await fixture();
+		const secondPacket = buildRootEquipmentPackets({
+			manifest: buildEquipmentMaterialProductionManifest(),
+			allocation: buildEquipmentMaterialAllocationPlan(),
+			profile: valid.profile,
+			acceptance: valid.acceptance,
+			assignedAt: valid.packet.assignment.assignedAt
+		})[1]!;
+		const secondCandidateBytes = await sharp({
+			create: {
+				width: secondPacket.target.presentation.canvas.width,
+				height: secondPacket.target.presentation.canvas.height,
+				channels: 4,
+				background: { r: 35, g: 24, b: 18, alpha: 1 }
+			}
+		})
+			.png()
+			.toBuffer();
+		const secondResult = resultForPacket(secondPacket, secondCandidateBytes);
+		await Promise.all([
+			writeRepositoryFile(
+				valid.workspaceRoot,
+				secondPacket.targetPath,
+				jsonBytes(secondPacket.target)
+			),
+			writeRepositoryFile(
+				valid.workspaceRoot,
+				secondPacket.assignmentPath,
+				jsonBytes(secondPacket.assignment)
+			),
+			writeRepositoryFile(
+				valid.workspaceRoot,
+				secondPacket.target.output.candidatePath,
+				secondCandidateBytes
+			)
+		]);
+		await expect(
+			lstat(path.join(valid.workspaceRoot, ...`${ROOT}/results`.split('/')))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+
+		const persisted = await Promise.all([
+			persistEquipmentImageResult({
+				workspaceRoot: valid.workspaceRoot,
+				targetPath: valid.targetPath,
+				assignmentPath: valid.assignmentPath,
+				result: valid.result
+			}),
+			persistEquipmentImageResult({
+				workspaceRoot: valid.workspaceRoot,
+				targetPath: secondPacket.targetPath,
+				assignmentPath: secondPacket.assignmentPath,
+				result: secondResult
+			})
+		]);
+
+		expect(persisted.map(({ status }) => status)).toEqual(['candidate', 'candidate']);
+		expect(new Set(persisted.map(({ ownedPaths }) => ownedPaths.at(-1))).size).toBe(2);
+		expect(persisted[0]!.ownedPaths).toEqual([
+			valid.packet.target.output.candidatePath,
+			valid.packet.target.output.resultPath
+		]);
+		expect(persisted[1]!.ownedPaths).toEqual([
+			secondPacket.target.output.candidatePath,
+			secondPacket.target.output.resultPath
+		]);
+	});
+
 	it('fully verifies before exclusive create, then re-reads and verifies exact persisted bytes', async () => {
 		const valid = await fixture();
 		const persisted = await persistEquipmentImageResult({
