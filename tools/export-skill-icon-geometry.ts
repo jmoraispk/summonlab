@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { lstat, mkdir, open, readFile, realpath, rename, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -84,8 +85,55 @@ export async function renderSkillIconGeometryGuide(geometry: SkillIconGeometry):
 }
 
 async function currentBytes(destination: string, expected: Buffer): Promise<boolean> {
+	const metadata = await lstat(destination).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+	if (!metadata?.isFile()) return false;
 	const current = await readFile(destination).catch(() => null);
 	return current?.equals(expected) ?? false;
+}
+
+function isInside(parent: string, child: string): boolean {
+	const relative = path.relative(parent, child);
+	return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..');
+}
+
+async function assertSafeDestination(root: string, destination: string): Promise<void> {
+	const [resolvedRoot, resolvedDirectory] = await Promise.all([
+		realpath(root),
+		realpath(path.dirname(destination))
+	]);
+	if (!isInside(resolvedRoot, resolvedDirectory)) {
+		throw new Error(`Guide destination resolves outside the workspace root: ${destination}`);
+	}
+	const metadata = await lstat(destination).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+	if (metadata?.isSymbolicLink()) {
+		throw new Error(`Refusing to replace a symbolic link guide destination: ${destination}`);
+	}
+	if (metadata && !metadata.isFile()) {
+		throw new Error(`Guide destination is not a regular file: ${destination}`);
+	}
+}
+
+async function stageGuide(destination: string, bytes: Buffer): Promise<string> {
+	const temporary = `${destination}.stage-${process.pid}-${randomUUID()}.tmp`;
+	let handle: Awaited<ReturnType<typeof open>> | null = null;
+	try {
+		handle = await open(temporary, 'wx');
+		await handle.writeFile(bytes);
+		await handle.sync();
+		await handle.close();
+		handle = null;
+		return temporary;
+	} catch (error) {
+		await handle?.close().catch(() => undefined);
+		await unlink(temporary).catch(() => undefined);
+		throw error;
+	}
 }
 
 export async function exportSkillIconGeometry(options: {
@@ -105,9 +153,20 @@ export async function exportSkillIconGeometry(options: {
 	if (options.mode === 'write' && (!svgCurrent || !pngCurrent)) {
 		await mkdir(path.dirname(svgDestination), { recursive: true });
 		await Promise.all([
-			svgCurrent ? Promise.resolve() : writeFile(svgDestination, svg),
-			pngCurrent ? Promise.resolve() : writeFile(pngDestination, png)
+			assertSafeDestination(root, svgDestination),
+			assertSafeDestination(root, pngDestination)
 		]);
+		const staged: string[] = [];
+		try {
+			staged.push(await stageGuide(svgDestination, svg));
+			staged.push(await stageGuide(pngDestination, png));
+			await rename(staged[0]!, svgDestination);
+			staged.shift();
+			await rename(staged[0]!, pngDestination);
+			staged.shift();
+		} finally {
+			await Promise.all(staged.map((temporary) => unlink(temporary).catch(() => undefined)));
+		}
 		written = true;
 		svgCurrent = true;
 		pngCurrent = true;
