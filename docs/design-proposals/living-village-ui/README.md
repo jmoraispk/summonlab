@@ -1,6 +1,6 @@
 # Living Village client visual proposal
 
-**Status:** Title gateway and tier-one Village locked; progression and control model proposed
+**Status:** Title gateway, tier-one Village, and control model locked; Inventory redesign proposed
 
 **Date:** 2026-09-02
 
@@ -17,6 +17,8 @@ gameplay contracts, or shared content catalogs.
 - a scene-first, centered Village composition on desktop;
 - direct facility labels with fine leader lines;
 - the cyan circle and arrow that connect a selected hero to the world;
+- the four global modes: `Village`, `Residents`, `Inventory`, and `Missions`;
+- point-to-move for a selected resident, separate from facility and mode navigation;
 - the phone bottom-navigation placement and icon-plus-label treatment;
 - the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right, and
   the portal landmark centered at the rear.
@@ -24,9 +26,8 @@ gameplay contracts, or shared content catalogs.
 ### Continue designing
 
 - the exact gameplay thresholds behind the visual Village stages;
-- the exact Village Inventory organization and assignment interactions;
+- final Village Inventory states and exact equipment-assignment feedback;
 - the detailed suggested-packing and return-reconciliation sequence;
-- final approval of the proposed `Village`, `Residents`, `Inventory`, and `Missions` mode names;
 - production feasibility, responsive collision handling, and final asset requirements.
 
 The immediate goal is to freeze the foundation above, then use it to design the unresolved gameplay
@@ -59,7 +60,7 @@ this composition rather than turn the gateway into a conventional login form.
 
 These three complete desktop mockups preserve one camera, road pattern, facility layout, and interface
 shell while the settlement grows in place. The stages describe visual maturity only; they do not create
-a three-level gameplay contract. The shell also tests a simplified four-mode navigation proposal:
+a three-level gameplay contract. The shell uses the approved four-mode navigation:
 `Village`, `Residents`, `Inventory`, and `Missions`.
 
 ![Starting Village](./mockups/village-stage-1-desktop.png)
@@ -102,7 +103,16 @@ dimensions, and construction behavior remain undefined so interface work stays t
 
 ### Shared Village Inventory
 
-![Desktop Village Inventory](./mockups/village-inventory-desktop.png)
+The revised Inventory keeps the stockpile communal and visually dominant. Selecting available equipment
+opens an explicit resident chooser; mission supplies remain in the `Missions` preparation flow instead
+of sharing an ambiguous `Assign or Pack` action.
+
+![Desktop Village Inventory](./mockups/village-inventory-desktop-v2.png)
+
+![Phone Village Inventory](./mockups/village-inventory-phone.png)
+
+The [earlier desktop concept](./mockups/village-inventory-desktop.png) remains as design history. Its
+five-mode shell and combined `Assign or Pack` action are superseded.
 
 ### Suggested mission packing
 

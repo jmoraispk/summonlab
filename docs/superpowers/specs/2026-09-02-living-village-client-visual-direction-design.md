@@ -1,6 +1,6 @@
 # Living Village client visual direction
 
-**Status:** Title gateway and tier-one Village locked; progression and control model proposed
+**Status:** Title gateway, tier-one Village, and control model locked; Inventory redesign proposed
 
 **Date:** 2026-09-02
 
@@ -27,8 +27,8 @@ not alter gameplay contracts or shared content catalogs.
 5. Desktop uses a centered, symmetrical panorama as its home composition.
 6. Facility pointers inherit the brighter, more legible callout treatment from the first explored
    direction.
-7. Phone uses a fixed bottom navigation bar with an icon and label for every global mode. The placement
-   and treatment remain approved; the exact destination set is reopened by the control proposal below.
+7. Phone uses a fixed bottom navigation bar with icon and label for `Village`, `Residents`, `Inventory`,
+   and `Missions`.
 8. Hero details appear only after the player selects a resident.
 9. Inventory has two meanings only: the shared Village Inventory and a temporary per-hero Mission
    Inventory.
@@ -40,17 +40,18 @@ not alter gameplay contracts or shared content catalogs.
     right, and the portal landmark on the centerline.
 14. A selected resident physically moves through the Village. Facility pointers and navigation support
     that spatial experience; they do not reduce the Village to a static image map.
+15. Point-to-move directs the selected resident. Opening a facility or switching a global mode does not
+    issue a movement order.
 
-## Control model recommendation — pending approval
+## Approved control model
 
-The interface should distinguish global modes from physical Village places. The recommended shell has
-four stable modes:
+The interface distinguishes global modes from physical Village places. The shell has four stable modes:
 
 | Global mode | Player expectation |
 | --- | --- |
 | `Village` | See the living settlement, select residents, inspect facilities, and direct movement |
 | `Residents` | Browse the full roster and inspect one person's state, equipment, and mission cargo |
-| `Inventory` | Manage the shared Village stockpile and assign equipment or mission supplies |
+| `Inventory` | Manage the shared Village stockpile and equip items to residents |
 | `Missions` | Choose a Tower or Portal expedition, prepare its party and cargo, depart, and reconcile the return |
 
 Residence, Kitchen, Training Grounds, Forge, and Portal Tower are world facilities, not parallel global
@@ -68,13 +69,15 @@ The following visual foundation is approved and should not be reopened during ro
 - the centered, scene-first desktop Village composition;
 - bright facility labels attached to their targets with fine leader lines;
 - the cyan circle and arrow used to identify a selected hero in the scene;
+- the four global modes: `Village`, `Residents`, `Inventory`, and `Missions`;
+- point-to-move for the selected resident, kept separate from facility and mode navigation;
 - the phone bottom-navigation placement and icon-plus-label treatment;
 - the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right,
   Portal Tower centered at the rear, and four residents in the approved review frame.
 
 Approval of the composition does not freeze the mature settlement shown in the exploratory Village
 mockups as the launch-state population or construction state. Inventory layout, mission packing details,
-return reconciliation, the proposed four-mode naming, and gameplay progression remain open design work.
+return reconciliation, and gameplay progression remain open design work.
 
 The title gateway is locked. Subsequent design passes may define the sign-in step after `Enter Village`,
 but should not add login fields, account navigation, or secondary actions to the gateway itself.
@@ -108,7 +111,7 @@ dashboard laid over an illustration.
 - Pair every navigation icon with a label on phone.
 - Do not rely on color alone for active state; combine color, border/marker, and text treatment.
 
-## Recommended information architecture
+## Approved information architecture
 
 ```text
 Title gateway
@@ -157,7 +160,7 @@ Mockups: [desktop](../../design-proposals/living-village-ui/mockups/title-gatewa
 
 Desktop is anchored in the centered panorama direction:
 
-- a restrained top navigation establishes the four proposed global modes;
+- a restrained top navigation establishes the four global modes;
 - the panorama remains the dominant surface rather than becoming a banner;
 - facility names are placed near their targets with thin leader lines;
 - a resident strip anchors selection without covering the settlement;
@@ -175,7 +178,7 @@ Phone treats the Village as a vertical, explorable home rather than a compressed
 
 - the settlement fills the usable viewport;
 - facility pointers remain directly attached to the scene;
-- the fixed bottom bar exposes all four proposed global modes with icon and label;
+- the fixed bottom bar exposes all four global modes with icon and label;
 - resident details rise as a bottom sheet or replace the resident strip after selection;
 - safe-area padding is part of the navigation height;
 - when the keyboard or a blocking confirmation opens, the bar may temporarily yield.
@@ -318,11 +321,20 @@ views of the same communal holding, not different owners.
 
 - Resource rows emphasize name and amount.
 - Equipment rows expose availability, current wearer when equipped, and durability.
-- `Assign or Pack` starts a destination-aware flow: persistent equipment assignment or temporary
-  mission packing.
-- A hero portrait may appear in a chooser, but never dominate the stockpile surface.
+- Selecting available equipment opens a contextual assignment surface: a right panel on desktop and an
+  anchored bottom sheet on phone.
+- `Equip` is the only persistent-equipment assignment verb. The selected resident and replaced slot are
+  stated before commitment.
+- Equipped rows name their current wearer and do not present another immediate `Equip` action.
+- Hero portraits appear only inside the contextual resident chooser and never turn the stockpile into a
+  collection of personal inventories.
+- Mission supplies are packed from `Missions`; Inventory may link there, but it does not combine
+  equipment assignment and mission packing behind an ambiguous action.
 
-Mockup: [desktop Village Inventory](../../design-proposals/living-village-ui/mockups/village-inventory-desktop.png).
+Mockups: [desktop Village Inventory](../../design-proposals/living-village-ui/mockups/village-inventory-desktop-v2.png)
+and [phone Village Inventory](../../design-proposals/living-village-ui/mockups/village-inventory-phone.png).
+The [earlier desktop concept](../../design-proposals/living-village-ui/mockups/village-inventory-desktop.png)
+is superseded because it used the old five-mode shell and combined `Assign or Pack` action.
 
 ### Mission Inventory and suggested packs
 
@@ -349,7 +361,7 @@ Mockup: [phone mission packing](../../design-proposals/living-village-ui/mockups
 | Facility access | Scene labels and leader lines | Scene labels with collision suppression |
 | Resident switching | Bottom resident strip | Compact strip inside the inspection sheet |
 | Hero inspection | Right side sheet | Bottom sheet, expandable to full height |
-| Inventory detail | Two-column or ledger-plus-context | Single column; detail replaces list until dismissed |
+| Inventory detail | Shared ledger plus contextual assignment panel | Shared list plus anchored assignment sheet |
 | Mission packing | Side-by-side hero and pack review | Hero carousel plus stacked quantity controls |
 | Wiki | Outside shell | Outside shell |
 
