@@ -33,6 +33,9 @@ not alter gameplay contracts or shared content catalogs.
 9. Inventory has two meanings only: the shared Village Inventory and a temporary per-hero Mission
    Inventory.
 10. Mission packs are suggested automatically and remain editable before departure.
+11. The starting settlement is already a functioning Village with four critical facilities:
+    `Residence`, `Forge`, `Training Grounds`, and `Kitchen`.
+12. Starting buildings are humble, complete tier-one versions that can visibly upgrade in place.
 
 ## Freeze boundary
 
@@ -158,8 +161,8 @@ state. The home surface must tell the truth about the player's settlement and ro
 
 | Visual stage | World presentation |
 | --- | --- |
-| Starting Village | Three to five visible summoned residents, the portal/gate landmark, only the facilities actually available, dark or empty plots, and generous negative space |
-| Growing Village | Newly built structures occupy established plots; scaffolding, work light, smoke, and a few purposeful residents communicate progress without background crowds |
+| Starting Village | Three to five visible summoned residents; complete tier-one Residence, Forge, Training Grounds, and Kitchen; a portal landmark; and breathing room around every building |
+| Growing Village | Existing buildings expand upward or outward in place; new wings, stronger materials, work light, smoke, and a few purposeful residents communicate progress without background crowds |
 | Mature Village | The denser illuminated panorama, broader activity, and full facility labeling shown by the current exploratory mockups |
 
 These are visual stages, not gameplay thresholds or content-catalog definitions. The runtime scene should
@@ -167,16 +170,27 @@ derive visible residents from the actual roster and facility presence from actua
 must not use decorative crowds that imply heroes or workers the player does not have.
 
 The camera composition, navigation anchors, and major plots should remain stable across stages so growth
-feels additive. Construction fills deliberate absences; it should not replace the whole Village with an
-unrelated background. A future design pass must establish the starting plot map, the first available
-facility set, and transitions for construction and arrival.
+feels additive. Upgrades should extend the starter buildings rather than replace the whole Village with
+an unrelated background. A future design pass must establish the tier progression for each building and
+the transitions for construction, improvement, and resident arrival.
 
-The first opening-state candidate tests that approach with a permanent portal and central road, one
-completed residence, exactly three residents, and three recognizable future sites. The sites occupy the
-same compositional roles that completed facilities can inherit later; they are promises of growth rather
-than disabled dashboard cards. This candidate remains exploratory pending visual review.
+The first opening-state candidate used one residence and three empty construction sites. It established
+the permanent road and plot logic but felt too bare to communicate that play begins in a real village.
+It is superseded as the active direction.
 
-Mockup: [opening Village desktop candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
+The second candidate begins with four complete but modest facilities around the permanent road and a
+Portal Tower. It uses exactly four visible residents and preserves enough space for every structure to
+gain height, wings, ornament, and activity. This candidate remains exploratory pending visual review.
+
+Mockups: [current tier-one Village candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v2.png)
+and [superseded sparse-site study](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
+
+### Portal Tower working hypothesis
+
+The current recommendation is to house the portal inside the Tower. `Tower` names the physical place
+used for mission planning and preparation; `Gate` names the portal function used for departure and
+return. Both may focus the same landmark while opening different interaction states. This resolves the
+world-space duplication without yet freezing whether the two navigation destinations remain separate.
 
 ### Facility pointer states
 

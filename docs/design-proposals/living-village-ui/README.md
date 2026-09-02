@@ -21,7 +21,7 @@ gameplay contracts, or shared content catalogs.
 
 ### Continue designing
 
-- the sparse starting Village and its visible growth into the mature panorama;
+- the exact tier-one Village layout and its visible upgrades into the mature panorama;
 - the exact Village Inventory organization and assignment interactions;
 - the detailed suggested-packing and return-reconciliation sequence;
 - whether Tower and Gate remain separate destinations;
@@ -55,11 +55,14 @@ this composition rather than turn the gateway into a conventional login form.
 
 ### Exploratory opening Village
 
-This candidate is intentionally not frozen yet. It tests a stable path to the mature Village: one
-portal, one residence, exactly three visible residents, and future facilities occupying recognizable
-but unbuilt plots along the permanent central road.
+The current candidate starts with a functioning tier-one Village: Residence, Forge, Training Grounds,
+Kitchen, and a Portal Tower. Exactly four visible residents keep it intimate, while modest building
+footprints leave room for upgrades in place.
 
-![Opening Village desktop candidate](./mockups/opening-village-desktop-v1.png)
+![Opening Village desktop candidate v2](./mockups/opening-village-desktop-v2.png)
+
+The [superseded sparse-site study](./mockups/opening-village-desktop-v1.png) remains as design history;
+it felt too much like a construction yard and did not provide enough sense of starting in a village.
 
 ### Shared Village Inventory
 
