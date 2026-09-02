@@ -16,6 +16,8 @@
 		"equipment-image-packets.spec.ts",
 		"equipment-image-result.ts",
 		"equipment-image-result.spec.ts",
+		"equipment-image-run-readiness.ts",
+		"equipment-image-run-readiness.spec.ts",
 		"equipment-image-production.ts",
 		"persist-equipment-image-production-output.ts",
 		"persist-equipment-image-production-output.spec.ts",

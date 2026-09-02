@@ -20,6 +20,11 @@ import {
 	readEquipmentRepositoryJson,
 	verifyEquipmentImageResult
 } from './equipment-image-result.js';
+import {
+	DEFAULT_EQUIPMENT_RUN_ID,
+	activateEquipmentRun,
+	reportEquipmentRunReadiness
+} from './equipment-image-run-readiness.js';
 
 const PROFILE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/visual-profile/profile.json` as const;
 const MANIFEST_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/manifest.json` as const;
@@ -214,6 +219,36 @@ export async function runEquipmentImageProductionCli(input: {
 			result: await readEquipmentRepositoryJson(input.workspaceRoot, resultPath)
 		});
 		return { command, targetPath, assignmentPath, resultPath, ...result };
+	}
+
+	if (command === 'report-readiness') {
+		const options = parseOptions(commandArgs, ['--run-id', '--created-at', '--checked-at']);
+		const checkedAt = options.get('--checked-at') ?? new Date().toISOString();
+		const result = await reportEquipmentRunReadiness({
+			workspaceRoot: input.workspaceRoot,
+			runId: options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID,
+			createdAt: options.get('--created-at') ?? checkedAt,
+			checkedAt
+		});
+		return { command, ...result };
+	}
+
+	if (command === 'activate-run') {
+		const options = parseOptions(commandArgs, [
+			'--run-id',
+			'--created-at',
+			'--activated-at',
+			'--activated-by'
+		]);
+		const activatedAt = options.get('--activated-at') ?? new Date().toISOString();
+		const result = await activateEquipmentRun({
+			workspaceRoot: input.workspaceRoot,
+			runId: options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID,
+			createdAt: options.get('--created-at') ?? activatedAt,
+			activatedAt,
+			activatedBy: requireOption(options, '--activated-by')
+		});
+		return { command, ...result };
 	}
 
 	throw new Error(`Unknown Equipment image-production command: ${command}`);
