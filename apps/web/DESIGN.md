@@ -186,8 +186,10 @@ results.
   goblin_02 died`. Optional character messages are short public intent or personality, not private
   reasoning, and never imply an outcome before the engine resolves it.
 - Keep the feed subordinate to the battlefield: on phone it is a shallow, collapsible overlay above
-  the command bar; desktop may use adjacent space. Each message retains actor identity, event order,
-  and replay linkage, and the complete feed remains reachable without relying on transient animation.
+  the command bar showing the latest three messages by default; expanding it reveals the complete
+  history. Desktop uses adjacent space for the feed. Each message retains actor identity, event
+  order, and replay linkage, and the complete feed remains reachable without relying on transient
+  animation.
 
 ### Content and data visualization
 

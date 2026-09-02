@@ -91,6 +91,10 @@ Messages arrive in authoritative event order and retain links to their source ev
 feed can be reconstructed during replay. Narration may color a resolved event, but cannot predict,
 replace, or revise resolution.
 
+On phone, the collapsed feed shows the latest three messages above the command bar and expands to
+the complete history. Desktop places the same feed beside the battlefield, using the additional
+horizontal space without changing its message order or contents.
+
 The supplied damage expression currently defines shape, not accepted constants:
 
 ```text
