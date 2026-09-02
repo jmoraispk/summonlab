@@ -1,9 +1,10 @@
 {
   "schemaVersion": "hero-star-progression-study-v1",
   "experimentId": "ultra-realistic-star-progression-v1",
-  "status": "candidate-review",
+  "status": "rejected-rendering-direction",
   "createdAt": "2026-09-02",
   "purpose": "Test whether four fixed identities remain recognizable while 1-star, 3-star, 5-star, and 7-star forms become unmistakably more exceptional in an ultra-realistic cinematic direction.",
+  "decision": "Rejected on 2026-09-02: the literal photographic correction pass exceeds the accepted hero realism ceiling. Retained only as review and provenance evidence.",
   "authority": "docs/wiki/art/hero-identity-and-evolution.md",
   "rankOrder": [1, 3, 5, 7],
   "summonRule": "Only 1-star through 5-star heroes may be summoned; 6-star and 7-star forms are reached through evolution.",

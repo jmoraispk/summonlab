@@ -1,9 +1,10 @@
 {
   "schemaVersion": "hero-one-star-selection-pilot-v1",
   "experimentId": "one-star-selection-pilot-v1",
-  "status": "candidate-review",
+  "status": "rejected-rendering-direction",
   "createdAt": "2026-09-02",
   "purpose": "Validate a shortlist-first production funnel with twelve ultra-realistic, weaponless, unaligned 1-star identity anchors before scaling toward two 100-candidate waves.",
+  "decision": "The shortlist interaction model remains useful, but the literal photographic hero rendering was rejected on 2026-09-02 and must not guide future production.",
   "selectionFunnel": {
     "pilotCount": 12,
     "proposedWaveA": { "generated": 100, "targetKeeps": 40 },

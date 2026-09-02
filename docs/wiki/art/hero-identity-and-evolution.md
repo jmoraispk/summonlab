@@ -9,6 +9,23 @@ connects physical variation, starting capability, aptitudes, personality, wardro
 and current-star evolution without pretending that an image model is a deterministic procedural
 human renderer.
 
+## Accepted rendering register
+
+Hero art uses **cinematic semi-realistic painted character art**. The accepted realism ceiling is
+the [Ochre Braid progression reference](../../../assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png),
+whose manifest explicitly limits approval to rendering direction.
+
+The target combines believable adult anatomy, weight, skin, hair, textile construction, leather,
+and metal with a polished painterly game-key-art finish. It must not be pushed into literal
+live-action photography, photo-specific pore or lens treatment, plastic 3D surfaces, anime
+simplification, or cel shading. “Realistic” in older hero planning documents means materially and
+anatomically believable inside this painted register; it does not authorize photorealism.
+
+Expression belongs to identity and scene context, not rank. Evolution must not manufacture a smile,
+grin, theatrical anger, or exaggerated facial acting merely to make a later form feel different.
+Unless a scene brief explicitly requires another expression, continuity studies preserve the
+anchor's calm, controlled facial affect.
+
 ## Reproducible brief, stochastic image
 
 The durable source is a versioned hero design manifest plus the exact approved image bytes. A
@@ -194,6 +211,15 @@ Production ultimately preserves, per hero:
 The first production experiment should cover twelve 1★ heroes with deliberately broad wardrobe and
 physical variation. The strongest identities then receive 1★, 3★, 5★, and 7★ evolution studies so
 the team can judge both initial variety and continuity before producing a large roster.
+
+## Rendering decision record
+
+- On 2026-09-02, the owner rejected the literal photographic/ultra-realistic branch after direct
+  comparison and accepted the cinematic semi-realistic register above.
+- The photographic progression and one-star shortlist experiments remain retained as rejected
+  review evidence. Their pixels and prompts must not be used as forward hero-style references.
+- The shortlist-first production workflow remains viable independently of the rejected rendering
+  style: generate 1★ identity candidates, approve anchors, then invest in their evolution states.
 
 ## Integration boundary
 
