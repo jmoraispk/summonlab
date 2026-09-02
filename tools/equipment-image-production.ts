@@ -343,6 +343,12 @@ export async function runEquipmentImageProductionCli(input: {
 			if (!['candidate', 'revise', 'failed'].includes(status)) {
 				throw new Error('--status must be candidate, revise, or failed');
 			}
+			if (status === 'failed' && options.has('--result-canonical-sha256')) {
+				throw new Error('--result-canonical-sha256 is forbidden for failed terminal events');
+			}
+			if (status !== 'failed' && options.has('--failure-kind')) {
+				throw new Error(`--failure-kind is forbidden for ${status} terminal events`);
+			}
 			request = {
 				...requestCommon,
 				kind: 'job-terminal',

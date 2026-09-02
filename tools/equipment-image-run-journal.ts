@@ -110,6 +110,9 @@ function orderAndVerifyEvents(
 		if (event.previousEventCanonicalSha256 !== expectedPreviousHash) {
 			throw new Error(`Equipment event does not hash-bind the previous event: ${event.sequence}`);
 		}
+		if (Date.parse(event.request.requestedAt) > Date.parse(event.recordedAt)) {
+			throw new Error('Equipment event requestedAt must not be later than recordedAt');
+		}
 		if (previous !== undefined && Date.parse(event.recordedAt) < Date.parse(previous.recordedAt)) {
 			throw new Error('Recorder event timestamps must be nondecreasing');
 		}

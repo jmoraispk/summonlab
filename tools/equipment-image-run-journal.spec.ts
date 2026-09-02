@@ -173,6 +173,20 @@ describe('Equipment run journal replay', () => {
 		expect(() => replayEquipmentRunJournal(context, wrongRun)).toThrow(/another run/iu);
 	});
 
+	it('rejects future requests but accepts older concurrent-origin request times', () => {
+		const futureRequest = request('run-started', 'event-01', { epochId: 'epoch-one' });
+		futureRequest.requestedAt = '2026-09-03T00:00:00.000Z';
+		expect(() => replayEquipmentRunJournal(context, journal([futureRequest]))).toThrow(
+			/requestedAt.*recordedAt|request.*future/iu
+		);
+
+		const olderClaim = claimed();
+		olderClaim.requestedAt = '2026-09-01T20:00:00.000Z';
+		expect(() =>
+			replayEquipmentRunJournal(context, journal([runStarted(), olderClaim]))
+		).not.toThrow();
+	});
+
 	it('rejects changing worker identity and two active jobs for one worker', () => {
 		expect(() =>
 			replayEquipmentRunJournal(

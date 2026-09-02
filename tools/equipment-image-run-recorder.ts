@@ -12,6 +12,7 @@ import {
 	EQUIPMENT_PRODUCTION_ROOT,
 	type EquipmentRunActivation,
 	type EquipmentRunEvent,
+	type EquipmentRunEventRequest,
 	type EquipmentRunPlan
 } from './equipment-image-production-contract.js';
 import { canonicalJsonSha256 } from './equipment-image-packets.js';
@@ -38,6 +39,18 @@ interface JournalLockEvidence {
 	readonly acquiredAt: string;
 }
 
+export interface EquipmentRunRecorderTestHooks {
+	readonly afterStaleMainLockRemoved?: () => void | Promise<void>;
+	readonly beforePacketResolution?: (input: {
+		readonly index: number;
+		readonly targetId: string;
+	}) => void | Promise<void>;
+	readonly afterEventFileCreated?: (input: {
+		readonly event: EquipmentRunEvent;
+		readonly eventPath: string;
+	}) => void | Promise<void>;
+}
+
 interface RecorderLockOptions {
 	readonly workspaceRoot: string;
 	readonly runId: string;
@@ -46,6 +59,7 @@ interface RecorderLockOptions {
 	readonly now?: () => Date;
 	readonly staleLockAfterMs?: number;
 	readonly lockWaitTimeoutMs?: number;
+	readonly testHooks?: EquipmentRunRecorderTestHooks;
 }
 
 export interface RecordEquipmentRunEventOptions extends RecorderLockOptions {
@@ -89,7 +103,8 @@ function runPaths(runId: string) {
 		planPath: `${runDirectory}/plan.json`,
 		activationPath: `${runDirectory}/activation.json`,
 		eventsDirectory: `${runDirectory}/events`,
-		lockPath: `${runDirectory}/.journal.lock`
+		lockPath: `${runDirectory}/.journal.lock`,
+		recoveryGuardPath: `${runDirectory}/.journal-lock-recovery.guard`
 	};
 }
 
@@ -195,14 +210,20 @@ function isProcessAlive(processId: number): boolean {
 async function readLock(
 	workspaceRoot: string,
 	lockPath: string
-): Promise<{ evidence: JournalLockEvidence; identity: FileIdentity }> {
-	if ((await pathStateWithoutFollowing(workspaceRoot, lockPath)) !== 'file') {
+): Promise<{ evidence: JournalLockEvidence; identity: FileIdentity } | null> {
+	const state = await pathStateWithoutFollowing(workspaceRoot, lockPath);
+	if (state === 'absent') return null;
+	if (state !== 'file') {
 		throw new Error('Equipment journal lock collision is not a regular file');
 	}
 	const handle = await open(
 		repositoryAbsolute(workspaceRoot, lockPath),
 		fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW
-	);
+	).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+	if (handle === null) return null;
 	try {
 		const metadata = await handle.stat();
 		if (!metadata.isFile()) throw new Error('Equipment journal lock must be a regular file');
@@ -220,6 +241,106 @@ async function readLock(
 	} finally {
 		await handle.close();
 	}
+}
+
+function lockIsStale(evidence: JournalLockEvidence, now: Date, staleLockAfterMs: number): boolean {
+	return (
+		now.getTime() - Date.parse(evidence.acquiredAt) >= staleLockAfterMs &&
+		!isProcessAlive(evidence.processId)
+	);
+}
+
+async function waitForLockRetry(input: {
+	readonly waitStartedAt: number;
+	readonly lockWaitTimeoutMs: number;
+	readonly timeoutMessage: string;
+}): Promise<void> {
+	if (Date.now() - input.waitStartedAt >= input.lockWaitTimeoutMs) {
+		throw new Error(input.timeoutMessage);
+	}
+	await new Promise<void>((resolve) => {
+		setTimeout(resolve, LOCK_RETRY_INTERVAL_MS);
+	});
+}
+
+async function createOwnedLockFile(input: {
+	readonly workspaceRoot: string;
+	readonly repositoryPath: string;
+	readonly evidence: JournalLockEvidence;
+}): Promise<{ identity: FileIdentity; path: string } | null> {
+	let handle;
+	try {
+		handle = await open(repositoryAbsolute(input.workspaceRoot, input.repositoryPath), 'wx');
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'EEXIST') return null;
+		throw error;
+	}
+	const metadata = await handle.stat();
+	const identity = { device: metadata.dev, inode: metadata.ino };
+	try {
+		await handle.writeFile(`${JSON.stringify(input.evidence, null, '\t')}\n`, 'utf8');
+		await handle.sync();
+		await handle.close();
+		return { identity, path: input.repositoryPath };
+	} catch (error) {
+		await handle.close().catch(() => undefined);
+		if (!(await unlinkIfIdentityMatches(input.workspaceRoot, input.repositoryPath, identity))) {
+			throw new Error(`Owned Equipment lock could not be safely cleaned: ${input.repositoryPath}`, {
+				cause: error
+			});
+		}
+		throw error;
+	}
+}
+
+async function recoverStaleMainLock(input: {
+	readonly options: RecorderLockOptions;
+	readonly paths: ReturnType<typeof runPaths>;
+	readonly evidence: JournalLockEvidence;
+	readonly staleLockAfterMs: number;
+}): Promise<boolean> {
+	if (
+		(await pathStateWithoutFollowing(input.options.workspaceRoot, input.paths.runDirectory)) !==
+		'directory'
+	) {
+		throw new Error('Equipment run directory must be a verified real directory');
+	}
+	const guard = await createOwnedLockFile({
+		workspaceRoot: input.options.workspaceRoot,
+		repositoryPath: input.paths.recoveryGuardPath,
+		evidence: input.evidence
+	});
+	if (guard === null) return false;
+	let recoverySucceeded = false;
+	let recoveryError: unknown;
+	try {
+		const current = await readLock(input.options.workspaceRoot, input.paths.lockPath);
+		if (
+			current !== null &&
+			lockIsStale(current.evidence, input.options.now?.() ?? new Date(), input.staleLockAfterMs)
+		) {
+			if (
+				!(await unlinkIfIdentityMatches(
+					input.options.workspaceRoot,
+					input.paths.lockPath,
+					current.identity
+				))
+			) {
+				throw new Error('Stale Equipment journal lock changed during guarded recovery');
+			}
+			await input.options.testHooks?.afterStaleMainLockRemoved?.();
+		}
+		recoverySucceeded = true;
+	} catch (error) {
+		recoveryError = error;
+	}
+	if (!(await unlinkIfIdentityMatches(input.options.workspaceRoot, guard.path, guard.identity))) {
+		throw new Error('Equipment journal recovery guard changed before owned release', {
+			cause: recoveryError
+		});
+	}
+	if (!recoverySucceeded) throw recoveryError;
+	return true;
 }
 
 async function unlinkIfIdentityMatches(
@@ -260,54 +381,69 @@ async function acquireRunLock(options: RecorderLockOptions): Promise<{
 	}
 	const waitStartedAt = Date.now();
 	while (true) {
-		let handle;
-		try {
-			handle = await open(repositoryAbsolute(options.workspaceRoot, paths.lockPath), 'wx');
-			const metadata = await handle.stat();
-			const identity = { device: metadata.dev, inode: metadata.ino };
-			try {
-				await handle.writeFile(
-					`${JSON.stringify(
-						{
-							ownerId: options.lockOwnerId,
-							processId,
-							acquiredAt: now().toISOString()
-						},
-						null,
-						'\t'
-					)}\n`,
-					'utf8'
-				);
-				await handle.sync();
-			} catch (error) {
-				await handle.close();
-				handle = undefined;
-				await unlinkIfIdentityMatches(options.workspaceRoot, paths.lockPath, identity);
-				throw error;
-			}
-			await handle.close();
-			return { identity, lockPath: paths.lockPath };
-		} catch (error) {
-			if (handle !== undefined) await handle.close();
-			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+		if (
+			(await pathStateWithoutFollowing(options.workspaceRoot, paths.runDirectory)) !== 'directory'
+		) {
+			throw new Error('Equipment run directory must be a verified real directory');
 		}
+		const guardState = await pathStateWithoutFollowing(
+			options.workspaceRoot,
+			paths.recoveryGuardPath
+		);
+		if (guardState !== 'absent') {
+			if (guardState !== 'file') {
+				throw new Error('Equipment journal recovery guard must be a regular file');
+			}
+			await waitForLockRetry({
+				waitStartedAt,
+				lockWaitTimeoutMs,
+				timeoutMessage: 'Equipment journal recovery guard requires operator resolution'
+			});
+			continue;
+		}
+		const owned = await createOwnedLockFile({
+			workspaceRoot: options.workspaceRoot,
+			repositoryPath: paths.lockPath,
+			evidence: {
+				ownerId: options.lockOwnerId,
+				processId,
+				acquiredAt: now().toISOString()
+			}
+		});
+		if (owned !== null) return { identity: owned.identity, lockPath: owned.path };
 
-		const existing = await readLock(options.workspaceRoot, paths.lockPath);
-		const ageMs = now().getTime() - Date.parse(existing.evidence.acquiredAt);
-		const live = isProcessAlive(existing.evidence.processId);
-		if (ageMs >= staleLockAfterMs && !live) {
-			if (await unlinkIfIdentityMatches(options.workspaceRoot, paths.lockPath, existing.identity)) {
+		let existing;
+		try {
+			existing = await readLock(options.workspaceRoot, paths.lockPath);
+		} catch (error) {
+			await waitForLockRetry({
+				waitStartedAt,
+				lockWaitTimeoutMs,
+				timeoutMessage: `Equipment journal lock could not be verified: ${error instanceof Error ? error.message : String(error)}`
+			});
+			continue;
+		}
+		if (existing === null) continue;
+		if (lockIsStale(existing.evidence, now(), staleLockAfterMs)) {
+			if (
+				await recoverStaleMainLock({
+					options,
+					paths,
+					evidence: {
+						ownerId: options.lockOwnerId,
+						processId,
+						acquiredAt: now().toISOString()
+					},
+					staleLockAfterMs
+				})
+			) {
 				continue;
 			}
-			throw new Error('Stale Equipment journal lock changed during recovery');
 		}
-		if (Date.now() - waitStartedAt >= lockWaitTimeoutMs) {
-			throw new Error(
-				`Live Equipment journal lock is owned by ${existing.evidence.ownerId} (process ${existing.evidence.processId})`
-			);
-		}
-		await new Promise<void>((resolve) => {
-			setTimeout(resolve, LOCK_RETRY_INTERVAL_MS);
+		await waitForLockRetry({
+			waitStartedAt,
+			lockWaitTimeoutMs,
+			timeoutMessage: `Live Equipment journal lock is owned by ${existing.evidence.ownerId} (process ${existing.evidence.processId})`
 		});
 	}
 }
@@ -418,16 +554,17 @@ async function readEvents(
 	return replayEquipmentRunJournal(evidence.context, events).orderedEvents.slice();
 }
 
-async function exclusiveCreateEvent(
-	workspaceRoot: string,
-	eventsDirectory: string,
-	event: EquipmentRunEvent
-): Promise<string> {
-	await ensureRealDirectory(workspaceRoot, eventsDirectory);
-	const eventPath = `${eventsDirectory}/${eventFileName(event)}`;
+async function exclusiveCreateEvent(input: {
+	readonly workspaceRoot: string;
+	readonly eventsDirectory: string;
+	readonly event: EquipmentRunEvent;
+	readonly testHooks?: EquipmentRunRecorderTestHooks | undefined;
+}): Promise<string> {
+	await ensureRealDirectory(input.workspaceRoot, input.eventsDirectory);
+	const eventPath = `${input.eventsDirectory}/${eventFileName(input.event)}`;
 	let handle;
 	try {
-		handle = await open(repositoryAbsolute(workspaceRoot, eventPath), 'wx');
+		handle = await open(repositoryAbsolute(input.workspaceRoot, eventPath), 'wx');
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
 			throw new Error(`Exclusive Equipment event creation collided: ${eventPath}`, {
@@ -436,11 +573,21 @@ async function exclusiveCreateEvent(
 		}
 		throw error;
 	}
+	const metadata = await handle.stat();
+	const identity = { device: metadata.dev, inode: metadata.ino };
 	try {
-		await handle.writeFile(`${JSON.stringify(event, null, '\t')}\n`, 'utf8');
+		await input.testHooks?.afterEventFileCreated?.({ event: input.event, eventPath });
+		await handle.writeFile(`${JSON.stringify(input.event, null, '\t')}\n`, 'utf8');
 		await handle.sync();
-	} finally {
 		await handle.close();
+	} catch (error) {
+		await handle.close().catch(() => undefined);
+		if (!(await unlinkIfIdentityMatches(input.workspaceRoot, eventPath, identity))) {
+			throw new Error(`Incomplete Equipment event could not be safely cleaned: ${eventPath}`, {
+				cause: error
+			});
+		}
+		throw error;
 	}
 	return eventPath;
 }
@@ -450,6 +597,7 @@ async function appendEventUnderLock(input: {
 	readonly evidence: VerifiedRunEvidence;
 	readonly request: unknown;
 	readonly recordedAt: string;
+	readonly testHooks?: EquipmentRunRecorderTestHooks | undefined;
 }): Promise<{ event: EquipmentRunEvent; eventPath: string; state: EquipmentRunJournalState }> {
 	await assertRunEvidenceUnchanged(input.workspaceRoot, input.evidence);
 	const currentEvents = await readEvents(input.workspaceRoot, input.evidence);
@@ -463,11 +611,12 @@ async function appendEventUnderLock(input: {
 		request
 	});
 	replayEquipmentRunJournal(input.evidence.context, [...currentEvents, event]);
-	const eventPath = await exclusiveCreateEvent(
-		input.workspaceRoot,
-		runPaths(input.evidence.plan.runId).eventsDirectory,
-		event
-	);
+	const eventPath = await exclusiveCreateEvent({
+		workspaceRoot: input.workspaceRoot,
+		eventsDirectory: runPaths(input.evidence.plan.runId).eventsDirectory,
+		event,
+		testHooks: input.testHooks
+	});
 	await assertRunEvidenceUnchanged(input.workspaceRoot, input.evidence);
 	const persistedEvents = await readEvents(input.workspaceRoot, input.evidence);
 	const state = replayEquipmentRunJournal(input.evidence.context, persistedEvents);
@@ -498,7 +647,8 @@ export async function recordEquipmentRunEvent(
 			workspaceRoot: options.workspaceRoot,
 			evidence,
 			request: options.request,
-			recordedAt: options.recordedAt
+			recordedAt: options.recordedAt,
+			testHooks: options.testHooks
 		})
 	);
 }
@@ -564,6 +714,64 @@ async function resolvePacket(
 	};
 }
 
+type EquipmentPacketBinding = Awaited<ReturnType<typeof resolvePacket>>;
+type EquipmentClaimRequest = Extract<EquipmentRunEventRequest, { kind: 'job-claimed' }>;
+
+interface PlannedEquipmentClaim {
+	readonly sequence: number;
+	readonly request: EquipmentClaimRequest;
+	readonly packet: EquipmentPacketBinding;
+}
+
+async function reconstructDurableClaimPrefix(input: {
+	readonly workspaceRoot: string;
+	readonly evidence: VerifiedRunEvidence;
+	readonly plannedClaims: readonly PlannedEquipmentClaim[];
+	readonly recordedAt: string;
+}): Promise<EquipmentJobClaim[]> {
+	await assertRunEvidenceUnchanged(input.workspaceRoot, input.evidence);
+	const persistedEvents = await readEvents(input.workspaceRoot, input.evidence);
+	const state = replayEquipmentRunJournal(input.evidence.context, persistedEvents);
+	const durablePrefix: EquipmentJobClaim[] = [];
+	let missingPrefixMember = false;
+	for (const planned of input.plannedClaims) {
+		const event = state.orderedEvents.find(
+			({ request }) => request.eventId === planned.request.eventId
+		);
+		if (event === undefined) {
+			missingPrefixMember = true;
+			continue;
+		}
+		if (missingPrefixMember) {
+			throw new Error('Durable Equipment claim events are not an exact invocation prefix');
+		}
+		if (
+			event.sequence !== planned.sequence ||
+			event.recordedAt !== input.recordedAt ||
+			canonicalJsonSha256(event.request) !== canonicalJsonSha256(planned.request)
+		) {
+			throw new Error('Durable Equipment claim cannot be exactly reconstructed');
+		}
+		const currentPacket = await resolvePacket(
+			input.workspaceRoot,
+			input.evidence.plan,
+			planned.request.targetId
+		);
+		if (canonicalJsonSha256(currentPacket) !== canonicalJsonSha256(planned.packet)) {
+			throw new Error('Durable Equipment claim packet binding changed during reconstruction');
+		}
+		durablePrefix.push({
+			claimId: planned.request.claimId,
+			workerId: planned.request.workerId,
+			targetId: planned.request.targetId,
+			...planned.packet,
+			eventPath: `${runPaths(input.evidence.plan.runId).eventsDirectory}/${eventFileName(event)}`,
+			event
+		});
+	}
+	return durablePrefix;
+}
+
 export async function claimNextEquipmentJobs(
 	options: ClaimNextEquipmentJobsOptions
 ): Promise<EquipmentJobClaim[]> {
@@ -571,10 +779,43 @@ export async function claimNextEquipmentJobs(
 		throw new Error('availableWorkerSlots must be a nonnegative safe integer');
 	}
 	return withRunLock(options, async (evidence) => {
-		let events = await readEvents(options.workspaceRoot, evidence);
-		let state = replayEquipmentRunJournal(evidence.context, events);
+		const events = await readEvents(options.workspaceRoot, evidence);
+		const state = replayEquipmentRunJournal(evidence.context, events);
+		const claimCount = Math.max(
+			0,
+			Math.min(
+				16 - state.activeWorkerIds.size,
+				options.availableWorkerSlots,
+				state.readyUnclaimedTargetIds.length
+			)
+		);
+		const targetIds = state.readyUnclaimedTargetIds.slice(0, claimCount);
+		const firstClaimSequence = events.length + (state.runStarted ? 1 : 2);
+		const plannedClaims: PlannedEquipmentClaim[] = [];
+		for (const [index, targetId] of targetIds.entries()) {
+			await options.testHooks?.beforePacketResolution?.({ index, targetId });
+			const sequence = firstClaimSequence + index;
+			const request = EquipmentRunEventRequestSchema.parse({
+				schemaVersion: 'equipment-production-event-request-v1',
+				eventId: `job-claimed-${sequence}`,
+				runId: options.runId,
+				requestedAt: options.requestedAt,
+				actor: options.actor,
+				kind: 'job-claimed',
+				epochId: options.epochId,
+				claimId: `claim-${targetId}-${sequence}`,
+				targetId,
+				workerId: `equipment-worker-${sequence}`
+			});
+			if (request.kind !== 'job-claimed') throw new Error('Expected a parsed job-claimed request');
+			plannedClaims.push({
+				sequence,
+				request,
+				packet: await resolvePacket(options.workspaceRoot, evidence.plan, targetId)
+			});
+		}
 		if (!state.runStarted) {
-			const started = await appendEventUnderLock({
+			await appendEventUnderLock({
 				workspaceRoot: options.workspaceRoot,
 				evidence,
 				request: {
@@ -586,53 +827,38 @@ export async function claimNextEquipmentJobs(
 					kind: 'run-started',
 					epochId: options.epochId
 				},
-				recordedAt: options.recordedAt
+				recordedAt: options.recordedAt,
+				testHooks: options.testHooks
 			});
-			state = started.state;
-			events = state.orderedEvents.slice();
 		}
-		const claimCount = Math.max(
-			0,
-			Math.min(
-				16 - state.activeWorkerIds.size,
-				options.availableWorkerSlots,
-				state.readyUnclaimedTargetIds.length
-			)
-		);
 		const claims: EquipmentJobClaim[] = [];
-		for (const targetId of state.readyUnclaimedTargetIds.slice(0, claimCount)) {
-			const nextSequence = events.length + 1;
-			const eventId = `job-claimed-${nextSequence}`;
-			const claimId = `claim-${targetId}-${nextSequence}`;
-			const workerId = `equipment-worker-${nextSequence}`;
-			const packet = await resolvePacket(options.workspaceRoot, evidence.plan, targetId);
-			const appended = await appendEventUnderLock({
-				workspaceRoot: options.workspaceRoot,
-				evidence,
-				request: {
-					schemaVersion: 'equipment-production-event-request-v1',
-					eventId,
-					runId: options.runId,
-					requestedAt: options.requestedAt,
-					actor: options.actor,
-					kind: 'job-claimed',
-					epochId: options.epochId,
-					claimId,
-					targetId,
-					workerId
-				},
-				recordedAt: options.recordedAt
-			});
-			state = appended.state;
-			events = state.orderedEvents.slice();
-			claims.push({
-				claimId,
-				workerId,
-				targetId,
-				...packet,
-				eventPath: appended.eventPath,
-				event: appended.event
-			});
+		for (const planned of plannedClaims) {
+			try {
+				const appended = await appendEventUnderLock({
+					workspaceRoot: options.workspaceRoot,
+					evidence,
+					request: planned.request,
+					recordedAt: options.recordedAt,
+					testHooks: options.testHooks
+				});
+				claims.push({
+					claimId: planned.request.claimId,
+					workerId: planned.request.workerId,
+					targetId: planned.request.targetId,
+					...planned.packet,
+					eventPath: appended.eventPath,
+					event: appended.event
+				});
+			} catch (error) {
+				const durablePrefix = await reconstructDurableClaimPrefix({
+					workspaceRoot: options.workspaceRoot,
+					evidence,
+					plannedClaims,
+					recordedAt: options.recordedAt
+				});
+				if (durablePrefix.length === 0) throw error;
+				return durablePrefix;
+			}
 		}
 		return claims;
 	});
