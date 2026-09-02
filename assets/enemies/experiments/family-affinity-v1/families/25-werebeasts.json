@@ -24,34 +24,34 @@
     },
     "fire": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays mostly human with patchy fur and long fingers; T2 first adds a muzzle and crouched hybrid posture; T3 first gains digitigrade legs and full claws; T4 first carries a broken chain, iron collar, and moon-white eyes; T5 alone grows a horn and antler crown with floating broken runes.",
-        "Heat-blackened restraint tabs, ember channels woven through torn cloth, vented claw guards, controlled combustion, and directional smoke add a two-stage burn structure without replacing fur or flesh."
+        "Material/structure branches: T1 patchy fur and long fingers carry ember-threaded torn seams; T2 the emerging muzzle and hybrid shoulders gain heat-black cheek tabs; T3 digitigrade hocks and mature claws gain vented claw guards; T4 the broken chain and iron collar gain cooling links; T5 the horn-and-antler crown and broken runes gain bounded ignition sockets.",
+        "Motion/process branches: T1 a torn seam vents one short combustion cycle along the patchy forearm; T2 the hybrid pounce exhausts through muzzle-side cheek tabs; T3 digitigrade crosscuts open each claw-guard vent; T4 chain rotation pumps smoke through the collar heat sink; T5 each crown rune ignites and cools in a commanded sequence."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 stays mostly human with patchy fur and long fingers; T2 exposes its muzzle and crouched hybrid shoulder; T3 exposes digitigrade hocks and claws; T4 exposes a chain link at the collar beneath moon-white eyes; T5 exposes one horn or antler root when its runes break, and the active vent opens after each combustion cycle.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the patchy-fur torn seam opens its forearm vent after combustion; T2 the hybrid muzzle-side cheek tab exposes its cooling gap after the pounce; T3 a digitigrade landing opens the active claw-guard vent; T4 the chain-and-collar heat sink opens after a full rotation; T5 the crown rune exposes its ignition socket between commanded cycles.",
       "forbidden": ["Palette-only orange fur", "Glow-only fire treatment", "Uniform burning pelt", "Premature later-tier anatomy"]
     },
     "earth": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays mostly human with patchy fur and long fingers; T2 first adds a muzzle and crouched hybrid posture; T3 first gains digitigrade legs and full claws; T4 first carries a broken chain, iron collar, and moon-white eyes; T5 alone grows a horn and antler crown with floating broken runes.",
-        "Compressed mineral restraint plates, sediment-set hide bands, crystal load knots, weighted claw caps, and localized dust add engineered mass around the unchanged hybrid frame."
+        "Material/structure branches: T1 patchy fur and long fingers carry mineral-set torn-seam tabs; T2 the emerging muzzle and hybrid shoulders gain sediment cheek braces; T3 digitigrade hocks and mature claws gain crystal load keys; T4 the broken chain and iron collar gain compressed mineral links; T5 the horn-and-antler crown and broken runes gain fractured load sockets.",
+        "Motion/process branches: T1 a planted reach with long fingers loads one torn seam fault; T2 the hybrid pounce transfers weight through a muzzle-side brace; T3 digitigrade crosscuts alternate claw-key loads; T4 chain rotation commits the collar anchor; T5 each crown rune roots and releases one arena load."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 stays mostly human with patchy fur and long fingers; T2 exposes its muzzle and crouched hybrid shoulder; T3 exposes digitigrade hocks and claws; T4 exposes a chain link at the collar beneath moon-white eyes; T5 exposes one horn or antler root when its runes break, and the planted mineral joint fractures after a committed lunge.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the patchy-fur torn seam reveals its mineral fault after the planted reach; T2 the hybrid muzzle brace fractures after the pounce; T3 a digitigrade landing exposes the active claw load key; T4 the chain-and-collar anchor cracks after a full rotation; T5 the crown rune exposes its load socket when the commanded root releases.",
       "forbidden": ["Palette-only brown fur", "Glow-only earth treatment", "Pasted rocks", "Mass that hides the transformation silhouette"]
     },
     "wind": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays mostly human with patchy fur and long fingers; T2 first adds a muzzle and crouched hybrid posture; T3 first gains digitigrade legs and full claws; T4 first carries a broken chain, iron collar, and moon-white eyes; T5 alone grows a horn and antler crown with floating broken runes.",
-        "Directional fur lanes, torn-cloth vanes, pressure cuffs, debris vectors, and a still spine anchor create aerodynamic displacement around grounded hybrid movement."
+        "Material/structure branches: T1 patchy fur and long fingers carry tiny torn-seam vanes; T2 the emerging muzzle and hybrid shoulders gain cheek pressure channels; T3 digitigrade hocks and mature claws gain directional fur lanes; T4 the broken chain and iron collar gain calibrated air links; T5 the horn-and-antler crown and broken runes gain pressure-route sockets.",
+        "Motion/process branches: T1 a sweep with long fingers drives the torn seam tabs around one still wrist; T2 the hybrid pounce follows a muzzle-side pressure channel; T3 digitigrade crosscuts reverse directional fur flow; T4 chain rotation circles a still collar anchor; T5 each crown rune redirects one commanded debris vector."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 stays mostly human with patchy fur and long fingers; T2 exposes its muzzle and crouched hybrid shoulder; T3 exposes digitigrade hocks and claws; T4 exposes a chain link at the collar beneath moon-white eyes; T5 exposes one horn or antler root when its runes break, and the still spine appears between directional rushes.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the patchy-fur torn seam reveals a still wrist between vane sweeps; T2 the hybrid muzzle channel leaves one still shoulder after the pounce; T3 a digitigrade landing exposes the claw-lane pressure anchor; T4 the chain-and-collar still link appears after a full rotation; T5 the crown rune exposes its pressure socket between commanded vectors.",
       "forbidden": ["Palette-only pale fur", "Glow-only wind treatment", "Directionless vapor", "Floating anatomy without ground contact"]
     },
     "water": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays mostly human with patchy fur and long fingers; T2 first adds a muzzle and crouched hybrid posture; T3 first gains digitigrade legs and full claws; T4 first carries a broken chain, iron collar, and moon-white eyes; T5 alone grows a horn and antler crown with floating broken runes.",
-        "Pressurized restraint tubes, coherent wet-fur channels, reflective fill seams, mist valves, and draining claw guards add hydraulic behavior without turning the body into shapeless liquid."
+        "Material/structure branches: T1 patchy fur and long fingers carry a reflective torn-seam conduit; T2 the emerging muzzle and hybrid shoulders gain cheek-pressure tubes; T3 digitigrade hocks and mature claws gain draining claw guards; T4 the broken chain and iron collar gain linked water valves; T5 the horn-and-antler crown and broken runes gain bounded pressure sockets.",
+        "Motion/process branches: T1 a sweep with long fingers fills and drains the torn seam conduit; T2 the hybrid pounce pressurizes one muzzle-side tube; T3 digitigrade crosscuts alternate claw-guard flow; T4 chain rotation pumps the collar valves; T5 each crown rune releases one coherent pressure cycle."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 stays mostly human with patchy fur and long fingers; T2 exposes its muzzle and crouched hybrid shoulder; T3 exposes digitigrade hocks and claws; T4 exposes a chain link at the collar beneath moon-white eyes; T5 exposes one horn or antler root when its runes break, and pressure loss opens the active restraint valve.",
+      "counterplaySignal": "Affinity counterplay branches: T1 pressure loss opens the patchy fur torn seam conduit at the wrist; T2 the hybrid muzzle tube exposes its valve after the pounce; T3 a digitigrade landing drains the active claw guard; T4 the chain-and-collar valve opens after a full rotation; T5 the crown rune exposes its pressure socket after the commanded release.",
       "forbidden": ["Palette-only blue fur", "Glow-only water treatment", "Shapeless liquid body", "Spray that hides hands, hocks, or collar"]
     }
   },

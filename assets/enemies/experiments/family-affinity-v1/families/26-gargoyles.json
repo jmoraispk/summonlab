@@ -24,34 +24,34 @@
     },
     "fire": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
-        "Heat-black mortar, ceramic fuel grooves, ember-cut relief channels, smoke gargles, and cooling shutters add controlled combustion while carved stone remains visible."
+        "Material/structure branches: T1 chipped sandstone, tiny useless wings, perch chip, and crude water-spout throat gain a ceramic heat sink; T2 granite, moss, and small wings gain fuel-set mortar; T3 broad wings, carved relief, and amber seams gain ember channels; T4 marble, bronze, and tracery gain cooling shutters; T5 buttress wings, throne, and attendants gain bounded throne vents.",
+        "Motion/process branches: T1 one short perch drop exhausts through the water-spout heat sink; T2 a hop with small wings burns one measured mortar charge; T3 the dive with broad wings opens relief-channel combustion; T4 a tracery aisle cycles smoke through its bronze shutter; T5 each attendant command feeds and cools one throne vent."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a cooling joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one throne vent after combustion.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the chipped-sandstone perch and tiny wings expose the water-spout heat sink after exhaust; T2 the granite moss line and small-wing hinge expose cooling mortar after the hop; T3 broad wings and amber relief seams expose an ember-channel vent after the dive; T4 marble, bronze, and tracery expose the cooling shutter after an aisle cycle; T5 buttress wings, throne, and attendants expose the commanded throne vent after combustion.",
       "forbidden": ["Palette-only orange stone", "Glow-only fire treatment", "Uniform molten statue", "Premature wing architecture"]
     },
     "earth": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
-        "Compressed sediment laminates, crystal mortar keys, added load ribs, planted dust, and pale fracture routes engineer mineral force beyond the family's ordinary masonry."
+        "Material/structure branches: T1 chipped sandstone, tiny useless wings, perch chip, and crude water-spout mouth gain one crystal mortar key; T2 granite, moss, and small wings gain sediment-set hop joints; T3 broad wings, carved relief, and amber seams gain load ribs; T4 marble, bronze, and tracery gain fracture braces; T5 buttress wings, throne, and attendants gain bounded throne faults.",
+        "Motion/process branches: T1 one short perch drop loads the water-spout mortar key; T2 a hop with small wings commits one granite joint; T3 the dive with broad wings transfers load through relief ribs; T4 a tracery aisle plants through its bronze brace; T5 each attendant command loads and releases one throne fault."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a loaded joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one throne fault after a committed load.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the chipped-sandstone perch and tiny wings expose the water-spout mortar fault after landing; T2 the granite moss line and small-wing hinge expose a loaded joint after the hop; T3 broad wings and amber relief seams expose a load-rib fracture after the dive; T4 marble, bronze, and tracery expose the committed brace; T5 buttress wings, throne, and attendants expose the commanded throne fault after its load releases.",
       "forbidden": ["Palette-only brown stone", "Glow-only earth treatment", "Pasted rocks", "Extra mass that erases carving"]
     },
     "wind": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
-        "Directional pressure flutes, relief-edge vanes, debris vectors, aerodynamic mortar gaps, and a still chest keystone add engineered airflow without granting early flight."
+        "Material/structure branches: T1 chipped sandstone, tiny useless wings, perch chip, and crude water-spout throat gain an internal pressure notch; T2 granite, moss, and small wings gain calibrated mortar gaps; T3 broad wings, carved relief, and amber seams first gain relief-edge vanes; T4 marble, bronze, and tracery gain pressure flutes; T5 buttress wings, throne, and attendants gain bounded throne gauges.",
+        "Motion/process branches: T1 one short perch drop drives air through the water-spout notch toward a still perch; T2 a hop with small wings vents through granite mortar gaps; T3 the dive with broad wings directs relief-vane flow; T4 a tracery aisle cycles pressure through its bronze flute; T5 each attendant command redirects one throne gauge while the body stays grounded."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a still joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one still throne keystone between gusts.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the chipped-sandstone perch and tiny wings expose a still water-spout pressure notch after the drop; T2 the granite moss line and small-wing hinge expose a still mortar gap after the hop; T3 broad wings and amber relief seams expose the vane anchor after the dive; T4 marble, bronze, and tracery expose the still pressure flute between aisle gusts; T5 buttress wings, throne, and attendants expose the commanded still throne gauge.",
       "forbidden": ["Palette-only pale stone", "Glow-only wind treatment", "Flight for T1 or sustained flight for T2", "Directionless dust"]
     },
     "water": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 has wings too small for flight; T2 has small wings for short stabilizing hops; T3 first gains broad functional wings and amber seams; T4 first gains marble, bronze, and window tracery; T5 alone gains buttress wings, a carved throne, and statuary attendants.",
-        "Pressurized spout conduits, reflective fill marks, valve-cut mortar, coherent drainage channels, and mist exhaust add hydraulic force beyond native water staining and architecture."
+        "Material/structure branches: T1 chipped sandstone, tiny useless wings, perch chip, and crude water-spout mouth gain a separate pressure valve; T2 granite, moss, and small wings gain reflective mortar fills; T3 broad wings, carved relief, and amber seams gain spout conduits; T4 marble, bronze, and tracery gain drainage channels; T5 buttress wings, throne, and attendants gain bounded throne cisterns.",
+        "Motion/process branches: T1 one short perch drop fills and drains the water-spout valve; T2 a hop with small wings pressurizes one granite mortar seam; T3 the dive with broad wings drives coherent flow through relief conduits; T4 a tracery aisle cycles mist through its bronze drain; T5 each attendant command fills and empties one throne cistern."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 has wings too small for flight and exposes a perch chip; T2 small wings expose a hop hinge; T3 broad functional wings and amber seams expose a drain joint; T4 marble, bronze, and tracery expose a brace; T5 buttress wings, throne, and attendants expose one throne valve after pressure loss.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the chipped-sandstone perch and tiny wings expose the water-spout valve after pressure loss; T2 the granite moss line and small-wing hinge expose a draining mortar fill after the hop; T3 broad wings and amber relief seams expose the conduit valve after the dive; T4 marble, bronze, and tracery expose the draining channel after an aisle cycle; T5 buttress wings, throne, and attendants expose the commanded throne cistern valve.",
       "forbidden": ["Palette-only blue stone", "Glow-only water treatment", "Treating water staining as Water affinity", "Spray that hides masonry joints"]
     }
   },

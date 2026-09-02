@@ -589,6 +589,83 @@ const waveEFamilyFixtures = [
 ] as const;
 
 type FireTheme = ReturnType<typeof FamilyPacketSchema.parse>['affinityThemes']['fire'];
+type FamilyPacket = ReturnType<typeof FamilyPacketSchema.parse>;
+type ElementalAffinity = keyof Omit<FamilyPacket['affinityThemes'], 'normal'>;
+
+const elementalAffinities = ['fire', 'earth', 'wind', 'water'] as const;
+const exactTiers = ['T1', 'T2', 'T3', 'T4', 'T5'] as const;
+
+function extractTierClauses(text: string): Map<string, string> {
+	const clauses = new Map<string, string>();
+	for (const match of text.matchAll(/\b(T[1-5])\b([^;]*)(?:;|$)/gu)) {
+		clauses.set(match[1]!, match[2]!.trim());
+	}
+	return clauses;
+}
+
+const affinityMechanism: Record<ElementalAffinity, RegExp> = {
+	fire: /vent|heat sink|cooling|combustion|fuel|ignition|ember|exhaust/iu,
+	earth: /fault|fracture|load|joint|key|clamp|anchor|brace/iu,
+	wind: /still|vane|pressure|channel|anchor|gauge|vector/iu,
+	water: /pressure|valve|drain|conduit|fill|binding core/iu
+};
+
+type WaveETierContract = {
+	requiredByTier: Record<(typeof exactTiers)[number], RegExp>;
+	forbiddenAtT1: RegExp;
+};
+
+function assertTierCompleteElementalTheme(
+	theme: FamilyPacket['affinityThemes'][ElementalAffinity],
+	affinity: ElementalAffinity,
+	contract: WaveETierContract
+): void {
+	if (theme.constructionDimensions.length < 2) {
+		throw new Error('Affinity construction requires at least two altered dimensions');
+	}
+	if (new Set(theme.constructionDimensions.map((entry) => entry.trim())).size < 2) {
+		throw new Error('Affinity construction dimensions must be semantically distinct');
+	}
+	if (!theme.constructionDimensions.some((entry) => /material|structure|surface/iu.test(entry))) {
+		throw new Error('Affinity construction requires a material, structure, or surface dimension');
+	}
+	if (!theme.constructionDimensions.some((entry) => /motion|process|flow|cycle/iu.test(entry))) {
+		throw new Error('Affinity construction requires a motion, process, flow, or cycle dimension');
+	}
+
+	const constructionByDimension = theme.constructionDimensions.map(extractTierClauses);
+	const counterplayByTier = extractTierClauses(theme.counterplaySignal);
+	for (const tier of exactTiers) {
+		for (const [dimensionIndex, clauses] of constructionByDimension.entries()) {
+			const clause = clauses.get(tier);
+			if (!clause) {
+				throw new Error(`${affinity} construction dimension ${dimensionIndex + 1} lacks ${tier}`);
+			}
+			if (!contract.requiredByTier[tier].test(clause)) {
+				throw new Error(
+					`${affinity} construction dimension ${dimensionIndex + 1} loses ${tier} identity`
+				);
+			}
+			if (tier === 'T1' && contract.forbiddenAtT1.test(clause)) {
+				throw new Error(`${affinity} construction leaks later anatomy into T1`);
+			}
+		}
+
+		const counterplayClause = counterplayByTier.get(tier);
+		if (!counterplayClause) {
+			throw new Error(`${affinity} counterplay lacks ${tier}`);
+		}
+		if (!contract.requiredByTier[tier].test(counterplayClause)) {
+			throw new Error(`${affinity} counterplay loses ${tier} identity`);
+		}
+		if (!affinityMechanism[affinity].test(counterplayClause)) {
+			throw new Error(`${affinity} counterplay launders the ${tier} affinity apparatus`);
+		}
+		if (tier === 'T1' && contract.forbiddenAtT1.test(counterplayClause)) {
+			throw new Error(`${affinity} counterplay leaks later anatomy into T1`);
+		}
+	}
+}
 
 function assertEngineeredFlameElementalFireTheme(theme: FireTheme): void {
 	const engineeredProcess = theme.constructionDimensions.find((dimension) =>
@@ -1509,67 +1586,87 @@ describe('Wave E family packets', () => {
 	it.each([
 		{
 			fileName: '25-werebeasts.json',
-			checks: [
-				/T1[^.]*mostly human[^.]*patchy fur[^.]*long fingers/iu,
-				/T2[^.]*muzzle[^.]*crouched hybrid/iu,
-				/T3[^.]*digitigrade[^.]*claws/iu,
-				/T4[^.]*chain[^.]*collar[^.]*moon[^.]*eyes/iu,
-				/T5[^.]*horn[^.]*antler[^.]*runes/iu
-			]
+			contract: {
+				requiredByTier: {
+					T1: /patchy fur|long fingers|torn seam/iu,
+					T2: /muzzle|hybrid/iu,
+					T3: /digitigrade|claw/iu,
+					T4: /chain|collar/iu,
+					T5: /crown|rune/iu
+				},
+				forbiddenAtT1: /\bclaws?\b|muzzle|digitigrade|chain|collar|crown|runes?|antlers?|horns?/iu
+			}
 		},
 		{
 			fileName: '26-gargoyles.json',
-			checks: [
-				/T1[^.]*wings too small for flight/iu,
-				/T2[^.]*small wings/iu,
-				/T3[^.]*broad functional wings[^.]*amber seams/iu,
-				/T4[^.]*marble[^.]*bronze[^.]*tracery/iu,
-				/T5[^.]*buttress wings[^.]*throne[^.]*attendants/iu
-			]
+			contract: {
+				requiredByTier: {
+					T1: /chipped sandstone|tiny wings|perch|water-spout/iu,
+					T2: /granite|moss|small wings/iu,
+					T3: /broad wings|amber seam|relief/iu,
+					T4: /marble|bronze|tracery/iu,
+					T5: /buttress|throne|attendant/iu
+				},
+				forbiddenAtT1:
+					/relief|vanes?|granite|moss|broad|functional|amber|marble|bronze|tracery|buttress|throne|attendant/iu
+			}
 		},
 		{
 			fileName: '27-djinn.json',
-			checks: [
-				/T1[^.]*mostly vapor[^.]*half-face[^.]*no jewelry/iu,
-				/T2[^.]*defined torso[^.]*cuffs/iu,
-				/T3[^.]*visible wind arms[^.]*orbiting rings/iu,
-				/T4[^.]*crown[^.]*script/iu,
-				/T5[^.]*vortex[^.]*throne[^.]*lamps/iu
-			]
+			contract: {
+				requiredByTier: {
+					T1: /vapor|half-face|plume/iu,
+					T2: /torso|cuff/iu,
+					T3: /wind arms|ring/iu,
+					T4: /crown|script/iu,
+					T5: /vortex|throne|lamp/iu
+				},
+				forbiddenAtT1:
+					/\b(?:jewelry|cuffs?|rings?|bracelets?|crown|lamps?|throne|vortex)\b|defined torso|wind arms/iu
+			}
 		},
 		{
 			fileName: '28-fae.json',
-			checks: [
-				/T1[^.]*palm[^.]*simple insect wings/iu,
-				/T2[^.]*layered petals/iu,
-				/T3[^.]*stained-glass[^.]*antlers/iu,
-				/T4[^.]*gown[^.]*mask[^.]*crown[^.]*court/iu,
-				/T5[^.]*impossible geometry[^.]*season crown[^.]*reality bend/iu
-			]
+			contract: {
+				requiredByTier: {
+					T1: /palm|insect wings|thorn/iu,
+					T2: /petal/iu,
+					T3: /stained glass|antler/iu,
+					T4: /gown|mask|court/iu,
+					T5: /geometry|season crown|reality/iu
+				},
+				forbiddenAtT1: /layered petal|stained glass|antler|gown|mask|crown|court|geometry|reality/iu
+			}
 		},
 		{
 			fileName: '29-void-horrors.json',
-			checks: [
-				/T1[^.]*thin limbs[^.]*no face[^.]*no reflection/iu,
-				/T2[^.]*face-hole/iu,
-				/T3[^.]*eyes[^.]*star interior/iu,
-				/T4[^.]*vast partial[^.]*negative limbs/iu,
-				/T5[^.]*eye-ring[^.]*unresolved sovereign/iu
-			]
+			contract: {
+				requiredByTier: {
+					T1: /thin limb|missing edge|no reflection|faceless/iu,
+					T2: /face-hole/iu,
+					T3: /eye|star/iu,
+					T4: /partial|negative limb/iu,
+					T5: /eye-ring|unresolved/iu
+				},
+				forbiddenAtT1: /face-hole|\beyes?\b|star|vast|negative limb|eye-ring|sovereign/iu
+			}
 		},
 		{
 			fileName: '30-doppelgangers.json',
-			checks: [
-				/T1[^.]*blank[^.]*no face[^.]*no hair[^.]*no clothes/iu,
-				/T2[^.]*partial copy/iu,
-				/T3[^.]*seams[^.]*wrong hand/iu,
-				/T4[^.]*layered faces/iu,
-				/T5[^.]*body-wide faces[^.]*mask crown/iu
-			]
+			contract: {
+				requiredByTier: {
+					T1: /blank|smooth flesh|featureless|limb/iu,
+					T2: /partial copy|unfinished arm/iu,
+					T3: /jaw seam|wrong hand/iu,
+					T4: /layered face|mask/iu,
+					T5: /body-wide face|mask crown/iu
+				},
+				forbiddenAtT1: /copied|borrowed|cloth|hems?|garment|masks?|\bfaces?\b/iu
+			}
 		}
-	])(
-		'keeps $fileName elemental construction and counterplay tier-safe',
-		async ({ fileName, checks }) => {
+	] as const)(
+		'keeps every $fileName elemental dimension and counterplay branch tier-complete',
+		async ({ fileName, contract }) => {
 			const packet = FamilyPacketSchema.parse(
 				JSON.parse(
 					await readFile(
@@ -1581,16 +1678,61 @@ describe('Wave E family packets', () => {
 					)
 				)
 			);
-			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
-				const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
-				const counterplay = packet.affinityThemes[affinity].counterplaySignal;
-				for (const check of checks) {
-					expect(construction, `${affinity} construction ${check.source}`).toMatch(check);
-					expect(counterplay, `${affinity} counterplay ${check.source}`).toMatch(check);
-				}
+			for (const affinity of elementalAffinities) {
+				expect(() =>
+					assertTierCompleteElementalTheme(packet.affinityThemes[affinity], affinity, contract)
+				).not.toThrow();
 			}
 		}
 	);
+
+	it('rejects laundered T1 affinity counterplay, later-feature leakage, and duplicate dimensions', async () => {
+		const packet = FamilyPacketSchema.parse(
+			JSON.parse(
+				await readFile(
+					new URL(
+						'../assets/enemies/experiments/family-affinity-v1/families/25-werebeasts.json',
+						import.meta.url
+					),
+					'utf8'
+				)
+			)
+		);
+		const contract: WaveETierContract = {
+			requiredByTier: {
+				T1: /patchy fur|long fingers|torn seam/iu,
+				T2: /muzzle|hybrid/iu,
+				T3: /digitigrade|claw/iu,
+				T4: /chain|collar/iu,
+				T5: /crown|rune/iu
+			},
+			forbiddenAtT1: /\bclaws?\b|muzzle|digitigrade|chain|collar|crown|runes?|antlers?|horns?/iu
+		};
+
+		const laundered = structuredClone(packet.affinityThemes.fire);
+		laundered.counterplaySignal = laundered.counterplaySignal.replace(
+			/\bT1\b[^;]*/u,
+			'T1 patchy fur leaves the native wrist exposed'
+		);
+		expect(() => assertTierCompleteElementalTheme(laundered, 'fire', contract)).toThrow(
+			/launders the T1 affinity apparatus/iu
+		);
+
+		const leaking = structuredClone(packet.affinityThemes.fire);
+		leaking.constructionDimensions[0] = leaking.constructionDimensions[0]!.replace(
+			/\bT1\b/,
+			'T1 mature claws and '
+		);
+		expect(() => assertTierCompleteElementalTheme(leaking, 'fire', contract)).toThrow(
+			/leaks later anatomy into T1/iu
+		);
+
+		const duplicated = structuredClone(packet.affinityThemes.fire);
+		duplicated.constructionDimensions[1] = duplicated.constructionDimensions[0]!;
+		expect(() => assertTierCompleteElementalTheme(duplicated, 'fire', contract)).toThrow(
+			/semantically distinct/iu
+		);
+	});
 
 	it.each(['fire', 'wind'] as const)(
 		'gives Djinn $affinity an engineered process distinct from native air, fire, and smoke',

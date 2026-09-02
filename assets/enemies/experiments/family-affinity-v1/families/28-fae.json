@@ -24,34 +24,34 @@
     },
     "fire": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays palm-sized with simple insect wings; T2 first gains layered petals; T3 first gains stained-glass wings and branch antlers; T4 first gains a living gown, mask face, thorn crown, and mote court; T5 alone gains impossible geometry, a season crown, and reality bending.",
-        "Char-edged thorn fittings, ember pollen channels, heat-black wing ribs, controlled petal combustion, directional smoke, and cooling dew seams add engineered fire while living materials remain visible."
+        "Material/structure branches: T1 the palm-sized body, simple insect wings, and thorn grip gain one ceramic ember bead; T2 layered petal wings gain char-edged seams; T3 stained glass and branch antlers gain heat-black ribs; T4 gown, mask, and mote court gain cooling thorn clasps; T5 impossible geometry, season crown, and reality bend gain bounded ignition facets.",
+        "Motion/process branches: T1 the palm-sized thorn feint vents one dust-sized combustion cycle between insect wings; T2 layered petals burn outer-to-inner; T3 stained glass and antlers redirect heat along one pane; T4 the gown and mask court cycle smoke through a clasp; T5 the season crown ignites and cools one stable reality facet."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is palm-sized with simple insect wings and exposes a thorn grip; T2 layered petals expose a seam; T3 stained-glass wings and antlers expose one cool pane; T4 gown, mask, crown, and court expose a mask edge; T5 impossible geometry, season crown, and reality bending expose one stable crown break after combustion.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the palm-sized thorn grip exposes its ember-bead vent after the insect-wing feint; T2 a layered petal seam opens its cooling gap after combustion; T3 stained glass and antlers expose the cooling pane after heat transfer; T4 the gown and mask court expose a cooling clasp after smoke cycles; T5 the season crown and impossible reality facet expose an ignition break between cycles.",
       "forbidden": ["Palette-only red petals", "Glow-only fire treatment", "Uniformly burning wings", "Premature court or sovereign anatomy"]
     },
     "earth": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays palm-sized with simple insect wings; T2 first gains layered petals; T3 first gains stained-glass wings and branch antlers; T4 first gains a living gown, mask face, thorn crown, and mote court; T5 alone gains impossible geometry, a season crown, and reality bending.",
-        "Compressed mineral thorn caps, sediment-set wing ribs, crystal pollen weights, rooted stance moments, localized dust, and pale load faults add mineral force without turning ordinary bark into affinity."
+        "Material/structure branches: T1 the palm-sized body, simple insect wings, and thorn grip gain one mineral balance bead; T2 layered petal wings gain sediment-set ribs; T3 stained glass and branch antlers gain crystal load keys; T4 gown, mask, and mote court gain rooted thorn clasps; T5 impossible geometry, season crown, and reality bend gain bounded fracture facets.",
+        "Motion/process branches: T1 the palm-sized thorn feint briefly loads its insect-wing balance bead; T2 layered petals transfer weight outer-to-inner; T3 stained glass and antlers commit one pane key; T4 the gown and mask court plant through a clasp; T5 the season crown loads and releases one stable reality facet."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is palm-sized with simple insect wings and exposes a thorn grip; T2 layered petals expose a seam; T3 stained-glass wings and antlers expose one crystal fault; T4 gown, mask, crown, and court expose a mask edge; T5 impossible geometry, season crown, and reality bending expose one stable crown break after a committed root.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the palm-sized thorn grip exposes its mineral-bead fault after the insect-wing feint; T2 a layered petal seam fractures after load transfer; T3 stained glass and antlers expose the pane key after commitment; T4 the gown and mask court expose a load clasp after release; T5 the season crown and impossible reality facet expose a fracture after the load releases.",
       "forbidden": ["Palette-only brown leaves", "Glow-only earth treatment", "Pasted rocks", "Treating ordinary bark or branches as Earth affinity"]
     },
     "wind": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays palm-sized with simple insect wings; T2 first gains layered petals; T3 first gains stained-glass wings and branch antlers; T4 first gains a living gown, mask face, thorn crown, and mote court; T5 alone gains impossible geometry, a season crown, and reality bending.",
-        "Directional wing vanes, pollen vectors, pressure-cut petal layers, debris ribbons, and a still face anchor add engineered airflow beyond native weightlessness and insect flight."
+        "Material/structure branches: T1 the palm-sized body, simple insect wings, and thorn grip gain one pressure-thread anchor; T2 layered petal wings gain directional seam channels; T3 stained glass and branch antlers gain pane vanes; T4 gown, mask, and mote court gain still thorn clasps; T5 impossible geometry, season crown, and reality bend gain bounded pressure facets.",
+        "Motion/process branches: T1 the palm-sized thorn feint drives insect-wing dust around one still anchor; T2 layered petals direct flow outer-to-inner; T3 stained glass and antlers redirect one pane vector; T4 the gown and mask court cycle gusts around a clasp; T5 the season crown redirects and stills one reality facet."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is palm-sized with simple insect wings and exposes a thorn grip; T2 layered petals expose a seam; T3 stained-glass wings and antlers expose one still pane; T4 gown, mask, crown, and court expose a mask edge; T5 impossible geometry, season crown, and reality bending expose one stable crown break between gusts.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the palm-sized thorn grip exposes its still pressure anchor after the insect-wing feint; T2 a layered petal seam opens its still channel after flow; T3 stained glass and antlers expose the vane anchor between vectors; T4 the gown and mask court expose a still clasp between gusts; T5 the season crown and impossible reality facet expose its pressure break at the still interval.",
       "forbidden": ["Palette-only pale wings", "Glow-only wind treatment", "Native flight alone presented as Wind affinity", "Directionless pollen cloud"]
     },
     "water": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays palm-sized with simple insect wings; T2 first gains layered petals; T3 first gains stained-glass wings and branch antlers; T4 first gains a living gown, mask face, thorn crown, and mote court; T5 alone gains impossible geometry, a season crown, and reality bending.",
-        "Pressurized dew channels, reflective wing fills, coherent petal conduits, mist valves, and draining silk seams add hydraulic behavior beyond ordinary dew."
+        "Material/structure branches: T1 the palm-sized body, simple insect wings, and thorn grip gain one clear pressure bead; T2 layered petal wings gain reflective fill seams; T3 stained glass and branch antlers gain coherent pane conduits; T4 gown, mask, and mote court gain silk valves; T5 impossible geometry, season crown, and reality bend gain bounded cistern facets.",
+        "Motion/process branches: T1 the palm-sized thorn feint fills and drains its insect-wing pressure bead; T2 layered petals transfer flow outer-to-inner; T3 stained glass and antlers drain one pane conduit; T4 the gown and mask court cycle mist through a valve; T5 the season crown pressurizes and empties one stable reality facet."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is palm-sized with simple insect wings and exposes a thorn grip; T2 layered petals expose a seam; T3 stained-glass wings and antlers expose one drain pane; T4 gown, mask, crown, and court expose a mask edge; T5 impossible geometry, season crown, and reality bending expose one stable crown break after pressure loss.",
+      "counterplaySignal": "Affinity counterplay branches: T1 pressure loss opens the palm-sized thorn-grip bead after the insect-wing feint; T2 a layered petal seam exposes its drained fill line; T3 stained glass and antlers expose the empty pane conduit; T4 the gown and mask court expose a silk valve after drainage; T5 the season crown and impossible reality facet expose its cistern break after pressure loss.",
       "forbidden": ["Palette-only blue wings", "Glow-only water treatment", "Treating native dew as Water affinity", "Mist that hides the silhouette"]
     }
   },

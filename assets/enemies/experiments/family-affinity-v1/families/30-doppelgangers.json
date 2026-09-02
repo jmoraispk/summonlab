@@ -24,34 +24,34 @@
     },
     "fire": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
-        "Heat-black copied cloth edges, ember seam channels, controlled combustion cuffs, smoke shed from only borrowed surfaces, and cooling gaps preserve the clay-grey copy break."
+        "Material/structure branches: T1 blank smooth flesh and one featureless limb gain an external ember boundary without marking the body; T2 the partial copy and unfinished arm gain a heat-black copied-surface edge; T3 the jaw seam and wrong hand gain cooling channels; T4 layered faces and mask edges gain ceramic heat clasps; T5 body-wide faces and mask crown gain bounded ignition latches.",
+        "Motion/process branches: T1 the blank featureless limb drives one external combustion cycle around its silhouette; T2 the partial copy sheds smoke only from its finished surface; T3 the wrong hand opens the jaw-seam vent; T4 layered faces rotate heat from one mask clasp; T5 body-wide faces ignite and cool one mask-crown latch."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch after combustion, always preserving copy readability.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the blank smooth-flesh featureless limb opens its external cooling boundary after combustion; T2 the partial copy exposes a heat sink at the unfinished arm; T3 the jaw seam and wrong hand expose the active vent after correction; T4 layered faces expose the cooling mask clasp after rotation; T5 body-wide faces expose the mask-crown ignition latch between cycles, preserving copy readability.",
       "forbidden": ["Palette-only orange copy", "Glow-only fire treatment", "Uniform burning body", "Fire effects that hide the borrowed-versus-native boundary"]
     },
     "earth": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
-        "Compressed mineral seam clasps, sediment-set copied hems, crystal joint keys, planted weight, and pale fractures add external load structure without treating clay-grey flesh as Earth affinity."
+        "Material/structure branches: T1 blank smooth flesh and one featureless limb gain an external mineral boundary clamp without marking the body; T2 the partial copy and unfinished arm gain a sediment copied-surface edge; T3 the jaw seam and wrong hand gain crystal load keys; T4 layered faces and mask edges gain mineral clasps; T5 body-wide faces and mask crown gain bounded fracture latches.",
+        "Motion/process branches: T1 the blank featureless limb briefly loads its external silhouette clamp; T2 the partial copy transfers weight away from the unfinished arm; T3 the wrong hand loads the jaw-seam key; T4 layered faces rotate one mask-clasp load; T5 body-wide faces load and release one mask-crown latch."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch after a committed load, always preserving copy readability.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the blank smooth-flesh featureless limb exposes its external silhouette-clamp fault after load; T2 the partial copy exposes a fracture at the unfinished arm; T3 the jaw seam and wrong hand expose the active load key after correction; T4 layered faces expose the mask-clasp fault after rotation; T5 body-wide faces expose the mask-crown fracture latch after load, preserving copy readability.",
       "forbidden": ["Palette-only brown copy", "Glow-only earth treatment", "Treating clay-grey skin as stone", "Mineral mass that hides the copied identity"]
     },
     "wind": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
-        "Directional copied-cloth vanes, pressure seams, borrowed-color wake lines, aerodynamic displacement, and one still native-flesh center make force direction readable without blurring the disguise boundary."
+        "Material/structure branches: T1 blank smooth flesh and one featureless limb gain an external pressure boundary without marking the body; T2 the partial copy and unfinished arm gain a directional copied-surface channel; T3 the jaw seam and wrong hand gain pressure gauges; T4 layered faces and mask edges gain calibrated vanes; T5 body-wide faces and mask crown gain bounded still latches.",
+        "Motion/process branches: T1 the blank featureless limb redirects flow around one still silhouette edge; T2 the partial copy sheds a directional wake from its finished surface; T3 the wrong hand reverses the jaw-seam pressure vector; T4 layered faces rotate one mask-edge vane; T5 body-wide faces redirect and still one mask-crown latch."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch at the still center, always preserving copy readability.",
+      "counterplaySignal": "Affinity counterplay branches: T1 the blank smooth-flesh featureless limb exposes its still silhouette pressure boundary; T2 the partial copy exposes a still channel at the unfinished arm; T3 the jaw seam and wrong hand expose the pressure gauge between vectors; T4 layered faces expose the mask-edge vane anchor after rotation; T5 body-wide faces expose the mask-crown still latch, preserving copy readability.",
       "forbidden": ["Palette-only pale copy", "Glow-only wind treatment", "Transparency that erases copy defects", "Directionless borrowed-color wake"]
     },
     "water": {
       "constructionDimensions": [
-        "Tier-safe anatomy: T1 stays blank with no face, no hair, and no clothes; T2 first gains a partial copy; T3 first gains jaw seams and one wrong hand; T4 first gains layered faces; T5 alone gains body-wide faces and a mask crown.",
-        "Pressurized seam conduits, reflective borrowed-color fills, coherent fluid transitions limited to copied surfaces, mist valves, and draining joint marks preserve smooth native flesh and copy readability."
+        "Material/structure branches: T1 blank smooth flesh and one featureless limb gain an external pressure loop without marking the body; T2 the partial copy and unfinished arm gain a reflective copied-surface fill; T3 the jaw seam and wrong hand gain coherent conduits; T4 layered faces and mask edges gain mist valves; T5 body-wide faces and mask crown gain bounded cistern latches.",
+        "Motion/process branches: T1 the blank featureless limb fills and drains one external silhouette loop; T2 the partial copy drains color toward the unfinished arm; T3 the wrong hand reverses jaw-seam conduit flow; T4 layered faces rotate fluid through one mask valve; T5 body-wide faces pressurize and empty one mask-crown latch."
       ],
-      "counterplaySignal": "Tier-safe anchors: T1 is blank with no face, no hair, and no clothes and exposes a smooth wrist; T2 partial copy exposes its unfinished arm; T3 seams and wrong hand expose a jaw break; T4 layered faces expose the rotating edge; T5 body-wide faces and mask crown expose one crown latch after pressure loss, always preserving copy readability.",
+      "counterplaySignal": "Affinity counterplay branches: T1 pressure loss opens the blank smooth-flesh featureless-limb loop; T2 the partial copy exposes a drained fill at the unfinished arm; T3 the jaw seam and wrong hand expose the empty conduit after reversal; T4 layered faces expose the mask valve after drainage; T5 body-wide faces expose the mask-crown cistern latch after pressure loss, preserving copy readability.",
       "forbidden": ["Palette-only blue copy", "Glow-only water treatment", "Shapeless liquid body", "Reflection or mist that hides copied-versus-native anatomy"]
     }
   },
