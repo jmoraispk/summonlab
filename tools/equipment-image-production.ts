@@ -15,6 +15,11 @@ import {
 	renderEquipmentPrompt,
 	validateEquipmentPacket
 } from './equipment-image-packets.js';
+import {
+	persistEquipmentImageResult,
+	readEquipmentRepositoryJson,
+	verifyEquipmentImageResult
+} from './equipment-image-result.js';
 
 const PROFILE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/visual-profile/profile.json` as const;
 const MANIFEST_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/manifest.json` as const;
@@ -66,6 +71,25 @@ function requireOption(options: ReadonlyMap<string, string>, name: string): stri
 	return value;
 }
 
+async function readStandardInput(): Promise<string> {
+	const chunks: Buffer[] = [];
+	for await (const chunk of process.stdin) {
+		chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(String(chunk)));
+	}
+	return Buffer.concat(chunks).toString('utf8');
+}
+
+function parseExactlyOneJsonValue(stdin: string): unknown {
+	if (stdin.trim().length === 0) {
+		throw new Error('persist-result stdin must contain exactly one JSON value');
+	}
+	try {
+		return JSON.parse(stdin) as unknown;
+	} catch (error) {
+		throw new Error('persist-result stdin must contain exactly one JSON value', { cause: error });
+	}
+}
+
 async function exclusiveJsonWrite(
 	workspaceRoot: string,
 	repositoryPath: string,
@@ -93,6 +117,7 @@ async function exclusiveJsonWrite(
 export async function runEquipmentImageProductionCli(input: {
 	readonly args: readonly string[];
 	readonly workspaceRoot: string;
+	readonly stdin?: string;
 }): Promise<Record<string, unknown>> {
 	const [command, ...commandArgs] = input.args;
 	if (command === undefined) throw new Error('An Equipment image-production command is required');
@@ -161,6 +186,34 @@ export async function runEquipmentImageProductionCli(input: {
 				>[0]
 			)
 		};
+	}
+
+	if (command === 'persist-result') {
+		const options = parseOptions(commandArgs, ['--target', '--assignment']);
+		const targetPath = requireOption(options, '--target');
+		const assignmentPath = requireOption(options, '--assignment');
+		const result = await persistEquipmentImageResult({
+			workspaceRoot: input.workspaceRoot,
+			targetPath,
+			assignmentPath,
+			result: parseExactlyOneJsonValue(input.stdin ?? (await readStandardInput()))
+		});
+		return { command, targetPath, assignmentPath, ...result };
+	}
+
+	if (command === 'verify-result') {
+		const options = parseOptions(commandArgs, ['--target', '--assignment', '--result']);
+		const targetPath = requireOption(options, '--target');
+		const assignmentPath = requireOption(options, '--assignment');
+		const resultPath = requireOption(options, '--result');
+		const result = await verifyEquipmentImageResult({
+			workspaceRoot: input.workspaceRoot,
+			targetPath,
+			assignmentPath,
+			resultPath,
+			result: await readEquipmentRepositoryJson(input.workspaceRoot, resultPath)
+		});
+		return { command, targetPath, assignmentPath, resultPath, ...result };
 	}
 
 	throw new Error(`Unknown Equipment image-production command: ${command}`);
