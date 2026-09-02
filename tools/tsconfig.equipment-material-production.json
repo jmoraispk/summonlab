@@ -33,7 +33,13 @@
 		"persist-equipment-image-production-output.spec.ts",
 		"equipment-material-production-lib.ts",
 		"equipment-material-production-lib.spec.ts",
+		"equipment-material-production-v2.ts",
+		"equipment-material-production-v2.spec.ts",
+		"equipment-image-profile-v2.ts",
+		"equipment-image-profile-v2.spec.ts",
 		"export-equipment-image-profile.ts",
-		"export-equipment-material-production.ts"
+		"export-equipment-image-profile-v2.ts",
+		"export-equipment-material-production.ts",
+		"export-equipment-material-production-v2.ts"
 	]
 }

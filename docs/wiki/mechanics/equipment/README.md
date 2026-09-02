@@ -164,20 +164,27 @@ All 161 entries are planned **candidate production targets**, not approved or ru
 Promotion still requires source persistence, review evidence, approval, and a separate runtime
 export.
 
-The Equipment-owned
+The historical v1
 [material production manifest](../../../../assets/equipment/experiments/material-equipment-v1/manifest.json)
-expands this budget into explicit, collision-safe targets. Its full-set dependencies enforce the
-required sequence, and its candidate, provenance-result, and review paths are reservations rather
-than evidence that an image exists. The Equipment-owned
+expanded this budget into explicit targets. Its
 [allocation plan](../../../../assets/equipment/experiments/material-equipment-v1/allocation-plan.json)
-maps all 161 targets into one intended, resumable dependency-aware run: 77 jobs are initially ready
-and 84 Armour-piece jobs unlock four at a time only after human acceptance of their complete-set
-source. This is a non-executable planning template, not dispatch authorization or run state. Its
-rank waves are scheduling priority rather than cross-rank gates. Activation later requires an
-Equipment visual profile, strict local runner, hash-bound review receipts, immutable run copy and
-journal, and verified provider capacity. The adjacent
-[production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) define
-the execution boundary and deterministic validation command.
+mapped all 161 targets into a dependency-aware run with 77 root jobs and 84 Armour-piece jobs gated
+four at a time behind 21 full-set reviews. The adjacent
+[production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) preserve
+that run's execution and provenance boundary.
+
+### V2 planning state
+
+The owner-locked [v2 planning package](../../../../assets/equipment/experiments/material-equipment-v2/README.md)
+retains the same 161-target and full-set-first structure under a collision-safe new namespace. Its
+manifest uses Bronze, Ash, and Hard Leather; its approval-candidate visual profile binds every
+Equipment class to a hash-checked pose or camera reference, locks the standard single-bit Axe, uses
+an 8% framing target with a 5% hard minimum, and requires empty self-supporting Armour sets.
+
+V2 remains inert. It has no profile acceptance, target packets, assignments, run, review receipts,
+candidates, results, approved sources, or runtime exports. The v1 execution contract intentionally
+cannot accept or write v2; a separate Equipment-local execution-contract review is required before
+activation.
 
 ### Root-production review state
 
@@ -367,6 +374,8 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-02 — v2 planning — Prepared a collision-safe 161-target manifest, inert allocation plan,
+  and approval-candidate visual profile with hash-bound class pose and Armour camera references.
 - 2026-09-02 — owner material lock — Locked Bronze, Ash, and Hard Leather; deferred double-bit Axes
   as later variants.
 - 2026-09-02 — owner visual review — Made within-class weapon pose and full-set Armour camera,
