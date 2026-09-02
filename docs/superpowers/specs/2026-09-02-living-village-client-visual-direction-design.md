@@ -1,6 +1,6 @@
 # Living Village client visual direction
 
-**Status:** Title gateway locked; remaining system flows exploratory
+**Status:** Title gateway and tier-one Village locked; remaining system flows exploratory
 
 **Date:** 2026-09-02
 
@@ -51,6 +51,8 @@ The following visual foundation is approved and should not be reopened during ro
 - bright facility labels attached to their targets with fine leader lines;
 - the cyan circle and arrow used to identify a selected hero in the scene;
 - the five-destination phone navigation pattern and bottom placement.
+- the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right,
+  Portal Tower centered at the rear, and four residents in the approved review frame.
 
 Approval of the composition does not freeze the mature settlement shown in the exploratory Village
 mockups as the launch-state population or construction state. Inventory layout, mission packing details,
@@ -186,11 +188,12 @@ The second candidate begins with four complete but modest facilities around the 
 Portal Tower. It established the right settlement density but placed Forge on the left and Kitchen on
 the right and allowed some labels to approach the frame edge.
 
-The third candidate switches Kitchen to the left and Forge to the right, pulls the Training Grounds and
+The approved third candidate switches Kitchen to the left and Forge to the right, pulls the Training Grounds and
 side labels into a comfortable safe area, and preserves the connected paths needed for direct character
-movement. It remains exploratory pending visual review.
+movement. This is the locked tier-one Village composition; subsequent exploration should add upgrade
+states without reopening its spatial foundation.
 
-Mockups: [current tier-one Village candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v3.png),
+Mockups: [approved tier-one Village](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v3.png),
 [second candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v2.png), and
 [superseded sparse-site study](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
 

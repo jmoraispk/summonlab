@@ -1,6 +1,6 @@
 # Living Village client visual proposal
 
-**Status:** Title gateway locked; remaining system flows exploratory
+**Status:** Title gateway and tier-one Village locked; remaining system flows exploratory
 
 **Date:** 2026-09-02
 
@@ -18,10 +18,12 @@ gameplay contracts, or shared content catalogs.
 - direct facility labels with fine leader lines;
 - the cyan circle and arrow that connect a selected hero to the world;
 - the five-destination phone navigation pattern and placement.
+- the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right, and
+  the portal landmark centered at the rear.
 
 ### Continue designing
 
-- the exact tier-one Village layout and its visible upgrades into the mature panorama;
+- the building upgrade language from the tier-one Village into the mature panorama;
 - the exact Village Inventory organization and assignment interactions;
 - the detailed suggested-packing and return-reconciliation sequence;
 - whether Tower and Gate remain separate destinations;
@@ -55,7 +57,7 @@ this composition rather than turn the gateway into a conventional login form.
 
 ### Exploratory opening Village
 
-The current candidate starts with a functioning tier-one Village: Residence and Kitchen on the left,
+The approved opening Village starts with a functioning tier-one Village: Residence and Kitchen on the left,
 Training Grounds and Forge on the right, and a Portal Tower on the centerline. Exactly four visible
 residents keep it intimate, while modest building footprints leave room for upgrades in place. All
 buildings and labels remain inside a comfortable viewing safe area.
