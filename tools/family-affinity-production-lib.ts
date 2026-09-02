@@ -672,6 +672,9 @@ export const FamilyAffinityBlindReviewReceiptSchema = z
 export const FamilyAffinityReviewAssignmentSchema = z
 	.object({
 		schemaVersion: z.literal('family-affinity-review-assignment-v1'),
+		issuerRole: z.literal('controller'),
+		issuerId: RequiredTextSchema,
+		issuerAttestationSha256: Sha256Schema,
 		reviewKind: z.enum(['ordinary', 'blind']),
 		assignmentId: RequiredTextSchema,
 		reviewerId: RequiredTextSchema,
@@ -700,6 +703,15 @@ export const FamilyAffinityReviewAssignmentSchema = z
 	})
 	.strict()
 	.superRefine((assignment, context) => {
+		if (
+			assignment.issuerId === assignment.reviewerId ||
+			(assignment.producerId !== null && assignment.issuerId === assignment.producerId)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Controller issuer identity must be separate from producer and reviewer identities'
+			});
+		}
 		if (
 			assignment.assignmentId !==
 			`${assignment.targetId}/${assignment.reviewKind}-review-v${assignment.decisionVersion}/assignment`
@@ -763,6 +775,50 @@ export function familyAffinityRawSha256(bytes: Uint8Array | string): string {
 
 export function familyAffinityProducerIdentitySha256(producerId: string): string {
 	return familyAffinityRawSha256(`family-affinity-producer-v1\0${producerId}`);
+}
+
+export function familyAffinityReviewIssuerAttestationSha256(input: {
+	issuerId: string;
+	reviewerId: string;
+	kind: 'ordinary' | 'blind';
+	manifestPath: string;
+	manifestSha256: string;
+	target: unknown;
+	targetPath: string;
+	productionAssignment: unknown;
+	productionAssignmentPath: string;
+	result: FamilyAffinityResult;
+	resultSha256: string;
+	decisionVersion: number;
+	permittedReceiptPath: string;
+}): string {
+	const target = FamilyAffinityTargetSchema.parse(input.target);
+	const productionAssignment = FamilyAffinityAssignmentSchema.parse(input.productionAssignment);
+	return familyAffinitySha256({
+		schemaVersion: 'family-affinity-review-controller-attestation-v1',
+		issuerRole: 'controller',
+		issuerId: input.issuerId,
+		reviewerId: input.reviewerId,
+		reviewKind: input.kind,
+		manifestPath: input.manifestPath,
+		manifestSha256: input.manifestSha256,
+		targetId: target.targetId,
+		targetPath: input.targetPath,
+		targetSha256: familyAffinitySha256(target),
+		productionAssignmentPath: input.productionAssignmentPath,
+		productionAssignmentSha256: familyAffinitySha256(productionAssignment),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		decisionVersion: input.decisionVersion,
+		candidatePath: input.result.candidatePath,
+		candidateSha256: input.result.candidateSha256,
+		resultPath: input.result.resultPath,
+		resultSha256: input.resultSha256,
+		sourcePath: input.result.sourcePath,
+		sourceSha256: input.result.sourceSha256,
+		promptSha256: input.result.promptSha256,
+		permittedReceiptPath: input.permittedReceiptPath
+	});
 }
 
 export function familyAffinityPromptSha256(targetInput: unknown, assignmentInput: unknown): string {
@@ -906,7 +962,24 @@ export function validateFamilyAffinityReviewAssignmentEvidence(input: {
 	const assignment = FamilyAffinityReviewAssignmentSchema.parse(input.reviewAssignment);
 	const permittedReceiptPath =
 		input.kind === 'ordinary' ? target.ownedPaths.decision : target.ownedPaths.blindReview;
+	const expectedIssuerAttestationSha256 = familyAffinityReviewIssuerAttestationSha256({
+		issuerId: assignment.issuerId,
+		reviewerId: assignment.reviewerId,
+		kind: input.kind,
+		manifestPath: assignment.manifestPath,
+		manifestSha256: assignment.manifestSha256,
+		target,
+		targetPath: input.targetPath,
+		productionAssignment,
+		productionAssignmentPath: input.productionAssignmentPath,
+		result: input.result,
+		resultSha256: input.resultSha256,
+		decisionVersion: assignment.decisionVersion,
+		permittedReceiptPath
+	});
 	if (
+		assignment.issuerRole !== 'controller' ||
+		assignment.issuerAttestationSha256 !== expectedIssuerAttestationSha256 ||
 		assignment.reviewKind !== input.kind ||
 		input.reviewAssignmentPath !==
 			familyAffinityReviewAssignmentPath(input.kind, target, assignment.decisionVersion) ||

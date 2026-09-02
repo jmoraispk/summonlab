@@ -19,6 +19,7 @@ import {
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
 	familyAffinityReviewAssignmentPath,
+	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinitySha256,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityProductionBundle,
@@ -2824,8 +2825,31 @@ async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinity
 	};
 	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	const manifestBytes = await readFile(join(root, manifestPath));
+	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
+	const reviewAssignmentPath = familyAffinityReviewAssignmentPath(
+		'ordinary',
+		target,
+		target.version
+	);
 	const reviewAssignment = {
 		schemaVersion: 'family-affinity-review-assignment-v1' as const,
+		issuerRole: 'controller' as const,
+		issuerId: 'review-controller-alpha',
+		issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
+			issuerId: 'review-controller-alpha',
+			reviewerId: receipt.reviewerId,
+			kind: 'ordinary',
+			manifestPath,
+			manifestSha256,
+			target,
+			targetPath: attemptPaths.target,
+			productionAssignment: assignment,
+			productionAssignmentPath: attemptPaths.assignment,
+			result,
+			resultSha256: receipt.resultSha256,
+			decisionVersion: target.version,
+			permittedReceiptPath: target.ownedPaths.decision
+		}),
 		reviewKind: 'ordinary' as const,
 		assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
 		reviewerId: receipt.reviewerId,
@@ -2834,7 +2858,7 @@ async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinity
 			? familyAffinityProducerIdentitySha256(result.producerId)
 			: receipt.producerIdentitySha256,
 		manifestPath,
-		manifestSha256: familyAffinityRawSha256(manifestBytes),
+		manifestSha256,
 		targetId: target.targetId,
 		targetPath: attemptPaths.target,
 		targetSha256: familyAffinitySha256(target),
@@ -2854,11 +2878,7 @@ async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinity
 		exclusiveCreateRequired: true as const,
 		runtimeCatalogMutationForbidden: true as const
 	};
-	await writeOwnedFixture(
-		root,
-		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
-		reviewAssignment
-	);
+	await writeOwnedFixture(root, reviewAssignmentPath, reviewAssignment);
 	await writeOwnedFixture(root, target.ownedPaths.decision, receipt);
 }
 
@@ -3196,18 +3216,36 @@ async function makeRevisionFixture(options?: {
 	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	await writeOwnedFixture(root, manifestPath, manifest);
 	const manifestBytes = await readFile(join(root, manifestPath));
+	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
 	await writeOwnedFixture(
 		root,
 		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
 		{
 			schemaVersion: 'family-affinity-review-assignment-v1',
+			issuerRole: 'controller',
+			issuerId: 'review-controller-alpha',
+			issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
+				issuerId: 'review-controller-alpha',
+				reviewerId: receipt.reviewerId,
+				kind: 'ordinary',
+				manifestPath,
+				manifestSha256,
+				target,
+				targetPath,
+				productionAssignment,
+				productionAssignmentPath: assignmentPath,
+				result,
+				resultSha256: receipt.resultSha256,
+				decisionVersion: target.version,
+				permittedReceiptPath: target.ownedPaths.decision
+			}),
 			reviewKind: 'ordinary',
 			assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
 			reviewerId: receipt.reviewerId,
 			producerId: result.producerId,
 			producerIdentitySha256: receipt.producerIdentitySha256,
 			manifestPath,
-			manifestSha256: familyAffinityRawSha256(manifestBytes),
+			manifestSha256,
 			targetId: target.targetId,
 			targetPath,
 			targetSha256: familyAffinitySha256(target),

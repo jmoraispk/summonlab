@@ -18,6 +18,7 @@ import {
 	validateReviewTransition
 } from './family-affinity-review-lib.js';
 import {
+	allocateFamilyAffinityRevision,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
@@ -31,6 +32,7 @@ import {
 	type FamilyAffinityAssignment,
 	type FamilyAffinityTarget
 } from './family-affinity-production-lib.js';
+import { exportFamilyAffinityReview } from './export-family-affinity-review.js';
 
 const temporaryRoots: string[] = [];
 const sha = (character: string) => character.repeat(64);
@@ -107,6 +109,22 @@ async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1') {
 		await writeFile(join(root, path), bytes);
 	}
 	return { root, activeTarget, paths, candidateBytes, result };
+}
+
+function reviewIssueInput(
+	live: Awaited<ReturnType<typeof stageLiveAttempt>>,
+	kind: 'ordinary' | 'blind',
+	reviewerId: string
+) {
+	return {
+		callerRole: 'controller' as const,
+		issuerId: 'review-controller-alpha',
+		kind,
+		reviewerId,
+		targetPath: live.paths.target,
+		productionAssignmentPath: live.paths.assignment,
+		decisionVersion: 1
+	};
 }
 
 function resultFor(activeTarget: FamilyAffinityTarget, candidateBytes = Buffer.from('candidate')) {
@@ -325,22 +343,78 @@ describe('family-affinity review receipt contract', () => {
 		);
 	});
 
+	it('allows only an identity-separated controller to issue immutable review authorization', async () => {
+		for (const [callerRole, issuerId] of [
+			['producer', 'producer-alpha'],
+			['reviewer', 'reviewer-beta'],
+			['operator', 'review-controller-alpha']
+		] as const) {
+			const live = await stageLiveAttempt();
+			await expect(
+				issueReviewAssignmentExclusive(live.root, {
+					...reviewIssueInput(live, 'ordinary', 'reviewer-beta'),
+					callerRole,
+					issuerId
+				})
+			).rejects.toThrow(/controller|issuer|separate/i);
+			await expect(
+				readFile(
+					join(
+						live.root,
+						'assets/enemies/experiments/family-affinity-v1/review/assignments/decisions/goblins/goblin-runt/normal/candidate-v1-ordinary-v1-assignment.json'
+					)
+				)
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		}
+
+		for (const issuerId of ['producer-alpha', 'reviewer-beta']) {
+			const live = await stageLiveAttempt();
+			await expect(
+				issueReviewAssignmentExclusive(live.root, {
+					...reviewIssueInput(live, 'ordinary', 'reviewer-beta'),
+					issuerId
+				})
+			).rejects.toThrow(/identity|separate|collision/i);
+		}
+
+		const live = await stageLiveAttempt();
+		const issued = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		expect(issued.assignment).toMatchObject({
+			issuerRole: 'controller',
+			issuerId: 'review-controller-alpha'
+		});
+		await expect(
+			issueReviewAssignmentExclusive(live.root, reviewIssueInput(live, 'ordinary', 'reviewer-beta'))
+		).rejects.toThrow(/EEXIST|exist/i);
+		await writeFile(
+			join(live.root, issued.path),
+			stableFamilyAffinityJson({
+				...issued.assignment,
+				issuerId: 'forged-controller'
+			})
+		);
+		await expect(
+			createReviewReceiptExclusive(
+				live.root,
+				issued.path,
+				ordinaryFor(live.activeTarget, live.result)
+			)
+		).rejects.toThrow(/attestation|stale|forged|cross-bound/i);
+	});
+
 	it('runs producer result through independent ordinary and T3 blind approval into aggregation', async () => {
 		const live = await stageLiveAttempt('T3');
-		const ordinaryAssignment = await issueReviewAssignmentExclusive(live.root, {
-			kind: 'ordinary',
-			reviewerId: 'reviewer-beta',
-			targetPath: live.paths.target,
-			productionAssignmentPath: live.paths.assignment,
-			decisionVersion: 1
-		});
-		const blindAssignment = await issueReviewAssignmentExclusive(live.root, {
-			kind: 'blind',
-			reviewerId: 'reviewer-gamma',
-			targetPath: live.paths.target,
-			productionAssignmentPath: live.paths.assignment,
-			decisionVersion: 1
-		});
+		const ordinaryAssignment = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		const blindAssignment = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'blind', 'reviewer-gamma')
+		);
 		await createReviewReceiptExclusive(
 			live.root,
 			ordinaryAssignment.path,
@@ -361,15 +435,72 @@ describe('family-affinity review receipt contract', () => {
 		expect(artifacts.catalog).toMatchObject({ generatedCount: 1, approvedReviewCount: 1 });
 	}, 15_000);
 
+	it('retains immutable rejected v1 history while deriving current review state only from active v2', async () => {
+		const live = await stageLiveAttempt();
+		const issued = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		await createReviewReceiptExclusive(
+			live.root,
+			issued.path,
+			ordinaryFor(live.activeTarget, live.result, 'rejected')
+		);
+		const immutablePaths = [
+			live.activeTarget.ownedPaths.result,
+			issued.path,
+			live.activeTarget.ownedPaths.decision
+		];
+		const before = await Promise.all(immutablePaths.map((path) => readFile(join(live.root, path))));
+		await allocateFamilyAffinityRevision({
+			repositoryRoot: live.root,
+			manifestPath: 'assets/enemies/experiments/family-affinity-v1/manifest.json',
+			namespace: 'canonical',
+			coordinateId: live.activeTarget.coordinateId,
+			callerRole: 'integration-controller',
+			reviewPath: live.activeTarget.ownedPaths.decision
+		});
+
+		const artifacts = await buildFamilyAffinityReviewArtifacts(live.root);
+		const cell = artifacts.families
+			.find(({ familyId }) => familyId === 'goblins')!
+			.summary.cells.find(({ coordinateId }) => coordinateId === live.activeTarget.coordinateId)!;
+		expect(cell).toMatchObject({
+			activeVersion: 2,
+			state: 'planned',
+			label: 'NOT GENERATED',
+			historyAttemptCount: 1,
+			historyRevisionRequiredCount: 1
+		});
+		expect(artifacts.catalog).toMatchObject({
+			generatedCount: 0,
+			approvedReviewCount: 0,
+			historicalAttemptCount: 1,
+			historicalRevisionRequiredCount: 1
+		});
+		await exportFamilyAffinityReview(live.root, 'write');
+		await exportFamilyAffinityReview(live.root, 'check');
+		await exportFamilyAffinityReview(live.root, 'write');
+		const after = await Promise.all(immutablePaths.map((path) => readFile(join(live.root, path))));
+		expect(after).toEqual(before);
+
+		const orphanPath = canonicalAttemptPaths('goblins', 'goblin-runt', 'normal', 9).target;
+		await mkdir(dirname(join(live.root, orphanPath)), { recursive: true });
+		await writeFile(join(live.root, orphanPath), stableFamilyAffinityJson(live.activeTarget));
+		await expect(buildFamilyAffinityReviewArtifacts(live.root)).rejects.toThrow(/orphan|unbound/i);
+		await rm(join(live.root, orphanPath));
+		const orphanResult = canonicalAttemptPaths('goblins', 'goblin-runt', 'normal', 9).result;
+		await mkdir(dirname(join(live.root, orphanResult)), { recursive: true });
+		await writeFile(join(live.root, orphanResult), stableFamilyAffinityJson(live.result));
+		await expect(buildFamilyAffinityReviewArtifacts(live.root)).rejects.toThrow(/orphan|unbound/i);
+	}, 30_000);
+
 	it('binds resultSha256 to raw result bytes, including otherwise harmless whitespace', async () => {
 		const live = await stageLiveAttempt();
-		const reviewAssignment = await issueReviewAssignmentExclusive(live.root, {
-			kind: 'ordinary',
-			reviewerId: 'reviewer-beta',
-			targetPath: live.paths.target,
-			productionAssignmentPath: live.paths.assignment,
-			decisionVersion: 1
-		});
+		const reviewAssignment = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
 		await writeFile(
 			join(live.root, live.activeTarget.ownedPaths.result),
 			`${stableFamilyAffinityJson(live.result)}\n`
@@ -391,13 +522,10 @@ describe('family-affinity review receipt contract', () => {
 				stableFamilyAffinityJson({ ...live.result, [field]: sha('0') })
 			);
 			await expect(
-				issueReviewAssignmentExclusive(live.root, {
-					kind: 'ordinary',
-					reviewerId: 'reviewer-beta',
-					targetPath: live.paths.target,
-					productionAssignmentPath: live.paths.assignment,
-					decisionVersion: 1
-				})
+				issueReviewAssignmentExclusive(
+					live.root,
+					reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+				)
 			).rejects.toThrow(/stale|forged|cross-bound/i);
 		}
 	});
@@ -452,26 +580,20 @@ describe('family-affinity review receipt contract', () => {
 			await rm(absolute);
 			await symlink(external, absolute);
 			await expect(
-				issueReviewAssignmentExclusive(live.root, {
-					kind: 'ordinary',
-					reviewerId: 'reviewer-beta',
-					targetPath: live.paths.target,
-					productionAssignmentPath: live.paths.assignment,
-					decisionVersion: 1
-				})
+				issueReviewAssignmentExclusive(
+					live.root,
+					reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+				)
 			).rejects.toThrow(/symlink/i);
 		}
 	);
 
 	it('fails closed on symlinked controller assignments and immutable receipt collisions', async () => {
 		const live = await stageLiveAttempt();
-		const issued = await issueReviewAssignmentExclusive(live.root, {
-			kind: 'ordinary',
-			reviewerId: 'reviewer-beta',
-			targetPath: live.paths.target,
-			productionAssignmentPath: live.paths.assignment,
-			decisionVersion: 1
-		});
+		const issued = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
 		const assignmentAbsolute = join(live.root, issued.path);
 		const external = join(live.root, 'outside-review-assignment.json');
 		await writeFile(external, await readFile(assignmentAbsolute));
@@ -486,13 +608,10 @@ describe('family-affinity review receipt contract', () => {
 		).rejects.toThrow(/symlink/i);
 
 		const collision = await stageLiveAttempt();
-		const collisionAssignment = await issueReviewAssignmentExclusive(collision.root, {
-			kind: 'ordinary',
-			reviewerId: 'reviewer-beta',
-			targetPath: collision.paths.target,
-			productionAssignmentPath: collision.paths.assignment,
-			decisionVersion: 1
-		});
+		const collisionAssignment = await issueReviewAssignmentExclusive(
+			collision.root,
+			reviewIssueInput(collision, 'ordinary', 'reviewer-beta')
+		);
 		const receipt = ordinaryFor(collision.activeTarget, collision.result);
 		await createReviewReceiptExclusive(collision.root, collisionAssignment.path, receipt);
 		await expect(
@@ -682,5 +801,43 @@ describe('initial family review evidence', () => {
 			bridgeGeneratedCount: 1,
 			bridgeApprovedReviewCount: 0
 		});
-	});
+		const issued = await issueReviewAssignmentExclusive(root, {
+			callerRole: 'controller',
+			issuerId: 'review-controller-alpha',
+			kind: 'ordinary',
+			reviewerId: 'reviewer-beta',
+			targetPath: bridgePaths.target,
+			productionAssignmentPath: bridgePaths.assignment,
+			decisionVersion: 1
+		});
+		await createReviewReceiptExclusive(
+			root,
+			issued.path,
+			ordinaryFor(bridgeTarget, result, 'revise')
+		);
+		const historyPaths = [bridgePaths.result, issued.path, bridgePaths.decision];
+		const before = await Promise.all(historyPaths.map((path) => readFile(join(root, path))));
+		await allocateFamilyAffinityRevision({
+			repositoryRoot: root,
+			manifestPath,
+			namespace: 'bridge',
+			coordinateId,
+			callerRole: 'integration-controller',
+			reviewPath: bridgePaths.decision
+		});
+		const afterRevision = await buildFamilyAffinityReviewArtifacts(root);
+		expect(afterRevision.catalog).toMatchObject({
+			coordinateCount: 750,
+			generatedCount: 0,
+			approvedReviewCount: 0,
+			bridgeCoordinateCount: 1,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0,
+			historicalAttemptCount: 1,
+			historicalRevisionRequiredCount: 1
+		});
+		expect(await Promise.all(historyPaths.map((path) => readFile(join(root, path))))).toEqual(
+			before
+		);
+	}, 30_000);
 });

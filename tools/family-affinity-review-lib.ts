@@ -17,16 +17,18 @@ import {
 	bridgeAttemptPaths,
 	canonicalAttemptPaths,
 	familyAffinityProducerIdentitySha256,
-	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
+	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinityReviewAssignmentPath,
 	familyAffinitySha256,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityCandidateEvidence,
+	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityReceiptEvidence,
 	validateFamilyAffinityReviewAssignmentEvidence,
 	type FamilyAffinityAssignment,
 	type FamilyAffinityBlindReviewReceipt,
+	type FamilyAffinityManifest,
 	type FamilyAffinityResult,
 	type FamilyAffinityReviewAssignment,
 	type FamilyAffinityReviewReceipt,
@@ -255,6 +257,8 @@ async function loadLiveReviewAttempt(
 export async function issueReviewAssignmentExclusive(
 	repositoryRoot: string,
 	input: {
+		callerRole: string;
+		issuerId: string;
 		kind: 'ordinary' | 'blind';
 		reviewerId: string;
 		targetPath: string;
@@ -263,6 +267,12 @@ export async function issueReviewAssignmentExclusive(
 		manifestPath?: string;
 	}
 ): Promise<{ path: string; assignment: FamilyAffinityReviewAssignment }> {
+	if (input.callerRole !== 'controller') {
+		throw new Error('Only callerRole controller may issue review assignments');
+	}
+	if (input.issuerId.trim().length === 0 || input.issuerId === input.reviewerId) {
+		throw new Error('Controller issuer identity must be non-empty and separate from reviewer');
+	}
 	const manifestPath = input.manifestPath ?? `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	const live = await loadLiveReviewAttempt(
 		repositoryRoot,
@@ -272,6 +282,9 @@ export async function issueReviewAssignmentExclusive(
 	);
 	if (input.reviewerId === live.result.producerId) {
 		throw new Error('Producer cannot receive a review assignment for self-approval');
+	}
+	if (input.issuerId === live.result.producerId) {
+		throw new Error('Controller issuer identity must be separate from producer identity');
 	}
 	const requiresBlind = live.target.tier === 'T3' || live.target.tier === 'T5';
 	if (input.kind === 'blind' && !requiresBlind) {
@@ -285,15 +298,35 @@ export async function issueReviewAssignmentExclusive(
 			? live.target.ownedPaths.decision
 			: live.target.ownedPaths.blindReview;
 	const path = familyAffinityReviewAssignmentPath(input.kind, live.target, input.decisionVersion);
+	const resultSha256 = familyAffinityRawSha256(live.resultBytes);
+	const manifestSha256 = familyAffinityRawSha256(live.manifestBytes);
+	const issuerAttestationSha256 = familyAffinityReviewIssuerAttestationSha256({
+		issuerId: input.issuerId,
+		reviewerId: input.reviewerId,
+		kind: input.kind,
+		manifestPath,
+		manifestSha256,
+		target: live.target,
+		targetPath: input.targetPath,
+		productionAssignment: live.productionAssignment,
+		productionAssignmentPath: input.productionAssignmentPath,
+		result: live.result,
+		resultSha256,
+		decisionVersion: input.decisionVersion,
+		permittedReceiptPath
+	});
 	const assignment = FamilyAffinityReviewAssignmentSchema.parse({
 		schemaVersion: 'family-affinity-review-assignment-v1',
+		issuerRole: 'controller',
+		issuerId: input.issuerId,
+		issuerAttestationSha256,
 		reviewKind: input.kind,
 		assignmentId: `${live.target.targetId}/${input.kind}-review-v${input.decisionVersion}/assignment`,
 		reviewerId: input.reviewerId,
 		producerId: input.kind === 'ordinary' ? live.result.producerId : null,
 		producerIdentitySha256: familyAffinityProducerIdentitySha256(live.result.producerId),
 		manifestPath,
-		manifestSha256: familyAffinityRawSha256(live.manifestBytes),
+		manifestSha256,
 		targetId: live.target.targetId,
 		targetPath: input.targetPath,
 		targetSha256: familyAffinitySha256(live.target),
@@ -305,7 +338,7 @@ export async function issueReviewAssignmentExclusive(
 		candidatePath: live.result.candidatePath,
 		candidateSha256: live.result.candidateSha256,
 		resultPath: live.result.resultPath,
-		resultSha256: familyAffinityRawSha256(live.resultBytes),
+		resultSha256,
 		sourcePath: live.result.sourcePath,
 		sourceSha256: live.result.sourceSha256,
 		promptSha256: live.result.promptSha256,
@@ -397,6 +430,8 @@ type ReviewCell = {
 	candidatePath: string | null;
 	candidateSha256: string | null;
 	revisionRequired: boolean;
+	historyAttemptCount: number;
+	historyRevisionRequiredCount: number;
 };
 
 export type FamilyReviewSummary = {
@@ -407,6 +442,8 @@ export type FamilyReviewSummary = {
 	generatedCount: number;
 	approvedReviewCount: number;
 	revisionRequiredCount: number;
+	historicalAttemptCount: number;
+	historicalRevisionRequiredCount: number;
 	runtimeCount: 0;
 	rows: readonly ['T1', 'T2', 'T3', 'T4', 'T5'];
 	columns: typeof PRODUCTION_AFFINITIES;
@@ -424,6 +461,8 @@ export type FamilyAffinityReviewCatalog = {
 	bridgeGeneratedCount: number;
 	bridgeApprovedReviewCount: number;
 	revisionRequiredCount: number;
+	historicalAttemptCount: number;
+	historicalRevisionRequiredCount: number;
 	runtimeCount: 0;
 	stateCeiling: 'approved-review';
 	families: Array<{
@@ -515,6 +554,138 @@ async function walkFilesNoSymlinks(
 	return output.sort();
 }
 
+type ValidatedReviewAttempt = {
+	target: FamilyAffinityTarget;
+	assignment: FamilyAffinityAssignment;
+	coordinate: FamilyAffinityManifest['canonicalMatrix']['activeCoordinates'][number];
+	active: boolean;
+};
+
+async function loadValidatedReviewAttemptHistory(
+	repositoryRoot: string,
+	manifest: FamilyAffinityManifest
+): Promise<ValidatedReviewAttempt[]> {
+	const attempts: ValidatedReviewAttempt[] = [];
+	const expectedTargetPaths = new Set<string>();
+	const expectedAssignmentPaths = new Set<string>();
+	const expectedCandidatePaths = new Set<string>();
+	const expectedResultPaths = new Set<string>();
+	for (const activeCoordinate of [
+		...manifest.canonicalMatrix.activeCoordinates,
+		...manifest.bridge.activeCoordinates
+	]) {
+		let previousTarget: FamilyAffinityTarget | undefined;
+		for (let version = 1; version <= activeCoordinate.activeVersion; version += 1) {
+			const paths =
+				activeCoordinate.namespace === 'canonical'
+					? canonicalAttemptPaths(
+							activeCoordinate.familyId,
+							activeCoordinate.formId,
+							activeCoordinate.affinity,
+							version
+						)
+					: bridgeAttemptPaths(
+							activeCoordinate.currentClassId!,
+							activeCoordinate.affinity,
+							version
+						);
+			expectedTargetPaths.add(paths.target);
+			expectedAssignmentPaths.add(paths.assignment);
+			expectedCandidatePaths.add(paths.candidate);
+			expectedResultPaths.add(paths.result);
+			const target = FamilyAffinityTargetSchema.parse(
+				JSON.parse((await requiredRealFile(repositoryRoot, paths.target)).toString('utf8'))
+			);
+			const assignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse((await requiredRealFile(repositoryRoot, paths.assignment)).toString('utf8'))
+			);
+			const coordinate = {
+				...activeCoordinate,
+				activeVersion: version,
+				targetPath: paths.target,
+				targetSha256: familyAffinitySha256(target),
+				assignmentPath: paths.assignment,
+				assignmentSha256: familyAffinitySha256(assignment),
+				status: target.status
+			};
+			validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+			const active = version === activeCoordinate.activeVersion;
+			if (
+				active &&
+				(coordinate.targetSha256 !== activeCoordinate.targetSha256 ||
+					coordinate.assignmentSha256 !== activeCoordinate.assignmentSha256 ||
+					coordinate.status !== activeCoordinate.status)
+			) {
+				throw new Error(`Active manifest attempt is stale or cross-bound: ${target.targetId}`);
+			}
+			if (version === 1 && target.precedingAttempt !== null) {
+				throw new Error(`Initial review attempt cannot link prior history: ${target.targetId}`);
+			}
+			if (version > 1) {
+				const preceding = target.precedingAttempt;
+				if (
+					!previousTarget ||
+					!preceding ||
+					preceding.targetId !== previousTarget.targetId ||
+					preceding.targetSha256 !== familyAffinitySha256(previousTarget) ||
+					preceding.candidatePath !== previousTarget.ownedPaths.candidate ||
+					preceding.resultPath !== previousTarget.ownedPaths.result ||
+					preceding.reviewPath !== previousTarget.ownedPaths.decision
+				) {
+					throw new Error(`Review attempt history is skipped or unbound: ${target.targetId}`);
+				}
+				const [candidateBytes, resultBytes, receiptBytes] = await Promise.all([
+					requiredRealFile(repositoryRoot, preceding.candidatePath),
+					requiredRealFile(repositoryRoot, preceding.resultPath),
+					requiredRealFile(repositoryRoot, preceding.reviewPath)
+				]);
+				if (
+					familyAffinityRawSha256(candidateBytes) !== preceding.candidateSha256 ||
+					familyAffinityRawSha256(resultBytes) !== preceding.resultSha256 ||
+					familyAffinityRawSha256(receiptBytes) !== preceding.reviewSha256
+				) {
+					throw new Error(`Review attempt predecessor bytes are stale: ${target.targetId}`);
+				}
+			}
+			attempts.push({ target, assignment, coordinate, active });
+			previousTarget = target;
+		}
+	}
+	const actualTargetPaths = [
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/targets`)),
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/bridge/targets`))
+	];
+	const actualAssignmentPaths = [
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/assignments`)),
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/bridge/assignments`))
+	];
+	const actualCandidatePaths = [
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/candidates`)),
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/bridge/candidates`))
+	];
+	const actualResultPaths = [
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/results`)),
+		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/bridge/results`))
+	];
+	for (const path of actualTargetPaths) {
+		if (!expectedTargetPaths.has(path)) throw new Error(`Orphan or unbound review target: ${path}`);
+	}
+	for (const path of actualAssignmentPaths) {
+		if (!expectedAssignmentPaths.has(path)) {
+			throw new Error(`Orphan or unbound review production assignment: ${path}`);
+		}
+	}
+	for (const path of actualCandidatePaths) {
+		if (!expectedCandidatePaths.has(path)) {
+			throw new Error(`Orphan or unbound review candidate: ${path}`);
+		}
+	}
+	for (const path of actualResultPaths) {
+		if (!expectedResultPaths.has(path)) throw new Error(`Orphan or unbound review result: ${path}`);
+	}
+	return attempts;
+}
+
 function xml(value: string): string {
 	return value
 		.replaceAll('&', '&amp;')
@@ -594,30 +765,9 @@ export async function buildFamilyAffinityReviewArtifacts(
 	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	const manifestBytes = await requiredRealFile(repositoryRoot, manifestPath);
 	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
-	const allCoordinates = [
-		...manifest.canonicalMatrix.activeCoordinates,
-		...manifest.bridge.activeCoordinates
-	];
-	const attempts = await Promise.all(
-		allCoordinates.map(async (coordinate) => {
-			const bytes = await optionalRealFile(repositoryRoot, coordinate.targetPath);
-			if (!bytes) throw new Error(`Missing active target: ${coordinate.targetPath}`);
-			const target = FamilyAffinityTargetSchema.parse(JSON.parse(bytes.toString('utf8')));
-			if (familyAffinitySha256(target) !== coordinate.targetSha256) {
-				throw new Error(`Active target hash mismatch: ${coordinate.targetPath}`);
-			}
-			const assignmentBytes = await requiredRealFile(repositoryRoot, coordinate.assignmentPath);
-			const assignment = FamilyAffinityAssignmentSchema.parse(
-				JSON.parse(assignmentBytes.toString('utf8'))
-			);
-			if (familyAffinitySha256(assignment) !== coordinate.assignmentSha256) {
-				throw new Error(`Active assignment hash mismatch: ${coordinate.assignmentPath}`);
-			}
-			familyAffinityPromptSha256(target, assignment);
-			return { target, assignment, coordinate };
-		})
-	);
-	const targets = attempts.map(({ target }) => target);
+	const attempts = await loadValidatedReviewAttemptHistory(repositoryRoot, manifest);
+	const activeAttempts = attempts.filter(({ active }) => active);
+	const targets = activeAttempts.map(({ target }) => target);
 	const canonicalTargets = targets.filter(({ namespace }) => namespace === 'canonical');
 
 	const expectedGeneratedPaths = new Set<string>([FAMILY_AFFINITY_REVIEW_CATALOG_PATH]);
@@ -718,10 +868,20 @@ export async function buildFamilyAffinityReviewArtifacts(
 		if (receipts.length !== 1)
 			throw new Error(`Duplicate immutable review receipt paths for ${key}`);
 	}
+	const attemptByKey = new Map(
+		attempts.map((attempt) => [
+			`${attempt.target.coordinateId}/v${attempt.target.version}`,
+			attempt
+		])
+	);
+	for (const key of new Set([...ordinaryByKey.keys(), ...blindByKey.keys()])) {
+		if (!attemptByKey.has(key)) throw new Error(`Orphan or unbound review receipt: ${key}`);
+	}
 
 	const candidateBytesByCoordinate = new Map<string, Buffer>();
 	const cellByCoordinate = new Map<string, ReviewCell>();
-	for (const { target, assignment, coordinate } of attempts) {
+	const historicalCountsByCoordinate = new Map<string, { attempts: number; revisions: number }>();
+	for (const { target, assignment, coordinate, active } of attempts) {
 		const candidateBytes = await optionalRealFile(repositoryRoot, target.ownedPaths.candidate);
 		const resultBytes = await optionalRealFile(repositoryRoot, target.ownedPaths.result);
 		const key = `${target.coordinateId}/v${target.version}`;
@@ -729,6 +889,9 @@ export async function buildFamilyAffinityReviewArtifacts(
 		const blindRecord = blindByKey.get(key)?.[0];
 		if (!candidateBytes && !resultBytes && (ordinaryRecord || blindRecord)) {
 			throw new Error(`Review receipt exists without candidate/result for ${target.coordinateId}`);
+		}
+		if (!active && !ordinaryRecord) {
+			throw new Error(`Historical attempt lacks its immutable review receipt: ${target.targetId}`);
 		}
 		for (const record of [ordinaryRecord, blindRecord].filter(
 			(value): value is NonNullable<typeof value> => Boolean(value)
@@ -777,7 +940,26 @@ export async function buildFamilyAffinityReviewArtifacts(
 			...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
 			...(blindRecord ? { blind: blindRecord.receipt } : {})
 		});
+		if (!active) {
+			if (!evaluated.revisionRequired || evaluated.approved) {
+				throw new Error(
+					`Historical attempt is not a rejected/revise allocation source: ${target.targetId}`
+				);
+			}
+			const counts = historicalCountsByCoordinate.get(target.coordinateId) ?? {
+				attempts: 0,
+				revisions: 0
+			};
+			counts.attempts += 1;
+			counts.revisions += 1;
+			historicalCountsByCoordinate.set(target.coordinateId, counts);
+			continue;
+		}
 		if (candidateBytes) candidateBytesByCoordinate.set(target.coordinateId, candidateBytes);
+		const history = historicalCountsByCoordinate.get(target.coordinateId) ?? {
+			attempts: 0,
+			revisions: 0
+		};
 		cellByCoordinate.set(target.coordinateId, {
 			tier: target.tier,
 			formId: target.formId,
@@ -795,7 +977,9 @@ export async function buildFamilyAffinityReviewArtifacts(
 							: 'REVISION REQUIRED',
 			candidatePath: candidateBytes ? target.ownedPaths.candidate : null,
 			candidateSha256: candidateBytes ? familyAffinityRawSha256(candidateBytes) : null,
-			revisionRequired: evaluated.revisionRequired
+			revisionRequired: evaluated.revisionRequired,
+			historyAttemptCount: history.attempts,
+			historyRevisionRequiredCount: history.revisions
 		});
 	}
 
@@ -821,6 +1005,14 @@ export async function buildFamilyAffinityReviewArtifacts(
 		const revisionRequiredCount = orderedCells.filter(
 			({ revisionRequired }) => revisionRequired
 		).length;
+		const historicalAttemptCount = orderedCells.reduce(
+			(sum, cell) => sum + cell.historyAttemptCount,
+			0
+		);
+		const historicalRevisionRequiredCount = orderedCells.reduce(
+			(sum, cell) => sum + cell.historyRevisionRequiredCount,
+			0
+		);
 		const summary: FamilyReviewSummary = {
 			schemaVersion: 'family-affinity-family-review-v1',
 			familyId,
@@ -829,6 +1021,8 @@ export async function buildFamilyAffinityReviewArtifacts(
 			generatedCount,
 			approvedReviewCount,
 			revisionRequiredCount,
+			historicalAttemptCount,
+			historicalRevisionRequiredCount,
 			runtimeCount: 0,
 			rows: FORM_TIERS,
 			columns: PRODUCTION_AFFINITIES,
@@ -855,6 +1049,11 @@ export async function buildFamilyAffinityReviewArtifacts(
 		(sum, family) => sum + family.summary.revisionRequiredCount,
 		0
 	);
+	const historicalAttemptCount = attempts.filter(({ active }) => !active).length;
+	const historicalRevisionRequiredCount = [...historicalCountsByCoordinate.values()].reduce(
+		(sum, counts) => sum + counts.revisions,
+		0
+	);
 	const bridgeCells = targets
 		.filter(({ namespace }) => namespace === 'bridge')
 		.map(({ coordinateId }) => cellByCoordinate.get(coordinateId)!);
@@ -870,6 +1069,8 @@ export async function buildFamilyAffinityReviewArtifacts(
 		bridgeApprovedReviewCount: bridgeCells.filter(({ state }) => state === 'approved-review')
 			.length,
 		revisionRequiredCount,
+		historicalAttemptCount,
+		historicalRevisionRequiredCount,
 		runtimeCount: 0,
 		stateCeiling: 'approved-review',
 		families: families.map((family) => ({
