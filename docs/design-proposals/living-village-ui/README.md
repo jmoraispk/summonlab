@@ -1,6 +1,6 @@
 # Living Village client visual proposal
 
-**Status:** Title gateway and tier-one Village locked; remaining system flows exploratory
+**Status:** Title gateway and tier-one Village locked; progression and control model proposed
 
 **Date:** 2026-09-02
 
@@ -17,16 +17,16 @@ gameplay contracts, or shared content catalogs.
 - a scene-first, centered Village composition on desktop;
 - direct facility labels with fine leader lines;
 - the cyan circle and arrow that connect a selected hero to the world;
-- the five-destination phone navigation pattern and placement.
+- the phone bottom-navigation placement and icon-plus-label treatment;
 - the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right, and
   the portal landmark centered at the rear.
 
 ### Continue designing
 
-- the building upgrade language from the tier-one Village into the mature panorama;
+- the exact gameplay thresholds behind the visual Village stages;
 - the exact Village Inventory organization and assignment interactions;
 - the detailed suggested-packing and return-reconciliation sequence;
-- whether Tower and Gate remain separate destinations;
+- final approval of the proposed `Village`, `Residents`, `Inventory`, and `Missions` mode names;
 - production feasibility, responsive collision handling, and final asset requirements.
 
 The immediate goal is to freeze the foundation above, then use it to design the unresolved gameplay
@@ -54,6 +54,19 @@ this composition rather than turn the gateway into a conventional login form.
 ![Desktop Village home](./mockups/village-home-desktop.png)
 
 ![Phone Village home](./mockups/village-home-phone.png)
+
+### Complete Village progression
+
+These three complete desktop mockups preserve one camera, road pattern, facility layout, and interface
+shell while the settlement grows in place. The stages describe visual maturity only; they do not create
+a three-level gameplay contract. The shell also tests a simplified four-mode navigation proposal:
+`Village`, `Residents`, `Inventory`, and `Missions`.
+
+![Starting Village](./mockups/village-stage-1-desktop.png)
+
+![Growing Village](./mockups/village-stage-2-desktop.png)
+
+![Mature Village](./mockups/village-stage-3-desktop.png)
 
 ### Exploratory opening Village
 
