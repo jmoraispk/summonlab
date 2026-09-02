@@ -56,6 +56,7 @@
 		"record-equipment-image-result-v2.ts",
 		"record-equipment-image-terminal-v2.ts",
 		"verify-equipment-image-run-completion-v2.ts",
+		"export-equipment-v2-review-gallery.ts",
 		"export-equipment-image-profile.ts",
 		"export-equipment-image-profile-v2.ts",
 		"export-equipment-image-contracts-v2.ts",
