@@ -58,14 +58,14 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-	"skillContractSha256": "9be941c2d95f3e2e2de1923cc53f841746269495bcdc74b3d503b28aa2e76959",
+	"skillContractSha256": "b29a676fc9a9e7a89b103542b46d3caa4c40776b745a36b94a4115fc30527535",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-				"sha256": "9be941c2d95f3e2e2de1923cc53f841746269495bcdc74b3d503b28aa2e76959"
+				"sha256": "b29a676fc9a9e7a89b103542b46d3caa4c40776b745a36b94a4115fc30527535"
       },
       {
         "path": "SKILL.md",
@@ -97,7 +97,7 @@
       },
       {
         "path": "scripts/family_dispatch_gate.mjs",
-				"sha256": "39484988e6fc39d96b17ea0b84b9b11b3e1e453656163b950437e66f7e018c1b"
+				"sha256": "46c81c3199638caa141a6424d317ed3ee9d6901015095633aed20fff05a1da38"
       },
       {
         "path": "scripts/persist_family_candidate.py",
@@ -109,7 +109,7 @@
       },
       {
         "path": "scripts/validate_target.py",
-				"sha256": "c209e5f7d17ae34812db5b75be5bcd90cc51434dceb0fd5204d33ad518bda5c0"
+				"sha256": "219a607ac5a50833f1e5d7e00eca245d37e9b9e7e3768143e958412d3ca1d58e"
       },
       {
         "path": "scripts/verify_result.py",
@@ -120,7 +120,7 @@
         "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-		"bundleSha256": "55ec711acc2a1dbe11fdbb1111096dd08e08f90f1bb2df224ea73649d789b0c9"
+		"bundleSha256": "df57dd6bf393c147dba81c7614da87f986fdf114b5f1de80285b4d305e566435"
   },
   "repositoryDispatch": {
     "path": "tools/check-family-affinity-production-dispatch.ts",
@@ -133,7 +133,7 @@
     },
     "bundle": {
       "path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "39484988e6fc39d96b17ea0b84b9b11b3e1e453656163b950437e66f7e018c1b"
+			"sha256": "46c81c3199638caa141a6424d317ed3ee9d6901015095633aed20fff05a1da38"
     },
     "sources": [
       {
@@ -142,7 +142,7 @@
       },
       {
         "path": "tools/family-affinity-production-lib.ts",
-				"sha256": "635bd353ab2ac129aa250d0841d7ca9fc2f3fdb5b460202cc9787657e46fad48"
+				"sha256": "6bb07a1cfa6031d2ad53ceee860b951978b923800c2b2cb26e5adce47ec7213d"
       },
       {
         "path": "package.json",

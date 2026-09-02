@@ -222,6 +222,63 @@ const LegacyNormalCandidatePathSchema = z
 const AttemptStatusSchema = z.enum(['planned', 'blocked-on-anchor', 'earth-bridge-provisional']);
 const NamespaceSchema = z.enum(['canonical', 'bridge']);
 
+const FamilyAffinityRevisionSemanticOverridesShape = {
+	playerFacingName: RequiredTextSchema.optional(),
+	primaryArchetype: RequiredTextSchema.optional(),
+	battlefieldDuty: RequiredTextSchema.optional(),
+	identityInvariants: z.array(RequiredTextSchema).min(1).optional(),
+	anatomyInvariants: z.array(RequiredTextSchema).min(1).optional(),
+	constructionDimensions: z.array(RequiredTextSchema).min(2).optional(),
+	telegraph: RequiredTextSchema.optional(),
+	counterplay: RequiredTextSchema.optional(),
+	forbiddenTreatments: z.array(RequiredTextSchema).min(1).optional(),
+	acceptanceCriteria: z.array(RequiredTextSchema).min(8).optional()
+} as const;
+
+const FamilyAffinityRevisionSemanticOverridesSchema = z
+	.object(FamilyAffinityRevisionSemanticOverridesShape)
+	.strict()
+	.refine((overrides) => Object.keys(overrides).length > 0, {
+		message: 'Semantic correction requires at least one whitelisted override'
+	});
+
+const FamilyAffinityRevisionCorrectionShape = {
+	schemaVersion: z.literal('family-affinity-revision-correction-v1'),
+	rationale: RequiredTextSchema,
+	overrides: FamilyAffinityRevisionSemanticOverridesSchema
+} as const;
+
+export const FamilyAffinityRevisionCorrectionSchema = z
+	.object(FamilyAffinityRevisionCorrectionShape)
+	.strict();
+
+export type FamilyAffinityRevisionCorrection = z.infer<
+	typeof FamilyAffinityRevisionCorrectionSchema
+>;
+
+const AppliedFamilyAffinityRevisionCorrectionEventShape = {
+	...FamilyAffinityRevisionCorrectionShape,
+	appliedVersion: z.number().int().positive(),
+	precedingTargetId: RequiredTextSchema,
+	precedingTargetSha256: Sha256Schema
+} as const;
+
+const AppliedFamilyAffinityRevisionCorrectionSchema = z
+	.object({
+		...AppliedFamilyAffinityRevisionCorrectionEventShape,
+		correctionSha256: Sha256Schema
+	})
+	.strict()
+	.superRefine((correction, context) => {
+		const { correctionSha256, ...event } = correction;
+		if (correctionSha256 !== familyAffinitySha256(event)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Semantic correction event hash is stale or forged'
+			});
+		}
+	});
+
 export const BridgeIdentityPacketSchema = z
 	.object({
 		schemaVersion: z.literal('bridge-identity-packet-v1'),
@@ -384,6 +441,7 @@ export const FamilyAffinityTargetSchema = z
 		familyId: IdSchema,
 		formId: IdSchema,
 		currentClassId: IdSchema.nullable(),
+		playerFacingName: RequiredTextSchema.optional(),
 		canonicalCoordinateId: RequiredTextSchema.optional(),
 		affinity: z.enum(PRODUCTION_AFFINITIES),
 		tier: z.union([FormTierSchema, z.literal('bridge-only')]),
@@ -452,6 +510,7 @@ export const FamilyAffinityTargetSchema = z
 			})
 			.strict()
 			.nullable(),
+		semanticCorrection: AppliedFamilyAffinityRevisionCorrectionSchema.optional(),
 		version: z.number().int().positive(),
 		status: AttemptStatusSchema,
 		promotionCeiling: z.literal('approved-review'),
@@ -459,6 +518,61 @@ export const FamilyAffinityTargetSchema = z
 	})
 	.strict()
 	.superRefine((target, context) => {
+		const correction = target.semanticCorrection;
+		if (
+			target.playerFacingName !== undefined &&
+			(correction === undefined ||
+				correction.overrides.playerFacingName !== target.playerFacingName)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message:
+					'Player-facing name requires an equal, explicit override in its hash-bound semantic correction'
+			});
+		}
+		if (correction !== undefined) {
+			if (target.namespace !== 'bridge') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Semantic corrections are restricted to bridge revision targets'
+				});
+			}
+			if (target.version < correction.appliedVersion) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Semantic correction cannot postdate its target version'
+				});
+			}
+			const expectedPrecedingTargetId = `${target.namespace}/${target.coordinateId}/v${correction.appliedVersion - 1}`;
+			if (
+				correction.appliedVersion <= 1 ||
+				correction.precedingTargetId !== expectedPrecedingTargetId
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Semantic correction must bind the immediately preceding target identity'
+				});
+			}
+			if (
+				target.version === correction.appliedVersion &&
+				(target.precedingAttempt === null ||
+					target.precedingAttempt.targetId !== correction.precedingTargetId ||
+					target.precedingAttempt.targetSha256 !== correction.precedingTargetSha256)
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Semantic correction predecessor must match immutable attempt provenance'
+				});
+			}
+			for (const [field, value] of Object.entries(correction.overrides)) {
+				if (stableJson(target[field as keyof typeof target]) !== stableJson(value)) {
+					context.addIssue({
+						code: 'custom',
+						message: `Semantic correction override was not applied to target field: ${field}`
+					});
+				}
+			}
+		}
 		if (target.namespace === 'canonical') {
 			if (target.canonicalCoordinateId !== undefined) {
 				context.addIssue({
@@ -633,6 +747,10 @@ export function validateFamilyAffinitySourcePacket(
 		}
 		return packet;
 	}
+	const corrected = target.semanticCorrection?.overrides;
+	const sourceFieldIsUnchanged = (
+		field: keyof typeof FamilyAffinityRevisionSemanticOverridesShape
+	) => corrected === undefined || !(field in corrected);
 	if (
 		!('currentClassId' in packet) ||
 		target.namespace !== 'bridge' ||
@@ -640,13 +758,19 @@ export function validateFamilyAffinitySourcePacket(
 		packet.bridgeFamilyId !== target.familyId ||
 		packet.bridgeFormId !== target.formId ||
 		target.tier !== 'bridge-only' ||
-		packet.identityInvariants.join('\0') !== target.identityInvariants.join('\0') ||
-		packet.anatomyInvariants.join('\0') !== target.anatomyInvariants.join('\0') ||
-		packet.primaryArchetype !== target.primaryArchetype ||
-		packet.battlefieldDuty !== target.battlefieldDuty ||
-		packet.telegraph !== target.telegraph ||
-		!target.counterplay.includes(packet.counterplay) ||
-		packet.earthTheme.constructionDimensions.join('\0') !== target.constructionDimensions.join('\0')
+		(sourceFieldIsUnchanged('identityInvariants') &&
+			packet.identityInvariants.join('\0') !== target.identityInvariants.join('\0')) ||
+		(sourceFieldIsUnchanged('anatomyInvariants') &&
+			packet.anatomyInvariants.join('\0') !== target.anatomyInvariants.join('\0')) ||
+		(sourceFieldIsUnchanged('primaryArchetype') &&
+			packet.primaryArchetype !== target.primaryArchetype) ||
+		(sourceFieldIsUnchanged('battlefieldDuty') &&
+			packet.battlefieldDuty !== target.battlefieldDuty) ||
+		(sourceFieldIsUnchanged('telegraph') && packet.telegraph !== target.telegraph) ||
+		(sourceFieldIsUnchanged('counterplay') && !target.counterplay.includes(packet.counterplay)) ||
+		(sourceFieldIsUnchanged('constructionDimensions') &&
+			packet.earthTheme.constructionDimensions.join('\0') !==
+				target.constructionDimensions.join('\0'))
 	) {
 		throw new Error('Bridge identity packet drifted from the dispatch target');
 	}
@@ -2457,11 +2581,12 @@ export type AllocateFamilyAffinityRevisionInput = {
 	coordinateId: string;
 	callerRole: string;
 	reviewPath: string;
+	semanticCorrection?: FamilyAffinityRevisionCorrection;
 };
 
 export type FamilyAffinityRevisionBatchEntry = Pick<
 	AllocateFamilyAffinityRevisionInput,
-	'namespace' | 'coordinateId' | 'reviewPath'
+	'namespace' | 'coordinateId' | 'reviewPath' | 'semanticCorrection'
 >;
 
 export type AllocateFamilyAffinityRevisionBatchInput = Pick<
@@ -2695,6 +2820,7 @@ async function validateFullActiveCorpusBeforeAllocation(
 			)
 		);
 		validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+		await validateFamilyAffinitySemanticCorrectionLineage(repositoryRoot, target);
 		if (seenTargetIds.has(target.targetId) || seenAssignmentIds.has(assignment.assignmentId)) {
 			throw new Error('Active corpus contains an unreferenced or duplicate attempt pair');
 		}
@@ -2714,6 +2840,80 @@ async function validateFullActiveCorpusBeforeAllocation(
 			);
 			validateFamilyAffinityReviewPromotion(target, receipt);
 		}
+	}
+}
+
+async function validateFamilyAffinitySemanticCorrectionLineage(
+	repositoryRoot: string,
+	activeTarget: FamilyAffinityTarget
+): Promise<void> {
+	const correction = activeTarget.semanticCorrection;
+	if (correction === undefined) return;
+	let cursor = activeTarget;
+	while (cursor.version > correction.appliedVersion) {
+		if (cursor.precedingAttempt === null) {
+			throw new Error('Semantic correction lineage is missing an immutable preceding attempt');
+		}
+		const previousVersion = cursor.version - 1;
+		const previousPath = bridgeAttemptPaths(
+			cursor.currentClassId!,
+			cursor.affinity,
+			previousVersion
+		).target;
+		const previous = FamilyAffinityTargetSchema.parse(
+			JSON.parse((await readOwnedFileNoSymlinks(repositoryRoot, previousPath)).toString('utf8'))
+		);
+		if (
+			previous.targetId !== cursor.precedingAttempt.targetId ||
+			familyAffinitySha256(previous) !== cursor.precedingAttempt.targetSha256 ||
+			previous.coordinateId !== activeTarget.coordinateId ||
+			stableJson(previous.semanticCorrection) !== stableJson(correction)
+		) {
+			throw new Error('Semantic correction lineage is stale, forged, or was not preserved');
+		}
+		cursor = previous;
+	}
+	if (
+		cursor.version !== correction.appliedVersion ||
+		stableJson(cursor.semanticCorrection) !== stableJson(correction)
+	) {
+		throw new Error('Semantic correction event target is missing or mismatched');
+	}
+	if (cursor.precedingAttempt === null) {
+		throw new Error('Semantic correction application target is missing predecessor provenance');
+	}
+	const predecessorVersion = correction.appliedVersion - 1;
+	const predecessorPath = bridgeAttemptPaths(
+		cursor.currentClassId!,
+		cursor.affinity,
+		predecessorVersion
+	).target;
+	let predecessor: FamilyAffinityTarget;
+	try {
+		predecessor = FamilyAffinityTargetSchema.parse(
+			JSON.parse((await readOwnedFileNoSymlinks(repositoryRoot, predecessorPath)).toString('utf8'))
+		);
+	} catch {
+		throw new Error('Semantic correction on-disk predecessor is missing or invalid');
+	}
+	const predecessorSha256 = familyAffinitySha256(predecessor);
+	if (
+		predecessor.namespace !== cursor.namespace ||
+		predecessor.coordinateId !== cursor.coordinateId ||
+		predecessor.familyId !== cursor.familyId ||
+		predecessor.formId !== cursor.formId ||
+		predecessor.currentClassId !== cursor.currentClassId ||
+		predecessor.affinity !== cursor.affinity ||
+		predecessor.version !== predecessorVersion ||
+		predecessor.targetId !== correction.precedingTargetId ||
+		predecessor.targetId !== cursor.precedingAttempt.targetId ||
+		predecessorSha256 !== correction.precedingTargetSha256 ||
+		predecessorSha256 !== cursor.precedingAttempt.targetSha256
+	) {
+		throw new Error('Semantic correction on-disk predecessor identity or hash is mismatched');
+	}
+	if (predecessor.semanticCorrection !== undefined) {
+		throw new Error('Semantic correction predecessor cannot carry a pre-existing correction');
 	}
 }
 
@@ -2884,8 +3084,29 @@ async function prepareFamilyAffinityRevision(
 		currentTarget.status === 'earth-bridge-provisional'
 			? currentTarget.status
 			: currentAssignment.dispatchStatus;
+	if (input.semanticCorrection !== undefined && currentTarget.semanticCorrection !== undefined) {
+		throw new Error('A target with an existing semantic correction cannot be corrected again');
+	}
+	const requestedCorrection =
+		input.semanticCorrection === undefined
+			? undefined
+			: FamilyAffinityRevisionCorrectionSchema.parse(input.semanticCorrection);
+	if (requestedCorrection !== undefined && currentTarget.namespace !== 'bridge') {
+		throw new Error('Semantic corrections are restricted to bridge revision targets');
+	}
+	const semanticOverrides = requestedCorrection?.overrides ?? {};
+	const appliedCorrectionEvent =
+		requestedCorrection === undefined
+			? undefined
+			: {
+					...requestedCorrection,
+					appliedVersion: nextVersion,
+					precedingTargetId: currentTarget.targetId,
+					precedingTargetSha256: familyAffinitySha256(currentTarget)
+				};
 	const nextTarget = FamilyAffinityTargetSchema.parse({
 		...currentTarget,
+		...semanticOverrides,
 		targetId: `${currentTarget.namespace}/${currentTarget.coordinateId}/v${nextVersion}`,
 		version: nextVersion,
 		status: targetStatus,
@@ -2899,7 +3120,15 @@ async function prepareFamilyAffinityRevision(
 			resultSha256: receipt.resultSha256,
 			reviewPath: input.reviewPath,
 			reviewSha256: familyAffinityRawSha256(receiptBytes)
-		}
+		},
+		...(appliedCorrectionEvent === undefined
+			? {}
+			: {
+					semanticCorrection: {
+						...appliedCorrectionEvent,
+						correctionSha256: familyAffinitySha256(appliedCorrectionEvent)
+					}
+				})
 	});
 	const nextAssignment = buildAssignment(nextTarget);
 	return {
@@ -3081,7 +3310,10 @@ export async function allocateFamilyAffinityRevision(input: AllocateFamilyAffini
 			{
 				namespace: input.namespace,
 				coordinateId: input.coordinateId,
-				reviewPath: input.reviewPath
+				reviewPath: input.reviewPath,
+				...(input.semanticCorrection === undefined
+					? {}
+					: { semanticCorrection: input.semanticCorrection })
 			}
 		]
 	});

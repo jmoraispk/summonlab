@@ -1,4 +1,14 @@
-import { lstat, mkdtemp, mkdir, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import {
+	lstat,
+	mkdtemp,
+	mkdir,
+	readdir,
+	readFile,
+	rm,
+	symlink,
+	unlink,
+	writeFile
+} from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -27,6 +37,7 @@ import {
 	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityNormalAnchorEvidence,
 	validateFamilyAffinityReviewPromotion,
+	validateFamilyAffinitySourcePacket,
 	CurrentClassMappingFileSchema,
 	FamilyPacketSchema
 } from './family-affinity-production-lib.js';
@@ -3516,6 +3527,132 @@ async function stagePlannedElemental(
 	return { coordinate, target, assignment };
 }
 
+const earthWispSemanticCorrection = {
+	schemaVersion: 'family-affinity-revision-correction-v1' as const,
+	rationale:
+		'Player-directed correction: the class is player-facing Wisp, and Earth changes its magical substance without depicting combustion.',
+	overrides: {
+		playerFacingName: 'Wisp',
+		primaryArchetype: 'Affinity-Drift Initiate (Initiate)',
+		identityInvariants: [
+			'A small hovering magical entity keeps a flame-like or teardrop silhouette without becoming literal combustion.',
+			'Its visible body is made from its current affinity substance, so material and color change with affinity.'
+		],
+		anatomyInvariants: [
+			'A compact limbless teardrop of magic hovers above the ground with a soft taper and no humanoid anatomy.'
+		],
+		constructionDimensions: [
+			'Earth forms the body from brown and umber compacted dust, clay, and small stone grains rather than red or orange fire.',
+			'A granular fringe and a few close-orbiting mineral flecks preserve the light, drifting wisp silhouette.'
+		],
+		telegraph:
+			'The umber teardrop leans and sheds three compact dust motes toward its destination.',
+		counterplay:
+			'Leave the dust-mote endpoint and pass through the fading granular trail before the compacted Earth magic reforms.',
+		forbiddenTreatments: [
+			'Red or orange combustion, literal flame, sparks, cinders, or burning embers',
+			'A humanoid body or a heavy rock creature that loses the small hovering wisp silhouette'
+		]
+	}
+};
+
+async function stageBridgeRevisionReviewEvidence(input: {
+	root: string;
+	manifestPath: string;
+	targetPath: string;
+	assignmentPath: string;
+	target: FamilyAffinityTarget;
+}) {
+	const assignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(join(input.root, input.assignmentPath), 'utf8'))
+	);
+	const candidateBytes = `candidate-pixels-v${input.target.version}`;
+	await writeOwnedFixture(input.root, input.target.ownedPaths.candidate, candidateBytes);
+	const result = {
+		schemaVersion: 'family-affinity-result-v1' as const,
+		targetId: input.target.targetId,
+		targetSha256: familyAffinitySha256(input.target),
+		coordinateId: input.target.coordinateId,
+		candidateVersion: input.target.version,
+		producerId: 'producer-corrected-bridge',
+		candidatePath: input.target.ownedPaths.candidate,
+		candidateSha256: familyAffinityRawSha256(candidateBytes),
+		resultPath: input.target.ownedPaths.result,
+		sourcePath: input.target.sources.familyPacketPath,
+		sourceSha256: input.target.sources.familyPacketSha256,
+		promptSha256: familyAffinityPromptSha256(input.target, assignment),
+		state: 'candidate-only' as const,
+		runtimeCatalogMutationForbidden: true as const
+	};
+	const resultBytes = stableFamilyAffinityJson(result);
+	await writeOwnedFixture(input.root, input.target.ownedPaths.result, resultBytes);
+	const receipt = {
+		...makeOrdinaryReviewReceipt(input.target, {
+			decision: 'revise',
+			candidateSha256: result.candidateSha256,
+			resultSha256: familyAffinityRawSha256(resultBytes),
+			producerId: result.producerId
+		}),
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256
+	};
+	const manifestBytes = await readFile(join(input.root, input.manifestPath));
+	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
+	const reviewerId = receipt.reviewerId;
+	const issuerId = 'review-controller-corrected-bridge';
+	const reviewAssignment = {
+		schemaVersion: 'family-affinity-review-assignment-v1',
+		issuerRole: 'controller',
+		issuerId,
+		issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
+			issuerId,
+			reviewerId,
+			kind: 'ordinary',
+			manifestPath: input.manifestPath,
+			manifestSha256,
+			target: input.target,
+			targetPath: input.targetPath,
+			productionAssignment: assignment,
+			productionAssignmentPath: input.assignmentPath,
+			result,
+			resultSha256: receipt.resultSha256,
+			decisionVersion: input.target.version,
+			permittedReceiptPath: input.target.ownedPaths.decision
+		}),
+		reviewKind: 'ordinary',
+		assignmentId: `${input.target.targetId}/ordinary-review-v${input.target.version}/assignment`,
+		reviewerId,
+		producerId: result.producerId,
+		producerIdentitySha256: receipt.producerIdentitySha256,
+		manifestPath: input.manifestPath,
+		manifestSha256,
+		targetId: input.target.targetId,
+		targetPath: input.targetPath,
+		targetSha256: familyAffinitySha256(input.target),
+		productionAssignmentPath: input.assignmentPath,
+		productionAssignmentSha256: familyAffinitySha256(assignment),
+		coordinateId: input.target.coordinateId,
+		candidateVersion: input.target.version,
+		decisionVersion: input.target.version,
+		candidatePath: result.candidatePath,
+		candidateSha256: result.candidateSha256,
+		resultPath: result.resultPath,
+		resultSha256: receipt.resultSha256,
+		sourcePath: result.sourcePath,
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256,
+		permittedReceiptPath: input.target.ownedPaths.decision,
+		exclusiveCreateRequired: true,
+		runtimeCatalogMutationForbidden: true
+	};
+	await writeOwnedFixture(
+		input.root,
+		familyAffinityReviewAssignmentPath('ordinary', input.target, input.target.version),
+		reviewAssignment
+	);
+	await writeOwnedFixture(input.root, input.target.ownedPaths.decision, receipt);
+}
+
 describe('family affinity revision CLI parsing', () => {
 	it('parses compatible single and repeated-entry invocations', () => {
 		expect(
@@ -3560,6 +3697,57 @@ describe('family affinity revision CLI parsing', () => {
 			]).entries
 		).toHaveLength(2);
 	});
+
+	it('parses one corrected bridge entry beside an ordinary bridge entry', () => {
+		const corrected = JSON.stringify({
+			namespace: 'bridge',
+			coordinateId: 'ember-wisp/flame-elementals/flame-elemental-wisp/earth',
+			reviewPath: 'review/wisp.json',
+			semanticCorrection: earthWispSemanticCorrection
+		});
+		const ordinary = JSON.stringify({
+			namespace: 'bridge',
+			coordinateId: 'death-knight/undead/death-knight/earth',
+			reviewPath: 'review/death-knight.json'
+		});
+		expect(
+			parseFamilyAffinityRevisionCli([
+				'--caller-role',
+				'integration-controller',
+				'--entry',
+				corrected,
+				'--entry',
+				ordinary
+			]).entries
+		).toEqual([
+			expect.objectContaining({ semanticCorrection: earthWispSemanticCorrection }),
+			expect.not.objectContaining({ semanticCorrection: expect.anything() })
+		]);
+	});
+
+	it.each(['currentClassId', 'ownedPaths', 'namespace', 'version', 'sources', 'producerRole'])(
+		'rejects protected semantic correction field %s',
+		(protectedField) => {
+			const correction = structuredClone(earthWispSemanticCorrection) as Record<string, unknown> & {
+				overrides: Record<string, unknown>;
+			};
+			correction.overrides[protectedField] = 'forbidden';
+			const entry = JSON.stringify({
+				namespace: 'bridge',
+				coordinateId: 'ember-wisp/flame-elementals/flame-elemental-wisp/earth',
+				reviewPath: 'review/wisp.json',
+				semanticCorrection: correction
+			});
+			expect(() =>
+				parseFamilyAffinityRevisionCli([
+					'--caller-role',
+					'integration-controller',
+					'--entry',
+					entry
+				])
+			).toThrow(/only whitelisted semantic fields/i);
+		}
+	);
 
 	it.each(['--caller-role', '--namespace', '--coordinate', '--review-path'])(
 		'rejects repeated singleton flag %s',
@@ -4167,6 +4355,297 @@ describe('controller-only family affinity revision allocation', () => {
 			);
 			expect(manifest.canonicalMatrix.targetCount).toBe(750);
 			expect(manifest.bridge.targetCount).toBe(1);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('embeds and applies a hash-bound semantic correction without changing bridge identity or ownership', async () => {
+		const fixture = await makeRevisionFixture({ namespace: 'bridge', decision: 'revise' });
+		try {
+			const previousTargetBytes = await readFile(
+				join(fixture.root, fixture.coordinate.targetPath),
+				'utf8'
+			);
+			const correctionEvent = {
+				...earthWispSemanticCorrection,
+				appliedVersion: 2,
+				precedingTargetId: fixture.target.targetId,
+				precedingTargetSha256: familyAffinitySha256(fixture.target)
+			};
+			const allocated = await allocateFamilyAffinityRevision({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				namespace: 'bridge',
+				coordinateId: fixture.target.coordinateId,
+				callerRole: 'integration-controller',
+				reviewPath: fixture.target.ownedPaths.decision,
+				semanticCorrection: earthWispSemanticCorrection
+			});
+
+			expect(allocated.target).toMatchObject({
+				namespace: fixture.target.namespace,
+				coordinateId: fixture.target.coordinateId,
+				familyId: fixture.target.familyId,
+				formId: fixture.target.formId,
+				currentClassId: fixture.target.currentClassId,
+				affinity: fixture.target.affinity,
+				playerFacingName: 'Wisp',
+				primaryArchetype: 'Affinity-Drift Initiate (Initiate)',
+				semanticCorrection: {
+					...correctionEvent,
+					correctionSha256: familyAffinitySha256(correctionEvent)
+				}
+			});
+			expect(allocated.target.ownedPaths.candidate).toBe(
+				bridgeAttemptPaths(fixture.target.currentClassId!, fixture.target.affinity, 2).candidate
+			);
+			expect(allocated.assignment.targetSha256).toBe(familyAffinitySha256(allocated.target));
+			expect(await readFile(join(fixture.root, fixture.coordinate.targetPath), 'utf8')).toBe(
+				previousTargetBytes
+			);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('keeps the corrected Earth Wisp bound to its immutable bridge source packet', async () => {
+		const targetPath = `${FAMILY_AFFINITY_ROOT}/bridge/targets/ember-wisp/earth/target-v3.json`;
+		const current = FamilyAffinityTargetSchema.parse(
+			JSON.parse(await readFile(targetPath, 'utf8'))
+		);
+		const resultBytes = await readFile(current.ownedPaths.result);
+		const result = JSON.parse(resultBytes.toString('utf8')) as { candidateSha256: string };
+		const reviewBytes = await readFile(current.ownedPaths.decision);
+		const nextPaths = bridgeAttemptPaths(current.currentClassId!, current.affinity, 4);
+		const correctionEvent = {
+			...earthWispSemanticCorrection,
+			appliedVersion: 4,
+			precedingTargetId: current.targetId,
+			precedingTargetSha256: familyAffinitySha256(current)
+		};
+		const corrected = FamilyAffinityTargetSchema.parse({
+			...current,
+			...earthWispSemanticCorrection.overrides,
+			targetId: `${current.namespace}/${current.coordinateId}/v4`,
+			version: 4,
+			ownedPaths: {
+				candidate: nextPaths.candidate,
+				result: nextPaths.result,
+				decision: nextPaths.decision,
+				blindReview: nextPaths.blindReview
+			},
+			precedingAttempt: {
+				targetId: current.targetId,
+				targetSha256: familyAffinitySha256(current),
+				candidatePath: current.ownedPaths.candidate,
+				candidateSha256: result.candidateSha256,
+				resultPath: current.ownedPaths.result,
+				resultSha256: familyAffinityRawSha256(resultBytes),
+				reviewPath: current.ownedPaths.decision,
+				reviewSha256: familyAffinityRawSha256(reviewBytes)
+			},
+			semanticCorrection: {
+				...correctionEvent,
+				correctionSha256: familyAffinitySha256(correctionEvent)
+			}
+		});
+		const packetBytes = await readFile(current.sources.familyPacketPath);
+		expect(() => validateFamilyAffinitySourcePacket(corrected, packetBytes)).not.toThrow();
+	});
+
+	it('authenticates and preserves the original correction through an ordinary later revision', async () => {
+		const fixture = await makeRevisionFixture({ namespace: 'bridge', decision: 'revise' });
+		try {
+			const correctedV2 = await allocateFamilyAffinityRevision({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				namespace: 'bridge',
+				coordinateId: fixture.target.coordinateId,
+				callerRole: 'integration-controller',
+				reviewPath: fixture.target.ownedPaths.decision,
+				semanticCorrection: earthWispSemanticCorrection
+			});
+			await stageBridgeRevisionReviewEvidence({
+				root: fixture.root,
+				manifestPath: fixture.manifestPath,
+				targetPath: correctedV2.targetPath,
+				assignmentPath: correctedV2.assignmentPath,
+				target: correctedV2.target
+			});
+
+			const ordinaryV3 = await allocateFamilyAffinityRevision({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				namespace: 'bridge',
+				coordinateId: fixture.target.coordinateId,
+				callerRole: 'integration-controller',
+				reviewPath: correctedV2.target.ownedPaths.decision
+			});
+
+			expect(ordinaryV3.target.version).toBe(3);
+			expect(ordinaryV3.target.playerFacingName).toBe('Wisp');
+			expect(ordinaryV3.target.semanticCorrection).toEqual(correctedV2.target.semanticCorrection);
+			expect(ordinaryV3.target.precedingAttempt).toMatchObject({
+				targetId: correctedV2.target.targetId,
+				targetSha256: familyAffinitySha256(correctedV2.target)
+			});
+
+			const tamperedV3 = structuredClone(ordinaryV3.target);
+			tamperedV3.semanticCorrection!.rationale = 'Rewritten after the original correction event';
+			const { correctionSha256: _oldCorrectionHash, ...tamperedEvent } =
+				tamperedV3.semanticCorrection!;
+			tamperedV3.semanticCorrection!.correctionSha256 = familyAffinitySha256(tamperedEvent);
+			const tamperedAssignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, ordinaryV3.assignmentPath), 'utf8'))
+			);
+			tamperedAssignment.targetSha256 = familyAffinitySha256(tamperedV3);
+			await writeOwnedFixture(fixture.root, ordinaryV3.targetPath, tamperedV3);
+			await writeOwnedFixture(fixture.root, ordinaryV3.assignmentPath, tamperedAssignment);
+			const manifest = FamilyAffinityManifestSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, fixture.manifestPath), 'utf8'))
+			);
+			const active = manifest.bridge.activeCoordinates.find(
+				({ coordinateId }) => coordinateId === ordinaryV3.target.coordinateId
+			)!;
+			active.targetSha256 = familyAffinitySha256(tamperedV3);
+			active.assignmentSha256 = familyAffinitySha256(tamperedAssignment);
+			await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+			await expect(
+				allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'bridge',
+					coordinateId: fixture.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: ordinaryV3.target.ownedPaths.decision
+				})
+			).rejects.toThrow(/correction lineage.*forged|not preserved/i);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it.each(['missing', 'hash-mismatched'] as const)(
+		'rejects a %s on-disk predecessor before a later allocation',
+		async (failure) => {
+			const fixture = await makeRevisionFixture({ namespace: 'bridge', decision: 'revise' });
+			try {
+				const correctedV2 = await allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'bridge',
+					coordinateId: fixture.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: fixture.target.ownedPaths.decision,
+					semanticCorrection: earthWispSemanticCorrection
+				});
+				const predecessorAbsolute = join(fixture.root, fixture.coordinate.targetPath);
+				if (failure === 'missing') {
+					await unlink(predecessorAbsolute);
+				} else {
+					const predecessor = FamilyAffinityTargetSchema.parse(
+						JSON.parse(await readFile(predecessorAbsolute, 'utf8'))
+					);
+					predecessor.battlefieldDuty = 'Tampered predecessor duty';
+					await writeOwnedFixture(fixture.root, fixture.coordinate.targetPath, predecessor);
+				}
+
+				await expect(
+					allocateFamilyAffinityRevision({
+						repositoryRoot: fixture.root,
+						manifestPath: fixture.manifestPath,
+						namespace: 'bridge',
+						coordinateId: fixture.target.coordinateId,
+						callerRole: 'integration-controller',
+						reviewPath: correctedV2.target.ownedPaths.decision
+					})
+				).rejects.toThrow(/on-disk predecessor.*missing|invalid|mismatched/i);
+			} finally {
+				await rm(fixture.root, { recursive: true, force: true });
+			}
+		}
+	);
+
+	it('rejects forged correction lineage and an unrecorded player-facing rename', async () => {
+		const fixture = await makeRevisionFixture({ namespace: 'bridge', decision: 'revise' });
+		try {
+			const base = fixture.target;
+			const nextPaths = bridgeAttemptPaths(base.currentClassId!, base.affinity, 2);
+			const precedingAttempt = {
+				targetId: base.targetId,
+				targetSha256: familyAffinitySha256(base),
+				candidatePath: base.ownedPaths.candidate,
+				candidateSha256: fixture.result.candidateSha256,
+				resultPath: base.ownedPaths.result,
+				resultSha256: fixture.receipt.resultSha256,
+				reviewPath: base.ownedPaths.decision,
+				reviewSha256: familyAffinityRawSha256(
+					await readFile(join(fixture.root, base.ownedPaths.decision))
+				)
+			};
+			const event = {
+				...earthWispSemanticCorrection,
+				appliedVersion: 2,
+				precedingTargetId: base.targetId,
+				precedingTargetSha256: 'f'.repeat(64)
+			};
+			const forgedLineage = {
+				...base,
+				...earthWispSemanticCorrection.overrides,
+				targetId: `${base.namespace}/${base.coordinateId}/v2`,
+				version: 2,
+				ownedPaths: {
+					candidate: nextPaths.candidate,
+					result: nextPaths.result,
+					decision: nextPaths.decision,
+					blindReview: nextPaths.blindReview
+				},
+				precedingAttempt,
+				semanticCorrection: {
+					...event,
+					correctionSha256: familyAffinitySha256(event)
+				}
+			};
+			expect(() => FamilyAffinityTargetSchema.parse(forgedLineage)).toThrow(
+				/predecessor.*immutable attempt provenance/i
+			);
+
+			const renamedWithoutRecord = {
+				...forgedLineage,
+				playerFacingName: 'Unrecorded Rename',
+				semanticCorrection: {
+					...forgedLineage.semanticCorrection,
+					precedingTargetSha256: precedingAttempt.targetSha256
+				}
+			};
+			const { correctionSha256: _staleHash, ...renameEvent } =
+				renamedWithoutRecord.semanticCorrection;
+			renamedWithoutRecord.semanticCorrection.correctionSha256 = familyAffinitySha256(renameEvent);
+			expect(() => FamilyAffinityTargetSchema.parse(renamedWithoutRecord)).toThrow(
+				/equal, explicit override/i
+			);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('rejects a semantic correction on a canonical coordinate without mutation', async () => {
+		const fixture = await makeRevisionFixture({ decision: 'revise' });
+		try {
+			const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+			await expect(
+				allocateFamilyAffinityRevision({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					namespace: 'canonical',
+					coordinateId: fixture.target.coordinateId,
+					callerRole: 'integration-controller',
+					reviewPath: fixture.target.ownedPaths.decision,
+					semanticCorrection: earthWispSemanticCorrection
+				})
+			).rejects.toThrow(/restricted to bridge/i);
+			expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(manifestBefore);
 		} finally {
 			await rm(fixture.root, { recursive: true, force: true });
 		}

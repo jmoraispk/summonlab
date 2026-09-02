@@ -2,13 +2,15 @@ import { pathToFileURL } from 'node:url';
 
 import {
 	allocateFamilyAffinityRevisionBatch,
-	FAMILY_AFFINITY_ROOT
+	FAMILY_AFFINITY_ROOT,
+	FamilyAffinityRevisionCorrectionSchema
 } from './family-affinity-production-lib.js';
 import type { FamilyAffinityRevisionBatchEntry } from './family-affinity-production-lib.js';
 
 const SINGLETON_FLAGS = ['--caller-role', '--namespace', '--coordinate', '--review-path'] as const;
 const ALLOWED_FLAGS = new Set<string>([...SINGLETON_FLAGS, '--entry']);
-const ENTRY_KEYS = ['coordinateId', 'namespace', 'reviewPath'] as const;
+const REQUIRED_ENTRY_KEYS = ['coordinateId', 'namespace', 'reviewPath'] as const;
+const ALLOWED_ENTRY_KEYS = new Set<string>([...REQUIRED_ENTRY_KEYS, 'semanticCorrection']);
 
 export function parseFamilyAffinityRevisionCli(argv: readonly string[]): {
 	callerRole: string;
@@ -51,7 +53,8 @@ export function parseFamilyAffinityRevisionCli(argv: readonly string[]): {
 			}
 			const record = value as Record<string, unknown>;
 			if (
-				Object.keys(record).sort().join('\0') !== [...ENTRY_KEYS].sort().join('\0') ||
+				Object.keys(record).some((key) => !ALLOWED_ENTRY_KEYS.has(key)) ||
+				REQUIRED_ENTRY_KEYS.some((key) => !(key in record)) ||
 				(record.namespace !== 'canonical' && record.namespace !== 'bridge') ||
 				typeof record.coordinateId !== 'string' ||
 				record.coordinateId.length === 0 ||
@@ -59,13 +62,26 @@ export function parseFamilyAffinityRevisionCli(argv: readonly string[]): {
 				record.reviewPath.length === 0
 			) {
 				throw new Error(
-					`--entry ${index + 1} must contain exactly namespace, coordinateId, and reviewPath`
+					`--entry ${index + 1} must contain namespace, coordinateId, reviewPath, and only the optional semanticCorrection`
 				);
+			}
+			let semanticCorrection;
+			if (record.semanticCorrection !== undefined) {
+				try {
+					semanticCorrection = FamilyAffinityRevisionCorrectionSchema.parse(
+						record.semanticCorrection
+					);
+				} catch {
+					throw new Error(
+						`--entry ${index + 1} semanticCorrection must contain only whitelisted semantic fields`
+					);
+				}
 			}
 			return {
 				namespace: record.namespace,
 				coordinateId: record.coordinateId,
-				reviewPath: record.reviewPath
+				reviewPath: record.reviewPath,
+				...(semanticCorrection === undefined ? {} : { semanticCorrection })
 			};
 		});
 	} else {

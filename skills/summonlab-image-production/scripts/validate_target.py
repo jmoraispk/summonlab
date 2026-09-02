@@ -90,6 +90,102 @@ def require_sha(value: Any, label: str) -> str:
     return value
 
 
+def validate_family_semantic_correction(target: dict[str, Any]) -> None:
+    correction = target.get("semanticCorrection")
+    player_facing_name = target.get("playerFacingName")
+    if "playerFacingName" in target:
+        require_string(target, "playerFacingName")
+        if not isinstance(correction, dict):
+            fail("playerFacingName requires a hash-bound semantic correction")
+    if "semanticCorrection" not in target:
+        return
+    if not isinstance(correction, dict):
+        fail("semanticCorrection must be an object")
+    require_exact_keys(
+        correction,
+        {
+            "schemaVersion", "rationale", "overrides", "appliedVersion",
+            "precedingTargetId", "precedingTargetSha256", "correctionSha256",
+        },
+        "semanticCorrection",
+    )
+    if correction.get("schemaVersion") != "family-affinity-revision-correction-v1":
+        fail("semanticCorrection schemaVersion is invalid")
+    require_string(correction, "rationale")
+    applied_version = correction.get("appliedVersion")
+    if (
+        not isinstance(applied_version, int)
+        or isinstance(applied_version, bool)
+        or applied_version <= 1
+    ):
+        fail("semanticCorrection appliedVersion must be greater than one")
+    if target.get("namespace") != "bridge":
+        fail("semanticCorrection is restricted to bridge targets")
+    if target["version"] < applied_version:
+        fail("semanticCorrection cannot postdate its target version")
+    expected_predecessor = (
+        f'{target["namespace"]}/{target["coordinateId"]}/v{applied_version - 1}'
+    )
+    if correction.get("precedingTargetId") != expected_predecessor:
+        fail("semanticCorrection does not bind the immediately preceding target")
+    require_sha(
+        correction.get("precedingTargetSha256"),
+        "semanticCorrection.precedingTargetSha256",
+    )
+    correction_sha = require_sha(
+        correction.get("correctionSha256"), "semanticCorrection.correctionSha256"
+    )
+
+    overrides = correction.get("overrides")
+    if not isinstance(overrides, dict) or not overrides:
+        fail("semanticCorrection overrides must be a non-empty object")
+    scalar_fields = {
+        "playerFacingName", "primaryArchetype", "battlefieldDuty", "telegraph",
+        "counterplay",
+    }
+    array_minimums = {
+        "identityInvariants": 1,
+        "anatomyInvariants": 1,
+        "constructionDimensions": 2,
+        "forbiddenTreatments": 1,
+        "acceptanceCriteria": 8,
+    }
+    unexpected_overrides = set(overrides) - (scalar_fields | set(array_minimums))
+    if unexpected_overrides:
+        fail(
+            "semanticCorrection.overrides has unexpected fields: "
+            + ", ".join(sorted(unexpected_overrides))
+        )
+    for field in scalar_fields & set(overrides):
+        require_string(overrides, field)
+    for field in set(array_minimums) & set(overrides):
+        value = overrides[field]
+        if (
+            not isinstance(value, list)
+            or len(value) < array_minimums[field]
+            or not all(isinstance(item, str) and item.strip() for item in value)
+        ):
+            fail(f"semanticCorrection override {field} is incomplete")
+    event = dict(correction)
+    event.pop("correctionSha256")
+    if correction_sha != canonical_sha256(event):
+        fail("semanticCorrection event hash is stale or forged")
+    for field, value in overrides.items():
+        if canonical_json(target.get(field)) != canonical_json(value):
+            fail(f"semanticCorrection override was not applied to target field: {field}")
+    if player_facing_name is not None and overrides.get("playerFacingName") != player_facing_name:
+        fail("playerFacingName is not recorded by its semantic correction")
+
+    if target["version"] == applied_version:
+        preceding = target.get("precedingAttempt")
+        if (
+            not isinstance(preceding, dict)
+            or preceding.get("targetId") != correction["precedingTargetId"]
+            or preceding.get("targetSha256") != correction["precedingTargetSha256"]
+        ):
+            fail("semanticCorrection predecessor does not match immutable attempt provenance")
+
+
 def ensure_owned_path_has_no_symlink(workspace: Path, raw: str) -> Path:
     relative = project_path(raw)
     current = workspace
@@ -157,6 +253,10 @@ def validate_family(
     }
     if "canonicalCoordinateId" in target:
         target_keys.add("canonicalCoordinateId")
+    if "playerFacingName" in target:
+        target_keys.add("playerFacingName")
+    if "semanticCorrection" in target:
+        target_keys.add("semanticCorrection")
     require_exact_keys(target, target_keys, "family target")
     require_exact_keys(
         assignment,
@@ -247,6 +347,7 @@ def validate_family(
         )
         for field in ("targetSha256", "candidateSha256", "resultSha256", "reviewSha256"):
             require_sha(preceding.get(field), f"precedingAttempt.{field}")
+    validate_family_semantic_correction(target)
     if target.get("promotionCeiling") != "approved-review":
         fail("family target promotion ceiling is invalid")
     if target.get("runtimeCatalogMutationForbidden") is not True:

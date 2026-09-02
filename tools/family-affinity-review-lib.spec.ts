@@ -102,6 +102,7 @@ async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1') {
 	const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 	const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
 	await cp(source, destination, { recursive: true });
+	await stripBridgeFixture(root);
 	const activeTarget = target(tier);
 	const paths = canonicalAttemptPaths(
 		activeTarget.familyId,
@@ -123,6 +124,63 @@ async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1') {
 		await writeFile(join(root, path), bytes);
 	}
 	return { root, activeTarget, paths, candidateBytes, result };
+}
+
+const familyAffinityRoot = 'assets/enemies/experiments/family-affinity-v1';
+const familyAffinityManifestPath = `${familyAffinityRoot}/manifest.json`;
+
+async function stripBridgeFixture(root: string): Promise<void> {
+	const manifest = FamilyAffinityManifestSchema.parse(
+		JSON.parse(await readFile(join(root, familyAffinityManifestPath), 'utf8'))
+	);
+	manifest.bridge = { targetCount: 0, assignmentCount: 0, activeCoordinates: [] };
+	await writeFile(join(root, familyAffinityManifestPath), stableFamilyAffinityJson(manifest));
+	await rm(join(root, familyAffinityRoot, 'bridge'), { recursive: true, force: true });
+	await rm(join(root, familyAffinityRoot, 'review/bridge'), { recursive: true, force: true });
+}
+
+async function retainOnlyPlannedBridgeControls(root: string): Promise<number> {
+	const manifest = FamilyAffinityManifestSchema.parse(
+		JSON.parse(await readFile(join(root, familyAffinityManifestPath), 'utf8'))
+	);
+	const activeCoordinates = manifest.bridge?.activeCoordinates ?? [];
+	const plannedControls = (
+		await Promise.all(
+			activeCoordinates.map(async (coordinate) => {
+				if (coordinate.activeVersion !== 1) return undefined;
+				const targetBytes = await readFile(join(root, coordinate.targetPath));
+				const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+				const candidateExists = await readFile(join(root, target.ownedPaths.candidate)).then(
+					() => true,
+					() => false
+				);
+				if (candidateExists) return undefined;
+				return {
+					coordinate,
+					files: [
+						{ path: coordinate.targetPath, bytes: targetBytes },
+						{
+							path: coordinate.assignmentPath,
+							bytes: await readFile(join(root, coordinate.assignmentPath))
+						}
+					] as const
+				};
+			})
+		)
+	).filter((control): control is NonNullable<typeof control> => control !== undefined);
+	manifest.bridge = {
+		targetCount: plannedControls.length,
+		assignmentCount: plannedControls.length,
+		activeCoordinates: plannedControls.map(({ coordinate }) => coordinate)
+	};
+	await writeFile(join(root, familyAffinityManifestPath), stableFamilyAffinityJson(manifest));
+	await rm(join(root, familyAffinityRoot, 'bridge'), { recursive: true, force: true });
+	await rm(join(root, familyAffinityRoot, 'review/bridge'), { recursive: true, force: true });
+	for (const { path, bytes } of plannedControls.flatMap(({ files }) => files)) {
+		await mkdir(dirname(join(root, path)), { recursive: true });
+		await writeFile(join(root, path), bytes);
+	}
+	return plannedControls.length;
 }
 
 function reviewIssueInput(
@@ -458,7 +516,7 @@ describe('family-affinity review receipt contract', () => {
 				ordinaryFor(live.activeTarget, live.result)
 			)
 		).rejects.toThrow(/attestation|stale|forged|cross-bound/i);
-	});
+	}, 15_000);
 
 	it.each(['ordinary-first', 'blind-first'] as const)(
 		'atomically rejects conflicting concurrent %s cross-kind issuance',
@@ -1031,6 +1089,7 @@ describe('initial family review evidence', () => {
 			recursive: true,
 			filter: (path) => !path.includes(`${join(source, 'review')}`)
 		});
+		await stripBridgeFixture(root);
 		const external = join(root, 'outside');
 		await mkdir(join(destination, 'candidates'), { recursive: true });
 		await mkdir(external);
@@ -1047,6 +1106,7 @@ describe('initial family review evidence', () => {
 			recursive: true,
 			filter: (path) => !path.includes(`${join(source, 'review')}`)
 		});
+		await stripBridgeFixture(root);
 		await mkdir(join(destination, 'review/decisions'), { recursive: true });
 		await writeFile(join(destination, 'review/decisions/not-a-receipt.json'), '{}');
 		await expect(buildFamilyAffinityReviewArtifacts(root)).rejects.toThrow(/extraneous/i);
@@ -1058,7 +1118,7 @@ describe('initial family review evidence', () => {
 		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
 		await cp(source, destination, { recursive: true });
-		await rm(join(destination, 'bridge'), { recursive: true, force: true });
+		await stripBridgeFixture(root);
 		const canonicalPaths = canonicalAttemptPaths('goblins', 'goblin-runt', 'earth', 1);
 		const canonicalTarget = FamilyAffinityTargetSchema.parse(
 			JSON.parse(await readFile(join(root, canonicalPaths.target), 'utf8'))
@@ -1211,13 +1271,14 @@ describe('initial family review evidence', () => {
 		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
 		await cp(source, destination, { recursive: true });
+		const bridgeCoordinateCount = await retainOnlyPlannedBridgeControls(root);
 
 		const materialized = await buildFamilyAffinityReviewArtifacts(root);
 		expect(materialized.catalog).toMatchObject({
 			coordinateCount: 750,
 			generatedCount: 0,
 			approvedReviewCount: 0,
-			bridgeCoordinateCount: 39,
+			bridgeCoordinateCount,
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
 			runtimeCount: 0

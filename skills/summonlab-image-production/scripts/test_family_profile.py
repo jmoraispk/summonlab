@@ -251,6 +251,92 @@ class FamilyProfileTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Normal candidate evidence is stale"):
             validate(target, assignment, self.workspace)
 
+    def test_bridge_semantic_correction_is_hash_bound_and_explicit(self) -> None:
+        target = self._target("earth", "bridge")
+        target["version"] = 2
+        target["targetId"] = f'bridge/{target["coordinateId"]}/v2'
+        stem = f'{target["currentClassId"]}/{target["affinity"]}'
+        target["ownedPaths"] = {
+            "candidate": f"{ROOT}/bridge/candidates/{stem}-v2.png",
+            "result": f"{ROOT}/bridge/results/{stem}-v2.json",
+            "decision": (
+                f"{ROOT}/review/bridge/decisions/{stem}/candidate-v2-review-v2.json"
+            ),
+            "blindReview": (
+                f"{ROOT}/review/bridge/blind/{stem}/candidate-v2-blind-v2.json"
+            ),
+        }
+        predecessor_sha = "1" * 64
+        target["precedingAttempt"] = {
+            "targetId": f'bridge/{target["coordinateId"]}/v1',
+            "targetSha256": predecessor_sha,
+            "candidatePath": f"{ROOT}/bridge/candidates/{stem}-v1.png",
+            "candidateSha256": "2" * 64,
+            "resultPath": f"{ROOT}/bridge/results/{stem}-v1.json",
+            "resultSha256": "3" * 64,
+            "reviewPath": (
+                f"{ROOT}/review/bridge/decisions/{stem}/candidate-v1-review-v1.json"
+            ),
+            "reviewSha256": "4" * 64,
+        }
+        target["playerFacingName"] = "Wisp"
+        event = {
+            "schemaVersion": "family-affinity-revision-correction-v1",
+            "rationale": "Record the approved player-facing identity correction.",
+            "overrides": {"playerFacingName": "Wisp"},
+            "appliedVersion": 2,
+            "precedingTargetId": target["precedingAttempt"]["targetId"],
+            "precedingTargetSha256": predecessor_sha,
+        }
+        target["semanticCorrection"] = {
+            **event,
+            "correctionSha256": hashlib.sha256(
+                canonical_json(event).encode("utf-8")
+            ).hexdigest(),
+        }
+        assignment = self._assignment(target)
+        self.assertEqual(
+            validate(target, assignment, self.workspace)["targetId"], target["targetId"]
+        )
+
+        unrecorded = self._target("earth", "bridge")
+        unrecorded["playerFacingName"] = "Wisp"
+        with self.assertRaisesRegex(ValueError, "hash-bound semantic correction"):
+            validate(unrecorded, self._assignment(unrecorded), self.workspace)
+
+        invalid_cases = [
+            (
+                "unknown override",
+                lambda value: value["semanticCorrection"]["overrides"].__setitem__(
+                    "unapprovedField", "forged"
+                ),
+                "unexpected fields",
+            ),
+            (
+                "stale correction hash",
+                lambda value: value["semanticCorrection"].__setitem__(
+                    "correctionSha256", SHA
+                ),
+                "stale or forged",
+            ),
+            (
+                "unapplied override",
+                lambda value: value.__setitem__("playerFacingName", "Other Name"),
+                "not applied|not recorded",
+            ),
+            (
+                "missing predecessor provenance",
+                lambda value: value.__setitem__("precedingAttempt", None),
+                "immutable attempt provenance",
+            ),
+        ]
+        for label, mutate, message in invalid_cases:
+            with self.subTest(label=label):
+                invalid = json.loads(canonical_json(target))
+                mutate(invalid)
+                with self.assertRaisesRegex(ValueError, message):
+                    validate(invalid, self._assignment(invalid), self.workspace)
+
     def test_bridge_only_identity_packet_is_hash_bound_without_a_family_tier(self) -> None:
         target = self._target("earth", "bridge")
         target.pop("canonicalCoordinateId")
