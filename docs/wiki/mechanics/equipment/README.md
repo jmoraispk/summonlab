@@ -135,6 +135,23 @@ Material studies, equipment candidates, approved sources, and runtime exports re
 Creature-drop definitions are an input to later Equipment work, not permission for either owner to
 edit the other domain's shared catalogs.
 
+### Material-readable variation
+
+Consistency locks presentation, not exact geometry. Items in one class keep a comparable camera,
+framing, pose, and normalized footprint, while each material must contribute a visible construction
+idea and silhouette cue. A palette or texture swap alone is not enough. The class must remain
+recognizable at phone-thumbnail size, but its blade, guard, head, limbs, body, cutouts, proportions,
+or ornament may change to express the material and rank.
+
+This variation does not create more mechanical item classes. Round, square, or hero-shaped Shields
+remain Shields; visually different Bows remain Bows. Armour has the stronger consistency rule:
+every full set and its four separated pieces must match each other, while sets made from different
+materials should be visibly distinct rather than reusing one cut.
+
+The owner-provided [weapon inspiration references](../../../../assets/equipment/references/2026-09-02-owner-weapon-inspiration/README.md)
+are reference-only and must not be copied or promoted. They illustrate the desired range of
+silhouette ambition. The v2 root run remains review evidence rather than an approved direction.
+
 ### Material coverage and image budget
 
 The full canonical material ladder has seven materials in each of four families. Every Armour
