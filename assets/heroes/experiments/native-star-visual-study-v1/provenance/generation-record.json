@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "hero-image-generation-record-v1",
+  "experimentId": "native-star-visual-study-v1",
+  "generatedAt": "2026-09-02",
+  "generationTool": "built-in image generation",
+  "manifestPath": "assets/heroes/experiments/native-star-visual-study-v1/manifest.json",
+  "promptRecordPath": "assets/heroes/experiments/native-star-visual-study-v1/provenance/prompts.json",
+  "productionStatus": "candidate-only",
+  "runtimeCatalogMutation": false,
+  "inspection": {
+    "method": "producer visual inspection at full generated resolution",
+    "commonPasses": [
+      "exactly one adult hero",
+      "complete full body with hands and feet visible",
+      "weaponless and unarmored",
+      "no frame, stars, labels, UI, watermark, affinity glow, or active magic",
+      "semi-anime painterly treatment and readable clothing construction",
+      "manifest-compatible body, age, palette, and wardrobe silhouette"
+    ],
+    "humanApprovalRequired": true
+  },
+  "candidates": [
+    {
+      "targetId": "native-1a-nera-voss",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/1-star/nera-voss.png",
+      "sha256": "567f51829c0c788306349736302247dbf0fad82115647222f707ccc5100f40f8",
+      "bytes": 2434834,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Strong compact physicality, practical repairs, and immediate warmth; suitable 1-star baseline."
+    },
+    {
+      "targetId": "native-1b-oren-dae",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/1-star/oren-dae.png",
+      "sha256": "e8d63b108ed19b6735f8225c591743e2daca1c78dc41cc196b81124a958bae5a",
+      "bytes": 2381497,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Long-limbed silhouette and minimal ivory construction remain distinctive without rank ornament."
+    },
+    {
+      "targetId": "native-1c-sumi-pell",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/1-star/sumi-pell.png",
+      "sha256": "3fb3957c5714f1e697c182fb4ecb912d5b44c379360ca193783595015c485d91",
+      "bytes": 2593904,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Teal workwear, undercut, and sturdy proportions create clear personality with simple construction."
+    },
+    {
+      "targetId": "native-1d-tavo-renn",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/1-star/tavo-renn.png",
+      "sha256": "ec88fc0114a53aeb287b709dd21deeddb29a59fc5d22ddad7dff86eddd52867b",
+      "bytes": 2403139,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Handmade patchwork reads as personal history rather than rarity decoration; body and face remain legible."
+    },
+    {
+      "targetId": "native-3a-maela-rhun",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/3-star/maela-rhun.png",
+      "sha256": "1b71c5af59b15a07fb2577f5250b34272e6653a9c42b0f7a2a06de2dfd4cdc0c",
+      "bytes": 2152072,
+      "width": 941,
+      "height": 1672,
+      "status": "candidate",
+      "producerFinding": "Precise tailoring and marginalia embroidery communicate studiedness; contemporary-coat resemblance is a human-review concern."
+    },
+    {
+      "targetId": "native-3b-idris-kade",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/3-star/idris-kade.png",
+      "sha256": "ebf1cb5aab7bfc32db1beec6a18944082896e16ccbd805ca4d03e18ac91792d2",
+      "bytes": 2480394,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Dense physical power is unmistakable while rope closures and quilted panel keep the outfit cloth-based."
+    },
+    {
+      "targetId": "native-3c-hana-vey",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/3-star/hana-vey.png",
+      "sha256": "043931f187182f8e223c4fb70a8ce83fbda908ac564584a4ae85edbde20ba47c",
+      "bytes": 2621152,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Older soft body, skeptical bearing, mantle crossing, and repeated borders form a coherent 3-star identity."
+    },
+    {
+      "targetId": "native-3d-sol-aven",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/3-star/sol-aven.png",
+      "sha256": "6ddbd38603c47176554632ca361116357482a83dcddaf0bf3a7bd9be98a0bb03",
+      "bytes": 2315673,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Asymmetric sleeves, articulated knees, and expressive pose create a readable mobile silhouette."
+    },
+    {
+      "targetId": "native-5a-ayana-zev",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/5-star/ayana-zev.png",
+      "sha256": "923da655e8d81e87ca04b247015083adbd027ef6aa28bb0f6469c0d6cbe10036",
+      "bytes": 2523076,
+      "width": 941,
+      "height": 1672,
+      "status": "candidate",
+      "producerFinding": "Architectural curved panels and diagram weaving deliver rare visual authorship without gems or effects."
+    },
+    {
+      "targetId": "native-5b-jian-orra",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/5-star/jian-orra.png",
+      "sha256": "e0d86b494273e0be5af214bf1ccad9ccacd102ccaac7b1791aca524c40d45dd6",
+      "bytes": 2746433,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Exceptional mass, fabric-scale mantle, and oversized sash make a strong 5-star read; mantle may read as armor at thumbnail scale."
+    },
+    {
+      "targetId": "native-5c-ravi-senn",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/5-star/ravi-senn.png",
+      "sha256": "595b5ae995f18d9b7e56e0622fe2815d981d1eb24074c93273f64d91ac152b36",
+      "bytes": 2546811,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Ribbon geometry, exact closures, and slight physicality create a singular precision-led identity."
+    },
+    {
+      "targetId": "native-5d-cael-nahl",
+      "path": "assets/heroes/experiments/native-star-visual-study-v1/candidates/5-star/cael-nahl.png",
+      "sha256": "f414556c29dde0f27d2dfb4b292c20ffdcbc62fefb111fc96fbcbc44c2893640",
+      "bytes": 2325840,
+      "width": 1024,
+      "height": 1536,
+      "status": "candidate",
+      "producerFinding": "Cocoon geometry and large soft body produce an unusually iconic silhouette without combat-class or affinity cues."
+    }
+  ]
+}
