@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-iron-mace-v1",
+	"targetId": "material-equipment-v1-iron-mace-v1",
+	"assignmentId": "assignment-material-equipment-v1-iron-mace-v1",
+	"status": "candidate",
+	"promptSha256": "627a122a92334a2f44a3fd09839b673e8fbd76fd7634f4323febaddd38054b6a",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-iron-mace-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-8541-7551-96e8-77aba26d38f6/exec-5ed7ce26-29a8-4ddf-a0c6-e8e83b3713b0.png",
+			"requestStartedAt": "2026-09-02T14:51:01.607Z",
+			"generationCompletedAt": "2026-09-02T14:52:01.048Z",
+			"inspectionCompletedAt": "2026-09-02T14:53:59.087Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The complete mace, including the top cap, every visible flange, grip, and pommel, remains inside the declared 8% safe margin with uninterrupted ground around it."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete one-hand mace is present with no separate or duplicate equipment component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The compact flanged striking head, straight haft, wrapped grip, and pommel read immediately as a practical one-hand flanged mace."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Head collars, riveted longitudinal flanges, a continuous haft, wrapped grip, and capped pommel create plausible joins, handling, and weight distribution."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Dark worked iron dominates the head, flanges, collars, haft fittings, and pommel; subordinate brown grip wrap introduces no competing material rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Forged flanges, rivets, shallow pitting, rubbed bright edges, and uneven hammered surfaces establish iron through construction and physical response beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The rank-E iron uses ordinary restrained metal reflectance with no supernatural emission or full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Realistic painterly rendering, honest wear, cold key light, restrained warm rim, midnight-charcoal ground, and a subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or transferred subject, published-character resemblance, rarity rainbow, gold inflation, glow, oversized silhouette, ornamental material identity, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/mace-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1280835,
+		"sha256": "286e4dd52cf4205ecdcd9949f6d677ed93eb4fd7b0c33041dc6baec1cb86551d"
+	},
+	"candidateSha256": "286e4dd52cf4205ecdcd9949f6d677ed93eb4fd7b0c33041dc6baec1cb86551d",
+	"startedAt": "2026-09-02T14:51:01.607Z",
+	"completedAt": "2026-09-02T14:53:59.089Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/e/iron/mace-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/e/iron/mace-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

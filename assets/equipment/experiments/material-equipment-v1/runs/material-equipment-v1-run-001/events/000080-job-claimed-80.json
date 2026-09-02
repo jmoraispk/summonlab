@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 80,
+	"previousEventCanonicalSha256": "db6044616f86c88cc8dbd71f452b9a351594d11b40e67b9db9671d181313523c",
+	"recordedAt": "2026-09-02T14:55:33.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-80",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:55:32.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-beast-scale-light-armour-full-set-v1-80",
+		"targetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+		"workerId": "equipment-worker-80"
+	}
+}

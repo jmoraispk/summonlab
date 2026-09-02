@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 46,
+	"previousEventCanonicalSha256": "761bf572f7af136b35af037801e555c39265bc9f211e47a400f959b6a087ece0",
+	"recordedAt": "2026-09-02T14:52:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-iron-dagger-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:52:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-iron-dagger-v1",
+		"workerId": "equipment-worker-14",
+		"status": "revise",
+		"resultCanonicalSha256": "589d795badc7ead728d91b70092ebf4b3fbce044eb249cd0f186b39fdca366cf",
+		"failureKind": null
+	}
+}

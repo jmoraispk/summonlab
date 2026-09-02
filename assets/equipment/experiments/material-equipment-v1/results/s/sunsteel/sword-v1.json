@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-sunsteel-sword-v1",
+	"targetId": "material-equipment-v1-sunsteel-sword-v1",
+	"assignmentId": "assignment-material-equipment-v1-sunsteel-sword-v1",
+	"status": "revise",
+	"promptSha256": "89d3b6bbc02dc82799d9f649c004be28a6289c96a2eeb0b72dc9d47e8cf21ee5",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-sunsteel-sword-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-output-exec-966eb952-cf35-4d1f-b384-4d4420249ed0",
+			"requestStartedAt": "2026-09-02T15:11:34.700Z",
+			"generationCompletedAt": "2026-09-02T15:12:01.365Z",
+			"inspectionCompletedAt": "2026-09-02T15:12:48.878Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete sword is visible, but the pommel and blade tip sit only about 5% from the top and bottom edges, violating the declared 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete isolated sword is present, with no scabbard, character, second weapon, or loose equipment."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The straight double-edged blade, crossguard, long two-hand-capable grip, and pommel read immediately as a practical hand-and-a-half sword."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Blade shoulders seat cleanly against a functional crossguard, the grip is proportioned for one or two hands, and the substantial pommel plausibly balances the long blade."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Sunsteel forms the entire blade and structural hilt metal, with neutral dark leather as the only subordinate material and no competing rank signal."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "A physically integrated warm solar-metal core runs inside the cool forged blade faces, paired with crisp high-grade edge geometry to establish sunsteel beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Solar emission is confined to the narrow central blade channel and tiny hilt accents; the blade faces, grip, guard, and pommel do not glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The candidate uses premium realistic painterly metal, restrained wear, cold blue key, warm solar rim, midnight-charcoal backdrop, and a subtle floor plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental material substitution, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/sword-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1371627,
+		"sha256": "9e3b41c1e5dd8f3fd6c425035c605461cfc5a5850616db8bd0ac7b6b33edbeb5"
+	},
+	"candidateSha256": "9e3b41c1e5dd8f3fd6c425035c605461cfc5a5850616db8bd0ac7b6b33edbeb5",
+	"startedAt": "2026-09-02T15:11:34.700Z",
+	"completedAt": "2026-09-02T15:12:48.878Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/sword-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/sword-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

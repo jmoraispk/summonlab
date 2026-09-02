@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-wool-robes-full-set-v1",
+	"targetId": "material-equipment-v1-wool-robes-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-wool-robes-full-set-v1",
+	"status": "revise",
+	"promptSha256": "8cf5b5e69aa2935eb0cb058d1b429c1d0b106cef95d21a1504ea98bc02385d58",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-wool-robes-full-set-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-eda75dfe-f3a2-4cd4-89ec-852f2aada66f.png",
+			"requestStartedAt": "2026-09-02T14:57:49.096Z",
+			"generationCompletedAt": "2026-09-02T14:59:02.206Z",
+			"inspectionCompletedAt": "2026-09-02T14:59:44.046Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete hood and boots are visible, but the hood top and boot soles lie closer than the required 8% top and bottom safe margins, so the declared safe framing is not satisfied."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "One complete robes set is shown on a single display form, with Head, Torso, Legs, and Boots all distinctly readable together and no detached duplicate component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The hood, layered mantle, belted long robe, draped panels, leggings, and soft boots create an immediate cloth-robes silhouette."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Layered hems, reinforced edge stitching, overlapping front panels, tied waist cords, sleeve construction, wrapped leggings, and soft boots form a coherent wearable set with plausible cloth weight."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Dark woven wool dominates the hood, mantle, torso robe, leg coverings, and boots; small neutral fastenings and ties remain subordinate and introduce no second rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Visible coarse woven nap and softly frayed stitched hems establish wool physically beyond the charcoal palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "No supernatural glow or unbounded material effect is present; illumination remains ordinary cold and warm reflected light on cloth."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The render maintains premium realistic painterly detail, honest textile wear, a cold key with restrained warm rim, midnight-charcoal ground, and subtle floor contact."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The charcoal form has no face or personal identity, and the image contains no transferred subject, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-led material identity, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2303177,
+		"sha256": "fb3ea29e5e9e81c6c9e14e5d5f6aade543ac2457ca5e566a917a7c56539b28e9"
+	},
+	"candidateSha256": "fb3ea29e5e9e81c6c9e14e5d5f6aade543ac2457ca5e566a917a7c56539b28e9",
+	"startedAt": "2026-09-02T14:57:49.096Z",
+	"completedAt": "2026-09-02T15:00:01.924Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/e/wool/robes-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

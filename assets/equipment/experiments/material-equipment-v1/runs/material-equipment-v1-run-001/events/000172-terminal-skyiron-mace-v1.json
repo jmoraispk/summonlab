@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 172,
+	"previousEventCanonicalSha256": "842aba9baae80ba1de1e28d7c6fd9ecb71d856bc2946eb3eb52163ab939f42a0",
+	"recordedAt": "2026-09-02T15:08:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-skyiron-mace-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-skyiron-mace-v1",
+		"workerId": "equipment-worker-133",
+		"status": "revise",
+		"resultCanonicalSha256": "af7132f61a4b2613624647b25beb7cb6ceacb2aad4e849e87353606c855ade77",
+		"failureKind": null
+	}
+}

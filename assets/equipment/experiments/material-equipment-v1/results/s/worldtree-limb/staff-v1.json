@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-worldtree-limb-staff-v1",
+	"targetId": "material-equipment-v1-worldtree-limb-staff-v1",
+	"assignmentId": "assignment-material-equipment-v1-worldtree-limb-staff-v1",
+	"status": "revise",
+	"promptSha256": "f2eaa94695c0f88b7f00dac3f6f708c18a623bf9a3fd7f7a9f5a6985480bf63f",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-worldtree-limb-staff-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06296-b294-7ba1-ac25-7c4219c3b026/exec-e1acd271-ece6-4b46-b20e-678859923fa8.png",
+			"requestStartedAt": "2026-09-02T15:15:26.693Z",
+			"generationCompletedAt": "2026-09-02T15:16:09.059Z",
+			"inspectionCompletedAt": "2026-09-02T15:16:28.997Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The entire staff is visible, but the crown reaches to roughly three percent from the top edge and the butt sits about six percent from the bottom edge, short of the declared eight-percent safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete staff is present, with its shaft, bound grip zones, crown, and butt connected as a single object and no detached equipment."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long straight weight-bearing shaft, wrapped hand zones, grounded butt, and elevated forked focus crown read immediately as a full-length staff."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "A continuous thick wooden shaft supports the natural forked crown, while fitted collars and leather wraps plausibly reinforce stress points and hand positions."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "concern",
+			"observation": "Worldtree wood dominates the object, but the bright angular blue focus in the crown can read as a separate crystal rather than luminous sap or heartwood, creating ambiguity about whether the wood alone supplies the visible rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Deep age-cracked bark, continuous twisted grain, naturally grown branch forks, and fine blue channels following the wood fibres establish a living worldtree limb beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Blue emission is confined to narrow grain channels and the small space inside the crown; the shaft and surrounding ground do not become a full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Premium realistic painterly rendering, honest bark and binding wear, cold key light, restrained warm rim, midnight-charcoal background, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or transferred subject, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-only material identity, loose extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/worldtree-limb/staff-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1198726,
+		"sha256": "a4b9a65233833f024d67e32f25b171a45a5258d49b06c1ebe470b3fdae3a387a"
+	},
+	"candidateSha256": "a4b9a65233833f024d67e32f25b171a45a5258d49b06c1ebe470b3fdae3a387a",
+	"startedAt": "2026-09-02T15:15:26.693Z",
+	"completedAt": "2026-09-02T15:16:51.383Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/worldtree-limb/staff-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/worldtree-limb/staff-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

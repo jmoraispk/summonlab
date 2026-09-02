@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+	"targetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+	"status": "revise",
+	"promptSha256": "ada3139d23cf671daef47592170233b04241c6c7a1cc68cbf04c2aa087c6ef3d",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-88d216d4-63f9-4a56-b237-40f56d1734a3",
+			"requestStartedAt": "2026-09-02T15:11:11.223Z",
+			"generationCompletedAt": "2026-09-02T15:12:23.362Z",
+			"inspectionCompletedAt": "2026-09-02T15:12:43.971Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The full form is visible, but the helmet and boots have only about 50 to 60 vertical pixels of clearance on the 1536 pixel canvas, below the required 8 percent vertical safe margin of about 123 pixels."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "One coherent set is shown with Head helmet, Torso coverage, paired Legs protection, and paired Boots all readable together; arm and hand coverage is integrated into the torso garment rather than presented as extra detached gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "fail",
+			"observation": "The dense rigid-looking full coverage, large layered pauldrons, substantial forearm shells, and heavily plated greaves read more like heavy scale armour than mobile light armour."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Overlapping downward scales, flexible dark underlayers at joints, waist fastening, segmented skirts, and articulated limb transitions form a coherent wearable construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Dark wyrmscale dominates the helmet, torso, legs, and boots; small neutral straps and edge bindings remain subordinate and introduce no competing rank signal."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Repeated irregular reptilian scales and layered flexible hide construction establish wyrmscale identity physically beyond its dark palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "No supernatural full-set glow is present; the material response remains restrained directional sheen and narrow edge highlights."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly finish, worn scale response, cold key, restrained warm rim, midnight-charcoal backdrop, and grounded floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The featureless charcoal form has no transferable identity, and no published-character resemblance, weapon, extra detached gear, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-defined identity, text, label, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2224605,
+		"sha256": "29a4a75a5cd4a1a6a01be04ceba37641620514cc8196e4a1d66ff449d23b5f66"
+	},
+	"candidateSha256": "29a4a75a5cd4a1a6a01be04ceba37641620514cc8196e4a1d66ff449d23b5f66",
+	"startedAt": "2026-09-02T15:11:11.223Z",
+	"completedAt": "2026-09-02T15:12:49.870Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/a/wyrmscale/light-armour-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

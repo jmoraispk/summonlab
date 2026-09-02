@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 41,
+	"previousEventCanonicalSha256": "f1d3acb22858919fae287d3a93ad6e871c43b8ee293ca0a3acfc96bb3b4d878a",
+	"recordedAt": "2026-09-02T14:52:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-iron-sword-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:52:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-iron-sword-v1",
+		"workerId": "equipment-worker-13",
+		"status": "revise",
+		"resultCanonicalSha256": "a157695f64b33065d0ab7712c9a2eca268f89c6047d805ea5da1045d2b02143d",
+		"failureKind": null
+	}
+}

@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-blacksteel-spear-v1",
+	"targetId": "material-equipment-v1-blacksteel-spear-v1",
+	"assignmentId": "assignment-material-equipment-v1-blacksteel-spear-v1",
+	"status": "revise",
+	"promptSha256": "42b21c6879a854169c4752a7838c0f43673ebdb612d86bfb0c30e1436e466ce6",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-blacksteel-spear-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-output-exec-2bb45825-b274-4229-ae43-484c4a6ebfcb",
+			"requestStartedAt": "2026-09-02T15:02:23.500Z",
+			"generationCompletedAt": "2026-09-02T15:02:47.038Z",
+			"inspectionCompletedAt": "2026-09-02T15:03:34.058Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete spear is visible, but the tip and butt cap sit only about 4% from the top and bottom edges, violating the declared 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete isolated spear is present, with no separate weapon, person, or loose equipment."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long two-hand shaft, pointed leaf-like head, socket, and butt cap read immediately as a spear."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The forged head seats into a collared socket, the seasoned-wood shaft is continuous, and the central wrapped grip plus protected butt form a plausible two-hand polearm."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "The broad blacksteel spearhead supplies the sole rank signal, while the brown wooden shaft and dark neutral grip remain visually subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense dark forged planes, sharply raised ridges, and controlled pale wear along the cutting edges establish worked blacksteel beyond a merely dark palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "There is no supernatural emission or full-object glow; highlights remain narrow reflections on the forged ridges and edges."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The candidate uses a premium realistic painterly finish, honest metal and wood wear, cold blue key, restrained warm rim, charcoal backdrop, and subtle floor plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject, published-character resemblance, rarity rainbow, gold inflation, glow, oversized silhouette, ornamental material substitution, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/spear-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1191774,
+		"sha256": "3eb97a2892004aa136142f9f68d80639418d6320b382107cc867ff8423962133"
+	},
+	"candidateSha256": "3eb97a2892004aa136142f9f68d80639418d6320b382107cc867ff8423962133",
+	"startedAt": "2026-09-02T15:02:23.500Z",
+	"completedAt": "2026-09-02T15:03:34.058Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/spear-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/spear-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

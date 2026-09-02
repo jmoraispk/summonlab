@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-living-branch-bow-v1",
+	"targetId": "material-equipment-v1-living-branch-bow-v1",
+	"assignmentId": "assignment-material-equipment-v1-living-branch-bow-v1",
+	"status": "revise",
+	"promptSha256": "a91bd508d45a59a894d236f9643df3fa12300dba7c54d50fe6bcdb4fa1cfd4b7",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-living-branch-bow-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-0a04-7700-97a0-04c2a4b54598/exec-8ba5c0e9-1e3d-4ade-bf4b-9595ab1a7ed7.png",
+			"requestStartedAt": "2026-09-02T15:15:14.702Z",
+			"generationCompletedAt": "2026-09-02T15:16:25.476Z",
+			"inspectionCompletedAt": "2026-09-02T15:16:48.970Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete bow and string are visible, but the upper and lower limb tips sit only about 4% to 5% from the vertical edges, violating the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete strung bow is shown, with one continuous stave and one bowstring and no arrow, duplicate, or separate prop."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The curved paired limbs, recurved tips, central grip, and taut tip-to-tip string read immediately as a recurved bow."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The string seats at both limb tips, the limbs form a continuous stave with coherent grain, and the centered reinforced leather grip supports plausible handling and flex."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Living wood supplies the entire rank-bearing stave and dominates the object; dark leather wrapping and the neutral string remain subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Continuous twisting branch grain plus rooted moss and small living shoots establish Living Branch through physical growth cues beyond brown and green palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The rank-A living behavior is bounded to sparse shoots and moss on the wooden stave, with no full-object emission or glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image uses a realistic painterly dark-fantasy finish, honest bark and leather wear, controlled cold lighting and warm rim, and the accepted midnight-charcoal floor and background."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject or hammer, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental material substitute, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/a/living-branch/bow-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1320511,
+		"sha256": "f7f793cef68d95a700206a848fe8b2f5b35fbcf831a698034aa268723350f6ea"
+	},
+	"candidateSha256": "f7f793cef68d95a700206a848fe8b2f5b35fbcf831a698034aa268723350f6ea",
+	"startedAt": "2026-09-02T15:15:14.702Z",
+	"completedAt": "2026-09-02T15:17:17.793Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/a/living-branch/bow-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/a/living-branch/bow-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 75,
+	"previousEventCanonicalSha256": "cdda72e39901e9753881ee97642e0ce9a9e387286b4c55decc2fc86150b7de45",
+	"recordedAt": "2026-09-02T14:54:41.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-60",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:54:40.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-steel-shield-v1-60",
+		"targetId": "material-equipment-v1-steel-shield-v1",
+		"workerId": "equipment-worker-60"
+	}
+}

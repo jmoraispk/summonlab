@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-worldtree-limb-bow-v1",
+	"targetId": "material-equipment-v1-worldtree-limb-bow-v1",
+	"assignmentId": "assignment-material-equipment-v1-worldtree-limb-bow-v1",
+	"status": "revise",
+	"promptSha256": "38bef08c87a51c18a5b64bdd45f64220bb17fb64751bca3c186032dcdd01b504",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-worldtree-limb-bow-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-c28f-7e81-afd0-22c8524354fc/exec-838ca408-6ee3-41e8-9c5a-1763b84bf977.png",
+			"requestStartedAt": "2026-09-02T15:23:58.377Z",
+			"generationCompletedAt": "2026-09-02T15:24:58.262Z",
+			"inspectionCompletedAt": "2026-09-02T15:25:49.665Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete bow remains inside the canvas, but the upper tip begins only about 3% below the top and the lower tip ends about 5–6% above the bottom, violating the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete strung bow is shown, with one continuous wooden body, one wrapped grip, two recurved tips, and one bowstring; no arrow, duplicate, or separate prop appears."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The curved paired limbs, clearly reversed tips, central hand grip, and taut string read immediately as a practical recurved bow."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The intergrown wooden limbs keep coherent grain continuity through the bends, the string seats at reinforced recurved nocks, and the central wrap provides a plausible stable grip without top-heavy fittings."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Worldtree Limb wood dominates both limbs, tips, and grip core; the dark fibre grip and nock wraps plus neutral string remain subordinate and do not assert another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Multiple living wood strands grown into one continuous flexing limb and uninterrupted longitudinal grain through the recurves establish Worldtree Limb through physical structure beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Faint green-blue vitality is confined to narrow grain channels in the wooden limbs; the bow body and string remain non-emissive and avoid full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image maintains a premium realistic painterly dark-fantasy finish, honest worn wood and wraps, cold key light with restrained warm rim, and a midnight-charcoal floor and background."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred person, clothing, hammer, or design; no published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-dependent identity, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/worldtree-limb/bow-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1196094,
+		"sha256": "70cdd419939d4c1b69e23f9eb3559a30063c52ad769cb609185bfab30ad95335"
+	},
+	"candidateSha256": "70cdd419939d4c1b69e23f9eb3559a30063c52ad769cb609185bfab30ad95335",
+	"startedAt": "2026-09-02T15:23:58.377Z",
+	"completedAt": "2026-09-02T15:25:49.665Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/worldtree-limb/bow-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/worldtree-limb/bow-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

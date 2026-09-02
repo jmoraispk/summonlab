@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 207,
+	"previousEventCanonicalSha256": "47abaea2d33e2cd01868c3e177e42c0aeedd7b2ab9caaf4b420a03bd3ace264a",
+	"recordedAt": "2026-09-02T15:13:45.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-207",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:13:44.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-worldtree-limb-bow-v1-207",
+		"targetId": "material-equipment-v1-worldtree-limb-bow-v1",
+		"workerId": "equipment-worker-207"
+	}
+}

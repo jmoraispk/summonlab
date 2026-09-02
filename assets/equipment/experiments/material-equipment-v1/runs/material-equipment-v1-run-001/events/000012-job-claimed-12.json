@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 12,
+	"previousEventCanonicalSha256": "8cceeebd663d179193b6791302da3ed21d89e795d1e44e2ef046e305952c9894",
+	"recordedAt": "2026-09-02T14:45:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-12",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:45:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-hemp-weave-robes-full-set-v1-12",
+		"targetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+		"workerId": "equipment-worker-12"
+	}
+}

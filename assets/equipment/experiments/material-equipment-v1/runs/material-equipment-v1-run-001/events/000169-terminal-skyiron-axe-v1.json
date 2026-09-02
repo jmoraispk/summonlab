@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 169,
+	"previousEventCanonicalSha256": "0fc540e83bbc64cdfe764144520dd5c50a0e56469e0040cb022ee4eda4771e3c",
+	"recordedAt": "2026-09-02T15:08:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-skyiron-axe-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-skyiron-axe-v1",
+		"workerId": "equipment-worker-117",
+		"status": "candidate",
+		"resultCanonicalSha256": "cbdf642aa101e24b303df1edc623d06f14a8a1423b5de921a30ed72e6ff45475",
+		"failureKind": null
+	}
+}

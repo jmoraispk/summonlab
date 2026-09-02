@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-copper-sword-v1",
+	"targetId": "material-equipment-v1-copper-sword-v1",
+	"assignmentId": "assignment-material-equipment-v1-copper-sword-v1",
+	"status": "revise",
+	"promptSha256": "afae79534789a9a03d4c1b35c767fd3e9121252ac06a307e961b3ecf0161e4e8",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-copper-sword-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-d6d361ea-4bba-46ff-8016-d5708f9c2a97",
+			"requestStartedAt": "2026-09-02T14:48:05.913Z",
+			"generationCompletedAt": "2026-09-02T14:49:36.663Z",
+			"inspectionCompletedAt": "2026-09-02T14:50:57.504Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete sword is visible, but the pommel and blade tip sit only about 60 to 70 source pixels from the nearest edges on a 1254 pixel square, below the required 8 percent safe margin of about 100 pixels."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete sword is present, with no second weapon or detached component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long straight double-edged blade, crossguard, wrapped grip, and pommel read immediately as a practical hand-and-a-half sword."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The blade, guard, grip, and pommel form a coherent aligned assembly with a usable wrapped grip and plausible weight distribution."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Reddish worked copper dominates the blade, guard, and pommel; the subdued brown grip wrap remains subordinate and introduces no competing rank signal."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Worked surface variation, small dents and scratches, warm metallic reflections, and restrained oxidation cues establish copper beyond color alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "There is no supernatural full-object glow; illumination remains narrow reflected highlights and a restrained warm rim."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The source follows the realistic painterly dark-fantasy profile with honest wear, cold key light, restrained warm rim, midnight-charcoal backdrop, and grounded floor plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person, published-character resemblance, transferred hammer design, rainbow rank color, gold inflation, full-object glow, oversized silhouette, extra gear, ornament-defined material identity, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/sword-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1453972,
+		"sha256": "3e19745a17220da67b227413499fa635cfdecb39b5c3d5ded164094a9d4aa437"
+	},
+	"candidateSha256": "3e19745a17220da67b227413499fa635cfdecb39b5c3d5ded164094a9d4aa437",
+	"startedAt": "2026-09-02T14:48:05.913Z",
+	"completedAt": "2026-09-02T14:51:07.164Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/f/copper/sword-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/f/copper/sword-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

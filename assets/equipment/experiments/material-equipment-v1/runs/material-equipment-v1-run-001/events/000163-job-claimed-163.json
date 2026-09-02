@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 163,
+	"previousEventCanonicalSha256": "a919163691611cf7cce8079f020543e200f494c2da59b3f9f84766718b8a1262",
+	"recordedAt": "2026-09-02T15:06:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-163",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:06:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-starmetal-axe-v1-163",
+		"targetId": "material-equipment-v1-starmetal-axe-v1",
+		"workerId": "equipment-worker-163"
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 135,
+	"previousEventCanonicalSha256": "a8ec539941e69ccc921db0306eec26a7a3e13346eaef887172747a2f9096fb63",
+	"recordedAt": "2026-09-02T15:04:48.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-135",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:04:47.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-skyiron-heavy-armour-full-set-v1-135",
+		"targetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-135"
+	}
+}

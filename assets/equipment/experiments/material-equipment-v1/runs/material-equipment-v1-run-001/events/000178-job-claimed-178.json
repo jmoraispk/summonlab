@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 178,
+	"previousEventCanonicalSha256": "5970ce9f2bccc7c79a04cb4c71916e17629d18e077ec48c0562f97748860a579",
+	"recordedAt": "2026-09-02T15:08:03.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-178",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:02.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-starcloth-robes-full-set-v1-178",
+		"targetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+		"workerId": "equipment-worker-178"
+	}
+}

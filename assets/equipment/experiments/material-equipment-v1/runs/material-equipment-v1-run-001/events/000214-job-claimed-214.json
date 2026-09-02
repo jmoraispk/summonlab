@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 214,
+	"previousEventCanonicalSha256": "10003996c8b42f25538f76d3cd4986b139bd0f2097c0173ebd1c08389d16b251",
+	"recordedAt": "2026-09-02T15:13:51.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-214",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:13:50.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-fateweave-robes-full-set-v1-214",
+		"targetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+		"workerId": "equipment-worker-214"
+	}
+}

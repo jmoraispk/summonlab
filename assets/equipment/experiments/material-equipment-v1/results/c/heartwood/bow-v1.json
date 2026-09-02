@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-heartwood-bow-v1",
+	"targetId": "material-equipment-v1-heartwood-bow-v1",
+	"assignmentId": "assignment-material-equipment-v1-heartwood-bow-v1",
+	"status": "revise",
+	"promptSha256": "9e6c2bed90fdbbe03c422e5ad15c6104cbbddf5284d11d7f8583bc58544248f7",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-heartwood-bow-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-175d-7120-96a7-b8f44434e17f/exec-47efe5f3-7277-4864-ad7c-67784b041c78.png",
+			"requestStartedAt": "2026-09-02T15:04:16.000Z",
+			"generationCompletedAt": "2026-09-02T15:04:43.004Z",
+			"inspectionCompletedAt": "2026-09-02T15:05:16.855Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete bow remains visible, but both recurved tips sit only about 3% from the nearest top and bottom edges, inside the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete strung bow is present, with no arrow, quiver, duplicate weapon, detached component, or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The tall curved wooden limbs, recurved tips, centered one-hand grip, and taut bowstring read immediately as a practical recurved bow."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Both continuous limbs align around a reinforced central grip, taper credibly into recurved nocks, and hold one taut string with plausible attachment and usable draw geometry."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Rich Heartwood dominates both limbs and the bow body; the dark grip wrap, small reinforcing bands, and string remain neutral and subordinate without asserting another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Strong longitudinal grain following the stressed limb curves and dense dark heartwood tonal variation establish the material through physical structure beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The rank-C Heartwood shows no full-object glow or uncontrolled emission; its special presence stays bounded to exceptional natural grain, dense construction, and narrow reflected highlights."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly dark-fantasy finish, honest abrasion and wear, cold key, restrained warm rim, midnight-charcoal backdrop, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or transferred reference subject, published-character resemblance, rarity rainbow, gold inflation, full-object glow, implausibly oversized construction, ornament-led material identity, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/heartwood/bow-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1240471,
+		"sha256": "213d47dd9fe10797820ef9df3bae27178bc7d77172422d8f2873d84786030b41"
+	},
+	"candidateSha256": "213d47dd9fe10797820ef9df3bae27178bc7d77172422d8f2873d84786030b41",
+	"startedAt": "2026-09-02T15:04:16.000Z",
+	"completedAt": "2026-09-02T15:05:16.855Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/c/heartwood/bow-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/c/heartwood/bow-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

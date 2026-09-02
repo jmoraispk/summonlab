@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 54,
+	"previousEventCanonicalSha256": "6736bfce9f199a05c233ff0b4363a00bd941331361a0f42da2c1b63e573521bd",
+	"recordedAt": "2026-09-02T14:54:39.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-54",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:54:38.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-wool-robes-full-set-v1-54",
+		"targetId": "material-equipment-v1-wool-robes-full-set-v1",
+		"workerId": "equipment-worker-54"
+	}
+}

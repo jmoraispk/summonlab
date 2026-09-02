@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 167,
+	"previousEventCanonicalSha256": "b994e2f07575020ca398633c5ac3f9985555180727a4acdbb053bfbb7b5373a8",
+	"recordedAt": "2026-09-02T15:06:51.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-164",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:06:50.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-starmetal-mace-v1-164",
+		"targetId": "material-equipment-v1-starmetal-mace-v1",
+		"workerId": "equipment-worker-164"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 105,
+	"previousEventCanonicalSha256": "e6eebc75e92ce40f36ee3a075b820dbcd839b5e92b922987dfd27929aaa6c959",
+	"recordedAt": "2026-09-02T15:02:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-beast-scale-light-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+		"workerId": "equipment-worker-80",
+		"status": "revise",
+		"resultCanonicalSha256": "352010275a3b433d7d82a36e348b9830273b1f0fc95a5c08a2ba16c4a35337e5",
+		"failureKind": null
+	}
+}

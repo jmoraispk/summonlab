@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-steel-mace-v1",
+	"targetId": "material-equipment-v1-steel-mace-v1",
+	"assignmentId": "assignment-material-equipment-v1-steel-mace-v1",
+	"status": "revise",
+	"promptSha256": "bd0b643cce9098e44cc14584b39be1575e8c68d622d72094dced18da5431d275",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-steel-mace-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-c28f-7e81-afd0-22c8524354fc/exec-05bc6ae2-7b2c-42c0-9e7f-64e221906fb5.png",
+			"requestStartedAt": "2026-09-02T14:57:59.187Z",
+			"generationCompletedAt": "2026-09-02T14:58:57.100Z",
+			"inspectionCompletedAt": "2026-09-02T14:59:36.972Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete mace remains inside the canvas, but its top cap begins only about 6% below the top edge, violating the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete mace is shown, with one flanged head, one continuous shaft and grip, and one pommel; no duplicate or separate prop appears."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The compact radial striking flanges, reinforced neck, straight one-hand haft, wrapped grip, and terminal pommel read immediately as a practical flanged mace."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The flanges form a coherent reinforced head around a central socket, the steel shaft is collared at stress points, and the leather-wrapped lower grip and flared pommel support plausible retention and weight."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Worn dark steel dominates the head, neck, shaft, collars, and pommel; the small neutral leather grip wrap remains subordinate and does not imply another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Forged planar flanges with bright abraded steel edges and a subtly hammered, scratched shaft surface establish steel through construction and material response beyond colour alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The Standard rank-D mace has no supernatural emission or full-object glow; its narrow blue and warm edge accents are reflected studio light."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image uses a premium realistic painterly dark-fantasy finish, honest dents and scratches, cold key light with restrained warm rim, and a midnight-charcoal floor and background."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred person, clothing, hammer, or design; no published-character resemblance, rarity rainbow, gold inflation, object glow, oversized silhouette, ornament-dependent material identity, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/mace-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1566214,
+		"sha256": "c597955b30f2180612f197720ce39f6c0f320af94acfb564fbe2e80fbeb234b6"
+	},
+	"candidateSha256": "c597955b30f2180612f197720ce39f6c0f320af94acfb564fbe2e80fbeb234b6",
+	"startedAt": "2026-09-02T14:57:59.187Z",
+	"completedAt": "2026-09-02T14:59:36.972Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/d/steel/mace-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/d/steel/mace-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

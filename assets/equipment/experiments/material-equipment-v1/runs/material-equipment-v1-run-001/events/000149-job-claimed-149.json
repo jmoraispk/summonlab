@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 149,
+	"previousEventCanonicalSha256": "74ce9ca22c10af445b6842eb4723a041797b681cfb8523526a68170fd303dbdc",
+	"recordedAt": "2026-09-02T15:06:43.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-149",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:06:42.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-drakescale-light-armour-full-set-v1-149",
+		"targetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+		"workerId": "equipment-worker-149"
+	}
+}

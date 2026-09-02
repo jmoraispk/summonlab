@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-sunsteel-shield-v1",
+	"targetId": "material-equipment-v1-sunsteel-shield-v1",
+	"assignmentId": "assignment-material-equipment-v1-sunsteel-shield-v1",
+	"status": "revise",
+	"promptSha256": "777b1f02a26d3502e324571c010eabaa6d3e1f8b3d921dd416bcad1ae16a45ca",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-sunsteel-shield-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-d5602621-d457-4ec7-aed1-92d9cb830ec0",
+			"requestStartedAt": "2026-09-02T15:14:19.000Z",
+			"generationCompletedAt": "2026-09-02T15:14:40.263Z",
+			"inspectionCompletedAt": "2026-09-02T15:15:34.683Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The complete shield remains visible with more than the required 8% clearance from every canvas edge."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete shield is present, with no duplicate object or additional equipment."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "fail",
+			"observation": "The object reads as a circular boss-centered round shield, not the required medium heater shield with rounded shoulders, tapered sides, and a pointed lower profile."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The curved metal face, central boss, continuous reinforced rim, regularly spaced rivets, radial ribs, and four rim braces form a coherent weight-bearing shield construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Warm radiant sunsteel dominates the broad face and boss, while the darker rim, rivets, and braces remain neutral structural supports and do not assert another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Hammered luminous alloy response and physically raised radial strengthening flutes distinguish sunsteel through surface and construction cues beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The strongest solar reflection remains localized on the face and boss; there is no emitted aura or full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly finish, honest dents and scuffs, controlled cold reflections, restrained warm rim, midnight-charcoal backdrop, and subdued floor match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or published-character resemblance, extra gear, rarity rainbow, unrelated gold trim inflation, full-object glow, oversized silhouette, ornament-only material identity, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/shield-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1816528,
+		"sha256": "2b9fd6e9b86cdcfea517650ff05ec0fdc426aa7166182316c0502b5dedc1444f"
+	},
+	"candidateSha256": "2b9fd6e9b86cdcfea517650ff05ec0fdc426aa7166182316c0502b5dedc1444f",
+	"startedAt": "2026-09-02T15:14:19.000Z",
+	"completedAt": "2026-09-02T15:15:35.000Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/shield-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/shield-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

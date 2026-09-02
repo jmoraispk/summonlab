@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-iron-spear-v1",
+	"targetId": "material-equipment-v1-iron-spear-v1",
+	"assignmentId": "assignment-material-equipment-v1-iron-spear-v1",
+	"status": "revise",
+	"promptSha256": "0a7e898dd442c62b3800fc7d5787d6b4640c609c6646d52e56392d201bb0c36e",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-iron-spear-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-exec-a71dd068-c807-43cb-b80e-4d7a49e066d3",
+			"requestStartedAt": "2026-09-02T14:50:19.714Z",
+			"generationCompletedAt": "2026-09-02T14:51:10.695Z",
+			"inspectionCompletedAt": "2026-09-02T14:52:26.683Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete spear is visible, but its upper tip and lower butt extend inside the declared 8% safe-margin exclusion zone."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete spear is shown with no duplicate object or required missing component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long two-hand shaft and pointed polearm head read immediately as a spear."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The iron head, socket and collars join plausibly to a seasoned-wood shaft with a wrapped handhold and reinforced butt."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "The forged iron spearhead is the sole rank-bearing focal material; the brown wood shaft and dark wrap remain neutral and subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dark forged surface variation and narrow sharpened-edge highlights establish iron beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The standard rank-E presentation uses controlled metal highlights without supernatural or full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Realistic painterly finish, honest wear, cold key, restrained warm rim, floor plane and midnight-charcoal ground match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person, transferred subject, extra gear, rarity treatment, gold inflation, full-object glow, oversized silhouette, text, label, UI, border, frame, logo or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/spear-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1207529,
+		"sha256": "15e1d942b8760bb269a4a70074008a7be2999636c354fb802f15bd962a99f6b6"
+	},
+	"candidateSha256": "15e1d942b8760bb269a4a70074008a7be2999636c354fb802f15bd962a99f6b6",
+	"startedAt": "2026-09-02T14:50:19.714Z",
+	"completedAt": "2026-09-02T14:52:26.683Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/e/iron/spear-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/e/iron/spear-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

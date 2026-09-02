@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 179,
+	"previousEventCanonicalSha256": "881f80e19222e8fee3398a6d65fcb5533c85005639344bde5adbc66e2653bc36",
+	"recordedAt": "2026-09-02T15:08:05.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-174",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:04.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-starmetal-heavy-armour-full-set-v1-174",
+		"targetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-174"
+	}
+}

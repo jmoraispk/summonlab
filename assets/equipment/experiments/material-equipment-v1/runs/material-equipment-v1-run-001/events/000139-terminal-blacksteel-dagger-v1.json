@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 139,
+	"previousEventCanonicalSha256": "964e35fcf3d1690c5c9c1f870817fa84a05538572428e4d85a675a5654368d76",
+	"recordedAt": "2026-09-02T15:04:52.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-blacksteel-dagger-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:04:51.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-blacksteel-dagger-v1",
+		"workerId": "equipment-worker-89",
+		"status": "candidate",
+		"resultCanonicalSha256": "d81401391d2dc2691134eae13c2878cf042d9af795b870482ce92f1957d84687",
+		"failureKind": null
+	}
+}

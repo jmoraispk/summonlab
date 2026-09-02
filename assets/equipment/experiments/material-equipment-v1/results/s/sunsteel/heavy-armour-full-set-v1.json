@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+	"targetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+	"status": "revise",
+	"promptSha256": "fd3f613dfa3fbf5e35c3e92605ed5e8da70d7c1f8bbec6570f023ca323875cb6",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-sunsteel-heavy-armour-full-set-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-exec-e90bf7af-644e-452b-a35c-422b1e6147fa",
+			"requestStartedAt": "2026-09-02T15:14:03.134Z",
+			"generationCompletedAt": "2026-09-02T15:14:56.446Z",
+			"inspectionCompletedAt": "2026-09-02T15:15:28.431Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The full display form is visible, but the helmet crown and boot soles extend inside the declared 8% vertical safe-margin exclusion zones."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "One complete set is shown with Head, Torso, Legs and Boots all distinctly readable together on one featureless charcoal display form."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The enclosed helm, broad pauldrons, full plate torso, articulated limbs and reinforced boots read immediately as heavy armour."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Overlapping plate articulation, joint gaps, rivets, faulds, poleyns, vambraces and sabatons form a plausible wearable construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Sunsteel plates dominate every set component and supply the sole visible rank; dark joint underlayers remain neutral and subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense polished plate construction and a controlled warm solar reflectance over cool steel surfaces establish sunsteel beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Warm solar response is confined to narrow edges and the chest focus without becoming full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Realistic painterly finish, honest wear, cold key, restrained warm rim, floor plane and midnight-charcoal ground match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The display form shows no person or transferred subject, and no published-character resemblance, weapon, extra gear, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-only material identity, text, label, UI, border, frame, logo or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2092258,
+		"sha256": "67f6a2b21ccbd29766297095ccc6159e2f5cb0aaebf86fdb0e944d1bf91a81bb"
+	},
+	"candidateSha256": "67f6a2b21ccbd29766297095ccc6159e2f5cb0aaebf86fdb0e944d1bf91a81bb",
+	"startedAt": "2026-09-02T15:14:03.134Z",
+	"completedAt": "2026-09-02T15:15:28.431Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/heavy-armour-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

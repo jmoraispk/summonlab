@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-ironwood-staff-v1",
+	"targetId": "material-equipment-v1-ironwood-staff-v1",
+	"assignmentId": "assignment-material-equipment-v1-ironwood-staff-v1",
+	"status": "revise",
+	"promptSha256": "2020e721509463836c6a8ac9bfe80ae531bcc57c0023091a81599b8d75250b41",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-ironwood-staff-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-6305-7b43-85e3-ef4e4f051591/exec-74e77fbd-b26f-4a3c-8402-8e08892187a9.png",
+			"requestStartedAt": "2026-09-02T14:58:54.000Z",
+			"generationCompletedAt": "2026-09-02T14:59:20.623Z",
+			"inspectionCompletedAt": "2026-09-02T14:59:43.858Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The staff is complete and uncropped, but its crown and foot sit only about 3% from the top and bottom edges, inside the prohibited 8% safe-margin zone."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete staff is present, with no second object, loose component, or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long straight shaft, hand-scaled grip regions, and distinct crown read immediately as a full-length staff."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "A continuous wood-led shaft, integrated forked crown, wrapped grip sections, and restrained metal collars form a plausible durable construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Ironwood visibly forms the entire structural shaft and crown; the narrow dark fittings remain neutral and subordinate without asserting a second rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense dark longitudinal grain and a naturally gnarled forked crown establish ironwood through physical growth and construction cues rather than color alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Rank behavior remains bounded to controlled surface highlights and unusually dense wood character, with no supernatural emission or full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image has a realistic painterly dark-fantasy finish, honest wear, cold key light, restrained warm rim, midnight-charcoal background, and grounded floor plane consistent with the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or transferred subject, published-character resemblance, rarity rainbow, gold inflation, glow, oversized silhouette, ornament-only material cue, extra gear, orb, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/d/ironwood/staff-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1150465,
+		"sha256": "45a2d592a15f8f716206d36e648149ace3afb8cfd3ccedfeb94561d508d7433b"
+	},
+	"candidateSha256": "45a2d592a15f8f716206d36e648149ace3afb8cfd3ccedfeb94561d508d7433b",
+	"startedAt": "2026-09-02T14:58:53.000Z",
+	"completedAt": "2026-09-02T14:59:44.000Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/d/ironwood/staff-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/d/ironwood/staff-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
