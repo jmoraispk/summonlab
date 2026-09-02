@@ -152,6 +152,29 @@ State transitions run roughly 150–250ms with direct easing. Motion may clarify
 changes; it does not orchestrate routine reading. `prefers-reduced-motion: reduce` removes reveal,
 transform, and transition effects.
 
+### Combat presentation
+
+Combat is a scene-first game surface, not an archive dashboard. A PixiJS canvas may own the arena,
+characters, depth sorting, contact shadows, camera movement, and effects. Svelte remains responsible
+for readable controls, initiative information, public intent, responsive layout, and accessibility.
+Both layers consume the same authoritative combat projection; neither invents timing, legality, or
+results.
+
+- Use a slightly top-down 2.5D camera: closer to overhead than the observatory direction proof, with
+  only enough pitch to preserve silhouettes, environmental depth, and elliptical contact shadows.
+- Make action timing unmistakable. The primary initiative display is a relative-time rail with a
+  visible origin and future offsets, such as `t0` and `t+5`, plus a dominant ready-actor treatment.
+  Labels must bind to engine-projected scheduling values. Until those values exist, use honest
+  ordinal markers rather than decorative seconds.
+- Keep the battlefield dominant. Action controls and Manual, Assist, or Auto ownership remain quiet
+  overlays and must not compete with the ready actor or the next material event.
+- Render environmental opportunities as part of the battlefield. Surprise, concealment, hazards,
+  and other encounter advantages originate in authoritative environment and perception state; the
+  canvas reveals only the projected evidence and legal affordances.
+- Preserve a flat chibi character language at combat scale: stable feet anchors, readable
+  silhouettes, consistent directional frames, and soft elliptical shadows. Dimensionality comes
+  from authored layers, overlap, lighting, and motion rather than requiring full 3D models.
+
 ### Content and data visualization
 
 Copy is concise, literal, and written from the reader's perspective. Taxonomy language follows the

@@ -98,6 +98,23 @@ monsters below T3 should mostly remain Unaligned. Living Village implements only
 seams needed by its presentation fixture. Permanent injury, death, recovery time, free-roaming
 gathering, agentic intent, and model narration remain off.
 
+### Accepted combat presentation direction
+
+The combat view is a slightly top-down 2.5D battlefield with flat chibi combatants, stable feet
+anchors, soft elliptical shadows, and environmental layers that create depth without requiring a
+full 3D renderer. The battlefield remains the primary surface on both phone and desktop.
+
+Turn clarity uses an explicit relative-time rail rather than an ambiguous row of portraits. It
+shows the ready actor at the origin and later projected actors at engine-owned offsets such as `t+5`.
+If the current engine exposes only initiative order, the UI labels that order honestly until a
+versioned scheduler defines time units. A stronger ready-actor treatment must remain legible without
+depending on color or animation.
+
+Environmental interaction is part of combat, beginning with encounter advantage such as catching
+an enemy by surprise. Environment, perception, approach, and resulting legal modifiers remain
+authoritative engine facts. PixiJS visualizes projected terrain and affordances; it does not decide
+whether surprise or another modifier applies.
+
 ## Living Village Tower exploration presentation
 
 Implementation status: **isolated presentation prototype**
