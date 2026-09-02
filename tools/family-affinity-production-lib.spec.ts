@@ -3361,6 +3361,44 @@ async function stagePlannedElemental(
 	await writeOwnedFixture(fixture.root, coordinate.targetPath, target);
 	await writeOwnedFixture(fixture.root, coordinate.assignmentPath, assignment);
 	await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+	const manifestBytes = await readFile(join(fixture.root, fixture.manifestPath));
+	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
+	const productionAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(join(fixture.root, fixture.coordinate.assignmentPath), 'utf8'))
+	);
+	for (const kind of [
+		'ordinary',
+		...(fixture.target.tier === 'T3' || fixture.target.tier === 'T5' ? (['blind'] as const) : [])
+	] as const) {
+		const reviewAssignmentPath = familyAffinityReviewAssignmentPath(
+			kind,
+			fixture.target,
+			fixture.target.version
+		);
+		const reviewAssignment = JSON.parse(
+			await readFile(join(fixture.root, reviewAssignmentPath), 'utf8')
+		);
+		reviewAssignment.manifestSha256 = manifestSha256;
+		reviewAssignment.issuerAttestationSha256 = familyAffinityReviewIssuerAttestationSha256({
+			issuerId: reviewAssignment.issuerId,
+			reviewerId: reviewAssignment.reviewerId,
+			kind,
+			manifestPath: fixture.manifestPath,
+			manifestSha256,
+			target: fixture.target,
+			targetPath: fixture.coordinate.targetPath,
+			productionAssignment,
+			productionAssignmentPath: fixture.coordinate.assignmentPath,
+			result: fixture.result,
+			resultSha256: fixture.receipt.resultSha256,
+			decisionVersion: fixture.target.version,
+			permittedReceiptPath:
+				kind === 'ordinary'
+					? fixture.target.ownedPaths.decision
+					: fixture.target.ownedPaths.blindReview
+		});
+		await writeOwnedFixture(fixture.root, reviewAssignmentPath, reviewAssignment);
+	}
 	return { coordinate, target, assignment };
 }
 
@@ -3372,13 +3410,40 @@ describe('controller-only family affinity revision allocation', () => {
 		});
 		try {
 			const { coordinate: fireCoordinate } = await stagePlannedElemental(fixture);
+			const anchorInput = {
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				targetPath: fireCoordinate.targetPath
+			};
 			await expect(
-				validateFamilyAffinityNormalAnchorEvidence({
-					repositoryRoot: fixture.root,
-					manifestPath: fixture.manifestPath,
-					targetPath: fireCoordinate.targetPath
-				})
+				validateFamilyAffinityNormalAnchorEvidence(anchorInput)
 			).resolves.toBeUndefined();
+			const manifestAbsolute = join(fixture.root, fixture.manifestPath);
+			const manifestBytes = await readFile(manifestAbsolute);
+			for (const [label, mutate] of [
+				['status', (coordinate: any) => (coordinate.status = 'blocked-on-anchor')],
+				['activeVersion', (coordinate: any) => (coordinate.activeVersion = 2)],
+				['assignmentPath', (coordinate: any) => (coordinate.assignmentPath += '.foreign')],
+				['assignmentSha256', (coordinate: any) => (coordinate.assignmentSha256 = 'a'.repeat(64))]
+			] as const) {
+				const tamperedManifest = JSON.parse(manifestBytes.toString('utf8'));
+				const normalCoordinate = tamperedManifest.canonicalMatrix.activeCoordinates.find(
+					({ coordinateId }: { coordinateId: string }) =>
+						coordinateId === fixture.target.coordinateId
+				)!;
+				mutate(normalCoordinate);
+				await writeOwnedFixture(fixture.root, fixture.manifestPath, tamperedManifest);
+				await expect(
+					validateFamilyAffinityNormalAnchorEvidence(anchorInput),
+					label
+				).rejects.toThrow();
+				await writeFile(manifestAbsolute, manifestBytes);
+			}
+			await writeFile(manifestAbsolute, Buffer.concat([manifestBytes, Buffer.from(' ')]));
+			await expect(validateFamilyAffinityNormalAnchorEvidence(anchorInput)).rejects.toThrow(
+				/manifest|attestation|assignment|stale|forged|cross-bound/i
+			);
+			await writeFile(manifestAbsolute, manifestBytes);
 
 			const resultPath = join(fixture.root, fixture.receipt.resultPath);
 			const receiptPath = join(fixture.root, fixture.target.ownedPaths.decision);
@@ -3404,34 +3469,18 @@ describe('controller-only family affinity revision allocation', () => {
 					reviewerId: 'reviewer-beta'
 				})
 			);
-			await expect(
-				validateFamilyAffinityNormalAnchorEvidence({
-					repositoryRoot: fixture.root,
-					manifestPath: fixture.manifestPath,
-					targetPath: fireCoordinate.targetPath
-				})
-			).rejects.toThrow();
+			await expect(validateFamilyAffinityNormalAnchorEvidence(anchorInput)).rejects.toThrow();
 			await writeFile(resultPath, resultBytes);
 			await writeFile(receiptPath, receiptBytes);
 
 			await rm(ordinaryAssignmentPath);
-			await expect(
-				validateFamilyAffinityNormalAnchorEvidence({
-					repositoryRoot: fixture.root,
-					manifestPath: fixture.manifestPath,
-					targetPath: fireCoordinate.targetPath
-				})
-			).rejects.toThrow();
+			await expect(validateFamilyAffinityNormalAnchorEvidence(anchorInput)).rejects.toThrow();
 			await writeFile(ordinaryAssignmentPath, ordinaryAssignmentBytes);
 
 			await writeFile(resultPath, `${resultBytes.toString('utf8')}\n`);
-			await expect(
-				validateFamilyAffinityNormalAnchorEvidence({
-					repositoryRoot: fixture.root,
-					manifestPath: fixture.manifestPath,
-					targetPath: fireCoordinate.targetPath
-				})
-			).rejects.toThrow(/stale|forged|cross-bound|mismatch/i);
+			await expect(validateFamilyAffinityNormalAnchorEvidence(anchorInput)).rejects.toThrow(
+				/stale|forged|cross-bound|mismatch/i
+			);
 		} finally {
 			await rm(fixture.root, { recursive: true, force: true });
 		}

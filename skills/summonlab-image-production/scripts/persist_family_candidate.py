@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -14,18 +13,32 @@ from anchored_io import (
     anchored_exclusive_create,
     read_regular_source_no_follow,
 )
-from validate_target import load_json, validate
+from validate_target import load_json, run_mandatory_family_dispatch_gate, validate
 
 
 def persist_family_candidate(
     source_path: Path,
-    target: dict[str, Any],
-    assignment: dict[str, Any],
+    target_path: Path,
+    assignment_path: Path,
     workspace: Path,
     *,
     hooks: AnchoredCreateHooks | None = None,
 ) -> dict[str, object]:
-    report = validate(target, assignment, workspace, allow_existing_outputs=True)
+    workspace = workspace.resolve()
+    target_path = target_path.resolve()
+    assignment_path = assignment_path.resolve()
+    run_mandatory_family_dispatch_gate(
+        target_path, assignment_path, workspace, phase="candidate"
+    )
+    target = load_json(target_path)
+    assignment = load_json(assignment_path)
+    report = validate(
+        target,
+        assignment,
+        workspace,
+        target_path=target_path,
+        assignment_path=assignment_path,
+    )
     if report.get("profile") != "image-production-family-target-v1":
         raise ValueError("family candidate persistence requires the v3 family profile")
     source_bytes = read_regular_source_no_follow(source_path)
@@ -56,25 +69,10 @@ def main() -> None:
     assignment_path = Path(sys.argv[3]).resolve()
     workspace = Path(sys.argv[4]).resolve()
     try:
-        preflight = subprocess.run(
-            [
-                sys.executable,
-                str(Path(__file__).resolve().with_name("validate_target.py")),
-                str(target_path),
-                str(assignment_path),
-                str(workspace),
-            ],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        if preflight.returncode != 0:
-            detail = preflight.stderr.strip() or preflight.stdout.strip()
-            raise ValueError(f"mandatory family dispatch preflight failed: {detail}")
         report = persist_family_candidate(
             source_path,
-            load_json(target_path),
-            load_json(assignment_path),
+            target_path,
+            assignment_path,
             workspace,
         )
     except (OSError, json.JSONDecodeError, ValueError) as error:

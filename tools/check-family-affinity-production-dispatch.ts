@@ -15,6 +15,7 @@ import {
 	readFamilyAffinityOwnedFile,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityAttemptCrossBinding,
+	validateFamilyAffinityCandidateEvidence,
 	validateFamilyAffinityNormalAnchorEvidence,
 	validateFamilyAffinityProductionCompatibility
 } from './family-affinity-production-lib.js';
@@ -81,6 +82,7 @@ export async function validateFamilyAffinityProductionSurface(input: {
 	compatibility: unknown;
 	trackedSkillRoot: string;
 	installedSkillRoot: string;
+	repositoryRoot: string;
 }) {
 	const [tracked, installed] = await Promise.all([
 		computeFamilyAffinityProductionSurface(input.trackedSkillRoot),
@@ -131,6 +133,23 @@ export async function validateFamilyAffinityProductionSurface(input: {
 	) {
 		throw new Error('v3 execution-surface per-file hash drift');
 	}
+	const repositoryRoot = resolve(input.repositoryRoot);
+	const dispatchPath = compatibility.repositoryDispatch.path;
+	const dispatchAbsolute = resolve(repositoryRoot, dispatchPath);
+	if (!dispatchAbsolute.startsWith(`${repositoryRoot}${sep}`)) {
+		throw new Error('Repository dispatch entrypoint escapes the repository');
+	}
+	let cursor = repositoryRoot;
+	for (const part of relative(repositoryRoot, dispatchAbsolute).split(sep).filter(Boolean)) {
+		cursor = join(cursor, part);
+		const metadata = await lstat(cursor);
+		if (metadata.isSymbolicLink())
+			throw new Error('Repository dispatch entrypoint path is symlinked');
+	}
+	const dispatchBytes = await readFile(dispatchAbsolute);
+	if (familyAffinityRawSha256(dispatchBytes) !== compatibility.repositoryDispatch.sha256) {
+		throw new Error('Repository dispatch entrypoint drifted from approval');
+	}
 	return {
 		status: 'compatible' as const,
 		bundleSha256: installed.bundleSha256,
@@ -168,6 +187,8 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 	targetPath: string;
 	assignmentPath: string;
 	installedSkillRoot?: string;
+	phase?: 'candidate' | 'result';
+	result?: unknown;
 }) {
 	const repositoryRoot = resolve(input.repositoryRoot);
 	const receipt = JSON.parse(
@@ -182,7 +203,8 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 	const surface = await validateFamilyAffinityProductionSurface({
 		compatibility: receipt,
 		trackedSkillRoot,
-		installedSkillRoot
+		installedSkillRoot,
+		repositoryRoot
 	});
 	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	const [manifestBytes, targetBytes, assignmentBytes] = await Promise.all([
@@ -243,12 +265,34 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 		familyPacketBytes,
 		renderedPromptBytes: promptBytes
 	});
-	await Promise.all([
-		assertOutputAbsentWithoutSymlinks(repositoryRoot, target.ownedPaths.candidate),
-		assertOutputAbsentWithoutSymlinks(repositoryRoot, target.ownedPaths.result)
-	]);
+	const phase = input.phase ?? 'candidate';
+	if (phase === 'candidate') {
+		if (input.result !== undefined) {
+			throw new Error('Candidate dispatch phase cannot accept result material');
+		}
+		await Promise.all([
+			assertOutputAbsentWithoutSymlinks(repositoryRoot, target.ownedPaths.candidate),
+			assertOutputAbsentWithoutSymlinks(repositoryRoot, target.ownedPaths.result)
+		]);
+	} else {
+		if (input.result === undefined) {
+			throw new Error('Result dispatch phase requires exact in-memory result material');
+		}
+		const [candidateBytes] = await Promise.all([
+			readFamilyAffinityOwnedFile(repositoryRoot, target.ownedPaths.candidate),
+			assertOutputAbsentWithoutSymlinks(repositoryRoot, target.ownedPaths.result)
+		]);
+		validateFamilyAffinityCandidateEvidence({
+			target,
+			assignment,
+			familyPacketBytes,
+			candidateBytes,
+			resultBytes: Buffer.from(stableFamilyAffinityJson(input.result).slice(0, -1))
+		});
+	}
 	return {
 		dispatchable: true as const,
+		phase,
 		state: 'candidate-only' as const,
 		targetId: target.targetId,
 		affinity: target.affinity,
@@ -261,21 +305,46 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 	};
 }
 
+async function readJsonFromStdin(): Promise<unknown> {
+	const chunks: Buffer[] = [];
+	for await (const chunk of process.stdin) {
+		chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+	}
+	const bytes = Buffer.concat(chunks);
+	if (bytes.length === 0) throw new Error('Result dispatch phase requires JSON on stdin');
+	return JSON.parse(bytes.toString('utf8'));
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
 	const argumentsAfterScript = process.argv.slice(2);
-	const argumentsWithoutSeparator =
+	const tokens =
 		argumentsAfterScript[0] === '--' ? argumentsAfterScript.slice(1) : argumentsAfterScript;
-	if (argumentsWithoutSeparator.length < 2 || argumentsWithoutSeparator.length > 3) {
+	const targetPath = tokens.shift();
+	const assignmentPath = tokens.shift();
+	const repositoryRoot = tokens[0] && tokens[0] !== '--phase' ? tokens.shift()! : process.cwd();
+	let phase: 'candidate' | 'result' = 'candidate';
+	if (tokens.length === 2 && tokens[0] === '--phase' && tokens[1] === 'result') {
+		phase = 'result';
+		tokens.splice(0);
+	} else if (tokens.length === 2 && tokens[0] === '--phase' && tokens[1] === 'candidate') {
+		tokens.splice(0);
+	}
+	if (!targetPath || !assignmentPath || tokens.length !== 0) {
 		console.error(
-			'usage: check-family-affinity-production-dispatch.ts TARGET ASSIGNMENT [REPOSITORY_ROOT]'
+			'usage: check-family-affinity-production-dispatch.ts TARGET ASSIGNMENT [REPOSITORY_ROOT] [--phase candidate|result]'
 		);
 		process.exitCode = 2;
 	} else {
-		checkFamilyAffinityProductionDispatch({
-			repositoryRoot: argumentsWithoutSeparator[2] ?? process.cwd(),
-			targetPath: argumentsWithoutSeparator[0]!,
-			assignmentPath: argumentsWithoutSeparator[1]!
-		})
+		Promise.resolve(phase === 'result' ? readJsonFromStdin() : undefined)
+			.then((result) =>
+				checkFamilyAffinityProductionDispatch({
+					repositoryRoot,
+					targetPath,
+					assignmentPath,
+					phase,
+					result
+				})
+			)
 			.then((report) => console.log(JSON.stringify(report, null, 2)))
 			.catch((error: unknown) => {
 				console.error(error instanceof Error ? error.message : String(error));

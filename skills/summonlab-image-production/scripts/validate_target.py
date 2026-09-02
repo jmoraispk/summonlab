@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
@@ -619,6 +620,85 @@ def validate(
     )
 
 
+def run_mandatory_family_dispatch_gate(
+    target_path: Path,
+    assignment_path: Path,
+    workspace: Path,
+    *,
+    phase: str,
+    result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if phase not in {"candidate", "result"}:
+        raise ValueError("mandatory family dispatch phase must be candidate or result")
+    target_path = target_path.resolve()
+    assignment_path = assignment_path.resolve()
+    workspace = workspace.resolve()
+    if workspace not in target_path.parents or workspace not in assignment_path.parents:
+        raise ValueError("mandatory family dispatch inputs are outside the repository")
+    if phase == "candidate" and result is not None:
+        raise ValueError("candidate dispatch cannot accept result material")
+    if phase == "result" and result is None:
+        raise ValueError("result dispatch requires exact in-memory result material")
+    contract = load_json(
+        Path(__file__).resolve().parents[1] / "references/contract-v3.json"
+    )
+    dispatch = contract.get("repositoryDispatch")
+    if not isinstance(dispatch, dict) or set(dispatch) != {"path", "sha256"}:
+        raise ValueError("installed v3 contract has no repository dispatch binding")
+    if dispatch.get("path") != "tools/check-family-affinity-production-dispatch.ts":
+        raise ValueError("installed v3 contract has the wrong repository dispatch path")
+    entrypoint = workspace / dispatch["path"]
+    cursor = workspace
+    for part in PurePosixPath(dispatch["path"]).parts:
+        cursor /= part
+        metadata = cursor.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            raise ValueError("repository dispatch entrypoint path is symlinked")
+    if not entrypoint.is_file():
+        raise ValueError("repository dispatch entrypoint is not a regular file")
+    if hashlib.sha256(entrypoint.read_bytes()).hexdigest() != dispatch.get("sha256"):
+        raise ValueError("repository dispatch entrypoint drifted from the sealed contract")
+    pnpm = shutil.which("pnpm")
+    if pnpm is None:
+        raise ValueError(
+            "mandatory family dispatch gate requires pnpm; no unsafe fallback is allowed"
+        )
+    command = [
+        pnpm,
+        "--silent",
+        "exec",
+        "tsx",
+        dispatch["path"],
+        target_path.relative_to(workspace).as_posix(),
+        assignment_path.relative_to(workspace).as_posix(),
+        str(workspace),
+        "--phase",
+        phase,
+    ]
+    gate = subprocess.run(
+        command,
+        cwd=workspace,
+        check=False,
+        capture_output=True,
+        text=True,
+        input=canonical_json(result) if result is not None else None,
+    )
+    if gate.returncode != 0:
+        detail = gate.stderr.strip() or gate.stdout.strip() or "unknown gate failure"
+        raise ValueError(f"mandatory repository dispatch gate rejected target: {detail}")
+    try:
+        report = json.loads(gate.stdout)
+    except json.JSONDecodeError as error:
+        raise ValueError("mandatory repository dispatch gate returned invalid JSON") from error
+    if (
+        not isinstance(report, dict)
+        or report.get("dispatchable") is not True
+        or report.get("phase") != phase
+    ):
+        raise ValueError("mandatory repository dispatch gate returned no phase-bound approval")
+    return report
+
+
 def main() -> None:
     allow_existing_outputs = len(sys.argv) == 5 and sys.argv[4] == "--allow-existing-outputs"
     if len(sys.argv) not in {4, 5} or (len(sys.argv) == 5 and not allow_existing_outputs):
@@ -635,30 +715,9 @@ def main() -> None:
         target = load_json(target_path)
         assignment = load_json(assignment_path)
         if target.get("schemaVersion") == FAMILY_TARGET_VERSION:
-            pnpm = shutil.which("pnpm")
-            if pnpm is None:
-                raise ValueError(
-                    "mandatory family dispatch gate requires pnpm; no unsafe fallback is allowed"
-                )
-            target_relative = target_path.relative_to(workspace).as_posix()
-            assignment_relative = assignment_path.relative_to(workspace).as_posix()
-            gate = subprocess.run(
-                [
-                    pnpm,
-                    "check:family-affinity-production-dispatch",
-                    "--",
-                    target_relative,
-                    assignment_relative,
-                    str(workspace),
-                ],
-                cwd=workspace,
-                check=False,
-                capture_output=True,
-                text=True,
+            run_mandatory_family_dispatch_gate(
+                target_path, assignment_path, workspace, phase="candidate"
             )
-            if gate.returncode != 0:
-                detail = gate.stderr.strip() or gate.stdout.strip() or "unknown gate failure"
-                raise ValueError(f"mandatory repository dispatch gate rejected target: {detail}")
         report = validate(
             target,
             assignment,

@@ -140,19 +140,89 @@ def verify_parent_binding(parent: AnchoredParent) -> None:
 
 def _cleanup_created(parent: AnchoredParent, created_fd: int) -> None:
     created = os.fstat(created_fd)
-    try:
-        current = os.stat(parent.basename, dir_fd=parent.fd, follow_symlinks=False)
-    except FileNotFoundError:
-        return
-    if (
-        created.st_dev != current.st_dev
-        or created.st_ino != current.st_ino
-        or not stat.S_ISREG(current.st_mode)
-    ):
+    matches: list[str] = []
+    for name in os.listdir(parent.fd):
+        try:
+            current = os.stat(name, dir_fd=parent.fd, follow_symlinks=False)
+        except FileNotFoundError:
+            continue
+        if (
+            stat.S_ISREG(current.st_mode)
+            and created.st_dev == current.st_dev
+            and created.st_ino == current.st_ino
+        ):
+            matches.append(name)
+    if not matches:
         raise ValueError(
-            f"anchored cleanup refused a changed result inode: {parent.owned_path}"
+            f"anchored cleanup could not find the created inode: {parent.owned_path}"
         )
-    os.unlink(parent.basename, dir_fd=parent.fd)
+    for name in matches:
+        current = os.stat(name, dir_fd=parent.fd, follow_symlinks=False)
+        if (
+            not stat.S_ISREG(current.st_mode)
+            or created.st_dev != current.st_dev
+            or created.st_ino != current.st_ino
+        ):
+            raise ValueError(
+                f"anchored cleanup refused a changed created inode: {parent.owned_path}"
+            )
+        os.unlink(name, dir_fd=parent.fd)
+
+
+def verify_visible_created_binding(parent: AnchoredParent, created_fd: int) -> None:
+    rebound = open_anchored_parent(
+        parent.workspace, parent.owned_path, create_directories=False
+    )
+    visible_fd: int | None = None
+    try:
+        held_parent = os.fstat(parent.fd)
+        visible_parent = os.fstat(rebound.fd)
+        if (
+            held_parent.st_dev != visible_parent.st_dev
+            or held_parent.st_ino != visible_parent.st_ino
+        ):
+            raise ValueError(
+                f"visible family output parent changed after create: {parent.owned_path}"
+            )
+        created = os.fstat(created_fd)
+        try:
+            visible = os.stat(
+                parent.basename, dir_fd=rebound.fd, follow_symlinks=False
+            )
+        except FileNotFoundError as error:
+            raise ValueError(
+                f"visible family output disappeared after create: {parent.owned_path}"
+            ) from error
+        if (
+            not stat.S_ISREG(created.st_mode)
+            or not stat.S_ISREG(visible.st_mode)
+            or created.st_dev != visible.st_dev
+            or created.st_ino != visible.st_ino
+        ):
+            raise ValueError(
+                f"visible family output changed after create: {parent.owned_path}"
+            )
+        try:
+            visible_fd = os.open(
+                parent.basename, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=rebound.fd
+            )
+        except OSError as error:
+            raise ValueError(
+                f"visible family output cannot be reopened safely: {parent.owned_path}"
+            ) from error
+        reopened = os.fstat(visible_fd)
+        if (
+            not stat.S_ISREG(reopened.st_mode)
+            or created.st_dev != reopened.st_dev
+            or created.st_ino != reopened.st_ino
+        ):
+            raise ValueError(
+                f"reopened family output changed after create: {parent.owned_path}"
+            )
+    finally:
+        if visible_fd is not None:
+            os.close(visible_fd)
+        rebound.close()
 
 
 def anchored_exclusive_create(
@@ -178,8 +248,6 @@ def anchored_exclusive_create(
             )
         except FileExistsError as error:
             raise FileExistsError(f"family output collision: {owned_path}") from error
-        if hooks.after_final_create:
-            hooks.after_final_create()
         view = memoryview(payload)
         written = 0
         while written < len(view):
@@ -188,6 +256,9 @@ def anchored_exclusive_create(
                 raise OSError("anchored family output write made no progress")
             written += count
         os.fsync(created_fd)
+        if hooks.after_final_create:
+            hooks.after_final_create()
+        verify_visible_created_binding(parent, created_fd)
         return {
             "path": owned_path,
             "bytes": len(payload),

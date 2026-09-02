@@ -522,6 +522,12 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 				bundleSha256: Sha256Schema
 			})
 			.strict(),
+		repositoryDispatch: z
+			.object({
+				path: z.literal('tools/check-family-affinity-production-dispatch.ts'),
+				sha256: Sha256Schema
+			})
+			.strict(),
 		reviewedAt: z
 			.string()
 			.regex(
@@ -559,6 +565,12 @@ const FamilyAffinitySkillContractSchema = z
 					z.literal('scripts/write_family_result.py')
 				]),
 				expectedNonContractSha256: z.record(z.string(), Sha256Schema)
+			})
+			.strict(),
+		repositoryDispatch: z
+			.object({
+				path: z.literal('tools/check-family-affinity-production-dispatch.ts'),
+				sha256: Sha256Schema
 			})
 			.strict(),
 		profiles: z
@@ -647,6 +659,7 @@ export function validateFamilyAffinityProductionCompatibility(
 	const contract = FamilyAffinitySkillContractSchema.parse(contractInput);
 	const profile = contract.profiles[FAMILY_AFFINITY_PRODUCTION_PROFILE];
 	if (
+		stableJson(contract.repositoryDispatch) !== stableJson(compatibility.repositoryDispatch) ||
 		profile.repositoryTargetSchema !== compatibility.targetSchema ||
 		profile.assignmentSchema !== compatibility.assignmentSchema ||
 		profile.resultSchema !== compatibility.resultSchema ||
@@ -2121,7 +2134,8 @@ async function validateAllocationAnchor(
 	repositoryRoot: string,
 	manifest: FamilyAffinityManifest,
 	target: FamilyAffinityTarget,
-	manifestPath: string
+	manifestPath: string,
+	manifestSha256: string
 ): Promise<void> {
 	if (target.affinity === 'normal' || target.status !== 'planned') {
 		return;
@@ -2135,9 +2149,13 @@ async function validateAllocationAnchor(
 	);
 	if (
 		!normalCoordinate ||
+		normalCoordinate.status !== 'planned' ||
 		normalCoordinate.activeVersion !== anchor.normalVersion ||
 		normalCoordinate.targetPath !== anchor.normalTargetPath ||
-		normalCoordinate.targetSha256 !== anchor.normalTargetSha256
+		normalCoordinate.targetSha256 !== anchor.normalTargetSha256 ||
+		normalCoordinate.assignmentPath !==
+			canonicalAttemptPaths(target.familyId, target.formId, 'normal', anchor.normalVersion)
+				.assignment
 	) {
 		throw new Error('Planned elemental allocation has a stale or manifest-unbound Normal anchor');
 	}
@@ -2153,6 +2171,7 @@ async function validateAllocationAnchor(
 			)
 		)
 	);
+	validateFamilyAffinityAttemptCrossBinding(normalCoordinate, normalTarget, normalAssignment);
 	const receiptBytes = await readOwnedFileNoSymlinks(repositoryRoot, anchor.reviewReceiptPath);
 	const receipt = FamilyAffinityReviewReceiptSchema.parse(
 		JSON.parse(receiptBytes.toString('utf8'))
@@ -2192,6 +2211,7 @@ async function validateAllocationAnchor(
 		reviewAssignmentPath: ordinaryReviewAssignmentPath,
 		kind: 'ordinary',
 		manifestPath,
+		manifestSha256,
 		target: normalTarget,
 		targetPath: normalCoordinate.targetPath,
 		productionAssignment: normalAssignment,
@@ -2229,6 +2249,7 @@ async function validateAllocationAnchor(
 			reviewAssignmentPath: blindAssignmentPath,
 			kind: 'blind',
 			manifestPath,
+			manifestSha256,
 			target: normalTarget,
 			targetPath: normalCoordinate.targetPath,
 			productionAssignment: normalAssignment,
@@ -2282,13 +2303,20 @@ export async function validateFamilyAffinityNormalAnchorEvidence(input: {
 			(await readOwnedFileNoSymlinks(input.repositoryRoot, input.targetPath)).toString('utf8')
 		)
 	);
-	await validateAllocationAnchor(input.repositoryRoot, manifest, target, input.manifestPath);
+	await validateAllocationAnchor(
+		input.repositoryRoot,
+		manifest,
+		target,
+		input.manifestPath,
+		familyAffinityRawSha256(manifestBytes)
+	);
 }
 
 async function validateFullActiveCorpusBeforeAllocation(
 	repositoryRoot: string,
 	manifest: FamilyAffinityManifest,
-	manifestPath: string
+	manifestPath: string,
+	manifestSha256: string
 ): Promise<void> {
 	const seenTargetIds = new Set<string>();
 	const seenAssignmentIds = new Set<string>();
@@ -2312,7 +2340,7 @@ async function validateFullActiveCorpusBeforeAllocation(
 		}
 		seenTargetIds.add(target.targetId);
 		seenAssignmentIds.add(assignment.assignmentId);
-		await validateAllocationAnchor(repositoryRoot, manifest, target, manifestPath);
+		await validateAllocationAnchor(repositoryRoot, manifest, target, manifestPath, manifestSha256);
 		if (
 			target.anchor.kind === 'earth-bridge-provisional' &&
 			(await exists(absoluteOwnedPath(repositoryRoot, target.ownedPaths.decision)))
@@ -2338,7 +2366,8 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	await validateFullActiveCorpusBeforeAllocation(
 		input.repositoryRoot,
 		manifest,
-		input.manifestPath
+		input.manifestPath,
+		familyAffinityRawSha256(manifestBytes)
 	);
 	const collection = input.namespace === 'canonical' ? manifest.canonicalMatrix : manifest.bridge;
 	const coordinate = collection.activeCoordinates.find(
@@ -2359,7 +2388,13 @@ async function allocateFamilyAffinityRevisionUnlocked(
 		)
 	);
 	validateFamilyAffinityAttemptCrossBinding(coordinate, currentTarget, currentAssignment);
-	await validateAllocationAnchor(input.repositoryRoot, manifest, currentTarget, input.manifestPath);
+	await validateAllocationAnchor(
+		input.repositoryRoot,
+		manifest,
+		currentTarget,
+		input.manifestPath,
+		familyAffinityRawSha256(manifestBytes)
+	);
 	if (
 		currentTarget.coordinateId !== coordinate.coordinateId ||
 		currentTarget.version !== coordinate.activeVersion ||

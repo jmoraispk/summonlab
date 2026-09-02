@@ -12,7 +12,10 @@ is permitted.
 Family candidate and result creation require Linux `/proc/self/fd`, `O_DIRECTORY|O_NOFOLLOW`
 directory traversal, device/inode rebinding, and final `O_CREAT|O_EXCL|O_NOFOLLOW`. Cleanup after a
 failed create is relative to the held parent and refuses an inode mismatch. There is no pathname or
-non-Linux fallback.
+non-Linux fallback. Success is reported only after re-traversing the visible parent and reopening
+the visible final file without following links; both must still match the held parent and freshly
+created file device/inode identities. A post-create namespace replacement cleans only the created
+inode through the held parent handle and never follows or removes the replacement.
 
 This compact repository receipt intentionally has no legacy attempt, timing, finding, provider, or
 inspection fields. Return those details in the image job handoff. A provider failure or any failure

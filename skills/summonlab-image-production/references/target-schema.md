@@ -34,6 +34,11 @@ re-runs that CLI and fails if the receipt, installed/tracked execution bundle, a
 packet, prompt renderer, exact Normal review chain, or output-absence checks drift. Structural
 Python validation is additional defense, not a substitute authorization path.
 
+Candidate phase requires both owned outputs absent. Result phase requires the exact owned candidate
+to be a regular no-symlink file whose raw hash matches the strict in-memory result material, while
+the owned result remains absent. Every public family persistence function and CLI invokes the
+corresponding phase; callers cannot authorize a write by calling the Python function directly.
+
 ## Legacy profiles (v1/v2)
 
 ## Target

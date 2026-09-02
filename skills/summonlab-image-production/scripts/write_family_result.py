@@ -9,20 +9,36 @@ from pathlib import Path
 from typing import Any
 
 from anchored_io import AnchoredCreateHooks, anchored_exclusive_create
-from validate_target import canonical_json, load_json
+from validate_target import (
+    canonical_json,
+    load_json,
+    run_mandatory_family_dispatch_gate,
+)
 from verify_result import verify_family_result
 
 
 def exclusive_create_family_result(
-    target: dict[str, Any],
-    assignment: dict[str, Any],
+    target_path: Path,
+    assignment_path: Path,
     result: dict[str, Any],
-    result_path: Path,
     workspace: Path,
     *,
     hooks: AnchoredCreateHooks | None = None,
 ) -> dict[str, Any]:
     """Validate all bytes before one O_EXCL receipt create; never repair in place."""
+    workspace = workspace.resolve()
+    target_path = target_path.resolve()
+    assignment_path = assignment_path.resolve()
+    run_mandatory_family_dispatch_gate(
+        target_path,
+        assignment_path,
+        workspace,
+        phase="result",
+        result=result,
+    )
+    target = load_json(target_path)
+    assignment = load_json(assignment_path)
+    result_path = workspace / target["ownedPaths"]["result"]
     verification = verify_family_result(
         target,
         assignment,
@@ -53,12 +69,9 @@ def main() -> None:
     draft_path = Path(sys.argv[3]).resolve()
     workspace = Path(sys.argv[4]).resolve()
     try:
-        target = load_json(target_path)
-        assignment = load_json(assignment_path)
         result = load_json(draft_path)
-        result_path = workspace / target["ownedPaths"]["result"]
         report = exclusive_create_family_result(
-            target, assignment, result, result_path, workspace
+            target_path, assignment_path, result, workspace
         )
     except (OSError, json.JSONDecodeError, ValueError) as error:
         raise SystemExit(f"family result creation failed: {error}") from error

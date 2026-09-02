@@ -7,14 +7,16 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from render_prompt import render, render_family_prompt
 from persist_family_candidate import persist_family_candidate
 from anchored_io import AnchoredCreateHooks
-from validate_target import validate
+from validate_target import run_mandatory_family_dispatch_gate, validate
 from verify_result import verify_family_result
 from write_family_result import exclusive_create_family_result
 
@@ -193,6 +195,28 @@ class FamilyProfileTests(unittest.TestCase):
             assignment_relative, assignment
         )
 
+    def _family_result(
+        self, target: dict, assignment: dict, candidate_bytes: bytes
+    ) -> dict:
+        return {
+            "schemaVersion": "family-affinity-result-v1",
+            "targetId": target["targetId"],
+            "targetSha256": assignment["targetSha256"],
+            "coordinateId": target["coordinateId"],
+            "candidateVersion": 1,
+            "producerId": "image-producer-01",
+            "candidatePath": target["ownedPaths"]["candidate"],
+            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+            "resultPath": target["ownedPaths"]["result"],
+            "sourcePath": self.packet_path,
+            "sourceSha256": self._packet_hash(),
+            "promptSha256": hashlib.sha256(
+                render_family_prompt(target, assignment).encode("utf-8")
+            ).hexdigest(),
+            "state": "candidate-only",
+            "runtimeCatalogMutationForbidden": True,
+        }
+
     def test_family_normal_and_all_element_names_dispatch_explicitly(self) -> None:
         normal = self._target()
         assignment = self._assignment(normal)
@@ -302,7 +326,7 @@ class FamilyProfileTests(unittest.TestCase):
     def test_collision_and_symlink_escape_fail_closed(self) -> None:
         target = self._target()
         assignment = self._assignment(target)
-        self._persist_inputs(target, assignment)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
         candidate = self.workspace / target["ownedPaths"]["candidate"]
         candidate.parent.mkdir(parents=True, exist_ok=True)
         candidate.write_bytes(b"collision")
@@ -384,67 +408,237 @@ class FamilyProfileTests(unittest.TestCase):
     def test_family_result_is_exclusive_created_once_and_never_rewritten(self) -> None:
         target = self._target()
         assignment = self._assignment(target)
-        self._persist_inputs(target, assignment)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
         candidate_bytes = b"candidate"
         candidate = self.workspace / target["ownedPaths"]["candidate"]
         candidate.parent.mkdir(parents=True, exist_ok=True)
         candidate.write_bytes(candidate_bytes)
-        result = {
-            "schemaVersion": "family-affinity-result-v1",
-            "targetId": target["targetId"],
-            "targetSha256": assignment["targetSha256"],
-            "coordinateId": target["coordinateId"],
-            "candidateVersion": 1,
-            "producerId": "image-producer-01",
-            "candidatePath": target["ownedPaths"]["candidate"],
-            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
-            "resultPath": target["ownedPaths"]["result"],
-            "sourcePath": self.packet_path,
-            "sourceSha256": self._packet_hash(),
-            "promptSha256": hashlib.sha256(
-                render_family_prompt(target, assignment).encode("utf-8")
-            ).hexdigest(),
-            "state": "candidate-only",
-            "runtimeCatalogMutationForbidden": True,
-        }
+        result = self._family_result(target, assignment, candidate_bytes)
         result_path = self.workspace / target["ownedPaths"]["result"]
-        report = exclusive_create_family_result(
-            target, assignment, result, result_path, self.workspace
-        )
+        with patch("write_family_result.run_mandatory_family_dispatch_gate") as gate:
+            report = exclusive_create_family_result(
+                target_path, assignment_path, result, self.workspace
+            )
+            gate.assert_called_once_with(
+                target_path,
+                assignment_path,
+                self.workspace,
+                phase="result",
+                result=result,
+            )
         original = result_path.read_bytes()
         self.assertEqual(report["operation"], "anchored-exclusive-create")
         self.assertEqual(original, canonical_json(result).encode("utf-8"))
-        with self.assertRaisesRegex(FileExistsError, "collision"):
-            exclusive_create_family_result(target, assignment, result, result_path, self.workspace)
+        with self.assertRaisesRegex((FileExistsError, ValueError), "collision"):
+            with patch("write_family_result.run_mandatory_family_dispatch_gate"):
+                exclusive_create_family_result(
+                    target_path, assignment_path, result, self.workspace
+                )
         self.assertEqual(result_path.read_bytes(), original)
 
     def test_family_candidate_is_anchored_exclusive_and_retains_exact_source_bytes(self) -> None:
         target = self._target()
         assignment = self._assignment(target)
-        self._persist_inputs(target, assignment)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
         source = self.workspace / "provider-output.png"
         source_bytes = b"exact provider bytes"
         source.write_bytes(source_bytes)
-        report = persist_family_candidate(
-            source, target, assignment, self.workspace
-        )
+        with patch(
+            "persist_family_candidate.run_mandatory_family_dispatch_gate"
+        ) as gate:
+            report = persist_family_candidate(
+                source, target_path, assignment_path, self.workspace
+            )
+            gate.assert_called_once_with(
+                target_path, assignment_path, self.workspace, phase="candidate"
+            )
         candidate = self.workspace / target["ownedPaths"]["candidate"]
         self.assertEqual(candidate.read_bytes(), source_bytes)
         self.assertEqual(report["operation"], "anchored-exclusive-copy")
-        with self.assertRaisesRegex(FileExistsError, "collision"):
-            persist_family_candidate(source, target, assignment, self.workspace)
+        with self.assertRaisesRegex((FileExistsError, ValueError), "collision"):
+            with patch("persist_family_candidate.run_mandatory_family_dispatch_gate"):
+                persist_family_candidate(
+                    source, target_path, assignment_path, self.workspace
+                )
+
+    def test_public_family_writers_fail_without_repository_dispatch_evidence(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
+        source = self.workspace / "provider-output.png"
+        source.write_bytes(b"candidate")
+        with self.assertRaises((OSError, ValueError)):
+            persist_family_candidate(
+                source, target_path, assignment_path, self.workspace
+            )
+        self.assertFalse((self.workspace / target["ownedPaths"]["candidate"]).exists())
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_bytes(b"candidate")
+        result = self._family_result(target, assignment, b"candidate")
+        with self.assertRaises((OSError, ValueError)):
+            exclusive_create_family_result(
+                target_path, assignment_path, result, self.workspace
+            )
+        self.assertFalse((self.workspace / target["ownedPaths"]["result"]).exists())
+
+    def test_mandatory_gate_uses_direct_silent_tsx_and_requires_one_json_document(
+        self,
+    ) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
+        entrypoint = self.workspace / "tools/check-family-affinity-production-dispatch.ts"
+        entrypoint.parent.mkdir(parents=True)
+        entrypoint.write_bytes(b"sealed dispatch")
+        contract = {
+            "repositoryDispatch": {
+                "path": "tools/check-family-affinity-production-dispatch.ts",
+                "sha256": hashlib.sha256(entrypoint.read_bytes()).hexdigest(),
+            }
+        }
+        approval = canonical_json({"dispatchable": True, "phase": "candidate"})
+        completed = subprocess.CompletedProcess([], 0, stdout=approval, stderr="")
+        with patch("validate_target.load_json", return_value=contract), patch(
+            "validate_target.shutil.which", return_value="/usr/bin/pnpm"
+        ), patch(
+            "validate_target.subprocess.run", return_value=completed
+        ) as runner:
+            report = run_mandatory_family_dispatch_gate(
+                target_path,
+                assignment_path,
+                self.workspace,
+                phase="candidate",
+            )
+        self.assertTrue(report["dispatchable"])
+        command = runner.call_args.args[0]
+        self.assertEqual(
+            command[:5],
+            [
+                "/usr/bin/pnpm",
+                "--silent",
+                "exec",
+                "tsx",
+                "tools/check-family-affinity-production-dispatch.ts",
+            ],
+        )
+        self.assertEqual(runner.call_args.kwargs["cwd"], self.workspace)
+        entrypoint.write_bytes(b"drifted dispatch")
+        with patch("validate_target.load_json", return_value=contract), patch(
+            "validate_target.subprocess.run"
+        ) as blocked_runner:
+            with self.assertRaisesRegex(ValueError, "entrypoint drifted"):
+                run_mandatory_family_dispatch_gate(
+                    target_path,
+                    assignment_path,
+                    self.workspace,
+                    phase="candidate",
+                )
+            blocked_runner.assert_not_called()
+        entrypoint.write_bytes(b"sealed dispatch")
+        with patch("validate_target.load_json", return_value=contract), patch(
+            "validate_target.shutil.which", return_value="/usr/bin/pnpm"
+        ), patch(
+            "validate_target.subprocess.run",
+            return_value=subprocess.CompletedProcess([], 0, stdout="", stderr=""),
+        ):
+            with self.assertRaisesRegex(ValueError, "invalid JSON"):
+                run_mandatory_family_dispatch_gate(
+                    target_path,
+                    assignment_path,
+                    self.workspace,
+                    phase="candidate",
+                )
 
     def test_family_candidate_rejects_a_symlinked_provider_source(self) -> None:
         target = self._target()
         assignment = self._assignment(target)
-        self._persist_inputs(target, assignment)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
         real_source = self.workspace / "provider-output-real.png"
         real_source.write_bytes(b"provider bytes")
         symlink_source = self.workspace / "provider-output.png"
         symlink_source.symlink_to(real_source)
         with self.assertRaisesRegex(ValueError, "symlinked"):
-            persist_family_candidate(symlink_source, target, assignment, self.workspace)
+            with patch("persist_family_candidate.run_mandatory_family_dispatch_gate"):
+                persist_family_candidate(
+                    symlink_source, target_path, assignment_path, self.workspace
+                )
         self.assertFalse((self.workspace / target["ownedPaths"]["candidate"]).exists())
+
+    def test_post_create_parent_and_final_path_swaps_fail_closed(self) -> None:
+        for artifact in ("candidate", "result"):
+            for mutation in ("parent", "final"):
+                with self.subTest(artifact=artifact, mutation=mutation):
+                    self._assert_post_create_swap_resistance(artifact, mutation)
+
+    def _assert_post_create_swap_resistance(self, artifact: str, mutation: str) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
+        candidate_bytes = b"candidate bytes"
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        source = self.workspace / "provider-output.png"
+        source.write_bytes(candidate_bytes)
+        if artifact == "result":
+            candidate.parent.mkdir(parents=True, exist_ok=True)
+            candidate.write_bytes(candidate_bytes)
+        result = self._family_result(target, assignment, candidate_bytes)
+        owned = target["ownedPaths"][artifact]
+        output = self.workspace / owned
+        parent = output.parent
+        parked_parent = parent.with_name(f"{parent.name}-held")
+        parked_file = parent / f"{output.name}.held"
+        alias_file = parent / f"{output.name}.alias"
+        outside = Path(self.temporary.name).parent / (
+            f"outside-post-create-{os.getpid()}-{artifact}-{mutation}"
+        )
+        outside.mkdir(exist_ok=True)
+        sentinel = outside / "sentinel"
+        sentinel.write_bytes(b"external sentinel")
+
+        def mutate_after_create() -> None:
+            if mutation == "parent":
+                parent.rename(parked_parent)
+                parent.symlink_to(outside, target_is_directory=True)
+            else:
+                os.link(output, alias_file)
+                output.rename(parked_file)
+                output.symlink_to(sentinel)
+
+        try:
+            with self.assertRaises(ValueError):
+                if artifact == "candidate":
+                    with patch("persist_family_candidate.run_mandatory_family_dispatch_gate"):
+                        persist_family_candidate(
+                            source,
+                            target_path,
+                            assignment_path,
+                            self.workspace,
+                            hooks=AnchoredCreateHooks(after_final_create=mutate_after_create),
+                        )
+                else:
+                    with patch("write_family_result.run_mandatory_family_dispatch_gate"):
+                        exclusive_create_family_result(
+                            target_path,
+                            assignment_path,
+                            result,
+                            self.workspace,
+                            hooks=AnchoredCreateHooks(after_final_create=mutate_after_create),
+                        )
+            self.assertEqual(sentinel.read_bytes(), b"external sentinel")
+            self.assertFalse((outside / output.name).exists())
+            self.assertFalse(parked_file.exists())
+            self.assertFalse(alias_file.exists())
+            if parked_parent.exists():
+                self.assertFalse((parked_parent / output.name).exists())
+        finally:
+            if parent.is_symlink():
+                parent.unlink()
+            if parked_parent.exists():
+                parked_parent.rename(parent)
+            if output.is_symlink():
+                output.unlink()
+            shutil.rmtree(outside)
 
     def test_candidate_and_result_writes_resist_parent_swap_at_all_mutation_seams(self) -> None:
         for artifact, seam in (
@@ -461,7 +655,7 @@ class FamilyProfileTests(unittest.TestCase):
     def _assert_swap_resistance(self, artifact: str, seam: str) -> None:
         target = self._target()
         assignment = self._assignment(target)
-        self._persist_inputs(target, assignment)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
         candidate_bytes = b"candidate bytes"
         candidate = self.workspace / target["ownedPaths"]["candidate"]
         source = self.workspace / "provider-output.png"
@@ -469,24 +663,7 @@ class FamilyProfileTests(unittest.TestCase):
         if artifact == "result":
             candidate.parent.mkdir(parents=True, exist_ok=True)
             candidate.write_bytes(candidate_bytes)
-        result = {
-            "schemaVersion": "family-affinity-result-v1",
-            "targetId": target["targetId"],
-            "targetSha256": assignment["targetSha256"],
-            "coordinateId": target["coordinateId"],
-            "candidateVersion": 1,
-            "producerId": "image-producer-01",
-            "candidatePath": target["ownedPaths"]["candidate"],
-            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
-            "resultPath": target["ownedPaths"]["result"],
-            "sourcePath": self.packet_path,
-            "sourceSha256": self._packet_hash(),
-            "promptSha256": hashlib.sha256(
-                render_family_prompt(target, assignment).encode("utf-8")
-            ).hexdigest(),
-            "state": "candidate-only",
-            "runtimeCatalogMutationForbidden": True,
-        }
+        result = self._family_result(target, assignment, candidate_bytes)
         owned = target["ownedPaths"][artifact]
         parent = (self.workspace / owned).parent
         parked = parent.with_name(f"{parent.name}-held")
@@ -516,16 +693,23 @@ class FamilyProfileTests(unittest.TestCase):
         try:
             with self.assertRaises((ValueError, RuntimeError)):
                 if artifact == "candidate":
-                    persist_family_candidate(source, target, assignment, self.workspace, hooks=hooks)
+                    with patch("persist_family_candidate.run_mandatory_family_dispatch_gate"):
+                        persist_family_candidate(
+                            source,
+                            target_path,
+                            assignment_path,
+                            self.workspace,
+                            hooks=hooks,
+                        )
                 else:
-                    exclusive_create_family_result(
-                        target,
-                        assignment,
-                        result,
-                        self.workspace / target["ownedPaths"]["result"],
-                        self.workspace,
-                        hooks=hooks,
-                    )
+                    with patch("write_family_result.run_mandatory_family_dispatch_gate"):
+                        exclusive_create_family_result(
+                            target_path,
+                            assignment_path,
+                            result,
+                            self.workspace,
+                            hooks=hooks,
+                        )
             self.assertEqual(sentinel.read_bytes(), b"external sentinel")
             self.assertFalse((outside / Path(owned).name).exists())
             if swapped:

@@ -79,6 +79,7 @@ async function validReceipt() {
 		skillContractSha256: familyAffinityRawSha256(contractBytes),
 		approvedSkillRoot: approved.approvedSkillRoot,
 		executionSurface: approved.executionSurface,
+		repositoryDispatch: approved.repositoryDispatch,
 		reviewedAt: '2026-09-02T12:00:00.000Z',
 		approvalReference: 'user-confirmed-summonlab-image-production-v3-2026-09-02'
 	};
@@ -150,6 +151,20 @@ describe('family affinity production compatibility gate', () => {
 		expect(() => validateFamilyAffinityProductionCompatibility(forgedReceipt, forgedBytes)).toThrow(
 			/prompt|contract/i
 		);
+	});
+
+	it('rejects repository dispatch entrypoint drift from the sealed skill contract', async () => {
+		const bytes = await loadContractBytes();
+		const receipt = await validReceipt();
+		expect(() =>
+			validateFamilyAffinityProductionCompatibility(
+				{
+					...receipt,
+					repositoryDispatch: { ...receipt.repositoryDispatch, sha256: 'a'.repeat(64) }
+				},
+				bytes
+			)
+		).toThrow(/profile|dispatch|drift/i);
 	});
 
 	it('requires every ownership/hash binding and exact forbidden write classes', async () => {

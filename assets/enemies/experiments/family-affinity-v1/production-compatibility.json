@@ -54,18 +54,18 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-  "skillContractSha256": "2bd23b35550c3f039ad63d05854891c80e292a32c2ea71cf24eaf7cc4fababbf",
+  "skillContractSha256": "092b491387e795abdbc7619b31b8c3d1323a66884b676eb9512c1808f0339ef1",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-        "sha256": "2bd23b35550c3f039ad63d05854891c80e292a32c2ea71cf24eaf7cc4fababbf"
+        "sha256": "092b491387e795abdbc7619b31b8c3d1323a66884b676eb9512c1808f0339ef1"
       },
       {
         "path": "SKILL.md",
-        "sha256": "4ecc5e36b46ec73b365f9a9ffca47fbe8c8b93f7f7cb68eb43e45c87f8472f13"
+        "sha256": "32eeb3e780cd04b535b41cc18753ba08551e4050def8606eeb3072ad4d64abfd"
       },
       {
         "path": "references/affinity-grammar.md",
@@ -73,7 +73,7 @@
       },
       {
         "path": "references/result-schema.md",
-        "sha256": "4cbf81049797cdcfd4792bf45cfa1b7b97442396afbe0d5a7d5fb9c8a7ed5169"
+        "sha256": "ad16064c563e18cbdb7ce0697680d6032f8485a37504b2940d3dafd4fe91c8ce"
       },
       {
         "path": "references/review-rubric.md",
@@ -85,15 +85,15 @@
       },
       {
         "path": "references/target-schema.md",
-        "sha256": "7aff98167c4c2c7c6c0f62c5468f32e8d8998434fd4681a55539b65c30d9c2b4"
+        "sha256": "9c49f0d29d3627a12a5f2ab846ecc549258845d2fda5a9486f66f0eb837e3503"
       },
       {
         "path": "scripts/anchored_io.py",
-        "sha256": "a4ae6b663f7e6af44ef5f4884d5d5b1ade1bdfa8f7d793b7e296ff1e929b3a0c"
+        "sha256": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de"
       },
       {
         "path": "scripts/persist_family_candidate.py",
-        "sha256": "dad1c602cdd72b8bacb4aa2f55ea6a6ed202bf84b92611dcbf9e8f1292ce9786"
+        "sha256": "0c87b4d1c82b1659f1e8c4ba6df2f9d0b06735b730a3e68e17ae4abd1b5a23ce"
       },
       {
         "path": "scripts/render_prompt.py",
@@ -101,7 +101,7 @@
       },
       {
         "path": "scripts/validate_target.py",
-        "sha256": "534502b2976fa4d58e0566518e8547c433c02f52fdca917a3b6d5b15bce5ac3d"
+        "sha256": "422ef0e82378a3078fc998ec8dbaf975f6fa464dfb77dc7b19c95011c9c8b892"
       },
       {
         "path": "scripts/verify_result.py",
@@ -109,10 +109,14 @@
       },
       {
         "path": "scripts/write_family_result.py",
-        "sha256": "6c670320367755fb96f14567b86d1c9400044b48020dcc5d518d96b2c174ee94"
+        "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-    "bundleSha256": "fa9da223ccf2836537b2766a68488ed2b1ca88b8ab4ec006aa5473c851b3cba9"
+    "bundleSha256": "6446e25d16dbd142fdd22a83c3a9f87eebceb46f0cae85afb42f4e48feecafb9"
+  },
+  "repositoryDispatch": {
+    "path": "tools/check-family-affinity-production-dispatch.ts",
+    "sha256": "c3a8da0829faef4d27c7d4dffcb553da32c8c5d7b00d1c8b13cc4a7ac9481f64"
   },
   "reviewedAt": "2026-09-02T15:01:44.000Z",
   "approvalReference": "user-confirmed-summonlab-image-production-v3-2026-09-02"

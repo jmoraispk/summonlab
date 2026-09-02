@@ -34,7 +34,8 @@ export async function checkFamilyAffinityProductionCompatibility(repositoryRoot:
 	const surface = await validateFamilyAffinityProductionSurface({
 		compatibility: receipt,
 		trackedSkillRoot: join(repositoryRoot, 'skills/summonlab-image-production'),
-		installedSkillRoot: installedSkillPath
+		installedSkillRoot: installedSkillPath,
+		repositoryRoot
 	});
 	return {
 		status: 'compatible' as const,

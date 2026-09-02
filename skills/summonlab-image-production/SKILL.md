@@ -72,13 +72,16 @@ Read [target-schema.md](references/target-schema.md) and
 8. Persist only the exact source path returned by that tool invocation. Never discover “the newest”
    file in a shared generation directory. Family jobs must exclusively run
    `python3 <skill-directory>/scripts/persist_family_candidate.py <source> <target> <assignment> <workspace>`;
-   it retains the exact source bytes through Linux directory-handle anchored O_EXCL creation. Never
-   route family output through the shared legacy persistence helper. Legacy jobs retain their
-   existing helper, supported near-match normalization, and evidence contract.
+   its public function and CLI both re-run the mandatory gate in candidate phase, then retain the
+   exact source bytes through Linux directory-handle anchored O_EXCL creation. Never route family
+   output through the shared legacy persistence helper. Legacy jobs retain their existing helper,
+   supported near-match normalization, and evidence contract.
 9. Write only the profile's assigned result. A family job persists the repository-owned strict
    `family-affinity-result-v1` through
    `python3 <skill-directory>/scripts/write_family_result.py <target> <assignment> <draft> <workspace>`.
-   It constructs the complete bytes in memory and O_EXCL-creates the receipt once; never correct or
+   Its public function and CLI both re-run the mandatory gate in result phase, requiring the exact
+   existing candidate bytes to match the in-memory draft while the result remains absent. It then
+   constructs the complete bytes in memory and O_EXCL-creates the receipt once; never correct or
    rewrite it. Return tool-call and inspection detail in the job handoff, not as undeclared result
    fields. Legacy jobs retain the verbose `image-production-result-v1` attempt evidence and may
    correct only a result inode newly created by that legacy job.
