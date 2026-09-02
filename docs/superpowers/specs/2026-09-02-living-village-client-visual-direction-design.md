@@ -180,11 +180,18 @@ feels additive. Upgrades should extend the starter buildings rather than replace
 an unrelated background. A future design pass must establish the tier progression for each building and
 the transitions for construction, improvement, and resident arrival.
 
-The [Residence growth study](../../design-proposals/living-village-ui/mockups/residence-growth-study.png)
-illustrates that principle in three loose stages: Hearth House, Resident Hall, and Observatory Manor.
-It establishes only the idea that the same building gains height, wings, activity, and astronomical
-ornament. It does not define a runtime tier count, costs, capacity, production dimensions, or a content
-catalog.
+Five lightweight growth studies illustrate that principle across the complete opening Village:
+
+- [Residence](../../design-proposals/living-village-ui/mockups/residence-growth-study.png)
+- [Forge](../../design-proposals/living-village-ui/mockups/forge-growth-study.png)
+- [Training Grounds](../../design-proposals/living-village-ui/mockups/training-grounds-growth-study.png)
+- [Kitchen](../../design-proposals/living-village-ui/mockups/kitchen-growth-study.png)
+- [Portal Tower](../../design-proposals/living-village-ui/mockups/portal-tower-growth-study.png)
+
+Each tests three loose stages in which the same facility gains capability, stronger materials, activity,
+and restrained astronomical ornament while preserving its original identity. The stage and facility
+names are presentation labels only. These studies do not define a runtime tier count, costs, capacity,
+production dimensions, construction behavior, Tower/Gate separation, or a content catalog.
 
 The first opening-state candidate used one residence and three empty construction sites. It established
 the permanent road and plot logic but felt too bare to communicate that play begins in a real village.

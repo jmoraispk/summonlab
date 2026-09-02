@@ -70,14 +70,22 @@ The [second candidate](./mockups/opening-village-desktop-v2.png) established the
 facilities but placed Forge on the left and Kitchen on the right and pushed some content too close to
 the frame edges.
 
-### Lightweight Residence growth study
+### Lightweight building growth studies
 
-This is loose visual guidance, not a production tier contract. It tests one architectural lineage from
-the opening Hearth House through a larger Resident Hall to a high-level Observatory Manor. Exact tier
-count, costs, capacity, dimensions, and construction behavior remain undefined so interface work stays
-the priority.
+These are loose visual guidance, not production tier contracts. They test a readable architectural
+lineage from the intimate opening Village to the mature observatory settlement while keeping each
+facility recognizable in place. The names are exploratory labels. Exact tier count, costs, capacity,
+dimensions, and construction behavior remain undefined so interface work stays the priority.
 
 ![Residence growth study](./mockups/residence-growth-study.png)
+
+![Forge growth study](./mockups/forge-growth-study.png)
+
+![Training Grounds growth study](./mockups/training-grounds-growth-study.png)
+
+![Kitchen growth study](./mockups/kitchen-growth-study.png)
+
+![Portal Tower growth study](./mockups/portal-tower-growth-study.png)
 
 ### Shared Village Inventory
 
