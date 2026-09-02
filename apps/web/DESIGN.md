@@ -166,6 +166,11 @@ results.
   visible origin and future offsets, such as `t0` and `t+5`, plus a dominant ready-actor treatment.
   Labels must bind to engine-projected scheduling values. Until those values exist, use honest
   ordinal markers rather than decorative seconds.
+- On phone, anchor that rail horizontally to the top edge of the battlefield. It is a thin overlay,
+  not an opaque header or a reserved band: the scene remains visible beneath it, with only a local
+  contrast veil behind portraits and labels. Future actors sweep left toward `Now`.
+- Desktop may preserve the same top rail or reposition it within the wider combat shell, but it must
+  keep the same leftward time semantics, scheduling values, and ready-actor emphasis as phone.
 - Keep the battlefield dominant. Action controls and Manual, Assist, or Auto ownership remain quiet
   overlays and must not compete with the ready actor or the next material event.
 - Render environmental opportunities as part of the battlefield. Surprise, concealment, hazards,

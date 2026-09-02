@@ -110,6 +110,11 @@ If the current engine exposes only initiative order, the UI labels that order ho
 versioned scheduler defines time units. A stronger ready-actor treatment must remain legible without
 depending on color or animation.
 
+On phone, the rail is horizontal and fixed to the top edge of the battlefield. It remains visually
+thin and scene-transparent rather than reserving an opaque header band; only a localized contrast
+veil may sit behind the portraits and timing labels. Future actors move left toward `Now`. Desktop
+may reposition the same rail in its wider shell, but it preserves the same values and time direction.
+
 Environmental interaction is part of combat, beginning with encounter advantage such as catching
 an enemy by surprise. Environment, perception, approach, and resulting legal modifiers remain
 authoritative engine facts. PixiJS visualizes projected terrain and affordances; it does not decide
