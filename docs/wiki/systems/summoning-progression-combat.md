@@ -95,6 +95,10 @@ On phone, the collapsed feed shows the latest three messages above the command b
 the complete history. Desktop places the same feed beside the battlefield, using the additional
 horizontal space without changing its message order or contents.
 
+The compact live view gives the newest message full emphasis and fades the preceding two messages
+progressively. Expanded history restores uniform readable contrast, and event order remains explicit
+without depending on opacity alone.
+
 The supplied damage expression currently defines shape, not accepted constants:
 
 ```text

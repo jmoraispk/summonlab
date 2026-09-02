@@ -190,6 +190,9 @@ results.
   history. Desktop uses adjacent space for the feed. Each message retains actor identity, event
   order, and replay linkage, and the complete feed remains reachable without relying on transient
   animation.
+- In the compact live view, keep the newest message at full emphasis and fade the preceding two
+  progressively. Expanded history restores uniform readable contrast; fading never removes content
+  or becomes the only indication of event order.
 
 ### Content and data visualization
 
