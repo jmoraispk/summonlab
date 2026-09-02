@@ -19,6 +19,10 @@ import {
 import { buildEquipmentVisualProfileV2 } from './equipment-image-profile-v2.js';
 import { buildRootEquipmentPacketsV2 } from './equipment-image-packets-v2.js';
 import {
+	DEFAULT_EQUIPMENT_V2_RUN_ID,
+	activateEquipmentV2Run
+} from './equipment-image-run-activation-v2.js';
+import {
 	buildEquipmentMaterialAllocationPlanV2,
 	buildEquipmentMaterialProductionManifestV2
 } from './equipment-material-production-v2.js';
@@ -58,7 +62,8 @@ async function fixture(input: { readonly withCandidate: boolean }) {
 		profile,
 		acknowledgedProfileSha256: EQUIPMENT_V2_ACCEPTED_PROFILE_CANONICAL_SHA256
 	});
-	const packet = buildRootEquipmentPacketsV2({ manifest, allocation, profile, acceptance })[0]!;
+	const packets = buildRootEquipmentPacketsV2({ manifest, allocation, profile, acceptance });
+	const packet = packets[0]!;
 	await Promise.all([
 		writeRepositoryFile(
 			workspaceRoot,
@@ -80,14 +85,27 @@ async function fixture(input: { readonly withCandidate: boolean }) {
 			'assets/equipment/experiments/material-equipment-v2/visual-profile/acceptance.json',
 			jsonBytes(acceptance)
 		),
-		writeRepositoryFile(workspaceRoot, packet.targetPath, jsonBytes(packet.target)),
-		writeRepositoryFile(workspaceRoot, packet.assignmentPath, jsonBytes(packet.assignment)),
-		...packet.target.references.map(async ({ path: repositoryPath }) => {
+		...packets.flatMap((rootPacket) => [
+			writeRepositoryFile(workspaceRoot, rootPacket.targetPath, jsonBytes(rootPacket.target)),
+			writeRepositoryFile(
+				workspaceRoot,
+				rootPacket.assignmentPath,
+				jsonBytes(rootPacket.assignment)
+			)
+		]),
+		...profile.references.map(async ({ path: repositoryPath }) => {
 			const destination = path.join(workspaceRoot, ...repositoryPath.split('/'));
 			await mkdir(path.dirname(destination), { recursive: true });
 			await cp(path.join(process.cwd(), ...repositoryPath.split('/')), destination);
 		})
 	]);
+	await activateEquipmentV2Run({
+		workspaceRoot,
+		runId: DEFAULT_EQUIPMENT_V2_RUN_ID,
+		createdAt: '2026-09-02T21:00:00.000Z',
+		activatedAt: '2026-09-02T21:01:00.000Z',
+		activatedBy: 'equipment-v2-result-test'
+	});
 	if (input.withCandidate) {
 		const sourcePath = path.join(workspaceRoot, 'source.png');
 		await writeFile(

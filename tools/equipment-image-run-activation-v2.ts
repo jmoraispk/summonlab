@@ -615,6 +615,49 @@ export async function reportEquipmentV2RunReadiness(input: {
 	});
 }
 
+export async function assertEquipmentV2RootTargetAuthorized(input: {
+	readonly workspaceRoot: string;
+	readonly targetId: string;
+	readonly runId?: string;
+}): Promise<{
+	readonly runId: string;
+	readonly targetId: string;
+	readonly runPlanCanonicalSha256: string;
+	readonly scope: 'root-targets-only';
+}> {
+	const runId = input.runId ?? DEFAULT_EQUIPMENT_V2_RUN_ID;
+	const checkedAt = new Date().toISOString();
+	const plan = await buildEquipmentV2RunPlan({
+		workspaceRoot: input.workspaceRoot,
+		runId,
+		createdAt: checkedAt
+	});
+	const activation = await activationState({
+		workspaceRoot: input.workspaceRoot,
+		expectedPlan: plan
+	});
+	if (activation.state !== 'valid') {
+		throw new Error(
+			`Equipment v2 target write is not authorized: ${activation.blockers.map(({ message }) => message).join('; ') || activation.state}`
+		);
+	}
+	if (!plan.initialGeneration.authorizedTargetIds.includes(input.targetId)) {
+		throw new Error(
+			`Equipment v2 target is not authorized by the root-only activation: ${input.targetId}`
+		);
+	}
+	return {
+		runId,
+		targetId: input.targetId,
+		runPlanCanonicalSha256: canonicalJsonSha256V2(
+			EquipmentV2RunPlanSchema.parse(
+				await readEquipmentRepositoryJson(input.workspaceRoot, runPaths(runId).planPath)
+			)
+		),
+		scope: 'root-targets-only'
+	};
+}
+
 interface FileIdentity {
 	readonly device: number;
 	readonly inode: number;

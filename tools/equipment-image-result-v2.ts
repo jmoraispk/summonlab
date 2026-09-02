@@ -17,6 +17,7 @@ import {
 	renderEquipmentPromptV2,
 	validateEquipmentResultV2
 } from './equipment-image-packets-v2.js';
+import { assertEquipmentV2RootTargetAuthorized } from './equipment-image-run-activation-v2.js';
 import { EQUIPMENT_V2_PRODUCTION_ROOT } from './equipment-material-production-v2.js';
 import {
 	equipmentRepositoryPathState,
@@ -262,6 +263,11 @@ export async function verifyEquipmentImageResultEvidenceV2(
 export async function persistEquipmentImageResultEvidenceV2(
 	input: Omit<VerifyEquipmentImageResultEvidenceV2Input, 'resultPath'>
 ): Promise<VerifiedEquipmentImageResultEvidenceV2> {
+	const { target } = await readPacket(input);
+	await assertEquipmentV2RootTargetAuthorized({
+		workspaceRoot: input.workspaceRoot,
+		targetId: target.targetId
+	});
 	const verified = await verifyEquipmentImageResultEvidenceV2(input);
 	const resultPath = verified.writtenOutputPaths.at(-1)!;
 	const serialized = `${JSON.stringify(

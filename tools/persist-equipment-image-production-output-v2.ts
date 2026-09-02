@@ -19,6 +19,7 @@ import {
 	EquipmentVisualProfileV2Schema
 } from './equipment-image-profile-v2.js';
 import { validateEquipmentPacketV2 } from './equipment-image-packets-v2.js';
+import { assertEquipmentV2RootTargetAuthorized } from './equipment-image-run-activation-v2.js';
 import {
 	EQUIPMENT_V2_ALLOCATION_PLAN_PATH,
 	EQUIPMENT_V2_MANIFEST_PATH,
@@ -218,6 +219,10 @@ export async function persistEquipmentImageProductionOutputV2(
 	}
 	const sourcePath = resolve(options.sourcePath);
 	const { target, assignment } = await readPacketAndStaticInputs({ ...options, workspaceRoot });
+	await assertEquipmentV2RootTargetAuthorized({
+		workspaceRoot,
+		targetId: target.targetId
+	});
 	const destinationAbsolutePath = equipmentRepositoryAbsolute(
 		workspaceRoot,
 		options.destinationPath

@@ -25,6 +25,7 @@ import {
 	EquipmentV2RunActivationSchema,
 	EquipmentV2RunPlanSchema,
 	activateEquipmentV2Run,
+	assertEquipmentV2RootTargetAuthorized,
 	buildEquipmentV2RunPlan,
 	reportEquipmentV2RunReadiness
 } from './equipment-image-run-activation-v2.js';
@@ -203,6 +204,18 @@ describe('Equipment v2 immutable run activation', () => {
 			maximumConcurrency: 16,
 			gatedChildrenAuthorized: false
 		});
+		await expect(
+			assertEquipmentV2RootTargetAuthorized({
+				workspaceRoot,
+				targetId: plan.rootPackets[0]!.targetId
+			})
+		).resolves.toMatchObject({ scope: 'root-targets-only' });
+		await expect(
+			assertEquipmentV2RootTargetAuthorized({
+				workspaceRoot,
+				targetId: plan.gatedChildTargetIds[0]!
+			})
+		).rejects.toThrow(/not authorized/iu);
 		const firstAuthorizedTargetIndex = plan.targetIds.indexOf(
 			activation.authorization.authorizedTargetIds[0]!
 		);

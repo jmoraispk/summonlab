@@ -13,6 +13,10 @@ This directory prepares the collision-safe successor to `material-equipment-v1`.
 The profile acceptance remains `visual-profile-only`. Separate immutable run evidence now binds 77
 materialized root target/assignment pairs and authorizes those roots at concurrency 16. The 84
 Armour-piece targets remain unmaterialized and unauthorized behind their 21 full-set review gates.
+Every terminal root result is followed by one root-orchestrator-owned, exclusive-created receipt
+under the activated run's `terminal/` directory. That per-target receipt hash-binds the immutable
+plan, activation, packets, and verified result without introducing a shared writer file. Workers
+remain limited to the candidate and provenance-result paths in their immutable assignments.
 There are no approved sources or runtime exports. Existing v1 evidence is immutable and explicitly
 forbidden as an output destination.
 
@@ -54,6 +58,10 @@ The additive v2 schemas define profile acceptance, target, assignment, result, A
 and contract-readiness records. The Equipment-local v2 path materializes and validates all 77 root
 envelopes with class-scoped references, binds them into one immutable root-only run, and verifies and
 exclusively persists PNG candidates and their result evidence. The v1/shared runner remains separate.
+Result recording becomes terminal only after its collision-safe, per-target journal receipt is
+persisted and reverified against the activated run by the root orchestrator. The orchestrator-only
+`tools/record-equipment-image-terminal-v2.ts` command enforces this ownership split; it is not a
+worker helper.
 Only the activated roots may run; Armour pieces require a later accepted full-set receipt. No worker
 may modify engine contracts, shared runtime catalogs, reviews, or approved assets.
 
