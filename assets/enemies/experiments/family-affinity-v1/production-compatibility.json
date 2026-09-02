@@ -58,14 +58,14 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-	"skillContractSha256": "b0c6f06a37549cac2cf499dc633e911a23cc664ec7cfaa947c2a98b63f19c617",
+	"skillContractSha256": "9be941c2d95f3e2e2de1923cc53f841746269495bcdc74b3d503b28aa2e76959",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-				"sha256": "b0c6f06a37549cac2cf499dc633e911a23cc664ec7cfaa947c2a98b63f19c617"
+				"sha256": "9be941c2d95f3e2e2de1923cc53f841746269495bcdc74b3d503b28aa2e76959"
       },
       {
         "path": "SKILL.md",
@@ -97,7 +97,7 @@
       },
       {
         "path": "scripts/family_dispatch_gate.mjs",
-				"sha256": "48071a431094bc19d179c121da677228ebb6bdb3403f841f9dcaa90142aff63b"
+				"sha256": "39484988e6fc39d96b17ea0b84b9b11b3e1e453656163b950437e66f7e018c1b"
       },
       {
         "path": "scripts/persist_family_candidate.py",
@@ -120,7 +120,7 @@
         "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-		"bundleSha256": "d7895038d4ff11acac259c42bd4409d395879c8ed2a5434461abaab02df2af99"
+		"bundleSha256": "55ec711acc2a1dbe11fdbb1111096dd08e08f90f1bb2df224ea73649d789b0c9"
   },
   "repositoryDispatch": {
     "path": "tools/check-family-affinity-production-dispatch.ts",
@@ -133,7 +133,7 @@
     },
     "bundle": {
       "path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "48071a431094bc19d179c121da677228ebb6bdb3403f841f9dcaa90142aff63b"
+			"sha256": "39484988e6fc39d96b17ea0b84b9b11b3e1e453656163b950437e66f7e018c1b"
     },
     "sources": [
       {
@@ -142,7 +142,7 @@
       },
       {
         "path": "tools/family-affinity-production-lib.ts",
-				"sha256": "4a8093d8b65f7ec0540f550be33903d0e76e5167718efc9557c29ad872fd3f2f"
+				"sha256": "635bd353ab2ac129aa250d0841d7ca9fc2f3fdb5b460202cc9787657e46fad48"
       },
       {
         "path": "package.json",

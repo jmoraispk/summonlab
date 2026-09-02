@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { lstat, mkdtemp, mkdir, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -35,6 +35,7 @@ import type {
 	FamilyAffinityTarget
 } from './family-affinity-production-lib.js';
 import { exportFamilyAffinityProduction } from './export-family-affinity-production.js';
+import { parseFamilyAffinityRevisionCli } from './allocate-family-affinity-revision.js';
 
 const passingReviewRubric = Object.fromEntries(
 	['identity', 'tier', 'archetype', 'anatomy', 'affinity', 'counterplay', 'framing', 'finish'].map(
@@ -3515,7 +3516,205 @@ async function stagePlannedElemental(
 	return { coordinate, target, assignment };
 }
 
+describe('family affinity revision CLI parsing', () => {
+	it('parses compatible single and repeated-entry invocations', () => {
+		expect(
+			parseFamilyAffinityRevisionCli([
+				'--caller-role',
+				'integration-controller',
+				'--namespace',
+				'canonical',
+				'--coordinate',
+				'goblins/goblin-runt/normal',
+				'--review-path',
+				'review/one.json'
+			])
+		).toEqual({
+			callerRole: 'integration-controller',
+			entries: [
+				{
+					namespace: 'canonical',
+					coordinateId: 'goblins/goblin-runt/normal',
+					reviewPath: 'review/one.json'
+				}
+			]
+		});
+		const first = JSON.stringify({
+			namespace: 'bridge',
+			coordinateId: 'class/family/form/earth',
+			reviewPath: 'review/one.json'
+		});
+		const second = JSON.stringify({
+			namespace: 'bridge',
+			coordinateId: 'other/family/form/earth',
+			reviewPath: 'review/two.json'
+		});
+		expect(
+			parseFamilyAffinityRevisionCli([
+				'--caller-role',
+				'integration-controller',
+				'--entry',
+				first,
+				'--entry',
+				second
+			]).entries
+		).toHaveLength(2);
+	});
+
+	it.each(['--caller-role', '--namespace', '--coordinate', '--review-path'])(
+		'rejects repeated singleton flag %s',
+		(flag) => {
+			const argv = [
+				'--caller-role',
+				'integration-controller',
+				'--namespace',
+				'canonical',
+				'--coordinate',
+				'goblins/goblin-runt/normal',
+				'--review-path',
+				'review/one.json',
+				flag,
+				'extra-value'
+			];
+			expect(() => parseFamilyAffinityRevisionCli(argv)).toThrow(/repeated singleton/i);
+		}
+	);
+
+	it('rejects ambiguous single and batch flags in either order', () => {
+		const entry = JSON.stringify({
+			namespace: 'canonical',
+			coordinateId: 'goblins/goblin-runt/normal',
+			reviewPath: 'review/one.json'
+		});
+		for (const argv of [
+			[
+				'--caller-role',
+				'integration-controller',
+				'--entry',
+				entry,
+				'--coordinate',
+				'goblins/goblin-runt/normal'
+			],
+			[
+				'--caller-role',
+				'integration-controller',
+				'--review-path',
+				'review/one.json',
+				'--entry',
+				entry
+			]
+		]) {
+			expect(() => parseFamilyAffinityRevisionCli(argv)).toThrow(/cannot be mixed/i);
+		}
+	});
+
+	it.each([
+		'null',
+		'[]',
+		JSON.stringify({ namespace: 'canonical', coordinateId: 'coordinate' }),
+		JSON.stringify({
+			namespace: 'canonical',
+			coordinateId: 'coordinate',
+			reviewPath: 'review.json',
+			unknown: true
+		}),
+		JSON.stringify({ namespace: 1, coordinateId: 'coordinate', reviewPath: 'review.json' }),
+		JSON.stringify({ namespace: 'canonical', coordinateId: 1, reviewPath: 'review.json' }),
+		JSON.stringify({ namespace: 'canonical', coordinateId: 'coordinate', reviewPath: false })
+	])('rejects non-strict batch entry %s', (entry) => {
+		expect(() =>
+			parseFamilyAffinityRevisionCli(['--caller-role', 'integration-controller', '--entry', entry])
+		).toThrow(/entry/i);
+	});
+});
+
 describe('controller-only family affinity revision allocation', () => {
+	it('rejects a mixed canonical and bridge batch before writing either namespace', async () => {
+		const fixture = await makeRevisionFixture({ namespace: 'bridge', decision: 'revise' });
+		try {
+			const canonical = await addRevisionEvidence(fixture);
+			const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+			const bridgePaths = bridgeAttemptPaths(
+				fixture.target.currentClassId!,
+				fixture.target.affinity,
+				2
+			);
+			const canonicalPaths = canonicalAttemptPaths(
+				canonical.target.familyId,
+				canonical.target.formId,
+				canonical.target.affinity,
+				2
+			);
+			await expect(
+				allocateFamilyAffinityRevisionBatch({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					callerRole: 'integration-controller',
+					entries: [
+						{
+							namespace: 'bridge',
+							coordinateId: fixture.target.coordinateId,
+							reviewPath: fixture.target.ownedPaths.decision
+						},
+						canonical.entry
+					]
+				})
+			).rejects.toThrow(/cannot mix canonical and bridge/i);
+			expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(manifestBefore);
+			for (const path of [
+				bridgePaths.target,
+				bridgePaths.assignment,
+				canonicalPaths.target,
+				canonicalPaths.assignment
+			]) {
+				await expect(readFile(join(fixture.root, path))).rejects.toMatchObject({ code: 'ENOENT' });
+			}
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it.each(['target', 'assignment', 'candidate', 'result', 'decision', 'blindReview'] as const)(
+		'rejects a dangling symlink at the future %s path with zero mutation',
+		async (kind) => {
+			const fixture = await makeRevisionFixture({ decision: 'revise' });
+			try {
+				const paths = canonicalAttemptPaths(
+					fixture.target.familyId,
+					fixture.target.formId,
+					fixture.target.affinity,
+					2
+				);
+				const danglingAbsolute = join(fixture.root, paths[kind]);
+				await mkdir(join(danglingAbsolute, '..'), { recursive: true });
+				await symlink('missing-owned-path', danglingAbsolute);
+				const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath), 'utf8');
+				await expect(
+					allocateFamilyAffinityRevision({
+						repositoryRoot: fixture.root,
+						manifestPath: fixture.manifestPath,
+						namespace: 'canonical',
+						coordinateId: fixture.target.coordinateId,
+						callerRole: 'integration-controller',
+						reviewPath: fixture.target.ownedPaths.decision
+					})
+				).rejects.toThrow(/collision/i);
+				expect(await readFile(join(fixture.root, fixture.manifestPath), 'utf8')).toBe(
+					manifestBefore
+				);
+				expect((await lstat(danglingAbsolute)).isSymbolicLink()).toBe(true);
+				for (const pairPath of [paths.target, paths.assignment]) {
+					if (pairPath === paths[kind]) continue;
+					await expect(readFile(join(fixture.root, pairPath))).rejects.toMatchObject({
+						code: 'ENOENT'
+					});
+				}
+			} finally {
+				await rm(fixture.root, { recursive: true, force: true });
+			}
+		}
+	);
+
 	it('atomically allocates sibling review receipts bound to one manifest snapshot', async () => {
 		const fixture = await makeRevisionFixture({ decision: 'revise' });
 		try {

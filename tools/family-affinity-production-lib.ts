@@ -2385,6 +2385,21 @@ async function exists(path: string): Promise<boolean> {
 	}
 }
 
+async function pathEntryExistsNoFollow(path: string): Promise<boolean> {
+	try {
+		await lstat(path);
+		return true;
+	} catch (error) {
+		if (
+			(error as NodeJS.ErrnoException).code === 'ENOENT' ||
+			(error as NodeJS.ErrnoException).code === 'ENOTDIR'
+		) {
+			return false;
+		}
+		throw error;
+	}
+}
+
 function absoluteOwnedPath(repositoryRoot: string, ownedPath: string): string {
 	OwnedPathSchema.parse(ownedPath);
 	return absoluteRepositoryPath(repositoryRoot, ownedPath);
@@ -2914,6 +2929,9 @@ async function allocateFamilyAffinityRevisionBatchUnlocked(
 	if (input.entries.length === 0) {
 		throw new Error('Revision allocation batch requires at least one entry');
 	}
+	if (new Set(input.entries.map(({ namespace }) => namespace)).size !== 1) {
+		throw new Error('Revision allocation batch cannot mix canonical and bridge namespaces');
+	}
 	const entryKeys = input.entries.map(
 		({ namespace, coordinateId }) => `${namespace}\0${coordinateId}`
 	);
@@ -2955,7 +2973,7 @@ async function allocateFamilyAffinityRevisionBatchUnlocked(
 		throw new Error('Revision allocation batch contains overlapping output paths');
 	}
 	for (const proposed of proposedPaths) {
-		if (await exists(absoluteOwnedPath(input.repositoryRoot, proposed))) {
+		if (await pathEntryExistsNoFollow(absoluteOwnedPath(input.repositoryRoot, proposed))) {
 			throw new Error(`Revision allocation collision: ${proposed}`);
 		}
 	}
