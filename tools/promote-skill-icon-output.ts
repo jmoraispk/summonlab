@@ -1,6 +1,17 @@
 import { constants } from 'node:fs';
 import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
-import { lstat, mkdir, open, readdir, realpath, rename, unlink } from 'node:fs/promises';
+import {
+	link,
+	lstat,
+	mkdir,
+	open,
+	readFile,
+	readdir,
+	realpath,
+	rename,
+	rmdir,
+	unlink
+} from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -80,6 +91,14 @@ const ManagedOutputPathSchema = z.string().superRefine((value, context) => {
 		context.addIssue({ code: 'custom', message: 'Output path is outside promotion authority' });
 	}
 });
+const StagingDirectoryPathSchema = z
+	.string()
+	.regex(/^assets\/wiki\/skills\/icon-production-v1\/\.promotion-staging\/[a-f0-9-]{36}$/u);
+const StagingFilePathSchema = z
+	.string()
+	.regex(
+		/^assets\/wiki\/skills\/icon-production-v1\/\.promotion-staging\/[a-f0-9-]{36}\/\d{4}\.stage$/u
+	);
 const ParentFingerprintSchema = z
 	.object({ realPath: z.string().min(1), device: z.number().int(), inode: z.number().int() })
 	.strict();
@@ -111,6 +130,10 @@ export const SkillIconPromotionLockSchema = z
 		transactionId: TransactionTokenSchema,
 		recoveryTokenHash: Sha256Schema,
 		pid: z.number().int().positive(),
+		processIdentity: z
+			.object({ bootId: z.string().min(1), startTicks: z.string().regex(/^\d+$/u) })
+			.strict()
+			.nullable(),
 		acquiredAt: z.string().datetime({ offset: true })
 	})
 	.strict();
@@ -169,7 +192,24 @@ export const SkillIconPromotionJournalSchema = z
 					afterFile: FileFingerprintSchema.nullable()
 				})
 				.strict()
-		)
+		),
+		staging: z
+			.object({
+				directoryPath: StagingDirectoryPathSchema,
+				parent: ParentFingerprintSchema,
+				directory: FileFingerprintSchema,
+				files: z.array(
+					z
+						.object({
+							path: StagingFilePathSchema,
+							finalPath: ManagedOutputPathSchema,
+							contentHash: Sha256Schema,
+							file: FileFingerprintSchema
+						})
+						.strict()
+				)
+			})
+			.strict()
 	})
 	.strict()
 	.superRefine((journal, context) => {
@@ -178,12 +218,21 @@ export const SkillIconPromotionJournalSchema = z
 			['master paths', journal.jobs.map((job) => job.masterPath)],
 			['planned paths', journal.planned.map((item) => item.path)],
 			['created paths', journal.created.map((item) => item.path)],
-			['shared paths', journal.shared.map((item) => item.path)]
+			['shared paths', journal.shared.map((item) => item.path)],
+			['staging paths', journal.staging.files.map((item) => item.path)]
 		] as const) {
 			if (new Set(values).size !== values.length)
 				context.addIssue({ code: 'custom', message: `Promotion journal has duplicate ${name}` });
 		}
 		const planned = new Map(journal.planned.map((item) => [item.path, item.contentHash]));
+		if (!journal.staging.directoryPath.endsWith(`/${journal.transactionId}`))
+			context.addIssue({ code: 'custom', message: 'Staging directory does not match transaction' });
+		for (const staged of journal.staging.files) {
+			if (!staged.path.startsWith(`${journal.staging.directoryPath}/`))
+				context.addIssue({ code: 'custom', message: 'Staged file escaped transaction directory' });
+			if (planned.get(staged.finalPath) !== staged.contentHash)
+				context.addIssue({ code: 'custom', message: 'Staged output is not exactly planned' });
+		}
 		for (const job of journal.jobs) {
 			if (planned.get(job.masterPath) !== job.contentHash)
 				context.addIssue({ code: 'custom', message: 'Journal master is not exactly planned' });
@@ -291,9 +340,15 @@ interface PreparedPromotion {
 
 type PromotionLock = z.infer<typeof SkillIconPromotionLockSchema>;
 type PromotionJournal = z.infer<typeof SkillIconPromotionJournalSchema>;
+type PromotionStaging = PromotionJournal['staging'];
 interface PromotionAuthority {
 	readonly lock: PromotionLock;
 	readonly recoveryToken: string;
+}
+
+export interface PromotionCoordinatorIdentity {
+	readonly pid: number;
+	readonly processIdentity: { readonly bootId: string; readonly startTicks: string } | null;
 }
 
 interface AuthorityFileIdentity {
@@ -424,6 +479,43 @@ async function syncDirectory(directory: string): Promise<void> {
 
 function sha256(bytes: Buffer): string {
 	return createHash('sha256').update(bytes).digest('hex');
+}
+
+async function readProcessIdentity(
+	pid: number
+): Promise<PromotionCoordinatorIdentity['processIdentity']> {
+	try {
+		const [bootId, stat] = await Promise.all([
+			readFile('/proc/sys/kernel/random/boot_id', 'utf8'),
+			readFile(`/proc/${pid}/stat`, 'utf8')
+		]);
+		const closingParenthesis = stat.lastIndexOf(')');
+		const fields = stat
+			.slice(closingParenthesis + 2)
+			.trim()
+			.split(/\s+/u);
+		const startTicks = fields[19];
+		if (!startTicks || !/^\d+$/u.test(startTicks)) return null;
+		return { bootId: bootId.trim(), startTicks };
+	} catch {
+		return null;
+	}
+}
+
+async function coordinatorIsLive(lock: PromotionCoordinatorIdentity): Promise<boolean> {
+	try {
+		process.kill(lock.pid, 0);
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ESRCH') return false;
+		return true;
+	}
+	if (!lock.processIdentity) return true;
+	const current = await readProcessIdentity(lock.pid);
+	if (!current) return true;
+	return (
+		current.bootId === lock.processIdentity.bootId &&
+		current.startTicks === lock.processIdentity.startTicks
+	);
 }
 
 function parseTransactionJson<T>(schema: z.ZodType<T>, bytes: Buffer, label: string): T {
@@ -1005,39 +1097,206 @@ async function removeAuthorizedJournal(
 	await removeAuthorityFile(current.identity);
 }
 
+function stagingDirectoryPath(transactionId: string): string {
+	return `assets/wiki/skills/icon-production-v1/.promotion-staging/${transactionId}`;
+}
+
+async function createPromotionStaging(
+	root: string,
+	transactionId: string
+): Promise<PromotionStaging> {
+	const directoryPath = StagingDirectoryPathSchema.parse(stagingDirectoryPath(transactionId));
+	const destination = path.resolve(root, directoryPath);
+	await ensureSafeParents(root, destination, true);
+	const parent = await parentFingerprint(destination);
+	await mkdir(destination, { mode: 0o700 });
+	await syncDirectory(path.dirname(destination));
+	const metadata = await lstat(destination);
+	if (!metadata.isDirectory() || metadata.isSymbolicLink())
+		throw new Error('Promotion staging authority is not a real directory');
+	if (!sameParentFingerprint(await parentFingerprint(destination), parent))
+		throw new Error('Promotion staging parent changed during creation');
+	return {
+		directoryPath,
+		parent,
+		directory: { device: metadata.dev, inode: metadata.ino },
+		files: []
+	};
+}
+
+async function assertPromotionStagingDirectory(
+	root: string,
+	staging: PromotionStaging
+): Promise<void> {
+	const directory = path.resolve(root, staging.directoryPath);
+	await ensureSafeParents(root, directory, false);
+	const metadata = await lstat(directory);
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isDirectory() ||
+		metadata.dev !== staging.directory.device ||
+		metadata.ino !== staging.directory.inode ||
+		!sameParentFingerprint(await parentFingerprint(directory), staging.parent)
+	)
+		throw new Error('Promotion staging directory identity changed; cleanup required');
+}
+
+async function cleanupPromotionStaging(root: string, staging: PromotionStaging): Promise<void> {
+	const directory = path.resolve(root, staging.directoryPath);
+	const directoryMetadata = await metadataOrNull(directory);
+	if (!directoryMetadata) return;
+	await ensureSafeParents(root, directory, false);
+	if (
+		directoryMetadata.isSymbolicLink() ||
+		!directoryMetadata.isDirectory() ||
+		directoryMetadata.dev !== staging.directory.device ||
+		directoryMetadata.ino !== staging.directory.inode ||
+		!sameParentFingerprint(await parentFingerprint(directory), staging.parent)
+	)
+		throw new Error('Promotion staging directory identity changed; cleanup required');
+	const tracked = new Map(staging.files.map((item) => [path.basename(item.path), item]));
+	for (const entry of await readdir(directory, { withFileTypes: true })) {
+		const staged = tracked.get(entry.name);
+		const stagedPath = path.join(directory, entry.name);
+		if (!/^\d{4}\.stage$/u.test(entry.name) || entry.isSymbolicLink() || !entry.isFile())
+			throw new Error(`Unexpected promotion staging entry; cleanup required: ${entry.name}`);
+		const metadata = await lstat(stagedPath);
+		if (staged) {
+			if (metadata.dev !== staged.file.device || metadata.ino !== staged.file.inode)
+				throw new Error(`Staged output inode changed; cleanup required: ${staged.path}`);
+		} else if (metadata.size !== 0) {
+			throw new Error(`Untracked staging bytes require cleanup: ${entry.name}`);
+		}
+		const immediatelyBefore = await lstat(stagedPath);
+		const currentDirectory = await lstat(directory);
+		if (
+			immediatelyBefore.dev !== metadata.dev ||
+			immediatelyBefore.ino !== metadata.ino ||
+			currentDirectory.dev !== staging.directory.device ||
+			currentDirectory.ino !== staging.directory.inode
+		)
+			throw new Error(`Staged output changed before unlink: ${entry.name}`);
+		await unlink(stagedPath);
+	}
+	await syncDirectory(directory);
+	const finalDirectory = await lstat(directory);
+	if (
+		finalDirectory.dev !== staging.directory.device ||
+		finalDirectory.ino !== staging.directory.inode ||
+		(await readdir(directory)).length !== 0
+	)
+		throw new Error('Promotion staging directory changed before removal');
+	await rmdir(directory);
+	await syncDirectory(path.dirname(directory));
+}
+
+async function preflightPromotionStaging(root: string, staging: PromotionStaging): Promise<void> {
+	const directory = path.resolve(root, staging.directoryPath);
+	const metadata = await metadataOrNull(directory);
+	if (!metadata) return;
+	await ensureSafeParents(root, directory, false);
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isDirectory() ||
+		metadata.dev !== staging.directory.device ||
+		metadata.ino !== staging.directory.inode ||
+		!sameParentFingerprint(await parentFingerprint(directory), staging.parent)
+	)
+		throw new Error('Promotion staging directory identity changed; cleanup required');
+	const tracked = new Map(staging.files.map((item) => [path.basename(item.path), item]));
+	for (const entry of await readdir(directory, { withFileTypes: true })) {
+		const filePath = path.join(directory, entry.name);
+		const file = await lstat(filePath);
+		const expected = tracked.get(entry.name);
+		if (!/^\d{4}\.stage$/u.test(entry.name) || entry.isSymbolicLink() || !entry.isFile())
+			throw new Error(`Unexpected promotion staging entry; cleanup required: ${entry.name}`);
+		if (expected) {
+			if (file.dev !== expected.file.device || file.ino !== expected.file.inode)
+				throw new Error(`Staged output inode changed; cleanup required: ${expected.path}`);
+		} else if (file.size !== 0) {
+			throw new Error(`Untracked staging bytes require cleanup: ${entry.name}`);
+		}
+	}
+}
+
+async function cleanupEmptyUnjournaledStaging(root: string, transactionId: string): Promise<void> {
+	const directory = path.resolve(root, stagingDirectoryPath(transactionId));
+	const metadata = await metadataOrNull(directory);
+	if (!metadata) return;
+	await ensureSafeParents(root, directory, false);
+	const parent = await parentFingerprint(directory);
+	if (metadata.isSymbolicLink() || !metadata.isDirectory() || (metadata.mode & 0o777) !== 0o700)
+		throw new Error('Unjournaled staging authority is unsafe; cleanup required');
+	if ((await readdir(directory)).length !== 0)
+		throw new Error('Unjournaled staging authority is not empty; cleanup required');
+	const immediatelyBefore = await lstat(directory);
+	if (
+		immediatelyBefore.dev !== metadata.dev ||
+		immediatelyBefore.ino !== metadata.ino ||
+		!sameParentFingerprint(await parentFingerprint(directory), parent)
+	)
+		throw new Error('Unjournaled staging authority changed before cleanup');
+	await rmdir(directory);
+	await syncDirectory(path.dirname(directory));
+}
+
 async function writeOwnedOutput(
 	root: string,
 	relativePath: string,
 	bytes: Buffer,
-	afterReservation: (planned: PromotionJournal['planned'][number]) => Promise<void>,
+	staging: PromotionStaging,
+	stageIndex: number,
+	afterReservation: (
+		planned: PromotionJournal['planned'][number],
+		staged: PromotionStaging['files'][number]
+	) => Promise<void>,
 	afterWrite?: (input: { readonly path: string }) => void | Promise<void>
 ): Promise<PromotionJournal['created'][number]> {
 	ManagedOutputPathSchema.parse(relativePath);
 	const destination = path.resolve(root, relativePath);
 	await ensureSafeParents(root, destination, true);
 	const parent = await parentFingerprint(destination);
+	const stagePath = StagingFilePathSchema.parse(
+		`${staging.directoryPath}/${String(stageIndex).padStart(4, '0')}.stage`
+	);
+	const stageDestination = path.resolve(root, stagePath);
+	await assertPromotionStagingDirectory(root, staging);
 	const handle = await open(
-		destination,
+		stageDestination,
 		constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 		0o644
 	);
 	const metadata = await handle.stat();
+	const file = { device: metadata.dev, inode: metadata.ino };
 	try {
-		await afterReservation({
-			path: relativePath,
-			contentHash: sha256(bytes),
-			parent,
-			file: { device: metadata.dev, inode: metadata.ino }
-		});
+		await afterReservation(
+			{ path: relativePath, contentHash: sha256(bytes), parent, file },
+			{ path: stagePath, finalPath: relativePath, contentHash: sha256(bytes), file }
+		);
 		await handle.writeFile(bytes);
 		await handle.sync();
-		await afterWrite?.({ path: relativePath });
 	} finally {
 		await handle.close();
 	}
-	await syncDirectory(path.dirname(destination));
+	await syncDirectory(path.dirname(stageDestination));
+	const stagedBytes = await readRepositoryRegular(
+		root,
+		stageDestination,
+		`Staged promotion output ${relativePath}`
+	);
+	if (!stagedBytes.equals(bytes)) throw new Error(`Staged output bytes changed: ${relativePath}`);
+	await assertPromotionStagingDirectory(root, staging);
+	const stagedMetadata = await lstat(stageDestination);
+	if (stagedMetadata.dev !== file.device || stagedMetadata.ino !== file.inode)
+		throw new Error(`Staged output inode changed before link: ${relativePath}`);
 	if (!sameParentFingerprint(await parentFingerprint(destination), parent))
-		throw new Error(`Promotion output parent changed during write: ${relativePath}`);
+		throw new Error(`Promotion output parent changed before link: ${relativePath}`);
+	await link(stageDestination, destination);
+	await syncDirectory(path.dirname(destination));
+	const finalMetadata = await lstat(destination);
+	if (finalMetadata.dev !== file.device || finalMetadata.ino !== file.inode)
+		throw new Error(`Promotion output inode changed during link: ${relativePath}`);
+	await afterWrite?.({ path: relativePath });
 	const retained = await readRepositoryRegular(
 		root,
 		destination,
@@ -1048,8 +1307,37 @@ async function writeOwnedOutput(
 		path: relativePath,
 		contentHash: sha256(bytes),
 		parent,
-		file: { device: metadata.dev, inode: metadata.ino }
+		file
 	};
+}
+
+async function assertCompletedOutputs(root: string, journal: PromotionJournal): Promise<void> {
+	const created = new Map(journal.created.map((item) => [item.path, item]));
+	if (created.size !== journal.planned.length)
+		throw new Error('Promotion cannot commit before every planned output is complete');
+	for (const planned of journal.planned) {
+		const complete = created.get(planned.path);
+		if (!planned.file || !complete)
+			throw new Error(`Promotion output lacks completed ownership: ${planned.path}`);
+		const destination = path.resolve(root, planned.path);
+		if (!sameParentFingerprint(await parentFingerprint(destination), planned.parent))
+			throw new Error(`Promotion output parent changed before commit: ${planned.path}`);
+		const metadata = await lstat(destination);
+		if (
+			metadata.isSymbolicLink() ||
+			!metadata.isFile() ||
+			metadata.dev !== planned.file.device ||
+			metadata.ino !== planned.file.inode
+		)
+			throw new Error(`Promotion output inode changed before commit: ${planned.path}`);
+		const bytes = await readRepositoryRegular(
+			root,
+			destination,
+			`Completed output ${planned.path}`
+		);
+		if (sha256(bytes) !== planned.contentHash)
+			throw new Error(`Promotion output hash changed before commit: ${planned.path}`);
+	}
 }
 
 async function assertSharedIdentity(
@@ -1098,9 +1386,6 @@ async function rollbackJournal(
 			throw new Error(`Planned output parent identity changed; cleanup required: ${planned.path}`);
 		if (metadata.isSymbolicLink() || !metadata.isFile())
 			throw new Error(`Planned output identity is unsafe: ${planned.path}`);
-		const bytes = await readRepositoryRegular(root, destination, `Recovery output ${planned.path}`);
-		if (sha256(bytes) !== planned.contentHash)
-			throw new Error(`Planned output hash changed; cleanup required: ${planned.path}`);
 		if (
 			!planned.file ||
 			metadata.dev !== planned.file.device ||
@@ -1108,6 +1393,9 @@ async function rollbackJournal(
 		)
 			throw new Error(`Planned output inode changed; cleanup required: ${planned.path}`);
 		const created = createdByPath.get(planned.path);
+		const bytes = await readRepositoryRegular(root, destination, `Recovery output ${planned.path}`);
+		if (created && sha256(bytes) !== planned.contentHash)
+			throw new Error(`Completed output hash changed; cleanup required: ${planned.path}`);
 		if (created && (metadata.dev !== created.file.device || metadata.ino !== created.file.inode))
 			throw new Error(`Created output inode changed; cleanup required: ${planned.path}`);
 		outputs.push({ planned, exists: true });
@@ -1115,6 +1403,7 @@ async function rollbackJournal(
 	const sharedStates = await Promise.all(
 		journal.shared.map(async (item) => ({ item, state: await assertSharedIdentity(root, item) }))
 	);
+	await preflightPromotionStaging(root, journal.staging);
 	await testHooks?.beforeRecoveryMutation?.();
 	for (const { item, state } of sharedStates) {
 		if (state === 'before') continue;
@@ -1134,13 +1423,6 @@ async function rollbackJournal(
 		if (!current) continue;
 		if (!sameParentFingerprint(await parentFingerprint(destination), output.planned.parent))
 			throw new Error(`Planned output parent changed during recovery: ${output.planned.path}`);
-		const bytes = await readRepositoryRegular(
-			root,
-			destination,
-			`Recovery output ${output.planned.path}`
-		);
-		if (sha256(bytes) !== output.planned.contentHash)
-			throw new Error(`Planned output changed during recovery: ${output.planned.path}`);
 		if (
 			!output.planned.file ||
 			current.dev !== output.planned.file.device ||
@@ -1148,6 +1430,13 @@ async function rollbackJournal(
 		)
 			throw new Error(`Planned output inode changed during recovery: ${output.planned.path}`);
 		const created = createdByPath.get(output.planned.path);
+		const bytes = await readRepositoryRegular(
+			root,
+			destination,
+			`Recovery output ${output.planned.path}`
+		);
+		if (created && sha256(bytes) !== output.planned.contentHash)
+			throw new Error(`Completed output changed during recovery: ${output.planned.path}`);
 		if (created && (current.dev !== created.file.device || current.ino !== created.file.inode))
 			throw new Error(`Created output inode changed during recovery: ${output.planned.path}`);
 		const immediatelyBefore = await lstat(destination);
@@ -1163,11 +1452,15 @@ async function rollbackJournal(
 		await syncDirectory(path.dirname(destination));
 		await testHooks?.afterRecoveryOutputDelete?.({ index, path: output.planned.path });
 	}
+	await cleanupPromotionStaging(root, journal.staging);
 }
 
 export async function recoverSkillIconPromotion(options: {
 	readonly root?: string;
 	readonly transactionToken: string;
+	readonly isCoordinatorLive?: (
+		identity: PromotionCoordinatorIdentity
+	) => boolean | Promise<boolean>;
 	readonly testHooks?: PromotionTestHooks;
 }): Promise<void> {
 	const root = path.resolve(options.root ?? process.cwd());
@@ -1205,6 +1498,11 @@ export async function recoverSkillIconPromotion(options: {
 		lockAuthority.bytes,
 		'promotion lock'
 	);
+	const isLive = await (options.isCoordinatorLive ?? coordinatorIsLive)({
+		pid: lock.pid,
+		processIdentity: lock.processIdentity
+	});
+	if (isLive) throw new Error('Recovery refused because a live coordinator owns the promotion');
 	if (
 		lock.transactionId !== tokenRecord.transactionId ||
 		lock.recoveryTokenHash !== sha256(Buffer.from(token))
@@ -1229,7 +1527,7 @@ export async function recoverSkillIconPromotion(options: {
 		assertJournalAuthorization(journal, token);
 		await rollbackJournal(root, journal, options.testHooks);
 		await removeAuthorityFile(journalAuthority.identity);
-	}
+	} else await cleanupEmptyUnjournaledStaging(root, lock.transactionId);
 	await removeAuthorityFile(lockAuthority.identity);
 	await removeAuthorityFile(tokenAuthority.identity);
 }
@@ -1274,6 +1572,7 @@ async function withCoordinatorLock<T>(
 		);
 	}
 	const recoveryToken = randomUUID();
+	const processIdentity = await readProcessIdentity(process.pid);
 	const authority: PromotionAuthority = {
 		recoveryToken,
 		lock: {
@@ -1281,6 +1580,7 @@ async function withCoordinatorLock<T>(
 			transactionId: randomUUID(),
 			recoveryTokenHash: sha256(Buffer.from(recoveryToken)),
 			pid: process.pid,
+			processIdentity,
 			acquiredAt: new Date().toISOString()
 		}
 	};
@@ -1340,20 +1640,33 @@ async function withCoordinatorLock<T>(
 				`Promotion failed with durable recovery state retained; recovery token ${authority.recoveryToken}`,
 				{ cause: error }
 			);
-		const cleanupFailures: unknown[] = [];
-		for (const identity of [lockIdentity, tokenIdentity]) {
-			try {
-				await removeAuthorityFile(identity);
-			} catch (cleanupError) {
-				cleanupFailures.push(cleanupError);
-			}
-		}
-		if (cleanupFailures.length > 0)
+		try {
+			await cleanupEmptyUnjournaledStaging(root, authority.lock.transactionId);
+		} catch (cleanupError) {
 			throw new AggregateError(
-				[error, ...cleanupFailures],
-				`Promotion failed and authority cleanup requires recovery token ${recoveryToken}`,
-				{ cause: error }
+				[error, cleanupError],
+				`Promotion failed and staging cleanup requires recovery token ${recoveryToken}`,
+				{ cause: cleanupError }
 			);
+		}
+		try {
+			await removeAuthorityFile(lockIdentity);
+		} catch (cleanupError) {
+			throw new AggregateError(
+				[error, cleanupError],
+				`Promotion failed and authority cleanup requires recovery token ${recoveryToken}`,
+				{ cause: cleanupError }
+			);
+		}
+		try {
+			await removeAuthorityFile(tokenIdentity);
+		} catch (cleanupError) {
+			throw new AggregateError(
+				[error, cleanupError],
+				`Promotion failed and token cleanup requires recovery token ${recoveryToken}`,
+				{ cause: cleanupError }
+			);
+		}
 		throw error;
 	}
 	try {
@@ -1531,6 +1844,7 @@ async function commitPromotions(
 			return { ...item, parent: await parentFingerprint(destination), file: null };
 		})
 	);
+	const staging = await createPromotionStaging(root, authority.lock.transactionId);
 
 	let journal: PromotionJournal = {
 		schemaVersion: 'skill-icon-promotion-transaction-v1',
@@ -1545,23 +1859,33 @@ async function commitPromotions(
 		})),
 		planned,
 		created: [],
-		shared
+		shared,
+		staging
 	};
-	await writeJournal(root, journal, true, authority.recoveryToken);
+	try {
+		await writeJournal(root, journal, true, authority.recoveryToken);
+	} catch (error) {
+		if (!(await metadataOrNull(path.resolve(root, SKILL_ICON_PROMOTION_JOURNAL_PATH))))
+			await cleanupPromotionStaging(root, staging);
+		throw error;
+	}
 	const records: SkillIconAssetRecord[] = [];
 	try {
 		const recordReservation = async (
-			reservation: PromotionJournal['planned'][number]
+			reservation: PromotionJournal['planned'][number],
+			staged: PromotionStaging['files'][number]
 		): Promise<void> => {
 			journal = {
 				...journal,
 				phase: 'outputs-writing',
 				planned: journal.planned.map((item) =>
 					item.path === reservation.path ? reservation : item
-				)
+				),
+				staging: { ...journal.staging, files: [...journal.staging.files, staged] }
 			};
 			await writeJournal(root, journal, false, authority.recoveryToken);
 		};
+		let stageIndex = 0;
 		for (const [index, item] of prepared.entries()) {
 			await ensureSafeParents(root, item.destination, true);
 			await testHooks?.beforeMasterWrite?.({ index, destination: item.destination });
@@ -1570,6 +1894,8 @@ async function commitPromotions(
 				root,
 				item.record.approvedMaster.path,
 				item.bytes,
+				staging,
+				stageIndex++,
 				recordReservation,
 				testHooks?.afterOutputWriteBeforeProgress
 			);
@@ -1585,6 +1911,8 @@ async function commitPromotions(
 					root,
 					output.asset.path,
 					output.bytes,
+					staging,
+					stageIndex++,
 					recordReservation,
 					testHooks?.afterOutputWriteBeforeProgress
 				);
@@ -1598,6 +1926,8 @@ async function commitPromotions(
 				root,
 				receiptPath,
 				receiptBytes,
+				staging,
+				stageIndex++,
 				recordReservation,
 				testHooks?.afterOutputWriteBeforeProgress
 			);
@@ -1640,6 +1970,8 @@ async function commitPromotions(
 			await testHooks?.afterSharedWrite?.({ index: 1, path: SKILL_ICON_CATALOG_PATH });
 		}
 		await Promise.all(prepared.map((item) => assertPromotionEvidenceCurrent(root, item)));
+		await assertCompletedOutputs(root, journal);
+		await cleanupPromotionStaging(root, journal.staging);
 		await removeAuthorizedJournal(root, authority.lock.transactionId, authority.recoveryToken);
 		return records;
 	} catch (error) {

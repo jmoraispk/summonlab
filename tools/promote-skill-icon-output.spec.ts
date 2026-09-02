@@ -239,19 +239,33 @@ async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
 	const masterPath =
 		'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png';
 	const master = path.join(item.root, masterPath);
+	const stagingDirectoryPath = `assets/wiki/skills/icon-production-v1/.promotion-staging/${transactionId}`;
+	const stagingDirectory = path.join(item.root, stagingDirectoryPath);
 	await mkdir(path.dirname(master), { recursive: true });
+	await mkdir(stagingDirectory, { recursive: true, mode: 0o700 });
 	const bytes = await readFile(path.join(item.root, item.candidatePath));
 	await writeFile(master, bytes);
-	const [parentMetadata, fileMetadata, parentRealPath] = await Promise.all([
+	const [
+		parentMetadata,
+		fileMetadata,
+		parentRealPath,
+		stagingParentMetadata,
+		stagingMetadata,
+		stagingParentRealPath
+	] = await Promise.all([
 		lstat(path.dirname(master)),
 		lstat(master),
-		realpath(path.dirname(master))
+		realpath(path.dirname(master)),
+		lstat(path.dirname(stagingDirectory)),
+		lstat(stagingDirectory),
+		realpath(path.dirname(stagingDirectory))
 	]);
 	const lock = {
 		schemaVersion: 'skill-icon-promotion-lock-v1',
 		transactionId,
 		recoveryTokenHash: createHash('sha256').update(transactionToken).digest('hex'),
 		pid: 999_999,
+		processIdentity: null,
 		acquiredAt: '2026-09-02T10:00:00.000Z'
 	};
 	const journal = {
@@ -285,7 +299,17 @@ async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
 				file: { device: fileMetadata.dev, inode: fileMetadata.ino }
 			}
 		],
-		shared: []
+		shared: [],
+		staging: {
+			directoryPath: stagingDirectoryPath,
+			parent: {
+				realPath: stagingParentRealPath,
+				device: stagingParentMetadata.dev,
+				inode: stagingParentMetadata.ino
+			},
+			directory: { device: stagingMetadata.dev, inode: stagingMetadata.ino },
+			files: []
+		}
 	};
 	Object.assign(journal, signJournalForTest(journal, transactionToken));
 	await writeFile(
@@ -747,6 +771,77 @@ describe('promoteSkillIconOutput', () => {
 		await expect(first).resolves.toMatchObject({ jobId: 'charcoal-forged-stone-v1' });
 	});
 
+	it('does not let token possession recover a paused live writer', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		let release!: () => void;
+		const blocked = new Promise<void>((resolve) => {
+			release = resolve;
+		});
+		let entered!: () => void;
+		const acquired = new Promise<void>((resolve) => {
+			entered = resolve;
+		});
+		const promotion = promoteSkillIconOutput({
+			jobId: 'charcoal-forged-stone-v1',
+			reviewPath: item.reviewPath,
+			root: item.root,
+			testHooks: {
+				afterLockAcquired: async () => {
+					entered();
+					await blocked;
+				}
+			}
+		});
+		await acquired;
+		const token = JSON.parse(
+			await readFile(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH), 'utf8')
+		).recoveryToken as string;
+		expect(
+			JSON.parse(await readFile(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH), 'utf8'))
+		).toMatchObject({ pid: process.pid, processIdentity: { bootId: expect.any(String) } });
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: token,
+				isCoordinatorLive: () => true
+			})
+		).rejects.toThrow(/live coordinator/iu);
+		release();
+		await expect(promotion).resolves.toMatchObject({ jobId: 'charcoal-forged-stone-v1' });
+	});
+
+	it('retains the token when operation failure finds a tampered lock', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const lockPath = path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH);
+		let originalLock = '';
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					afterLockAcquired: async () => {
+						originalLock = await readFile(lockPath, 'utf8');
+						await writeFile(lockPath, `${originalLock}\n`);
+						throw new Error('operation failed after lock tamper');
+					}
+				}
+			})
+		).rejects.toThrow(/authority cleanup requires recovery token/iu);
+		const tokenPath = path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH);
+		const token = JSON.parse(await readFile(tokenPath, 'utf8')).recoveryToken as string;
+		await expect(access(lockPath)).resolves.toBeUndefined();
+		await expect(access(tokenPath)).resolves.toBeUndefined();
+		await writeFile(lockPath, originalLock);
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: token,
+			isCoordinatorLive: () => false
+		});
+		await expect(access(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(tokenPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
 	it('rolls back every owned write after an injected commit failure', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const master = path.join(
@@ -775,6 +870,9 @@ describe('promoteSkillIconOutput', () => {
 		await expect(
 			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
 		).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			readdir(path.join(item.root, 'assets/wiki/skills/icon-production-v1/.promotion-staging'))
+		).resolves.toEqual([]);
 	});
 
 	it('rolls back owned outputs when result evidence changes during the transaction', async () => {
@@ -1065,6 +1163,107 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
+	it('removes partial bytes only when the durable plan binds the exact reserved inode', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const journal = signJournalForTest({ ...state.journal, created: [] }, state.transactionToken);
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(journal)
+		);
+		await writeFile(state.master, Buffer.from('partial'));
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken,
+			isCoordinatorLive: () => false
+		});
+		await expect(access(state.master)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('fails closed when a completed output is tampered on its recorded inode', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		await writeFile(state.master, Buffer.from('tampered'));
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken,
+				isCoordinatorLive: () => false
+			})
+		).rejects.toThrow(/completed output hash changed|cleanup required/iu);
+		await expect(readFile(state.master)).resolves.toEqual(Buffer.from('tampered'));
+	});
+
+	it('does not delete an empty substituted inode from a pre-reservation crash state', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const journal = signJournalForTest(
+			{
+				...state.journal,
+				planned: state.journal.planned.map((planned) => ({ ...planned, file: null })),
+				created: []
+			},
+			state.transactionToken
+		);
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(journal)
+		);
+		await rm(state.master);
+		await writeFile(state.master, '');
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken,
+				isCoordinatorLive: () => false
+			})
+		).rejects.toThrow(/inode|cleanup required/iu);
+		await expect(readFile(state.master)).resolves.toEqual(Buffer.alloc(0));
+	});
+
+	it('cleans an empty transaction stage left before its inode reservation without exposing a final', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const journal = signJournalForTest(
+			{
+				...state.journal,
+				planned: state.journal.planned.map((planned) => ({ ...planned, file: null })),
+				created: []
+			},
+			state.transactionToken
+		);
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(journal)
+		);
+		await rm(state.master);
+		const emptyStage = path.join(item.root, state.journal.staging.directoryPath, '0000.stage');
+		await writeFile(emptyStage, '');
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken,
+			isCoordinatorLive: () => false
+		});
+		await expect(access(state.master)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(emptyStage)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('rejects a replaced inode even when replacement bytes match', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const bytes = await readFile(state.master);
+		await rename(state.master, `${state.master}.replaced`);
+		await writeFile(state.master, bytes);
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken,
+				isCoordinatorLive: () => false
+			})
+		).rejects.toThrow(/inode|cleanup required/iu);
+		await expect(readFile(state.master)).resolves.toEqual(bytes);
+	});
+
 	it('treats a missing planned output as an already-completed rollback step', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const state = await recoveryState(item);
@@ -1076,6 +1275,22 @@ describe('promoteSkillIconOutput', () => {
 		await expect(
 			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
 		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('refuses token-authorized recovery while the coordinator is live', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken,
+				isCoordinatorLive: () => true
+			})
+		).rejects.toThrow(/live coordinator/iu);
+		await expect(access(state.master)).resolves.toBeUndefined();
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
+		).resolves.toBeUndefined();
 	});
 
 	it('retries recovery after one planned output was already deleted', async () => {
