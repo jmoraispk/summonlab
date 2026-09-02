@@ -1,0 +1,7 @@
+interface:
+  display_name: 'Summonlab Skill Icon Production'
+  short_description: 'Produce one bounded skill-icon candidate'
+  default_prompt: 'Use $summonlab-skill-icon-production to produce one assigned skill-icon candidate.'
+
+policy:
+  allow_implicit_invocation: true
