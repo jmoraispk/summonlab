@@ -1,0 +1,4067 @@
+{
+	"schemaVersion": "skill-icon-motif-map-v1",
+	"entries": [
+		{
+			"mapEntryId": "blade.precision-cut",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:swordsmanship",
+				"martial:blade:measured-cut",
+				"martial:blade:edge-care",
+				"martial:blade:edge-alignment",
+				"martial:blade:severing-intent",
+				"martial:blade:formless-blade",
+				"martial:blade:void-cut",
+				"martial:blade:one-blade-one-world"
+			]
+		},
+		{
+			"mapEntryId": "blade.overhead-cut",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:overhead-chop",
+				"martial:blade:half-sword",
+				"martial:blade:heaven-s-fall"
+			]
+		},
+		{
+			"mapEntryId": "blade.sweeping-cut",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:horizontal-slash",
+				"martial:blade:crescent-sweep",
+				"martial:blade:wind-slash",
+				"martial:blade:rising-moon",
+				"martial:blade:ten-thousand-leaves"
+			]
+		},
+		{
+			"mapEntryId": "blade.guard-flow",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:cross-guard",
+				"martial:blade:binding-cut",
+				"martial:blade:counter-flow",
+				"martial:blade:still-water-stance",
+				"martial:blade:mirrored-edge"
+			]
+		},
+		{
+			"mapEntryId": "blade.draw-cut",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:quick-draw",
+				"martial:blade:drawing-cut"
+			]
+		},
+		{
+			"mapEntryId": "blade.thrust",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:piercing-thrust"
+			]
+		},
+		{
+			"mapEntryId": "blade.feinting-cut",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:feinting-cut"
+			]
+		},
+		{
+			"mapEntryId": "blade.sword-dance",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:whirl-step",
+				"martial:blade:blade-dance",
+				"martial:blade:thousand-cuts"
+			]
+		},
+		{
+			"mapEntryId": "blade.dagger-strike",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:knifework",
+				"martial:blade:quick-stab",
+				"martial:blade:slash-across",
+				"martial:blade:opening",
+				"martial:blade:hamstring",
+				"martial:blade:vital-nick",
+				"martial:blade:bleeding-edge",
+				"martial:blade:arterial-strike",
+				"martial:blade:severed-thread"
+			]
+		},
+		{
+			"mapEntryId": "blade.concealed-kill",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:concealed-carry",
+				"martial:blade:silent-step",
+				"martial:blade:fleeting-step",
+				"martial:blade:ghost-step",
+				"martial:blade:shadow-sever",
+				"martial:blade:vanish",
+				"martial:blade:thousand-silent-deaths"
+			]
+		},
+		{
+			"mapEntryId": "blade.assassin-angle",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:low-guard",
+				"martial:blade:blind-spot",
+				"martial:blade:assassin-s-certainty"
+			]
+		},
+		{
+			"mapEntryId": "blade.cut-purse",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:cut-purse"
+			]
+		},
+		{
+			"mapEntryId": "blade.grit-throw",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:grit-throw"
+			]
+		},
+		{
+			"mapEntryId": "blade.throwing-arc",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:blade-throw",
+				"martial:blade:hundred-needles",
+				"martial:blade:ricochet",
+				"martial:blade:fan-throw",
+				"martial:blade:boomerang-arc",
+				"martial:blade:storm-of-steel",
+				"martial:blade:perfect-arc"
+			]
+		},
+		{
+			"mapEntryId": "blade.twin-dagger",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:twin-grip",
+				"martial:blade:twin-fangs",
+				"martial:blade:windmill",
+				"martial:blade:nightfall-flurry"
+			]
+		},
+		{
+			"mapEntryId": "blade.coated-edge",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:coated-blade"
+			]
+		},
+		{
+			"mapEntryId": "blade.heavy-cleave",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:great-blade",
+				"martial:blade:cleave",
+				"martial:blade:wide-arc",
+				"martial:blade:hewing-blow",
+				"martial:blade:mountain-cleaver",
+				"martial:blade:world-ender"
+			]
+		},
+		{
+			"mapEntryId": "blade.heavy-break",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:guard-break",
+				"martial:blade:pommel-strike",
+				"martial:blade:bulwark-swing"
+			]
+		},
+		{
+			"mapEntryId": "blade.heavy-momentum",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:shoulder-set",
+				"martial:blade:weight-shift",
+				"martial:blade:momentum",
+				"martial:blade:unstoppable"
+			]
+		},
+		{
+			"mapEntryId": "blade.ground-impact",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:ground-slam",
+				"martial:blade:earthbreaker"
+			]
+		},
+		{
+			"mapEntryId": "blade.execution-drop",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:executioner-s-drop"
+			]
+		},
+		{
+			"mapEntryId": "blade.dual-offense",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:two-blades",
+				"martial:blade:alternating-strike",
+				"martial:blade:scissor-cut",
+				"martial:blade:severing-cross"
+			]
+		},
+		{
+			"mapEntryId": "blade.dual-guard",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:cross-block",
+				"martial:blade:rolling-guard",
+				"martial:blade:double-parry"
+			]
+		},
+		{
+			"mapEntryId": "blade.dual-flow",
+			"domain": "Martial",
+			"family": "Blade",
+			"memberTargetIds": [
+				"martial:blade:mirror-grip",
+				"martial:blade:dance-of-two",
+				"martial:blade:whirlwind",
+				"martial:blade:storm-of-blades",
+				"martial:blade:perfect-symmetry",
+				"martial:blade:two-blades-one-mind",
+				"martial:blade:twin-souls"
+			]
+		},
+		{
+			"mapEntryId": "polearm.piercing-line",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:polearm-handling",
+				"martial:polearm:straight-thrust",
+				"martial:polearm:piercing-line",
+				"martial:polearm:serpent-s-tongue",
+				"martial:polearm:heaven-piercer",
+				"martial:polearm:thousand-li-thrust"
+			]
+		},
+		{
+			"mapEntryId": "polearm.butt-strike",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:butt-strike"
+			]
+		},
+		{
+			"mapEntryId": "polearm.held-line",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:bracing",
+				"martial:polearm:keep-away",
+				"martial:polearm:wall-of-points",
+				"martial:polearm:unbreakable-line",
+				"martial:polearm:the-line-that-holds"
+			]
+		},
+		{
+			"mapEntryId": "polearm.sweep-hook",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:sweep-low",
+				"martial:polearm:hook-and-pull",
+				"martial:polearm:dragon-tail",
+				"martial:polearm:coiling-dragon"
+			]
+		},
+		{
+			"mapEntryId": "polearm.reaping-blade",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:halberd-handling",
+				"martial:polearm:chop",
+				"martial:polearm:berserk-swing",
+				"martial:polearm:reaping-arc",
+				"martial:polearm:storm-of-iron",
+				"martial:polearm:red-harvest",
+				"martial:polearm:the-last-harvest"
+			]
+		},
+		{
+			"mapEntryId": "polearm.hook-grip",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:hook-shield",
+				"martial:polearm:split-grip",
+				"martial:polearm:executioner-s-grip"
+			]
+		},
+		{
+			"mapEntryId": "polearm.armour-rend",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:rend-armour",
+				"martial:polearm:bloodletting",
+				"martial:polearm:ruin"
+			]
+		},
+		{
+			"mapEntryId": "polearm.hammer-impact",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:polehammer-handling",
+				"martial:polearm:crush",
+				"martial:polearm:shatter",
+				"martial:polearm:concussive-blow",
+				"martial:polearm:anvil-strike",
+				"martial:polearm:bell-ringer",
+				"martial:polearm:unmaking",
+				"martial:polearm:silence-the-bell",
+				"martial:polearm:nothing-stands"
+			]
+		},
+		{
+			"mapEntryId": "polearm.seismic-weight",
+			"domain": "Martial",
+			"family": "Polearm",
+			"memberTargetIds": [
+				"martial:polearm:knee-breaker",
+				"martial:polearm:heavy-footing",
+				"martial:polearm:seismic-step",
+				"martial:polearm:tremor-field",
+				"martial:polearm:mountain-s-weight"
+			]
+		},
+		{
+			"mapEntryId": "ranged.precision-arrow",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:archery",
+				"martial:ranged:aimed-shot",
+				"martial:ranged:steady-stance",
+				"martial:ranged:heartseeker",
+				"martial:ranged:the-arrow-that-finds"
+			]
+		},
+		{
+			"mapEntryId": "ranged.arrow-volley",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:quick-loose",
+				"martial:ranged:multishot",
+				"martial:ranged:arcing-volley",
+				"martial:ranged:rain-of-arrows",
+				"martial:ranged:storm-of-a-thousand"
+			]
+		},
+		{
+			"mapEntryId": "ranged.power-piercing",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:power-draw",
+				"martial:ranged:pinning-shot",
+				"martial:ranged:piercing-shot",
+				"martial:ranged:sky-piercer",
+				"martial:ranged:world-s-edge-shot"
+			]
+		},
+		{
+			"mapEntryId": "ranged.arrow-craft",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:fletching",
+				"martial:ranged:split-arrow"
+			]
+		},
+		{
+			"mapEntryId": "ranged.hunters-mark",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:hunter-s-mark"
+			]
+		},
+		{
+			"mapEntryId": "ranged.crossbow-cycle",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:crossbow-handling",
+				"martial:ranged:bolt-shot",
+				"martial:ranged:reload-drill",
+				"martial:ranged:braced-shot"
+			]
+		},
+		{
+			"mapEntryId": "ranged.repeating-bolt",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:bolt-craft",
+				"martial:ranged:repeating-mechanism",
+				"martial:ranged:bolt-storm",
+				"martial:ranged:the-machine"
+			]
+		},
+		{
+			"mapEntryId": "ranged.siege-bolt",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:siege-bolt",
+				"martial:ranged:puncture",
+				"martial:ranged:ballista-form"
+			]
+		},
+		{
+			"mapEntryId": "ranged.trick-bolt",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:trick-bolt"
+			]
+		},
+		{
+			"mapEntryId": "ranged.sling",
+			"domain": "Martial",
+			"family": "Ranged",
+			"memberTargetIds": [
+				"martial:ranged:sling"
+			]
+		},
+		{
+			"mapEntryId": "shield.fortress",
+			"domain": "Martial",
+			"family": "Shield",
+			"memberTargetIds": [
+				"martial:shield:shield-use",
+				"martial:shield:raise-shield",
+				"martial:shield:brace",
+				"martial:shield:wall-stance",
+				"martial:shield:tower-form",
+				"martial:shield:unyielding",
+				"martial:shield:immovable",
+				"martial:shield:endure",
+				"martial:shield:the-last-wall"
+			]
+		},
+		{
+			"mapEntryId": "shield.impact",
+			"domain": "Martial",
+			"family": "Shield",
+			"memberTargetIds": [
+				"martial:shield:shield-bash",
+				"martial:shield:shield-push",
+				"martial:shield:shield-charge"
+			]
+		},
+		{
+			"mapEntryId": "shield.ally-cover",
+			"domain": "Martial",
+			"family": "Shield",
+			"memberTargetIds": [
+				"martial:shield:cover",
+				"martial:shield:interpose",
+				"martial:shield:aegis",
+				"martial:shield:phalanx",
+				"martial:shield:guardian-s-oath",
+				"martial:shield:aegis-eternal"
+			]
+		},
+		{
+			"mapEntryId": "shield.deflection",
+			"domain": "Martial",
+			"family": "Shield",
+			"memberTargetIds": [
+				"martial:shield:deflect",
+				"martial:shield:retaliation-ward"
+			]
+		},
+		{
+			"mapEntryId": "shield.throw",
+			"domain": "Martial",
+			"family": "Shield",
+			"memberTargetIds": [
+				"martial:shield:shield-throw"
+			]
+		},
+		{
+			"mapEntryId": "shield.attention",
+			"domain": "Martial",
+			"family": "Shield",
+			"memberTargetIds": [
+				"martial:shield:taunt",
+				"martial:shield:draw-attention"
+			]
+		},
+		{
+			"mapEntryId": "body.combat-foundation",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:footing",
+				"martial:body:grip",
+				"martial:body:basic-block",
+				"martial:body:recovery",
+				"martial:body:unbroken-guard",
+				"martial:body:martial-form"
+			]
+		},
+		{
+			"mapEntryId": "body.combat-reading",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:feint",
+				"martial:body:feint-chain",
+				"martial:body:combat-reading",
+				"martial:body:battle-instinct"
+			]
+		},
+		{
+			"mapEntryId": "body.parry-counter",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:parry",
+				"martial:body:riposte",
+				"martial:body:perfect-parry"
+			]
+		},
+		{
+			"mapEntryId": "body.sidestep",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:sidestep"
+			]
+		},
+		{
+			"mapEntryId": "body.disarm",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:disarm"
+			]
+		},
+		{
+			"mapEntryId": "body.called-shot",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:called-shot"
+			]
+		},
+		{
+			"mapEntryId": "body.second-wind",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:second-wind"
+			]
+		},
+		{
+			"mapEntryId": "body.striking-form",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:straight-punch",
+				"martial:body:low-kick",
+				"martial:body:elbow-and-knee",
+				"martial:body:combination",
+				"martial:body:rising-kick",
+				"martial:body:focused-strike",
+				"martial:body:hundred-hands",
+				"martial:body:one-inch",
+				"martial:body:storm-of-fists",
+				"martial:body:empty-force",
+				"martial:body:the-fist-that-ends"
+			]
+		},
+		{
+			"mapEntryId": "body.empty-defense",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:palm-block",
+				"martial:body:breathing-form",
+				"martial:body:iron-body",
+				"martial:body:flowing-redirect",
+				"martial:body:diamond-body",
+				"martial:body:formless-body"
+			]
+		},
+		{
+			"mapEntryId": "body.grappling-control",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:wrestling",
+				"martial:body:grab",
+				"martial:body:shove",
+				"martial:body:trip",
+				"martial:body:joint-lock",
+				"martial:body:throw",
+				"martial:body:ground-control",
+				"martial:body:chokehold",
+				"martial:body:suplex",
+				"martial:body:immovable-grip",
+				"martial:body:giant-toss",
+				"martial:body:bind-the-beast"
+			]
+		},
+		{
+			"mapEntryId": "body.ground-movement",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:footwork",
+				"martial:body:dash",
+				"martial:body:roll",
+				"martial:body:sure-step",
+				"martial:body:weave",
+				"martial:body:dive",
+				"martial:body:hundred-steps",
+				"martial:body:untouchable",
+				"martial:body:never-where-struck",
+				"martial:body:the-road-has-no-end"
+			]
+		},
+		{
+			"mapEntryId": "body.acrobatics",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:climb",
+				"martial:body:vault",
+				"martial:body:wall-run"
+			]
+		},
+		{
+			"mapEntryId": "body.impossible-movement",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:blink-step",
+				"martial:body:air-walk",
+				"martial:body:afterimage",
+				"martial:body:shadowless",
+				"martial:body:between-places"
+			]
+		},
+		{
+			"mapEntryId": "body.endurance",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:set-jaw",
+				"martial:body:undying"
+			]
+		},
+		{
+			"mapEntryId": "body.mounted-bond",
+			"domain": "Martial",
+			"family": "Body",
+			"memberTargetIds": [
+				"martial:body:riding",
+				"martial:body:pack-bond",
+				"martial:body:mounted-combat",
+				"martial:body:bonded-mount"
+			]
+		},
+		{
+			"mapEntryId": "elemental.fire-kindling",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:ember",
+				"magical:elemental:spark",
+				"magical:elemental:warmth",
+				"magical:elemental:ignite",
+				"magical:elemental:kindling"
+			]
+		},
+		{
+			"mapEntryId": "elemental.fire-projectile",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:fireball",
+				"magical:elemental:great-fireball",
+				"magical:elemental:charged-fireball",
+				"magical:elemental:meteor",
+				"magical:elemental:sunfall"
+			]
+		},
+		{
+			"mapEntryId": "elemental.fire-trail",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:cinder-trail",
+				"magical:elemental:flame-jet"
+			]
+		},
+		{
+			"mapEntryId": "elemental.fire-form",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:flame-shroud",
+				"magical:elemental:phoenix-form"
+			]
+		},
+		{
+			"mapEntryId": "elemental.fire-field",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:detonation",
+				"magical:elemental:firestorm",
+				"magical:elemental:ashfall",
+				"magical:elemental:sea-of-flame"
+			]
+		},
+		{
+			"mapEntryId": "elemental.water-projectile",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:draw-water",
+				"magical:elemental:water-bullet",
+				"magical:elemental:pressure-lance"
+			]
+		},
+		{
+			"mapEntryId": "elemental.water-cold",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:cold-touch",
+				"magical:elemental:deep-cold",
+				"magical:elemental:glacier",
+				"magical:elemental:frozen-world"
+			]
+		},
+		{
+			"mapEntryId": "elemental.water-flow",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:flow",
+				"magical:elemental:water-whip",
+				"magical:elemental:torrent",
+				"magical:elemental:maelstrom",
+				"magical:elemental:leviathan-s-coil"
+			]
+		},
+		{
+			"mapEntryId": "elemental.water-obscure",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:mist",
+				"magical:elemental:drowning-grasp"
+			]
+		},
+		{
+			"mapEntryId": "elemental.water-depth",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:tide-sense",
+				"magical:elemental:still-depths",
+				"magical:elemental:the-deep",
+				"magical:elemental:where-all-rivers-end"
+			]
+		},
+		{
+			"mapEntryId": "elemental.earth-shape",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:stoneshape",
+				"magical:elemental:stone-shard",
+				"magical:elemental:boulder-throw",
+				"magical:elemental:stone-sentinel"
+			]
+		},
+		{
+			"mapEntryId": "elemental.earth-form",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:harden",
+				"magical:elemental:stone-skin",
+				"magical:elemental:unshakeable",
+				"magical:elemental:earthen-form",
+				"magical:elemental:living-mountain"
+			]
+		},
+		{
+			"mapEntryId": "elemental.earth-weight",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:tremor",
+				"magical:elemental:crushing-weight",
+				"magical:elemental:the-weight-of-ages"
+			]
+		},
+		{
+			"mapEntryId": "elemental.earth-fracture",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:spike-field",
+				"magical:elemental:fissure",
+				"magical:elemental:avalanche",
+				"magical:elemental:bury-the-world"
+			]
+		},
+		{
+			"mapEntryId": "elemental.earth-rise",
+			"domain": "Magical",
+			"family": "Elemental",
+			"memberTargetIds": [
+				"magical:elemental:earthen-wall",
+				"magical:elemental:mountain-rise"
+			]
+		},
+		{
+			"mapEntryId": "ward.sealed-barrier",
+			"domain": "Magical",
+			"family": "Ward",
+			"memberTargetIds": [
+				"magical:ward:warding",
+				"magical:ward:shield-sigil",
+				"magical:ward:barrier",
+				"magical:ward:layered-ward",
+				"magical:ward:the-unbroken-circle",
+				"magical:ward:nothing-reaches"
+			]
+		},
+		{
+			"mapEntryId": "ward.cleansing-break",
+			"domain": "Magical",
+			"family": "Ward",
+			"memberTargetIds": [
+				"magical:ward:cleanse",
+				"magical:ward:dispel",
+				"magical:ward:unbinding",
+				"magical:ward:severance-ward"
+			]
+		},
+		{
+			"mapEntryId": "ward.elemental-guard",
+			"domain": "Magical",
+			"family": "Ward",
+			"memberTargetIds": [
+				"magical:ward:elemental-guard",
+				"magical:ward:absorption"
+			]
+		},
+		{
+			"mapEntryId": "ward.reflection",
+			"domain": "Magical",
+			"family": "Ward",
+			"memberTargetIds": [
+				"magical:ward:reflect",
+				"magical:ward:counter-sigil",
+				"magical:ward:mirror-ward"
+			]
+		},
+		{
+			"mapEntryId": "ward.protected-field",
+			"domain": "Magical",
+			"family": "Ward",
+			"memberTargetIds": [
+				"magical:ward:aegis-field",
+				"magical:ward:null-zone",
+				"magical:ward:sanctuary"
+			]
+		},
+		{
+			"mapEntryId": "enchantment.imbued-object",
+			"domain": "Magical",
+			"family": "Enchantment",
+			"memberTargetIds": [
+				"magical:enchantment:imbuing",
+				"magical:enchantment:weapon-oil",
+				"magical:enchantment:armour-imbuing",
+				"magical:enchantment:elemental-attunement"
+			]
+		},
+		{
+			"mapEntryId": "enchantment.blessing",
+			"domain": "Magical",
+			"family": "Enchantment",
+			"memberTargetIds": [
+				"magical:enchantment:minor-blessing",
+				"magical:enchantment:greater-blessing",
+				"magical:enchantment:group-blessing",
+				"magical:enchantment:battle-hymn",
+				"magical:enchantment:ascendance"
+			]
+		},
+		{
+			"mapEntryId": "enchantment.light",
+			"domain": "Magical",
+			"family": "Enchantment",
+			"memberTargetIds": [
+				"magical:enchantment:light"
+			]
+		},
+		{
+			"mapEntryId": "enchantment.bound-sigil",
+			"domain": "Magical",
+			"family": "Enchantment",
+			"memberTargetIds": [
+				"magical:enchantment:component-craft",
+				"magical:enchantment:sigil-binding",
+				"magical:enchantment:greater-sigil",
+				"magical:enchantment:soul-sigil",
+				"magical:enchantment:the-written-world"
+			]
+		},
+		{
+			"mapEntryId": "enchantment.power-weave",
+			"domain": "Magical",
+			"family": "Enchantment",
+			"memberTargetIds": [
+				"magical:enchantment:empowerment",
+				"magical:enchantment:sustained-weave",
+				"magical:enchantment:transference"
+			]
+		},
+		{
+			"mapEntryId": "restoration.wound-mending",
+			"domain": "Magical",
+			"family": "Restoration",
+			"memberTargetIds": [
+				"magical:restoration:mending",
+				"magical:restoration:close-wound",
+				"magical:restoration:field-care",
+				"magical:restoration:mass-mending",
+				"magical:restoration:great-renewal"
+			]
+		},
+		{
+			"mapEntryId": "restoration.vital-renewal",
+			"domain": "Magical",
+			"family": "Restoration",
+			"memberTargetIds": [
+				"magical:restoration:soothe",
+				"magical:restoration:regeneration",
+				"magical:restoration:shared-vigour",
+				"magical:restoration:sanctified-ground"
+			]
+		},
+		{
+			"mapEntryId": "restoration.purification",
+			"domain": "Magical",
+			"family": "Restoration",
+			"memberTargetIds": [
+				"magical:restoration:cure",
+				"magical:restoration:purity"
+			]
+		},
+		{
+			"mapEntryId": "restoration.return-life",
+			"domain": "Magical",
+			"family": "Restoration",
+			"memberTargetIds": [
+				"magical:restoration:restore-limb",
+				"magical:restoration:second-life",
+				"magical:restoration:return",
+				"magical:restoration:what-was-taken-back"
+			]
+		},
+		{
+			"mapEntryId": "restoration.life-thread",
+			"domain": "Magical",
+			"family": "Restoration",
+			"memberTargetIds": [
+				"magical:restoration:life-link",
+				"magical:restoration:the-unbroken-thread"
+			]
+		},
+		{
+			"mapEntryId": "mind.influence",
+			"domain": "Magical",
+			"family": "Mind",
+			"memberTargetIds": [
+				"magical:mind:presence",
+				"magical:mind:distract",
+				"magical:mind:suggestion",
+				"magical:mind:domination"
+			]
+		},
+		{
+			"mapEntryId": "mind.surface-sight",
+			"domain": "Magical",
+			"family": "Mind",
+			"memberTargetIds": [
+				"magical:mind:read-surface",
+				"magical:mind:shared-sight"
+			]
+		},
+		{
+			"mapEntryId": "mind.illusion",
+			"domain": "Magical",
+			"family": "Mind",
+			"memberTargetIds": [
+				"magical:mind:minor-illusion",
+				"magical:mind:veil",
+				"magical:mind:false-terrain",
+				"magical:mind:mass-illusion",
+				"magical:mind:nothing-was-ever-here"
+			]
+		},
+		{
+			"mapEntryId": "mind.fear-disruption",
+			"domain": "Magical",
+			"family": "Mind",
+			"memberTargetIds": [
+				"magical:mind:fear",
+				"magical:mind:confusion",
+				"magical:mind:the-long-silence"
+			]
+		},
+		{
+			"mapEntryId": "mind.self-fortress",
+			"domain": "Magical",
+			"family": "Mind",
+			"memberTargetIds": [
+				"magical:mind:mental-fortress",
+				"magical:mind:unmaking-of-the-self"
+			]
+		},
+		{
+			"mapEntryId": "mind.memory-edit",
+			"domain": "Magical",
+			"family": "Mind",
+			"memberTargetIds": [
+				"magical:mind:memory-edit"
+			]
+		},
+		{
+			"mapEntryId": "forging.smithing",
+			"domain": "Craft",
+			"family": "Forging",
+			"memberTargetIds": [
+				"craft:forging:ore-sense",
+				"craft:forging:simple-smithing",
+				"craft:forging:weaponsmithing",
+				"craft:forging:armoursmithing",
+				"craft:forging:godsmithing"
+			]
+		},
+		{
+			"mapEntryId": "forging.finishing",
+			"domain": "Craft",
+			"family": "Forging",
+			"memberTargetIds": [
+				"craft:forging:sharpening",
+				"craft:forging:fittings",
+				"craft:forging:weightless-craft"
+			]
+		},
+		{
+			"mapEntryId": "forging.metallurgy",
+			"domain": "Craft",
+			"family": "Forging",
+			"memberTargetIds": [
+				"craft:forging:fuel-craft",
+				"craft:forging:alloying",
+				"craft:forging:tempering",
+				"craft:forging:living-metal"
+			]
+		},
+		{
+			"mapEntryId": "forging.runic-mark",
+			"domain": "Craft",
+			"family": "Forging",
+			"memberTargetIds": [
+				"craft:forging:runic-foundation",
+				"craft:forging:master-s-mark",
+				"craft:forging:soul-forging"
+			]
+		},
+		{
+			"mapEntryId": "forging.monster-craft",
+			"domain": "Craft",
+			"family": "Forging",
+			"memberTargetIds": [
+				"craft:forging:monster-craft"
+			]
+		},
+		{
+			"mapEntryId": "alchemy.brewing",
+			"domain": "Craft",
+			"family": "Alchemy",
+			"memberTargetIds": [
+				"craft:alchemy:reagent-sense",
+				"craft:alchemy:simple-brewing",
+				"craft:alchemy:potion-brewing",
+				"craft:alchemy:elixir-craft",
+				"craft:alchemy:elixir-of-years"
+			]
+		},
+		{
+			"mapEntryId": "alchemy.refinement",
+			"domain": "Craft",
+			"family": "Alchemy",
+			"memberTargetIds": [
+				"craft:alchemy:preservation",
+				"craft:alchemy:extraction",
+				"craft:alchemy:concentration",
+				"craft:alchemy:transmutation",
+				"craft:alchemy:philosopher-s-work"
+			]
+		},
+		{
+			"mapEntryId": "alchemy.poison-remedy",
+			"domain": "Craft",
+			"family": "Alchemy",
+			"memberTargetIds": [
+				"craft:alchemy:poisoncraft",
+				"craft:alchemy:antidotes",
+				"craft:alchemy:deathcap",
+				"craft:alchemy:panacea"
+			]
+		},
+		{
+			"mapEntryId": "alchemy.volatile-delivery",
+			"domain": "Craft",
+			"family": "Alchemy",
+			"memberTargetIds": [
+				"craft:alchemy:volatiles",
+				"craft:alchemy:grenade-throw"
+			]
+		},
+		{
+			"mapEntryId": "cooking.shared-meal",
+			"domain": "Craft",
+			"family": "Cooking",
+			"memberTargetIds": [
+				"craft:cooking:cooking",
+				"craft:cooking:hearth-meal",
+				"craft:cooking:feast",
+				"craft:cooking:the-long-table"
+			]
+		},
+		{
+			"mapEntryId": "cooking.rations",
+			"domain": "Craft",
+			"family": "Cooking",
+			"memberTargetIds": [
+				"craft:cooking:field-rations",
+				"craft:cooking:preserving"
+			]
+		},
+		{
+			"mapEntryId": "cooking.monster-meat",
+			"domain": "Craft",
+			"family": "Cooking",
+			"memberTargetIds": [
+				"craft:cooking:butchery",
+				"craft:cooking:monster-cuisine",
+				"craft:cooking:banquet-of-the-five"
+			]
+		},
+		{
+			"mapEntryId": "cooking.nourishment",
+			"domain": "Craft",
+			"family": "Cooking",
+			"memberTargetIds": [
+				"craft:cooking:seasoning",
+				"craft:cooking:restorative-broth",
+				"craft:cooking:comfort"
+			]
+		},
+		{
+			"mapEntryId": "gathering.harvest",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:gathering",
+				"craft:gathering:careful-harvest",
+				"craft:gathering:nothing-wasted",
+				"craft:gathering:the-earth-provides"
+			]
+		},
+		{
+			"mapEntryId": "gathering.mining",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:mining",
+				"craft:gathering:prospecting",
+				"craft:gathering:deep-vein",
+				"craft:gathering:leyline-harvest"
+			]
+		},
+		{
+			"mapEntryId": "gathering.foraging",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:foraging",
+				"craft:gathering:cultivation"
+			]
+		},
+		{
+			"mapEntryId": "gathering.skinning",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:skinning",
+				"craft:gathering:perfect-cut"
+			]
+		},
+		{
+			"mapEntryId": "gathering.beast-bond",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:animal-handling",
+				"craft:gathering:taming",
+				"craft:gathering:greater-taming",
+				"craft:gathering:monarch-of-beasts"
+			]
+		},
+		{
+			"mapEntryId": "gathering.breeding",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:breeding"
+			]
+		},
+		{
+			"mapEntryId": "gathering.bulk-carry",
+			"domain": "Craft",
+			"family": "Gathering",
+			"memberTargetIds": [
+				"craft:gathering:bulk-carry"
+			]
+		},
+		{
+			"mapEntryId": "knowledge.script",
+			"domain": "Craft",
+			"family": "Knowledge",
+			"memberTargetIds": [
+				"craft:knowledge:literacy",
+				"craft:knowledge:languages",
+				"craft:knowledge:ancient-script",
+				"craft:knowledge:recovered-knowledge"
+			]
+		},
+		{
+			"mapEntryId": "knowledge.appraisal",
+			"domain": "Craft",
+			"family": "Knowledge",
+			"memberTargetIds": [
+				"craft:knowledge:identify",
+				"craft:knowledge:appraisal",
+				"craft:knowledge:read-the-body",
+				"craft:knowledge:deep-appraisal"
+			]
+		},
+		{
+			"mapEntryId": "knowledge.mapping",
+			"domain": "Craft",
+			"family": "Knowledge",
+			"memberTargetIds": [
+				"craft:knowledge:mapping",
+				"craft:knowledge:cartography"
+			]
+		},
+		{
+			"mapEntryId": "knowledge.research",
+			"domain": "Craft",
+			"family": "Knowledge",
+			"memberTargetIds": [
+				"craft:knowledge:research",
+				"craft:knowledge:the-archive"
+			]
+		}
+	],
+	"records": [
+		{
+			"targetId": "martial:blade:swordsmanship",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:measured-cut",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:swordsmanship"
+		},
+		{
+			"targetId": "martial:blade:overhead-chop",
+			"mapEntryId": "blade.overhead-cut",
+			"motifFamily": "blade.overhead-cut",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:horizontal-slash",
+			"mapEntryId": "blade.sweeping-cut",
+			"motifFamily": "blade.sweeping-cut",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:cross-guard",
+			"mapEntryId": "blade.guard-flow",
+			"motifFamily": "blade.guard-flow",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:quick-draw",
+			"mapEntryId": "blade.draw-cut",
+			"motifFamily": "blade.draw-cut",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:edge-care",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:measured-cut"
+		},
+		{
+			"targetId": "martial:blade:piercing-thrust",
+			"mapEntryId": "blade.thrust",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:feinting-cut",
+			"mapEntryId": "blade.feinting-cut",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:whirl-step",
+			"mapEntryId": "blade.sword-dance",
+			"motifFamily": "blade.sword-dance",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:edge-alignment",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:edge-care"
+		},
+		{
+			"targetId": "martial:blade:half-sword",
+			"mapEntryId": "blade.overhead-cut",
+			"motifFamily": "blade.overhead-cut",
+			"primaryVisualParent": "martial:blade:overhead-chop"
+		},
+		{
+			"targetId": "martial:blade:binding-cut",
+			"mapEntryId": "blade.guard-flow",
+			"motifFamily": "blade.guard-flow",
+			"primaryVisualParent": "martial:blade:cross-guard"
+		},
+		{
+			"targetId": "martial:blade:crescent-sweep",
+			"mapEntryId": "blade.sweeping-cut",
+			"motifFamily": "blade.sweeping-cut",
+			"primaryVisualParent": "martial:blade:horizontal-slash"
+		},
+		{
+			"targetId": "martial:blade:drawing-cut",
+			"mapEntryId": "blade.draw-cut",
+			"motifFamily": "blade.draw-cut",
+			"primaryVisualParent": "martial:blade:quick-draw"
+		},
+		{
+			"targetId": "martial:blade:blade-dance",
+			"mapEntryId": "blade.sword-dance",
+			"motifFamily": "blade.sword-dance",
+			"primaryVisualParent": "martial:blade:whirl-step"
+		},
+		{
+			"targetId": "martial:blade:wind-slash",
+			"mapEntryId": "blade.sweeping-cut",
+			"motifFamily": "blade.sweeping-cut",
+			"primaryVisualParent": "martial:blade:crescent-sweep"
+		},
+		{
+			"targetId": "martial:blade:counter-flow",
+			"mapEntryId": "blade.guard-flow",
+			"motifFamily": "blade.guard-flow",
+			"primaryVisualParent": "martial:blade:binding-cut"
+		},
+		{
+			"targetId": "martial:blade:rising-moon",
+			"mapEntryId": "blade.sweeping-cut",
+			"motifFamily": "blade.sweeping-cut",
+			"primaryVisualParent": "martial:blade:wind-slash"
+		},
+		{
+			"targetId": "martial:blade:thousand-cuts",
+			"mapEntryId": "blade.sword-dance",
+			"motifFamily": "blade.sword-dance",
+			"primaryVisualParent": "martial:blade:blade-dance"
+		},
+		{
+			"targetId": "martial:blade:still-water-stance",
+			"mapEntryId": "blade.guard-flow",
+			"motifFamily": "blade.guard-flow",
+			"primaryVisualParent": "martial:blade:counter-flow"
+		},
+		{
+			"targetId": "martial:blade:heaven-s-fall",
+			"mapEntryId": "blade.overhead-cut",
+			"motifFamily": "blade.overhead-cut",
+			"primaryVisualParent": "martial:blade:half-sword"
+		},
+		{
+			"targetId": "martial:blade:severing-intent",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:edge-alignment"
+		},
+		{
+			"targetId": "martial:blade:mirrored-edge",
+			"mapEntryId": "blade.guard-flow",
+			"motifFamily": "blade.guard-flow",
+			"primaryVisualParent": "martial:blade:still-water-stance"
+		},
+		{
+			"targetId": "martial:blade:formless-blade",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:severing-intent"
+		},
+		{
+			"targetId": "martial:blade:void-cut",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:formless-blade"
+		},
+		{
+			"targetId": "martial:blade:ten-thousand-leaves",
+			"mapEntryId": "blade.sweeping-cut",
+			"motifFamily": "blade.sweeping-cut",
+			"primaryVisualParent": "martial:blade:rising-moon"
+		},
+		{
+			"targetId": "martial:blade:one-blade-one-world",
+			"mapEntryId": "blade.precision-cut",
+			"motifFamily": "blade.precision-cut",
+			"primaryVisualParent": "martial:blade:void-cut"
+		},
+		{
+			"targetId": "martial:blade:knifework",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:quick-stab",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:knifework"
+		},
+		{
+			"targetId": "martial:blade:slash-across",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:quick-stab"
+		},
+		{
+			"targetId": "martial:blade:concealed-carry",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:low-guard",
+			"mapEntryId": "blade.assassin-angle",
+			"motifFamily": "blade.assassin-angle",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:cut-purse",
+			"mapEntryId": "blade.cut-purse",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:grit-throw",
+			"mapEntryId": "blade.grit-throw",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:blade-throw",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:opening",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:slash-across"
+		},
+		{
+			"targetId": "martial:blade:hamstring",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:opening"
+		},
+		{
+			"targetId": "martial:blade:silent-step",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": "martial:blade:concealed-carry"
+		},
+		{
+			"targetId": "martial:blade:twin-grip",
+			"mapEntryId": "blade.twin-dagger",
+			"motifFamily": "blade.twin-dagger",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:vital-nick",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:hamstring"
+		},
+		{
+			"targetId": "martial:blade:twin-fangs",
+			"mapEntryId": "blade.twin-dagger",
+			"motifFamily": "blade.twin-dagger",
+			"primaryVisualParent": "martial:blade:twin-grip"
+		},
+		{
+			"targetId": "martial:blade:bleeding-edge",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:vital-nick"
+		},
+		{
+			"targetId": "martial:blade:fleeting-step",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": "martial:blade:silent-step"
+		},
+		{
+			"targetId": "martial:blade:coated-blade",
+			"mapEntryId": "blade.coated-edge",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:blind-spot",
+			"mapEntryId": "blade.assassin-angle",
+			"motifFamily": "blade.assassin-angle",
+			"primaryVisualParent": "martial:blade:low-guard"
+		},
+		{
+			"targetId": "martial:blade:windmill",
+			"mapEntryId": "blade.twin-dagger",
+			"motifFamily": "blade.twin-dagger",
+			"primaryVisualParent": "martial:blade:twin-fangs"
+		},
+		{
+			"targetId": "martial:blade:hundred-needles",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": "martial:blade:blade-throw"
+		},
+		{
+			"targetId": "martial:blade:ghost-step",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": "martial:blade:fleeting-step"
+		},
+		{
+			"targetId": "martial:blade:arterial-strike",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:bleeding-edge"
+		},
+		{
+			"targetId": "martial:blade:shadow-sever",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": "martial:blade:ghost-step"
+		},
+		{
+			"targetId": "martial:blade:nightfall-flurry",
+			"mapEntryId": "blade.twin-dagger",
+			"motifFamily": "blade.twin-dagger",
+			"primaryVisualParent": "martial:blade:windmill"
+		},
+		{
+			"targetId": "martial:blade:vanish",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": "martial:blade:shadow-sever"
+		},
+		{
+			"targetId": "martial:blade:assassin-s-certainty",
+			"mapEntryId": "blade.assassin-angle",
+			"motifFamily": "blade.assassin-angle",
+			"primaryVisualParent": "martial:blade:blind-spot"
+		},
+		{
+			"targetId": "martial:blade:severed-thread",
+			"mapEntryId": "blade.dagger-strike",
+			"motifFamily": "blade.dagger-strike",
+			"primaryVisualParent": "martial:blade:arterial-strike"
+		},
+		{
+			"targetId": "martial:blade:thousand-silent-deaths",
+			"mapEntryId": "blade.concealed-kill",
+			"motifFamily": "blade.concealed-kill",
+			"primaryVisualParent": "martial:blade:vanish"
+		},
+		{
+			"targetId": "martial:blade:great-blade",
+			"mapEntryId": "blade.heavy-cleave",
+			"motifFamily": "blade.heavy-cleave",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:cleave",
+			"mapEntryId": "blade.heavy-cleave",
+			"motifFamily": "blade.heavy-cleave",
+			"primaryVisualParent": "martial:blade:great-blade"
+		},
+		{
+			"targetId": "martial:blade:guard-break",
+			"mapEntryId": "blade.heavy-break",
+			"motifFamily": "blade.heavy-break",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:shoulder-set",
+			"mapEntryId": "blade.heavy-momentum",
+			"motifFamily": "blade.heavy-momentum",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:pommel-strike",
+			"mapEntryId": "blade.heavy-break",
+			"motifFamily": "blade.heavy-break",
+			"primaryVisualParent": "martial:blade:guard-break"
+		},
+		{
+			"targetId": "martial:blade:wide-arc",
+			"mapEntryId": "blade.heavy-cleave",
+			"motifFamily": "blade.heavy-cleave",
+			"primaryVisualParent": "martial:blade:cleave"
+		},
+		{
+			"targetId": "martial:blade:weight-shift",
+			"mapEntryId": "blade.heavy-momentum",
+			"motifFamily": "blade.heavy-momentum",
+			"primaryVisualParent": "martial:blade:shoulder-set"
+		},
+		{
+			"targetId": "martial:blade:ground-slam",
+			"mapEntryId": "blade.ground-impact",
+			"motifFamily": "blade.ground-impact",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:hewing-blow",
+			"mapEntryId": "blade.heavy-cleave",
+			"motifFamily": "blade.heavy-cleave",
+			"primaryVisualParent": "martial:blade:wide-arc"
+		},
+		{
+			"targetId": "martial:blade:momentum",
+			"mapEntryId": "blade.heavy-momentum",
+			"motifFamily": "blade.heavy-momentum",
+			"primaryVisualParent": "martial:blade:weight-shift"
+		},
+		{
+			"targetId": "martial:blade:bulwark-swing",
+			"mapEntryId": "blade.heavy-break",
+			"motifFamily": "blade.heavy-break",
+			"primaryVisualParent": "martial:blade:pommel-strike"
+		},
+		{
+			"targetId": "martial:blade:executioner-s-drop",
+			"mapEntryId": "blade.execution-drop",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:earthbreaker",
+			"mapEntryId": "blade.ground-impact",
+			"motifFamily": "blade.ground-impact",
+			"primaryVisualParent": "martial:blade:ground-slam"
+		},
+		{
+			"targetId": "martial:blade:unstoppable",
+			"mapEntryId": "blade.heavy-momentum",
+			"motifFamily": "blade.heavy-momentum",
+			"primaryVisualParent": "martial:blade:momentum"
+		},
+		{
+			"targetId": "martial:blade:mountain-cleaver",
+			"mapEntryId": "blade.heavy-cleave",
+			"motifFamily": "blade.heavy-cleave",
+			"primaryVisualParent": "martial:blade:hewing-blow"
+		},
+		{
+			"targetId": "martial:blade:world-ender",
+			"mapEntryId": "blade.heavy-cleave",
+			"motifFamily": "blade.heavy-cleave",
+			"primaryVisualParent": "martial:blade:mountain-cleaver"
+		},
+		{
+			"targetId": "martial:blade:two-blades",
+			"mapEntryId": "blade.dual-offense",
+			"motifFamily": "blade.dual-offense",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:alternating-strike",
+			"mapEntryId": "blade.dual-offense",
+			"motifFamily": "blade.dual-offense",
+			"primaryVisualParent": "martial:blade:two-blades"
+		},
+		{
+			"targetId": "martial:blade:cross-block",
+			"mapEntryId": "blade.dual-guard",
+			"motifFamily": "blade.dual-guard",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:mirror-grip",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:blade:scissor-cut",
+			"mapEntryId": "blade.dual-offense",
+			"motifFamily": "blade.dual-offense",
+			"primaryVisualParent": "martial:blade:alternating-strike"
+		},
+		{
+			"targetId": "martial:blade:rolling-guard",
+			"mapEntryId": "blade.dual-guard",
+			"motifFamily": "blade.dual-guard",
+			"primaryVisualParent": "martial:blade:cross-block"
+		},
+		{
+			"targetId": "martial:blade:dance-of-two",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": "martial:blade:mirror-grip"
+		},
+		{
+			"targetId": "martial:blade:whirlwind",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": "martial:blade:dance-of-two"
+		},
+		{
+			"targetId": "martial:blade:double-parry",
+			"mapEntryId": "blade.dual-guard",
+			"motifFamily": "blade.dual-guard",
+			"primaryVisualParent": "martial:blade:rolling-guard"
+		},
+		{
+			"targetId": "martial:blade:storm-of-blades",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": "martial:blade:whirlwind"
+		},
+		{
+			"targetId": "martial:blade:twin-souls",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": "martial:blade:two-blades-one-mind"
+		},
+		{
+			"targetId": "martial:blade:perfect-symmetry",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": "martial:blade:storm-of-blades"
+		},
+		{
+			"targetId": "martial:blade:severing-cross",
+			"mapEntryId": "blade.dual-offense",
+			"motifFamily": "blade.dual-offense",
+			"primaryVisualParent": "martial:blade:scissor-cut"
+		},
+		{
+			"targetId": "martial:blade:two-blades-one-mind",
+			"mapEntryId": "blade.dual-flow",
+			"motifFamily": "blade.dual-flow",
+			"primaryVisualParent": "martial:blade:perfect-symmetry"
+		},
+		{
+			"targetId": "martial:blade:ricochet",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": "martial:blade:hundred-needles"
+		},
+		{
+			"targetId": "martial:blade:fan-throw",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": "martial:blade:ricochet"
+		},
+		{
+			"targetId": "martial:blade:boomerang-arc",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": "martial:blade:fan-throw"
+		},
+		{
+			"targetId": "martial:blade:storm-of-steel",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": "martial:blade:boomerang-arc"
+		},
+		{
+			"targetId": "martial:blade:perfect-arc",
+			"mapEntryId": "blade.throwing-arc",
+			"motifFamily": "blade.throwing-arc",
+			"primaryVisualParent": "martial:blade:storm-of-steel"
+		},
+		{
+			"targetId": "martial:polearm:polearm-handling",
+			"mapEntryId": "polearm.piercing-line",
+			"motifFamily": "polearm.piercing-line",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:straight-thrust",
+			"mapEntryId": "polearm.piercing-line",
+			"motifFamily": "polearm.piercing-line",
+			"primaryVisualParent": "martial:polearm:polearm-handling"
+		},
+		{
+			"targetId": "martial:polearm:butt-strike",
+			"mapEntryId": "polearm.butt-strike",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:bracing",
+			"mapEntryId": "polearm.held-line",
+			"motifFamily": "polearm.held-line",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:sweep-low",
+			"mapEntryId": "polearm.sweep-hook",
+			"motifFamily": "polearm.sweep-hook",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:keep-away",
+			"mapEntryId": "polearm.held-line",
+			"motifFamily": "polearm.held-line",
+			"primaryVisualParent": "martial:polearm:bracing"
+		},
+		{
+			"targetId": "martial:polearm:piercing-line",
+			"mapEntryId": "polearm.piercing-line",
+			"motifFamily": "polearm.piercing-line",
+			"primaryVisualParent": "martial:polearm:straight-thrust"
+		},
+		{
+			"targetId": "martial:polearm:hook-and-pull",
+			"mapEntryId": "polearm.sweep-hook",
+			"motifFamily": "polearm.sweep-hook",
+			"primaryVisualParent": "martial:polearm:sweep-low"
+		},
+		{
+			"targetId": "martial:polearm:wall-of-points",
+			"mapEntryId": "polearm.held-line",
+			"motifFamily": "polearm.held-line",
+			"primaryVisualParent": "martial:polearm:keep-away"
+		},
+		{
+			"targetId": "martial:polearm:serpent-s-tongue",
+			"mapEntryId": "polearm.piercing-line",
+			"motifFamily": "polearm.piercing-line",
+			"primaryVisualParent": "martial:polearm:piercing-line"
+		},
+		{
+			"targetId": "martial:polearm:dragon-tail",
+			"mapEntryId": "polearm.sweep-hook",
+			"motifFamily": "polearm.sweep-hook",
+			"primaryVisualParent": "martial:polearm:hook-and-pull"
+		},
+		{
+			"targetId": "martial:polearm:unbreakable-line",
+			"mapEntryId": "polearm.held-line",
+			"motifFamily": "polearm.held-line",
+			"primaryVisualParent": "martial:polearm:wall-of-points"
+		},
+		{
+			"targetId": "martial:polearm:heaven-piercer",
+			"mapEntryId": "polearm.piercing-line",
+			"motifFamily": "polearm.piercing-line",
+			"primaryVisualParent": "martial:polearm:serpent-s-tongue"
+		},
+		{
+			"targetId": "martial:polearm:coiling-dragon",
+			"mapEntryId": "polearm.sweep-hook",
+			"motifFamily": "polearm.sweep-hook",
+			"primaryVisualParent": "martial:polearm:dragon-tail"
+		},
+		{
+			"targetId": "martial:polearm:thousand-li-thrust",
+			"mapEntryId": "polearm.piercing-line",
+			"motifFamily": "polearm.piercing-line",
+			"primaryVisualParent": "martial:polearm:heaven-piercer"
+		},
+		{
+			"targetId": "martial:polearm:the-line-that-holds",
+			"mapEntryId": "polearm.held-line",
+			"motifFamily": "polearm.held-line",
+			"primaryVisualParent": "martial:polearm:unbreakable-line"
+		},
+		{
+			"targetId": "martial:polearm:halberd-handling",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:chop",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": "martial:polearm:halberd-handling"
+		},
+		{
+			"targetId": "martial:polearm:hook-shield",
+			"mapEntryId": "polearm.hook-grip",
+			"motifFamily": "polearm.hook-grip",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:split-grip",
+			"mapEntryId": "polearm.hook-grip",
+			"motifFamily": "polearm.hook-grip",
+			"primaryVisualParent": "martial:polearm:hook-shield"
+		},
+		{
+			"targetId": "martial:polearm:rend-armour",
+			"mapEntryId": "polearm.armour-rend",
+			"motifFamily": "polearm.armour-rend",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:berserk-swing",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": "martial:polearm:chop"
+		},
+		{
+			"targetId": "martial:polearm:reaping-arc",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": "martial:polearm:berserk-swing"
+		},
+		{
+			"targetId": "martial:polearm:bloodletting",
+			"mapEntryId": "polearm.armour-rend",
+			"motifFamily": "polearm.armour-rend",
+			"primaryVisualParent": "martial:polearm:rend-armour"
+		},
+		{
+			"targetId": "martial:polearm:executioner-s-grip",
+			"mapEntryId": "polearm.hook-grip",
+			"motifFamily": "polearm.hook-grip",
+			"primaryVisualParent": "martial:polearm:split-grip"
+		},
+		{
+			"targetId": "martial:polearm:storm-of-iron",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": "martial:polearm:reaping-arc"
+		},
+		{
+			"targetId": "martial:polearm:red-harvest",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": "martial:polearm:storm-of-iron"
+		},
+		{
+			"targetId": "martial:polearm:ruin",
+			"mapEntryId": "polearm.armour-rend",
+			"motifFamily": "polearm.armour-rend",
+			"primaryVisualParent": "martial:polearm:bloodletting"
+		},
+		{
+			"targetId": "martial:polearm:the-last-harvest",
+			"mapEntryId": "polearm.reaping-blade",
+			"motifFamily": "polearm.reaping-blade",
+			"primaryVisualParent": "martial:polearm:red-harvest"
+		},
+		{
+			"targetId": "martial:polearm:polehammer-handling",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:crush",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:polehammer-handling"
+		},
+		{
+			"targetId": "martial:polearm:knee-breaker",
+			"mapEntryId": "polearm.seismic-weight",
+			"motifFamily": "polearm.seismic-weight",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:polearm:heavy-footing",
+			"mapEntryId": "polearm.seismic-weight",
+			"motifFamily": "polearm.seismic-weight",
+			"primaryVisualParent": "martial:polearm:knee-breaker"
+		},
+		{
+			"targetId": "martial:polearm:shatter",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:crush"
+		},
+		{
+			"targetId": "martial:polearm:concussive-blow",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:shatter"
+		},
+		{
+			"targetId": "martial:polearm:seismic-step",
+			"mapEntryId": "polearm.seismic-weight",
+			"motifFamily": "polearm.seismic-weight",
+			"primaryVisualParent": "martial:polearm:heavy-footing"
+		},
+		{
+			"targetId": "martial:polearm:anvil-strike",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:concussive-blow"
+		},
+		{
+			"targetId": "martial:polearm:bell-ringer",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:anvil-strike"
+		},
+		{
+			"targetId": "martial:polearm:unmaking",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:bell-ringer"
+		},
+		{
+			"targetId": "martial:polearm:tremor-field",
+			"mapEntryId": "polearm.seismic-weight",
+			"motifFamily": "polearm.seismic-weight",
+			"primaryVisualParent": "martial:polearm:seismic-step"
+		},
+		{
+			"targetId": "martial:polearm:mountain-s-weight",
+			"mapEntryId": "polearm.seismic-weight",
+			"motifFamily": "polearm.seismic-weight",
+			"primaryVisualParent": "martial:polearm:tremor-field"
+		},
+		{
+			"targetId": "martial:polearm:silence-the-bell",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:unmaking"
+		},
+		{
+			"targetId": "martial:polearm:nothing-stands",
+			"mapEntryId": "polearm.hammer-impact",
+			"motifFamily": "polearm.hammer-impact",
+			"primaryVisualParent": "martial:polearm:silence-the-bell"
+		},
+		{
+			"targetId": "martial:ranged:archery",
+			"mapEntryId": "ranged.precision-arrow",
+			"motifFamily": "ranged.precision-arrow",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:aimed-shot",
+			"mapEntryId": "ranged.precision-arrow",
+			"motifFamily": "ranged.precision-arrow",
+			"primaryVisualParent": "martial:ranged:archery"
+		},
+		{
+			"targetId": "martial:ranged:quick-loose",
+			"mapEntryId": "ranged.arrow-volley",
+			"motifFamily": "ranged.arrow-volley",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:steady-stance",
+			"mapEntryId": "ranged.precision-arrow",
+			"motifFamily": "ranged.precision-arrow",
+			"primaryVisualParent": "martial:ranged:aimed-shot"
+		},
+		{
+			"targetId": "martial:ranged:fletching",
+			"mapEntryId": "ranged.arrow-craft",
+			"motifFamily": "ranged.arrow-craft",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:power-draw",
+			"mapEntryId": "ranged.power-piercing",
+			"motifFamily": "ranged.power-piercing",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:pinning-shot",
+			"mapEntryId": "ranged.power-piercing",
+			"motifFamily": "ranged.power-piercing",
+			"primaryVisualParent": "martial:ranged:power-draw"
+		},
+		{
+			"targetId": "martial:ranged:arcing-volley",
+			"mapEntryId": "ranged.arrow-volley",
+			"motifFamily": "ranged.arrow-volley",
+			"primaryVisualParent": "martial:ranged:multishot"
+		},
+		{
+			"targetId": "martial:ranged:multishot",
+			"mapEntryId": "ranged.arrow-volley",
+			"motifFamily": "ranged.arrow-volley",
+			"primaryVisualParent": "martial:ranged:quick-loose"
+		},
+		{
+			"targetId": "martial:ranged:piercing-shot",
+			"mapEntryId": "ranged.power-piercing",
+			"motifFamily": "ranged.power-piercing",
+			"primaryVisualParent": "martial:ranged:pinning-shot"
+		},
+		{
+			"targetId": "martial:ranged:hunter-s-mark",
+			"mapEntryId": "ranged.hunters-mark",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:rain-of-arrows",
+			"mapEntryId": "ranged.arrow-volley",
+			"motifFamily": "ranged.arrow-volley",
+			"primaryVisualParent": "martial:ranged:arcing-volley"
+		},
+		{
+			"targetId": "martial:ranged:heartseeker",
+			"mapEntryId": "ranged.precision-arrow",
+			"motifFamily": "ranged.precision-arrow",
+			"primaryVisualParent": "martial:ranged:steady-stance"
+		},
+		{
+			"targetId": "martial:ranged:split-arrow",
+			"mapEntryId": "ranged.arrow-craft",
+			"motifFamily": "ranged.arrow-craft",
+			"primaryVisualParent": "martial:ranged:fletching"
+		},
+		{
+			"targetId": "martial:ranged:sky-piercer",
+			"mapEntryId": "ranged.power-piercing",
+			"motifFamily": "ranged.power-piercing",
+			"primaryVisualParent": "martial:ranged:piercing-shot"
+		},
+		{
+			"targetId": "martial:ranged:storm-of-a-thousand",
+			"mapEntryId": "ranged.arrow-volley",
+			"motifFamily": "ranged.arrow-volley",
+			"primaryVisualParent": "martial:ranged:rain-of-arrows"
+		},
+		{
+			"targetId": "martial:ranged:the-arrow-that-finds",
+			"mapEntryId": "ranged.precision-arrow",
+			"motifFamily": "ranged.precision-arrow",
+			"primaryVisualParent": "martial:ranged:heartseeker"
+		},
+		{
+			"targetId": "martial:ranged:world-s-edge-shot",
+			"mapEntryId": "ranged.power-piercing",
+			"motifFamily": "ranged.power-piercing",
+			"primaryVisualParent": "martial:ranged:sky-piercer"
+		},
+		{
+			"targetId": "martial:ranged:crossbow-handling",
+			"mapEntryId": "ranged.crossbow-cycle",
+			"motifFamily": "ranged.crossbow-cycle",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:bolt-shot",
+			"mapEntryId": "ranged.crossbow-cycle",
+			"motifFamily": "ranged.crossbow-cycle",
+			"primaryVisualParent": "martial:ranged:crossbow-handling"
+		},
+		{
+			"targetId": "martial:ranged:reload-drill",
+			"mapEntryId": "ranged.crossbow-cycle",
+			"motifFamily": "ranged.crossbow-cycle",
+			"primaryVisualParent": "martial:ranged:bolt-shot"
+		},
+		{
+			"targetId": "martial:ranged:bolt-craft",
+			"mapEntryId": "ranged.repeating-bolt",
+			"motifFamily": "ranged.repeating-bolt",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:braced-shot",
+			"mapEntryId": "ranged.crossbow-cycle",
+			"motifFamily": "ranged.crossbow-cycle",
+			"primaryVisualParent": "martial:ranged:reload-drill"
+		},
+		{
+			"targetId": "martial:ranged:repeating-mechanism",
+			"mapEntryId": "ranged.repeating-bolt",
+			"motifFamily": "ranged.repeating-bolt",
+			"primaryVisualParent": "martial:ranged:bolt-craft"
+		},
+		{
+			"targetId": "martial:ranged:bolt-storm",
+			"mapEntryId": "ranged.repeating-bolt",
+			"motifFamily": "ranged.repeating-bolt",
+			"primaryVisualParent": "martial:ranged:repeating-mechanism"
+		},
+		{
+			"targetId": "martial:ranged:siege-bolt",
+			"mapEntryId": "ranged.siege-bolt",
+			"motifFamily": "ranged.siege-bolt",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:trick-bolt",
+			"mapEntryId": "ranged.trick-bolt",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:ranged:ballista-form",
+			"mapEntryId": "ranged.siege-bolt",
+			"motifFamily": "ranged.siege-bolt",
+			"primaryVisualParent": "martial:ranged:puncture"
+		},
+		{
+			"targetId": "martial:ranged:puncture",
+			"mapEntryId": "ranged.siege-bolt",
+			"motifFamily": "ranged.siege-bolt",
+			"primaryVisualParent": "martial:ranged:siege-bolt"
+		},
+		{
+			"targetId": "martial:ranged:the-machine",
+			"mapEntryId": "ranged.repeating-bolt",
+			"motifFamily": "ranged.repeating-bolt",
+			"primaryVisualParent": "martial:ranged:bolt-storm"
+		},
+		{
+			"targetId": "martial:ranged:sling",
+			"mapEntryId": "ranged.sling",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:shield-use",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:raise-shield",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:shield-use"
+		},
+		{
+			"targetId": "martial:shield:shield-bash",
+			"mapEntryId": "shield.impact",
+			"motifFamily": "shield.impact",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:brace",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:raise-shield"
+		},
+		{
+			"targetId": "martial:shield:cover",
+			"mapEntryId": "shield.ally-cover",
+			"motifFamily": "shield.ally-cover",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:shield-push",
+			"mapEntryId": "shield.impact",
+			"motifFamily": "shield.impact",
+			"primaryVisualParent": "martial:shield:shield-bash"
+		},
+		{
+			"targetId": "martial:shield:deflect",
+			"mapEntryId": "shield.deflection",
+			"motifFamily": "shield.deflection",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:interpose",
+			"mapEntryId": "shield.ally-cover",
+			"motifFamily": "shield.ally-cover",
+			"primaryVisualParent": "martial:shield:cover"
+		},
+		{
+			"targetId": "martial:shield:shield-throw",
+			"mapEntryId": "shield.throw",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:wall-stance",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:brace"
+		},
+		{
+			"targetId": "martial:shield:shield-charge",
+			"mapEntryId": "shield.impact",
+			"motifFamily": "shield.impact",
+			"primaryVisualParent": "martial:shield:shield-push"
+		},
+		{
+			"targetId": "martial:shield:aegis",
+			"mapEntryId": "shield.ally-cover",
+			"motifFamily": "shield.ally-cover",
+			"primaryVisualParent": "martial:shield:interpose"
+		},
+		{
+			"targetId": "martial:shield:tower-form",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:wall-stance"
+		},
+		{
+			"targetId": "martial:shield:unyielding",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:tower-form"
+		},
+		{
+			"targetId": "martial:shield:retaliation-ward",
+			"mapEntryId": "shield.deflection",
+			"motifFamily": "shield.deflection",
+			"primaryVisualParent": "martial:shield:deflect"
+		},
+		{
+			"targetId": "martial:shield:phalanx",
+			"mapEntryId": "shield.ally-cover",
+			"motifFamily": "shield.ally-cover",
+			"primaryVisualParent": "martial:shield:aegis"
+		},
+		{
+			"targetId": "martial:shield:immovable",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:unyielding"
+		},
+		{
+			"targetId": "martial:shield:guardian-s-oath",
+			"mapEntryId": "shield.ally-cover",
+			"motifFamily": "shield.ally-cover",
+			"primaryVisualParent": "martial:shield:phalanx"
+		},
+		{
+			"targetId": "martial:shield:aegis-eternal",
+			"mapEntryId": "shield.ally-cover",
+			"motifFamily": "shield.ally-cover",
+			"primaryVisualParent": "martial:shield:guardian-s-oath"
+		},
+		{
+			"targetId": "martial:shield:the-last-wall",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:endure"
+		},
+		{
+			"targetId": "martial:shield:taunt",
+			"mapEntryId": "shield.attention",
+			"motifFamily": "shield.attention",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:shield:endure",
+			"mapEntryId": "shield.fortress",
+			"motifFamily": "shield.fortress",
+			"primaryVisualParent": "martial:shield:immovable"
+		},
+		{
+			"targetId": "martial:shield:draw-attention",
+			"mapEntryId": "shield.attention",
+			"motifFamily": "shield.attention",
+			"primaryVisualParent": "martial:shield:taunt"
+		},
+		{
+			"targetId": "martial:body:footing",
+			"mapEntryId": "body.combat-foundation",
+			"motifFamily": "body.combat-foundation",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:grip",
+			"mapEntryId": "body.combat-foundation",
+			"motifFamily": "body.combat-foundation",
+			"primaryVisualParent": "martial:body:footing"
+		},
+		{
+			"targetId": "martial:body:basic-block",
+			"mapEntryId": "body.combat-foundation",
+			"motifFamily": "body.combat-foundation",
+			"primaryVisualParent": "martial:body:grip"
+		},
+		{
+			"targetId": "martial:body:recovery",
+			"mapEntryId": "body.combat-foundation",
+			"motifFamily": "body.combat-foundation",
+			"primaryVisualParent": "martial:body:basic-block"
+		},
+		{
+			"targetId": "martial:body:feint",
+			"mapEntryId": "body.combat-reading",
+			"motifFamily": "body.combat-reading",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:sidestep",
+			"mapEntryId": "body.sidestep",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:parry",
+			"mapEntryId": "body.parry-counter",
+			"motifFamily": "body.parry-counter",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:disarm",
+			"mapEntryId": "body.disarm",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:called-shot",
+			"mapEntryId": "body.called-shot",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:riposte",
+			"mapEntryId": "body.parry-counter",
+			"motifFamily": "body.parry-counter",
+			"primaryVisualParent": "martial:body:parry"
+		},
+		{
+			"targetId": "martial:body:second-wind",
+			"mapEntryId": "body.second-wind",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:feint-chain",
+			"mapEntryId": "body.combat-reading",
+			"motifFamily": "body.combat-reading",
+			"primaryVisualParent": "martial:body:feint"
+		},
+		{
+			"targetId": "martial:body:combat-reading",
+			"mapEntryId": "body.combat-reading",
+			"motifFamily": "body.combat-reading",
+			"primaryVisualParent": "martial:body:feint-chain"
+		},
+		{
+			"targetId": "martial:body:unbroken-guard",
+			"mapEntryId": "body.combat-foundation",
+			"motifFamily": "body.combat-foundation",
+			"primaryVisualParent": "martial:body:recovery"
+		},
+		{
+			"targetId": "martial:body:perfect-parry",
+			"mapEntryId": "body.parry-counter",
+			"motifFamily": "body.parry-counter",
+			"primaryVisualParent": "martial:body:riposte"
+		},
+		{
+			"targetId": "martial:body:battle-instinct",
+			"mapEntryId": "body.combat-reading",
+			"motifFamily": "body.combat-reading",
+			"primaryVisualParent": "martial:body:combat-reading"
+		},
+		{
+			"targetId": "martial:body:martial-form",
+			"mapEntryId": "body.combat-foundation",
+			"motifFamily": "body.combat-foundation",
+			"primaryVisualParent": "martial:body:unbroken-guard"
+		},
+		{
+			"targetId": "martial:body:straight-punch",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:low-kick",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:straight-punch"
+		},
+		{
+			"targetId": "martial:body:palm-block",
+			"mapEntryId": "body.empty-defense",
+			"motifFamily": "body.empty-defense",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:breathing-form",
+			"mapEntryId": "body.empty-defense",
+			"motifFamily": "body.empty-defense",
+			"primaryVisualParent": "martial:body:palm-block"
+		},
+		{
+			"targetId": "martial:body:elbow-and-knee",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:low-kick"
+		},
+		{
+			"targetId": "martial:body:combination",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:elbow-and-knee"
+		},
+		{
+			"targetId": "martial:body:iron-body",
+			"mapEntryId": "body.empty-defense",
+			"motifFamily": "body.empty-defense",
+			"primaryVisualParent": "martial:body:breathing-form"
+		},
+		{
+			"targetId": "martial:body:rising-kick",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:combination"
+		},
+		{
+			"targetId": "martial:body:flowing-redirect",
+			"mapEntryId": "body.empty-defense",
+			"motifFamily": "body.empty-defense",
+			"primaryVisualParent": "martial:body:iron-body"
+		},
+		{
+			"targetId": "martial:body:focused-strike",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:rising-kick"
+		},
+		{
+			"targetId": "martial:body:hundred-hands",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:focused-strike"
+		},
+		{
+			"targetId": "martial:body:diamond-body",
+			"mapEntryId": "body.empty-defense",
+			"motifFamily": "body.empty-defense",
+			"primaryVisualParent": "martial:body:flowing-redirect"
+		},
+		{
+			"targetId": "martial:body:one-inch",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:hundred-hands"
+		},
+		{
+			"targetId": "martial:body:storm-of-fists",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:one-inch"
+		},
+		{
+			"targetId": "martial:body:empty-force",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:storm-of-fists"
+		},
+		{
+			"targetId": "martial:body:formless-body",
+			"mapEntryId": "body.empty-defense",
+			"motifFamily": "body.empty-defense",
+			"primaryVisualParent": "martial:body:diamond-body"
+		},
+		{
+			"targetId": "martial:body:the-fist-that-ends",
+			"mapEntryId": "body.striking-form",
+			"motifFamily": "body.striking-form",
+			"primaryVisualParent": "martial:body:empty-force"
+		},
+		{
+			"targetId": "martial:body:wrestling",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:grab",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:wrestling"
+		},
+		{
+			"targetId": "martial:body:shove",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:grab"
+		},
+		{
+			"targetId": "martial:body:trip",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:shove"
+		},
+		{
+			"targetId": "martial:body:joint-lock",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:trip"
+		},
+		{
+			"targetId": "martial:body:throw",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:joint-lock"
+		},
+		{
+			"targetId": "martial:body:ground-control",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:throw"
+		},
+		{
+			"targetId": "martial:body:chokehold",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:ground-control"
+		},
+		{
+			"targetId": "martial:body:suplex",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:chokehold"
+		},
+		{
+			"targetId": "martial:body:immovable-grip",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:suplex"
+		},
+		{
+			"targetId": "martial:body:giant-toss",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:immovable-grip"
+		},
+		{
+			"targetId": "martial:body:bind-the-beast",
+			"mapEntryId": "body.grappling-control",
+			"motifFamily": "body.grappling-control",
+			"primaryVisualParent": "martial:body:giant-toss"
+		},
+		{
+			"targetId": "martial:body:footwork",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:dash",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:footwork"
+		},
+		{
+			"targetId": "martial:body:roll",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:dash"
+		},
+		{
+			"targetId": "martial:body:climb",
+			"mapEntryId": "body.acrobatics",
+			"motifFamily": "body.acrobatics",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:sure-step",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:roll"
+		},
+		{
+			"targetId": "martial:body:vault",
+			"mapEntryId": "body.acrobatics",
+			"motifFamily": "body.acrobatics",
+			"primaryVisualParent": "martial:body:climb"
+		},
+		{
+			"targetId": "martial:body:wall-run",
+			"mapEntryId": "body.acrobatics",
+			"motifFamily": "body.acrobatics",
+			"primaryVisualParent": "martial:body:vault"
+		},
+		{
+			"targetId": "martial:body:weave",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:sure-step"
+		},
+		{
+			"targetId": "martial:body:dive",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:weave"
+		},
+		{
+			"targetId": "martial:body:blink-step",
+			"mapEntryId": "body.impossible-movement",
+			"motifFamily": "body.impossible-movement",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:air-walk",
+			"mapEntryId": "body.impossible-movement",
+			"motifFamily": "body.impossible-movement",
+			"primaryVisualParent": "martial:body:blink-step"
+		},
+		{
+			"targetId": "martial:body:afterimage",
+			"mapEntryId": "body.impossible-movement",
+			"motifFamily": "body.impossible-movement",
+			"primaryVisualParent": "martial:body:air-walk"
+		},
+		{
+			"targetId": "martial:body:shadowless",
+			"mapEntryId": "body.impossible-movement",
+			"motifFamily": "body.impossible-movement",
+			"primaryVisualParent": "martial:body:afterimage"
+		},
+		{
+			"targetId": "martial:body:hundred-steps",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:dive"
+		},
+		{
+			"targetId": "martial:body:untouchable",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:hundred-steps"
+		},
+		{
+			"targetId": "martial:body:between-places",
+			"mapEntryId": "body.impossible-movement",
+			"motifFamily": "body.impossible-movement",
+			"primaryVisualParent": "martial:body:shadowless"
+		},
+		{
+			"targetId": "martial:body:never-where-struck",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:untouchable"
+		},
+		{
+			"targetId": "martial:body:the-road-has-no-end",
+			"mapEntryId": "body.ground-movement",
+			"motifFamily": "body.ground-movement",
+			"primaryVisualParent": "martial:body:never-where-struck"
+		},
+		{
+			"targetId": "martial:body:set-jaw",
+			"mapEntryId": "body.endurance",
+			"motifFamily": "body.endurance",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:undying",
+			"mapEntryId": "body.endurance",
+			"motifFamily": "body.endurance",
+			"primaryVisualParent": "martial:body:set-jaw"
+		},
+		{
+			"targetId": "martial:body:riding",
+			"mapEntryId": "body.mounted-bond",
+			"motifFamily": "body.mounted-bond",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "martial:body:pack-bond",
+			"mapEntryId": "body.mounted-bond",
+			"motifFamily": "body.mounted-bond",
+			"primaryVisualParent": "martial:body:riding"
+		},
+		{
+			"targetId": "martial:body:mounted-combat",
+			"mapEntryId": "body.mounted-bond",
+			"motifFamily": "body.mounted-bond",
+			"primaryVisualParent": "martial:body:pack-bond"
+		},
+		{
+			"targetId": "martial:body:bonded-mount",
+			"mapEntryId": "body.mounted-bond",
+			"motifFamily": "body.mounted-bond",
+			"primaryVisualParent": "martial:body:mounted-combat"
+		},
+		{
+			"targetId": "magical:elemental:ember",
+			"mapEntryId": "elemental.fire-kindling",
+			"motifFamily": "elemental.fire-kindling",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:spark",
+			"mapEntryId": "elemental.fire-kindling",
+			"motifFamily": "elemental.fire-kindling",
+			"primaryVisualParent": "magical:elemental:ember"
+		},
+		{
+			"targetId": "magical:elemental:warmth",
+			"mapEntryId": "elemental.fire-kindling",
+			"motifFamily": "elemental.fire-kindling",
+			"primaryVisualParent": "magical:elemental:spark"
+		},
+		{
+			"targetId": "magical:elemental:ignite",
+			"mapEntryId": "elemental.fire-kindling",
+			"motifFamily": "elemental.fire-kindling",
+			"primaryVisualParent": "magical:elemental:warmth"
+		},
+		{
+			"targetId": "magical:elemental:fireball",
+			"mapEntryId": "elemental.fire-projectile",
+			"motifFamily": "elemental.fire-projectile",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:cinder-trail",
+			"mapEntryId": "elemental.fire-trail",
+			"motifFamily": "elemental.fire-trail",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:flame-shroud",
+			"mapEntryId": "elemental.fire-form",
+			"motifFamily": "elemental.fire-form",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:great-fireball",
+			"mapEntryId": "elemental.fire-projectile",
+			"motifFamily": "elemental.fire-projectile",
+			"primaryVisualParent": "magical:elemental:fireball"
+		},
+		{
+			"targetId": "magical:elemental:flame-jet",
+			"mapEntryId": "elemental.fire-trail",
+			"motifFamily": "elemental.fire-trail",
+			"primaryVisualParent": "magical:elemental:cinder-trail"
+		},
+		{
+			"targetId": "magical:elemental:detonation",
+			"mapEntryId": "elemental.fire-field",
+			"motifFamily": "elemental.fire-field",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:kindling",
+			"mapEntryId": "elemental.fire-kindling",
+			"motifFamily": "elemental.fire-kindling",
+			"primaryVisualParent": "magical:elemental:ignite"
+		},
+		{
+			"targetId": "magical:elemental:firestorm",
+			"mapEntryId": "elemental.fire-field",
+			"motifFamily": "elemental.fire-field",
+			"primaryVisualParent": "magical:elemental:detonation"
+		},
+		{
+			"targetId": "magical:elemental:charged-fireball",
+			"mapEntryId": "elemental.fire-projectile",
+			"motifFamily": "elemental.fire-projectile",
+			"primaryVisualParent": "magical:elemental:great-fireball"
+		},
+		{
+			"targetId": "magical:elemental:ashfall",
+			"mapEntryId": "elemental.fire-field",
+			"motifFamily": "elemental.fire-field",
+			"primaryVisualParent": "magical:elemental:firestorm"
+		},
+		{
+			"targetId": "magical:elemental:meteor",
+			"mapEntryId": "elemental.fire-projectile",
+			"motifFamily": "elemental.fire-projectile",
+			"primaryVisualParent": "magical:elemental:charged-fireball"
+		},
+		{
+			"targetId": "magical:elemental:phoenix-form",
+			"mapEntryId": "elemental.fire-form",
+			"motifFamily": "elemental.fire-form",
+			"primaryVisualParent": "magical:elemental:flame-shroud"
+		},
+		{
+			"targetId": "magical:elemental:sea-of-flame",
+			"mapEntryId": "elemental.fire-field",
+			"motifFamily": "elemental.fire-field",
+			"primaryVisualParent": "magical:elemental:ashfall"
+		},
+		{
+			"targetId": "magical:elemental:sunfall",
+			"mapEntryId": "elemental.fire-projectile",
+			"motifFamily": "elemental.fire-projectile",
+			"primaryVisualParent": "magical:elemental:meteor"
+		},
+		{
+			"targetId": "magical:elemental:draw-water",
+			"mapEntryId": "elemental.water-projectile",
+			"motifFamily": "elemental.water-projectile",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:water-bullet",
+			"mapEntryId": "elemental.water-projectile",
+			"motifFamily": "elemental.water-projectile",
+			"primaryVisualParent": "magical:elemental:draw-water"
+		},
+		{
+			"targetId": "magical:elemental:cold-touch",
+			"mapEntryId": "elemental.water-cold",
+			"motifFamily": "elemental.water-cold",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:flow",
+			"mapEntryId": "elemental.water-flow",
+			"motifFamily": "elemental.water-flow",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:pressure-lance",
+			"mapEntryId": "elemental.water-projectile",
+			"motifFamily": "elemental.water-projectile",
+			"primaryVisualParent": "magical:elemental:water-bullet"
+		},
+		{
+			"targetId": "magical:elemental:mist",
+			"mapEntryId": "elemental.water-obscure",
+			"motifFamily": "elemental.water-obscure",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:water-whip",
+			"mapEntryId": "elemental.water-flow",
+			"motifFamily": "elemental.water-flow",
+			"primaryVisualParent": "magical:elemental:flow"
+		},
+		{
+			"targetId": "magical:elemental:torrent",
+			"mapEntryId": "elemental.water-flow",
+			"motifFamily": "elemental.water-flow",
+			"primaryVisualParent": "magical:elemental:water-whip"
+		},
+		{
+			"targetId": "magical:elemental:drowning-grasp",
+			"mapEntryId": "elemental.water-obscure",
+			"motifFamily": "elemental.water-obscure",
+			"primaryVisualParent": "magical:elemental:mist"
+		},
+		{
+			"targetId": "magical:elemental:deep-cold",
+			"mapEntryId": "elemental.water-cold",
+			"motifFamily": "elemental.water-cold",
+			"primaryVisualParent": "magical:elemental:cold-touch"
+		},
+		{
+			"targetId": "magical:elemental:tide-sense",
+			"mapEntryId": "elemental.water-depth",
+			"motifFamily": "elemental.water-depth",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:maelstrom",
+			"mapEntryId": "elemental.water-flow",
+			"motifFamily": "elemental.water-flow",
+			"primaryVisualParent": "magical:elemental:torrent"
+		},
+		{
+			"targetId": "magical:elemental:glacier",
+			"mapEntryId": "elemental.water-cold",
+			"motifFamily": "elemental.water-cold",
+			"primaryVisualParent": "magical:elemental:deep-cold"
+		},
+		{
+			"targetId": "magical:elemental:still-depths",
+			"mapEntryId": "elemental.water-depth",
+			"motifFamily": "elemental.water-depth",
+			"primaryVisualParent": "magical:elemental:tide-sense"
+		},
+		{
+			"targetId": "magical:elemental:leviathan-s-coil",
+			"mapEntryId": "elemental.water-flow",
+			"motifFamily": "elemental.water-flow",
+			"primaryVisualParent": "magical:elemental:maelstrom"
+		},
+		{
+			"targetId": "magical:elemental:frozen-world",
+			"mapEntryId": "elemental.water-cold",
+			"motifFamily": "elemental.water-cold",
+			"primaryVisualParent": "magical:elemental:glacier"
+		},
+		{
+			"targetId": "magical:elemental:the-deep",
+			"mapEntryId": "elemental.water-depth",
+			"motifFamily": "elemental.water-depth",
+			"primaryVisualParent": "magical:elemental:still-depths"
+		},
+		{
+			"targetId": "magical:elemental:where-all-rivers-end",
+			"mapEntryId": "elemental.water-depth",
+			"motifFamily": "elemental.water-depth",
+			"primaryVisualParent": "magical:elemental:the-deep"
+		},
+		{
+			"targetId": "magical:elemental:stoneshape",
+			"mapEntryId": "elemental.earth-shape",
+			"motifFamily": "elemental.earth-shape",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:stone-shard",
+			"mapEntryId": "elemental.earth-shape",
+			"motifFamily": "elemental.earth-shape",
+			"primaryVisualParent": "magical:elemental:stoneshape"
+		},
+		{
+			"targetId": "magical:elemental:harden",
+			"mapEntryId": "elemental.earth-form",
+			"motifFamily": "elemental.earth-form",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:tremor",
+			"mapEntryId": "elemental.earth-weight",
+			"motifFamily": "elemental.earth-weight",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:stone-skin",
+			"mapEntryId": "elemental.earth-form",
+			"motifFamily": "elemental.earth-form",
+			"primaryVisualParent": "magical:elemental:harden"
+		},
+		{
+			"targetId": "magical:elemental:spike-field",
+			"mapEntryId": "elemental.earth-fracture",
+			"motifFamily": "elemental.earth-fracture",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:earthen-wall",
+			"mapEntryId": "elemental.earth-rise",
+			"motifFamily": "elemental.earth-rise",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:elemental:crushing-weight",
+			"mapEntryId": "elemental.earth-weight",
+			"motifFamily": "elemental.earth-weight",
+			"primaryVisualParent": "magical:elemental:tremor"
+		},
+		{
+			"targetId": "magical:elemental:boulder-throw",
+			"mapEntryId": "elemental.earth-shape",
+			"motifFamily": "elemental.earth-shape",
+			"primaryVisualParent": "magical:elemental:stone-shard"
+		},
+		{
+			"targetId": "magical:elemental:fissure",
+			"mapEntryId": "elemental.earth-fracture",
+			"motifFamily": "elemental.earth-fracture",
+			"primaryVisualParent": "magical:elemental:spike-field"
+		},
+		{
+			"targetId": "magical:elemental:unshakeable",
+			"mapEntryId": "elemental.earth-form",
+			"motifFamily": "elemental.earth-form",
+			"primaryVisualParent": "magical:elemental:stone-skin"
+		},
+		{
+			"targetId": "magical:elemental:mountain-rise",
+			"mapEntryId": "elemental.earth-rise",
+			"motifFamily": "elemental.earth-rise",
+			"primaryVisualParent": "magical:elemental:earthen-wall"
+		},
+		{
+			"targetId": "magical:elemental:stone-sentinel",
+			"mapEntryId": "elemental.earth-shape",
+			"motifFamily": "elemental.earth-shape",
+			"primaryVisualParent": "magical:elemental:boulder-throw"
+		},
+		{
+			"targetId": "magical:elemental:earthen-form",
+			"mapEntryId": "elemental.earth-form",
+			"motifFamily": "elemental.earth-form",
+			"primaryVisualParent": "magical:elemental:unshakeable"
+		},
+		{
+			"targetId": "magical:elemental:avalanche",
+			"mapEntryId": "elemental.earth-fracture",
+			"motifFamily": "elemental.earth-fracture",
+			"primaryVisualParent": "magical:elemental:fissure"
+		},
+		{
+			"targetId": "magical:elemental:the-weight-of-ages",
+			"mapEntryId": "elemental.earth-weight",
+			"motifFamily": "elemental.earth-weight",
+			"primaryVisualParent": "magical:elemental:crushing-weight"
+		},
+		{
+			"targetId": "magical:elemental:living-mountain",
+			"mapEntryId": "elemental.earth-form",
+			"motifFamily": "elemental.earth-form",
+			"primaryVisualParent": "magical:elemental:earthen-form"
+		},
+		{
+			"targetId": "magical:elemental:bury-the-world",
+			"mapEntryId": "elemental.earth-fracture",
+			"motifFamily": "elemental.earth-fracture",
+			"primaryVisualParent": "magical:elemental:avalanche"
+		},
+		{
+			"targetId": "magical:ward:warding",
+			"mapEntryId": "ward.sealed-barrier",
+			"motifFamily": "ward.sealed-barrier",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:ward:shield-sigil",
+			"mapEntryId": "ward.sealed-barrier",
+			"motifFamily": "ward.sealed-barrier",
+			"primaryVisualParent": "magical:ward:warding"
+		},
+		{
+			"targetId": "magical:ward:cleanse",
+			"mapEntryId": "ward.cleansing-break",
+			"motifFamily": "ward.cleansing-break",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:ward:elemental-guard",
+			"mapEntryId": "ward.elemental-guard",
+			"motifFamily": "ward.elemental-guard",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:ward:barrier",
+			"mapEntryId": "ward.sealed-barrier",
+			"motifFamily": "ward.sealed-barrier",
+			"primaryVisualParent": "magical:ward:shield-sigil"
+		},
+		{
+			"targetId": "magical:ward:reflect",
+			"mapEntryId": "ward.reflection",
+			"motifFamily": "ward.reflection",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:ward:dispel",
+			"mapEntryId": "ward.cleansing-break",
+			"motifFamily": "ward.cleansing-break",
+			"primaryVisualParent": "magical:ward:cleanse"
+		},
+		{
+			"targetId": "magical:ward:counter-sigil",
+			"mapEntryId": "ward.reflection",
+			"motifFamily": "ward.reflection",
+			"primaryVisualParent": "magical:ward:reflect"
+		},
+		{
+			"targetId": "magical:ward:aegis-field",
+			"mapEntryId": "ward.protected-field",
+			"motifFamily": "ward.protected-field",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:ward:null-zone",
+			"mapEntryId": "ward.protected-field",
+			"motifFamily": "ward.protected-field",
+			"primaryVisualParent": "magical:ward:aegis-field"
+		},
+		{
+			"targetId": "magical:ward:layered-ward",
+			"mapEntryId": "ward.sealed-barrier",
+			"motifFamily": "ward.sealed-barrier",
+			"primaryVisualParent": "magical:ward:barrier"
+		},
+		{
+			"targetId": "magical:ward:absorption",
+			"mapEntryId": "ward.elemental-guard",
+			"motifFamily": "ward.elemental-guard",
+			"primaryVisualParent": "magical:ward:elemental-guard"
+		},
+		{
+			"targetId": "magical:ward:sanctuary",
+			"mapEntryId": "ward.protected-field",
+			"motifFamily": "ward.protected-field",
+			"primaryVisualParent": "magical:ward:null-zone"
+		},
+		{
+			"targetId": "magical:ward:unbinding",
+			"mapEntryId": "ward.cleansing-break",
+			"motifFamily": "ward.cleansing-break",
+			"primaryVisualParent": "magical:ward:dispel"
+		},
+		{
+			"targetId": "magical:ward:mirror-ward",
+			"mapEntryId": "ward.reflection",
+			"motifFamily": "ward.reflection",
+			"primaryVisualParent": "magical:ward:counter-sigil"
+		},
+		{
+			"targetId": "magical:ward:the-unbroken-circle",
+			"mapEntryId": "ward.sealed-barrier",
+			"motifFamily": "ward.sealed-barrier",
+			"primaryVisualParent": "magical:ward:layered-ward"
+		},
+		{
+			"targetId": "magical:ward:severance-ward",
+			"mapEntryId": "ward.cleansing-break",
+			"motifFamily": "ward.cleansing-break",
+			"primaryVisualParent": "magical:ward:unbinding"
+		},
+		{
+			"targetId": "magical:ward:nothing-reaches",
+			"mapEntryId": "ward.sealed-barrier",
+			"motifFamily": "ward.sealed-barrier",
+			"primaryVisualParent": "magical:ward:the-unbroken-circle"
+		},
+		{
+			"targetId": "magical:enchantment:imbuing",
+			"mapEntryId": "enchantment.imbued-object",
+			"motifFamily": "enchantment.imbued-object",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:enchantment:minor-blessing",
+			"mapEntryId": "enchantment.blessing",
+			"motifFamily": "enchantment.blessing",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:enchantment:weapon-oil",
+			"mapEntryId": "enchantment.imbued-object",
+			"motifFamily": "enchantment.imbued-object",
+			"primaryVisualParent": "magical:enchantment:imbuing"
+		},
+		{
+			"targetId": "magical:enchantment:light",
+			"mapEntryId": "enchantment.light",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:enchantment:greater-blessing",
+			"mapEntryId": "enchantment.blessing",
+			"motifFamily": "enchantment.blessing",
+			"primaryVisualParent": "magical:enchantment:minor-blessing"
+		},
+		{
+			"targetId": "magical:enchantment:group-blessing",
+			"mapEntryId": "enchantment.blessing",
+			"motifFamily": "enchantment.blessing",
+			"primaryVisualParent": "magical:enchantment:greater-blessing"
+		},
+		{
+			"targetId": "magical:enchantment:armour-imbuing",
+			"mapEntryId": "enchantment.imbued-object",
+			"motifFamily": "enchantment.imbued-object",
+			"primaryVisualParent": "magical:enchantment:weapon-oil"
+		},
+		{
+			"targetId": "magical:enchantment:component-craft",
+			"mapEntryId": "enchantment.bound-sigil",
+			"motifFamily": "enchantment.bound-sigil",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:enchantment:sigil-binding",
+			"mapEntryId": "enchantment.bound-sigil",
+			"motifFamily": "enchantment.bound-sigil",
+			"primaryVisualParent": "magical:enchantment:component-craft"
+		},
+		{
+			"targetId": "magical:enchantment:empowerment",
+			"mapEntryId": "enchantment.power-weave",
+			"motifFamily": "enchantment.power-weave",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:enchantment:sustained-weave",
+			"mapEntryId": "enchantment.power-weave",
+			"motifFamily": "enchantment.power-weave",
+			"primaryVisualParent": "magical:enchantment:empowerment"
+		},
+		{
+			"targetId": "magical:enchantment:elemental-attunement",
+			"mapEntryId": "enchantment.imbued-object",
+			"motifFamily": "enchantment.imbued-object",
+			"primaryVisualParent": "magical:enchantment:armour-imbuing"
+		},
+		{
+			"targetId": "magical:enchantment:greater-sigil",
+			"mapEntryId": "enchantment.bound-sigil",
+			"motifFamily": "enchantment.bound-sigil",
+			"primaryVisualParent": "magical:enchantment:sigil-binding"
+		},
+		{
+			"targetId": "magical:enchantment:battle-hymn",
+			"mapEntryId": "enchantment.blessing",
+			"motifFamily": "enchantment.blessing",
+			"primaryVisualParent": "magical:enchantment:group-blessing"
+		},
+		{
+			"targetId": "magical:enchantment:transference",
+			"mapEntryId": "enchantment.power-weave",
+			"motifFamily": "enchantment.power-weave",
+			"primaryVisualParent": "magical:enchantment:sustained-weave"
+		},
+		{
+			"targetId": "magical:enchantment:soul-sigil",
+			"mapEntryId": "enchantment.bound-sigil",
+			"motifFamily": "enchantment.bound-sigil",
+			"primaryVisualParent": "magical:enchantment:greater-sigil"
+		},
+		{
+			"targetId": "magical:enchantment:ascendance",
+			"mapEntryId": "enchantment.blessing",
+			"motifFamily": "enchantment.blessing",
+			"primaryVisualParent": "magical:enchantment:battle-hymn"
+		},
+		{
+			"targetId": "magical:enchantment:the-written-world",
+			"mapEntryId": "enchantment.bound-sigil",
+			"motifFamily": "enchantment.bound-sigil",
+			"primaryVisualParent": "magical:enchantment:soul-sigil"
+		},
+		{
+			"targetId": "magical:restoration:mending",
+			"mapEntryId": "restoration.wound-mending",
+			"motifFamily": "restoration.wound-mending",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:restoration:close-wound",
+			"mapEntryId": "restoration.wound-mending",
+			"motifFamily": "restoration.wound-mending",
+			"primaryVisualParent": "magical:restoration:mending"
+		},
+		{
+			"targetId": "magical:restoration:soothe",
+			"mapEntryId": "restoration.vital-renewal",
+			"motifFamily": "restoration.vital-renewal",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:restoration:field-care",
+			"mapEntryId": "restoration.wound-mending",
+			"motifFamily": "restoration.wound-mending",
+			"primaryVisualParent": "magical:restoration:close-wound"
+		},
+		{
+			"targetId": "magical:restoration:regeneration",
+			"mapEntryId": "restoration.vital-renewal",
+			"motifFamily": "restoration.vital-renewal",
+			"primaryVisualParent": "magical:restoration:soothe"
+		},
+		{
+			"targetId": "magical:restoration:cure",
+			"mapEntryId": "restoration.purification",
+			"motifFamily": "restoration.purification",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:restoration:shared-vigour",
+			"mapEntryId": "restoration.vital-renewal",
+			"motifFamily": "restoration.vital-renewal",
+			"primaryVisualParent": "magical:restoration:regeneration"
+		},
+		{
+			"targetId": "magical:restoration:mass-mending",
+			"mapEntryId": "restoration.wound-mending",
+			"motifFamily": "restoration.wound-mending",
+			"primaryVisualParent": "magical:restoration:field-care"
+		},
+		{
+			"targetId": "magical:restoration:restore-limb",
+			"mapEntryId": "restoration.return-life",
+			"motifFamily": "restoration.return-life",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:restoration:life-link",
+			"mapEntryId": "restoration.life-thread",
+			"motifFamily": "restoration.life-thread",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:restoration:sanctified-ground",
+			"mapEntryId": "restoration.vital-renewal",
+			"motifFamily": "restoration.vital-renewal",
+			"primaryVisualParent": "magical:restoration:shared-vigour"
+		},
+		{
+			"targetId": "magical:restoration:second-life",
+			"mapEntryId": "restoration.return-life",
+			"motifFamily": "restoration.return-life",
+			"primaryVisualParent": "magical:restoration:restore-limb"
+		},
+		{
+			"targetId": "magical:restoration:purity",
+			"mapEntryId": "restoration.purification",
+			"motifFamily": "restoration.purification",
+			"primaryVisualParent": "magical:restoration:cure"
+		},
+		{
+			"targetId": "magical:restoration:great-renewal",
+			"mapEntryId": "restoration.wound-mending",
+			"motifFamily": "restoration.wound-mending",
+			"primaryVisualParent": "magical:restoration:mass-mending"
+		},
+		{
+			"targetId": "magical:restoration:return",
+			"mapEntryId": "restoration.return-life",
+			"motifFamily": "restoration.return-life",
+			"primaryVisualParent": "magical:restoration:second-life"
+		},
+		{
+			"targetId": "magical:restoration:the-unbroken-thread",
+			"mapEntryId": "restoration.life-thread",
+			"motifFamily": "restoration.life-thread",
+			"primaryVisualParent": "magical:restoration:life-link"
+		},
+		{
+			"targetId": "magical:restoration:what-was-taken-back",
+			"mapEntryId": "restoration.return-life",
+			"motifFamily": "restoration.return-life",
+			"primaryVisualParent": "magical:restoration:return"
+		},
+		{
+			"targetId": "magical:mind:presence",
+			"mapEntryId": "mind.influence",
+			"motifFamily": "mind.influence",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:mind:distract",
+			"mapEntryId": "mind.influence",
+			"motifFamily": "mind.influence",
+			"primaryVisualParent": "magical:mind:presence"
+		},
+		{
+			"targetId": "magical:mind:read-surface",
+			"mapEntryId": "mind.surface-sight",
+			"motifFamily": "mind.surface-sight",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:mind:minor-illusion",
+			"mapEntryId": "mind.illusion",
+			"motifFamily": "mind.illusion",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:mind:fear",
+			"mapEntryId": "mind.fear-disruption",
+			"motifFamily": "mind.fear-disruption",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:mind:veil",
+			"mapEntryId": "mind.illusion",
+			"motifFamily": "mind.illusion",
+			"primaryVisualParent": "magical:mind:minor-illusion"
+		},
+		{
+			"targetId": "magical:mind:confusion",
+			"mapEntryId": "mind.fear-disruption",
+			"motifFamily": "mind.fear-disruption",
+			"primaryVisualParent": "magical:mind:fear"
+		},
+		{
+			"targetId": "magical:mind:false-terrain",
+			"mapEntryId": "mind.illusion",
+			"motifFamily": "mind.illusion",
+			"primaryVisualParent": "magical:mind:veil"
+		},
+		{
+			"targetId": "magical:mind:suggestion",
+			"mapEntryId": "mind.influence",
+			"motifFamily": "mind.influence",
+			"primaryVisualParent": "magical:mind:distract"
+		},
+		{
+			"targetId": "magical:mind:mental-fortress",
+			"mapEntryId": "mind.self-fortress",
+			"motifFamily": "mind.self-fortress",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:mind:domination",
+			"mapEntryId": "mind.influence",
+			"motifFamily": "mind.influence",
+			"primaryVisualParent": "magical:mind:suggestion"
+		},
+		{
+			"targetId": "magical:mind:mass-illusion",
+			"mapEntryId": "mind.illusion",
+			"motifFamily": "mind.illusion",
+			"primaryVisualParent": "magical:mind:false-terrain"
+		},
+		{
+			"targetId": "magical:mind:memory-edit",
+			"mapEntryId": "mind.memory-edit",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "magical:mind:the-long-silence",
+			"mapEntryId": "mind.fear-disruption",
+			"motifFamily": "mind.fear-disruption",
+			"primaryVisualParent": "magical:mind:confusion"
+		},
+		{
+			"targetId": "magical:mind:shared-sight",
+			"mapEntryId": "mind.surface-sight",
+			"motifFamily": "mind.surface-sight",
+			"primaryVisualParent": "magical:mind:read-surface"
+		},
+		{
+			"targetId": "magical:mind:unmaking-of-the-self",
+			"mapEntryId": "mind.self-fortress",
+			"motifFamily": "mind.self-fortress",
+			"primaryVisualParent": "magical:mind:mental-fortress"
+		},
+		{
+			"targetId": "magical:mind:nothing-was-ever-here",
+			"mapEntryId": "mind.illusion",
+			"motifFamily": "mind.illusion",
+			"primaryVisualParent": "magical:mind:mass-illusion"
+		},
+		{
+			"targetId": "craft:forging:ore-sense",
+			"mapEntryId": "forging.smithing",
+			"motifFamily": "forging.smithing",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:forging:simple-smithing",
+			"mapEntryId": "forging.smithing",
+			"motifFamily": "forging.smithing",
+			"primaryVisualParent": "craft:forging:ore-sense"
+		},
+		{
+			"targetId": "craft:forging:sharpening",
+			"mapEntryId": "forging.finishing",
+			"motifFamily": "forging.finishing",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:forging:fittings",
+			"mapEntryId": "forging.finishing",
+			"motifFamily": "forging.finishing",
+			"primaryVisualParent": "craft:forging:sharpening"
+		},
+		{
+			"targetId": "craft:forging:weaponsmithing",
+			"mapEntryId": "forging.smithing",
+			"motifFamily": "forging.smithing",
+			"primaryVisualParent": "craft:forging:simple-smithing"
+		},
+		{
+			"targetId": "craft:forging:armoursmithing",
+			"mapEntryId": "forging.smithing",
+			"motifFamily": "forging.smithing",
+			"primaryVisualParent": "craft:forging:weaponsmithing"
+		},
+		{
+			"targetId": "craft:forging:fuel-craft",
+			"mapEntryId": "forging.metallurgy",
+			"motifFamily": "forging.metallurgy",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:forging:alloying",
+			"mapEntryId": "forging.metallurgy",
+			"motifFamily": "forging.metallurgy",
+			"primaryVisualParent": "craft:forging:fuel-craft"
+		},
+		{
+			"targetId": "craft:forging:tempering",
+			"mapEntryId": "forging.metallurgy",
+			"motifFamily": "forging.metallurgy",
+			"primaryVisualParent": "craft:forging:alloying"
+		},
+		{
+			"targetId": "craft:forging:weightless-craft",
+			"mapEntryId": "forging.finishing",
+			"motifFamily": "forging.finishing",
+			"primaryVisualParent": "craft:forging:fittings"
+		},
+		{
+			"targetId": "craft:forging:runic-foundation",
+			"mapEntryId": "forging.runic-mark",
+			"motifFamily": "forging.runic-mark",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:forging:master-s-mark",
+			"mapEntryId": "forging.runic-mark",
+			"motifFamily": "forging.runic-mark",
+			"primaryVisualParent": "craft:forging:runic-foundation"
+		},
+		{
+			"targetId": "craft:forging:living-metal",
+			"mapEntryId": "forging.metallurgy",
+			"motifFamily": "forging.metallurgy",
+			"primaryVisualParent": "craft:forging:tempering"
+		},
+		{
+			"targetId": "craft:forging:monster-craft",
+			"mapEntryId": "forging.monster-craft",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:forging:soul-forging",
+			"mapEntryId": "forging.runic-mark",
+			"motifFamily": "forging.runic-mark",
+			"primaryVisualParent": "craft:forging:master-s-mark"
+		},
+		{
+			"targetId": "craft:forging:godsmithing",
+			"mapEntryId": "forging.smithing",
+			"motifFamily": "forging.smithing",
+			"primaryVisualParent": "craft:forging:armoursmithing"
+		},
+		{
+			"targetId": "craft:alchemy:reagent-sense",
+			"mapEntryId": "alchemy.brewing",
+			"motifFamily": "alchemy.brewing",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:alchemy:simple-brewing",
+			"mapEntryId": "alchemy.brewing",
+			"motifFamily": "alchemy.brewing",
+			"primaryVisualParent": "craft:alchemy:reagent-sense"
+		},
+		{
+			"targetId": "craft:alchemy:preservation",
+			"mapEntryId": "alchemy.refinement",
+			"motifFamily": "alchemy.refinement",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:alchemy:extraction",
+			"mapEntryId": "alchemy.refinement",
+			"motifFamily": "alchemy.refinement",
+			"primaryVisualParent": "craft:alchemy:preservation"
+		},
+		{
+			"targetId": "craft:alchemy:poisoncraft",
+			"mapEntryId": "alchemy.poison-remedy",
+			"motifFamily": "alchemy.poison-remedy",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:alchemy:potion-brewing",
+			"mapEntryId": "alchemy.brewing",
+			"motifFamily": "alchemy.brewing",
+			"primaryVisualParent": "craft:alchemy:simple-brewing"
+		},
+		{
+			"targetId": "craft:alchemy:volatiles",
+			"mapEntryId": "alchemy.volatile-delivery",
+			"motifFamily": "alchemy.volatile-delivery",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:alchemy:antidotes",
+			"mapEntryId": "alchemy.poison-remedy",
+			"motifFamily": "alchemy.poison-remedy",
+			"primaryVisualParent": "craft:alchemy:poisoncraft"
+		},
+		{
+			"targetId": "craft:alchemy:concentration",
+			"mapEntryId": "alchemy.refinement",
+			"motifFamily": "alchemy.refinement",
+			"primaryVisualParent": "craft:alchemy:extraction"
+		},
+		{
+			"targetId": "craft:alchemy:transmutation",
+			"mapEntryId": "alchemy.refinement",
+			"motifFamily": "alchemy.refinement",
+			"primaryVisualParent": "craft:alchemy:concentration"
+		},
+		{
+			"targetId": "craft:alchemy:elixir-craft",
+			"mapEntryId": "alchemy.brewing",
+			"motifFamily": "alchemy.brewing",
+			"primaryVisualParent": "craft:alchemy:potion-brewing"
+		},
+		{
+			"targetId": "craft:alchemy:deathcap",
+			"mapEntryId": "alchemy.poison-remedy",
+			"motifFamily": "alchemy.poison-remedy",
+			"primaryVisualParent": "craft:alchemy:antidotes"
+		},
+		{
+			"targetId": "craft:alchemy:philosopher-s-work",
+			"mapEntryId": "alchemy.refinement",
+			"motifFamily": "alchemy.refinement",
+			"primaryVisualParent": "craft:alchemy:transmutation"
+		},
+		{
+			"targetId": "craft:alchemy:panacea",
+			"mapEntryId": "alchemy.poison-remedy",
+			"motifFamily": "alchemy.poison-remedy",
+			"primaryVisualParent": "craft:alchemy:deathcap"
+		},
+		{
+			"targetId": "craft:alchemy:elixir-of-years",
+			"mapEntryId": "alchemy.brewing",
+			"motifFamily": "alchemy.brewing",
+			"primaryVisualParent": "craft:alchemy:elixir-craft"
+		},
+		{
+			"targetId": "craft:alchemy:grenade-throw",
+			"mapEntryId": "alchemy.volatile-delivery",
+			"motifFamily": "alchemy.volatile-delivery",
+			"primaryVisualParent": "craft:alchemy:volatiles"
+		},
+		{
+			"targetId": "craft:cooking:cooking",
+			"mapEntryId": "cooking.shared-meal",
+			"motifFamily": "cooking.shared-meal",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:cooking:field-rations",
+			"mapEntryId": "cooking.rations",
+			"motifFamily": "cooking.rations",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:cooking:butchery",
+			"mapEntryId": "cooking.monster-meat",
+			"motifFamily": "cooking.monster-meat",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:cooking:hearth-meal",
+			"mapEntryId": "cooking.shared-meal",
+			"motifFamily": "cooking.shared-meal",
+			"primaryVisualParent": "craft:cooking:cooking"
+		},
+		{
+			"targetId": "craft:cooking:preserving",
+			"mapEntryId": "cooking.rations",
+			"motifFamily": "cooking.rations",
+			"primaryVisualParent": "craft:cooking:field-rations"
+		},
+		{
+			"targetId": "craft:cooking:seasoning",
+			"mapEntryId": "cooking.nourishment",
+			"motifFamily": "cooking.nourishment",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:cooking:restorative-broth",
+			"mapEntryId": "cooking.nourishment",
+			"motifFamily": "cooking.nourishment",
+			"primaryVisualParent": "craft:cooking:seasoning"
+		},
+		{
+			"targetId": "craft:cooking:monster-cuisine",
+			"mapEntryId": "cooking.monster-meat",
+			"motifFamily": "cooking.monster-meat",
+			"primaryVisualParent": "craft:cooking:butchery"
+		},
+		{
+			"targetId": "craft:cooking:feast",
+			"mapEntryId": "cooking.shared-meal",
+			"motifFamily": "cooking.shared-meal",
+			"primaryVisualParent": "craft:cooking:hearth-meal"
+		},
+		{
+			"targetId": "craft:cooking:comfort",
+			"mapEntryId": "cooking.nourishment",
+			"motifFamily": "cooking.nourishment",
+			"primaryVisualParent": "craft:cooking:restorative-broth"
+		},
+		{
+			"targetId": "craft:cooking:banquet-of-the-five",
+			"mapEntryId": "cooking.monster-meat",
+			"motifFamily": "cooking.monster-meat",
+			"primaryVisualParent": "craft:cooking:monster-cuisine"
+		},
+		{
+			"targetId": "craft:cooking:the-long-table",
+			"mapEntryId": "cooking.shared-meal",
+			"motifFamily": "cooking.shared-meal",
+			"primaryVisualParent": "craft:cooking:feast"
+		},
+		{
+			"targetId": "craft:gathering:gathering",
+			"mapEntryId": "gathering.harvest",
+			"motifFamily": "gathering.harvest",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:mining",
+			"mapEntryId": "gathering.mining",
+			"motifFamily": "gathering.mining",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:foraging",
+			"mapEntryId": "gathering.foraging",
+			"motifFamily": "gathering.foraging",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:skinning",
+			"mapEntryId": "gathering.skinning",
+			"motifFamily": "gathering.skinning",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:animal-handling",
+			"mapEntryId": "gathering.beast-bond",
+			"motifFamily": "gathering.beast-bond",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:taming",
+			"mapEntryId": "gathering.beast-bond",
+			"motifFamily": "gathering.beast-bond",
+			"primaryVisualParent": "craft:gathering:animal-handling"
+		},
+		{
+			"targetId": "craft:gathering:breeding",
+			"mapEntryId": "gathering.breeding",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:careful-harvest",
+			"mapEntryId": "gathering.harvest",
+			"motifFamily": "gathering.harvest",
+			"primaryVisualParent": "craft:gathering:gathering"
+		},
+		{
+			"targetId": "craft:gathering:prospecting",
+			"mapEntryId": "gathering.mining",
+			"motifFamily": "gathering.mining",
+			"primaryVisualParent": "craft:gathering:mining"
+		},
+		{
+			"targetId": "craft:gathering:bulk-carry",
+			"mapEntryId": "gathering.bulk-carry",
+			"motifFamily": null,
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:gathering:deep-vein",
+			"mapEntryId": "gathering.mining",
+			"motifFamily": "gathering.mining",
+			"primaryVisualParent": "craft:gathering:prospecting"
+		},
+		{
+			"targetId": "craft:gathering:perfect-cut",
+			"mapEntryId": "gathering.skinning",
+			"motifFamily": "gathering.skinning",
+			"primaryVisualParent": "craft:gathering:skinning"
+		},
+		{
+			"targetId": "craft:gathering:cultivation",
+			"mapEntryId": "gathering.foraging",
+			"motifFamily": "gathering.foraging",
+			"primaryVisualParent": "craft:gathering:foraging"
+		},
+		{
+			"targetId": "craft:gathering:leyline-harvest",
+			"mapEntryId": "gathering.mining",
+			"motifFamily": "gathering.mining",
+			"primaryVisualParent": "craft:gathering:deep-vein"
+		},
+		{
+			"targetId": "craft:gathering:greater-taming",
+			"mapEntryId": "gathering.beast-bond",
+			"motifFamily": "gathering.beast-bond",
+			"primaryVisualParent": "craft:gathering:taming"
+		},
+		{
+			"targetId": "craft:gathering:nothing-wasted",
+			"mapEntryId": "gathering.harvest",
+			"motifFamily": "gathering.harvest",
+			"primaryVisualParent": "craft:gathering:careful-harvest"
+		},
+		{
+			"targetId": "craft:gathering:monarch-of-beasts",
+			"mapEntryId": "gathering.beast-bond",
+			"motifFamily": "gathering.beast-bond",
+			"primaryVisualParent": "craft:gathering:greater-taming"
+		},
+		{
+			"targetId": "craft:gathering:the-earth-provides",
+			"mapEntryId": "gathering.harvest",
+			"motifFamily": "gathering.harvest",
+			"primaryVisualParent": "craft:gathering:nothing-wasted"
+		},
+		{
+			"targetId": "craft:knowledge:literacy",
+			"mapEntryId": "knowledge.script",
+			"motifFamily": "knowledge.script",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:knowledge:identify",
+			"mapEntryId": "knowledge.appraisal",
+			"motifFamily": "knowledge.appraisal",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:knowledge:mapping",
+			"mapEntryId": "knowledge.mapping",
+			"motifFamily": "knowledge.mapping",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:knowledge:appraisal",
+			"mapEntryId": "knowledge.appraisal",
+			"motifFamily": "knowledge.appraisal",
+			"primaryVisualParent": "craft:knowledge:identify"
+		},
+		{
+			"targetId": "craft:knowledge:languages",
+			"mapEntryId": "knowledge.script",
+			"motifFamily": "knowledge.script",
+			"primaryVisualParent": "craft:knowledge:literacy"
+		},
+		{
+			"targetId": "craft:knowledge:research",
+			"mapEntryId": "knowledge.research",
+			"motifFamily": "knowledge.research",
+			"primaryVisualParent": null
+		},
+		{
+			"targetId": "craft:knowledge:read-the-body",
+			"mapEntryId": "knowledge.appraisal",
+			"motifFamily": "knowledge.appraisal",
+			"primaryVisualParent": "craft:knowledge:appraisal"
+		},
+		{
+			"targetId": "craft:knowledge:cartography",
+			"mapEntryId": "knowledge.mapping",
+			"motifFamily": "knowledge.mapping",
+			"primaryVisualParent": "craft:knowledge:mapping"
+		},
+		{
+			"targetId": "craft:knowledge:ancient-script",
+			"mapEntryId": "knowledge.script",
+			"motifFamily": "knowledge.script",
+			"primaryVisualParent": "craft:knowledge:languages"
+		},
+		{
+			"targetId": "craft:knowledge:deep-appraisal",
+			"mapEntryId": "knowledge.appraisal",
+			"motifFamily": "knowledge.appraisal",
+			"primaryVisualParent": "craft:knowledge:read-the-body"
+		},
+		{
+			"targetId": "craft:knowledge:the-archive",
+			"mapEntryId": "knowledge.research",
+			"motifFamily": "knowledge.research",
+			"primaryVisualParent": "craft:knowledge:research"
+		},
+		{
+			"targetId": "craft:knowledge:recovered-knowledge",
+			"mapEntryId": "knowledge.script",
+			"motifFamily": "knowledge.script",
+			"primaryVisualParent": "craft:knowledge:ancient-script"
+		}
+	]
+}

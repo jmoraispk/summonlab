@@ -1,0 +1,21 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"noUncheckedIndexedAccess": false,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"skill-taxonomy-lib.ts",
+		"skill-icon-production-lib.ts",
+		"skill-icon-production-lib.spec.ts",
+		"export-skill-icon-geometry.ts",
+		"export-skill-icon-geometry.spec.ts",
+		"export-skill-icon-production.ts",
+		"report-skill-icon-readiness.ts",
+		"report-skill-icon-readiness.spec.ts"
+	]
+}

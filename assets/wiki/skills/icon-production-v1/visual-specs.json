@@ -1,0 +1,3197 @@
+{
+	"schemaVersion": "skill-icon-visual-specs-v1",
+	"records": [
+		{
+			"targetId": "martial:blade:swordsmanship",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:measured-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:overhead-chop",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:horizontal-slash",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:cross-guard",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:quick-draw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:edge-care",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:piercing-thrust",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:feinting-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:whirl-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:edge-alignment",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:half-sword",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:binding-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:crescent-sweep",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:drawing-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:blade-dance",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:wind-slash",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:counter-flow",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:rising-moon",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:thousand-cuts",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:still-water-stance",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:heaven-s-fall",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:severing-intent",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:mirrored-edge",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:formless-blade",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:void-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:ten-thousand-leaves",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:one-blade-one-world",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:knifework",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:quick-stab",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:slash-across",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:concealed-carry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:low-guard",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:cut-purse",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:grit-throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:blade-throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:opening",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:hamstring",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:silent-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:twin-grip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:vital-nick",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:twin-fangs",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:bleeding-edge",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:fleeting-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:coated-blade",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:blind-spot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:windmill",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:hundred-needles",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:ghost-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:arterial-strike",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:shadow-sever",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:nightfall-flurry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:vanish",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:assassin-s-certainty",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:severed-thread",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:thousand-silent-deaths",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:great-blade",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:cleave",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:guard-break",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:shoulder-set",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:pommel-strike",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:wide-arc",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:weight-shift",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:ground-slam",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:hewing-blow",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:momentum",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:bulwark-swing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:executioner-s-drop",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:earthbreaker",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:unstoppable",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:mountain-cleaver",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:world-ender",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:two-blades",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:alternating-strike",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:cross-block",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:mirror-grip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:scissor-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:rolling-guard",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:dance-of-two",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:whirlwind",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:double-parry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:storm-of-blades",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:twin-souls",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:perfect-symmetry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:severing-cross",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:two-blades-one-mind",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:ricochet",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:fan-throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:boomerang-arc",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:storm-of-steel",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:blade:perfect-arc",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:polearm-handling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:straight-thrust",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:butt-strike",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:bracing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:sweep-low",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:keep-away",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:piercing-line",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:hook-and-pull",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:wall-of-points",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:serpent-s-tongue",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:dragon-tail",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:unbreakable-line",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:heaven-piercer",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:coiling-dragon",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:thousand-li-thrust",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:the-line-that-holds",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:halberd-handling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:chop",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:hook-shield",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:split-grip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:rend-armour",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:berserk-swing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:reaping-arc",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:bloodletting",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:executioner-s-grip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:storm-of-iron",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:red-harvest",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:ruin",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:the-last-harvest",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:polehammer-handling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:crush",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:knee-breaker",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:heavy-footing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:shatter",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:concussive-blow",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:seismic-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:anvil-strike",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:bell-ringer",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:unmaking",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:tremor-field",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:mountain-s-weight",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:silence-the-bell",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:polearm:nothing-stands",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:archery",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:aimed-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:quick-loose",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:steady-stance",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:fletching",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:power-draw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:pinning-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:arcing-volley",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:multishot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:piercing-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:hunter-s-mark",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:rain-of-arrows",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:heartseeker",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:split-arrow",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:sky-piercer",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:storm-of-a-thousand",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:the-arrow-that-finds",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:world-s-edge-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:crossbow-handling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:bolt-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:reload-drill",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:bolt-craft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:braced-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:repeating-mechanism",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:bolt-storm",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:siege-bolt",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:trick-bolt",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:ballista-form",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:puncture",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:the-machine",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:ranged:sling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:shield-use",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:raise-shield",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:shield-bash",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:brace",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:cover",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:shield-push",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:deflect",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:interpose",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:shield-throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:wall-stance",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:shield-charge",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:aegis",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:tower-form",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:unyielding",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:retaliation-ward",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:phalanx",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:immovable",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:guardian-s-oath",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:aegis-eternal",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:the-last-wall",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:taunt",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:endure",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:shield:draw-attention",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:footing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:grip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:basic-block",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:recovery",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:feint",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:sidestep",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:parry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:disarm",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:called-shot",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:riposte",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:second-wind",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:feint-chain",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:combat-reading",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:unbroken-guard",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:perfect-parry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:battle-instinct",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:martial-form",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:straight-punch",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:low-kick",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:palm-block",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:breathing-form",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:elbow-and-knee",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:combination",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:iron-body",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:rising-kick",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:flowing-redirect",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:focused-strike",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:hundred-hands",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:diamond-body",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:one-inch",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:storm-of-fists",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:empty-force",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:formless-body",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:the-fist-that-ends",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:wrestling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:grab",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:shove",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:trip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:joint-lock",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:ground-control",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:chokehold",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:suplex",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:immovable-grip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:giant-toss",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:bind-the-beast",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:footwork",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:dash",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:roll",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:climb",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:sure-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:vault",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:wall-run",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:weave",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:dive",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:blink-step",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:air-walk",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:afterimage",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:shadowless",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:hundred-steps",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:untouchable",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:between-places",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:never-where-struck",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:the-road-has-no-end",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:set-jaw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:undying",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:riding",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:pack-bond",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:mounted-combat",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "martial:body:bonded-mount",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:ember",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:spark",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:warmth",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:ignite",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:fireball",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:cinder-trail",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:flame-shroud",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:great-fireball",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:flame-jet",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:detonation",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:kindling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:firestorm",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:charged-fireball",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:ashfall",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:meteor",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:phoenix-form",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:sea-of-flame",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:sunfall",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:draw-water",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:water-bullet",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:cold-touch",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:flow",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:pressure-lance",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:mist",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:water-whip",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:torrent",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:drowning-grasp",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:deep-cold",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:tide-sense",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:maelstrom",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:glacier",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:still-depths",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:leviathan-s-coil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:frozen-world",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:the-deep",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:where-all-rivers-end",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:stoneshape",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:stone-shard",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:harden",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:tremor",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:stone-skin",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:spike-field",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:earthen-wall",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:crushing-weight",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:boulder-throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:fissure",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:unshakeable",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:mountain-rise",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:stone-sentinel",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:earthen-form",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:avalanche",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:the-weight-of-ages",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:living-mountain",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:elemental:bury-the-world",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:warding",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:shield-sigil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:cleanse",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:elemental-guard",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:barrier",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:reflect",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:dispel",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:counter-sigil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:aegis-field",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:null-zone",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:layered-ward",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:absorption",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:sanctuary",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:unbinding",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:mirror-ward",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:the-unbroken-circle",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:severance-ward",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:ward:nothing-reaches",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:imbuing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:minor-blessing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:weapon-oil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:light",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:greater-blessing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:group-blessing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:armour-imbuing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:component-craft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:sigil-binding",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:empowerment",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:sustained-weave",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:elemental-attunement",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:greater-sigil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:battle-hymn",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:transference",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:soul-sigil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:ascendance",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:enchantment:the-written-world",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:mending",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:close-wound",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:soothe",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:field-care",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:regeneration",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:cure",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:shared-vigour",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:mass-mending",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:restore-limb",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:life-link",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:sanctified-ground",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:second-life",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:purity",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:great-renewal",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:return",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:the-unbroken-thread",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:restoration:what-was-taken-back",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:presence",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:distract",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:read-surface",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:minor-illusion",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:fear",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:veil",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:confusion",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:false-terrain",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:suggestion",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:mental-fortress",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:domination",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:mass-illusion",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:memory-edit",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:the-long-silence",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:shared-sight",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:unmaking-of-the-self",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "magical:mind:nothing-was-ever-here",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:ore-sense",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:simple-smithing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:sharpening",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:fittings",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:weaponsmithing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:armoursmithing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:fuel-craft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:alloying",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:tempering",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:weightless-craft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:runic-foundation",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:master-s-mark",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:living-metal",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:monster-craft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:soul-forging",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:forging:godsmithing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:reagent-sense",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:simple-brewing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:preservation",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:extraction",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:poisoncraft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:potion-brewing",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:volatiles",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:antidotes",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:concentration",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:transmutation",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:elixir-craft",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:deathcap",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:philosopher-s-work",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:panacea",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:elixir-of-years",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:alchemy:grenade-throw",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:cooking",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:field-rations",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:butchery",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:hearth-meal",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:preserving",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:seasoning",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:restorative-broth",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:monster-cuisine",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:feast",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:comfort",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:banquet-of-the-five",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:cooking:the-long-table",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:gathering",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:mining",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:foraging",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:skinning",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:animal-handling",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:taming",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:breeding",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:careful-harvest",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:prospecting",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:bulk-carry",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:deep-vein",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:perfect-cut",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:cultivation",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:leyline-harvest",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:greater-taming",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:nothing-wasted",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:monarch-of-beasts",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:gathering:the-earth-provides",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:literacy",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:identify",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:mapping",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:appraisal",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:languages",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:research",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:read-the-body",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:cartography",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:ancient-script",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:deep-appraisal",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:the-archive",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		},
+		{
+			"targetId": "craft:knowledge:recovered-knowledge",
+			"status": "mapped",
+			"visualSpec": null,
+			"assets": null,
+			"review": null
+		}
+	]
+}
