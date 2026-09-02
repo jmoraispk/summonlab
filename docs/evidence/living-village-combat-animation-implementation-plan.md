@@ -1,0 +1,280 @@
+# Living Village combat animation implementation plan
+
+Status: **recommended implementation sequence**
+
+Accepted visual reference:
+[phone combat direction v1](living-village-combat-phone-direction-v1.png)
+
+Primary runtime surface: **/mission/:runId**
+
+## Recommendation
+
+Do not generate combat chibis for the complete hero roster yet. First prove the runtime with one
+identity-bound hero, one enemy, and one skill effect. That pilot establishes the camera scale,
+direction count, feet anchor, tile footprint, frame dimensions, clip names, atlas budget, and
+playback cadence that every later asset must satisfy.
+
+The mockup characters are visual placeholders. The repository's approved hero art currently covers
+summon, dialogue, and roster uses, but there is no approved combat-chibi usage or animation pack.
+Final combat chibis must derive from each hero's approved identity packet rather than from the
+placeholder faces in the mockup.
+
+## Current implementation truth
+
+- The mission engine already owns deterministic rounds, legal choices, public intent, seeded
+  initiative, resolved actions, before/after effects, monster policies, and strict replay.
+- **/mission/:runId** currently renders an HTML/CSS tactical graph with letter tokens. It does not
+  have a PixiJS combat arena or frame-based character animation.
+- Actors currently occupy mission nodes. Several party members may share one node and are separated
+  only by browser offsets. That is insufficient for a combat screen where every actor occupies one
+  visible tile and selection outlines match authoritative tile bounds.
+- PixiJS 8.20 is already installed. The runtime visual catalog has no combat usage and no combat
+  spritesheet manifest.
+- The accepted phone composition, timeline, tile treatment, live feed, and command bar are preserved
+  in **living-village-combat-phone-direction-v1.png**.
+
+## Boundary: simulation first, playback second
+
+~~~text
+engine command
+  -> immutable resolved round and effects
+  -> pure CombatPlaybackProjection
+  -> deterministic presentation cues
+  -> PixiJS battlefield playback
+  -> Svelte timeline, feed, controls, and accessibility mirror
+~~~
+
+PixiJS never calculates a legal move, hit, critical, damage, death, initiative position, or tile
+occupancy. It animates an already-resolved engine receipt. Replay consumes the stored receipt and
+never asks the engine to roll again.
+
+While an agent decision is pending, the stage may show a quiet idle or considering state. It must
+not preview an uncommitted movement, target, skill, or outcome. Once the receipt arrives, playback
+runs the authoritative cues.
+
+## Work sequence
+
+### C0 — authoritative combat-board projection
+
+Separate mission navigation from local encounter placement:
+
+- Keep the existing authored mission-node graph for exploration and encounter entry.
+- Add a versioned combat-board projection for an active encounter: rectangular dimensions, stable
+  cell IDs, cell centers, walkability, terrain flags, and actor occupancy.
+- Give every active hero and monster exactly one combat cell. One cell cannot contain two active
+  actors unless a future rule explicitly permits it.
+- Make movement, targeting, surprise, cover, and environmental interaction refer to engine-owned
+  cell IDs. The browser receives only knowledge-safe projected cells.
+- Introduce this only for new current-version combat state. Historical engine states and replay
+  payloads remain immutable; no old receipt is migrated or reinterpreted.
+
+Minimum first-slice terrain is walkable, blocked, cover, hazard, and objective. More elaborate tile
+types wait until a mechanic consumes them.
+
+Exit: a fixture can place three heroes and five enemies on distinct cells, move one actor legally,
+resolve one attack, and replay the exact occupancy and effects.
+
+### C1 — pure playback projection
+
+Create a presentation-only adapter that maps the existing resolved round into ordered cues:
+
+~~~text
+focus -> public-intent -> move -> windup -> impact
+      -> state-delta -> reaction/down -> feed-message -> settle
+~~~
+
+Each cue carries a stable cue ID, source event/action ID, actor ID, optional target ID, start offset,
+duration, and payload. The projection is deterministic and contains no clock reads or randomness.
+
+The cue timeline permits multiple tracks and overlapping cosmetic tails from the beginning. V1
+mechanical actions still play in authoritative initiative order; a later parallel scheduler can
+place independent cues at the same start offset without replacing the renderer.
+
+Exit: one recorded round always produces the same cue list, including superseded actions, misses,
+movement, damage, and death.
+
+### C2 — reusable PixiJS combat stage
+
+Add one reusable combat presentation module under **apps/web/src/lib/components/combat/** and use
+the same component in a focused fixture route and the production mission route.
+
+Recommended scene graph:
+
+~~~text
+combatStage
+  environmentLayer
+  terrainAndTileLayer
+  selectionAndPathLayer
+  actorLayer (sorted by projected feet Y)
+    actorContainer
+      contactShadow
+      body AnimatedSprite
+      equipment overlay when required
+      local health/guard bar
+  effectsLayer
+  foregroundLayer
+~~~
+
+Svelte retains the initiative portrait rail, three-line name-only feed, Manual/Assist/Auto controls,
+skill controls, and screen-reader status. Pixi owns the battlefield, actors, contact shadows, tile
+selection, paths, camera motion, and transient effects.
+
+Use one application ticker and deltaMS-based playback. Do not create a ticker per actor. Actor views
+are Containers with a bottom-center feet anchor; the container position always equals the projected
+cell center. Sort actors by feet Y, not texture bounds.
+
+Exit: resize-safe phone and desktop stages render the accepted composition with proxy art, exact
+tile alignment, and no simulation logic in the client.
+
+### C3 — proxy motion slice
+
+Before producing roster art, prove one hero, one enemy, and one skill with a temporary authored
+proxy pack:
+
+1. idle loop;
+2. move between two cells;
+3. ready/focus;
+4. basic or skill action;
+5. impact and hit reaction;
+6. defeat/down;
+7. return to idle.
+
+The first choreography tuning is reversible:
+
+- focus: 100–160 ms;
+- movement: 180–320 ms per tile;
+- windup: 160–260 ms;
+- impact: 80–140 ms;
+- reaction and health change: 160–240 ms;
+- settle: 80–140 ms.
+
+Movement follows cell-center paths. The feet anchor lands exactly at the destination center before
+the engine state delta is presented. Cosmetic follow-through may overlap the next settle phase but
+must never reorder mechanical events.
+
+Exit: Move, Fleeting Step or another pilot skill, critical impact, damage, and defeat can play from
+one frozen receipt; Skip lands immediately on the exact final projection.
+
+### C4 — combat animation-pack contract
+
+Use PixiJS v8 spritesheets: one content-hashed atlas image plus atlas JSON and a small manifest.
+Load combat packs through an Assets bundle and background-load the encounter's actors before entry.
+Do not use independently generated full frames at runtime.
+
+Minimum pilot clip vocabulary:
+
+| Clip | Suggested frames | Authoring rate | Loop |
+| --- | ---: | ---: | --- |
+| idle | 4–6 | 8 fps | yes |
+| move | 6–8 | 12 fps | yes while moving |
+| ready | 3–4 | 10 fps | short loop |
+| act | 6–10 | 12 fps | no |
+| hit | 3–4 | 12 fps | no |
+| down | 6–8 | 10 fps | no |
+
+Use four authored directions for the pilot. Horizontal mirroring is permitted only when the pack
+declares it safe; left-handed heroes, asymmetric equipment, scars, and costume details must not be
+silently reversed.
+
+Every pack declares:
+
+- identity or enemy-archetype key;
+- source identity/content hashes;
+- transparent frame dimensions;
+- bottom-center feet anchor;
+- contact-shadow bounds;
+- directions and clips;
+- per-clip fps, loop, and interrupt policy;
+- equipment attachment points when needed;
+- encoded and decoded memory estimates;
+- fallback texture;
+- approval status and provenance.
+
+Skill VFX are separate from the body atlas. A new skill should normally add an effect asset and cue
+recipe, not a complete duplicate hero sheet.
+
+Exit: schema validation rejects missing clips, bad anchors, unknown identities, unsafe mirror rules,
+and atlas frames outside declared bounds.
+
+### C5 — one real identity-bound chibi pilot
+
+Produce one hero combat pack only after C3 and C4 freeze the technical target:
+
+1. derive a compact chibi design sheet from the approved hero identity anchor;
+2. approve front, back, left, and right silhouettes at actual phone combat size;
+3. preserve face, hair, palette, signature clothing, body proportion cues, handedness, and equipment;
+4. create clean key poses against transparency;
+5. build or hand-correct the in-between frames into the validated atlas;
+6. review recognition in idle, movement, hit, and down states;
+7. bind the pack to the exact manifest/content hash.
+
+Image generation can accelerate design sheets and key poses, but independently prompting every
+animation frame is not production-safe: identity, limb length, equipment, light direction, and feet
+anchors will drift. V1 should use frame-based atlases rather than reviving a custom procedural hero
+rig. If atlas cost becomes prohibitive after the pilot, evaluate a professional 2D skeletal workflow
+as a separate decision.
+
+Repeat the same pilot for one enemy archetype. Only then fan out hero, enemy, and skill-effect asset
+production.
+
+### C6 — timeline, feed, controls, and ownership
+
+Synchronize the accepted interface with playback:
+
+- The top portrait rail highlights the cue's active actor and advances toward Now.
+- The feed appends public intent only when it becomes public and appends the factual event line only
+  after its resolved cue. Phone shows three messages with progressive fading; expanded history
+  restores uniform contrast.
+- Manual pauses at a legal decision boundary. Assist proposes a legal action but waits for player
+  confirmation. Auto submits the bound provider's legal choice.
+- Input is locked only while a committed receipt is playing. Skip reveals the final state and all
+  resolved feed lines without dropping event order.
+- Replay rebuilds cues from the stored receipt and never submits a command.
+- Reduced motion replaces travel and impact movement with direct cell-state changes, restrained
+  focus, and readable feed/health updates.
+
+Exit: playback cannot submit a second command, create a result, or expose an outcome before receipt
+arrival.
+
+### C7 — production integration and proof
+
+Replace the current letter-token tactical board inside **/mission/:runId** with the reusable combat
+stage only for the supported current combat version. Keep a legible static fallback while assets load
+or WebGL is unavailable.
+
+Required proof:
+
+- deterministic unit snapshots for resolved-round-to-cue projection;
+- unit tests for playback skip, replay, interruption, and speed;
+- atlas/manifest validation and missing-asset fallback;
+- engine tests for unique cell occupancy and legal movement;
+- browser checks at 390 × 844 and 1,440 × 900;
+- visual captures for rest, decision pending, movement, impact, defeat, and reduced motion;
+- three heroes and five enemies remain centered on distinct tiles;
+- the selected outline exactly follows the authoritative cell;
+- timeline, feed, and controls match the accepted reference;
+- reconnecting during or after presentation produces the same final frame and feed;
+- no client code mutates engine state or hidden mission knowledge.
+
+## Parallel ownership after the contracts freeze
+
+| Owner | Owns | Must not own |
+| --- | --- | --- |
+| Combat engine | board/cell contract, occupancy, legal actions, receipts, effects, replay | Pixi timing or art files |
+| Combat presentation | playback projection, Pixi stage, cue controller, UI synchronization | combat outcomes or asset identity |
+| Hero visuals | identity-bound chibi sheets and validated hero atlases | renderer or engine schemas |
+| Enemy visuals | archetype-bound chibi sheets and validated enemy atlases | monster policy resolution |
+| Skill visuals | effect atlases and cue recipes keyed to accepted skill IDs | damage, targeting, or legality |
+
+The presentation owner supplies the validated proxy pack and contract before the three visual owners
+fan out. Each visual owner can then add new content-hashed packs without editing the renderer.
+
+## Recommended first implementation slice
+
+Implement C0 through C3 with proxy art, then stop for a phone playtest. The slice should let the
+player commit one legal action, watch one precomputed round play, read the three-line feed, skip,
+replay, and inspect the exact final state.
+
+Only after that playtest should the project generate the first real hero and enemy chibi animation
+packs. This sequence prevents a large asset batch from freezing the wrong anchors, directions, frame
+counts, or on-screen scale.

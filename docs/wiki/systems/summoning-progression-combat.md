@@ -129,6 +129,9 @@ This image is the accepted visual baseline for the first phone combat slice, inc
 battlefield density, tile alignment, timeline restraint, three-line name-only feed, and command-bar
 proportions.
 
+The [combat animation implementation plan](../../evidence/living-village-combat-animation-implementation-plan.md)
+defines the recommended board, playback, PixiJS, asset-pack, and identity-bound chibi sequence.
+
 The combat view is a steep top-down 2.5D battlefield with flat chibi combatants, stable feet anchors,
 soft elliptical shadows, and environmental layers that create depth without requiring a full 3D
 renderer. The battlefield remains the primary surface on both phone and desktop. Every combatant's
