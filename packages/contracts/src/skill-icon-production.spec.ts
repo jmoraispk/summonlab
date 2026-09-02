@@ -15,6 +15,7 @@ import {
 	SkillIconRaritySchema,
 	SkillIconRecordSchema,
 	SkillIconRecognitionPathSchema,
+	SkillIconReferencePathSchema,
 	SkillIconRepositoryPathSchema,
 	SkillIconResultSchema,
 	SkillIconResultPathSchema,
@@ -62,11 +63,18 @@ const producerFindings = [
 		evaluator: 'automated' as const,
 		outcome: 'pass' as const,
 		observation: 'Canvas and safe zones pass.'
+	},
+	{
+		category: 'manifest-fidelity' as const,
+		evaluator: 'producer' as const,
+		outcome: 'pass' as const,
+		observation: 'The generated image matches the declared target.'
 	}
 ];
 
 const producerResult = {
 	jobId,
+	status: 'candidate' as const,
 	path: resultPath,
 	contentHash: resultHash,
 	findings: producerFindings
@@ -326,6 +334,34 @@ describe('skill-icon production contracts', () => {
 		).toBe(false);
 	});
 
+	it('allowlists only image references from production and rarity authority roots', () => {
+		for (const path of [
+			'assets/wiki/skills/icon-production-v1/references/geometry-guide.svg',
+			'assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-horizontal-slash.png',
+			'assets/wiki/skills/rarity-frame-v1/references/option-c.webp',
+			'assets/wiki/skills/rarity-frame-v1/sources/option-c.png'
+		]) {
+			expect(SkillIconReferencePathSchema.safeParse(path).success).toBe(true);
+		}
+		for (const path of [
+			'.git/config',
+			'.env',
+			'packages/contracts/src/index.ts',
+			'assets/wiki/skills/icon-production-v1/references/geometry.json',
+			'assets/wiki/skills/icon-production-v1/references/guide.png\n.env'
+		]) {
+			expect(SkillIconReferencePathSchema.safeParse(path).success).toBe(false);
+		}
+
+		const duplicate = skillTarget().references[0];
+		expect(
+			SkillIconTargetSchema.safeParse({
+				...skillTarget(),
+				references: [duplicate, { ...duplicate, purpose: 'Duplicate alias.' }]
+			}).success
+		).toBe(false);
+	});
+
 	it('requires an explicit recognition pass for accepted skill-art review', () => {
 		expect(
 			SkillIconReviewSchema.safeParse({
@@ -540,6 +576,78 @@ describe('skill-icon production contracts', () => {
 			SkillIconResultSchema.safeParse({
 				...result(),
 				writtenOutputPaths: [...result().writtenOutputPaths, 'assets/wiki/shared.json']
+			}).success
+		).toBe(false);
+	});
+
+	it('requires candidate producer and automated passes while preserving honest failures', () => {
+		const automatedGeometryFail = {
+			category: 'geometry' as const,
+			evaluator: 'automated' as const,
+			outcome: 'fail' as const,
+			observation: 'Visible pixels escape the effect-safe region.'
+		};
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				findings: [...producerFindings, automatedGeometryFail]
+			}).success
+		).toBe(false);
+		for (const findings of [[producerFindings[0]], [producerFindings[1]]]) {
+			expect(SkillIconResultSchema.safeParse({ ...result(), findings }).success).toBe(false);
+		}
+		expect(
+			SkillIconRecordSchema.safeParse({
+				...approvedRecord,
+				status: 'candidate',
+				assets: { candidate: candidateAsset },
+				producerResult: {
+					...producerResult,
+					findings: [...producerFindings, automatedGeometryFail]
+				},
+				review: null
+			}).success
+		).toBe(false);
+
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'revise',
+				findings: [automatedGeometryFail]
+			}).success
+		).toBe(true);
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'failed',
+				output: null,
+				findings: [automatedGeometryFail],
+				writtenOutputPaths: [resultPath]
+			}).success
+		).toBe(true);
+	});
+
+	it('preserves exact prompt whitespace and hashes the original bytes', () => {
+		const exactPrompt = '  Paint one polished sword.\n';
+		const target = { ...skillTarget(), exactPrompt };
+		const produced = {
+			...result(),
+			exactPrompt,
+			promptHash: createHash('sha256').update(exactPrompt).digest('hex')
+		};
+		const parsed = SkillIconExecutionSchema.safeParse({
+			schemaVersion: 'skill-icon-execution-v1',
+			target,
+			assignment: assignment(),
+			result: produced
+		});
+		expect(parsed.success).toBe(true);
+		if (parsed.success) expect(parsed.data.result.exactPrompt).toBe(exactPrompt);
+
+		expect(
+			SkillIconResultSchema.safeParse({
+				...produced,
+				promptHash: createHash('sha256').update(exactPrompt.trim()).digest('hex')
 			}).success
 		).toBe(false);
 	});
