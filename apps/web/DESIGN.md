@@ -181,6 +181,13 @@ results.
   from authored layers, overlap, lighting, and motion rather than requiring full 3D models.
 - Center each combatant's feet anchor and contact shadow on one tactical tile. Selection outlines
   trace that tile's exact projected edges; they must not float inside it, exceed it, or straddle seams.
+- Present combat activity as a live, chat-like feed. Engine-authored outcome lines stay terse and
+  causal, for example: `hero_04 used Fleeting Step → flanked goblin_02 → Opening → critical →
+  goblin_02 died`. Optional character messages are short public intent or personality, not private
+  reasoning, and never imply an outcome before the engine resolves it.
+- Keep the feed subordinate to the battlefield: on phone it is a shallow, collapsible overlay above
+  the command bar; desktop may use adjacent space. Each message retains actor identity, event order,
+  and replay linkage, and the complete feed remains reachable without relying on transient animation.
 
 ### Content and data visualization
 

@@ -80,6 +80,17 @@ of why the party won or lost. A useful trace exposes:
 - telegraphs before their resolution;
 - one decisive cause supported by exact event IDs.
 
+The player-facing form is a live, chat-like combat feed with two explicitly different message types:
+
+- **Resolved event:** an engine-authored factual line, such as `hero_04 used Fleeting Step → flanked
+  goblin_02 → Opening → critical → goblin_02 died`.
+- **Character voice:** an optional short statement of public intent or personality grounded in the
+  actor's legal choice and visible state. It is not private reasoning and has no mechanical authority.
+
+Messages arrive in authoritative event order and retain links to their source event IDs so the same
+feed can be reconstructed during replay. Narration may color a resolved event, but cannot predict,
+replace, or revise resolution.
+
 The supplied damage expression currently defines shape, not accepted constants:
 
 ```text
