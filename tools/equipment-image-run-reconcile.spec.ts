@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
-import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import sharp from 'sharp';
@@ -20,10 +19,9 @@ import {
 	recordVerifiedEquipmentRunTerminal
 } from './equipment-image-run-recorder.js';
 import { DEFAULT_EQUIPMENT_RUN_ID, activateEquipmentRun } from './equipment-image-run-readiness.js';
+import { makeCleanEquipmentTestWorkspace } from './equipment-test-workspace.js';
 
 const SOURCE_WORKSPACE_ROOT = process.cwd();
-const PROFILE_REFERENCE_PATH =
-	'assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 const RUN_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs/${DEFAULT_EQUIPMENT_RUN_ID}`;
 const EVENTS_DIRECTORY = `${RUN_DIRECTORY}/events`;
 const CREATED_AT = '2026-09-01T23:15:00.000Z';
@@ -49,18 +47,11 @@ async function writeRepositoryFile(
 }
 
 async function makeStartedFixture() {
-	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-reconcile-'));
+	const workspaceRoot = await makeCleanEquipmentTestWorkspace(
+		SOURCE_WORKSPACE_ROOT,
+		'equipment-reconcile-'
+	);
 	fixtureRoots.push(workspaceRoot);
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, EQUIPMENT_PRODUCTION_ROOT),
-		absolute(workspaceRoot, EQUIPMENT_PRODUCTION_ROOT),
-		{ recursive: true }
-	);
-	await mkdir(path.dirname(absolute(workspaceRoot, PROFILE_REFERENCE_PATH)), { recursive: true });
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, PROFILE_REFERENCE_PATH),
-		absolute(workspaceRoot, PROFILE_REFERENCE_PATH)
-	);
 	await activateEquipmentRun({
 		workspaceRoot,
 		runId: DEFAULT_EQUIPMENT_RUN_ID,

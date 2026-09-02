@@ -30,6 +30,7 @@ import {
 	validateEquipmentPacket
 } from './equipment-image-packets.js';
 import { runEquipmentImageProductionCli } from './equipment-image-production.js';
+import { makeCleanEquipmentTestWorkspace } from './equipment-test-workspace.js';
 
 const ROOT = 'assets/equipment/experiments/material-equipment-v1';
 const PROFILE_PATH = `${ROOT}/visual-profile/profile.json`;
@@ -362,6 +363,11 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 
 	it('validates strict packet bindings, ordered reference bytes, hashes, and empty outputs', async () => {
 		const { manifest, allocation, profile, acceptance } = fixture();
+		const workspaceRoot = await makeCleanEquipmentTestWorkspace(
+			process.cwd(),
+			'equipment-image-packets-'
+		);
+		temporaryDirectories.push(workspaceRoot);
 		const packet = buildRootEquipmentPackets({
 			manifest,
 			allocation,
@@ -372,7 +378,7 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 
 		await expect(
 			validateEquipmentPacket({
-				workspaceRoot: process.cwd(),
+				workspaceRoot,
 				manifest,
 				allocation,
 				profile,
@@ -387,7 +393,7 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 
 		await expect(
 			validateEquipmentPacket({
-				workspaceRoot: process.cwd(),
+				workspaceRoot,
 				manifest,
 				allocation,
 				profile,
@@ -401,7 +407,7 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 		).rejects.toThrow('target ID');
 		await expect(
 			validateEquipmentPacket({
-				workspaceRoot: process.cwd(),
+				workspaceRoot,
 				manifest,
 				allocation,
 				profile,

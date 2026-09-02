@@ -1,8 +1,6 @@
 import {
-	cp,
 	lstat,
 	mkdtemp,
-	mkdir,
 	readFile,
 	readdir,
 	rename,
@@ -33,10 +31,9 @@ import {
 	recordEquipmentRunEvent
 } from './equipment-image-run-recorder.js';
 import { DEFAULT_EQUIPMENT_RUN_ID, activateEquipmentRun } from './equipment-image-run-readiness.js';
+import { makeCleanEquipmentTestWorkspace } from './equipment-test-workspace.js';
 
 const SOURCE_WORKSPACE_ROOT = process.cwd();
-const PROFILE_REFERENCE_PATH =
-	'assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 const RUN_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs/${DEFAULT_EQUIPMENT_RUN_ID}`;
 const EVENTS_DIRECTORY = `${RUN_DIRECTORY}/events`;
 const LOCK_PATH = `${RUN_DIRECTORY}/.journal.lock`;
@@ -51,18 +48,11 @@ function absolute(workspaceRoot: string, repositoryPath: string): string {
 }
 
 async function makeActivatedFixture(): Promise<string> {
-	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-run-recorder-'));
+	const workspaceRoot = await makeCleanEquipmentTestWorkspace(
+		SOURCE_WORKSPACE_ROOT,
+		'equipment-run-recorder-'
+	);
 	fixtureRoots.push(workspaceRoot);
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, EQUIPMENT_PRODUCTION_ROOT),
-		absolute(workspaceRoot, EQUIPMENT_PRODUCTION_ROOT),
-		{ recursive: true }
-	);
-	await mkdir(path.dirname(absolute(workspaceRoot, PROFILE_REFERENCE_PATH)), { recursive: true });
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, PROFILE_REFERENCE_PATH),
-		absolute(workspaceRoot, PROFILE_REFERENCE_PATH)
-	);
 	await activateEquipmentRun({
 		workspaceRoot,
 		runId: DEFAULT_EQUIPMENT_RUN_ID,

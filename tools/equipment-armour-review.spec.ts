@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
-import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import sharp from 'sharp';
@@ -26,10 +25,9 @@ import {
 	materializeDependentArmourPackets,
 	verifyArmourSourceReviewReceipt
 } from './equipment-armour-review.js';
+import { makeCleanEquipmentTestWorkspace } from './equipment-test-workspace.js';
 
 const SOURCE_WORKSPACE_ROOT = process.cwd();
-const PROFILE_REFERENCE_PATH =
-	'assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 const RUN_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs/${DEFAULT_EQUIPMENT_RUN_ID}`;
 const PLAN_PATH = `${RUN_DIRECTORY}/plan.json`;
 const ACTIVATION_PATH = `${RUN_DIRECTORY}/activation.json`;
@@ -67,18 +65,11 @@ async function writeJson(
 }
 
 async function makeWorkspace(): Promise<string> {
-	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-armour-review-'));
+	const workspaceRoot = await makeCleanEquipmentTestWorkspace(
+		SOURCE_WORKSPACE_ROOT,
+		'equipment-armour-review-'
+	);
 	fixtureRoots.push(workspaceRoot);
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, EQUIPMENT_PRODUCTION_ROOT),
-		absolute(workspaceRoot, EQUIPMENT_PRODUCTION_ROOT),
-		{ recursive: true }
-	);
-	await mkdir(path.dirname(absolute(workspaceRoot, PROFILE_REFERENCE_PATH)), { recursive: true });
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, PROFILE_REFERENCE_PATH),
-		absolute(workspaceRoot, PROFILE_REFERENCE_PATH)
-	);
 	return workspaceRoot;
 }
 

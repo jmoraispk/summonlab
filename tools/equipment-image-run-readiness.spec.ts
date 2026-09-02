@@ -2,7 +2,6 @@ import { createHash } from 'node:crypto';
 import {
 	cp,
 	lstat,
-	mkdtemp,
 	mkdir,
 	readFile,
 	readdir,
@@ -11,7 +10,6 @@ import {
 	unlink,
 	writeFile
 } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
@@ -22,6 +20,7 @@ import {
 	EquipmentRunPlanSchema
 } from './equipment-image-production-contract.js';
 import { canonicalJsonSha256 } from './equipment-image-packets.js';
+import { makeCleanEquipmentTestWorkspace } from './equipment-test-workspace.js';
 import { runEquipmentImageProductionCli } from './equipment-image-production.js';
 import {
 	DEFAULT_EQUIPMENT_RUN_ID,
@@ -31,8 +30,6 @@ import {
 } from './equipment-image-run-readiness.js';
 
 const SOURCE_WORKSPACE_ROOT = process.cwd();
-const PROFILE_REFERENCE_PATH =
-	'assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png';
 const RUN_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs/${DEFAULT_EQUIPMENT_RUN_ID}`;
 const RUNS_DIRECTORY = `${EQUIPMENT_PRODUCTION_ROOT}/runs`;
 const PLAN_PATH = `${RUN_DIRECTORY}/plan.json`;
@@ -58,18 +55,11 @@ function absolute(workspaceRoot: string, repositoryPath: string): string {
 }
 
 async function makeFixture(): Promise<string> {
-	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-run-readiness-'));
+	const workspaceRoot = await makeCleanEquipmentTestWorkspace(
+		SOURCE_WORKSPACE_ROOT,
+		'equipment-run-readiness-'
+	);
 	fixtureRoots.push(workspaceRoot);
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, EQUIPMENT_PRODUCTION_ROOT),
-		absolute(workspaceRoot, EQUIPMENT_PRODUCTION_ROOT),
-		{ recursive: true }
-	);
-	await mkdir(path.dirname(absolute(workspaceRoot, PROFILE_REFERENCE_PATH)), { recursive: true });
-	await cp(
-		absolute(SOURCE_WORKSPACE_ROOT, PROFILE_REFERENCE_PATH),
-		absolute(workspaceRoot, PROFILE_REFERENCE_PATH)
-	);
 	return workspaceRoot;
 }
 

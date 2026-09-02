@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { lstat, readFile, readdir } from 'node:fs/promises';
+import { lstat, readFile, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
@@ -8,6 +8,7 @@ import { EQUIPMENT_PRODUCTION_ROOT } from './equipment-image-production-contract
 import { runEquipmentImageProductionCli } from './equipment-image-production.js';
 import { reportEquipmentRun, simulateEquipmentRun } from './equipment-image-run-reconcile.js';
 import { DEFAULT_EQUIPMENT_RUN_ID } from './equipment-image-run-readiness.js';
+import { makeCleanEquipmentTestWorkspace } from './equipment-test-workspace.js';
 
 async function snapshotTree(workspaceRoot: string): Promise<string[]> {
 	const entries: string[] = [];
@@ -71,7 +72,10 @@ describe('Equipment production dry integration', () => {
 	});
 
 	it('reports current ready-for-activation state and runs report/simulate with zero writes', async () => {
-		const workspaceRoot = process.cwd();
+		const workspaceRoot = await makeCleanEquipmentTestWorkspace(
+			process.cwd(),
+			'equipment-production-integration-'
+		);
 		const before = await snapshotTree(workspaceRoot);
 		const report = await reportEquipmentRun({
 			workspaceRoot,
@@ -124,5 +128,6 @@ describe('Equipment production dry integration', () => {
 			summary: { generatedImages: 0 }
 		});
 		expect(await snapshotTree(workspaceRoot)).toEqual(before);
+		await rm(workspaceRoot, { recursive: true, force: true });
 	});
 });
