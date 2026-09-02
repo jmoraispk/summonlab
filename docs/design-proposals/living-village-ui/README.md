@@ -53,6 +53,14 @@ this composition rather than turn the gateway into a conventional login form.
 
 ![Phone Village home](./mockups/village-home-phone.png)
 
+### Exploratory opening Village
+
+This candidate is intentionally not frozen yet. It tests a stable path to the mature Village: one
+portal, one residence, exactly three visible residents, and future facilities occupying recognizable
+but unbuilt plots along the permanent central road.
+
+![Opening Village desktop candidate](./mockups/opening-village-desktop-v1.png)
+
 ### Shared Village Inventory
 
 ![Desktop Village Inventory](./mockups/village-inventory-desktop.png)

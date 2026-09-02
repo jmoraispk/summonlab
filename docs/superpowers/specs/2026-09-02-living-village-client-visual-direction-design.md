@@ -171,6 +171,13 @@ feels additive. Construction fills deliberate absences; it should not replace th
 unrelated background. A future design pass must establish the starting plot map, the first available
 facility set, and transitions for construction and arrival.
 
+The first opening-state candidate tests that approach with a permanent portal and central road, one
+completed residence, exactly three residents, and three recognizable future sites. The sites occupy the
+same compositional roles that completed facilities can inherit later; they are promises of growth rather
+than disabled dashboard cards. This candidate remains exploratory pending visual review.
+
+Mockup: [opening Village desktop candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
+
 ### Facility pointer states
 
 Pointers have three states: ambient, focused, and suppressed. Ambient labels use restrained contrast;
