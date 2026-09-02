@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 
 import sharp from 'sharp';
@@ -178,7 +178,15 @@ async function ensureSafeParent(repositoryRoot: string, ownedPath: string): Prom
 			}
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-			await mkdir(cursor);
+			try {
+				await mkdir(cursor);
+			} catch (creationError) {
+				if ((creationError as NodeJS.ErrnoException).code !== 'EEXIST') throw creationError;
+				const metadata = await lstat(cursor);
+				if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+					throw new Error(`Review receipt parent is not a real directory: ${cursor}`);
+				}
+			}
 		}
 	}
 	return absolute;
@@ -285,6 +293,54 @@ function validateReviewAssignmentIdentityPair(input: ReviewAssignmentIdentityPai
 	}
 }
 
+function reviewAssignmentIssuanceLockPath(target: FamilyAffinityTarget): string {
+	if (target.namespace === 'bridge') {
+		return `${FAMILY_AFFINITY_ROOT}/review/bridge/assignments/locks/${target.currentClassId}/${target.affinity}/candidate-v${target.version}.lock`;
+	}
+	return `${FAMILY_AFFINITY_ROOT}/review/assignments/locks/${target.familyId}/${target.formId}/${target.affinity}/candidate-v${target.version}.lock`;
+}
+
+async function acquireReviewAssignmentIssuanceLock(
+	repositoryRoot: string,
+	target: FamilyAffinityTarget,
+	input: { issuerId: string; kind: 'ordinary' | 'blind' }
+): Promise<{ absolutePath: string; ownedPath: string; bytes: Buffer }> {
+	const ownedPath = reviewAssignmentIssuanceLockPath(target);
+	const absolutePath = await ensureSafeParent(repositoryRoot, ownedPath);
+	const bytes = Buffer.from(
+		stableFamilyAffinityJson({
+			schemaVersion: 'family-affinity-review-issuance-lock-v1',
+			targetId: target.targetId,
+			coordinateId: target.coordinateId,
+			candidateVersion: target.version,
+			issuerId: input.issuerId,
+			reviewKind: input.kind
+		})
+	);
+	try {
+		await writeFile(absolutePath, bytes, { flag: 'wx' });
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+		throw new Error(
+			`Review assignment issuance lock is active or crash-stale: ${ownedPath}. Retry after the active issuance completes; remove only after controller audit.`
+		);
+	}
+	return { absolutePath, ownedPath, bytes };
+}
+
+async function releaseReviewAssignmentIssuanceLock(
+	repositoryRoot: string,
+	lock: Awaited<ReturnType<typeof acquireReviewAssignmentIssuanceLock>>
+): Promise<void> {
+	const currentBytes = await requiredRealFile(repositoryRoot, lock.ownedPath);
+	if (!currentBytes.equals(lock.bytes)) {
+		throw new Error(
+			`Review assignment issuance lock changed while held; manual controller audit required: ${lock.ownedPath}`
+		);
+	}
+	await unlink(lock.absolutePath);
+}
+
 export async function issueReviewAssignmentExclusive(
 	repositoryRoot: string,
 	input: {
@@ -377,40 +433,49 @@ export async function issueReviewAssignmentExclusive(
 		exclusiveCreateRequired: true,
 		runtimeCatalogMutationForbidden: true
 	});
-	const oppositeKind = input.kind === 'ordinary' ? 'blind' : 'ordinary';
-	const oppositePath = familyAffinityReviewAssignmentPath(
-		oppositeKind,
+	const issuanceLock = await acquireReviewAssignmentIssuanceLock(
+		repositoryRoot,
 		live.target,
-		input.decisionVersion
+		input
 	);
-	const oppositeBytes = await optionalRealFile(repositoryRoot, oppositePath);
-	let oppositeAssignment: FamilyAffinityReviewAssignment | undefined;
-	if (oppositeBytes) {
-		oppositeAssignment = validateFamilyAffinityReviewAssignmentEvidence({
-			reviewAssignment: FamilyAffinityReviewAssignmentSchema.parse(
-				JSON.parse(oppositeBytes.toString('utf8'))
-			),
-			reviewAssignmentPath: oppositePath,
-			kind: oppositeKind,
-			manifestPath,
-			manifestSha256,
-			target: live.target,
-			targetPath: input.targetPath,
-			productionAssignment: live.productionAssignment,
-			productionAssignmentPath: input.productionAssignmentPath,
-			result: live.result,
-			resultSha256
+	try {
+		const oppositeKind = input.kind === 'ordinary' ? 'blind' : 'ordinary';
+		const oppositePath = familyAffinityReviewAssignmentPath(
+			oppositeKind,
+			live.target,
+			input.decisionVersion
+		);
+		const oppositeBytes = await optionalRealFile(repositoryRoot, oppositePath);
+		let oppositeAssignment: FamilyAffinityReviewAssignment | undefined;
+		if (oppositeBytes) {
+			oppositeAssignment = validateFamilyAffinityReviewAssignmentEvidence({
+				reviewAssignment: FamilyAffinityReviewAssignmentSchema.parse(
+					JSON.parse(oppositeBytes.toString('utf8'))
+				),
+				reviewAssignmentPath: oppositePath,
+				kind: oppositeKind,
+				manifestPath,
+				manifestSha256,
+				target: live.target,
+				targetPath: input.targetPath,
+				productionAssignment: live.productionAssignment,
+				productionAssignmentPath: input.productionAssignmentPath,
+				result: live.result,
+				resultSha256
+			});
+		}
+		validateReviewAssignmentIdentityPair({
+			producerId: live.result.producerId,
+			...(input.kind === 'ordinary'
+				? { ordinary: assignment, ...(oppositeAssignment ? { blind: oppositeAssignment } : {}) }
+				: { blind: assignment, ...(oppositeAssignment ? { ordinary: oppositeAssignment } : {}) })
 		});
+		const absolute = await ensureSafeParent(repositoryRoot, path);
+		await writeFile(absolute, stableFamilyAffinityJson(assignment), { flag: 'wx' });
+		return { path, assignment };
+	} finally {
+		await releaseReviewAssignmentIssuanceLock(repositoryRoot, issuanceLock);
 	}
-	validateReviewAssignmentIdentityPair({
-		producerId: live.result.producerId,
-		...(input.kind === 'ordinary'
-			? { ordinary: assignment, ...(oppositeAssignment ? { blind: oppositeAssignment } : {}) }
-			: { blind: assignment, ...(oppositeAssignment ? { ordinary: oppositeAssignment } : {}) })
-	});
-	const absolute = await ensureSafeParent(repositoryRoot, path);
-	await writeFile(absolute, stableFamilyAffinityJson(assignment), { flag: 'wx' });
-	return { path, assignment };
 }
 
 export async function createReviewReceiptExclusive(

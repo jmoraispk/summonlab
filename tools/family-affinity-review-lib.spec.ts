@@ -130,6 +130,15 @@ function reviewIssueInput(
 	};
 }
 
+function reviewIssuanceLockPath(live: Awaited<ReturnType<typeof stageLiveAttempt>>): string {
+	return `assets/enemies/experiments/family-affinity-v1/review/assignments/locks/${live.activeTarget.familyId}/${live.activeTarget.formId}/${live.activeTarget.affinity}/candidate-v${live.activeTarget.version}.lock`;
+}
+
+async function existingReviewAssignmentPaths(root: string, paths: string[]): Promise<string[]> {
+	const reads = await Promise.allSettled(paths.map((path) => readFile(join(root, path))));
+	return paths.filter((_, index) => reads[index]?.status === 'fulfilled');
+}
+
 function reviewAssignmentWithIdentity(
 	live: Awaited<ReturnType<typeof stageLiveAttempt>>,
 	assignment: FamilyAffinityReviewAssignment,
@@ -434,6 +443,105 @@ describe('family-affinity review receipt contract', () => {
 		).rejects.toThrow(/attestation|stale|forged|cross-bound/i);
 	});
 
+	it.each(['ordinary-first', 'blind-first'] as const)(
+		'atomically rejects conflicting concurrent %s cross-kind issuance',
+		async (order) => {
+			const live = await stageLiveAttempt('T3');
+			const ordinaryInput = reviewIssueInput(live, 'ordinary', 'reviewer-beta');
+			const blindInput = {
+				...reviewIssueInput(live, 'blind', 'reviewer-beta'),
+				issuerId: 'review-controller-delta'
+			};
+			const scheduled =
+				order === 'ordinary-first' ? [ordinaryInput, blindInput] : [blindInput, ordinaryInput];
+			const results = await Promise.allSettled(
+				scheduled.map((input) => issueReviewAssignmentExclusive(live.root, input))
+			);
+			expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1);
+			const rejected = results.filter(
+				(result): result is PromiseRejectedResult => result.status === 'rejected'
+			);
+			expect(rejected).toHaveLength(1);
+			expect(String(rejected[0]!.reason)).toMatch(/issuance lock|active issuance/i);
+
+			const ordinaryPath = familyAffinityReviewAssignmentPath('ordinary', live.activeTarget, 1);
+			const blindPath = familyAffinityReviewAssignmentPath('blind', live.activeTarget, 1);
+			expect(
+				await existingReviewAssignmentPaths(live.root, [ordinaryPath, blindPath])
+			).toHaveLength(1);
+			const missingKind = (await readFile(join(live.root, ordinaryPath)).catch(() => undefined))
+				? 'blind'
+				: 'ordinary';
+			await expect(
+				issueReviewAssignmentExclusive(
+					live.root,
+					missingKind === 'ordinary' ? ordinaryInput : blindInput
+				)
+			).rejects.toThrow(/independent|cross-kind|separate|reviewer/i);
+			expect(
+				await existingReviewAssignmentPaths(live.root, [ordinaryPath, blindPath])
+			).toHaveLength(1);
+			await expect(readFile(join(live.root, reviewIssuanceLockPath(live)))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	);
+
+	it('allows the compatible concurrent loser to retry after the winner releases the lock', async () => {
+		const live = await stageLiveAttempt('T3');
+		const inputs = [
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta'),
+			reviewIssueInput(live, 'blind', 'reviewer-gamma')
+		] as const;
+		const results = await Promise.allSettled(
+			inputs.map((input) => issueReviewAssignmentExclusive(live.root, input))
+		);
+		expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1);
+		const failedIndex = results.findIndex(({ status }) => status === 'rejected');
+		expect(failedIndex).toBeGreaterThanOrEqual(0);
+		expect(String((results[failedIndex] as PromiseRejectedResult).reason)).toMatch(
+			/issuance lock|active issuance/i
+		);
+		await expect(
+			issueReviewAssignmentExclusive(live.root, inputs[failedIndex]!)
+		).resolves.toBeDefined();
+		expect(
+			await existingReviewAssignmentPaths(live.root, [
+				familyAffinityReviewAssignmentPath('ordinary', live.activeTarget, 1),
+				familyAffinityReviewAssignmentPath('blind', live.activeTarget, 1)
+			])
+		).toHaveLength(2);
+		await expect(readFile(join(live.root, reviewIssuanceLockPath(live)))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	});
+
+	it.each(['existing-file', 'symlink'] as const)(
+		'fails closed on an issuance-lock %s without creating an assignment',
+		async (mode) => {
+			const live = await stageLiveAttempt('T3');
+			const lockPath = reviewIssuanceLockPath(live);
+			await mkdir(dirname(join(live.root, lockPath)), { recursive: true });
+			if (mode === 'existing-file') {
+				await writeFile(join(live.root, lockPath), 'active issuance\n');
+			} else {
+				const stored = join(live.root, 'stored-review-issuance-lock');
+				await writeFile(stored, 'forged lock target\n');
+				await symlink(stored, join(live.root, lockPath));
+			}
+			const assignmentPath = familyAffinityReviewAssignmentPath('ordinary', live.activeTarget, 1);
+			await expect(
+				issueReviewAssignmentExclusive(
+					live.root,
+					reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+				)
+			).rejects.toThrow(/lock|active|collision|exist/i);
+			await expect(readFile(join(live.root, assignmentPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	);
+
 	it.each([
 		{
 			name: 'one reviewer receiving both roles',
@@ -467,6 +575,9 @@ describe('family-affinity review receipt contract', () => {
 			})
 		).rejects.toThrow(/independent|cross-kind|separate|reviewer/i);
 		await expect(readFile(join(live.root, invalidPath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(readFile(join(live.root, reviewIssuanceLockPath(live)))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
 	});
 
 	it.each([
@@ -502,6 +613,9 @@ describe('family-affinity review receipt contract', () => {
 			})
 		).rejects.toThrow(/independent|cross-kind|separate|reviewer/i);
 		await expect(readFile(join(live.root, invalidPath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(readFile(join(live.root, reviewIssuanceLockPath(live)))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
 	});
 
 	it('fails closed before write when opposite-kind authorization is malformed, tampered, or symlinked', async () => {
