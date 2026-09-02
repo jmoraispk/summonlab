@@ -54,7 +54,9 @@ This mode refuses either pre-existing output or any other repository change, wri
 assigned result path with `output: null`, and verifies the strict execution and ownership contract.
 Supply the real start plus either completion or elapsed milliseconds; when both are supplied they
 must agree exactly. The helper derives only the omitted value and rejects naive, reversed, or
-inconsistent timing instead of synthesizing a zero-duration attempt.
+inconsistent timing instead of synthesizing a zero-duration attempt. Derived completion preserves
+sub-millisecond start precision, and final verification independently cross-checks elapsed time
+against both timestamps for every result status.
 
 If verification fails after this job newly created outputs, report the failure for coordinator
 handling. Do not delete, replace, promote, or move evidence and do not touch shared files.

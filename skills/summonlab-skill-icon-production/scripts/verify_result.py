@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import stat
 import subprocess
 from datetime import datetime, timedelta
@@ -33,6 +34,10 @@ FAILURE_KINDS = {
     "validation",
     "other",
 }
+ISO_TIMESTAMP_PATTERN = re.compile(
+    r"^(?P<seconds>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})"
+    r"(?:\.(?P<fraction>\d+))?(?P<zone>Z|[+-]\d{2}:\d{2})$"
+)
 
 
 def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> None:
@@ -42,20 +47,75 @@ def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> N
         fail("attempt count violates the assignment retry ceiling")
 
 
-def _parse_timestamp(raw: Any, label: str) -> datetime:
+def _parse_timestamp(raw: Any, label: str) -> tuple[datetime, str, str]:
     if not isinstance(raw, str) or not raw:
         fail(f"{label} timestamp must be a non-empty ISO-8601 string")
+    matched = ISO_TIMESTAMP_PATTERN.fullmatch(raw)
+    if matched is None:
+        fail(f"{label} timestamp must include seconds and a UTC offset")
+    zone = matched.group("zone")
     try:
-        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(
+            matched.group("seconds") + zone.replace("Z", "+00:00")
+        )
     except ValueError as error:
         fail(f"{label} timestamp must be a valid ISO-8601 timestamp: {error}")
     if parsed.utcoffset() is None:
         fail(f"{label} timestamp must include a UTC offset")
-    return parsed
+    return parsed, matched.group("fraction") or "", zone
 
 
-def _format_timestamp(value: datetime) -> str:
-    return value.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+def _format_derived_timestamp(started_at: str, total_wall_time_ms: int) -> str:
+    started, fraction, zone = _parse_timestamp(started_at, "started-at")
+    precision = max(len(fraction), 3)
+    scale = 10**precision
+    fraction_ticks = int(fraction.ljust(precision, "0") or "0")
+    elapsed_ticks = total_wall_time_ms * 10 ** (precision - 3)
+    seconds, completed_fraction = divmod(fraction_ticks + elapsed_ticks, scale)
+    completed = started + timedelta(seconds=seconds)
+    return (
+        completed.strftime("%Y-%m-%dT%H:%M:%S")
+        + f".{completed_fraction:0{precision}d}"
+        + zone
+    )
+
+
+def _elapsed_wall_time_ms(
+    started_at: Any, completed_at: Any
+) -> tuple[datetime, datetime, int]:
+    started, started_fraction, _ = _parse_timestamp(started_at, "started-at")
+    completed, completed_fraction, _ = _parse_timestamp(completed_at, "completed-at")
+    precision = max(len(started_fraction), len(completed_fraction), 3)
+    scale = 10**precision
+    elapsed = completed - started
+    whole_seconds = elapsed.days * 86_400 + elapsed.seconds
+    elapsed_ticks = (
+        whole_seconds * scale
+        + int(completed_fraction.ljust(precision, "0") or "0")
+        - int(started_fraction.ljust(precision, "0") or "0")
+    )
+    if elapsed_ticks < 0:
+        fail("result timing is not chronological")
+    ticks_per_millisecond = 10 ** (precision - 3)
+    if elapsed_ticks % ticks_per_millisecond != 0:
+        fail("result timing duration must resolve to whole milliseconds")
+    elapsed_ms = elapsed_ticks // ticks_per_millisecond
+    return started, completed, elapsed_ms
+
+
+def _validate_result_timing(
+    started_at: Any, completed_at: Any, total_wall_time_ms: Any
+) -> tuple[datetime, datetime, int]:
+    if (
+        isinstance(total_wall_time_ms, bool)
+        or not isinstance(total_wall_time_ms, int)
+        or total_wall_time_ms < 0
+    ):
+        fail("total wall-time duration must be a non-negative integer in milliseconds")
+    started, completed, elapsed_ms = _elapsed_wall_time_ms(started_at, completed_at)
+    if total_wall_time_ms != elapsed_ms:
+        fail("declared total wall-time duration does not match the timestamps")
+    return started, completed, elapsed_ms
 
 
 def _resolve_failure_timing(
@@ -63,7 +123,7 @@ def _resolve_failure_timing(
     completed_at: str | None,
     total_wall_time_ms: int | None,
 ) -> tuple[str, str, int]:
-    started = _parse_timestamp(started_at, "started-at")
+    _parse_timestamp(started_at, "started-at")
     if total_wall_time_ms is not None and (
         isinstance(total_wall_time_ms, bool)
         or not isinstance(total_wall_time_ms, int)
@@ -73,27 +133,16 @@ def _resolve_failure_timing(
     if completed_at is None and total_wall_time_ms is None:
         fail("failure timing requires completed-at or total wall-time duration")
 
-    completed: datetime | None = None
-    elapsed_ms: int | None = None
     if completed_at is not None:
-        completed = _parse_timestamp(completed_at, "completed-at")
-        if completed < started:
-            fail("failure timing is not chronological")
-        elapsed_microseconds = round((completed - started).total_seconds() * 1_000_000)
-        if elapsed_microseconds % 1_000 != 0:
-            fail("failure timing duration must resolve to whole milliseconds")
-        elapsed_ms = elapsed_microseconds // 1_000
-        if total_wall_time_ms is not None and total_wall_time_ms != elapsed_ms:
-            fail("declared total wall-time duration does not match the timestamps")
-
-    if completed is None:
+        _, _, elapsed_ms = _elapsed_wall_time_ms(started_at, completed_at)
+        if total_wall_time_ms is None:
+            total_wall_time_ms = elapsed_ms
+    else:
         assert total_wall_time_ms is not None
-        completed = started + timedelta(milliseconds=total_wall_time_ms)
-        completed_at = _format_timestamp(completed)
-    if total_wall_time_ms is None:
-        assert elapsed_ms is not None
-        total_wall_time_ms = elapsed_ms
+        completed_at = _format_derived_timestamp(started_at, total_wall_time_ms)
     assert completed_at is not None
+    assert total_wall_time_ms is not None
+    _validate_result_timing(started_at, completed_at, total_wall_time_ms)
     return started_at, completed_at, total_wall_time_ms
 
 
@@ -158,6 +207,9 @@ def verify(
         assignment,
         result=result,
         contract_root=contract_root or root,
+    )
+    _validate_result_timing(
+        result["startedAt"], result["completedAt"], result["totalWallTimeMs"]
     )
 
     _validate_attempt_count(assignment, attempt_count)

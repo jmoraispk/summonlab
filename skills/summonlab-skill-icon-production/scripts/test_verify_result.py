@@ -788,6 +788,24 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.assertEqual(retained["completedAt"], COMPLETED_AT)
         self.assertEqual(retained["totalWallTimeMs"], TOTAL_WALL_TIME_MS)
 
+    def test_elapsed_derivation_preserves_sub_millisecond_start_precision(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="timeout",
+            failure_message="The provider timed out after one millisecond.",
+            started_at="2026-09-01T17:01:00.000500Z",
+            total_wall_time_ms=1,
+            contract_root=REPOSITORY_ROOT,
+        )
+        retained = load_json(self.packet.root / RESULT_PATH)
+        self.assertEqual(retained["completedAt"], "2026-09-01T17:01:00.001500Z")
+        self.assertEqual(retained["totalWallTimeMs"], 1)
+
     def test_result_only_failure_rejects_invalid_timing_without_writing(self) -> None:
         self.packet.candidate_file.unlink()
         self.packet.result_file.unlink()
@@ -844,6 +862,13 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.packet.assignment["retryCeiling"] = 0
         with self.assertRaisesRegex(ValueError, "retry ceiling"):
             self.packet.verify(attempt_count=2)
+
+    def test_rejects_tampered_wall_time_duration(self) -> None:
+        self.packet.result["startedAt"] = "2026-09-01T17:01:00.000500Z"
+        self.packet.result["completedAt"] = "2026-09-01T17:01:00.001500Z"
+        self.packet.result["totalWallTimeMs"] = 2
+        self.packet.rewrite_result()
+        self.assert_invalid("duration")
 
     def test_rejects_invalid_status(self) -> None:
         self.packet.result["status"] = "approved"
