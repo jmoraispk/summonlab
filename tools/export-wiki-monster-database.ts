@@ -13,12 +13,15 @@ import {
 } from './family-affinity-production-lib.js';
 import {
 	assertGeneratedMonsterWikiFreshness,
+	assertManagedMonsterCatalogEntries,
 	buildCanonicalMonsterWikiDatabase,
 	buildMonsterDatabaseIndex,
 	buildMonsterVisualIndex,
 	buildMonsterWikiPage,
 	generatedMonsterPageFileNames,
 	obsoleteGeneratedMonsterPages,
+	unmanagedMonsterPageCollisions,
+	type CanonicalMonsterWikiDatabase,
 	type LegacyCandidateReference,
 	type MonsterWikiBuildInput
 } from './wiki-monster-database-lib.js';
@@ -102,10 +105,14 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 	return { families, mapping, manifest, targets, candidateReferences };
 }
 
-function buildCatalog(current: WikiCatalog, formIds: readonly string[]): WikiCatalog {
-	const retained = current.entries.filter(
-		(entry) => entry.wikiId !== 'creatures.monster-database' && !entry.wikiId.startsWith('monster.')
-	);
+function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDatabase): WikiCatalog {
+	assertManagedMonsterCatalogEntries(database, current.entries);
+	const replaceableWikiIds = new Set([
+		'creatures.monster-database',
+		...database.forms.map(({ formId }) => `monster.${formId}`),
+		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`)
+	]);
+	const retained = current.entries.filter((entry) => !replaceableWikiIds.has(entry.wikiId));
 	return {
 		...current,
 		lastReviewed: '2026-09-01',
@@ -121,7 +128,7 @@ function buildCatalog(current: WikiCatalog, formIds: readonly string[]): WikiCat
 				visualStatus: 'brief',
 				spoilerScope: 'discoverable'
 			},
-			...formIds.map((formId) => ({
+			...database.forms.map(({ formId }) => ({
 				wikiId: `monster.${formId}`,
 				path: `docs/wiki/creatures/monsters/${formId}.md`,
 				pageType: 'monster-entry',
@@ -174,9 +181,14 @@ async function writeOutputs(input: MonsterWikiBuildInput): Promise<number> {
 	await validateReferenceAssets(database.reconciliation);
 	await validateSourcePages(input.manifest);
 	await mkdir(monsterWikiRoot, { recursive: true });
-	const expectedPages = generatedMonsterPageFileNames(database);
 	const existingFileNames = await readdir(monsterWikiRoot);
-	const obsoletePages = obsoleteGeneratedMonsterPages(existingFileNames, expectedPages);
+	const unmanagedPages = unmanagedMonsterPageCollisions(database, existingFileNames);
+	if (unmanagedPages.length > 0) {
+		throw new Error(`Unmanaged monster page collision: ${unmanagedPages.join(', ')}`);
+	}
+	const currentCatalog = await readJson<WikiCatalog>(wikiCatalogPath);
+	assertManagedMonsterCatalogEntries(database, currentCatalog.entries);
+	const obsoletePages = obsoleteGeneratedMonsterPages(database, existingFileNames);
 	for (const fileName of obsoletePages) await unlink(resolve(monsterWikiRoot, fileName));
 
 	await writeFile(resolve(monsterWikiRoot, 'README.md'), buildMonsterDatabaseIndex(database));
@@ -187,17 +199,9 @@ async function writeOutputs(input: MonsterWikiBuildInput): Promise<number> {
 		visualIndexPath,
 		`${JSON.stringify(buildMonsterVisualIndex(database), null, 2)}\n`
 	);
-	const currentCatalog = await readJson<WikiCatalog>(wikiCatalogPath);
 	await writeFile(
 		wikiCatalogPath,
-		`${JSON.stringify(
-			buildCatalog(
-				currentCatalog,
-				database.forms.map(({ formId }) => formId)
-			),
-			null,
-			2
-		)}\n`
+		`${JSON.stringify(buildCatalog(currentCatalog, database), null, 2)}\n`
 	);
 	return obsoletePages.length;
 }
@@ -220,10 +224,7 @@ async function checkOutputs(input: MonsterWikiBuildInput): Promise<void> {
 		existingFileNames
 	});
 	const catalog = await readJson<WikiCatalog>(wikiCatalogPath);
-	const expectedCatalog = buildCatalog(
-		catalog,
-		database.forms.map(({ formId }) => formId)
-	);
+	const expectedCatalog = buildCatalog(catalog, database);
 	if (JSON.stringify(catalog) !== JSON.stringify(expectedCatalog)) {
 		throw new Error('Wiki catalog monster registrations are stale');
 	}

@@ -1,9 +1,305 @@
-import visualIndex from '../../../../../docs/wiki/creatures/monsters/visual-index.json';
+import visualIndexJson from '../../../../../docs/wiki/creatures/monsters/visual-index.json';
 
-export type MonsterProductionEntry = (typeof visualIndex.monsters)[number];
+export type MonsterTier = 'T1' | 'T2' | 'T3' | 'T4' | 'T5';
+export type MonsterAffinity = 'normal' | 'fire' | 'earth' | 'wind' | 'water';
+export type MonsterProductionStatus = 'planned' | 'blocked-on-anchor' | 'earth-bridge-provisional';
+export type MonsterProductionPresentationStatus = 'planned-ownership';
+export type MonsterCandidatePresentationStatus = 'candidate-only';
+export type MonsterCurrentClassDisposition =
+	'map' | 'rename-map' | 'secondary-archetype' | 'fauna' | 'retire';
+export type MonsterVisualIndexSourceStatus = 'canonical-production-plan';
+export type MonsterReconciliationSourceStatus = 'candidate-only-reference';
 
+export const MONSTER_TIERS = [
+	'T1',
+	'T2',
+	'T3',
+	'T4',
+	'T5'
+] as const satisfies readonly MonsterTier[];
+export const MONSTER_AFFINITIES = [
+	'normal',
+	'fire',
+	'earth',
+	'wind',
+	'water'
+] as const satisfies readonly MonsterAffinity[];
+export const MONSTER_PRODUCTION_STATUSES = [
+	'planned',
+	'blocked-on-anchor',
+	'earth-bridge-provisional'
+] as const satisfies readonly MonsterProductionStatus[];
+export const MONSTER_CURRENT_CLASS_DISPOSITIONS = [
+	'map',
+	'rename-map',
+	'secondary-archetype',
+	'fauna',
+	'retire'
+] as const satisfies readonly MonsterCurrentClassDisposition[];
+
+export interface MonsterProductionVariant {
+	affinity: MonsterAffinity;
+	status: MonsterProductionStatus;
+	presentationStatus: MonsterProductionPresentationStatus;
+	targetId: string;
+	targetPath: string;
+	assignmentPath: string;
+	candidatePath: string;
+	resultPath: string;
+	version: number;
+}
+
+export interface MonsterProductionEntry {
+	id: string;
+	name: string;
+	familyId: string;
+	familyName: string;
+	tier: MonsterTier;
+	role: string;
+	floorSlot: null;
+	pagePath: string;
+	variants: MonsterProductionVariant[];
+}
+
+export interface MonsterProductionFamily {
+	familyId: string;
+	displayName: string;
+	sourceRaceNumber: number;
+	floorSlot: null;
+	formIds: string[];
+}
+
+export interface LegacyMonsterWikiRoute {
+	currentClassId: string;
+	disposition: MonsterCurrentClassDisposition;
+	destination: string;
+	statusCode: 308;
+}
+
+interface MonsterCandidateReference {
+	affinity: MonsterAffinity;
+	presentationStatus: MonsterCandidatePresentationStatus;
+	candidatePath: string;
+	contentHash: string;
+}
+
+interface MonsterReconciliationEntry {
+	currentClassId: string;
+	sourceFamilyLabel: string;
+	disposition: MonsterCurrentClassDisposition;
+	canonicalFamilyId: string | null;
+	canonicalFormId: string | null;
+	rationale: string;
+	candidateReuseByAffinity: Record<MonsterAffinity, boolean>;
+	references: MonsterCandidateReference[];
+}
+
+export interface MonsterVisualIndexV2 {
+	schemaVersion: 'summonlab-monster-visual-index-v2';
+	sourceStatus: MonsterVisualIndexSourceStatus;
+	familyCount: 30;
+	formCount: 150;
+	coordinateCount: 750;
+	currentClassCount: 40;
+	affinities: readonly MonsterAffinity[];
+	families: MonsterProductionFamily[];
+	monsters: MonsterProductionEntry[];
+	legacyRoutes: LegacyMonsterWikiRoute[];
+	reconciliation: {
+		sourceStatus: MonsterReconciliationSourceStatus;
+		entries: MonsterReconciliationEntry[];
+	};
+}
+
+function record(value: unknown, label: string): Record<string, unknown> {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) {
+		throw new Error(`Invalid monster visual index ${label}`);
+	}
+	return value as Record<string, unknown>;
+}
+
+function array(value: unknown, label: string): unknown[] {
+	if (!Array.isArray(value)) throw new Error(`Invalid monster visual index ${label}`);
+	return value;
+}
+
+function string(value: unknown, label: string): string {
+	if (typeof value !== 'string' || value.length === 0) {
+		throw new Error(`Invalid monster visual index ${label}`);
+	}
+	return value;
+}
+
+function nullableString(value: unknown, label: string): string | null {
+	if (value === null) return null;
+	return string(value, label);
+}
+
+function boolean(value: unknown, label: string): boolean {
+	if (typeof value !== 'boolean') {
+		throw new Error(`Invalid monster visual index ${label}`);
+	}
+	return value;
+}
+
+function literal<T extends string | number>(
+	value: unknown,
+	allowed: readonly T[],
+	label: string
+): T {
+	if (!allowed.includes(value as T)) {
+		throw new Error(`Invalid monster visual index ${label}: ${String(value)}`);
+	}
+	return value as T;
+}
+
+function exactStringArray<T extends string>(
+	value: unknown,
+	expected: readonly T[],
+	label: string
+): readonly T[] {
+	const values = array(value, label);
+	if (
+		values.length !== expected.length ||
+		values.some((entry, index) => entry !== expected[index])
+	) {
+		throw new Error(`Invalid monster visual index ${label}`);
+	}
+	return values as T[];
+}
+
+export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 {
+	const root = record(input, 'root');
+	literal(root.schemaVersion, ['summonlab-monster-visual-index-v2'] as const, 'schemaVersion');
+	literal(root.sourceStatus, ['canonical-production-plan'] as const, 'sourceStatus');
+	literal(root.familyCount, [30] as const, 'familyCount');
+	literal(root.formCount, [150] as const, 'formCount');
+	literal(root.coordinateCount, [750] as const, 'coordinateCount');
+	literal(root.currentClassCount, [40] as const, 'currentClassCount');
+	exactStringArray(root.affinities, MONSTER_AFFINITIES, 'affinities');
+
+	const families = array(root.families, 'families');
+	if (families.length !== 30) throw new Error('Invalid monster visual index family count');
+	for (const [familyIndex, familyInput] of families.entries()) {
+		const family = record(familyInput, `families[${familyIndex}]`);
+		string(family.familyId, `families[${familyIndex}].familyId`);
+		string(family.displayName, `families[${familyIndex}].displayName`);
+		if (
+			!Number.isInteger(family.sourceRaceNumber) ||
+			Number(family.sourceRaceNumber) < 1 ||
+			Number(family.sourceRaceNumber) > 30
+		) {
+			throw new Error(`Invalid monster visual index families[${familyIndex}].sourceRaceNumber`);
+		}
+		if (family.floorSlot !== null) {
+			throw new Error(`Invalid monster visual index families[${familyIndex}].floorSlot`);
+		}
+		const formIds = array(family.formIds, `families[${familyIndex}].formIds`);
+		if (formIds.length !== 5) throw new Error('Invalid monster visual index family form count');
+		for (const [formIndex, formId] of formIds.entries()) {
+			string(formId, `families[${familyIndex}].formIds[${formIndex}]`);
+		}
+	}
+
+	const monsters = array(root.monsters, 'monsters');
+	if (monsters.length !== 150) throw new Error('Invalid monster visual index monster count');
+	for (const [monsterIndex, monsterInput] of monsters.entries()) {
+		const monster = record(monsterInput, `monsters[${monsterIndex}]`);
+		for (const field of ['id', 'name', 'familyId', 'familyName', 'role', 'pagePath'] as const) {
+			string(monster[field], `monsters[${monsterIndex}].${field}`);
+		}
+		literal(monster.tier, MONSTER_TIERS, `monster tier ${String(monster.tier)}`);
+		if (monster.floorSlot !== null) {
+			throw new Error(`Invalid monster visual index floorSlot: ${String(monster.floorSlot)}`);
+		}
+		const variants = array(monster.variants, `monsters[${monsterIndex}].variants`);
+		if (variants.length !== 5) throw new Error('Invalid monster visual index variant count');
+		for (const [variantIndex, variantInput] of variants.entries()) {
+			const variant = record(variantInput, `variant ${variantIndex}`);
+			literal(variant.affinity, MONSTER_AFFINITIES, 'variant affinity');
+			literal(variant.status, MONSTER_PRODUCTION_STATUSES, 'variant status');
+			literal(
+				variant.presentationStatus,
+				['planned-ownership'] as const,
+				'variant presentationStatus'
+			);
+			for (const field of [
+				'targetId',
+				'targetPath',
+				'assignmentPath',
+				'candidatePath',
+				'resultPath'
+			] as const) {
+				string(variant[field], `variant.${field}`);
+			}
+			if (!Number.isInteger(variant.version) || Number(variant.version) < 1) {
+				throw new Error(`Invalid monster visual index variant version: ${String(variant.version)}`);
+			}
+		}
+	}
+
+	const legacyRoutes = array(root.legacyRoutes, 'legacyRoutes');
+	if (legacyRoutes.length !== 40)
+		throw new Error('Invalid monster visual index legacy route count');
+	for (const routeInput of legacyRoutes) {
+		const route = record(routeInput, 'legacy route');
+		string(route.currentClassId, 'legacy route currentClassId');
+		literal(route.disposition, MONSTER_CURRENT_CLASS_DISPOSITIONS, 'legacy route disposition');
+		string(route.destination, 'legacy route destination');
+		literal(route.statusCode, [308] as const, 'legacy route statusCode');
+	}
+
+	const reconciliation = record(root.reconciliation, 'reconciliation');
+	literal(
+		reconciliation.sourceStatus,
+		['candidate-only-reference'] as const,
+		'reconciliation sourceStatus'
+	);
+	const reconciliationEntries = array(reconciliation.entries, 'reconciliation entries');
+	if (reconciliationEntries.length !== 40) {
+		throw new Error('Invalid monster visual index reconciliation count');
+	}
+	for (const entryInput of reconciliationEntries) {
+		const entry = record(entryInput, 'reconciliation entry');
+		string(entry.currentClassId, 'reconciliation currentClassId');
+		string(entry.sourceFamilyLabel, 'reconciliation sourceFamilyLabel');
+		string(entry.rationale, 'reconciliation rationale');
+		literal(entry.disposition, MONSTER_CURRENT_CLASS_DISPOSITIONS, 'reconciliation disposition');
+		nullableString(entry.canonicalFamilyId, 'reconciliation canonicalFamilyId');
+		nullableString(entry.canonicalFormId, 'reconciliation canonicalFormId');
+		const candidateReuseByAffinity = record(
+			entry.candidateReuseByAffinity,
+			'reconciliation candidateReuseByAffinity'
+		);
+		for (const affinity of MONSTER_AFFINITIES) {
+			boolean(
+				candidateReuseByAffinity[affinity],
+				`reconciliation candidateReuseByAffinity.${affinity}`
+			);
+		}
+		const references = array(entry.references, 'reconciliation references');
+		for (const referenceInput of references) {
+			const reference = record(referenceInput, 'candidate reference');
+			literal(reference.affinity, MONSTER_AFFINITIES, 'candidate reference affinity');
+			literal(
+				reference.presentationStatus,
+				['candidate-only'] as const,
+				'candidate presentationStatus'
+			);
+			string(reference.candidatePath, 'candidate path');
+			string(reference.contentHash, 'candidate contentHash');
+		}
+	}
+
+	return input as MonsterVisualIndexV2;
+}
+
+const visualIndex = parseMonsterVisualIndexV2(visualIndexJson as unknown);
 const productionByWikiId = new Map(
 	visualIndex.monsters.map((monster) => [`monster.${monster.id}`, monster])
+);
+const legacyRedirectByCurrentClassId = new Map(
+	visualIndex.legacyRoutes.map((route) => [route.currentClassId, route.destination])
 );
 
 export function getMonsterProductionDatabase(): readonly MonsterProductionEntry[] {
@@ -12,6 +308,14 @@ export function getMonsterProductionDatabase(): readonly MonsterProductionEntry[
 
 export function getMonsterProductionEntry(wikiId: string): MonsterProductionEntry | null {
 	return productionByWikiId.get(wikiId) ?? null;
+}
+
+export function getLegacyMonsterWikiRoutes(): readonly LegacyMonsterWikiRoute[] {
+	return visualIndex.legacyRoutes;
+}
+
+export function getLegacyMonsterWikiRedirect(currentClassId: string): string | null {
+	return legacyRedirectByCurrentClassId.get(currentClassId) ?? null;
 }
 
 // The canonical v2 index contains ownership plans, not renderable pixels. Keep the former visual

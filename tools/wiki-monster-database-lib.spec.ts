@@ -8,14 +8,20 @@ import {
 	FamilyAffinityTargetSchema,
 	FamilyPacketSchema
 } from './family-affinity-production-lib.js';
+import { familyAffinitySha256 } from './family-affinity-production-lib.js';
 import {
+	assertCandidateSafeRenderedMonsterWiki,
 	assertGeneratedMonsterWikiFreshness,
+	assertManagedMonsterCatalogEntries,
 	buildCanonicalMonsterWikiDatabase,
 	buildMonsterDatabaseIndex,
 	buildMonsterVisualIndex,
 	buildMonsterWikiPage,
 	generatedMonsterPageFileNames,
+	legacyMonsterPageFileNames,
+	legacyMonsterRouteMap,
 	obsoleteGeneratedMonsterPages,
+	unmanagedMonsterPageCollisions,
 	type LegacyCandidateReference,
 	type MonsterWikiBuildInput
 } from './wiki-monster-database-lib.js';
@@ -171,9 +177,13 @@ describe('canonical monster wiki database', () => {
 	});
 
 	it('emits deterministic canonical and separate candidate-only reconciliation records', async () => {
-		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		const input = await productionInput();
+		const database = buildCanonicalMonsterWikiDatabase(input);
 		const first = buildMonsterVisualIndex(database);
 		const second = buildMonsterVisualIndex(database);
+		const sourceRationaleByCurrentClassId = new Map(
+			input.mapping.entries.map(({ currentClassId, rationale }) => [currentClassId, rationale])
+		);
 
 		expect(second).toEqual(first);
 		expect(first).toMatchObject({
@@ -188,6 +198,30 @@ describe('canonical monster wiki database', () => {
 		expect(first.monsters.every(({ variants }) => variants.length === 5)).toBe(true);
 		expect(first.reconciliation.entries).toHaveLength(40);
 		expect(first.reconciliation.sourceStatus).toBe('candidate-only-reference');
+		expect(
+			first.reconciliation.entries.map(({ currentClassId, rationale }) => [
+				currentClassId,
+				rationale
+			])
+		).toEqual(
+			input.mapping.entries.map(({ currentClassId, rationale }) => [currentClassId, rationale])
+		);
+		const reconciliationReadme = buildMonsterDatabaseIndex(database);
+		for (const { rationale } of input.mapping.entries) {
+			expect(reconciliationReadme).toContain(rationale);
+		}
+		expect(
+			first.reconciliation.entries.find(({ currentClassId }) => currentClassId === 'hill-giant')
+		).toMatchObject({
+			disposition: 'map',
+			rationale: sourceRationaleByCurrentClassId.get('hill-giant')
+		});
+		expect(
+			first.reconciliation.entries.find(({ currentClassId }) => currentClassId === 'grey-wolf')
+		).toMatchObject({
+			disposition: 'fauna',
+			rationale: sourceRationaleByCurrentClassId.get('grey-wolf')
+		});
 		expect(first.reconciliation.entries.flatMap(({ references }) => references)).toHaveLength(160);
 		expect(
 			first.reconciliation.entries
@@ -261,15 +295,44 @@ describe('canonical monster wiki database', () => {
 		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow();
 	});
 
-	it('allowlists cleanup to obsolete generated monster pages only', async () => {
+	it('deletes only the exact forty managed legacy pages and preserves unknown Markdown', async () => {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
 		const expected = generatedMonsterPageFileNames(database);
-		const existing = ['README.md', 'visual-index.json', ...expected, 'old-class.md', 'notes.txt'];
+		const managedLegacy = legacyMonsterPageFileNames(database);
+		const existing = [
+			'README.md',
+			'visual-index.json',
+			...expected,
+			...managedLegacy,
+			'hand-authored-encounter.md',
+			'notes.txt'
+		];
 
-		expect(obsoleteGeneratedMonsterPages(existing, expected)).toEqual(['old-class.md']);
+		expect(managedLegacy).toHaveLength(40);
+		expect(obsoleteGeneratedMonsterPages(database, existing)).toEqual(managedLegacy);
+		expect(unmanagedMonsterPageCollisions(database, existing)).toEqual([
+			'hand-authored-encounter.md'
+		]);
 	});
 
-	it('detects stale generated content, missing pages, and extra obsolete pages', async () => {
+	it('fails closed on an unknown monster catalog registration without removing it', async () => {
+		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		const entries = [
+			{ wikiId: 'creatures.monster-database' },
+			{ wikiId: 'monster.goblin-runt' },
+			{ wikiId: 'monster.grey-wolf' },
+			{ wikiId: 'monster.hand-authored-encounter' },
+			{ wikiId: 'system.visuals' }
+		];
+		const snapshot = structuredClone(entries);
+
+		expect(() => assertManagedMonsterCatalogEntries(database, entries)).toThrow(
+			/unmanaged.*monster.*catalog/iu
+		);
+		expect(entries).toEqual(snapshot);
+	});
+
+	async function freshStoredOutputs() {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
 		const pages = new Map(
 			database.forms.map((form) => [`${form.formId}.md`, buildMonsterWikiPage(form)])
@@ -277,23 +340,142 @@ describe('canonical monster wiki database', () => {
 		const index = buildMonsterDatabaseIndex(database);
 		const visualIndex = `${JSON.stringify(buildMonsterVisualIndex(database), null, 2)}\n`;
 
-		expect(() =>
-			assertGeneratedMonsterWikiFreshness(database, {
+		return {
+			database,
+			stored: {
 				readme: index,
 				visualIndex,
 				pages,
 				existingFileNames: ['README.md', 'visual-index.json', ...pages.keys()]
-			})
-		).not.toThrow();
+			}
+		};
+	}
 
-		pages.delete('goblin-runt.md');
+	it('accepts a fresh complete generated wiki', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).not.toThrow();
+	});
+
+	it('detects a stale README independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
 		expect(() =>
 			assertGeneratedMonsterWikiFreshness(database, {
-				readme: `${index}\n<!-- stale -->`,
-				visualIndex,
-				pages,
-				existingFileNames: ['README.md', 'visual-index.json', ...pages.keys(), 'old-class.md']
+				...stored,
+				readme: `${stored.readme}\n<!-- stale -->`
 			})
-		).toThrow(/stale|missing|obsolete/iu);
+		).toThrow(/README is stale/iu);
+	});
+
+	it('detects a missing canonical page independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		stored.pages.delete('goblin-runt.md');
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
+			/missing generated page goblin-runt/iu
+		);
+	});
+
+	it('detects an altered canonical page independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		stored.pages.set('goblin-runt.md', `${stored.pages.get('goblin-runt.md')}\nchanged`);
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
+			/goblin-runt.*stale/iu
+		);
+	});
+
+	it('detects a managed extra old page independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		stored.existingFileNames = [...stored.existingFileNames, 'grey-wolf.md'];
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
+			/managed legacy.*grey-wolf/iu
+		);
+	});
+
+	it('detects an unknown hand-authored collision independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		stored.existingFileNames = [...stored.existingFileNames, 'hand-authored-encounter.md'];
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
+			/unmanaged.*hand-authored-encounter/iu
+		);
+	});
+
+	it.each([
+		[
+			'archetype',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.forms[0]!.primaryArchetype += ' drift')
+		],
+		[
+			'duty',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.forms[0]!.battlefieldDuty += ' drift')
+		],
+		[
+			'telegraph',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.forms[0]!.telegraph! += ' drift')
+		],
+		[
+			'counterplay',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.forms[0]!.counterplay! += ' drift')
+		],
+		[
+			'source',
+			(input: MonsterWikiBuildInput) => input.families[0]!.forms[0]!.sourceReferences.push('Drift')
+		],
+		[
+			'constant',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.visualConstants[0] += ' drift')
+		]
+	] as const)('rejects packet-to-target %s drift', async (_label, mutate) => {
+		const input = cloneInput(await productionInput());
+		mutate(input);
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/packet.*target|source.*drift/iu
+		);
+	});
+
+	it('rejects target source-field drift even when the manifest hash is refreshed', async () => {
+		const input = cloneInput(await productionInput());
+		const target = input.targets[0]!;
+		target.telegraph += ' forged';
+		input.manifest.canonicalMatrix.activeCoordinates[0]!.targetSha256 =
+			familyAffinitySha256(target);
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/packet.*target|source.*drift/iu
+		);
+	});
+
+	it('audits every rendered page and rejects affirmative candidate promotion wording', async () => {
+		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		expect(() => assertCandidateSafeRenderedMonsterWiki(database)).not.toThrow();
+		const changed = structuredClone(database);
+		changed.forms[0]!.battlefieldDuty = 'This candidate is approved runtime art.';
+		expect(() => assertCandidateSafeRenderedMonsterWiki(changed)).toThrow(
+			/affirmative.*approved|runtime/iu
+		);
+	});
+
+	it('builds forty loop-free typed legacy routes with canonical and reconciliation destinations', async () => {
+		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		const routes = legacyMonsterRouteMap(database);
+		expect(routes).toHaveLength(40);
+		expect(new Set(routes.map(({ currentClassId }) => currentClassId))).toHaveLength(40);
+		expect(routes.find(({ currentClassId }) => currentClassId === 'hill-giant')).toMatchObject({
+			disposition: 'map',
+			destination: '/wiki/creatures/monsters/giant-hill-giant',
+			statusCode: 308
+		});
+		expect(
+			routes.find(({ currentClassId }) => currentClassId === 'goblin-chieftain')
+		).toMatchObject({
+			disposition: 'rename-map',
+			destination: '/wiki/creatures/monsters/goblin-warboss'
+		});
+		expect(
+			routes.find(({ currentClassId }) => currentClassId === 'death-knight')?.destination
+		).toBe('/wiki/creatures/monsters#current-class-reconciliation');
+		expect(routes.find(({ currentClassId }) => currentClassId === 'grey-wolf')?.destination).toBe(
+			'/wiki/creatures/monsters#current-class-reconciliation'
+		);
+		for (const route of routes) {
+			expect(route.destination).not.toBe(`/wiki/creatures/monsters/${route.currentClassId}`);
+		}
 	});
 });

@@ -868,6 +868,57 @@ function buildCanonicalTarget(
 	return FamilyAffinityTargetSchema.parse(target);
 }
 
+const CANONICAL_TARGET_SOURCE_FIELDS = [
+	'familyId',
+	'formId',
+	'currentClassId',
+	'affinity',
+	'tier',
+	'primaryArchetype',
+	'battlefieldDuty',
+	'identityInvariants',
+	'anatomyInvariants',
+	'constructionDimensions',
+	'telegraph',
+	'counterplay',
+	'forbiddenTreatments',
+	'sources',
+	'presentationContract',
+	'acceptanceCriteria',
+	'promotionCeiling',
+	'runtimeCatalogMutationForbidden'
+] as const;
+
+/**
+ * Proves that an active canonical attempt still expresses its packet's authored mechanics.
+ * Revision-only evidence, version, and owned paths deliberately remain outside this comparison.
+ */
+export function validateCanonicalTargetSourceBinding(
+	targetInput: unknown,
+	familyInput: unknown,
+	formInput: unknown
+): void {
+	const target = FamilyAffinityTargetSchema.parse(targetInput);
+	const family = FamilyPacketSchema.parse(familyInput);
+	const form = FamilyFormSchema.parse(formInput);
+	if (target.namespace !== 'canonical') {
+		throw new Error('Packet-to-target source binding applies only to canonical targets');
+	}
+	if (family.familyId !== target.familyId || form.formId !== target.formId) {
+		throw new Error(`Packet-to-target source identity drift: ${target.coordinateId}`);
+	}
+	const expectedNormal = buildCanonicalTarget(family, form, 'normal');
+	const expected =
+		target.affinity === 'normal'
+			? expectedNormal
+			: buildCanonicalTarget(family, form, target.affinity, expectedNormal);
+	for (const field of CANONICAL_TARGET_SOURCE_FIELDS) {
+		if (stableJson(target[field]) !== stableJson(expected[field])) {
+			throw new Error(`Packet-to-target source drift for ${target.coordinateId}: ${field}`);
+		}
+	}
+}
+
 function buildCanonicalFormTargets(family: FamilyPacket, form: FamilyForm): FamilyAffinityTarget[] {
 	const normal = buildCanonicalTarget(family, form, 'normal');
 	return [

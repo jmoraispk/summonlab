@@ -1,6 +1,10 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
-import { getMonsterVisualDatabase, getMonsterVisualEntry } from '$lib/server/monster-database';
+import {
+	getLegacyMonsterWikiRedirect,
+	getMonsterVisualDatabase,
+	getMonsterVisualEntry
+} from '$lib/server/monster-database';
 import { getWikiAsset, getWikiPage } from '$lib/server/wiki';
 
 import type { PageServerLoad } from './$types';
@@ -35,6 +39,9 @@ const visualPacketHeroes = [
 ] as const;
 
 export const load: PageServerLoad = ({ params }) => {
+	const legacyMonsterId = params.slug.match(/^creatures\/monsters\/([a-z][a-z0-9-]*)$/u)?.[1];
+	const legacyDestination = legacyMonsterId ? getLegacyMonsterWikiRedirect(legacyMonsterId) : null;
+	if (legacyDestination) redirect(308, legacyDestination);
 	const wikiPage = getWikiPage(params.slug);
 	if (!wikiPage || wikiPage.href === '/wiki') error(404, 'Wiki page not found');
 

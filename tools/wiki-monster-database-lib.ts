@@ -7,6 +7,7 @@ import {
 	FORM_TIERS,
 	PRODUCTION_AFFINITIES,
 	familyAffinitySha256,
+	validateCanonicalTargetSourceBinding,
 	type CurrentClassMappingEntry,
 	type CurrentClassMappingFile,
 	type FamilyAffinityManifest,
@@ -194,6 +195,7 @@ export function buildCanonicalMonsterWikiDatabase(
 				family.familyId === coordinate.familyId && form.formId === coordinate.formId
 		);
 		if (!sourceForm) fail(`coordinate ${coordinate.coordinateId} has no canonical form`);
+		validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
 		const expectedStatus = coordinate.affinity === 'normal' ? 'planned' : 'blocked-on-anchor';
 		if (coordinate.status !== expectedStatus) {
 			fail(`${coordinate.coordinateId} must initially use ${expectedStatus}`);
@@ -347,7 +349,7 @@ export function buildCanonicalMonsterWikiDatabase(
 		fail(`expected 10 canonical mappings and 30 bridge-only identities`);
 	}
 
-	return {
+	const database: CanonicalMonsterWikiDatabase = {
 		sourceStatus: MONSTER_VISUAL_INDEX_SOURCE_STATUS,
 		affinities: PRODUCTION_AFFINITIES,
 		families: canonicalFamilies,
@@ -363,6 +365,8 @@ export function buildCanonicalMonsterWikiDatabase(
 			legacyCandidateReferences: references.length
 		}
 	};
+	assertCandidateSafeRenderedMonsterWiki(database);
+	return database;
 }
 
 function sourceLink(sourcePage: string): string {
@@ -500,7 +504,7 @@ export function buildMonsterDatabaseIndex(database: CanonicalMonsterWikiDatabase
 				entry.canonicalFormId === null
 					? 'Not a canonical form; retained as bridge/reference identity'
 					: `[${entry.canonicalFormId}](${entry.canonicalFormId}.md)`;
-			return `| \`${entry.currentClassId}\` | ${entry.sourceFamilyLabel} | \`${entry.disposition}\` — ${dispositionMeaning(entry.disposition)} | ${canonical} | No (every target affinity) | ${entry.references.length} candidate-only references |`;
+			return `| \`${entry.currentClassId}\` | ${entry.sourceFamilyLabel} | \`${entry.disposition}\` — ${dispositionMeaning(entry.disposition)} | ${canonical} | ${sanitizeRenderedCopy(entry.rationale)} | No (every target affinity) | ${entry.references.length} candidate-only references |`;
 		})
 		.join('\n');
 	return `# Canonical monster family database
@@ -530,8 +534,8 @@ false, so none is automatically accepted for a canonical coordinate.
 
 ### Current class reconciliation
 
-| Current class ID | Source family label | Disposition | Canonical destination | Reuse eligibility | Preserved provenance |
-| --- | --- | --- | --- | --- | --- |
+| Current class ID | Source family label | Disposition | Canonical destination | Mapping rationale | Reuse eligibility | Preserved provenance |
+| --- | --- | --- | --- | --- | --- | --- |
 ${reconciliationRows}
 
 ## Production synchronization
@@ -580,6 +584,7 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 				version: coordinate.version
 			}))
 		})),
+		legacyRoutes: legacyMonsterRouteMap(database),
 		reconciliation: {
 			sourceStatus: 'candidate-only-reference' as const,
 			entries: database.reconciliation.map((entry) => ({
@@ -588,6 +593,7 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 				disposition: entry.disposition,
 				canonicalFamilyId: entry.canonicalFamilyId,
 				canonicalFormId: entry.canonicalFormId,
+				rationale: entry.rationale,
 				candidateReuseByAffinity: entry.candidateReuseByAffinity,
 				references: entry.references.map((reference) => ({
 					affinity: reference.affinity,
@@ -604,19 +610,78 @@ export function generatedMonsterPageFileNames(database: CanonicalMonsterWikiData
 	return database.forms.map(({ formId }) => `${formId}.md`).sort();
 }
 
-export function obsoleteGeneratedMonsterPages(
-	existingFileNames: readonly string[],
-	expectedPageFileNames: readonly string[]
-): string[] {
-	const expected = new Set(expectedPageFileNames);
-	return existingFileNames
-		.filter(
-			(fileName) =>
-				fileName !== 'README.md' &&
-				/^[a-z][a-z0-9-]*\.md$/u.test(fileName) &&
-				!expected.has(fileName)
-		)
+export function legacyMonsterPageFileNames(database: CanonicalMonsterWikiDatabase): string[] {
+	const canonicalIds = new Set(database.forms.map(({ formId }) => formId));
+	return database.reconciliation
+		.map(({ currentClassId }) => currentClassId)
+		.filter((currentClassId) => !canonicalIds.has(currentClassId))
+		.map((currentClassId) => `${currentClassId}.md`)
 		.sort();
+}
+
+export function obsoleteGeneratedMonsterPages(
+	database: CanonicalMonsterWikiDatabase,
+	existingFileNames: readonly string[]
+): string[] {
+	const existing = new Set(existingFileNames);
+	return legacyMonsterPageFileNames(database).filter((fileName) => existing.has(fileName));
+}
+
+export function unmanagedMonsterPageCollisions(
+	database: CanonicalMonsterWikiDatabase,
+	existingFileNames: readonly string[]
+): string[] {
+	const managed = new Set([
+		'README.md',
+		...generatedMonsterPageFileNames(database),
+		...legacyMonsterPageFileNames(database)
+	]);
+	return existingFileNames
+		.filter((fileName) => /^[a-z][a-z0-9-]*\.md$/u.test(fileName) && !managed.has(fileName))
+		.sort();
+}
+
+export function assertManagedMonsterCatalogEntries(
+	database: CanonicalMonsterWikiDatabase,
+	entries: readonly { wikiId: string }[]
+): void {
+	const allowedMonsterWikiIds = new Set([
+		...database.forms.map(({ formId }) => `monster.${formId}`),
+		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`)
+	]);
+	const unknown = entries
+		.map(({ wikiId }) => wikiId)
+		.filter((wikiId) => wikiId.startsWith('monster.') && !allowedMonsterWikiIds.has(wikiId));
+	if (unknown.length > 0) {
+		fail(`unmanaged monster catalog collision: ${unknown.sort().join(', ')}`);
+	}
+}
+
+export type LegacyMonsterRoute = {
+	currentClassId: string;
+	disposition: CurrentClassMappingEntry['disposition'];
+	destination: string;
+	statusCode: 308;
+};
+
+export function legacyMonsterRouteMap(
+	database: CanonicalMonsterWikiDatabase
+): LegacyMonsterRoute[] {
+	return database.reconciliation.map((entry) => {
+		const destination =
+			entry.canonicalFormId === null
+				? '/wiki/creatures/monsters#current-class-reconciliation'
+				: `/wiki/creatures/monsters/${entry.canonicalFormId}`;
+		if (destination === `/wiki/creatures/monsters/${entry.currentClassId}`) {
+			fail(`legacy route would redirect-loop: ${entry.currentClassId}`);
+		}
+		return {
+			currentClassId: entry.currentClassId,
+			disposition: entry.disposition,
+			destination,
+			statusCode: 308
+		};
+	});
 }
 
 export type StoredMonsterWikiOutputs = {
@@ -630,7 +695,6 @@ export function assertGeneratedMonsterWikiFreshness(
 	database: CanonicalMonsterWikiDatabase,
 	stored: StoredMonsterWikiOutputs
 ): void {
-	const expectedPages = generatedMonsterPageFileNames(database);
 	if (stored.readme !== buildMonsterDatabaseIndex(database)) fail('README is stale');
 	const expectedIndex = `${JSON.stringify(buildMonsterVisualIndex(database), null, 2)}\n`;
 	if (stored.visualIndex !== expectedIndex) fail('visual index is stale');
@@ -640,8 +704,37 @@ export function assertGeneratedMonsterWikiFreshness(
 		if (page === undefined) fail(`missing generated page ${fileName}`);
 		if (page !== buildMonsterWikiPage(form)) fail(`generated page ${fileName} is stale`);
 	}
-	const obsolete = obsoleteGeneratedMonsterPages(stored.existingFileNames, expectedPages);
-	if (obsolete.length > 0) fail(`obsolete generated pages remain: ${obsolete.join(', ')}`);
+	const obsolete = obsoleteGeneratedMonsterPages(database, stored.existingFileNames);
+	if (obsolete.length > 0) fail(`managed legacy pages remain: ${obsolete.join(', ')}`);
+	const unmanaged = unmanagedMonsterPageCollisions(database, stored.existingFileNames);
+	if (unmanaged.length > 0) fail(`unmanaged monster page collision: ${unmanaged.join(', ')}`);
+}
+
+export function assertCandidateSafeRenderedMonsterWiki(
+	database: CanonicalMonsterWikiDatabase
+): void {
+	const rendered = [
+		['README.md', buildMonsterDatabaseIndex(database)],
+		...database.forms.map((form) => [`${form.formId}.md`, buildMonsterWikiPage(form)] as const)
+	] as const;
+	for (const [fileName, source] of rendered) {
+		const withoutFixedNegativeLanguage = source
+			.replace(/no coordinate[^.\n]*(?:approved|runtime)[^.\n]*/giu, '')
+			.replace(/(?:is|are|remains?)\s+(?:intentionally\s+)?not\s+(?:approved|runtime)/giu, '')
+			.replace(/neither\s+approved\s+nor\s+runtime/giu, '')
+			.replace(/never\s+(?:a\s+)?runtime(?:\s+asset)?/giu, '')
+			.replace(/does\s+not\s+(?:mean|make)[^.\n]*(?:approved|runtime)/giu, '');
+		if (
+			/\bcandidate\s+(?:is|are|becomes?|status\s*:)\s*(?:approved|runtime)\b/iu.test(
+				withoutFixedNegativeLanguage
+			) ||
+			/\b(?:approved|runtime)\s+(?:candidate|art|asset|image)\b/iu.test(
+				withoutFixedNegativeLanguage
+			)
+		) {
+			fail(`affirmative candidate-as-approved/runtime wording in ${fileName}`);
+		}
+	}
 }
 
 // Legacy symbols retained only so retirement checks can import this module while the new exporter
