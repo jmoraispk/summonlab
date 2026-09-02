@@ -160,6 +160,10 @@ for readable controls, initiative information, public intent, responsive layout,
 Both layers consume the same authoritative combat projection; neither invents timing, legality, or
 results.
 
+Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
+Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
+command-bar proportions as the visual baseline for the first combat slice.
+
 - Use a steep top-down 2.5D camera, with only enough pitch to preserve silhouettes, environmental
   depth, and elliptical contact shadows.
 - Make action order unmistakable. The primary initiative display is a portrait rail with a visible
