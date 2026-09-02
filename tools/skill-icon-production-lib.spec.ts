@@ -202,6 +202,111 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 		expect(parseAcceptedMotifMap(markdown, rows).entries[0]?.mapEntryId).toBe('blade.first');
 	});
 
+	it.each([
+		[
+			'generic block tag',
+			`<div>
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+</div>`
+		],
+		[
+			'CDATA',
+			`<![CDATA[
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+]]>`
+		],
+		[
+			'processing instruction',
+			`<?retired
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+?>`
+		]
+	])('rejects a complete accepted mapping contained by %s raw HTML', (_label, markdown) => {
+		expect(() => parseAcceptedMotifMap(markdown, [row('martial:blade:first', 'First')])).toThrow(
+			/accepted status/u
+		);
+	});
+
+	it('excludes all seven CommonMark HTML block types beside a live mapping', () => {
+		const rows = [row('martial:blade:first', 'First')];
+		const markdown = `<script>
+**Status:** Proposed
+</style>
+
+<!-- **Status:** Proposed -->
+
+<?retired
+**Status:** Proposed
+?>
+
+<!RETIRED
+**Status:** Proposed
+>
+
+<![CDATA[
+**Status:** Proposed
+]]>
+
+<div class="retired">
+**Status:** Proposed
+## Martial
+### Blade
+| \`blade.retired-six\` | **Retired Six** |
+</div>
+
+<retired-example data-kind="motif">
+**Status:** Proposed
+## Martial
+### Blade
+| \`blade.retired-seven\` | **Retired Seven** |
+</retired-example>
+
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |`;
+		expect(parseAcceptedMotifMap(markdown, rows).entries).toEqual([
+			{
+				mapEntryId: 'blade.first',
+				domain: 'Martial',
+				family: 'Blade',
+				memberTargetIds: ['martial:blade:first']
+			}
+		]);
+	});
+
+	it.each(['pre', 'script', 'style', 'textarea'])(
+		'rescans a line after an HTML comment into a type-1 <%s> block',
+		(tag) => {
+			const rows = [row('martial:blade:first', 'First')];
+			const markdown = `<!-- retired -->\u003c${tag}>
+**Status:** Proposed
+## Martial
+### Blade
+| \`blade.retired\` | **Retired** |
+</${tag}>
+
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |`;
+			expect(parseAcceptedMotifMap(markdown, rows).entries[0]?.mapEntryId).toBe('blade.first');
+		}
+	);
+
 	it('rejects cycles and parents outside a motif family', () => {
 		expect(() =>
 			validateVisualLineage([

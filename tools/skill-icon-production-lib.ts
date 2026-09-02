@@ -82,11 +82,134 @@ function skillKey(domain: SkillDomain, family: string, name: string): string {
 	return `${domain}\u0000${family}\u0000${name}`;
 }
 
+const COMMONMARK_BLOCK_TAG_NAMES = [
+	'address',
+	'article',
+	'aside',
+	'base',
+	'basefont',
+	'blockquote',
+	'body',
+	'caption',
+	'center',
+	'col',
+	'colgroup',
+	'dd',
+	'details',
+	'dialog',
+	'dir',
+	'div',
+	'dl',
+	'dt',
+	'fieldset',
+	'figcaption',
+	'figure',
+	'footer',
+	'form',
+	'frame',
+	'frameset',
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'h6',
+	'head',
+	'header',
+	'hr',
+	'html',
+	'iframe',
+	'legend',
+	'li',
+	'link',
+	'main',
+	'menu',
+	'menuitem',
+	'nav',
+	'noframes',
+	'ol',
+	'optgroup',
+	'option',
+	'p',
+	'param',
+	'search',
+	'section',
+	'summary',
+	'table',
+	'tbody',
+	'td',
+	'tfoot',
+	'th',
+	'thead',
+	'title',
+	'tr',
+	'track',
+	'ul'
+].join('|');
+
+const COMMONMARK_TYPE_1_START = /^ {0,3}<(pre|script|style|textarea)(?:[ \t]|>|$)/iu;
+const COMMONMARK_TYPE_1_END = /<\/(?:pre|script|style|textarea)>/iu;
+const COMMONMARK_TYPE_6_START = new RegExp(
+	`^ {0,3}</?(?:${COMMONMARK_BLOCK_TAG_NAMES})(?:[ \\t]|/?>|$)`,
+	'iu'
+);
+const COMMONMARK_TYPE_7_TAG =
+	/^ {0,3}(?:<[A-Za-z][A-Za-z0-9-]*(?:[ \t]+[A-Za-z_:][A-Za-z0-9_.:-]*(?:[ \t]*=[ \t]*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*[ \t]*\/?>|<\/[A-Za-z][A-Za-z0-9-]*[ \t]*>)[ \t]*$/u;
+
+type HtmlBlockEnd =
+	{ readonly kind: 'blank' } | { readonly kind: 'marker'; readonly pattern: RegExp };
+
+function htmlBlockStart(line: string, allowTypeSeven: boolean): HtmlBlockEnd | null {
+	if (COMMONMARK_TYPE_1_START.test(line)) {
+		return { kind: 'marker', pattern: COMMONMARK_TYPE_1_END };
+	}
+	if (/^ {0,3}<\?/u.test(line)) return { kind: 'marker', pattern: /\?>/u };
+	if (/^ {0,3}<![A-Z]/u.test(line)) return { kind: 'marker', pattern: />/u };
+	if (/^ {0,3}<!\[CDATA\[/u.test(line)) return { kind: 'marker', pattern: /\]\]>/u };
+	if (COMMONMARK_TYPE_6_START.test(line)) return { kind: 'blank' };
+	if (allowTypeSeven && COMMONMARK_TYPE_7_TAG.test(line)) return { kind: 'blank' };
+	return null;
+}
+
+function stripHtmlComments(
+	line: string,
+	inComment: boolean
+): { readonly line: string; readonly inComment: boolean; readonly changed: boolean } {
+	let output = '';
+	let cursor = 0;
+	let changed = inComment;
+	if (inComment) {
+		const commentEnd = line.indexOf('-->');
+		if (commentEnd === -1) return { line: '', inComment: true, changed: true };
+		cursor = commentEnd + 3;
+		inComment = false;
+	}
+	while (cursor < line.length) {
+		const commentStart = line.indexOf('<!--', cursor);
+		if (commentStart === -1) {
+			output += line.slice(cursor);
+			break;
+		}
+		changed = true;
+		output += line.slice(cursor, commentStart);
+		const commentEnd = line.indexOf('-->', commentStart + 4);
+		if (commentEnd === -1) return { line: output, inComment: true, changed };
+		cursor = commentEnd + 3;
+	}
+	return { line: output, inComment, changed };
+}
+
+function opensMarkdownParagraph(line: string): boolean {
+	if (line.trim() === '') return false;
+	return !/^ {0,3}(?:#{1,6}(?:[ \t]|$)|>|(?:[-+*]|\d+[.)])(?:[ \t]|$))/u.test(line);
+}
+
 function liveMarkdownLines(markdown: string): string[] {
 	const lines: string[] = [];
 	let fence: { marker: '`' | '~'; length: number } | null = null;
-	let rawBlock: 'pre' | 'script' | 'style' | 'textarea' | null = null;
+	let htmlBlock: HtmlBlockEnd | null = null;
 	let inHtmlComment = false;
+	let paragraphOpen = false;
 	for (const line of markdown.split(/\r?\n/u)) {
 		if (fence) {
 			const closingFence = new RegExp(
@@ -94,65 +217,77 @@ function liveMarkdownLines(markdown: string): string[] {
 				'u'
 			);
 			if (closingFence.test(line)) fence = null;
+			lines.push('');
 			continue;
 		}
-		if (rawBlock) {
-			if (new RegExp(`</${rawBlock}\\s*>`, 'iu').test(line)) rawBlock = null;
-			continue;
-		}
-
-		let liveLine = line;
-		if (inHtmlComment) {
-			const commentEnd = liveLine.indexOf('-->');
-			if (commentEnd === -1) {
-				lines.push('');
-				continue;
+		if (htmlBlock) {
+			if (
+				(htmlBlock.kind === 'blank' && line.trim() === '') ||
+				(htmlBlock.kind === 'marker' && htmlBlock.pattern.test(line))
+			) {
+				htmlBlock = null;
 			}
-			liveLine = liveLine.slice(commentEnd + 3);
-			inHtmlComment = false;
+			lines.push('');
+			continue;
 		}
 
-		if (/^(?: {4}|\t)/u.test(liveLine)) continue;
-		const openingFence = /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(liveLine)?.[1];
+		if (!inHtmlComment && /^(?: {4}|\t)/u.test(line)) {
+			lines.push('');
+			continue;
+		}
+		const openingFence = !inHtmlComment
+			? /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(line)?.[1]
+			: undefined;
 		if (openingFence) {
 			fence = {
 				marker: openingFence[0] as '`' | '~',
 				length: openingFence.length
 			};
-			continue;
-		}
-		const rawBlockOpening = /^ {0,3}<(pre|script|style|textarea)(?:\s|>|$)/iu
-			.exec(liveLine)?.[1]
-			?.toLowerCase();
-		if (
-			rawBlockOpening === 'pre' ||
-			rawBlockOpening === 'script' ||
-			rawBlockOpening === 'style' ||
-			rawBlockOpening === 'textarea'
-		) {
-			if (!new RegExp(`</${rawBlockOpening}\\s*>`, 'iu').test(liveLine)) {
-				rawBlock = rawBlockOpening;
-			}
+			paragraphOpen = false;
+			lines.push('');
 			continue;
 		}
 
-		let uncommented = '';
-		let cursor = 0;
-		while (cursor < liveLine.length) {
-			const commentStart = liveLine.indexOf('<!--', cursor);
-			if (commentStart === -1) {
-				uncommented += liveLine.slice(cursor);
-				break;
+		let liveLine = line;
+		const startsWithComment = inHtmlComment || /^ {0,3}<!--/u.test(liveLine);
+		if (!startsWithComment) {
+			const blockStart = htmlBlockStart(liveLine, !paragraphOpen);
+			if (blockStart) {
+				if (blockStart.kind === 'blank' || !blockStart.pattern.test(liveLine)) {
+					htmlBlock = blockStart;
+				}
+				paragraphOpen = false;
+				lines.push('');
+				continue;
 			}
-			uncommented += liveLine.slice(cursor, commentStart);
-			const commentEnd = liveLine.indexOf('-->', commentStart + 4);
-			if (commentEnd === -1) {
-				inHtmlComment = true;
-				break;
-			}
-			cursor = commentEnd + 3;
 		}
-		lines.push(uncommented);
+
+		const stripped = stripHtmlComments(liveLine, inHtmlComment);
+		liveLine = stripped.line;
+		inHtmlComment = stripped.inComment;
+		if (stripped.changed) {
+			const rescannedFence = /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(liveLine)?.[1];
+			if (rescannedFence) {
+				fence = {
+					marker: rescannedFence[0] as '`' | '~',
+					length: rescannedFence.length
+				};
+				paragraphOpen = false;
+				lines.push('');
+				continue;
+			}
+			const rescannedBlock = htmlBlockStart(liveLine, !paragraphOpen);
+			if (rescannedBlock) {
+				if (rescannedBlock.kind === 'blank' || !rescannedBlock.pattern.test(liveLine)) {
+					htmlBlock = rescannedBlock;
+				}
+				paragraphOpen = false;
+				lines.push('');
+				continue;
+			}
+		}
+		lines.push(liveLine);
+		paragraphOpen = opensMarkdownParagraph(liveLine);
 	}
 	return lines;
 }
